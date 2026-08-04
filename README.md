@@ -4,7 +4,7 @@ A dark medieval, low-magic tactical roguelike. Slay the Spire style road, Battle
 Brothers style hex battles, a company of four strangers who did not choose each
 other and one contract that will not wait.
 
-**Play it in the browser: https://USERNAME.github.io/REPO/**
+**Play it in the browser: https://dmytriyvihrov-stack.github.io/My-game/**
 
 Nothing to install and nothing to download. It is one HTML file with the
 paintings and the score inside it. Works on a phone. Your run saves to the

@@ -12,20 +12,17 @@
 
 ---
 
-## First time only: four clicks
+## Where it lives
 
-The repo is on this laptop and nowhere else until you do this once.
+| | |
+|---|---|
+| **Repo** | https://github.com/dmytriyvihrov-stack/My-game |
+| **The link you send** | **https://dmytriyvihrov-stack.github.io/My-game/** |
 
-1. **github.com/new** · name it `grimtoll` · **Public** · do **not** tick "add a README",
-   the repo already has one.
-2. In the project folder:
-   ```powershell
-   git remote add origin https://github.com/YOURNAME/grimtoll.git
-   git push -u origin main
-   ```
-3. In the repo on github.com: **Settings → Pages → Source: Deploy from a branch →
-   `main` / `(root)` → Save.**
-4. Wait about a minute. Your link is **`https://YOURNAME.github.io/grimtoll/`**.
+*Done on 2026-08-04. Kept here in case a second copy is ever needed: create a
+**public** repo without a README, then `git remote add origin <url>` and
+`git push -u origin main`, then **Settings → Pages → Source: Deploy from a
+branch → `main` / `(root)` → Save**, and the link appears about a minute later.*
 
 Send that link to anyone. It works on a phone, needs no account, installs nothing,
 and the run saves in their browser so closing the tab does not lose it.
