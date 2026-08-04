@@ -18,31 +18,56 @@
 
 ---
 
-## 🔗 The link you send to friends  *(⛔ STOPPED 2026-08-04. Take it off the artifact and onto a host)*
+## 🔗 The link you send to friends  *(2026-08-04 · build log 8f.111 · **four clicks left, and they are yours**)*
 
-**Dropping C1 was not enough. The share was refused again with the picture gone, so C1 was one
-blocker and not the only one.** The likeliest remaining suspects are the five paintings that went in
-that same day (8f.107) and were never share-tested. **The ratling is back in the build**, since
-removing it bought nothing: the published page is the complete game again, every painting in place.
+**The repo exists, the build is committed, and for the first time the shareable file HAS SOUND IN
+IT.** That is the part worth saying twice. Every version anyone outside this machine has ever heard
+was silent, because the music lived in an `audio/` folder that never travelled with the page. It
+travels now: the eleven approved cues are inside `index.html` as AAC, 79MB of WAV squeezed to 3.7MB,
+and the whole page is 10.3MB with nothing to fetch and nothing to install.
 
-**⛔ The artifact route is abandoned for this. Use a real host, where nothing gets to refuse you.**
+**What is done:** git repo created, `.gitignore` written, everything committed on `main`, and
+`index.html` built and checked in a real browser. **What is not done: the repo is only on this
+laptop.** GitHub does not exist yet, so there is no link yet.
 
-| | |
-|---|---|
-| **GitHub Pages** | push the file to a public repo, switch Pages on, public URL in about a minute, updates by `git push`. **The recommended one.** The `audio/` folder can ride along, so the game stops being silent, which an artifact could never fix |
-| **Netlify Drop** | app.netlify.com/drop, drag the file, URL in ten seconds, no account |
-| **itch.io** | the right home for a real playtest: upload as an HTML game and put a password on it |
+### The four clicks
 
-All three serve one self-contained file with all 114 pictures and no content check between you and
-your friends.
+1. Go to **github.com/new**. Name it `grimtoll`. **Public.** Do **not** tick "add a README", the
+   repo already has one.
+2. Copy the URL it shows you and hand it back to this chat, or run the two lines GitHub prints
+   under *"push an existing repository"*.
+3. In the repo: **Settings → Pages → Source: Deploy from a branch → `main` / `(root)` → Save.**
+4. Wait about a minute. The link is **`https://<your-name>.github.io/grimtoll/`**.
 
-**Still true and worth keeping:** the page must never call `window.claude` (that is the capability API,
-and a page holding a capability cannot be public). That rule cost the save-as-a-file row at 8f.104,
-and it applies to artifacts only. On GitHub Pages none of this matters, and the row could come back.
+Send that link. It works on a phone, it needs no account, and closing the tab does not lose the run.
 
-*The old artifact links still hold the current build if you want them:
+### What to listen for, since this has never been heard by anybody but you
+
+- **Sound starts on the FIRST CLICK, never on load.** Every browser blocks autoplay. If the menu is
+  silent until you touch something, that is correct.
+- The **main menu** has its own track. The **road** has two that alternate. **Battle** and **boss**
+  are separate. Speaker button is bottom right.
+- **This is a 64k AAC copy, not the master.** It should be indistinguishable through a phone or a
+  laptop speaker. If something sounds thin or swirly on good headphones, say which cue and it gets
+  re-encoded higher; that is one number in one script.
+- ⚠ **A bug worth watching for: sound that works here and not there.** That failure is the entire
+  reason this entry exists, so if a friend says "no music", ask what they clicked first.
+
+### Updating it later
+
+`prototype/grimtoll_slice.html` stays the working file and its audio table stays empty on purpose.
+When something ships, rebuild the shareable copy and push. The link never changes.
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File audio\build_audio.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File tools\build_site.ps1
+```
+
+*The old artifact links still hold an older, silent build:
 [the original](https://claude.ai/code/artifact/0263fef0-f753-477e-a90e-ed329f724226) ·
-[backup](https://claude.ai/code/artifact/a76483cd-cc32-48fe-ac43-d1bce1ae0338). They are private.*
+[backup](https://claude.ai/code/artifact/a76483cd-cc32-48fe-ac43-d1bce1ae0338). They are private, and
+they are no longer the thing you send.* **On a real host the `window.claude` ban evaporates**, so the
+save-as-a-file row that 8f.104 cost you can come back whenever you want it.
 
 ---
 
