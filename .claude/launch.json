@@ -1,0 +1,29 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "grimtoll",
+      "runtimeExecutable": "powershell",
+      "runtimeArgs": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "tools/serve.ps1"
+      ],
+      "port": 8777
+    },
+    {
+      "name": "grimtoll-8778",
+      "runtimeExecutable": "powershell",
+      "runtimeArgs": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-Command",
+        "$env:GT_PORT='8778'; & tools/serve.ps1"
+      ],
+      "port": 8778
+    }
+  ]
+}

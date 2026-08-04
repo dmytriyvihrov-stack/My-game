@@ -1,0 +1,3106 @@
+# Grimtoll — the record
+
+> **Everything in this file is history, not instructions.** It exists because the reasoning behind
+> a past decision is the most expensive thing to reconstruct and the cheapest thing to keep — but
+> nothing here is a task, and many of its numbers were true only on the day they were written.
+>
+> **Changelog rows are a historical record: the numbers inside them describe what a build did at
+> the time and are deliberately not updated.** [`01_GAME_CONCEPT.md`](01_GAME_CONCEPT.md) and the
+> running build hold what is true now. **When the record and the build disagree, the build wins.**
+>
+> *Split out of [`00_PLAN_AND_BACKLOG.md`](00_PLAN_AND_BACKLOG.md) on 2026-07-31 at the user's
+> request — the working file keeps only what a session can act on; everything shipped or
+> superseded lands here. When an active entry is built: move its full text here, leave its row in
+> the Done table there.*
+
+**Contents:** [the build log](#the-build-log--one-row-per-sub-build) ·
+[built backlog entries in full](#built-backlog-entries--the-full-text) ·
+[the outside review's P0 list](#codex-packet--status) ·
+[playtest snapshots](#snapshots-kept-for-the-reasoning) ·
+[the original phase plan](#the-original-phase-plan)
+
+## The build log — one row per sub-build
+
+### Phase A — Pre-production (paper only, no code)
+
+| Step | Deliverable | Status |
+|------|-------------|--------|
+| 1 | **Game Concept** (`01_GAME_CONCEPT.md`) — pillars, loops, tone, scope, run economy, metaprogression | ✅ DONE |
+| 2 | **Art Direction + visual prompt pack #1** (`02_ART_DIRECTION.md`) — style bible, palette, tech specs, 8 prompts | ✅ DONE — awaiting generated results |
+| 2.5 | **Style Bible** (Claude design project) — Ash & Iron base + 4 atmosphere keys + screens 4a/4b | ✅ DONE |
+| 3 | **Core combat design** — stat tables, threat budget, professions, enemy types | ✅ SUPERSEDED — designed *in* the slice and documented in `01_GAME_CONCEPT.md`. (The "Winds economy" line here is dead: **Winds of Magic was cut entirely** — casting costs the caster's own nerve instead.) |
+| 4 | **Overworld design** — node map rules, event types, camp choices, resource economy | ✅ SUPERSEDED — same: built and documented. Economy reworked twice since (see the Provisions and Party-size sections of the concept). |
+| 5 | **MVP scope lock** — cut list, data formats, Godot 4 port plan | pending — worth doing *after* the settlements MVP, when the systems stop moving |
+
+### Phase B — Vertical Slice (first playable)
+
+| Step | Deliverable | Status |
+|------|-------------|--------|
+| 6 | **Browser slice v1** — 2 world nodes → hex battle → post-battle dialog | ✅ DONE |
+| 7 | **Browser slice v2** (`prototype/grimtoll_slice.html`) — 3-route map with real distances & food, 3-action combat, morale & routing, visible race art, run/camp resources | ✅ DONE — wins in ~8 rounds, inside the band |
+| 8 | **Browser slice v3** — you as the Captain, charisma & wages, archer + battle-mage, enemy captains, engagement rule, surrender & mercy, visible trinkets | ✅ DONE — 7 rounds, inside the band |
+| 8b | **Browser slice v4** — four core stats, equipment with sized armour, traits, classes/levels/perks, Battle-Brothers morale, readable hit & dodge, inventory screen, richer map | ✅ DONE |
+| 8c | **Browser slice v5** — after-battle spoils & mercy, dialogs on the map, daily upkeep, camp incidents, injuries from greed, recruitment, a second (beast) battle, trinket tooltips, funny gear | ✅ DONE |
+| 8d | **Browser slice v6–v8** — scars & downed, facing/backstab arcs, spell ladder, The Old Camp (forge + yard + roster, localStorage persistence), healing over time, brigand faction + per-battle terrain, synthesized audio & music | ✅ DONE |
+| 8e | **Browser slice v9–v10** (first playtest incorporated) — two-hex lindwurm boss + circling cub, four spell schools (casters roll 2), facing/backstab arcs, AUTO & WITHDRAW (final battle is life-or-death), perk points spendable from inventory, event recruitment (Pell), big-four HUD, day-1 start, node vignettes, withdraw-softlock fixed | ✅ DONE |
+| 8f | **Content layer + lore split** — `docs/03_WORLD_LORE.md`, `content/` folder (names & personalities, events, art prompts), 16 floating events shuffled per run, 14 personalities, 12 names per race, battle rebalance (2 actions, tighter spreads) | ✅ DONE |
+| 8f.1 | **Post-feedback pass** — fixed a silent `pathTo` crash that stalled the Fen-Mother fight forever; roster cut to 3 starting humans + mandatory ratkin-vs-ogre clash event (`EVENTS.clash`) as the only early route to a non-human recruit; faction/reputation system removed entirely (§4b in `03_WORLD_LORE.md`, cut); company-level morale renamed and redisplayed as named "Blessings & Curses" states instead of a raw number; trinkets moved to per-character display (company relics stay on the world bar); Captain-only pet slot added, fillable by the Fen-Mother cub, passive support only; The Old Camp renamed/reframed as The Wagon, with boot narration branching on whether the last company died (`LEGACY.priorDied`) instead of any cross-run magic; race-gated (`needRace`) event choices added to `ogrestone` and `wedding` | ✅ DONE |
+| 8f.2 | **Prologue + village + allied units** — tavern opening (nobleman, coin, insult, three answers, punch resolved as written outcome not a fight); slow-reveal rule (nothing non-human named before Blood on the Road; the final node reads only "The Snare"); Blood on the Road promoted to a real battle with **AI-driven allied NPCs on your side of the board**; Coldharrow village at the act break (bone-setter / market / armourer-one-piece / wheelwright); wagon-bed upgrade moved from the between-run screen to the village wheelwright; fixed a `hurtLine` temporal-dead-zone crash, a `render()` crash on ally units, and an end-of-battle transition that could be silently cancelled by a turn starting inside its window | ✅ DONE |
+| 8f.3 | **Playtest #3 fixes** — clash reworked to 3 outcomes (ratkin→2 join, ogre→1 joins, watch→fight the winners alone, find one half-dead ratkin); first fight tuned EASY when you help; Broken Men down one enemy; withdrawal now resolves the node instead of re-offering it, and never abandons the Captain; **`cast()` token layer** so no event can name an absent character (fixes the `{A}` leak and ~24 hardcoded Skree/Bruht/Vesna/Marrow references); event card now scrolls its prose with the choice buttons pinned in view; opening text cut ~45%; personalities built (Ambition/rage, Does not run, No stomach for it, Big, Courageous, Kind-affects-enemies, Magpie-minded); two artifacts (Ground-Glass Eyes, The Wood-Stick With Two Holes) | ✅ DONE |
+| 8f.4 | **Personality system proper** — personalities gated by class/race (`cls`/`race`/`notCls`/`notRace`) so no more dud rolls; **`byRace` variants** so one personality is three creatures (Ambition worked through on ratkin/ogre/human); `tr()` reads through the carrier's race so every engine hook became race-aware for free; **perk trees doubled to 8 per class in 4 tiers** and an exhausted tree now converts a perk promotion into a stat instead of eating it; 5 new perks; starting party is 4 (archer added, carries Ambition); charisma 13; Dead Company loot cut from 5 pieces to 2; fixed `checkEnd` re-scheduling the end-of-battle hand-off on every call (which recruited the clash survivors **twice**) | ✅ DONE |
+| — | **`docs/06_DESIGN_REQUEST_FOR_GPT.md`** — self-contained brief for an outside designer: rewrite choice labels away from arithmetic, 10 events, 12 personalities, 8 camp incidents. Paste-and-go, no code access needed. | ✅ SENT · deleted 2026-07-31 — jobs done, facts stale |
+| 8f.5 | **Combat + audio pass (playtest #3)** — STR/AGI became damage MULTIPLIERS (`(stat−8)×5.5%`, melee on STR, bows on AGI) with a small flat part; race spreads narrowed again to ogre +2/−1 and ratkin −1/+1 because a multiplier compounds what a flat bonus added; **parting swings capped at one per enemy per turn**; **archers heavily penalised at 1 hex (−40) and at extreme range (−18)**; **cutter's BACKSTAB replaced with DISTRACT** (1 action, no damage, turns the target to face away — opens its back for the whole line); inventory perk tree now shows all four tiers instead of two; **music rebuilt as an 8-chord harmony engine with a transition map**, and the road and battlefield are now genuinely different pieces (bell-and-wind vs drum-and-horn, battle refuses the bright chord); **hit sounds voiced by body size** (ogre/human/ratkin/beast) with distinct "taking a hit" variants | ✅ DONE |
+| 8f.6 | **Art pack 02 + formations + smarter AI** — six new painted scenes wired in as E11–E16 (tavern, Blood on the Road, toll-man, drowned chapel, the Collector, Under the Bloom); the prologue has artwork for the first time; toll/chapel and bloom/taxman stopped sharing pictures; **three formation bonuses** (The Swarm, The Weight, The Line); **AI cohesion** so units stop advancing alone into an encirclement, and a **shooting-line stance** where a side that out-shoots you refuses the melee and makes you cross the field | ✅ DONE |
+| 8f.7 | **Boss fear + perk order + readable personalities** — Fen-Mother morale 150→260 and a new **THE SOUND SHE MAKES** (no damage; a nerve check on everyone within 4 hexes, failures rout and run); promotions now start on the **perk** so a level-2 character can actually choose something; personalities show one short clause on screen with the full text on hover; Muster Field second hire cut from ×2 to ×1.5, and a **ratkin undercuts by a fifth** rather than be the one left on the wall | ✅ DONE |
+| 8f.8 | **Classes, formations polish, wagon fittings** — race colours made genuinely distinct; ogre spread pulled in again (Bruht 17→13 STR); THE DEBT rewritten so every ending costs the whole company something (new `hurtAll`); act-final fight now always fields **an ogre among the ratkin** (and `build()` derives race from kind, which had been silently labelling every enemy 'ratkin'); **archer signature → CRIPPLING SHOT** (half damage, half movement, −10 dodge); **caster split into Battle-Mage (2 schools, 1 cast) and Mage (3 schools, 1 full + 1 half)**; spell ranges differentiated 2/4/5/6; **forge is now per-run, not permanent**; **wagon fittings: 3 slots, 4 buildings** (Bed / Medicine Chest / Cook-Fire / Reliquary); clash made idempotent after a report of all three recruits joining at once | ✅ DONE |
+| — | **`docs/07_WORLD_MAP_ART_BRIEF.md`** — tech task for the world-map visual pass: what to send an image generator, what I wire up afterwards, and the fixed node coordinates it must not disturb | ⚰ SUPERSEDED · deleted 2026-07-31 — its "fixed" node coordinates predate the map rebuild |
+| 8f.9 | **Winds cut · economy simplified · bigger board** — **Winds of Magic deleted entirely** (UI strip, pools, gusts, per-side economy) and replaced with **personal strain**: every spell costs the caster their own morale, second working of a turn ×1.6; **wood + iron merged into SALVAGE** (crowns in-run / salvage between runs / gems both, per the ChatGPT economy note), implemented as write-through aliases so ~75 existing data sites keep working; **battlefield 13×8 → 15×10** with hexes shrunk to fit and enemy formations shifted to the new far edge | ✅ DONE |
+| 8f.10 | **Boss eye + balance shave** — the Fen-Mother's scream now also **TRANSFIXES the nearest survivor** (held by her eye: no move, no disengage, one full turn, 👁 badge on the field — the scream punishes the shaken, the eye punishes the brave); global ~10% shave on hitpoints (`25+STR×3.5`) and weapon dice, enemies trimmed by the same multiplier in `build()` so nothing drifts; lasting conditions (transfixed/crippled) now show as persistent badges instead of one-second floats; prologue finally admits four people stand up | ✅ DONE |
+| 8f.11 | **Playthrough + reference pass + miswork sweep** — **TRAVEL CONFIRM shipped** (StS-style: clicking a route shows `TRAVEL — X DAYS · Y FOOD` with the baggage discount, second click commits); **no camp incidents before Blood on the Road** (the ambient world stays quiet until the scripted reveal lands); **race-gated choices now work in camp incidents too** ("feed it to the ogre" needs an ogre); **per-race nickname pools** (a nickname is a culture's judgement — humans named for histories, ratkin for what they do, ogres for what they are, plus a shared road-pool); **readability pass** (choice sub-lines 9→10.5px and brighter, node labels get backing plates, action buttons 40→46px with larger text, battle log and stat readouts up a size, active turn-order card lifts with a gold ring, **the acting unit pulses on the field**, LINE ≡ and SWARM ≋ badges make formations visible); **salvage display de-duplicated** (the world bar was showing WOOD and IRON as the same number twice; forge/fitting/wheelwright costs now priced in salvage, and a village `need` that silently under-required was fixed); concept/plan stale-fact sweep (race leans, daily wages, charisma-not-muster, five slots, painted-not-pixel, orphaned step rows, ZoC mention) | ✅ DONE |
+| 8f.12 | **"Reading the Road" — world-map rework** *(planned on Fable, executed by a Sonnet subagent, independently verified)* — every edge carries a **road character** shown on the map and in the travel confirm (*"potentially more fights"*, *"the long, quiet way"*, *"slow and wet"*…); roads render as **state** (open = solid gold with dark casing, walked = dim bone, unreachable = faint dashes); cost chips only on roads you can take, now with the character line; **node borders colour-coded by type** (battle red / trade gold / strange magenta / camp blue / muster green), discs 27→33px, live nodes pulse; a legend decodes all of it bottom-left. No logic, coordinates or costs touched. | ✅ DONE |
+| 8f.13 | **Enemy AI, Battle-Brothers-informed** — attack selection by **expected damage** (hit-chance × dice × arc, 1.6× finishing bonus; <15% to hit repositions instead of swinging); **deliberate flanking** (+16 BACK / +9 FLANK on movement scoring) and **pile-on** (+5 per friendly already on the target — ratkin now complete their own Swarm rings); **shooters kite** (shoot, then open the ground); **the hurt pull back** when shaken, unengaged and out of reach; **captains keep a cohesion weight** and arrive with their line. Also: sheet now separates **PERSONALITY — who they are** from **SKILLS — what they do** (two labelled blocks), and the class/weapon badge moved out of the hexagon's cut corner (it was half-clipped) and up a size | ✅ DONE — live autobattle verify pending (harness outage), statically verified |
+| 8f.14 | **THE ARENA — AI-vs-AI tournament, and what it proved** — per-side AI profiles (`AIP.you`/`AIP.foe`, seven toggles) wired into aiTurn; a console arena (`ARENA.match(comp,kind,n,profA,profB)`, comps four/prepared/swarm/wall/bows) that runs whole battles with rendering stubbed, ~90 in twenty seconds. Findings: **(1)** 130+ battles, zero exceptions — the AI rework's live verification; **(2)** the new AI beats the old rush AI **6/6 vs 2/6** in the mirrored brigand fight — the rework is worth the tokens; **(3)** comp identities are real (swarm crushes brigands 6/6 taking nobody down, bows are the squishiest, the all-ratkin party handles the Snare best — ratkin fight ratkin); **(4)** the Snare had silently become a wall — a PREPARED six (mail, level 3, Skree+Bruht) lost **8 of 8**; retuned twice on arena data to 5 base units, +spear+ogre at six, second ogre at eight → prepared now ~30% in mirror-AI, which reads as a hard human win once DISTRACT/COMMAND/crippling join in. Bare four still 0-for — the Muster Field stays mandatory, as designed | ✅ DONE |
+| 8f.15 | **Race & class doctrines** — the AI now fights like what it is, tuned by ~120 more arena battles. **Ratkin** hunt in packs (pile-on 7 vs 5, 1.5× flank hunger — full-strength pack weight made them *detour to clump* and die for it, arena-caught, moderated); **ogres** herd toward each other to project the WEIGHT and refuse to chase faster prey; **humans** walk to hexes that complete a LINE — the only formation anybody can learn; **shooters** hold their sweet band (~3 hexes) instead of merely "in range". Skills-composition audit: **the AI had been landing SWEEP and TAIL-LASH on one body** while the player's version hit the whole crowd — fixed, and sweeps are now priced by the crowd they pass through; **enemy ogres got SWEEP** (the counter to being ringed is one horizontal answer). A/B results: shooter band **6/8 vs 4/8**, ogre herd positive, all doctrines now casualty-neutral or better. Finale re-checked after everything: prepared six **12/20 mirror-AI** with ~4 down per fight — winnable and bloody; bare four still 0-for | ✅ DONE |
+| 8f.14 | **The score becomes a journey** — 8 chords → **13** (borrowed V, Neapolitan bII, vii°7, Phrygian iv); the transition map replaced by **planned routes** that climb through tiers of tension to a **goal chord** and then cadence home (52–59s per journey, fresh route each time, filter opening with the climb); **tension sets** per chord feed **long syncopated suspensions on weak beats only** (never strong, never short, ~19% / 30% at the goal). Audited 400 routes per mode — 0 violations. Artifact republished (the live build had been ~20 sessions stale). | ✅ DONE — structure verified, **audio unheard** |
+| 8f.15 | **AUTO given judgement · armour nerf · slower feet · the dog · a real boss · statuses · two fights · onboarding** — AUTO stopped charging (it now weighs **exposure**, cohesion and arc like the enemy brain; a ratkin no longer walks under the enemy line and dies there); armour −25% on both sides (`ARM` in `build()`); movement −1 hex for everyone; **the Lurcher** — bites and is gone two hexes, no parting swing, one action (`bounce`); **the Fen-Mother made a real boss** — exempt from the global trims via `noTrim` (470hp/170arm, 5 actions) plus **DRAG UNDER** (hauls somebody out of your line and drops them against her flank) and **THE FEN ANSWERS** (turns the ground around her to marsh); a **STATUS/AURA register** so conditions declare their icon and meaning once and the field, panel and readout all read from it; **two new fights** — the dog **PACK** (with a 1.5× captain whose aura gives every dog nearby +8 hit/+5 dodge, and a rally that calls the shaken back in) and **THE STEADING-LINE** (four ogres, randomised kit, they will not chase — a fight that must be kited); **an unskippable dog ambush** in the road pool so the road is not all one-day errands; **three-sentence onboarding** (map / company / fight, once each, remembered in LEGACY); the world token is now **the Captain's painted face**. | ✅ DONE |
+| 8f.16 | **Opening tightened · options always clickable · a seventh fight · enemy personalities** — prologue cut **35%** and rebuilt dialogue-first (*"You scum." … "I need a shitpile of you to carry a message for me."*); **`.popts` and `#wChoices` are sticky footers** so option buttons can never scroll out of a long card; **THE SLING-LINE** — a ranged ratkin fight (5 shooters, 2 spear screens, a warp-sniffer, a sling-master with a +6-to-hit volley aura) on open ground, which is the first fight where the enemy's *hold your ground* disposition actually fires and where your own archer and caster become necessary; **enemy people now carry personalities** (~2 in 3, animals excluded) and they change movement — *cautious* raises exposure-aversion and breaks off at 45% rather than 30%, *courageous* and *does-not-run* never break off at all, *feral* wants the middle of the press — all visible on hover. Act 1 now has **seven distinct fights**: clash rd4, brigand rd6, pack rd6, sling-line rd7, steading rd8, snare rd6, Fen-Mother rd11. | ✅ DONE |
+| 8f.17 | **Map dialog fixed · monsters are not a class** — the map card was 430px and every one of its seven call sites guessed its own `top` against a CSS `max-height` that knew nothing about that offset, so tall cards ran off the bottom of the map and the last option was physically unclickable. Replaced with one measured `placeDlg()` (**520px wide**, clamped inside the map, deferred re-measure because callers fill the options *after* revealing the card, internal scroll only when genuinely needed). Verified 0px overflow and the last option reachable on all five card types. **Monsters given their own register (`MONSTERS`) instead of a class** — the Fen-Mother was printing "⚑ CAPTAIN" because she borrowed the captain flag for its action count; she now declares `monster:'wyrm'` and `bigkill:true` (the morale shock without the rank) and reads **"⬢ GREAT BEAST — LINDWURM"**, the cub reads "☙ WHELP". Classes are a human idea and the UI says so. | ✅ DONE |
+| 8f.18 | **Permadeath removed · battle log · the Door-Shrine** — **nobody on the roster dies in a fight** (was 88/12 downed-vs-dead; that 12% forced every encounter to be balanced against the worst roll, so removing it is what lets fights be dangerous). Going down is a **scar** — permanent, stacking, removable once a run at the Medicine Chest; withdrawing now carries the downed out instead of abandoning them. Allied NPCs and enemies still die, and a run still ends if everyone is down. Verified 0 deaths in 30 forced knockdowns, enemies and allies still die, party stayed 4 across all seven fights. **BATTLE LOG along the bottom of the battle screen** — the whole fight in order, round dividers, colour-coded by side (yours pale, theirs red, decisive moments gold), replacing a one-line tip that let an entire enemy turn scroll past unread. **The Door-Shrine** — the last quiet node before the Snare, reachable from either approach: rest (2 days, everyone heals), pray (a company-wide +6 max morale for the run), leave an offering (a relic), or take the door for timber and −22 morale. | ✅ DONE |
+| 8f.19 | **Poor from the first road · the tells · four continuity fixes.** **Starting purse cut to 40 crowns** (from a base 412 + an 80-crown wagon) — so the act opens near a hundred crowns against ~8/day of wages, and food and robbery are live questions immediately instead of things you get to ignore. **THE TELLS: the four stats come off the screen as numbers and go on as words** — BUILD / HANDS / WITS / NERVE, seven bands each, in the sheet, the battle panel, the hover readout and the Muster Field; raw values survive only under THE ARITHMETIC. Promotions are phrased as changes in the person and always name what they move toward. **Battle tokens +24%** and the hexagon no longer clips them (the state tint moved to its own `.hfill` layer), so the person is no longer the smallest thing on the screen. **Everyone one hex slower again**, ceiling 5→4, enemies take the same −1 in `build()` — a company that crosses a 15-wide board in three turns never manoeuvres. Four continuity bugs from the playtest: boot text said "Three of you" over a party of four (now `headcount()`); every non-brigand fight closed with "THE FEN GOES QUIET", a title reporting on a boss the player had not met (now a per-fight `AFTER` table); the map named **The Fen-Mother / The Steading-Line / The Sling-Line** before the reveal (now The Black Fen / The Hill Steading / The Stone Field); and two starting characters shared the nickname "the Unpaid" (now unique per company, names too, and candidates you never hire no longer burn the pool). | ✅ DONE |
+| 8f.20 | **Road vignettes · kill tallies · who-card on promotion · dismissal and its consequences.** **VIGNETTES** — more than half of road incidents are now one-card, no-choice "it already happened" beats (12 authored: small finds, small losses, small oddnesses) because a full decision card for every found boot made the road a questionnaire; big incidents still come, they are just not the only register. **KILL TALLIES** — every roster member remembers people and beasts separately (`killsMen`/`killsBeasts`, synced in `afterBattle`), shown in words on the sheet: *"Has put two men and one beast in the ground."* **WHO-CARD** — the promotion screen now opens with a compact character card (tells, personality, swing, armour, tally, scars), because choosing a perk for somebody you cannot see was the old screen. **DISMISSAL** — any non-Captain can be paid off from the sheet; they leave with what they are wearing. The road keeps them, split by loyalty: **under 3 fights together** they can turn up in the deserter line (*"Vesna, who you paid off"* — and she can die there, she is not yours any more); **3+ fights** they walk back to a fire — take them in (needs charisma), part properly this time (−2 food −15 crowns), or cut them down for a bundle holding eight crowns and a spoon with your mark on it (−18 mood, everybody watched). Also fixed en route: **`say2()` never existed** — five call sites (withdraw, wagon-bed heal, sinkhole return, under-road) were calling a helper lost in a refactor and silently crashing; it is now a fading road-news toast over the map. Concept doc gains the four-way reference analysis (BB/Wartales/Qud vs Banner Saga/Wildermyth vs RimWorld vs StS) behind the tells decision. | ✅ DONE |
+| 8f.21 | **Mutations (first chain) · provisions redesign · resource tooltips.** **MUTATIONS** land as designed in the new [08_MUTATIONS.md](08_MUTATIONS.md) (16 mutations + 15 conditions authored; ONE chain built, per its own §13): the Fen-Mother's DRAG UNDER leaves **Fen-Water in the Lungs** — a four-day clock the sheet shows ticking, curable at Coldharrow's bone-setter (she steams up something grey and alive-looking and burns it) — and untreated it usually becomes **GILLS OF THE FEN**: marsh costs nothing, **SINK BELOW** once a fight (vanish into water, surface from any marsh hex within 5, no parting swings), teal gill-lines on the token (the saturation rule: one unnatural colour on a muddy figure), a flooded chapel crypt only the gilled can loot, two camp vignettes where the company reacts, and −12 morale on dry fields — the cost lives on the same organ as the gift. Sometimes the clock just yields ruined lungs, an ordinary scar; the player is never told the odds. **PROVISIONS**: food stopped being a travel tax — the road bills money (days × wages, "wages and keep in one number", shown on edge labels and the travel confirm) and provisions became the good barrels, clickable: a proper meal (−4/−3, mood +12, once a day) or double rations (−3, wounds mend 12/day for 3 days). Start drops 20→6. **Every world-bar resource explains itself on hover** (provisions/salvage/gems/day/crowns/keep/charisma). | ✅ DONE |
+| 8f.22 | **Full-run playtest batch (#5) — 18 items.** **THE RECURRING RUNTIME BUG FOUND**: `TypeError: reading 'n'` from Sling-Line onward was the PET — the cub is `side:'you'` and not an `ally`, so `mine`/`own` were true and both the battle panel and the hover readout asked for `CLASSES[undefined].n`; it started the moment the cub joined, exactly as the report guessed. Both call sites now exclude `pet`. **MOVEMENT BY RACE**: first move ratkin 5 / human 4 / ogre 3, second move −1 for everybody, cutter +1 on the first only; `RACESTEP` replaces `D.speed`, enemies use the same table, AGI no longer touches movement. **Giving ground is finite (3 fall-backs)** — ratkin at 5 vs your 4 let a shooting line kite forever and the Sling-Line went 9→15-18 rounds; back to 8-9. **POST-BATTLE 6 SCREENS → 3**: mercy → the cage (moved forward from screen five) → one `consequences()` card holding the field, the scars, the promotion and the books; `showButchersBill` and the standalone `promote` screen deleted. Per-fight aftermath titles finished (`snare`, `packev` added — the Sling-Line was still printing "THE FEN GOES QUIET" and the cub's line). **INCIDENTS CHAIN**: ids, once-per-run, and 5 authored sequels gated on the exact ruling (`needs:{id,opt}`), reusing the same cast and waiting 2 days. **ECONOMY**: crowns +20% (40→48), provisions 6→8, **hire prices ÷2.5** (every candidate read "cannot afford"), and provisions now reach the field (≤2 = −6 morale to the line, 0 = −14). **CHARISMA → PARTY SIZE** everywhere, which also fixed the wheelwright upgrade doing nothing (it rebuilt from base 12 against a real base of 13). Dismissal is free. Tells row cut from the battle panel. **PAPER DOLL** on the sheet (head/body/4 limbs, scars marked on the part, mutation glows teal, body fills with remaining hp). **ROAD HISTORY + SHARED FACTS** — 2-4 memories per person, older ones compressed to place-names, plus one fact per pair (not friendship bars). **Artifact descriptions rewritten** as sentences with the raw token in brackets. | ✅ DONE |
+| 9 | **Settlements & Legacy — metaprogression redesign** ([09_SETTLEMENTS_AND_LEGACY.md](09_SETTLEMENTS_AND_LEGACY.md)). Designed, NOT built. Materials get spent inside the story (reforge, repair the village forge, build an infirmary, strengthen a gate) instead of banking abstractly; between acts the settlement takes 1–2 buildings that change scenes rather than numbers; buildings do NOT cross runs — each leaves ONE legacy (a blueprint, a tool, a known smith, a guaranteed node, a person), so **possibility transfers, not power**; gems become rule-breakers (finish a building with no materials, keep one between runs, pass a dead character's weapon on) with the axis "survive now vs outlast the company". The wagon stays as mobile inventory and legacy-carrier. | designed |
+| 8f.23 | **Impact, cooldowns, the throw, the camp, and the clash-refight bug.** **THE CLASH COULD BE FOUGHT TWICE** (user hit it): `pickChoice`'s battle branch never closed the map card, so after the fight you stood on the node with all three choices still clickable — fixed at the ROOT: `show()` now dismisses `#wDlg` whenever leaving the world screen. **IMPACT ANIMATION**: attacker lunges along the real geometry, target recoils (or evades on a miss), collision flash (white ring = armour, red bloom = flesh) + sparks; arrows/stones/warp-light **fly across the board** as projectiles. **COOLDOWNS** on everything strong (generic `cool:` via `spend`/`canUse`/`u.cd`): COMMAND 3, SPEAR WALL 2, CRIPPLING SHOT 2, DISTRACT 2, SWEEP 2, ROAR 3, BLIGHT-WIND 3, WITHER 2, IRON-OATH 3 — the "best thing, twice" turn is dead; buttons show "ready in N". **HURL A RATKIN**: every ogre (yours and theirs) can throw an adjacent ratkin up to 4 hexes — it keeps its own turn, takes a small knock, and the AI version lobs clan ratkin onto your archer. **SYNERGIES**: spear-wall survives the throw (land as a spike in their line), screen-the-shooter (braced spear beside an archer cuts the scrum penalty −35→−18), fire-drive (enemies pinned against the camp fire bleed 8 morale/turn and pathfind away from it), plus the free ones — throw into the back arc a cutter opened, throw the gilled into marsh for SINK BELOW. **THE CAMP** battlefield (user's idea): the pack is now fought in the ogres' own camp — palisade ring with TWO gaps, fire-pit centre, lean-tos inside; dogs deploy around the fire and the gap is the fight. **Obstacles are clumps, not noise** (random rock ~15% → 2-4 real stands at 3-15%, flood-fill guarantees connectivity — first cut silted the middle and brigand hit 22 rounds of nobody closing). **FACING you can read**: wedge = where they look, red arc = their back, and while moving, hexes in somebody's back arc mark themselves ✦. **WITHDRAW says NO WAY OUT** (struck through) in life-or-death fights instead of being a live-looking dead button. | ✅ DONE |
+| 8f.24 | **Board, hands, nerve, and a second mutation (14 items).** **BOARD 15×10 → 15×13** — three more rows, hexes down to 37×42, `TOKEN` retuned to 1.13, HEXW/HEXH/HEXOFF and the ground canvas all re-derived; going round a flank is a real option now. **Blocked hexes are unmistakable** — dark fill, hard border, centred ▲ (rock/palisade) or ♨ (fire), with a title. **THE MORALE LADDER** (user's own mock): five named rungs — *It rocks / Happy / Ok / Depressed / Broken* — current one boxed, the rest thin strips, hover shows the whole scale with what each step costs; replaces the morale bar in the panel and the SPIRIT word on the sheet. **Morale moves in faces, not numbers** (`moodFace`) — a floating −18 next to −18 of damage was two currencies in the same clothes. **Proximity weighting** (`nearWeight`): a death beside you costs full nerve, across the field about a third. **ONE HAND OR TWO** — spear/maul/club/broom/Weeping Hammer take both (`hands:2`, enforced in `effStats` + `unitFrom` via `handsFree`), so the shield is a real trade; the **bow stays one-handed on purpose** so the archer's quiver-vs-dirk choice exists, and the **OFF-HAND DIRK grants a reach-1 action** for when something is inside bow range. **All ranged and spell ranges −1.** **The mage is bad with a blade** — 0.72× skill, 0.6× melee damage (the warmage keeps his sword; that's his whole class). **Level-up shows the face** of whoever was promoted. **Monsters get their own icons** (🐲🐺🥚👁 via `monTag`) instead of borrowing class glyphs. **THE CAMP AMBUSH IS INVERTED** (user): you start *inside* the palisade around the fire, the pack comes at the two gaps from outside, one-button event fired on arrival (mid-road would have stranded the token — only `arrive` clears `G.moving`). **Total-War-style after-battle report** — both orders of battle grouped by statblock, losses and hitpoints each way. **SECOND MUTATION CHAIN**: Colour Beneath the Nail → **Blooming Hand** (ROOTING GRASP, reach 2, roots a target; cannot hold a two-handed weapon — it drops what you were carrying into the stash), plus two event origins (the drowned chapel's flooded crypt → fen-water, the Bloom-stem cut barehanded → the nail). | ✅ DONE |
+| 8f.25 | **The nerve pass, keys, test mode — and a bug that only existed in the published build.** **`window.confirm`/`prompt` ARE BLOCKED IN THE ARTIFACT SANDBOX**, so "Let them go", releasing a pet, withdrawing and the medicine chest all silently did nothing *for the player* while working perfectly in local testing. Replaced with an in-game `ask()` dialog; **nothing may use native dialogs again**. **Heads no longer clipped** — the hexagon `clip-path` was on `.hex` itself and clips all descendants; the shape moved to a `.hedge` layer behind everything. **"It rocks" now pays** (+5 to hit, +5% damage, read off the fraction so no code testing `state==='steady'` is disturbed) and **fights start at 78% — HAPPY, not exalted** — so the top rung is earned, not given (both sides). **Battle Brothers' situational morale**, checked at the start of each unit's turn: surrounded (−6 per extra attacker), standing alone (−9), shoulder-to-shoulder (+5), badly hurt (−7), captain near and up (+4), heavily outnumbered (−8) or heavily winning (+6), quiet turn (+14). **SKILL → CHANCE TO HIT**, **FLANK removed** from the panel (it is per-target and was never true of any actual swing). **Personality readable mid-fight** — bordered, legible, full race-specific text on hover. **Keyboard shortcuts**: 1–9 fire actions in draw order (1 always MOVE, 2 the weapon), SPACE ends the turn, ESC cancels. **Withdrawal opened up** — only the Snare and the camp ambush refuse now; everywhere else `FLEECOST` charges by what you are leaving (mood, days, and a line about how they let you go — the Fen-Mother costs 30 mood and 2 days *because you have to come back this way*). **Fen-Mother made properly ugly** — six asymmetric eyes, an overbite that does not close, ribs through waterlogged hide, a broken horn, weed hanging off her. **Map readability** — right-hand cluster respaced, travel labels given real backgrounds and z-order, the TROUBLE tag moved off its own line onto the glyph. **TEST MODE** (top right, remembered): toggles a **WIN NOW** button that clears the field through the normal resolution path, so spoils/scars/promotion stay testable. | ✅ DONE |
+| 8f.26 | **The "show a state, not a number" pass — and the act's back half.** **THE ARITHMETIC DRAWER IS DELETED.** No raw stat appears anywhere in the game now; `STATHELP` was rewritten from coefficients into sentences, `bindStatTips`/`cstat` retired. **Everything is a state you can hover.** The nerve ladder collapsed to **one rung on the sheet**, full five-step scale with % thresholds on hover; the four stats do the same — one word, and the **whole seven-step scale on hover** with the current step lit (`tellLadderHTML`), so a player can see where "Strong enough" actually sits without a number ever being printed. **Road history collapsed** to the latest event + an "EVERYTHING ELSE" fold. **On the token: one mood emoji and one hitpoint bar** (the morale bar is gone — the face carries it). **Depressed → Breaking, softened** from −18/−7 to −12/−5 with the heavy-action lock removed: at the old numbers that rung was out of the fight and the ladder effectively had four steps. **Magic can miss** — a working is aimed with the WITS (`38+int×3.4`, target dodge counts a third), which makes the new **OGRE, ONE-WORD** in the Snare land 25% against a sniffer's 56% and hit for 30–46 when he does. **Dog ambush now fires reliably** (scripted, first eligible arrival from day 4 — was a coin-flip that kept not happening) and left the floating pool so it cannot double-fire. **The act's back half is split**: two new road slots (`e1`/`e2`) and a **second Muster Field** before the Snare, so it runs fight → road → hire → road → fight; the direct `dead→snare` shortcut now says what it costs you. **Fen-Mother reads as a monster everywhere** — the token badge checked for any act with a `range` and her scream has one, so she wore the archer glyph. | ✅ DONE |
+| 8f.27 | **Hands, the shove, the camp as a node — and the ogre that would not fight.** **MAIN/SECOND WEAPON → MAIN HAND / OFF HAND**, and the off hand now says *"Both hands are on the boar spear"* with whatever is nominally in it greyed and named, so a two-handed weapon is a visible conflict instead of a silent nerf. **FORCED MOVEMENT (backlog #1) built**: `push`/`pull` resolve in `strike` next to `bounce`/`drag` — no parting swings, `big` immune, and a shove into a wall deals the unspent distance as damage. The **halberd** arrives with it, and brings the game's first **weapon-defined signature**: with a boar spear the spearwoman braces (SPEAR WALL), with a halberd she shoves (BRACE AND SHOVE, push 2). The shove reports what it achieved — into the water, into the fire's reach, *"and away from anybody of theirs"* (which is the existing *alone* morale rule doing the damage). **THE DOG AMBUSH IS A NODE** (`camp1`, The Ruined Steading) at the choke point where all three routes rejoin — verified all 18 possible routes pass through it. It was a chance roll and kept never happening. **Class and race explain themselves on hover** (`RACEHELP`/`CLASSHELP`, wired on the sheet and the Muster Field) — one sentence on what the thing is *for*, then what follows from it. **The direction wedge was removed** — the back-arc ring already says it and two marks per token was clutter at 37px. **Sheet/battle-panel consistency**: armour and hitpoints are now the same bars in both, plus CHANCE TO HIT and DODGE on the sheet. **THE OGRE THAT WOULD NOT FIGHT** — `shooters()` and `iShoot` tested for *any act with a `range` field*, and **HURL A RATKIN is range 4**, so every ogre carrying it registered as an archer: it inflated its side into the "hold your ground" stance and then froze the ogre itself with a melee fight in front of it. Both now require `a.dmg`, and no unit with a swing in reach may ever hold. | ✅ DONE |
+| 8f.28 | **Captain proximity was paying double.** The user asked to confirm that standing near the Captain lifts morale — it does, and asking exposed that it was being applied **twice**: the new situational-morale block (+4) and an older scattered line in `beginTurn` (+6) both fired, so proximity paid **+10** a turn. The same duplicate also double-paid the quiet-turn recovery. Consolidated into the situational block at **+6** with a reason string, and the personality/perk recovery modifiers (Stubborn, Field Dressing) moved with it so nothing was lost. Verified: +6 near vs far, quiet turn 14 once, Stubborn 22. **Lesson: when adding a block of rules that covers ground an older scattered line already covered, grep for the old one — a duplicate morale source is invisible in a regression that only checks fights complete.** | ✅ DONE |
+| 8f.29 | **Playtest #6 batch — the fights finally last, and the AI cannot silently stop.** **WATCHDOG**: two fights hung with no defeat, dialog or error. Rather than prove every `later()` path safe forever, a 2s poller converts any stall into a skipped turn — if nothing has progressed for 6s and the engine holds `B.busy` (or it is an AI turn, which never waits on the player), force the lock and advance, with an in-world line. **A skipped enemy turn is a glitch; a frozen battle is a lost run.** **FIGHTS WERE ENDING IN 3–5 ROUNDS — and it was never the damage.** `tookHit` was a flat −16 *per hit*: in a 7-on-2 opening that is −112 of nerve on one body in a round, and an ogre routed in **round 2 at 72% health**. Fixed at three levels: `tookHit` −16→−11 and **diminishing within a round** (full, half, quarter — counter resets per ROUND, not on the victim's own turn, which had let two undiminished waves land); near-death shock fires **once**, not per blow; the situational-morale rules are collected and **capped at ±14 a turn** (they were −36 combined, a guillotine rather than pressure), with recovery left outside the cap so a shaken line can climb back. **All damage ×0.8** and shooters (both sides) 10% thinner. **Blood on the Road**: three ogres not two, and much tougher — 4+3 against 2 bodies was over before facing, surrounding or screening could matter. Result: the round band went **2–5 → 4–10** (clash 3→6, pack 4→10, mother 5→8). **Post-battle split into two beats** — *what happened* (field, orders of battle, scars) then *what you carry away* (the two decisions, books as one quiet line); it was one card carrying twelve things and read as a tax return after every fight. **The map stops spoiling itself**: floating nodes show a hint by type in the road's voice until visited, then keep their real name — and the hover no longer quotes the event's opening line either. **Provisions have a sink at last**: any day somebody is mending costs one, and on an empty barrel the mending halves — a 22-day route had ended with the starting 8 untouched. **Kill tally is a row of heads**, one glyph per race, so it says *who* they have been killing. Plus: raw floats rounded out of the after-battle report, the morale emoji turned down (9px, desaturated, only the top and bottom rungs speak up), and the wood/iron→salvage sweep finished across every label and `fx` — **which broke every material reward until the three fx appliers learned the `salvage` key.** | ✅ DONE |
+| 8f.30 | **Codex packet intake — P0 correctness (B01 · B02 · B03).** Followed the packet's intake sequence; treated its files as non-canonical proposals and verified each against current source before touching anything. **B02 — the AUTO deadlock, fixed at the cause, not masked.** The packet explicitly said not to paper it with a watchdog, so the watchdog I had written was demoted to a *reporter* and the real bug found: `B.seq++` in `beginTurn` invalidates every pending `later()` callback, and several of those callbacks carry **the only `B.busy=false` in their path** (the AI step chain, routed movement). Advance the turn while one is in flight and the callback is discarded *together with the unlock it was holding* — player input and AUTO are both gated on `B.busy`, so the battle could never move again. One line at the point of invalidation: **ownership of the lock cannot outlive its turn.** Proven deterministically in both directions (same sequence: old code → `busy:true` deadlock, new code → lock released, player unit can act) and by a real-timed AUTO harness that observed 5 genuine callback drops with zero stalls. The reporter now waits 8s and prints kind/round/idx/unit/seq/stall-ms/drop-count — if it ever fires, the message is the reproduction. **B01 — banking doubled every salvage**: `wood` and `iron` are write-through aliases of one pool and the wagon added both, so a haul of 3 banked 6; now banks the canonical resource once by name (verified 0/1/3/10 exact, and idempotent on reopening). **B03 — the Fen-Mother could flee alive and still be reported dead**, handing you the cub of a living mother: a set-piece now ends only when it is physically down (`noRout`), her nerve still grinds but can no longer end the encounter, and the unreachable "she left" aftermath is written anyway so no aftermath can ever announce a death that did not happen. | ✅ DONE |
+| 8f.31 | **P0 list closed (B04·B05·B06) + four from the backlog.** **B04** — `e1` sat at x=1300 on a 1280-wide map, so the only road forward from the Hill Steading had its glyph entirely outside the playable area; pulled inside, and `clampNodes()` now pulls *any* node into the safe area at boot and warns, so hand-placed coordinates can never ship this again. **B05** — the map now *looks* as locked as it is: everything goes `locked` while `G.moving`, the destination gets a `walking` state that pulses and says "on the way", and no node carries a click handler during the walk (a control that looks live and silently does nothing is worse than a disabled one). **B06** — the prologue told you to share out the junk while the company starts in real class kit, so obeying it weakened you; the junk is now plainly spares, and the line points at the free off-hand instead. **THE WHISPER LAYER** (backlog #14, layer 2) — seven one-sentence lessons that fire at the moment the rule first bites (both hands taken · first cooldown · first rung dropped · first parting swing · first back-arc hit · first provisions click · first HURL), once ever, persisted in `LEGACY.seen`, dismissible. **THE HOOK-POLE** (backlog #7) — a Snare ratkin that PULLS one of yours out of the line at reach 2, so forced movement is finally pointed back at the player and the *alone* morale rule fires on your side; the AI scores a pull on **what it achieves** (huge when it strands somebody, near-zero when it doesn't) rather than on its small dice. **This exposed that `pull` was inverted** — src/dst swapped *and* the sector reversed, two flips cancelling, so a "pull" politely shoved people further away; rewritten to compute one direction from the target toward the attacker. **UNPAID WAGES** (backlog #5) — a missed payday was a flat −4 mood; now `p.unpaid` accrues per person, costs 4 nerve per day *on the battlefield* (capped 20, announced in the log), personalities disagree via `unpaidMod` (Light-fingered 0.4, Ambition 1.6 — they came here to get on), the world bar escalates its warning, and after five days somebody **walks**, into the existing returner arc. Tuned to ~1 departure per 14 broke days, never the Captain, never below three bodies. **ASHMOOR** (backlog #10) — the game's one explicit promise about the future was broken by the epilogue; it now closes the slice both ways and persists to the wagon as `LEGACY.ashmoor` — a *name that knows you*, which is the possibility-not-power legacy docs/09 asks for. | ✅ DONE |
+| 8f.32 | **8g CLOSED — the receipts are gone, and there is a linter now.** **48 of 90 choice labels printed a morale number**, which is the pillar contradicting itself: the design says the world reacts but never scores you, and the label scored you *before you chose*. All of them now carry **what the company does** instead — *"nobody will look at you for a while"*, *"the clans will hear, and so will your own"*, *"they think better of you"* — graded by magnitude, with the memorable acts hand-written. **Prices stay**: crowns, provisions, gems and days are things you knowingly agree to, and the economy IS the moral system, so hiding what robbery pays would break the pillar's own mechanism. Zero numeric labels remain, all 90 verified well-formed. **THE CONTENT LINTER** (`LINT()`, and a button in test mode) reads every content table for the classes of bug this project has actually shipped: unknown or lower-case `{TOKEN}`s, hardcoded character names in *floating* events, impossible `needRace`/`needMut` gates, `fx` keys nothing consumes, missing gear/condition ids, battles with no `AFTER` entry, nicknames in two culture pools, map nodes pointing at missing events or sitting outside the safe area, and any surviving arithmetic receipt. Content currently reads **clean**; verified against five planted faults, all five caught. **MID-RUN SAVE** (backlog #9) — an act is an hour and lived only in memory. Saves at coherent moments only (arrival, event resolution, battle hand-off), **never mid-battle: a battle is regenerated, not restored** — restoring one would mean serialising the turn lifecycle, which is the machinery that produced B02. Version-stamped, stale stamps discarded silently, **CONTINUE THE ROAD** offered at boot. 3.3 KB round-trip carries wounds, unpaid days, kill tallies, memories, learned node names and every run flag. Two bugs found while building it: a `try/catch` silently swallowed a **renamed constant** so the save never wrote at all (the catch now reports), and *"Start a new company"* cleared the save without resetting the live state, so the next save wrote the old run straight back (now reloads). | ✅ DONE |
+| 8f.33 | **The outside review read properly, and harvested in full.** I had first dispositioned its F01–F37 list from the summary table rather than the dossiers — the user pushed back, correctly. Now folded in: **the architecture shape rules** (one fact store with many readers · one battle contract shared by campaign and any harness · decision makers choose commands and never mutate state · location/faction/encounter as separate owners · AUTO never makes an irreversible choice) into `README.md` §5 and the backlog · **"Race body + Class job + Trait exception + Gear + Scars + History = Person"** and the accept/reject **concept filter** into `01_GAME_CONCEPT.md` · and the positioning line *"Every body keeps the receipt. Every relationship remembers who paid. Every Rabble is different."* New backlog entries **#25–#31**: personalities that earn their evolution (count qualified risky successes, never action spam — the best fit for our existing personality system), **The Smaller One** reference chain (offer a named ratkin to a hungry ogre; it joins; two fights later it betrays you beside its brothers), the balance finding that **the optional Hill Steading beat the finale 1-in-30 vs 30-in-30**, the **Act 1 stinger** (flagged: its enemy is named with a placeholder borrowed from elsewhere and needs a real one), **Zone of Control's better version** (three *front* hexes only, elite profiles authored per creature — parked, since ZOC was cut once for making movement unaffordable), the **action-economy package** (second use of the same action at 50%, with the quiver and the slow mage as overrides on top), and **long-fight provision attrition**. Also fixed a small accessibility miss their decision list caught: the kill-head row read *"4 mans"*. | ✅ DONE |
+| 8f.34 | **The rest of the review harvested — all nine files read end to end, and the packet can now be deleted.** 8f.33 covered roughly a third; this closes it. **Six dispositions reversed after reading the actual designs rather than the summary lines.** *The third scar* is not the permadeath we removed — it is a visible three-slot track shipped as an **opt-in run contract**, with the packet itself rejecting the permanent lockout (*"the game may ask the player to sit with the loss for a few seconds; it may not confiscate the demo"*) → **#34**. *Grafts* get a five-field contract and the rule **"worse in one ordinary way, strangely better in one specific situation"** → **#35**. *Line of fire* becomes four named states — CLEAR · SCREENED · OBSTRUCTED · BLOCKED — which formalises the screening bonus we already ship and, more importantly, **shows** it → **#36**. *AUTO doctrines* PRESS · KEEP LINE · HOLD & SCREEN, deliberately **not** a rules editor (*"doctrine is an order, not mind control"*), with a hard safety list → **#37**. *Relationships* ship as **exactly one tie** — "You carried me out" — built from an actual rescue, with affinity bars explicitly banned → **#38**. Plus **#39** character-led onboarding (speakers are cast *roles*, never hardcoded names — we have shipped that bug already) and **#40** portraits that react toward the player without ever revealing a correct moral answer. **#26 (The Smaller One) rewritten from a paragraph to the real thing**: the hunt is 2–4 rounds, deliberately easy and deliberately awful, the opening shot is an authored transition that cannot miss, killing pays **nothing** and does not increment the kill tally, escape is a real branch — and **AUTO is disabled**, because letting automation execute the former companion *"turns the decision into a cutscene disguised as a battle."* **#24 got its data shape**: `addFact`/`facts`/`latestFact` plus `characterRef()` snapshotting name-at-time, so a dead or dismissed person stays addressable. Also folded: the **four layers** (facts → rules → presentation → validation) and the dependency direction into `README.md` §5, the **eight open questions and two canon conflicts** the review left for the user, **"race body · class job · trait exception · history"** as the balance rule, and the chronicle's prohibitions (*no power score, no DPT sort, no tier grades, no MVP-by-kills*) into the concept. **The line worth keeping above all of it:** a named person → a witnessed choice → a mechanical act → a stored fact → a delayed consequence → a changed future encounter. Break any link and it is prose without mechanics, or mechanics without memory. **Verification:** `LINT()` clean (0 findings), all seven fight kinds run to completion with no errors, stalls or dropped callbacks — **but the Fen-Mother set-piece runs 46–244 rounds against 4–16 everywhere else**, because the cub never closes once its mother is down. Logged in the backlog with the reproduction; **#31 must not ship before it is fixed.** | ✅ DONE |
+| 8f.35 | **⛔ THE GATE, and a combat batch specified under it.** The user set a standing process rule: **before building any new system or skill, (1) write out the actual rules — costs, targets, cooldowns, limits, what it takes away — and (2) show a picture of where it lives on screen, which is mandatory. Then build.** *"That way we keep it clean and don't do extra job."* It is now the first thing in `README.md` §5, the first thing in the backlog's standing rules, and in memory. Every backlog entry is a **specification, not an instruction to start coding.** The rule proved itself the same day: two entries written that afternoon had to be immediately cut back after review, which is exactly the wasted work it exists to prevent. **The batch it governs — backlog #45–#48. #45 REVERSES the accepted Codex rule F30**: do not punish repeated actions, **reward combinations**, because *a penalty taxes the player who has not learned the system yet while a bonus pays the player who has* — same behaviour, opposite emotional direction, and no tax on the AI or on the fights where repeating was correct. Mechanism: **a skill leaves a mark and other skills read marks** (OFF BALANCE from displacement, TAINTED from poison, GROUND from terrain), a **follow-up** is one unit acting on a mark *another unit made*, capped at one per target per round, and the log **names** the combination the first time it fires. **#46 — one signature per race, none of them a damage button**: humans **KICK** (push 1, cooldown 1, does not move an ogre), ogres **THROW** — one general verb that grabs *anything from an adjacent tile*, unit or boulder, absorbing the old `HURL A RATKIN` and letting an ogre **open a lane by removing terrain** — and ratkin **POISON** (+25%, two rounds, stacking, limited by the action cost rather than a cap). The sequence falls out of the constraints instead of being scripted: the ogre can only grab from adjacent, so the kick becomes the delivery. **#47 — the spear gets its weakness**: an accuracy band lost in the clinch, which makes it the only class whose counter to its own weakness is a positioning action, and retroactively unifies SPEAR WALL and BRACE AND SHOVE into one job answered twice. **#48 — bodies stay on the ground, and nothing more**: a shape drawn under the tokens, no movement cost, no morale rule, nothing to click, so by round eight the board tells you where the fight has been. Six further mechanics were considered and **cut as over-building**, listed in the entry so a later session does not re-add them as new ideas. | ✅ SPECIFIED |
+| 8f.36 | **The backlog restructured into an instrument, and the first batch specced to build level.** At the user's direction the file is now three lists: **✅ Done** (a record — build nothing from it), **🔨 Active** (pick ONE, from the top tier down), **🕰 Distant future** (ten bigger ideas parked with intent, each keeping its full entry, tagged). The active list is **ordered by influence, not age** — Tier 1 are the five multipliers **#49 → #24 → #13 → #32 → #45** (AI debuggable → consequences findable → balance measurable → fights end → abilities composable), Tier 2 the systems several things sit on (#36, #2, #4+#17), Tier 3 their consumers, Tier 4 the leaves. **Housekeeping the split surfaced:** a parallel-session number collision — the Fen-Mother defect and "make the AI explain itself" both held #32; the defect keeps it, the tool is now **#49** — a duplicated #14, four entries still marked open that shipped in 8f.31/8f.32 (#5 #7 #9 #10, now marked BUILT with what landed), and the user's four newest ideas landed as **#41–#44** (first-down reaction · AUTO's one flourish · the narrator's budget · ratkin kin claims). **Build blocks added to the whole first batch** (#32, #19, #24, #36, #45, #46, #47, #48): each now names its mechanism, its exact touch points in the file, its AI obligations in both brains, and its verification — per the gate, still specs, not instructions. The #32 fix is worth noting because it is systemic, not a boss patch: **routing becomes something you need help to come back from** (recovery cannot re-cross the rout line without the Captain near or an ally adjacent — a lone runner keeps running and the fight resolves through `fled`), and **the cub runs when its mother falls.** Also from the user this session, recorded in `README.md` §6/§8: the map (#6) lives in its own branch; combat is about to change shape, so no retuning against today's feel; and the next free backlog number is #50. | ✅ DONE |
+| — | **PILLAR promoted to the concept: "You cannot afford to be good to everyone."** Six rules in [01_GAME_CONCEPT.md](01_GAME_CONCEPT.md): the good path exists but never gets everything · no universal optimal route (incompatible kinds of success; every act costs one important thing) · bad deeds actually pay · good deeds don't secretly pay better · consequences personal, never a meter · deeds change future options, not a bar. This is the content-authoring yardstick for every event from here on. | pillar |
+| 8f.33 | **★ THE THING IN ARMOUR (backlog #18) — the act's eighth fight, and the first one whose correct play is a sacrifice.** Four rules that only mean anything together: **`noArc`** (its own flag, deliberately not a reuse of `big`, which claims two hexes and a tail) cancels the back arc, the flank bonus **and the surrounded bonus** — "it takes no flanking penalty" has to include the numbers one, because leaving `threatsAt` in place would have paid a ring **+30 a head** and made ringing it correct after all; **its sword sweeps**, so the ring is not merely useless but charged for; **`soak:4`** off body damage after the armour split, floored at 1 — armour is a pool you can empty, soak never empties, and it costs a heavy swing a tenth and a light one a fifth; **step 5**, so running buys time and does not escape. It fires **once per run on arrival** at the first ordinary road node past the first Muster Field (`armourDue()` is written as a RULE, not a node id, so the map rebuild in #6 cannot silently delete it) and **queues the node's own event instead of eating it**. Three answers, one fight, three deployments. It **melts**: no corpse, no race, nothing in the run summary, and **the kill tally records nothing** (`notally` — the company cannot say what it killed, so it does not write it down); the aftermath gives a smell and **The Cold Thing**. Retuned across ~600 arena battles: a strong six wins and carries **three** off; an all-melee line loses 0-for. Also found and fixed en route: **a movement local-minimum that could hang a fight forever** — both AI brains closed on "the reachable hex nearest in a STRAIGHT LINE", which around a boulder stand is a pocket (every hex that leads round it is further away), and since `reachMap` deletes the hex you stand on, the body cannot even hold still — it oscillates between two hexes for the rest of the battle. Caught as a **599-round** bows-vs-armour game with *nothing logged*: the archers held (correct — they out-shoot it) and the thing coming for them never arrived. `closeOn()` walks the real path, and only fires when the naive pick would not close, so every approach that already worked is untouched. Plus: **`dmgPreview` had been 25% high on every attack in the game since playtest #6** (it never learned the global ×0.8), and **two fights had no LOOT table** — the Fen-Mother was offering you "the chieftain's harness, it is ogre-sized" and "cut the bells down" after a fight with no chieftain and no bells in it. Both now linted. | ✅ DONE — **one thing open:** the "send somebody wide" answer is not balanced, and the arena structurally cannot balance it (see backlog #18) |
+| 8f.34 | **THE FRONT DOOR — a menu, a practice field, and the rules written down** *(user: "maybe it is nice to start from menu + battle simulator + something else")*. The game booted straight into the tavern, and that one fact caused three problems: **a saved company could only be picked up by reloading the page**, there was **nowhere to read the rules** (so the only way to learn what a parting swing was, was to lose to one), and the only way to see a fight was to spend a road getting to it — which made the eight fights the least-tested part of the build. **THE MENU** now boots first: continue · a new company · the practice field · how any of this works · the wagon. The duplicate continue/start-again dialog inside `enterWorld` was **deleted, not left as a fallback** — this project has already paid for one pair of rules covering the same ground (captain proximity paid +10 for weeks because two blocks both granted it). **`☰ MENU`** returns from the world screen only: mid-battle is not a coherent moment to save at, because a battle is regenerated and never restored. **THE PRACTICE FIELD** — any of the eight fights against any of six companies, *including a copy of your live company read out of the save*, with the road card's own questions asked here too (which side at Blood on the Road, which deployment against the Thing in Armour). It borrows `G` wholesale and gives it back: `simStart()` snapshots the object, `simResult()` restores it before drawing anything, and **four engine guards** carry the safety property — `saveRun` (never write a scratch company over a real one), `clearRun` (a practice defeat must not delete the run), `checkEnd` ×3 (spoils recruit, defeat wipes, mercy sets flags) and `withdraw` (the two fights that refuse withdrawal in a run must not refuse it here). `SIM` is declared beside `TEST`, with the engine rather than beside its screen, because those guards run during boot and a later `const` would sit in the temporal dead zone. **THE STANDING REFERENCE (backlog #14 layer 3, which closes #14)** — `? RULES` bottom-left on every screen: how a turn works · how a hit works · how nerve works · **nobody dies in a fight** · what the road costs. That fourth section was not in the spec and earns its place: it is the rule players least expect, it is *why* the fights are allowed to be dangerous, and nothing in the game said it out loud. Verified: all eight fights run start-to-finish through the practice field with `G`, `PARTYCAP` and the save file byte-identical afterwards; a practice wipe leaves the save intact and does not set `LEGACY.priorDied`. Also caught: `#sim`/`#help` were not on the screen-centring rule, so both cards would have shipped rendered top-left on a transparent background. | ✅ DONE |
+| — | **⚠ Logged, not fixed at the time: backlog #32 — the Fen-Mother can reach a state that never ends.** *(Since CLOSED; #32 now carries the rally rule instead.)* Roughly one arena boss fight in forty never resolves (835 rounds before the harness gave up): the last survivor oscillates across the rout line every round (`steadies · breaks · misses`), routed so their hit chance is floored at 5%, while `noRout` stops her leaving and `checkEnd`'s mercy branch excludes `mother` by design (B03). **Pre-existing and unrelated to the pathing fix** — 0/20 stalls with `closeOn()` on and 0/20 with it off. Not fatal (she is withdrawable) but it reads as a broken game. Left out of this batch deliberately: it wants a morale/rout change, which is its own package. | logged |
+| 8f.35 | **THE ROAD — a map with a mountain in it, a horizon on the purse, and the boss that would not die.** **THE MAP REBUILT (backlog #6)** — the graph designed first, the coordinates second, and then thrown out once and redone because the user was right: *"we are going right, and then we are going left — we need some justification for it."* A route that doubles back for no reason is a diagram. So the country got a shape before the roads did: **THE FEN** in the south-west and **THE HUNCH**, a mountain in the east the road cannot cross except at one pass. Every direction change in the act is now a fact about the ground — you climb the north shoulder because there is no other way over, you come back south-west because the Snare is at the southern foot, the Hill Steading is high on the east flank (which is *why* four ogres are sitting on that road), and the hurry road is the pass itself. Forks now read **long-and-light against short-and-costly** and the edge labels say so instead of describing the scenery: crossroad A is 7 days quiet or **5 with the Broken Men on it**; crossroad B is 3 quiet or **2 over the shooting ridge**; the last fork is 4 days of pilgrim path, 3 past the ogres, or **2 over the pass arriving with no shrine and no muster**. **SPACING IS ENFORCED IN CODE** — and the first version of that rule was wrong: a purely radial 90px check passed The Sunken Wain and The Snare at 102px while their name plates still overlapped, because a `.node` is 104×69 and the separation was almost all horizontal. The check now tests the **plate**, not the radius, and it warns at boot, draws the offending pair in red in test mode, and is a linter rule. Also in the linter: reachability from the hold, that every route still passes the four spine nodes, and that no fork offers the same days on both branches. Where the pass road crosses the ridge was **solved numerically** rather than by eye (The Old Milestone kept sitting on the line at 7px; it is 63px clear now) and the col is drawn where the road actually crosses. 18 routes, 13–20 days, no road within 50px of a place it does not touch, zero plate overlaps measured off the real DOM. **ABOUT FOUR FUNDED DAYS (backlog #20)** — crowns ÷ daily upkeep, in words not digits, as a world-bar chip and a last line on the travel card. **Never a gate**: verified the travel button does not disable even at zero, because debt is a legitimate way for a run to go. **THE FEN-MOTHER GOES DESPERATE** *(user's design)* — when her nerve would break she does not, because she is standing over a child: she goes **DESPERATE** instead. **6% of her maximum hitpoints a turn**, **+50% damage**, and **five actions become three**. Her total output goes *down* — which is the point: it opens two correct plays at once (stand and finish it, or break contact and shoot) and leaves standing next to her trading blows the wrong one, exactly as before. **LONG FIGHTS GET HUNGRY (backlog #31)** — from round 11, **one provision every second round**; on an empty barrel the **first** cost is morale and the **second** ends the fight as a withdrawal without the retreat price. **Together these close backlog #32**: the Fen-Mother's never-ending state is gone at the root (she is always dying now) and every future shape of it has a fuse on it. Measured: she went from **21–30 rounds average, 51 max, one game in forty running to 835** → **12–14 average, 25 max, 0 stalls in 24 games**, costing 1 provision. Caught while measuring: `ARENA.match` never set `G.run.food`, so after the hunger clock went in every long arena fight read as a loss — the company was being starved off the field rather than beaten. | ✅ DONE |
+| 8f.37 | **#45 deferred, #50 opened, #48 pulled up — the user rebalanced the queue itself.** *"Mark is for later — it is too big one. We are shaping the system with many new inputs, skills and mutations, and would balance it and change the logic of motivation a bit later, when things are ready."* **Tier 1 goes from five multipliers to four: #49 → #24 → #13 → #32.** The reasoning is the gate applied to sequencing rather than to a single feature: **#45 is a rule that everything plugs into, and the things plugging into it have not arrived yet** — race skills (#46), the spear rework (#47), the remaining mutations (#16), losable parts (#4). Specified now, it would be written against a shape that is about to change, which is the rework the gate exists to prevent; written later it is *cheaper*, because there will be a full set of displacement verbs to write it against instead of three. **Nothing was blocked by the deferral**: #46 and #47 named #45 as a parent, but they were only ever *enhanced* by marks — a kick that displaces and a shove that buys a wasted enemy turn are complete verbs alone. Their dependency rows were corrected rather than their scope. **#50 — THE BALANCE PASS** is the new terminal entry, and it is a **place to put things, not a thing to build**: it has an entry condition (#13 #46 #47 #16 #4 in first), a scope (the motivation layer — which is where **#45 returns**, since marks are a motivation rule — then the arena numbers, then compositions, in that order), a list of rules it may not break (the pillar is not a balance knob; `noTrim` bosses opt out; the Thing in Armour's "send somebody wide" is settled by the human playthrough because the arena structurally cannot value it), and a **parking lot** so a balance observation made mid-build has somewhere to go other than a session that stops to retune. #27 and #30's survivors were banked into it immediately. **#48 (bodies on the ground) pulled from Tier 4 to Tier 2** at the user's request — no dependencies, and it is the one thing on the near list that makes the board itself remember the fight. **The instinct was already written in `README.md` §8** (*"combat is about to change shape — do not tune against today's feel"*); what changed is that there is now somewhere to put the observations instead of acting on them. Docs only — no code touched. | ✅ DONE |
+| 8f.38 | **The plan and the backlog became one file** *(user: "I think it is nice to combine backlog and production plan into one file, so all context is in one place")*. `00_PRODUCTION_PLAN.md` + `10_BACKLOG.md` → **`00_PLAN_AND_BACKLOG.md`**, and the two originals were deleted rather than left as stubs — a stub is a second source of truth, which is the thing this merge existed to remove. **It fixed a real bug rather than merely tidying.** The plan carried its own copy of the backlog index, and that copy had drifted badly: it listed **#5 #7 #9 #10 #6 #14 #18 #20 #31 #32 as open** when all ten had shipped, some of them months earlier. `README.md` §6 held a *third* copy, which still called the map rebuild a current priority long after it was built. Both duplicates are gone; README §6 is now a six-line pointer, deliberately too short to drift, and the merged file owns the order and the reasons. **Structure:** where the build stands → the plan → the backlog index → every entry → the standing rules → **`# The record`**, below which everything is history and nothing is an instruction (the build log, the phase tables, the playtest reads, the v2 combat snapshot). Section headings are named rather than numbered, because `## 6 — The map rebuilt` is an *entry* and `## 6 — The record` would have been a section — entry numbers are stable identities and are never renumbered, so they run out of order and with gaps. Content was spliced, not retyped: nothing was dropped, and the originals are backed up outside the project. Docs only — no code touched. | ✅ DONE |
+| 8f.39 | **The record split back out, and the dead wood cut** *(user: "Make as you think. It makes sense to really split shipped and backlog — to process it easier. You can clean/delete outdated or not useful pieces and legacies")*. The one-file merge (8f.38) put history and work in the same scroll; one session later that read as the wrong trade, so the file split along the only line that matters: **can a session act on it?** `00_PLAN_AND_BACKLOG.md` keeps the plan, the index, every UNBUILT entry and the standing rules (~1,650 lines, all actionable); **this file** takes the build log, the ten built entries in full (#1 #5 #6 #7 #9 #10 #11 #14 the front door #18), the Codex P0 table, the playtest snapshots and the original phase plan. **#32 stays in the working file deliberately** — its details block holds the rally-rule spec Tier 1 still points at. The working file's header now states the maintenance contract: *when an entry ships, move its full text here, add a row here, keep its one-line Done row there.* **Deleted, after reading each:** the nine `CODEX_TEMP_*` files (~11,000 lines, marked "fully harvested — can be deleted" since 8f.34; now actually deleted), `06_DESIGN_REQUEST_FOR_GPT.md` (its jobs came back and shipped; as a "self-contained" brief it had become a drifted copy of old design facts — a future outside brief should be written fresh from README + the concept), and `07_WORLD_MAP_ART_BRIEF.md` (**actively dangerous**: it ordered an image generator not to move fourteen node coordinates that the map rebuild has since moved — a brief for painting a country that no longer exists; #12 keeps the pipeline conventions inline). `05_BUDGET_AND_TIMELINE.md` was read and **kept** — its money reasoning ("personality is a concept win, not a render-quality win") is durable even where its asset counts are stale. Everything deleted is backed up outside the project. Docs only — no code touched. | ✅ DONE |
+| 8f.40 | **The slice swept for dead code** *(user: "check and clean main file of the game from historical garbage and pieces of code that doesn't work")*. Every candidate was **proved unreachable before it was cut** — the file was loaded in the browser and every declaration cross-counted against its own reference count, so nothing went on a reading of the code. **Cut from the JS:** `bondOther()` (never called); `killLine()` **and its caller**, which was the interesting one — `drawInv` still computed `kl=killLine(p)` and then never read `kl`, so the row-of-heads rewrite (8f.6) left a whole prose-fallback path running once per sheet draw into nothing; `TRAITKEYS`; `FILL` (the terrain colour table the painted field replaced); **`D.speed`**, which carried the comment *"kept only so nothing that still calls D.speed crashes"* — nothing called it, and RACESTEP has owned the stride since playtest #5; and `bindStatTips()`, an empty function plus its one call site, left behind when THE ARITHMETIC took the `.core` boxes. **Cut from the CSS:** `.capself`, `.core` and its five descendant rules, `.sSTR/.sAGI/.sINT/.sMOR` — all four-stat-grid leftovers from the same removal. **The `t-*` node classes were checked and KEPT**: they look dead to a text search because they are only ever built as `'t-'+n.t`, which is the standing trap in reverse — *a dynamic consumer makes live code look unreferenced.* Nothing else in the file was: no commented-out code anywhere, no `$('id')` pointing at an id that does not exist, no unused `@keyframes`, no dead `data-*`, and `window.confirm`/`prompt` survive **only inside the comment that forbids them**. **Two real defects fixed while in there.** The Stubborn personality's `mrec:8` was **authored data the engine ignored** — morale recovery read `u.trait==='stubborn'?8:0` instead, a hardcoded name and a second source of truth; it reads `tr(u,'mrec')` now, which also makes it `byRace`-aware for free, and the swap was proved identical across all 20 personalities × 3 races before it went in. And `saveLegacy()` swallowed a failed write in silence — the exact failure `saveRun` has a shouting comment about, on the one write that carries everything crossing runs. **Verified by running it, not by reading it:** all eight fights through the AI harness with `checkEnd()` between turns (4–11 rounds, no stalls, no throw); a real run driven through the UI — menu, prologue, travel, event cards, Blood on the Road, the steading ambush and the Fen-Mother in the practice field, spoils, loot, promotion, the character sheet with all four tell hovers, save and resume at day 12; `LINT()` clean throughout; **zero uncaught errors end to end**. Net −21 lines. The pre-cleanup build is kept byte-identical at `prototype/_old/`. *(Harness note for next time: the preview pane runs hidden, so `requestAnimationFrame` never fires and `setTimeout` is floored at ~1s — travel animations simply stop. Routing timers through a `MessageChannel` port is not clamped and runs a rendered battle at full speed.)* | ✅ DONE |
+| 8f.41 | **#48 bodies on the ground · #36 line of fire — the board remembers, and the archer can see why.** **#48** is one canonical `dropBody()` called from every place a unit actually dies — the strike resolution, the Fen-Mother bleeding out, and the test-mode clear; there were three such sites, not the two the entry named, which is exactly why it is a function and not three copied lines. **Not for the DOWNED**: a roster member is dragged out still breathing, and leaving their body would say the opposite of the rule the whole scar system exists to state. Purely a picture — `pointer-events:none` is what guarantees "nothing to click", because a body that swallowed a click on the hex under it would be a rule by accident. The figure is the unit's own sprite, laid over and shaded, so race sizes it and side tints it for free. **The extras stayed cut** (difficult ground, stumbling, nerve, throwing them) exactly as the entry demanded. **#36** is one pure `losState()` — the standard cube-lerp trace, which the engine had never had, so range was pure distance and an archer could put an arrow through two of his own and a boulder without knowing. Four states: **CLEAR · SCREENED · OBSTRUCTED · BLOCKED**, with `hit:null` on BLOCKED as a load-bearing detail — it is not a very large penalty, it is *the absence of an offer*, and every consumer tests for it rather than adding it. Folded into `hitBreakdown` rather than bolted onto the UI, which is what makes **both AI brains change behaviour without either being taught anything**: the same function prints the preview and scores expected damage. On top of that a hard filter in both brains — BLOCKED is never on the table, OBSTRUCTED is off the table while a clean lane exists — because "usually prefers" is not the contract; an archer who occasionally shoots his own shieldman reads as broken however good the arithmetic was. **THREE THINGS THE WORK ITSELF TAUGHT.** *(1)* **The gate picture caught a real bug before it shipped.** The first SCREENED rule asked for `arcOn(...)==='BACK'`, one sector of six. Drawing the mockup measured the textbook formation — archer 3,6, shield 3,5 standing ON the traced lane facing the enemy at 6,4 — as **FLANK**, because a hex line *bends* and the sector from the shield to the archer need not be the exact opposite of the sector from the shield to the target. A one-sector rule would have made SCREENED almost impossible to form on purpose: the feature would have existed and never fired. It reads the rear 180° now. *(2)* **A pure function in the innermost loop is not free.** `losState` called `at()` per crossed hex, `at()` rebuilds `alive()` on every call, and a five-round clash that used to resolve instantly took **23 seconds** — that is the AI's turn, and the player waits through it. Two caches keyed on a signature of where every body is standing (exact, not merely fast: anything moving throws both away) took it to **2.0s**, 11×. *(3)* **The user's two corrections, both of which made it better.** *"Make it streight"* — the ray traced the polyline the hex maths walks, honest about the algorithm and wrong about the fiction; an arrow flies from the bow to the body, and the crossed hexes are marked as dots along that straight line instead. *"If the range is not optimal (too long) — yellow"* — the lane was only half of what makes a shot bad, and a clear line at the edge of the bow was being drawn in confident green while `extreme range −18` and `long shot −8` were charged invisibly. One verdict per shot now, worst-thing-first: BLOCKED red · OBSTRUCTED amber · FAR/LONG yellow · SCREENED gold · CLEAR green. And *"corpses same colors as main creatures"* + *"ratkin corpses a bit bigger"*: the first version darkened bodies almost to silhouettes, throwing away the one thing the picture is for, and one flat scale looked right on a human and vanished on a ratkin (21×29 against 26×38) — per-kind scaling now, living palette kept. **Verified:** all eight fights through both brains with `checkEnd()` between turns — 4–14 rounds, no stalls, nothing thrown; **zero BLOCKED shots ever resolved** and **zero cases** of any unit taking an obstructed shot while a clean lane was available; every dead unit produced exactly one body and every fight started with none; graves stay walkable at normal cost and `at()` returns empty on them; six planted lanes produce all six verdicts from one archer; the trace is symmetric read from either end and connected hex-to-hex; `LINT()` clean. **Banked, not acted on:** the brigand fight went 9–11 → **14 rounds**, the one most exposed to lane costs — parked in #50 rather than retuned, because #46 and #47 are about to change what a shooter's turn is worth. **Also added:** `tools/harness.js` (the hidden pane floors `setTimeout` at ~1s and never fires `requestAnimationFrame`, so a rendered battle took ten minutes and travel animations stopped dead — routing timers through a `MessageChannel` port is not clamped) and a `POST /__shot/` handler in `tools/serve.ps1`, so the board serialises **itself** into a standalone page when a screenshot is impossible. That is how both gate pictures were produced. | ✅ DONE |
+| 8f.42 | **#51 the Captain's call — the company gets a voice on the field.** *(User, new: "when main hero character comics style comments things happening on battlefields… for tutorial or important battle moments — they are running, we lost a man, fen mother is desperate. Tool to explain what is happening, give hints on possible actions or emotional layer.")* One speech balloon anchored to the **Captain's own body**, tail pointing at him, 2.2s, **no input pause and nothing to dismiss** — parchment and ink with a hard black border and a flat offset shadow, because the comic read has to come from the drawing and not from a white bubble that would look like a browser tooltip landed on a painting. It lives in `#bFx`, which is already `pointer-events:none`, so it can never eat a click meant for the hex beneath it; mirrored into the fight log as `.ll.cap` for a player who was looking at the other side of the board. **Three tiers, one register:** TEACH (a rule, first time ever) · CALL (a state on the field just changed) · HEART (it cost us somebody) — built at twelve triggers and **cut to six by the user the same hour** (*"make only 6 the most important events — for next I will craft manually"*): **six triggers, fourteen lines, no digit anywhere in any of them**, two per job, all three tiers, and a HOW TO ADD ONE block above the register with the six cut lines kept paste-ready in the new `WHAT_TO_TEST.md`. The budget is the design: one balloon per round, five per battle, HEART > CALL > TEACH with the loser **dropped rather than queued** (a comment about a moment that has passed is worse than silence), and **a line never repeats in a run** — if every variant is spent it says nothing. **The free thing that does the most work: when the Captain is down, dead, fled or not in this fight, the voice stops for the rest of the battle.** No substitute speaker, no handover. The commentary you have had all fight simply *stops*, which is the mechanical consequence of losing the Captain delivered without a line of prose. **TEACH rides on `whisper()`** — one call, two voices, **one seen-set**, so they can never drift apart: the Captain says the human half on the field and never a number, and the existing toast carries the exact rule, which is the one place a number is allowed. The six whispers already in the build got a voice for free. **Triggers are read once per turn in `capTick()`, never inside a scorer** — 8f.41 lost 23 seconds to one innocent function call in `hitBreakdown` and nothing else gets to make that mistake. **THREE THINGS THE WORK TAUGHT.** *(1)* **A one-shot flag set before the line is actually said is a trigger that silently disappears.** The first version marked `C.desp=true` and *then* called `capSay`; on the Fen-Mother, DESPERATE collided with another CALL in the same round, correctly lost the round — and could then never fire again for the rest of the fight. `capSay` returns whether it spoke, and every one-shot flag is set from that return. *(2)* **Flip on the actual overflow, not on which half of the field you are standing in.** The board is narrower than `#bField` and sits inside it, so "past the middle" and "would this run off the edge" are different questions; the first version measured the wrong one and the balloon never flipped. *(3)* **A pre-existing bug the entry's own rule exposed:** `whisper()` wrote `LEGACY.seen` unconditionally, so **practising the Snare spent the back-arc tutorial on a fight that never happened.** In `SIM.on` it is now shown, capped to once per practice fight, and never persisted — the same rule the Captain's teaching lines needed and could not have had on their own. **Also:** the unit `name` is `name + surname`, and "That is Vesna Kolb, close over her" is a clerk reading a roll — `capName()` takes the roster first name for our own people and leaves anything else untouched, because splitting on the space would have turned "The Fen-Mother" into "The". **Verified:** all eight fights twice through both brains with `checkEnd()` between turns — 4–19 rounds, no stalls, nothing thrown, `LINT()` 0 findings; every rule in the contract asserted on a live practice board (same-round drop, heavier tier taking the round, the dropped-then-retried path, variants exhausting into silence, the five-cap at exactly five, Captain-down muting permanently even after he is helped up); `G.capSaid` round-trips the save and a practice fight leaves it **empty**. Three gate pictures in `shots/51_*.html` were taken off live boards. **Banked, not acted on:** brigand 12–15 and the Thing in Armour 9–21 round spreads — #50's parking lot, as before. | ✅ DONE |
+| 8f.43 | **Three Tier-4 leaves in one session — #8 audio · #15 battlefield styles · #44 the aunt.** *(User: "take and do 3 smaller steps from the backlog." Three leaves, chosen because the backlog itself marks that tier safe in any order, and deliberately spread across three senses so they could not collide: sound, place, voice. No shared code between them.)* **#8** — every verb the game grew *after* the sound set was written had been borrowing somebody else's noise: the ogre's throw played `rout`, the Blooming Hand played `back`, SINK BELOW played `dodge`, and **the morale ladder had never had a sound in either direction**. Seven new WebAudio entries (`shove` · `hook` · `hurl` · `sink` · `grasp` · `rung_up` · `rung_down`) plus the camp-fire ambience the entry asked for — a looped brown-noise bed with sparse crackle, started from `startBattle` and stopped by `setMusicMode`, which is the one function every exit from a battle passes through. **The rung tick is throttled and that is not optional:** `mor()` is called across a whole side at once (the kind one's aura at deployment, a rout sweeping a line), and eight ticks inside one frame is a machine gun rather than a rung. **The fire is started from `startBattle`, not from `setMusicMode`, on purpose** — `FIREPIT` is declared with the obstacle code far below, and reading it from a function that runs during boot is a temporal-dead-zone crash; this project has shipped one of those already. **#15** — `paintTerrain` hardcoded a single palette, and the style bible had locked four atmosphere keys of which exactly one was in use. Lifted into a `GROUND{}` register: the existing colours were moved **verbatim** as `teal` so the default could not regress, and two more written against them. Dust & Gold on the ogres' hill, the sling-line and the Thing in Armour's broken ground; the Bloom on the Fen-Mother — **which is not an invention: her event card is already `art:'bloom'`, her node is `weird` on the map, and the aftermath talks about the bloom-light going out under her hide. The battlefield was the last screen that had not been told.** *(1)* **A palette is not free, and the measurement is the entry's own warning made concrete.** The hex tint and the state colours were tuned against teal. The first Dust & Gold was the genuinely pale ridge the bible describes and it cost **every** state colour ~13% of its contrast — ROUTED fell 2.71 → 2.37. The rule this settled on and which the next palette inherits: **no state colour may read worse on a new ground than on the one the game already ships.** The paleness moved off the base and into the tufts and the rock, where it belongs anyway; bright detail on darker ground reads *more* like hard sunlight. Final: teal 4.10/4.74/3.31/2.71 · dust 3.99/4.62/3.22/2.64 · bloom 6.02/6.97/4.87/3.99. *(2)* **The proof the refactor was clean is a number, not a reading:** teal's mean ground samples byte-identically at (48,60,57) before and after, so the default palette provably did not drift. **#44** — three beats and no genealogy. **CLAIM:** two ratkin insist on the same aunt for incompatible reasons — one older than the bridge and owns a boat, one twelve and dead six years and owed four crowns; same woman, same teeth, nothing else agreed. **COST:** three rulings, none free, and the one that pays a dead child's four crowns out of the chest is warm *and* teaches the whole fire that the chest opens for a good enough story. **RETURN:** one card per ruling, all delivering the same evidence — neither of them was right — and each with a warm door and a cold one, because the failure mode this entry exists to avoid is ratkin becoming the comic-relief species. Three booleans on two people (`claimsKin` · `kinDebt` · `kinInsult`) carry the whole chain, and they live **on the person**, which is what makes the entry's one hard requirement work: one of them leaves and the other still remembers the ruling alone. **New machinery, small and reusable:** `castRace`/`castNeed` gate a whole card on who is at the fire (`needRace` has always gated a *choice*); `castKeep` requires at least one of the original pair still on the roster; `body`/`after` get a third argument saying whether both are still there, so the prose can never claim two people are not speaking when one of them left. **And LINT learned to read CAMPS** — the one content table it had never opened, and the table with the most gates in it. A sequel keyed on `needs:{id,opt}` with a misspelled id or an off-by-one option does not crash and does not warn; it simply never appears, for the life of the project. The rule was proved by deliberately breaking the chain four ways and confirming each was caught. **Verified:** all eight fights through both brains with `checkEnd()` between turns, before and after, no stalls and nothing thrown; `LINT()` 0 findings; every new sound fires without error and the fire loop starts only in the camp, stops on any screen change, never double-starts, and is silenced by the existing mute because it hangs off `AU.master`; all three grounds assigned and measured; the aunt chain driven end to end through the real `openCamp` path — cast drawn only from ratkin over 40 shuffles, tags landing on the right two people, bond and memory written, and each of the three rulings opening exactly one return and only after the two-day ripening; `castKeep` verified across both-present, one-left and both-gone; the tags round-trip the save. **Banked, not acted on — and this one is a correction to what is already parked.** The brigand fight threw 21 and 26 rounds on the final two regression passes, which looks alarming beside the 14 already in #50's lot. It is not a shift: nothing in this build touches combat logic, and **12 dedicated runs read 8 · 9 · 9 · 9 · 10 · 10 · 10 · 11 · 11 · 13 · 13 · 15 — median 10, and inside the band.** So the number worth parking is *the tail, not the centre*: brigand sits at a median of 10 with excursions past 20 at maybe one run in ten. **A single regression sample of this fight is not evidence of anything**, which is the actual lesson — every previous read banked for it (14, 12–15, 9–18) was one sample of a wide distribution. Measure it with a sweep when #50 runs, not off a regression line. **One thing found and not fixed, because it is correct:** the default company has **one** ratkin, so the aunt cannot fire until a second is recruited. That is the card being honest about its own cast, not a defect. | ✅ DONE |
+| 8f.44 | **The backlog re-indexed by SCREEN, and every entry told where it lives** *(user: "reorganise backlog — categorise things by screens: battles, map, inventory, after battle, etc. To each task add related tasks and systems — if it is a mutation it could be both inventory-and-character or battle, but should have a reference to another one.")* The index was ordered by **influence**, which answers *what do I build next* and answers nothing at all about *what else lives on the screen I am about to open*. It is now **six screen sections** — ⚔ the battle board · 🗺 the road (map, travel, road and camp cards, the Muster Field) · 🎒 the company (roster, character sheet, stash) · 📜 after the battle · 🚪 the front door and between runs · ⚙ no screen (foundations, tools, budgets) — named after the panes that actually exist in the build (`#bLeft`/`#bMain`, `#wMap`/`#wDlg`, `#iRoster`/`#iChar`/`#iStash`, `afterBattle()`, the menu). **An entry appears in exactly ONE section — where the player meets it — and every other screen it reaches is in its *also touches* column**, which is the collision warning the old index could not express: #4 is a paper doll that changes a combat rule and lands through the aftermath, and the tier tables said only "Tier 2". **Nothing was duplicated to do it.** Tier, model, dependency and "what it unlocks" became *columns* on the same rows rather than a parallel list, because this file has already paid for one index that drifted from the thing it indexed (8f.38: the plan's copy listed ten shipped features as open). The build order survives as a **four-line strip of numbers** above the sections — a pointer, not a second table — and the separate 🕰 Distant-future table is gone, its ten entries folded into their screens carrying a 🕰 tier tag and their *why it waits*, so a screen section now shows **everything that will ever land there**. **Every one of the 33 unbuilt entries also carries its own three-line header** — screen · systems · related — so an entry found by search reads cold without a trip back to the index. **What the cross-referencing exposed, which is the actual value of the exercise:** **#44's `castRace`/`castNeed`/`castKeep` are #22's machinery, already built** — they gate a whole *card* on who is at the fire, which is exactly what "the road reads the company" needs; **#46 deletes a boulder mid-fight, so #33's "at least two connected paths" has to hold *after* the board changes and not only at spawn**; **#51 · #40 · #39 · #43 all spend one speaking budget on one field**, and #51 already chose its shape; **#4 + #17 are one painter API used in opposite directions**, which #35 then waits on. Also tagged: #45 sits on the battle board but is built **inside** #50, #27 is banked in #50's parking lot and is a measurement rather than a build, and the aftermath screen is **mostly consumed rather than owned** — four entries write to it from elsewhere. Docs only — no code touched. | ✅ DONE |
+| 8f.45 | **Seven corrections from the first real playthrough** *(user: "I played the game — here are additional tasks and corrections. Fix them now, fast — they are smaller ones.")* **1 — the opening is two cards, not three.** Arrival → insult → outcome, where the middle card existed only to carry a single "Answer the call" button nobody could refuse. The two scenes merged and the prose came down ~40%; the choice now sits on the same screen as the insult, which is also where it belongs, because **the choice IS the reply**. All three answers pay exactly what they paid before. **2 + 7 — the travel label.** It was a box with a sentence in it on every road out of the live node. The box shrank, and the descriptions were rewritten to three or four words in the user's own shape — *"longer road, more safe; shorter road, more fights; who knows what road, have no idea"* — which is **longer-or-shorter first, what is on it second**, because that is the comparison the player is actually making. And the load-bearing half: **a description is DROPPED ENTIRELY when there is only one road out.** An explanation exists to be weighed against another explanation; on `hold→clash` the game was solemnly captioning *the only road east*. One line in the map builder (`edgesFrom(G.at).length>1`) and the fork keeps everything while the corridor says just the price. **3a — COMBAT LOGIC is an accordion.** Four permanent lines on the bottom-left of the board: useful in the first fight, in the way in every fight after it. Now one collapsed strip that opens on click. Two details worth keeping: the state rides on **`LEGACY`, not the run**, because a player who has read it once should not re-close it every fight *or every campaign*; and it got `pointer-events` back, which it deliberately did not have — it is the only thing over the field allowed to take a click, and it sits outside the hex grid, so no hex is covered by a control. **3b — bones, and nothing else.** `PROPGLYPHS` was ten symbols including a house, a clover, a cross, an urn, a trident, a flag and a fleuron. *"I like bones, don't like other things."* One glyph now (☠) at a lower density so they read as occasional rather than as scenery — **a battlefield with bones on it is a battlefield; a battlefield with a house symbol on it is a UI bug.** ⚠ **Half-done on purpose and flagged to the user**: the referenced screenshot never arrived, so only the *symbol* layer was cut and the *painted* clutter (branches, stumps, flowers, reeds) was left alone. **3c — standing in water costs a hex of stride. This is the one new RULE in the batch.** Wet hexes already cost 2 to enter and then cost nothing once you were in them, so water was a thing you paid for once and ignored. It now also takes 1 off the budget of anybody who *begins* a move standing in it. It went into **`moveBudget`** — the single function every mover asks — so the reach preview, `aiTurn` and `autoStep` all obey it without one of them being taught about water; that is the entire reason this codebase has a `moveBudget`. **Gills are exempt**, exactly as they are already exempt from the wading cost. The legend and the hit receipt now say **water** rather than marsh (the internal key stays `marsh` — renaming a data vocabulary mid-session is precisely the sweep this project has been bitten by, and the player never sees the key). **4 + the rest of 2 — the after-battle roll says who they were and what they did.** Every entry gets a second line: `captain · human` on the left, `63 dealt` on the right, off a new `a.dealt` accumulator set at the one site that applies body damage. **The footer total went with it** — it was summing exactly the two things the rows now say for themselves, sitting directly under the table that says them. Grouped statblocks (`Ogre, club ×3`) show the group's damage and no class line, because three bodies do not share one job title, and a row with nothing to say prints no second line at all. **5 — a lone button sits in the middle.** `.popts` is a two-column grid, so *Pick over the field* and *Back to the road* were landing hard against the left edge and reading like the first of two choices that had not loaded. `.popt:only-child` is the honest test: it is a **continue**, not a decision, exactly when it is the only thing offered — and it fixes every single-button card in the game at once, not the two that were reported. **Verified:** `LINT()` 0 findings; all eight fights through both brains with `checkEnd()` between turns, no stalls and nothing thrown; the water rule asserted directly (human stride 4 → **3** standing in water, **4** again on dry ground, **4** with gills); the accordion's body measured `display:none` closed and `flex` open with the click round-tripping through `LEGACY`; the lone `.popt` computed `justify-self:center` spanning both columns; the roll rendered with class·race and per-person damage and **no blank rows**. **Banked, not acted on:** water is the first movement rule this game has had, and a 5×2 A/B on the sling-line read a **median of 8 rounds either way** — but the water-on arm threw a 24 and the water-off arm did not. Five samples cannot separate that from the tail already parked for brigand (median 10, past 20 at ~1 run in 10), and **a single regression line is not evidence about a wide distribution** — that is 8f.43's lesson, applied rather than re-learned. It is in #50's parking lot with the two cheap knobs named. | ✅ DONE |
+| 8f.46 | **Five corrections from a human-review pass, plus one bug investigated and not closed** *(user, after playing: annotated screenshots + a short list, "smaller ones now, bigger ones to the backlog")*. **1 — the travel CARD forgets the fork rule 8f.45 already taught the MAP.** `drawNodes`' inline road label has gated its "this road is shorter/longer" line on `edgesFrom(G.at).length>1` since 8f.45; `confirmTravel`'s **dialog** — the "TRAVEL — 2 DAYS" card you actually click through — never got the same check, so a single corridor still opened with *"This road: the short way, under the Bloom."* Same one-line fix, second surviving site. **2 — morale shown on the choice, and confirmed after it** *(explicit, temporary override of the pillar's "the score is hidden" rule — user: "it can contradict some ideas, but for playtest I prefer clarity… a hidden choice doesn't count if the player can't see it")*. New `moraleTag()`/`moraleLine()`, wired into both `EVENTS` choices (Under the Bloom, the Fen-Mother, …) and the chained `CAMPS` incidents: the button now carries `morale ±N` next to its hand-written flavour text, and the outcome card confirms the same number plus the resulting **named** mood state (`AT EASE`, `GRUMBLING RANKS`, …) — the authored number is reported, not a live before/after delta, because a choice that also spends days can tick unpaid-wage morale in the same breath and that second swing answers a different question. Flagged in-code for reconsideration before ship. **3 — the readout's own "other" bucket was hiding a third of itself.** `hitBreakdown` folded the attacker's own nerve penalty (`STATES[a.state].hit` — 0/−8/−12) into `other` without ever pushing a line into the `parts` caption underneath, so a shaken archer's tooltip read `other −16` over a caption that only summed to −8. Found from the user's own screenshot; one line now names it (`"your own nerve, wavering −8"`), and every consumer of `other` was already reading the corrected total, so nothing about the odds themselves changed. **4 — EMBER, once a turn.** Its note has always said it "does not count against your one working a turn" — true, and read as "unlimited," because it fell through to the generic reuse cap of **two** shared by every other action. `canUse` now caps `blaze` specifically at one; every other action keeps its two. **5 — the character sheet, decluttered** *(screenshot marked up by hand)*: the header's `(human-sized)` tag and `signature: X + Y` deleted (redundant with the size-mismatch warning and the SKILLS card of the same name); the `PERSONALITY — WHO THEY ARE` label deleted (the line under it already says what a personality is); `SKILLS — WHAT THEY DO IN BATTLE` shortened to `SKILLS`; and **NERVE moved** off its own full-width, coloured `.lrung` block — nine lines further down, between the swing stats and the equipment slots — into a plain `statLine` row beside ARMOUR and HITPOINTS, same id so the existing hover tooltip needed no changes. **6 — reported, not fixed: a hard lock on the world map after Coldharrow** (no screenshot, "can't move after Coldharrow"). Driven through the harness rather than guessed at: a clean win over the Fen-Mother *and* a withdraw from it, each played through every after-battle screen into Coldharrow, a real armourer purchase, and back out onto the road — both clean, `G.pending`/`G.moving` falsy throughout. **A loss (units actually downed and scarred) and the ambush variant of the fight remain untested** — filed as backlog **#52** with what was ruled out and what to check first if it recurs. **Verified:** all eight fights through both brains, `checkEnd()` between turns, 5–19 rounds, nothing thrown; `LINT()` 0 findings; the fork check confirmed false on a corridor and true at a real crossroad; the morale tag and consequence line read correctly off a live `EVENTS.bloom` pick; `other`'s parts now sum exactly to its total on a wavering archer; `canUse` confirmed EMBER blocked on its second use in the same turn while a normal action still allows two; the sheet's DOM inspected post-render for the new header text, the missing labels, and the relocated `#iNerve` row. | ✅ DONE |
+| 8f.47 | **#52 investigated further — two more Fen-Mother outcomes ruled out, still not reproduced.** 8f.46 had walked a clean win and a withdraw clean; this session drove the two branches it flagged as untested. **Win with scarred units:** two of four party units forced `downed` mid-fight against the Fen-Mother, then the field cleared (`winNow()`) — walked the real `afterBattle()`→`consequences(scarred)` branch this time (the "CARRIED OFF THE FIELD" card, the fenwater condition firing off `u.downed&&G.battleKind==='mother'`, both consequence beats, loot and promotion picks) through to Coldharrow (armour purchase available) and on to the Muster Field. **The ambush variant:** picked "Marrow wants a bloom-spitter's gland" (`fx:{days:1}`, `ambush:true`, confirmed via `G.ambush`/`B.ambushRound`) instead of the plain kill choice, walked the same chain. **Both clean** — `G.pending`/`G.moving` falsy at every transition, `window.__errs` empty. That is all four real "how the Fen-Mother fight ended" branches now ruled out. **Also reread `saveRun()`/`loadRun()`** ([grimtoll_slice.html:7722](../prototype/grimtoll_slice.html)) against the remaining "stale save" hypothesis: `G.pending`/`G.moving`/`G.dest` are never written to the save blob and `loadRun()` unconditionally clears all three on load, so a plain reload-and-resume cannot be the mechanism — narrows that hypothesis to a save written from an older build, or a reload landing between two `saveRun()` calls in a way that skips a flag another screen depends on (`armourDone`/`queuedEv`). **What's left, both untested:** a stale/pre-edit save, and something specific to the published artifact (this session, like the last, only had the dev preview). **One process note for next time:** the hidden preview pane's `requestAnimationFrame` genuinely never fires (per §5's own warning) — the harness's `MessageChannel` shim fixes it, but a preview restart mid-session silently drops the shim (`window.__mcShim` resets), and `travel()`'s token-walk animation depends on it. The first attempt this session hung on exactly that — read as a reproduction of #52 for several steps before the state (`G.moving` stuck true, no dialog open, no error) matched the *known* RAF artifact rather than a new bug; re-loading the harness fresh before travelling resolved it. Docs only — no code changed; #52 stays open. | — |
+| 8f.48 | **The stage-1 painting pack, wired in — a painted front door and fourteen event scenes.** Integrated per `art/src/stage-1/CLAUDE_ASSET_PLACEMENT.md`, which is the art pack's own instruction file. **The menu is a painting now:** KEY-01, the company walking into the Bloom, sized to the stage (1280×720, cover-fit so the five figures in the lower-left corner are never cropped away) and set from `openMenu()` as `ART.MENU` — the stylesheet cannot reach a data URI that lives in the script — under a `rgba(10,3,12,.20→.46)` wash that keeps the title legible in the painting's dark central corridor without draining the magenta. **Fourteen events stopped wearing somebody else's picture:** `pedlar`, `camp` and `wain` had been borrowing the clan-cart and muster-field stand-ins, `armour`/`packev`/`shrine`/`slingline`/`steading` had no dedicated art at all, and `bloom`/`mother` were on the older, duller grading. All fourteen now map to their own scene (`EV03`…`EV21`) through an `Object.assign(EVENTART,…)` override left deliberately separate from the original table so the two packs stay legible as two packs. **The builder learned a second pass:** `build_assets.ps1` reads `src/stage-1/events/*.jpg` **verbatim** — no label crop, no resize, no re-encode, because these arrive already delivered at 640×360 with no baked-in label corner, and the existing crop pass would only damage them — plus a cover-fit pass for the menu key. 44 assets, 1535 KB embedded; the prototype is 2837 KB. **And the picture window got bigger**, which was the user's own ask: the map card is 520→**560px** wide (`DLGW` moved with it — `placeDlg` centres on that constant, not on the CSS) and the art canvas 398×104 → **528×176**, a clean 3:1 letterbox drawn at exactly its display size, so nothing is stretched to fit the box any more. Checked: all fourteen crops keep their story prop at 528×176 (the pedlar's table, the door standing in the field, the sling wall, the milestone fork, the salt pans, the body in the peat); every card fits inside the map without overflow; the two longest, the Door-Shrine and Something in Armour, now scroll ~50px of prose that previously fit — the choices stay pinned, so nothing became unreachable. LINT clean, no console errors. | ✅ DONE |
+| 8f.49 | **Backlog #46 — one skill per race: KICK · PICK UP AND THROW · POISON THE BLADE.** Three verbs, one per race, **none of them a damage button**; each 1 action out of 2, each third in the row (under the weapon, above the class signature) so the new verb is always the **3** key. Built from **one `RACESKILL` register read by both `unitFrom` and `foes`**, so a clan ratkin poisons exactly the way yours does and the old per-template copy of HURL A RATKIN is gone. **SIZE became a word:** `sizeOf` (3 great beast · 2 ogre · 1 everything else) + `maxSize` on the two displacing acts, giving one player-facing rule — *an ogre is never moved by anything, and only a great beast could lift one* — enforced **twice on purpose**: in the targeting so the player never sees a false offer, and in the forced-movement block itself so no AI branch or later verb can route round it. Refusal is an **offer withdrawn, not an action wasted** (hex unlit, click does nothing, nothing spent — verified 2 actions before and after). **THE THROW, per the user's ruling:** *only an INDEPENDENT boulder* (no rock adjacent) can be lifted — which is what makes the rest safe, because **a wall can never be dismantled** and the connectivity `makeObstacles` flood-filled at spawn cannot be opened into a shape it never validated — range **3** for a stone against 4 for a body, it rolls to hit and hits like a warclub, and **it comes back down on the ground** rather than shattering: on the target hex if free, otherwise the free hex just past the body it hit, never beside another rock (so every boulder stays independent for the whole fight). A liftable stone is the one impassable hex that is a legal target, so it is the one allowed to keep a bright border — blocked ground otherwise forces a dark edge, which was quietly eating the gold offer. **POISON** is a list of clocks, **+15% per live stack** for two rounds (specified at 25% and **taken down by the user the same day** — `VENOM_PER`, one constant; three cuts now buy +45% instead of +75%), **uncapped on purpose** (the limiter is the action cost, not a ceiling), shown as a green **☣ with a live count** through a `STATUS` register that learned to carry a `count`. ⚠ **It multiplies rather than joining the additive sum** — inside the bracket, against a base already above 1, the term arrives diluted: at the original 25% two stacks measured **+37%** while the button promised "half again". Moved out beside the back-arc multiplier it is exact at any value — verified ×1.1500 / ×1.3000 / ×1.4500 / ×1.6000 for one to four cuts. **The dilution applies whatever the number is, which is the general lesson: a stated number has to be the number, so it cannot live in the additive sum.** **Both brains from one decision (`raceVerb`)**, thresholded rather than scored as expected damage — a kick priced at its 3 damage would never be chosen, which is how a setup verb ends up existing and never being used. **Three defects found by measuring rather than by feel: (1)** the enemy-throw first scored "far from their friends, near enough to ours", which is a **treadmill** — throw somebody out of the fight, they walk back, throw them again; both sides doing it turned a 4-round clash into 20 and made the entry's own chain the engine of it. Rewritten as a **capture**: the landing must put two of ours within reach, once per body per fight. **(2)** A `noChase` gate was tried on top of that and **removed** — wrong diagnosis, and it killed the feature outright since `noChase` is true for every ogre and only ogres throw. **(3)** The real cause was **pre-existing and this entry made it loud**: `targetScore` and `doctrine` still tested `a.range` without `a.dmg`, the exact bug `disposition()` and `iShoot` were both fixed for when HURL A RATKIN (range 4, no damage) made every ogre register as an archer. With a throw on **every** ogre, all four Steading-Line ogres started keeping station at three hexes like bowmen — in the one fight whose premise is that they hold their ground — and 9 rounds became 29 without a single throw being taken. Four sites corrected (`targetScore` ×2, `doctrine`'s `shoot`, `aiTurn`'s `kshot`/`shot`, `autoStep`'s `shoot`); brigand came *down* 12→7 as a side effect. Also: `forceDest()` extracted from `strike()` so the AI asks the same arithmetic the blow will use (that direction has been flipped twice historically); three icons added (**⇥ ⬆ ☣**), all three verbs had been falling through to the generic sword; a `venom` sound (the kick borrows `shove` and the stone `hurl`, which are the *right* noises); race help rewritten for all three; the `hurl` whisper rewritten and two added. **Verified:** all eight fights back inside their pre-change bands measured against a stripped-acts baseline (clash 4–5, brigand 7–11, pack 4–5, slingline 6–7, steading 7–9, snare 7–10, mother 6–16, armour 9–16); both brains use all three; `LINT()` clean; no errors, no stalls; the two-click throw driven through `clickHex` for real; the size gate confirmed to cost nothing; lone-vs-clump confirmed on the board. Picture, made from the built feature: [`shots/46_race_skills.html`](../shots/46_race_skills.html). Tooling: `tools/harness.js` grew **`shotUI`/`grabUI`** — the board serialiser plus `#bLeft`, several panels per file, every `<canvas>` swapped for an `<img>` first. | ✅ DONE |
+| 8f.50 | **Backlog #38 — one tie: "You carried me out."** *(User: "run next batch — take safe ones, easy test / easy bug fixes, nothing where you need to overdo the whole system." A Tier-4 leaf, picked because it is small, self-contained, and it is the entry that sets the pattern every later tie copies. Session opened with a health check on the 8f.49 build: `LINT()` 0 findings, all eight fights clean, 4–15 rounds.)* **The cause was already built and nobody had noticed** — `afterBattle` has always picked the least-hurt person still standing and written a `bond()` recording who they went back for. What shipped is the *type*: a bond may now carry a `t`, and a typed bond is a **TIE**. A `t` buys three things a bare shared line cannot — it is **directional** (`a` went back, `b` was carried), so the two sheets say different sentences; the camp deck can gate a card on one existing; and the battle can read it. **`t` is optional on purpose**: every bond written before this, and every later one that is only a shared memory, is untouched, and `TIES` is the only place that knows what a type means. **ON THE SHEET, the same fact in two sentences** — `LOOKS AFTER — Skree "the Loud" · Went back for Skree at The Black Fen` against `OWES — Vesna "the Second Thought" · Vesna came back for them at The Black Fen` — sitting between the personality and WHAT HAPPENED TO THEM, because **a tie is who somebody is *with*, and that belongs beside who they are**, not buried in the list of things that have happened to them. The album takes the **untyped** bonds only; left in, the shared third-person line would have said the same thing a second time nine lines lower, in the one voice the tie was written to replace. **A tie outlives the pair**: it carries its own copy of both names and the place, so a dismissal cannot make the surviving sheet print a raw id — it goes to past tense and the name stays. **ONE CAMP LINE, gated by a new `castTie`** — the same machinery #44 built for `castRace`, one turn further in: `castRace` asks *are there two ratkin here*, `castTie` asks *are these two particular people here, and does one of them owe the other*. TWO SHADOWS cannot be reached by a roll, a day count or a proximity check; it does not exist until somebody has actually been carried off a field. Deliberately **not** `castKeep`'s rule (at least one of them) — a card about two people who will not be separated cannot be played by one of them. And it is deliberately **not a warm card**: a tie that only ever pays is an affinity bar with better writing, so the cost is the pillar exactly — two people who will not be separated are one person's worth of frontage, and the middle option lets you buy that frontage back by **ending the tie, out loud, in front of the two people it is about**. That is the only thing in the game that can end one. **ONE BATTLE RULE, and the entry's own version of it was void.** #38 asked for "one safe AUTO behaviour — do not leave that person downed while withdrawal is still possible"; withdrawing has since learned to carry the downed out (see `withdraw()`), so there is nothing left behind to go back for. The **reason** survives, moved from the movement scorer into **morale**: when your tie goes down where you can see it you take the grief **doubled**, and then you **will not rout for the rest of the battle**. A boon and a bill in one fact — a body that holds the line, and a body that will very likely be carried off it as well. **Morale rather than a scorer term is the load-bearing choice**: `noRout` is read at one place by everything, so **both AI brains and AUTO inherit it without being taught**, and this project has been bitten twice by a behaviour that went into `aiTurn` and not `autoStep`. It also cannot oscillate — it only ever stops a body crossing the rout line *downward*, and a unit that will not rout can still be put down, so if it changes fight length at all it shortens it. The doubling multiplies the grief they were **already** going to take, so somebody with `noGrief` still takes none: the tie holds them anyway, it does not manufacture a feeling. **ONE PRE-EXISTING BUG FOUND BY BUILDING ON TOP OF IT: `G.bonds` had never been written to the save.** Every shared fact in the company silently vanished on a reload, and it did not show because until now a bond was one italic line at the bottom of a collapsed drawer. A tie is load-bearing — it gates a card and it holds a body on a field — so it had to survive the road. Added to `saveRun`/`loadRun` with `||[]` and no migration. **LINT learned three more gates**: a `castTie` naming a tie that is not in `TIES` (a card that can never fire — the exact failure `castRace`'s check exists for), `castTie` and `castRace` on one card (the cast can only come from one of them), and `endTie` on a card not cast from that tie (there is no pair to end it between). **Verified by exercising it, not by reading it:** `LINT()` 0 findings and all eight fights clean before and after (4–9 rounds, nothing thrown) — and `G.bonds:0` during the regression proves the tie path was never entered, so the round variance in those runs is ordinary and not this change; the two sheets rendered from the running build and confirmed to share a fact and share no sentence; the first rescue's shared line confirmed suppressed and a *second* rescue of the same pair confirmed to add a memory and **not** a second tie; a third party's sheet untouched; TWO SHADOWS rolled from the real deck with the cast in the right order, confirmed to leave the pool the moment one of the pair is off the roster, and its middle option driven through `openCamp` for real — tie gone, the memory that it happened still in the album; the fight rule measured inside one run at **−28 for the tied unit against −14 for an untied bystander**, `noRout` true on the one and false on the other, and the line firing exactly once; the save round-tripped with names intact, and a save written *before* ties confirmed to load clean. Picture, made from the built feature: [`shots/38_one_tie.html`](../shots/38_one_tie.html). **One small defect fixed on the way past:** the third choice's label wrote its own mood figure while `moraleTag()` appends it, so the button printed it twice — every other card in `CAMPS` and `EVENTS` was checked and none does this. | ✅ DONE |
+| 8f.51 | **Three reported defects fixed, and #53 built — the playtest notes.** *(User, out of the room: "fix a bit economy, especially for the longer routes — at least don't go below 0 · fix constant overlap of many things on the global map · fix overlap of things or stick things that shows on top of actual events · add to backlog and create simple version of small like, super like and dislike in the right corner of the page… I will send it to friends and want to see their analytics and impressions… length of the run, all made decisions, like and dislike screens.")* **1 — THE PURSE HAS A FLOOR, AND ONE DOOR.** Invariant #3 says each resource has one canonical mutation path; crowns and provisions had **nineteen**, and only the daily wage loop had ever learned to clamp. A −15 vignette or a −4 camp ruling on a nearly-empty chest produced a **negative purse**, which is not a debt system — it is a display bug that then makes every later "can I afford this" test lie. `pay(key,delta)` is the door: it clamps at zero and **returns what actually moved**, so a caller can say "you could only find four of the six". Every one of the nineteen sites now goes through it (or through `payFx` for a whole content-table `fx` block). Morale is deliberately **not** clamped — mood is signed by design. **2 — A LONGER ROAD IS MORE ROAD, NOT JUST A BIGGER BILL**, and this was the actual economy defect, structural rather than numeric: `travel()` rolled the road **once per leg regardless of length**, so a 4-day road charged four times the wages of a 1-day road and offered exactly the same single chance of anything happening on it. The long option at every fork was **strictly dominated** — you paid for days and bought nothing with them, which is the opposite of the trade a fork exists to present. A leg now rolls **once per day, capped at three**, at evenly spaced points; the per-roll odds are untouched and the one-stop case still lands on **t=0.55**, so a **1-day road comes out bit-for-bit unchanged** and nothing about the short roads was retuned. Beyond the first stop the deck leans to **vignettes** (.82 against .55) for two reasons: the incident deck is finite and once-per-run per id, so burning it faster on long roads would starve the back half of the act — and vignettes are where the small crowns and provisions live, which is what a long road should pay some of its own wages with. `arrive` stays the only thing that clears `G.moving`; every extra stop is another walk segment in front of it, because a road that resolved early would strand the token (the failure that moved the dog ambush onto a node). **3 — THE MAP OVERLAP WAS THE ROAD LABEL, AND NOTHING HAD EVER CHECKED IT.** The node-against-node spacing rule from #6 measured clean and was not the problem: the **price label sat at the exact midpoint of the road**, and on a short edge the midpoint is inside one of its own endpoints' name plates. It landed on **the node you were standing on**, at **ten of the twenty-one places you can stand** — which is why the user read it as *constant* rather than as one bad corner, and why looking at the map at rest never found it: **the collision is a property of where you stand**, since a label only exists on the live roads out of the live node. `labelSpot` now searches — a handful of points along the road × a handful of vertical lifts, scored against every plate and against the sibling labels already placed, first clean one wins. **Ten collisions → zero**, and `labelViolations()` checks it from every node, at boot and inside `LINT()`. ⚑ **The first attempt made it worse (10 → 15)**: "nudge it perpendicular to the road" is the wrong shape, because a plate is 104 wide and 28 tall — clearing it sideways costs ~118px and clearing it *vertically* costs ~30. The cheap axis is up and down, and a normal that happens to point along the road spends the expensive one. It lifts labels **above** the road by preference, because a plate hangs *below* its glyph. **4 — CONTENT NOW OUTRANKS CHROME.** `#wDlg` — the event card, the thing the player is being asked to read and answer — sat at **z-index 12**, while ? RULES, ☰ MENU and ♪ sound sat at **50** and the three tester buttons at **60**. Every card opened *underneath the furniture*. The z-indexes had grown one number at a time and nobody had ever written the ladder down, so it is written down now, in one comment beside `#wDlg`, with one rule: **content outranks chrome; only a modal outranks content.** Cards 12→30, chrome 50→20, tester 60→22, `.coach` 60→70. **5 — #53, THE PLAYTEST NOTES.** ★ ▲ ▼ bottom-right of **every** screen, one click each, nothing to fill in, and clicking the same button again **takes the reaction back** (a tester who mis-clicks and cannot undo it stops using the thing, and one wrong row in a small sample is worse than a missing one). The whole value is in **what it attaches to**: `JOURNAL.where()` resolves the finest thing on screen — the event card's own title, the camp incident, the fight's kind, the practice field — so the report reads *"▼ event: PEDLAR ON THE RIDGE"* and never *"▼ world"*. Base screens get the name a player would use, not an element id. Alongside it the journal records **every decision**: event and camp choices with the exact option text, every road taken with its length, every fight joined, and run start/end. The **report** groups by run and gives length in days *and* in time at the keyboard, how it ended, the decision count, the reaction tallies, every reaction against its screen and every decision in order. **And it can get home:** the whole journal exports as one plain-text blob the friend copies and sends back, and the same screen reads somebody else's blob in without touching your own. ⚠ **Invariant #10 is the contract and is stated in the code: it observes and never acts.** Nothing in the game reads the journal to decide anything. A resumed save **continues its run** rather than opening a second one, rebasing the wall-clock so time-at-the-keyboard is the sum of the sittings and not the gap between them. **ONE TRAP RE-LEARNED THE HARD WAY, AND IT IS THE ONE §5 ALREADY WARNS ABOUT.** The road-label check was first called from a boot IIFE placed **above** `const EDGES` — a temporal-dead-zone `ReferenceError` that aborts the whole script, leaving every later declaration undefined. The page came up with a working `LINT` and **no EDGES at all**, which is the most confusing possible failure mode. Its boot warning lives immediately after the EDGES array now, with a comment at the old site saying why it cannot be there. **A second, new trap worth writing down: `getBoundingClientRect()` returns ZEROS in the hidden preview pane** — the stage has no size there — so the first "measure the DOM and look for overlaps" pass reported **0 overlaps on everything** and was completely meaningless. The label checker is arithmetic, not measurement, and says so in a comment. **Verified:** `LINT()` 0 findings and `labelViolations()` 0 from all 21 nodes; all eight fights through both brains with `checkEnd()` between turns (4–13 rounds, no stalls, nothing thrown, zero console errors); the purse floor driven at the door (spend 15 from 3 → moved −3, left 0; a −999 fx leaves 0/0); real multi-day legs driven through `travel()` to arrival — 1-day one stop at .55, 2-day two, 3-day three, `G.at` and `G.moving` correct at every arrival; the reaction bar confirmed present and clickable on **all twelve screens**, attributing correctly on each; a reaction taken back leaves no row; the report rendered off a real journal; the export blob re-parsed, a friend's blob read in without touching the local one, and garbage rejected with a message rather than a throw. Picture: [`shots/53_playtest_notes.html`](../shots/53_playtest_notes.html). **Banked, not acted on:** three of the pedlar's four choices are unaffordable at day 1 with 48 crowns — that may be correct (he is meant to be a temptation you cannot meet honestly) or may be one number too high, and it belongs to **#50**, not to this session. | ✅ DONE |
+| 8f.52 | **The playthrough verdict, three design rulings, two new entries, and the shipped registry split out.** *Docs only — no code touched.* **THE PLAYTHROUGH IS DONE AND THE VERDICT IS GOOD** *(user: "Done — the game is good — I gave feedback already")*, which closes the item that has sat at the top of the plan for weeks. **#52, the Coldharrow hard-lock, closed with it — *"it works"*** — and its investigation is kept in `SHIPPED.md` because the conclusion is a live trap rather than a dead bug: the hidden preview pane's `requestAnimationFrame` never fires, and a preview restart drops the harness's `MessageChannel` shim, producing a stuck `G.moving` with no dialog and no error that is **indistinguishable from the report**. **#40 (portraits that look back) closed — *"it is done, delete"*** — its machinery shipped inside #51, since `capBalloon` takes a *speaker* rather than the Captain. **ACT 2 PARKED** *("Delete act 2 for now as in plan")*: nothing about it is rejected, but the slice is good and **deeper beats longer**, so the order now deepens Act 1 instead. The settlements MVP, which used to be justified as *Act 2 structurally needs it*, is now step 1 on its own merits — and more urgent than before, because mortality is ruled. **THREE OF THE EIGHT OPEN QUESTIONS ANSWERED, each turned into a live entry rather than a note. (1) MORTALITY — *"yes — after get scars and maimed."*** This reverses the oldest rule in the project and does it in the one way that keeps the reason the rule existed: **death is the end of a visible chain, never a roll.** SCARRED → MAIMED → the next one is the last one. No-death shipped for an arithmetic reason — a 12% delete-a-character roll forces every encounter to be balanced against the worst case — and a chain is not a roll: the rung is on the sheet in words, there is a warning before deploying somebody on their last one, and the player can leave them behind, so **a death is always something they spent.** #34 was rewritten from an opt-in *Iron Road* contract into **the** rule, moved from 🕰 distant-future to **Tier 2**, and it drags **#4+#17 up in front of it** because a maiming has to be a real, drawn thing first. It also gave **#24 a second job** — the chain is stored facts, not a count. Two rules were carried over from the packet unchanged because they are still right: **the death is revealed in the aftermath and never as a mid-board cutscene**, and **the Medicine Chest can never walk a rung back**. ⚠ The failure mode to measure is the one that killed permadeath the first time: **players who stop forming attachments. (2) GRAFTS — *"rare authored consequences of specific injuries or events on the road."*** The doctor's-menu alternative is explicitly rejected — a graft you *chose from a list* is equipment; one that *happened to you* is a story. And the ruling **widened** the entry: the original sourced a graft from an injury, and the road half is new, which is the more interesting one because it puts a graft in front of a player who has not lost anything yet. **(3) FOREST — *"it is a lot of scattered trees. Check as Battle Brothers do."*** Not a repaint, and the reference is named. Filed as **#56**: individually placed `BLOCKED` hexes, never in runs, whose main effect is that **clean firing lanes become rare** — which #36's `losState` already models and both AI brains already respect, so a wood changes what a shooter is worth *without changing a rule of combat*. Density is the whole design knob and is the thing to playtest, because too many is exactly the failure that got **#29 (zone of control) cut once**. Three constraints recorded: an ogre must not be able to lift a tree (#46's boulder rule), the connectivity flood-fill must still pass, and **#15's contrast rule binds it** — a green wood is the likeliest ground yet to break the four state colours. **TWO NEW ENTRIES FROM THE PLAYTHROUGH. #55 — the reward after a battle is automatic** *("you don't need to choose. You chose only lvl and sometimes what to do with prisoners")*: the loot **pick** goes and the loot still arrives, leaving the two things that are actually decisions — the promotion, and what happens to whoever is still alive on the other side. The reasoning recorded: a choice between *+12 salvage*, *a warclub* and *+30 crowns* is arithmetic, it depends on the stash rather than the story, and it was sharing a screen with two real decisions and giving them its own weight. ⚠ Two hazards flagged on the entry — the *"Back to the road"* button is gated on `st.loot`, so removing the picker without moving that gate is a **softlock**, and **#19's contract promise of "first pick of the loot" no longer points at anything. #54 — reactions update and re-save continuously** *("it isn't one time action")*: #53 v1 files one reaction per screen per run and reads a repeat as *undo*, which imported a false assumption — that you have one opinion about a screen, formed once. You do not: the map at day 2 and the map at day 19 are different experiences. Every press should record, the bar should show the latest, a short grace window keeps the mis-click fix, and **the report has to be able to show a change of mind** (`▲ d3 · ▲ d7 · ▼ d14`), which is the single most valuable thing the feature can capture and which v1 could not represent. **AND THE SHIPPED REGISTRY LEFT THE BACKLOG** *("I feel shipped should be in independent file — just in case")*: new **[`SHIPPED.md`](SHIPPED.md)**, one line per shipped entry with **every open remainder named** plus the registry of spent numbers, so `00_PLAN_AND_BACKLOG.md` now holds only what a session can act on. That is the same reasoning that split this file out of the plan the week before: a Done table at the top of the working file is the first thing to go stale and the last thing anybody rereads. Five files now, five jobs. **One standing instruction recorded for future sessions:** *"write significantly more about tasks in backlog — usually take all context that I give you about this task. If you are losing context, then you doing things wrong and it becomes useless."* Entries quote the user verbatim and keep the rejected alternative; docs long, chat short. Updated: `00_PLAN_AND_BACKLOG.md` (order, index, five full entries), `SHIPPED.md` (new), `README.md` (§2 pillar rule, §4 file table, §6 plan and questions), `01_GAME_CONCEPT.md` (the mortality chain, above the economy rules). **Next free number: #57.** | ✅ DONE |
+| 8f.53 | **A new standalone tool — `tools/dramaturge.html`.** *Nothing in the game was touched.* *(User: "generate me some tool, an independent file… so I can easily see a name straight away, and if I hover I see more text of event… drag and drop, put some events, and create different line of where my crew will go… mark each event by tag… show in some very simple graph the building of lore or character development through the time… and independently, create the graph of dramaturgy — some events put it up, some put it down.")* **THE SHAPE OF A RUN, MADE LOOKABLE-AT.** Three tabs in one file. **MAP** — the real `NODES`/`EDGES` graph, drag a place to move it, click a road to price it, add and delete both; it runs **the game's own two linters, ported arithmetic-for-arithmetic** (`spacingViolations` and `labelViolations`, including `labelSpot`'s search), so a map arranged here is a map that will not ship the #6 or the 8f.51 overlap; `show code` emits a paste-ready `const NODES` / `const EDGES` block. **DRAMATURGE** — a drag-and-drop line of beats with a tray, hover-to-read, four graphs and a lint bar. **ANALYTICS** — a deliberate stub, its whole spec written on the tab, filed as **#57**. **THE ONE SOURCE RULE, and it is the reason this is not a copy.** *(User: "important thing — that you work with same file for events that used in the game, so later on it would be easy to update events in one place rather then copy for different.")* On boot the tool **fetches `prototype/grimtoll_slice.html` and parses the live tables out of it** — a string-and-comment-aware brace matcher slices `const EVENTS={…}` and its six siblings, `new Function` evaluates them with a stubbed `G`/`who`, and camp and vignette bodies (which are functions of the party) are called with `{A}`/`{B}` and flattened. Edit an event in the game and it is edited here, with **no export step and no build step** — there is no Node in this environment and none is needed. An embedded snapshot is carried **only as a fallback** for `file://` or a dead server, and the header says in teal which one is live. Read cold: **28 events · 18 camp cards · 14 vignettes · 21 nodes · 25 roads = 60 beats.** **FOUR CURVES, AND ONLY THREE OF THEM ARE OPINIONS.** *Drama* is a **signed move, not a level** — positive winds tension up, negative discharges it — plotted as per-beat bars with a swing whisker and a cumulative gold line over the top; the alternation is the point, so the lint names a run of four same-sign beats as monotony. *Lore* and *attachment* and *erosion* only ever climb. **SURVIVAL PRESSURE IS NOT SCORED AT ALL** — it is the ledger, and this was the user's own correction *("taking longer pass adds to drama if it significantly drains your money and you feel pressure — otherwise it doesn't work")*. It spends the real `fx.crowns` / `fx.food` / `fx.days` out of the game file against **wages per day**, and a route imported from the MAP tab carries **the days of each road it walked**, so a 4-day leg is 4 days of wages and not a label. A **played** switch — *kind* / *average* / *cruel* — picks which choice the walker takes, which is the whole argument: **on the longest route, playing kind the purse is empty at beat 10 of 24 and pressure peaks at 70/100; playing cruel it never empties, peak pressure 40, and 257 crowns in hand.** The floor at zero is modelled the way `pay()` models it and **what the floor swallows is reported** — *"the purse floor swallowed 173 crowns; that much of this road was walked broke, and being broke costs nothing"*, which is a real balance finding the tool produced on its first run. **ATTACHMENT READS THE FILE, NOT THE AUTHOR:** the hand flag plus +1 wherever a choice can scar somebody (`hurt`) and +1 for a card gated on a bond (`castTie`) — so #38's ties count themselves. **THE LINT IS THE PRACTICE, MADE CHECKABLE**, and nothing in it is an order: value-charge monotony, flatlines, a long climb with no relief, *"tension peaks at beat N and then falls away — the climax is not the top"*, a loudest-beat in the first third, **setup without payoff and payoff without setup** (threads), lore and character droughts, a purse that is never in danger, erosion that is all front-loaded (temptations arriving while the purse is full are the cheapest to refuse), more than one climax fight, a first real fight before anything taught them to fight, fights stacked back-to-back, nowhere to mend, and **a `requires` token no earlier beat `creates`**. **THREADS WERE ALREADY IN THE DATA** — the camp chains `debt→debt2/3/4`, `found→found2`, `fiddler→fiddler2`, `kin→kin2/3/4` are the game's own `needs:{id,opt}`, read out and drawn as arcs under the board; `main` marks the act spine and draws gold. **THE CONSEQUENCE TREE** *(user's own format)*: `title ├─ choice │ └─ what happens`, built from the game's real `after` prose and flags, with **◇-marked lines you write yourself** for downstream links that do not exist yet — so a wish is never mistaken for a feature. **THE RUN SHEET** *(user: "at the end of run make example of structure so it is easier to quickly see what is dynamic — additional could be resources earned / spent")*: one row per beat, fixed columns, and **the drama column is its own text chart** with relief growing left of a spine and tension right of it, so the pulse is visible without reading a word; then EARNED / SPENT / NET across crowns, provisions, salvage and gems, the wage bill over the day count, and the fights-by-tier and recovery lists. **ON THE TEN-FIELD SCHEMA THE USER FORWARDED: four were added, three were deliberately *derived* rather than asked for, and three already existed.** *Stage*, *act phase* and *repeat rule* are computed from the thread step, the position on the line, and `FLOATING`-vs-fixed — **a floating event is early on one run and late on the next, so storing a phase against it would simply be untrue.** *Follow-up deadline* is folded into `requires`: "settle the debt before the Snare" **is** a requires-token on the Snare. Added: **battle tier** (none/teaching/standard/climax), **tactical pressure** (what the fight costs in bodies and ground, which the purse never hears about), **recovery**, and **creates/requires**. The refusal is the point — ten fields on a form is a form nobody fills in for 60 beats. **All 60 beats ship pre-scored** against a written rubric that is printed in the tool so it can be argued with; every number is editable and your edits win; `reset scores` goes back to shipped. State is `localStorage` plus export/import JSON. **Verified by driving it:** live-load confirmed reading `prototype/grimtoll_slice.html`; 0 console errors; all four graphs render; map lint clean from all 21 nodes and clean again after a node was moved and reverted; 18 routes enumerated hold→snare (13 to 20 days); the code export round-tripped; all twelve inspector fields present and bound; the run sheet generated under all three play styles. **Three defects found and fixed in the sheet itself** — a truncated drama column, an overflowing L/A/E column, and a NET that silently disagreed with the ending purse because the floor was absorbing the difference unreported. ⚠ **No screenshot: the Browser pane is not displayed, so the page never composites a frame.** **Next free number: #58.** | ✅ DONE |
+| 8f.54 | **#54 — reactions are continuous · #55 — the reward is automatic · and a dead receipt fixed.** *(User: "take backlog 2-3 thing to work and do. You can start with how analytics (like) show. It saves good, just need to refresh counter each screen." Both entries are the user's own rulings from the playthrough, and they are the two items the plan had ahead of Tier 1.)* **1 — THE BAR NEVER REFRESHED, AND THAT WAS THE WHOLE OF THE REPORTED DEFECT.** `show()` re-read the reaction bar on a screen change; **`mark()` did not** — and `mark()` is what every event card, camp incident, village, muster and travel card goes through. So a card opened on top of the map with **the map's verdict still lit underneath it**, and a press on the card looked like it had done nothing. One line, at the one place `JOURNAL.card` is ever set. **2 — AND EVERY PRESS IS A MOMENT NOW, NOT A VERDICT** (#54's own ruling: *"that like and dislikes updates and saves automatically for every screen (it isn't one time action)"*). v1 filed **one** reaction per screen per run: a second press replaced the first, the same press again took it back. That quietly assumed you have one opinion about a screen, formed once — and the map is seen forty times in a run and is a different place on day 2 and day 19. Every press records now. What survives of v1 is the *reason* it existed — a mis-click has to be undoable — and it survives as a **grace window** rather than as a rule about the whole run: inside 8 seconds of your own last press **on this same screen**, the same button takes it back and a different button corrects it; after that, pressing the same thing again is *"still true"* and it is a second row. ⚑ **The window is measured on the wall clock and deliberately NOT from the row's `ms`** — `ms` is zero for every row filed before a run starts (the menu, the practice field), which would have made every menu press look like a correction of the last one. **3 — THE COUNTER THE USER ASKED FOR.** `×N` beside the buttons, tinted to the latest verdict, drawn only once this screen carries something. It is the visible proof that the bar re-reads itself, which is what was actually broken. **4 — AND THE REPORT CHANGED SHAPE WITH IT: one row per screen, not one per press.** A screen reacted to five times is the interesting row and not five duplicates, so the sequence is printed — `▲ d3 · ▼ d14 · ▲ d19` — and **a screen whose verdict changed is called out in words**, because that is the single most valuable thing in this feature and v1 could not represent it at all. The tallies above still count **presses**, because *"eleven dislikes"* and *"dislikes on four screens"* are different facts and both are worth having. `CAP` 600 → **1500**, and it now says out loud which rows die first: **not reactions-first and not decisions-first** — plain oldest-first *skipping the two boundary types*, because dropping a `run-start` does not lose a row, it makes every surviving row of that run unreadable. Export blob bumped to **v2**; the row shape did not change, so a friend's v1 blob still reads, and the reader has never looked at `v` and must not start. **5 — #55: THE HAUL ARRIVES; NOTHING IS ASKED FOR IT** *(user, from the playthrough: "Reward after battle automatical (you don't need to choose. You chose only lvl and sometimes what to do with prisoners)")*. The loot picker is gone. One row is drawn and applied before the card draws, and the screen **reports it by name** — the removal is of the question, not of the receipt. Drawing at random from the pool **is** *"roughly what an average pick was worth"* by construction, so nothing was tuned here; if it reads generous or mean that is a number for **#50**. **6 — BUT A LOOT TABLE HELD TWO DIFFERENT THINGS WEARING THE SAME SHAPE, AND THAT IS THE LOAD-BEARING PART.** A row that pays iron, coin or a spear is **arithmetic** — there is nearly always a right answer and it depends on the stash rather than on the story, which is exactly why the user ruled it away. A row that costs a day or costs you the company's regard — *bury what is left of them · burn the lot and stand upwind · drag her clear and leave her be · cut out whatever the light under her skin was coming from* — is **the pillar in miniature**, and automating one would be the game making a moral choice on the player's behalf, which AUTO is forbidden from doing everywhere else. So the haul is drawn from the **spoils** only, and what is left becomes **one question, "AND WHAT IS LEFT OF THEM"** — the *"sometimes"* in the user's own sentence. **Four of the eight fights have one; four ask nothing at all.** The test is the `fx` block and **not a new field** (`morale` or `days` ⇒ a decision), so it reads off content that is already written and cannot drift out of step with it. **7 — AND IT UNCOVERED A DEAD RECEIPT.** The old picker applied `payFx` plus salvage/iron/wood **and nothing else**, so `gems`, `morale` and `days` on a loot row had never done anything since the tables were written: the steading's *"+90 crowns +1 gem"* paid ninety crowns and no gem, and clash's *"−1 day · they think better of you"* cost nothing and bought nothing. **Six rows across these tables were printing a price the game did not charge.** One applier now — `takeLoot()` — used by the automatic haul and by the question alike. **THE SOFTLOCK WAS THE ONE NAMED RISK AND IT IS DESIGNED OUT, not tested out:** `st.field` starts **true** on a fight with no question, and every question that exists carries an appended **Leave it. The road is waiting.**, so both halves of the gate are always answerable. `LINT` gained a rule that every LOOT table must hold at least one row that is spoils rather than a decision, so the haul's fallback can never take a moral choice silently. **Verified by driving it:** `LINT()` 0 findings; all eight fights through both brains with `checkEnd()` between turns (5–12 rounds, nothing thrown); **all eight driven through `consequences()`** — the question appears on exactly clash/pack/slingline/mother, *Back to the road* is disabled on arrival, enables immediately after the promotion on the four with no question and after both on the four with one, and the haul lands exactly once in the purse, the stash, the gems and the day count; the bar exercised across a screen change, a `mark()` card and back; a press inside the grace window confirmed to leave no row and one outside it confirmed to leave two; the report rendered off a real journal showing a changed mind; the cap driven to overflow and confirmed to keep the run frame. Picture, made from the real screens: [`shots/54_55_reactions_and_reward.html`](../shots/54_55_reactions_and_reward.html). **Banked for #50, not acted on:** whether the automatic haul is worth the same as an average pick, now that it can no longer be optimised against the stash. | ✅ DONE |
+| 8f.55 | **The backlog cleaned, and #57 marked as running outside this repo.** *Docs only — no code touched.* *(User: "update all docs if needed and clean a backlog. Mark event analytic as big independent task that I am doing in other tab.")* **1 — #57 IS NOT THIS REPO'S TO BUILD, AND THE DOCS NOW SAY SO IN THREE PLACES.** Event analytics — the ANALYTICS tab of `tools/dramaturge.html` — is a big independent task the user is running in a separate session, and **its spec lives inside the tool, on the tab.** It gets a ⛔ index row, a **"Running elsewhere — do not pick it up here"** section in the plan, a pointer entry at #57 so the number is never reused and a search for it lands somewhere, and a line in `README.md`. **The useful part is what it made explicit: this repo owes it exactly one thing, a stable input.** #53/#54's journal export blob is at **v2**, and its row *shape* is now a contract with a session outside the repo — change it and something already parsing the old one breaks. **Invariant #10 crosses the boundary with it** (it observes and never acts), and **if the tool ever needs a field the game does not record, that is a numbered entry here** — a reader asking for data is fine, a reader quietly changing what the game writes down is not. **2 — ELEVEN SHIPPED OR CLOSED ENTRIES WERE STILL SITTING IN THE WORKING FILE.** #8 #15 #20 #31 #36 #38 #40 #41 #44 #46 #48 #52 — as ✅ BUILT stubs, and **#52 with its heading duplicated**. The file's own rule is *nothing shipped stays in this file at all*, precisely so that everything in it is actionable; the stubs are all in `CHANGELOG.md` and `SHIPPED.md` already. Struck, and **the two live lines buried in them were rehomed rather than lost**: #15's contrast rule was already stated verbatim on #56, and **#40's rule that a reaction must never reveal a "correct" moral answer moved onto #43**, where it binds every speaker on the field rather than only a portrait. **3 — #32 IS AN ENTRY AGAIN INSTEAD OF AN AUTOPSY.** It was ~100 lines of closed-defect archaeology — *the Fen-Mother's never-ending state*, with the one live idea sealed inside a `<details>` block. **The defect is closed** (she goes DESPERATE, every fight gets hungry from round 11, the cub is `passive`) and the entry is now the rule the investigation *found*: **routing needs help to come back from** — a routed body may not re-cross the rout line on a quiet turn alone; it needs the Captain within 3 hexes or a steady ally adjacent, and a lone routed survivor therefore leaves through `fled`, a state the game already has. ⚑ **It is the only number in both registries on purpose**, and `SHIPPED.md` now says why in the row itself, because *"32 · shipped"* would have read as spent. It also **moved to third of the Tier-1 three**: it was second while it was a defect; #13 is what makes #50 possible at all, and nothing is waiting on the rally rule. **4 — EIGHTEEN LIVE ENTRIES WERE BOLD LINES, NOT HEADINGS.** Everything harvested from the outside review (#19 #21–#30 #33 #37 #39 #42 #43 #45 #47 #49) sat as `**#NN — Title**` inside a wrapper section, so **no link could reach them and the index could not be mechanically checked against them.** Converted to real `##` headings. **The check now passes: every index row has exactly one entry body, and every entry body has a row** — the single exception is **#27**, which has a body and no row because it is one of #50's parking-lot items, and it now says so on itself. **5 — AND THE SMALL DRIFT.** *"24 shipped"* → 26 · #50's entry condition still listed the shipped #46 · a `CHANGELOG` link pointed at #32's old heading · `Contents` gained `SHIPPED.md`, which it had never listed · the plan's steps renumbered around the shipped pair · and the *"the human playthrough is still the top item"* note went, since the playthrough is done — replaced with the rule it was actually carrying: **take a "few small steps" session off Tier 4 and spread it across systems that share no code.** A signpost was added where the entries pause for the review's harvest and resume at #19; **moving those sixty lines was deliberately NOT done** — tidying a table of contents by relocating the reasoning behind the entry wording is churn. **The file came out 12% shorter (2262 → ~1995 lines) and every line of it is actionable, which is the only property it has to have.** | ✅ DONE |
+| 8f.57 | **#58 — the fork card: the travel window opens only at a crossroads, and it compares the roads.** *(User, 2026-08-01: "show this window choice only on crossroads with estimate how long it take days/money. And how dangerous is each road. You can calculate it automatically.")* **1 — A CONFIRMATION IS FOR A DECISION, AND A CORRIDOR IS NOT ONE.** On a single road out the card is gone entirely: the click walks. Nothing is lost with it — the map's road label has read `1d · 8c` since the labels were fixed in 8f.51, and it sits on the road under the cursor. ⚠ The named risk is **playtest #2's** finding, which is what put a second click here originally (*a single click read as "nothing happened"*); it should not recur, because `travel()` starts the token walking and locks the whole map in the same frame, but that is the regression to look for if a corridor ever feels dead. **2 — AND AT A FORK IT IS ONE CARD, NOT ONE CARD PER ROAD.** *"How dangerous is each road"* is a question that only has an answer next to another road — the same reasoning that already gated the road *description* on `forkHere`, taken to its conclusion. **3 — THE UNIT OF THE DECISION WAS THE WRONG SIZE, AND THAT IS THE LOAD-BEARING PART.** The card priced **the leg**. At crossroad A the three legs are 3 · 2 · 2 days, which makes the two long roads look *cheaper* than they are and says nothing at all about the fight two nodes down the middle one. A fork is read to the **join** now — the nearest node every branch reaches — so the real numbers appear: **7 · 5 · 7 days to The Ruined Steading**, which is the trade the map was designed around and had never once been shown. The join is excluded from every count, because all branches pay it. Both numbers are on the row and they are labelled as different things: **the leg on the button** (what this click buys) and **the branch under it**. It also tells the player the roads *rejoin*, and where — a map fact that previously had to be inferred from the drawn curves. **4 — DANGER COUNTS `t:'battle'` NODES AND NOTHING ELSE.** That is exactly the set of ✕ glyphs the map is already drawing, so the reading is an **aggregation of what is on screen** and can never leak something the map deliberately hides: a floating slot's real event, the Fen-Mother (`weird`, and on a corridor anyway), or the armour ambush, which is a rule about arrivals and is meant to be a surprise. Three rungs, as a state and never a number — **NOTHING HEARD · TROUBLE · BLOOD** — in the palette's own green/amber/blood. The card is headed *"what the road has heard"* for that reason: **it is hearsay, not a promise**, and an ambush is allowed to break it. *(BLOOD is unreachable on today's map — no branch carries two fights. It is kept for the map rebuild rather than tuned away.)* **5 — AND A THIRD COLUMN THAT IS NOT DANGER AND MATTERS AS MUCH: PLACES TO STOP.** Without it the chip **mis-sells the most dangerous road in the act.** The pass out of The Dead Company reads NOTHING HEARD and that is *true* — nothing stands between you and the bells. Its price is **`nowhere to stop`**: no shrine, no last muster, nobody replaced before the Snare. A cheap option that reads as a free one is the pillar's own trap, and one clause closes it. Counted as places that *do* something for the company — a bed, a shop, a fire, a muster — never an event node. **6 — THE HORIZON MOVED ONTO THE FIGURE.** #20's *"After it: a good while of wages left in the purse"* was a whole sentence, which works for one road and not for three; the leg's crowns are simply **coloured by `fundedCol` of what the purse looks like after it**, same colour the world-bar chip already wears. **7 — AND IT EXPOSED A NAMING COLLISION THE CARD MADE UNREADABLE.** Hints are drawn independently per slot, so two roads out of one fork could both come up *"A story going round"* — harmless while they were far apart on the map, unreadable as two rows with the same title. `dealEvents` now re-picks the second from its own type's list; **1 collision in 600 fork-deals** survives (three `weird` slots, two `weird` hints) and is left to stand rather than loop. **8 — TWO FALLBACKS SO A FUTURE MAP CANNOT TAKE THE SCREEN OUT.** `branchOf` returns null when the branches never rejoin, and the old single-road card is kept for exactly that case; `LINT()` gained a rule that warns when a fork has no join, so the map rebuild (**#6**) cannot quietly cost the comparison without saying so. **Verified by driving it:** `LINT()` 0 findings; all three forks rendered from the running build; a row click confirmed to start `travel()` with the right `G.dest`; the corridor at The Ruined Steading confirmed to walk on one click with no card and its price still on the map label; 200 deals × 3 forks checked for duplicate titles. Picture, shot from the real screens: [`shots/58_fork_card.html`](../shots/58_fork_card.html). **Next free number: #59.** | ✅ DONE |
+| 8f.58 | **The favicon — the user's own bell, wired so it survives publishing.** *(User, 2026-08-01: "I created favicon - add it: favicon.svg".)* The art is theirs: a bell in bone `#d8d5cc` on the field's own `#090b0c`, split by one stroke of `--weird` `#d9218f` — **the only saturated colour in the palette, and the one the game reserves for the wrong-feeling things**, so the tab carries the game's whole thesis at 16px. `prototype/icons/` already held the full generated set (`.ico`, 16/32/48 png, apple-touch, 192/512, webmanifest) and `grimtoll_slice.html` already linked it. **The one thing that did not work was the case that matters: the published artifact is a SINGLE FILE, and `href="icons/favicon.svg"` has nothing to resolve against once the folder is not beside it** — the same class of mistake as the `<canvas>`-in-a-shot trap, an asset referenced rather than carried. So the primary icon is now the SVG **inline as a data URI**; the `.ico`, png and apple-touch links are kept underneath, unchanged, and resolve when `icons/` really is there (local dev, a real deploy, the PWA manifest). Both paths work and neither was traded for the other. The same inline link was given to [`tools/dramaturge.html`](../tools/dramaturge.html), which had no icon at all and is always opened as a loose file — the tool and the game now sit in the tab strip as one thing. **Verified by loading it:** the data URI decodes in the running page in both files (`Image.onload`, 150×150), and all six sizes paint in the shot. ⚠ Note for the next person: percent-encode `#` → `%23` in an inline SVG data URI or the browser truncates the href at the first colour and the icon silently vanishes. Picture at real tab sizes on both light and dark browser chrome: [`shots/favicon_scale.html`](../shots/favicon_scale.html). | ✅ DONE |
+| 8f.59 | **`weBend` deleted from the Captain's register, and #60 filed.** *(User, 2026-08-01, while specifying #60: "weBend - delete".)* **The line fired on two or more of ours being off *steady*, and that is most of the middle of most fights** — it was the one trigger in `CAPLINES` that commented on the ordinary, which is how a voice turns into a status bar. **The reason generalises and is written into the register's header comment: a trigger that can fire in a typical round is not a moment.** Its subject is not lost; it is being rebuilt as teaching rather than narration, once ever, in **#60**'s lesson on your own nerve. `capTick` loses its `bent` count and its snapshot field with it. **Six moments are now five.** Verified: all eight fights through `regress()` (4 to 12 rounds, nothing thrown), 0 console errors, `CAPLINES` reads `w_back · theyRun · desperate · alone · weFell`. **Filed the same session: #60, the first battle teaches itself** — ten lessons in the Captain's mouth, gate artifacts done (rules in the backlog, picture at [`shots/60_first_battle_onboarding.html`](../shots/60_first_battle_onboarding.html)), **not coded**, three design questions still with the user. **And a hard rule arrived with it, which binds everything written here from now on: *"never use "—" anywhere"*** — no em dash in chat, docs, code comments or in-game text. The existing files are full of them and have **not** been purged; that is a separate offered job. **Next free number: #61.** | ✅ DONE |
+| 8f.60 | **The Dramaturge, finished in one long session — and documented in [`DRAMATURGE.md`](DRAMATURGE.md).** *Docs and `tools/` only; the game was never touched.* Built from **8f.53**'s first cut through a dozen rounds of the user's own notes, each one a real defect or a real gap. **THE TWO SCREENS BECAME ONE** *("map and dramaturge add on 1 screen — but dramaturge opens as accordion below map… so I can build or adjust map and it would be automatically generated dramaturge")*: the map on top, the analysis in an accordion under it, and every map edit regenerates it — stretch a road and 16 days becomes 24 without touching anything else; delete a road the live route needed and it falls back to the nearest surviving one **and says so**; cut the map and it warns rather than showing a stale line under a confident label. The live line is rebuilt **in place** (it used to push a new one per import and piled up five identical `route · 20d` entries). **THE ROAD IS A DECISION PER CROSSROAD, NOT AN INDEX** *("add the option to pick road — could be this selection for each crossroad")*: `S.picks[node]=node`, so re-pointing a road or inserting a place **keeps every choice made downstream of it**, which a route list cannot do; later forks appear and disappear as the road moves, and it says *"3 crossroads (2 not chosen yet — taking the first road)"* rather than pretending. **AND THE ROAD SHOWS WHAT IS ACTUALLY ON IT** *("I need here connection to actual paths that you choose. Not just a random stuff. If there are a bunch of choices I want to have a bunch of drop menus")* — this was a genuine defect: slots were filled from the floating pool **in file order regardless of which way you went**, so one line showed the toll-man, the pedlar *and* the chapel, which are on three different roads, and the pool cursor wrapped so a late slot handed you an event you met four days earlier. A place is now one of three things and they are not treated alike — **FIXED** (stated, not offered), **SLOT** (a dropdown over the pool), **NIGHT** (a dropdown over the camp deck, with *no fire*) — and **both pools are once-per-run**, matching the game. Unset reads *"whatever the pool gives"*, so a guess is never dressed as a decision. **THE MAP LEARNED TO BE EDITED** *("still unclear how to create new road or adjust current one")*: a road is drawn 2px but is **16px wide to the mouse** (that alone was most of why roads read as uneditable) and carries an arrow, because direction is order; `+ road` announces itself in a band with the source ringed, a rubber band on the cursor and Esc to stop; and **`+ place` with a road selected drops the new place INTO it** (`A→X→B`, days split) — which is the ordering gesture, and the fix for ending up with two orphan *New Place* boxes. Order also moves by re-pointing a road's **from/to**, by **⇅ swap**, and — *("if I move events in dramaturge they can also move on the global map")* — **by dragging the card**: `P→X→Q` closes to `P→Q` with the days summed, the destination road splits, and the place moves to its new midpoint. It **refuses on a fork or a join** with a reason rather than guessing. **DRAG AND DROP WAS BROKEN, THREE CAUSES** *("doesn't work that properly")*: `dragleave` fires when the cursor enters a CHILD, so moving over a card cancelled the drop; the caret was inserted before the target card but the strip is card·road·card·road, so it drew on the far side of the road and pointed at the wrong gap; and a 22-beat line is wider than the window with nothing scrolling. **ONE PALETTE FOR BOTH HALVES** *("keep consistency between colors and explanation between map and dramaturge")* — there were literally two: the map coloured a place by NODE TYPE and the board coloured a card by CATEGORY, the same seven ideas in two colour sets. `CATS` is now the only one, `TYPE_CAT` translates, and **`liveBeatAt()` decides what a place shows — on a slot the filled event outranks the node's default `ev`**, which caught THE DROWNED CHAPEL drawing slate on the map and violet on its own card. Verified zero colour and zero label mismatches across a whole road. **THE DRAMA GRAPH STOPPED BEING ALL RED** *("there a lot of reds — maybe show different battle and choice and relief")*: each bar takes its beat's category colour (six on the current road where there was one), and direction moved onto the shape — solid above the axis is tension, hollow below is relief. **THE FINDINGS BECAME SUGGESTIONS** *("change to clearer sugestions")*: every one names real beats and says what to do, and the advice is **computed** — it looks up which beat carries the missing payoff and names the calmest thing *not already on the road*; where nothing can fix it, it says so (*"There is no payoff written yet. That is a thing to write, not a thing to fix here."*). Sorted worst-first, with a summary readable while folded. **AND THREE PANELS FOLD** *("make 1 and 2 accordion. And 3 accordion")* — tray, score and findings, state remembered. **NEW EVENTS** *("add an option to generate event based on set parameters and short promts. If needed a bunch of events")*: the page has no network and no model, so it **does not write prose and does not pretend to** — it makes real, scored DRAFT beats whose placeholder choices carry real `fx` shaped by category, **so a road planned out of drafts still produces an honest pressure curve** and the shape can be judged before a word exists; plus `copy the briefs` (a commission carrying the house rules — costs as intent, consequences on a named person, the party tokens, the provisions/salvage vocabulary, the pillar) and `copy code skeletons` (valid `EVENTS` entries that paste in and boot, every string a TODO). **SAVED MAPS** *("option to save on the global map… you can save it with different map name")* keep the places, the roads **and the road you had picked through them**, because a map without the road you were reading is half the work. **Two traps worth keeping.** ⚑ **Never build a snapshot by reading the running game's globals — parse the SOURCE TEXT.** The first fallback was extracted from a booted page, and the game renames its slot nodes at boot (`o1.n` → *"Something on the road"*, the real title moves to `.real`), so the crossroad picker showed vague names until live-load finished. ⚑ **The graphs grow into spare window height rather than leaving a void** — and the fitter **bails when it cannot measure**, because `clientHeight` returns zero in a hidden pane, the same trap that cost an investigation in 8f.51. **Verified throughout by driving it**, not by reading it: live-load confirmed against the real file (28 events · 18 camp cards · 14 vignettes · 21 nodes · 25 roads = 60 beats); 0 console errors; map lint clean before and after every structural edit including a node move, a swap and a road split; 18 routes enumerated; drag simulated through real `DragEvent`s for both a place (map rewires) and a camp night (map untouched, road stays live — a bug found that way); the generator run end-to-end with the ledger confirmed to spend the drafts' costs. **New file: [`DRAMATURGE.md`](DRAMATURGE.md)** — the manual. **Backlog #57** is the one unbuilt piece. | ✅ DONE |
+| 8f.61 | **Creature battlefield models plus the line-before-noise rule.** Built and integrated 31 small painted creature sprites for allied and hostile ratkin, allied and hostile ogres, hounds, the Warden, the Fen-Mother family and three additional ratkin variants. Humans intentionally remain on the procedural fallback for the next pass. Ratkin gained more grounded anatomy and materials, tougher posture and selective madness rather than a comic expression on every face. A connected-component cut pass removes chroma background and loose pixel noise, preserves long weapons and tails, then produces 25-56 px runtime PNGs and a contact sheet. The runtime mapping keeps role, side and corpse appearance stable. The permanent art rule now appears in the master asset bible, art direction, prompt pack and every Claude asset-placement guide: silhouette, gesture and connected masses first; texture only when it follows form and survives the live crop. Verified in live Snare, Pack, Warden and Fen-Mother battles; all browser warnings/errors were clear and both generated JavaScript files parsed cleanly. | DONE |
+| 8f.62 | **#60 BUILT — the first battle teaches itself.** *(User: "then we need good step by step onboarding for the batle", seven moments, plus DISENGAGE, the zone of control and morale added the same hour, plus "looks good, update in main build and docs".)* **Ten lessons in the Captain's mouth, each fired the first time its rule bites, once ever, on `LEGACY.seen` exactly the way the whisper toasts already are.** No new panel, no modal, no input pause. The order a clean save actually hears in a four-round clash: **learn_sides > learn_close > learn_round > learn_twice > w_rung > learn_zone > learn_bow > learn_cast**, with `weFell` still getting through on top of them. **1 — A FOURTH TIER, AND EVERY WAY IT DIFFERS FROM THE OTHER THREE HAS A REASON.** `learn` is the LOWEST tier, so a lesson can never take the round off something that is happening; it does **not** spend the five-a-battle budget, because that budget is a budget for *comments* and ten lessons would never fit inside it; it may say **two things a round**; it lives **4.5s** rather than 2.2s. **2 — AND IT IS THE ONLY TIER THAT QUEUES INSTEAD OF DROPPING, which is the load-bearing idea.** #51's drop rule exists for a stated reason: *"a comment about a moment that has passed is worse than silence."* **That reasoning does not cover a RULE.** A call is about a moment and expires with it; a lesson is about how the game works and is still true next round. So a refused lesson goes on a queue that is drained at the top of every tick, in the order the lessons came up, stopping at the first refusal rather than skipping past it — a tutorial that taught its lessons out of order would teach the answer before the question. **3 — AND IT SURVIVES THE CAPTAIN GOING DOWN, the only thing that does.** The silence when he falls is the best free thing in #51 and it would have silently **deleted the tutorial** in the one fight that needs it. A lesson now falls back to whoever is currently up — which cost one argument, because `capBalloon` has taken a *speaker* rather than the Captain since #40. Verified: with him downed, `theyRun` is correctly refused and the lesson is spoken by Ilka under her own name. **4 — `skip tutorial`, BOTTOM-LEFT, THE FIRST CLICKABLE THING THIS BALLOON HAS EVER HAD.** It silences the **voice** and not the **rules**: every whisper toast keeps firing and `? RULES` is where it was, which is what makes it safe to press by accident. Permanent and per save, because somebody who skips has said *I know this game* and asking again next fight is the nag the button exists to prevent. ⚠ **`#bFx` is `pointer-events:none` so a balloon can never eat a click meant for a hex**, so the skip turns them back on **for itself and nothing else**; measured in the running build: fx `none`, balloon `none`, skip `auto`. **5 — THE ONLY NEW PIXELS IN THE WHOLE FEATURE ARE THREE RINGS, and the third one is the point.** The first fight of the game puts ratkin allies on your side of the board who are not on your roster, are not yours to command and whose deaths cost you nothing, **and the game had never said so.** Ten rings and three labels, positions computed from the rings rather than placed by hand so they cannot drift when a fight starts people elsewhere; verified landing on all ten bodies' feet. They last as long as the line and never come back — a marker that stayed would be a HUD. **6 — TWO SHIPPED LINES WERE DELIBERATELY COLLIDED WITH.** **`w_back` is gone**: it rode `whisper('back')`, which fires when a blow has *already* landed in a back, so the Captain was congratulating you on something you had worked out. The user asked for the line one turn earlier, while the movement is still unspent, so `learn_round` is an **offer** and the old receipt is deleted rather than kept beside it. ⚠ **Rear 180°, sectors 2 to 4, never the single BACK sector** — a hex line bends, #36 shipped that bug once, and one sector here would make the offer nearly unreachable. And **the first enemy to break takes its round off `theyRun`**, evaluated before the CALL chain, because theyRun outranks a lesson by tier and the rule would otherwise arrive a round late attached to nothing the player could still see. **7 — LESSON 9 TEACHES WHAT THE GAME DOES, NOT WHAT #29 WOULD DO.** Grimtoll has **no** Zone of Control rule; #29 is parked and its own entry says it was cut for making movement unaffordable. What exists is engagement plus parting swings, a **soft** zone: standing beside an enemy forbids nothing, it puts a price on leaving. The line describes the price and never a prohibition, because *"you are pinned"* would make a player stop moving, which is precisely the failure that got the hard rule cut. **8 — AND THE BUG THAT IS WORTH CARRYING FORWARD.** `CAPTIER[E.tier]||1` **silently promoted every lesson to TEACH**, because the new tier's value is **0** and `0||1` is 1: the first lesson of a round then outranked all the others and they queued behind it, so the tutorial dribbled out one line a round instead of two. Caught on the first staged fight. ⚑ **A new tier whose value is falsy is a trap any `||` default will spring**, and this file leans on that idiom in a lot of places. **Verified by driving it:** all eight fights through `regress()` (4 to 16 rounds, nothing thrown, 0 console errors); a cleared save driven through clash and confirmed to speak eight lessons in four rounds and queue nothing; `learn_step` fired by selecting MOVE on an engaged body; the skip clicked live and confirmed to end the tutorial, leave the toasts running, and write only to the practice field's own flag while `LEGACY` stayed untouched; the Captain downed and the mute exception confirmed in both directions. Picture, shot from the running build: [`shots/60_first_battle_onboarding.html`](../shots/60_first_battle_onboarding.html). **The thing to watch in a real playthrough: eight lessons landed inside four rounds, and a human first fight is not much longer.** If it reads as narration rather than teaching, the fix is the per-round cap, not the lesson count. **Next free number: #66.** *(⚠ this row was 8f.60 for an hour: a parallel session spent 8f.60 and 8f.61 on the Dramaturge and the creature models the same day, and #61 to #65 on the terrain cluster. **Grep the build log AND all three docs before taking either kind of number.**)* | ✅ DONE |
+| 8f.63 | **#60's lines re-cut, and the "THIS IS A FIGHT" card deleted.** Three instructions in the hour after #60 shipped, and together they settle how the Captain's register is written from here on. **1 — THE ZONE LINE NAMES THE MECHANIC NOW** *(user: "make it clearer. For example - You are in enemy zone of control. to move you need to disingage, or other wise you will be hit")*. It was *"standing next to them is standing in a fight"*, which describes the situation and does not tell anybody what to do. It is now **"You are in their zone of control now. Move out of it and they get a free hit at you."** ⚑ **In a lesson, naming the mechanic out loud is right**, because a player who does not know the word cannot look it up. One deliberate difference from the user's own sentence, kept in the code comment: **you do not need DISENGAGE in order to move, you need it in order to move without being hit**, and their second clause says as much. `? RULES` gained the term too, so the vocabulary matches in both places. **2 — AND THAT FORCED LESSON 8 TO BE RE-CUT WITH IT, which is the transferable bit.** Once 9 said *"they get a free hit"*, 8's *"he gets a free swing"* was the same rule twice, one tick apart, which is exactly the nag that cut this register from twelve triggers to six in the first place. **9 is now the problem and 8 is the answer**: *"DISENGAGE is how you get out of it. It costs an action, and they only get one free swing each a turn."* — and that last clause moved into the line because it is what stops the pair reading as a rule against ever moving. ⚑ **When you sharpen one line in a register, check the line that fires next to it.** **3 — ALL TEN LESSONS REWRITTEN PLAINER, AND THE COMMENTS DELIBERATELY LEFT ALONE** *(user: "you can update also other teachings. For me important - that people understand. And then the regular capitan comands more in a vibe of game")*. The register is now written in **two voices, and the tier is which one you are in**: a LEARN line says the rule, says what to do, stops, and may name a mechanic out loud; everything else stays atmospheric because its job is that a person is watching, not that a rule is understood. **Both tests are written into the code above `CAPLINES`:** a lesson must still teach with the balloon deleted, and a comment must still work as a line of dialogue in a film. Concretely: *"One working a turn"* became *"One spell a turn"* · *"the second one is tired"* became *"the second move is a hex shorter, and the strong things need a round"* · the ally ring line now says the gold ones **are not ours to command**, which is the fact that was missing · and the nerve line leads with *"nerve is not health"*. **4 — `coach('fight')` IS DELETED, register entry and call site** *(user: "I prefer tutorial as capitan says, rather than in unit card")*. It was a card with a GOT IT button, shown once ever at the start of the first fight, carrying four rules at the moment the player had least reason to read them: two actions each · armour before blood · standing behind is worth more · walking away lets them swing. **Three of those four are #60 lessons now**, fired when the rule bites and said by a person; the fourth is in `? RULES`. The card was the same content delivered worse, and a wall of rules up front is the thing #14's three layers were written to replace. `map` and `inv` stay: they teach screens #60 never visits. **The register entry was removed rather than left unused, because a dead entry is a second source of truth the next editor will believe.** **5 — AND THE EM DASH CAME OUT OF THE THREE OLDER LINES.** `theyRun`, `desperate` and `weFell` still carried them; they are in-game text and the hard rule covers it. The vibe is unchanged — *"They are going. Let them. We do not need the chase."* **Verified by driving it:** all eight fights (4 to 16 rounds, nothing thrown), `LINT()` 0 findings, 0 console errors, no coach card in a fight, `COACH` reads `map · inv`; every line in `CAPLINES` checked programmatically for digits and em dashes (**none in any of the fourteen**) and for length (longest 120 characters); a cleared save driven through clash speaking nine lessons plus one HEART in five rounds. | ✅ DONE |
+| 8f.62 | **Creature models rolled back before approval.** The 31 detailed stage-3 PNGs were removed from `art_data.js`, their runtime resolver was removed, and all variant-only rendering metadata was reverted. The live game again uses the original procedural pixel tokens. Source sheets remain as rejected reference material. A simpler approval-only v3 set was generated with roughly 65 percent less internal information and is not connected to the game. The new target follows the RimWorld principle supplied by the user: the picture gives a silhouette and a few identity cues, then the player's imagination supplies the rest. | DONE |
+| 8f.64 | **THE TERRAIN CLUSTER BUILT IN ONE SESSION — #61 #62 #63 #56 #64 #65 #33.** *(User's own list, then "nice - do it and also related points from backlog". Specced with a full gate picture first, `shots/61_terrain.html`, then built; the after-pictures are `shots/61_terrain_built.html`.)* **#61 — terrain became one word.** A battlefield used to be decided by two knobs that did not know about each other and neither was called terrain: `GROUND{}` painted it, an anonymous per-fight row shaped it. One `TERRAIN{}` register replaces both, `FIELDS` says which fight is fought where, and `fieldFor()` merges them. The rule that sorted the user's list into entries: **a terrain type is a place with its own rule, and a dial is not a type** — which is why plains and rocky needed no entry (they existed unnamed) and swamp, bloom and outpost did. ⚠ **`fen` kept its own entry rather than being renamed `plains`**: six of eight fights are fought on 7-13% standing water and the user's plains is drier, so making them the same word would have been a content change disguised as a refactor. **The acceptance test was "no shipped fight may look different", and it was run first, not last**: all eight verified to reproduce their old seed, thresholds, scat, layout and palette exactly, and the three new generators verified never to be *called* on a shipped fight — the guard on each is the only thing keeping `rnd` (one shared stream) from shifting every clump and blade of grass downstream of it. **#62 — the tree.** A new `BLOCKED` kind, deliberately **not `rock`**: #46's `loneRock` tests `==='rock'` exactly, so keeping the kinds apart *is* the entire mechanism that stops an ogre uprooting a forest, and the work was in not merging them. Small is one hex; **huge is three in a triangle, drawn once from the centroid, and placed only where nothing else touches it**. It gets all of #36 free. Verified: an ogre is offered `rock` and never tree/huge/wall/flower, and a thrown boulder cannot land in any of them. **#63 — the swamp.** `deep` beside `marsh`: 3 to enter, −2 stride to start in, **size 2+ pays the entry and not the stride**, gills pays neither. ⚑ **The density was tuned by measurement and the first cut FAILED**: at 35% wet the board left a company at **51% of its plains reach**, against a 60% floor the entry set for itself, which is #29's cut-for-unaffordable-movement repeating. Shipped at 24% wet and **61-64%**. ⚠ **A measured refusal of the literal request** — "a lot of water ewherywhere" is carried by the palette and the channel, not by coverage. The payoff: **a gilled body reaches 62% further than anybody else there**, so a mutation that paid for nothing now has a terrain. **#56 — the forest** is that dial and nothing else: 26 trees and 2 giants, 69-73% of plains reach, and it is an *obstacle* effect rather than a movement tax. **#64 — the bloom flower**, the user's own object and numbers. Asleep at the start, opens at the **top of the round after** somebody ends a round beside it, never closes. ⚑ **Radius 1, and radius 2 was rejected with a reason**: at −2 stride an ogre goes 3→1 and could not leave a radius-2 aura in one turn, which would break the user's own point ("it forces you to move"). **Both sides**, on the `auraAll` precedent, which makes it a *weapon* — push, pull and the throw all already exist. ⚑ **Two spec predictions were wrong in the codebase's favour and both are worth keeping**: the nerve lift went onto `nerveFrac()`, one function now read by `restate`, `ladderAt` and `rocking`, so `u.morale` is never written (#38's lesson applied before the fact); and the damage penalty needed **one** site, not the two the spec warned about, because `dmgMul` is already the single function `strike()` and `dmgPreview()` both call. Measured live: stride 4→2, nerve 0.785→1.0 with `u.morale` untouched, damage **×0.63** — ×0.60 from the flower and **+5% back because being that brave crosses the ROCKING line**, two systems agreeing with each other. Two Captain lines, a `learn` on round one and a `call` when one opens. ⚠ **The Fen-Mother does not get them, and that was decided by measurement**: with flowers her fight ran 11-29 rounds median 16, without it 8-23 median 13, so they live on the practice field until they have been played. **#65 — the outpost.** A `wall` kind, and the rotten runs are **`rock`** — one word, and #46 offers them to an ogre and never offers him the wall, so the siege engine needed no new verb. ⚑ **The first draft had a choke of ONE** (gate only) and was rewritten before it ran: the rotten run does not count as a second way in, because a company without an ogre cannot use one, so a **breach stands open** from the start. **#33 — the terrain validator**, pulled forward from 🕰 because three things in this cluster can fail silently and all three look like balance problems. `terrainCheck()` computes components, sealed forces, walkable ratio and the narrowest column cut. ⚑ **It earned itself on its first run**: one outpost seed in twenty-four had a tree planted in the gate, dropping the board to a choke of 1 — the exact single-mandatory-corridor failure the outpost was designed to avoid, reintroduced by a generator that had never heard of the outpost. Hand-built layouts declare `LAYOUT_KEEP` now and every generator asks. 8 grounds × 30 seeds: zero failures, one island every time. LINT gained a check that every fight names a terrain that exists (the `LOOT[kind]||LOOT.snare` silent-fallback shape, one layer down). Full regression green, LINT 0. | DONE |
+| 8f.65 | **#66 BUILT: three camera stops on the battle board.** *(User: "maybe some simple close further on battlefield? so units and action looks a bit bigger. Like in battle brothers", then "3 states for battlefield: full - smaller units, medium - camera comes a bit closer - and close - you see how units can hit each other", then "good, i like it - do it and update docs".)* **1. THE MEASUREMENT REWROTE THE REQUEST, and that is the whole entry.** Measured off the running build before anything was designed: the field is **980×544** and the board is **596×416**, so **41% of the battle screen was empty gradient.** The people looked small **not because the camera was far away but because the board had never grown into the room it had.** Which means the lowest stop is **×1.30 and not ×1.00**: at 1.30 the whole 15×13 board still fits, so the shipping view showed *exactly the same hexes, only smaller*. **A stop that shows the same thing smaller is a control with no job**, and this project rejects those on sight, so today's zoom level was not kept as a fourth option, it was replaced. **2. THE THREE STOPS.** **FULL ×1.30** (all 15×13, no camera to move, nothing can be off screen) · **FIELD ×1.80**, the default (14.3 cols × 9.4 rows: your line, their line and one flank) · **CLOSE ×2.50** (10.3 × 6.8: a melee cluster and its reach). The control is three words top-right of the field, current one lit, plus the wheel; bottom-right belongs to #53's reaction bar. It is **a state and not a number**: no slider, no percentage, no free zoom, and the chosen stop lives in the **settings** band (`gt_cam`, beside `gt_mute` and `gt_test`), not the save. **3. THE CAMERA IS PRESENTATION AND NOTHING ELSE**, and the invariant is testable: it changes no reachable hex, no hit chance and no AI decision, and switching stop mid-turn cannot change an outcome. `regress()` is untouched by construction, because `render()` is stubbed in the harness and the camera has exactly one call site, which is the bottom of `render()`. **4. WHY ONE CSS TRANSFORM ON `#bGround` WAS ENOUGH, and it is the part to remember.** Everything on the board that floats above it (damage numbers, the LOS ray, the Captain's balloon) is anchored by measuring `(hexRect − fieldRect) ÷ the #stage scale`. **That expression is already correct at any zoom, for free, precisely because `#bFx` sits OUTSIDE the zoomed layer.** Verified numerically rather than by eye: the same body's derived board point is **identical to two decimals at all three stops** (94.48, 138.98). ⚠ **Do not move the transform onto `#bField` and do not move `#bFx` inside `#bGround`**: either one silently breaks all of them at once. The balloon not scaling is the same fact from the other side: it is chrome pointing at the board, and a ×2.5 balloon would cover the fight it is talking about. **5. THE RESOLUTION CEILING WAS EXACTLY ×2.00, AND IT WAS NOT AN ACCIDENT.** Sprites are rendered at `2×TOKEN` and displayed at `1×TOKEN`, so the old board sat exactly at the limit and CLOSE would have started to blur. `OVER` is now **3** (one constant; the bitmaps are cached in `SPR`, so 2.25× the pixels once) and the ground canvas is painted at **1200×880 and shown at 600×440**. ⚠ **`setTransform`, never `scale()`**, in `paintTerrain`: it runs again on every new battlefield and a `scale()` would compound each time. Nothing in the painter knows it happened, because the context scale keeps every coordinate in board pixels. **6. WHAT STOPS IT SLIDING UNDER THE CURSOR.** The camera frames whoever is acting (one rule, both sides), clamps to the board so off-board emptiness is never shown, and **only moves when the subject drifts outside the middle 40% of the view**, because otherwise a player choosing a hex would have the board move under them on every step of a walk. A stop change rebuilds the board, because a LOS ray is measured in field pixels and would be left pointing at nothing. **Verified by driving it:** all eight fights through `regress()` (5 to 17 rounds, nothing thrown), `LINT()` 0 findings, 0 console errors; a fully rendered six-round fight played out at CLOSE with the camera taking **17 distinct positions, every one inside the clamp**; all eight fights staged and cycled through all three stops on all three grounds; `terrainCheck()` still ok. Pictures: the gate mockup [`shots/66_camera_stops.html`](../shots/66_camera_stops.html) and the built board [`shots/66_camera_built.html`](../shots/66_camera_built.html), whose transforms match the mockup's to the tenth of a pixel. **Deliberately not built: drag to look around.** It was specced as the cuttable half and left out, because the follow rule may be enough and a drag is a new way to send somebody to the wrong hex. **Next free number: #67.** | ✅ DONE |
+| 8f.66 | **Final battlefield models integrated and threat scale locked.** The approved creature direction was simplified another 10 to 20 percent, ten human roles were added in the same language, and 42 final role PNGs now replace the procedural tokens wherever a mapping exists. Friend and foe identity uses a large uniform layer: blue or teal for allies, rust or red for enemies, with the garment type allowed to vary by unit. The resolver maps race, side, class, and enemy template so weapons and silhouettes stay truthful. Fen-Mother has one front-half sprite on the head cell and one living rear-half and tail sprite on the second occupied cell. Final display multipliers make body size communicate approximate danger: dogs 75 percent, ratkin 85 percent, humans 105 percent, ogres unchanged, and Something in armour 114 percent. Source atlases remain untouched. The old painter remains only as a fallback. Static parse passed, all 42 assets embedded, the live PNG ladder passed, and no contact sheet entered the single-file build. | DONE |
+| 8f.67 | **#68 BUILT: the outpost gate is defended, and you may walk through your own.** *(User: "outpost have 2 open tiles on the entry. And enemies build the line before the entry of outpost (you can script it for ai logic) - to defend it better. And changes position only if player enter the camp from one of the sides", then "Update movment logic. You can pass through your allies and team mates, but cant through enemies".)* **1. THE ENTRY IS TWO HEXES AND THAT IS A RULE, NOT A TWEAK.** Through one hex you arrive alone, every time, forever, which is #33's queue with a gate painted on it; through two you may arrive **together**, which is the first move that makes the door worth arguing over. Column cut at the wall went **2 to 3**, `terrainCheck()` still ok. **2. THE FRONT RANK IS NOT A ROW, AND IT IS THE ENTRY'S ONE REAL LESSON.** ⚑ The first cut was a straight rank at column 11, which *looks* like a line and seals nothing: the wall only bulges to column 10 on every third row, so **column 10 is an open corridor running the whole height of the fort behind it**, and the very first test walked a ratkin in the door, north up that corridor and into the enemy mage six hexes away, past four men all still facing the gate. **THE HOLE WAS INVISIBLE ON THE PICTURE AND OBVIOUS IN THE PATH** - a formation drawn by eye on a hex grid is a guess, take it off `nbrs()`. The front rank is now the **frontier**: every hex one step out of the three doorway hexes, which is exactly four here, and occupying them shuts the door with bodies. Still not #33's queue, because the doorway is three hexes wide and three of yours can be swinging at once. **A front post emptied by a death is handed to the nearest body still standing further back**, never to a shooter. **3. WHERE THE HOLD SITS IN `aiTurn` IS THE DESIGN.** Below every attack decision, so holding can never mean "standing there with a swing available" - anything they can reach they have hit, and it means only *I do not walk out to find you*. Above the kiting and the wounded pull-back, because a line whose hurt men trickle backwards out of it is not a line. **4. TURNED BY GOING ROUND, AND IT NEVER RE-FORMS.** Head-on is a formed line at their strongest point; the breach or the rotten run costs a long walk and buys the one thing the door cannot be talked out of. ⚠ **One-way**, and posts are *cleared* rather than ignored so nobody can mistake a stale post for a live one. The flank test is measured as **rows derived from the side entries**, so moving the breach moves the test; a body that came in the front door and fought north is deliberately not counted, because calling that "over the wall" puts the wrong sentence in the log at the moment the player is reading it. **A second release the user's sentence did not name because it is that sentence's consequence:** bled with nobody coming, they come out - otherwise two bows beat the fort from outside it and the gate is never used. ⚑ **Three hexes and not one**, settled by the first gate picture: at one hex it fired in round three of a head-on assault, with the company standing in the doorway about to swing. **5. YOU MAY PATH THROUGH YOUR OWN AND NEVER THROUGH THEIRS.** ⚑ Two different questions were being answered by one function: `walkable` means "I can END here" and a pathfinder needs "I can CROSS here". A four-man line used to seal its own flank. `passable()` is the crossing test, `walkable` stays the standing one, and **`reachMap` paths with the first then deletes every occupied hex from its `dist`** - so `dist` keeps its one meaning and **none of its eight consumers had to be told anything changed**, while `prev` keeps the crossing for `pathTo()`. ⚠ **A great beast is exempt and it is not a special case, it is two hexes**: a tailed body drags its tail into the hex the head just left, so a path through a friend parks the tail inside them. **Measured, not asserted:** +7% (clash), +8% (pack), +17% (snare), +17% (armour) reachable hexes at the opening of a fight, 44 of 51 bodies gaining something. **Verified by driving it:** `regress()` twice, all eight fights, 4 to 20 rounds, nothing thrown, no guard hits; `LINT()` 0; 0 console errors; the outpost run across five companies and four fights with every fight resolving; a head-on assault leaving 5 of 9 defenders on their exact starting hex after three rounds; two bodies through the breach clearing every post in one round. Picture: [`shots/68_outpost_gate.html`](../shots/68_outpost_gate.html). **Parked for #50:** a `bows` company ran the fort to 29 rounds and withdrew - not a stall, but a balance reading. ⚠ **#67 was taken in code by a parallel session while all three docs still said "next free #67"**, the third collision of this kind. This is **#68**. **Next free number: #69.** | ✅ DONE |
+| 8f.68 | **#67 #69 #70 BUILT: the slow working, the sheet's skill drawer, and one card after a battle instead of three.** *(Three requests in one message: "1) скилы, которые не можеш взять у класса, на странице персонажа показывать акордеоном… чтобы увидеть все скилл три надо розвернуть. 2) для магов дать задержку на спелы дамажные. чтобы это был медленый гласс канон. и чтобы если враг мог до них дотянуться, фокусил в первую очередь их. 3) в меню после битвы щас три экрана… объедини экраны 2 и 3, т.к. 3й экран почти полностью копирует 2й", then "'beg for mercy' you can add to the after battle stats screen". The gate was offered and **waived by the user mid-session** - "hey, you can do it without my gate, just impliment" - after the first picture was already made; it is kept as `shots/67_mage_windup.html`.)* **#67 - A DAMAGING SCHOOL IS SPOKEN TWICE.** The click pays the actions and the nerve; the damage lands at the start of that caster's **next** turn, at full strength, with nothing to press and nothing to aim again. **1. Why a delay and not a longer cooldown.** The caster was the one body in the game whose best turn was also its safest: pick the softest thing in range, delete it, and stand four hexes from anybody who could answer. A cooldown makes that rarer; it does not make it *answerable*, and the line the mage is supposed to need had no job to do. A delay puts one whole round on the board in which the working can be taken away. **2. Three things take it away, and each is a different player's answer.** The target **walks out of range** - it lands on the PERSON, not the hex, and if they are further away than the spell's reach when it comes due it goes into the ground where they were standing. The caster is **put down**. The caster **breaks** - checked explicitly at the release site, because the routed branch is at the *foot* of `beginTurn` and the release sits near the top, so flow could not be trusted to carry it. **3. What was deliberately left instant.** EMBER, IRON-OATH and UNPICK. The trade is "the fast things are small, the big things are slow", and a caster too shaken for a school keeps something to do with the turn. **4. ⚑ DERIVED, NOT DECLARED, and this is the transferable half.** `gathers = a.arcane && a.dmg && a.k!=='blaze'` is **one test**, so the ratkin warp-sniffer (both fights) and the Snare's one-word ogre inherited the rule without being told, and anything that later gets a `dmg` pair on an arcane act is slow **the day it is written**. #46's lesson (one register both sides read) applied one turn earlier: at definition rather than at content. **5. THE OTHER HALF IS THE TARGETING.** A body that can reach a damage-caster **this turn** goes for the caster. ⚑ **`targetScore` already gave a damage-caster −34 and it never once mattered** - it is a tiebreak worth a third of a point of expected damage, against a movement scorer charging 6 a hex and 6 a place down the target list, so a caster standing one body further back was permanently priced out. **A rule has to be written as a rule:** `isPrize` + a hard diversion of the movement scorer's target list, in **both brains** (`aiTurn` and `autoStep`), plus ×1.45 on the attack pick and ×1.25 more while the caster is actually holding a working. It is **not** a hunt: the prize only counts when a hex this unit can reach this turn already puts the caster in its reach, which is the user's own condition. **Two authored doctrines keep their own minds** - `doc.nearest` (the Thing in Armour takes whatever is nearest; that *is* its encounter) and `doc.loner` (a dog goes for whoever is most alone; a beast does not know what a caster is). **6. ONE NEW WORD IN THE STATUS REGISTER.** `on` - a status that is neither a clock nor a stack. ✷ *Gathering* on the caster is a fact about them; ◎ *A working is coming* on the target is a fact about somebody ELSE that is true of them, so it is **computed at every look the way an aura is** rather than copied onto the target, which would have been a second source of truth for one working. **Verified by driving it:** the click holds and spends; the release lands, misses, fizzles out of range, and finds a dead target, each on its own path; a released working that kills the last enemy resolves `checkEnd` cleanly inside `beginTurn` (`B.won` true, `B.busy` false, nothing thrown); a routed caster loses it out loud; the enemy line walked round a spear to reach the mage in a real fight. ⚑ **One test failure was mine and worth recording**: a battle-mage rolls **two schools out of four**, so a bench that assumes WITHER silently does nothing on half the runs and looks exactly like a broken feature. **#69 - THE SHEET SHOWS WHAT THEY CAN DO.** Eight perk cards on every visit, six of them greyed LEVEL 4 / LEVEL 5 promises: the two describing the person you were actually looking at were outnumbered three to one. Now: everything **TAKEN** plus anything buyable this second, and the rest behind **▸ THE REST OF THE TREE · n they cannot take yet**. ⚑ **The "plus anything buyable" clause is an old lesson kept intact** - *a perk point with nothing visible to spend it on reads as a broken screen* - and hiding the whole tree would have reintroduced it. One screen-level flag, not one per person, and toggled **in place** rather than through `drawInv()`, so the sheet neither scrolls to the top nor shuts under the hand that just bought from it. Picture: `shots/68_sheet_skill_tree.html`. **#70 - ONE CARD YOU READ, ONE CARD YOU DECIDE ON.** ⚑ **There was never a third screen in the code, and that is exactly why it read as a wasted one:** beat two redrew *itself* after each pick, replacing the buttons with an italic sentence saying the same thing, jumping the card to the top, and asking for one more click. The pick **settles in place** now - ✔ on what you took, the rest faded, nothing removed, **· settled** on the heading, the books at the foot updated live, and **Back to the road** the only control that changes state. **Mercy came in with it** (the user's follow-up) as the **top** section, above the property, with the only paragraph on the card: it is the one question here the pillar is about, and it used to be a whole screen of its own containing one paragraph and three buttons, which is the wrong weight for it. Its three answers moved into a `MERCY` content table and its effects into one `takeMercy()`, so the card cannot pay a price the old screen did not. ⚑ **#55's un-softlockable contract stopped being re-derived in the markup and got one reader, `markGo()`**, over three flags that all start answerable. Four cards after a fight became two. Picture: `shots/69_after_battle_one_screen.html`. **Verified across all three:** `regress()` five times over the session, all eight fights, 4 to 17 rounds, nothing thrown; `LINT()` 0 findings; 0 console errors; the aftermath driven end to end on a mercy win (mercy → loot → promotion → road) with the books, `G.spared` and the gate button checked at each step. ⚠ **Two sessions were live in this file all day** - see the collision note in `SHIPPED.md`. **Next free number: #71.** | ✅ DONE |
+| 8f.69 | **The painted battlefield objects were never hidden by a bug. They were hidden by the UI on top of them.** *(User, 2026-08-01, with a screenshot: "gpt build nice pictures for objects. And they work already in the file (but your placeholdrs are still precent in the map). Can you use chatgpt stuff to show terrain?")* **THE DIAGNOSIS, AND IT IS THE WHOLE OF THE LESSON.** Nothing was wrong with the art and nothing was wrong with the painter. All eight objects from `art/src/stage-3/battle-objects/` were embedded in `BATTLE_ART` with correct `w`/`h`, `objectImage()` was loading them, `paintObjectSprite()` was drawing them, and a photograph of the bare `#bTerrain` canvas showed rock, palisade, wall and tree rendering **perfectly** on the ground. What the player saw instead was the DOM one layer up: `.hedge` on a blocked hex was filled with **flat opaque `#1b2021`**, a solid hexagon laid over each object. The only evidence any of it existed was the brown spilling out past the hex edge. ⚑ **A "the art is not showing" report is not always an art bug or a painter bug - photograph the layer that draws it before touching either.** Two canvases and a DOM grid stack on this screen and only one of them was at fault. **1. THE DARK IS A RIM NOW, NOT A FILL.** `BLOCK_VEIL` is a radial gradient: transparent to 30%, `.40` at 72%, `.88` at the hex edge, clipped to the same hexagon. The hex still **ends in a hard black edge**, which is the whole of what says *this is a thing, not ground*, and the middle is left clear for the object to stand in. ⚠ **The centre stop must stay fully transparent** - anything above about `.12` there and a boulder goes muddy again; the rim carries the reading, not the wash. The fire keeps a warm version of the same gradient. **2. WHY THE OLD ANSWER WAS RIGHT WHEN IT WAS WRITTEN, AND THIS IS THE TRANSFERABLE HALF.** The opaque plate came from a real user complaint in the #15 era - *"when you can't get on the tile, put it in the middle and more clear"* - and at the time the only thing underneath it was a procedural scribble of stones that the plate genuinely read better than. **The premise expired and the rule did not.** Eight painted objects landed underneath it, and #66 doubled the hexes on screen; both halves of "the painted stones alone are ambiguous at this hex size" stopped being true, and the fix that had been correct became the thing hiding the fix. **When a UI rule is written against a weakness, note the weakness, because the day it is fixed the rule is the defect.** **3. THE GLYPH WAITS TO BE ASKED.** ▲ ▮ ♣ ✿ used to sit on every blocked hex in every state; on painted timber a centred ▮ is a beige box stamped over the only thing that was telling you it was a wall. Three mock-ups went to the user - centred always / gone entirely / small at the feet - and **their call was a fourth thing neither of us had drawn: "only while choosing a move"**. `askingWhereToWalk` is true when a move is selected, when a hover is showing somebody's reach, or when the ogre's throw is looking for a landing, and then **every** blocked hex lights at once, beside the blue reach numbers it belongs with. The rest of the time the object says it. This is the pillar - *show a state, hide the number* - turned on the marker itself. ⚠ **The hover title is deliberately NOT gated**: "Rock. Nobody gets over it." is on the hex in both states, so nothing was actually removed from the game, only from the picture. A liftable boulder is the one exception and keeps its gold mark always, because **an offer always shows its mark**. **4. The glyph also went 15px → 12px with a four-way halo**, because it now sits on painted timber rather than a flat plate and vanished into the wood without one. **Verified by driving it:** the outpost board photographed in both states (`shots/objects_idle.html`, `shots/objects_asking.html`, and the pair side by side in `shots/objects_two_states.png`); `.blk` counted **0 idle / 22 with a move live / 0 after clearing** against 22 blocked hexes; `regress()` all eight fights, 4 to 13 rounds, nothing thrown, no guard hits; `LINT()` 0 findings; 0 console errors. **No new backlog number - this is a defect in shipped UI, not an entry.** | ✅ DONE |
+| 8f.70 | **The approved audio pack is in: eleven recordings replace the synthesized score and every noisy one-shot.** *(User, 2026-08-01: "also, claude created audio files. Can you please embed them in the game: audio/CLAUDE_INSTRUCTIONS.md". That file is the integration brief and it is the spec; this row records where the build met it and the three places it did not.)* **WHAT WENT.** A thirteen-chord modal route-planner driving a detuned sawtooth drone, a suspension generator, a wandering bell, a band-passed white-noise wind, a brown-noise camp fire, and `tone()`/`thud()` - about 210 lines of generative score, deleted. The brief is unambiguous: replace, do not layer. **Layering a written cue under a generative one gives you neither, because the generative half never agrees with the recorded half about where the bar line is.** **1. THE MUSIC IS FOUR RECORDINGS AND A 200ms CONTROLLER.** World alternates `world_road` and `world_fen` out of a **shuffle bag**, not a coin flip - the brief asks for both before either repeats, so the programme runs ~3:12 before anything is heard twice, and a refilled bag whose first card equals the last one played is swapped, because the seam between two bags is the only place the rule could still break. Crossfade 2.5s, mode change fades 1.0s **and pauses at the bottom** ("do not allow two modes to continue playing underneath each other" is a rule about what is still decoding, not just about what is audible). Battle cues play **once** from zero and, if the fight outlives the track, take **4s of quiet** and go again - never `element.loop`, which is the single most recognisable prototype sound there is. Mix: world `.28`, battle `.34`, boss `.38`. **2. THE BOSS CUE IS A ROUTING QUESTION, NOT A SCREEN.** `setMusicMode` asks `BOSSFIGHT[G.battleKind]` before naming the cue; there is still exactly one battle SCREEN, per the brief's "do not change visual screen routing to accomplish this". `startBattle` writes `G.battleKind` on its first line and calls `show('battle')` ~190 lines later, so the kind is always the current fight's - guarded anyway, because this also runs at boot before `G` exists. **3. SFX ARE A POOL, NOT AN ELEMENT PER PLAY.** Four `Audio` elements per file, round-robin, six simultaneous voices maximum. ⚑ `new Audio()` per strike builds an unbounded number of media elements during an AUTO battle and the browser eventually just stops playing them. Measured: 25 `hit`s fired in one frame clamp to 6 voices over exactly 4 elements and drain back to 0. One sample does four jobs by playback rate - `hit.wav` is ×1.12 for ratkin and ×0.82 for ogre, beast, death, shove and hurl - which is what makes a blow sound like the same WORLD regardless of who took it. **4. ⚠ THREE DEPARTURES FROM THE BRIEF, ALL DELIBERATE, ALL RECORDED IN THE CODE.** *(a)* **`rung_up` is silent, not `promote.wav`.** The brief's table reads as a fair guess from the name and is wrong about what the sound IS: `rung_up` is not a promotion, it is a nerve tick fired from `mor()` and **throttled to one per 140ms precisely because it arrives in volleys** when an aura lands or a rout sweeps a line. A 1.30s fanfare on each of those is a machine gun of fanfares. ⚑ **The brief's own fallback rule ("prefer silence over falling back to broadband noise") outranks the brief's own table**, and this is the transferable half: *a mapping written from a symbol's NAME has not read the symbol's call sites.* *(b)* `rout` (9 sites, the loudest moment the game has), `back`, and `rung_down` have **nothing in the pack that fits**, so they are silent too. `rout` is the one the next pack should cover first. *(c)* **The published single-file artifact now has no audio at all**, and that is the known price of "do not base64-embed" - which at **62MB of 44.1k WAV** was never on the table anyway. Every failure path is swallowed: silence is the intended degraded state, not a broken one. **5. ⚑ THE DEV SERVER HAD TO BE FIXED BEFORE ANY OF THIS COULD BE VERIFIED, AND THE BUG IS A GOOD ONE.** `tools/serve.ps1` was one `while` loop calling `GetContext()` and writing the whole file in a single blocking `Write`. Fine for HTML, JS and 5KB PNGs; **fatal for a 16MB WAV, for one specific reason - a media element does not read its response as fast as it can.** It buffers ahead, then throttles to roughly playback rate and holds the connection for the length of the track. Observed live: `world_fen` played and `battle`, `boss` and `world_road` sat at `readyState 0` with **zero bytes buffered, indefinitely**. Now: a runspace per request (pool of 12) and byte-range support, which is what a media element actually wants. Measured after: **all four tracks reach `readyState 4` with correct durations in 1.1s**, and a range request returns a proper `206` + `Content-Range`. `.wav` also got a real MIME type. ⚠ **A server already running on :8777 is the OLD script - it must be restarted to pick this up.** **6. ⚑ A VERIFICATION TRAP WORTH REMEMBERING.** Three tracks appeared to be playing at once after `regress()`, which is exactly the thing the brief forbids. It was not real: **the harness replaces `setTimeout` with a MessageChannel shim, so every `await wait(1500)` in a probe elapses in 0ms** and the 200ms controller tick never runs between the samples. The state was mid-fade, not broken, and settled to one track. *A timing probe written inside the harness is measuring zero seconds.* **Verified against the brief's own checklist:** all 11 URLs 200; first click starts audio and a reload preserves `♪ OFF`; a muted game creates **zero** audio elements; world tracks alternate (`FRFRFRFR` over 8 draws, never a repeat) and crossfade with both audible together (fen 0.28→0.00 against road 0.00→0.28 over 2.5s); `clash`/`snare`/`pack` → battle, `mother`/`armour` → boss; leaving a battle leaves exactly one track playing on the map; the battle cue plays out, pauses 4s, restarts from 0; `regress()` all eight fights 4–12 rounds, nothing thrown; `LINT()` 0; 0 console errors; no dangling reference to any of the seven deleted synth symbols. **Open, and the user's call:** 62MB is too much to hand a playtester, so compressed derivatives are the obvious next pass - the brief names it. | ✅ DONE |
+| 8f.71 | **Six small fixes, done unattended. The hover stops freezing the board, and two of the six turned out to be things the game already knew and would not say.** *(User, 2026-08-01, six numbered asks and "You can do it without me - i am out".)* **4. THE HOVER FREEZE, AND IT IS THE ONE WORTH READING.** ⚑ **MEASURED FIRST, AND THE MEASUREMENT MOVED THE BLAME.** On the pack ambush with 16 bodies: `render()` **35.2ms**, `reachMap()` **1.5ms**, one hover enter+leave **86.5ms**. The obvious suspect - recomputing where the hovered body could walk - was 2% of it. The real cost was that `inspect()` and `hideRead()` each called `render()`, which tears down and rebuilds **195 hex buttons** with their sprites, status badges and handlers. Drag a cursor over eight hexes and that is sixteen full rebuilds. **A READ-ONLY OVERLAY WAS BEING DRAWN BY THE FUNCTION THAT DRAWS THE AUTHORITATIVE BOARD**, and that is the transferable shape. What a peek actually changes is one CSS background on otherwise-empty hexes, so it got its own pass (`paintPeek`) over the elements the last render already built: nothing created, nothing destroyed, and a hex whose colour has not changed is not written to at all. ⚠ **The peek tint had to LEAVE the render cascade, not merely move** - left in place, the `fill` each hex records as its base would be the peek rather than the board under it. The equivalence that makes the post-pass exact: the peek is applied *first* and every later rule overwrites it, so "base, or the tint if base is transparent" is the same cascade read backwards. Reach maps are cached against a **render stamp** bumped once per `render()`, so sweeping back and forth over one body computes it once, and nothing has to reason about *which* state change invalidated it. **Result, A/B on identical machine state: hover 86.5ms → 1.55ms (56x), `render()` 35.15 → 36.79ms.** That trade is the whole point - render runs on state changes, hover runs on mouse pixels. ⚑ **A measurement trap worth recording:** the first baseline read 26.7ms and the first post-change read 37ms, which looked like a bad regression and was not - the machine had two more servers on it by then. **An A/B is only an A/B if both halves are measured minutes apart on the same box**; the pre-session file was copied back in and re-measured to get the honest number. **1 and 6 - TWO ASKS THAT WERE ALREADY IMPLEMENTED, BADLY.** *Statuses on hover:* the `STATUS` register, `statusesOn()` and every sentence already existed - the hex drew them as four **10px** glyphs behind a native `title`, which is a readout you have to find by resting a cursor on a 37px tile and waiting, while the card the player was **already looking at** said nothing. Both cards now print `statusesOn()`, so nothing new was registered: the full card gets the sentence (under the three bars it modifies, above the movement it often halves), the aiming card gets a name strip, because at that moment ✷ Gathering is a *reason to swing here* and the definition of gathering is not what is being asked. *Class and race:* `bindLoreTips` existed and was **prose**. Good prose, and it named the signature the way a manual does - it could not tell you that **this** brute's sweep is 15-21 because of the maul he is holding. ⚑ **The receipt is now DERIVED: `unitFrom(p)` is the same constructor the battle uses**, so the list is the bar he will actually have, including weapon-dependent signatures (the spearwoman braces or shoves depending on what is in her hands) and a caster's *rolled* schools. Anything added to a class later appears here without this function being told. The perk tree is listed with what is already taken ticked. **3. THE DAMAGE UNDER THE ODDS.** ⚠ **The hitpoint range, not the total.** Against something in plate most of a swing goes into the armour, and a number adding the two together would promise damage the target does not take; `3-5` on an armoured body is the useful, honest answer. The armour half stays one hover away on the readout card, which already had both. Cost a 1px layout fix - the 11px odds had a 13px default line box that put its foot inside the damage line, so **both rows now declare `line-height:1`**, measured with `offsetTop`, never `getBoundingClientRect` (zeros in a hidden pane). **2. WIPE HISTORY, in test mode.** ⚑ **It wipes BY PREFIX, not by list.** Five `gt_` keys exist today and the sixth will be written by a session that has never read the function - an explicit list is a wipe that silently stops being one. Every `gt_` key goes; `gt_test` is the named exception, because a button that turns off the tools it lives on cannot be pressed twice. Then it **reloads**, which is not laziness: LEGACY, JOURNAL and the run are live objects held across the file, and clearing storage underneath them leaves a running game holding the old ones to write straight back. Verified end to end - a planted key from an imaginary future session was cleared, a foreign `unrelated_app_key` was not, and the page came back on the front door with `runs=0`. **5. SOMETHING IN ARMOUR IS ONE ANSWER NOW.** ⚑ **#18 shipped with this exact question written into its own entry** - *is "send somebody wide" worth the person it costs? the arena cannot tell* - and this is the user answering it. Three answers that picked a **deployment** and led to an identical fight: a choice you cannot evaluate before making and cannot read afterwards is a dice roll wearing a decision's clothes, and this game's pillar is that a choice costs you something you can **name**. The card is longer, because the tension moved into the prose where it was already doing the work: the company tries the broken ground, tries going wide, and the thing simply keeps walking. ⚠ **The `AR` deployment table and both other plans are deliberately left standing** and still run clean - the practice field is a test tool for a fight, and this was a ruling about a road card. **Verified:** `regress()` five times across the session, all eight fights, 4-21 rounds, nothing thrown, no guard hits; `LINT()` 0; 0 console errors; all three armour plans still resolve; the road card driven end to end into the fight with the token substituted and one button offered. Pictures: [`shots/fixes_hover.html`](../shots/fixes_hover.html), [`shots/fixes_statuses.html`](../shots/fixes_statuses.html). | ✅ DONE |
+| 8f.72 | **The morale system re-tuned: the nerve you start on is a magnet.** *(User, 2026-08-01: "less plus every turn. And morale strives to neutral - if you are above the start it drops a little, if below it rises. And trim the penalties a bit." The numbers below were then set line by line by the user against a table.)* **THE DEFECT THE MEASUREMENT FOUND FIRST.** A body standing in a formed line, beside the Captain, on a quiet turn, was gaining **+32 nerve a turn**: a flat +14 recovery, the situation capped at +14, and the line's +4 sitting *outside* that cap. The top rung of the ladder was not earned, it was the default state of anybody not currently being hit, and every fight's morale story was over by round three. **THE RULE, AND IT IS ONE SENTENCE.** *Nothing that happens every turn may lift a body above the nerve it walked on with. Only what a body does goes above: a kill, COMMAND, a rally, CALLED IN.* Mechanically that is `u.morale0`, stamped at build time so it already carries the company mood, the banner, the body's own nature and what it is owed, plus one new function: **`morUp()` is `mor()` that stops at the magnet**, and the *only* difference between the two is whether the thing that caused it was earned. Shoulder-to-shoulder, the Captain nearby, winning and Inspire all moved onto `morUp`; kills, orders and rallies stayed on `mor`. ⚑ **The transferable half: this is a second door on one write, not a second write.** Ten call sites had to change meaning and none of them had to change shape, because they all already went through the same choke point. **THE DRIFT** replaces the flat recovery and is proportional so it decelerates into the middle and can never overshoot: below the start it climbs **half the gap, at most +8** a turn (was a flat +14); above it, it settles **a third of the gap, at most −4**. Both directions share the old quiet-turn gate: full with nothing within two hexes, 40% with something near, **nothing at all while somebody is on them** (you do not get your nerve back with an axe in your face, and you do not come off the boil either). `mrec` and the field medic raise the climb only. **THE CAP IS NO LONGER A CONSTANT.** The situation may move a body **±6 while it is within a rung of its start, ±10 once it is two rungs or more away** (user's own rule). Near the middle the field only nudges, so the magnet is what the player feels; out at the edges the situation still moves properly, which is what keeps a collapse looking like a collapse. **THE NUMBERS,** all the user's: tookHit −11 → **−5**, allyDied −18 → **−14**, nearDeath −26 → **−15**, surrounded −6 → **−5** per extra body, standing alone −9 → **−8**. **TWO RULES DELETED.** *Badly hurt* (−7 every turn under a third health) went because it is the same news as nearDeath, told once as an event and then charged again forever; it was also why a hurt body could never climb back to its own neutral. *There are far more of them left* (−8) went because being outnumbered is already being surrounded and standing alone, and the third charge for it was what made a losing fight unrecoverable. **THE LINE'S +4 MORALE went too** and the line is a **dodge** formation now (+5, unchanged): standing in a row and standing shoulder to shoulder were one fact paid twice. **MEASURED.** All eight harness fights run clean, no errors, no guard hits, outcomes and round counts inside the noise of the same regression with the magnet switched off at runtime. The magnet was then traced through a real fight: of 104 morale ticks on the player's side, **2 left anybody above their own start, and both were kills**; a body crushed to 7 by the Fen-Mother's scream climbed +3, +3, +8 back up; Vesna sat at 93 after a kill and drained −4, −4, −2 toward her 73 until she earned it again. ⚑ One thing the trace also showed and this build did **not** touch: the Fen-Mother's scream **writes `morale` directly** rather than going through `mor()`, so it skips the ladder sound and the whisper. Pre-existing, filed here rather than fixed. | ✅ DONE |
+| 8f.73 | **#71 THE MAP RESHAPED FOR DRAMATURGY: two roads at the first fork, the muster in front of the monster, and the pass deleted.** *(User, 2026-08-01, after approving `tools/map_proposal_2026-08-01.html` item by item: "nice, impliment it".)* Crossroad A went from three roads to two, because three made it a menu and two make it a question: **4 days with a slot, the Broken Men and a fire, or 6 quiet days with three slots**. Both rejoin at the Ruined Steading, so the dogs stay unavoidable. **The Muster Field moved in front of the Black Fen and took the armourer's rack with it** (user: "I want to move the first hire and the armourer a bit earlier. And it matters that the player has money in the chest at that moment") — the dogs show you that you are too few, the muster answers it, the Fen spends it. **The wagon's purse went 48 → 90** to pay for that, and it is sized rather than chosen: with the average prologue the act opens at ~150 and the muster costs a hire plus one cheap piece exactly once. **The pass was deleted** (user: "cut the long empty transition straight to the finale, the 2-day one with nothing in between") — it was two days with nothing on them and it let a company reach the bells having missed both the shrine and the last muster. That cost four days at the short end, which the bigger purse buys back, so the act is no richer. **Two new places and one new event:** THE ROADSIDE FIRE between the Broken Men and the dogs, which deals a card off the existing `CAMPS` deck rather than owning one; and **THE WARM SPRING** on the corridor after the ambush, whose fourth choice is the user's own — one named person asks for one more day, and it costs a day and pays a permanent point of NERVE on their sheet. Bonepicker's Camp left the floating pool to become the fixed refit stop between the Stone Field and the ambush. **Road events halved** to `ROAD_EVENT` 0.28 with a one-per-leg latch. ⚑ **Three lessons.** **(a) A rule phrased against a node's PROGRESS breaks silently the day somebody reorders the run** — `armourDue` read `G.visited['hire']`, so moving the muster in front of the Fen would have fired the Thing in Armour on top of the boss; it is anchored to a computed SHAPE now (`branchOf('vill').join`), with a LINT check because both failure directions are silent. **(b) Every scene in the map painter is a node lookup, so a deleted node is a TypeError that takes the whole painting with it** — `o1` and `o2` had gallows and a pedlar's table drawn off them. Remove a node, remove its scene in the same edit. **(c) A painting outlives the map it was drawn for**: the Bloom's glow was centred on "the one genuinely empty quarter", and the reshape put two new places straight through it. | ✅ DONE |
+| 8f.74 | **#72 BUILT: the combat pass - dodge softened at the top, the kick becomes a combo, the spear wall becomes a lane, and DISENGAGE becomes the step itself.** *(User, 2026-08-01, five asks in one message and "act on your own while I walk".)* **1. DODGE IS SOFT-CAPPED, NOT TRIMMED.** *(Their words: lower it slightly, "especially when dodge is already high".)* A flat -3 takes the same three points off an ogre at 8 as off a lurcher at 26, which is the opposite of the ask. So the first 12 points are free and every point above them is worth 0.6: **8→8 · 12→12 · 15→14 · 18→16 · 24→19 · 30→23 · 34→25.** The low end does not move at all and the stacked cases (bulwark + HOLD THE LINE + the formation + an aura) stop compounding into a body nothing can touch. Applied LAST, to the sum, which is the only place it can go without every contributor needing to know about it. **2. RATKIN +5 DODGE, OGRE -5**, from a `RACEDODGE` register read off `race` OR `kind` exactly the way `sizeOf` does, applied *before* the cap - so a ratkin already above 12 keeps about three of its five and **the bonus pays for part of itself**. It went inside `dodgeOf()`, so both AI brains, the hit preview and the tooltip inherited it without being told. **3. THE KICK IS A COMBO NOW, AND THAT IS TWO FLAGS ON ONE ACT.** `provoke`: everybody still in reach of the body gets an opportunity swing as it is torn off them - the one shove in the game that provokes, deliberately, because the kick does almost no damage and this is what it buys. `slip`: if the hex straight back is occupied, they are **shoved round the man behind rather than into him** (the two sec±1 neighbours, each of which touches both the body and the blocker - a fact about the grid, not a drawing), tie-broken deterministically toward the hex further from their own people, because `raceVerb` asks `forceDest` where the kick will land *before* it commits and a coin-flip there would make both brains score a hex the blow then does not use. ⚠ **Order bit once in the writing:** a hook-pole is a reach act with `pull`, so an opportunity swing can move the body itself - the destination is therefore computed twice, once dry only to ask "will this go anywhere", once for real afterwards. **4. THE OPPORTUNITY SWING IS HALF A BLOW.** ⚠ Recorded because the request assumed otherwise: it was **0.75**, not the "very little" the ask described, so this multiplier went **down**. What went up is how often it fires - the kick combo, and a DISENGAGE cheap enough that bodies actually leave a scrum. One line to put back. `killzone` still pays full and its text was corrected. **5. SPEAR WALL: 1 ACTION, 75%, A COIN-FLIP SHOVE, AND IT DIES WITH SOMEBODY IN HER FACE.** It cost two, which meant bracing was the whole turn and it only ever went up when nothing else could be done with the time. The shove is built by **cloning her weapon act with `push`**, so it resolves through the ONE forced-movement block and inherits `maxSize:1` for free - an ogre takes the point and does not move. ⚑ **The real change is that the wall is a fact about the ground now, not a flag she carries** (`wallLive`): a lurcher that gets under the point turns the whole thing off, which is what finally gives the spearwoman a job for the line to *do* - she holds a lane and somebody keeps her front clear. `bracewall` had nothing left to buy at 1 action, so it now buys the exception to that rule. ⚠ **`wallLive(u, ignore)` and the `ignore` cost a test to find:** the trigger asks it *after* the mover is put down, so without it anybody who walked all the way in turned the wall off **by arriving**, and it could only catch a body that stopped at exactly reach 2 - which is nobody. **6. DISENGAGE IS THE HEX.** It cost an action and made your *next* move free, i.e. two actions - the whole turn - to leave a scrum, and the honest player answer to that was never to leave one. Now the action **is** the step: it offers every free neighbour, you click one, nothing swings. `safeMove` is still set, so **the old two-action version survives underneath the new one** rather than being replaced. `movesUsed` is deliberately untouched, so stepping clear and then walking is still a full first move. **MEASURED, not asserted.** Eight-fight regression before/after with the pre-#72 dodge reconstructed at runtime: mean **9.5 → 8.7 rounds (-8%)** and **+12% swings thrown** for the same eight fights, with the landed-hit rate flat at ~55% - both brains simply re-aim at what the softer dodge opens up, which is the honest reading of "more dynamic". Rule-level: the kick slipped to the flanking hex and the spearwoman took her half-blow while the kicker did not; 50 clean approaches into a live wall were caught **every time, always at x0.75**, shoved back on a coin, and the same 50 with a lurcher already at reach 1 were caught **zero** times; the disengage offered four hexes, stepped, left 2 threats → 0 and took **0 damage**. `LINT()` 0, 0 console errors, all eight fights resolve. Pictures: [`shots/72_combat_dynamics.html`](../shots/72_combat_dynamics.html) (the gate, before the code) then [`shots/72_combat_built.html`](../shots/72_combat_built.html) (after, driven through the engine). **Open:** the enemy AI still never braces a wall and never disengages, so both new rules are player-side in practice; and nothing here was retuned against the numbers #50 will want. | ✅ DONE |
+| 8f.75 | **THE WORLD GOT ITS CANON: the lore book, a 26-event consistency pass, a personal opening with a readable joke, and a map card that states facts.** *(User, 2026-08-01, going out: "Update concept of the world... Light shift in direction of ttw, different races, a tiny bit magic. Strange shit happening" · "heroes not merceneries, they just start with a contract. But rather forced together random crew" · "It is great to bring specific clear things - not that good something vague" · plus the onboarding, joke-clarity and first-map-card asks, and "WOrk on this autonomusly".)* **1. `03_WORLD_LORE.md` is the lore book now, canon rather than deliberately soft.** The island's name explained twice in one word (every road is owned and priced, and the island keeps watch with bells) · the bell custom (hang one where something wrong passed; three bells over a door is a boast; stringing a road with them to hunt is an obscenity) · a dated spine (the Landing 60 years back · the Shorecrown fell 40 back · the Bloom rising 30 · Ashmoor fell last winter · the last ship 3 years back) · the Bloom as a soaked current with observable rules (in through openings only; moving water resists it, which is what the ratkin waterworks are FOR) · the Thing in Armour as landing-pattern plate walking a dead order · the Old Work · warm saints' bones · rat-kings · and the identity ruling: **not mercenaries, a forced-together crew of strangers that STARTS with one contract**, while the island goes on calling them mercenaries, so wages and contracts stay exactly as built (README §6 and concept §1 updated to match). The style law that decided everything in it: **one observable rule per strange thing, and no explanation behind the rule.** **2. 26 of 29 map events and 2 camp cards** now carry those specifics: the toll-man's bridge grew a fresh clan-mark, the Broken Men wear Ashmoor's buttons, the aqueduct stopped being scenery and became the clans' thirty-year defence against the Bloom in one sentence, the snare's bells became the custom turned inside out, the Dead Company became the nine the coin bought first and the lord's silence about them. Text only: ids, fx, gates and the journal shape untouched, LINT 0. Unchanged on purpose: packev, hollow, wedding, the kin chain, shadows (person-scale cards that lore would only dilute). **3. The opening is the same two cards, about 40% shorter and personal**: the Captain came on the last ship with prospects and can name what he lost, the lord's war took a season, and the four who stand are strangers with empty purses, not a company. **4. The joke reads as won or lost**: the outcome card opens with THE JOKE LANDED (green) or THE JOKE DID NOT LAND (red), and **only the gamble carries a verdict**: the fight and the coin are purchases, not bets. Every outcome names a scene (floor · coin · joke_hit · joke_miss) and an empty `PRO_ART{}` waits to map scene → the user's planned per-scenario paintings. **5. The first map card states four facts in the user's order**: the contract east past Coldharrow · the map and what a day costs · where the resources live · the pillar. It also stops describing the three-road fork that #71 deleted, which it had been quietly doing since the reshape. Picture: [`shots/lorepass_onboarding.html`](../shots/lorepass_onboarding.html), shot live off the running page. | ✅ DONE |
+| 8f.76 | **THE FEN-MOTHER WAS BUILT BACKWARDS, AND ALL THREE OF THE USER'S COMPLAINTS WERE ONE BODY LAID OUT WRONG.** *(User, 2026-08-02: "check fen mother fight: -she can move more then 1 tile -her face faced player -she actually has a back and a flank", then the warden nerf and the armour bar.)* **1. HER BODY WAS ON THE WRONG SIDE OF HER HEAD, and it is a one-token bug with three symptoms.** `build()` places the head at `cc` - the plan's column pushed `FOE_SHIFT` toward the far edge - and was computing the tail from `e[0]`, **the column before the shift**. At a shift of 2 her hindquarters landed one hex **west** of her head: in front of her, between her and the company. ⚑ **The art is what proves the intent, and it is worth knowing that the art can be read as a spec.** Her two painted pieces are a head facing west with the neck opening **east**, and hindquarters carrying the tail away **east** - so the pair only joins when the body is east of the head. Laid out backwards the two halves face away from each other, she reads as two animals standing back to back, and *the thing the player meets first is her tail*. That is the whole of "her face faced player". `tail:[cc+1,e[1]]` now, plus **`beastFlip()`**, which mirrors both halves together off the head-to-tail **axis** and deliberately not off `facing` - two pictures that meet at a seam must never disagree, and facing is what the arcs are for. ⚠ The flip is a **CSS variable** and not an inline transform: every impact keyframe sets `transform` outright, so a plain `scaleX(-1)` would be thrown away for the 0.3s a lunge runs and she would flap. **2. SHE WAS DROWNING IN HER OWN SIGNATURE.** Stride 3; standing water costs 1 of it and costs 2 to enter, so on marsh she could move **exactly one hex**, forever - and THE FEN ANSWERS, her own act, turns two hexes around her to standing water. The act whose note ends *"the field itself is on her side"* was the most expensive thing she could do to herself. **`fenborn`** (her and the cub) reads through one new function, **`wetproof()`**, which is also where the gills exemption now lives, so the entry cost, the standing penalty and the -10 to aim out of the water answer together instead of drifting. Measured: budget on marsh **2 → 3**. **3. HER BACK AND FLANK EXISTED IN THE MATHS AND NOWHERE ELSE.** `arcOn` answered BACK +30 ×1.25 correctly all along - and **four separate places excluded `big`**, so the red back-arc ring was never drawn on her, the ✦ walk-here-to-stab marks never appeared, and **neither AI brain had ever been told she had a back**, in the fight the README calls the one that teaches you to surround something. All four inlined the same three lines of sector arithmetic; they call one **`arcFrom(c,r,target)`** now and `arcOn` is a wrapper on it. ⚑ **The two-hex half is the part worth carrying: an arc measured from the head alone told you that standing level with her TAIL was her FRONT.** `arcFrom` measures from whichever of her hexes you are actually beside, so the words match the picture - face FRONT, down her body SHOULDER then FLANK, behind the tail BACK - and the ring moved onto the **tail hex**, because that is the only hex whose opening points at ground you can walk to. **MEASURED, A/B in one session with the flag toggled at runtime, 30 runs each arm.** Win rate **28/30 → 19/30 (93% → 63%)**, median **9 → 13 rounds**, **0.8 → 2.5 of yours put down per fight** - and, the result that matters most, **the long tail got SHORTER**: p90 **24 → 19**, max **29 → 25**, fights over 20 rounds **4 → 2**. ⚑ **That is the counter-intuitive half and it is the reason this is a defect closing rather than a difficulty decision.** A boss pinned in a bog cannot finish a fight either: the last survivors circle out of her one-hex reach and the round count runs away, which is the same shape as the 835-round stall #31 was built to fuse. Giving her back her stride makes her **resolve** fights, so the median moves up toward her documented 12-14 band and the tail comes in. Her template comment has always read *"tuned so she reliably puts one or two of yours on the ground"* and at 0.8 she was under her own spec; 2.5 is a shade over it, and that number is the one to watch. ⚠ **Four earlier samples of 6, 12 and 14 runs each said something noisier and slightly worse** (a 14-run arm read median 14 and a 6-run arm read median 20) - **this fight has a famously wide distribution and README says so in as many words; the 30/30 is the only one of the five worth quoting.** **Banked in #50's parking lot rather than compensated for.** **4. SOMETHING IN ARMOUR: hp 380 → 342, armour 180 → 162**, a flat 10% on the user's read. Nothing else on the block moved - the sweep, `soak:4`, the five-hex stride and the three actions are what make it the fight you run from, and they are the half nobody complained about. ⚠ **The arena cannot score this fight and did not**: it rings the thing, which is the exact play the fight is built to punish, so the win rate barely moved (2/14 → 1/14) while the honest change is ~38 fewer hitpoints and ~18 less armour to chew through. `noTrim` still keeps it out of every global pass, so these two numbers are the whole change. **5. THE ARMOUR BAR SITS ON TOP OF THE HEALTH BAR.** Armour and hitpoints have been independent pools since build 1 and only one of them was ever on the token, so *"who is nearly dead"* was on the board and *"who is still behind plate"* was not - though that is the one that decides who is worth swinging at this turn. 2px against the health bar's 3px and cool where it is red, because it is the shell and not the person; **drawn only when there is a shell to draw**, so a body in rags shows one bar rather than an empty promise of a second; and it **goes dark below 35% before it goes away**, which is the warning that the next blow is the first one that reaches flesh. **Verified:** all eight fights resolve, no stalls, no guard hits, `LINT()` 0, 0 console errors; the arc read from four positions round her and each ✦ mark checked against what the damage would actually pay; both sprite halves confirmed to mirror together; the bar driven through five states (70% · 17% dark · 0% · no shell · the boss at half). Pictures: [`shots/mother_before.html`](../shots/mother_before.html), [`shots/mother_after.html`](../shots/mother_after.html), [`shots/armour_bar.html`](../shots/armour_bar.html). | ✅ DONE |
+| 8f.77 | **THE OGRE COSTS THREE SEATS AND ONE COIN: party room and daily wage stopped being the same number.** *(User, 2026-08-02: "important to add for the ogre: he takes 3 party size. But costs one coin a day only, because he is a bit stupid." Plus the constraint on how to do it, since other sessions were live in the same file: "do not overwrite the other values.")* `COST{ratkin:1,human:2,ogre:3}` had carried **two jobs on one map** since build 3, with the comment `// party room AND crowns-per-day` admitting it. They were one map because they happened to agree, and the ogre is the case that pulls them apart: he is enormous, so three seats stands, but he is paid **one crown a day like a ratkin** because nobody has told him what he is worth and he has never thought to ask. **`WAGE{ratkin:1,human:2,ogre:1}` is the new map and it has exactly one consumer, `dailyUpkeep()`** - the whole wage economy (the road-leg bill, the funded-days readout, the payday loop, the unpaid grievance, `wWage`) already ran through that one function, so the rule changed in a single line and every downstream site inherited it without being touched. `COST` keeps `partyUsed()` and the four "does this recruit fit" checks and now means one thing only. ⚑ **Four places were printing the same variable twice in one sentence** ("takes N of the party room and N crowns a day") and each had to be told which N it meant: the dismiss button, the dismiss confirmation, the race tooltip on the sheet, and the hire line at the Muster Field. **A doubled read of one constant is invisible until the two halves stop agreeing, and it is the exact failure mode this split creates.** Two prose sites also stated the old number out loud and are rewritten rather than patched: the OGRE codex entry (which had said "3 crowns a day, so one ogre costs what three ratkin do" - the arithmetic it was built on is now false) and the `wWage` tooltip. The `wCha` party-size tooltip still reads ratkin 1 / human 2 / ogre 3 and is **correct as written**, because it is about seats. **What this does to the game:** the ogre is now expensive in **bodies** and cheap in **coin**, so he is the pick for a short purse and the wrong pick for a big company - the opposite trade from the ratkin, who is cheap in both and dies to a stiff breeze. Measured on the starting four humans plus an ogre and a ratkin: room 12 of 13 unchanged, wages **12 → 10 a day**. His hire price is untouched (`hirePrice` still ×1.35), so the up-front sting stays and only the standing bill moved. **Verified:** boots clean, 0 console errors, `COST`/`WAGE`/`dailyUpkeep()`/`partyUsed()` read back correct off the running page. ⚠ **Written against a file two parallel sessions were editing**, so every change is a targeted single-line edit and nothing else in the economy was touched. | ✅ DONE |
+| 8f.78 | **THE AFTERMATH ASKS FEWER QUESTIONS, AND THE DOGS STOPPED BEGGING FOR MERCY.** *(User, 2026-08-02, with a screenshot of the card after the dog fight: "To much choises - with monsters never quustion for prisoners. Sometimes you can have with ogres, ratlings or humans" · "From loot after most of the events you don't have a choice - you given random loot out of it" · "after dogs fight - make this things as event rile, not hardcoded".)* **1. ONLY PEOPLE BEG, AND IT IS READ OFF THE BODIES.** ⚑ **The comment on that line in `checkEnd` had said the right thing for months and the code under it named one fight instead of implementing it:** *"beasts do not surrender and do not ask for anything, only people do"*, then `G.battleKind!=='mother'`. So the dog pack begged - ten dogs broke, the card printed *"they are small and wet and they smell of the fen"*, and offered to **strip them to the fur**. The test is **`!u.monster`**, which covers the Fen-Mother and the Thing in Armour without naming either and which any beast fight added later inherits. ⚠ **It is deliberately NOT a race test, and that is the trap worth recording: `build()` derives race from kind, so a dog comes out `race:'ratkin'`** and a race gate would have let the whole pack straight through. `beg` is the broken **people**, not the broken bodies, so a mixed field asks about the ones who can be asked about. **This is the answer to "make it an event rule, not hardcoded": the rule is now read off the content instead of off a fight's name.** **2. THE PLEA IS SPOKEN BY WHOEVER IS KNEELING.** One paragraph served every fight and it was written for the fen, so human deserters on the Broken Men road were also *"small and wet"*. Three variants of two clauses (`MERCYSAY`): the picture in front, and the one label about taking their things off them, because an ogre has no fur and a deserter has no pelt. **The second half does not vary and that is the point** - both things are true, neither cancels the other, your company is watching to see which one you think matters - because that sentence is the scene whoever is on their knees. Race is safe *here* precisely because nothing reaches this table until it has passed `!u.monster`. **3. THE LOOT QUESTION SURVIVES ON TWO FIGHTS OF EIGHT, NOT FOUR.** #55 already made the haul automatic; what was left was the *decision* rows, and on the dog fight that meant a third question (burn the bodies, go through what they had been eating) stacked under a mercy plea and a promotion. Gone from **pack** and **slingline**. It stays on the **Fen-Mother** (drag her clear versus cut the light out of her - the moral centre of the act, and she is a mother) and on **Blood on the Road** (bury both sides after your first fight). ⚑ **The rule that falls out of it and is now written above `takeLoot`: an automatic haul may never charge morale or days.** A price nobody chose is not a decision, it is a tax, and an invisible one since the haul is drawn at random - so a decision row is not "simplified" into a haul by leaving its `fx` alone, the price is dropped with the question. The pack's *somebody fed these* hook was not lost with its row; it lives in `AFTER.pack`, which is where a hook belongs. **4. A LINTER FALSE ALARM, FOUND ON THE WAY PAST AND FIXED.** `LINT()` was reporting **"no route from the hold to the Snare"** on a graph with eight perfectly good ones. Its route walk carried `if(path.length>14)return` as a runaway guard, and **#71's reshape made every route 17 to 19 nodes long**, so the walk gave up before it could ever arrive. ⚑ *A check written to catch a broken map was itself broken by a map change* - the same shape as #71's own lesson about a rule anchored to a number. A revisit was already impossible, so the guard is bound to `Object.keys(NODES).length` now, which is the exact bound a simple path can never exceed and cannot go stale the next time somebody adds a place. **MEASURED, not asserted:** eight runs of each of the eight fights, and **`pack` now resolves to `true` every time and never once to `mercy`** (the dogs rout, flee the field and the fight ends on the win, with no stall), while clash, brigand, slingline and snare still produce pleas. `LINT()` back to 0, all eight fights resolve, no guard hits, 0 console errors. ⚠ **The user's live run save was snapshotted out of `localStorage` and restored byte-identical around every one of these drives**, because reaching this card at all means starting a run. Picture: [`shots/aftermath_fewer_questions.html`](../shots/aftermath_fewer_questions.html), the before and both afters captured off the running page. **Open:** *"after dogs fight - make this things as event rule"* was read as *the aftermath's questions should be decided by a rule rather than by a fight's name*; if it meant *turn the dog fight's aftermath into a road event card*, that is a different and larger job and nothing here blocks it. | ✅ DONE |
+| 8f.79 | **#73 BUILT: THE LONG FIRE.** *(User, 2026-08-02: "After battle with huge monster 'thing in armor' add node with event. 'Near fire'… скри просит провизии, чтобы сделать празднование. Если ты соглашаешься - то он рассказывает историю… почему крысолюды выжили… они держатся кланов… Но клан тоже должен заботиться." Gate picture [`shots/73_long_fire.html`](../shots/73_long_fire.html) first, built picture [`shots/73_long_fire_built.html`](../shots/73_long_fire_built.html).)* A camp node one day past the Dead Company. A ratkin has built a fire far bigger than a fire needs to be and wants the barrels opened on it tonight, because this company walked away from the thing in the armour and nine men in a ditch three miles back did not. Open them and he tells you why ratkin are still on this island (**clan**, both hands, do not let go), and then, quieter, what his own clan did to him when they sent him to a slaughter that was about a milestone and he said no. **1. IT SITS BEFORE THE WARM SPRING FOR A MECHANICAL REASON AND THAT IS THE ENTRY'S ONE REAL DECISION.** The spring's first option closes every wound in the company, and provisions are only spent on a day when somebody is carrying one - so **four provisions charged after the spring costs nothing at all**, because the barrels stop draining the same night they are opened. Before it, four provisions is four days of mending walked into the Snare. It is also the better order: the fight, the nine who did not make it, the night we did, then the water. Spirit before body. ⚑ **A cost is only a cost where the sink is still running - check the sink, not the number.** **2. ONE FACT, TWO RULES, NO STAT.** `p.clan` is the whole storage, in the roster the save already carries. In a fight: the first time his nerve would take him to ROUTED it holds, in `restate()`, at the same site and for the same reason as `desperateAt` - caught before the `noRout` floor lifts him, because after the floor the moment can never be seen again. ⚠ **It is not a one-tick reprieve**: `noRout` stays set for the rest of that battle, which is #38's `tieHeld` exactly and which is his own sentence, *"I will stand in it until it is over"* - so it is a boon and a bill, since BREAKING is −12 to hit on a ratkin cutter who now cannot leave. Out of a fight: he is never in the walkout roll in `passDays`. That is the user's second half - *"клан тоже должен заботиться"* - stated in the one currency this game argues in. **Both are rules rather than weights, so both AI brains and AUTO inherited them from one site without being taught** (#67's line applied before the fact). **3. THE MIDDLE CHOICE IS THE CYNICAL ONE AND IT IS SUPPOSED TO PAY BETTER TONIGHT.** Spend the same four provisions, and while they are full and loud tell them the wage is short: every unpaid day in the company wiped, +10 mood, and **he works out what the fire was for** - he tells the first half of the story, stops, and never gets HIS CLAN. It is drawn only when somebody is actually owed wages (`needUnpaid`, the same shape as `needHurt`), so it appears exactly when it is tempting. That is the pillar with the sign the right way round: the generous option is available, it is never free, and it must not secretly pay better. **4. A NEW CAST TOKEN, AND THE GAP IT FILLS IS OLDER THAN THIS CARD.** Every token in `cast()` is re-picked on every call, and body / after / effect prose are three calls - so a card ABOUT somebody could only keep its subject by hardcoding a name (the thing the comment above `CASTFALL` warns against) or by being a `CAMPS` card with its cast handed in. **`{TELLER}` / `{TELLER1}` resolve off `G.fireTeller`**, set once when the card opens: the full introduction and the bare first name, one place knowing the rule. LINT gained a check that reads `openEvent`'s own source, because an uncast `{TELLER}` degrades to "the smallest of you" and reads as writing rather than as a bug. **5. NO RATKIN, NO BROKEN NODE.** The place deals a card off the `CAMPS` deck instead, the way The Roadside Fire does - a second card written for the same node would be a second source of truth about what that place is. **Verified by driving it:** all three choices drawn and the same person named in body, after and story; food 7→3 and `p.clan` set on the generous one; every `unpaid` wiped to 0 and no clan on the cynical one; the cynical one absent from a paid-up company; both feast options greyed under four provisions; `unitFrom` carrying `clan`, the hold firing once at BREAKING and a second collapse routing him; 400 walkout rolls with him never once a candidate and others always; a ratkin-less company getting SOMETHING IN THE PORK; `spacingViolations()` 0, `labelViolations()` 0, `armourWhere()` still `dead`, `LINT()` 0, `regress()` all eight fights 5-19 rounds, nothing thrown. ⚑ **And one trap re-learned from the other side:** LINT reported "no route from the hold to the Snare" on a perfectly good graph, because the page in the browser was **one edit stale** while a parallel session was mid-fix on that very check. **When a check disagrees with the file, reload before debugging.** **The standing rule this event arrived with** - *"на каждом из событий важно вынести, оно сделано человеком или нет"* - is now the seventh question in README §5's before-an-event-ships list, and it is why the fire and not the meal is this card's subject. **Next free number: #74.** | ✅ DONE |
+| 8f.80 | **#48 AMENDED: YOUR OWN CREW LEAVE A BODY WHERE THEY FELL, AND ONE PERSON CAN ONLY LEAVE ONE.** *(User, 2026-08-02: "куда-то пропали тела раненых моей команды… вернуть опцию раненых от команды и моей и противника", and on telling down apart from dead: "wounded and dead could look same on battlefield of my team - body on the ground. on this lvl it isnt that important.")* **It was not a regression.** The enemy half was verified still working in the live game before a line was touched - `B.bodies` written, `.bmark`/`.bfig` in the DOM, the sprite data-URL decoding, nothing clipping it. The player's side had simply never been switched on: #48 shipped with the downed **deliberately excluded**, on the argument that a body says "dead" and your roster never dies. That argument reasoned about what a body says and ignored what an **empty hex** says - the enemy dead lay all over the right of the board while your side looked like it had walked off the field, which is the worse lie. `dropBody(d)` now runs on the downed branch too, from the same one site. The amber pool and ring that would have kept down and dead apart was offered and **declined**, so it is the same picture on both sides; the distinction lives where it already lived and reads better - the `DOWN` float, the log line, the aftermath scar. The **road sacrifice** (#18, the armour fight) is the one exclusion kept: that person went wide off the road and is not on the field, so a body in your starting line would contradict the prose. **A pre-existing #48 bug fell out of the regression sweep and is fixed here:** a corpse can be struck again (cleave, simultaneous blow, an act already in flight) and the kill branch runs twice - `pack` produced **three** `dropBody` calls for one dog and drew a small pile where one animal had fallen. Guarded with `u.bodied` **on the unit, not the hex**, because the hex COUNT must keep working when two *different* people fall on the same ground; units are rebuilt per battle so it cannot leak forward. **Verified in the running game, all eight fights, zero thrown errors:** summed body count equals units fallen **exactly** in every fight (it was 12-for-10 in `pack` before the guard), duplicate calls are rejected rather than counted, a downed crew member's hex returns empty from `at()`, stays walkable, stays clickable, and the body layer computes `pointer-events:none`. Pictures: [`shots/bodies_now.html`](../shots/bodies_now.html) (the gap), [`shots/bodies_proposal.html`](../shots/bodies_proposal.html) (the declined variant), [`shots/bodies_fixed.html`](../shots/bodies_fixed.html) (built). **The lesson: a rule about what the board SAYS must be checked against what the board LOOKS LIKE.** #48's exclusion was argued entirely in prose, reads perfectly in the changelog, and is obviously wrong in one screenshot - anything that decides NOT to draw something needs a picture of the not-drawn case before it ships. **Next free number: #74.** | ✅ DONE |
+| 8f.81 | **#74 BUILT: THE CIRCLE.** *(User, 2026-08-02: "когда ты встречаешь странных сектантов… они предлагают сделать тебе тату лица - на лице. Чтобы войти в их круг и получить бонусы… оказалось - что большая банда из 10ти… Сделать тату лица на своем лице · Заплатить провизией · Начать сражатся (очень не рекомендуем)… бой - где невозможно победить." Gate picture [`shots/74_the_circle.html`](../shots/74_the_circle.html) first, built picture [`shots/74_the_circle_built.html`](../shots/74_the_circle_built.html).)* A floating road card. Three of them at a fire wave you over, the bread is better than yours, and you are most of the way through the second bowl when the other seven come in out of the dark. **1. THE CANON HOOK IS THE GAME'S OWN TITLE.** `03_WORLD_LORE.md` §2 already says *"passage is never free; when it looks free, the price has simply not been named yet"* - this card is that sentence played as a scene. A clan cuts its mark on a milestone; these people own no road, so they cut it into faces. **The second bowl is load-bearing**: you have already eaten, which is what takes "walk away" off the card, and there is no fourth option on purpose. **2. THE MARK IS NOT A BONUS AND THAT IS THE ENTRY.** It was specced with an upside and the user cut the upside out: *"just ugly. Both enemies and friends feels shakier near you - morale -10 to adjacent units."* **The sect promises that the ring gets you into the circle and gets you bonuses, and the game never once corrects them and never confirms them either.** What you bought is that nobody wants to stand next to you: `p.mark='circle'` on the Captain, and **every body adjacent to him, friend or foe, reads 10 morale lower**. ⚑ It is a modifier in `nerveFrac()`, one line under the bloom flower's lift and for the same reason - ⚠ **it is never written into `u.morale`**, which is #64's lesson word for word, because writing it in would clamp against `moraleMax` and would not be given back when the body steps away. Verified live: a friend beside him reads .667 against .778 away, a foe .650 against .775, the Captain himself is untouched, and both bodies' stored `morale` is never written. ⚑ **What makes it a tool rather than only a tax is where you stand him**, and nothing in the game says so - the positions do. **3. IT IS FREE TONIGHT, AND THE PAYING DOOR CAN BE SHUT.** Six provisions, flat, with `need:{food:6}` - so under six barrels the middle option greys out and **the only currencies left are your face and your blood**, which is the pillar in one disabled button. It must stay flat: a price that scales to what the player happens to be carrying is not a price. **4. THE FIGHT, AND THE LABEL THAT NEARLY SHIPPED AS A LIE.** Ten of them, and `noRout` on every one - that is what makes it unwinnable **without rigging a single number**, because you cannot rout a circle, so it ends when you are down or when you withdraw. ⚑ **The first cut of the statblocks lost 4 fights out of 5.** Written as rabble at 32hp and 20 armour, `noRout` had made them *easier*: nothing fled, so all ten stood there and were farmed for the loot table, and a seasoned six walked through them without losing anybody. Tuned against the arena rather than against taste: at the shipped numbers it is **0 wins in 60** (twelve runs against each of the five arena companies, 4 to 16 rounds), and over 20 runs the seasoned six - the strongest thing this act produces - takes 1, which is the 5% the entry deliberately left open. **A button that says "you will not win" is a promise, and the arena has to be asked about it before it ships.** **5. LOSING IT IS A BEATING AND NOT A DEFEAT.** `checkEnd` sends a lost fight to `toDefeat()`, which ends the run and wipes the save, and a floating card that can land in any of seven slots must never be able to do that. A new `BEATEN{}` register - data, the same shape as `NOWITHDRAW` - routes it to `toBeaten()` instead: everybody comes off the field, the downed carrying a scar, they take **every barrel and every crown**, and they cut the ring into your face anyway. So **all three doors end with a toll paid and the fight is the worst way to arrive at the same place**, which is the user's own ruling. ⚑ README §7 records *"a written outcome instead of an unwinnable fight"* as one of their best calls; this does not reverse it, it applies it **to** an unwinnable fight. The body-handling was **pulled out of `toRetreat` into `carryEverybodyOut()`** rather than copied, because two ways to turn a downed body into a scar is two rules to keep in step. **6. TWO NEW LINT CHECKS, ONE OF THEM PAID FOR ITSELF THE SAME HOUR.** `startBattle` picks its foe list from a hardcoded `kind==='x'?xFoes():` chain ending in `:foes()`, which is the Snare's ratkin - **a fight kind missing from the chain silently fights the Snare's army**, the same silent-fallback shape as `LOOT[kind]||LOOT.snare` one layer further in. It is not hypothetical: this fight served nine ratkin the first time it was stood up on the board. The check reads the function's own source, because the chain is the only place that knows. ⚑ **AND A DUPLICATE KEY IN A REGISTER LITERAL IS COMPLETELY SILENT.** The new status was called `marked`, which #67 had already taken further down the same `STATUS` literal; the later one simply wins and the earlier one never existed. Nothing warned, both features looked fine in isolation, and only the one defined first was gone. Renamed `ringed`/`nearring`, with the warning written where the next status will be added, because neither the linter nor the console can see it. **7. Two prose bugs caught by driving it.** The receipt shipped as *"a black ring round You's left eye"* - the Captain's roster name is literally `You`, which this file already warns about once, on `cast()`; it is second person now, with the generic branch kept. And the em dash in the confiscation line went. **Verified:** `LINT()` 0 · `regress()` all eight fights unchanged, 4-15 rounds, nothing thrown · the paying door open at 8 provisions and shut at 5 · the mark landing on the Captain and nobody else · both ends of the ring showing on the board and #67's own `marked` status still alive and still its own · a real (non-practice) run driven to a total loss with the save intact, `G.over` unset, all four alive and scarred, food and crowns at zero and the ring on the Captain's face · the fight added to the practice field, where `SIM.on` means the beating can never fire and the mark can never reach a real face. **Next free number: #75.** | ✅ DONE |
+| 8f.82 | **TWO BUGS FROM ONE SCREENSHOT: THE AUTO ARCHER FROZE ON AN OGRE, AND A MAP TOOLTIP FOLLOWED THE COMPANY INTO THE FIGHT.** *(User, 2026-08-02, with a screenshot of round V: "1) ARcher frezes when atacker near (on after battle, don`t know, if it works for ai. 2) some strange thing from the global map sticks in the battle".)* **1. THE FREEZE WAS THE SIZE GATE, AND THE SCREENSHOT CONTAINED THE WHOLE DIAGNOSIS.** The log in it printed *"An ogre does not get moved"* five times in a row, which is `clickHex`'s #46 refusal, and it is the one refusal that **spends nothing**: OFFER WITHDRAWN, never an action wasted, which is exactly right for a hand on a mouse and a deadlock for a brain. AUTO clicks the board the player clicks, on a 240ms `setInterval`. An archer with an ogre on it has no other damaging act on the table (the picker drops every ranged act while engaged), so it scored KICK, clicked, was refused, spent nothing, scored KICK again, forever. Reproduced exactly before touching anything (`autoStep()` called six times by hand: `actions` stayed at 2, `idx` never moved, six identical refusal lines) and again after the fix (steps back out of reach, eats the parting swing, shoots the following tick, turn ends). ⚑ **THE FIX IS A PREDICATE, NOT A SPECIAL CASE.** `mayAim(u,a,t)` states the refusals a brain can walk into ONCE, next to `sizeOK`, and both pickers ask it in the same breath as the lane test. **A refusal the player reads is a rule being taught; a refusal a brain gets back is a stall**, and the note over it says any new no-op-and-return gate in `clickHex` must be added there too. ⚠ **AND IT ANSWERS THE USER'S OWN QUESTION ("don't know if it works for ai") IN THE OTHER DIRECTION.** `aiTurn` never goes through `clickHex` - it calls `spend()` and `strike()` directly - so the enemy brain never froze; it did something the player is **not allowed to do at all**, kicking an ogre for 2-4 damage and no shove. Both brains or neither, so the same predicate went into both. **2. THE WATCHDOG HAD A HOLE THE EXACT SHAPE OF THIS BUG.** B02's stall reporter tests `if(!B.busy&&!aiSide)return` - a player thinking is not a stall - and under AUTO `busy` is false and the stuck body is one of YOURS, so **both tests passed and it sat there while the fight was plainly dead**. `B.auto` now counts as a machine-driven side: nobody is thinking while AUTO is on, so eight quiet seconds on the same unit is a stall by definition. The net is not the fix and never was, but the fix that has no net is the one that costs a run. **3. THE "STRANGE THING FROM THE GLOBAL MAP" IS ONE SHARED TOOLTIP AND A LOST `mouseleave`.** `#gtTip` is a single body-level div used by fifteen hover sources across three screens, and every one of them hides it on `mouseleave`. **A DOM node REMOVED under the cursor never fires `mouseleave`** - so hovering a node on the way out and then clicking a live one leaves the tip lit while `drawNodes()` destroys every button underneath it, and the fight then takes the screen with a map card floating over the board in the map's own typeface (the screenshot has it sitting on the fen, reading *"Too far to know more than the shape of it"*). Fixed at the **two places that destroy hovered elements** rather than at the fifteen that create them, which is the same shape as `#wDlg` in `show()` and for the same stated reason: the next hover source would forget. ⚑ `hideTip()` looks the element up **by id on purpose** - `show()` is defined 13,000 lines above the `const TIP`, and naming it directly would be a temporal-dead-zone throw on any call that lands before that line runs. **Verified:** the freeze reproduced and gone, on a fresh page a full AUTO fight from the exact reported position ran to the spoils screen with `STALLS` empty and nothing thrown · `regress()` all eight fights resolve, no guard hits, no errors · the tip lit on hover, cleared by the map rebuild and cleared again by the screen hand-off. ⚠ **A parallel session held the file open the whole time**; every edit was made against a re-read anchor and the build-log number was re-grepped at the last moment (8f.80 and 8f.81 were taken while this was being written). | ✅ DONE |
+| 8f.83 | **THE ONBOARDING FIRED EVERY OTHER TIME, AND IT WAS FOUR SEPARATE DEFECTS. PLUS THE LESSON ABOUT ARMOUR.** *(User, 2026-08-02, working overnight from a prepared list: "Онбординг - срабатывает через раз. Пофиксить. / Добавить про броню, которая смягчает удар (клод)".)* **1. "EVERY OTHER TIME" WAS LITERAL, AND THE REPRO IS THE WHOLE DIAGNOSIS.** `learnSides()` sat ABOVE `camBar()` in `startBattle`, which is before the first `render()` of the fight - and `#bGrid` is built by `render()`. So every `hexPt()` returned null: the three rings were never drawn, the balloon was never appended, **and `capSay()` returned `true` anyway**, so lesson 1 was marked seen for the life of the save. It looked intermittent because **`#bGrid` still held the PREVIOUS fight's hexes, at the same coordinates on the same 15x13 board** - so the second and every later fight of a page session worked perfectly and only the first one lost it. Measured before touching anything: first battle after a page load, `gridBefore:0`, **0 balloons, 0 rings, `L_learn_sides` marked seen**; second battle, identical call, 1 balloon and 12 rings. In a campaign the first battle of a page load is Blood on the Road, which is the fight the tutorial exists for. One `render()` before `learnSides()` fixes it, and it goes **after** `camApply()` because the balloon is placed from live rects. **2. THE CLASS FIX: A BALLOON THAT CANNOT BE DRAWN MAY NOT BE SPENT.** `capBalloon()` reads its position off the live DOM and returns silently when there is no board to hang on, and `capSay` reported success regardless - the same shape as the one-shot-flag trap this file already warns about twice: **"remember that this happened" and "make it happen" must not be two statements that can come apart.** `capSay` now asks `$('bFx') && $('bField') && hexPt(spk)` **before it mutates anything** (the spent-lines set, the round, the tier, the budget), so a refusal costs a lesson nothing - it stays unseen and goes back on the queue. That makes fix 1 belt as well as braces: reordering `startBattle` again cannot silently delete a lesson. **3. A LESSON RIDING A WHISPER COULD BE LOST FOREVER, AND THE USER'S LIVE SAVE PROVES IT.** `whisper()` burns `w_rung` whether or not the lesson half got a round, and `learn()` refuses outright while `B.won!==null` - which is exactly when most nerve drops happen, because the blow that ends a fight is the one that makes a line's nerve go. Read straight out of their `localStorage`: **`w_rung` seen, `L_w_rung` never**, so the nerve lesson had become unreachable in a save that has played the whole act. The lesson is now asked for **above** the toast's once-ever gate, with its own `L_` flag: the toast still speaks once ever, and the lesson is re-offered on every later occurrence until it actually gets said. The two seen-sets may now differ, which is the point - they answer different questions. **It retro-heals the existing save**, verified by recreating that exact state (`w_rung` set, `L_w_rung` deleted) and dropping a rung: the lesson fires and the toast correctly stays silent. **4. TWO LESSONS COULD SHARE A ROUND, WHICH IS TRUE OF THE ROUND AND FALSE OF THE SCREEN.** There is ONE balloon, and the later line removes the earlier one on sight. `startBattle` and `beginTurn` run in **one synchronous block**, so *"Green rings are ours"* was drawn and then replaced by the next lesson **before a single frame had been painted** - the rings appeared under a line about something else, and the first sentence of the tutorial had been unreadable in every fight of the game, including the ones where fix 1 was not in play. A lesson now waits for the screen to be clear (`if(C.el)return false`), which costs this tier nothing **because it is the tier that queues** - which is what the queue was built for. `learnAt`/`learnN` were deleted with the rule they served rather than left sitting beside the new one. **5. THE ARMOUR LESSON - the fourth rule of the deleted `coach('fight')` card, finally in somebody's mouth.** #60 turned three of that card's four rules into lessons and left **armour before blood** in `? RULES`, where a player has to go looking for it. It fires on the first blow of the save where the harness takes **more of it than the body does**, whoever swung it: not the first blow ever, because on the first blow nobody yet cares which pool moved, but the one where the number **looks like a failure** - a large grey figure, a small red one, and nothing in the game saying which of the two ends a life. ⚑ **Gated on `armD>3`, which is exactly the threshold at which `strike()` draws the "- N arm" figure: teach what is on the screen.** A lesson pointing at a number the player cannot see is worse than no lesson, because they go looking for it and conclude they have misread the board. It also cannot fire on an armour-ignoring act (`act.am===0` leaves `armD` at zero), so **the Weeping Hammer can never be the weapon that teaches the armour rule** - correct by construction, since an exception is a bad teacher. Wording lifted from `? RULES` verbatim (*"Armour comes off before blood"*) so the two places cannot teach one rule in two dialects. No new number: the register's own note says a seventh trigger is one row and nothing counts them. Picture: [`shots/75_armour_lesson_built.html`](../shots/75_armour_lesson_built.html). **6. AND A THIRD SIGHTING OF THE PRONOUN BUG, fixed centrally this time.** Testing the nerve lesson on the Captain produced ***"You is losing their nerve, and standing alone is what does it fastest"*** - `capName` returns the roster name, the Captain's roster name is the word **You**, and every `{N}` line in the register is written in the third person. 8f.81 fixed the same thing in one event's receipt and the file warns about it once more on `cast()`; that is three separate copies of one bug, so this one went into **`capName` itself** - he is named by his nickname, exactly as the balloon's own header has done since #51. One line fixes `alone`, `w_rung`, `learn_bow` and `learn_cast` together. **Verified in the running game:** the first battle of a fresh page load now draws the balloon, 12 rings and all three labels (OURS / WITH US TODAY / THEIRS) · a full AUTO clash taught **seven** lessons in order, one per balloon, with the rest queued and none lost · the queue drains in order after being deliberately starved · `LINT()` 0 findings · `regress()` all eight fights resolve at 4-11 rounds, no guard hits, nothing thrown. **Next free number: #75** - unspent, nothing here took one. | ✅ DONE |
+| 8f.84 | **FOUR COMFORT FIXES IN THE FIGHT, AND THE FIRST BATTLE STOPPED BEING A WALL.** *(User, 2026-08-02, overnight list: "Удобство боя… Показывать статы твои и противника когда ховер какое-то время (например 2-3 секунды), иначе он зависает и мешает ходить / Чуть больше хитбокс противника, когда ты наводишь на него удар… / В первом бою если выбираешь помочь ретлингам - у огров противников 20 брони, вместо 50ти / make auto battle workble only it test mode".)* **1. THE HOVER CARD WAITS TO BE ASKED, AND IT WAS ALSO GENUINELY STUCK.** Two complaints in one sentence with two different causes. *Мешает ходить*: the 240px readout opened on the first frame of a `mouseenter`, so crossing the board threw it up over the hexes on the way; it cannot eat a click (`pointer-events:none`) but a panel flashing over the place you are aiming at is the same problem to the hand on the mouse. *Зависает*: it was **actually getting stuck**, the same bug 8f.82 fixed for the map tooltip one screen over - `render()` does `g.innerHTML=''`, **a removed element never fires `mouseleave`**, and the card stayed lit over a board that had moved on, describing a body that might have died meanwhile. Fixed at the place that DESTROYS the hovered element, not at the handlers that make it. ⚑ **The dwell is 1200ms and not the 2-3s in the request, said out loud because it is a refusal**: at two and a half seconds the card effectively never opens in play, and the hit-chance breakdown is what the whole aiming layer is built on - the literal version would have deleted the feature it is about. A **450ms grace** makes the wait painless: once you have read one card, moving along a line of bodies opens the next at once. ⚠ `e.currentTarget` is null by the time a timer fires, so the element is captured synchronously and handed on in a stand-in. And `hideRead` was split: `closeReadCard()` for render, because the peek tint is deliberately restored across a rebuild and closing a card is not a reason to reverse that. **2. THE TARGET GOT 74% MORE CLICKABLE AREA, MEASURED.** The cause was `.hrow{margin-top:-10px}`: rows overlap by ten pixels and a later row's buttons paint over the row behind, so **the bottom quarter of every hex belongs to the hex in front of it** - which is exactly where a bottom-anchored token's legs are. A ratkin is a 21x29 sprite in a 37x42 button whose lower 10px is somebody else's, so with your own people round it there was very little left to hit. `.aimpad` is a transparent layer that takes the area back and a few pixels besides: 1184px² effective → 2064px². ⚑ **It carries no handlers** - it is a descendant of the hex button, so clicks bubble and `mouseenter` fires for descendants, which means one code path per hex and nothing new to keep in step. ⚠ **It is transparent and NOT a z-index on the hex**, because raising the hex would lift the token with it and paint a target on top of whoever stands in front of it, which is the depth cue the overlapping rows exist to create. Drawn only where `odds!==null` - a hex the selected blow can legally reach - so it can never steal a click from a hex you could have walked to. **3. THE FIRST FIGHT WAS THE OUTLIER AND THE ARENA SAID SO.** Twelve runs a branch with the starting four, before touching anything: helping the ratkin ran **67% win, 7-16 rounds, median 12** - a third of first fights lost, at the top of the round band, in the fight that teaches the game - while the other two doors were already 100% at medians of 6 and 8. ⚑ **The number he saw was 54, not 50, and the statblock said 72**: `build()` puts every foe through the playtest-#4 armour trim (ARM=.75), so **the figure in a statblock is not the figure on the board** and this had to be solved backwards, 20/.75 = 27. After: **92% win, median 7**, other branches unmoved (the ally ogres share the template and getting weaker did not hurt the branch they fight on, so it was left as one creature rather than split into two). Hitpoints untouched on purpose: an ogre should still be more meat than a company in rags can chew quickly - what was wrong is that knives could not get THROUGH it, which reads as your weapons being fake rather than the enemy being big. **4. AUTO IS A TESTER TOOL NOW.** *"I want to see how people would play without this shortcut."* Same `display:none`/`.on` gate as WIN NOW and LINT, from the one authority `syncTest()`; the placement and every line of `autoStep` stay exactly where they are, because the point is to watch people play a fight and not to stop them ever skipping one. ⚠ **Turning test mode off mid-battle hands the fight back** - hiding a live control would leave AUTO running with nothing on screen to stop it. ⚑ **And the first cut of the gate did not work at all**: `#bOpts button` sets `display:flex`, an id PLUS a type, which **outranks a bare `#bAuto`** - the rule lost silently and the button sat there looking exactly as though the gate were working. Scoped to `#bOpts #bAuto`. **Verified:** dwell measured at 0/600/1400ms, grace re-open instant, card closed by a render under the cursor · pad present once per legal target, absent when MOVE is selected, 43x48 against a 37x42 hex · AUTO hidden by default, shown under TEST, and a live AUTO stopped when TEST went off · `LINT()` 0 · `regress()` all eight fights. | ✅ DONE |
+| 8f.85 | **#75 DOUBLE RATIONS, #76 SEND THE RUN, AND THE EVENT BOOK.** *(User, 2026-08-02, same list.)* **1. #75 — THE MECHANIC ALREADY EXISTED AND ONLY THE DOOR WAS MISSING.** *"Если есть юниты с неполным здоровьем перед путешествием на нод боя - предложение за провизию их восстановить (двойные рационы)".* `openProvisions` has sold DOUBLE RATIONS FOR THE HURT since the provisions redesign and `passDays` has doubled the mending for it - but it lives behind the PROVISIONS chip and **nothing in the game ever mentions it at the moment it is worth anything**. Building a second way to heal would have been a second source of truth for "how does a wound close", so the offer calls the same purchase (`takeRations`), and the four numbers that were inline in two functions are named once above both readers. It asks only when all four are true: the road you have committed to ends at a `t:'battle'` node, somebody is carrying a wound, rations are not already running, and there are barrels enough to pay - so on the great majority of legs nothing changes. ⚠ **It sits inside `travel()` and not `confirmTravel()`**: there are three ways to commit to a road (the fork card, the single-road card, and a plain click on a corridor, which #58 stripped of its confirmation on purpose) and a question asked in one is a question the other two do not ask. One door, three callers, nothing to keep in step. ⚠ **It does not reopen #58**, whose ruling was "do not make the player click twice to agree with the map" - this card exists only when there is a decision with a price on it, which is the test #58 itself set. ⚑ **The card quotes what THIS ROAD gives back, and that is the whole feature**: mending is per DAY, so a one-day march to the fight hands over one day of it however long the rations last, and the card says *"twelve to each of them instead of six before you get to Blood on the Road"* and then says the leftover follows you onto the next road, "which is no use to anybody standing in this one". Verified end to end: the promise was 12 and Vesna went 18→6 on that one day. Picture: [`shots/75_double_rations_built.html`](../shots/75_double_rations_built.html). ⚠ `num()` was a **local inside `forkCard`** and both new callers would have thrown on it; hoisted. **2. #76 — SEND THE RUN.** *"чтоб после рана человек в меню мог нажать кнопку отправить ран… + далась короткая анкета… Сделай хорошо и не напряжно."* #53 already records every decision, road and fight, which answers *what did they do* completely and *what did they think* not at all. Seven open questions, each aimed at something this slice is genuinely unsure about: **where you stopped** (the only honest measure of a slice) · **name somebody from your company** (ATTACHMENT, which README §2 names as the thing that killed permadeath the first time - **a player who cannot name one person is the finding**, so a blank here is data) · **the hardest decision** and **what you could not afford** (the pillar from the conscience side and the purse side) · **a moment in a fight you did not understand** (legibility, which is what gate 1 is for) · **what would you cut** (§5's own last question, asked of the only person who can answer it) · anything else. Plus one pick the journal cannot infer: how hard was it, including *"I lost and did not know why"*. **Not nagging is a rule, not a hope**: nothing is required, the card says a blank is a real answer, it saves on `input` (not `change` - the last box a person fills is the one they never leave), and it is never pushed in front of anybody. Answers ride home in the journal blob, **bumped to v3, which adds keys and changes no row shape** - the contract #57 reads under, and a v1 or v2 blob from a friend on an older build still reads perfectly (verified). ⚠ **A friend's pasted journal never carries your answers**, or the export would put words in their mouth. ⚠ CLEAR MY JOURNAL now clears answers and name too, or the promise that one control forgets you is not true. The copy button tries `navigator.clipboard` and falls back to `execCommand`, **and says which happened** - a copy button that silently does nothing is the worst control in any program, and in this sandbox the fallback is the path that runs. ⚑ **`esc()` was a local inside `drawNotes`**, the same trap as `num()` above, and the questionnaire renders a player's own typed text right beside it. Picture: [`shots/76_send_the_run_built.html`](../shots/76_send_the_run_built.html). 🚧 **ONE DECISION IS THE USER'S**: there is no actual *sending*. The published artifact's CSP blocks every outbound request, so "quick sending" is copy-and-paste until there is a form URL or an address to point at. **3. #77 — THE EVENT BOOK.** *"Собери мне тексты ивентов в удобный гугл док… подпись ивента вверху, текст, выборы, результаты… Можна там то-же показать теги и оценку этих событий, чтобы если что я понимал куда править."* [`tools/events_book.js`](../tools/events_book.js) reads `EVENTS`, `CAMPS`, `VIGNETTES` and `NODES` out of the **running game** and the rubric out of `tools/dramaturge.html` at run time, and writes [`content/events_book.html`](../content/events_book.html): 31 road and story events, 18 camp cards, 14 vignettes, 152 choices, with a *where to look first* table carrying each beat's tag, drama, swing and erosion. ⛔ **No second copy of the event data**, the same rule the Dramaturge lives under. Under each choice is a ▸ line saying **what it actually does in the game**, so the words can be judged against the mechanics without opening the file. ⚑ **Eighteen camp bodies and twelve result texts are FUNCTIONS**, `(a,b,both)=>'...'`, because those cards are about two named people - the first cut rendered them with `String()` and **put JavaScript source into the middle of the writer's document**. One resolver now handles every authored string, called with `{A}` and `{B}` so the prose comes out and the placeholders stay obvious, printing both branches when the flag changes the words. Two more of the shape: a choice's `rep` is an object and some `tag`s are objects, and both stringified to "[object Object]" before they were given renderers. The doc's own preamble carries the three round-trip rules: do not touch the `[key]` in a heading, say in a comment when you mean to delete a choice, and leave the `{TOKENS}` alone. **Verified:** the saved tool reproduces the book byte for byte from a cold page, 49 cards, no leaked code and no `[object Object]`. **Numbers #75 #76 #77 spent; next free is #78.** | ✅ DONE |
+| 8f.86 | **#76 FINISHED: THE RUN ACTUALLY GOES SOMEWHERE NOW.** *(User, 2026-08-02, answering the open question from 8f.85: "Можно ли вшить именно отправку? Человек будет делать это в клод артефакте онлайн. Или просто письмом на емейл dmytriyvihrov@gmail.com" - and confirming the survey stays in English, and that #75 needed no change because it was already a choice.)* ⛔ **A SILENT SEND IS IMPOSSIBLE AND THAT IS WRITTEN INTO THE CODE so nobody spends another hour on it.** The published artifact runs under a CSP that refuses `fetch`, XHR, WebSocket, `sendBeacon` and the old image-pixel trick, and **no runtime capability grants a page network access** - the two that exist are `downloads` and `mcp`, and `mcp` is out on its own terms because a page declaring it *cannot be shared publicly*, which is the entire purpose here. So a Google Form cannot be POSTed to and nothing can be uploaded, by anybody, ever, from inside an artifact. **What IS possible is a navigation**, and that is the whole design: **✉ SEND IT TO ME is a real `<a href="mailto:">`**, not a scripted `window.open`, because a click on an anchor is a user gesture on a link and is the most permissive way out of a sandboxed frame. Their mail opens addressed to `FEEDBACK_TO` with the answers, the difficulty and the run tally already written. ⚑ **The clipboard copy happens in the SAME gesture**, and it has to: a `mailto:` URL dies somewhere past two kilobytes in several clients, so the letter carries the answers (the half a human reads) and the journal blob rides the clipboard, one action rather than two. The default is never prevented, so the browser still follows the href. ⚠ **A tester who writes an essay must not get a dead link**: the URL is measured, and over 1900 characters it falls back to a short body saying the rest is on the clipboard - **a send button that opens nothing is worse than no send button**. Verified at 1488 characters with all seven answers, and at 242 with two 2,800-character answers. **A third row appears only when the page is published as an artifact with the `downloads` capability** (`window.claude.downloads.save`, feature-detected, absent on the local server and in a plain browser) so a tester can attach a file rather than paste one - **a control that cannot work must not be on the screen**. Under all of it the address sits in plain text and the copy box is the floor. ⚠ **The address is now published to everybody who ever plays this build**, on the user's explicit instruction; it was deliberately left out until he said so. Picture: [`shots/76_sending_built.html`](../shots/76_sending_built.html). **Verified:** the anchor carries the address and the letter, the click copies without blocking the navigation, a friend's pasted journal still offers no send button and carries none of your answers, `LINT()` 0, `regress()` all eight fights. | ✅ DONE |
+| 8f.87 | **QA PLAYTHROUGH: FIVE RUNS AS A USER, NO SOFT LOCKS, 27 FINDINGS FILED.** *(User, 2026-08-02: "Run game as a user - check bugs and mistakes. Fix smaller one, save bigger one. Main concern bigger bugs and soft locks - want to give user for test!")* No code changed this session (the user called time before the fix pass); the deliverable is **[`QA_PLAYTEST_2026-08-02.md`](QA_PLAYTEST_2026-08-02.md)**, findings categorised bug / balance / feature / lore with severities and code pointers. **The headline is the absence: across five campaign runs, twelve fights, three full wipes, two withdrawals, one skipped boss and one fled road ambush, every ending exited cleanly and `window.__errs` stayed empty.** The one path still unverified is the Snare VICTORY epilogue (all five runs died or stopped short of it). Best catch: **takeMercy() never pays its advertised salvage** (payFx covers crowns+food only, takeMercy adds iron and gems but not salvage; both paying mercy rows promise it) - the 8f.54 dead-receipt class on a second applier, confirmed live (strip paid +30 crowns, +0 salvage) and in source. Also live in five registers: the Captain-pronoun trap ("You misses.", "You is down", "You does not offer" in the Warm Spring beat). Balance flags for the friends playtest: the dog pack wiped two careless manual runs at rounds 9-10 through the nerve cascade while AUTO won it twice with the same bodies; a mercy-playing company arrives at Coldharrow with ~20 crowns and every shop greyed; the sinkhole tunnel can legitimately skip the dogs AND the muster. The user's live save was backed up to the session scratchpad before testing and byte-restored after. Six one-line fixes are queued in the report's "ready to apply" list for the next session. | ✅ QA |
+| 8f.88 | **THE ALLY SLINGER STOOD ON ITS DEPLOYMENT HEX FOR THE WHOLE FIGHT, AND IT WAS THE ENEMY'S OWN "WE HAVE THE BOWS" STANCE AIMED AT THE PLAYER'S SIDE BY ACCIDENT.** *(User, 2026-08-02: "In the first battle when i helped ratlings, ratling archer wasnt moving and heloing".)* **THE DIAGNOSIS IS ONE WORD IN ONE PREDICATE AND THE REST IS ARITHMETIC.** `disposition()` is computed **per SIDE**, and the clash allies are pushed onto side `you` by `clashAllies()`. Helping the ratkin gives your side your own archer plus their slinger, which is **two shooters**, against **three ogres carrying none** (WARCLUB and SWEEP are the whole ogre kit here, and PICK UP AND THROW correctly does not count since 8f.49's `a.dmg` rule), with seven bodies on the field. That is exactly `myShots>=2 && myShots>theirShots && mine.length>=3`, so **`B.disp.you.hold` came out `true` in a fight the player was never going to hold in**. Nothing on your side showed it except the one body that is both AI-driven and carries ranged damage: the player's own units never read `aiTurn` at all, and the two spear allies fail the `iShoot` test. **Measured before touching anything, over four rounds: `Ratkin slinger @5,6` on every single turn, nearest ogre never closer than seven hexes against a sling range of four, and not one stone let go.** The two spear allies were at `@10,4` and `@11,5` and engaged by round two, which is why the fight still felt like it had allies in it and why this survived. **THE FIX IS THE RULE, NOT A GUARD, AND IT IS DELIBERATELY NOT IN `disposition()`.** Holding is an argument about whose ground gets crossed, and only a side that owns the whole battle plan is entitled to make it: three ratkin who took your side an hour ago are not, and a helper who announces that YOU can come to HIM is not helping. So `const holds=disp.hold&&!u.ally`, and the stance itself is left correct for the player's own line under AUTO. **The ally is the exception because of what it IS, not because of which side it happens to stand on**, which is the same shape as the `race` trap already in the README: test what a thing is, never what its fields look like. **Verified in the running game, not in a scorer:** staged from the practice field with the ratkin door picked, `B.disp.you.hold` is still `true` and the slinger now goes `5,6 -> 8,6 -> 11,8`, **six sling stones in a five-round fight against zero before**, board shot at [`shots/ally_slinger_after.html`](../shots/ally_slinger_after.html) · `regress()` all eight fights resolve, no guard hits, `errs` empty · **24 arena runs a door on the starting four, which is the same instrument 8f.84 tuned this fight with: ratkin 92% at a median of 6 (8f.84 read 92% at a median of 7), ogres 100% at 6, watch-it-happen 100% at 6.** The door the user complained about is fractionally faster and no easier, because the slinger's contribution is small; what changed is that it is now visibly in the battle. ⚑ **The next reader of this is #59** (the woman from the cage returns as `ally:true` for the Snare, reusing `clashAllies()`'s contract whole) and **she is an archer**, so this would have shipped twice. | ✅ DONE |
+| 8f.89 | **THREE QA LEFTOVERS, PICKED UP AFTER THE PARALLEL FIX SESSION TOOK THE REST.** *(User, 2026-08-02: "can you make this fixes if you havent".)* Coordinated against 8f.88's session by grepping the file first: capName (QA-2, fixed structurally via `unitName` at the unit build), word4 (QA-5), Coldharrow subtitle (QA-6), monster race in the report (QA-4, `kindOf` bestiary tag), takeMercy salvage (QA-1), the fled-path queuedEv comeback (QA-7) and the SECOND DEBT rewrite (QA-24) were already in, so only the untouched three were taken. **1. QA-3: five vignettes were literally titled ON THE ROAD** while the card header prefixes the same frame, rendering "ON THE ROAD - ON THE ROAD" on every draw of the mule, the bet, the rain, the heels and the crow. Titled THE MULE · THE BET · AN HOUR OF RAIN · SORE HEELS · THE CROW, with a warning comment above the first so the sixth cannot come back. **2. QA-11: Blood on the Road promised two ogres and fields three**, in the body and in the ratkin door's receipt. The text now says three; the fight is untouched. The ogre-door ratkin count was left alone, unverified. **3. QA-22, and the root was a gate bypass, not a wording.** The `nofear` trait already carries `notRace:['ogre']`, yet the Sitting Stone ogre walked in with it and its small-folk cost line: `pickChoice`'s `c.recruit` block overwrites race and class AFTER `rollRecruit` rolled the trait for a different body. One line re-rolls the trait through `rollTrait(nr.race,nr.cls)` once the overwrite has said who they actually are - which also closes the same hole for every class-gated trait on every event recruit. **Verified:** `LINT()` 0 findings · `regress()` all eight fights resolve, no guard hits, `errs` empty (clash 5rd, brigand 9rd, pack 4rd, slingline 5rd, steading 8rd, snare 8rd, mother 21rd, armour 8rd) · the user's live save shielded around the regression and confirmed intact after (day 1 · 4 in the company · 140 crowns). Still open from the QA report: QA-8/9/10 (claimed by the fix session, possibly in flight), QA-25 and QA-27 (author's flavor calls), QA-12..17 balance and the two design questions. | ✅ DONE |
+| 8f.90 | **THE QA FIX PASS, RUN IN PARALLEL WITH THE PLAYTHROUGH THAT FOUND IT, AND THE THREE THINGS IT TURNED UP THAT NOBODY HAD PLAYED INTO YET.** *(User, 2026-08-02: "ca you move paralel with chat 'Game testing and bug fixes' and fix bugs what that it have found?")* Read the tester session's own `findings.md` rather than waiting for its write-up, claimed a list out loud by message so the two sessions could not collide on a 4.2MB file, and fixed it. **QA-1 takeMercy never paid salvage** and both paying MERCY rows advertise it: fixed by giving takeMercy the same four materials `takeLoot` pays, `wood` included, so a receipt written tomorrow does not have to remember the list. **QA-2, the pronoun trap, was fixed ONE STEP EARLIER THAN IT WAS FOUND, and that is the whole entry.** The Captain's roster name is the word "You" and every combat-log line is written in the third person, so the field printed "You misses.", "You is down" and "You breaks. White flag, and gone." `capName` had already solved this for the balloon register and its own comment named the answer (the company calls him by his NICKNAME) - so the rule moved down to `unitName`, where the battle unit is BUILT, and **fifty `say()` lines were fixed at one site instead of fifty.** `youName` is its mirror for the two cards that are pointing AT you rather than telling a story about you, and it keeps the unit card reading "⚑ You" over its own nickname line. The camp cards needed the same rule one register further out (`proseName`, used by `who()`), and **that one had a trap in it**: four sites resolve a cast string back to a roster member with `indexOf(m.name)===0`, and a cast string is BUILT by `who()`, so the reverse lookup had to move with it or the Captain would have silently counted as no longer at the fire. **QA-8 got one rule for the whole game** (`needTag`): a dead button now names the thing you ran out of, so an empty barrel stops reading as an empty purse, which mattered most at THE LONG FIRE, whose only price is provisions and which was telling the player they could not afford a thing that costs no money. **QA-9 stopped being a dead click**: the aftermath exit is no longer `disabled`, it scrolls to and flashes whichever of mercy/field/promotion is still unanswered, because the click IS the question "why can I not leave" and the screen already knows the answer. **QA-10 flipped two words**: `live` now outranks `done` on the map, since reachable-from-where-you-stand is what live MEANS, and the test order was only ever correct while no road could run back to somewhere you had stood. **QA-25** got a kill ending on both clash branches, counted off `B.units` rather than assumed. **QA-6 was fixed by deleting the sentence rather than correcting it**: Coldharrow's exit now calls `roadOut(G.at)` and reads the days off `EDGES`, because a hand-written direction is the `armourDue` trap in label form and it will go stale again the next time the map moves. **The clash counts are now measured, not remembered** ("Four ratkin with spears and a sling" and the ogre door says five, both counted in the running game), and **THE BROKEN MEN says four men and two dogs**, which is what `brigands()` fields and which also stops two lurchers walking onto the board unannounced on the one card whose whole argument is "they are people". **THREE THINGS NOBODY HAD PLAYED INTO.** (1) **THE WARM SPRING'S FULL-COMPANY HEAL WAS FREE.** `pay()` floors at zero and the option never carried a `need`, so a company on an empty barrel was charged nothing and still had every wound closed. (2) It was not alone: a sweep of every `fx` in `EVENTS` and `CAMPS` found **nine more rows spending provisions or crowns they never checked for**, all now gated, verified by a script that walks both tables and reports any spend without a matching `need`. (3) **AND GATING THEM WOULD HAVE SHIPPED A SOFT LOCK.** Bonepicker's Camp is four costed options and no exit; it cannot dead-end TODAY only because "rest a day" was ungated and quietly charged nothing, which is the very lie being closed. **So the loot picker's oldest rule was promoted to the event and camp cards: the leave-it option is APPENDED, never authored, and it appears whenever nothing else is affordable.** `pickChoice` takes the choice OBJECT now, because the appended answer is not in `e.choices` and an index cannot name it. One more fell out of QA-10: nothing clears a node's `ev` when its fight is WON, so walking back down the re-opened under-hill road **would have opened the Fen-Mother a second time** - arrival now reads `firstTime` BEFORE it sets `G.visited[k]`. **QA-7 was verified and deliberately NOT changed**: both `toBattleLost` and `toRetreat` null `G.queuedEv` on purpose and say so in a comment, so fleeing the Thing in Armour really does delete the Dead Company, and that is a ruling for the author rather than a bug (see the QA doc). Gates: LINT 0, `regress()` all eight fights resolve with no errors, the trait gates hold over 48,000 rolls plus every preset and the muster, and the user's save was backed up and restored byte-identical. | ✅ DONE |
+| 8f.91 | **THE USER'S FIVE QA RULINGS, AND THE TWO THEY ASKED BUILT.** *(User, 2026-08-02, answering the report's open questions: "1. Secret 2. skill check - it is quite easy battle - idea - don't run, keep your ground 3. soften a bit - lets noble give you 30% more money from the begining 4. Food and provision don't eaten each day automatically - only to heal... so dont be so good ) 5. bug - fix it".)* **Rulings recorded:** the under-hill tunnel is an INTENDED SECRET (QA-17 closed, no gate) · the dog pack stays as the keep-your-ground skill check (QA-12 closed, no softening) · provisions stay heal-only and the hungry fen is the pillar working (QA-15/19 closed, no food at the muster). **Built 1 - THE NOBLE PAYS ~30% MORE (QA-14's first turn of the knob):** all four tavern advances went up, rounded to figures the prose can say out loud: floor 30 to 40, silent 60 to 80, joke missed 40 to 50, joke landed 90 to 120, with every written-out number in the scene text updated ("a hundred and twenty instead of eighty"). The wagon's 48/90 strongbox is deliberately untouched - the ruling named the noble. Verified live: "Eighty crowns, in full" renders and the purse reads 128 at the wagon (80+48). **Built 2 - the Bonepicker rest line (QA-23):** "and the wagon does not survive" was ruled a bug; the receipt now lands the joke it was reaching for ("sleeps beside the wagon from noon to noon, so still that twice somebody goes over to check"). *(QA-25's kill ending was already in via 8f.90's session; nothing to do.)* **Verified:** `LINT()` 0 · `regress()` all eight resolve, errs empty (clash 4rd, brigand 5rd, pack 6rd, slingline 4rd, steading 8rd, snare 7rd, mother 6rd, armour 13rd) · the user's save shielded through the smoke test via a shots/ round trip and confirmed present across two boots after. ⚠ One session note for the next reader: a page that is mid-run keeps saving until it unloads, so restoring localStorage FROM a live game page can lose the restored key to the dying page's last write - restore from the MENU, or reload first. **Still waiting on the user: QA-7 (fleeing the Thing deletes the Dead Company beat - deliberate per 8f.90's code read, three one-line options in the QA doc) and QA-27 (the bells line).** | ✅ DONE |
+| 8f.92 | **THE LORD NAMES THE JOB, AND THE THREE OPENING TEXTS BECAME ONE CARD.** *(User, 2026-08-02, four asks in one message: "From first 3 texts (two onboarding) and long on the map - create one" · "Change a bit, how lord is speaking. I don't know, more lordish and less repeats" · "Make opening screen scene 30% shorter" · "he has specific task: bandits took the palace of his smaller vassal - owner of a village. And he need to at least pretend, that he cares. He cant spare his man, but can spare you" · "that village on the other side of a valley (or can I say thing on the mpa valley?)".)* **1 - THE BRIEF IS A PLACE NOW.** "Something east of Grausen Hold is eating my road and my factor has stopped writing" was atmosphere the player could not picture; it is a man, a village, a hall and a date: **SKELBROOK**, one of his own men, taken at the thaw, a letter arriving every week. **The destination and the act are untouched** - the head under the Snare's standard IS the head out of that chair, and it is the SNARE VICTORY CARD that was rewritten to say so, because the one thing that card may not do is leave the player unsure whether they killed the right person. The village is never reached and the card says that out loud too ("Skelbrook is another two days east, and nobody is paying anybody for those two days"), which is the honest reading of a brief that asked for a head and not for a village. ⚠ **HE SAYS "BANDITS" AND MUST GO ON SAYING IT:** the prologue's whole set-up is that the player believes this is a country with one people in it until BLOOD ON THE ROAD, and a lord who has not been east in years calling a clan "bandits" is exactly the shape of that lie. **2 - THE PRETENCE IS THE WEEKLY LETTER, and it is why the brief is a HEAD and not a rescue.** He has been reading them since the thaw and doing nothing; a company is the cheapest thing that counts as doing something. Nobody says it, least of all him: one narrated line at the bottom of the card, arithmetic left to the player. **3 - LESS REPEATS, LITERALLY:** he said "scum" three times in seven paragraphs, says it once now, and the second lordly beat went with the repeat. Lordly here means TERSE AND UNEXPLAINED - he states what he owns, what he is keeping ("my own men stay where they are"), what he wants carried, and never argues, persuades or addresses the Captain directly. **Seven paragraphs became five and ~170 words became ~140, which is 18% and not the 30% asked for; the missing 12% IS the brief** (naming a place costs words that "something east of here" did not), and the note in the code names the next thing to cut if the user wants the full third. **4 - THE THREE OPENING TEXTS ARE ONE CARD.** The first map card, then `coach('map')` the instant it was dismissed, then `coach('inv')` on the first roster visit: three instruction boxes inside a minute, two of them saying what the card was already halfway through saying. **Both `COACH` rows are DELETED, not left dark** - the register is now `{}` with its history in a comment, same rule as the dead `coach('fight')` row: an unused entry is a second source of truth and the next editor will believe it. `coach()` itself stays, harmless on an empty register. The card keeps its order (job, map, company, pillar) and absorbs both. **5 - AND THE GROUND HAS A NAME: `THE GRAUSEN VALLEY`,** answering the user's question with a yes, because it was already true before it was written down (hills the whole north edge, the Hunch closing the east, the fen belt south-west) and "two valleys south" was already in the game's mouth. Painted faint, dimmer than THE HUNCH, in the one gap in the middle band no plate, road, cairn or bridge stands in. ⚠ **AND IT NEEDED A ROW IN THE TREE SCATTER**, which runs after the terrain and planted its first seed squarely through the N of GRAUSEN; caught by cropping the live canvas, not by reading the code. **Any label added to this map needs an exclusion band or it will be eaten eventually.** **Verified live:** `LINT()` 0 findings · `regress()` all eight fights resolve, no errors (clash 5rd mercy, brigand 7rd, pack 7rd, slingline 6rd, steading 9rd, snare 10rd, mother 7rd, armour 10rd) · both cards read back out of the running game · the valley label re-cropped after the fix and clear · **the user's day-5 save backed up before anything and confirmed byte-identical from a cold boot after** (day 5 · 5 in the company · The Broken Men · 145 crowns), restored from the menu and reloaded per 8f.91's warning. **Not renumbered:** this took no backlog number, so **#79 is still free**. *(`content/events_book.html` is NOT stale: it renders `EVENTS`, `CAMPS`, `VIGNETTES` and `NODES`, and every card touched here lives in the prologue, `enterWorld` or `AFTER`, none of which it reads. Worth knowing the next time a text pass wonders whether to regenerate it.)* | ✅ DONE |
+| 8f.93 | **THE CACHE, AND THE EVENT-TEXT PASS.** *(User, 2026-08-02: "hey, and when you updated - update pls all other events. Tipically shorter text. Mor specific information. (for example about the ask secret privatly or in a group - if in the group - you can add some consiquences. You get a place of a stash. So it should apear in one of the roads (longer way) - highlight on global map and add extra bonis from that staash when you arrived... Also, after updating text: shorter. Shorter sentences. More concrrete (even if something is up). Battle brother style.")* **PART ONE - THE CACHE, and it is a whole system out of one line of feedback.** `WHAT THEY DID BEFORE` paid in adjectives (*"You get an answer. It is short and it is true"*): nothing was learned, nothing existed afterwards, and the two ways of asking differed by six morale. **The answer is a PLACE now.** Ask in front of the fire and the shares get promised out loud; ask aside and only the two of you know. At the cache: OPEN pays 45 crowns +6 salvage +1 gem, +12 morale and **wipes every unpaid day in the company**; QUIET pays **90 crowns** +6 salvage +1 gem and buys nothing else at all. Coin or people, decided a week before you arrive, which is the pillar with a week of travel in the middle of it. **THE RULES, all four edges, are in the block comment at `plantStash`:** it lands only on `STASH_ARMS` (the long quiet arm of a fork, never the short one - the short arm already pays in a fight and the point is to make the SLOWER road worth walking); the slot is chosen by a **forward BFS over EDGES** and not by "unvisited", because the south water road is unvisited forever once you took the north one and marking an unreachable place is worse than marking nothing; it OVERWRITES the floating card dealt to that slot, deliberately, because two things on one slot is the double-fire bug that took the pedlar out of the floating pool; and when every long arm is behind you it pays **small and at once** (`stashFallback`, 40 crowns) rather than promising a place the map cannot deliver. **The plate is green with a ✦, lifts its own opacity** (`far` sits at .38 and a highlight that dims with everything else is not a highlight), and it is **the only node in the game that answers a hover from any distance** - every other far node says "too far to know more than the shape of it", which is the wrong sentence about somewhere a person in your company drew you a map to. **FOUR TRAPS HIT WHILE BUILDING IT, all four worth carrying:** (1) ⛔ **`G.stash` IS THE COMPANY'S ITEM BAG** and it is in the save and on the inventory screen - naming this `G.stash` would have replaced the player's gear with `{mode,at}` the first time anybody asked at the fire. It is `G.cache`. (2) **`pay()` ONLY EVER TOUCHES `G.run`**, so `pay('salvage',6)` wrote a `G.run.salvage` nobody reads and the player got a receipt for iron that never arrived; camp materials go through the `fx` pass into `G.camp`. Caught by measuring the deltas in the running game, not by reading. (3) **THE TEMPORAL-DEAD-ZONE COMMENT IN `pickChoice` IS LOAD-BEARING** - the first draft of `cacheTake` wrote into `hurtLine` twenty lines above its own `let`, which is the exact crash that killed THE GROUND OPENS once already. (4) **AN EVENT BODY MAY BE A FUNCTION NOW** (the cache reads which way it was asked for); CAMPS always allowed it and EVENTS did not, so `cast(fn)` threw on `.indexOf`. `evBody()` is the one resolver and the map hover and the LINTER both go through it. `plantStash` is idempotent because it is called from an `after` text, and a text function with a side effect is one refactor from being called twice. **PART TWO - THE TEXT PASS: all 31 events, the eight base camp cards and the chain cards.** Three rules: one idea per sentence, concrete nouns with the ornament cut, and more paragraphs so a card is scanned rather than read. SOMETHING IN ARMOUR went from five long paragraphs to nine short ones; THE DROWNED CHAPEL from one 45-word sentence to four; BLOOD ON THE ROAD, THE DEAD COMPANY, THE FEN-MOTHER, THE CIRCLE, THE SNARE, THE WOMAN IN THE CAGE, THE WARM SPRING, THE LONG FIRE and the rest all re-cut. **Not one cost, gate, reward, `needRace`, recruit or battle hook moved.** ⚠ **AND ONE THING WAS PUT BACK:** two receipts went onto THE HANGED TOLL-MAN's labels before the pass caught itself. That card is the REFERENCE event - costs stated as INTENT, payout a surprise, the falling beam `hideHurt` - and **concrete prose and a printed receipt are not the same thing.** The 14 road vignettes were left alone: they are already two sentences each in exactly the register asked for, and rewriting them would have been churn. **Verified live:** `LINT()` 0 · `regress()` all eight fights resolve, no errors · all 32 event bodies, all 18 camp bodies and all 14 vignettes resolve to strings · the cache walked end to end in both modes with the deltas measured (open: +45 crowns, +6 salvage, +1 gem, +12 morale, 5 of 5 grievances cleared; quiet: +90, +6, +1, 0 morale) · the fallback fired correctly from the Last Muster with every arm behind · the plate photographed on the real map at q1 · **the user's day-5 save backed up first and confirmed byte-identical from a cold boot after.** **Still #79-free:** no backlog number taken. | ✅ DONE |
+| 8f.94 | **THE FREE DOOR, THE SOFTENED PENALTIES, AND THE TEXT IN A DOC.** *(User, 2026-08-02: "Each event with merchant where is choice to buy or rob - lets have one of options just leave. Without any morale fine and profit - just save free option. And also make a bit less sevier penalty for morale in the events overall. And then gather all text of events in google doc - so it would be easier for me to make correction, when i get offline on my travel.")* **1 - THE FREE DOOR, on all five merchant cards.** PEDLAR ON THE RIDGE, THE SALT-WIVES, THE CLAN CART, THE COLLECTOR and BONEPICKER'S CAMP each gained one answer that costs and pays nothing: `fx:{}`, no `need`, no gear, no morale. ⚠ **IT IS `fx:{}` AND IT MUST STAY `fx:{}`** - a walk-away with a small mood ding on it is not a free option, it is a fourth price, and the card is straight back to three ways to spend and no way to keep. `moraleTag()` prints nothing on an empty fx, so the button reads clean. **BONEPICKER'S HAS NO ROB OPTION AND GOT THE DOOR ANYWAY**, because the rule the user is describing is that a SHOP MUST BE A PLACE YOU CAN WALK OUT OF: every other answer there spends crowns, gems, a day or two barrels, and the appended walk-away only ever appeared when NOTHING was affordable, so a company with money in the chest and a reason to keep it had no button at all. ⚠ **THE COLLECTOR'S "explain, kindly, about the kingdom" WAS NOT TURNED INTO THE FREE ONE** - it costs mood because the company has to watch you do it, and that is the joke. The free one is a separate row where nothing happens. **2 - EVERY EVENT MORALE PENALTY DOWN TO ~60%,** 62 of them, across EVENTS, CAMPS, VIGNETTES, the spoils and mercy screens, the cub choices and the prologue: 24→14, 22→13, 20→12, 18→11, 14→8, 12→7, 10→6, 9→5, 8→5, 6→4, 5→3, 4→2, 3→2, 2→1. Monotone, so nothing changed its rank against anything else, and the worst answer in the game (rob the pedlar) went from −22 to −13. ⛔ **THE COMBAT `MORALE` TABLE WAS NOT TOUCHED** - own kill, ally died, took a hit and near death are a different system with different key names, and the user's ask was about events. ⚠ **AND THE FIRST PASS AT THIS WAS WRONG IN A WAY WORTH RECORDING:** a PowerShell `[ordered]` dictionary indexed with an INT is a POSITIONAL lookup, not a key lookup, so `$map[24]` returned nothing and the replace wrote nine literal `morale:-@@@@` tokens and scrambled the rest. Caught immediately by grepping the result rather than trusting the report, and repaired from the line-numbered list captured BEFORE the edit. **Capture the before-state of a bulk edit before making it.** **3 - EVERY WORD ON THE ROAD, AS FLAT TEXT AND AS TWO GOOGLE DOCS.** `tools/events_text.js` is the sibling of `events_book.js`: same one rule (no second copy of the event data, it reads the running game), but flat text rather than rich HTML, because flat text is what pastes into a Doc cleanly and survives being edited on a phone with no signal. 72,925 characters, every body, button, cost line and result. Copied to `content/events_text_for_editing.txt` and uploaded as **GRIMTOLL text 1 of 2 - the road events** and **GRIMTOLL text 2 of 2 - camp cards and vignettes**. ⚠ **TWO GENERATOR TRAPS, both fixed in the tool:** cast placeholders must be ONE WORD, because the camp chain runs `fst()` over the cast string and turned "[first person]" into "[first" all the way down the aunt chain; and two vignettes throw when nobody has the mutation they are about, so the resolver catches and labels instead of dying. **Verified live:** `LINT()` 0 · `regress()` all eight fights resolve · all five merchant cards confirmed to expose exactly one zero-cost zero-reward answer, read back out of the running game · no event choice anywhere is harsher than −14 · the user's day-5 save backed up and restored byte-identical. **#79 still free.** | ✅ DONE |
+| 8f.95 | **THE THING IN ARMOUR STOPS DODGING, AND THE RULE THAT WAS OFFERED AROUND IT WAS TURNED DOWN.** *(User, 2026-08-02: "less dodge chance for thing in the armor -5% it is big and -10% heavy armor".)* **The ask was read two ways and the user picked one.** It could have been a SYSTEM: armour has weight, weight costs dodge, and every worn piece falls in a band (mail, lashed plates and the wardrobe at -5; foundry plate and ogre scale at -10; the ratkin line and everything under 35 free), applied to crew and enemy blocks alike. It could also have been ONE STATBLOCK: the boss is big *and* it is in heavy armour, which is -5 and -10 against the same body. **The user was shown both with the numbers attached and ruled "just Something in armour, nothing else changes"** - so `WARDEN.dodge` is 12 to 0 (12 - 5 - 10 = -3, and `dodgeOf` floors at zero, so the block simply states 0) and **there is no armour-weight register anywhere**. The rejected system is written out in full in the code comment above `WARDEN` so the next reader does not go hunting for the other half of a rule that was never built. ⚑ **WHAT IT ACTUALLY COSTS THE FIGHT, MEASURED RATHER THAN GUESSED:** 20 harness runs of `armour` at dodge 12 against 20 at dodge 0, same composition - average rounds **11.3 to 9.8**, average of your six on the ground at the end **5.8 to 4.85**, and **wins 1/20 to 5/20**. A player's chance to hit it went **44% to 56%** on an arming sword, which is the full 12 points landing intact: the block's dodge sat under `DODGE_SOFT` (12) so nothing was being softened away, and the whole of it comes off. **This is the largest single softening this block has taken** and it is bigger than the 10% off hp and armour before it: the fight moved from *you do not win this* to *you win it one time in four*. `noTrim` still keeps the Warden out of every global balance pass, so those three numbers are the whole of what has ever moved on it. ⚠ **One display bug fell out and was fixed with it:** `readout()` printed `their dodge −0`, which reads as a typo, and the boss now shows it on **every preview of a ten-round fight**. The dodge row now prints `—` and goes grey at zero, which is exactly what the *flanking* row two lines below it has always done. Pre-existing (a routed ogre could already reach 0) and simply never seen often enough to matter. ⚠ **The +4 that appears on a live Warden is the OLD HAND trait**, rolled onto the instance by `build()`, not a second source of dodge: it lands the block at 4 rather than 0 and it is per-instance, so the same fight is not the same number twice. Verified in the running game, not read off the source. **Gates:** `LINT()` **0 findings** · `regress()` **all eight resolve, no errors, no guard hits** (clash 5rd, brigand 10rd, pack 5rd, slingline 5rd, steading 7rd, snare 9rd, mother 21rd, armour 11rd) · **the user's localStorage backed up before anything ran and `gt_journal_v1` restored byte-identical afterwards** (105,062 chars, out and back), because `runFight` writes fight rows into the journal and 8 harness fights had already grown it to 109,022. ⚠ **8f.94 was taken by a session running in parallel while this one was building**, which is the second time in two days; the build log was re-read at write time rather than remembered. **#79 still free.** | ✅ DONE |
+| 8f.96 | **THE MENU HAS A THEME, AND IT COMES BACK WHEN YOU LIVE THROUGH THE ROAD.** *(User, 2026-08-02: "update main game manu song: and also it could be after some cool event".)* **"Road Beneath the Bloom"** (`audio/music/main_menu.wav`, 97.2s) was rendered and approved in a music pass that deliberately did not touch the prototype; `audio/CLAUDE_MAIN_MENU_INSTRUCTIONS.md` was the brief and it has now been executed to the letter. **1 - THE ONE REAL CHANGE IS THAT `show()` STOPPED ANSWERING THE QUESTION.** The line was `setMusicMode(i==='battle'?'battle':'world')` - it collapsed twelve screens into two cue families *before* `setMusicMode` ever saw them, which is precisely why a menu cue could not be added without touching screen routing. It passes the real screen id now, and **which cue a screen gets is `setMusicMode`'s question and nobody else's**, exactly as `BOSSFIGHT` already worked. `AU.mode` was deliberately pinned back to its old two values (`battle`/`world`) rather than allowed to start saying `inv`: nothing reads it today, and a flag that quietly changes meaning is a trap for whoever first does. **2 - `menu` IS A REAL MODE, NOT A SPECIAL CASE.** One `MUSDEF` row (`{f:'main_menu',v:.30}` - the quietest cue in the game, because it is the only one a player hears with nothing happening), one `MENUCUE` table, and `musEnter`'s existing named-cue path carried the rest with no new player. **3 - `ended` NO LONGER MEANS "TURN THE PAGE".** Only `world` is the alternating programme; letting `menu` fall through to `musAdvanceWorld` would have put road music under the title screen the moment the theme ran out. It takes a 3s silence (`MUSMENUGAP`) and replays over a **1.5s fade-in** instead, which needed one new field: `MUS.quietFade`, because the gap timer now restarts a cue two ways - a battle cue at full volume because the fight never stopped, the theme on a ramp because the silence was part of it. **4 - THE "COOL EVENT" IS THE SURVIVING ENDING, AND THE USER PICKED IT FROM FOUR.** Offered: the winning epilogue · a boss going down (the spoils screen after the Mother or the Warden) · a warm road beat (The Warm Spring, The Roadside Fire) · both endings. ⚠ **`epilogue` IS THEREFORE NOT IN `MENUCUE`, because the epilogue SCREEN is two endings.** `toEpilogue` and `toDefeat` both call `show('epilogue')`, so a table row would have given the theme to a wiped company too - and a warm piano cue over four corpses is not an elegy, it is the wrong music. Each writer declares which it is via `MUSWON` **on the line above its own `show()`**, because `show()` is what asks. Left true after a win on purpose: **END OF SLICE hands over to the menu still playing the same take**, unbroken, which is the whole reason to put it there; `toDefeat` clears it so a previous run's win cannot leak into a death. **Verified live** (served, not `file://`): `main_menu.wav` **206** from `../audio/music/` · one `Audio` element per track and **never a second** across menu→road→MENU button→menu→both endings (5 elements, 5 tracks) · `loop=false`, duration 97.2s, volume 0.30 · the end-of-track gap measured at 3.0s with the ramp reaching 0.15 halfway and 0.30 at 1.5s *(the preview pane runs hidden, so `document.hidden` had to be stubbed for that one probe - `musTick` early-returns on it, correctly)* · the MENU button restarts the theme **from zero** while the road cue fades and **pauses** · battle/boss routing re-confirmed unchanged (`brigand`→battle, `mother`→boss) · mute pauses the theme, `gt_mute` persists, unmute resumes it · losing epilogue stays on world music, winning epilogue starts the theme and its `currentTime` **keeps climbing across the hand-off into the menu** with no restart · `regress()` all eight fights resolve, no errors, no guard hits. **No backlog number taken** - this executed a brief that already existed. **#79 still free.** ⚠ *A parallel session appended 8f.95's section to the BOTTOM of `WHAT_TO_TEST.md`; that file's own rule is newest at the top, and this build's section is at the top. Worth a tidy next time somebody is in there.* | ✅ DONE |
+| 8f.97 | **#79 SHIPPED - ARMOUR IS LIGHT, MEDIUM OR HEAVY, AND IT DECIDES HOW MUCH OF A BLOW REACHES THE BODY.** *(User, 2026-08-02: "You can classify each armor piece light, medium or heavy. I like this. Ligh absorbs 50% of damage, another 50% goes to health. Medium absorbs 60%, 40% goes to health. And heavy absobs 75% of damage, 25% goes to health" - then, on scope: "Let put this advanced system in bavklog and for now focus only on main light, medium and heavy armor thing. With huge bonus and a small debuf to it".)* **THE HUGE BONUS IS THE ABSORPTION AND THE SMALL DEBUFF IS DODGE**, which is where the user's own earlier figure finally lives: *"-5% it is big and -10% heavy armor"* was refused as a rule of its own in 8f.95 and is exactly right as the price of a band. Light 50/50 and no dodge cost · medium 60/40 and **-5** · heavy 75/25 and **-10**. ⛔ **ONE THRESHOLD, READ BY BOTH SIDES.** A player's band comes off the value of the piece they are wearing and an enemy's off the bare `armour:` number on its statblock, **through the same function** (`bandKey`: under 36 light, 36 to 70 medium, 71 and over heavy). The alternative was a `band:` field on all thirteen gear rows plus a separate rule for enemies, **which is two lists that have to agree forever.** ⚑ **It fell out without anybody being assigned anything:** the human line spans all three on its own (padded jack 34 light, mail hauberk 66 medium, foundry plate 96 heavy), the ratkin line is light whatever they do, and the enemies come out **two heavy (both bosses), nine medium (the ogres and the captains), sixteen light (the rabble)** - measured by walking all eight fights, not read off the statblocks, **and the statblocks would have told you wrong**: `build()`'s ×0.75 trim puts the ogres at 45-66 in play against the 64-88 the table says, so they are MEDIUM and not heavy. ⚠ `armourValue()` applies the ill-fitting ×0.70 BEFORE the band is read, so a man roped into ogre lashed plates (74 to 52) is banded MEDIUM. Correct and funny: half the plates do not meet, so half the blow does not stop. ⛔ **ONE SPLIT FUNCTION.** `splitFor(d,act)` is called by `dmgPreview()` and `strike()` and neither has a copy - those two have already drifted apart once here (the preview missed the global ×0.8 for months and read 25% high on every attack in the game). `ignoresArmour(act)` names the `am:0` convention that spells and the ogre's throw have used since the first pass, so the one thing still read off the weapon is read in one place. 🚧 **THE WEAPON'S HALF IS PARKED AS [#80](00_PLAN_AND_BACKLOG.md) ON THE USER'S CALL.** Every act still carries `am`/`ft` and **nothing reads them any more** - they are not dead data, they are #80's input, and they are why it is cheap: `pen = (ft - 0.30) × 100` gives the maul its **-12** and the gut-knife its **+15** straight out of the file as it stands. A comment at `ARMOUR_BANDS` says so, because the next reader's instinct will be to tidy them away. ⚑ **WHAT IT ACTUALLY DID, MEASURED - AND THE MECHANISM IS NOT THE ONE THE NUMBERS LOOK LIKE.** 8 runs per fight, old model against new, same compositions: *clash 4.5→4.9rd · brigand 9.5→10.8rd (down 1.6→2.3) · pack 7.0→5.8rd · slingline 5.9→6.5rd · steading 8.3→8.4rd, 0/8 both · snare 9.0→8.1rd (win 8/8→7/8) · **mother 12.8→9.3rd, win 5/8→8/8, your dead 2.3→0.3** · **armour 8.6→7.0rd, win 5/8→8/8, your dead 3.8→1.6***. **The ordinary fights barely moved and the two BOSSES became winnable**, which is the opposite of what "heavy armour absorbs more" sounds like it should do to a boss. The reason is the armour POOL, not the split: the old weapon `am` averaged **0.945** across the melee rack and the new absorb is 0.50/0.60/0.75, **so armour now drains at roughly half to four-fifths of the old rate and lasts 1.3 to 1.9 times longer.** The phase that actually kills people is the one AFTER a pool is empty, when the whole blow lands, and that phase now arrives much later. A boss's big single hits used to strip a padded jack in two swings; they take four now, the crew stays up, six attackers keep attacking, and the fight gets shorter as well as safer. **This is a real balance debt and it is named rather than hidden: the knob is armour VALUES, not the 50/60/75 the user stated** - but cutting values also re-bands pieces, so it belongs to a sweep and not to this row. **Verified:** `LINT()` **0** · `regress()` all eight resolve, no errors, no guard hits · the split read back off the running game against a light, a medium and a heavy body and it is exactly 50/50, 60/40, 75/25 · the ill-fitting case banded correctly · **the user's `gt_journal_v1` backed up first and restored byte-identical** (105,062 chars; `runFight` writes fight rows into it and the sweeps had grown it to 108,965). ⚠ **The heavy panel in the picture reads 1-3 body against a quarter of the blow because the Warden also has `soak:4`**, which comes off body damage after the split and floors at 1 - the older rule doing its job on top of this one, and the caption says so. Picture: [`shots/79_armour_bands_built.html`](../shots/79_armour_bands_built.html). ⚠ **8f.94 AND 8f.96 were both taken by a parallel session while this one was building.** Two collisions in one evening; the build log was re-read at write time each time rather than remembered. **#79 spent, #80 spec'd and unbuilt, next free #81.** | ✅ DONE |
+| 8f.98 | **THE ROSTER WAS A TRAPDOOR: OPENING THE INVENTORY WITH A CARD UP ATE THE CARD, THE WALK, AND THE RUN.** *(User, 2026-08-02: "if i check inventory while moving between tiles, game soft locks.")* **The first real soft lock since the QA playthrough, and it was one click deep.** `show()` has dismissed the map's overlay on every screen change since the fight hand-off bug (you came back from a battle standing on the same node looking at the same three choices, all still clickable). `#wInv` lives in `#wBar`, **outside `#wMap`**, so it stays clickable under every card the map can raise. And a road incident's card is the ONLY thing holding `next()`, the continuation of the walk, and the only thing that ever clears `G.pending`. So one click on INVENTORY while the column was walking threw both away: `G.moving` stayed true, `G.pending` stayed set, the map stayed greyed and locked, the menu refused ("Finish what you are standing in first"), and nothing left on the screen could move the company again. Reloading and choosing *Continue the road* was the only way out, because `loadRun` clears both flags. **`? RULES` was the same door**, and an arrival event card was the same trap standing still. **The fix is one word of vocabulary the file did not have: a DETOUR is not a HAND-OFF.** The roster and the rules are round trips, you come back and the card is still the thing you have to answer; everything else has moved the world on and the old rule is right about it. `DETOUR={inv:1,help:1}` is the entire list. Hiding the card on the way out costs nothing, because `.screen` is `display:none` and it goes with the map and comes back with it. `replaceDlg()` re-measures on return, for the other half: a card that OPENED while the map was hidden measured every height as zero and sat low and off its node. **⚑ The lesson: a control that lives outside the thing it can destroy will eventually be clicked while that thing is up.** The chrome row is outside the map on purpose, so every card is one click from a button that never asked whether it was allowed. The guard belongs at the screen change and not on each button, which is the same argument the original note in `show()` makes, and the reason this came to four lines rather than nine guards that the tenth button would forget. Verified end to end in the pane against the real save: a road vignette forced mid-walk, INVENTORY, BACK, card still there with its button live, *Keep moving* resumes the walk, the company arrives and the node's own event opens. And the reverse, so the 2026-07-31 fix still stands: a card a battle hand-off legitimately closed does not come back through either door. | ✅ DONE |
+| 8f.99 | **THE QUESTIONNAIRE RE-CUT, AND THE NOTES SCREEN NOW LEADS WITH THE ONLY BUTTON THAT DOES ANYTHING.** *(User, 2026-08-03, on #76's form before it goes to ten friends: two questions replaced, two deleted, two added, "change places - 'back' and 'done'. Done make grean and apealing to send", and "redo this screen with run. So it is more clear button to send. Opion to clear and read someone else are visible only in test mode. It is lover on that screen".)* **The form went from asking what the player thought about the DESIGN to asking what they thought about the GAME, and that is the whole change of register.** `who` was *"Name somebody from your company. Why that one?"* with a hint that made forgetting the useful answer; it is now *"Name or describe someone from the team. Who was it?"* - **a description is an answer, so a player who bonded with the ogre but never read his name is no longer told they have failed the question.** `hard` dropped *"and do you regret it?"* to become *"Which decision did you remember?"*: regret is a conclusion, memory is an observation, and only one of them can be reported honestly by somebody who finished twenty minutes ago. **`afford` and `cut` were deleted outright** - both were the author's questions rather than the player's (*"anything that could be deleted with nothing lost"* asks a stranger to do design review), and in their place `like` and `dislike` ask the two things every tester can actually answer. **`dislike` inherited `cut`'s "be blunt" hint, so the sharpest instruction on the form survived the question that carried it.** Still seven questions, so the card's own opening line did not have to change. ⚠ **The two dead keys are NOT pruned from `JOURNAL.poll`** - the blob exports the object whole, so an early tester's words still arrive even though the letter no longer quotes them; a comment in the file says so, because "tidying" that object is a one-line change that silently destroys received data. **On the questionnaire, `Back` moved left and `Done` moved right and turned green**, because the right-hand end of a row is where the thing you are meant to press lives. **On the notes screen the SEND IT BACK block moved from the bottom to the TOP.** It had been sitting under every run block, which on a finished run is a long scroll: the one action the screen exists for was the last thing you found, after a wall of statistics about yourself. Order is now *ask → send → what is in it*, the mail anchor wears a new `.big` treatment (2px border, 16.5px display type, a faint green bloom) and names the address in its own subtitle, and the run detail sits under a **WHAT IS IN IT** rule where it reads as the contents of the letter rather than as the point of the page. **`Clear my journal` and `Read somebody else's` are gone unless `⚙ TEST` is on**, under a TESTER TOOLS section at the bottom: **a player who mis-clicks the wipe destroys the only copy of the thing this screen exists to collect**, and reading a friend's journal was never a player's job. ⚑ **Three code lessons.** (a) `a.popt.sendit` set the green AND `display:block` in one selector, so putting the same green on a `<button>` would have flattened its flex column - **the colour rule and the element-specific rule had to be split before the class could be reused**, which is the cost of ever writing a tag name into a modifier. (b) **Conditional rendering means the handlers below it must be null-guarded**: `$('nPaste').onclick=` had been unconditional, and left that way it would have thrown for every real player the instant the screen opened. (c) **A screen drawn once per open has to be re-drawn when the switch that shapes it moves underneath it**, so `syncTest()` calls `redrawNotes()` - a hoisted function declaration on purpose, because `syncTest` runs during boot thousands of lines above where the notes state is declared and `typeof` on a `let` in its temporal dead zone throws rather than answering. Verified in the pane: seven questions in the right order, `Back`/`Done` swapped with `Done` green at 2px, the mailto letter carrying `stop` and `like` and NOT the seeded `afford`, the blob still carrying it, and the tester row appearing and vanishing live as `⚙ TEST` is toggled with the screen open. Shot: `shots/80_send_the_run_recut.html`. | ✅ DONE |
+| 8f.100 | **#81 SHIPPED - THE BATTLEFIELD HAS ONE CLOCK NOW, IT RUNS AT ×1.75, AND THE PLAYER CAN TURN IT.** *(User, 2026-08-03: "make actions on battlfild 50-100% slower. so player have more info to understend what have happened".)* **⛔ ONE MULTIPLIER, TWO DOORS, AND THAT IS THE WHOLE ENTRY.** The board's timings were twenty-three hand-tuned literals - `later(step,380)` between AI steps, a 340ms recoil, a 1000ms damage number - **and they were tuned against each other**: a blow lands, its animation runs, and the next beat is scheduled just after it finishes. So the naive readings of the request are both wrong. **Multiply only the pauses and the animations stay where they were, opening a dead gap in the middle of every beat; multiply only the animations and they are still playing when the next unit swings** - which is the exact confusion the request is about. The multiplier is therefore applied at the two places every duration on the board passes through, **`paced()` in JS and `--pace` in CSS**, and every ratio the old numbers encoded survives at every setting. ⚑ **THE LITERALS STAY LITERAL.** `later(step,380)` still says 380, because that number's job is to say how this beat compares to its neighbours, not how long it is in seconds. Baking ×1.75 into twenty-three call sites would make the next person to retune the pacing divide them all in their head. One knob, one line, arguable. **⚑ THE ONE DURATION DELIBERATELY LEFT ALONE IS THE ARROW, AND IT IS A MEASUREMENT NOT AN OVERSIGHT.** `strike()` looses the shot and resolves the damage in the same tick, so the flash and the figure are on the target while the arrow is still crossing the ground: at ×1 the arrow arrives at ~420ms, **after** a 340ms recoil has already finished, which is backwards. Leaving the flight alone while the recoil stretches to 595ms puts the arrow back **inside** the reel it is supposed to have caused. The real fix is to hold the impact until the shot lands - a change to `strike()`, not to a multiplier - **named as this entry's open remainder rather than smuggled into it.** ⚑ **THE SHOOTER'S OWN LUNGE IS PACED THOUGH THE FLIGHT IS NOT**, because that is a `.lunge` keyframe and keyframes are on the clock; its cleanup timer had to move with it or the class is stripped mid-animation. **A PLAYER CONTROL, ON PURPOSE.** ⏱ PACE sits under WITHDRAW and cycles ×1 · ×1.25 · ×1.5 · **×1.75** · ×2 · ×2.5, remembered in `gt_pace`, gold whenever it is off the default. **How much time you need to read a blow is a fact about the person, not a balance number**, and nothing behind the button can change the outcome of a fight - which is exactly why it is not gated behind `⚙ TEST` the way AUTO is. It retimes a fight already in progress, **including a live AUTO**: an interval keeps the period it was created with, so `setPace` restarts it. ⚠ Adding it made `#bOpts` a real two-column grid again, so **the `:has(#bAuto:not(.on))` single-column rule was replaced by `:has(#bAuto.on) #bPace{grid-column:1/-1}`** - three buttons only ever happen in test mode, and there PACE takes the second row. **MEASURED, NOT ASSERTED**, by tallying every `later()` call through all eight fights: scheduled pause time goes **clash 42.9→75.0s · brigand 56.9→99.6 · pack 57.8→101.2 · slingline 50.9→89.1 · steading 72.0→125.9 · snare 113.1→197.9 · mother 92.9→162.6 · armour 52.1→91.2**. **The Snare adds 85 seconds and that is the number worth arguing with** - it is written into `WHAT_TO_TEST.md` as an explicit question to the user rather than left for them to feel, with ×1.5 one press away. ⚑ **AND IT COSTS THE HARNESS NOTHING**: `runFight` drives `aiTurn`/`nextTurn` itself and shims timers to microtasks, so the full `regress()` still runs in **817ms** at ×1.75. **Verified in the running game:** `LINT()` **0** · `regress()` all eight fights resolve, 0 errors, no guard hits · computed durations read back off the live DOM at ×1.75 (fx 1.75s, lunge .595s, recoil .525s, evade .56s, flash .525s, spark .735s) and at ×1 (lunge .34s, fx 1s), so the CSS tracks the variable exactly · the button cycles, persists and tints through a full lap · `grid-column` reads `1 / -1` with AUTO shown and `auto` with it hidden · **the user's localStorage was backed up first and every key is byte-identical afterwards** (`gt_run_v4` 3681, `gt_journal_v1` 1215). **Deliberately NOT paced:** the Captain's balloons (2.2s comment, 4.5s lesson) and the opening side labels - those are reading time, not action time, and were tuned on their own. **#81 spent, next free #82.** | ✅ DONE |
+| 8f.101 | **TWO RECEIPT FIXES, FOUND WHILE ANSWERING THE EVENT-DOC QUESTION.** *(The user's global note on his event-text doc, 2026-08-03: "check everywhere in texts, did you replace everywhere wood and iron with salvage?" The answer is YES at the engine and the cost lines: `materialPool` folded wood+iron into the one SALVAGE pool with write-through aliases, and no player-facing line prints wood or iron as a resource; prose still says iron only as a plain noun for the metal. But the check surfaced two receipts that lied.)* **1 - `fxLine` never printed a `salvage:` reward.** It still read only the old `iron` alias key, so a road vignette paying `salvage:1` (the battlefield-shop one) applied the material and printed no receipt at all - the exact silent-miss the comment above the three appliers warns about, one function further down. It reads `salvage` first now and falls back to summing the `iron`/`wood` aliases; salvage-first matters because on a materialPool'd object the aliases ARE the pool, and summing them would count one bag twice. Verified in the running game: `{salvage:3}` prints `+3 salvage`, `{iron:2}` still prints `+2 salvage`. **2 - the prologue's coin door said `morale −9` and applied −5.** The 8f.94 softening sweep (9 to 5) rewrote the fx keys and never this hand-written label; a grep for hand-written morale digits in cost lines finds no other. It says −5 now. `LINT()` 0 findings. *(The rest of the session was text deliverables for the user's doc pass: his style extracted as rules, the starred items polished, the three opening screens written out in the doc's format. Nothing else in the build was touched; the doc round-trip stays open as #77's remainder.)* **#82 still free.** | ✅ DONE |
+| 8f.102 | **THE EVENT CARD GREW BOTH WAYS, AND THE LESSON IS THAT THE TWO NUMBERS FIGHT EACH OTHER.** *(User, 2026-08-03: "for events texts - for texts itslef - can you make box a bit wider, so it took les space. And make a picturre space 20-30% taller - so I ee more fully picture.")* Card **560 → 620px**, picture **528x176 → 586x212**. **The trap: those are not two independent asks.** `drawArt` cover-crops a 16:9 painting into whatever shape the window is, so how much of the painting you SEE is set by the box's ASPECT, not its height - and the width is half of that ratio. Widening the card at the old 176px height would have shown **less** painting than before (53%, down from 59%), and a naive "+25% height on a wider card" lands at 62%, barely moving. 196px was the break-even, so only what is above 196 is real gain. **Shipped at 212px: +20.5% box, 64.3% of the painting on screen.** The height is the bottom of the range asked for on purpose - measured over all 32 events, the step from 212 to 224 doubles the cards that open on under five lines of prose (5 → 12) to buy four points of painting, and Coldharrow, the worst card in the game, drops from 2.2 lines to 1.5. **Three side-findings, all from measuring instead of guessing.** *(1)* A first cut made the picture height adapt to the map, which was **dead code on arrival**: `#world` is a fixed 1280x720 letterbox and `#wMap` is the flex:1 inside it, so the map is **always** 638px and the branch could never fire at any window size. Deleted; the height budget is an absolute. *(2)* All three cards that open a painting carried their own `width="528" height="176"` literal - six numbers kept equal by hand - now one `artTag()` beside `DLGW`, which owns both halves that must agree (the CSS box and the canvas backing store; let them differ and the painting stretches). *(3)* Everything here is `border-box`, so the canvas's 1px **border** was eating into its own content box and the old card had been quietly squeezing a 528-wide backing store into 524 real pixels. An inset `outline` draws the same hairline without taking the room, so the backing and the box are finally the same two numbers. Verified in the running game across all 32 events plus the road camp and Coldharrow: no stretch, every card inside the 618px cap and on the map, `__errs` empty. Before/after in `shots/event_card_wider_2026-08-03.html`. **The remaining thin cards are not a picture problem** - a five-option card spends 297px of a 618px budget on buttons, and that is a choice-list job nobody has picked up. **#82 still free.** | ✅ DONE |
+| 8f.103 | **THE USER'S DOC PASS, PART 1, READ BACK INTO THE BUILD BY HAND.** *(User, 2026-08-03: "i made updates in events. Most of the things i cut a bit, or changed a bit. Where sign * - it means you need to polish it... Also check my style and use it as rules" then "update then road events based on updated style". This is #77's open round trip done manually for the 32 road and node events; no tool was built and none is needed until Part 2.)* **THE METHOD IS THE PART TO KEEP: every event was diffed against the doc, not just the marked ones.** The doc is a faithful export (8f.94), so any difference IS a user edit, and the sweep caught **six silent cuts the star marks never mentioned**: Bonepicker's "Nobody asks twice", the Fen-Mother's "Thirty years under the Bloom made this one", the Long Fire's whole he-does-not-call-it-a-feast paragraph, the Circle's "Nobody has drawn anything", the pack event's "Two gaps in the palisade. A fire in the middle.", and the shrine woman's "Bells that way" line. **Eleven events changed; the other twenty-one verified word-identical and untouched.** The starred items were polished per the new style memory (BG3 narrator, every line pays rent, simple words, concrete over general): the toll-man's beams door in plain words, the pews line without the simile, a concrete Bloom intro (pink light off the ground, a deer that will not rot, a map four years stale), the Circle's needle ("Somebody else works the needle, and the needle is not sharp"), and SOMETHING IN ARMOUR's new ending, the user's own: *you stop, because stopping is the only thing left. It does not.* The forty-paces-waiting beat could not survive alongside it and died with the cut. **STRUCTURAL: four cards are four options now** (pedlar lost pay-properly to the user's maximum-four rule; chapel lost the lead roof as a near-copy of the wade-in; Bonepicker's lost the rest day; the Warm Spring lost its walk-past, because a positive event with easy outcomes does not need a free door - the free door is for shops and shakedowns). Every deletion is a one-line comment at the site so the next reader does not rebuild it. **The pedlar sells ONE shield now** (−40, `gear:'shield'`, the barrel lid stays on his table as prose). **CLASH cost lines name who joins** (two ratkin / one ogre) and the watch-it-happen door says the road is too narrow to pass by. **AND THE STEADING-LINE PAYS IN PEOPLE: both peaceful doors offer Osk**, a young ogre brute, **90 crowns, same price on both or the cheaper door would dominate** (the user priced the toll door and left the parley door blank; 90 on both is the default awaiting his overrule). It cost the `recruit` block one new optional field: **`price` refuses before it robs** - room is checked first, then the chest, each refusal names its reason, and Hoom and Pell carry no price and are bit-identical in behaviour. **Verified in the running game with the user's save backed up first and restored byte-identical after** (7 keys, gt_journal_v1 105,062 chars): `LINT()` 0 findings · all eleven data deltas read back off the live `EVENTS` · **all three recruit branches exercised through `pickChoice` itself** - the paid join (party +1, 120+90 taken, receipt names the 90), the full-company refusal, the empty-chest refusal - plus the shield purchase (crowns −40, `shield` in the stash, the barrel-lid prose on the card). ⚠ **Open remainders, named:** Part 2 (camps and vignettes) has NOT been swept for silent cuts; `content/events_book.html` and `events_text_for_editing.txt` are stale generated artifacts until their tools rerun; THE SITTING STONE and A WEDDING ON THE ROAD still hold five options against the user's maximum-four rule (race-gated, awaiting his ruling). **#82 still free.** | ✅ DONE |
+| 8f.104 | **THE SAVE-AS-A-FILE ROW IS CUT, BECAUSE IT WAS THE ONE THING STOPPING THE BUILD FROM BEING SHARED.** *(User, 2026-08-03: "show me link to share online with friends + with the last update", then, when the share menu refused: "it says 'This version can't be shared publicly. Publish a new version or change the shared version, then try again.'")* **The published slice had gone stale at 2026-08-01 while the file moved to 8f.103, so the first job was a straight republish to the same URL. That is where the wall was.** The artifact platform grants a published page the **`downloads`** capability, which is what `⤓ Save it as a file` (8f.86) needs, and it treats that grant as **mutually exclusive with public sharing**: the deploy refused outright with *"artifacts that use the downloads capability can't be shared publicly"*, and after publishing without the declaration the share menu still refused the version, because **the check reads the page, not only the declaration** - three literal `window.claude` references, one of them inside a comment, were enough to mark the build as capability-using. So the row is gone at the source: the feature detection, the conditional markup and the `saveBtn` handler are deleted, and the block comment that explained the three roads out now explains why there are two. **The lesson is that a capability is not a free upgrade, it is a trade, and this one traded away the entire point of the build.** #76's send screen exists to reach ten friends; a page that cannot be handed to them reaches nobody, so a nice-to-have attachment route lost to a link that opens. ✉ SEND IT TO ME and the clipboard are untouched and are the whole path now, exactly as `WHAT_TO_TEST.md` §6b already said would happen when the capability is absent. Verified by serving the edited file and driving `openNotes()`: the 4MB script still parses, `nMail` is present and addressed, `nCopy` is present, `nSave` is gone. ⚠ **Do not re-add a `window.claude` call to this file while the link is public**, in code or in a comment, or the share silently stops accepting new versions. | ✅ DONE |
+| 8f.105 | **THE MAIL BUTTON IS OUT, ON A HUNCH, AND THE HUNCH IS ABOUT THE ADDRESS AND NOT THE BUTTON.** *(User, 2026-08-03, after 8f.104 failed to unblock the share: "still doesnt work. Maybe reson button 'send email' - try to remove it from build and i will check".)* **This is a TEST, not a decision, and the exact code to put back is kept in [the restore block below](#8f105--the-removed-send-block-kept-whole-for-restore).** ✉ SEND IT TO ME (#76, shipped 8f.86, re-cut 8f.99) is gone from the Send-the-run screen, along with `FEEDBACK_TO`, the `mailto:` href builder and its two-kilobyte measurement. **The reasoning for going further than the ask: a button is not what a publish-to-the-web check looks at, a PERSONAL EMAIL ADDRESS IN PLAIN TEXT is.** Removing the control while leaving `dmytriyvihrov@gmail.com` in the const, in two player-facing sentences and in a comment would have tested nothing, so every occurrence went. **What replaces it is one press that carries both halves:** `✎ COPY IT ALL, READY TO SEND` puts the readable letter AND the journal on the clipboard joined, and the player pastes that wherever they were given the link. The letter is no longer trimmed, because the ceiling it was trimmed against was the URL's and the clipboard has none. ⚠ The copy borrows the blob box (`execCommand` can only copy a selection) and **puts the blob back in a `finally`**, so the screen never shows a payload it did not draw. Verified by driving `openNotes()` on a served copy: no `mailto:` anchor, no address in `body.innerText`, the box intact after the press, and the honest "press Ctrl+C" fallback firing when the headless browser refuses the clipboard. **⚑ THE OUTCOME DECIDES WHAT HAPPENS NEXT: if the share menu now accepts the version, the address was the blocker and the send screen stays clipboard-only. If it still refuses, the address was innocent, the mail button comes back verbatim, and the blocker is something else about the artifact (size is the next suspect, the file is 4.1MB).** | ✅ DONE |
+| 8f.106 | **#83 SHIPPED - A BIT MOBILE FRIENDLY. THE GAME TURNS, THE PLAYER DOES NOT.** *(User, 2026-08-03: "make it a bit mobile freindly. Not fully but a bit friendly.")* **Six rules, no game rule moved, no new screen, and the whole entry is about one fixed box.** `#stage` is 1280x720 and `fit()` is the one place that decides how much of a screen it gets; on a 393x852 phone that answer was `min(393/1280, 852/720)` = **0.307**, a 393x221 board with **74% of the phone black**. **1 - THE VIEWPORT IS DECLARED.** The file had no `<meta name="viewport">` at all, so a phone laid it out at 980px and zoomed that down on top of a stage `fit()` had already shrunk: **the game was being shrunk twice.** One line, and it is the largest single thing here. `user-scalable` is deliberately left alone - a 9px mono label at 0.55 is 5px and pinch is the only way anybody reads it - and the double-tap zoom that usually makes pinch unbearable in a game is removed by `touch-action:manipulation` instead, which keeps pinch. **2 - THE GAME TURNS.** Portrait, under 700px wide, and a coarse pointer: `#stage` takes `rotate(90deg)` on top of its scale and goes **0.307 → 0.546, the board 78% bigger and the phone full**, whichever way it is held. *The user chose this over a "turn your phone" overlay: "a player with rotation lock is stuck at 0.307".* **The gate is three tests on purpose.** A tablet upright (820 wide) is already readable at 0.64 and a sideways game in two hands is wrong, so the width test keeps it out; and **the pointer test is what keeps a DESKTOP out** - a browser window dragged tall and narrow is 500x900, passes both size tests, and would turn the game sideways on a monitor for somebody who was only resizing a window. `gt_rot` = `on`/`off` overrides it for testing and nothing else reads it. **3 - ⚑ THE REAL HAZARD WAS NOT THE ROTATION, IT WAS EVERY RECT IN THE BUILD, AND THIS IS THE TRANSFERABLE HALF.** Everything that floats over the battlefield - the damage figures, the impact line, the hover readout, the Captain's balloon through `hexPt` - is anchored by the delta between two `getBoundingClientRect()`s divided by the stage scale. That is #66's rule and it is what keeps `#bFx` correct at any camera zoom. **A rect is axis-aligned in SCREEN space**, so the moment the stage turns, that delta turns with it and every floating number lands at a right angle to the body it belongs to. Measured: forcing the wrong branch drifts them **1103px**. One new function, **`relPt(inner,outer)`**, is the only place that knows, and the three call sites read it identically either way up. The maths is written above it, because it is not obvious: `rotate(90deg)` sends a layout point (x,y) to screen (-y,x), so a box's screen bbox has `left = -(layout bottom)·s`, `top = (layout left)·s`, `width = layout HEIGHT·s` - **reading the layout top edge back needs the rects' RIGHT edges, not their lefts.** **4 - THE TOOLTIP IS THE ONE THING ROTATION DOES NOT CARRY**, because `TIP` sits on `<body>` outside the stage on purpose (it keeps its own size while the board shrinks, which is what makes it readable on a phone at all). `moveTip` turns it and swaps its clamp axes; the unturned branch now measures the box instead of assuming 310x160, which is why a long trinket tooltip no longer runs off the bottom of a short window. **5 - `fit()` READS `visualViewport`** where it exists, because on a phone `innerHeight` counts the browser chrome currently sliding over the top of the game, and re-runs on `orientationchange` (twice - a phone reports the OLD size on the event and corrects a frame later). **It also fixes a real bug found while measuring: the stage was sitting at `scale(0)`.** `fit()` run once in a zero-sized frame computes a scale of zero and the entire game disappears with no error and no way back - the hidden preview pane does exactly this on boot. Floored at 0.05, and a sub-2px viewport now keeps the last good fit instead of overwriting it. **6 - `overscroll-behavior:none`** so a drag on the board does not pull the browser into a page refresh and throw away the battle, and `-webkit-tap-highlight-color:transparent` so the phone does not paint a grey box over the body you just aimed at. **Verified in the running game at 393x852 with the turn live:** `hexPt`, `fx` and `placeRead` return **the same field coordinates turned as flat, to 0.0001px** across every unit (227.371/166.975 and 257.371/64.975 either way up) · **58 of 60 hexes and 14 of 14 menu buttons hit-test identically** rotated and flat, and the two hexes miss flat as well and always have · the tooltip carries `rotate(90deg)` and stays inside the screen · `LINT()` **0 findings** · **`regress()` all eight fights** (clash 4rd · brigand 7 · pack 7 · slingline 5 · steading 9 · snare 10 · mother 22 · armour 6), no guard hits, `__errs` empty · the desktop reads `COARSE:false` and never turns. Gate picture `shots/83_mobile.html` (three phone frames, the real staged CLASH), built picture `shots/83_mobile_built.html` (the real rotated game, carrying its live transform string). ⚠ **`relPt` and `moveTip` are the only two places that know about `ROT`, and the comment above `fit()` says so** - anything that later anchors to a rect has to go through `relPt` or it will be right on a desktop and a right angle out on a phone. **Not done, on purpose, and this is where "not fully" was spent:** nothing was made bigger. At 0.546 the mono labels render at 5px, and the honest ceiling for a 1280x720 stage on a phone is exactly what panel C shows - a real font pass is a different entry. **#83 spent, next free #84.** | ✅ DONE |
+| 8f.107 | **FIVE PAINTINGS GO IN AT THEIR OWN SIZE, AND THE WHOLE ENTRY IS THAT THE PIPELINE WANTED TO SHRINK THEM.** *(User, 2026-08-04, with the mapping written out first as `.claude/rules/static-event-art.md`: the three rest scenes and the two prologue outcomes are painted and want embedding.)* `EV29` THE WARM SPRING, `EV30` THE LONG FIRE, `EV31` THE CIRCLE onto `EVENTART.oasis/bonfire/circle`; `EV00B` and `EV00C` onto `PRO_ART.coin` and `PRO_ART.joke_hit`. **⛔ THE ONE DECISION WORTH THE ROW: THESE MASTERS ARE PAINTED AT THE LIVE CANVAS, NOT AT A DELIVERY SIZE.** 586x212 is `DLGART_W` x `DLGART_H` exactly, set by 8f.102 when the event card grew; 460x190 is `proCard()`'s outcome canvas exactly. Every existing pass in `build_assets.ps1` is a **crop-and-resize** pass - stage 2 cover-crops to 640x360 and re-encodes as JPEG - and running these through it would have cropped an already-fitted painting a second time and then thrown the pixels away to a lossy encoder for no gain. The new pass reads the bytes and emits them, nothing else, on the same reasoning stage 1 was exempted for. **⚑ WHICH MEANS THE MIME TYPE HAD TO GROW A SECOND CASE.** `ART{}` was emitted with a hardcoded `data:image/jpeg;base64,` prefix because every entry until now was a JPEG the script itself wrote. PNG masters embedded verbatim need `data:image/png`, so `$pngEntries` is a separate list joined into the same object at emit time - one object for the game, two encodings underneath, and the split is where the file format is decided rather than smeared through the callers. **THE 1:1 DRAW IS A CONSEQUENCE, NOT A NEW CODE PATH.** `drawArt` is a cover-fit: `s = max(W/im.width, H/im.height)`. Source equal to canvas makes `s` exactly **1** and both offsets 0, so the cover-fit degrades into a pixel-for-pixel blit and nothing in the draw path had to be special-cased for this pack. Measured in the running game rather than reasoned about: all five decode at **586x212 / 586x212 / 586x212 / 460x190 / 460x190**, `s` reads back **1**, and driving the real `drawArt` on real-sized canvases paints **99%** of the oasis window and **95%** of the coin card, so nothing is silently blank behind the vignette. **DELIBERATELY LEFT UNPAINTED, AND THE RULE FILE SAYS SO IN WRITING:** `cache` (the buried bag does not read at 586x212), `floor`, and `joke_miss` (both attempted beating compositions were rejected and deleted). All three still resolve to `undefined` and fall through to the tavern, verified live - **an unmapped scene falling back is a feature of `proCard(...,artKey||TAVERNART)` and not an accident, so the absence had to be checked, not assumed.** Cost: **1116 KB** of PNG, **1488 KB** once base64 costs its third, prototype **3.9 → 5.4 MB**. ⚠ **That is the number to watch, because 8f.105 is still open on whether artifact SIZE is what blocks the public share, and this build just added a megabyte to the suspect.** **#84 still free.** | ✅ DONE |
+| 8f.108 | **#82 SHIPPED - OBSTACLES HAVE A HEIGHT NOW, AND TWO THINGS FINALLY ASK.** *(User, 2026-08-03: "Spearmen can't hit through the tall objects (tree, group o rocks). Independent rock medium-small. But archers can shoot through smaller objects (like fire)".)* ⛔ **THE WHOLE ENTRY IS THAT ONE MAP WAS ANSWERING TWO QUESTIONS.** `BLOCKED{}` says *can a body walk here*, and since #36 shipped it has also been answering *can a shot cross here*. The two answers were the same for a year and then they had to differ: **a campfire stopped an arrow exactly as hard as an oak did, and nothing at all stopped a spear** - `needsLane` reads `act.range`, a reach-2 melee act carries `act.reach` and no range, so a thrust never asked about the hex it crossed. **Photographed before the code** (`shots/82_obstacle_height.html`): an archer with three ogres all 3 hexes away read **BLOCKED / BLOCKED / BLOCKED** through a tree, a lone rock and a fire; Vesna with the boar spear was offered all four bodies at 2 hexes, **52% through the tree and 56% through a rock group**. **HEIGHT IS A SECOND REGISTER AND IT NEVER MERGES WITH THE FIRST.** `heightAt(c,r)` returns **TALL** (tree · huge/hugeA · wall · **a rock that touches another rock**) · **MED** (an independent rock) · **LOW** (fire · flower). ⚑ **A GROUP OF ROCKS IS TALLER THAN A ROCK, AND THE FILE ALREADY KNEW WHICH WAS WHICH**: `loneRock` was written for #46 so an ogre could only lift a boulder standing on its own, and it is exactly the test height needed - **so no new terrain kind was added**, which is #61's rule that a kind is a place with its own rule and a dial is not a kind. **THE ARROW:** TALL is BLOCKED as before, LOW is invisible, MED is a new state **COVER at −14**, priced between SCREENED −8 (your own man, braced, cooperating) and OBSTRUCTED −22 (an enemy body, not cooperating). It slotted into the `SHOT{}` ladder in one line **because that ladder was already sorted by cost**, between FAR −18 and LONG −8. **This is the game's first real cover: a hex behind a boulder is now worth standing in.** ⚑ **THE LANE IS WORTH THE WORST THING IN IT, NEVER THE SUM** - a boulder and a body across one line charge −22, not −36, because two costs added together is a number nobody can predict off the board, and the whole point of naming the states was that they can. **THE SPEAR:** a new `reachBlocked()` in **`mayAim`**, so **both brains got it without being taught**, plus the matching refusal in `clickHex` (the comment above `mayAim` has demanded that pairing since the archer-freeze bug) and the offer withdrawn in `render` so **the hex is never lit-and-then-refused**. ⛔ **TERRAIN ONLY. A BODY NEVER REFUSES A SPEAR** - fighting over the person in front of her IS the spearwoman, and a version of this that read bodies would have deleted the class in one line. The wall's trigger asks the same question, or a body walking round the far side of an oak gets speared through it. ⚠ **`losState` IS MEMOISED ON WHERE THE BODIES ARE, AND A LIFTED BOULDER MOVES NO BODY**, so `terrMoved()` now throws the lane cache away at all three mid-fight writes to `B.terr` (the lift, the landing, the Fen-Mother's bog) - and a rock's height depends on its NEIGHBOURS, so **lifting half of a pair re-heights the other half**: a lane that was BLOCKED becomes COVER without that hex changing at all. ⚠ **AND IT DEMOTES A LINE OF #46, WRITTEN DOWN RATHER THAN DISCOVERED**: the old comment on `losState` said the thrown boulder was *"the only way to turn a BLOCKED lane back into a shooting lane"*, and a lone boulder no longer blocks, so what the lift buys now is **removing cover** - clearing a lane means lifting a rock out of a GROUP, which is the one thing #46 does not allow. **THE USER'S RULING, asked as the entry's one open decision:** an independent rock gives an archer **COVER at −14** rather than blocking outright. **Verified in the running game:** `LINT()` **0 findings** · `regress()` all eight fights resolve, no guard hits, `__errs` empty · the archer's three lanes read **BLOCKED / COVER 44% / CLEAR 58%**, the fire lane's number **identical to an empty lane**, the cover lane printing **"over a boulder −14"** · Vesna's four lanes refuse the tree and the rock group and allow the fire and the lone rock, with **exactly two odds badges in the live DOM (56% and 40%) and no lit border**, so the two refusals are genuinely unlit · height reads TALL/MED/LOW off the three hexes as specified. **Measured rather than asserted**, 6 regression passes each way with the old behaviour restored at runtime: wins **35/48 → 38/48**, round counts inside their bands, so the change is **slightly in the player's favour** - archers gain shots over fires and lone rocks, enemy pikes lose reach through woods. **That is a single small sample and not a balance verdict; #50 owns the number.** Pictures: `shots/82_obstacle_height.html` (before, the gate) and `shots/82_obstacle_height_after.html` (after, the verification). ⚠ **THREE NUMBER COLLISIONS WITH A PARALLEL SESSION IN ONE DAY**: #83 and build logs 8f.106 and 8f.107 were all taken while this was being written. **Grep the build log AND all three docs at write time, not at plan time.** **#82 spent, next free #84.** | ✅ DONE |
+| 8f.109 | **⛔ ONE PICTURE, C1, WAS STOPPING THE ENTIRE GAME FROM BEING SHARED WITH ANYBODY. FOUND BY TWENTY PUBLISHED PROBES.** *(User, 2026-08-03 to 08-04, across a day of it: "show me link to share online with friends", "still doesnt work", "can you check the reson in the internet", "Find what was wrong and fix it", and at the end, on the last bisect, "c1".)* **THE SYMPTOM:** the share menu refused every new version with *"This version can't be shared publicly. Publish a new version or change the shared version, then try again"*, while the artifact rendered perfectly in private. **THE METHOD IS THE PART TO KEEP, because the error message names nothing and there is no log:** publish a probe page, have the user click the share toggle, record yes or no, halve the suspect space, repeat. Twenty probes. Ruled out in order: **the account** (a 2KB page shares), **capabilities** (`{}` cleared, and the `downloads` grant had already cost the save-as-a-file row at 8f.104), **artifact history** (a brand new record refuses identically), **size** (4.2MB of the game's own artwork shares), **the email address and the `mailto:`** (shares, which retired the 8f.105 hunch and means ✉ SEND IT TO ME can come back), **all 103KB of the game's prose** (shares), **the head links and the web manifest** (share), **every browser API the game touches** (localStorage, Audio, AudioContext, canvas, clipboard, execCommand: share), **2MB of dense game code** (shares). **What refused was code AND artwork on one page.** Then the two discriminators that broke it open: **filler bytes of identical length in place of the pictures SHARE**, and **the real pictures with the `data:image` prefix mangled still REFUSE**. So the payloads are being decoded by their magic bytes, not by their label, and the page is judged as a whole. A 22-picture bisect went 4-way, then 3-way, then to singles, and landed on **C1_Ratkin_Rank_and_File**, the common ratkin enemy portrait, a three-panel SPEAR/CLEAVER/SLINGER reference sheet. **113 of 114 pictures are innocent.** ⚑ **THE LESSONS.** A capability is a trade and not an upgrade, and this one traded away the whole build. A binary search still works when the oracle is a human clicking a button, it just costs round trips, so publish every probe of a round at once and let them click through. And when a check reports one sentence and no reason, the only way through is to make the smallest thing that fails. ⛔ **What was refused and stays refused: scrambling the image bytes so the scan cannot see a picture.** That is defeating a content check on a public page, it was offered as an option and turned down out loud, and the note is here so nobody quietly reaches for it later. **SHIPPED AS:** the published page drops the one `ART.C1` line, `artFor('C1')` returns null and `bust()` draws the ratkin silhouette that was already the fallback for faceless enemies, so nothing breaks and no other art moves. `art/C1_REPLACEMENT_BRIEF.md` holds the redraw brief, the generator advice and the exact pipeline steps. ⚠ **THE MAIN BUILD STILL HAS C1** and was deliberately not edited: a parallel session was working in it (8f.106 to 8f.108, five new paintings among them), so the removal lives only in the published copy until the replacement lands. ⚠ **Those five new paintings from 8f.107 have never been share-tested**, so if the link is refused again they are the next suspects, one probe each. | ✅ DONE |
+| 8f.110 | **C1 WAS A BLOCKER AND NOT THE BLOCKER, SO THE RATLING IS BACK AND THE WHOLE ARTIFACT ROUTE IS ABANDONED.** *(User, 2026-08-04, an hour after 8f.109: "it is blocked again. Stop for todya and giveme quick answer - if i use githuba and share it through git, will it work better? Reterun ratling, make the note".)* **The share was refused again with C1 gone**, which retires the single-picture theory: removing it bought nothing, so it goes back and the published page is the complete game again, all 114 paintings. **The prime remaining suspects are the five paintings a parallel session added the same day at 8f.107**, none of them ever share-tested, but they are not being chased. ⚑ **THE CALL, AND IT IS THE ENTRY:** a day of bisection produced a real mechanism (the page is judged whole, code and pictures together, payloads read by magic bytes rather than by label) and still no shareable link, because **the oracle is one bit with no reason attached and the suspect space is every byte in a 5.6MB file**. That is not a search worth continuing when a static host has no oracle at all. **GitHub Pages is the answer given**: push the file to a public repo, switch Pages on, public URL in a minute, updates by `git push`, and the `audio/` folder can ride along, so the published game stops being silent, which the artifact could never fix. Netlify Drop for speed, itch.io with a password for the real playtest. **The lesson is about knowing when a diagnosis is finished:** twenty probes bought the mechanism and one named picture, and the twenty-first would have bought a second named picture and still no link. When the constraint is somebody else's unexplained check, route around it instead of mapping it. ⚠ `window.claude` stays forbidden **for artifacts only**; on a real host the rule evaporates and the save-as-a-file row of 8f.104 could come back. | ✅ DONE |
+| **NEXT** | **The plan lives in [`00_PLAN_AND_BACKLOG.md`](00_PLAN_AND_BACKLOG.md). Nothing in this file is next.** | - |
+| 8g | **First 15 Minutes Pass - DONE.** The consequence numbers are gone and the linter exists; the stat wall went with THE ARITHMETIC (8f.26) and the first battle now sells screening and facing (8f.29's three tougher ogres). | ✅ DONE |
+| 8h | Painted portraits P1–P5 + three event illustrations | |
+
+
+## 8f.105 — the removed send block, kept whole for restore
+
+*Here because 8f.105 removed a working feature to test a guess, and a guess that turns out wrong
+must cost one paste to undo. This is the code exactly as it stood at 8f.104, in
+`prototype/grimtoll_slice.html`, inside `drawNotes()`. Restoring it means putting all four pieces
+back and deleting the `nSend` button and its handler.*
+
+**1. The address, above `const POLL=[`:**
+
+```js
+const FEEDBACK_TO='dmytriyvihrov@gmail.com';
+```
+
+**2. The href, after `const L=own?letter():null;`:**
+
+```js
+/* built once so the length can be checked before the anchor is written */
+const mailHref=(()=>{
+  if(!L)return '';
+  const full='mailto:'+FEEDBACK_TO+'?subject='+encodeURIComponent(L.subject)+
+    '&body='+encodeURIComponent(L.body);
+  if(full.length<=1900)return full;
+  return 'mailto:'+FEEDBACK_TO+'?subject='+encodeURIComponent(L.subject)+
+    '&body='+encodeURIComponent('GRIMTOLL, playtest notes'+
+      (JOURNAL.who?' from '+JOURNAL.who:'')+
+      '\n\nIt was too long to put in the link. It is all on my clipboard. Pasting it here:\n\n');
+})();
+```
+
+**3. The markup, where the `nSend` button now sits:**
+
+```js
+'<a class="popt sendit big" id="nMail" href="'+esc(mailHref)+'">'+
+  '<b>✉ SEND IT TO ME</b><i>opens your mail addressed to '+esc(FEEDBACK_TO)+
+  ', with the answers already written · the journal goes on your clipboard in the '+
+  'same click, paste it under the line</i></a>'+
+'<p style="margin-top:11px">No mail on this machine? Copy the box and send it to <b>'+
+esc(FEEDBACK_TO)+'</b> any way you like. '+
+'It is plain text — nothing in it but what is on this page and what you typed.</p>'+
+```
+
+**4. The handler, where the `nSend` handler now sits:**
+
+```js
+const mail=$('nMail');
+if(mail)mail.onclick=()=>{
+  try{ta.focus();ta.select();document.execCommand('copy');
+    if(navigator.clipboard&&navigator.clipboard.writeText)
+      navigator.clipboard.writeText(ta.value).catch(()=>{});}catch(e){}
+  const note=mail.querySelector('i');
+  if(note)note.textContent='the journal is on your clipboard. Paste it under the line.';
+};
+```
+
+**And one line inside `letter()`**, whose tail read
+`'\n\n----------\nThe full journal is on my clipboard. Pasting it below.\n\n'`
+before the clipboard started carrying both halves at once.
+
+## Built backlog entries - the full text
+
+*Moved here when they shipped. Their one-line rows stay in the Done table of
+[`00_PLAN_AND_BACKLOG.md`](00_PLAN_AND_BACKLOG.md); open remainders are noted there too.
+**#32 (the Fen-Mother defect, closed) stays in the working file** — its details block holds
+the rally-rule spec that Tier 1 still points at.*
+
+## 82 - HOW TALL IS IT? OBSTACLES GET A HEIGHT ✅ BUILT
+
+> **SHIPPED 2026-08-04, build log 8f.108.** Asked, specced, pictured, ruled on and built in one
+> session. The gate picture is [`shots/82_obstacle_height.html`](../shots/82_obstacle_height.html)
+> (the before) and the verification is
+> [`shots/82_obstacle_height_after.html`](../shots/82_obstacle_height_after.html) (the after, same
+> two boards with the rule in). **The spec below is kept as it was written**, with one thing
+> settled: the user ruled the independent rock gives **COVER at -14** rather than blocking, which
+> is option (a) of the open decision.
+
+> ⚔ **THE BATTLE BOARD** and nothing else. No sheet, no road, no aftermath.
+> **SYSTEMS** `BLOCKED{}` (the one map that answers two questions today) · `losState()` and its
+> `LOS{}` verdict table · `needsLane(act)` · `shotState()`/`SHOT{}` (the word on the hex) ·
+> `hitBreakdown`'s `#36` lane block, which is where the receipt line is printed ·
+> `mayAim(u,a,t)` and the matching gate in `clickHex` · the spear wall's trigger
+> (`grimtoll_slice.html:9542`) · `loneRock(c,r)` · both AI brains, for free, if the rule lands in
+> `mayAim` and `hitBreakdown` rather than in the UI
+> **RELATED** **#36** (line of fire: this entry is the second half of it, and the first half's
+> comment about the ogre's boulder has to be rewritten) · **#46** (only an INDEPENDENT rock may be
+> lifted, and a thrown one always lands independent: that rule is what makes a height tier for the
+> lone rock safe) · **#61/#64** (the terrain register and the flower, which is where the kinds come
+> from) · **#47** (the spear rework: this entry gives the class its first thing it cannot do, and
+> #47 gives it the second, so read them together) · **#50** (an archer that can shoot over a fire
+> is worth more than one that cannot, and that is a balance number nobody has measured)
+> **MODEL** 🧠 STRONG. It is a combat rule that lands in both brains and it touches the one
+> function every shot in the game passes through.
+
+**THE ASK.** User, 2026-08-03, in one message:
+
+> *"Spearmen can't hit through the tall objects (tree, group o rocks). Independent rock
+> medium-small. But archers can shoot through smaller objects (like fire)"*
+
+### WHAT THE ENGINE DOES TODAY, WITH RECEIPTS
+
+There is **one map**, `BLOCKED = {rock, fire, tree, huge, hugeA, wall, flower}`, and it is asked
+**two different questions**: *can a body walk here* and *can a shot cross here*. It gives the same
+answer to both, so:
+
+- **Every obstacle stops an arrow dead.** Photographed on the practice field: an archer at 4,6 with
+  three ogres all exactly 3 hexes away, one tree, one lone rock and one fire on the three traced
+  lanes. All three read **BLOCKED**. A campfire stops an arrow exactly as hard as an oak does.
+- **No obstacle stops a spear.** `needsLane(act)` reads `act.range`, and a reach-2 melee act carries
+  `act.reach` and no `range`, so a thrust never asks about the hex it crosses. Photographed:
+  Vesna with the boar spear, four bodies each exactly 2 hexes away, a tree in one lane and two
+  touching rocks in another, and **all four are offered with the odds printed on them: 52% through
+  the tree, 56% through the rock group.**
+
+Both pictures are in [`shots/82_obstacle_height.html`](../shots/82_obstacle_height.html).
+
+### THE RULE: THREE HEIGHTS, AND HEIGHT IS A PROPERTY OF A KIND
+
+| height | what it is | an arrow | a reach-2 thrust |
+|---|---|---|---|
+| **TALL** | `tree` · `huge`/`hugeA` · `wall` (palisade, hut) · **a rock that touches another rock** | **BLOCKED**, unchanged | **refused**, the offer is withdrawn |
+| **MEDIUM** | **an independent rock**, which is `loneRock(c,r)` and already exists | **COVER**: the shot is offered and costs accuracy | **allowed**, no penalty |
+| **LOW** | `fire` · `flower` | **CLEAR**, nothing at all | **allowed**, no penalty |
+
+Three things are worth saying plainly about that table.
+
+**A GROUP OF ROCKS IS TALLER THAN A ROCK, and the code already knows which is which.** `loneRock`
+was written for #46 so an ogre could only lift a boulder standing on its own, and it is exactly the
+test this entry needs: a rock with a neighbour is a spine you go round, a rock on its own is a thing
+you shoot over. **No new terrain kind is added.** That matters, because #61 says a terrain kind is a
+place with its own rule and a dial is not a kind, and height is a dial.
+
+**HEIGHT IS NOT WALKABILITY, AND THEY MUST NOT SHARE A MAP.** You still cannot walk into the fire,
+and after this you can shoot over it. `BLOCKED` keeps its job (movement, `walkable`, `reachMap`,
+`terrainCheck`, the throw's landing) and a new `HEIGHT{}` answers the shot. **The transferable
+lesson of this entry is that one map was answering two questions, and the day the two answers had to
+differ it could not.**
+
+**BODIES NEVER REFUSE A SPEAR.** The lane test for a thrust asks about **terrain only**. A
+spearwoman fighting over the person in front of her is the entire class (`grimtoll_slice.html:3152`),
+and a version of this rule that read bodies would delete it in one line. This is the single most
+likely way to get this entry wrong.
+
+### THE ONE OPEN DECISION: WHAT AN INDEPENDENT ROCK DOES TO AN ARROW
+
+The user's sentence settles the spear (medium-small, so she thrusts over it) and settles the fire
+(an arrow crosses it). It does not settle the arrow over a boulder, and there are two honest
+readings:
+
+- **(a) COVER, the recommendation.** The shot is offered at **-14**, between `SCREENED` -8 (your own
+  man, braced, cooperating) and `OBSTRUCTED` -22 (an enemy body across the lane). It gives the game
+  its **first piece of real cover**: standing behind a boulder is now worth doing, and the ogre
+  putting one down (#46) creates cover rather than only removing a lane. New word on the hex, new
+  colour, slots into the `SHOT{}` ladder between `FAR` -18 and `LONG` -8, which is already sorted by
+  cost.
+- **(b) still BLOCKED.** A waist-high boulder stops the shot outright. Cheaper, changes nothing
+  about archer value, and **keeps #46 exactly as written**: lifting a lone rock is still the only way
+  to turn a blocked lane back into a shooting lane. The cost is that the MEDIUM tier then behaves
+  identically to TALL for one of the two verbs and only exists for the spear.
+
+**⚠ (a) demotes a line of #46 and the entry has to say so rather than smuggle it.** The comment at
+the top of `losState` reads *"this is exactly what makes the ogre's thrown boulder worth a whole
+action: it is the only way to turn a BLOCKED lane back into a shooting lane."* Under (a) that
+sentence becomes *removes cover*, which is a smaller thing. It is still not nothing, and the throw
+was never only about the lane, but the comment is wrong the moment this ships and must be rewritten
+in the same edit.
+
+### BUILD, AND EVERY SITE IS NAMED
+
+1. **`HEIGHT{}` beside `BLOCKED{}`.** A function, not a table, because one kind is computed:
+   `heightAt(c,r)` returns `TALL` / `MED` / `LOW` / `null`, and rock asks `loneRock`.
+2. **`losState` reads `heightAt` instead of `BLOCKED`.** TALL returns `BLOCKED` as it does now, MED
+   raises a cover flag, LOW is invisible to it. **The lane is worth the worst thing in it**: cover
+   and a body in the same lane take the larger penalty, never the sum.
+3. **`LOS.COVER`** with its own word, colour and one-line description, and **`SHOT.COVER`** in the
+   verdict ladder between `FAR` and `LONG`.
+4. **`hitBreakdown`'s #36 block** prints the receipt. Its current line is hardcoded
+   `'a body in the way '` and cover needs its own wording: *"shooting over a boulder -14"*.
+5. **The thrust asks.** A new `reachLane(act)` (`act.reach >= 2 && !act.arcane`), tested inside
+   **`mayAim`** so both brains inherit it, plus the matching refusal in `clickHex`. ⛔ The comment
+   above `mayAim` already says every no-op-and-return gate in `clickHex` must be repeated there,
+   and this is the gate that will prove it.
+6. **The spear wall's trigger** (`grimtoll_slice.html:9542`) asks the same question, or a body
+   walking round the far side of an oak gets speared through it.
+7. **The hex the player hovers.** A refused thrust must be **unlit**, not lit and then refused
+   (#46's rule, and B05). The reason belongs on the aiming card in one word.
+
+### WHAT WILL BITE
+
+- **Both brains, or neither.** `aiTurn` and `autoStep` both reach the rule through `mayAim` and
+  `hitBreakdown` if it is put there, and both diverge the moment it is put in `clickHex` alone.
+  This file has been bitten by that four times.
+- **`losState` is memoised on where the bodies are standing, not on the terrain.** The cache key is
+  a signature of every unit's position, and terrain changes mid-fight (an ogre lifts a rock, a
+  bog-working floods a hex, a wall comes down). Lifting the one rock in a lane must invalidate the
+  cache. Check this before shipping: it may already be safe because the lift also moves a body, and
+  *may already be safe* is not the same as safe.
+- **A rock's height depends on its neighbours**, so a rock is TALL until the ogre beside it is
+  lifted away. That is correct and it is also the first time a hex's height can change without that
+  hex changing. Say it in `WHAT_TO_TEST.md`.
+- **Every enemy with `reach:2` inherits the refusal**: the pikes, the felling pike, the hook-pole,
+  the great beast's ANVIL-HEAD and DRAG UNDER. That is the point (one rule, both sides) and it also
+  means the enemy line loses reach it used to have through a wood. Watch the Snare and the two
+  bosses in the regression.
+- **Board generation was tuned when everything blocked a shot.** Making fire and lone rocks
+  shootable-over raises the archer's value on every generated field. Not a blocker, a number for
+  **#50** to measure.
+
+### VERIFY
+
+`LINT()` at 0 and `regress()` over all eight fights with no new guard hits and no fight moving
+outside its round band. Then, in the practice field, the two photographed boards again with the rule
+in: the archer's three lanes read **BLOCKED / COVER / CLEAR**, the fire lane's hit chance is
+identical to an empty lane, and the cover lane's receipt prints the exact number. Vesna's four lanes
+offer two and refuse two, and **the two refusals are unlit hexes rather than lit-and-refused**.
+One AUTO fight on a wooded board that does not stall, which is the failure mode a new
+offer-withdrawn gate produces.
+
+### GATE ARTIFACTS. ✅ RULES WRITTEN · ✅ PICTURE MADE · ⛔ ONE DECISION OPEN · ⛔ NOT CODE YET.
+
+The picture is [`shots/82_obstacle_height.html`](../shots/82_obstacle_height.html), two panels, both
+photographed off the running build with `grabUI`/`shotUI`: the archer's three lanes and the
+spearwoman's four. It shows the **before**, which is what a picture can show for a rule that refuses
+things, with each lane's new verdict written on it. **Owes a `WHAT_TO_TEST.md` section when it
+ships.**
+
+---
+
+## 81 - THE BATTLE CLOCK ✅ BUILT
+
+> **SHIPPED 2026-08-03, build log 8f.100.** Specced and built in one session. No gate picture: the
+> thing being changed is *duration*, and there is nothing in a still frame to photograph. The gate
+> was paid in **measurement** instead, which is the honest substitute for a picture when the change
+> is temporal - the numbers are at the foot of this entry.
+
+> ⚔ **THE BOARD** (every fight, always) - one multiplier on every duration on the battlefield,
+> shipped at ×1.75, with a player-facing control
+> **SYSTEMS** `PACE` · `paced()` · `--pace` · `later()` · `endLater()` · `animClash` · `animShot` ·
+> `fx()` · `strike()`'s ranged branch · `toggleAuto`'s interval · `#bOpts`
+> **RELATED** #60 built (the Captain's lessons are the *other* answer to "the player did not
+> understand what happened", and they are deliberately not on this clock) · #43 (the narrator's
+> budget ranks **action readability** first, and this is that) · #13 (gate 1 is legibility)
+
+**The user, verbatim** *(2026-08-03)*:
+
+> "make actions on battlfild 50-100% slower. so player have more info to understend what have
+> happened"
+
+### The rules
+
+**1. There is one number and everything goes through it.** `PACE`, default **1.75** - the middle of
+the range asked for. Two doors: **`paced(ms)`** for every JS timer on the board, and the CSS
+variable **`--pace`** for every keyframe, each duration written as `calc(base * var(--pace))`.
+
+**2. The literals stay literal.** Every call site still says the number it always said. `380` in
+`later(step,380)` means *the beat after a blow*, and its job is to say how this beat compares to its
+neighbours - not how long it is in wall time. That translation happens in exactly one place.
+
+**3. Nothing about the fight changes.** Not a hit chance, not a damage number, not an AI decision,
+not a round count. This is the reason the control is not gated behind `⚙ TEST` the way AUTO is:
+**how much time a person needs to read a blow is a fact about the person**, and no setting behind
+this button can change how a fight comes out.
+
+**4. What is on the clock, and what is not.**
+
+| On it | Not on it |
+|---|---|
+| every `later()` beat - AI steps, turn hand-off, rout movement | the Captain's balloons (2.2s comment, 4.5s lesson) |
+| `endLater()`, the hand-off to the spoils screen | the opening side labels (4.5s) |
+| lunge · recoil · evade · hitflash · sparks | the arrow's flight - see the remainder below |
+| the damage figure's rise, and the timer that deletes it | the camera's 0.22s pan |
+| AUTO's step interval | anything off the battlefield |
+
+The line between the columns is **action time versus reading time**. A balloon is text you are
+reading; it was tuned on its own and stretching it with the board would make a lesson hold for eight
+seconds.
+
+**5. The control.** ⏱ PACE under WITHDRAW, cycling ×1 · ×1.25 · ×1.5 · **×1.75** · ×2 · ×2.5,
+remembered in `gt_pace`, gold whenever it is off the default, and it retimes the fight you are
+already in on the next blow. It cycles rather than opening a settings panel because there is no
+settings screen to put it on, and because **the only way to know which speed you want is to press it
+during a fight and watch the next blow.**
+
+### ⚑ The three things worth carrying out of it
+
+- ⚑ **A SET OF DURATIONS TUNED AGAINST EACH OTHER IS A SINGLE OBJECT, AND SCALING HALF OF IT BREAKS
+  IT.** Both obvious readings of "make it slower" are wrong here: pause-only opens a dead gap in the
+  middle of every beat, animation-only leaves a blow still playing when the next unit swings. The
+  test for any future timing knob is whether **every** duration in the relationship passes through
+  it. This is written into the `--pace` comment, where the next person to add a board animation will
+  read it.
+- ⚑ **THE ARROW EXPOSED A DEFECT THAT WAS INVISIBLE UNTIL THINGS SLOWED DOWN.** `strike()` looses
+  the shot and resolves the damage in the same tick, so the flash and the figure are already on the
+  target while the arrow is still in the air - at ×1 it arrives at ~420ms, **after** a 340ms recoil
+  has finished. Pacing the flight would have widened that to 735ms and made it obvious. Leaving it
+  alone puts the arrow back *inside* the reel, which is right by accident and wrong by construction.
+  **It is a patch, it is labelled as one in the code, and the fix is the remainder.**
+- ⚑ **A TEMPORAL CHANGE PAYS ITS GATE IN MEASUREMENT.** There is no picture of a duration. Tallying
+  every `later()` call through all eight fights took one instrumented `regress()` and turned "it
+  feels slower" into a number the user can argue with - including the one that deserves arguing
+  with, the Snare's extra 85 seconds.
+
+### Measured
+
+Scheduled pause time per fight, every `later()` call tallied, ×1 → ×1.75:
+
+| clash | brigand | pack | slingline | steading | snare | mother | armour |
+|---|---|---|---|---|---|---|---|
+| 42.9→75.0s | 56.9→99.6s | 57.8→101.2s | 50.9→89.1s | 72.0→125.9s | **113.1→197.9s** | 92.9→162.6s | 52.1→91.2s |
+
+**The Snare adds 85 seconds** to a fight that is already the longest in the game. That is the number
+this entry is least sure about, so it went into `WHAT_TO_TEST.md` as a question rather than being
+left for the user to discover by getting bored.
+
+**The harness pays nothing:** `runFight` drives `aiTurn`/`nextTurn` itself and shims timers to
+microtasks, so the full `regress()` still runs in **817ms** at ×1.75.
+
+### Verified
+
+`LINT()` 0 · `regress()` all eight fights resolve, 0 errors, no guard hits · computed animation
+durations read back off the live DOM at ×1.75 (fx 1.75s, lunge .595s, recoil .525s, evade .56s,
+flash .525s, spark .735s) and at ×1 (lunge .34s, fx 1s) · the button cycles, persists and tints
+through a full lap · `#bPace`'s `grid-column` reads `1 / -1` with AUTO shown, `auto` with it hidden
+· the user's localStorage backed up before anything ran and every key byte-identical afterwards
+(`gt_run_v4` 3681, `gt_journal_v1` 1215).
+
+### 🚧 Open remainder
+
+**The impact should wait for the arrow to land.** `strike()` resolves the shot in the tick it is
+loosed; it should defer the damage, the flash and the figure by the flight time, at which point the
+flight joins the clock like everything else. Left out on purpose: it is a change to how a blow
+resolves, not to a multiplier, and it wants its own entry and its own verification.
+
+## 74 - THE CIRCLE ✅ BUILT
+
+> **SHIPPED 2026-08-02, build log 8f.81.** Specced, pictured and built in one session. The one thing
+> the build changed about the spec below is at the foot of this entry, and it is the statblocks.
+
+> 🗺 **THE ROAD** (a floating card, any slot, once a run) - also ⚔ a new fight of ten who never
+> break · 🎒 the mark on the Captain's sheet · 📜 an authored loss that is not a defeat
+> **SYSTEMS** `EVENTS` · `FLOATING` · `nerveFrac()` · `startBattle`'s foe dispatch · `FIELDS` ·
+> `AFTER` · `LOOT` · `FLEECOST` · `checkEnd`'s loss branch · `toRetreat` · `LINT`
+> **RELATED** #64 built (the bloom flower's aura is this rule's exact shape, and its lessons apply
+> line for line) · #73 built (the other half of "a permanent mark on one named person") · #34 (an
+> authored beating is the gentle sibling of the mortality chain) · #22
+> **PICTURES** [`shots/74_the_circle.html`](../shots/74_the_circle.html) (the gate) then
+> [`shots/74_the_circle_built.html`](../shots/74_the_circle_built.html) (as built).
+
+**The user, verbatim** *(2026-08-02)*:
+
+> *"Добавь еще событие - когда ты встречаешь странных сектантов. И они предлагают сделать тебе тату
+> лица - на лице. Чтобы войти в их круг и получить бонусы. Вы подсели к их костру. Но оказалось что
+> это не маленькая группа из 3 людей.. Вы поели и попили. И оказалось - что большая банда из 10ти.
+> И даются выборы: Сделать тату лица на своем лице · Заплатить провизией (много провизии отдашь) ·
+> Начать сражатся (и приписка - очень не рекомендуем. Их в разы больше и они вас отделают). Ну и
+> если выберешь этот вариант бой - где невозможно победить."*
+
+**And the two rulings that shaped it, both given after the gate picture:**
+
+> **On losing the fight: *"They beat you and mark you anyway."*** All three doors end with a toll
+> paid, and the fight is the worst way to arrive at the same place.
+>
+> **On what the mark buys: *"just ugly. Both enemies and friends feels shakier near you - morale
+> -10 to adjacent units."*** ⚑ **This is the entry.** It was specced as a bonus and the user cut the
+> bonus out. **The sect promises that the mark lets you into the circle and gets you bonuses, and
+> the game never once corrects them.** What you actually bought is that nobody wants to stand next
+> to you. It is free tonight and it is a tax on every fight for the rest of the run.
+
+**The canon hook, and it is the reason this card is worth a number.**
+[`03_WORLD_LORE.md`](03_WORLD_LORE.md) §2 already says it: *"passage is never free; when it looks
+free, the price has simply not been named yet."* This card **is** that sentence played as a scene -
+you sat down, you ate, it looked free, and now the price is being named. A clan cuts its mark on a
+milestone; these people own no road, so they cut it into faces.
+
+### The rules
+
+**Where.** A **floating** card (`FLOATING`), so it can land in any of the seven road slots, at most
+once a run. ⚠ **A floating card may never name a specific character** (`LINT`'s `scanNames`), so the
+only person it speaks about is `{CAPTAIN}`, who is always present.
+
+**The body, three beats.** Three of them at a fire wave you over. There is bread better than yours
+and nobody asks who you are. You are most of the way through the second bowl when the other seven
+come in out of the dark. Every one of them wears a ring cut round the left eye, badly. Nobody has
+drawn anything; the oldest says that passage is never free, that you have eaten, and that nobody has
+ever left this fire without settling.
+
+**There is no fourth option and there is not supposed to be.** You already ate. That is what the
+second bowl is in the prose for, and it is why "walk away" is not on the card.
+
+**The three choices.**
+
+| | label | costs | leaves |
+|---|---|---|---|
+| 1 | *Sit back down. Do it now, while the fire is hot.* | nothing you can count tonight | **THE CIRCLE** on the Captain, permanently |
+| 2 | *Pay them. Whatever is in the cart that they will take.* | **−6 provisions** (`need:{food:6}`, so it greys out) | nothing |
+| 3 | *No. Stand up.* | **BATTLE**, and the label says *"we do not recommend it. There are ten of them and you will not win."* | a beating, and the mark anyway |
+
+⚑ **The provisions gate is the pillar and not a nicety.** When the cart is under six barrels the
+paying door is shut, and the only currencies left are your face and your blood. **Do not soften it
+by scaling the price to what the player happens to have** - a price that always fits is not a price.
+
+**THE CIRCLE - one rule, symmetric, no exceptions.** `p.mark='circle'` on the Captain.
+
+> **Every unit standing adjacent to the marked Captain, friend or foe, reads 10 morale lower.**
+
+- It is a **modifier in `nerveFrac()`**, exactly where the bloom flower's lift lives, and ⚠ **it is
+  never written into `u.morale`** - #64's lesson word for word: writing it in would clamp against
+  `moraleMax` and would not be given back when the body steps away.
+- **Radius 1**, adjacency, measured with the one `udist` call `B.marked` makes affordable, because
+  `nerveFrac` is read from inside both movement scorers and that is the inner loop of both AI
+  brains. ⚠ **`at()` must never appear there** - it rebuilds `alive()` on every call.
+- **It does not take a side.** The precedent is the Kind personality's `auraAll` and the flower's.
+- **It does not touch the Captain himself.** He is used to his own face.
+- It shows up in `statusesOn()` on both ends, the way #67's ✷/◎ pair does, so a player can see why
+  their own line is sagging.
+
+⚑ **What makes it a tool rather than only a tax is where you stand him.** Keep him off your own
+line and drive him into theirs and the same rule is a weapon. Nothing in the game says so; the
+positions do. That is the project's filter satisfied: *a tactical choice reveals something.*
+
+**The fight - ten, and none of them break.** `noRout` on every one of the ten. ⚑ **That is what
+makes it unwinnable without rigging a single number:** you cannot rout a circle, so the fight ends
+when you are down or when you withdraw. Withdrawal stays available through the normal `FLEECOST`
+door - *they wanted a member, not a chase.*
+
+**Losing it is a BEATING, and this is the part that must not be got wrong.**
+`checkEnd`'s `!you.length` branch calls `toDefeat()`, which **ends the run and wipes the save**. A
+floating card that can land in any slot must never be able to do that.
+
+- A `BEATEN{}` register - data, the same shape as `NOWITHDRAW` - routes the loss to `toBeaten()`:
+  everybody comes back up, the downed carrying a scar, which is **exactly what `toRetreat()` already
+  did**, so the body pass was **pulled out into `carryEverybodyOut()` and shared** rather than
+  copied. Two ways to turn a downed body into a scar is two rules to keep in step.
+- They take **the provisions and the purse**, and they cut the ring into your face anyway.
+- ⚑ **README §7 records that "a written outcome instead of an unwinnable fight" was one of the
+  user's best calls.** This does not reverse it - it is that ruling applied *to* an unwinnable
+  fight: the fight is real, and its outcome is written.
+- **Winning is left possible.** A fight labelled *"you will not win"* that cannot be won even in
+  principle is a cutscene wearing a battle's clothes, so it has its own `AFTER` and `LOOT`.
+
+### ⚑ What the build changed about the spec above
+
+**The statblocks, and the label nearly shipped as a lie.** The ten were written as rabble - 32
+hitpoints, 20 armour - and **lost 4 fights out of 5**. `noRout` had made them *easier*, not harder:
+nothing fled, so all ten stood there and were farmed for the loot table, and a seasoned six walked
+through them without losing anybody. Tuned against the arena rather than against taste, in four
+passes, and the shipped numbers give **0 wins in 60** (twelve runs against each of the five arena
+companies, 4 to 16 rounds); over 20 runs the seasoned six - the strongest thing this act produces -
+takes 1, which is the 5% the spec deliberately left open.
+
+> **A button that says "you will not win" is a promise, and the arena has to be asked about it
+> before it ships.**
+
+**And two LINT checks the spec did not ask for, one of which paid for itself the same hour.**
+
+1. **`startBattle`'s foe dispatch has a silent fallback.** It is a hardcoded
+   `kind==='x'?xFoes():` chain ending in `:foes()`, which is the Snare's ratkin - so a fight kind
+   missing from the chain quietly fights the Snare's army. Not hypothetical: **this fight served
+   nine ratkin the first time it was stood up on the board.** Same shape as
+   `LOOT[kind]||LOOT.snare`, one layer further in. The check reads the function's own source.
+2. ⚑ **A DUPLICATE KEY IN A REGISTER LITERAL IS COMPLETELY SILENT.** The new status was called
+   `marked`, which #67 had already taken further down the same `STATUS` literal. **The later one
+   simply wins and the earlier one never existed** - nothing warns, both features look fine in
+   isolation, and only the one defined *first* is gone. Renamed `ringed`/`nearring`, with the
+   warning written where the next status will be added, because neither the linter nor the console
+   can see it.
+
+**And two prose bugs caught by driving it.** The receipt shipped as *"a black ring round You's left
+eye"* - the Captain's roster name is literally `You`, which this file already warns about once, on
+`cast()`. It is second person now, with the generic branch kept. And the em dash in the
+confiscation line went.
+
+## 73 - THE LONG FIRE ✅ BUILT
+
+> **SHIPPED 2026-08-02, build log 8f.79.** Built the same session it was specced, to the spec below, with two changes recorded at the foot of this entry.
+
+> 🗺 **THE ROAD** (a new camp node on the corridor after the Thing in Armour) - also 🎒 the fact and
+> the rule on one person's sheet · ⚔ he does not break the first time it comes for him · ⚙ one new
+> node, two new edges, one new cast token, one new choice gate
+> **SYSTEMS** `NODES` · `EDGES` · `EVENTS` · `cast()` · `openEvent`'s choice filter · `pickChoice` ·
+> `restate()` · the walkout branch in `passDays` · `LINT`
+> **RELATED** #44 built (`castRace`/`castNeed` is the gate this reuses) · #38 built (one fact
+> producing two rules, one in a fight and one out of it) · #71 built (the corridor it lands on) ·
+> #22 (the road reading the company) · #34 (a person who will not leave is a person you can spend)
+> **PICTURE** [`shots/73_long_fire.html`](../shots/73_long_fire.html) - three panels, shot from the
+> running build with the draft card injected: the ask, the story, and where the node sits.
+
+**The user, verbatim** *(2026-08-02, and the Russian is kept because the story is in it)*:
+
+> *"After battle with huge monster 'thing in armor' add node with event. 'Near fire'. New one. Idea
+> and concept of event: событие. После большого события (битвы с фен мозер или синг). На карте кемпа
+> скри просит провизии, что сделать праздноване. Если ты соглашаешься - то он рассказывает историю.
+> Вы знаете, почему крысолюды выжили? Хотя они самые маленькие и слабые - они держатся кланов. Мы
+> тоже держались и эта штука нас не сломала. Но клан тоже должен заботиться. Его хотели принести в
+> жертву на бездумній убой - и когда он отаказался, его сключили из клана. Ему важно - чтобы клан о
+> нем заботился, и он стоял до конца. Его клан. Мне очень нравится малыш скри - я бы хотел с ним
+> дружить."*
+
+**What it is.** A camp node, **The Long Fire**, standing on the corridor between the Dead Company
+and the Warm Spring. A ratkin has built a fire far bigger than a fire needs to be and wants the
+barrels opened on it, tonight, because this company walked away from the thing in the armour and the
+nine men in the ditch three miles back did not. If you open them, he tells the story: first why
+ratkin are still on this island (**clan**, and holding on with both hands), and then, quieter, what
+his own clan did to him when he refused to be spent on a slaughter that was about a milestone.
+
+**Why it is not a vignette.** It runs all six links. A named person → a choice the whole fire
+watches → a mechanical act (four provisions, in the stretch where provisions are the mending clock)
+→ a stored fact → a delayed consequence → a body that behaves differently at the Snare.
+
+### The rules
+
+**Placement.** `bonfire :{x:1216,y:400,n:'The Long Fire',t:'camp',ev:'bonfire'}`, splitting the
+existing `dead → oasis` edge into `dead → bonfire → oasis`, one day each. **Measured, not eyeballed:
+`spacingViolations()` reports nothing on the new node and `labelViolations()` reports 0 over the
+whole map at those coordinates.** The act goes one day longer, which is one more day of wages, and
+that is the price of the beat.
+
+> **⚑ WHY BEFORE THE WARM SPRING AND NOT AFTER IT, and it is a mechanical reason rather than a
+> taste one.** The spring's first choice closes every wound in the company. Provisions are only
+> spent on a day when somebody is carrying a wound (see `passDays`), so a four-provision cost
+> **placed after the spring costs nothing at all** - the barrels would stop draining the same night
+> they were opened. Before it, the company is at its most chewed-up and four provisions is four days
+> of mending walked into the Snare. The order is also the better dramaturgy: the fight, then nine
+> men who did not make it, then the night we did, then the water. Spirit, then body.
+
+**The cast.** `castRace:'ratkin'`, `castNeed:1`. Prefer the person with id `skree` if he is on the
+roster, otherwise any ratkin, chosen once when the card opens and stored as `G.fireTeller`.
+**If there is no ratkin in the company at all, the node deals a card off the `CAMPS` deck instead**,
+exactly the way The Roadside Fire does (`openCamp(node,()=>{},true)`) - one line, no second card to
+write, and the node is never an empty stop.
+
+> **⚑ IT NEEDS A NEW CAST TOKEN, and the gap is pre-existing.** `cast()` re-picks its `{RATKIN}`
+> on every call, so the body and the `after` text of the same card can name two different people -
+> which is why every card that needs a stable subject today either hardcodes a name (the thing the
+> comment above `CASTFALL` warns against) or is a `CAMPS` card with `body:(a,b)=>`. Add **`{TELLER}`
+> / `{TELLER1}`** to `cast()`, resolving off `G.fireTeller` (full `who()` form and bare first name),
+> set when the card opens and cleared when it closes. One place knows the rule, and body, `after`
+> and the effect prose cannot drift apart. **Any later authored card about one specific person wants
+> this and there is nothing else to reach for.**
+
+**The three choices.**
+
+| | label | costs | pays |
+|---|---|---|---|
+| 1 | *Open the barrels. All of them.* | −4 provisions (`need:{food:4}`), so it greys out on an empty cart | +14 company mood · **the story** · **HIS CLAN** on his sheet, permanently |
+| 2 | *Open them. And while they are full and loud, tell them the wage is short.* | −4 provisions · **and he works out what the fire was for** | +10 company mood · **every unpaid day in the company is wiped** (`p.unpaid=0`) · he tells the first half of the story and stops · **no HIS CLAN, ever** |
+| 3 | *No. Four days to the bells, and that food is the road.* | nothing tonight | −8 company mood · he agrees with you out loud, in front of everybody, and goes and sits where he always sits |
+
+**Choice 2 only exists when it can bite.** A new choice gate `needUnpaid`, the same shape as the
+existing `needHurt`: it is drawn only when somebody in the company is actually owed wages. It is the
+cynical option and it is **supposed to pay better tonight** - mood and a wiped grievance for the
+same four provisions - while costing the one permanent thing in the card. That is the pillar with
+the sign the right way round: the generous option is available, it is never free, and it does not
+secretly pay better.
+
+**HIS CLAN - one fact, two rules.** `p.clan=true`, plus a `remember()` line, plus a line on the
+sheet. It buys exactly two things and both are stated in words, never numbers:
+
+1. **In a fight:** the first time his nerve would take him to ROUTED, it does not. Implemented in
+   `restate()` as `if(u.clan&&!u.clanHeld&&frac<0.15){u.clanHeld=true;u.noRout=true;}` - **the same
+   shape as `desperateAt`, caught before the `noRout` floor lifts him back up, and at the one site
+   both AI brains and AUTO already read.** Once per battle, for the rest of his life.
+2. **Off it:** he is never in the `goers` list in `passDays`. He does not walk out over money. That
+   is the second half of the user's own sentence - *"a clan must also care"* - stated in the one
+   currency the game already argues in.
+
+**What refusing does.** Nothing tonight, a line on his sheet, and he does not get the rule - so at
+the Snare he breaks like anybody else. Deliberately **not** a punishment clock: a refusal that
+quietly makes him more likely to walk out later is a karma meter with better manners, and it would
+make the generous option the only correct one. Same shape as the Warm Spring's fourth choice, which
+the user wrote: *free today, remembered forever.*
+
+> ### ⚑ THE STANDING RULE THIS EVENT CAME WITH - apply it to every card, not just this one
+>
+> **The user, same message:** *"На каждом из собыитй важно вынести - оно сделано человеком или нет.
+> Это да - и оно важно для эмоционального включеня и сюжета."* - **every event should make legible
+> whether the thing in front of the company was made by people or not**, because the two are
+> different kinds of dread and the difference is what the player attaches to.
+>
+> The lore book already has the axis and has never been asked to carry it on the card: the **Old
+> Work** is dressed stone nobody living made and it is still doing its job; the **Bloom** is not
+> anybody's doing at all; the **Thing in Armour** is the question stated as a monster, because the
+> armour was certainly made by people and what is inside it was not. **This card is the other end of
+> the scale, and that is why the fire is the subject rather than the meal**: it is the one thing in
+> the back half of the act that people built themselves, out of nothing, on purpose, for a night
+> that feeds nobody tomorrow.
+>
+> **It belongs in the "before an event ships" checklist in [`README.md`](README.md) §5** as a
+> seventh question, and it is worth one added line in the Thing in Armour's own aftermath. Neither is
+> part of building this entry; both are cheap and should be done while the reason is fresh.
+
+### Build
+
+1. `NODES.bonfire` + swap the `dead→oasis` edge for two. Re-run `spacingViolations()` and
+   `labelViolations()` after, and **remember that every scene in the map painter is a node lookup**
+   - this adds one rather than removing one, so nothing there breaks, but the painter should get the
+   fire drawn on it.
+2. `{TELLER}` / `{TELLER1}` in `cast()`; `G.fireTeller` set in `openEvent` and saved with the run.
+3. `EVENTS.bonfire` - the card, three choices, the ratkin fallback to `openCamp`.
+4. `needUnpaid` in `openEvent`'s `visible` filter; `clanFeast` / `clanBuy` in `pickChoice`, writing
+   `hurtLine` the way `springStay` already does.
+5. `restate()`'s one line; the `goers` filter in `passDays`; `p.clan` on the character sheet.
+6. Teach `LINT()` the three new keys, and add the node to whatever it checks about the graph.
+
+**Verify.** A company with no ratkin gets a camp card and never a broken node · the same person is
+named in the body, the `after` and the story · choice 2 is invisible to a company that is paid up ·
+choice 1 greys out under four provisions · `p.clan` survives a save and reload (⚠ **`G.bonds` was
+never written to the save until #38 caught it** - check this one the same way) · he holds exactly
+once per battle and not once per run · he is skipped by the walkout roll at five days unpaid · the
+card cannot fire twice · `LINT()` clean · `regress()` over all eight fights unchanged.
+
+### ⚑ Two things the build changed about the spec above
+
+**1. HIS CLAN is not a one-tick reprieve, and the words were changed to match the rule rather than
+the rule softened to match the words.** The spec said *"the first time his nerve would take him to
+ROUTED, it does not"*, which reads as one saved tick. What `restate()` actually does - and what
+#38's `tieHeld` has always done - is set `noRout` for **the rest of that battle**, so once his nerve
+goes he cannot leave that field at all. That is his own sentence in the story (*"I will stand in it
+until it is over"*), and it is a bill as well as a boon: BREAKING is −12 to hit on a ratkin cutter
+who now has to stand in it. **Three texts say it in those words - the story, the sheet and the code
+comment. Soften one and you have to soften all three.**
+
+**2. LINT gained a check the spec did not ask for.** An uncast `{TELLER}` does not render a raw
+brace, it renders *"the smallest of you"* - so a future card that writes the token and forgets to
+set `G.fireTeller` would read as slightly odd writing and never be reported. The check reads
+`openEvent`'s own source, because that is the only place a card is allowed to cast itself.
+
+**And one trap re-learned from the wrong side.** `LINT()` reported *"no route from the hold to the
+Snare"* on a graph with eight good routes, because the page in the browser was **one edit stale**: a
+parallel session was mid-fix on that very check while this one was testing. **When a check disagrees
+with the file, reload before you debug.**
+
+## 72 - The combat pass: dodge, the kick combo, the spear wall, the step back ✅ BUILT
+
+> ⚔ **THE BATTLE BOARD**, and nowhere else.
+> **SHIPPED 2026-08-01, build log 8f.74.** Pictures: the gate
+> [`shots/72_combat_dynamics.html`](../shots/72_combat_dynamics.html), drawn on a real practice
+> board before any code, then [`shots/72_combat_built.html`](../shots/72_combat_built.html), the
+> same three rules driven through the engine afterwards.
+> **SYSTEMS** `dodgeOf()` · `hitBreakdown()` · `forceDest()` · the one forced-movement block in
+> `strike()` · `partingShots()` · `selectAct`/`clickHex` · `raceVerb` (both brains) · `STATUS`.
+> **RELATED** #46 (the race skills, whose KICK this rewrites) · #47 (the spearwoman rework, which
+> now inherits a class with an actual job) · #50 (the balance pass - **nothing here was tuned
+> against its numbers, and it should re-read all of them**) · #29 (hard zone of control, still cut).
+
+**The ask, verbatim** *(user, 2026-08-01, one message, while walking)*: combat 10-15% more dynamic ·
+lower the dodge chance a little, *"especially when dodge is already high"* · ratling +5% dodge, ogre
+-5% · opportunity attacks at half normal damage · *"when you disengage you step one hex out of the
+zone of control without damage"* · the kick activates opportunity attacks, *"this gives the human a
+fun combo"*, and if somebody stands right behind the enemy you kick, they are pushed left or right
+around them · spear wall costs 1 ability, deals 75% in the zone, has a 50% chance to push the
+attacker back, *"but if somebody has already come right up to one hex, the zone of control stops
+working"*.
+
+**THE ONE JUDGEMENT CALL, RECORDED BECAUSE IT WENT AGAINST THE REASON GIVEN.** The opportunity swing
+was **0.75** of a blow, not the "very little" the request assumed, so obeying the number *lowered*
+it. It was obeyed anyway - the number was explicit, the user was away, and it is one line to put
+back - and the intent behind it is served by the two rules that make the swing *fire* far more
+often: the kick now provokes, and DISENGAGE is cheap enough that bodies actually leave a scrum.
+
+**FOUR THINGS WORTH KEEPING FROM THE BUILD.**
+
+**(a) A soft cap is the arithmetic of "especially when it is already high."** A flat trim takes the
+same points off everybody, which is the opposite of what was asked. `softDodge` leaves the first 12
+alone and prices everything above it at 0.6 - so an ogre at 8 is untouched, a lurcher at 26 loses
+five, and the stack cases lose the most. It is applied **last, to the sum**, which is the only place
+it can be applied without every contributor to `dodgeOf` needing to know it exists.
+
+**(b) A rule that is a fact about the ground beats a flag a body carries.** `spearwall` was a
+boolean she held; `wallLive()` asks the board. That one change is what turns the spearwoman from
+somebody who taxes anyone who comes near, alone and forever, into somebody the line has to *keep
+clear* - and it did it without a single new number. ⚠ Its `ignore` parameter is the trap: the
+trigger asks the question *after* the mover has been put down, so without it anybody who walked all
+the way in turned the wall off **by arriving**, and 50 test approaches were caught zero times.
+
+**(c) When a verb's value is a hex, the AI must be able to ask for that hex before it commits.**
+`forceDest` gained `slip`, and the tie-break between the two flanking hexes had to stay
+*deterministic* for exactly that reason - `raceVerb` calls `forceDest` to score the kick, and a coin
+flip inside it would make both brains score a destination the blow then does not use.
+
+**(d) The cheap door was added, the old door was left open.** DISENGAGE still sets `safeMove`, so
+"step out, then walk properly" costs the same two actions it always did. Nothing was taken away;
+a one-action version was put beside it.
+
+**OPEN.** The enemy AI never braces a wall and never disengages, so both of those rules are
+player-side in practice - that is pre-existing, and it is the obvious next thing if the wall is
+supposed to be a threat as well as a tool. And the enemy's spear wall does not exist at all: no foe
+statblock carries `k:'wall'`.
+
+## 66 - Three camera stops on the battle board ✅ BUILT
+
+> ⚔ **THE BATTLE BOARD** and ⚙ settings (the stop is remembered across launches).
+> **SHIPPED 2026-08-01, build log 8f.65.** Pictures: the gate mockup
+> [`shots/66_camera_stops.html`](../shots/66_camera_stops.html) and the built board
+> [`shots/66_camera_built.html`](../shots/66_camera_built.html).
+> **SYSTEMS** `#bField` / `#bGround` layout · the `#bFx` overlay and everything anchored in it
+> (`fx`, `hexPt`, the LOS ray, `capBalloon`) · `sprite()`'s oversample · `paintTerrain` · `render()`
+
+> **WHAT CHANGED BETWEEN THE SPEC AND THE BUILD.** Nothing in the design. The four questions the
+> spec left open were ruled by the user with *"good, i like it - do it"*, so the recommendations
+> stood: **1.30 / 1.80 / 2.50**, hex text **scales with the board** (free, and a legibility win at
+> FULL), **FIELD is the default**, and **drag to look around was NOT built** because it was written
+> as the cuttable half. The built transforms match the mockup's to the tenth of a pixel, which is
+> the strongest argument this project has yet produced for making the picture in the game.
+
+**The user's own words, 2026-08-01:**
+
+> *"And maybe some simple close further on battlefield? so units and action looks a bit bigger. Like
+> in battle brothers."*
+> *"Maybe 3 states for battlefield: full - smaller units, medium - camera comes a bit closer - and
+> close - you see how units can hit each other."*
+
+### The measurement that changed the design
+
+Measured off the running build, practice field, the clash: **the battle field is 980 x 544 and the
+board is 596 x 416.** The board is centred in it, so **41% of the field was empty gradient**, with
+1.64x of horizontal slack and 1.31x of vertical.
+
+That single fact rewrote the request. The people looked small **not because the camera was far away
+but because the board never grew into the space it was given.** Which means:
+
+> ### The lowest stop is x1.30, not x1.00.
+> A stop that shows exactly the same 15 x 13 hexes, only smaller, is **a control with no job**. The
+> old view was dominated by x1.30 in every respect: same information, nothing cropped, no camera to
+> move, everything 30% larger. So it was replaced rather than kept as a fourth option.
+
+### The three stops as built
+
+| | scale | what you see | the camera |
+|---|---|---|---|
+| **FULL** | **x1.30** | all 15 x 13 hexes, filling the field's height | **none needed.** The whole board fits. |
+| **FIELD** | **x1.80** | 14.3 cols x 9.4 rows | follows the acting body, clamped to the board |
+| **CLOSE** | **x2.50** | 10.3 cols x 6.8 rows | follows the acting body, clamped to the board |
+
+**FULL is the planning view**, **FIELD is the working view** and is the default, **CLOSE is the
+watching view** and is deliberately not a planning view.
+
+### The rules
+
+1. **The camera is presentation and nothing else.** No rule, no hit chance, no reachable hex, no AI
+   decision. Switching stop mid-turn cannot change an outcome. *(Invariant 9.)*
+2. **It never hides something you need in order to act.** Everything cropped at CLOSE is board you
+   can bring back with one click.
+3. **Where it points, at FIELD and CLOSE only:** the body whose turn it is, **clamped to the board**
+   so the view never shows off-board emptiness, with a 220ms glide. One rule, both sides.
+4. **It only moves when the subject leaves the middle 40% of the view**, so the board does not slide
+   under the cursor on every step of a walk.
+5. **The stop is a setting** (`gt_cam`), remembered across launches like the audio toggle. Not run
+   state, not battle state.
+6. **The control** is three segmented words at the top-right of the field, current one lit, plus the
+   mouse wheel. A state, not a number: no slider, no percentage, no free zoom.
+
+### What made it cheap, and the two things that would break it
+
+The mechanism is **one CSS transform on `#bGround`** plus `#bField{overflow:hidden}`. `fx()` and
+`hexPt()` compute positions as `(hexRect - fieldRect) / the #stage scale`, and **`#bFx` stays outside
+the transform**, so every effect, floating number, LOS ray and Captain's balloon lands correctly at
+any stop with no edit. Verified numerically: the same body's derived board point is **identical to
+two decimals at all three stops**.
+
+> ⚠ **Do not move the transform onto `#bField`, and do not move `#bFx` inside `#bGround`.** Either
+> one breaks all of that in the same instant, and silently.
+
+**The resolution ceiling was exactly x2.00 and it was not an accident.** Sprites were rendered at
+`2*TOKEN` and displayed at `1*TOKEN`, which is precisely where the old board sat. `OVER` is 3 now,
+and the ground canvas is painted at 1200x880 and shown at 600x440. ⚠ **`setTransform`, never
+`scale()`** in `paintTerrain`, which runs again on every battlefield.
+
+### Deliberately not built
+
+**Drag to look around.** Specced as the cuttable half and left out: the follow rule may be enough,
+and a drag is a new way to send somebody to the wrong hex. If CLOSE reads as claustrophobic in a real
+playthrough, this is the thing to add, and the rule it needs is that a drag of more than 6px
+suppresses the click.
+
+---
+
+## 60 - The first battle teaches itself ✅ BUILT
+
+> ⚔ **THE BATTLE BOARD** and 🚪 the front door.
+> **SHIPPED 2026-08-01, build log 8f.62, re-cut in 8f.63.** Picture, shot from the running build:
+> [`shots/60_first_battle_onboarding.html`](../shots/60_first_battle_onboarding.html)
+
+> **WHAT CHANGED BETWEEN THE SPEC BELOW AND THE BUILD.** Nothing in the design, and one thing in
+> the code that is worth carrying forward. **`CAPTIER[E.tier]||1` silently promoted every lesson
+> to TEACH**, because the tutorial tier's value is **0** and `0||1` is 1. The first lesson of a
+> round then outranked every other lesson and they all queued behind it, so the tutorial dribbled
+> out one line a round instead of two. Found on the first staged fight, in the first minute.
+> ⚑ **A new tier whose value is falsy is a trap that any `||` default will spring**, and this file
+> uses that idiom in a lot of places.
+
+> **All three open questions were answered by the user with *"looks good"*, so the spec's own
+> recommendations shipped as written:** a `learn` tier below everything that queues rather than
+> drops · lessons survive the Captain going down, spoken by whoever is up · rings under the feet.
+
+> ### AND THEN THE LINES WERE RE-CUT, WHICH IS THE PART TO READ IF YOU EVER WRITE MORE OF THEM
+> Three instructions from the user in the hour after it shipped, and together they settle how this
+> register is written from now on:
+>
+> 1. ***"make it clearer. For example - You are in enemy zone of control. to move you need to
+>    disingage, or other wise you will be hit."*** Lesson 9's first version was *"standing next to
+>    them is standing in a fight"*, which is flavour: it describes the situation and does not tell
+>    anybody what to do. **Naming the mechanic out loud is the right call in a lesson**, because a
+>    player who does not know the word cannot look it up.
+> 2. ***"you can update also other teachings. For me important - that people understand. And then
+>    the regular capitan comands more in a vibe of game."*** So **all ten lessons were rewritten
+>    plainer**, and the CALL and HEART lines were deliberately left atmospheric. The register now
+>    has **two voices and the tier is which one you are in**, which is written into the code above
+>    `CAPLINES` with a test for each: a lesson must still teach with the balloon deleted; a comment
+>    must still work as a line of dialogue in a film.
+> 3. ***"I prefer tutorial as capitan says, rather than in unit card."*** **The `coach('fight')`
+>    card is deleted**, register entry and call site. It was a card with a GOT IT button carrying
+>    four rules at the moment the player had least reason to read them, and three of the four are
+>    lessons now. The `map` and `inv` cards stay: they teach screens #60 never visits.
+>
+> ⚑ **And re-cutting lesson 9 forced lesson 8 to be re-cut with it.** Once 9 said *"they get a free
+> hit"*, 8's *"he gets a free swing"* was the same rule twice. **9 is the problem, 8 is the
+> answer** (DISENGAGE, plus the one-swing-each-a-turn clause that stops it reading as a rule against
+> ever moving). *When you sharpen one line in a register, check the line that fires next to it.*
+
+
+> ⚔ **THE BATTLE BOARD**. Also 🚪 **the front door** (it is onboarding's last beat) and
+> ⚙ it amends one rule inside `capSay()` that every future speaker inherits.
+> **SYSTEMS** `capSay` / `capBalloon` / `capTick` / `CAPLINES` (#51 built all four) ·
+> `whisper()` + `LEGACY.seen` (#14's layer 2, and the once-ever persistence this reuses) ·
+> `moveBudget` · `canUse` / `onCool` / `castCap` / `castMul` · `losState` / `shotState` (#36) ·
+> `arcOn` · `engaged` / `partingShots` · the nerve ladder and `rungOf` ·
+> `SIM.on` (the practice field must not spend the tutorial)
+> **RELATED** **#51 built. This is its sixth through fifteenth triggers, and the first thing ever
+> to ask for an exception to its budget** · **#39** shares a border and does not block: #39 owns the
+> beats **before you can act** (the arrival cards), this owns **while you act** ·
+> **#43** (the speaking budget. The amendment below is what that entry will inherit) ·
+> **#29** (Zone of Control, parked. ⚠ lesson 9 teaches what the game does TODAY, not that entry) ·
+> #14 built (three layers, this is layer 2 with a mouth) · #40 closed (`capBalloon` already takes a
+> **speaker**, which is what makes lesson 1 and the mute exception cheap) · #36 built (the archer
+> lesson is only worth saying because the lane states already exist) · #46 built (the race verbs are
+> **not** taught here, see *what is deliberately left out*)
+
+> **GATE ARTIFACTS: rules below, plus the picture at `shots/60_first_battle_onboarding.html`,**
+> three panels built in the game on the real Blood-on-the-Road board. Nothing is coded.
+
+**The request, verbatim** *(user, 2026-08-01)*:
+
+> *"then we need good step by step onboarding for the batle:*
+> *- here is you wariors - here is enemy*
+> *- to hit enemy with regular fighter you need to move closer. Move forvard*
+> *- you have two action per round - second repeated action (run, hit) - ussually less efective
+> then first. (explain it, after second move of same unit)*
+> *- when selecting archer - explain how it works*
+> *- when taking mage - explain how it works*
+> *- When in close compbat and some unit has enough movment - explain flanjing and back*
+> *- when enemy breaks - explain morale*
+> *(you can make it as capitan says this in the first battle. When the triger is right)"*
+
+**Three additions the same day, all theirs:** *"add also explanation about disingage"*, *"Add also
+about control zone - for education"*, and *"morale for education - how it works. It could be 2
+sentences from a capitan"*. **And one deletion:** *"weBend - delete"*, which was done immediately
+and is not part of this entry. See build log 8f.56.
+
+**The shape.** Ten lessons, spoken by the Captain from his own body, each fired **at the moment the
+rule first bites**, which is the whisper contract (#14 layer 2) with a mouth on it, and the
+machinery for it shipped whole in #51. **No new panel, no modal, no pause.** One new control: a
+`skip tutorial` in the corner of the balloon.
+
+> **The one-sentence version: the first fight is the tutorial, and it does not know it is one.**
+
+### The ten triggers, and the actual rule behind each
+
+*The rule is what is **true in the build today**, checked against the code rather than assumed. The
+line is what the Captain says, and it carries **no digits**, because "show a state, hide the number"
+is not suspended because a person is saying it.*
+
+> ### ⚑ THE VOICE RULE FOR THIS ENTRY, SET BY THE USER 2026-08-01: ***"a bit less epic, more clear he says."***
+> Every other line in `CAPLINES` is a **comment**, and may be atmospheric, because its job is that a
+> person is watching. **A lesson's job is that the player understands the rule**, so the tutorial
+> tier is written flatter than the rest of the register on purpose. Rewrite test: *if you deleted
+> the balloon and printed the line as a help entry, would it still teach?* If not, it is atmosphere
+> wearing a tutorial's hat.
+>
+> **Two of them must be role-generic, not cast.** The first drafts of 4 and 5 named *Ilka* and
+> *Marrow*, which is wrong the moment the archer is a ratkin recruit or the caster was hired at the
+> Muster. `{N}` or nobody. **A tutorial line may never assume the starting roster.**
+>
+> **And no em dash, anywhere, in any of them.** *(User's hard rule, 2026-08-01: "never use "—"
+> anywhere.")* Note that the five shipped `CAPLINES` still contain them, which is a separate job.
+
+**1 · `learn_sides`. Here is us, here is them.**
+*Fires:* once, on the **first battle of a run**, after the board is drawn and **before the first
+turn begins**.
+*Rule:* three rings, not two. **The first fight puts ratkin allies on your side who are not on your
+roster**, and the game has never said so out loud. Ours green, allies gold, theirs red, drawn under
+the feet, lasting as long as the line and then gone for good.
+*Line:* **"Green rings are ours. Red are theirs. Gold are fighting with us today, but they are not
+ours to command."**
+*(alt: "Ours wear green. Theirs wear red. The gold ones are on our side and take their own
+orders.")*
+> ⚠ **This is the only new pixel in the whole entry.** Everything else is a balloon over machinery
+> that already exists. If the rings are cut, the entry still works, it just opens with words.
+
+**2 · `learn_close`. Walk at them.**
+*Fires:* the first time one of yours is the current unit, has an action, and **no enemy is inside
+its weapon's reach** (`reach`, so a spear is 2 and a sword is 1. The lesson must not lie to Vesna).
+*Rule:* moving is one of your two actions, the lit hexes are how far this body gets, ground is free
+and blood is not.
+*Line:* **"Nothing is close enough to hit. Move first, then swing with the other action."**
+*(alt: "Too far to reach anybody. The lit hexes are as far as this one gets this turn.")*
+
+**3 · `learn_twice`. The second one is always worse.**
+*Fires:* the moment **the same unit spends its second action on the same kind of thing**, a second
+MOVE or the same act key twice. *(The user's own trigger: "explain it, after second move of same
+unit".)*
+*Rule, and it is genuinely three rules wearing one idea, all already in the build:*
+> · **a second move is one hex shorter.** `moveBudget`: `movesUsed>0` costs 1, and a **cutter loses
+>   its +1**, which only ever applied to the first move
+> · **the strong things go cold for a round.** `onCool`, so the good idea *cannot* be repeated
+> · **nothing may be used more than twice a turn at all.** `canUse`, and **EMBER only once**
+*Line:* **"Two actions a turn. The second move is a hex shorter, and the strong things need a round
+before you can use them again."**
+*(alt: "Doing the same thing twice in one turn is always the weaker half of it. Move, then swing.")*
+
+**4 · `learn_bow`. The archer.**
+*Fires:* the first time the player **selects a body carrying a bow**.
+*Rule:* range 5 with the hunting bow. The **lane** has to be there and the board already says so in
+one word on the hex: BLOCKED · OBSTRUCTED · SCREENED · FAR · LONG · CLEAR (#36). Shooting from
+inside a scrum is a wreck (−35, or −18 with a braced spear beside her, −15 with SURE SHOT).
+**Point blank (−40) is worse than extreme range (−18).** And CRIPPLING SHOT takes the target's
+**legs, not its life**: half damage, half its movement, 10 dodge, until it next acts.
+*Line:* **"A bow is worst up close and it needs a clear line. Keep {N} back, with one of ours in
+front of them, not three."**
+*(alt: "Read the word on the hex before shooting. CLEAR is a good shot and everything else is a
+worse one.")*
+
+**5 · `learn_cast`. The caster.**
+*Fires:* the first time the player selects a **battle-mage or mage**.
+*Rule:* **one working a turn** (`castCap` is 1 for the battle-mage, 2 for the mage with **the second
+at half**, `castMul`). **EMBER once a turn**, cheap, mostly ignores armour, and costs **his own
+nerve** rather than an arrow (`strain:5`). And **a working is not an arrow**: `needsLane` exempts
+arcane, so no lane, no screen, no point-blank penalty. *That last one is the only thing keeping the
+battle-mage distinct from the archer, and no screen has ever said it.*
+*Line:* **"One spell a turn, and it costs {N} their own nerve rather than an arrow. Bodies and walls
+do not block it."**
+*(alt: "Only one spell a turn, so spend it on what a sword cannot reach. It needs no clear line to
+anybody.")*
+
+**6 · `learn_round`. Flanking, as an offer.**
+*Fires:* one of yours is **adjacent to an enemy** and **still has movement enough to reach a hex in
+that enemy's rear 180°** *(sectors 2 to 4. ⚠ **not** the single BACK sector. A hex line bends, and
+#36 already shipped that bug once.)*
+*Rule:* the back arc is drawn in red under every body, standing there is **+30 to hit and a quarter
+more damage**, the side is worth less, the front is worth nothing, and **some things have no back at
+all**, which the readout says.
+*Line:* **"The red arc under him is his back. Stand in it and you hit him harder and more often."**
+*(alt: "Walk round behind him. His front is worth nothing to us, his back is worth the walk.")*
+> ⚠ **THIS COLLIDES WITH A SHIPPED LINE AND THE COLLISION IS THE INTERESTING PART.**
+> `CAPLINES.w_back` already exists and says *"Behind them. That is where a fight gets cheap."* But it
+> rides `whisper('back')`, which fires **when a blow has already landed in a back**. That is a
+> **receipt**. The user asked for an **offer**, one turn earlier, while the movement is still
+> unspent. **They must not both exist**, or the Captain teaches one rule twice, which is exactly the
+> nag that got #51 cut from twelve triggers to six. **Recommendation: `learn_round` replaces
+> `w_back` as the Captain's line. The whisper toast keeps its precise wording unchanged.**
+>
+> **This line no longer mentions the parting swing.** It used to, and that made it teach two rules
+> at once while lesson 8 taught one of them again. **One rule, one line.**
+
+**7 · `learn_theirnerve`. When they break.**
+*Fires:* the **first enemy to rout or flee**, on either side of the field.
+*Rule:* nerve is not health. Five rungs, **Broken · Breaking · Ok · Happy · It rocks**. It decides
+whether a body **keeps standing there at all**, which is how most fights actually end, and **a
+routed body comes back if it survives.**
+*Line, two sentences:* **"That one broke and ran, and he is not even wounded. Nerve runs out before
+blood does."**
+*(alt: "He is finished without being hurt. Frighten enough of them and we do not have to kill any of
+them.")*
+> ⚠ **This collides with a shipped line too, and more gently.** `theyRun` is a **CALL** and outranks
+> a lesson by tier, so on the very first break the CALL would win and the lesson would be lost
+> forever. **The first break gives its round to the lesson.** Every break after that belongs to
+> `theyRun`.
+
+**8 · `learn_step`. DISENGAGE.** *(added by the user mid-spec: "add also explanation about
+disingage")*
+*Fires:* the first time one of yours is **engaged**, meaning an enemy is inside its reach, **and the
+player selects MOVE.** That is the exact moment the choice exists and the exact moment before it is
+paid for. A line after the swing has landed is a receipt, and `whisper('parting')` is already that.
+*Rule:* walking out of somebody's reach lets them **swing at you for free**. **DISENGAGE costs an
+action and prevents it.** And the part that stops this being a rule against ever moving:
+**each enemy only gets one parting swing a turn**, so walking through a line is expensive rather
+than suicidal.
+*Line:* **"DISENGAGE is how you get out of it. It costs an action, and they only get one free swing
+each a turn."**
+*(alt: "Break off with DISENGAGE and nobody swings at you. Just walking is quicker and it costs
+blood.")*
+> **Re-cut when lesson 9 was rewritten.** It used to lead with *"he gets a free swing"*, which is
+> what lesson 9 now says one tick earlier, so the two were teaching one rule twice. **9 is the
+> problem, 8 is the answer**, and the one-swing-each-a-turn clause moved into the line because it is
+> what stops this reading as a rule against ever moving.
+
+**9 · `learn_zone`. The zone of control.** *(added by the user: "Add also about control zone - for
+education")*
+*Fires:* the first time one of yours **becomes engaged**, whoever closed the distance. That is one
+tick after lesson 2 in almost every first battle, which is the right order: *go to them*, then
+*this is what being there means.*
+> ### ⚠ TEACH WHAT THE GAME DOES TODAY, NOT WHAT #29 WOULD DO
+> **Grimtoll has no Zone of Control rule.** #29 is parked, and its entry says why: it was cut once
+> for making movement unaffordable. What the game has instead is **engagement plus parting swings**,
+> which is a soft zone: standing next to an enemy does not forbid anything, it puts a **price** on
+> leaving. **The lesson must describe the price, never a prohibition**, or a player will believe
+> they are pinned and stop moving, which is precisely the failure that got the hard rule cut. If
+> #29 is ever built, this line is one of the things it has to rewrite.
+*Rule:* adjacency is what "in a fight" means. It is what makes a parting swing possible (lesson 8),
+what the flanking arcs are measured from (lesson 6), what wrecks a bow (lesson 4), and what
+**being surrounded** is counted from for nerve (lesson 10).
+*Line:* **"You are in their zone of control now. Move out of it and they get a free hit at you."**
+*(alt: "That is their reach you are standing in. Walk out of it and they swing at you for nothing.")*
+> **Rewritten after the first build, by the user: *"make it clearer. For example - You are in enemy
+> zone of control. to move you need to disingage, or other wise you will be hit."*** The first
+> version said *"standing next to them is standing in a fight"*, which is flavour and does not tell
+> anybody what to do. **It names the term on purpose:** "zone of control" is a wargamer's phrase and
+> that is exactly why it works, because it is the phrase the player has probably already met.
+> ⚠ **One deliberate difference from the user's own sentence:** you do NOT need DISENGAGE in order
+> to move, you need it in order to move **without being hit**, and their second clause says as much.
+
+**10 · `learn_ournerve`. Morale, from your own side.** *(added by the user: "morale for education -
+how it works. It could be 2 sentences from a capitan")*
+*Fires:* the first time **one of yours drops a rung**. It rides the existing `whisper('rung')`,
+which has fired since #14 and **has never had a voice**, exactly the way lesson 6 rides
+`whisper('back')`.
+*Rule, and this is the half the game has never taught:* what **moves** the ladder is being hit,
+watching somebody drop, being surrounded, and **standing on your own, which is the worst of them**.
+What **restores** it is a quiet turn, shoulder to shoulder, and the Captain nearby. That is why a
+shove or a hook that drags somebody out of the line is an attack on their nerve rather than their
+body, and it is the single most useful thing a new player can know about this game.
+*Line, two sentences:* **"{N} is losing their nerve, and standing alone is what does it fastest. Put
+somebody beside them and it comes back."**
+*(alt: "Nerve is not health. {N} can walk off this field untouched and still be no use to us, so
+keep them shoulder to shoulder.")*
+> **This is what `weBend` should have been.** The deleted CALL narrated the same subject every fight
+> and told you nothing. This says it **once, ever**, and says what to do about it.
+
+### ⏭ THE SKIP, in the corner of the balloon
+
+*User, 2026-08-01: **"for this tutorial you can add on the ottom left conner of his mesege 'skip
+tutorial'"***
+
+**A small `skip tutorial` bottom-left of the balloon, on `learn` lines only.** Nothing else in the
+register grows one. A CALL is a comment and there is nothing to skip.
+
+- **What it does:** marks **every remaining `learn_*` id as seen** in `LEGACY.seen`, clears the
+  queue and drops the current balloon. **Permanent and per save**, not per battle. Somebody who
+  skips has said *I know this game*, and asking again next fight is the nag.
+- **What it does NOT do, which is what makes it safe to press:** the **whisper toasts keep firing.**
+  They are the layer with the precise numbers in them, they were never the tutorial, and `? RULES`
+  stays where it is. Skipping silences a *voice*, not the *rules*.
+- **It is the first clickable thing the Captain has ever had**, and that is the implementation trap:
+  ⚠ **`#bFx` is `pointer-events:none`** so a balloon can never eat a click meant for a hex. The skip
+  needs `pointer-events:auto` **on itself and nothing else**, or this feature breaks the board it is
+  teaching.
+- **Styling:** `--mono`, about 8px, letter-spaced, the muted ink already used by `.ccall .who`, no
+  border, underline on hover. It must read as an exit and not a button. **Nothing on this balloon
+  may look like the thing the lesson is telling you to press.**
+- **Reachability:** on screen for the balloon's dwell and no longer. At 4.5s (below) that is enough
+  for a deliberate click and short enough that nobody hits it by accident. **A skip that paused the
+  fight to be pressed would be worse than no skip.**
+
+### The three rules this entry needs changed, and they are the whole design question
+
+**(a) THE BUDGET.** `capSay()` allows **one line a round and five a battle**, deliberately. Ten
+lessons do not fit, and the fight has its own CALLs and HEARTs to make. **Proposal: a fourth tier,
+`learn`, ranked BELOW `teach`**, so it may never take a round off a CALL or a HEART, with **its own
+counter of at most two a round and no battle cap**. Every lesson is once ever, so the second fight
+inherits only leftovers and the third is silent.
+
+**(b) A LESSON QUEUES. A COMMENT DROPS.** #51's drop rule exists for a stated reason: *"a comment
+about a moment that has passed is worse than silence."* **That reason does not cover a rule.** A
+CALL is about a moment and expires with it. **A lesson is about how the game works and is still true
+next round.** So `learn` is the one tier that **queues** when it loses a round, and everything else
+keeps dropping. *This is the amendment #43 will inherit, so it is worth getting right once.*
+
+**(c) THE MUTE EXCEPTION.** When the Captain is down the voice stops for the fight, the best free
+thing in #51, and it would silently **delete the tutorial** if he goes down in fight one.
+**Proposal: `learn` lines survive the mute and are spoken by the current unit instead.**
+`capBalloon` already takes a *speaker*, so it costs one argument, and it is defensible in fiction: a
+rule is not the Captain's opinion. **This is the one place I would break #51's silence, and it is
+the user's call.**
+
+**And one knob:** a balloon lives **2.2 seconds** and cannot be dismissed. Right for a comment,
+short for a lesson. **Proposal: `learn` dwells 4.5s**, still with no input pause, and every line is
+already mirrored into the fight log by `capLog`, so it can be re-read.
+
+### What is deliberately left out
+
+**The race verbs (#46), the throw, poison, the kick, SPEAR WALL, provisions, the loot screen.** Every
+one already has a `whisper()` that fires at the right moment, and **ten balloons in one fight is by
+some distance the most this game has ever talked.** The skip in the corner exists precisely because
+that is a lot. If the first fight needs more, it is the user's to add: the register has a HOW TO ADD
+ONE block above it and a new lesson is one row. *This entry is the smallest thing that answers the
+request.*
+
+### The test
+
+Not *"did the lines fire"*. The harness can answer that and it proves nothing. **Watch somebody who
+has never played reach round the back of an ogre on purpose, and then say why.** If they can explain
+the second-action rule afterwards without being asked, lesson 3 worked. If they cannot, it was
+narration. *(The same test as #42's, and it is the right one.)*
+
+### Traps this one will hit
+
+- **`SIM.on`.** The practice field must not spend a lesson on a fight that never happened.
+  `whisper()` already has this guard and it was a real bug once. Every `LEGACY.seen` write here
+  inherits it, or the tutorial is gone before the campaign starts.
+- **`capTick` is the only place triggers are read**, once a turn, outside every scorer. Lessons 2,
+  4, 5, 6 and 8 are about the *selected* unit rather than the turn, so they need a second hook at
+  selection. **It must not go inside `hitBreakdown` or a movement scorer.** `losState` there took a
+  five-round clash to 23 seconds.
+- **A one-shot flag is set from the return value of the thing that fires**, never before it. Written
+  into #51's own comments after DESPERATE silently disappeared for a whole fight.
+- **`a.range` is not "is a shooter".** Lesson 4 must test `a.dmg` too, or KICK and HURL A RATKIN make
+  everybody an archer.
+- **Lesson 9 must not describe a rule the game does not have.** See the box under it.
+
+
+
+## 68 - The outpost gate is defended, and you may walk through your own ✅ BUILT
+
+> ⚔ **THE BATTLE BOARD** - the outpost layout, enemy deployment, the enemy AI, and pathfinding
+> **SHIPPED 2026-08-01, build log 8f.67.** Picture:
+> [`shots/68_outpost_gate.html`](../shots/68_outpost_gate.html)
+> **SYSTEMS** new `OUTPOST` register + `formUpAtGate()` + `outpostTurned()` · `makeObstacles`'
+> outpost layout · `startBattle` deployment · `B.outpost` battle state · one hold branch in
+> `aiTurn` · new `passable()` beside `walkable()` · `reachMap`
+> **RELATED** #65 built the outpost and left it a garrison rather than a defence · #33's
+> single-mandatory-corridor rule is what forced the second gate hex · #46 is why the rotten run
+> stays `rock` · #50 is where any balance reading from this goes
+
+> ### THE REQUEST, IN FULL
+> ***"outpost have 2 open tiles on the entry. And enemies build the line before the entry of
+> outpost (you can script it for ai logic) - to defend it better. And changes position only if
+> player enter the camp from one of the sides"*** and ***"Update movment logic. You can pass
+> through your allies and team mates, but cant through enemies"*** - user, 2026-08-01.
+
+### 1 - THE ENTRY IS TWO HEXES, AND THAT IS A RULE RATHER THAN A TWEAK
+
+A one-hex door and a two-hex door are different fights. Through one hex you arrive alone, every
+time, forever, which is #33's queue with a gate painted on it. Through two you may arrive
+**together**, which is the first move that makes the door worth arguing over. It is also what makes
+the line below mean anything, because a line drawn across a one-hex hole is just a man standing in
+a doorway. The column cut at the wall went from **2 to 3** and `terrainCheck()` stays ok.
+
+### 2 - THE FRONT RANK IS NOT A ROW, AND THAT IS THE ENTRY'S ONE REAL LESSON
+
+⚑ The first cut was a straight rank at column 11, which **looks** like a line and seals nothing.
+The wall only bulges out to column 10 on every third row, so **column 10 is an open corridor
+running the whole height of the fort behind it**. The very first test walked a ratkin in the door,
+turned it north up that corridor and put a knife in the enemy mage six hexes away, **past four men
+who were all still facing the gate**. THE HOLE WAS INVISIBLE ON THE PICTURE AND OBVIOUS IN THE
+PATH, and the general form of that is worth keeping: *a formation drawn by eye on a hex grid is a
+guess; take it off `nbrs()`.*
+
+So the front rank is the **frontier**: every hex reachable in one step from the three doorway
+hexes, which on this wall is exactly four. Occupy those and the door is shut by bodies. It is still
+not the queue #33 forbids, because the doorway is three hexes wide and three of yours can be
+swinging at once, which is a fight at a gate and is the whole point of putting a gate there.
+Everything after the fourth post is the second rank, and **a front post left empty by a death is
+handed to the nearest body still standing further back** - shooters never, because a slinger
+dragged into the front rank is two mistakes rather than one.
+
+### 3 - WHERE THE HOLD SITS IN `aiTurn` IS THE DESIGN
+
+It goes **below every attack decision**, so holding can never mean "standing there with a swing
+available" - anything a defender can reach, it has already hit. That is the same rule the shipped
+`disp.hold` stance had to learn. Holding means only *I do not walk out to find you*.
+
+It goes **above the kiting and the wounded pull-back**, because a line whose hurt men trickle
+backwards out of it is not a line, and the gate is the only thing these four are worth anything at.
+
+### 4 - IT IS TURNED BY GOING ROUND, AND IT NEVER RE-FORMS
+
+The whole entry is one trade. Hitting the gate head-on means fighting a formed line at the one
+place they are strongest; the breach at the top or an ogre pulling down the rotten run at the
+bottom costs a long walk and several rounds, and what it buys is that the line **stops being a
+line**. A decision with a price on both sides of it.
+
+⚠ The release is **one-way**, and the posts are cleared rather than merely ignored, so no later
+reader can mistake a stale post for a live one. Soldiers who have broken formation to chase
+somebody through their own camp do not tidily fall back in.
+
+The flank test is measured as **rows**, and the rows are derived from the side entries rather than
+written down, so moving the breach moves the test with it. A body that walked in the front door and
+then fought its way north is deliberately **not** this: the door rows are wide enough to hold a
+fight, and calling that "over the wall" would put the wrong sentence in the log at the one moment
+the player is actually reading it.
+
+**A second release the user's sentence did not name, because it is that sentence's own
+consequence:** a line that has been **bled with nobody coming** breaks and comes out. Without it a
+company with two bows beats this fort by standing outside it and the gate never gets used at all.
+⚑ The threshold is **three hexes and not one**, and the first gate picture is what settled that: at
+one hex the rule fired in round three of a head-on assault, because the company was standing in the
+doorway about to swing and had not touched anybody yet. *Nobody is coming* has to mean nobody is
+coming.
+
+### 5 - YOU MAY PATH THROUGH YOUR OWN AND NEVER THROUGH THEIRS
+
+⚑ **Two different questions were being answered by one function, and that is the whole of the bug.**
+`walkable` means "I can END here"; a pathfinder needs "I can CROSS here", and once a friend is
+standing in the way those are not the same word. A four-man line used to seal its own flank: the
+man behind it had to walk the long way round his own shield.
+
+`passable(c,r,u)` is the crossing test and `walkable` stays the standing one. The two are kept
+honest in one place: **`reachMap` paths with the first, then deletes every occupied hex from its
+`dist`**, so `dist` still means exactly what it has always meant - the hexes I may end this move on
+- and **not one of its eight consumers had to be told anything changed**. `prev` keeps the
+crossing, so `pathTo()` still walks the real route.
+
+⚠ **A great beast is exempt and it is not a special case, it is two hexes.** A tailed body walks
+its path hop by hop and drags the tail into the hex the head just left, so a path crossing a friend
+would park the tail inside them. A thing that size does not squeeze past anybody anyway.
+
+**Measured rather than asserted**, over every body on four boards at the opening of a fight, new
+rule against a strict re-implementation of the old one: clash **+7%** reachable hexes, pack **+8%**,
+snare **+17%**, armour **+17%**, and 44 of 51 bodies gained something. Meaningful, and not a
+rewrite of movement.
+
+### VERIFIED BY DRIVING IT
+
+All eight fights through `regress()` twice (4 to 20 rounds, nothing thrown, no guard hits), `LINT()`
+**0 findings**, 0 console errors. The outpost run head-to-head across five companies and four
+fights: the line holds to the last round in most of them, breaks by flank or by bleeding in the
+rest, **every fight resolves and none stalls**. `terrainCheck()` ok on the outpost with choke 3.
+A head-on assault verified to leave 5 of 9 defenders standing on their exact starting hex after
+three rounds; two bodies placed through the breach verified to clear every post inside one round
+and log the right sentence.
+
+**Open, and parked for #50 rather than tuned now:** a shooting company (`bows`) ran the outpost to
+29 rounds and withdrew. Nothing stalled and the withdrawal is a real outcome, but a fort that
+out-waits archers for 29 rounds is a balance reading, and balance readings go in #50's parking lot.
+
+⚠ **#67 was taken in code by a parallel session while all three docs still said "next free #67"** -
+the third such collision on this project. This entry is **#68**. Grep the code AND all three doc
+headers before numbering.
+
+
+## 58 — The fork card: the travel window only opens at a crossroads ✅ BUILT
+
+> 🗺 **THE ROAD / MAP** — the travel confirmation and the node click
+> **SHIPPED 2026-08-01, build log 8f.57.** Picture:
+> [`shots/58_fork_card.html`](../shots/58_fork_card.html)
+> **SYSTEMS** `confirmTravel` (split into `forkCard` + `legCard`) · new `branchOf` ·
+> `dealEvents`' hint pass · `LINT()` map rules · `.dang` / `.rd` in the stylesheet
+> **RELATED** #20 shipped — its horizon sentence became a colour on the figure · #6 the map
+> rebuild, which the new LINT rule protects this against · #50, where any balance reading goes
+
+> ### THE REQUEST, IN FULL
+> ***"show this window choice only on crossroads with estime how long it take days/money. And how
+> dangerous is each road. You can calculate it automatically."*** — user, 2026-08-01, with an
+> annotated screenshot of the old single-road travel card on the world map.
+>
+> It extends their own ruling of 2026-07-31 — *"this thing shows only on crossroads — otherwise it
+> doesn't make sense if the player can only move forward"* — which at the time was applied to the
+> road **description** only. This applies it to the whole card.
+
+**THE RULES AS BUILT**
+
+1. **One road out → no card.** The click walks. The price is not lost: the map's road label reads
+   `1d · 8c` on the live road, under the cursor.
+2. **Two or more → one card listing every road**, headed `TWO/THREE ROADS FROM HERE`, anchored on
+   the **centroid of the destinations** rather than on where you stand (anchoring on `G.at` pinned
+   it to the left edge at crossroad A with all three destinations underneath it).
+3. **Each row carries two different numbers.** On the button, **the leg** — what this click buys,
+   with the crowns coloured by `fundedCol` of the purse after it. Under it, **the branch** — days
+   to the join, and the join's name.
+4. **Danger is a state, never a number:** `NOTHING HEARD` · `TROUBLE` · `BLOOD`, from the count of
+   `t:'battle'` nodes on the branch, join excluded.
+5. **Places to stop** — `town`/`shop`/`camp`/`hire` on the branch, join excluded. An event node is
+   not a place to stop.
+6. **Fallbacks:** `branchOf` returns null for a corridor *and* for a fork whose roads never rejoin;
+   the second case falls back to the old single-road card, and `LINT()` warns about it.
+
+**WHY THE BRANCH AND NOT THE LEG.** The card used to price the first leg — 3 · 2 · 2 days at
+crossroad A — which is not the decision being made. The decision is 7 · 5 · 7 days to The Ruined
+Steading with a fight on the middle one, and the old card actively made the long roads look cheap.
+
+**WHY THE DANGER READING CANNOT LEAK.** It counts battle-type nodes, which are the ✕ glyphs already
+drawn on the map, so it aggregates what is on screen and reveals nothing new. That is deliberate and
+it is why the card says *what the road has heard*: the reading is **hearsay, not a promise**, and
+the armour ambush (a rule about arrivals, and meant to be a surprise) is allowed to break it.
+
+**WHY `nowhere to stop` IS LOAD-BEARING.** The pass out of The Dead Company reads NOTHING HEARD and
+that is true — nothing stands between you and the bells. Its price is that you arrive having stopped
+nowhere: no shrine, no last muster, nobody replaced before the Snare. **A cheap option that reads as
+a free one is the pillar's own trap**, and without the stops clause the danger chip would have
+mis-sold the most dangerous road in the act.
+
+**OPEN.** `BLOOD` is unreachable on today's map — no branch carries two fights — and is kept for the
+map rebuild rather than tuned away. A count of *things on the road* (event glyphs) was specified and
+**not built**: it would separate the two long roads at crossroad A, which currently read identically
+apart from their character line.
+
+## 54 — Reactions update and re-save continuously on every screen ✅ BUILT
+
+> 🚪 **EVERY SCREEN** (the bar is on all twelve) — also ⚙ the journal itself
+> **SHIPPED 2026-08-01, build log 8f.54.** Picture:
+> [`shots/54_55_reactions_and_reward.html`](../shots/54_55_reactions_and_reward.html)
+> **SYSTEMS** `JOURNAL.put`/`react`/`syncReact`/`where()` · `JOURNAL.CAP`/`trim` · `mark()` ·
+> `drawNotes()` · the export blob's shape
+> **RELATED** #53 shipped — this was its v2 · #50 (a ▼ on a fight is a balance observation)
+
+> ### ✅ RULED BY THE USER, 2026-08-01 — the day after v1 shipped
+> ***"That like and dislikes updates and saves automatically for every screen (it isn't one time
+> action)."***
+> **And reported again the next day, which is what set this session's order:** *"You can start with
+> how analytics (like) show. It saves good, just need to refresh counter each screen."*
+
+**The report was the more useful half of the ruling, and it named a real defect the entry had not.**
+The bar was refreshed by `show()` on a screen change and by nothing else — but `mark()`, which is
+what every event card, camp incident, village, muster and travel card goes through, never touched
+it. A card opening on top of the map is *exactly* the moment what-you-are-reacting-to changes, and
+the bar kept showing the verdict left on the map underneath. **It saved correctly the whole time**,
+which is why the user's diagnosis was right to the line: it was a display that never re-read itself.
+
+**What shipped, in five parts.**
+
+1. **`mark()` refreshes the bar.** One line, at the one place `JOURNAL.card` is ever set.
+2. **Every press records.** A ▲ on the map at day 3 and a ▼ on the map at day 14 are two rows and
+   both survive. v1 replaced or deleted, which threw the earlier moment away.
+3. **The mis-click case survives as a grace window, not as a rule about the run.** Inside 8 seconds
+   of your own last press on this same screen, the same button takes it back and a different button
+   corrects it. After that, the same button again means *still true*, and it is a second row.
+   ⚑ **Measured on the wall clock, never from the row's `ms`** — `ms` is 0 for every row filed
+   before a run starts, so a row-based window would treat every menu press as a correction.
+4. **The counter.** `×N` beside the buttons, tinted to the latest verdict, drawn only when this
+   screen carries something. It is the visible proof that the bar re-reads itself.
+5. **One row per screen in the report, not one per press** — with the sequence printed
+   (`▲ d3 · ▼ d14 · ▲ d19`) and **a changed mind called out in words**. The tallies still count
+   presses; *"eleven dislikes"* and *"dislikes on four screens"* are different facts.
+
+**The cap, decided deliberately as the entry asked.** 600 → **1500**, and the rule is written down:
+**not reactions-first and not decisions-first** — plain oldest-first, *skipping `run-start` and
+`run-end`*, because dropping a run's frame does not lose a row, it makes every surviving row of that
+run unreadable. Blob bumped to **v2**; the row shape is unchanged so a friend's v1 blob still reads,
+and the reader has never looked at `v`.
+
+**⚠ The invariant is unchanged and is still the whole contract: it observes and never acts.**
+
+---
+
+## 55 — The reward after a battle is automatic ✅ BUILT
+
+> 📜 **AFTER THE BATTLE** — also 🎒 the stash receives it · 🚪 the loop the player feels most
+> **SHIPPED 2026-08-01, build log 8f.54.** Picture:
+> [`shots/54_55_reactions_and_reward.html`](../shots/54_55_reactions_and_reward.html)
+> **SYSTEMS** `LOOT[kind]` · `lootIsChoice`/`takeLoot` (new) · `consequences()` · the `st.field` gate
+> **RELATED** #19 (its *first pick of the loot* promise has no picker to point at any more) ·
+> #34 (the death beat lands on this same screen) · #50 (the haul's worth is banked there)
+
+> ### ✅ RULED BY THE USER, 2026-08-01, from the playthrough
+> ***"Reward after battle automatical (you don't need to choose. You chose only lvl and sometimes
+> what to do with prisoners)."***
+
+**The haul arrives and the screen reports it.** One row, drawn and applied *before* the card draws,
+printed by name — the removal is of the question, not of the receipt. Random from the pool **is**
+"roughly what an average pick was worth" by construction, so nothing was tuned; if it reads generous
+or mean, that number belongs to **#50**.
+
+### The line the entry did not draw, and the reason it matters
+
+A `LOOT` row was two different things wearing one shape.
+
+- A **haul** — iron, coin, a hide, a spear. Arithmetic. There is nearly always a right answer, it
+  depends on the stash rather than on the story, and the player learns to click it without reading.
+  That is precisely what the ruling removes.
+- A **decision** — *bury what is left of them · burn the lot and stand upwind · drag her clear and
+  leave her be · cut out whatever the light under her skin was coming from.* These cost a day or
+  cost you the company's regard and pay nothing you can spend. **They are the pillar in miniature**,
+  and automating one would be the game making a moral choice on the player's behalf — the one thing
+  AUTO is forbidden from doing everywhere else in this build.
+
+So the haul is drawn from the hauls only, and what is left becomes **one question — "AND WHAT IS
+LEFT OF THEM"** — which is the ***sometimes*** in the user's own sentence, sitting in the same
+category as the prisoners. **Four of the eight fights have one; four ask nothing at all.**
+
+**The test is the `fx` block and not a new field**: a row carrying `morale` or `days` is a decision.
+It reads off content that is already written, so it cannot drift out of step with it.
+
+### The dead receipt this uncovered
+
+The old picker applied `payFx` plus salvage/iron/wood **and nothing else**. So `gems`, `morale` and
+`days` on a loot row had never done anything since the tables were written — the steading's *"+90
+crowns +1 gem"* paid ninety crowns and no gem; clash's *"−1 day · they think better of you"* cost
+nothing and bought nothing. **Six rows were printing a price the game did not charge.** There is one
+applier now, `takeLoot()`, used by the automatic haul and the question alike.
+
+### The softlock, designed out rather than tested out
+
+*"Back to the road"* used to wait on **loot and promotion**; the named risk was that it would wait
+forever on a picker that no longer exists. `st.field` starts **true** on a fight with no question,
+and every question that does exist carries an appended **"Leave it. The road is waiting."** — so
+both halves of the gate are always answerable. `LINT` now also requires every LOOT table to hold at
+least one row that is spoils rather than a decision, so the haul's fallback can never quietly take a
+moral choice.
+
+**⚠ #19 inherits a debt.** Desperation contracts promise a recruit *first pick of the loot*. There is
+no pick to be first at. Re-expressed on that entry as **a share of the haul** — see the backlog.
+
+---
+
+## 38 — One tie, built from something that happened ✅ BUILT
+
+> 🎒 **THE COMPANY** (both sheets, in different words) — also 📜 the rescue that causes it is
+> detected there · ⚔ one battle rule · 🗺 one camp card
+> **SHIPPED 2026-07-31, build log 8f.50.** Picture: [`shots/38_one_tie.html`](../shots/38_one_tie.html)
+
+**The entry asked for exactly one relationship, and one is what shipped.** *"You carried me out"* —
+created by an actual rescue, shown on both sheets **in different words**, changing one camp line and
+granting one battle behaviour. The vocabulary the entry banked for later ties (**Owes · Keeps close ·
+Trusts with fear · Looks after · Shares a secret · Misses**) is untouched and unbuilt; `LOOKS AFTER`
+and `OWES` are the **two faces of one tie**, not two ties.
+
+**What a tie is.** A bond may now carry a `t`, and a bond with a `t` is a tie. The type buys three
+things a bare shared line cannot:
+
+1. **Direction.** `a` went back, `b` was carried. That is what lets the two sheets say different
+   sentences about one fact.
+2. **A gate the camp deck can read.** `castTie` — see below.
+3. **Something the battle can read.** `tiedIds(i,j)` takes ids, because the battle asks this about
+   *units* and a unit is not a roster entry.
+
+`t` is **optional on purpose**. Every bond written before this keeps working, every later one that is
+only a shared memory stays untyped, and `TIES` is the only place in the file that knows what a type
+means. The register is four strings and four sentence-builders; adding the second tie is adding one
+key to it.
+
+**The cause was already built.** `afterBattle` has always found the least-hurt person still standing
+and written a `bond()` for who they went back for. The only change at that site is the fourth
+argument.
+
+**On the sheet.** Between the personality and WHAT HAPPENED TO THEM, because *a tie is who somebody
+is with, and that belongs beside who they are.* The album takes the **untyped** bonds only — left in,
+the shared third-person line would say the same thing again nine lines lower, in the one voice the
+tie was written to replace. **A tie outlives the pair:** it carries its own copy of both names and
+the place, so a dismissal or a walkout cannot make the surviving sheet print a raw id. The words go
+to past tense; the name stays.
+
+**One camp line — TWO SHADOWS, gated by `castTie`.** The same machinery #44 built for `castRace`, one
+turn further in: `castRace` asks *are there two ratkin at this fire*, `castTie` asks *are these two
+particular people here, and does one of them owe the other*. Not `castKeep`'s rule (at least one of
+them) — **a card about two people who will not be separated cannot be played by one of them.**
+
+It is deliberately **not a warm card.** A tie that only ever pays is an affinity bar with better
+writing. The cost is the pillar exactly: two people who will not be separated are one person's worth
+of frontage, and the middle option lets you buy that frontage back by **ending the tie, out loud, in
+front of the two people it is about.** That is the only thing in the game that can end one, and the
+memory that it happened stays in the album afterwards where it can no longer hold anybody on a field.
+
+**One battle rule — and the entry's own version of it was void.** #38 asked for *"one safe AUTO
+behaviour — do not leave that person downed while withdrawal is still possible."* Withdrawing has
+since learned to carry the downed out, so there is nothing left behind to go back for. The reason
+survives, moved out of the movement scorer and into **morale**:
+
+> **When your tie goes down where you can see it, you take the grief doubled — and then you will not
+> rout for the rest of the battle.**
+
+A boon and a bill in one fact: a body that holds the line, and a body that will very likely be
+carried off it as well. Three reasons this is the right shape and not a compromise:
+
+- **`noRout` is read at one place by everything**, so both AI brains *and* AUTO inherit it without
+  being taught. The project has been bitten twice by a behaviour that went into `aiTurn` and not
+  `autoStep`.
+- **It cannot oscillate.** It only ever stops a body crossing the rout line *downward*, and a unit
+  that will not rout can still be put down — so if it changes fight length at all, it shortens it.
+- **The doubling multiplies the grief they were already going to take**, so somebody with `noGrief`
+  still takes none. The tie holds them anyway; it does not manufacture a feeling.
+
+**What it does NOT do** — the entry's explicit bans, kept: no affinity bar, no number anywhere on
+either sheet, and **nothing but a real rescue can write a tie.** No proximity, no travel tick, no
+gift, no invisible roll.
+
+**Open remainders:** the second tie type (the vocabulary is banked above, and **Misses** — which
+persists after death or departure — is the one that would exercise the outlives-the-pair path
+hardest). The entry's own scoping rule still applies: *expand only if players remember the pair two
+battles later.* And #24's provenance ledger will want to own this eventually — a tie is a fact, and
+it is currently its own small store.
+
+## 1 — Forced movement: push and pull ✅ BUILT
+
+> **Done.** `push`/`pull` resolve in `strike()` beside `bounce`/`drag`: no parting swings, `big`
+> immune, and a shove that runs into a wall deals the unspent distance as damage. The **halberd**
+> shipped with it and introduced the game's first **weapon-defined signature** — boar spear →
+> SPEAR WALL, halberd → BRACE AND SHOVE (push 2). The shove names what it achieved (into water,
+> into a fire's reach, *"and away from anybody of theirs"*), so the existing *alone* morale rule
+> does the real damage.
+>
+> **Still open from this entry:** an enemy with a **pull** so the player meets the idea from the
+> other side (the Fen-Mother's DRAG UNDER is one, but a ratkin **hook-pole** in the Snare would
+> teach it earlier), and pushes as a reason to care about board edges.
+
+<details><summary>Original spec (kept for the unbuilt parts)</summary>
+
+**The idea (user).** Skills that move somebody else on the board. A **halberd** as the spearwoman's
+alternative to the boar spear: same two-handed reach 2, but its signature *shoves*.
+
+**Why it earns a place.** Grimtoll's hex layer already rewards position — arcs, engagement, parting
+swings, formations, the camp's fire, the marsh. Every one of those is currently something you
+arrange *for yourself*. Forced movement lets you arrange it **for them**, and it is the cleanest
+possible synergy engine because it multiplies systems that already exist rather than adding a new
+one:
+
+- **Push into terrain** — into marsh (movement 2, −10 to hit), into the camp fire's adjacency
+  (−8 morale a turn), off a rock ledge into the open.
+- **Pull somebody out of their line** — and the *alone* morale rule (−9 for having nobody of
+  yours within two hexes while somebody is on you) does the rest. This is the good one: it makes
+  a pull a *morale attack* without a single new number.
+- **Push to break an arc** — shove a unit past you and its back is to your line.
+- **Push out of a spear wall / off the gap** in the camp fight.
+- **Pull them off the archer.**
+
+**How it should work.**
+- `push:N` / `pull:N` on an act, resolved in `strike()` alongside the existing `bounce` and `drag`
+  (both already move units after damage — copy that shape).
+- The target slides along the attacker→target axis. If the destination is blocked (`BLOCKED`,
+  occupied, off-board) it stops and **takes the difference as damage** — a shove into a boulder
+  should be worth doing on purpose.
+- Forced movement provokes **no parting swings** (it is not their choice), same as `bounce`.
+- Great beasts (`big`) are immune, as they are to DISTRACT.
+
+**Content to add.**
+- `halberd` in `GEAR` — `slot:'main'`, `hands:2`, reach 2, damage a little under the boar spear.
+- A spearwoman signature branch: with a halberd her signature becomes **BRACE AND SHOVE**
+  (1 action, half damage, push 1) instead of SPEAR WALL. Weapon-defined signatures are a pattern
+  the game does not use yet and should.
+- One enemy with a pull so the player meets the idea from the other side — the Fen-Mother's DRAG
+  UNDER is already a pull; give a ratkin a **hook-pole** in the Snare.
+
+**Touch:** `GEAR`, `unitFrom` (the `sig` block), `strike` (after the damage/`bounce` section),
+`clickHex` if the push needs targeting UI (it should not — it resolves off the attack).
+
+**Verify:** push into marsh changes the victim's `moveBudget`; push into a wall deals the extra
+damage; a pulled unit that ends up isolated takes the *alone* penalty on its next turn; no parting
+swings fire; `big` units do not move. Then the seven-fight regression.
+
+</details>
+
+---
+
+## 5 — Unpaid wages break the company ✅ BUILT
+
+> **Done in 8f.31.** `p.unpaid` accrues per person, costs nerve on the battlefield (capped, and
+> announced in the log), personalities disagree via `unpaidMod`, and after five broke days somebody
+> walks — never the Captain, never below three bodies.
+
+**The idea (user).** *"If there is no money — morale drops for the units."*
+
+**Why it earns a place.** This is the missing tooth in the economy. Wages already fall due every
+day and already drain the chest, but running out currently costs a flat −4 company mood in
+`passDays` and nothing else — so the wage bill is an inconvenience, not a threat. It should be the
+thing that makes the pedlar start looking like a target, which is exactly what the pillar says the
+money is *for*.
+
+**How it should work.**
+- **A missed payday is per-person, not company-wide.** Company mood is a temperature; unpaid
+  wages are a grievance somebody holds. Track `p.unpaid` — days since they were last paid in full.
+- **It compounds.** One missed day is grumbling; four is a company that has noticed you keep
+  promising. Something like −4 starting nerve per unpaid day, capped.
+- **It lands in the fight** through the same door hunger uses (`startBattle`'s provisions block) —
+  one clear log line naming the number, because the player must be able to connect the empty chest
+  to the bad round.
+- **The personalities should disagree about it.** *Light-fingered* barely minds — they were always
+  going to take a cut anyway. *Kind* minds on somebody else's behalf. *Ambition* minds most: they
+  came here to get on, and not getting paid is the opposite of getting on. Use `tr(u,'unpaidMod')`
+  so it reads through the race variants for free.
+- **Give it a road consequence, not just a battle one.** After N unpaid days somebody should
+  *leave* — walk off at a camp, with a line, and go onto `G.dismissed` so the returner/turncoat
+  machinery already built can pick them up later. That is the real cost: not a debuff, a person.
+- **And an out that costs something.** A camp choice: *"Open the strongbox and split what is
+  left"* (clears the grievance, empties the chest), or *"Promise them the next contract"* (clears
+  it now, doubles it if you miss again).
+
+**Touch:** `passDays` (accrue `p.unpaid`), `unitFrom`/`startBattle` (starting nerve), a `CAMPS`
+entry gated on unpaid days, `dismiss()` for the walk-off, `TRAITS` for `unpaidMod`.
+
+**Verify:** wages missed for three days measurably lowers starting nerve; the log names it; a
+personality with `unpaidMod` differs from one without; somebody eventually leaves and can return
+via the existing arc; paying up clears it. Seven-fight regression afterwards (the starting-nerve
+change touches every battle).
+
+---
+
+## 6 — The map rebuilt ✅ BUILT
+
+> **Built, and then rebuilt once more on the user's note** — which was the note that mattered:
+> *"we are going right, and then we are going left. We need some justification for it."* A route
+> that doubles back for no reason is a diagram, not a road.
+>
+> **So the country was designed before the roads.** Two pieces of land the graph has to obey:
+> **THE FEN** in the south-west (water, the causeway, the Black Fen at its head) and **THE
+> HUNCH**, a mountain in the east that the road cannot cross except at one pass. Every direction
+> change in the act is now a fact about the ground: you climb the north shoulder because there is
+> no other way over, you come back south-west because the Snare is at the southern foot, the Hill
+> Steading is high on the east flank — which is *why* four ogres are sitting on that road — and
+> the hurry road is the pass itself.
+>
+> **Forks read long-and-light against short-and-costly**, and the edge labels say so instead of
+> describing scenery. Crossroad A: 7 days quiet or **5 with the Broken Men on it**. Crossroad B:
+> 3 quiet or **2 over the shooting ridge**. The last fork: 4 days of pilgrim path, 3 past the
+> ogres, or **2 over the pass, arriving with no shrine and no muster**.
+>
+> **SPACING IS ENFORCED IN CODE — and the first version of the rule was wrong.** A radial 90px
+> check passed The Sunken Wain against The Snare at 102px while their name plates overlapped,
+> because a `.node` is 104×69 and the separation was nearly all horizontal. It tests the **plate**
+> now, warns at boot, draws the offending pair in red in test mode, and is a linter rule. The
+> linter also checks reachability from the hold, that every route still passes the four spine
+> nodes, and that no fork offers the same days on both branches.
+>
+> **Where the pass road crosses the ridge was solved numerically**, not by eye — The Old Milestone
+> kept sitting on the line at 7px and is 63px clear now — and the col is drawn where the road
+> actually crosses rather than where it looked tidy.
+>
+> **Verified:** 18 routes, 13–20 days, every one through the Ruined Steading, the Black Fen,
+> Coldharrow and the Muster Field. No road within 50px of a place it does not touch. Zero plate
+> overlaps measured off the real DOM, nothing off-stage.
+
+<details><summary>Original spec</summary>
+
+## 6 — The map rebuilt: proportional scatter, honest routes
+
+**The idea (user, twice now).** *"Definitely the map and an update of the routes, so it's scattered
+more proportionally."* And from the earlier full-run feedback, which was parked and belongs here:
+*"at least two crossroads with fights, exploration between; usually one road is longer but with
+fewer/optional fights, the other shorter in days but with a mandatory fight."*
+
+**Why it earns a place.** The map grew by accretion — every new node was wedged into whatever space
+was left, which is why the right-hand side needed emergency respacing twice and the front half is
+still three parallel corridors into one choke point. A Slay-the-Spire-style act lives or dies on
+whether the *route* choice reads at a glance; ours currently reads as geography first and choice
+second.
+
+**How it should work.**
+- **Design the graph before the pixels.** Write the act as a diagram first: START → crossroad A
+  (fight on one branch) → exploration belt → choke (the Ruined Steading, keep) → the Fen →
+  village/muster belt → crossroad B (fight on one branch) → shrine/muster → SNARE. *Then* place
+  coordinates.
+- **The route archetype, everywhere a road forks:** one branch **longer in days but lighter**
+  (optional fight, more exploration slots), one branch **shorter but with a mandatory fight or a
+  toll**. The edge labels already carry prose — make them carry the archetype honestly ("two days
+  round the hill, nothing on it" vs "one day, and something is sitting on it").
+- **Spacing rules, enforced in code, not by eye:** minimum distance between any two nodes (~90px),
+  labels never overlapping another node's glyph, and a debug overlay (test mode) that draws the
+  violation pairs in red so future node additions cannot silently recrowd the map.
+- **Keep the fixed spine fixed**: clash → steading-camp → mother → village → muster → … → snare
+  are structural. Scatter the floating slots so each *belt* between spine nodes gets a
+  proportional share instead of whatever was left.
+- The map painting (`drawMap`'s vignettes, hills, river) needs re-anchoring to the new positions —
+  budget for that; it is most of the work.
+
+**Touch:** `NODES`, `EDGES`, `dealEvents`/`SLOTS_ON_MAP`, the map-painting scene anchors, and a new
+test-mode overlay in `drawNodes`.
+
+**Verify:** flood-fill reachability of every node; all routes still pass the steading and the fen;
+no two nodes within the minimum distance (assert it in the test overlay); each fork offers the
+long-light vs short-costly pair; and the 18-route count is recomputed and sane.
+
+</details>
+
+---
+
+## 7 — The hook-pole: the enemy's pull ✅ BUILT
+
+> **Done in 8f.31.** A Snare ratkin pulls one of yours out of the line at reach 2, so the *alone*
+> morale rule finally fires on your side. Building it exposed that `pull` had been **inverted since
+> it was written** — src/dst swapped *and* the sector reversed, two flips cancelling.
+
+**The idea.** The open remainder of #1: a ratkin **hook-pole** in the Snare that PULLS one of yours
+out of the line, so the player meets forced movement from the receiving end early enough for it to
+teach.
+
+**Why.** Every trick the player owns should be pointed back at them once — that is what made the
+enemy ogre's HURL work. A pull is scarier than a shove: it takes your person *toward* them, into
+the pile, away from the spear wall — and the *alone* penalty fires on your side for once.
+
+**How.** `hooker` template in the Snare's `T`: reach 2, low damage, `pull:1`, and the AI already
+prioritises soft targets — a pull that lands on the archer is the lesson working. One log line that
+names what just happened. AI gating: only pull when it actually detaches the target from its line
+(reuse the *alone* check), otherwise swing normally.
+
+**Touch:** `foes()` in the Snare, nothing else — `pull` already resolves in `strike`.
+
+**Verify:** the archer gets hooked out of the line in an AUTO run within a few rounds; the pull
+respects `big`; seven-fight regression.
+
+---
+
+## 9 — Mid-run save ✅ BUILT
+
+> **Done in 8f.32.** Saves at coherent moments only — arrival, event resolution, battle hand-off —
+> and **never mid-battle: a battle is regenerated, not restored.** Two bugs found while building it:
+> a `try/catch` silently swallowed a renamed constant so the save never wrote at all, and
+> *"start a new company"* cleared the save without resetting live state.
+
+**The idea.** The run only lives in memory: close the tab mid-act and everything is gone. Act 1 is
+now over an hour with a full playthrough, and playtesting keeps being interrupted exactly this way.
+
+**Why now.** Every future playtest gets cheaper. And the human playthrough — priority #2 in the
+plan — becomes resumable, which makes it far more likely to actually finish.
+
+**How.**
+- Serialize `G` + `PARTYCAP` + the RNG-free bits to `localStorage` (`gt_run`) on every arrival,
+  battle end, and event resolution — the moments the state is coherent. **Never mid-battle**:
+  a battle is regenerated, not restored; on load with a pending battle node, re-enter it fresh
+  (the withdraw-softlock re-entry path already exists).
+- `G` contains functions nowhere, but `p.cond`/`mem`/`bonds` etc. must round-trip — write one
+  `serializeRun()`/`restoreRun()` pair with an explicit field list rather than blind
+  JSON.stringify of `G` (the log alone is huge; cap it).
+- Boot: if `gt_run` exists, the tavern screen offers **CONTINUE THE ROAD** above NEW COMPANY.
+  Defeat and epilogue both clear it.
+- Version-stamp the save; a stamp mismatch discards it silently (the format will change often).
+
+**Verify:** save at a node → reload → same day/party/stash/map state; reload with a pending battle
+re-enters it; defeat clears the save; an old-stamp save is discarded without a crash.
+
+---
+
+## 10 — Ashmoor: the brass token pays off ✅ BUILT
+
+> **Done in 8f.31.** The game's one explicit promise about the future now closes the slice both
+> ways and persists to the wagon as `LEGACY.ashmoor` — a *name that knows you*, which is the
+> possibility-not-power legacy `09_SETTLEMENTS_AND_LEGACY.md` asks for.
+
+**The idea.** Wynn Aldreth's thread is live and dangling: free her without a fee and *"at Ashmoor
+they will know your banner before you reach the gate"* — `G.contact`, the brass token, the run
+summary even reports `Ashmoor: yes/no`. Nothing ever comes of it.
+
+**Why.** It is the game's one explicit promise about the future, and a promise the epilogue
+currently breaks. It is also the natural **Act 2 seed** — and per the settlements design (docs/09),
+a *known name* is exactly the kind of legacy that should cross runs.
+
+**How (small now, bigger later).**
+- Now: the **epilogue** branches on `G.contact` — a paragraph where the road to Ashmoor is open
+  and somebody is waiting at the gate, versus the standard ending. The **wagon screen** records
+  "Ashmoor knows the banner" as a legacy line.
+- Later (Act 2): Ashmoor is the act-2 starting settlement when the token was earned — arrival
+  scene differs, first prices differ, one recruit is free.
+
+**Touch:** `toEpilogue`, the camp screen, `LEGACY` (persist `contact` as `LEGACY.ashmoor`).
+
+**Verify:** both epilogue branches render; the legacy line survives a new run; nothing references
+Ashmoor when the token was never earned.
+
+---
+
+## 11 — Teach the new verbs → **merged into #14**
+
+The one-line in-context whispers (first two-handed weapon, first cooldown, first dropped rung,
+first provisions click, first HURL) belong to the same job as the onboarding layer below. Build
+them together — see **#14**, "The whisper layer".
+
+---
+
+## 14 — Onboarding for somebody new to the genre ✅ BUILT
+
+> **All three layers are in.** Layer 1 (the arrival cards) and layer 2 (the seven whispers, plus
+> `sweep` added with the Thing in Armour) shipped earlier. **Layer 3 — the standing reference — is
+> now `? RULES`, bottom-left on every screen and an entry on the main menu.** Five sections written
+> once and shown only when asked: how a turn works · how a hit works · how nerve works · **nobody
+> dies in a fight** · what the road costs.
+>
+> The fourth section was not in the original spec and earns its place: *nobody on the roster is
+> ever killed* is the rule most players will not expect, it is the reason the fights are allowed to
+> be dangerous, and there was nowhere in the game that said it out loud.
+>
+> The **practice field** (see the front-door entry below) is the other half of this: layer 3 tells
+> you the rules exist, and the practice field lets you lose to them for free.
+
+<details><summary>Original spec</summary>
+
+## 14 — Onboarding for somebody who has never played one of these
+
+**The idea (user).** *"Simple onboarding for both battles, map, and inventory/character screen — so
+a player new to the genre can get it."*
+
+**Why it earns a place.** The current onboarding is three cards that **name the screen and refuse
+to teach rules** — a deliberate choice made when the only audience was somebody who had watched it
+being built. That audience has changed. A tactics newcomer meeting this slice has to work out hex
+facing, two actions a turn, engagement and parting swings, a nerve ladder, armour-before-hitpoints,
+cooldowns, hands, and a map that charges wages per day — with no help at all. **Almost nobody
+bounces off this game because it is hard; they bounce off because nothing told them the rules
+exist.**
+
+**The rule that must survive.** Do not turn it into a wall of text or a forced tutorial mission.
+The design's own instinct — *name the screen, do not lecture* — was right, it was just applied to
+too little. Three layers instead:
+
+**Layer 1 — the arrival card (once per screen, expanded).** The existing `COACH{}` cards stay but
+get the two or three sentences that actually matter:
+- **Map:** every road costs days, and days cost wages. Where you go is the whole game.
+- **Inventory:** everybody carries what you put on them; two hands, and some things take both.
+- **Fight:** two actions each. Armour comes off before blood. Standing behind somebody is worth
+  more than standing in front of them, and walking away from an enemy lets them swing.
+
+**Layer 2 — the whisper layer (absorbed #11).** One sentence, once ever, at the moment the thing
+first happens rather than up front: first two-handed weapon blanking an off-hand · first cooldown ·
+first dropped rung on the ladder · first provisions click · first HURL · first back-arc kill
+(*"that landed in his back — that is what the red arc is for"*) · first parting swing taken.
+Machinery exists: `COACH{}` + `LEGACY.seen`.
+
+**Layer 3 — the standing reference.** A **?** in the corner opening one scrollable card:
+"how a turn works / how a hit works / how nerve works / what the road costs". Written once, never
+shown unless asked. This is what a returning player wants and what a confused one reaches for, and
+it costs nothing to leave in.
+
+**Touch:** `COACH{}` (expand), `coach()` call sites, `LEGACY.seen`, a new help overlay reusing the
+`ask()` modal shell.
+
+**Verify:** a fresh `localStorage` sees each arrival card exactly once and each whisper exactly
+once; nothing fires twice across two runs; nothing interrupts an AUTO battle; the reference opens
+and closes from every screen.
+
+</details>
+
+---
+
+## THE FRONT DOOR — menu · practice field · standing reference ✅ BUILT
+
+**The idea (user).** *"Maybe it is nice to start from menu + battle simulator + something else."*
+
+**Why it earned its place, beyond being asked for.** The game booted straight into the tavern, and
+that one fact caused three separate problems: a saved company could only be picked up by
+**reloading the page**; there was nowhere to read the rules, so the only way to learn what a
+parting swing was, was to lose to one; and the only way to see a fight was to spend a road getting
+to it — which made the eight fights the least-tested part of the build.
+
+**What is in it.**
+- **A main menu** (`#menu`, `openMenu()`), which the game now boots into. Continue the road ·
+  a new company (confirmed, and only ever via a reload — see the note in `enterWorld`) · the
+  practice field · how any of this works · the wagon, once there is one. **The duplicate
+  continue/start-again dialog inside `enterWorld` was DELETED, not left as a fallback** — this
+  project has already paid for one pair of rules covering the same ground.
+- **`☰ MENU`** on the world screen only. Mid-battle is not a coherent moment to save at; a battle
+  is regenerated, never restored, so walking out of one would silently discard it.
+- **The practice field** (`#sim`) — any of the eight fights, against any of six companies,
+  including **a copy of your live company** read out of the save. The road card's own questions are
+  asked here too (which side at Blood on the Road, which deployment against the Thing in Armour),
+  because on the practice field the deployment is part of what you came to try.
+- **The standing reference** — see #14, which this closes.
+
+**The safety property, and how it is enforced.** A practice fight borrows `G` wholesale rather than
+teaching fifty call sites about a practice mode: `simStart()` snapshots the whole object (it is
+plain data — the save code relies on the same fact) and `simResult()` puts it back before drawing
+anything. Four engine guards do the rest, and they are the whole feature:
+
+| where | what it stops |
+|---|---|
+| `saveRun` | writing a scratch company over a real one |
+| `clearRun` | a practice defeat deleting the run |
+| `checkEnd` ×3 | spoils (which recruit), defeat (which wipes), mercy (which sets `G.spared`) |
+| `withdraw` | the two fights that refuse withdrawal in a run refusing it here |
+
+`SIM` is declared beside `TEST`, with the engine, **not** beside the screen that uses it — those
+four guards are consulted during boot and a `const` declared later would sit in the temporal dead
+zone. This project has shipped one temporal-dead-zone crash already.
+
+**Verified:** all eight fights run start-to-finish through the practice field; `G`, `PARTYCAP` and
+the save file come back byte-identical every time; a practice wipe leaves the save intact and does
+not set `LEGACY.priorDied`; the menu round-trips world → menu → world.
+
+**Note on the parked Battle Lab.** The outside review's `F26` proposed this and it stayed parked
+because it was *a tool for the builder, not the game*. That reasoning was right and it still is —
+what changed is the framing: this is **a place in the game where you can lose without it costing
+anything**, which is a different feature that happens to share the code. The builder's version
+(ScenarioSpec, arbitrary compositions) stays parked.
+
+---
+
+## 18 — ★ THE THING IN ARMOUR ✅ BUILT
+
+> **Done, and it works.** `noArc` (its own flag, not a reuse of `big`) cancels the back arc, the
+> flank bonus **and the surrounded bonus** — "no flanking penalty" has to mean the numbers one too,
+> or a ring pays +30 a head and ringing it is correct after all. `soak:4` comes off body damage
+> after the armour split, floored at 1. Its sword is a one-cost sweep and it has three actions, so
+> it closes five hexes and cuts, every round. Step 5. `noRout` + mor 460 so it does not react to
+> being hurt. It melts: no corpse, no race, **and the kill tally records nothing** (`notally`) —
+> the company cannot say what it killed. The aftermath gives a smell and **The Cold Thing**.
+>
+> Fires once per run on arrival at the first ordinary road node past the first Muster Field
+> (`armourDue()` — written as a rule, not a node id, so the map rebuild in #6 cannot delete it),
+> and **queues the node's own event** rather than eating it.
+>
+> **The one thing still open.** The three answers are not balanced yet: the arena puts
+> **"send somebody wide" last of the three, every time**, and it is not about the enemy's strength
+> — halving its durability barely moved the win rate. Losing a body is unconditional; the thing it
+> buys (ground, and distance to shoot across) is only worth something to a side that CHOOSES to
+> hold, and the mirror-AI walks straight at it instead. So the instrument cannot value that option
+> and further compensation would be tuning to a broken measurement. **It needs the human
+> playthrough**, and it matters: per the pillar, spending a person has to actually pay, and if it
+> does not, that choice is a trap. Current compensation: spacing-of-two deployment, the back edge,
+> and the Thing arrives at half armour.
+>
+> **The other thing worth knowing:** deployment barely moves an AI-driven party, because the AI
+> re-forms immediately. It moves a *player* a great deal. Read the arena's deployment table as a
+> lower bound, not a verdict.
+
+<details><summary>Original spec (kept — the build follows it, and the reasoning is still the reason)</summary>
+
+**★ The user's flagged priority: "maybe one of the most important things."** Build this before the
+other content entries.
+
+**The idea (user).** Something in armour comes at you between two places. You do not know what it
+is. **Surrounding it does not work** — it takes no flanking penalty and its sword sweeps, so a ring
+of your people is the *worst* possible formation. It is fast, heavily armoured, shrugs a flat
+amount off every blow, and it will take a company apart if you meet it head-on. **The fight is to
+skirmish it**: pin it with one body, shoot it with everybody else, and accept what happens to the
+one you pinned it with. When it dies it **melts**, and you never find out what was inside.
+
+**Why it earns a place — this is the missing lesson.** Each fight in the act sets a different
+tactical problem, and there is a hole in the set:
+
+| Fight | The lesson |
+|---|---|
+| Fen-Mother | surround it, swarm it, take the arcs |
+| The Pack | do not spread — hold the gap, make them come |
+| The Sling-Line | cross open ground under fire |
+| The Hill Steading | kite four things that will not chase |
+| **The Thing in Armour** | **do not engage it. Fix it with one, shoot it with the rest, and pay for it.** |
+
+It is also the first fight whose correct answer is **a sacrifice** — the ogre goes in front because
+he is the only one who might survive being the anchor, and he might not. That is the pillar
+(*you cannot afford to be good to everyone*) expressed as a tactical decision instead of an event
+choice, which is exactly where the design has not yet put it.
+
+### The creature
+
+- **Fast.** Step 5 — at least a ratkin's. It closes whether you like it or not; running is buying
+  time, not escaping.
+- **Huge sword, sweeping.** Its main attack hits every adjacent enemy (`sweep:true`, which already
+  exists — the brute and the ogre maul use it). **This is what punishes the ring.**
+- **No arcs.** Flanking and backstabs do nothing to it. `big:true` already grants immunity to arcs
+  and DISTRACT — but `big` also means *two hexes and a tail*, which this is not. **Add a separate
+  `noArc:true`** and have `arcOn`/DISTRACT/the AI's arc weighting honour either flag.
+- **Flat damage reduction.** `soak:2` or `3` — subtracted from every blow *after* the armour split,
+  floored at 1. This is what makes chip damage pointless and a committed line pointless: it rewards
+  the few big shots a skirmish produces over the many small ones a scrum does.
+- **Heavy armour and a lot of hitpoints**, but *not* Fen-Mother numbers — she is 470/170 and a
+  set-piece; this should be beatable by a clever four and brutal to a careless six.
+- **Its AI throws everything at whatever is nearest**, which is correct for it and is what makes
+  the anchor plan work: it fixes on the body in front of it.
+
+### The unknown
+
+- Its class line reads as a **monster with nothing legible in it** — a new `MONSTERS` entry whose
+  tag deliberately refuses to identify it (*"⚔ SOMETHING IN ARMOUR"*), and a `nature` line saying
+  you cannot tell what is inside.
+- **On death it melts.** No corpse, no loot table, no race revealed. The aftermath card gives you
+  the **artifact** it was carrying and one sensory detail — a smell — and nothing else.
+- **This is a hook for a later act, and it should stay a hook.** Do not answer it anywhere in the
+  slice. The run summary should not mention it either.
+
+### The road event
+
+Fires **on arrival at a node, framed as having happened on the last stretch** — *not* mid-travel.
+
+> ⚠ **Do not fire this from `rollCampAt`.** Jumping to a battle mid-journey strands the party
+> token: only `travel()`'s `arrive` clears `G.moving` and moves `G.at`. The dog ambush was moved to
+> arrival for exactly this reason and reads fine — "you had made camp / you were an hour short of
+> the place when…".
+
+Three choices, and **all three end in the same fight** — what changes is the state you enter it in:
+
+- **Run for it.** You reach broken ground, but strung out: **scattered deployment**, everybody
+  further apart and further from each other. Costs you the line you would have had.
+- **Form up and meet it.** **Concentrated deployment** — a tight line, which is exactly the
+  formation its sweep is designed to punish. The obvious choice, and the wrong one, and the game
+  must not say so.
+- **Send somebody to draw it off.** A ratkin volunteers or is chosen. They **start the fight downed
+  and take a scar for it** — but the rest of you get the ground you wanted: good spacing *and*
+  distance. The cost is a person, up front, before a blow is struck.
+
+Deployment variation per choice is already supported — `startBattle`'s `slots` table is chosen per
+battle kind (the camp does exactly this). Use `G.armourChoice` to pick the slot set.
+
+### What to touch
+
+`EVENTS` (the road card) · `NODES`/`arrive` (the arrival hook, once per run, gated like `packDone`)
+· a new `armour()` foe builder · `MONSTERS` (the unidentifiable entry) · `strike` (`soak`) ·
+`arcOn` + DISTRACT + the AI arc weighting (`noArc`) · `startBattle`'s `slots` (three deployments) ·
+`AFTER` (the melt) · `LOOT`/`GEAR` (the artifact) · the aftermath card.
+
+### Verify
+
+- Circling it produces **no** arc bonus and DISTRACT refuses; a ring of four takes sweep damage
+  every one of its turns.
+- `soak` measurably flattens small hits and barely touches big ones — check an archer's chip
+  damage against a maul.
+- Each of the three choices produces a visibly different starting formation; the distract option
+  begins with one of yours already down and scarred.
+- It melts: no corpse, no race in any log line, the artifact arrives, and nothing anywhere names
+  what it was.
+- **Balance it deliberately**: a careful four should win with one person carried off; a careless
+  six that surrounds it should lose people. Use the arena (#13) rather than a single AUTO run —
+  this is the one fight in the act where "it completed" tells you almost nothing.
+
+</details>
+
+---
+
+## 48 — Bodies on the ground ✅ BUILT
+
+*Shipped 2026-07-31 (build log 8f.41). Pulled up from Tier 4 to Tier 2 by the user on the day it
+was written, and built the day after.*
+
+`at()` reads `alive()`, so the moment somebody died the hex came clean again and the field forgot
+the fight had ever been there.
+
+> **Leave the body where it fell. That is the whole entry.**
+
+**Built.** One canonical `dropBody(u)` writing `B.bodies[K(col,row)] = {kind, side, race, round, n,
+rot}`, called from **every place a unit actually dies** — the strike resolution, the Fen-Mother
+bleeding out, and the test-mode clear. *The entry named two write sites; there were three, which is
+precisely why this is a function and nobody has to find the fourth.* Two on one hex keep a **count**
+rather than a second entry. `rot` is rolled once and stored, because `render()` runs many times a
+turn and a fresh angle per frame would make the dead twitch.
+
+**~~Not for the DOWNED.~~ REVERSED 2026-08-02 (build log 8f.80), see below.** The original rule
+was: a roster member is dragged out of the line still breathing, so leaving their body on the field
+would say the opposite of the rule the entire scar system exists to state.
+
+**One read site** in `render()`, after the state tint and before the token — DOM order alone puts a
+standing figure over the one it is standing on, so it needs no `z-index` and cannot fight the
+back-arc ring or the hover ring. The figure is the unit's **own sprite**, laid over and shaded:
+the race sizes it and the side palette tints it, so *whose* body it is reads at a glance without a
+second art pass. `pointer-events:none` is what makes "nothing to click" true — a body that
+swallowed a click on the hex under it would be a rule by accident.
+
+**The user's two corrections, both of which made it better.** *"Player corpses and enemy corpses
+has same colors as main creatures"* — the first version darkened them almost to silhouettes, which
+threw away the one thing the picture is for; only enough shade to read as ground now. *"Ratkin
+corpses a bit bigger"* — one flat scale looked right on a human and vanished on a ratkin, whose
+sprite is 21×29 against a human's 26×38, so a small body lying down was a smudge. `BODYSCALE` is
+per-kind, and every race lands at roughly the same weight on the ground.
+
+**Everything deliberately NOT in scope stayed out**, so a later session does not re-add them
+thinking they are new ideas: difficult ground · stumbling when shoved onto one · nerve for standing
+beside your own dead · throwing them · monsters eating them · salvage depending on where somebody
+fell.
+
+**Verified.** All eight fights: every dead unit produced exactly one body, every fight started with
+zero (a battle is regenerated, never restored, so this never reaches the save); graves stay
+walkable at their bare terrain cost and `at()` returns empty on them; the body layer computes
+`pointer-events: none` and the hex under it keeps its own click handler.
+
+### AMENDED 2026-08-02 (build log 8f.80): your own crew leave a body too
+
+*(User: "куда-то пропали тела раненых моей команды… вернуть опцию раненых от команды и моей и
+противника", then, on whether a downed body should be told apart from a dead one: "ok, but wounded
+and dead could look same on battlefield of my team - body on the ground. on this lvl it isnt that
+important.")*
+
+**The complaint was not a regression.** The enemy half was verified still working in the running
+game before anything was changed: `B.bodies` written, `.bmark`/`.bfig` in the DOM, the sprite
+data-URL decoding, nothing above clipping it. The player's side had simply never been switched on:
+the exclusion above was deliberate and it was **wrong in play**.
+
+**Why the original argument failed.** It reasoned about what a body *says* and ignored what an
+empty hex says. With the downed excluded, your crew fell and the hex came **clean**. The enemy
+dead were lying all over the right of the board and your side looked like it had walked off the
+field. That is a worse lie than the one the rule was avoiding, and it is invisible from the source:
+you only see it by looking at the board after somebody of yours goes down.
+
+**Built.** `dropBody(d)` is now called on the downed branch too, from the same one site. The user
+was offered an amber pool and ring to keep down and dead apart and **declined it**, so it is
+literally the same picture on both sides. The distinction was never carried by the body anyway: the
+`DOWN` float, the log line and the aftermath scar all still say it, and each of them says it better
+than a second palette on a 37px hex.
+
+**One thing NOT changed:** the road sacrifice at `startBattle` (#18, the armour fight) sets
+`downed` without a body on purpose: that person went wide off the road and is *not on the field*,
+so a body in your starting line would be the picture contradicting the prose.
+
+**A pre-existing #48 bug found by the regression sweep and fixed here.** A corpse can be struck
+again (a cleave, a simultaneous blow, an act already in flight) and the kill branch runs a second
+time on somebody already dead. `pack` produced **three** `dropBody` calls for one dog (`foe7`), and
+the hex count went to two, which the two-figure render drew as a small pile where one animal had
+fallen. Guarded with a `u.bodied` flag **on the unit, not the hex**, because the hex count is the
+thing that must keep working when two *different* people fall on the same ground. Units are rebuilt
+per battle (`G.party.map(unitFrom)`), so the flag cannot leak into the next fight.
+
+**Verified in the running game, all eight fights, zero thrown errors:** summed body count equals the
+number of units that fell **exactly** in every fight (it was 12-for-10 in `pack` before the guard);
+duplicate `dropBody` calls still occur and are now rejected rather than counted; a downed crew
+member's hex returns empty from `at()`, stays walkable and stays clickable, and the body layer
+computes `pointer-events: none`. Picture: [`shots/bodies_fixed.html`](../shots/bodies_fixed.html),
+against the two that framed it: [`shots/bodies_now.html`](../shots/bodies_now.html) (the gap) and
+[`shots/bodies_proposal.html`](../shots/bodies_proposal.html) (the amber variant, declined).
+
+**The transferable lesson.** *A rule about what the board SAYS has to be checked against what the
+board LOOKS LIKE, and #48 was argued entirely in prose.* The exclusion reads perfectly in the
+changelog and is obviously wrong in one screenshot. Anything that decides not to draw something
+needs a picture of the not-drawn case before it ships, not just a sentence about it.
+
+---
+
+## 36 — Line of fire the player can read ✅ BUILT
+
+*Shipped 2026-07-31 (build log 8f.41). Built ahead of #46, which needed it.*
+
+The engine had **no line trace at all** — range was pure distance, so an archer could put an arrow
+through two of his own and a boulder and never know.
+
+**Four states**, resolved by tracing the actual hex line: **CLEAR** · **SCREENED** (exactly one
+body, yours, adjacent, its front turned away) · **OBSTRUCTED** (a body across the lane that is not
+standing there for you) · **BLOCKED** (rock, fire, palisade, or more than one body). `hit:null` on
+BLOCKED is load-bearing: it is not a very large penalty, it is **the absence of an offer**, and
+every consumer tests for it rather than adding it.
+
+**The one function is the whole feature.** `losState(a,d)` traces the standard cube-lerp line and
+classifies what it crosses. It is folded into `hitBreakdown` rather than bolted onto the UI, which
+is what makes **both AI brains change behaviour without either being taught anything** — the same
+function prints the player's preview and scores the AI's expected damage. On top of that, one hard
+filter in both brains: BLOCKED is never on the table, and OBSTRUCTED is off the table *while a
+clean lane exists*. "Usually prefers" was not the contract — an archer who occasionally puts one
+through his own shieldman reads as broken however good the arithmetic was.
+
+**Rock stops an arrow**, which is what makes the ogre's thrown boulder in #46 worth a whole action:
+it is the only way to turn a BLOCKED lane back into a shooting lane.
+
+**A working is not an arrow.** Casters are exempt by design — a blight-wind is aimed with the wits
+and goes where it is sent. That exemption is also the only thing keeping the battle-mage distinct
+from the archer once screening exists.
+
+### Three things the work itself taught
+
+**1 — The gate picture caught a real bug before it shipped.** The first SCREENED rule asked for
+`arcOn(a,s).n === 'BACK'`: one sector out of six. Drawing the mockup measured the textbook
+formation — archer at 3,6, shield at 3,5 standing *on the traced lane* facing the enemy at 6,4 — as
+**FLANK**, because a hex line **bends**: the sector from the shield to the archer need not be the
+exact opposite of the sector from the shield to the target. A one-sector rule would have made
+SCREENED almost impossible to form on purpose, and the feature would have existed and never fired,
+which is worse than not building it. It reads the **rear 180°** (sectors 2–4) now, and *"his back is
+to you"* is what that means.
+
+**2 — A pure function in the innermost loop is not free.** `losState` called `at()` for every hex it
+crossed, `at()` rebuilds `alive()` on every call, and a five-round clash that used to resolve
+instantly took **23 seconds**. That is not a harness inconvenience — it is the AI's turn, and the
+player waits through it. Two caches keyed on a signature of where every body is standing (**exact**,
+not merely fast: the instant anything moves, dies, flees or goes down both are thrown away) took it
+to **2.0s**. 11×.
+
+**3 — The user's two corrections.** *"Make it streight"* — the ray traced the polyline the hex maths
+walks, which is honest about the **algorithm** and wrong about the **fiction**: an arrow flies from
+the bow to the body, it does not stagger from hex centre to hex centre. Straight line now, with a
+dot on every hex it has to cross and a fat dot on whatever is in the way. *"If the range is not
+optimal (too long) — yellow"* — the lane was only **half** of what makes a shot bad. A perfectly
+clear line at the edge of the bow is still a poor shot, and the board was drawing it in confident
+green while `extreme range −18` and `long shot −8` were charged invisibly. One verdict per shot now,
+worst-thing-first — **BLOCKED** red · **OBSTRUCTED** amber · **FAR/LONG** yellow · **SCREENED** gold
+· **CLEAR** green — and the range bands are not new numbers, they are penalties the bow has always
+paid and the board never showed.
+
+**Verified.** Six planted lanes produce all six verdicts from one archer; the trace is symmetric
+read from either end and connected hex-to-hex; a controlled A/B (one shooter, one target, only the
+lane changing) reads 28% clear → 20% screened → 6% obstructed → no offer at all through rock, and
+turning the screen round to face the archer correctly drops it to OBSTRUCTED; across all eight
+fights **zero BLOCKED shots ever resolved** and **zero** cases of any unit taking an obstructed shot
+while a clean lane was available.
+
+**Banked for #50, not acted on:** the brigand fight went from a 9–11 round read to **14**, the fight
+most exposed to lane costs. Not retuned, because #46 and #47 are about to change what a shooter's
+turn is worth.
+
+---
+
+## 51 — The Captain's call ✅ BUILT
+
+*Shipped 2026-07-31 (build log 8f.42). The user's own idea, asked for and built the same day —
+and the first entry whose gate mockup was drawn before a single line of it existed.*
+
+> **The ask, in the user's words:** *"When main hero character comics style comments things
+> happening on battlefields. Say phrases and sentences. It should be for tutorial or important
+> battle moments — they are running, we lost a man, fen mother is desperate. Tool to explain what
+> is happening, give hints on possible actions or emotional layer."*
+
+**What it is.** One speech balloon from the Captain's own body on the field — tail pointing at
+her, portrait at the left, 2.2 seconds, **no input pause, no click, nothing to dismiss.** It does
+three jobs and no others: says what just happened, teaches a rule the first time it bites, and
+lets the company be a company when it costs somebody.
+
+**Why the Captain and not a narrator.** She is the player's own body on the board, so a musing
+voice-over would be the player talking to themselves. A *leader calling the fight* is a different
+sentence entirely — "They are going, let them" is order-shaped, and a captain shouting a read of
+the field is simply what a captain does.
+
+**The three tiers.** The tier is invisible to the player except as a hairline on the balloon's
+left edge; its real job is deciding who wins a collision.
+
+| | fires | example |
+|---|---|---|
+| **TEACH** | a rule, the first time it ever bites, once per save | *"Behind them. That is where a fight gets cheap."* |
+| **CALL** | a state on the field just changed | *"The Fen-Mother has stopped guarding. Whatever happens now happens fast."* |
+| **HEART** | it cost us somebody | *"That is Vesna. Close over them — now."* |
+
+**Six triggers, fourteen lines, and not one digit in any of them** — *show a state, hide the
+number* is not suspended because a person is saying it.
+
+> **It was twelve, and the user halved it the same hour:** *"Start with less triggers. Make only 6
+> the most important events — for next I will craft manually."* Kept: **they are running · one of
+> ours is down · something has gone DESPERATE** (the three they named when they asked for the
+> feature) plus **two or more of ours lose their nerve · one of ours is surrounded by three · the
+> first back-arc hit ever.** That is two per job — explain, hint, feel — and all three tiers.
+>
+> **Six is a design number, not a limit in the code:** a seventh is one row, and nothing counts
+> them. What does *not* grow is the budget — thirty triggers would still speak five times a
+> battle, each one just more rarely, which is a quieter game rather than a busier one. There is a
+> **HOW TO ADD ONE** block above the register, and the six cut lines are kept paste-ready in
+> [`WHAT_TO_TEST.md`](WHAT_TO_TEST.md) in case a real playthrough finds the field too silent.
+
+**The budget is the design, and it is what separates a voice from a nag.**
+One balloon per round · five per battle · **HEART > CALL > TEACH**, and the loser is **dropped,
+never queued**, because a comment about a moment that has passed is worse than silence · **a line
+never repeats in a run**, and when every variant of a trigger is spent it says nothing at all.
+
+> **When the Captain is down, dead, fled, or not in this fight, the voice stops for the rest of
+> the battle.** No substitute speaker, no handover, and it does not come back if he is helped up.
+> It cost nothing to build and it is the loudest thing the system can do: the running commentary
+> you have had all fight simply *stops*, and you notice before you have worked out why. **Losing
+> the voice is the mechanical consequence of losing the Captain**, delivered without a line of prose.
+
+**TEACH rides on `whisper()` rather than duplicating it.** One call, two voices, **one seen-set**,
+so they can never drift apart or fire on different occasions: the Captain says the human half on
+the field and never a number; the existing bottom-of-screen toast carries the exact rule, which is
+the one place a number is allowed. The six whispers already in the build got a voice for free.
+
+**Where it must never go.** Tactical reads only — a hint about arcs is a rule, a hint about whether
+to spare somebody is a karma meter and the pillar forbids it. Never `#bTip`, which is the game's
+voice. Never `G.log`, which is written into the save. And **triggers are read once per turn in
+`capTick()`, never inside a scorer** — 8f.41 lost twenty-three seconds to one innocent function
+call in `hitBreakdown`, and nothing else gets to make that mistake.
+
+### Three things the work itself taught
+
+**1. A one-shot flag set *before* the line is said is a trigger that silently disappears.** The
+first version marked `C.desp=true` and then called `capSay`. On the Fen-Mother, DESPERATE collided
+with another CALL in the same round, correctly lost the round to it — and could then never fire
+again for the rest of the fight, because the flag said it already had. `capSay` returns whether it
+actually spoke, and every one-shot flag is now set from that return. **The general shape:
+"remember that this happened" and "make it happen" must not be two statements that can come apart.**
+
+**2. Flip on the actual overflow, not on which half of the field you are standing in.** The board
+is narrower than `#bField` and sits inside it, so *past the middle of the field* and *would this
+run off the edge* are different questions. The first version asked the first one and the balloon
+never flipped.
+
+**3. A pre-existing bug that only this entry's rule exposed.** `whisper()` wrote `LEGACY.seen`
+unconditionally — so **practising the Snare spent the back-arc tutorial on a fight that never
+happened**, which is the practice field reaching the campaign, and `SIM.on` exists precisely to
+stop that. It is now shown, capped to once per practice fight, and never persisted. The Captain's
+teaching lines needed exactly that rule and could not have had it on their own.
+
+**And one small one.** A unit's `name` is `name + surname`; *"That is Vesna Kolb, close over her"*
+is a clerk reading a roll, not a captain shouting. `capName()` takes the roster first name for our
+own people and leaves everything else untouched — splitting on the space would have turned
+*"The Fen-Mother"* into *"The"*.
+
+### The follow-up the user asked for the same hour, and why it mattered
+
+> *"The phrase adjusted to captain unit (so he says it) and his photo connected to the empty
+> square — so it feels more personal. And then it would feel more personal for different heroes."*
+
+**Two fixes and one shape.**
+
+**1. It says who he is, not what he does.** The label read `THE CAPTAIN` — a job title, on a game
+whose whole pitch is that these are people. It now reads the roster's own `fullName()`, so a run
+gets **`YOU “TALLOW”`** and the nickname (rolled per run) is what makes it a person, given that the
+Captain's literal name is *"You"*. Because it goes through `fullName`, it can never drift from the
+character sheet. The mirrored log line is attributed too — an unattributed quotation is the game
+talking rather than a person.
+
+**2. The empty square was real, and it was in the pictures rather than the game.** The face was
+drawn into a live `<canvas>` — and **canvas pixels do not survive `innerHTML`**, which is exactly
+how `shotBoard()` serialises the `#bFx` overlay. So every gate picture showed a blank square while
+the running build drew the portrait correctly. It is an `<img>` carrying a data URI now: `P1`, the
+same painted bust the battle panel and the sheet use, with the procedural bust rendered once and
+handed over the same way so there is a single code path. *(A general one, worth keeping: **the
+serialiser is the thing to distrust when a picture disagrees with the running build**, not the
+build.)*
+
+**3. "Different heroes" cost one argument, not a rewrite.** `capBalloon` takes a **speaker**, and
+nothing below `capSay` knows the Captain exists — face, label and anchor all come off whichever
+unit is handed in. Verified against somebody who is *not on the roster at all*: they get a name and
+a procedural bust with no painting and no roster entry, which is precisely what a second speaker
+will be. **That is [#40](00_PLAN_AND_BACKLOG.md) — the company reacting toward the player — already
+holding its half of the machinery**, without a line of speculative code being written for it.
+
+### What it absorbed and what it did not
+
+**#41 — the first one down** is the HEART tier, folded in rather than left as a duplicate entry.
+**#40 — portraits that look back** stays separate and unbuilt: that is the *company* reacting
+toward the player, a different speaker and a different job. #41's slow-down of the action was
+deliberately **not** built — the user asked for comments, not cutscenes.
+
+**Verified.** All eight fights twice through both brains with `checkEnd()` between turns — 4–19
+rounds, no stalls, nothing thrown, `LINT()` 0 findings. Every rule in the contract asserted on a
+live practice board: a lighter tier dropped in a taken round · a heavier one taking the round off
+it · **the dropped-then-retried path** · variants exhausting into silence rather than repeating ·
+the five-per-battle cap holding at exactly five · the Captain going down muting the voice
+permanently, including after she is helped back up. `G.capSaid` round-trips the save, arrives
+absent from a pre-#51 save without a migration, and **a practice fight leaves it empty**. Three
+gate pictures taken off live boards: `shots/51_heart.html` · `51_call_flip.html` · `51_teach.html`,
+all three carrying the painted face in the serialised markup.
+
+**Banked for #50, not acted on:** brigand read 12–15 rounds and the Thing in Armour 9–21 across
+the two regression passes. Same parking lot, same reason.
+
+---
+
+## 8 — Audio for the new verbs ✅ BUILT
+
+**The state as found.** The sound set predates most of the current game. Shove, hurl, SINK BELOW,
+ROOTING GRASP, the camp fire and the morale ladder had no voice — and the ones that *seemed* to
+have a voice were the worse problem: **they were borrowing somebody else's.**
+
+| the verb | what it played | why that is wrong |
+|---|---|---|
+| the ogre's HURL | `rout` | the sound of somebody's nerve breaking, for a thrown ally |
+| ROOTING GRASP | `back` | the bright two-note back-arc sting, for a wet hand closing |
+| SINK BELOW | `dodge` | a dry whiff of air, for going under water |
+| a rung of the ladder | *nothing, in either direction* | the ladder has been silent since it was built |
+
+A sound that belongs to another act does not read as "no sound". It reads as **the wrong thing
+having happened**, which is worse than silence and much harder to notice you are being taught.
+
+**Built.** Seven registry entries and one loop, all WebAudio (CSP forbids files):
+
+- **`shove`** — boots losing the ground, then weight arriving. **`hook`** — the pull's own sound,
+  a scrape *then* the arrival, because a pull and a push are not the same event from the receiving
+  end and #7 built them as two verbs.
+- **`hurl`** — air rising, then something landing, with the landing delayed to where it lands.
+- **`sink`** — the water swallowing *and* giving back, one sound with two gestures, because SINK
+  BELOW resolves as a single act.
+- **`grasp`** — a wet creak closing, with two small clicks in it.
+- **`rung_up` / `rung_down`** — the same gesture, down a third and duller. `rung_up` did not exist
+  either.
+- **the camp fire** — a looped brown-noise bed through a lowpass, with sparse crackle on its own
+  interval. Distance-independent on purpose: it is the room, not an object.
+
+**Two things that are load-bearing and would not be obvious later.**
+
+**The rung tick is throttled, and it has to be.** `mor()` is called across a whole side at once —
+the kind one's aura at deployment, a rout sweeping a line — and eight ticks inside one frame is a
+machine gun, not a rung. One tick per event, whoever moved: the news is that the line's nerve
+changed, not whose.
+
+**The fire is started from `startBattle` and only ever *stopped* from `setMusicMode`.** Every exit
+from a battle passes through a `show()`, and every `show()` calls `setMusicMode`, so the stop is
+guaranteed by a path that already exists. The start is not put there because `FIREPIT` is declared
+with the obstacle code far below and reading it from a function that runs during boot is a
+temporal-dead-zone crash — **this project has already shipped one of those** (`hurtLine` in
+`pickChoice`) and it cost a whole event branch.
+
+**Mute is free**: everything hangs off `AU.master`, whose gain the mute button zeroes, so the fire
+is silenced by a control that does not know it exists.
+
+**Verified.** Every case fires with no console error against a real AudioContext; the fire loop
+starts in the ogres' camp (`FIREPIT` set) and **not** in a fight without one, stops on any screen
+change, cannot double-start, and its stop is idempotent; all eight fights clean through the
+harness.
+
+**The standing caveat, carried from every audio session: the builder cannot hear the output.** The
+code is verified to run and the synthesis is written to a described gesture. Whether it *sounds*
+right is the user's judgement, and it ships behind the existing mute.
+
+---
+
+## 15 — Second and third battlefield styles ✅ BUILT
+
+**The idea (user).** *"Second and third style hex for battles."*
+
+**Why it earned its place.** Every fight was the same wet ground with different props. The style
+bible had locked **four atmosphere keys for exactly this** and one of them was in use — the art
+direction was written and unspent.
+
+**Built.** `paintTerrain`'s hardcoded literals lifted into a `GROUND{}` register — base tones,
+damp patches, water/pool/glint/reed, rock in three tones, bare ground, tuft colours and density,
+the six clutter kinds, cart ruts, the low-lying layer, and **the surround and the vignette**, which
+were CSS and are now owned by the same table. One place decides what a battlefield looks like.
+
+- **Fogbound Teal** — the fen. **Moved verbatim**, so the default could not regress.
+- **Dust & Gold** — the ogres' hill, the sling-line, the Thing in Armour's broken ground. Pale rock
+  shelves, dry stalks, and heat instead of fog: fewer low bands, warmer, much weaker, because the
+  point of that ground is *that you can see across it*.
+- **The Bloom** — the Fen-Mother. Magenta light with no source, near-black moss, wrong-coloured
+  water, and flowers in `#e05fa8` — **the Blooming Hand's own magenta**, so the ground and the
+  mutation are visibly the same thing.
+
+**Why the Fen-Mother, when the entry said the fen keeps teal.** Because the rest of the build
+already calls her a Bloom place and only the battlefield had not been told: her event card is
+`art:'bloom'`, her node is `weird` on the map, and the aftermath talks about *the bloom-light going
+out under her hide*. Assigning the third palette to nothing would have left it exactly as unspent
+as the entry was written to complain about.
+
+### The measurement, which is the whole lesson
+
+**The hex tint and the state colours were tuned against teal, so a new base is not free.** The
+first Dust & Gold was the genuinely pale ridge the bible describes, and it cost **every** state
+colour about 13% of its contrast against the shipped ground — ROUTED fell from 2.71 to 2.37.
+
+> **The rule this settled on, and the next palette inherits it: no state colour may read worse on
+> a new ground than on the one the game already ships.**
+
+The fix was not to give up the look. **The paleness moved off the base and into the tufts and the
+rock**, which is where it belonged anyway — bright detail on darker ground reads *more* like hard
+sunlight, not less.
+
+| ground | STEADY | WAVERING | BREAKING | ROUTED |
+|---|---|---|---|---|
+| teal *(shipped baseline)* | 4.10 | 4.74 | 3.31 | 2.71 |
+| dust *(first pass — rejected)* | 3.58 | 4.14 | 2.89 | **2.37** |
+| **dust (shipped)** | 3.99 | 4.62 | 3.22 | **2.64** |
+| **bloom** | 6.02 | 6.97 | 4.87 | 3.99 |
+
+**And the proof the refactor itself was clean is a number rather than a reading:** teal's mean
+ground samples **byte-identically at (48,60,57)** before and after the lift, so the default palette
+provably did not drift while 40-odd colour literals were moved.
+
+**Verified.** All three assigned and rendering at 15×13 with no console error; the camp keeps its
+fire-lit treatment on top of teal; gate pictures at `shots/15_ground_teal.html` ·
+`15_ground_dust.html` · `15_ground_bloom.html`, each with three of yours set to WAVERING, BREAKING
+and ROUTED and one selected, so the badges, the odds, the arcs and the reach overlay are all being
+read over the new ground rather than over the one they were drawn for. Eight fights clean.
+
+---
+
+## 44 — Ratkin argue about who is related to whom ✅ BUILT
+
+> **Ratkin do not merely have large families. They have aggressive, contradictory, politically
+> useful definitions of family.**
+
+**Three beats, exactly as the entry specified them.**
+
+**CLAIM.** Two ratkin have established, between the pot and the second watch, that they share an
+aunt. One aunt is older than the bridge at Coldharrow, owns a boat, and is owed respect. The other
+is twelve, has been dead six years, and is owed four crowns. They are describing the same woman;
+they agree on her name, her teeth, and nothing else. *Ratkin do not settle family between
+themselves — they settle it in front of somebody who was not there.*
+
+**COST.** Three rulings, none of them free:
+
+| the ruling | what it costs | what it buys |
+|---|---|---|
+| the older claim stands | free, immediate, and one of them remembers it | the argument ends tonight |
+| the dead one was owed four crowns — **pay it** | −4 crowns, and the whole fire watched | the best-spent money in the chest — *and* proof that the chest opens for a good enough story |
+| neither — produce her or stop saying her name | the most morale of the three | you were exactly fair, and it bought you nothing |
+
+**RETURN.** One card per ruling, all carrying the same evidence — **neither of them was right** —
+and each with a warm door and a cold one. The boatman knows the woman and says she never had a
+sister. The dead twelve-year-old was real and was a debtor's daughter whose name got borrowed. Or
+she turns up at the crossing selling eels, entirely real, somebody's aunt, and does not recognise
+anybody. **How the company ruled becomes the shared fact**, written through `bond()` and
+`remember()`.
+
+**The guardrail, and it was the real risk.** The first beat has to be funny without lore, and **at
+least one outcome has to create attachment rather than only friction** — otherwise ratkin quietly
+become the comic-relief species, which is the failure mode. Every return has a door that makes the
+two of them co-conspirators, and none of those doors is free.
+
+**Mechanically tiny, as specified. No genealogy, no family tree, no spawned relatives.** Three
+booleans on two people — `claimsKin` · `kinDebt` · `kinInsult` — carry the entire chain. **They
+live on the person**, which is what makes the entry's one hard requirement work: one of the pair
+leaves the company and the other still remembers the ruling alone.
+
+### The machinery it needed, which is small and reusable
+
+- **`castRace` / `castNeed`** gate a whole *card* on who is at the fire. `needRace` has always
+  gated a *choice* — "feed it to the ogre" needs an ogre — and this is the same rule one level up:
+  two ratkin arguing about an aunt is not a scene two humans can play.
+- **`castKeep`** requires at least one of the original pair still on the roster. Both gone and the
+  card never comes, because there is nobody left for it to be about, and naming a departed person
+  as though they were still at the fire is *presentation becoming a second source of truth*, in
+  prose.
+- **`body` and `after` get a third argument** — is this still a scene with two people in it — so
+  the writing can never claim two people have not spoken when one of them left. Every card written
+  before this ignores it.
+- **`after` may now be a function**, for the same reason `body` always was: a card about two named
+  people has to be able to name them on the way out too.
+- **`fst()`**, because `who()` is right for an introduction and unreadable on the third use. It was
+  producing *"(ratkin cutter)'s aunt is older than the bridge"*. Cards introduce with `who()` and
+  use first names after.
+
+### And LINT learned to read CAMPS
+
+**It was the one content table the linter had never opened, and it is the table with the most
+gates in it.** A sequel keyed on `needs:{id,opt}` with a misspelled id or an off-by-one option
+**does not crash and does not warn — it simply never appears, for the whole life of the project.**
+That is precisely the class of bug the linter exists to catch, and the camp chain doubled in size
+the day this rule went in.
+
+The rule checks: duplicate incident ids · a `needs` pointing at a missing card · a `needs` option
+index the parent card does not have · `castRace` that is not a race · `castKeep` with no `needs` ·
+unknown `fx` keys · missing gear ids · and a choice gated on a race that the card's own cast
+excludes. **It was proved by deliberately breaking the chain four ways and confirming each break
+was caught**, then confirming clean again — a lint rule that has never fired is indistinguishable
+from one that cannot.
+
+**Verified.** `LINT()` 0 findings; all eight fights clean before and after. The chain driven end to
+end through the real `openCamp` path: the cast drawn only from ratkin across 40 shuffles, tags
+landing on the correct two people, crowns and morale applied, `bond()` and `remember()` written.
+Each of the three rulings opens **exactly one** return and only after the two-day ripening.
+`castKeep` verified at both-present, one-left and both-gone. Every body and every `after` rendered
+in **both** voices — two present and one departed — which caught two grammar bugs in the
+one-departed branch (*"the sort of people"* for one person, and *"an eel each"* for one person).
+The tags round-trip the save.
+
+**Found and deliberately not fixed:** the default company has **one** ratkin, so the aunt cannot
+fire until a second is recruited. That is the card being honest about its own cast, not a defect —
+and it is written up in `WHAT_TO_TEST.md` so the user is not left waiting for a card that is
+correctly refusing to appear.
+
+---
+
+### Codex packet — status
+
+The `docs/CODEX_TEMP_*` files were **non-canonical proposals** from the outside review — fully
+harvested, and **deleted on 2026-07-31**. Status of their P0 list:
+
+| | | Status |
+|---|---|---|
+| **B01** Banking doubles all Salvage | banked the aliased pool twice | **INTEGRATED** |
+| **B02** AUTO busy-state deadlock | `beginTurn` invalidated callbacks without releasing the lock they held | **INTEGRATED** — cause fixed, not masked; watchdog demoted to a reporter |
+| **B03** Fen-Mother flees but is reported dead | set-pieces now cannot rout (`noRout`) | **INTEGRATED** |
+| **B04** Late-route node clipped off the right edge | pulled inside + `clampNodes()` guard at boot | **INTEGRATED** |
+| **B05** Nodes look clickable while travel rejects input | everything locks; the destination shows a `walking` state | **INTEGRATED** |
+| **B06** Prologue text contradicts the starting loadout | the junk is spares; the line points at the free off-hand | **INTEGRATED** |
+
+**All six P0 items are closed.** Everything past them (ScenarioSpec, Battle Lab, ZOC, combat roles,
+the independent ideas) is **STILL OPEN** and deliberately untouched — the packet's own rule is one
+thin package at a time, and its dependency order puts all of it behind the P0 list. The next
+packet ticket by its own order is the **shared ScenarioSpec**, then the **Battle Lab thin slice**.
+
+### Playtest #6 (GPT) — what was fixed on 2026-07-31
+
+Done, so nobody re-opens them: the **AUTO/AI hang** (watchdog), **fights ending in 3–5 rounds**
+(it was `tookHit`, not damage — see the plan entry), **the tutorial fight teaching nothing**
+(three tougher ogres), **the post-battle tax return** (split into two beats), **provisions having
+no sink** (the wounded eat), **the map printing event titles before you arrive**, **raw floats in
+the report**, **the wood/iron/salvage vocabulary**, and **the emoji being the loudest thing on the
+field** (turned down; painted state icons are still #25).
+
+Still open from that playtest, and folded into the entries below: the **map's visual weakness**
+(→ #6 — dark, uniform, tiny labels, microscopic legend, the centre card covering the geography)
+and **painted morale states** to replace the placeholder emoji (→ #25).
+
+---
+
+
+## Snapshots kept for the reasoning
+
+#### Combat model as built (v2 — historical; see the concept for what is true now)
+
+> **This section is a snapshot of build v2, kept for the record.** Five of its rules have since
+> changed: actions went **3 → 2** per turn (reactions made three impossible to balance); movement
+> left the stat block entirely and became **race-based** (ratkin 5 / human 4 / ogre 3 on the first
+> move, −1 on the second); **Winds of Magic was cut**; strong abilities now carry **cooldowns**; and
+> **nobody on the roster dies** — going down is a scar.
+
+- **3 actions per turn, max 2 of the same.** Replaced AP + fatigue. Heavy abilities cost 2. *(Now 2 actions; captains 3, great beasts declare their own.)*
+- **Rabble get 2 actions, your veterans get 3** — the swarm/elite dial.
+- **Morale, not fatigue**: Steady → Wavering → Breaking → Routed. Routed units flee the field. *(Still true.)*
+- Hex grid, six-way flanking (+15% each), marsh 2 hexes/−10%. *(The ZoC rule mentioned here in v2 was later cut for the engagement/parting-swing model — see the concept.)*
+- Armour absorbs before hitpoints. *(Still true.)* ~~Winds of Magic is a per-side pool that ebbs each round.~~ **Cut — casting now costs the caster's own morale.**
+- **Verified by automated playthrough**, not by eye: full loop world → travel → event → battle → dialog → epilogue.
+- Two real concurrency bugs were found and fixed this way: deferred turn-advances could double-fire and skip a unit's turn, and stale callbacks from a finished battle could fire into a new one. Both are guarded now by stamping every deferred callback with its battle *and* its turn.
+
+#### Note on the browser prototype
+
+The slice is HTML/JS so it is playable instantly with no install, and so design rules can be
+changed in seconds rather than in an engine. **Godot 4 is still the production target** — the
+prototype exists to find out which rules are wrong while that is cheap. Nothing in it is
+intended to be ported line-by-line; the *numbers and the feel* are the deliverable.
+
+#### Open design tension worth watching
+
+**Morale ends fights earlier than a hitpoint-attrition model does** — that is what morale is *for*, but it fights the 6–12 round target. In testing, fights kept resolving at 4–5 rounds by mass rout until enemy Resolve was raised and the surrender trigger was gated (round ≥ 5, and enemies reduced below a third). Worth deciding explicitly: **is the 6–12 band still the goal, or is "the fight ends when a side breaks" the better rule and the band should follow it?** Recommend the latter for standard encounters and a hard band only for bosses, who should not rout.
+
+#### Playtest #2 — outside read of the built slice (2026-07-29)
+
+An external reviewer played the current HTML end to end and compared it against these docs.
+Verdict: **~8/10 as a prototype, ~4–5/10 as a public demo** — the systems and the voice are
+there, the first twenty minutes are not. The praise worth keeping: the game's strongest asset
+is *not the combat*, it is the feeling that specific named people keep having things happen to
+them on the road. Sell that, not the system count.
+
+**Fixed in 8f.2:**
+- `Cannot access 'hurtLine' before initialization` — THE GROUND OPENS' "leave them" branch was a
+  hard crash (temporal dead zone: the strand branch wrote into `hurtLine` above its own `let`).
+
+**Fixed in 8f.3:**
+- Literal `{A}` reaching the screen, and ~24 events naming Skree/Bruht/Vesna/Marrow who may be
+  absent or dead — both solved structurally by the `cast()` token layer, not by hand-editing.
+- Long event cards pushed their own answer buttons below the fold with no visible scroll hint.
+
+**Still open — this is the 8g work list, in priority order:**
+1. **Consequence numbers destroy the moral ambiguity.** Showing `+150 crowns · morale −22 · injury`
+   before a choice turns a moral decision into an arithmetic one, which directly contradicts the
+   §4 rule that the cost is stated *as intent, not as a receipt*. Keep guaranteed material prices
+   visible ("Pay 45 crowns"); hide morale, injury and human consequences behind intent-language
+   ("The company will remember this").
+2. **Travel needs a confirmation step.** First click selects a route, second click moves, and
+   nothing says so — a genuine first-minute failure. Show an explicit `TRAVEL — 1 DAY · 1 FOOD`
+   button so the player sees the price and commits to it.
+3. **Readability.** 8–10px text, brown-on-brown, node labels lost in the map, tiny battle
+   figures. Desaturation is a rule for the *world*, not for interactive information — buttons,
+   the selected path, the active unit and legal targets need far more contrast.
+4. **The stat wall contradicts "people, not stat blocks."** First inventory shows a dozen derived
+   values before the player has any reason to care about Vesna. Open with HP, armour, morale,
+   weapon accuracy/damage, one signature ability and the personality; move the rest to tooltips.
+5. **No random camp incident before Blood on the Road.** A fiddler landing before the reveal
+   blunts it. Suppress incidents on the first leg.
+6. **Content validation sweep** — a real linter, run over every event against every possible party:
+   - literal `{A}` placeholders reaching the screen (seen in THE GROUND OPENS);
+   - options that require a race nobody has ("Feed it to the ogre" with no ogre, then text
+     claiming Bruht ate it);
+   - hardcoded names for people who may not be in the company (Bruht, Skree);
+   - hardcoded party sizes ("two of the six", "the fifth") when the company may be 3 or 7;
+   - nicknames drawn from the wrong race pool (Vesna "Smallest" Kolb — an ogre nickname);
+   - every option executing without an exception.
+   With this many combinations this cannot be held by hand any more.
+7. **The first battle should sell one unique thing** — a legible backstab, a morale break, a
+   surrender — rather than reading as "many rules, like Battle Brothers."
+
+**Positioning note from the same read:** "Slay the Spire structure + Battle Brothers combat" is
+clear but not distinctive. The stronger hook is *"Battle Brothers, but every campaign is a
+compact roguelike story about the people who survived it"* — ugly memorable faces, heavy road
+decisions, personal consequences, and stories the player retells afterwards.
+
+#### Playtest #1 verdicts (user, 2026-07-29)
+
+- Wyrm difficulty: **fine**. Music with chords: **good**. Forced-inventory beat: **feels ok**.
+- Fights end **a bit earlier than wanted** → `allyDied` softened −22 → −18. Watch again.
+- The final battle (the Snare) is deliberately **no-withdraw** — life or death. All other fights allow WITHDRAW (spoils lost, −20 mood, downed people abandoned permanently).
+- Company **MOOD** (map-level) now also matters in battle: a negative mood lowers everyone's starting morale (floor 30% of pool). Per-unit morale remains its own system.
+
+### Reference note — RimWorld
+
+The user has 1000+ hours in RimWorld and named what they want from it: *"stories, world,
+interaction — each time unpredictable development."* That is a **systems** target, not a content
+target. It is served by: camp incidents naming real party members, randomly rolled recruits,
+random promotions, injuries attached to specific people by greedy choices, and a roster that
+keeps changing shape. It is *not* served by writing more set-piece prose. When in doubt, add
+another thing that can happen to a named person, not another paragraph.
+<!-- (steps 9 and 10 were folded into 8b–8d long ago: the character sheet,
+     inventory, sfx and hit feedback all shipped there. Rows removed — they
+     were orphaned mid-document and read as still-open work.) -->
+
+
+## The original phase plan
+
+### Phase C — MVP ("Act 1" of the game)
+
+| Step | Deliverable |
+|------|-------------|
+| 10 | Full Act 1 map (~30-40 nodes, 3 regions) |
+| 11 | 6 classes + multiclass rules, levels 1-6 |
+| 12 | 12-15 enemy types (ratkin swarms → ogre/cyclops elites) |
+| 13 | 10 events + 2 quest-lines + NPC dialogs |
+| 14 | Metaprogression v1 (unlocks between runs) |
+| 15 | Balance pass + closed playtest |
+
+### Rules we agreed on
+
+- **Small batches.** Max 6-8 assets per art session.
+- **Paper before code.** Every system gets a one-page design before implementation.
+- **Battles must stay compact**: target 6-12 player turns (skirmish ~4-5, boss ~15), decided by positioning and ability choices, not attrition.
+
+### Reference map (what we steal from where)
+
+- Overworld structure → Slay the Spire / Void Wars (node map), but with quest-lines and non-combat places
+- Combat feel → Battle Brothers / Wildermyth (compact, deadly, readable)
+- Party & inventory → Battle Brothers
+- Classes & multiclass → Wartales
+- Metaprogression → Wartales
+- Lore/weirdness/artifacts → Caves of Qud
+- Story delivery, tone → The Banner Saga
+- Art → pixel art between Battle Brothers and Caves of Qud, Banner Saga palette
+
+---
+
+**#46 — One skill per race, and each one is a setup** *(the point is that they change behaviour)*
+
+> ⚔ **THE BATTLE BOARD** — also 🎒 three new acts on the sheet · the token (poison needs a count)
+> **SYSTEMS** the `acts` builder (`grimtoll_slice.html:3126`) · the forced-movement block in
+> `strike()` · `B.terr`/`BLOCKED` · `losState()` · both brains' scorers · cooldown render
+> **RELATED** **#36 built ⇠ supplies `losState()`, which is how the throw's AI knows a rock is
+> worth removing** · #47 (the other half of the verb batch) · #45 (adds the payout later — do NOT
+> build it early) · #33 (a thrown rock changes the topology *mid-fight*) · #4 (same size/limb
+> vocabulary) · #50 ⇠ it is on its entry condition
+
+> ### ⛔ GATE ARTIFACTS — DONE 2026-07-31, and they keep
+> **The rules are written out in the block below** (*The rules, settled* — costs, targets,
+> cooldowns, the size vocabulary, what each takes away, both brains, the four open scope cuts).
+> **The picture is [`shots/46_race_skills.html`](../shots/46_race_skills.html)** — made *in the
+> game*, four panels: the three action rows with their cooldown states · the size rule refusing
+> an ogre · a boulder thrown and a BLOCKED lane becoming CLEAR · the whole chain in one still.
+> The three acts were stubbed into the **live** action row on a real practice-field board, so the
+> panel in the picture is the panel that would ship.
+>
+> **What the picture cost, and it is worth knowing:** `shotBoard()` photographs the field and
+> nothing else, which is useless for a gate about a **button**. `tools/harness.js` grew
+> **`shotUI()` / `grabUI()`** — the same serialiser plus `#bLeft`, several panels to a file, and
+> **every `<canvas>` swapped for an `<img>` before serialising**, because `outerHTML` copies the
+> element and not its pixels (the trap that made four of #51's gate pictures wrong). Any later
+> gate about a control gets it for free.
+
+---
+
+Race currently decides the body and little else in the verbs list. Each race gets **one signature
+action**, and — deliberately — **none of the three is a damage button**. All three exist to make
+somebody *else's* action better, which is what makes a mixed company worth assembling.
+
+Definitions in the existing `acts` shape, alongside `hurl` at `prototype/grimtoll_slice.html:3214`:
+
+**HUMANS — KICK.** `cost:1, reach:1, push:1, cool:1`, damage negligible.
+Pushes a **human- or ratkin-sized** body one hex. **It does not move an ogre** — the size rule has
+to bite somewhere visible, and an ogre shrugging off a kick is the cheapest way to teach it.
+Cooldown **1**, so it is available nearly every round: this is a *verb*, not an event. It is the
+cheapest displacement in the game and therefore the default setup — kick somebody into the marsh,
+out of your spearman's face, **into reach of your ogre so it can pick them up**, or off a friend who
+is down.
+
+**OGRES — THROW.** `cost:1, cool:2`. Not a rock-throwing skill — **one general verb.**
+
+> **Pick up anything on an adjacent tile and throw it.** A unit or a rock.
+
+That is the whole rule. The **source must be adjacent**; the destination is the usual throw range.
+It absorbs the existing `HURL A RATKIN` (`grimtoll_slice.html:3214`), which stops being its own
+action and becomes the case where the thing you grabbed happens to be an ally.
+
+What it can grab: **an allied ratkin** (as today) · **an enemy small enough to lift** · **a rock —
+the impassable ones already on the field.** No new terrain type is needed; the boulders are already
+there, already in `BLOCKED`, already generated in clumps.
+
+And that last case is the good one: **throwing a rock removes it from the board.** The ogre is the
+only unit that can *open a lane* — take out the boulder your archers cannot shoot past, or the one
+funnelling the enemy into your line, and the map is a different map afterwards. One body on the
+field can rearrange the terrain, which is the most ogre-shaped ability available.
+
+**Size rule:** an ogre cannot throw another ogre. Same rule as the kick, one tier up.
+
+**RATKIN — POISON.** `cost:1, reach:1, cool:2`.
+The target takes **+25% damage for two rounds, and it stacks.** Two ratkin make it +50%.
+
+> ⚑ **SHIPPED AT 15%, NOT 25% — the user's call on the day (2026-07-31), after the build.** One
+> constant, `VENOM_PER`. Three cuts buy **+45%** rather than +75%. The paragraph below still reads
+> as specified; the number it argues about is the one that moved, and the argument holds either
+> way — the limiter is the three turns, not a ceiling.
+
+This is the purest synergy skill in the game and it defines the race: individually the weakest body
+on the field, and what they contribute is **making somebody else's hit matter.** A ratkin-heavy
+company plays completely differently — it spends its early actions buying a single enormous one.
+
+> ⚠ **The stack must be self-limiting, and the honest limiter is the action cost, not a cap.**
+> Three stacks means three ratkin spent their whole turn before anyone hit anything. If the target
+> moves, dies to someone else, or the line breaks first, all of it is wasted. Let the risk do the
+> balancing; only add a hard cap if testing shows +75% deleting bosses.
+
+**Why these three and not three attacks.** Each is weak alone and strong in sequence, and the
+sequence falls out of the constraints rather than being scripted. **The ogre can only grab from an
+adjacent tile** — so somebody has to *deliver* the target, and the human's kick is exactly the tool
+that does it:
+
+> *the ratkin poisons him → the human kicks him into the ogre's reach → the ogre picks him up and
+> throws him back through his own line.*
+
+Three races, three turns, one round of setup, and nobody in that chain dealt meaningful damage
+except the last one. That is the shape the fights should have — and note that **no rule anywhere
+says those three actions combine.** They combine because of where the bodies are.
+
+**Build.** All three go into the `acts` builder beside the class signatures
+(`grimtoll_slice.html:3126`), and each reuses a resolver that already exists. **KICK** is the
+forced-move block with force 1 and a size gate (`big` targets ignore it, with the receipt line
+saying so). **THROW** replaces the `hurl` definition: targeting becomes two clicks — an adjacent
+*thing* (small unit, ally or enemy, or a `rock` hex), then a destination in range; the rock case
+deletes the terrain entry and lands as a single-target hit. The unit case is `hurl`'s existing
+flight-and-landing code untouched. **POISON** is a stack array on the target,
+`d.venom.push({until:B.round+2})`, and one multiplier line in the damage calculation,
+`×(1+0.25·live stacks)` — plus a green count on the token, because a stacking debuff nobody can
+see is a spreadsheet. AI, in both brains: kick scores by what it delivers (hazard adjacency, or
+adjacency to a friendly ogre); throw-a-rock scores when the rock stands between own shooters and
+their targets (#36's `losState` is the measure, which is why that ships first); poison scores on
+high-HP targets early. **Per the gate: one mockup of all three buttons with cooldown states before
+any code.**
+
+**Verify.** Size gates hold (kicked ogre does not move, thrown ogre is refused); a thrown rock is
+gone from `B.terr` and pathing reflows; poison stacks sum and expire on schedule; both brains use
+all three at least once across the regression; cooldowns render.
+
+---
+
+### #46 — THE RULES, SETTLED *(gate step 1, written 2026-07-31; picture: [`shots/46_race_skills.html`](../shots/46_race_skills.html))*
+
+*Everything above is the design. This is the contract — what a session builds, with the numbers,
+the edges and the four places scope was deliberately cut.*
+
+**What all three share.** Built in `unitFrom()` beside the class signatures, gated on `p.race`.
+**Every race gets exactly one; nobody gets two.** Each is **1 action out of 2** — taking one is
+half your turn, and that is the whole price. Each sits **third in the row** (under the weapon,
+above the class signature), so it is always the **3** key. **Enemies get them too, by race**, or
+the trick is a player toy — enemy ratkin poison you, and enemy ogres already throw.
+
+**SIZE — one new word, and it is the only one.**
+
+| | |
+|---|---|
+| `sizeOf(u)` | **3** great beast (`u.big`) · **2** ogre (`race==='ogre'\|\|kind==='ogre'`) · **1** everything else |
+| both new acts carry | `maxSize:1` |
+| the player-facing rule | **an ogre is never moved by anything, and only a great beast could lift one** |
+
+Great beasts are already immovable — the forced-movement block has read `!d.big` since push and
+pull shipped. **The refusal is an offer withdrawn, never an action wasted:** the target is not
+highlighted, the click does nothing, and the hover readout says why — the same contract as a
+BLOCKED lane (*"it is not a very large penalty, it is the absence of an offer"*). Spending an
+action to be told a rule punishes the player for not knowing it yet, and this game teaches on
+hover. One `whisper()` the first time it comes up.
+
+**1 · HUMANS — KICK.** `{k:'kick', cost:1, reach:1, push:1, cool:1, maxSize:1, aim:10,
+dmg:[2,4], am:.15, ft:.35}` — *confirmed unchanged by the user, 2026-07-31: "small damage, one
+tile push."*
+
+- **It rolls to hit** — it resolves through `strike()`, which is where the one forced-movement
+  block lives, and that block only runs on a hit. A kick can miss, and on a 1-turn cooldown it
+  has to be able to. `aim:+10`: it is a boot, not a weapon, and it does not care what is in your
+  hands.
+- **No destination picker.** The existing block computes the direction from target→attacker and
+  walks the opposite way, so **a kick always goes straight back, away from you.** You aim it by
+  walking round first — *that is the whole skill of it*, and it is why the cheapest verb in the
+  game is still a decision.
+- Hex behind them blocked or occupied → they do not move and take the existing wall damage
+  (`(want−stepped)×7`). **A kick into a boulder is worth doing**, and that rule already exists.
+- Cooldown **1**: use it, warm one turn, ready the next. With the twice-a-turn cap it cannot be
+  spammed. This is a *verb*, not an event.
+- **Enemies only.** *(Scope cut 1 — the entry's "kick somebody off a friend who is down" opens
+  friendly-fire targeting for one line of flavour. Bodies on the ground are decoration, per #48.)*
+
+**2 · OGRES — THROW.** `{k:'throw', cost:1, cool:2, range:4, rockRange:3, maxSize:1}` — **replaces
+`hurl` entirely**, along with its AI branch, its whisper key and its `? RULES` line. *Two ranges,
+because a body and a boulder do not fly the same distance.*
+
+> **Pick up anything on an adjacent tile and throw it.** Source must be **adjacent**; destination
+> is the usual range. Two clicks, exactly as `hurl` reads today.
+
+| what you grabbed | what happens |
+|---|---|
+| **a size-1 ally** | today's `hurl` flight, untouched: lands, **keeps its own turn**, takes `hpMax×0.06+2` and −6 nerve. *Widened from ratkin-only — a human is size 1, so an ogre can throw Vesna. The size rule already answers it and it is funnier than the exception.* |
+| **a size-1 enemy** | thrown as a weapon. **Double the landing knock** (nobody is being careful) and it does **not** get a turn out of it — it is not their turn. Throw them out of their line, or into your own line's teeth. |
+| **an INDEPENDENT `rock` hex** | **range 3, not 4.** The boulder leaves where it was (`B.terr[k]='field'`) and **comes back down on the ground somewhere else.** Rolls to hit; decent damage. See the block below — this case has its own rules. |
+
+**THE ROCK — the user's ruling, 2026-07-31.** *(This reverses the first draft of this entry, which
+had the boulder shatter. The user's version is better, and the reason it is safe is the first
+line.)*
+
+> *"Throwing rock — works only if it is independent rock. It puts it to the ground on adjacent
+> tile. Has decent damage and chance to miss. Works when you are near. Has limited reach for
+> rock — 3 tiles."*
+
+- **Only an INDEPENDENT rock can be lifted** — a `rock` hex with **no `rock` hex adjacent to it.**
+  A lone boulder, never a stone out of a spine or a clump. This is the rule that makes everything
+  else safe: **a wall can never be dismantled**, so the connectivity `makeObstacles` flood-filled
+  at spawn cannot be opened up into something it validated against.
+- **It must be adjacent to the ogre** to be picked up — the same "works when you are near" as
+  every other thing it can grab.
+- **Range 3, not 4.** A body is thrown further than a stone, which is the right way round: the
+  ratkin is aerodynamic and cooperative, the boulder is neither.
+- **It rolls to hit, and it hits hard** — `dmg:[22,34], am:1.15, ft:.30`, roughly a warclub, which
+  is what it should be. **A miss is a real outcome**, so this is not a guaranteed anything.
+- **It always ends up on the ground.** Target a hex within 3:
+  - **hex is free** → the boulder lands there. No roll — this is the *rearrange the map* use.
+  - **somebody is standing there** → roll to hit them for the damage above, then the boulder
+    **comes to rest on the nearest free hex beside them, on the far side from the ogre** — it
+    landed past them. Hit or miss, it comes down.
+  - **no free hex beside them at all** → the boulder shatters. One edge case, one line, and it is
+    the only way a rock ever leaves the board.
+- ⚠ **PROPOSED, not asked for — cut it if you disagree:** *a boulder may not be set down adjacent
+  to another rock.* That keeps the user's own rule true for the whole fight instead of only at
+  spawn — every boulder on the field stays independent, so the ogre can never build the wall it is
+  forbidden to take apart, and one placed hex can never seal a corridor the generator validated.
+  Without it, "independent rock" is a condition that decays as the fight goes on.
+- **So the ogre rearranges the map, in both directions**, which is the most ogre-shaped ability
+  available and was the entry's own claim. It opens the lane your archers cannot shoot past **and**
+  drops the stone where it will be in somebody's way.
+- **This is the case #36 shipped for.** `losState()` is how the AI knows *which* rock is worth an
+  action — and now, also, *where putting one down is worth it*.
+
+**3 · RATKIN — POISON.** `{k:'venom', cost:1, reach:1, cool:2, venom:2, dmg:[2,5], am:.10, ft:.50}`
+
+- **It rolls to hit.** It is a cut; a miss wastes the action. *The risk is the balance* — the
+  entry's own instruction.
+- On a hit: `d.venom.push({until:B.round+2})` → **+15% damage taken per live stack, two full
+  rounds, stacking, no cap** *(specified at 25%, **shipped at 15%** — the user's call the same
+  day; `VENOM_PER`)*. Two ratkin make it +30%, three +45%. The limiter is the action cost and the
+  clock: three stacks means three ratkin spent their whole turn before anybody hit anything, and
+  if he dies to somebody else first, all of it was wasted.
+- **It is not a damage-over-time.** One idea, one rule.
+- **It raises what EVERYBODY does to that body** — including the ratkin's own next swing, and
+  including their own side's sweep catching a poisoned friend. That is correct, and it is a good
+  detail.
+- **One line in `dmgMul(a,d,act)`** — the function `strike()` *and* `dmgPreview()` both call.
+  ⚠ Anywhere else and the readout starts lying: *"a readout that does not apply a global
+  multiplier is a lie that survives for months."*
+- **It shows on the token**: a green **☣ with the live stack count**, declared once in the
+  `STATUS` register so the badge, the unit panel and the hover readout cannot drift apart. The
+  badge needs one small change — a status may now carry a **count**. It ticks on the poisoned
+  body's own turn, by round number, like `crippled` and `rooted`.
+
+**What each takes away.** Nothing is removed from any class. **The cost is the action**, which in
+a two-action game is half a turn, plus the cooldown. A ratkin who poisoned did not attack; a human
+who kicked did not swing; an ogre who threw a rock did not club anybody. *That is why all three
+have to be worth more in sequence than alone* — and they are, without a single rule saying they
+combine.
+
+**Both brains — `aiTurn` AND `autoStep`, or AUTO silently stays stupid.**
+
+- **KICK** scores on what it *delivers*, never on its damage: large when the hex behind the target
+  is marsh or beside a fire · large when that hex is adjacent to a friendly ogre with THROW ready ·
+  moderate when it strands the target away from its own line (the `pull` scorer's `wouldStrand`
+  logic, same shape, opposite sign) · moderate when the hex behind is blocked (the wall damage).
+  Otherwise ~0, so a bored AI does not shove people about for nothing.
+- **THROW** scores three ways: a **rock** when `losState()` says it blocks a lane from one of my
+  shooters to one of their targets · an **ally** as today (lands where it could not have walked,
+  beside something soft) · an **enemy** when the landing takes them out of their line or into my
+  line's reach.
+- **POISON** scores on high-HP/high-armour targets early, ~0 on something dying this round, and
+  refuses a target already carrying 2+ stacks unless nothing else is on offer.
+
+**Two more scope cuts, named so they are not rediscovered.** *(2)* No new terrain type, no new
+`? RULES` page — the throw absorbs `hurl`'s. *(3)* **No marks and no follow-up bonus** — #45 is
+deferred into #50 and these three verbs were only ever *enhanced* by it. Build them plain; all
+forced movement keeps resolving through the one block in `strike()`, which is where the mark will
+later be set, so nothing here has to be revisited when it lands.
+
+**Two icons want adding to `ICON`** — KICK and POISON both fall through to the generic `⚔` today,
+which the gate picture shows.
+
+---

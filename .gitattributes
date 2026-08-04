@@ -1,0 +1,15 @@
+# Normalise line endings in the repo, leave the working copy to Windows.
+* text=auto
+
+# Never touched, never diffed as text.
+*.png binary
+*.jpg binary
+*.ico binary
+*.svg binary
+*.wav binary
+*.m4a binary
+*.gz  binary
+
+# The built page is generated. A diff of it is 10MB of base64 and tells nobody
+# anything; read prototype/grimtoll_slice.html instead.
+index.html -diff linguist-generated

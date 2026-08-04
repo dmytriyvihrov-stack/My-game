@@ -1,0 +1,41 @@
+# ---------------------------------------------------------------------------
+# What this repo is FOR: the playable build, the docs, and everything needed to
+# rebuild the playable build. Not the asset masters.
+#
+# The paintings and the recordings are already INSIDE index.html - the art as
+# base64 PNG, the music and sfx as base64 AAC. Committing the sources as well
+# would put ~360MB of PNG and WAV into every clone to ship a 10MB page. They
+# live in the Google Drive folder, which is where the pipeline reads them from.
+#
+# If a source folder here ever needs to be in git, take it out one folder at a
+# time and say why - do not delete this file.
+# ---------------------------------------------------------------------------
+
+# painting masters, 130MB. build_assets.ps1 + inject.ps1 turn these into the
+# base64 block in the prototype; the block is committed, the PNGs are not.
+art/src/
+art/out/
+
+# the approved 44.1k WAV pack, 79MB, and its encoded derivatives.
+# build_audio.ps1 turns these into audio/out/audio_data.js; build_site.ps1
+# pours that into index.html.
+audio/music/
+audio/sfx/
+audio/web/
+audio/out/
+
+# rejected takes and synthesis previews kept for comparison, 76MB
+audio_review/
+
+# scratch: the running game POSTs its own board here to be looked at, 80MB
+shots/
+
+# tarball of the docs as they stood before the 2026-07-31 cleanup
+_archive_docs_*.tar.gz
+
+# per-machine Claude Code state. .claude/rules/ and .claude/skills/ ARE tracked.
+.claude/settings.local.json
+
+__pycache__/
+Thumbs.db
+desktop.ini

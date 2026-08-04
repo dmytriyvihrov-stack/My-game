@@ -1,0 +1,1566 @@
+GRIMTOLL - EVERY WORD ON THE ROAD
+Generated from the running build. Edit freely: this is the text, not the code.
+Names in [square brackets] are filled in by the game with whoever is in the company.
+
+SECTION 1 - ROAD AND NODE EVENTS (32 cards)
+
+==================================================
+EVENT: BLOOD ON THE ROAD   [clash]
+==================================================
+
+A ratkin foraging party and an ogre steading-line have met on the same stretch of road. The argument is a dead deer. It is not worth what it is about to cost either of them.
+
+Four ratkin with spears and a sling, foragers off some southern clan. Fast, loud, already committed. Three ogres with clubs, down off the Hunch, in no hurry at all.
+
+Three years on this island, and this is the closest any of you have stood to either people.
+
+Neither side has seen you. That will not hold.
+
+  ---- OPTION 1 ----
+  BUTTON: Wade in for the ratkin.
+  COST LINE: three fight beside you · three ogres against you · TWO of them join after
+
+  ---- OPTION 2 ----
+  BUTTON: Wade in for the ogres.
+  COST LINE: two fight beside you · five ratkin against you · ONE of them joins after
+
+  ---- OPTION 3 ----
+  BUTTON: Do nothing. Watch it happen.
+  COST LINE: you will still be fighting the winners · nobody beside you when you do
+
+
+==================================================
+EVENT: THE HANGED TOLL-MAN   [toll]
+==================================================
+
+He is still swinging when you reach the bridge. Good rope. Somebody went to trouble here, and trouble travels with a purse.
+
+A clan-mark is cut fresh into the rail, low down, where a toll-man would look for it. He was collecting on a road that had an owner. It has one again.
+
+The boots are very good. Everyone has seen the boots. Nobody has said anything about the boots.
+
+  ---- OPTION 1 ----
+  BUTTON: Cut him down. Bury what is left.
+  COST LINE: it will cost you the afternoon
+  RESULT: Wet ground. It takes until dark. Nobody complains, which is its own kind of complaining.
+  
+  He goes under a cairn with the boots still on. The company is quiet for two days, and steadier than it was.
+
+  ---- OPTION 2 ----
+  BUTTON: Take the purse. And the boots.
+  COST LINE: he has no further use for either
+  RESULT: Thirty-eight crowns. More than a toll-man should be carrying. The boots have barely been walked in.
+  
+  Nobody wants them. They sit on the cart until evening. Then SOMEBODY is wearing them and being extremely casual about it.
+
+  ---- OPTION 3 ----
+  BUTTON: Strip the bridge timbers. All of them.
+  COST LINE: the beams are sound and the men are tired
+  RESULT: Good beams, seasoned, worth having. The fourth one comes down early and without warning.
+
+
+==================================================
+EVENT: PEDLAR ON THE RIDGE   [pedlar]
+==================================================
+
+A one-mule pedlar with a folding table, three miles from anywhere. Salt, arrowheads, little warding-bells.
+
+He has counted your column and counted his own odds, and has decided to be extremely friendly about both.
+
+He is alone. Everyone has noticed that he is alone.
+
+  ---- OPTION 1 ----
+  BUTTON: Buy food and iron. Pay him properly.
+  COST LINE: −85 crowns · +7 provisions +4 salvage · a charm
+  RESULT: He throws in a charm he swears is lucky. He would.
+
+  ---- OPTION 2 ----
+  BUTTON: Buy the round shield and the barrel-lid.
+  COST LINE: −70 crowns · two shields
+  RESULT: One is a proper shield. One is a barrel lid. Both stop a spear, mostly.
+
+  ---- OPTION 3 ----
+  BUTTON: Trade two gems for supplies.
+  COST LINE: −2 gems · +10 provisions +6 salvage +40 crowns
+  RESULT: He turns them over twice, names a number, and does not haggle.
+
+  ---- OPTION 4 ----
+  BUTTON: Take the cart. He is one man.
+  COST LINE: +150 crowns +8 provisions +5 salvage · nobody will look at you for a while
+  RESULT: It takes no time at all. That is the part nobody sleeps well about.
+  
+  He had a knife. Nobody expected the knife. [somebody] does not speak to you for two days.
+
+  ---- OPTION 5 ----
+  BUTTON: Buy nothing. Wish him luck.
+  COST LINE: no cost · no coin, no trouble
+  RESULT: He wishes you good roads, and means it, and starts folding the table before you are out of sight.
+
+
+==================================================
+EVENT: THE DROWNED CHAPEL   [chapel]
+==================================================
+
+A landing chapel. Sixty years of saints in it, drowned for the last twenty. The roof went first and then the floor.
+
+The pews stand in four inches of brown water like a congregation that never learned to leave.
+
+Something under the altar is still dry.
+
+  ---- OPTION 1 ----
+  BUTTON: Wade in. Take what the water left.
+  COST LINE: +6 salvage · −1 day
+  RESULT: Altar fittings, mostly. Iron does not care what it used to be for.
+
+  ---- OPTION 2 ----
+  BUTTON: Pry the lead from the roof. All of it.
+  COST LINE: +8 salvage · it sits badly with them · somebody falls
+  RESULT: The lead comes away in sheets. So does the man standing on it.
+
+  ---- OPTION 3 ----
+  BUTTON: Say the words and go.
+  COST LINE: a saint’s fingerbone · quietly approved of
+  RESULT: [somebody] knows the words. Under the altar there was a fingerbone, and it is faintly warm, which is how you know a real one.
+
+  ---- OPTION 4 ----
+  BUTTON: Somebody has to go under the altar. It is only water.
+  COST LINE: −1 day · whatever is down there · and a long time breathing it
+  RESULT: It takes an hour and most of a rope. Under the altar: forty crowns of somebody else's tithe and a fingerbone, faintly warm.
+  
+  Whoever went down comes up coughing, and keeps coughing, and what comes up is grey.
+
+  ---- OPTION 5 ----
+  BUTTON: Send the gilled one down. The crypt has been under water for years.
+  COST LINE: what nobody else could reach · they are gone a long time
+  RESULT: They are under longer than anybody can hold a breath. Long enough that the company stops joking about it.
+  
+  Then a strongbox comes up, and a silver charm, and then them. They stand in the water a moment before climbing out. Everybody pretends not to have seen that part.
+
+
+==================================================
+EVENT: BONEPICKER’S CAMP   [camp]
+==================================================
+
+Six tents, a cook-fire, and a man who buys teeth.
+
+They go to the clans for dice and buttons, he says, before anybody asks. Nobody asks twice.
+
+He is friendly the way men are when they have decided you are not worth robbing. Take it as a compliment.
+
+  ---- OPTION 1 ----
+  BUTTON: Buy food. Haggle badly.
+  COST LINE: −60 crowns · +9 provisions
+  RESULT: He wins the haggle. Everyone knew he would. The salt pork is genuinely good.
+
+  ---- OPTION 2 ----
+  BUTTON: Buy the stitched hides. Ogre-sized.
+  COST LINE: −55 crowns · ogre armour
+  RESULT: On the rack nine years because nobody his size ever comes through.
+
+  ---- OPTION 3 ----
+  BUTTON: Sell him a gem.
+  COST LINE: −1 gem · +90 crowns
+  RESULT: He does not ask where it came from, and you do not volunteer it.
+
+  ---- OPTION 4 ----
+  BUTTON: Rest a day. Just rest.
+  COST LINE: −1 day −2 provisions · the company stands taller for it
+  RESULT: A whole day of nothing. [somebody] sleeps beside the wagon from noon to noon, so still that twice somebody goes over to check.
+
+  ---- OPTION 5 ----
+  BUTTON: Look at everything. Buy nothing.
+  COST LINE: no cost · the chest stays shut
+  RESULT: He is not offended. He has been doing this a long time and knows the difference between a company with no money and a company saving it.
+
+
+==================================================
+EVENT: THE SUNKEN WAIN   [wain]
+==================================================
+
+A merchant wagon up to its axles in the fen. Four days abandoned. A Coldharrow mark on the sideboard.
+
+The oxen are gone. So is the merchant.
+
+The strongbox is not gone. The strongbox is simply heavy.
+
+  ---- OPTION 1 ----
+  BUTTON: The strongest of you lifts. Everyone else pretends to help.
+  COST LINE: +2 gems +40 crowns · −1 day · he strains
+  RESULT: An hour, and a great deal of ogre. Inside: coin, and two stones the wrong colour for this country.
+
+  ---- OPTION 2 ----
+  BUTTON: Take the wheels and the iron banding.
+  COST LINE: +6 salvage
+  RESULT: Less glamorous. Just as useful, four weeks from now, at a forge.
+
+  ---- OPTION 3 ----
+  BUTTON: Take the guard’s maul from the seat.
+  COST LINE: a two-hand maul
+  RESULT: Whoever carried this did not get to use it. It is in very good condition.
+
+
+==================================================
+EVENT: UNDER THE BLOOM   [bloom]
+==================================================
+
+The light here is the wrong colour and there is nothing making it. Moss goes black. Nothing has died and nothing is well.
+
+Thirty years of it, leaking out of the fen. A current that stopped moving and soaked in.
+
+It is wider than the last map says. The last map is four years old.
+
+[somebody] keeps looking over their shoulder, and is usually right about this sort of thing.
+
+  ---- OPTION 1 ----
+  BUTTON: Push straight through. Do not look up.
+  COST LINE: −2 provisions · they will remember this
+  RESULT: Two hours that feel like a day. On the far side everyone counts everyone else, twice.
+
+  ---- OPTION 2 ----
+  BUTTON: Cut a bloom-stem and bag it.
+  COST LINE: a bloom-stem · they think you should not have touched it
+  RESULT: It weighs nothing and it is warm and it hums at a pitch you feel in your teeth.
+  
+  Whoever cut it did it barehanded, because nobody thought to say otherwise. There is a thin line across two fingers by evening and nobody mentions it.
+
+  ---- OPTION 3 ----
+  BUTTON: Camp at the edge and watch it all night.
+  COST LINE: −1 day +1 gem · it sits badly with them · it gets close
+  RESULT: By morning the light has moved forty paces closer, and the man on watch has not blinked in some time.
+
+
+==================================================
+EVENT: THE FEN-MOTHER   [mother]
+==================================================
+
+You took it for a fallen barn. It is the size of a hay-wain and it has not moved in a long time.
+
+Six legs. A head like a split anvil. Bloom-light running under the hide in slow bands.
+
+It is not looking at you. It is looking at the small one behind it, which is the size of a large dog and is trying to eat a rock.
+
+Her kind live in the deep fen and were never this size. Thirty years under the Bloom made this one. The cub is the first of its kind born inside it.
+
+[your mage] says the word for it, quietly, twice, and then says you should all leave.
+
+  ---- OPTION 1 ----
+  BUTTON: Back away. Slowly. All of you.
+  COST LINE: −1 day · it sits well with them
+  RESULT: It watches you go and does not follow. Two hundred paces on, the cub makes a sound like a gate, and the Fen-Mother answers it, and nobody speaks until dusk.
+
+  ---- OPTION 2 ----
+  BUTTON: Take the shed tooth and go. Quietly.
+  COST LINE: a great tooth +1 gem · it sits badly with them
+  RESULT: A shed tooth, half-buried where she has been lying. She sees you take it. She lets you. That is somehow much worse.
+
+  ---- OPTION 3 ----
+  BUTTON: Kill it. That hide is worth a season’s wages.
+  COST LINE: BATTLE · she is enormous and she is not alone
+
+  ---- OPTION 4 ----
+  BUTTON: Marrow wants a bloom-spitter’s gland. Go round the back.
+  COST LINE: BATTLE · −1 day · you strike first
+
+
+==================================================
+EVENT: THE DEAD COMPANY   [deadco]
+==================================================
+
+Somebody else took this contract first.
+
+Nine of them in the ditch, four or five days dead. From the way they are lying they were hit from the north while facing east.
+
+The gear is still on them, and most of it is better than yours. The clan took the food and the boots and left everything a rat cannot lift or wear.
+
+Nine people, bought with the same coin that bought you. Nobody at the Three Bells mentioned them.
+
+Your company says nothing for a while.
+
+  ---- OPTION 1 ----
+  BUTTON: Take what you can carry. Be quick about it.
+  COST LINE: two pieces · they will remember this
+  RESULT: An hour, and the worst hour of the week. You still leave most of it behind. There is only so much a company can walk east with.
+  
+  A mail hauberk and an arming sword. GO TO THE INVENTORY AND PUT THEM ON SOMEBODY. Neither is worth anything in the cart, and the bells are two miles east.
+
+  ---- OPTION 2 ----
+  BUTTON: One harness. The best one. Nothing else.
+  COST LINE: one piece · it sits badly with them
+  RESULT: The foundry plate comes off the biggest of them. The rest is left exactly as it lies, blades still in hands.
+  
+  That distinction matters to about half your company and to nobody else in this country.
+  
+  Open the INVENTORY. It does nothing in the cart.
+
+  ---- OPTION 3 ----
+  BUTTON: Bury them. Take nothing. You know how this ends.
+  COST LINE: −1 day · the company stands taller for it
+  RESULT: Nine graves is most of a day. The company does it without being told twice.
+  
+  Somebody puts a saint's fingerbone in the last one, and then takes it back out again.
+  
+  You go east in the rags you arrived in. The company has not been this steady since Grausen Hold.
+
+
+==================================================
+EVENT: THE WARM SPRING   [oasis]
+==================================================
+
+The hollow is green. At this end of the year, in this country, that is the first thing anybody says about it, and nobody says it kindly.
+
+Then the smell. Not rot. Warm stone and iron.
+
+A spring comes up through cut kerbing of Old Work, dressed stone older than any clan's songs, still doing its job. The water is the temperature of a living thing.
+
+No shrine. No offerings. No bones. Nobody has ever fought over this, and after the last three weeks that is the part the company cannot get past.
+
+They stand at the edge with their boots on, waiting to be told what the catch is.
+
+  ---- OPTION 1 ----
+  BUTTON: A day in it. All of you. That is an order.
+  COST LINE: −1 day −2 provisions · every wound in the company closes
+  RESULT: It takes twenty minutes for the last of them to stop watching the treeline. Then the company comes apart in the water like something unknotting.
+  
+  [somebody] falls asleep on the kerb with their feet in and has to be moved. Somebody washes a shirt that has not been a colour since Grausen Hold.
+  
+  Nothing happens all day. That is the whole of what happened, and it is worth more than the day it cost.
+
+  ---- OPTION 2 ----
+  BUTTON: Fill every skin and barrel, and keep walking.
+  COST LINE: +4 provisions · a warm hour, and no more than that
+  RESULT: Warm water is still water and the barrels do not care.
+  
+  The company drinks standing up, in armour, the way it has drunk everything since the fen. Back on the road inside the hour, wet sleeves, and a slightly better opinion of the world.
+
+  ---- OPTION 3 ----
+  BUTTON: Strip it. The votive coin in the basin, the kerb-stones, the orchard wall.
+  COST LINE: +40 crowns +4 salvage · they will remember this
+  RESULT: The coins come out of the basin in handfuls. Some are older than the language anybody here speaks. The dressed stone comes up with two bars and a lot of swearing.
+  
+  The water is still warm when you leave. It is just no longer anywhere in particular.
+  
+  [somebody] works with everybody else and does not look at you once, all afternoon.
+
+  ---- OPTION 4 ----
+  BUTTON: Somebody asks for one more day here. Just them.
+  COST LINE: −1 day · what it does for them, they cannot say and you cannot see
+
+  ---- OPTION 5 ----
+  BUTTON: It is water. We have a road.
+  COST LINE: no cost · none you can see today
+  RESULT: You give the order and the company takes it, because that is what a company does with an order, and the hollow is behind you in ten minutes.
+  
+  Nobody argues. Somebody looks back.
+
+
+==================================================
+EVENT: THE LONG FIRE   [bonfire]
+==================================================
+
+The fire is already too big when you reach it. Somebody has been feeding it since before the light went. It throws heat twenty feet. There is nothing on it, because it is not for cooking.
+
+[the ratkin at the fire] stands beside it, waiting to be looked at.
+
+He wants the barrels opened. All of them, tonight. This company walked away from the thing in the armour; nine men in a ditch three miles back did not.
+
+He does not call it a feast. He says it is a thing his people do, and that it has a name, and he does not offer the name.
+
+Everything else this road has put in front of you was made by something that was not a person. The dressed stone. The Bloom coming out of the fen. Whatever stood inside that armour.
+
+This fire was built by hand, out of nothing, on purpose, for one night that feeds nobody tomorrow.
+
+  ---- OPTION 1 ----
+  BUTTON: Open the barrels. All of them.
+  COST LINE: −4 provisions · they will still be talking about it at the Snare
+  RESULT: It takes them about ten minutes to believe you meant it, and then the barrels come off the cart and the night stops being a night on the road.
+
+  ---- OPTION 2 ----
+  BUTTON: Open them. And while they are full and loud, tell them the wage is short.
+  COST LINE: −4 provisions · every unpaid day in the company is forgotten
+  RESULT: It works exactly as well as you expected it to. Nobody argues about money at a fire like that. Nobody argues about anything.
+
+  ---- OPTION 3 ----
+  BUTTON: No. Four days to the bells, and that food is the road.
+  COST LINE: no cost · none you can see tonight
+  RESULT: He says of course, at once, before you have finished. He says it is a stupid custom and he only asked because somebody had to.
+  
+  The fire is let down to a cooking fire. Everybody eats what they were going to eat.
+  
+  He is not sulking. That is the part that stays with you. He agreed with you out loud, in front of everybody, and went and sat where he always sits.
+
+
+==================================================
+EVENT: THE CIRCLE   [circle]
+==================================================
+
+Three of them at a fire off the road. They wave you over before anybody has decided anything. There is a pot. There is bread better than yours. Nobody asks who you are.
+
+You are most of the way through the second bowl when the rest come in out of the dark. There are ten.
+
+All of them wear the same mark: a ring cut round the left eye. Black, old, and done badly, the way it is done when the one cutting is not a surgeon and the one being cut is not lying still.
+
+Nobody has drawn anything.
+
+The oldest says that on this island passage is never free. That you have eaten. That nobody has left this fire without settling. He says there is room in the circle and it is a good thing to be inside of.
+
+He is not wrong about the road. That is what ends the argument.
+
+  ---- OPTION 1 ----
+  BUTTON: Sit back down. Do it now, while the fire is hot.
+  COST LINE: no coin, no provisions · it does not come off
+  RESULT: It takes a long time and it is not clean. Somebody holds your head. Somebody else talks the whole way through, about nothing at all, which turns out to be a kindness.
+  
+  They feed you again afterwards. From the moment it is done they are entirely warm about it.
+
+  ---- OPTION 2 ----
+  BUTTON: Pay them. Whatever is in the cart that they will take.
+  COST LINE: −6 provisions · they count it twice
+  RESULT: They take six barrels and leave the seventh. They are extremely pleasant about it. One of them shakes your hand at the end.
+  
+  Nobody says anything until the fire is well out of sight.
+
+  ---- OPTION 3 ----
+  BUTTON: No. Stand up.
+  COST LINE: BATTLE · we do not recommend it. There are ten of them and you will not win.
+
+
+==================================================
+EVENT: SOMETHING IN ARMOUR   [armour]
+==================================================
+
+It has been behind you since the middle of the afternoon.
+
+Not following. Coming the same way, at a walk, and the walk does not change when yours does.
+
+Plate from the throat down. Visor shut. A sword that would be two-handed on anybody else, carried in one, point down, so the tip draws a line in the road the whole way.
+
+The plate is human work, landing pattern. Nothing on this island has forged its like in sixty years. The farm you passed at noon had a new bell on the gate.
+
+[somebody] hails it once and gets nothing. Not a refusal. Not a turn of the head.
+
+You try the broken ground. It costs an hour and gains nothing. Somebody suggests going wide and pulling it off the road; [somebody] points out that it has not once looked at anything except the middle of the road you are on.
+
+So the last hour is walking, and being walked after, and running out of ideas.
+
+When the light starts to go you stop, because stopping is the only thing left. The walking behind you stops too. Forty paces back. Point down.
+
+Waiting for you to finish deciding.
+
+  ---- OPTION 1 ----
+  BUTTON: Face it.
+  COST LINE: BATTLE · shoulder to shoulder, because there was never anything else
+
+
+==================================================
+EVENT: THEY COME OVER THE WALL   [packev]
+==================================================
+
+You made camp inside somebody's old steading. The wall was still standing and the fire-pit was already dug.
+
+That was the right call. It is about to be the only thing that saves you.
+
+[somebody] is on watch when the first one comes through the north gap without slowing down.
+
+More than you can count in the dark. Long-legged, starved to the frame. One bigger than the rest does not come in at all: it waits outside the wall, where a captain waits.
+
+Two gaps in the palisade. A fire in the middle. Nobody chose this and there is nowhere to go.
+
+  ---- OPTION 1 ----
+  BUTTON: Up. Get to the gaps.
+  COST LINE: you are already in it · hold the two ways in
+
+
+==================================================
+EVENT: THE DOOR-SHRINE   [shrine]
+==================================================
+
+A door, upright in the middle of a field. Nothing on either side of it. No frame, no house, no hinges that lead anywhere.
+
+The timber is Old Work: no grain, no joins, and sixty years of weather that has not weathered it. The ground in front has been swept. Somebody keeps sweeping it.
+
+On this island a shrine is not where a god is. It is where something has been seen to work.
+
+The offerings: bread, a shoe, four teeth, a coin so old it is only a shape. A woman sits a little way off. She does not get up and she does not ask you for anything.
+
+"Bells that way," she says, when the silence has gone on long enough. "You will want to have done whatever you are going to do."
+
+  ---- OPTION 1 ----
+  BUTTON: Rest here. Let the hurt mend.
+  COST LINE: −2 days · everybody heals
+  RESULT: Two days of doing nothing at all, in a field, in front of a door.
+  
+  It is the longest anybody has slept since the hold. The wounds do not close entirely, but they close, and nobody wakes up in the night.
+
+  ---- OPTION 2 ----
+  BUTTON: Pray. All of you, properly, out loud.
+  COST LINE: −1 day · a blessing on the company
+  RESULT: You do not know the words and neither does anybody else, so you make some up, and the woman does not correct you.
+  
+  Something happens. Nobody afterwards will say what, and nobody will say nothing did. The company walks east standing straighter than it has any right to.
+
+  ---- OPTION 3 ----
+  BUTTON: Leave an offering. Coin, and be quick about it.
+  COST LINE: −60 crowns · a relic
+  RESULT: You put sixty crowns on the swept ground and take, from the pile, a fingerbone that is faintly and consistently warm.
+  
+  “That was not a trade,” the woman says, without any particular emphasis. “But it will do.”
+
+  ---- OPTION 4 ----
+  BUTTON: Take the door. It is good timber and we need it.
+  COST LINE: +9 salvage · they watched you do it
+  RESULT: It comes apart more easily than a door standing in a field for that long has any business doing.
+  
+  The woman watches the whole thing and says absolutely nothing, and that is what the company will remember about it. Nine loads of good seasoned timber, and not one person willing to be the one carrying the top plank.
+
+
+==================================================
+EVENT: THE SLING-LINE   [slingline]
+==================================================
+
+The first stone takes a chip off the wagon-board an inch from [somebody]'s ear.
+
+They are up on the ridge and they have been waiting. Slingers behind two long spears, and something further back making the pink light. That means a sniffer. A sniffer means a clan that can afford one.
+
+They are not coming down. They do not have to. The ground between is open and they have all afternoon.
+
+"Off the road," one of them calls, quite reasonably. Then another stone.
+
+  ---- OPTION 1 ----
+  BUTTON: Cross the open ground and get in among them.
+  COST LINE: BATTLE · they shoot the whole way in
+
+  ---- OPTION 2 ----
+  BUTTON: Answer them. Ours shoot too.
+  COST LINE: BATTLE · it sits well with them · a fight at distance
+
+  ---- OPTION 3 ----
+  BUTTON: Back off the road and go round the long way.
+  COST LINE: −1 day −2 provisions · it sits badly with them
+  RESULT: You go down off the road and across the wet ground, and they watch you do it, and one of them keeps a sling loaded the entire time in case you change your mind.
+  
+  Nobody is hurt. Everybody is furious, mostly with the road.
+
+
+==================================================
+EVENT: THE STEADING-LINE   [steading]
+==================================================
+
+Four of them across the road, down off the Hunch for the season. A fire, something on it, and the ground around them packed flat. They have been here a while.
+
+The one in the middle is old. Not slow. Old. It watches you come with the patience of a thing that has never once had to hurry, and it does not get up.
+
+"Road's ours today," it says. "Was yours yesterday. Be yours again tomorrow."
+
+Which, if you think about it, is an offer.
+
+  ---- OPTION 1 ----
+  BUTTON: Take the long way round.
+  COST LINE: −2 days −2 provisions · it sits badly with them · nobody dies
+  RESULT: You go around. It costs the light and most of the water, and the company is very quiet about it.
+  
+  Nobody says the word cowardice. Everybody has privately decided whether it applies, which is worse and lasts longer.
+
+  ---- OPTION 2 ----
+  BUTTON: “It is ours today.”
+  COST LINE: BATTLE · four ogres · they will not chase you
+
+  ---- OPTION 3 ----
+  BUTTON: Offer them the price of the road.
+  COST LINE: −120 crowns · quietly approved of
+  RESULT: The elder counts it twice, without hurrying, and then moves about a foot to the left. That turns out to be all the room you needed.
+  
+  The most expensive foot of road on the island. Everybody agrees it was worth it.
+
+  ---- OPTION 4 ----
+  BUTTON: Send your own ogre to talk.
+  COST LINE: −40 crowns · a courtesy, not a toll
+  RESULT: [your ogre] walks up alone and sits down by the fire. Nine words in an hour.
+  
+  Forty crowns changes hands and the line opens. On the way past, the elder says something to [your ogre] that nobody translates and everybody notices.
+
+
+==================================================
+EVENT: THE MILESTONE   [milestone]
+==================================================
+
+A ratkin milestone, cut with a distance and a clan-mark. Somebody has been at it with a chisel, recently, to change the number.
+
+The new number would send a company four days wrong.
+
+Four days wrong, out here, is not a joke played on strangers. It is a way of killing them without being present.
+
+A clan that owns a road cuts true miles on it. Law and pride in one stone. Which makes this murder, not mischief.
+
+  ---- OPTION 1 ----
+  BUTTON: Re-cut it properly. It costs the evening.
+  COST LINE: −1 day · it sits well with them
+  RESULT: [somebody] does the cutting, badly but correctly. Whoever comes next will never know, which is the entire point of it.
+
+  ---- OPTION 2 ----
+  BUTTON: Change it again. Worse. Then go.
+  COST LINE: a chisel · it sits badly with them
+  RESULT: Somebody left the chisel behind. You take that too. Nobody says anything for a mile.
+
+  ---- OPTION 3 ----
+  BUTTON: Leave it. Not your road, not your milestone.
+  COST LINE: no cost
+  RESULT: It is still there behind you, saying the wrong thing, and it will be there tomorrow.
+
+
+==================================================
+EVENT: THE SALT-WIVES   [saltwives]
+==================================================
+
+Four human women boiling brine on the shingle. No village behind them.
+
+First-ship stock. Here before the Shorecrown rose, here when it fell, here long before your lord came. The island has decided they are part of the shore.
+
+They will sell you salt. They will also work out, without appearing to ask, how many of you there are and which way you are going.
+
+  ---- OPTION 1 ----
+  BUTTON: Buy salt properly. Pay the asking price.
+  COST LINE: −45 crowns · +6 provisions · quietly approved of
+  RESULT: The salt is very good. One of them tells you which ford is out. That was worth more than the salt and she knows it.
+
+  ---- OPTION 2 ----
+  BUTTON: Ask what they have heard.
+  COST LINE: −20 crowns · what is on the road ahead
+  RESULT: They talk for a while about nothing and then, all at once, about something.
+
+  ---- OPTION 3 ----
+  BUTTON: Take the salt and the pot.
+  COST LINE: +4 provisions · word travels, and it travels ahead of you
+  RESULT: It takes no time. They do not fight and they do not beg. They watch, and count, and one of them starts walking inland before you are out of sight.
+  
+  The island is small.
+
+  ---- OPTION 4 ----
+  BUTTON: Buy nothing. Keep walking.
+  COST LINE: no cost · no salt, no story
+  RESULT: They go back to the brine before you have finished turning round. Whatever they were counting, they finish counting it.
+
+
+==================================================
+EVENT: THE CLAN CART   [ratcart]
+==================================================
+
+A ratkin trade-cart with a broken wheel. Four ratkin sitting on it, wearing the exact resignation of people who have already decided how this goes.
+
+The cargo is crossbows. Eleven hundred of them. Each will fire about eleven times before it comes apart in somebody's hands. It is the most ratkin thing you have ever seen.
+
+The way-slip says they are bound for a clan war two valleys south. Both sides will be buying.
+
+  ---- OPTION 1 ----
+  BUTTON: Fix the wheel. It takes an ogre and an hour.
+  COST LINE: −1 day · it sits well with them · a clan owes you
+  RESULT: The strongest of you lifts the axle. The oldest of them watches it happen, then writes something small in a book. A ratkin clan now knows your banner as a thing that stopped to help.
+
+  ---- OPTION 2 ----
+  BUTTON: Buy fifty crossbows at scrap value.
+  COST LINE: −60 crowns · +5 salvage
+  RESULT: They are delighted. You have bought fifty pieces of firewood with metal in them, and the metal is the point.
+
+  ---- OPTION 3 ----
+  BUTTON: Take the cart.
+  COST LINE: +120 crowns +8 salvage · the clans will hear, and so will your own
+  RESULT: Four ratkin walk away down the road without hurrying. They do not look back and they do not need to.
+  
+  A clan now knows your banner as something else entirely.
+
+  ---- OPTION 4 ----
+  BUTTON: Not our wheel, not our war. Walk past.
+  COST LINE: no cost · nobody owes anybody anything
+  RESULT: You go by on the verge. One of them nods. That is the whole of it, and nothing at all comes of it, which is what walking past is for.
+
+
+==================================================
+EVENT: THE HOLLOW TREE   [hollow]
+==================================================
+
+Something has been living in the trunk. Not recently.
+
+Inside: a bedroll gone to mould, a very good knife, and forty-one tally-marks cut into the inner wall. Then a gap. Then no more marks.
+
+  ---- OPTION 1 ----
+  BUTTON: Take the knife and go.
+  COST LINE: an off-hand dirk
+  RESULT: It is better steel than anything you are carrying, which raises a question nobody asks.
+
+  ---- OPTION 2 ----
+  BUTTON: Count the marks properly. Bury the bedroll.
+  COST LINE: it sits well with them
+  RESULT: Forty-one. [somebody] says it out loud so that it has been said, and then you go.
+
+  ---- OPTION 3 ----
+  BUTTON: Sleep in it. It is dry and it is free.
+  COST LINE: they will remember this
+  RESULT: It is dry. Nobody sleeps.
+
+
+==================================================
+EVENT: THE SITTING STONE   [ogrestone]
+==================================================
+
+An ogre is sitting on a rock beside the road. By his own account he has been there two winters.
+
+He is not hostile. He is not, as far as anyone can tell, anything.
+
+The stone is Old Work and it is exactly the right height for him. They always are.
+
+He would like to know whether you have bread. Whether the war is over. Then, after a long pause, which war you mean.
+
+  ---- OPTION 1 ----
+  BUTTON: Give him bread. Sit a while.
+  COST LINE: −2 provisions · the steadings hear of it, and think better of you
+  RESULT: He eats slowly and tells you, eventually, what is on the road ahead. It is accurate. He has had a great deal of time to watch it.
+
+  ---- OPTION 2 ----
+  BUTTON: Ask him to come with you.
+  COST LINE: an ogre may join
+  RESULT: He thinks about it for the better part of a minute, which for him is impulsive.
+
+  ---- OPTION 3 ----
+  BUTTON: Let your own ogre do the talking.
+  COST LINE: the company stands taller · needs an ogre
+  RESULT: Eleven words in twenty minutes, and somehow that is a full conversation.
+  
+  [your ogre] walks taller for a day afterward, and does not explain, and nobody asks.
+
+  ---- OPTION 4 ----
+  BUTTON: Leave him to it.
+  COST LINE: barely worth a word
+  RESULT: He is still sitting there when you look back, which you do, twice.
+
+  ---- OPTION 5 ----
+  BUTTON: Your ratkin asks him what he is actually waiting for.
+  COST LINE: +45 crowns · they think better of you · needs a ratkin
+  RESULT: [your ratkin] does not ask it kindly. There is a clan-word in there that the ogre understands and you do not. The silence afterwards goes on long enough to be uncomfortable for everybody.
+  
+  Then he laughs. It is enormous, slow and appalling. He gets up for the first time in two years, digs a purse out from under his own rock, and gives it to them.
+  
+  Not to you. To them.
+
+
+==================================================
+EVENT: THE COLLECTOR   [taxman]
+==================================================
+
+A human in a good coat, with a ledger and no escort, collecting a road-toll for the Shorecrown.
+
+The Shorecrown fell forty years ago.
+
+He is entirely serious. He has a stamped writ. The writ is genuine and worthless, and he has been doing this for eleven years.
+
+  ---- OPTION 1 ----
+  BUTTON: Pay the toll. It is four crowns.
+  COST LINE: −4 crowns · they think better of you
+  RESULT: He stamps the ledger with enormous care and wishes you good roads. The company talks about him for three days. It is the best four crowns you have ever spent.
+
+  ---- OPTION 2 ----
+  BUTTON: Explain, kindly, about the kingdom.
+  COST LINE: it sits badly with them
+  RESULT: He listens. He thanks you for the information. He does not change anything about his day, and you are the one who has to walk away from it.
+
+  ---- OPTION 3 ----
+  BUTTON: Rob the tax collector.
+  COST LINE: +25 crowns · they will remember this
+  RESULT: Even [somebody] thinks this is beneath you, and says so, which is a first.
+
+  ---- OPTION 4 ----
+  BUTTON: Say nothing. Walk past him.
+  COST LINE: no cost · he is not your problem
+  RESULT: He steps aside without being asked and wishes you good roads anyway. He is still there when the road bends, writing something in the ledger.
+
+
+==================================================
+EVENT: WHAT THE PEAT KEPT   [bogbody]
+==================================================
+
+The peat-cutting has opened a face.
+
+A ratkin, tanned dark, perfectly preserved, with a ratkin blade still between its ribs. The blade's mark and the dead one's mark are different clans.
+
+That is what a war grave is. An old one, and a good one.
+
+Which means there are others in this cutting, and metal with them.
+
+  ---- OPTION 1 ----
+  BUTTON: Dig it properly. There is iron down there.
+  COST LINE: −1 day · +7 salvage +1 gem · it sits badly with them · it is a clan grave
+  RESULT: Seven bodies and a great deal of good metal. [somebody] works with everyone else and does not speak once, all afternoon.
+
+  ---- OPTION 2 ----
+  BUTTON: Take the blade. Nothing else.
+  COST LINE: a gut-knife · barely worth a word
+  RESULT: It comes free easily, which somehow makes it worse.
+
+  ---- OPTION 3 ----
+  BUTTON: Cover it back over.
+  COST LINE: the clans would approve, and your own do
+  RESULT: [somebody] does the covering, and does not explain, and nobody asks them to.
+
+  ---- OPTION 4 ----
+  BUTTON: Let your own ratkin decide what happens here.
+  COST LINE: +3 salvage · they will not stop talking about it · needs a ratkin
+  RESULT: [your ratkin] goes down into the cutting alone and is gone a long time, and comes back up with three pieces of metal and an expression nobody asks about.
+  
+  "That one was a nobody," they say. "These two were somebody. Those stay." And that is the whole of the debate, and the company follows it exactly, and takes what it is given.
+
+
+==================================================
+EVENT: A WEDDING ON THE ROAD   [wedding]
+==================================================
+
+A ratkin clan-wedding has spilled across the road and is not moving for anyone.
+
+They are drunk. They are enormously friendly. They have collectively decided that your company is the finest thing that has happened to them all season.
+
+  ---- OPTION 1 ----
+  BUTTON: Stay for one drink. Only one.
+  COST LINE: −1 day · the company stands taller for it
+  RESULT: It is not one drink. Somebody in your company is carried, briefly, on the shoulders of the wedding party. Nobody will ever stop talking about it.
+
+  ---- OPTION 2 ----
+  BUTTON: Let your ratkin lead the toast.
+  COST LINE: they will not stop talking about it · needs a ratkin
+  RESULT: [your ratkin] knows the toast. The real one, the long one, the one with the clan-names in it. The whole wedding goes quiet to hear it done properly.
+  
+  For about four minutes your company is the most important thing on this island.
+
+  ---- OPTION 3 ----
+  BUTTON: Let them have your ogre for a dance.
+  COST LINE: the company stands taller · needs an ogre
+  RESULT: It takes four of them to lift one of him, and they manage it twice, and by the end of it [your ogre] has been adopted by at least two separate clan-lines. They do not seem to mind. He rarely does.
+
+  ---- OPTION 4 ----
+  BUTTON: Push politely through.
+  COST LINE: barely worth a word
+  RESULT: They let you by without complaint and go back to it. You hear them for an hour.
+
+  ---- OPTION 5 ----
+  BUTTON: Trade with the wedding party.
+  COST LINE: −30 crowns · +5 provisions +1 trinket
+  RESULT: Drunk ratkin are the best customers and the worst negotiators on the island.
+
+
+==================================================
+EVENT: THE RATKIN WATERWORKS   [aqueduct]
+==================================================
+
+A stone aqueduct running forty feet overhead. Beautifully engineered, catastrophically built. It has leaked for a century and will stand for another.
+
+It was built to carry drinking water. The clans have kept it working these thirty years for a different reason: water that moves does not bloom.
+
+At the base, a clan-mark. Under the clan-mark, a very rude word.
+
+  ---- OPTION 1 ----
+  BUTTON: Camp under it. Shelter of a sort.
+  COST LINE: quietly approved of
+  RESULT: It drips all night in a rhythm that eventually becomes restful, which nobody admits.
+
+  ---- OPTION 2 ----
+  BUTTON: Strip the lead jointing.
+  COST LINE: +6 salvage · a village downstream, and they know it
+  RESULT: The leak becomes a flood before you are half a mile off. There is a village down there. There was a village down there.
+
+  ---- OPTION 3 ----
+  BUTTON: Copy the joint design for the forge.
+  COST LINE: +1 salvage · the camp learns something
+  RESULT: [your mage] sketches it. Badly, but well enough. Whatever else the ratkin are, they understand water better than anyone who came off a ship.
+
+
+==================================================
+EVENT: THE LAST SHIP   [shipwreck]
+==================================================
+
+A human vessel, sixty years up the shingle, far too far from any water that could have floated it.
+
+Somebody dragged it here, or the sea did. Neither explanation is comfortable.
+
+This is one of the ships. Somebody has lived in it since. Somebody has died in it since.
+
+  ---- OPTION 1 ----
+  BUTTON: Search it properly.
+  COST LINE: −1 day · +40 crowns +3 salvage · it sits badly with them
+  RESULT: Ship’s nails, a strongbox with the lock already broken, and a name carved by the bunk that you half recognise from a muster-roll a lifetime ago.
+
+  ---- OPTION 2 ----
+  BUTTON: Take the ship’s bell.
+  COST LINE: a bell that rings wrong
+  RESULT: It rings flat. It has been ringing flat for sixty years and there is nobody left to tell it was ever otherwise.
+
+  ---- OPTION 3 ----
+  BUTTON: Stand and look at it a while.
+  COST LINE: it sits well with them
+  RESULT: You came over on the last one there will ever be. Everyone here knows it. Nobody says it.
+
+
+==================================================
+EVENT: THE GROUND OPENS   [sinkhole]
+==================================================
+
+The peat gives way without a sound and takes [somebody] with it. Twelve feet, maybe twenty, into a black slot in the ground that was not there a moment ago.
+
+Then, from a long way down and off to one side: swearing. Steady, inventive, entirely alive.
+
+There is a passage down there. It goes somewhere, and it does not come back up here.
+
+  ---- OPTION 1 ----
+  BUTTON: Go down after them. All of you.
+  COST LINE: −1 day · opens a way under the hill
+  RESULT: Down on a rope, into cold air that smells of old water. You find them in twenty minutes: filthy, furious, unhurt.
+  
+  The walls are cut, not worn. Ratkin work, old and dry. Some clan's grand drainage scheme that outlived the clan.
+  
+  It runs east, under everything, and comes out somewhere useful. A NEW ROAD has opened on the map.
+
+  ---- OPTION 2 ----
+  BUTTON: Shout down that you will meet them on the road east.
+  COST LINE: no cost · they will catch you up, changed
+  RESULT: They shout back something that is probably agreement. You go on without them.
+  
+  It is the practical decision. Everyone agrees it is the practical decision. Nobody enjoys making it, and the company is very quiet for the rest of the afternoon.
+
+  ---- OPTION 3 ----
+  BUTTON: Spend the day getting them out with ropes.
+  COST LINE: −2 days · they are fine, and everybody saw you go back
+  RESULT: It takes the whole day and most of the rope and the strongest of you does the pulling. They come up covered in peat, entirely unharmed, and refuse to discuss it ever again.
+
+
+==================================================
+EVENT: THE CACHE   [cache]
+==================================================
+
+The marker is where you were told it would be, and so is the bag.
+
+Coin, good iron, one cut stone. Nobody asks how you knew. Two of them have worked it out and neither says so.
+
+  ---- OPTION 1 ----
+  BUTTON: Take it up.
+  COST LINE: +6 salvage +1 gem · and the coin, by whatever was agreed
+  RESULT: It comes up wrapped in oilcloth and it is dry, which after this long in the ground means somebody did it properly.
+
+
+==================================================
+EVENT: THE BROKEN MEN   [broken]
+==================================================
+
+Four of them out of the treeline, with the confidence of men who have done this eleven times. Two lean dogs come with them and do not sit down.
+
+Deserters. Half a uniform each, and the buttons are Ashmoor's. Nobody has paid them since the foundry fell. A season of hunger, and a captain who still stands like one.
+
+"Food and the cart," he says. "Nobody has to be brave."
+
+They are not monsters. They are what a company like yours turns into after one bad winter, and everybody on both sides of the road knows it.
+
+  ---- OPTION 1 ----
+  BUTTON: “No.”
+  COST LINE: BATTLE · they are people, and they break like people
+
+  ---- OPTION 2 ----
+  BUTTON: Give them four days of food.
+  COST LINE: −4 provisions · it sits well with them · one of them stays
+  RESULT: The captain looks at the sacks for a long moment, and then at you, and gives you a nod that is almost a salute.
+  
+  When they move off, one of them does not. A young one with a pike and half a uniform stands in the road looking at your banner. “Pell,” he says, as though that settles it.
+
+  ---- OPTION 3 ----
+  BUTTON: Hand over the coin they can see.
+  COST LINE: −40 crowns · it sits badly with them
+  RESULT: They take it and go. Nobody feels good about it, least of all the people paid to prevent exactly this. [somebody] does the maths aloud: cheaper than arrows. Nobody thanks them.
+
+
+==================================================
+EVENT: THE RATKIN SNARE   [snare]
+==================================================
+
+They have strung the road with bells.
+
+That is the first thing. Bells are for warning on this island, and even other clans spit at this use of them.
+
+The second is the hauling-cage at the far end, built for a boar, with a woman folded up inside it.
+
+The third is the big one under the standard giving orders. And the small one at the back, holding no weapon, humming.
+
+  ---- OPTION 1 ----
+  BUTTON: Straight down the road. Let the bells ring.
+  COST LINE: battle · they are ready
+
+  ---- OPTION 2 ----
+  BUTTON: Through the marsh. Slower, but quiet.
+  COST LINE: battle · −1 day · you strike first
+
+
+==================================================
+EVENT: THE WOMAN IN THE CAGE   [wynn]
+==================================================
+
+The cage was built for hauling boar. It has been carrying a woman for three days.
+
+She makes no sound when Vesna cuts the withies. She counts you instead, and you can watch her do the sum.
+
+"You are late. I had made my peace with being a small course."
+
+Her name is Wynn Aldreth. Her husband ran the foundry at Ashmoor until the winter took him. Then the clan took the foundry.
+
+The mark on the standard out there is the mark on Ashmoor's own iron. The clan that took her town is the clan that took her, and she has had three days in a cage to appreciate the symmetry.
+
+She looks at the banner, then at you, and works out which one of you she needs to talk to.
+
+  ---- OPTION 1 ----
+  BUTTON: “There is a fee.”
+  COST LINE: +60 crowns
+  RESULT: She counts it into your palm like a woman paying a butcher. Which, she observes, you are.
+
+  ---- OPTION 2 ----
+  BUTTON: “Tell me about the foundry.”
+  COST LINE: +13 salvage
+  RESULT: She draws it in the mud: the wheel, the race, the two furnaces the rats never worked out how to light. Then she gives you what she carried out of it. That iron will outlive this contract.
+
+  ---- OPTION 3 ----
+  BUTTON: “Go home, mistress. No charge.”
+  COST LINE: a brass token · a name that owes you · and they saw you take nothing
+  RESULT: She does not say thank you. She presses a small brass thing into your hand instead. At Ashmoor they will know your banner before you reach the gate.
+
+
+
+SECTION 2 - CAMP AND FIRE CARDS (18 cards)
+
+==================================================
+CAMP: THE ARGUMENT   [argue]
+==================================================
+
+[first person] and [second person] have not spoken since the last crossing.
+
+Nobody will say what it was about. Everyone has taken a side, including the people who were not there.
+
+  ---- OPTION 1 ----
+  BUTTON: Make them share the watch. All night.
+  COST LINE: it sits well with them · −1 day
+  RESULT: By dawn they are not friends. They are conspirators against you, which works just as well.
+
+  ---- OPTION 2 ----
+  BUTTON: Buy a jug and let them shout it out.
+  COST LINE: −25 crowns · they think better of you
+  RESULT: Loud, then louder, then somebody laughs and it is over. The jug does not survive.
+
+  ---- OPTION 3 ----
+  BUTTON: Say nothing. It will keep.
+  COST LINE: it sits badly with them
+  RESULT: It keeps. It keeps very well, and it will be here later.
+
+
+==================================================
+CAMP: SOMETHING IN THE PORK   [pork]
+==================================================
+
+The salt pork has gone green at the edges. [first person] ate it anyway, on the grounds that it was there.
+
+The rest of the barrel is a question the company would like answered.
+
+  ---- OPTION 1 ----
+  BUTTON: Throw the barrel out. Eat light.
+  COST LINE: −3 provisions · quietly approved of
+  RESULT: Hungry and healthy. A vocal minority considers this cowardice and says so at length.
+
+  ---- OPTION 2 ----
+  BUTTON: Boil it long enough and it is fine.
+  COST LINE: it sits badly with them · somebody regrets it
+  RESULT: It is fine for almost everyone. It is very much not fine for the one it is not fine for.
+
+  ---- OPTION 3 ----
+  BUTTON: Feed it to the ogre. He has opinions but no standards.
+  COST LINE: +2 provisions · it sits well with them
+  RESULT: [your ogre] eats the entire barrel, announces that this changes nothing about their principles, and sleeps for eleven hours.
+
+
+==================================================
+CAMP: THE FIDDLER   [fiddler]
+==================================================
+
+A man with a fiddle and no shoes attaches himself to the fire. He plays until somebody tells him to stop, and nobody does.
+
+He does not ask for anything. That is the unsettling part.
+
+  ---- OPTION 1 ----
+  BUTTON: Feed him and let him play.
+  COST LINE: −2 provisions · the company stands taller for it · he leaves something behind
+  RESULT: He is gone before the fire is out. On the log where he sat: a rosined string, coiled.
+
+  ---- OPTION 2 ----
+  BUTTON: Pay him properly and send him on.
+  COST LINE: −30 crowns · it sits well with them
+  RESULT: He takes the coin and looks slightly insulted. It is the most honest thing anybody has done all week.
+
+  ---- OPTION 3 ----
+  BUTTON: Move him along. No passengers.
+  COST LINE: it sits badly with them
+  RESULT: He goes without a word. The fire is a great deal quieter and everybody notices.
+
+
+==================================================
+CAMP: THE FOUND THING   [found]
+==================================================
+
+[first person] comes back from the treeline with something wrapped in a shirt, and will not say where it came from.
+
+It is small. It is heavier than it should be. It is a knuckle-bone with a crown scratched into it.
+
+The clans pay to make these not exist. That is not the same as buying them.
+
+  ---- OPTION 1 ----
+  BUTTON: Keep it. Everything is worth something.
+  COST LINE: a rat-king’s knuckle · it sits badly with them
+  RESULT: [somebody] will not touch it and will not explain why, and will not sleep on that side of the fire again.
+
+  ---- OPTION 2 ----
+  BUTTON: Bury it and mark the spot.
+  COST LINE: they think better of you
+  RESULT: [somebody] does the burying, and is thorough about it, and puts a stone on top, and stands there a while.
+
+  ---- OPTION 3 ----
+  BUTTON: Sell it at the next stop, whatever it is.
+  COST LINE: +55 crowns · it sits badly with them
+  RESULT: It goes for more than it should, from a man who did not want to look at it either.
+
+
+==================================================
+CAMP: THE DEBT   [debt]
+==================================================
+
+[first person] owes [second person] money. It stopped being funny a week ago.
+
+Neither will say how much. Both will say who is right.
+
+The rest of the company has stopped pretending to be busy. Whatever you say next, you are saying to all of them.
+
+  ---- OPTION 1 ----
+  BUTTON: Pay it out of the chest. Buy the peace.
+  COST LINE: −35 crowns · it is over tonight
+  RESULT: Money spent on nothing at all, which is what peace usually costs.
+  
+  It does settle it. It also settles, in everybody's mind, that the chest opens for whoever is loudest, and you will find out what that was worth some other evening.
+
+  ---- OPTION 2 ----
+  BUTTON: Let them settle it themselves.
+  COST LINE: the whole company watches it happen
+  RESULT: It is over in nine seconds and neither of them will look at you afterwards.
+  
+  Two of yours hit each other in front of everybody, and you stood there, and that is now a thing this company knows about itself.
+
+  ---- OPTION 3 ----
+  BUTTON: Rule that debts do not exist in this company.
+  COST LINE: clean, immediate, and remembered
+  RESULT: Everyone agrees at once, which should have been the warning.
+  
+  You have just told every person at that fire that anything they are owed can be erased by you saying so at the right moment. The one who was owed does not argue. Nobody argues. That is the part that costs you.
+
+
+==================================================
+CAMP: WHAT THEY DID BEFORE   [before]
+==================================================
+
+[second person] has recognised [first person], and has gone quiet about it, and is mending something on the far side of the fire that is not broken.
+
+Whatever [first person] was before this, they walked away from it in a hurry. Nobody walks away from a thing like that empty-handed. They buried what they took, and they know the road it is buried on.
+
+  ---- OPTION 1 ----
+  BUTTON: Ask. In front of everyone.
+  COST LINE: the whole fire hears the number · the shares are promised out loud
+  RESULT: [first person] answers flatly, to the fire, because you have not left them a way not to.
+  
+  A soldier's bag, on the water road, at the first crossing. Coin, iron and one cut stone.
+  
+  Every one of the 6 of you now knows the number. Two of them say out loud what a fair share would be. Nobody argues with them, and that is the promise made.
+  
+  It is on the map. It is on the long road.
+
+  ---- OPTION 2 ----
+  BUTTON: Ask quietly, later, away from the fire.
+  COST LINE: only the two of you know · they will not forget that
+  RESULT: They tell you, because you asked properly, and because you asked where nobody else could hear the answer.
+  
+  A soldier's bag, on the water road, at the first crossing. Coin, iron and one cut stone. They draw it in the ash with a stick and then rub it out.
+  
+  "Nobody else," they say. Not a condition. Just a fact about how they would prefer it.
+  
+  It is on the map. It is on the long road.
+
+  ---- OPTION 3 ----
+  BUTTON: Do not ask.
+  COST LINE: quietly approved of · you will not hear about it again
+  RESULT: It stays where it was. The mending gets finished. Nothing else happens, tonight or ever, and you will not know what you did not ask for.
+
+
+==================================================
+CAMP: THE WRONG FIRE   [wrongfire]
+==================================================
+
+You have made camp where somebody else made camp four or five days ago, and left in a hurry.
+
+Half a meal still in the pot. One boot. No blood anywhere.
+
+On the gate-post, a bell on new wire. Nobody stayed to listen to it.
+
+  ---- OPTION 1 ----
+  BUTTON: Move on in the dark. Now.
+  COST LINE: −1 day · quietly approved of
+  RESULT: Two miles on you make a cold camp, and nobody complains about the cold.
+
+  ---- OPTION 2 ----
+  BUTTON: Stay. Double the watch.
+  COST LINE: it sits badly with them
+  RESULT: Nothing comes. Nobody sleeps. Both are true and only one is a relief.
+
+  ---- OPTION 3 ----
+  BUTTON: Stay, and go through what they left.
+  COST LINE: +25 crowns · it sits badly with them
+  RESULT: A purse in the boot. Somebody hid it there in a hurry, which tells you something about the hurry.
+
+
+==================================================
+CAMP: THE GOOD NIGHT   [goodnight]
+==================================================
+
+Nothing happens.
+
+The fire holds. The rain stops. [first person] produces a stolen cheese and [second person] produces a story that is almost certainly a lie.
+
+First evening in a fortnight that nobody has had to be talked to.
+
+  ---- OPTION 1 ----
+  BUTTON: Let it run late. The road will keep.
+  COST LINE: −1 day · the company stands taller for it
+  RESULT: Everyone is slow in the morning and nobody minds. You will spend this later, and be glad you had it.
+
+  ---- OPTION 2 ----
+  BUTTON: Early start. Take the good mood with you.
+  COST LINE: it sits well with them
+  RESULT: You break camp with the fire still warm. Good time made, and the mood holds most of the day.
+
+
+==================================================
+CAMP: THE SECOND DEBT   [debt2]
+==================================================
+
+[first person] owes money again. To two different people this time, on terms nobody remembers agreeing to, and [first person] is being very sorry and very public about it.
+
+[second person] says quietly that the first one was real. This one is a business.
+
+  ---- OPTION 1 ----
+  BUTTON: Pay it again. It is only money.
+  COST LINE: −40 crowns · and now it is a system
+  RESULT: Paid, and cheerfully accepted, and by the end of the week there is a third debt.
+  
+  You have taught this company how to be paid twice. That was expensive and it was not the money.
+
+  ---- OPTION 2 ----
+  BUTTON: Say out loud what they are doing.
+  COST LINE: the whole fire hears it · it sits badly with them
+  RESULT: You name it in front of everybody, which is the only place naming it works. They deny it, badly.
+  
+  The debts stop. So does most of the talking, for two days.
+
+  ---- OPTION 3 ----
+  BUTTON: Buy the debts off the others instead.
+  COST LINE: −25 crowns · it sits well with them
+  RESULT: You settle with the creditors and leave the debtor holding nothing but the scheme. It is the cheapest thing you have done all week and the only one anybody admires.
+
+
+==================================================
+CAMP: WHAT DEBTS DO NOT EXIST   [debt3]
+==================================================
+
+[second person]'s good knife is on [first person]'s belt, and [first person] is not hiding it, and does not appear to think anything has happened.
+
+"Debts do not exist in this company," [first person] says, pleasantly, and looks at you, and waits.
+
+  ---- OPTION 1 ----
+  BUTTON: The ruling stands. It stands for everybody.
+  COST LINE: they will remember this · consistent, at least
+  RESULT: It stands. The knife stays where it is.
+  
+  Everything anybody owns is now on loan from whoever picks it up next, and every person at that fire has just done the same arithmetic you did.
+
+  ---- OPTION 2 ----
+  BUTTON: A knife is not a debt. Give it back.
+  COST LINE: it sits well with them · and the rule is worth less
+  RESULT: The knife goes back. So does the rule - quietly, without ever being withdrawn, which is how most rules die.
+  
+  Next time you make one, they will wait to see which kind it is.
+
+  ---- OPTION 3 ----
+  BUTTON: Buy the knife off them. Everybody wins, nobody is satisfied.
+  COST LINE: −20 crowns · nobody says thank you
+  RESULT: You pay for a knife you already owned, on behalf of somebody who did not steal it because stealing has been abolished. It works. Nobody enjoys it working.
+
+
+==================================================
+CAMP: THE NINE SECONDS   [debt4]
+==================================================
+
+It has been quiet between [first person] and [second person] since the fight, and quiet in the way a held breath is quiet.
+
+Tonight one of them has put their bedroll on the far side of the fire, and the other has noticed, and the company is watching a second time.
+
+  ---- OPTION 1 ----
+  BUTTON: Put them on the same watch until it is over.
+  COST LINE: −1 day · they think better of you
+  RESULT: Six hours of enforced company and a cold dawn. They come back not friends, exactly, but with the specific ease of two people who have run out of things to not say.
+
+  ---- OPTION 2 ----
+  BUTTON: Split them. Different watches, different ends of the column.
+  COST LINE: it sits badly with them · it keeps
+  RESULT: Neatly managed, and the company notices that too: this is a place where a problem gets arranged around rather than finished.
+
+  ---- OPTION 3 ----
+  BUTTON: Tell them what it cost you to watch it the first time.
+  COST LINE: the company stands taller for it
+  RESULT: You say it plainly and only once and then you go to sleep.
+  
+  In the morning the bedroll has moved back. Nobody mentions it, then or ever.
+
+
+==================================================
+CAMP: THE THING THAT WAS KEPT   [found2]
+==================================================
+
+The knuckle-bone has moved. Not far - from the bottom of the cart to the top of the sacks, where anybody untying them would put a hand straight onto it.
+
+[first person] did not move it. [first person] is extremely clear about that.
+
+  ---- OPTION 1 ----
+  BUTTON: Bury it now, in the dark, and mark nothing.
+  COST LINE: they think better of you · you lose the thing
+  RESULT: It goes in a wet hole a hundred paces off the road and nobody watches which way you walk back. The company sleeps better than it has in a week.
+
+  ---- OPTION 2 ----
+  BUTTON: Keep it. Wrap it better.
+  COST LINE: it sits badly with them · it stays
+  RESULT: Three layers of sacking and a knot somebody's grandmother taught them.
+  
+  It is still on top of the sacks in the morning. Everyone has now decided not to discuss this.
+
+  ---- OPTION 3 ----
+  BUTTON: Give it to whoever will take it at the next stop, for nothing.
+  COST LINE: it sits well with them · somebody else's problem
+  RESULT: A pedlar takes it for free and is delighted, which is the single most frightening thing that has happened on this road.
+
+
+==================================================
+CAMP: THE TUNE COMES BACK   [fiddler2]
+==================================================
+
+[first person] has been humming the fiddler's tune for three days, and last night two other people were humming it too, and none of them can say where they learned the words.
+
+There were no words.
+
+  ---- OPTION 1 ----
+  BUTTON: Sing the whole thing through, all of you, and be done with it.
+  COST LINE: the company stands taller for it
+  RESULT: It turns out to be a marching song, and a filthy one, and the company arrives at the next stop in the best temper it has been in since the tavern.
+
+  ---- OPTION 2 ----
+  BUTTON: Forbid the tune. No humming, no whistling.
+  COST LINE: they will remember this
+  RESULT: The humming stops. The tune does not - it simply moves somewhere you cannot police, and now nobody tells you what they are thinking about on the road.
+
+  ---- OPTION 3 ----
+  BUTTON: Ask what the words are.
+  COST LINE: you find something out
+  RESULT: Nobody knows. Everybody agrees on the words. You write them down and they are a list of place-names, in order, and the last one is where you are going.
+
+
+==================================================
+CAMP: THE AUNT   [kin]
+==================================================
+
+[first person] and [second person] have established, somewhere between the pot and the second watch, that they share an aunt.
+
+This ought to be a warm moment.
+
+[first’s aunt is older than the bridge at Coldharrow, owns a boat, and is owed respect.
+
+[second’s aunt is twelve, has been dead six years, and is owed four crowns.
+
+They are describing the same woman. They agree on her name, her teeth, and nothing else.
+
+Ratkin do not settle family between themselves. They settle it in front of somebody who was not there.
+
+  ---- OPTION 1 ----
+  BUTTON: The older claim stands. The boat, the respect, all of it.
+  COST LINE: free, immediate, and one of them will remember it
+  RESULT: You say it once and it is done, which is what they wanted from you and not what they wanted to hear.
+  
+  [second does not argue. [second agrees, at length, that you are the captain and that the matter is closed, and goes on agreeing about it for three days.
+
+  ---- OPTION 2 ----
+  BUTTON: The dead one was owed four crowns. Pay it out of the chest.
+  COST LINE: −4 crowns · the cheapest thing you will buy this month
+  RESULT: Four crowns, counted out on a barrel head, for a debt owed to a twelve-year-old who has been dead six years, in front of everybody.
+  
+  [second does not thank you and does not have to. It is the best-spent money in the chest.
+  
+  It is also, and the whole fire saw it, proof that the chest opens for a good enough story. Somebody at that fire is already working on theirs.
+
+  ---- OPTION 3 ----
+  BUTTON: Neither. Produce the aunt or stop saying her name.
+  COST LINE: it sits badly with them · nobody owes anybody anything
+  RESULT: It works. The name stops. So does most of the talking at that end of the fire, for about a week.
+  
+  You have been fair, exactly, and to the letter, and it has bought you nothing at all - which is a thing worth knowing about being fair.
+
+
+==================================================
+CAMP: THE BOAT   [kin2]
+==================================================
+
+A boatman at the crossing knows the woman. Older than the bridge, owns a boat, extremely rude.
+
+He also says, without being asked, that she never had a sister and has no nephews. People have been claiming her for years because she is famous and cannot read.
+
+[first person] does not know you have heard this. Neither does [second person].
+
+  ---- OPTION 1 ----
+  BUTTON: Tell them both. At the same time, so neither hears it second.
+  COST LINE: it sits well with them · the ruling was worth nothing and you say so
+  RESULT: They take it badly for about four seconds and then extremely well. By morning they have agreed she was probably a great-aunt on a side nobody counts, which is not how aunts work, and have started telling the story together.
+  
+  You unmade your own ruling in front of everybody. Nobody minds. File that.
+
+  ---- OPTION 2 ----
+  BUTTON: Say nothing. The ruling stands, and it is quieter.
+  COST LINE: quietly approved of · you know something they do not
+  RESULT: Nothing happens, which is what you paid for.
+  
+  The two of them are still not quite right with each other, and now that is your doing rather than the aunt’s, and you are the only person at this fire who knows it.
+
+
+==================================================
+CAMP: FOUR CROWNS   [kin3]
+==================================================
+
+The dead twelve-year-old was real. She was not anybody's aunt. She was a debtor's daughter, and her name got borrowed the way a good coat gets borrowed, and other people have borrowed it since.
+
+The four crowns went to a house that was owed nothing and knew it. They kept them.
+
+[second person] has gone very quiet. [first has not, and is enjoying this enormously.
+
+  ---- OPTION 1 ----
+  BUTTON: Send somebody back for the four crowns.
+  COST LINE: +4 crowns · they will remember this for longer than four crowns
+  RESULT: You get them back. Four crowns.
+  
+  What the fire saw was the captain who paid a dead child’s debt in front of everybody, and then went and got the money back, and those are not two events. They are one event, and it is the second half that people will describe.
+
+  ---- OPTION 2 ----
+  BUTTON: Let it lie. It was four crowns.
+  COST LINE: the company stands taller for it · and the story gets out
+  RESULT: Neither of them mentions it. Somebody else does, at the next fire, to people from another company - and by the time it comes back to you the sum has grown and so has the child.
+  
+  You have bought a reputation for four crowns. It will cost more than four crowns to keep.
+
+
+==================================================
+CAMP: THE AUNT, IN PERSON   [kin4]
+==================================================
+
+She is at the crossing, selling eels out of the boat, and she is exactly as described - by both of them, in every particular, including the teeth.
+
+She is real. She is somebody’s aunt. She has looked at [first person] and [second person] for a while now and has not recognised anybody, and has said so, twice, in front of the eels.
+
+  ---- OPTION 1 ----
+  BUTTON: Introduce them properly. Names, company, the lot.
+  COST LINE: −1 day · the company stands taller for it
+  RESULT: It takes an hour and most of it is her talking. She does not become anybody’s aunt. She does establish, to her own satisfaction, that the two of them are the sort of people who could have been, and hands over an eel each, and says to come back when they are less thin.
+  
+  They are unbearable about this for a day and a half. It is worth the day.
+
+  ---- OPTION 2 ----
+  BUTTON: Say nothing. Buy eels. Get back on the road.
+  COST LINE: it sits badly with them · they saw you not say it
+  RESULT: You buy the eels and you do not say the thing, and both of them watch you not say it.
+  
+  The name never comes back. Neither does the argument. Something that was loud and stupid and theirs is now just gone, and you are the reason, and it did not even save you an hour.
+
+
+==================================================
+CAMP: TWO SHADOWS   [shadows]
+==================================================
+
+[second has taken the second watch three nights running. All three of them were [first’s.
+
+Nobody has said anything. There is nothing to say: it is not laziness and it is not fear.
+
+But on the last two fields they stood close enough that one good swing could have had them both, and [first has started walking the long way round the fire.
+
+The debt is not being paid. It is being carried. And your line is one body short of the width you counted on.
+
+  ---- OPTION 1 ----
+  BUTTON: Leave it. They will sort it out or they will not.
+  COST LINE: free · it sits well with them · and your line stays narrow
+  RESULT: You say nothing, which they both notice, and which [second takes as permission.
+  
+  It is good for the company and it is good for the two of them, and the next time the line has to stretch you will be counting one body twice. You knew that when you said nothing.
+
+  ---- OPTION 2 ----
+  BUTTON: Say it in front of everybody: the debt is paid. Drop it.
+  COST LINE: it sits badly with them · the debt is closed and they heard you close it
+  RESULT: You say it once, out loud, at the fire, with everybody sitting there - that the account is settled and nobody owes anybody a watch.
+  
+  [second agrees that it is settled. [first agrees that it is settled. Both of them are correct and neither of them looks at you.
+  
+  The line will be its proper width in the morning. That was the trade, and you made it in front of the people it was about, which is the only honest place to make it.
+
+  ---- OPTION 3 ----
+  BUTTON: Split them. Opposite ends of the line, different watches.
+  COST LINE: it sits badly with them · the tie stays, and now it has to reach further
+  RESULT: They take the order the way people take an order, and they keep it.
+  
+  It does not do what you wanted. [second spends every fight from the far end of the line watching the far end of the line, which is a thing [first can feel from there. You have not ended anything. You have made it longer.
+
+
+
+SECTION 3 - ROAD VIGNETTES (14, no choices)
+
+---- FOUND ----
+[first person] pulls a horseshoe out of the mud, entire and barely rusted, and is unreasonably pleased about it for the rest of the day.
+
+---- FOUND ----
+[first person] finds a purse in a ditch. In it: three crowns and a milk tooth. Nobody comments on the tooth.
+
+---- FOUND ----
+[first person] and [second person] come back from filling the waterskins with a wheel of cheese neither of them will account for.
+
+---- FOUND ----
+[first person] spots a cart-spring in the wreck of somebody else's bad day. Good steel. Somebody else's bad day is the company's favourite shop.
+
+---- LOST ----
+[first person]'s boot-sole comes off mid-stride and is ceremonially buried where it fell. The limp is theatrical by noon and insufferable by dark.
+
+---- LOST ----
+A sack slips its knot on a bad rut and a day's bread goes into the bog, which accepts it without gratitude.
+
+---- LOST ----
+Somewhere in the last five miles [first person] has lost the little knife they ate with, and is now eating with the big one, and everyone gives them room.
+
+---- THE MULE ----
+A riderless mule considers the column for a long moment and walks the other way. [first person] takes it personally.
+
+---- THE BET ----
+[first person] bets [second person] the next milestone is under an hour off. It is four hours off. The debt is one boot-cleaning and it is paid in full and in public.
+
+---- AN HOUR OF RAIN ----
+Rain for an hour, the flat grey kind that gets into everything except the mood, somehow. The wagon smells of wet wool until morning.
+
+---- SORE HEELS ----
+[first person] walks the last mile backwards, on a theory about sore heels. The theory is not explained. The heels are reportedly fine.
+
+---- THE CROW ----
+A crow follows the wagon from noon until dusk. [first person] names it, which everyone agrees was a mistake, whatever happens now.
+
+---- AT THE FIRE ----
+[dynamic text]
+
+---- AT THE FIRE ----
+[dynamic text]

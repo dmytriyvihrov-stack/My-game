@@ -1,0 +1,560 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Grimtoll. World map dramaturgy: proposal v2 (2026-08-01)</title>
+<style>
+  body{background:#16130f;color:#d8cdb8;font:14px/1.55 Georgia,'Times New Roman',serif;
+    margin:0;padding:28px 4vw 90px}
+  *{box-sizing:border-box}
+  h1{font-size:26px;color:#e9e2d0;letter-spacing:.5px;margin:0 0 4px}
+  h2{font-size:19px;color:#c9a227;margin:44px 0 10px;border-bottom:1px solid #4d3c22;padding-bottom:6px}
+  h3{font-size:15px;color:#e9e2d0;margin:22px 0 6px}
+  .status{display:inline-block;background:#3a2c14;border:1px solid #c9a227;color:#c9a227;
+    padding:3px 10px;font-size:12px;letter-spacing:2px;margin:8px 0 2px}
+  .muted{color:#a08a5e}
+  .card{background:#1e1a14;border:1px solid #4d3c22;padding:14px 18px;margin:12px 0}
+  .flag{border-left:3px solid #c15d55}
+  .ok{color:#8ca35a}.bad{color:#c15d55}.teal{color:#5fa8a0}.white{color:#e9e2d0}
+  table{border-collapse:collapse;width:100%;margin:10px 0;font-size:13px}
+  th,td{border:1px solid #4d3c22;padding:5px 9px;text-align:left;vertical-align:top}
+  th{background:#241f17;color:#c9a227;font-weight:normal;letter-spacing:1px;font-size:12px}
+  td.num{text-align:right;font-family:Consolas,monospace}
+  tr.new td{background:#221d15}
+  .tag{display:inline-block;font-size:11px;border:1px solid #4d3c22;padding:1px 6px;margin-right:5px;color:#a08a5e}
+  .tagNew{border-color:#e9e2d0;color:#e9e2d0}
+  .tagMoved{border-color:#5fa8a0;color:#5fa8a0}
+  .tagCut{border-color:#c15d55;color:#c15d55}
+  .tagRule{border-color:#c9a227;color:#c9a227}
+  svg{display:block;width:100%;height:auto;background:#141210;border:1px solid #4d3c22;margin:8px 0}
+  .legend{font-size:12px;color:#a08a5e;margin:4px 0 18px}
+  code,pre{font-family:Consolas,monospace;font-size:12px;color:#cbbf9f;background:#241f17}
+  pre{padding:10px 14px;border:1px solid #4d3c22;overflow:auto}
+  ol li,ul li{margin:7px 0}
+  .beat{display:inline-block;background:#241f17;border:1px solid #4d3c22;padding:2px 8px;
+    margin:2px 3px 2px 0;font-size:12px}
+  .beat.hot{border-color:#c15d55}
+  .beat.cool{border-color:#8ca35a}
+  .up{color:#c15d55}.down{color:#8ca35a}
+</style>
+</head>
+<body>
+
+<h1>Grimtoll. World map dramaturgy: proposal v2</h1>
+<div class="status" style="background:#26301c;border-color:#8ca35a;color:#8ca35a">
+  ✅ APPROVED AND BUILT 2026-08-01 &middot; BACKLOG #71 &middot; BUILD LOG 8f.73</div>
+<div class="card" style="border-color:#8ca35a">
+<p style="margin-top:0"><b>This document is now history.</b> It was approved item by item and shipped
+the same day. The living map is <code>prototype/grimtoll_slice.html</code>, and the picture of the
+real thing is <code>shots/map_reshape_2026-08-01.html</code>. Where this file and the build disagree,
+the build wins.</p>
+<p><b>Three things changed between this proposal and the code, all for the same reason: the painted
+mountain.</b> The coordinates here were verified against the game's spacing rules but not against the
+Hunch, and three places landed on top of it. <code>dead</code> moved to the ridge line (1200,300),
+<code>oasis</code> to just below the southern foot (1178,496), and the pilgrim slot was renamed
+<code>p1</code> and moved to the western foot (985,430). The painter also needed the deleted nodes'
+scenery removed, the stale "the pass" caption deleted and the Bloom's glow pushed north out of the
+two new places. <b>Shipped counts: 23 places, 25 roads, 8 routes, 17 to 21 days, LINT clean.</b></p>
+<p style="margin-bottom:0"><b>One flag from section 8 was resolved as written:</b> the armourer
+question was read as "both", so the cart is at the muster and Coldharrow keeps a single expensive
+piece. Say so if that was not what you meant, it is two lines to undo.</p>
+</div>
+<p class="muted">2026-08-01. Working document, not a source of truth. All current data (nodes, days,
+prices, odds, loot tables) read from the live <code>prototype/grimtoll_slice.html</code> today.
+v2 folds in your seven answers plus four structural notes. No existing event text is edited anywhere
+in this document: events move, they do not change.</p>
+
+<h2>1. What changed in v2</h2>
+<div class="card">
+<table>
+<tr><th>your note</th><th>what it became</th></tr>
+<tr><td>A calmer, recovery beat between the Stone Field and the Thing in Armour</td>
+    <td><b>Bonepicker's Camp becomes a fixed node</b> on the sling road, between the Stone Field and
+    the join. Existing event, no new prose, and it leaves the floating pool so it is guaranteed once
+    a run. It is the refit beat: buy food, buy ogre armour, sell a gem, rest a day for morale.</td></tr>
+<tr><td>Cut the long empty 2-day hop straight to the finale</td>
+    <td><b>The pass is deleted.</b> Everybody now walks the shrine and the Last Muster. That costs the
+    act 4 days at the short end, which is the one real price in this proposal, priced in section 5.</td></tr>
+<tr><td>Something between the Broken Men and the Ruined Steading</td>
+    <td><b>THE ROADSIDE FIRE</b>, a guaranteed camp night dealt from the existing <code>CAMPS</code>
+    deck. It fixes a real pile-up (two fights one day apart), and it pays back what 8.7 takes away:
+    with road events halved, the fire-side chains are the content that would have thinned out most.
+    Section 6.6.</td></tr>
+<tr><td>The road should bend further south after the hollow</td>
+    <td>The whole tail drops: the hollow at y=470, then the last fork sweeps along y=578..592 and
+    west to the Snare at y=585. Verified against the game's own plate rules, section 10.</td></tr>
+<tr><td>8.1 converge fork A at the Ruined Steading</td><td>Done. Both roads meet at the dogs, then a
+    fixed corridor: steading &rarr; muster &rarr; the Fen.</td></tr>
+<tr><td>8.2 start purse, a bit more</td><td>Wagon <b>48 &rarr; 90</b>, inherited wagon 24 &rarr; 48.
+    Typical opening ~150 crowns. The arithmetic is in section 5 and it is tighter than it looks.</td></tr>
+<tr><td>8.3 armourer</td><td>Read as <b>both</b>: the rack moves to the muster (three cheap pieces,
+    buy one), <i>and</i> Coldharrow keeps a single expensive piece as the late upgrade. Flagged in
+    section 8 in case you meant only the first half.</td></tr>
+<tr><td>8.4 no empty leg</td><td>The quiet road of fork B gets a slot node (<code>q1</code>).
+    No leg on the map has nothing on it now.</td></tr>
+<tr><td>8.5 warm spring, someone wants to stay</td><td><b>THE WARM SPRING</b>, draft in section 7,
+    with the stay-a-day choice costing one day and paying in nerve on a named person.</td></tr>
+<tr><td>8.6 do not split the pool</td><td>Not done. One pool, dealt at random, as now.</td></tr>
+<tr><td>8.7 fewer road events</td><td>0.28 per stop plus one-per-leg latch. Section 6.1.</td></tr>
+</table>
+</div>
+
+<h2>2. The map</h2>
+<div id="mapNew"></div>
+<div class="legend">
+  <b style="color:#c9a227">&#9679; town / trade</b> &middot;
+  <b style="color:#c15d55">&#10005; fight</b> &middot;
+  <b style="color:#b58ad1">&#9672; weird</b> &middot;
+  <b style="color:#5fa8a0">&#9873; muster</b> &middot;
+  <b style="color:#8b8b8b">&#9671; slot (floating event)</b> &middot;
+  dashed ring = new or moved &middot; numbers on roads = days.
+</div>
+
+<h3>The same road as a line of beats (risky route)</h3>
+<div class="card">
+<span class="beat">tap-room</span> &rarr;
+<span class="beat hot">Blood on the Road <span class="up">&uarr;</span></span> &rarr;
+<span class="beat">FORK A: blood or coin</span> &rarr;
+<span class="beat">slot</span> &rarr;
+<span class="beat hot">The Broken Men <span class="up">&uarr;</span></span> &rarr;
+<span class="beat cool">THE ROADSIDE FIRE <span class="down">&darr;</span> NEW</span> &rarr;
+<span class="beat hot">Ruined Steading, the dogs <span class="up">&uarr;</span></span> &rarr;
+<span class="beat cool">MUSTER + ARMOURER <span class="down">&darr;</span></span> &rarr;
+<span class="beat hot">THE BLACK FEN <span class="up">&uarr;&uarr;</span></span> &rarr;
+<span class="beat cool">Coldharrow <span class="down">&darr;&darr;</span></span> &rarr;
+<span class="beat">FORK B: fight or quiet</span> &rarr;
+<span class="beat hot">The Stone Field <span class="up">&uarr;</span></span> &rarr;
+<span class="beat cool">Bonepicker's Camp <span class="down">&darr;</span> refit</span> &rarr;
+<span class="beat hot">THING IN ARMOUR <span class="up">&uarr;&uarr;</span></span> &rarr;
+<span class="beat">The Dead Company</span> &rarr;
+<span class="beat cool">THE WARM SPRING <span class="down">&darr;&darr;</span> NEW</span> &rarr;
+<span class="beat">FORK C: the steading or the pilgrims</span> &rarr;
+<span class="beat hot">The Hill Steading <span class="up">&uarr;</span></span> &rarr;
+<span class="beat">slot</span> &rarr;
+<span class="beat cool">The Door-Shrine <span class="down">&darr;</span></span> &rarr;
+<span class="beat cool">The Last Muster</span> &rarr;
+<span class="beat hot">THE SNARE <span class="up">&uarr;&uarr;</span></span>
+<p class="muted" style="margin-bottom:0"><b>Three exhale beats now, and no two of them do the same
+job.</b> The Roadside Fire is the <b>company's beat</b> (named people talking, nothing bought),
+Bonepicker's is the <b>quartermaster's beat</b> (supplies, coin, one night's morale), the spring is the
+<b>heart's beat</b> (wounds, and one person asking for something). Putting the same beat down three
+times would read as padding; these do not. And with the fire in place <b>no two fights are adjacent
+anywhere on the map</b>, which is the check the dramaturge runs and the front half was failing.</p>
+</div>
+
+<h3>Current map, for comparison</h3>
+<div id="mapOld"></div>
+<div class="legend">Three roads on fork A; the muster and the armourer sit after the Fen; the pass
+runs from the Dead Company straight to the Snare with nothing on it.</div>
+
+<h2>3. Every road, every day</h2>
+<div class="card">
+<table>
+<tr><th>road</th><th>days</th><th>fork label (short, no dashes)</th><th>change</th></tr>
+<tr><td>hold &rarr; clash</td><td class="num">1</td><td>the only road east</td><td>unchanged</td></tr>
+<tr><td colspan="4" style="background:#241f17;color:#c9a227">FORK A &middot; joins at the Ruined Steading &middot; 4 days with a fight, or 6 quiet</td></tr>
+<tr><td>clash &rarr; b1 <i>(slot)</i></td><td class="num">1</td><td>shorter, somebody on it</td><td>risky road, was 2 days</td></tr>
+<tr><td>b1 &rarr; bm <i>(Broken Men)</i></td><td class="num">1</td><td></td><td>was 2 days</td></tr>
+<tr class="new"><td>bm &rarr; fire <i>(The Roadside Fire)</i></td><td class="num">1</td><td></td><td>NEW node, splits the two fights</td></tr>
+<tr class="new"><td>fire &rarr; camp1</td><td class="num">1</td><td></td><td>NEW road</td></tr>
+<tr><td>clash &rarr; f1 <i>(slot)</i></td><td class="num">2</td><td>longer, wet the whole way</td><td>safe road</td></tr>
+<tr><td>f1 &rarr; f2 <i>(slot)</i></td><td class="num">2</td><td></td><td>unchanged</td></tr>
+<tr><td>f2 &rarr; f3 <i>(slot)</i></td><td class="num">1</td><td></td><td>was 2 days</td></tr>
+<tr><td>f3 &rarr; camp1</td><td class="num">1</td><td></td><td>unchanged</td></tr>
+<tr><td colspan="4" style="background:#241f17;color:#c9a227">CORRIDOR &middot; nobody skips any of this</td></tr>
+<tr class="new"><td>camp1 &rarr; hire <i>(Muster + armourer)</i></td><td class="num">1</td><td></td><td>NEW road, muster moved</td></tr>
+<tr class="new"><td>hire &rarr; mother <i>(The Black Fen)</i></td><td class="num">1</td><td></td><td>NEW road</td></tr>
+<tr><td>mother &rarr; vill <i>(Coldharrow)</i></td><td class="num">1</td><td></td><td>unchanged</td></tr>
+<tr><td colspan="4" style="background:#241f17;color:#c9a227">FORK B &middot; joins at The Dead Company &middot; 3 days with a fight and a refit, or 4 quiet</td></tr>
+<tr><td>vill &rarr; sling <i>(The Stone Field)</i></td><td class="num">1</td><td>shorter, shooters on the ridge</td><td>fork moved to Coldharrow</td></tr>
+<tr class="new"><td>sling &rarr; rest <i>(Bonepicker's Camp)</i></td><td class="num">1</td><td></td><td>NEW node, your recovery beat</td></tr>
+<tr class="new"><td>rest &rarr; dead</td><td class="num">1</td><td></td><td>NEW road</td></tr>
+<tr class="new"><td>vill &rarr; q1 <i>(slot)</i></td><td class="num">2</td><td>longer, and quiet</td><td>NEW node, answers 8.4</td></tr>
+<tr class="new"><td>q1 &rarr; dead</td><td class="num">2</td><td></td><td>NEW road</td></tr>
+<tr><td colspan="4" style="background:#241f17;color:#c9a227">CORRIDOR &middot; the ambush lands on arrival at dead</td></tr>
+<tr class="new"><td>dead &rarr; oasis <i>(The Warm Spring)</i></td><td class="num">1</td><td></td><td>NEW node and road</td></tr>
+<tr><td colspan="4" style="background:#241f17;color:#c9a227">FORK C &middot; joins at the Door-Shrine &middot; 3 days with a fight, or 4 quiet</td></tr>
+<tr><td>oasis &rarr; steadn <i>(Hill Steading)</i></td><td class="num">1</td><td>shorter, something big on it</td><td>fork moved to the spring</td></tr>
+<tr><td>steadn &rarr; e1 <i>(slot)</i></td><td class="num">1</td><td></td><td>unchanged</td></tr>
+<tr><td>e1 &rarr; shrine</td><td class="num">1</td><td></td><td>unchanged</td></tr>
+<tr><td>oasis &rarr; p1 <i>(slot)</i></td><td class="num">2</td><td>longer, the pilgrim path</td><td>was e2, renamed and moved south</td></tr>
+<tr><td>p1 &rarr; shrine</td><td class="num">2</td><td></td><td>unchanged</td></tr>
+<tr><td colspan="4" style="background:#241f17;color:#c9a227">THE LAST CORRIDOR</td></tr>
+<tr><td>shrine &rarr; hire2 <i>(Last Muster)</i></td><td class="num">1</td><td></td><td>unchanged</td></tr>
+<tr><td>hire2 &rarr; snare</td><td class="num">1</td><td></td><td>unchanged</td></tr>
+<tr class="new"><td style="text-decoration:line-through">dead &rarr; snare, the pass</td><td class="num">2</td><td></td>
+    <td class="bad">DELETED, your call</td></tr>
+</table>
+<p><b>Run length: 17 days shortest, 21 longest</b> (now 13 to 21). Fights on route: <b>5 minimum,
+8 maximum</b>, and the all-risk route is the only road in the act that meets every authored fight.
+Nodes deleted: <code>o1</code>, <code>o2</code> (the northern pair). Their events, the Hanged Toll-Man
+and the Pedlar, stay in the floating pool and keep turning up elsewhere.</p>
+</div>
+
+<h2>4. What can and cannot be skipped</h2>
+<div class="card">
+<table>
+<tr><th>on every road, in order</th><th>only if you choose it</th></tr>
+<tr><td>
+  Blood on the Road &middot; the Ruined Steading and the dogs &middot; <b>the Muster Field with the
+  armourer</b> &middot; the Fen-Mother &middot; Coldharrow &middot; <b>the Thing in Armour</b> &middot;
+  The Dead Company &middot; <b>The Warm Spring</b> &middot; the Door-Shrine &middot; the Last Muster
+  &middot; the Snare
+</td><td>
+  The Broken Men &middot; <b>The Roadside Fire</b> &middot; 1 to 3 floating slots on fork A &middot;
+  The Stone Field &middot; Bonepicker's Camp &middot; the quiet slot on fork B &middot;
+  The Hill Steading &middot; one slot on fork C
+</td></tr>
+</table>
+<p class="muted">Eleven fixed beats against eight optional ones. With the pass gone, the shrine and the
+Last Muster stop being skippable, which is what you wanted from removing it: no road arrives at the
+bells having stopped nowhere.</p>
+</div>
+
+<h2>5. The money, honestly</h2>
+<div class="card">
+<p><b>First, a correction to v1.</b> Since #55 the post-battle haul auto-draws <i>one random row</i>
+from that fight's spoils rows, and most of those rows pay in gear or salvage, not coin. Expected
+crowns per fight, computed from the live <code>LOOT</code> tables:</p>
+<pre>clash 10   brigand 11   pack 15   mother 30   slingline 20   steading 22   snare 19   armour 0</pre>
+<p>So the whole act pays about <b>127 crowns of fight loot</b> on the richest route, not the 300-odd
+v1's table implied. Fights pay in <i>iron and gear</i>; the purse is fed by the opening advance and by
+events. That is worth knowing before tuning anything.</p>
+
+<h3>The purse, risky route, average play, average prologue</h3>
+<table>
+<tr><th>where</th><th>day</th><th>wages</th><th>in</th><th>out</th><th>purse<br>start 90</th><th>purse<br>start 48 (today)</th></tr>
+<tr><td>the tap-room</td><td class="num">1</td><td></td><td class="num">90 + 60</td><td></td><td class="num">150</td><td class="num">108</td></tr>
+<tr><td>Blood on the Road</td><td class="num">2</td><td class="num">-8</td><td class="num">+10</td><td></td><td class="num">152</td><td class="num">110</td></tr>
+<tr><td>slot on the risky road</td><td class="num">3</td><td class="num">-8</td><td class="num">+15</td><td></td><td class="num">159</td><td class="num">117</td></tr>
+<tr><td>The Broken Men</td><td class="num">4</td><td class="num">-8</td><td class="num">+11</td><td></td><td class="num">162</td><td class="num">120</td></tr>
+<tr class="new"><td>The Roadside Fire</td><td class="num">5</td><td class="num">-8</td><td class="num">a camp card</td><td></td><td class="num">154</td><td class="num">112</td></tr>
+<tr><td>the dogs</td><td class="num">6</td><td class="num">-8</td><td class="num">+15</td><td></td><td class="num">161</td><td class="num">119</td></tr>
+<tr class="new"><td><b>THE MUSTER + ARMOURER</b></td><td class="num">7</td><td class="num">-8</td><td></td>
+    <td class="num">-55 hire<br>-60 shield</td><td class="num"><b>38</b></td><td class="num"><b>-4 &rarr; one or the other</b></td></tr>
+<tr><td>the Fen-Mother</td><td class="num">8</td><td class="num">-10</td><td class="num">+30</td><td></td><td class="num">58</td><td class="num">26</td></tr>
+<tr><td>Coldharrow, the bone-setter</td><td class="num">11</td><td class="num">-30</td><td></td><td class="num">-45</td><td class="num">-17 &rarr; <b>0</b></td><td class="num">0, and unpaid wages</td></tr>
+<tr><td>The Stone Field</td><td class="num">12</td><td class="num">-10</td><td class="num">+20</td><td></td><td class="num">10</td><td class="num">0</td></tr>
+<tr><td>Bonepicker's Camp</td><td class="num">13</td><td class="num">-10</td><td class="num">+90 sell a gem</td><td></td><td class="num">90</td><td class="num">80</td></tr>
+<tr><td>the ambush, the Dead Company</td><td class="num">14</td><td class="num">-10</td><td class="num">gear</td><td></td><td class="num">80</td><td class="num">70</td></tr>
+<tr><td>The Warm Spring, a day in it</td><td class="num">16</td><td class="num">-20</td><td></td><td></td><td class="num">60</td><td class="num">50</td></tr>
+<tr><td>The Hill Steading</td><td class="num">17</td><td class="num">-10</td><td class="num">+22</td><td></td><td class="num">72</td><td class="num">62</td></tr>
+<tr><td>the shrine, the Last Muster</td><td class="num">19</td><td class="num">-20</td><td></td><td class="num">-70 hire</td><td class="num">-18 &rarr; <b>0</b></td><td class="num">0</td></tr>
+<tr><td>the Snare</td><td class="num">21</td><td class="num">-24</td><td class="num">+19</td><td></td><td class="num">0, scraped</td><td class="num">0, scraped</td></tr>
+</table>
+<p><b>What this says.</b> At 90 the muster is a real shop: you hire <i>and</i> buy one cheap piece and
+walk away with something. At today's 48 you can do one of the two and that is the whole reason the
+number has to move. The purse still floors twice, at Coldharrow and at the Last Muster, which is
+correct: the pillar is that the road keeps offering you things you cannot pay for, and it now does
+that <i>after</i> the shopping rather than instead of it.</p>
+<p class="muted">Cost of removing the pass: 4 extra days at 10 to 12 a day, about 45 crowns of wages,
+which is most of what the bigger start purse buys back. The two changes roughly cancel, so the act is
+no richer than today. If it plays too tight, the single constant to move is the wagon, and it goes in
+#50's parking lot rather than being retuned mid-session.</p>
+<p><b>The safe route</b> costs 2 more days (~20 crowns) and gives up the Broken Men's 11 crowns and
+their scars, buying 2 extra slot events instead. <b>The quiet road on fork B</b> gives up the Stone
+Field's 20 crowns <i>and</i> Bonepicker's, for one slot and no fight. That last one is the sharpest
+trade on the map: the fight road pays you and then lets you refit, the quiet road does neither and
+costs you nobody.</p>
+</div>
+
+<h2>6. Rule changes, one at a time</h2>
+
+<div class="card">
+<h3>6.1 Road events: half as often, at most one per leg</h3>
+<p>Today: 1 to 3 stops per leg, 55% chance of something at each. Proposed: <b>28%</b> per stop, and a
+<b>latch</b> so the rest of the leg stays quiet once something has fired (a returner counts).</p>
+<pre>chance of at least one thing on a leg      today    proposed
+  1 day                                     0.55      0.28
+  2 days                                    0.80      0.48
+  3+ days                                   0.91      0.63
+expected road events, full risky route      ~9.4      ~4.7</pre>
+<p class="muted">Exactly half, and a longer road is still more likely to have something on it, so
+8f.51's "a longer road is more road" survives. The vignette/incident mix (55% and 82% on later stops)
+is untouched.</p>
+
+<h3>6.2 The Thing in Armour re-anchors, and it has to</h3>
+<p>Today's rule is "the first ordinary arrival after the first muster". <b>With the muster moved before
+the Fen, that rule fires the ambush on arrival at the Black Fen, on top of the boss.</b> The rule must
+travel with the muster. Proposed: the anchor is <b>the node where the fork after Coldharrow rejoins</b>,
+computed at boot from <code>branchOf('vill').join</code>, so no coordinate and no id is hardcoded and a
+future map rebuild cannot silently move it. On this map that is The Dead Company, reached by both roads.
+Everything else about it is unchanged: once a run, on arrival, the node's own event queues behind it.</p>
+<p class="muted">⚠ <code>branchOf</code> reads <code>EDGES</code>, so the anchor must be resolved after
+the <code>EDGES</code> declaration, never in a boot IIFE above it. That exact temporal-dead-zone crash
+already cost this project a session.</p>
+
+<h3>6.3 The armourer</h3>
+<p>The rack leaves Coldharrow and stands at the muster as the quartermaster's cart. Same rule, three
+pieces on the boards, buy one, he will not sell you two. The early rack rolls from the cheap row only:
+<code>buckler 55 &middot; quiver 50 &middot; shield 60 &middot; shortsw 65 &middot; spear 75 &middot;
+jack 95</code>. Coldharrow keeps <b>one</b> expensive piece instead of three cheap ones, rolled from
+<code>mail 210 &middot; bow 110 &middot; maul 150 &middot; focus 80</code>, so the town is still where a
+big purse buys something a battered company cannot.</p>
+
+<h3>6.4 The start purse</h3>
+<p>Wagon <b>48 &rarr; 90</b>, inherited wagon <b>24 &rarr; 48</b>. The prologue is untouched, so the
+opening is 120 / 150 / 180 depending on how you answered the man in the coat. The boot line
+"Forty-eight crowns, and don't" becomes "Ninety crowns, and don't".</p>
+
+<h3>6.5 Slots and the pool</h3>
+<p>Seven slots: <code>b1 f1 f2 f3 q1 e1 p1</code>. A single run walks 2 to 5 of them. The floating pool
+drops to 16 because Bonepicker's Camp becomes fixed; nothing else leaves and nothing is added. No
+splitting by road, per 8.6.</p>
+
+<h3>6.6 The Roadside Fire</h3>
+<p><code>fire</code>, <code>t:'camp'</code>, fixed, between the Broken Men and the Ruined Steading. It
+is <b>not a new event.</b> It opens one card from the existing <code>CAMPS</code> deck, the same deck
+the road already rolls at random, and then the company walks on.</p>
+<p><b>Why it is worth a node rather than a slot.</b> Three reasons, in order of weight:</p>
+<ol>
+<li><b>It repairs what 8.7 costs.</b> Halving the road-event rate halves how often the fire-side deck
+comes up, and that deck is where the <i>chains</i> live: <code>debt &rarr; debt2/3/4</code>,
+<code>kin &rarr; kin2/3/4</code>, <code>fiddler</code>, <code>found</code>. Those chains are the only
+content in the game that does all six links (named person, witnessed choice, mechanical act, stored
+fact, delayed consequence, changed encounter). Thinning them by half and pinning one to the map is a
+better trade than either alone.</li>
+<li><b>Two fights were one day apart.</b> The Broken Men and the dogs, with nothing between them. That
+is a check the dramaturge runs and the front half was the only place still failing it.</li>
+<li><b>It rhymes with what comes next, on purpose.</b> You make camp and the company talks. The next
+night you make camp inside a ruined palisade and are hit through the wall. Two camps in a row, one
+where nothing happens and one where everything does. The quiet one is what makes the second one land.</li>
+</ol>
+<p><b>Days:</b> paid for, not added. <code>clash &rarr; b1</code> drops from 2 days to 1, so fork A's
+risky road is still 4 days against the safe road's 6, and the run is still 17 to 21. The risky road now
+reads <i>fight, slot, fight, fire, fight</i>.</p>
+<p class="muted">Edge case for implementation: the camp deck is once-per-id per run, so if it were ever
+empty the node must fall through to a vignette rather than to an empty card. Early in the act it cannot
+be empty, but the fallback still gets written.</p>
+<p class="muted"><b>The two I did not pick, and why.</b> A plain <i>slot</i> would have been cheapest,
+but the risky road already has one and a second says nothing about the road. Pulling the <i>wedding</i>
+out of the floating pool would have guaranteed the warmest card in the game, and made ratkin legible as
+people before the Snare, but it makes one road strictly nicer and takes the best card away from every
+other road in every other run.</p>
+</div>
+
+<h2>7. THE WARM SPRING: draft rules</h2>
+<div class="card">
+<p><span class="tag tagNew">DRAFT</span><b>Node:</b> <code>oasis</code>, <code>t:'event'</code>,
+<code>ev:'oasis'</code>, fixed, on the corridor between the Dead Company and fork C.
+<b>Beat:</b> the full exhale, drama -3, immediately after the worst fight in the act. A hot spring in a
+green hollow in the wrong season, an old cut stone lip, nobody guarding it. The company does not trust
+it, which is the joke, and the joke is the relief.</p>
+<table>
+<tr><th>choice</th><th>what it is for</th><th>draft effect</th></tr>
+<tr><td>A day in the water. All of you.</td><td>the recovery the back half has nowhere else</td>
+    <td>-1 day, -2 provisions, a share of every wound closes, morale +14</td></tr>
+<tr><td>Fill everything and go.</td><td>competence, no stop</td><td>+4 provisions, morale +4</td></tr>
+<tr><td>Strip it. The votive coins in the basin, the orchard wall for firewood.</td>
+    <td>the ugly answer pays, or the pillar is decoration</td><td>+40 crowns, +4 salvage, morale -12</td></tr>
+<tr class="new"><td><b>{NAME} asks for one more day here.</b><br>
+    <i>The person with the worst wound or a condition on them, named.</i></td>
+    <td>your 8.5. One person, one day, and it lands on their sheet</td>
+    <td><b>give it:</b> -1 day, their condition clears, permanent +1 NERVE, remembered as a fact on
+    their sheet ("The spring gave it back")<br>
+    <b>refuse:</b> free, and remembered as a grievance on the same sheet</td></tr>
+</table>
+<p class="muted">The fourth choice is the one that earns the node. It is the six-link chain the project
+asks for: a named person, a witnessed choice, a mechanical act (+1 MOR or a stored grievance), a stored
+fact, and a body who behaves differently in the last fight because of it. The other three are texture.
+Prose and final numbers belong to your event session; this is the rules half of the gate, and it wants
+its picture before any of it is code.</p>
+</div>
+
+<h2>8. Flags: things I decided that you may want to overrule</h2>
+<div class="card flag">
+<ol>
+<li><b>8.3 read as "both".</b> Your "Да" answered an either/or. I moved the rack to the muster
+    <i>and</i> left Coldharrow one expensive piece. If you meant "move it entirely, Coldharrow gets
+    nothing", delete section 6.3's last sentence and the town drops to three things.</li>
+<li><b>The recovery beat is Bonepicker's Camp, not new prose.</b> It buys food, ogre armour, a gem sale
+    and one restful night for +14 morale, but it does <i>not</i> close wounds. If you want actual
+    healing there before the ambush, that is one new row on an existing event, which is your event
+    session, not mine.</li>
+<li><b>The act is 4 days longer at the short end</b> (17 rather than 13). That is the price of deleting
+    the pass, and it is paid in wages. The cheapest single day to buy back is the <code>e1</code> slot on
+    fork C; say the word and it goes.</li>
+<li><b>The lore line about the Hunch needs one sentence changed.</b> README says the road "cannot cross
+    except at one pass". With the pass deleted the crossing is the north shoulder and the return is round
+    the southern foot, which is what the map already draws. Small doc edit, not a design question.</li>
+</ol>
+</div>
+
+<h2>9. What is deliberately untouched</h2>
+<div class="card">
+<ul>
+  <li>Every existing event's text and choices. Events move; they do not change.</li>
+  <li>Wynn (#59): still waiting at the Last Muster, which every road now reaches.</li>
+  <li>The journal export contract v2 (#57, your tab). Row shape unchanged; new place names are just
+      new values in the same field.</li>
+  <li>Battle balance constants. Observations keep going to #50's parking lot.</li>
+  <li>The map background. The geography still reads the same way, so nothing has to be repainted. If
+      you want it refreshed it is a separate job.</li>
+</ul>
+</div>
+
+<h2>10. Implementation order, after approval</h2>
+<div class="card">
+<ol>
+  <li><code>NODES</code> / <code>EDGES</code> to the layout below.
+      <code>SLOTS_ON_MAP=['b1','f1','f2','f3','q1','e1','p1']</code>. Remove <code>'camp'</code> from
+      <code>FLOATING</code>. Delete <code>o1</code>, <code>o2</code>, and the pass edge.</li>
+  <li><code>armourDue</code> rewritten against <code>branchOf('vill').join</code>, declared after
+      <code>EDGES</code>. Fallback to the old rule if the fork ever has no join.</li>
+  <li><code>rollCampAt</code> and <code>travel</code>: 0.28, plus a per-leg latch threaded through
+      <code>leg(i)</code>. <code>arrive</code> stays the only thing that clears <code>G.moving</code>.</li>
+  <li>Boot purse 48 &rarr; 90 and 24 &rarr; 48, and the two boot sentences that print the number.</li>
+  <li><code>openHire</code> gains the quartermaster's rack (cheap row, three rolled, buy one);
+      <code>drawVillage</code>'s <code>arm</code> row becomes a single expensive piece.</li>
+  <li><code>EVENTS.oasis</code> written from section 7 after the picture is approved.</li>
+  <li>The <code>fire</code> node: one handler that calls the existing <code>openCamp</code> with the
+      node's position, plus a vignette fallback if the camp deck is spent.</li>
+  <li>Copy edits where the order changed: the muster's opening lines now speak of the Fen ahead rather
+      than behind, the new fork labels, the curve bow on the pilgrim path.</li>
+  <li>Checks: <code>LINT()</code>, <code>spacingViolations()</code>, <code>labelViolations()</code>,
+      <code>branchOf</code> on all three forks, <code>regress()</code> over all eight fights, one full
+      human run through the world, then the <code>WHAT_TO_TEST.md</code> section.</li>
+  <li>Backlog number taken only after grepping all three doc headers <b>and</b> the prototype.</li>
+</ol>
+</div>
+
+<h2>11. Geometry check, computed on this page</h2>
+<div class="card"><div id="spacing"></div><div id="codeOut"></div></div>
+
+<script>
+var NEW_NODES={
+  hold  :{x:100, y:330, n:'Grausen Hold',        t:'town'},
+  clash :{x:228, y:330, n:'Blood on the Road',   t:'battle'},
+  b1    :{x:362, y:232, n:'slot',                t:'slot'},
+  bm    :{x:500, y:172, n:'The Broken Men',      t:'battle'},
+  fire  :{x:640, y:178, n:'The Roadside Fire',   t:'camp', mark:'new', note:'NEW, A CAMP NIGHT'},
+  f1    :{x:330, y:452, n:'slot',                t:'slot'},
+  f2    :{x:445, y:505, n:'slot',                t:'slot'},
+  f3    :{x:578, y:455, n:'slot',                t:'slot'},
+  camp1 :{x:668, y:322, n:'The Ruined Steading', t:'battle'},
+  hire  :{x:782, y:200, n:'The Muster Field',    t:'hire', mark:'moved',
+          note:'+ THE ARMOURER, MOVED HERE'},
+  mother:{x:832, y:418, n:'The Black Fen',       t:'weird'},
+  vill  :{x:948, y:296, n:'Coldharrow',          t:'town'},
+  sling :{x:1062,y:150, n:'The Stone Field',     t:'battle'},
+  rest  :{x:1192,y:196, n:"Bonepicker's Camp",   t:'shop', mark:'new', note:'NEW FIXED, RECOVERY'},
+  q1    :{x:1075,y:302, n:'slot',                t:'slot', mark:'new'},
+  dead  :{x:1200,y:332, n:'The Dead Company',    t:'event', note:'★ THING IN ARMOUR'},
+  oasis :{x:1178,y:470, n:'The Warm Spring',     t:'event', mark:'new', note:'NEW'},
+  p1    :{x:1032,y:448, n:'slot',                t:'slot'},
+  steadn:{x:1078,y:578, n:'The Hill Steading',   t:'battle'},
+  e1    :{x:930, y:592, n:'slot',                t:'slot'},
+  shrine:{x:800, y:570, n:'The Door-Shrine',     t:'camp'},
+  hire2 :{x:668, y:548, n:'The Last Muster',     t:'hire'},
+  snare :{x:542, y:585, n:'The Snare',           t:'battle'}
+};
+var NEW_EDGES=[
+  ['hold','clash',1],
+  ['clash','b1',1],['b1','bm',1],['bm','fire',1],['fire','camp1',1],
+  ['clash','f1',2],['f1','f2',2],['f2','f3',1],['f3','camp1',1],
+  ['camp1','hire',1],['hire','mother',1],['mother','vill',1],
+  ['vill','sling',1],['sling','rest',1],['rest','dead',1],
+  ['vill','q1',2],['q1','dead',2],
+  ['dead','oasis',1],
+  ['oasis','steadn',1],['steadn','e1',1],['e1','shrine',1],
+  ['oasis','p1',2],['p1','shrine',2],
+  ['shrine','hire2',1],['hire2','snare',1]
+];
+var OLD_NODES={
+  hold  :{x:100, y:330, n:'Grausen Hold',        t:'town'},
+  clash :{x:228, y:330, n:'Blood on the Road',   t:'battle'},
+  o1    :{x:352, y:168, n:'slot',                t:'slot'},
+  o2    :{x:520, y:112, n:'slot',                t:'slot'},
+  b1    :{x:372, y:330, n:'slot',                t:'slot'},
+  bm    :{x:546, y:300, n:'The Broken Men',      t:'battle'},
+  f1    :{x:322, y:488, n:'slot',                t:'slot'},
+  f2    :{x:480, y:552, n:'slot',                t:'slot'},
+  f3    :{x:596, y:458, n:'slot',                t:'slot'},
+  camp1 :{x:700, y:330, n:'The Ruined Steading', t:'battle'},
+  mother:{x:806, y:420, n:'The Black Fen',       t:'weird'},
+  vill  :{x:890, y:300, n:'Coldharrow + armourer',t:'town'},
+  hire  :{x:986, y:196, n:'The Muster Field',    t:'hire'},
+  sling :{x:1112,y:124, n:'The Stone Field',     t:'battle'},
+  dead  :{x:1214,y:236, n:'The Dead Company',    t:'event', note:'★ THING IN ARMOUR'},
+  steadn:{x:1216,y:392, n:'The Hill Steading',   t:'battle'},
+  e1    :{x:1122,y:516, n:'slot',                t:'slot'},
+  e2    :{x:1000,y:300, n:'slot',                t:'slot'},
+  shrine:{x:930, y:500, n:'The Door-Shrine',     t:'camp'},
+  hire2 :{x:812, y:560, n:'The Last Muster',     t:'hire'},
+  snare :{x:700, y:540, n:'The Snare',           t:'battle'}
+};
+var OLD_EDGES=[
+  ['hold','clash',1],
+  ['clash','o1',3],['o1','o2',2],['o2','camp1',2],
+  ['clash','b1',2],['b1','bm',2],['bm','camp1',1],
+  ['clash','f1',2],['f1','f2',2],['f2','f3',2],['f3','camp1',1],
+  ['camp1','mother',1],['mother','vill',1],['vill','hire',1],
+  ['hire','dead',3],['hire','sling',1],['sling','dead',1],
+  ['dead','steadn',1],['steadn','e1',1],['e1','shrine',1],
+  ['dead','e2',2],['e2','shrine',2],
+  ['shrine','hire2',1],['hire2','snare',1],
+  ['dead','snare',2,90]
+];
+var TCOL={town:'#c9a227',shop:'#c9a227',battle:'#c15d55',weird:'#b58ad1',
+  hire:'#5fa8a0',event:'#9a9a8a',slot:'#7a7a72',camp:'#9a9a8a'};
+var TGLY={town:'●',shop:'●',battle:'✕',weird:'◈',
+  hire:'⚑',event:'◆',slot:'◇',camp:'◆'};
+function drawMap(elId,nodes,edges,title){
+  var s='<svg viewBox="0 0 1280 660" xmlns="http://www.w3.org/2000/svg">';
+  s+='<text x="14" y="26" fill="#6b5d43" font-size="15" font-family="Georgia">'+title+'</text>';
+  edges.forEach(function(e){
+    var a=nodes[e[0]],b=nodes[e[1]],bow=e[3]||0;
+    var mx=(a.x+b.x)/2,my=(a.y+b.y)/2-bow;
+    s+='<path d="M'+a.x+','+a.y+' Q'+mx+','+my+' '+b.x+','+b.y+
+      '" fill="none" stroke="#4d3c22" stroke-width="2"/>';
+    var lx=(a.x+2*mx+b.x)/4,ly=(a.y+2*my+b.y)/4;
+    s+='<text x="'+lx+'" y="'+(ly-7)+'" fill="#7f6d4c" font-size="12" text-anchor="middle" '+
+      'font-family="Consolas,monospace">'+e[2]+'d</text>';
+  });
+  Object.keys(nodes).forEach(function(k){
+    var n=nodes[k],c=TCOL[n.t]||'#9a9a8a',g=TGLY[n.t]||'◆';
+    if(n.mark)s+='<circle cx="'+n.x+'" cy="'+n.y+'" r="24" fill="none" stroke="#e9e2d0" '+
+      'stroke-dasharray="4,4" stroke-width="1.4"/>';
+    s+='<text x="'+n.x+'" y="'+(n.y+7)+'" fill="'+c+'" font-size="21" text-anchor="middle">'+g+'</text>';
+    s+='<text x="'+n.x+'" y="'+(n.y+27)+'" fill="#cbbf9f" font-size="12.5" text-anchor="middle" '+
+      'font-family="Georgia">'+n.n+'</text>';
+    if(n.note){
+      var col=n.note.charAt(0)==='★'?'#c15d55':(n.mark==='moved'?'#5fa8a0':'#e9e2d0');
+      s+='<text x="'+n.x+'" y="'+(n.y-26)+'" fill="'+col+'" font-size="11.5" text-anchor="middle" '+
+        'font-family="Georgia">'+n.note+'</text>';
+    }
+  });
+  s+='</svg>';
+  document.getElementById(elId).innerHTML=s;
+}
+drawMap('mapNew',NEW_NODES,NEW_EDGES,'PROPOSED');
+drawMap('mapOld',OLD_NODES,OLD_EDGES,'TODAY');
+
+/* the game's own two rules, computed and never measured */
+(function(){
+  var ks=Object.keys(NEW_NODES),out=[];
+  for(var i=0;i<ks.length;i++)for(var j=i+1;j<ks.length;j++){
+    var a=NEW_NODES[ks[i]],b=NEW_NODES[ks[j]];
+    var dx=Math.abs(a.x-b.x),dy=Math.abs(a.y-b.y),d=Math.round(Math.hypot(dx,dy));
+    if(d<90)out.push(ks[i]+' / '+ks[j]+': glyphs crowd, '+d+'px');
+    else if(dx<110&&dy<72)out.push(ks[i]+' / '+ks[j]+': name plates overlap, dx='+dx+' dy='+dy);
+  }
+  ks.forEach(function(k){var n=NEW_NODES[k];
+    if(n.x<60||n.x>1220||n.y<38||n.y>600)out.push(k+': outside the clamped map area');});
+  var pairs=ks.length*(ks.length-1)/2;
+  document.getElementById('spacing').innerHTML=out.length
+    ? '<p class="bad">'+out.length+' violations of '+pairs+' pairs:</p><pre>'+out.join('\n')+'</pre>'
+    : '<p class="ok">Clean. '+ks.length+' nodes, '+pairs+' pairs, 0 violations of the 90px rule and '+
+      'the 110x72 name-plate rule, all inside the clamp. Same arithmetic as '+
+      '<code>spacingViolations()</code>. Road-label collisions still need '+
+      '<code>labelViolations()</code> against the real CSS at implementation time.</p>';
+  var code='const NODES={\n'+ks.map(function(k){var n=NEW_NODES[k];
+    return '  '+(k+'      ').slice(0,6)+':{x:'+n.x+',y:'+n.y+"},";}).join('\n')+
+    '\n};\nconst EDGES=[\n'+NEW_EDGES.map(function(e){
+    return "  ['"+e[0]+"','"+e[1]+"',"+e[2]+"],";}).join('\n')+'\n];';
+  document.getElementById('codeOut').innerHTML=
+    '<h3>Coordinates and days, paste-ready shape</h3><pre>'+code+'</pre>';
+})();
+</script>
+</body>
+</html>

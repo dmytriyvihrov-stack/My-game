@@ -1,0 +1,517 @@
+<title>Grimtoll: the muster board</title>
+
+<style>
+/* ───────────────────────────────────────────────────────────
+   DELIBERATELY SINGLE-THEME. The user picked the light one by
+   name ("I love white one"), so the page commits to bone and
+   ink and does not follow the viewer's dark preference.
+   ─────────────────────────────────────────────────────────── */
+:root{
+  --ink:#14181B; --ink-2:#3A454C; --ink-3:#69757D;
+  --ground:#DCDAD2; --panel:#E7E5DE; --panel-2:#D0CDC3;
+  --rule:#B7B3A6; --rule-soft:#C8C5BA;
+  --brass:#8A6516; --brass-soft:#F1E5C7;
+  --verd:#356B59; --verd-soft:#D3E2DA;
+  --rust:#94371F; --rust-soft:#F1D9D1;
+  --steel:#5F7079;
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--ground); color:var(--ink);
+  font-family:-apple-system,"Segoe UI",Roboto,ui-sans-serif,sans-serif;
+  font-size:15px; line-height:1.55; -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1120px; margin:0 auto; padding:34px 22px 90px}
+.display{font-family:Georgia,"Iowan Old Style","Palatino Linotype",serif; font-weight:400; text-wrap:balance}
+.eyebrow{font-family:ui-monospace,"Cascadia Mono",Consolas,monospace; font-size:10.5px;
+  letter-spacing:.20em; text-transform:uppercase; color:var(--ink-3)}
+.mono{font-family:ui-monospace,"Cascadia Mono",Consolas,monospace; font-variant-numeric:tabular-nums}
+
+/* ── masthead ─────────────────────────────────── */
+header.mast{border-bottom:2px solid var(--ink); padding-bottom:16px}
+.mast h1{font-family:Georgia,serif; font-weight:400; font-size:clamp(30px,5.2vw,46px);
+  line-height:1.04; margin:8px 0 6px; letter-spacing:-.005em}
+.mast h1 em{font-style:italic; color:var(--brass)}
+.mast .sub{max-width:64ch; color:var(--ink-2); margin:0}
+.tally{display:flex; flex-wrap:wrap; margin-top:18px; border-top:1px solid var(--rule-soft)}
+.tally div{flex:1 1 118px; padding:10px 14px 8px; border-right:1px solid var(--rule-soft)}
+.tally div:last-child{border-right:0}
+.tally b{display:block; font-family:Georgia,serif; font-size:23px; line-height:1.1}
+.tally span{display:block; font-size:11px; letter-spacing:.07em; text-transform:uppercase; color:var(--ink-3)}
+
+/* ── sections ─────────────────────────────────── */
+section{margin-top:52px}
+.shead{display:flex; align-items:baseline; gap:14px; border-bottom:1px solid var(--ink); padding-bottom:7px}
+.shead h2{font-family:Georgia,serif; font-weight:400; font-size:22px; margin:0}
+.shead .note{margin-left:auto; font-size:12.5px; color:var(--ink-3); text-align:right}
+.lede{max-width:68ch; color:var(--ink-2); margin:14px 0 0}
+
+/* ── gate rail ────────────────────────────────── */
+.meter{margin-top:22px; border:1px solid var(--rule); background:var(--panel)}
+.meter .bar{display:flex; height:9px}
+.meter .bar i{display:block; height:100%}
+.meter .legend{display:flex; flex-wrap:wrap; gap:16px; padding:8px 12px;
+  border-top:1px solid var(--rule-soft); font-size:11.5px; color:var(--ink-2)}
+.meter .legend b{font-weight:600; color:var(--ink)}
+.key{display:inline-block; width:9px; height:9px; margin-right:6px}
+
+.rail{display:grid; grid-template-columns:repeat(auto-fill,minmax(168px,1fr)); gap:1px;
+  background:var(--rule-soft); border:1px solid var(--rule); margin-top:18px}
+.st{background:var(--panel); border:0; text-align:left; color:inherit; font:inherit;
+  padding:12px 13px 13px; cursor:pointer; position:relative; display:block;
+  border-left:3px solid transparent; transition:background .12s ease}
+.st:hover{background:var(--panel-2)}
+.st:focus-visible{outline:2px solid var(--brass); outline-offset:-2px}
+.st[data-s="open"]{border-left-color:var(--steel)}
+.st[data-s="moving"]{border-left-color:var(--brass)}
+.st[data-s="ask"]{border-left-color:var(--rust)}
+.st[data-s="done"]{border-left-color:var(--verd)}
+.st[data-s="done"] .mark{color:var(--verd)}
+.st[data-s="gate"]{border-left-color:var(--verd); background:var(--panel-2)}
+.st.on{background:var(--brass-soft)}
+.st .id{font-family:ui-monospace,Consolas,monospace; font-size:10.5px; letter-spacing:.12em; color:var(--ink-3)}
+.st .nm{font-family:Georgia,serif; font-size:15.5px; line-height:1.25; margin-top:3px; display:block}
+.st .mv{font-family:ui-monospace,Consolas,monospace; font-size:10px; color:var(--brass); margin-top:6px; display:block}
+.st .mark{position:absolute; top:11px; right:12px; font-size:12px; color:var(--ink-3)}
+
+.detail{border:1px solid var(--rule); border-top:0; background:var(--panel); padding:16px 18px; display:grid; gap:11px}
+.detail .dt{max-width:72ch}
+.detail .dt b{font-family:Georgia,serif; font-weight:400; font-size:17px; display:block; margin-bottom:2px}
+.detail .row{display:flex; flex-wrap:wrap; gap:10px 22px; font-size:13px; color:var(--ink-2)}
+.detail .row u{text-decoration:none; color:var(--ink-3); text-transform:uppercase;
+  letter-spacing:.1em; font-size:10.5px; display:block}
+
+/* ── filters ──────────────────────────────────── */
+.filters{display:flex; flex-wrap:wrap; gap:7px; margin-top:20px}
+.chip{font:inherit; font-size:12.5px; padding:4px 11px; cursor:pointer;
+  background:transparent; color:var(--ink-2); border:1px solid var(--rule)}
+.chip:hover{border-color:var(--ink-3); color:var(--ink)}
+.chip:focus-visible{outline:2px solid var(--brass); outline-offset:1px}
+.chip[aria-pressed="true"]{background:var(--ink); color:var(--ground); border-color:var(--ink)}
+
+/* ── buckets ──────────────────────────────────── */
+.bucket{margin-top:34px}
+.bhead{display:flex; align-items:flex-end; gap:12px; padding-bottom:6px; border-bottom:3px solid var(--ink)}
+.bucket[data-b="2"] .bhead{border-bottom-color:var(--steel)}
+.bucket[data-b="3"] .bhead{border-bottom-color:var(--rule)}
+.bhead .ord{font-family:Georgia,serif; font-size:30px; line-height:.9; color:var(--brass)}
+.bucket[data-b="2"] .bhead .ord{color:var(--steel)}
+.bucket[data-b="3"] .bhead .ord{color:var(--ink-3)}
+.bhead h3{font-family:Georgia,serif; font-weight:400; font-size:19px; margin:0; flex:1}
+.bhead .cnt{font-family:ui-monospace,Consolas,monospace; font-size:11px; color:var(--ink-3)}
+.bwhy{font-size:13px; color:var(--ink-2); margin:8px 0 4px; max-width:74ch}
+
+.ent{display:grid; grid-template-columns:64px 1fr; gap:0 16px;
+  border-bottom:1px solid var(--rule-soft); padding:11px 0 12px; transition:opacity .15s ease}
+.ent.dim{opacity:.26}
+.ent.hit{background:var(--brass-soft); box-shadow:-10px 0 0 var(--brass-soft),10px 0 0 var(--brass-soft)}
+.ent.gate{border-left:3px solid var(--verd); padding-left:11px; margin-left:-14px;
+  grid-template-columns:64px 1fr; background:var(--verd-soft)}
+.ent.gate.hit{background:var(--brass-soft)}
+.folio{text-align:right; padding-top:1px}
+.folio .num{font-family:Georgia,serif; font-size:20px; line-height:1; display:block}
+.folio .tier{font-family:ui-monospace,Consolas,monospace; font-size:9.5px; letter-spacing:.09em;
+  display:block; margin-top:4px; color:var(--ink-3)}
+.ent h4{margin:0; font-size:15px; font-weight:600; line-height:1.3}
+.ent p{margin:3px 0 0; font-size:13.2px; color:var(--ink-2); max-width:76ch}
+.ent .blocks{margin:5px 0 0; font-size:12.5px; color:var(--verd); font-weight:600}
+.tags{display:flex; flex-wrap:wrap; gap:6px; margin-top:7px}
+.tag{font-family:ui-monospace,Consolas,monospace; font-size:10px; letter-spacing:.06em;
+  padding:2px 6px; border:1px solid var(--rule); color:var(--ink-3); text-transform:uppercase}
+.tag.wait{border-color:var(--rust); color:var(--rust)}
+.tag.crit{border-color:var(--verd); color:var(--verd); background:var(--panel)}
+.tag.feed{border-color:var(--brass); color:var(--brass)}
+.tag.scr{border-color:var(--rule-soft); color:var(--ink-3)}
+
+/* ── strip + decisions ────────────────────────── */
+.strip{margin-top:20px; border:1px solid var(--rule); background:var(--panel); padding:13px 16px; overflow-x:auto}
+.strip .ln{display:flex; gap:9px; align-items:baseline; padding:5px 0; white-space:nowrap}
+.strip .ln b{font-family:ui-monospace,Consolas,monospace; font-size:10px; letter-spacing:.13em;
+  text-transform:uppercase; color:var(--ink-3); width:106px; flex:none}
+.strip .ln span{font-family:Georgia,serif; font-size:15px}
+.strip .ln .arw{color:var(--ink-3)}
+.strip .ln .gt{color:var(--verd); font-weight:600}
+.strip .ln .aside{font-family:inherit; font-size:12px; color:var(--ink-3)}
+
+.decide{border-left:3px solid var(--rust); background:var(--rust-soft); padding:14px 18px; margin-top:16px}
+.decide h4{margin:0 0 4px; font-family:Georgia,serif; font-weight:400; font-size:16.5px}
+.decide p{margin:0 0 10px; font-size:13.5px; color:var(--ink-2); max-width:74ch}
+.decide p:last-child{margin-bottom:0}
+.decide .ans{color:var(--ink); font-weight:600}
+
+footer{margin-top:60px; border-top:1px solid var(--rule); padding-top:12px; font-size:12px; color:var(--ink-3)}
+
+@media (max-width:560px){
+  .ent,.ent.gate{grid-template-columns:44px 1fr; gap:0 11px}
+  .folio .num{font-size:17px}
+  .rail{grid-template-columns:repeat(auto-fill,minmax(140px,1fr))}
+  .strip .ln b{width:auto}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none !important}}
+</style>
+
+<div class="wrap">
+
+  <header class="mast">
+    <div class="eyebrow">Grimtoll &middot; the work, as of 2 August 2026</div>
+    <h1 class="display">The muster board: <em>everything between here and ten friends</em></h1>
+    <p class="sub">Act 1 is feature-complete and the playthrough verdict was good. What is left is not
+      features. It is the gap between a slice that works and a build a stranger can trust.</p>
+    <div class="tally">
+      <div><b class="mono">5</b><span>before playtest 1</span></div>
+      <div><b class="mono">13</b><span>before playtest 2</span></div>
+      <div><b class="mono">13</b><span>later, and that is fine</span></div>
+      <div><b class="mono">3</b><span>critical gates</span></div>
+      <div><b class="mono">48</b><span>already shipped</span></div>
+    </div>
+  </header>
+
+  <!-- ══ GATE 1 ══════════════════════════════════ -->
+  <section>
+    <div class="shead">
+      <h2 class="display">Gate 1 &middot; ten friends</h2>
+      <div class="note">click a step to see what it needs</div>
+    </div>
+    <p class="lede">Thirteen steps, and <b>not one of them adds a system</b>. Each is either making a
+      thing legible, making a thing fair, or making a thing look finished. <b>Only five backlog
+      entries are inside this gate</b>: the rest of it is polish, measurement and two playthroughs,
+      which is exactly why it does not look like the old build order.</p>
+    <p class="lede"><b>After the QA day (2 Aug) the model run and its fix pass are closed</b>: five
+      campaign runs through the real UI, 27 findings, no soft locks, twin fix passes 8f.88 to 8f.91,
+      your five rulings same day. <b>Your own short list to the gate, in your words:</b>
+      1&#41; update the event texts, your side and then a session's &middot;
+      2&#41; the remaining event art, after the texts &middot;
+      3&#41; check the send-run form. The board's stations for those are G1-8 and the two #76/#77
+      remainders.</p>
+
+    <div class="meter">
+      <div class="bar" id="bar"></div>
+      <div class="legend">
+        <span><i class="key" style="background:var(--verd)"></i><b>2</b> closed</span>
+        <span><i class="key" style="background:var(--brass)"></i><b>1</b> moving</span>
+        <span><i class="key" style="background:var(--steel)"></i><b>7</b> not started</span>
+        <span><i class="key" style="background:var(--rust)"></i><b>3</b> your call, undecided</span>
+      </div>
+    </div>
+
+    <div class="rail" id="rail"></div>
+    <div class="detail" id="detail"></div>
+  </section>
+
+  <!-- ══ THE THREE BUCKETS ═══════════════════════ -->
+  <section>
+    <div class="shead">
+      <h2 class="display">The backlog, by when it has to be true</h2>
+      <div class="note" id="scount"></div>
+    </div>
+    <p class="lede">Thirty-one live rows sorted into three questions rather than four tiers.
+      <b>Does a friend need this to understand the game?</b> Then it is first.
+      <b>Does the depth pass need it before strangers arrive?</b> Then it is second.
+      Everything else is third, and third is not a demotion: it is the pile that gets to be good
+      instead of urgent. <b>Three rows are critical gates</b>, marked in green, because other entries
+      cannot start until they exist.</p>
+
+    <div class="filters" id="filters"></div>
+    <div id="ledger"></div>
+  </section>
+
+  <!-- ══ ORDER + DECISIONS ═══════════════════════ -->
+  <section>
+    <div class="shead"><h2 class="display">The order, now that priority is a date and not a tier</h2>
+      <div class="note">one entry per session, still</div></div>
+    <div class="strip">
+      <div class="ln"><b>Playtest 1</b><span class="gt">13</span><span class="arw">&rsaquo;</span><span>50</span><span class="arw">&rsaquo;</span><span>27</span><span class="arw">&middot;</span><span>12</span><span class="arw">&middot;</span><span>39</span><span class="aside">&nbsp;&nbsp;13 is the gate: the three balance steps are unmeasurable without it</span></div>
+      <div class="ln"><b>Playtest 2</b><span class="gt">24</span><span class="arw">&rsaquo;</span><span class="gt">4+17</span><span class="arw">&rsaquo;</span><span>34</span><span class="arw">&middot;</span><span>32</span><span class="arw">&middot;</span><span>2</span><span class="arw">&middot;</span><span>47</span><span class="arw">&middot;</span><span>45</span><span class="arw">&middot;</span><span>16</span><span class="arw">&middot;</span><span>3</span><span class="arw">&middot;</span><span>22</span><span class="arw">&middot;</span><span>59</span><span class="aside">&nbsp;&nbsp;plus the settlements MVP</span></div>
+      <div class="ln"><b>Later</b><span>35</span><span class="arw">&middot;</span><span>25</span><span class="arw">&middot;</span><span>23</span><span class="arw">&middot;</span><span>19</span><span class="arw">&middot;</span><span>21</span><span class="arw">&middot;</span><span>26</span><span class="arw">&middot;</span><span>28</span><span class="arw">&middot;</span><span>29</span><span class="arw">&middot;</span><span>30</span><span class="arw">&middot;</span><span>37</span><span class="arw">&middot;</span><span>42</span><span class="arw">&middot;</span><span>43</span><span class="arw">&middot;</span><span>49</span></div>
+    </div>
+
+    <div class="decide">
+      <h4 class="display">Five calls the board is waiting on, and all five are yours</h4>
+      <p><i>Five others were made on 2 Aug and are already built or banked: the under-hill tunnel
+        stays a secret, the dog pack stays the keep-your-ground skill check, provisions stay
+        heal-only, the noble pays a third more, and both reported text bugs are fixed.</i></p>
+      <p><span class="ans">Does the polish gate outrank the deep work?</span> The buckets above assume
+        yes: five entries before the friends play, everything structural after. If you would rather
+        interleave, the honest cost is that a friend meets a build in the middle of a rule change.</p>
+      <p><span class="ans">Is #50 pulled forward at playtest grade?</span> It is marked
+        <i>deliberately last</i> and bucket 1 puts it second. The recommendation keeps the number and
+        keeps the terminal pass: classes, races and fights get tuned to <i>survivable and fair</i>,
+        and the deferred pieces it holds stay behind for the real one.</p>
+      <p><span class="ans">Is the spearwoman sayable in one sentence without #47?</span> That is the
+        one row I moved out of bucket 1 on a judgement. It is a rework, not an addition, but it
+        touches enemy AI in both brains, which is not what you want destabilised the week before you
+        hand the build out. <b>If the class pass finds her unsayable, #47 comes forward.</b></p>
+      <p><span class="ans">Does fleeing the Thing in Armour keep deleting the Dead Company?</span>
+        Deliberate in code, but THE LONG FIRE one node later still mentions the nine men in the
+        ditch to a player who never met them. Three one-line answers in the QA report, and one of
+        them is just a text edit you could make during the event-text pass.</p>
+      <p><span class="ans">Do the bells ring over every dead company?</span> The defeat card opens
+        with "The bells are still ringing" wherever the run ends, including half a map from
+        Grausen. Keep it placeless, or key one clause on where they fell.</p>
+    </div>
+  </section>
+
+  <footer>
+    Rendered from <span class="mono">docs/00_PLAN_AND_BACKLOG.md</span> and
+    <span class="mono">docs/SHIPPED.md</span>. Regenerate with the <span class="mono">master-board</span> skill.
+  </footer>
+</div>
+
+<script>
+/* ═══ GATE 1 STEPS ═══════════════════════════════ */
+const STEPS=[
+ {id:"G1-1",nm:"The instrument",s:"open",dt:"The arena earns its keep",
+  done:"one call prints per-class and per-race numbers over all eight fights, reproducible from a seed",
+  why:"Not on your list, and it goes first anyway. Three of your own bullets are the word balance, and this project already ruled that a balance pass is measured or it is an opinion repeated four times.",
+  uses:["13"]},
+ {id:"G1-2",nm:"Classes, one by one",s:"open",dt:"Every class picked up and adjusted",
+  done:"all seven can be said in one sentence each, and none is never-picked or always-picked",
+  why:"Captain, spearwoman, archer, battle-mage, mage, cutter, brute. A class that needs a paragraph is a balance problem wearing a UI problem's clothes.",
+  uses:["50"]},
+ {id:"G1-3",nm:"Races and their skills",s:"open",dt:"Races: skills and modifiers",
+  done:"the three play differently, not merely at different numbers",
+  why:"Three banked questions land here: the uncapped poison stack, the gilled body that now has a terrain, and whether an ogre's 3 stride is a tax or a shape.",
+  uses:["50"]},
+ {id:"G1-4",nm:"Battle balance",s:"open",dt:"Battle balance, and only after the two above",
+  done:"eight fights inside their round bands with the boss longest, measured rather than felt",
+  why:"A fight is composed of classes and races, so retuning a fight to fix a class is how a pass eats itself. This is the runaway risk of the whole gate: give it a band and stop when the band is met.",
+  uses:["50","27"]},
+ {id:"G1-5",nm:"The opening",s:"open",dt:"Less text, more engaging",
+  done:"time and clicks to the first decision that costs something are measured and cut, and the teaching survives the cut",
+  why:"The trap: the opening is crowded, not empty. Ten Captain lessons already land inside a four-round first fight. This step is subtraction, and the per-round cap is the lever, not the lesson count.",
+  uses:["39"]},
+ {id:"G1-6",nm:"Dramaturgy",s:"open",dt:"Dramaturgy and dynamic",
+  done:"a run has named beats, no two adjacent screens of the same shape, and the sag is found",
+  why:"The pillar is the ruler. A stretch that never makes you choose who to be good to is the sag. The dramaturge tool is the instrument, and its analytics tab is yours.",
+  uses:["57"]},
+ {id:"G1-7",nm:"Every screen cleaner",s:"moving",moved:"1 Aug",dt:"One deliberate pass per screen",
+  done:"before-and-after per surface, and show a state / hide the number holds everywhere",
+  why:"The battle board already passed: the camera shipped at x1.30 / x1.80 / x2.50 and came back with four questions instead of nothing. Five surfaces have had no pass at all.",
+  uses:["12"]},
+ {id:"G1-8",nm:"Event art",s:"ask",dt:"Finish the event art",
+  done:"no event card falls back to a placeholder",
+  why:"Your question mark, and on 2 Aug you sequenced it yourself: the pictures wait for the event-text pass, then you send the requests in ChatGPT. The stage-2 pack is already injected and live, so this is not making art, it is finding what is still bare.",
+  uses:[]},
+ {id:"G1-9",nm:"Unit sprites",s:"ask",moved:"1 Aug",dt:"Update the sprites on the battlefield",
+  done:"a body still reads at x2.50, the closest camera stop",
+  why:"Your question mark, and it was unblocked today. The camera settled the size target and the oversample went 2 to 3 for exactly this. Before the camera, this would have been done twice.",
+  uses:[]},
+ {id:"G1-10",nm:"Music and sound",s:"ask",dt:"Music and sounds",
+  done:"you have listened to what shipped and ruled on it",
+  why:"Your question mark, and it does not start with new assets. Every new verb already has a sound, verified to fire. Whether it sounds right is your ear and has never been given.",
+  uses:["43"]},
+ {id:"G1-11",nm:"The model run",s:"done",moved:"2 Aug",dt:"A model plays it all and reports",
+  done:"a written report exists, with the reaction bar on and the journal exported",
+  why:"Done, by Claude through the real UI: five campaign runs, twelve fights, every ending shape reached, reactions pressed, journal recorded. The report is docs/QA_PLAYTEST_2026-08-02.md, 27 findings, and the headline is the absence: no soft lock and no uncaught error anywhere.",
+  uses:[]},
+ {id:"G1-12",nm:"Fix what it found",s:"done",moved:"2 Aug",dt:"Triage, then close",
+  done:"every finding sorted into blocks a friend, annoys a friend, or neither, and the first two closed",
+  why:"Closed the same day by twin fix passes, 8f.88 to 8f.91. Blocks a friend: none found. Annoys a friend: fixed, plus three real ones found while fixing. Neither: you ruled them yourself - the tunnel stays secret, the dogs stay a skill check, provisions stay heal-only, and the noble now pays a third more.",
+  uses:[]},
+ {id:"G1-13",nm:"Your own run",s:"open",dt:"The human run, and the fixes after it",
+  done:"you finish a run and nothing on your list would block a stranger",
+  why:"Precedent: the last playthrough produced two rulings that were built the same day, both small, both touching nothing in common.",
+  uses:[]},
+ {id:"GATE",nm:"Hand it to ten friends",s:"gate",dt:"The gate itself",
+  done:"ten journals come home",
+  why:"The collection instrument already exists: the reaction bar on every screen, a decision log, and a copy-paste blob so a friend's journal travels home. It needs a build, a link, and a sentence.",
+  uses:[]}
+];
+
+/* ═══ BUCKETS ════════════════════════════════════ */
+const BUCKETS=[
+ {b:"1",ord:"I",t:"Before the first playtest",
+  why:"A friend has to be able to understand the game and be treated fairly by it. Nothing here adds a system. Five entries, and the gate is the first one: the three balance steps are unmeasurable without it."},
+ {b:"2",ord:"II",t:"Before the second playtest",
+  why:"Strangers will not ask what a screen means, they will close it. This is the depth pass between the two rooms: the ledger that makes consequences findable, the anatomy that makes a maiming real, and the rule change that lets a company actually end. <b>The bigger conceptual work lives here too, by your call: the synergy rule and the metaprogression.</b> Both were parked while the things that plug into them were still landing, and by this bucket they have landed."},
+ {b:"3",ord:"III",t:"Later, and that is not a demotion",
+  why:"Thirteen rows that get to be good instead of urgent. Most are consumers of the two gates above, so they get cheaper the moment those exist. Nothing here is rejected and nothing here is forgotten."}
+];
+
+const SCR={battle:"⚔ board",road:"🗺 road",company:"🎒 company",after:"📜 aftermath",door:"🚪 front door",none:"⚙ no screen"};
+
+const E=[
+ /* ── I ── before the first playtest ── */
+ {n:"13",b:"1",sc:"none",tier:"1",t:"The balance harness earns its keep",crit:true,
+  blocks:"Nothing in the balance trio can be measured until this exists. It also unblocks #50, #29 and #30.",
+  d:"The arena exists and has gone stale around every combat change since. Without it the balance pass is somebody's opinion.",m:"split",feeds:["G1-1","G1-4"]},
+ {n:"50",b:"1",sc:"none",tier:"L",t:"The balance pass, at playtest grade",
+  d:"Classes, then races, then fights, tuned to survivable and fair. The terminal pass stays behind for the pieces it holds: the motivation rule, ZOC, the quiver.",m:"strong",feeds:["G1-2","G1-3","G1-4"]},
+ {n:"27",b:"1",sc:"none",tier:"L",t:"The optional fight is harder than the finale",
+  d:"A known wrong shape in the difficulty curve, and the first thing the arena should be pointed at.",m:"-",feeds:["G1-4"]},
+ {n:"12",b:"1",sc:"company",tier:"4",t:"Painted faces, pack 03",
+  d:"Mostly your generator work, and it is the cheapest thing on this list that makes the build stop looking like a prototype.",m:"sonnet",feeds:["G1-7"]},
+ {n:"39",b:"1",sc:"door",tier:"4",t:"Meet the Rabble",
+  d:"Must replace or enrich the arrival cards, never add a fourth modal. Speakers are cast roles, never hardcoded names.",m:"split",feeds:["G1-5"]},
+
+ /* ── II ── before the second playtest ── */
+ {n:"24",b:"2",sc:"none",tier:"1",t:"Provenance ledger",crit:true,
+  blocks:"Five entries wait on this and cannot start: #19, #22, #23, #25 and the distant #26.",
+  d:"Facts with names instead of booleans. The id is the reference; the snapshot is so a dead, dismissed or renamed person can still be talked about three hours later.",m:"strong"},
+ {n:"4+17",b:"2",sc:"company",tier:"2",t:"Parts you can lose, mutations you can see",crit:true,
+  blocks:"The mortality chain and the grafts both wait on this one painter API.",
+  d:"Build it once and both use it in opposite directions: a lost part draws as outline-plus-cross, a mutated part is redrawn as a different shape.",m:"split"},
+ {n:"34",b:"2",sc:"company",tier:"2",t:"The mortality chain",
+  d:"Scarred, maimed, dead. It reverses the oldest rule in the project in the one way that keeps the reason the rule existed: death is the end of a visible chain, never a roll.",m:"strong",wait:"4+17"},
+ {n:"32",b:"2",sc:"battle",tier:"1",t:"The rally rule",
+  d:"A routed body may not re-cross the rout line on a quiet turn alone. It needs the Captain within three hexes, or a steady ally adjacent.",m:"strong",note:"defect closed, rule kept"},
+ {n:"2",b:"2",sc:"battle",tier:"2",t:"Personalities that command the AI",
+  d:"AUTO stops being a button that is either safe or not, and becomes a judgement about who you can trust with which part of a fight.",m:"strong"},
+ {n:"47",b:"2",sc:"battle",tier:"3",t:"The spear becomes a zone",
+  d:"The last open half of the verb batch, and the one row moved out of bucket 1 on a judgement. It is a rework rather than an addition, but it touches enemy AI in both brains.",m:"strong",note:"pull forward if the class pass needs it"},
+ {n:"16",b:"2",sc:"company",tier:"4",t:"The rest of the mutations",
+  d:"Three or four of the fourteen, never all. Each needs a real battle rule and the tone rule: not a death sentence, not a joke.",m:"strong"},
+ {n:"3",b:"2",sc:"road",tier:"4",t:"The clash recruit is already changed",
+  d:"The best single idea in the file. It puts a mutation in front of the player in the first hour and gives the tutorial fight a cause. The first candidate to pull into bucket 1 if the opening still lacks a hook.",m:"strong"},
+ {n:"22",b:"2",sc:"road",tier:"3",t:"The road reads the company",
+  d:"Every Rabble is different should be visible in the prose, not only on the stat screen.",m:"split",wait:"24"},
+ {n:"—",b:"2",sc:"door",tier:"plan",t:"Settlements and Legacy MVP",
+  d:"Not a numbered entry. Build the inheritance screen first: it is the piece that makes a lost run mean something, and mortality is what makes that urgent.",m:"strong"},
+ {n:"57",b:"2",sc:"none",tier:"X",t:"Event analytics",
+  d:"Yours, in another tab, and it is the instrument for the second playtest the way the journal blob is for the first. All this repo owes it is a stable input.",m:"-",feeds:["G1-6"]},
+ {n:"45",b:"2",sc:"battle",tier:"P",t:"Reward the combination, not the repetition",
+  d:"The synergy rule: doing two different things together pays more than doing the good thing twice. Deferred while skills and mutations were still landing, which by this bucket they have. Everything shipped before it must keep its hook reachable.",m:"strong",note:"your call: the big conceptual one"},
+ {n:"59",b:"2",sc:"door",tier:"3",t:"The woman from the cage comes back",
+  d:"Free Wynn without a fee and a later run she waits at the last quiet node and fights the Snare beside you. She joins the fight, never the roster. The only piece of metaprogression that is already specced and shot.",m:"split",note:"your call: metaprogression"},
+
+ /* ── III ── later ── */
+ {n:"35",b:"3",sc:"company",tier:"3",t:"Grafts, rare and authored",
+  d:"Not a doctor's menu. Worse in one ordinary way, strangely better in one specific situation. Start with Shield-Skull.",m:"strong",wait:"4+17"},
+ {n:"25",b:"3",sc:"company",tier:"3",t:"Personalities that earn their evolution",
+  d:"Count qualified risky successes, not repeated actions, or it is grinding.",m:"strong",wait:"24"},
+ {n:"23",b:"3",sc:"company",tier:"3",t:"The cost of command",
+  d:"The Captain's sheet only, and facts with names, never a morality score.",m:"sonnet",wait:"24"},
+ {n:"19",b:"3",sc:"road",tier:"3",t:"Desperation contracts at the Muster",
+  d:"A recruit who costs you something later. Its promise of first pick of the loot is now a share of the haul.",m:"split",wait:"24"},
+ {n:"21",b:"3",sc:"after",tier:"4",t:"What they did without you",
+  d:"Strict thresholds and authored templates. If nothing exceptional happened, show nothing.",m:"split"},
+ {n:"26",b:"3",sc:"road",tier:"C",t:"The Smaller One",
+  d:"Seven cards of a reference chain. First candidate to graduate back out of the distant future.",m:"-",wait:"24"},
+ {n:"28",b:"3",sc:"road",tier:"C",t:"The Act 1 stinger",
+  d:"Demo-ending content. The enemy still needs a real name, and the postscript must not corrupt the completed run.",m:"-"},
+ {n:"29",b:"3",sc:"battle",tier:"C",t:"Zone of Control, the better version",
+  d:"Cut once for making movement unaffordable. Needs the arena to measure a return.",m:"-",wait:"13"},
+ {n:"30",b:"3",sc:"battle",tier:"C",t:"Action economy remainder",
+  d:"Quiver and slow mage. Its base rule was superseded; the survivors are banked in the balance pass.",m:"-",wait:"13"},
+ {n:"37",b:"3",sc:"battle",tier:"C",t:"AUTO doctrines",
+  d:"Press, keep line, hold and screen. Waits on a mature, trusted AUTO.",m:"-",wait:"2"},
+ {n:"42",b:"3",sc:"battle",tier:"C",t:"AUTO gets one flourish",
+  d:"Teacher-AUTO, after the doctrines exist.",m:"-",wait:"37"},
+ {n:"43",b:"3",sc:"none",tier:"C",t:"The narrator's budget",
+  d:"Who may speak and how often. Production-stage, but its ranking applies today: action readability, then barks, then narrator, then ambience.",m:"-",feeds:["G1-10"]},
+ {n:"49",b:"3",sc:"battle",tier:"P",t:"Make the AI explain itself",
+  d:"Deferred by you, but the gate artifacts are done and keep, so it returns as a build session rather than a design one.",m:"strong"}
+];
+
+const TIERLBL={"1":"tier 1","2":"tier 2","3":"tier 3","4":"tier 4","C":"clock","P":"paused","plan":"plan item","L":"balance","X":"elsewhere"};
+const MODEL={strong:"strong model",split:"split",sonnet:"sonnet-ok","-":""};
+const SMARK={open:"□",moving:"▣",ask:"?",done:"☑",gate:"▸"};
+
+/* meter */
+document.getElementById("bar").innerHTML=
+  [["var(--verd)",2],["var(--brass)",1],["var(--steel)",7],["var(--rust)",3]]
+  .map(([c,n])=>`<i style="background:${c};flex:${n}"></i>`).join("");
+
+/* rail */
+const rail=document.getElementById("rail"), detail=document.getElementById("detail");
+let active=null;
+rail.innerHTML=STEPS.map((s,i)=>`
+  <button class="st" data-s="${s.s}" data-i="${i}" aria-pressed="false">
+    <span class="mark">${SMARK[s.s]}</span>
+    <span class="id">${s.id}</span>
+    <span class="nm">${s.nm}</span>
+    ${s.moved?`<span class="mv">moved ${s.moved}</span>`:""}
+  </button>`).join("");
+
+function select(i){
+  active=(active===i)?null:i;
+  [...rail.children].forEach((b,j)=>{
+    b.classList.toggle("on",j===active);
+    b.setAttribute("aria-pressed",j===active?"true":"false");
+  });
+  if(active===null){
+    detail.innerHTML=`<div class="dt"><b>Thirteen steps and a gate</b>Pick one to see its done-test
+      and which backlog entries it would spend. Three carry a question mark because you marked them
+      that way: art, sprites and audio are yours, and they run in parallel rather than in the queue.</div>`;
+  }else{
+    const s=STEPS[active];
+    const used=s.uses.length?s.uses.map(n=>`<b>#${n}</b>`).join(" &middot; ")
+      :"nothing in the backlog. This step is a run or a judgement, not a build.";
+    detail.innerHTML=`
+      <div class="dt"><b>${s.dt}</b>${s.why}</div>
+      <div class="row"><div><u>done when</u>${s.done}</div></div>
+      <div class="row"><div><u>consumes</u>${used}</div></div>`;
+  }
+  render();
+}
+rail.addEventListener("click",e=>{const b=e.target.closest(".st"); if(b) select(+b.dataset.i);});
+
+/* filters */
+const FILTERS=[
+  {k:"all",l:"everything"},
+  {k:"crit",l:"critical gates"},
+  {k:"gate1",l:"inside gate 1"},
+  {k:"blocked",l:"waiting on something"},
+  {k:"free",l:"nothing blocking it"}
+];
+let filt="all";
+const fbox=document.getElementById("filters");
+fbox.innerHTML=FILTERS.map(f=>`<button class="chip" data-k="${f.k}" aria-pressed="${f.k==="all"}">${f.l}</button>`).join("");
+fbox.addEventListener("click",e=>{
+  const b=e.target.closest(".chip"); if(!b) return;
+  filt=b.dataset.k;
+  [...fbox.children].forEach(c=>c.setAttribute("aria-pressed",c.dataset.k===filt?"true":"false"));
+  render();
+});
+function passes(x){
+  if(filt==="crit") return !!x.crit;
+  if(filt==="gate1") return !!(x.feeds&&x.feeds.length);
+  if(filt==="blocked") return !!x.wait;
+  if(filt==="free") return !x.wait;
+  return true;
+}
+
+const ledger=document.getElementById("ledger"), scount=document.getElementById("scount");
+function render(){
+  const step=active===null?null:STEPS[active];
+  const wanted=step?step.uses:[];
+  let shown=0;
+  ledger.innerHTML=BUCKETS.map(bk=>{
+    const rows=E.filter(x=>x.b===bk.b), vis=rows.filter(passes);
+    if(!vis.length) return "";
+    shown+=vis.length;
+    return `<div class="bucket" data-b="${bk.b}">
+      <div class="bhead">
+        <span class="ord display">${bk.ord}</span>
+        <h3>${bk.t}</h3>
+        <span class="cnt">${vis.length} of ${rows.length}</span>
+      </div>
+      <p class="bwhy">${bk.why}</p>
+      <div>${vis.map(x=>{
+        const hit=wanted.includes(x.n), dim=step&&!hit;
+        return `<div class="ent ${x.crit?"gate":""} ${hit?"hit":""} ${dim?"dim":""}">
+          <div class="folio"><span class="num mono">${x.n}</span><span class="tier">${TIERLBL[x.tier]||""}</span></div>
+          <div>
+            <h4>${x.t}</h4>
+            <p>${x.d}</p>
+            ${x.blocks?`<p class="blocks">&#9670; ${x.blocks}</p>`:""}
+            <div class="tags">
+              ${x.crit?`<span class="tag crit">critical gate</span>`:""}
+              ${x.wait?`<span class="tag wait">waits on ${x.wait}</span>`:""}
+              ${(x.feeds||[]).map(f=>`<span class="tag feed">${f}</span>`).join("")}
+              <span class="tag scr">${SCR[x.sc]}</span>
+              ${MODEL[x.m]?`<span class="tag">${MODEL[x.m]}</span>`:""}
+              ${x.note?`<span class="tag">${x.note}</span>`:""}
+            </div>
+          </div>
+        </div>`;}).join("")}</div>
+    </div>`;
+  }).join("");
+  scount.textContent=shown+" of "+E.length+" showing";
+}
+
+/* every const the renderers touch now exists, so boot.
+   ⚠ calling select() any earlier is a TDZ crash that kills the whole script. */
+select(null);
+</script>
