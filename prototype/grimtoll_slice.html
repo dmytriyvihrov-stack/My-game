@@ -7077,10 +7077,38 @@ function strike(a,d,act,mult){
      player can see who hit whom without reading the log. */
   const ranged=!!act.range;
   if(ranged)animShot(a,d,act.arcane?'arcane':(a.race==='ogre'?'stone':'arrow'));
-  if(Math.random()*100>hitBreakdown(a,d,act).total){
-    say(a.name+' misses.');fx(d,'DODGE','#8ca35a');
-    if(!ranged)animClash(a,d,'miss');
-    sfx(d.side==='you'&&!d.ally?'dodge':'miss');
+  /* ═══ #84 - A DODGE AND A MISS ARE TWO DIFFERENT EVENTS ═════════════════
+     The field used to print "X misses." AND float a green DODGE over the
+     target on the same failed roll, which is both halves of one lie: a swing
+     that went nowhere near anybody was credited to the defender, and a
+     defender who genuinely got out of the way was called a bad swing.
+     ⚑ ONE ROLL STILL, TWO READINGS, NO NEW RANDOMNESS. `total` is
+     skill + flank + other MINUS the target's dodge, so the same number
+     answers a second question for free: WOULD THIS HAVE LANDED ON SOMEBODY
+     WHO NEVER MOVED? If it would have, the dodge is the only reason it did
+     not, and the defender earned the line. If it would have missed a post,
+     the attacker owns it and the defender is credited with nothing they did
+     not do. Clamped exactly the way `total` is, or a roll of 96 against a
+     95-capped chance reads as a dodge on a target with 2 dodge. */
+  const bd=hitBreakdown(a,d,act),roll=Math.random()*100;
+  if(roll>bd.total){
+    const dodged=roll<=clamp(Math.round(bd.skill+bd.flank+bd.other),5,95);
+    /* Three weapons, and one word for all three is worse than three: a bow
+       does not swing, and a working is not sidestepped, you simply fail to be
+       where it lands (which is hitBreakdown's own note, moved to the log). */
+    say(dodged
+      ?(act.arcane?d.name+' is not where it lands.'
+       :act.range ?d.name+' twists, and the shot goes past.'
+                  :d.name+' leans back out of it.')
+      :(act.arcane?a.name+"'s working comes apart."
+       :act.range ?a.name+' shoots wide.'
+                  :a.name+' swings wide.'));
+    fx(d,dodged?'DODGE':'MISS',dodged?'#8ca35a':'#7d9490');
+    if(!ranged)animClash(a,d,'miss',dodged);
+    /* keyed on the VERDICT now, not on whose side the target was - both names
+       still reach the same sample, so the day a real dodge sound lands in the
+       pack there is nothing to rewire here. */
+    sfx(dodged?'dodge':'miss');
     /* an ogre with ambition is keeping count of these, and there is a number
        at which it stops trying to look good about it */
     a.misses=(a.misses||0)+1;
@@ -7478,8 +7506,10 @@ const uspOf=u=>{
   const hx=$('bGrid')&&$('bGrid').querySelector('[data-k="'+K(u.col,u.row)+'"]');
   return hx?hx.querySelector('img.usp'):null;
 };
-/* attacker leans into it, defender is knocked along the same line */
-function animClash(a,d,kind){
+/* attacker leans into it, defender is knocked along the same line.
+   #84 - `evaded` only means anything on a miss: it says the defender is the
+   reason it missed, and so the only one whose body moves. */
+function animClash(a,d,kind,evaded){
   const pa=hexPt(a),pd=hexPt(d);
   if(!pa||!pd)return;
   let dx=pd.x-pa.x, dy=pd.y-pa.y;
@@ -7491,11 +7521,14 @@ function animClash(a,d,kind){
     sa.classList.remove('lunge');void sa.offsetWidth;sa.classList.add('lunge');
     setTimeout(()=>sa&&sa.classList.remove('lunge'),paced(360));
   }
-  if(sd){
+  /* #84 - a swing that went wide is the ATTACKER'S event and the defender
+     stands there through it. Only a dodge moves the body it was aimed at, so
+     the two failures are now told apart on the board and not only in the log. */
+  const cls=kind!=='miss'?'recoil':evaded?'evade':null;
+  if(sd&&cls){
     sd.style.setProperty('--dx',dx.toFixed(3));
     sd.style.setProperty('--dy',dy.toFixed(3));
     sd.style.setProperty('--rz',(dx>0?4:-4)+'deg');
-    const cls=kind==='miss'?'evade':'recoil';
     sd.classList.remove('recoil','evade');void sd.offsetWidth;sd.classList.add(cls);
     setTimeout(()=>sd&&sd.classList.remove('recoil','evade'),paced(340));
   }

@@ -668,7 +668,10 @@ whole question: **everything that will ever land here, near or far.**
 >
 > **Everything below this line is unbuilt and actionable.** That is the whole point of the split —
 > a Done table at the top of the working file is the first thing to go stale and the last thing
-> anybody rereads. **52 shipped, next free number #84** *(**#82, obstacle height**, shipped
+> anybody rereads. **53 shipped, next free number #85** *(**#84, a dodge and a miss are two different
+> events**, shipped 2026-08-04 in build log 8f.113 - the field used to print "X misses." and float a
+> green DODGE for the same roll; one roll now answers two questions and no new randomness was added.
+> Its open remainder is that the hover odds are still one number.)* *(**#82, obstacle height**, shipped
 > 2026-08-04 in build log 8f.108 - a tree or a group of rocks now refuses a spear thrust and an
 > arrow crosses a fire; **#83, a bit mobile friendly**, was a parallel session the same day.
 > ⚠ **THREE numbers were taken out from under this session in one day** - #83, 8f.106 and 8f.107.

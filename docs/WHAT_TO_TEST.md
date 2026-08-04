@@ -18,6 +18,49 @@
 
 ---
 
+## ⚔ A dodge and a miss are different things now  *(#84 · 2026-08-04 · build log 8f.113)*
+
+**What it is.** Until today every attack that failed printed *"Ilka Renn misses."* and floated a
+green **DODGE** over the target, at the same time, for the same roll. Those two statements
+contradict each other and only one of them can be true per swing. Now the game decides which.
+
+**How to reach it in three steps.** ⚙ TEST → any fight → attack something. Watch the log strip and
+the word that floats over the target.
+
+**What should happen.**
+
+| | the log says | the floater says |
+|---|---|---|
+| **You swung badly** | *"Ilka Renn swings wide."* / *"shoots wide."* / *"her working comes apart."* | **MISS**, dull grey-green |
+| **They got out of the way** | *"Lurcher leans back out of it."* / *"twists, and the shot goes past."* / *"is not where it lands."* | **DODGE**, green |
+
+The rule is the honest one and it costs no extra dice: **it is a DODGE only if the blow would have
+landed on a target that never moved.** If it would have missed a fence post, it is a MISS and the
+defender gets no credit for standing there. A target with no dodge to speak of can never produce a
+dodge line.
+
+**The board says it too, without the log.** On a dodge the defender's figure gets out of the way,
+the way it always did. On a plain miss **it does not move at all** now, because nothing happened to
+it. That difference is the fastest read on the field.
+
+**What is worth judging.** The split is not even, on purpose: an ogre has 3 dodge against your ~55
+skill and a lurcher has 26, so **the ogre fights should now read as "I keep swinging badly" and the
+dog and ratkin fights as "they will not stand still"**. Across a full regression it came out 51
+dodges to 169 misses, with 10-12 dodges in the fast fights and **2 in the whole steading fight and 0
+against the Fen-Mother**. That is the stat block finally being visible. Tell me if it reads as
+flavour instead of information.
+
+**What would be a bug.** An ogre or the Fen-Mother dodging often · a lurcher or a slinger never
+dodging · the word MISS over a figure that visibly ducks · *"swings wide"* on a bow or a working ·
+the same failed swing printing both words. **Nothing about the odds changed** - if a fight feels
+harder or easier than yesterday, that is not this.
+
+**Not built, and say if you want it:** the hover odds still show one number. A player who wants to
+know how much of their 45% failure is *the target moving* has to read the dodge row and work it out.
+A split preview (*"55 fails: 12 of them it dodges"*) is a separate job.
+
+---
+
 ## 🔗 The link you send to friends  *(2026-08-04 · build log 8f.111 · **four clicks left, and they are yours**)*
 
 **The repo exists, the build is committed, and for the first time the shareable file HAS SOUND IN
