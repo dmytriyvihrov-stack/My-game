@@ -53,15 +53,18 @@ Send that link. It works on a phone, it needs no account, and closing the tab do
 - ⚠ **A bug worth watching for: sound that works here and not there.** That failure is the entire
   reason this entry exists, so if a friend says "no music", ask what they clicked first.
 
-### Updating it later
-
-`prototype/grimtoll_slice.html` stays the working file and its audio table stays empty on purpose.
-When something ships, rebuild the shareable copy and push. The link never changes.
+### Updating it later: one command
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File audio\build_audio.ps1
-powershell -NoProfile -ExecutionPolicy Bypass -File tools\build_site.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File deploy.ps1
 ```
+
+Builds the page, **refuses to push it if the sound did not make it in**, commits, pushes, prints
+the URL. About twenty seconds. **The link never changes**, so one you sent last week is the build
+you pushed a minute ago; if a friend sees the old one, that is their cache, Ctrl+F5.
+
+Add `-Audio` only on a day something in `audio/` changed. Full card in
+[`DEPLOY.md`](DEPLOY.md).
 
 *The old artifact links still hold an older, silent build:
 [the original](https://claude.ai/code/artifact/0263fef0-f753-477e-a90e-ed329f724226) ·

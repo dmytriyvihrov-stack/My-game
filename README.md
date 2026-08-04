@@ -22,24 +22,25 @@ browser, so closing the tab does not lose it.
 | `tools/` | Local server, the dramaturge, the test harness. |
 | `art/`, `audio/` | The build pipelines. The masters themselves are not in git, see `.gitignore`. |
 
-## Rebuilding the playable file
+## Deploying
 
-`index.html` is `prototype/grimtoll_slice.html` with the compressed audio pack
-poured into it. The prototype's `AUDIO_EMBED` table is deliberately empty,
-because at the desk the game reads the WAV masters out of `audio/`. A static
-host has no such folder, and for several builds that meant a game which played
-perfectly here and was completely silent for every playtester. So:
+One command, from this folder:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File audio\build_audio.ps1
-powershell -NoProfile -ExecutionPolicy Bypass -File tools\build_site.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File deploy.ps1
 ```
 
-The first encodes the eleven approved cues to AAC (79MB of WAV becomes 3.7MB)
-and writes `audio/out/audio_data.js`. It needs `ffmpeg` on PATH and it needs the
-masters, so it only runs on a machine that has the Drive folder. The second
-pours that into a fresh `index.html` at the root and copies the icons beside it.
-Commit `index.html` and push: GitHub Pages serves it as it stands.
+It rebuilds `index.html`, **refuses to push if the sound did not make it in**,
+commits, pushes, and prints the live URL. The link never changes.
+
+`index.html` is `prototype/grimtoll_slice.html` with the compressed audio pack
+poured into it, and it is **generated, never hand-edited**. The prototype's
+`AUDIO_EMBED` table is deliberately empty, because at the desk the game reads
+the WAV masters out of `audio/`. A host has no such folder, and for forty builds
+that meant a game which played perfectly here and was silent for every
+playtester. **[`docs/DEPLOY.md`](docs/DEPLOY.md) is the full card**: first-time
+GitHub Pages setup, the flags, what is in git and what is not, and what to do
+when git asks for a password.
 
 To run the working file locally instead:
 

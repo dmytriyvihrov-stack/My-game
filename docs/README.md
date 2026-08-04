@@ -18,8 +18,14 @@ You are the **Captain**, and you fight on the field yourself. You lead a company
 individually rolled people across an act of roads and battles, and the question the game keeps
 asking is not *can you win the fight* but **who are you willing to spend to win it.**
 
-- **The build:** `prototype/grimtoll_slice.html` — one self-contained file, ~1 MB, no build step,
-  no external assets. Published as a static artifact, which is how the user plays it.
+- **The working file:** `prototype/grimtoll_slice.html`, one self-contained file, ~5.4 MB. This is
+  the one you change.
+- **The build people play:** `index.html` at the repo root, ~10.3 MB, **generated and never
+  hand-edited**. It is the working file with the audio pack poured in, hosted on GitHub Pages.
+  ⚠ **Its audio table is empty in the working file on purpose**, so copying instead of building
+  ships a game that is silent for everybody but you. One command, `deploy.ps1`, does the whole
+  thing and refuses to push a silent page. **See [`DEPLOY.md`](DEPLOY.md) before touching any of
+  this.** *(The Claude artifact route was abandoned at 8f.110; see `CHANGELOG.md`.)*
 - **Production target:** Godot 4. HTML is for iteration speed; the scope lock happens after the
   systems stop moving.
 - **Art:** painted, not pixel. "Ash & Iron" palette. **Line before noise:** silhouette, gesture and
