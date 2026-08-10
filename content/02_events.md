@@ -210,3 +210,24 @@ These already shuffle. Current set: **The Argument**, **Something in the Pork**,
 - Move on in the dark → −1 day, morale +4
 - Stay and set a double watch → morale −6, no sleep
 - Stay and take what they left → +25 crowns, morale −4
+
+**THE DREAM** *(#85, shipped 2026-08-04 — the user's own scene)* — Somebody this company no longer
+has walks into your sleep. The face has fallen in and there are two empty sockets where the eyes
+were, and you know them anyway. They say you could have saved them and did not. You cannot get a
+word out. You wake soaked through.
+
+> ⛔ **Only offered when the run has actually lost somebody, and nothing in this game kills a body
+> on the roster** — the downed are always carried out and scarred. The three real ways to lose a
+> person, in the order the card prefers them: **you cut them down** when a dismissed veteran came
+> back and asked for their place (the only true crew death in the build) · **the sinkhole** at THE
+> GROUND OPENS still has them · **you dismissed them** and the road has not finished with them.
+> One sentence of the card changes with each, and it is the evidence rather than the accusation.
+>
+> ⚠ **The dream is the only thing that says they are dead.** Never write narration around this card
+> that states it from outside: the sinkhole rolls 50% a leg to hand its man back, and somebody
+> walking out of the treeline after you buried them in your sleep is the best thing it can do.
+
+The scene has no reply in it on purpose, so the ruling is the morning:
+- Say their name at the fire, and what you dreamed → −1 day, morale +10
+- Count out their share and put it back in the chest, in a bag with their name on it → −30 crowns, morale +6
+- Nothing. Kick the fire out and march → free tonight, morale −7, **and it comes back on the fourth night**

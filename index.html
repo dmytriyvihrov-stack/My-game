@@ -598,9 +598,110 @@ button:disabled{cursor:not-allowed}
   background:radial-gradient(circle,#f3aed0 0%,rgba(226,143,180,.15) 70%);
   box-shadow:0 0 9px #e28fb4}
 .shot.stone{width:5px;height:5px;margin:-2px 0 0 -2px;border-radius:50%;background:#9aa3a6}
+/* ═══ #87 — THE VERB HAS A SHAPE ════════════════════════════════════════
+   Before this there were three animations for thirty verbs. A KICK looked
+   exactly like a sword, a SWEEP played one sword-swing per neighbour and so
+   read as four separate attacks, and ROAR · COMMAND · HOLD THE LINE · SPEAR
+   WALL · THE FEN ANSWERS · SHE CALLS THEM IN put NOTHING on the board at all
+   — only a line of floating text, on a screen the player is not looking at.
+
+   EIGHT PRIMITIVES, NOT THIRTY ANIMATIONS, and a verb picks its shape from
+   WHAT IT DOES (`act.push`, `act.sweep`, `act.fear`, `act.buff`) rather than
+   from its name. Same reason `gathers` is derived and not declared: the next
+   act that grows a `push` gets its gust the day it is written, without being
+   told, and both AI brains inherit it because they go through the same two
+   doors (`spend` and `strike`).
+
+   The two oppositions that do the actual teaching:
+     · A RING TRAVELS OUTWARD AND MEANS BROADCAST. A PLATE SNAPS INWARD AND
+       MEANS PROTECTION. That one difference is what tells COMMAND from HOLD
+       THE LINE with no word on the screen.
+     · A RECOIL MEANS SOMETHING HIT YOU AND YOU WENT BACK. A SHUDDER MEANS
+       SOMETHING REACHED YOU WHERE YOU STAND. The scare verbs displace
+       nobody, so they were never allowed to borrow the recoil.
+
+   ⚠ Every duration is calc(Xs * var(--pace)) per #81, and everything lives
+   in #bFx, which is pointer-events:none and OUTSIDE the camera transform —
+   see #66. Nothing here may ever be moved inside #bGround. */
+/* ── P1 · GUST — somebody else decided where you are standing ───────────── */
+.gust{position:absolute;width:22px;height:3px;margin:-1.5px 0 0 -11px;pointer-events:none;
+  border-radius:2px;transform-origin:50% 50%;
+  background:linear-gradient(90deg,rgba(217,189,126,0) 0%,#e8d7a8 78%,rgba(232,215,168,.2) 100%);
+  animation:gustfly calc(.42s * var(--pace)) cubic-bezier(.2,.6,.35,1) forwards}
+@keyframes gustfly{
+  0%{opacity:0;transform:rotate(var(--ang)) translate(0,var(--off,0px)) scaleX(.35)}
+  22%{opacity:.95}
+  100%{opacity:0;transform:rotate(var(--ang)) translate(var(--gd,38px),var(--off,0px)) scaleX(1.3)}}
+/* ── P2 · ARC — one swing, everybody in reach ───────────────────────────── */
+.swarc{position:absolute;border-radius:50%;pointer-events:none;
+  width:var(--r,62px);height:var(--r,62px);
+  margin:calc(var(--r,62px) / -2) 0 0 calc(var(--r,62px) / -2);
+  border:3px solid transparent;
+  border-top-color:var(--ac,#e6edef);border-right-color:var(--ac2,rgba(230,237,239,.4));
+  animation:swarc calc(.46s * var(--pace)) cubic-bezier(.25,.75,.3,1) forwards}
+@keyframes swarc{0%{opacity:0;transform:rotate(var(--a0,-30deg)) scale(.72)}
+  18%{opacity:1}
+  100%{opacity:0;transform:rotate(calc(var(--a0,-30deg) + var(--spin,330deg))) scale(1.14)}}
+/* ── P3 · RING — a radius, spoken out loud ──────────────────────────────
+   Drawn at the act's ACTUAL radius in hexes, so ROAR at 2 and THE SOUND SHE
+   MAKES at 5 are visibly different sizes: the player learns the reach by
+   watching it rather than by opening a note. */
+.aring{position:absolute;border-radius:50%;pointer-events:none;
+  width:var(--r);height:var(--r);margin:calc(var(--r) / -2) 0 0 calc(var(--r) / -2);
+  border:2px solid var(--rc,#d9bd7e);
+  animation:aring calc(.66s * var(--pace)) cubic-bezier(.12,.7,.35,1) forwards}
+@keyframes aring{0%{opacity:0;transform:scale(.16)}
+  16%{opacity:.9}100%{opacity:0;transform:scale(1)}}
+/* ── P4 · TETHER — one body has hold of another ─────────────────────────── */
+.tether{position:absolute;height:2px;margin-top:-1px;pointer-events:none;
+  transform-origin:0 50%;
+  background:linear-gradient(90deg,var(--tc,#e05fa8) 0%,var(--tc,#e05fa8) 62%,rgba(0,0,0,0) 100%);
+  animation:tether calc(.58s * var(--pace)) ease-out forwards}
+@keyframes tether{0%{opacity:0;transform:rotate(var(--ang)) scaleX(0)}
+  24%{opacity:1;transform:rotate(var(--ang)) scaleX(1.04)}
+  34%{transform:rotate(var(--ang)) scaleX(1)}
+  70%{opacity:1}100%{opacity:0}}
+/* ── P5 · MOTES — something landed on them and stayed ───────────────────
+   They fall and SETTLE rather than flashing and leaving, because the venom
+   outlives the swing that carried it. */
+.mote{position:absolute;width:3.5px;height:3.5px;margin:-1.75px 0 0 -1.75px;
+  border-radius:50%;pointer-events:none;
+  background:var(--mc,#7fae4e);box-shadow:0 0 5px var(--mc,#7fae4e);
+  animation:mote calc(.62s * var(--pace)) ease-in forwards}
+@keyframes mote{0%{opacity:0;transform:translate(var(--mx,0px),-18px) scale(.5)}
+  22%{opacity:1}
+  66%{opacity:1;transform:translate(var(--mx,0px),0) scale(1)}
+  100%{opacity:0;transform:translate(var(--mx,0px),3px) scale(.4)}}
+/* ── P6 · PLATE — a guard closes over a body ────────────────────────────── */
+.plate{position:absolute;width:36px;height:36px;margin:-22px 0 0 -18px;pointer-events:none;
+  border-radius:50%;border:2px solid var(--pc,#8fd0a8);
+  animation:plate calc(.50s * var(--pace)) cubic-bezier(.2,.85,.3,1) forwards}
+@keyframes plate{0%{opacity:0;transform:scale(2.1)}
+  42%{opacity:1;transform:scale(1)}72%{opacity:1;transform:scale(1)}
+  100%{opacity:0;transform:scale(1)}}
+/* ── P7 · SHUDDER — it reached you where you stand ──────────────────────
+   ⚠ Ends in scaleX(var(--flip,1)) like every other keyframe on .usp. See
+   the note on .usp: a mirrored body would snap to its unmirrored side for
+   the length of it and snap again when it ended. */
+.usp.shudder{animation:shudder calc(.44s * var(--pace)) linear}
+@keyframes shudder{0%,100%{transform:translate(0,0) scaleX(var(--flip,1))}
+  12%{transform:translate(1.7px,-1.1px) scaleX(var(--flip,1))}
+  27%{transform:translate(-1.9px,.9px) scaleX(var(--flip,1))}
+  43%{transform:translate(1.4px,1.1px) scaleX(var(--flip,1))}
+  61%{transform:translate(-1.2px,-.7px) scaleX(var(--flip,1))}
+  80%{transform:translate(.7px,.4px) scaleX(var(--flip,1))}}
+/* ── P8 · GHOST — the body was here and is not ──────────────────────────
+   SINK BELOW, DISENGAGE and SNAP-AND-AWAY all teleport the body between two
+   renders with nothing in between, and a body that is simply somewhere else
+   next frame reads as a rendering fault rather than as a rule. */
+.ghost{position:absolute;pointer-events:none;image-rendering:pixelated;
+  animation:ghost calc(.46s * var(--pace)) ease-out forwards}
+@keyframes ghost{0%{opacity:.6;transform:scale(1)}
+  100%{opacity:0;transform:scale(.82) translateY(-7px)}}
 @media (prefers-reduced-motion:reduce){.fx{animation:none;opacity:1}
-  .usp.lunge,.usp.recoil,.usp.evade{animation:none}
-  .hitflash,.spark,.shot{display:none}}
+  .usp.lunge,.usp.recoil,.usp.evade,.usp.shudder{animation:none}
+  .hitflash,.spark,.shot,
+  .gust,.swarc,.aring,.tether,.mote,.plate,.ghost{display:none}}
 #bVig{position:absolute;inset:0;pointer-events:none;
       background:linear-gradient(#0f1618 0%,rgba(15,22,24,0) 24%,rgba(15,22,24,0) 76%,
                  rgba(15,22,24,.55) 100%)}
@@ -7091,10 +7192,38 @@ function strike(a,d,act,mult){
      player can see who hit whom without reading the log. */
   const ranged=!!act.range;
   if(ranged)animShot(a,d,act.arcane?'arcane':(a.race==='ogre'?'stone':'arrow'));
-  if(Math.random()*100>hitBreakdown(a,d,act).total){
-    say(a.name+' misses.');fx(d,'DODGE','#8ca35a');
-    if(!ranged)animClash(a,d,'miss');
-    sfx(d.side==='you'&&!d.ally?'dodge':'miss');
+  /* ═══ #84 - A DODGE AND A MISS ARE TWO DIFFERENT EVENTS ═════════════════
+     The field used to print "X misses." AND float a green DODGE over the
+     target on the same failed roll, which is both halves of one lie: a swing
+     that went nowhere near anybody was credited to the defender, and a
+     defender who genuinely got out of the way was called a bad swing.
+     ⚑ ONE ROLL STILL, TWO READINGS, NO NEW RANDOMNESS. `total` is
+     skill + flank + other MINUS the target's dodge, so the same number
+     answers a second question for free: WOULD THIS HAVE LANDED ON SOMEBODY
+     WHO NEVER MOVED? If it would have, the dodge is the only reason it did
+     not, and the defender earned the line. If it would have missed a post,
+     the attacker owns it and the defender is credited with nothing they did
+     not do. Clamped exactly the way `total` is, or a roll of 96 against a
+     95-capped chance reads as a dodge on a target with 2 dodge. */
+  const bd=hitBreakdown(a,d,act),roll=Math.random()*100;
+  if(roll>bd.total){
+    const dodged=roll<=clamp(Math.round(bd.skill+bd.flank+bd.other),5,95);
+    /* Three weapons, and one word for all three is worse than three: a bow
+       does not swing, and a working is not sidestepped, you simply fail to be
+       where it lands (which is hitBreakdown's own note, moved to the log). */
+    say(dodged
+      ?(act.arcane?d.name+' is not where it lands.'
+       :act.range ?d.name+' twists, and the shot goes past.'
+                  :d.name+' leans back out of it.')
+      :(act.arcane?a.name+"'s working comes apart."
+       :act.range ?a.name+' shoots wide.'
+                  :a.name+' swings wide.'));
+    fx(d,dodged?'DODGE':'MISS',dodged?'#8ca35a':'#7d9490');
+    if(!ranged)animClash(a,d,'miss',dodged,!!act.sweep);
+    /* keyed on the VERDICT now, not on whose side the target was - both names
+       still reach the same sample, so the day a real dodge sound lands in the
+       pack there is nothing to rewire here. */
+    sfx(dodged?'dodge':'miss');
     /* an ogre with ambition is keeping count of these, and there is a number
        at which it stops trying to look good about it */
     a.misses=(a.misses||0)+1;
@@ -7166,7 +7295,7 @@ function strike(a,d,act,mult){
           sd.style.setProperty('--rz','3deg');
           sd.classList.remove('recoil');void sd.offsetWidth;sd.classList.add('recoil');
           setTimeout(()=>sd&&sd.classList.remove('recoil'),paced(340));}}}
-  }else animClash(a,d,flavour);
+  }else animClash(a,d,flavour,false,!!act.sweep);
   sfxStrike(a,d,armD,hpD);
   if(armD>3)fx(d,'−'+Math.round(armD)+' arm','#96a1a5',true);
   /* #60 — ARMOUR BEFORE BLOOD, said the first time the harness takes the
@@ -7193,7 +7322,13 @@ function strike(a,d,act,mult){
         const dp=mates.length?Math.min.apply(null,mates.map(m=>udist(p,m))):0;
         const dq=mates.length?Math.min.apply(null,mates.map(m=>udist(q,m))):0;
         return dq-dp;});
+      /* #87 — she has hold of them BEFORE they move, so the tether is drawn
+         from where they were being dragged FROM. Order matters here. */
+      tetherFx(a,d,'#c15d55');
+      const dpF=hexPt(d),dpA=hexPt(a);
       d.col=spots[0][0];d.row=spots[0][1];
+      if(dpF&&dpA){const gx=dpA.x-dpF.x,gy=dpA.y-dpF.y,gl=Math.hypot(gx,gy)||1;
+        setTimeout(()=>gustFx(dpF.x,dpF.y-hexSpan()*0.3,gx/gl,gy/gl,1,'#e0a09a'),paced(160));}
       d.rooted=Math.max(d.rooted||0,1);
       faceToward(d,a.col,a.row);
       fx(d,'DRAGGED','#c15d55');sfx('rout');
@@ -7246,6 +7381,17 @@ function strike(a,d,act,mult){
     const F=dead?{to:[d.col,d.row],stepped:0,hitWall:false}:forceDest(a,d,force,act.slip);
     const cx=F.to[0],cy=F.to[1],stepped=F.stepped,hitWall=F.hitWall,want=Math.abs(force);
     if(stepped){
+      /* #87 — THE GUST, AND PUSH AND PULL ARE ONE PRIMITIVE WITH THE SIGN
+         FLIPPED. That is what makes them read as opposites instead of as two
+         unrelated effects: a kick blows straight away from the boot, a
+         hook-pole blows back toward the pole, same three chevrons. Measured
+         from the hex they are LEAVING, so it starts where they were. */
+      const gp=hexPt(d),ga=hexPt(a);
+      if(gp&&ga){
+        let ux=gp.x-ga.x,uy=gp.y-ga.y;const ul=Math.hypot(ux,uy)||1;ux/=ul;uy/=ul;
+        const s=force>0?1:-1;
+        gustFx(gp.x,gp.y-hexSpan()*0.3,ux*s,uy*s,stepped);
+      }
       d.col=cx;d.row=cy;
       fx(d,force>0?'SHOVED':'HOOKED','#d9bd7e');sfx(force>0?'shove':'hook');
       const marsh=B.terr[K(cx,cy)]==='marsh';
@@ -7279,6 +7425,7 @@ function strike(a,d,act,mult){
         const dd=Math.min.apply(null,T.map(t=>udist(p,t)));
         if(dd>bd){bd=dd;bp=p;}});
       if(bp){
+        ghostFx(a);                 /* #87 — it bit from HERE and is already gone */
         a.col=bp[0];a.row=bp[1];
         const nn=T.slice().sort((x,y)=>udist(a,x)-udist(a,y))[0];
         if(nn)faceToward(a,nn.col,nn.row);
@@ -7289,6 +7436,11 @@ function strike(a,d,act,mult){
   }
   if(act.cripple){
     d.crippled=2;fx(d,'CRIPPLED','#c9a227');
+    /* #87 — two short gusts at the FEET, blowing down and out. It reads as
+       low, which is where the arrow went and what it took away. */
+    const cp=hexPt(d);
+    if(cp){gustFx(cp.x,cp.y-hexSpan()*0.06,-.7,.7,.55,'#c9a227');
+           gustFx(cp.x,cp.y-hexSpan()*0.06,.7,.7,.55,'#c9a227');}
     say(d.name+' takes it low and is not going anywhere quickly.');
   }
   /* ═══ #46 — THE CUT THAT MAKES THE NEXT BLOW MATTER ═════════════════════
@@ -7301,6 +7453,10 @@ function strike(a,d,act,mult){
     d.venom.push({until:B.round+act.venom});
     const n=venomOn(d);
     fx(d,n>1?'POISONED ×'+n:'POISONED','#7fae4e');
+    /* #87 — drops that fall and SETTLE, not a flash that leaves. The venom
+       outlives the swing that carried it, so the picture is not allowed to
+       be over before the state is. One more drop per stack. */
+    moteFx(d,Math.min(8,4+n),'#7fae4e');
     sfx('venom');
     say(d.name+' is cut with something that was not clean'+
       (n>1?' — and that is '+n+' of them now, and everything lands harder.'
@@ -7492,24 +7648,35 @@ const uspOf=u=>{
   const hx=$('bGrid')&&$('bGrid').querySelector('[data-k="'+K(u.col,u.row)+'"]');
   return hx?hx.querySelector('img.usp'):null;
 };
-/* attacker leans into it, defender is knocked along the same line */
-function animClash(a,d,kind){
+/* attacker leans into it, defender is knocked along the same line.
+   #84 - `evaded` only means anything on a miss: it says the defender is the
+   reason it missed, and so the only one whose body moves. */
+function animClash(a,d,kind,evaded,noLunge){
   const pa=hexPt(a),pd=hexPt(d);
   if(!pa||!pd)return;
   let dx=pd.x-pa.x, dy=pd.y-pa.y;
   const len=Math.hypot(dx,dy)||1;dx/=len;dy/=len;
   const sa=uspOf(a),sd=uspOf(d);
-  if(sa){
+  /* #87 - A SWEEP IS ONE SWING AND MUST BE ONE PICTURE. It resolves as one
+     strike() per neighbour, so the attacker used to lunge once per body: a
+     brute in a ring of four played four sword-swings in four directions
+     inside a third of a second, and read as four attacks for two actions.
+     The arc from verbFx() is the swing now; the defenders still recoil,
+     because each of them really was hit. */
+  if(sa&&!noLunge){
     sa.style.setProperty('--dx',dx.toFixed(3));
     sa.style.setProperty('--dy',dy.toFixed(3));
     sa.classList.remove('lunge');void sa.offsetWidth;sa.classList.add('lunge');
     setTimeout(()=>sa&&sa.classList.remove('lunge'),paced(360));
   }
-  if(sd){
+  /* #84 - a swing that went wide is the ATTACKER'S event and the defender
+     stands there through it. Only a dodge moves the body it was aimed at, so
+     the two failures are now told apart on the board and not only in the log. */
+  const cls=kind!=='miss'?'recoil':evaded?'evade':null;
+  if(sd&&cls){
     sd.style.setProperty('--dx',dx.toFixed(3));
     sd.style.setProperty('--dy',dy.toFixed(3));
     sd.style.setProperty('--rz',(dx>0?4:-4)+'deg');
-    const cls=kind==='miss'?'evade':'recoil';
     sd.classList.remove('recoil','evade');void sd.offsetWidth;sd.classList.add(cls);
     setTimeout(()=>sd&&sd.classList.remove('recoil','evade'),paced(340));
   }
@@ -7611,6 +7778,136 @@ function animShot(a,d,sort){
        keyframe, and that one IS on the battle clock */
     setTimeout(()=>sa&&sa.classList.remove('lunge'),paced(360));}
   return ms;
+}
+/* ═══════════════════════════════════════════════════════════════════════
+   #87 — THE VERB HAS A SHAPE. The eight spawners, then the two doors.
+
+   ⚠ ONE HEX OF TRAVEL IS MEASURED, NEVER ASSUMED. `hexSpan()` asks the live
+   DOM how far apart two neighbouring hexes actually are, so every radius on
+   this page is correct at FULL, FIELD and CLOSE without the camera being
+   consulted — same contract `hexPt` already has. A hardcoded 42px would have
+   drawn a two-hex ROAR as a four-hex one at x2.50.
+   ═══════════════════════════════════════════════════════════════════════ */
+function hexSpan(){
+  const g=$('bGrid');if(!g)return 42;
+  const a=g.querySelector('[data-k="0,0"]'),b=g.querySelector('[data-k="1,0"]');
+  if(!a||!b)return 42;
+  const f=$('bField');
+  const pa=relPt(a,f),pb=relPt(b,f);
+  return Math.abs(pb.x-pa.x)||42;
+}
+const fxLayer=()=>$('bFx');
+function fxEl(cls,x,y){
+  const L=fxLayer();if(!L)return null;
+  const e=document.createElement('div');
+  e.className=cls;e.style.left=x+'px';e.style.top=y+'px';
+  L.appendChild(e);return e;
+}
+/* P1 — three chevrons along the blow's own axis. `dx,dy` is a unit vector,
+   `hexes` is how far the body actually travelled. */
+function gustFx(x,y,dx,dy,hexes,col){
+  const ang=Math.atan2(dy,dx)*180/Math.PI,span=hexSpan();
+  for(let i=0;i<3;i++){
+    const g=fxEl('gust',x,y);if(!g)break;
+    g.style.setProperty('--ang',ang.toFixed(1)+'deg');
+    g.style.setProperty('--gd',(hexes*span*0.82).toFixed(0)+'px');
+    g.style.setProperty('--off',((i-1)*6)+'px');
+    if(col)g.style.background='linear-gradient(90deg,rgba(0,0,0,0) 0%,'+col+' 78%,rgba(0,0,0,0) 100%)';
+    g.style.animationDelay=paced(i*60)+'ms';
+    setTimeout(()=>g.remove(),paced(620));}
+}
+/* P2 — one crescent all the way round, instead of one lunge per neighbour */
+function arcFx(u,px,col,spin){
+  const p=px||hexPt(u);if(!p)return;
+  const a=fxEl('swarc',p.x,p.y-hexSpan()*0.38);if(!a)return;
+  a.style.setProperty('--r',(hexSpan()*1.55).toFixed(0)+'px');
+  a.style.setProperty('--a0',(-30+Math.random()*30).toFixed(0)+'deg');
+  if(spin)a.style.setProperty('--spin',spin+'deg');
+  if(col){a.style.setProperty('--ac',col);a.style.setProperty('--ac2',col+'66');}
+  setTimeout(()=>a.remove(),paced(640));
+}
+/* P3 — expands to the act's REAL radius in hexes. Two of them: one is a
+   bubble, two is a shout. */
+function ringFx(u,hexes,col,dy){
+  const p=hexPt(u);if(!p)return;
+  const span=hexSpan();
+  for(let i=0;i<2;i++){
+    const a=fxEl('aring',p.x,p.y+(dy||0));if(!a)break;
+    a.style.setProperty('--r',(hexes*span*2*(i?0.72:1)).toFixed(0)+'px');
+    a.style.setProperty('--rc',col);
+    a.style.animationDelay=paced(i*110)+'ms';
+    setTimeout(()=>a.remove(),paced(900));}
+}
+/* P4 — snaps taut from one body to another and holds a beat */
+function tetherFx(a,d,col){
+  const p0=hexPt(a),p1=hexPt(d);if(!p0||!p1)return;
+  const lift=hexSpan()*0.42;
+  const dx=p1.x-p0.x,dy=(p1.y-lift)-(p0.y-lift),len=Math.hypot(dx,dy)||1;
+  const t=fxEl('tether',p0.x,p0.y-lift);if(!t)return;
+  t.style.width=len.toFixed(0)+'px';
+  t.style.setProperty('--ang',(Math.atan2(dy,dx)*180/Math.PI).toFixed(1)+'deg');
+  t.style.setProperty('--tc',col);
+  setTimeout(()=>t.remove(),paced(820));
+}
+/* P5 — a few drops that fall onto the body and settle */
+function moteFx(d,n,col){
+  const p=hexPt(d);if(!p)return;
+  for(let i=0;i<n;i++){
+    const m=fxEl('mote',p.x,p.y-hexSpan()*0.15);if(!m)break;
+    m.style.setProperty('--mx',((Math.random()-0.5)*17).toFixed(1)+'px');
+    m.style.setProperty('--mc',col);
+    m.style.animationDelay=paced(i*70)+'ms';
+    setTimeout(()=>m.remove(),paced(900));}
+}
+/* P6 — the opposite motion to the ring, and that is the whole point of it */
+function plateFx(d,col){
+  const p=hexPt(d);if(!p)return;
+  const e=fxEl('plate',p.x,p.y);if(!e)return;
+  e.style.setProperty('--pc',col);
+  setTimeout(()=>e.remove(),paced(700));
+}
+/* P7 — it reached you where you stand. No displacement, ever. */
+function shudderFx(d){
+  const s=uspOf(d);if(!s)return;
+  s.classList.remove('shudder');void s.offsetWidth;s.classList.add('shudder');
+  setTimeout(()=>s&&s.classList.remove('shudder'),paced(470));
+}
+/* P8 — a clone of the sprite left at the hex the body left. Called BEFORE
+   the coordinates are written, because it needs the hex they are leaving. */
+function ghostFx(u){
+  const s=uspOf(u),p=hexPt(u);if(!s||!p)return;
+  const g=s.cloneNode(true);
+  g.className='ghost';
+  g.style.cssText='position:absolute;left:'+p.x+'px;top:'+p.y+'px;'+
+    'margin:'+(-Math.round(hexSpan()*0.62))+'px 0 0 '+(-Math.round(s.width/2||13))+'px;'+
+    'transform-origin:50% 80%';
+  const L=fxLayer();if(!L)return;
+  L.appendChild(g);setTimeout(()=>g.remove(),paced(640));
+}
+/* ═══ THE FIRST DOOR — every act that is paid for comes through spend() ═══
+   Actor-centred shapes only: they need nobody's target, so both AI brains,
+   AUTO and the player's own click all inherit them at one site.
+
+   ⚠ THREE RADII ARE NAMED HERE AND NOT DERIVED, AND IT IS DELIBERATE.
+   ROAR's 2, COMMAND's 3 and HOLD THE LINE's 2 exist only inside their
+   handlers in selectAct() as literals. Reading them off `act` would mean
+   inventing a field on gameplay data for the sake of a picture, and the day
+   somebody retunes one number the ring would keep drawing the old one. The
+   honest fix is those three handlers taking their radius from the act; that
+   is a separate edit and it is named as a remainder on this entry. */
+function verbFx(u,a){
+  if(!a||a.move||!$('bFx'))return;
+  if(a.sweep){                      /* SWEEP · TAIL-LASH · STONE MAUL · THE SWORD COMES ROUND */
+    /* a great beast swings further and slower, and the arc says which */
+    arcFx(u,null,u.big?'#c9a88a':(u.noArc?'#f2f6f7':'#e6edef'),u.big?300:(u.noArc?360:330));
+    return;}
+  if(a.fear){ringFx(u,a.range||3,'#c2477f');return;}          /* THE SOUND SHE MAKES */
+  if(a.bog){ringFx(u,a.bog,'#35c8b8',hexSpan()*0.22);return;} /* THE FEN ANSWERS - the GROUND */
+  if(a.rally){ringFx(u,4,'#c9a227');return;}                  /* SHE CALLS THEM IN */
+  if(a.k==='roar'){ringFx(u,2,'#c15d55');return;}
+  if(a.k==='command'){ringFx(u,3,'#d9bd7e');return;}
+  if(a.k==='rallyline'){ringFx(u,2,'#8ca35a');return;}        /* ...and plates, in the handler */
+  if(a.k==='wall'){plateFx(u,'#8fd0a8');return;}              /* SPEAR WALL */
 }
 /* A deferred step that belongs to ONE turn. If the turn has moved on by the
    time it fires, the work is stale and is dropped — correct, and the source
@@ -8204,6 +8501,11 @@ function spend(u,a){
   /* the generic cooldown — see the note in beginTurn */
   if(a.cool){u.cd=u.cd||{};u.cd[a.k]=a.cool;
     if(u.side==='you'&&!u.ally)whisper('cool');}
+  /* #87 — THE ONE DOOR EVERY PAID ACT COMES THROUGH, which is why the
+     animation is here and not in eight handlers. `aiTurn`, `autoStep` and
+     the player's own click all call spend(), so the enemy ogre's sweep and
+     yours are the same picture without either brain being taught it. */
+  verbFx(u,a);
 }
 const onCool=(u,a)=>!!(a.cool&&u.cd&&u.cd[a.k]>0);
 /* the mage's SECOND spell of a turn goes off at half strength — it is the
@@ -8250,6 +8552,13 @@ const gatheredAt=t=>!!(B&&B.units&&B.units.some(x=>x.gather&&x.gather.t===t&&
 function beginGather(u,a,t){
   u.gather={a:a,t:t};
   faceToward(u,t.col,t.row);
+  /* #87 — a flash of the tether at the moment the working is begun, so
+     GATHERING is something you can see one body doing TO another rather than
+     a word floating over a caster. It is deliberately not persistent: a live
+     line held for a whole round has to survive render(), the camera and the
+     victim walking, and be torn down on all four ways the working is lost.
+     Named as a remainder on this entry rather than smuggled in. */
+  tetherFx(u,t,'#e28fb4');
   fx(u,'GATHERING','#e28fb4',true);
   sfx('cast');
   say(u.name+' starts the working on '+t.name+'. It is not finished, and it is not '+
@@ -8276,6 +8585,12 @@ function releaseGather(u){
   sfx('cast');
   /* BLIGHT-WIND catches whoever is beside them NOW, for the same reason */
   if(a.aoe){
+    /* #87 — AND THE RING BELONGS HERE, NOT AT THE CLICK. Every aoe school in
+       the game is arcane with a `dmg` pair, so `gathers` is true for all of
+       them and clickHex's own aoe branch is unreachable: the working is only
+       NAMED on the click and it comes down a round later, here. Drawing it
+       where it was paid for would have put the picture on the wrong turn. */
+    ringFx(t,1.6,'#8fae5e');
     const caught=[t];
     nbrs(t.col,t.row).forEach(p=>{const x=at(p[0],p[1]);
       if(x&&x.side!==u.side&&caught.indexOf(x)<0)caught.push(x);});
@@ -8306,6 +8621,12 @@ function fearBurst(src,act){
   say(src.name+' makes a sound that is not for anybody in particular.');
   sfx('rout');
   let broke=0;
+  /* #87 — the ring is drawn from spend(); this is the other half of it, and
+     the half that says the sound arrived. Everybody it reached shudders
+     where they stand, staggered outward from her so it reads as travelling
+     rather than as everybody being hit at once. */
+  T.slice().sort((x,y)=>udist(src,x)-udist(src,y))
+    .forEach((t,i)=>setTimeout(()=>shudderFx(t),paced(110+i*55)));
   T.forEach(t=>{
     const pct=t.morale/(t.moraleMax||1);
     /* Steady people usually hold — but never certainly, because a boss whose
@@ -8429,13 +8750,21 @@ function selectAct(i){
     say('You say the thing captains say. It works, mostly.');
     B.sel=null;render();autoEnd(u);return;}
   if(a.k==='rallyline'){spend(u,a);
+    /* #87 — the ring goes out from spend(), the plates close after it. That
+       ordering IS the difference between this and COMMAND: an order that
+       only travels, against an order that travels and then guards. */
     alive().filter(x=>x.side===u.side&&hdist([x.col,x.row],[u.col,u.row])<=2)
-      .forEach(x=>{x.rallyBuff=10;fx(x,'+10 dodge','#8ca35a',true);});
+      .forEach((x,i)=>{x.rallyBuff=10;fx(x,'+10 dodge','#8ca35a',true);
+        setTimeout(()=>plateFx(x,'#8ca35a'),paced(130+i*70));});
     say('Shields up, feet planted. Nobody moves and nobody dies.');
     B.sel=null;render();autoEnd(u);return;}
   if(a.k==='roar'){spend(u,a);
+    /* #87 — everybody inside the ring SHUDDERS where they stand. Not a
+       recoil: a roar displaces nobody, and borrowing the recoil would have
+       told the player a hex had changed hands when none had. */
     alive().filter(x=>x.side!==u.side&&hdist([x.col,x.row],[u.col,u.row])<=2)
-      .forEach(x=>mor(x,-28,'the ogre is very loud'));
+      .forEach((x,i)=>{mor(x,-28,'the ogre is very loud');
+        setTimeout(()=>shudderFx(x),paced(120+i*45));});
     say(u.name+' roars. Somewhere a rat reconsiders its career.');
     B.sel=null;render();autoEnd(u);return;}
   B.sel=a;render();
@@ -8495,6 +8824,13 @@ function throwBody(u,act,pas,c,r){
   const foe=pas.side!==u.side;
   spend(u,act);
   animShot(u,{col:c,row:r},'stone');
+  /* #87 — the heave. One gust off the ogre along the line of the throw, so
+     the ogre is visibly the reason the body is in the air instead of the
+     body simply appearing somewhere else. Drawn from where it was lifted. */
+  const tp=hexPt(pas),tq=hexPt({col:c,row:r});
+  if(tp&&tq){const tx=tq.x-tp.x,ty=tq.y-tp.y,tl=Math.hypot(tx,ty)||1;
+    gustFx(tp.x,tp.y-hexSpan()*0.3,tx/tl,ty/tl,1.4);}
+  ghostFx(pas);
   pas.col=c;pas.row=r;
   const knock=Math.round(pas.hpMax*(foe?0.12:0.06))+2;
   pas.hp=Math.max(1,pas.hp-knock);
@@ -8628,7 +8964,11 @@ function clickHex(c,r){
     /* it plates them, it does not mend them — no healing in a fight, ever */
     alive().filter(x=>x.side==='you'&&udist(tgt,x)<=2).forEach(x=>{
       x.armour+=18;if(x.armour>x.armourMax)x.armourMax=x.armour;
-      mor(x,12,'');fx(x,'+18 armour','#96a1a5',true);n++;});
+      mor(x,12,'');fx(x,'+18 armour','#96a1a5',true);
+      /* #87 — a plate on every body it reached, staggered so the oath spreads
+         through the line instead of arriving everywhere at once */
+      setTimeout(((y,i)=>()=>plateFx(y,'#8fd0a8'))(x,n),paced(n*90));
+      n++;});
     say(u.name+' speaks the iron-oath. '+n+' of yours stand a little harder.');
     B.sel=null;B.reach=null;render();autoEnd(u);
     return;
@@ -8684,6 +9024,10 @@ function clickHex(c,r){
     if(a.grasp){
       faceToward(u,tgt.col,tgt.row);
       tgt.rooted=2;
+      /* #87 — taken hold of, then closed on. The tether says who has them,
+         the plate says they are not going anywhere. */
+      tetherFx(u,tgt,'#e05fa8');
+      setTimeout(()=>plateFx(tgt,'#e05fa8'),paced(200));
       fx(tgt,'HELD','#e05fa8');sfx('grasp');
       say(u.name+'\'s hand takes hold of '+tgt.name+' from two hexes away and closes. '+
         'It is not going anywhere until it tears itself loose.');
@@ -8694,6 +9038,9 @@ function clickHex(c,r){
       faceToward(u,tgt.col,tgt.row);
       const toward=sectorOf([tgt.col,tgt.row],[u.col,u.row]);
       tgt.facing=(toward+3)%6;              /* now its back is squarely to him */
+      /* #87 — the arc goes ON THE TARGET and not on the cutter, because the
+         cutter did not swing at anything. Something spun them round. */
+      arcFx(tgt,null,'#e0b84a',200);
       fx(tgt,'TURNED','#e0b84a');sfx('back');
       /* shadow-step: the opening he just made is free for him to use */
       if(has(u,'shadowstep')){u.actions++;u.freeOn=tgt.id;}
@@ -8716,6 +9063,11 @@ function clickHex(c,r){
       sfx('cast');
       faceToward(u,tgt.col,tgt.row);
       const off=Math.min(tgt.armour,25);tgt.armour-=off;
+      /* #87 — the tether takes hold and the harness comes off it as shards.
+         Steel motes rather than green ones: the same primitive, and the
+         colour is the only thing saying which of the two it was. */
+      tetherFx(u,tgt,'#b6c4c6');
+      setTimeout(()=>moteFx(tgt,5,'#cdd6d8'),paced(220));
       fx(tgt,'−'+Math.round(off)+' armour','#96a1a5');
       mor(tgt,-14,'its harness came apart');
       say(u.name+' unpicks '+tgt.name+'’s harness — '+Math.round(off)+' armour gone.');
@@ -8726,6 +9078,10 @@ function clickHex(c,r){
       const caught=[tgt];
       nbrs(c,r).forEach(p=>{const x=at(p[0],p[1]);
         if(x&&x.side==='foe'&&caught.indexOf(x)<0)caught.push(x);});
+      /* #87 — the one ring centred on somebody else. BLIGHT-WIND is a radius
+         thrown across the board, so it gets the radius primitive at the hex
+         it lands on rather than at the caster's feet. */
+      ringFx(tgt,1.6,'#8fae5e');
       say(u.name+' pulls the blight-wind across '+caught.length+' of them.');
       caught.forEach(x=>strike(u,x,a));
     }
@@ -8740,6 +9096,7 @@ function clickHex(c,r){
   if(a&&a.sink&&B.reach&&B.reach.dist[K(c,r)]!==undefined&&!tgt){
     spend(u,a);u.sunk=true;u.moved=true;
     fx(u,'UNDER','#35c8b8');sfx('sink');
+    ghostFx(u);                     /* #87 — drawn BEFORE the hex is written */
     u.col=c;u.row=r;
     const near=alive().filter(x=>x.side!==u.side)
       .sort((p,q)=>hdist([u.col,u.row],[p.col,p.row])-hdist([u.col,u.row],[q.col,q.row]))[0];
@@ -8756,6 +9113,7 @@ function clickHex(c,r){
   if(a&&a.k==='dis'&&B.reach&&B.reach.dist[K(c,r)]!==undefined&&!tgt){
     spend(u,a);u.moved=true;u.safeMove=true;
     const was=threatsAt(u.col,u.row,u.side);
+    ghostFx(u);                     /* #87 — one clean step, and it shows */
     faceToward(u,c,r);u.col=c;u.row=r;
     const now=threatsAt(u.col,u.row,u.side);
     const near=alive().filter(x=>x.side!==u.side)
@@ -12241,6 +12599,11 @@ window.LINT=function(){
         hit('gate',w,'castTie "'+c.castTie+'" is not a tie in TIES');
       if(c.castTie&&c.castRace)
         hit('gate',w,'castTie and castRace on one card — the cast can only come from one of them');
+      /* #85 — same rule, third gate. A castLost card draws `a` from outside
+         the party entirely, so any other cast rule on it is silently ignored
+         by openCamp and the author would never find out. */
+      if(c.castLost&&(c.castRace||c.castTie||c.castKeep))
+        hit('gate',w,'castLost with another cast gate — the cast can only come from one place');
       if(c.needs){
         const par=byId[c.needs.id];
         if(!par)hit('gate',w,'needs missing incident "'+c.needs.id+'"');
@@ -12336,6 +12699,20 @@ function saveRun(){
         campSeen:G.campSeen,campChose:G.campChose,campDay:G.campDay,campCast:G.campCast,
         recruits:G.recruits,hiredHere:G.hiredHere,lateHireRolled:G.lateHireRolled,
         vill:G.vill,qm:G.qm,dismissed:G.dismissed,doubleRations:G.doubleRations,
+        /* ═══ #85 — THE TWO PEOPLE THE COMPANY NO LONGER HAS ══════════════
+           `dismissed` on the line above has always been saved; these two
+           never were, and they are the same kind of fact. THE DREAM reads
+           all three (see lostSoul), so a card whose whole subject vanished
+           on a reload would have been the thing that shipped.
+           ⚠ `stranded` IS A PRE-EXISTING BUG AND NOT NEW WORK: the person
+           the sinkhole took is the only thing holding `travel`'s 50%-a-leg
+           roll that walks them back out of the treeline, so closing the tab
+           quietly killed anybody who was down that hole. Exactly #38's gap
+           in the same block, found the same way.
+           Both hold a ROSTER OBJECT and neither is ever in `G.party`, so
+           the reload makes a separate copy on purpose and everything that
+           compares them does it by `id`. */
+        killedOwn:G.killedOwn,stranded:G.stranded,
         lastFeast:G.lastFeast,lastWalkout:G.lastWalkout,mustKit:G.mustKit,
         /* #73 - who the long fire is about. `p.clan` is the fact and it rides
            in the roster; this is only the pointer the card's own prose reads,
@@ -13500,6 +13877,44 @@ function afterPromotion(){
   }
 }
 
+/* ═══ #85 — WHO THIS RUN HAS ACTUALLY LOST ═══════════════════════════════
+   ⛔ READ THIS BEFORE WRITING ANY CARD ABOUT A DEAD CREW MEMBER: THIS GAME
+   DOES NOT KILL PEOPLE ON THE ROSTER, AND THAT IS DELIBERATE AND LOAD-BEARING.
+   `carryEverybodyOut()` says it in one line ("nobody is lost, the downed are
+   scarred and come back at 30%"), `afterBattle()` never splices anybody, and
+   a lost fight at THE CIRCLE goes through `toBeaten` which scars and does not
+   bury. Scars ARE the death system: units are meant to be disposable, and the
+   dilemma is sentiment versus arithmetic, not a graveyard.
+
+   So there are exactly three ways a person leaves this company for good, and
+   they are ranked here by how much of it is YOUR FAULT, because that is what
+   the card asks:
+
+     1. `cut`  — you cut them down at a fire. THE ONLY REAL DEATH IN THE
+                 BUILD, and you did it yourself: the third door of
+                 `openReturner`, taken against a veteran of three fights who
+                 walked back and asked for his place. It is recorded there
+                 and nowhere else, because nothing had ever needed to know.
+     2. `hole` — the sinkhole at THE GROUND OPENS took them (`strandOne`) and
+                 they have not walked out. ⚠ THEY STILL MIGHT: `travel`'s
+                 arrive rolls 50% per leg. The card fires once a run, so it
+                 can never contradict itself, and a man walking out of the
+                 treeline three days after you dreamed him dead is a better
+                 scene than either half alone. THE DREAM IS A DREAM. Nothing
+                 here asserts a death from outside it.
+     3. `sent` — you dismissed them and they are still out there. Unresolved
+                 only: `openReturner`'s `done()` splices the record on all
+                 three of its doors, so anybody in `G.dismissed` is somebody
+                 the road has not finished with.
+
+   Returns null when the company has lost nobody, which is most of a clean
+   run, and the gate above the card reads exactly that. */
+function lostSoul(){
+  if(G.killedOwn)return {p:G.killedOwn,how:'cut'};
+  if(G.stranded)return {p:G.stranded,how:'hole'};
+  const d=(G.dismissed||[])[0];
+  return d&&d.p?{p:d.p,how:'sent'}:null;
+}
 /* ============================================================
    Camp incidents — the RimWorld beat. Between one place and the
    next, the company is a group of people, not a unit.
@@ -13953,7 +14368,93 @@ const CAMPS=[
       after:(a,b)=>'They take the order the way people take an order, and they keep it.\n\n'+
         'It does not do what you wanted. '+fst(b)+' spends every fight from the far end of the '+
         'line watching the far end of the line, which is a thing '+fst(a)+' can feel from there. '+
-        'You have not ended anything. You have made it longer.'}]}
+        'You have not ended anything. You have made it longer.'}]},
+  /* ═══ #85 — THE DREAM ════════════════════════════════════════════════════
+     The user's own scene, written out whole (2026-08-04): "Сон. После кого-то
+     из твоей тимы умер. Он приходит в твоем сне. Его лицо изрядно впало а
+     вместо глаз пустые глазницы, но лицо все еще узнаваемо. Он говорит, что
+     ты мог бы спасти его. Но не спас и это все твоя вина. Но ты не можешь
+     ничего сказать в ответ, а просто безмолвно. Просыпаешься в холодном поту."
+
+     ⚠ IT IS A CAMP INCIDENT AND NOT A ROAD NODE, and that is forced rather
+     than preferred: a dream is not a place the company can decide to walk to,
+     so it cannot be a slot on the map. Between two stops, at night, with the
+     watch already set, is the only frame the game has for it.
+
+     ⚑ THE WHOLE ENTRY IS THAT THE CARD HAD NO CORPSE TO BE ABOUT. Nothing in
+     this build kills a crew member (see lostSoul() above), so the first thing
+     this cost was finding out which three states actually mean "gone" and
+     ranking them by fault. The card then says the SAME dream over all three
+     and changes exactly one sentence, because what the face accuses you of is
+     the same in every case and only the evidence differs.
+
+     ⚠ THE DREAM IS THE ONLY THING THAT CLAIMS THEY ARE DEAD. The narration
+     never does, and it must not start: the sinkhole rolls 50% a leg to hand
+     somebody back, and a man walking out of the treeline four days after you
+     buried him in your sleep is the best thing this card can produce. It is
+     also why the card fires once a run like every other incident — it can
+     never be dealt a second time to correct itself.
+
+     WHY THE MORNING CARRIES THE CHOICE. The scene the user wrote has no
+     answer in it on purpose; you open your mouth and nothing comes. So the
+     dream is not the decision — it plays, it ends, and the ruling is what you
+     do about it at first light. Three doors, and they are the only three a
+     captain has: say it out loud, pay for it, or march. The third is free
+     tonight, which is allowed here because the other two cost a day and thirty
+     crowns, and its price is written into its own aftermath instead of into a
+     sequel card: it comes back, you know it is coming, and it makes no
+     difference. */
+  {id:'dream',t:'THE DREAM',seed:23,castLost:true,
+   body:(a,b)=>{
+     const g=lostSoul()||{},A=fst(a);
+     /* one sentence, and it is the evidence rather than the accusation. The
+        accusation is identical in all three cases; what your eye cannot leave
+        alone is not. */
+     const tell={
+       cut:'There is not a mark on them. Not where you put it, not anywhere, and you cannot '+
+         'stop checking.',
+       hole:'There is no dirt on them. Nothing under the nails, nothing in the hair. Wherever '+
+         'they have been since the ground took them, it was not down there digging.',
+       sent:'They still have the bundle on their shoulder, roped the way it was roped the '+
+         'morning you sent them off with it, and it has not been opened since.'
+     }[g.how]||'';
+     const alone=G.party.length<2;
+     return 'You are asleep, and then you are not, and '+a+' is standing on the far side of the '+
+       'fire.\n\nThe face has fallen in on itself. The cheeks have gone under the bone and the '+
+       'mouth sits wrong because there is nothing left behind it holding the shape. Where the '+
+       'eyes were there are two sockets, dry and clean and open all the way through.\n\nYou know '+
+       'them anyway. You would know them from twice this far off.\n\n'+tell+'\n\n'+A+' says you '+
+       'could have saved them. Not shouting. The flat way somebody tells you what day it is. '+
+       'They say you did not. They say it was yours to do, and you did not do it.\n\nYou have '+
+       'the answer ready and it is a good one. None of it will come out. Your mouth works and '+
+       'nothing comes, and they wait for it, patiently, for a very long time.\n\nYou wake with '+
+       'the blanket soaked through and the cold coming off you in the dark. '+
+       (alone?'There is nobody on watch. There has not been for some time.'
+             :fst(b)+' has the watch, and has been watching you for a while, and says nothing '+
+              'about it.');},
+   choices:[
+     {t:'Say their name at the fire. Say what you dreamed.',
+      c:'−1 day · they think better of you for it',fx:{days:1,morale:10},
+      after:(a)=>'You say it at first light, before anybody has their boots on, and you say all '+
+        'of it, including the part where you could not answer.\n\nNobody tells you it was not '+
+        'your fault. That would have been a lie and it would have cost you something with them, '+
+        'and this company does not spend that on a morning.\n\nWhat happens instead is that the '+
+        'fire gets built back up and nobody marches, and by the middle of the day somebody has '+
+        'told a story about '+fst(a)+' that you had never heard.'},
+     {t:'Count out their share and put it back in the chest. Nobody touches it.',
+      c:'−30 crowns · it sits well with them',fx:{crowns:-30,morale:6},need:{crowns:30},
+      after:(a)=>'Thirty crowns counted out in front of everybody and put back in the chest in '+
+        'a bag of its own, with '+fst(a)+'\'s name on the bag in charcoal.\n\nNobody asks what '+
+        'it is for. Everybody knows what it is for, and everybody also knows there is nowhere '+
+        'for it to go, and that is the whole of what it is.\n\nIt is still in there a week '+
+        'later. Nobody has counted it and nobody is going to.'},
+     {t:'Nothing. Kick the fire out and march.',
+      c:'no cost tonight · and it will be back',fx:{morale:-7},
+      after:()=>'You are up before the watch changes and the fire is out before anybody else is '+
+        'awake. The column is on the road in the grey with nothing said.\n\nIt works. It works '+
+        'for four days.\n\nThen it is the same fire and the same face and the same two sockets, '+
+        'and this time you know exactly what is coming, and it makes no difference whatsoever. '+
+        'Your mouth still will not open.\n\nYou are going to keep having this. It is not asking.'}]}
 ];
 /* ═══════════════════════════════════════════════════════════════════════
    INCIDENTS CHAIN, THEY DO NOT REPEAT (playtest #5: THE DEBT came up twice
@@ -14008,6 +14509,16 @@ function campPool(){
        about two people who will not be separated cannot be played by one
        of them. */
     if(c.castTie)return !!liveTie(c.castTie);
+    /* ═══ #85 — A CARD CAN REQUIRE AN EMPTY CHAIR ═══════════════════════
+       The fourth gate, and the only one that asks about somebody who is NOT
+       at the fire. castRace asks "are there two ratkin here", castTie asks
+       "are these two particular people here" — this asks "has this company
+       lost anybody at all", and a run that has not is a run that never sees
+       the card. See lostSoul() above for the three ways it can be true.
+       ⚠ It is deliberately NOT combined with castRace: the cast is one
+       missing person plus whoever is awake, and a card can only be cast
+       from one place. */
+    if(c.castLost)return !!lostSoul();
     return !c.castRace||
       G.party.filter(p=>p.race===c.castRace).length>=(c.castNeed||2);
   };
@@ -14046,8 +14557,30 @@ function openCamp(spot,next,atPlace){
      has already proved both are here, so the fallback is dead code — and
      it stays, for the same reason castRace's does. */
   const tie=c.castTie?liveTie(c.castTie):null;
-  const a=tie?who(member(tie.a)):who(src[0]),
-        b=tie?who(member(tie.b)):who(src[1]||src[0]);
+  /* ═══ #85 — THE ONE CAST THAT IS NOT DRAWN FROM THE PARTY ═══════════════
+     `a` is the person who is gone and `b` is somebody still at the fire, so
+     the card is a scene between the company and an empty place in it.
+     Everything downstream already survives this and it was checked rather
+     than assumed: `stillHere(a)` is false, so `bothHere` is false; `pa` comes
+     back undefined and every use of it is behind `if(pa)` or `pa&&pb`. The
+     dead do not get a memory written on their sheet and do not form ties.
+     ⚠ `castLost` cards must never read `a` back as a roster member. */
+  const gone=c.castLost?lostSoul():null;
+  /* ⚠ `b` PREFERS SOMEBODY WHO IS NOT YOU. `src` is the whole shuffled party
+     and the Captain is in it, so a company dismissed down to one body would
+     have cast him as the man on watch watching himself wake up. The card also
+     carries its own solo line for a party of one, because preferring is not
+     the same as guaranteeing. */
+  /* ⚠ AND `b` IS EXPLICITLY NOT `a`. Every real path already splices the lost
+     person out of G.party before it records them (dismiss(), strandOne, and
+     openReturner's third door all fire after the splice), so the id test is
+     belt-and-braces — but the failure it prevents is the card naming one
+     person as both the corpse and the man on watch, which reads as a bug
+     rather than as a dream. */
+  const awake=gone?src.filter(p=>p.id!==gone.p.id):src;
+  const a=gone?who(gone.p):tie?who(member(tie.a)):who(src[0]),
+        b=gone?who(awake.find(p=>!p.leader)||awake[0]||src[0])
+               :tie?who(member(tie.b)):who(src[1]||src[0]);
   /* the chain remembers WHO, not just what — a sequel about a debt should
      name the same two people */
   G.campCast=G.campCast||{};
@@ -14106,7 +14639,13 @@ function openCamp(spot,next,atPlace){
       /* the two people the scene was about remember being in it */
       const pa=G.party.find(m=>cast1.a.indexOf(proseName(m))===0),
             pb=G.party.find(m=>cast1.b.indexOf(proseName(m))===0);
-      if(pa)remember(pa,c.t.toLowerCase().replace(/^the /,'The ')+', on the road to '+
+      /* #85 — on a castLost card `pa` is the person who is GONE, so the
+         memory has nowhere to land unless it lands on the one who was awake
+         for it. Scoped to that gate on purpose: everywhere else a missing
+         `pa` means somebody left mid-chain, and quietly handing their line to
+         the other person would be rewriting whose scene it was. */
+      const keeper=pa||(gone?pb:null);
+      if(keeper)remember(keeper,c.t.toLowerCase().replace(/^the /,'The ')+', on the road to '+
         placeName()+'.');
       if(pa&&pb&&pa!==pb)bond(pa,pb,pa.name+' and '+pb.name+' were both in '+c.t.toLowerCase()+'.');
       if(f.days)passDays(f.days);
@@ -17745,7 +18284,14 @@ function openReturner(spot,next,rec){
         'go at first light, and this time it does not feel like losing somebody.');});
   mk('<b>They know the roads, the watch-words, the strongbox.</b>'+
      '<i>cut them down · take what they carry · the company will not forget it</i>',
-    ()=>{G.morale-=18;pay('crowns',8);
+    /* #85 — THE ONLY PLACE IN THE GAME THAT KILLS SOMEBODY OFF THE ROSTER,
+       and until now it was the only place that knew. `done()` splices the
+       record out of G.dismissed on all three doors, so without this line the
+       man is simply gone from every table the game keeps and THE DREAM could
+       never be about the one death the player is actually guilty of.
+       The PERSON is stored, not a name: the card wants their race and class
+       to say who it is, and `who()` needs the object. */
+    ()=>{G.morale-=18;pay('crowns',8);G.killedOwn=p;
       done('It is quick, at least. The bundle holds eight crowns, a spare shirt and a wooden '+
         'spoon with your company\'s mark scratched on it, which everyone has now seen.\n\n'+
         'Nobody says anything. That is not the same as nobody thinking anything.');});
