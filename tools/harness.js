@@ -120,7 +120,12 @@ window.shotBoard=async function(name,caption,note){
     '.shotnote i{color:#c07a2c;font-style:normal}'+
     '.board{position:relative;width:600px;height:440px;overflow:hidden;'+
       'border:1px solid #2c3d3f;background:#16201f}'+
-    '.board>img.terr{position:absolute;left:0;top:0;width:600px;height:440px}'+
+    /* ⚠ #105 point 2 - top:-10, exactly like #bTerrain in the game. The grid
+       starts ten pixels above its own box (.hrow's negative margin is on the
+       FIRST row too), so a canvas pinned at zero leaves the top rank of tiles
+       standing on nothing - which is the black line #105 deleted. A photograph
+       that puts it back would send the next session hunting a fixed bug. */
+    '.board>img.terr{position:absolute;left:0;top:-10px;width:600px;height:440px}'+
     '.board>.gridholder{position:absolute;left:0;top:0}'+
     '.board>.fxholder{position:absolute;left:'+(-dx)+'px;top:'+(-dy)+'px;'+
       'width:'+Math.round(fb.width)+'px;height:'+Math.round(fb.height)+

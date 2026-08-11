@@ -23,6 +23,62 @@
 
 ---
 
+## ⚔ THE BATTLE SCREEN, ROUND NINE  *(#105 · 2026-08-11 · build log 8f.132)*
+
+**All eight of your points, and three of them turned out to be real bugs rather than taste.** Worth
+knowing which, because it changes what you should be looking at.
+
+**How to reach it.** Front door → **Continue the road** → walk into any fight. Or ⚙ DEV.MODE →
+practice field, which is faster and does not touch your run.
+
+**The black line at the top of the board (2) - this was a bug.** The hex grid starts ten pixels
+above its own box and the painted ground started at zero, so the top rank of tiles was standing on
+bare background. Gone. **But look at the ground itself too**: the same fix means every puddle,
+tuft, stone and camp fire in the game has moved onto its own tile for the first time - they were
+ten pixels low and, on every other row, eight pixels left. **If any battlefield now looks *worse*
+laid out than you remember, that is the thing to report** - it is the change with the widest reach
+in this build and it touches all six grounds.
+
+**Moving the camera by hand (3).** Zoom to FIELD or CLOSE, then either **drag the ground** with the
+left button, or **push the pointer into the outer edge of the field** and it scrolls, Battle
+Brothers style. Clicking a hex still works - a press only becomes a drag past about 5px.
+**It gives itself back on its own**: the moment the next body starts its turn the camera snaps back
+to whoever is acting. That is deliberate (a camera you have to hand back is one you forget you
+took), but **if it feels like it lets go too soon, say so** - it is one line.
+⚠ **This is the one thing here that nobody has judged with a hand on a mouse.** The edge scroll
+moves 11px every 32ms. Too fast, too slow, or too eager near the cards - all three are useful.
+
+**Walking bodies (8) - this was a bug too.** A body that walked was being drawn at **40-45% of its
+standing size** at the two closer camera stops, because the effects layer it walks in is outside
+the zoom. It is 90% now, at every stop, with the feet on the same line the standing body's are.
+**90% is my call, not yours** - it reads as "slightly further from the camera", which is what
+walking looks like - but you asked for a number and 100% is one literal if you want it.
+
+**The plaque is the other way up (6, 7).** Under the face: **ARMOUR / HITPOINTS / NERVE**, with what
+is left at nearly double size and the pool it is out of small and quiet beside it. The hitpoint
+number is now the same colour as its bar and the body's own bar on the board (blue yours, red
+theirs, gold fighting beside you), so it brightens as they bleed. Along the bottom: the action
+crystals, then a **drawn sword** and a **drawn foot** carrying the hit and dodge percentages, with
+the explanation on hover. Those two are SVG rather than font glyphs on purpose - there is no
+footprint character that does not come out as a colour emoji on Windows. **If either mark does not
+read as what it is at that size, that is worth a line**; they are 12x14 and 11x14.
+
+**The turn order (4).** Heads are **20% wider and 10% higher**, the rail starts 26px lower so it is
+clear of the log, and **the acting head finally has all four sides of its gold frame** - the top
+edge had been clipped since the rail turned vertical, which is exactly what you spotted. ⚠ **The
+cost of the bigger heads is two of them: the queue shows 7 where it showed 9.** If you would rather
+see more of the round than have them bigger, that is a trade I can put back.
+
+**The cards and the words (1, 5).** Cards 60→72 wide, 82→86 tall, name 8→9px, and everything else on
+the face up with it. The class line and the personality line under the portrait are 15% bigger.
+
+**What would be a bug.** A card name clipped mid-word · the plaque's numbers spilling out of the
+panel on the Fen-Mother or the Thing in Armour · a walking body sunk into the ground or floating ·
+the camera stuck somewhere after a drag and refusing to follow the next body · a hex that will not
+take a click · the ground looking misaligned on any of the six battlefields.
+
+---
+
 ## 🗺 THE ROAD SCREEN, ROUND TWO: THE BB DESIGN PASS  *(#104 · 2026-08-11 · build log 8f.131)*
 
 **Your nine points off the annotated shot, all in.** This round supersedes half of the #103
