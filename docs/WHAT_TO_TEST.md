@@ -60,6 +60,69 @@ face starts at -2. Up to four; the hover card still lists all of them with what 
 
 ---
 
+## ⚔ THE BATTLE SCREEN, ROUND FIVE - YOUR SEVEN POINTS  *(#98 · 2026-08-11 · build log 8f.126)*
+
+**How to reach it.** ⚙ TEST → **PRACTICE FIELD** → any fight.
+
+| | what you asked | what is there |
+|---|---|---|
+| 1 | *"a bit less space from the top and bottom"* | FULL went **×1.58 → ×1.64**: 49px above the board is now **31**, and 13 below is **7**. ⚠ **Half of that space was not the camera** - #95 moved the rail off the bottom and left the card row parked at `bottom:48`, so 38px of the floor was a hole where the rail used to be. The cards are on the floor now |
+| 2 | *"move elements, align nicer"* | one right-hand column, right-aligned, read from the floor up: **FEEDBACK · END TURN · ♪ ⏱ ⚑ · UNDO** |
+| 3 | *"bigger units order; hide who already moved"* | see below |
+| 4 | *"log narrower shut, wider and taller open"* | **150px** shut - a button - and **360 × 426** open |
+| 5 | *"hide the reactions behind a small FEEDBACK accordion"* | **68 × 19** folded. One press opens it, and it stays open for the session |
+| 6 | *"a star for a leader, the flag is for morale"* | ★ on the token, the plaque, the readout card and the class line |
+| 7 | *"smaller chance, and full damage regardless of armour"* | see below |
+
+### The three worth actually playing
+
+**⬢ The turn order is a queue, not a cast list.** Whoever is acting, then whoever is **still to
+come**; anybody who has already had their turn is gone until the round turns over. Where it turns,
+a **↻ II** divider marks it and everything under it is next round's order. Heads went **30×34 →
+40×46**, which is the smallest size a ratkin and a poacher are actually told apart at.
+**What to look for:** at the top of a round the rail should be the full queue; by the last body it
+should be almost all divider-and-next-round. Verified live: with three bodies left to act it read
+*slinger · warp-sniffer · ogre · **↻ II** · Ilka · chieftain · Vesna…*
+
+**⬢ The damage on the board is the whole blow now.** It used to print only the **hitpoint** half,
+so against 44 armour an arming sword read `7-9`. It reads **`16-23`** - the full swing, carrying
+the weapon, your bonus and the arc, and ignoring what the target's plate happens to eat. That is
+the number you compare two cards with; the armour/hitpoint split is still on the hover card, which
+is where a breakdown belongs. The **chance dropped to 9.5px** in the same edit, because with the
+damage now the larger figure the percentage had to give up the emphasis.
+⚠ **This is a deliberate reversal of an older decision** which argued that a full number "reads as
+a promise the target does not keep". Your reasoning wins: at the moment of choosing, `7-9` tells
+you about the plate, and the armour bar already says that.
+
+**⬢ FULL is 4% bigger than an hour ago and still does not crop.** Top-rank head sits at y=18 with
+13px of overhang, so nothing is cut. If it now feels tight again, the number is one constant.
+
+### What would be a bug
+
+- a body appearing **twice** in the rail, or the ↻ divider showing when the round has not wrapped
+- the rail overrunning the plaque (it is capped at 9 heads in a 490px band)
+- END TURN, the icons, FEEDBACK or the cards touching each other (measured clean at all three
+  stops, with the log open and with FEEDBACK open)
+- the damage on a hex disagreeing with the same blow's card, allowing for your damage bonus and the
+  arc multiplier
+- **any part of the screen looking unstyled.** See below
+
+### ⚑ A guard went in, and it is worth knowing about
+
+**A stray comment terminator in the stylesheet silently deletes every rule after it.** Nothing
+throws, the console stays clean, and the page renders with a hole that looks like a design opinion.
+It has now happened **twice in three days** - #95 dropped the whole log box to `position:static`,
+and this session dropped everything from the icon row down, including both hex readouts. Both were
+found only by measuring a box whose numbers made no sense.
+
+There is now a sentinel rule at the very bottom of the stylesheet and a boot check that asks the
+**parser** whether it got there. If it did not, the console says so in plain words and
+`window.__cssTail` is false. *(The first draft of that guard quoted the offending characters in its
+own comment and took the entire script down with a SyntaxError, which is either funny or the best
+possible argument for the guard.)*
+
+---
+
 ## ⚔ THE BATTLE SCREEN, ROUND FOUR - YOUR TEN POINTS  *(#95 · 2026-08-11 · build log 8f.123)*
 
 **How to reach it.** ⚙ TEST → **PRACTICE FIELD** → any fight. Or play.
