@@ -1242,28 +1242,49 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:11px;pa
 
 /* ================= WORLD ================= */
 #world{background:var(--g-ink);flex-direction:column}
+/* ═══ #103 · THE TOP BAR, REBUILT ON THE BATTLE BROTHERS SHAPE ═══════════
+   (Friends' feedback, 2026-08-11: on the map it is "unclear what is he
+   seeing".) Company on the left, counted resources on the right as one
+   connected strip, and the day and the contract on their own 40px row
+   below. ⚠ THE TWO ROWS SPEND EXACTLY THE 82px THE OLD TWO ROWS SPENT:
+   nodes, travel labels and placeDlg all position in raw px against the
+   1280x638 map, so #wMap's height is load-bearing. Grow these rows and
+   the painted roads part company with the buttons standing on them. */
 #wBar{height:42px;background:var(--g0);border-bottom:1px solid #3d2f1d;display:flex;align-items:center;
-      padding:0 16px;gap:15px;font-family:var(--display);font-size:12.5px;color:var(--g4);
-      letter-spacing:.06em;flex:none}
+      padding:0 64px 0 12px;gap:8px;flex:none}
 #wBar .sep{flex:1}
-#wBar em{font-family:var(--body);font-style:italic;font-size:13px;color:var(--g3);letter-spacing:0}
-#wBar .warn{color:#c15d55}
-/* the four numbers that run the campaign, stated loudly */
-#wBar .big4{font-size:15px;letter-spacing:.05em;color:#c2b493}
-#wBar .big4 b{font-size:19px;color:#e0d3b4;font-weight:700}
-#wBar .big4.gold, #wBar .big4.gold b{color:var(--g4)}
-#wBar button{font-family:var(--display);font-size:11.5px;color:var(--g4);border:1px solid #4d3c22;
-             padding:4px 12px;background:#2a2114;letter-spacing:.08em}
-#wBar button:hover{background:#3a2b16;border-color:var(--g3)}
-#wRes{height:40px;background:#161009;border-bottom:2px solid #3d2f1d;display:flex;align-items:center;
-      gap:6px;padding:0 16px;flex:none;overflow:hidden}
-.rchip{display:flex;align-items:center;gap:4px;background:#221a10;border:1px solid #3d2f1d;
-       padding:3px 7px;font-family:var(--mono);font-size:10.5px}
-.rchip .sw{width:9px;height:9px;flex:none}
-.rchip .ri{font-size:12px;line-height:1;font-family:var(--body)}
-.rchip .nm{color:#8a7449;font-size:8px;letter-spacing:.1em}
-.rchip b{font-weight:500;font-variant-numeric:tabular-nums}
-.rdiv{width:1px;height:20px;background:#3d2f1d;margin:0 2px}
+#wCompany{display:flex;align-items:center;gap:6px;min-width:0}
+#wRes{display:flex;align-items:center;flex:none}
+/* the counted resources: one strip, segments sharing borders */
+.rseg{display:flex;align-items:center;gap:6px;background:#161009;border:1px solid #3d2f1d;
+      padding:3px 10px;margin-left:-1px;font-family:var(--mono);cursor:help}
+.rseg:first-child{margin-left:0}
+.rseg .ri{font-size:13px;line-height:1;font-family:var(--body)}
+.rseg b{font-weight:600;font-size:15px;font-variant-numeric:tabular-nums;color:#e0d3b4}
+/* the company chips: bodies, kit, upkeep - the left-hand family */
+.cchip{display:flex;align-items:center;gap:6px;background:#221a10;border:1px solid #3d2f1d;
+       padding:3px 9px;font-family:var(--mono);font-size:10px;cursor:help;white-space:nowrap}
+.cchip .ri{font-size:13px;line-height:1;font-family:var(--body)}
+.cchip .nm{color:#8a7449;font-size:8.5px;letter-spacing:.1em}
+.cchip b{font-weight:600;font-size:14px;font-variant-numeric:tabular-nums;color:#e0d3b4}
+.cchip i{font-style:normal;font-size:10px}
+.cchip.click{cursor:pointer}
+.cchip.click:hover{background:#2a2114;border-color:var(--g3)}
+/* ── row two: the contract on the left, the day on a centre plaque ── */
+#wSub{height:40px;background:#0e0a05;border-bottom:2px solid #3d2f1d;position:relative;
+      display:flex;align-items:center;padding:0 12px;flex:none}
+#wQuest{display:flex;align-items:center;gap:8px;max-width:44%;cursor:help;overflow:hidden;
+        white-space:nowrap}
+#wQuest .qlab{font-family:var(--display);font-size:11px;color:var(--g4);letter-spacing:.09em;flex:none}
+#wQuest .qtx{font-family:var(--mono);font-size:10.5px;color:#a38652;overflow:hidden;
+             text-overflow:ellipsis}
+#wPlaque{position:absolute;left:50%;top:0;height:100%;transform:translateX(-50%);
+         display:flex;align-items:center;gap:10px;padding:0 18px;background:#161009;
+         border:1px solid #3d2f1d;border-top:none;cursor:help;white-space:nowrap}
+#wPlaque .sun{font-size:15px;color:var(--g4)}
+#wPlaque .d1{font-family:var(--display);font-size:13px;letter-spacing:.07em;color:#c2b493}
+#wPlaque .d1 b{font-size:18px;color:#e0d3b4}
+#wPlaque .pl{font-family:var(--mono);font-size:10px;color:#8a7449;letter-spacing:.05em}
 .tchip{display:flex;align-items:center;gap:4px;background:#2a1420;border:1px solid #5d2f45;
        padding:3px 7px;font-family:var(--mono);font-size:9.5px;color:var(--bloom-lit);cursor:help}
 /* Blessings & Curses — Total War style named company states */
@@ -1351,7 +1372,11 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:11px;pa
 #askB{font-family:var(--body);font-size:13.5px;color:var(--g-body);line-height:1.5;
   white-space:pre-wrap}
 #askOpts{display:flex;flex-direction:column;gap:6px}
-.mlegend{position:absolute;left:10px;bottom:8px;font-family:var(--mono);font-size:9.5px;color:#8a7449;background:rgba(14,10,5,.85);border:1px solid #3d2f1d;padding:4px 9px;pointer-events:none;z-index:5}
+/* #103 point 5: RULES, MENU and this legend were three boxes stacked on one
+   corner (left 10, 86 and 10 again), and the screenshot showed all three at
+   once. One row now: RULES ends near x85, MENU runs 100 to ~171, the legend
+   starts at 196. It is pointer-events:none, so it costs no clicks. */
+.mlegend{position:absolute;left:196px;bottom:9px;font-family:var(--mono);font-size:9.5px;color:#8a7449;background:rgba(14,10,5,.85);border:1px solid #3d2f1d;padding:4px 9px;pointer-events:none;z-index:5}
 /* the dialog now sits ON the map, anchored to the place it happens */
 /* the map dialog's choices stick too — same reason as .popts above */
 #wDlg #wChoices{position:sticky;bottom:-14px;z-index:3;padding:8px 0 14px;margin-bottom:-14px;
@@ -1707,6 +1732,10 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:11px;pa
           font-size:13px;color:#8a7449;background:rgba(16,12,6,.8);border:1px solid #3d2f1d;
           padding:3px 9px}
 #audioBtn:hover{color:var(--g4)}
+/* #103 point 5: on the road the music toggle is part of the top bar, far
+   right, where the user asked for it. Everywhere else it keeps its
+   bottom-right home. #wBar reserves 64px of right padding for it. */
+body:has(#world.on) #audioBtn{top:8px;bottom:auto;font-size:11px;padding:3px 8px;z-index:30}
 /* tester tools — top right, and unmistakably not part of the game.
    ── #100 points 3 and 4 · IT COMES DOWN A ROW AND IT SAYS WHAT IT IS ────
    (User: "Move Test a bit lower (as on screenshot). Call it dev.mode.")
@@ -1888,7 +1917,7 @@ a.popt.sendit{display:block;text-decoration:none}
 #helpBtn.inlog:hover{color:var(--t4);background:#1a2729}
 /* only on the world screen: a menu you can only reach by reloading the page is
    half a menu, and mid-battle is not a coherent moment to save at */
-#menuBtn{position:absolute;left:86px;bottom:10px;z-index:20;display:none;
+#menuBtn{position:absolute;left:100px;bottom:10px;z-index:20;display:none;
   font-family:var(--mono);font-size:13px;color:#8a7449;background:rgba(16,12,6,.8);
   border:1px solid #3d2f1d;padding:3px 9px}
 #menuBtn.on{display:block}
@@ -1910,15 +1939,24 @@ a.popt.sendit{display:block;text-decoration:none}
 <div id="stage">
 
 <section class="screen" id="world">
+  <!-- ═══ #103 · THE ROAD'S TOP BAR, ON THE BATTLE BROTHERS SHAPE ═════════
+       Two rows, 82px total: the same 82px the old two rows spent, because
+       every node, travel label and dialog on the map is placed in raw px
+       against 1280x638, so #wMap's height is load-bearing. Row one: the
+       company on the left (bodies, kit, upkeep, mood, blood), the counted
+       resources on the right as one connected strip, ♪ pinned at the row's
+       far end. Row two: the contract on the left, the day and the ground
+       underfoot on a centre plaque. worldTick() builds all of it; nothing
+       lives here but the sockets. -->
   <div id="wBar">
-    <div class="big4">DAY <b id="wDay">1</b></div>
-    <div class="big4 gold">◉ <b id="wCrownsTop">0</b> CROWNS</div>
-    <div class="big4">UPKEEP <b id="wWage">12</b>/DAY</div>
-    <div class="big4">PARTY SIZE <b id="wCha">12/12</b></div>
-    <button id="wInv">INVENTORY</button>
-    <div class="sep"></div><em id="wMood"></em>
+    <div id="wCompany"></div>
+    <div class="sep"></div>
+    <div id="wRes"></div>
   </div>
-  <div id="wRes"></div>
+  <div id="wSub">
+    <div id="wQuest"></div>
+    <div id="wPlaque"></div>
+  </div>
   <div id="wMap">
     <canvas id="wCanvas" width="1280" height="638"></canvas>
     <div id="wToken"><canvas id="wFace" width="40" height="40"></canvas>
@@ -2209,8 +2247,9 @@ const $=i=>document.getElementById(i);
    card must not be waiting when you return - that is what the note above
    fixed and it stands.
 
-   Dismissing a card on a detour lost the game. #wInv sits in #wBar, OUTSIDE
-   #wMap, so it stays clickable under every card, and a road incident's card
+   Dismissing a card on a detour lost the game. The company chips (#103,
+   formerly the #wInv button) sit in #wBar, OUTSIDE
+   #wMap, so they stay clickable under every card, and a road incident's card
    is the only thing holding `next()` - the continuation of the walk - and
    the only thing that ever clears `G.pending`. Eating it left `G.moving`
    true, `G.pending` set, the map greyed and locked, the menu refusing, and
@@ -18102,7 +18141,9 @@ function ask(title,body,opts){
     box.appendChild(b);});
   ASK.classList.add('on');
 }
-$('wInv').onclick=openInv;
+/* #103: the INVENTORY button became the ♟ and 🎒 chips in #wCompany, and
+   those are rebuilt (and rebound) by every worldTick, so nothing to wire
+   at boot any more. */
 $('iBack').onclick=()=>{G.mustKit=false;show('world');worldTick();};
 
 /* ============================================================
@@ -19241,12 +19282,10 @@ function payFx(f){if(!f)return;if(f.crowns)pay('crowns',f.crowns);if(f.food)pay(
    informed consent, not a locked door, and no road is ever disabled by it. */
 const fundedDays=()=>{const u=dailyUpkeep();
   return u>0?Math.floor(Math.max(0,G.run.crowns)/u):99;};
-/* words, not digits — and never the word "funded" as the VALUE, because the
-   chip is already labelled FUNDED and "FUNDED · funded" is not a sentence */
-const fundedWord=d=>d<=0?'nothing left'
-  :d===1?'a day, then nothing'
-  :d<=6?'about '+['','one','two','three','four','five','six'][d]+' days'
-  :d<10?'about a week':'a good while';
+/* #103: the horizon stopped being its own FUNDED chip and rides the upkeep
+   chip as digits now ("14 days of pay" / "2 days left"), because the user
+   asked for the number and for the red to sit beside the bill it measures.
+   fundedWord() went with the chip. */
 /* two days or fewer is red, five or fewer is the colour of a thing you have
    started watching, and above that it is the same bone as everything else —
    which is how you stop noticing it, and that is correct */
@@ -19286,133 +19325,154 @@ function worldTick(){
      leading what is left of the company */
   const face=$('wFace');
   if(face){const who1=member('you')||G.party[0];if(who1)bustFor(face,who1);}
-  $('wDay').textContent=G.day;
-  $('wCrownsTop').textContent=G.run.crowns;
-  $('wWage').textContent=dailyUpkeep();
-  $('wCha').textContent=partyUsed()+'/'+PARTYCAP;
-  const chip=(nm,v,col,ic,extra)=>'<span class="rchip"'+(extra||'')+
-    '><span class="ri" style="color:'+col+'">'+
-    ic+'</span><span class="nm">'+nm+'</span><b style="color:'+col+'">'+v+'</b></span>';
-  /* one SALVAGE chip — wood and iron alias the same pool now, and showing
-     both was the same number twice with different names on it */
-  let html=chip('PROVISIONS',G.run.food,'var(--grain)',RES_ICON.food,
-      ' data-res="prov" style="cursor:pointer"')+
-    /* the horizon, beside the thing it is a horizon for */
-    chip('FUNDED',fundedWord(fundedDays()),fundedCol(fundedDays()),'◷',' data-res="funded"')+
-    '<span class="rdiv"></span>'+
-    chip('SALVAGE',G.camp.salvage,'var(--wood)',RES_ICON.salvage,' data-res="salvage"')+
-    chip('GEMS',G.camp.gems,'var(--gem)',RES_ICON.gems,' data-res="gems"')+
-    '<span class="rdiv"></span>';
-  /* Blessings & Curses — the company's mood as a named state, Total War
-     style, instead of a raw number. The number still drives the maths
-     (battle starting morale); this is only how it reads. */
-  const ms=moodState(G.morale);
-  html+='<span class="bcchip" data-mood="1" style="border-color:'+ms.col+'66">'+
-    '<span style="color:'+ms.col+'">'+ms.ic+'</span><b style="color:'+ms.col+'">'+ms.n+
-    '</b></span>';
+  /* ═══ #103 · THE BAR, BUILT FRESH EACH TICK ═══════════════════════════
+     (Friends' map feedback plus the user's five points, 2026-08-11.)
+     Left: who the company is and what it costs. Right: what it owns, one
+     connected strip, numbers first. Row two: the contract and the day.
+     Every chip explains itself on hover; a bar of unexplained numbers is
+     homework, and this screen is where new players decide whether the
+     game respects them. Chips are rebuilt every tick, so the handlers
+     and hovers bind here too, not once at boot. */
+  const u=dailyUpkeep(),fd=fundedDays(),ms=moodState(G.morale);
+  const owedDays=Math.max.apply(null,[0].concat(G.party.map(p=>p.unpaid||0)));
+  /* the company's blood as a named state; the raw sums stay on hover */
+  const hurt=G.party.filter(p=>p.hpLoss>0);
+  let hpMaxAll=0,hpLossAll=0;
+  G.party.forEach(p=>{hpMaxAll+=unitFrom(p).hpMax;hpLossAll+=p.hpLoss||0;});
+  const bloodied=hurt.length&&(hpLossAll/Math.max(1,hpMaxAll)>=.25||hurt.length*2>=G.party.length);
+  const hs=!hurt.length?{n:'SOUND',col:'#7f9a58',d:'Nobody is mending. Whole skins all round.'}
+    :{n:bloodied?'BLOODIED':'MENDING',col:bloodied?'#c15d55':'#c9a227',
+      d:hurt.map(p=>who(p)+' is '+p.hpLoss+' hitpoints short').join('. ')+'.'};
+  /* the funded horizon rides the upkeep chip: digits, and red exactly when
+     it has become the problem (user: "so you can see the problematic spot") */
+  const fdTxt=fd<=0?'nothing left':fd===1?'1 day left':fd<=5?fd+' days left':fd+' days of pay';
   const petKey=hasPet();
-  if(petKey)html+='<span class="bcchip" data-pet="1" style="border-color:#8ca35a66">'+
-    '<span style="color:#8ca35a">♥</span><b style="color:#8ca35a">A COMPANION FOLLOWS</b></span>';
-  /* company relics work from the baggage — nobody wears them, so they sit
-     here rather than on any one character's sheet */
+  /* company relics work from the baggage; nobody wears them, so they sit
+     with the company chips rather than on any one character's sheet */
   const relics=heldGear().filter(k=>GEAR[k]&&GEAR[k].company);
-  if(relics.length){
-    html+='<span class="rdiv"></span>'+relics.map(k=>'<span class="tchip" data-tri="'+k+'">'+
+  $('wCompany').innerHTML=
+    '<span class="cchip click" data-w="party"><span class="ri">♟</span><b>'+
+      partyUsed()+'/'+PARTYCAP+'</b></span>'+
+    '<span class="cchip click" data-w="kit"><span class="ri">🎒</span></span>'+
+    '<span class="cchip" data-w="keep"><span class="nm">UPKEEP</span><b>'+u+'</b>'+
+      '<span class="nm">/DAY</span>'+
+      (u>0?'<i style="color:'+fundedCol(fd)+'">· '+fdTxt+'</i>':'')+'</span>'+
+    (owedDays>=1?'<span class="cchip" data-w="owed" style="border-color:#c15d55">'+
+      '<b style="color:#c15d55;font-size:10.5px">UNPAID '+owedDays+' DAY'+(owedDays>1?'S':'')+
+      '</b></span>':'')+
+    '<span class="bcchip" data-w="mood" style="border-color:'+ms.col+'66">'+
+      '<span style="color:'+ms.col+'">'+ms.ic+'</span><b style="color:'+ms.col+'">'+ms.n+'</b></span>'+
+    '<span class="bcchip" data-w="blood" style="border-color:'+hs.col+'66">'+
+      '<span style="color:'+hs.col+'">✚</span><b style="color:'+hs.col+'">'+hs.n+'</b></span>'+
+    (petKey?'<span class="bcchip" data-w="pet" style="border-color:#8ca35a66">'+
+      '<span style="color:#8ca35a">♥</span></span>':'')+
+    relics.map(k=>'<span class="tchip" data-tri="'+k+'">'+
       (GEAR[k].g||'✧')+' '+GEAR[k].n+'</span>').join('');
-  }
-  $('wRes').innerHTML=html;
-  $('wRes').querySelectorAll('[data-mood]').forEach(el=>{
-    el.onmouseenter=e=>{
-      TIP.innerHTML='<div style="font-family:var(--display);font-size:15px;color:'+ms.col+
-        ';margin-bottom:4px">'+ms.ic+' '+ms.n+'</div>'+
-        '<div style="margin-bottom:5px">'+ms.d+'</div>'+
-        '<div style="font-style:italic;color:#a38652">Every fight, the whole company starts '+
-        'closer to this mood than to steady. It comes from what you choose on the road.</div>';
-      TIP.style.display='block';moveTip(e);};
-    el.onmousemove=moveTip;el.onmouseleave=()=>{TIP.style.display='none';};});
-  $('wRes').querySelectorAll('[data-pet]').forEach(el=>{
-    el.onmouseenter=e=>{
-      const pt=PETS[petKey];
-      TIP.innerHTML='<div style="font-family:var(--display);font-size:15px;color:#8ca35a;'+
-        'margin-bottom:4px">'+(pt?pt.n:'A companion')+'</div>'+
-        '<div style="margin-bottom:5px">'+(pt?pt.d:'')+'</div>'+
-        '<div style="font-style:italic;color:#a38652">Assigned to the Captain — check the '+
-        'INVENTORY to change or remove it.</div>';
-      TIP.style.display='block';moveTip(e);};
-    el.onmousemove=moveTip;el.onmouseleave=()=>{TIP.style.display='none';};});
-  /* hovering a company relic says exactly what it does */
-  $('wRes').querySelectorAll('[data-tri]').forEach(el=>{
-    bindTip(el,el.dataset.tri,null);});
-  /* EVERY resource explains itself on hover — a bar of unexplained numbers
-     is homework, and this screen is where new players decide whether the
-     game respects them */
-  const RESINFO={
-    prov:{t:'PROVISIONS — THE GOOD BARRELS',col:'var(--grain)',
-      d:'Your wages already buy the company bread. This is <b>everything better than bread</b>: '+
-        'salt meat, cheese, a jug.<br><br>'+
-        '<b>The wounded eat it</b> — every day anybody is mending costs one, and on an empty '+
-        'barrel the mending halves.<br>'+
-        '<b>Lay out a proper meal</b> — the mood lifts hard (once a day).<br>'+
-        '<b>Double rations</b> — wounds mend twice as fast for three days.<br>'+
-        '<b>The road asks for it</b> — feeding a stranger, a wedding, a hungry ogre.',
+  /* the counted resources, Battle Brothers' strip mirrored to the right.
+     One SALVAGE segment on purpose: wood and iron alias the same pool,
+     and showing both was the same number twice with different names on it */
+  const seg=(key,ic,v,col,extra)=>'<span class="rseg" data-w="'+key+'"'+(extra||'')+
+    '><span class="ri" style="color:'+col+'">'+ic+'</span><b>'+v+'</b></span>';
+  $('wRes').innerHTML=
+    seg('crowns',RES_ICON.crowns,G.run.crowns,'var(--g4)')+
+    seg('prov',RES_ICON.food,G.run.food,'var(--grain)',' style="cursor:pointer"')+
+    seg('salvage',RES_ICON.salvage,G.camp.salvage,'var(--wood)')+
+    seg('gems',RES_ICON.gems,G.camp.gems,'var(--gem)');
+  /* row two: the day and the ground underfoot, centre; the contract, left */
+  const hereN=NODES[G.at],destN=G.moving&&G.dest?NODES[G.dest]:null;
+  $('wPlaque').innerHTML='<span class="sun">☀</span>'+
+    '<span class="d1">DAY <b>'+G.day+'</b></span>'+
+    '<span class="pl">'+(destN?'the road to '+destN.n:hereN?hereN.n:'')+'</span>';
+  $('wQuest').innerHTML='<span class="qlab">✦ THE CONTRACT</span>'+
+    '<span class="qtx">the head out of Skelbrook\'s hall · pays on delivery</span>';
+  /* every chip answers for itself: one table, rebound each tick because
+     the elements it binds to were just rebuilt */
+  const WTIPS={
+    party:{t:'THE COMPANY',col:'var(--g4)',
+      d:'How many bodies the wagon and the pay-chest can carry. Everybody takes room by '+
+        'size - ratkin 1, human 2, ogre 3 - so a fistful of ratkin and one ogre cost the '+
+        'same seats. Widen the wagon bed at a wheelwright to raise it, permanently.',
+      x:'CLICK: the roster, their sheets and their gear.'},
+    kit:{t:'THE KIT',col:'var(--g4)',
+      d:'The wagon\'s stash, and what everybody is wearing out of it.',
+      x:'CLICK: the same screen, straight to work.'},
+    keep:{t:'THE COMPANY\'S KEEP',col:fundedCol(fd),
+      d:'What all of you cost per day, in crowns - wages and provisions in one number. '+
+        'Ratkin 1, human 2, ogre 1 (he takes three seats and asks for one coin).<br><br>'+
+        'The chest holds '+G.run.crowns+' against '+u+' a day: <b style="color:'+fundedCol(fd)+
+        '">'+(u>0?fdTxt:'no wage bill')+'</b>. That sum does not know what the road is '+
+        'about to charge you.',
+      x:'It never stops you taking a road. Owing them is a way a run can go.'},
+    owed:{t:'UNPAID '+owedDays+' DAY'+(owedDays>1?'S':''),col:'#c15d55',
+      d:(owedDays>=5?'Somebody is going to walk.':owedDays>=3?'They have started asking '+
+        'what the arrangement is, in a tone that is not quite a question.':'They counted, '+
+        'and they said nothing.')+'<br><br>Every unpaid day costs nerve on the field, and '+
+        'the personalities disagree about how loudly.',
+      x:'Fill the chest and the wages catch up on their own at day\'s end.'},
+    mood:{t:ms.ic+' '+ms.n,col:ms.col,d:ms.d,
+      x:'Every fight, the whole company starts closer to this mood than to steady. '+
+        'It comes from what you choose on the road.'},
+    blood:{t:'✚ '+hs.n,col:hs.col,d:hs.d,
+      x:'Days on the road are the only medicine in this game.'},
+    crowns:{t:'CROWNS',col:'var(--g4)',
+      d:'The purse of THIS run - wages, tolls, hires, bribes. It does not survive the '+
+        'company. Spend it like somebody who knows that.',
+      x:'Wages fall due every day, walking or sitting.'},
+    prov:{t:'PROVISIONS - THE GOOD BARRELS',col:'var(--grain)',
+      d:'Your wages already buy the company bread. This is <b>everything better than '+
+        'bread</b>: salt meat, cheese, a jug.<br><br>'+
+        '<b>The wounded eat it</b> - every day anybody is mending costs one, and on an '+
+        'empty barrel the mending halves.<br>'+
+        '<b>Lay out a proper meal</b> - the mood lifts hard (once a day).<br>'+
+        '<b>Double rations</b> - wounds mend twice as fast for three days.<br>'+
+        '<b>The road asks for it</b> - feeding a stranger, a wedding, a hungry ogre.',
       x:'CLICK the chip to open the barrels.'},
     salvage:{t:'SALVAGE',col:'var(--wood)',
       d:'Timber, iron and fittings pulled off the road. It builds things INTO THE WAGON '+
-        'between runs — beds, chests, fires — and pays village craftsmen.',
+        'between runs - beds, chests, fires - and pays village craftsmen.',
       x:'Survives the run. Everything else dies with the company.'},
     gems:{t:'GEMS',col:'var(--gem)',
       d:'Stones the wrong colour for this country. The one thing both worlds take: spend '+
         'them in-run in a pinch, or bank them for the wagon.',
       x:'The deliberate bridge between the purse and the future.'},
-    funded:{t:'FUNDED',col:fundedCol(fundedDays()),
-      d:'How many more days you can pay the company for, at what it costs today — '+
-        G.run.crowns+' crowns against '+dailyUpkeep()+' a day. Nothing else: it does not '+
-        'know what the road is about to charge you.',
-      x:'It never stops you taking a road. Owing them is a way a run can go.'}};
-  $('wRes').querySelectorAll('[data-res]').forEach(el=>{
-    const inf=RESINFO[el.dataset.res];if(!inf)return;
+    pet:{t:(PETS[petKey]?PETS[petKey].n:'A companion'),col:'#8ca35a',
+      d:(petKey&&PETS[petKey]?PETS[petKey].d:'A companion follows the company.'),
+      x:'Assigned to the Captain. Check the company screen to change or remove it.'},
+    day:{t:'DAY '+G.day,col:'var(--g4)',
+      d:'How long the company has been on this contract. Wages fall due every one of '+
+        'them, walking or sitting.'+(destN?'<br><br>Walking to '+destN.n+'. Nothing on '+
+        'the map moves until you arrive.':hereN?'<br><br>You stand at '+hereN.n+'.':''),
+      x:'The sun holds still while you decide.'},
+    quest:{t:'THE CONTRACT',col:'var(--g4)',
+      d:'A man of the lord\'s holds Skelbrook, at the far end of the valley: one village, '+
+        'one hall, bandits in it since the thaw. Carry his letter east. Bring back the '+
+        'head out of the hall\'s chair. Keep the purse.',
+      x:'It pays on delivery, and not before.'}};
+  const bindW=(el,inf)=>{
     el.onmouseenter=e=>{
       TIP.innerHTML='<div style="font-family:var(--display);font-size:15px;color:'+inf.col+
         ';margin-bottom:4px">'+inf.t+'</div><div style="margin-bottom:5px">'+inf.d+'</div>'+
-        '<div style="font-style:italic;color:#a38652">'+inf.x+'</div>';
+        (inf.x?'<div style="font-style:italic;color:#a38652">'+inf.x+'</div>':'');
       TIP.style.display='block';moveTip(e);};
-    el.onmousemove=moveTip;el.onmouseleave=()=>{TIP.style.display='none';};});
-  const pv=$('wRes').querySelector('[data-res="prov"]');
+    el.onmousemove=moveTip;el.onmouseleave=()=>{TIP.style.display='none';};};
+  document.querySelectorAll('#wBar [data-w]').forEach(el=>{
+    const inf=WTIPS[el.dataset.w];if(inf)bindW(el,inf);});
+  bindW($('wPlaque'),WTIPS.day);bindW($('wQuest'),WTIPS.quest);
+  /* hovering a company relic says exactly what it does */
+  $('wCompany').querySelectorAll('[data-tri]').forEach(el=>{
+    bindTip(el,el.dataset.tri,null);});
+  /* the doors: both left-hand chips open the company screen; the barrels
+     open on the provisions segment, as before */
+  $('wCompany').querySelectorAll('[data-w="party"],[data-w="kit"]').forEach(el=>{
+    el.onclick=openInv;});
+  const pv=$('wRes').querySelector('[data-w="prov"]');
   if(pv)pv.onclick=()=>{whisper('prov');openProvisions();};
-  /* the top-bar numbers get the same courtesy — bound once, they are static */
-  if(!G.topTipsBound){
-    G.topTipsBound=true;
-    const TOPINFO={
-      wDay:{t:'DAY',d:'How long the company has been on this contract. Wages fall due every '+
-        'one of them, walking or sitting.'},
-      wCrownsTop:{t:'CROWNS',d:'The purse of THIS run — wages, tolls, hires, bribes. It does '+
-        'not survive the company. Spend it like somebody who knows that.'},
-      wWage:{t:'THE COMPANY\'S KEEP',d:'What all of you cost per day, in crowns — wages and '+
-        'provisions in one number. Ratkin 1, human 2, ogre 1 (he takes three seats and asks '+
-        'for one coin). It is why payday robbery is always quietly on the table.'},
-      wCha:{t:'PARTY SIZE',d:'How many bodies the wagon and the pay-chest can carry. Everybody '+
-        'takes room by size — ratkin 1, human 2, ogre 3 — so a fistful of ratkin and one ogre '+
-        'cost the same seats. Widen the wagon bed at a wheelwright to raise it, permanently.'}};
-    Object.keys(TOPINFO).forEach(id=>{
-      const el=$(id),box=el&&el.closest?(el.closest('.wstat')||el.parentElement):null;
-      const tgt=box||el;if(!tgt)return;
-      const inf=TOPINFO[id];
-      tgt.onmouseenter=e=>{
-        TIP.innerHTML='<div style="font-family:var(--display);font-size:15px;color:var(--g4);'+
-          'margin-bottom:4px">'+inf.t+'</div><div>'+inf.d+'</div>';
-        TIP.style.display='block';moveTip(e);};
-      tgt.onmousemove=moveTip;tgt.onmouseleave=()=>{TIP.style.display='none';};});
-  }
-  /* what they are owed outranks everything else this line could say */
-  const owedDays=Math.max.apply(null,[0].concat(G.party.map(p=>p.unpaid||0)));
-  $('wMood').innerHTML=owedDays>=1
-    ?'<span class="warn">Unpaid '+owedDays+' day'+(owedDays>1?'s':'')+'. '+
-      (owedDays>=5?'Somebody is going to walk.'
-       :owedDays>=3?'They have started asking what the arrangement is.'
-       :'They counted, and they said nothing.')+'</span>'
-    :G.run.crowns<dailyUpkeep()*5
-    ?'<span class="warn">The chest is nearly out. They have noticed.</span>'
-    :G.party.length+' of you, '+dailyUpkeep()+' crowns a day, and a contract that pays on delivery.';
+  /* #103 point 4: the italic sentence that lived here ("N of you, N crowns
+     a day, and a contract that pays on delivery") is deleted, per the user.
+     What it carried moved to where each piece belongs: the contract clause
+     to #wQuest, the wage arithmetic to the UPKEEP chip, and the two red
+     states (unpaid, chest nearly out) to a red UNPAID chip and the red
+     days-left readout beside the bill they measure. */
   drawMap();drawNodes();
 }
 /* ═══ DOUBLE RATIONS — ONE PRICE, ONE PACE, ONE PURCHASE ═══════════════════
@@ -19743,7 +19803,7 @@ function legCard(k,e){
     '<div style="margin-top:9px;color:'+fundedCol(after)+'">After it: '+
       (after<=0?'nothing left to pay them with.'
        :after>=10?'the purse still holds.'
-       :fundedWord(after)+' of wages left in the purse.')+'</div>'+
+       :'about '+after+' day'+(after>1?'s':'')+' of wages left in the purse.')+'</div>'+
     '</div>'+
     '<button class="choice" id="tGo"><b>TRAVEL — '+e[2]+' DAY'+(e[2]>1?'S':'')+
     ' · ~'+bill+' CROWNS</b><i>commit to the road</i></button>'+
@@ -19881,8 +19941,11 @@ function travel(k){
     {pick:e[2]+' day'+(e[2]>1?'s':'')});
   const a=NODES[G.at],b=NODES[k];
   /* B05: the map locks the moment the company steps off, and redraws so it
-     LOOKS locked — `G.dest` marks the one node that is being walked to. */
-  G.moving=true;G.dest=k;drawNodes();
+     LOOKS locked — `G.dest` marks the one node that is being walked to.
+     #103: the whole tick, not just the nodes, because the day plaque now
+     names the ground underfoot and "Grausen Hold" is a lie the moment the
+     company is on the road to somewhere else. */
+  G.moving=true;G.dest=k;worldTick();
   const arrive=()=>{
     G.dest=null;
     passDays(e[2]);
