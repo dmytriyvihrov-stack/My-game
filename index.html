@@ -117,13 +117,32 @@ button:disabled{cursor:not-allowed}
 #bTop .ord.foe{border-left-color:var(--blood)}
 #bTop .ord.cap{border-left-color:var(--gold)}
 #bTop .ord.now{transform:translateX(3px)}
-.ord{width:30px;height:34px;background:rgba(20,30,31,.88);border-top:2px solid #3d5250;
+/* #98 point 3 - bigger. 30x34 was a thumbnail of a thumbnail: the whole job
+   of a face in this rail is to be recognised, and at 22px of sprite it was
+   a coloured smudge. 40x46 with the sprite at .78 is the smallest size a
+   ratkin and a poacher are actually told apart at. */
+.ord{width:40px;height:46px;background:rgba(20,30,31,.88);border-top:2px solid #3d5250;
   display:flex;flex-direction:column;align-items:center;justify-content:flex-end;
   position:relative;flex:none;padding-bottom:1px;overflow:hidden}
 .ord.now{background:#2b3f3e;box-shadow:0 0 0 2px var(--gold),0 0 14px rgba(217,189,126,.45);transform:translateY(-2px)}
 .ord.foe{border-top-color:var(--blood)}.ord.cap{border-top-color:var(--gold)}
-.ord img{image-rendering:pixelated;width:22px;height:auto}
-.ord .flag{position:absolute;top:1px;left:1px;font-size:9px;line-height:1}
+.ord img{image-rendering:pixelated;width:30px;height:auto}
+.ord .flag{position:absolute;top:1px;left:1px;font-size:10px;line-height:1}
+/* ═══ #98 point 3 · THE ROUND TURNS OVER, AND THE RAIL SAYS SO ════════════
+   (User: "when unit already moved hide it from turn order, so show next
+   inside. You can add icon of turn on it, when turn is changing - and next
+   units after.") The rail was the whole initiative list with a ring on the
+   current body, so eleven faces answered "who is in this fight" - which the
+   board already answers - and nobody had to read it to know who was next.
+   It is a QUEUE now: whoever is acting, then whoever is still to come, and
+   the ones who have already had their turn are gone until the round turns.
+   This divider is where that happens, so the tail of the rail is next
+   round's order and is plainly labelled as such rather than looking like
+   more of this one. */
+.ordturn{width:40px;flex:none;display:flex;align-items:center;justify-content:center;
+  gap:3px;height:16px;margin:2px 0;color:#8a6a34;font-family:var(--mono);font-size:8px;
+  letter-spacing:.06em;border-top:1px dashed #5a4a2a;border-bottom:1px dashed #5a4a2a;
+  background:rgba(30,24,12,.7)}
 /* AUTO · PACE · WITHDRAW as icon buttons. Same ids, same handlers - the
    words moved into the title.
    ── #94 point 2 · THEY COME DOWN TO END TURN ────────────────────────────
@@ -135,8 +154,12 @@ button:disabled{cursor:not-allowed}
    sharing its row and reading as part of the same press. Directly above it,
    right-aligned to the same edge, they are the same group and plainly a
    different kind of control. UNDO takes the slot above them when it exists,
-   which is the only time anything else is in this stack. */
-#bIcons{position:absolute;right:8px;bottom:86px;z-index:40;display:flex;gap:6px;
+   which is the only time anything else is in this stack.
+   ── #98 point 2 · THE WHOLE RIGHT-HAND STACK COMES DOWN ─────────────────
+   One column, right-aligned to right:8, read from the floor up: FEEDBACK
+   (collapsed) · END TURN · ♪ ⏱ ⚑ · UNDO when it exists. Everything that was
+   floating at its own height is now on one rhythm of 32/38/32. */
+#bIcons{position:absolute;right:8px;bottom:70px;z-index:40;display:flex;gap:6px;
   align-items:center;justify-content:flex-end;height:28px}
 #bIcons button{width:28px;height:28px;background:#1f2d2e;border:1px solid #35494c;
   display:flex;align-items:center;justify-content:center;font-size:13px;color:#9fb3ae;
@@ -277,8 +300,11 @@ button:disabled{cursor:not-allowed}
    clearance to the right-hand column, and the longest name in the file
    wraps to two clamped lines with nothing clipped. The hotkey keeps a
    corner nothing else may enter; the cooldown veils the whole face. */
-/* #94 point 7: the order rail took bottom:8px, so the row sits on top of it */
-#bActions{position:absolute;bottom:48px;left:50%;transform:translateX(-50%);z-index:40;
+/* #94 point 7 put the order rail under this row at bottom:8, so the cards
+   moved up to 48. #95 sent the rail to the LEFT edge and nobody moved them
+   back, so 38px of floor has been empty ever since - which is half of #98
+   point 1's "a bit less space from the bottom". They are on the floor now. */
+#bActions{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);z-index:40;
   display:flex;flex-direction:row;align-items:flex-end;gap:5px}
 .act{width:60px;height:84px;background:linear-gradient(#1e2c2d,#141f20);border:1px solid #3a4f52;
   flex:none;position:relative;display:flex;flex-direction:column;align-items:center;
@@ -517,10 +543,17 @@ button:disabled{cursor:not-allowed}
    that a log you did not ask for is furniture whatever depth it is. Header
    only at the start of every fight, and one click gives the whole 300px.
    ⚠ `left:48px`, NOT 8: the order rail is the left EDGE now (#95 point 2)
-   and the two must never be able to overlap, at any log height. ── */
-#bLogWrap{position:absolute;left:48px;top:8px;width:308px;z-index:41;
+   and the two must never be able to overlap, at any log height.
+   ── #98 point 4 · SHUT IT IS A BUTTON, OPEN IT IS A PANEL ───────────────
+   (User: "when backlog is in accordion - make it also less wide, so it is
+   more a button. And when it open - wider and taller.") A 308px bar holding
+   two words was a panel pretending to be shut. 150px reads as a control you
+   press; 360x380 open is a panel you read. The width transitions, so the two
+   states are visibly the same object rather than two boxes swapping. */
+#bLogWrap{position:absolute;left:48px;top:8px;width:150px;z-index:41;
   background:rgba(13,19,20,.93);border:1px solid #33474a;
-  display:flex;flex-direction:column}
+  display:flex;flex-direction:column;transition:width .16s ease}
+#bLogWrap.open{width:360px}
 #bLogHead{display:flex;align-items:center;gap:6px;padding:4px 8px;cursor:pointer;
   border-bottom:1px solid #223335;user-select:none}
 #bLogHead>.lgcar{font-size:8px;color:#8a9a5c;transition:transform .12s}
@@ -529,7 +562,10 @@ button:disabled{cursor:not-allowed}
 /* #95 point 1 - shut is a real zero, not a peek. The header alone is the
    resting state and `openLog(false)` re-asserts it at the top of every fight. */
 #bLog{height:0;overflow:hidden;padding:0 8px;display:flex;flex-direction:column;gap:1px}
-#bLogWrap.open #bLog{height:300px;overflow-y:auto;padding:3px 8px 4px}
+#bLogWrap.open #bLog{height:380px;overflow-y:auto;padding:3px 8px 4px}
+/* shut, the header is the whole control: the round chip would wrap a 150px
+   bar onto two lines and it says nothing the capsule does not */
+#bLogWrap:not(.open) #bLogRound{display:none}
 #bLog::-webkit-scrollbar{width:6px}
 #bLog::-webkit-scrollbar-thumb{background:#35494c}
 #bLog .ll{font-size:10.5px;line-height:1.3;color:#8b9a99;font-family:var(--body);
@@ -549,7 +585,7 @@ button:disabled{cursor:not-allowed}
    press does not get any harder to find, the shouting stops. The log left
    this corner in the same edit, which is what paid for the room.
    Geometry measured in shots/94_css_bench.html. */
-#bEnd{position:absolute;right:8px;bottom:44px;width:190px;height:34px;z-index:40;
+#bEnd{position:absolute;right:8px;bottom:32px;width:190px;height:34px;z-index:40;
   background:#33201f;border:1px solid #6d2f2f;
   display:flex;align-items:center;justify-content:center;font-family:var(--display);
   font-weight:700;font-size:12.5px;color:#cbb6b1;letter-spacing:.14em}
@@ -557,7 +593,7 @@ button:disabled{cursor:not-allowed}
 #bEnd:disabled{background:#20191a;border-color:#3a2b2c;color:#6b6260}
 /* #91 point 12 - shown only while the last move can still be taken back.
    #95: one slot higher, because ⏱ ⚑ took bottom:86 above END TURN. */
-#bUndo{position:absolute;right:8px;bottom:120px;width:190px;height:24px;z-index:40;
+#bUndo{position:absolute;right:8px;bottom:102px;width:190px;height:24px;z-index:40;
   display:none;align-items:center;justify-content:center;gap:6px;
   background:#1f2d2e;border:1px solid #4d6b6c;font-family:var(--mono);
   font-size:10px;letter-spacing:.12em;color:#9fb3ae}
@@ -570,7 +606,9 @@ button:disabled{cursor:not-allowed}
 #bLegend>.lbl:hover{color:#c9c6bb;border-color:#4d6b6c}
 /* ⚠ #94: IT OPENS DOWNWARD NOW. The log is at the TOP of the screen, so a
    body anchored to bottom:22px hangs off the top edge of the stage. */
-#bLegend .lgbody{display:none;position:absolute;top:22px;right:-9px;width:300px;
+/* #98 point 4: anchored LEFT now. The shut log is 150px, so a 300px body
+   hanging off its right edge ran past the box and off the board. */
+#bLegend .lgbody{display:none;position:absolute;top:22px;left:-110px;width:300px;
   background:rgba(12,17,19,.96);border:1px solid #33474a;padding:8px 10px;
   flex-direction:column;gap:3px;z-index:60}
 #bLegend.open .lgbody{display:flex}
@@ -585,7 +623,7 @@ body:has(#battle.on) .whisp{bottom:138px}
    ? RULES) and not only the battle's own boxes - both of this entry's
    overlaps were between a battle box and a piece of furniture older than the
    screen. On the battle screen it joins the ⏱ ⚑ row above END TURN. */
-body:has(#battle.on) #audioBtn{bottom:86px;right:110px;font-size:11px;padding:3px 8px}
+body:has(#battle.on) #audioBtn{bottom:70px;right:110px;font-size:11px;padding:3px 8px}
 /* ⚠ #66 — overflow:hidden is what makes the camera safe. Past FULL the board
    is larger than the field, and without this it would spill over the chrome.
    #bRead already clamps itself inside the field (placeRead).
@@ -693,16 +731,20 @@ body:has(#battle.on) #audioBtn{bottom:86px;right:110px;font-size:11px;padding:3p
 /* line-height:1 is load-bearing now that something sits under it: the default
    gave the 11px odds a 13px box, which put its foot 1px inside the damage
    line below. Both rows are pinned, so both declare their own height. */
+/* #98 point 7 - 11px → 9.5px. The damage under it is the bigger figure now,
+   and two numbers on one hex want a hierarchy. */
 .hodds{position:absolute;top:3px;left:0;right:0;text-align:center;font-family:var(--mono);
-       font-size:11px;line-height:1;font-weight:700;text-shadow:0 0 3px #000,0 0 3px #000}
+       font-size:9.5px;line-height:1;font-weight:700;text-shadow:0 0 3px #000,0 0 3px #000}
 /* WHAT IT WOULD ACTUALLY TAKE OFF (user: "show not only % to hit - but also
    potential damage"). It rides directly under the odds on the same hex, in
    the hitpoint red the readout card uses for the same number, so the two
    readings are obviously the same fact at two levels of detail. Smaller and
    dimmer than the percentage on purpose: the chance is the decision, the
    damage is the consequence. */
-.hdmg{position:absolute;top:16px;left:-4px;right:-4px;text-align:center;
-      font-family:var(--mono);font-size:8.5px;line-height:1;font-weight:700;color:#d9736b;
+/* #98 point 7 - it moved up with the smaller odds and took the emphasis:
+   9.5px, because it is the whole blow now and the figure being compared */
+.hdmg{position:absolute;top:14px;left:-4px;right:-4px;text-align:center;
+      font-family:var(--mono);font-size:9.5px;line-height:1;font-weight:700;color:#e08a80;
       text-shadow:0 0 3px #000,0 0 3px #000;pointer-events:none}
 /* ═══ LINE OF FIRE (backlog #36) ════════════════════════════════════════
    The costs are hidden in the odds like every other modifier; what is NOT
@@ -1404,8 +1446,30 @@ body:has(#battle.on) #audioBtn{bottom:86px;right:110px;font-size:11px;padding:3p
    #askWrap, because a modal question is the one thing that owns the screen.
    Small and cornered so it costs the game almost nothing; the three glyphs
    are ★ ▲ ▼ rather than emoji so they sit in the game's own type. */
-#reactBar{position:absolute;right:10px;bottom:10px;z-index:150;display:flex;gap:4px;
+/* ═══ #98 point 5 · IT FOLDS AWAY ════════════════════════════════════════
+   (User: "social reacions from right corner you can also hide by small
+   accordion word 'Feedback' - so it takes as little space as possible for
+   people, who doesnt want to engage with it.")
+   The bar is the instrument the ten-friends gate depends on, so it may not
+   be removed - but three lit buttons in the corner of every screen ask for
+   an opinion continuously, and most players do not want to give one. Folded
+   to the word, it costs 74x20 and still says what it is; one press opens it
+   and it stays open for the session. ⚠ It keeps z-index 150 and the true
+   corner either way: #53's rule was that it must stay REACHABLE, and a
+   labelled chip is more reachable than three unexplained glyphs. */
+#reactBar{position:absolute;right:8px;bottom:6px;z-index:150;display:flex;gap:4px;
   align-items:center;font-family:var(--mono)}
+#reactTog{font-family:var(--mono);font-size:9px;letter-spacing:.14em;cursor:pointer;
+  background:rgba(16,12,6,.92);color:#7a6642;border:1px solid #3d2f1d;padding:4px 8px;
+  line-height:1}
+#reactTog:hover{color:var(--g4);border-color:#8a6a34}
+#reactBar.open #reactTog{color:#8a7449}
+/* shut, everything but the word is gone - and `display:none` rather than a
+   width transition, so a folded bar cannot swallow a click meant for the
+   board underneath it */
+#reactBar:not(.open) .rx,
+#reactBar:not(.open) #reactCount,
+#reactBar:not(.open) #reactWhat{display:none}
 #reactBar .rx{width:26px;height:26px;line-height:1;font-size:13px;cursor:pointer;
   background:rgba(16,12,6,.92);color:#8a7449;border:1px solid #3d2f1d;padding:0;
   transition:color .12s,border-color .12s,background .12s}
@@ -1600,6 +1664,18 @@ a.popt.sendit{display:block;text-decoration:none}
   border:1px solid #3d2f1d;padding:3px 9px}
 #menuBtn.on{display:block}
 #menuBtn:hover{color:var(--g4)}
+/* ═══ #98 · THE SENTINEL. DO NOT MOVE IT, DO NOT DELETE IT ════════════════
+   A stray comment terminator inside a comment ends that comment early, and
+   every rule after it is silently discarded. Nothing throws, the console
+   stays clean,
+   and the page renders with a large hole in it that looks like a layout
+   opinion rather than a fault. It has now shipped TWICE in three days: #95
+   dropped the whole battle log box to position:static, and #98 dropped every
+   rule from the icon row to the end of the sheet, including the two hex
+   readouts - found both times only by measuring a box that made no sense.
+   This rule is the last one in the sheet, so if the parser did not reach it,
+   the sheet is broken above it. `cssTail()` checks for it at boot. */
+#cssTail{--parsed:1}
 </style>
 
 <div id="stage">
@@ -1740,6 +1816,8 @@ a.popt.sendit{display:block;text-decoration:none}
      is reacting TO is whatever JOURNAL.where() resolves at the moment of
      the click, which is the event card or the fight, not "the game". -->
 <div id="reactBar">
+  <!-- #98 point 5: the fold. Shut, this word is the whole bar. -->
+  <button id="reactTog" title="say what you think of this screen">FEEDBACK</button>
   <button class="rx" data-k="super" title="loved this — tell me why later">★</button>
   <button class="rx" data-k="like"  title="liked this">▲</button>
   <button class="rx" data-k="dis"   title="did not like this">▼</button>
@@ -1764,6 +1842,27 @@ a.popt.sendit{display:block;text-decoration:none}
 
 <script>
 'use strict';
+/* ═══ #98 · DID THE STYLESHEET PARSE ALL THE WAY DOWN? ════════════════════
+   See the #cssTail note at the foot of the style block. One stray comment
+   terminator truncates the sheet and every rule below it vanishes without an
+   error, so this asks the PARSER rather than trusting the source.
+   `window.__cssTail` is false when it failed, which is what the harness
+   sweeps read; the console line is for whoever is looking at the page.
+   ⚠ AND NOTE WHAT HAPPENED WHILE THIS WAS BEING WRITTEN: the first draft of
+   this very comment quoted the offending two characters, which closed itself
+   early and took the whole script down with a SyntaxError. Do not name the
+   sequence in a comment. Say "comment terminator". */
+window.__cssTail=(()=>{
+  try{
+    for(const s of document.styleSheets){
+      let rules;try{rules=s.cssRules;}catch(e){continue;}
+      for(const r of rules)if(r.selectorText==='#cssTail')return true;
+    }
+  }catch(e){}
+  console.error('⛔ CSS TRUNCATED: the stylesheet did not parse to #cssTail. '+
+    'Look for a stray */ inside a comment - every rule after it is gone.');
+  return false;
+})();
 /* ═══ #83 - A BIT MOBILE FRIENDLY ══════════════════════════════════════════
    The stage is a fixed 1280x720 box and always has been. `fit()` is the one
    place that decides how much of the screen it gets, and on a phone the answer
@@ -7573,7 +7672,16 @@ function dmgPreview(a,d,act){
   const sp=splitFor(d,act);
   return {arm:sp?[Math.round(lo*sp.arm*m),Math.round(hi*sp.arm*m)]:[0,0],
     hp:(d.armour>0&&sp)?[Math.round(soak(lo*sp.body*m)),Math.round(soak(hi*sp.body*m))]
-      :[Math.round(soak(lo*m)),Math.round(soak(hi*m))]};
+      :[Math.round(soak(lo*m)),Math.round(soak(hi*m))],
+    /* #98 point 7 - THE WHOLE BLOW, BEFORE ARMOUR TAKES ITS HALF.
+       (User: "for hit - a full damage, regardless the armor - so i see full
+       scale of my damage of the skill.") `arm` and `hp` answer "what does
+       this do to THIS target"; `full` answers "how hard does this skill
+       hit", which is the question being asked when you are choosing between
+       two cards. It carries every multiplier that is about the SWING - the
+       weapon, the bonus, the arc, the global trim, the spell power - and
+       none of the ones that are about the target's shell. */
+    full:[Math.round(lo*m),Math.round(hi*m)]};
 }
 function strike(a,d,act,mult){
   mult=mult||1;
@@ -11650,10 +11758,17 @@ const hexCentre=(c,r)=>({x:c*HEXW+(r&1?HEXOFF:0)+19, y:r*HEXH+21});
    of head above the top row, and #bField is overflow:hidden. So the one stop
    whose promise is "you can see everything" was cropping the skulls off the
    top rank and the boots off the bottom one.
-   1.58 leaves 416*(1.73-1.58)/2 ≈ 31px clear at each end, which covers the
-   overhang twice over. It is still 1.22x the pre-#91 FULL, so the stop is
-   nowhere near the "control with no job" it was rescued from. */
-const CAMS=[{k:'full',n:'FULL',z:1.58},{k:'field',n:'FIELD',z:2.20},{k:'close',n:'CLOSE',z:2.50}];
+   1.58 left ~31px clear at each end, which covers the overhang twice over.
+   ── #98 point 1 · AND THAT WAS TOO MUCH ─────────────────────────────────
+   (User: "a bit less space from the top and button.") 1.58 bought the head
+   back and then some: 49px above and 13 below is a visible letterbox on a
+   stop whose job is to show the most board. 1.64 gives 31 above and 7 below
+   - still 2.4x the 13px overhang, so nothing crops - and hands 8px of board
+   back in every direction. ⚠ The other half of the same complaint was not
+   the camera at all: #95 moved the order rail off the bottom edge and left
+   #bActions sitting at bottom:48, so 38px of the bottom "space" was a hole
+   where the rail used to be. The cards are back on the floor. */
+const CAMS=[{k:'full',n:'FULL',z:1.64},{k:'field',n:'FIELD',z:2.20},{k:'close',n:'CLOSE',z:2.50}];
 /* the stop is a SETTING — it outlives the run and the launch, like the audio
    toggle, and is deliberately not part of the save (see the state bands) */
 const CAM={i:1,tx:undefined,ty:undefined,z:0};
@@ -11665,7 +11780,10 @@ const CAM_EDGE=.30;
 /* #95 point 8 - how much of FULL's slack goes above the board rather than
    below it. See the note in camApply: the top is the only end that can crop
    a body AND the only end with chrome floating over it. */
-const CAM_TOPBIAS=18;
+const CAM_TOPBIAS=12;
+/* #98 point 3 - how many heads the rail's 490px band holds at 40x46 plus the
+   round divider. Derived, not guessed: 9x49 + 20 = 461. */
+const RAIL_MAX=9;
 /* WHO THE CAMERA IS FRAMING: whoever is acting. One rule for both sides — if
    it is yours you are about to act with it, if it is theirs you watch it act. */
 function camSubject(){
@@ -12264,7 +12382,7 @@ function render(){
     /* #94 point 3 - the nickname rides on the name's line now. `.nick`
        ellipsises rather than wraps: a nickname that costs a second line is
        precisely the thing this change deletes. */
-    $('bName').innerHTML='<span class="nm">'+(u.leader||u.captain?'⚑ ':'')+youName(u)+'</span>'+
+    $('bName').innerHTML='<span class="nm">'+(u.leader||u.captain?'★ ':'')+youName(u)+'</span>'+
       (u.nick?'<span class="nick">“'+u.nick+'”</span>':'');
     /* CLASSES ARE A HUMAN IDEA. A wyrm does not have a profession — it has a
        BESTIARY entry, which is a different register and reads differently on
@@ -12276,7 +12394,7 @@ function render(){
       u.pet?'♥ THE COMPANY’S — IT FOLLOWS THE CAPTAIN':
       u.ally?'⚔ FIGHTING ON YOUR SIDE — NOT YOURS TO COMMAND':
       u.monster?monTag(u.monster):
-      (u.captain?'⚑ CAPTAIN':u.caster?'✷ CASTER':u.big?'⬢ GREAT BEAST':'RABBLE');
+      (u.captain?'★ CAPTAIN':u.caster?'✷ CASTER':u.big?'⬢ GREAT BEAST':'RABBLE');
     /* #91 point 13 - the personality shows its NAME and nothing else. Both
        sentences (the short read and the race-specific text) are the hover,
        where 8f.117 already put the long one. A body with no trait keeps its
@@ -12452,23 +12570,41 @@ function render(){
   /* the order rail (#91 point 17): faces only, in turn order. The initiative
      number is gone from the surface - the ORDER is the readout - and the
      name is the head's hover. */
+  /* ═══ #98 point 3 - THE RAIL IS A QUEUE, NOT A CAST LIST ════════════════
+     Walked from B.idx forward and wrapped, so it reads "acting now, then
+     these, then the round turns, then these". A body that has already had
+     its turn this round leaves the rail until the divider brings it back,
+     which is the whole request: what is LEFT is the useful half of an
+     initiative list, and who is in the fight is the board's job.
+     ⚠ The walk starts at B.idx and takes B.order.length steps, so every
+     body appears exactly once whatever the wrap point is; `dead || fled ||
+     downed` are skipped rather than shown greyed, as before. */
   const top=$('bTop');top.innerHTML='';
-  B.order.forEach((o,i)=>{
-    if(o.dead||o.fled||o.downed)return;
+  const N=B.order.length;
+  let shown=0,turned=false;
+  for(let k=0;k<N&&shown<RAIL_MAX;k++){
+    const idx=(B.idx+k)%N,o=B.order[idx];
+    if(o.dead||o.fled||o.downed)continue;
+    /* the wrap: everything from here on belongs to the NEXT round */
+    if(k>0&&idx===0&&!turned){
+      const dv=document.createElement('div');dv.className='ordturn';
+      dv.textContent='↻ '+roman(B.round+1);
+      dv.title='the round turns here - everything below is next round’s order';
+      top.appendChild(dv);turned=true;}
     const sp=sprite(o.kind,o.side,{unit:o,leader:o.leader||o.captain,caster:o.caster,bow:o.bow});
     const d=document.createElement('div');
     d.className='ord '+(o.side==='foe'?'foe ':'')+((o.leader||o.captain)?'cap ':'')+
-      (i===B.idx?'now':'');
+      (k===0?'now':'');
     d.title=(o.leader?'You':o.name)+(o.state==='routed'?' — broken and running':'');
     d.innerHTML=(o.state==='routed'?'<span class="flag">🏳</span>':'')+
-      '<img src="'+sp.src+'" width="'+Math.round(sp.w*.58)+'" height="'+Math.round(sp.h*.58)+
+      '<img src="'+sp.src+'" width="'+Math.round(sp.w*.78)+'" height="'+Math.round(sp.h*.78)+
       '" alt="'+o.name+'">';
     /* #96 point 1 - resting on a head lights the body it belongs to. The
        rail carries no names by design (#91), so this is the only thing that
        answers "which of the eleven out there is that". */
     d.onmouseenter=()=>spotOn(o);
     d.onmouseleave=spotOff;
-    top.appendChild(d);});
+    top.appendChild(d);shown++;}
   /* ⚠ THE CARD GOES DOWN BEFORE THE BOARD IT IS ABOUT IS DELETED. The line
      below destroys every hex, and A REMOVED ELEMENT NEVER FIRES `mouseleave`
      - so the readout stayed lit over a board that had moved on, describing a
@@ -12829,10 +12965,18 @@ function render(){
         inn.appendChild(wb);
         if(occ.state==='routed'){const f=document.createElement('span');
           f.className='wflag';f.textContent='🏳';inn.appendChild(f);}
+        /* ═══ #98 point 6 - A LEADER IS A STAR, NOT A FLAG ════════════════
+           (User: "for a leader more icon star, then flag. we use flag for a
+           morale.") He is right and it was a straight collision: 🏳 above a
+           head means BROKEN AND RUNNING, and ⚑ above a head meant leader -
+           two flags on the same anchor, one of them the worst news in the
+           game. The `else` below even proves it: a routed captain silently
+           swapped one flag for the other on the same pixel. ★ shares nothing
+           with the morale vocabulary. */
         else if(occ.leader||occ.captain){const cr=document.createElement('span');
           cr.className='crest'+(occ.leader?' big':'');
           cr.style.color=occ.side==='you'?'#f0e6c0':'#d9bd7e';
-          cr.textContent='⚑';inn.appendChild(cr);}
+          cr.textContent='★';inn.appendChild(cr);}
         /* WHERE THEY ARE LOOKING, and where their back is. The wedge points
            along the facing; the red arc marks the back arc you want to be in.
            Enemies get the arc drawn brightly because that is the one the
@@ -12874,15 +13018,25 @@ function render(){
         if(odds!==null){const o=document.createElement('div');o.className='hodds';
           o.style.color=odds>=70?'#8ca35a':odds>=45?'#c9a227':'#c15d55';
           o.textContent=odds+'%';inn.appendChild(o);
-          /* ⚠ THE HITPOINT RANGE, NOT THE TOTAL. Against something in plate
-             most of a swing goes into the armour, and a number that added
-             the two together would read as a promise the target does not
-             keep. "3-5" on an armoured body is the useful, honest answer:
-             you are not getting through yet. The armour half is one hover
-             away on the readout card, which is where the breakdown lives. */
+          /* ═══ #98 point 7 - THE WHOLE BLOW, AND THE ODDS GIVE IT ROOM ═══
+             This used to print the HITPOINT half only, on the argument that
+             adding the two together "would read as a promise the target does
+             not keep". The user's correction is better: "for hit - a full
+             damage, regardless the armor - so i see full scale of my damage
+             of the skill." The number on the board is read while CHOOSING
+             BETWEEN CARDS, and at that moment 3-5 tells you nothing about
+             whether the arming sword or the kick is the harder swing - it
+             tells you about the plate, which the armour bar already says.
+             The split is still one hover away on the readout card, which is
+             where a breakdown belongs.
+             ⚠ The odds dropped 11px → 9.5px in the same edit and that is not
+             cosmetic: two numbers on one hex want a hierarchy, and with the
+             damage now the larger figure the percentage had to yield the
+             emphasis it was holding. */
           const dp=dmgPreview(u,occ,offA);
-          if(dp&&dp.hp){const dd=document.createElement('div');dd.className='hdmg';
-            dd.textContent=dp.hp[0]+'-'+dp.hp[1];inn.appendChild(dd);}}
+          const dv=dp&&(dp.full||dp.hp);
+          if(dv){const dd=document.createElement('div');dd.className='hdmg';
+            dd.textContent=dv[0]+'-'+dv[1];inn.appendChild(dd);}}
         /* #36 — the word, always, even when the percentage is withdrawn */
         if(losHere){const lw=document.createElement('div');lw.className='hlos';
           lw.style.color=SHOT[losHere.k].col;lw.textContent=SHOT[losHere.k].n;
@@ -13136,7 +13290,7 @@ function inspect(t,e){
   const mv=t.acts.filter(a=>!a.move&&!a.self);
   const rd=$('bRead');
   rd.innerHTML='<div style="font-family:var(--display);font-size:14px;color:'+
-      (own?'var(--t4)':'#e0b0a8')+'">'+(t.leader||t.captain?'⚑ ':'')+youName(t)+'</div>'+
+      (own?'var(--t4)':'#e0b0a8')+'">'+(t.leader||t.captain?'★ ':'')+youName(t)+'</div>'+
     '<div style="font-family:var(--mono);font-size:8.5px;letter-spacing:.1em;color:#8a9a5c">'+
       (own?cIcon(t.cls)+' '+CLASSES[t.cls].n+' · LEVEL '+t.level
          :t.pet?'♥ THE COMPANY’S'
@@ -22090,6 +22244,12 @@ function react(kind){
 }
 document.querySelectorAll('#reactBar .rx').forEach(b=>{
   b.onclick=e=>{e.stopPropagation();react(b.dataset.k);};});
+/* #98 point 5 - the fold. Deliberately NOT remembered across launches: it is
+   a settings-band write for a UI-band fact (see the state table in the
+   README), and a player who folds it once has said "not now", not "never".
+   It stays open for as long as the page is up, which is the session. */
+(()=>{const t=$('reactTog');if(!t)return;
+  t.onclick=e=>{e.stopPropagation();$('reactBar').classList.toggle('open');};})();
 
 /* ═══ #76 — THE QUESTIONNAIRE ══════════════════════════════════════════════
    (User, 2026-08-02: "Анкетку на форму обратной связи и быструю отправку.
