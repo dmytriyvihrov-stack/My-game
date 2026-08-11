@@ -79,6 +79,56 @@ take a click · the ground looking misaligned on any of the six battlefields.
 
 ---
 
+## 🗺 THE ROAD SCREEN, ROUND THREE  *(#106 · 2026-08-11 · build log 8f.133)*
+
+**Your eight points, all in.** Two of them turned into more than they looked: point 4 was a real
+bug, and point 8's heart was lying about how hurt the company was.
+
+**How to reach it.** Front door → **Continue the road**. The two new doors are chips in the top
+bar; the rest is the map itself.
+
+**The quiet horizon (1).** The upkeep chip says **◉8/DAY** and nothing else while the chest is
+healthy. At **three days or fewer** a red **"2 days left"** appears beside it. The full
+arithmetic is still on the hover, every day. To see the red without spending a run: ⚙ DEV.MODE
+console, `G.run.crowns=18;worldTick()`, then reload.
+
+**The day, on the edge (2).** DAY and the sun-and-moon wheel are **one plaque, hard against the
+map's top-right corner** now, so the middle of the sky is map again. The wheel still turns only
+while you walk. ⚠ The developer column (⚙ DEV.MODE and the three tester buttons) **steps down
+past it on this screen only** — that gap under DEV.MODE is deliberate.
+
+**The contract (3).** Two lines now, **what it is over what it pays**, with a **golden trophy**
+as the main-quest mark. It went from 451px of covered map to 235.
+
+**The cut picture was your company (4).** Not spare art: `enterWorld` never placed the map token,
+so on a **new** run the whole company sat half off the top-left corner with "THE COMPANY" clipped
+to "MPANY". It places itself on every tick now. **Start a new company and check the token is
+standing on Grausen Hold from the first frame.**
+
+**The company on the road (5).** The single painted face is gone; the token is **every body in
+the party as its own battle sprite**, shrunk to 22px, Captain first, and it trudges while walking.
+A ratkin reads as a ratkin from the map.
+
+**The barrels stopped being a button (6).** The provisions chip is a **readout**. What you spend
+them on moved onto the two chips that name the effect:
+
+**A party (7).** **Click the mood chip** → *Throw them a party*, **3 provisions**, the mood lifts
+hard, once a day. ⚠ The cook-fire wagon fitting now makes it **2**, not 3 — I kept the fitting
+meaningful rather than deleting its discount, and the card always states the price it charges.
+
+**Double rations (8).** **Click the heart** → **3 provisions**, wounds mend twice as fast for
+three days of road. **Hover the heart** and you get **every body, hp by hp** (`Vesna 17/57`).
+⚠ **I corrected the heart while measuring it**: two scratches across four people used to paint it
+fully EMPTY and call the company BLOODIED. Empty now means a third of all the blood is gone, or
+somebody is under 45% and could fall in the next fight. Full → half → empty, honestly.
+
+**What would be a bug:** the token anywhere but on the node at the start of a new run · the days
+text visible when the purse is healthy · a party or rations card charging a price different from
+the one it printed · the heart empty when everybody has a scratch and nobody is in danger · the
+tester buttons under the day plaque.
+
+---
+
 ## 🗺 THE ROAD SCREEN, ROUND TWO: THE BB DESIGN PASS  *(#104 · 2026-08-11 · build log 8f.131)*
 
 **Your nine points off the annotated shot, all in.** This round supersedes half of the #103

@@ -1388,39 +1388,47 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:11px;pa
    The contract, the day plaque and the sun/moon disc float OVER the map,
    which is what Battle Brothers does with all three. They are children of
    #wMap so drawNodes' sweep (.node,.elab,.mlegend) never touches them. ── */
-#wQuest{position:absolute;top:10px;left:10px;z-index:6;display:flex;align-items:center;gap:8px;
-        max-width:470px;cursor:help;overflow:hidden;white-space:nowrap;
-        padding:6px 12px 6px 7px;background:linear-gradient(180deg,#241b0e,#180f07);
+/* #106 point 3: the contract is TWO LINES now - what it is on top, what it
+   pays under - which took it from 451px of map to about 300, and the badge
+   is BB's golden trophy, the mark that says MAIN QUEST rather than a bullet. */
+#wQuest{position:absolute;top:10px;left:10px;z-index:6;display:flex;align-items:center;gap:9px;
+        max-width:340px;cursor:help;overflow:hidden;
+        padding:5px 13px 5px 8px;background:linear-gradient(180deg,#241b0e,#180f07);
         border:1px solid #6b5330;
         box-shadow:inset 0 0 0 1px rgba(16,12,6,.95),inset 0 0 16px rgba(0,0,0,.5),
                    0 3px 10px rgba(0,0,0,.65)}
-#wQuest .qbdg{width:20px;height:20px;border:1px solid #5a4426;background:#14100a;flex:none;
-              display:flex;align-items:center;justify-content:center;color:var(--g4);
-              font-size:11px}
-#wQuest .qlab{font-family:var(--display);font-size:11px;color:var(--g4);letter-spacing:.09em;flex:none}
-#wQuest .qtx{font-family:var(--mono);font-size:10.5px;color:#a38652;overflow:hidden;
-             text-overflow:ellipsis}
-#wPlaque{position:absolute;left:50%;top:0;transform:translateX(-50%);z-index:6;height:32px;
-         display:flex;align-items:center;gap:9px;padding:0 16px;
+#wQuest .qcol{display:flex;flex-direction:column;gap:1px;min-width:0}
+#wQuest .qlab{font-family:var(--display);font-size:10.5px;color:var(--g4);letter-spacing:.09em}
+#wQuest .qtx{font-family:var(--mono);font-size:10.5px;color:#c2b493;white-space:nowrap;
+             overflow:hidden;text-overflow:ellipsis}
+#wQuest .qpay{font-family:var(--mono);font-size:9px;color:#8a7449;letter-spacing:.04em}
+/* the day, hard against the map's top-right corner (#106 point 2: "it could
+   be on the edge for emersion"), with its sky inside it rather than as a
+   second floating box. ⚠ The dev-chrome column lives in this corner too and
+   is pushed down on the world screen only - see #testBtn. */
+#wPlaque{position:absolute;right:10px;top:8px;z-index:6;height:36px;
+         display:flex;align-items:center;gap:9px;padding:0 13px 0 6px;
          background:linear-gradient(180deg,#221a10,#14100a);
-         border:1px solid #6b5330;border-top:none;cursor:help;white-space:nowrap;
+         border:1px solid #6b5330;cursor:help;white-space:nowrap;
          box-shadow:inset 0 0 0 1px rgba(16,12,6,.95),0 3px 10px rgba(0,0,0,.55)}
 #wPlaque .d1{font-family:var(--display);font-size:13px;letter-spacing:.07em;color:#c2b493}
 #wPlaque .d1 b{font-size:18px;color:#e0d3b4}
-#wPlaque .pl{font-family:var(--mono);font-size:10px;color:#8a7449;letter-spacing:.05em}
-/* the sun-and-moon disc, hanging under the day plaque, BB's own wheel: a
-   sky window, a rotating face pair, and a fixed ground silhouette the pair
-   sets behind. It TURNS while the company walks (worldTick toggles
-   .turning off G.moving) and rests at daylight while you stand. */
-#wDisc{position:absolute;left:50%;top:28px;transform:translateX(-50%);z-index:7;width:40px;
-       height:40px;border-radius:50%;border:1px solid #6b5330;overflow:hidden;cursor:help;
+#wPlaque .pl{font-family:var(--mono);font-size:10px;color:#8a7449;letter-spacing:.05em;
+             display:block;margin-top:1px}
+#wPlaque .dtx{display:flex;flex-direction:column;justify-content:center}
+/* the sun-and-moon wheel, BB's own: a sky window, a rotating face pair, and
+   a fixed ground silhouette the pair sets behind. It TURNS while the company
+   walks (worldTick toggles .turning off G.moving) and rests at daylight
+   while you stand, because the walk is when the days actually pass. */
+#wDisc{position:relative;flex:none;width:28px;height:28px;
+       border-radius:50%;border:1px solid #6b5330;overflow:hidden;
        background:radial-gradient(circle at 50% 32%,#26334a,#0b0f18 78%);
-       box-shadow:0 0 0 1px #14100a,0 3px 9px rgba(0,0,0,.6)}
+       box-shadow:0 0 0 1px #14100a,0 2px 6px rgba(0,0,0,.6)}
 #wDisc .wh{position:absolute;inset:0;z-index:1}
-#wDisc .su{position:absolute;left:50%;top:3px;transform:translateX(-50%);font-size:13px;
+#wDisc .su{position:absolute;left:50%;top:2px;transform:translateX(-50%);font-size:10px;
            line-height:1;color:#e8c86a;text-shadow:0 0 7px rgba(232,200,106,.85)}
-#wDisc .mo{position:absolute;left:50%;bottom:3px;transform:translateX(-50%) rotate(180deg);
-           font-size:12px;line-height:1;color:#c5cede;text-shadow:0 0 6px rgba(197,206,222,.6)}
+#wDisc .mo{position:absolute;left:50%;bottom:2px;transform:translateX(-50%) rotate(180deg);
+           font-size:9px;line-height:1;color:#c5cede;text-shadow:0 0 6px rgba(197,206,222,.6)}
 #wDisc .gd{position:absolute;left:0;right:0;bottom:0;height:30%;z-index:2;
            background:linear-gradient(180deg,#1c1409,#0e0a05);border-top:1px solid #5a4426}
 #wDisc.turning .wh{animation:daycycle 4s linear infinite}
@@ -1624,14 +1632,23 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:11px;pa
         display:flex;flex-direction:column;align-items:center;gap:2px;pointer-events:none}
 /* the company on the road is the CAPTAIN'S FACE, not an abstract diamond —
    the one screen where you are a marker was the one screen you were nobody */
-#wToken #wFace{width:34px;height:34px;border:2px solid var(--g4);background:#221a10;
-               box-shadow:0 0 14px rgba(217,189,126,.5),0 3px 10px rgba(0,0,0,.7);display:block}
-#wToken.walking #wFace{animation:trudge .55s ease-in-out infinite alternate}
+/* ═══ #106 point 5 · THE COMPANY IS THE COMPANY ══════════════════════════
+   ("When party move on the global map - can you use all small icons of
+   battle-units, just reduced and small.") One painted face said CAPTAIN;
+   a marching row of every body says what is actually walking down there,
+   and it is the same sprite() the battlefield and the order rail draw, so
+   a ratkin reads as a ratkin from the map without a second art path.
+   ⚠ The row is centred and the whole token is translate(-50%,-50%), so a
+   company of four and a company of thirteen both sit ON the node. */
+#wToken .wSpr{display:flex;align-items:flex-end;justify-content:center;
+              filter:drop-shadow(0 2px 4px rgba(0,0,0,.85))}
+#wToken .wSpr img{image-rendering:pixelated;max-width:none;display:block;margin:0 -2px}
+#wToken.walking .wSpr{animation:trudge .55s ease-in-out infinite alternate}
 #wToken .tl{font-family:var(--mono);font-size:8.5px;letter-spacing:.12em;color:var(--g4);
             background:rgba(16,12,6,.8);padding:1px 4px;white-space:nowrap}
 #wToken.walking .tk{animation:trudge .55s ease-in-out infinite alternate}
 @keyframes trudge{from{transform:translateY(-1.5px)}to{transform:translateY(2px)}}
-@media (prefers-reduced-motion:reduce){#wToken.walking #wFace{animation:none}}
+@media (prefers-reduced-motion:reduce){#wToken.walking .wSpr{animation:none}}
 #wLock{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);font-family:var(--mono);
        font-size:10px;color:#c15d55;background:rgba(16,12,6,.9);border:1px solid #6b2a24;
        padding:5px 12px;letter-spacing:.1em;display:none;z-index:11}
@@ -1895,6 +1912,15 @@ body:has(#world.on) #audioBtn{top:8px;bottom:auto;font-size:11px;padding:3px 8px
    test the game, rather than the switch that shows the developer's tools. */
 #testBtn{position:absolute;right:10px;top:44px;z-index:22;font-family:var(--mono);font-size:11px;
   color:#6b5836;background:rgba(16,12,6,.8);border:1px dashed #3d2f1d;padding:3px 9px}
+/* ⚠ #106 point 2: the day plaque took the map's top-right corner, so on the
+   WORLD screen the whole developer column steps down past it (plaque bottom
+   is stage y=86). Developer chrome yields to player chrome, same ruling as
+   #102 - and IT IS A STACK: all four move together or the gap they leave is
+   worse than the collision. The battle screen is untouched. */
+body:has(#world.on) #testBtn{top:96px}
+body:has(#world.on) #winBtn{top:186px}
+body:has(#world.on) #lintBtn{top:216px}
+body:has(#world.on) #wipeBtn{top:246px}
 #testBtn:hover{color:var(--g4)}
 #testBtn.on{color:#8ca35a;border-color:#5a7a3a;border-style:solid}
 /* ⚠ #102 points 2 and 3 · THE TESTER STACK DROPPED 60px TO LET THE TWO
@@ -2101,10 +2127,16 @@ a.popt.sendit{display:block;text-decoration:none}
   <div id="wMap">
     <canvas id="wCanvas" width="1280" height="638"></canvas>
     <div id="wQuest"></div>
-    <div id="wPlaque"></div>
-    <div id="wDisc"><div class="wh"><span class="su">☀</span><span class="mo">☾</span></div>
-      <div class="gd"></div></div>
-    <div id="wToken"><canvas id="wFace" width="40" height="40"></canvas>
+    <!-- #106 point 2: the day and its sky went to the TOP-RIGHT EDGE, one
+         object, so the middle of the sky is map again. The disc is inside
+         the plaque now, not a second floating box. -->
+    <div id="wPlaque"><div id="wDisc"><div class="wh"><span class="su">☀</span>
+        <span class="mo">☾</span></div><div class="gd"></div></div>
+      <span class="dtx"></span></div>
+    <!-- #106 point 5: the company on the road is the COMPANY - every body
+         in the party as its own battle sprite, shrunk. `wSpr` is filled by
+         worldTick; the face canvas it replaced is gone. -->
+    <div id="wToken"><div class="wSpr"></div>
       <span class="tl">THE COMPANY</span></div>
     <div id="wDlg"></div>
     <div id="wLock">DECIDE FIRST — THE COMPANY WILL NOT MOVE UNTIL YOU DO</div>
@@ -19761,6 +19793,18 @@ const SACK_SVG='<svg width="15" height="16" viewBox="0 0 16 17">'+
   'fill="#a58248" stroke="#2c2011" stroke-width="1"/>'+
   '<path d="M5.4 4.9 C6.9 5.6 9.1 5.6 10.6 4.9" fill="none" '+
   'stroke="#2c2011" stroke-width="1.1"/></svg>';
+/* #106 point 3: BB marks the main quest with a trophy, and a trophy says
+   "this is the one that ends the run" in a way a bullet never did */
+const TROPHY_SVG='<svg width="19" height="20" viewBox="0 0 19 20">'+
+  '<path d="M4.6 2h9.8v5.2c0 2.9-2.2 5-4.9 5s-4.9-2.1-4.9-5Z" fill="#d9bd7e" '+
+  'stroke="#5a4426" stroke-width="1.1" stroke-linejoin="round"/>'+
+  '<path d="M4.6 3.3H2.4v1.9c0 1.7 1 2.9 2.5 3.1M14.4 3.3h2.2v1.9c0 1.7-1 2.9-2.5 3.1" '+
+  'fill="none" stroke="#a58248" stroke-width="1.3"/>'+
+  '<path d="M8.2 12.1h2.6v3.2H8.2Z" fill="#a58248" stroke="#5a4426" stroke-width="1"/>'+
+  '<path d="M5.6 15.3h7.8v2.4H5.6Z" fill="#d9bd7e" stroke="#5a4426" stroke-width="1.1" '+
+  'stroke-linejoin="round"/>'+
+  '<path d="M7.4 4.6 8.5 6.7l2.3.3-1.7 1.6.4 2.3-2.1-1.1-2 1.1.4-2.3-1.7-1.6 2.3-.3Z" '+
+  'fill="#f0e6c0" opacity=".55" transform="translate(2)"/></svg>';
 const PAW_SVG='<svg width="13" height="12" viewBox="0 0 13 12" fill="#8ca35a">'+
   '<circle cx="2.1" cy="4.6" r="1.4"/><circle cx="4.9" cy="2.6" r="1.5"/>'+
   '<circle cx="8.1" cy="2.6" r="1.5"/><circle cx="10.9" cy="4.6" r="1.4"/>'+
@@ -19789,10 +19833,33 @@ function worldTick(){
     dlg.classList.add('on');placeDlg();
     $('wMut').onclick=()=>{dlg.classList.remove('on');worldTick();};
   }
-  /* the face on the road: the Captain if he lives, otherwise whoever is
-     leading what is left of the company */
-  const face=$('wFace');
-  if(face){const who1=member('you')||G.party[0];if(who1)bustFor(face,who1);}
+  /* ═══ #106 point 5 · THE COMPANY ON THE ROAD IS EVERY BODY IN IT ═══════
+     Each party member drawn by the same `sprite()` the battlefield uses,
+     fitted to 22px tall and overlapped, Captain first. The old single
+     painted face (and its #wFace canvas) is gone with it.
+     ⚠ #106 point 4 · AND THE TOKEN PLACES ITSELF HERE. `enterWorld` never
+     called placeToken, so a NEW company's token sat at its CSS default of
+     (0,0) with translate(-50%,-50%) on it: half of a sprite and the word
+     "MPANY" clipped by the map's top-left corner, which is exactly the
+     "cutted picture of something that doesnt work" in the report. It was
+     not spare art, it was the company itself, unplaced. One door now, and
+     ⚠ GUARDED ON `G.moving`, because worldTick also runs mid-walk (a camp
+     card closing) and an unguarded call would teleport the walkers back to
+     the node they set out from. */
+  const spr=$('wToken').querySelector('.wSpr');
+  if(spr){
+    const lead=member('you');
+    const marching=(lead?[lead]:[]).concat(G.party.filter(p=>p!==lead));
+    spr.innerHTML=marching.map(p=>{
+      const un=unitFrom(p);
+      const s=sprite(un.kind,'you',{unit:un,leader:p.id==='you',
+        caster:isCaster(p.cls),bow:!!un.bow});
+      const f=22/s.h;                 /* fit on HEIGHT: a row of people, not of boxes */
+      return '<img src="'+s.src+'" width="'+Math.round(s.w*f)+'" height="'+
+        Math.round(s.h*f)+'" alt="">';
+    }).join('');
+  }
+  if(!G.moving)placeToken();
   /* ═══ #103 · THE BAR, BUILT FRESH EACH TICK ═══════════════════════════
      (Friends' map feedback plus the user's five points, 2026-08-11.)
      Left: who the company is and what it costs. Right: what it owns, one
@@ -19807,15 +19874,30 @@ function worldTick(){
   const hurt=G.party.filter(p=>p.hpLoss>0);
   let hpMaxAll=0,hpLossAll=0;
   G.party.forEach(p=>{hpMaxAll+=unitFrom(p).hpMax;hpLossAll+=p.hpLoss||0;});
-  const bloodied=hurt.length&&(hpLossAll/Math.max(1,hpMaxAll)>=.25||hurt.length*2>=G.party.length);
+  /* ⚠ #106, MEASURED AND CORRECTED: the heart's empty state used to fire on
+     `hurt.length*2>=G.party.length`, so two scratches across four people
+     (15 hitpoints out of 207, seven per cent of the company's blood) painted
+     the heart fully EMPTY and the hover said BLOODIED. Half the company
+     having a graze is not the same fact as the company being in trouble.
+     Empty now means one of the two things that actually are trouble: a
+     third of all the blood is gone, or SOMEBODY is close enough to falling
+     that the next fight could take them. */
+  const worstFrac=Math.min.apply(null,[1].concat(G.party.map(p=>{
+    const m=unitFrom(p).hpMax;return m?(m-(p.hpLoss||0))/m:1;})));
+  const bloodied=hurt.length&&(hpLossAll/Math.max(1,hpMaxAll)>=.35||worstFrac<=.45);
   const hs=!hurt.length?{st:'full',n:'SOUND',col:'#8ca35a',
       d:'Nobody is mending. Whole skins all round.'}
     :{st:bloodied?'empty':'half',n:bloodied?'BLOODIED':'MENDING',
       col:bloodied?'#c15d55':'#c9a227',
       d:hurt.map(p=>who(p)+' is '+p.hpLoss+' hitpoints short').join('. ')+'.'};
-  /* the funded horizon rides the upkeep chip: digits, and red exactly when
-     it has become the problem (user: "so you can see the problematic spot") */
-  const fdTxt=fd<=0?'nothing left':fd===1?'1 day left':fd<=5?fd+' days left':fd+' days';
+  /* ═══ #106 point 1 · THE HORIZON IS SILENT UNTIL IT IS A PROBLEM ═══════
+     ("delete days - show it only when 3 or less left and highlight with
+     red then.") A number that is on screen every day is furniture and gets
+     read as furniture; a number that appears ONLY when the chest is three
+     days from empty is an alarm. The full arithmetic stays on the hover,
+     which is where a curious player looks and a busy one does not. */
+  const fdRed=fd<=3;
+  const fdTxt=fd<=0?'nothing left':fd===1?'1 day left':fd+' days left';
   const petKey=hasPet();
   /* company relics work from the baggage; nobody wears them, so they sit
      with the company chips rather than on any one character's sheet */
@@ -19826,13 +19908,15 @@ function worldTick(){
     '<span class="cchip click" data-w="kit">'+SACK_SVG+'</span>'+
     '<span class="cchip" data-w="keep"><span class="nm">UPKEEP</span>'+
       '<b><span style="color:var(--g4)">◉</span>'+u+'</b><span class="nm">/DAY</span>'+
-      (u>0?'<i style="color:'+fundedCol(fd)+'">· '+fdTxt+'</i>':'')+'</span>'+
+      (u>0&&fdRed?'<i style="color:#c15d55">· '+fdTxt+'</i>':'')+'</span>'+
     (owedDays>=1?'<span class="cchip" data-w="owed" style="border-color:#c15d55">'+
       '<b style="color:#c15d55;font-size:10.5px">UNPAID '+owedDays+' DAY'+(owedDays>1?'S':'')+
       '</b></span>':'')+
-    '<span class="bcchip" data-w="mood" style="border-color:'+ms.col+'66">'+
+    /* #106 points 7 and 8: both of these are doors now, and each opens the
+       one thing that changes what it measures */
+    '<span class="bcchip click" data-w="mood" style="border-color:'+ms.col+'66">'+
       '<span>'+ms.ic+'</span><b style="color:'+ms.col+'">'+ms.n+'</b></span>'+
-    '<span class="bcchip" data-w="blood" style="border-color:'+hs.col+'66">'+
+    '<span class="bcchip click" data-w="blood" style="border-color:'+hs.col+'66">'+
       heartSVG(hs.st)+'</span>'+
     (petKey?'<span class="bcchip" data-w="pet" style="border-color:#8ca35a66">'+
       PAW_SVG+'</span>':'')+
@@ -19849,18 +19933,27 @@ function worldTick(){
     '><span class="ri" style="color:'+col+'">'+ic+'</span><b>'+v+'</b></span>';
   $('wRes').innerHTML=
     seg('crowns',RES_ICON.crowns,G.run.crowns,'var(--g4)')+
-    seg('prov',RES_ICON.food,G.run.food,'var(--grain)',' style="cursor:pointer"')+
+    /* #106 point 6: the barrels are a READOUT, not a door. Both things you
+       could do with them moved onto the chips that name their effect (the
+       mood chip and the heart), and a chip that opens a card the player has
+       no reason to expect is exactly the clutter this pass is cutting.
+       ⚠ `openProvisions` is kept, unwired: the user's "later we will use
+       it" is a plan, and both new doors call its two halves. */
+    seg('prov',RES_ICON.food,G.run.food,'var(--grain)')+
     seg('salvage',RES_ICON.salvage,G.camp.salvage,'var(--wood)')+
     seg('gems',RES_ICON.gems,G.camp.gems,'var(--gem)');
   /* floating over the map (#104): the day plaque centre with the sun-and-
      moon disc under it, the framed contract top left. The disc turns only
      while the company is on the road; standing still, it holds daylight. */
   const hereN=NODES[G.at],destN=G.moving&&G.dest?NODES[G.dest]:null;
-  $('wPlaque').innerHTML='<span class="d1">DAY <b>'+G.day+'</b></span>'+
+  $('wPlaque').querySelector('.dtx').innerHTML=
+    '<span class="d1">DAY <b>'+G.day+'</b></span>'+
     '<span class="pl">'+(destN?'the road to '+destN.n:hereN?hereN.n:'')+'</span>';
   $('wDisc').classList.toggle('turning',!!G.moving);
-  $('wQuest').innerHTML='<span class="qbdg">✦</span><span class="qlab">THE CONTRACT</span>'+
-    '<span class="qtx">the head out of Skelbrook\'s hall · pays on delivery</span>';
+  $('wQuest').innerHTML=TROPHY_SVG+'<span class="qcol">'+
+    '<span class="qlab">THE CONTRACT</span>'+
+    '<span class="qtx">the head out of Skelbrook\'s hall</span>'+
+    '<span class="qpay">pays on delivery</span></span>';
   /* every chip answers for itself: one table, rebound each tick because
      the elements it binds to were just rebuilt */
   const WTIPS={
@@ -19886,10 +19979,23 @@ function worldTick(){
         'the personalities disagree about how loudly.',
       x:'Fill the chest and the wages catch up on their own at day\'s end.'},
     mood:{t:ms.ic+' '+ms.n,col:ms.col,d:ms.d,
-      x:'Every fight, the whole company starts closer to this mood than to steady. '+
-        'It comes from what you choose on the road.'},
-    blood:{t:'✚ '+hs.n,col:hs.col,d:hs.d,
-      x:'Days on the road are the only medicine in this game.'},
+      x:'Every fight starts closer to this mood than to steady. '+
+        '<b>CLICK: throw them a party</b> - '+feastCost()+' provisions.'},
+    /* #106 point 8: "when i hower on the health thing - you can show exactly
+       how much health each unit has". Every body, one line, hp out of hpMax,
+       and the ones who are short of it are the ones in colour. */
+    blood:{t:hs.n,col:hs.col,
+      /* ⚠ the SHORT name: who() introduces a person with nickname, race and
+         job, which is right once in a card and unreadable as a column of
+         thirteen. The Captain is the word "You" on the roster, so he goes
+         through the same nickname door every other line uses. */
+      d:G.party.map(p=>{const un=unitFrom(p),now=un.hpMax-(p.hpLoss||0);
+        const c=p.hpLoss?(now/un.hpMax<.6?'#c15d55':'#c9a227'):'#8ca35a';
+        return '<span style="color:'+c+'">'+capName(p)+' <b>'+now+'/'+un.hpMax+
+          '</b></span>';}).join('<br>'),
+      x:'Days on the road are the only medicine in this game. '+
+        '<b>CLICK: double rations</b> - '+RATION_COST+' provisions, and they mend twice '+
+        'as fast for '+num(RATION_DAYS)+' days.'},
     crowns:{t:'CROWNS',col:'var(--g4)',
       d:'The purse of THIS run - wages, tolls, hires, bribes. It does not survive the '+
         'company. Spend it like somebody who knows that.',
@@ -19902,7 +20008,8 @@ function worldTick(){
         '<b>Lay out a proper meal</b> - the mood lifts hard (once a day).<br>'+
         '<b>Double rations</b> - wounds mend twice as fast for three days.<br>'+
         '<b>The road asks for it</b> - feeding a stranger, a wedding, a hungry ogre.',
-      x:'CLICK the chip to open the barrels.'},
+      x:'A count, not a door (#106). What you spend them ON is on the two '+
+        'chips that name it: the mood throws a party, the heart doubles the rations.'},
     salvage:{t:'SALVAGE',col:'var(--wood)',
       d:'Timber, iron and fittings pulled off the road. It builds things INTO THE WAGON '+
         'between runs - beds, chests, fires - and pays village craftsmen.',
@@ -19937,12 +20044,14 @@ function worldTick(){
   /* hovering a company relic says exactly what it does */
   $('wCompany').querySelectorAll('[data-tri]').forEach(el=>{
     bindTip(el,el.dataset.tri,null);});
-  /* the doors: both left-hand chips open the company screen; the barrels
-     open on the provisions segment, as before */
+  /* the doors: both left-hand chips open the company screen, and #106 gave
+     the mood and the heart the one act that changes each of them */
   $('wCompany').querySelectorAll('[data-w="party"],[data-w="kit"]').forEach(el=>{
     el.onclick=openInv;});
-  const pv=$('wRes').querySelector('[data-w="prov"]');
-  if(pv)pv.onclick=()=>{whisper('prov');openProvisions();};
+  const mc=$('wCompany').querySelector('[data-w="mood"]');
+  if(mc)mc.onclick=()=>{whisper('prov');openFeastCard();};
+  const bl=$('wCompany').querySelector('[data-w="blood"]');
+  if(bl)bl.onclick=()=>{whisper('prov');openRationCard();};
   /* #103 point 4: the italic sentence that lived here ("N of you, N crowns
      a day, and a contract that pays on delivery") is deleted, per the user.
      What it carried moved to where each piece belongs: the contract clause
@@ -20127,11 +20236,89 @@ function walk(a,b,from,to,ms,done){
    price tag and a second click. Playtest #2 kept reading the old single
    click as "nothing happened" — and the old two-click had no visible cost. */
 /* THE PROVISIONS MENU — the store is a decision, not a meter. Click the chip. */
+/* ═══ #106 points 7 and 8 · THE TWO ACTS GOT DOORS THAT NAME THEM ════════
+   ("Let click on the mood - and offer 'a party' - morale boost, but costs 3
+   provision" · "and on state - double rations and double the healing
+   spead".) Neither act is new: the provisions card has sold both since the
+   provisions redesign, behind a chip labelled with a barrel. What was
+   missing is that the thing you want to change (the mood, the wounded) was
+   never the thing you could click. Now the mood chip throws the party and
+   the heart orders the rations.
+
+   ⚠ THREE DOORS, ONE PRICE, ONE MUTATION PATH. A card that quotes a price
+   it does not itself charge is the oldest bug in this file, and #75 already
+   paid for it once. `feastCost()` is the only place the number lives and
+   `layFeast()` is the only thing that spends it, exactly as `takeRations()`
+   already owns the other half.
+   ⚠ THE BASE COST IS THE USER'S 3, so the cook-fire fitting discounts to 2
+   rather than being deleted: a fitting that stops mattering the day a price
+   moves is a fitting somebody rebuilds by accident later.
+   ⚠ ALL FOUR ARE FUNCTION DECLARATIONS, NOT const ARROWS. `worldTick` sits
+   four hundred lines above this block and calls three of them to label the
+   chips, and this file has already shipped one temporal-dead-zone crash
+   that aborted the whole script. A hoisted declaration cannot do that. */
+function feastCost(){return hasFit('fire')?2:3;}
+function layFeast(){
+  pay('food',-feastCost());G.morale+=12;G.lastFeast=G.day;sfx('coin');
+}
+/* what stops each act, in words, or null when it can be done. One reader
+   for the card and the button label both. */
+function feastBlock(){return G.lastFeast===G.day?'they already ate well today'
+  :G.run.food<feastCost()?'not enough in the barrels':null;}
+function rationBlock(){return G.doubleRations>0?'already running'
+  :!G.party.some(p=>p.hpLoss>0)?'nobody is carrying a wound'
+  :G.run.food<RATION_COST?'not enough in the barrels':null;}
+/* a small card on the map, anchored where the company stands, with one act
+   on it and the way out. Both #106 doors are this shape. */
+function actCard(title,body,btn,block,go){
+  if(G.pending||G.moving)return;
+  const dlg=$('wDlg');
+  dlg.innerHTML='<h3>'+title+'</h3><div class="bd">'+body+'</div>'+
+    '<div id="wChoices" style="display:flex;flex-direction:column;gap:5px">'+
+    '<button class="choice" id="acDo"'+(block?' disabled style="opacity:.4"':'')+'><b>'+
+      btn.t+'</b><i>'+btn.c+(block?' · '+block:'')+'</i></button>'+
+    '<button class="choice" id="acNo"><b>Not now</b><i>it keeps</i></button></div>';
+  dlg.classList.add('on');
+  const n=NODES[G.at];placeDlg(n?n.x:undefined,n?n.y:undefined);
+  const close=()=>{dlg.classList.remove('on');worldTick();};
+  const b=$('acDo');if(b&&!block)b.onclick=()=>{go();close();};
+  $('acNo').onclick=close;
+}
+function openFeastCard(){
+  const c=feastCost();
+  actCard('A PARTY',
+    'The good barrels come open, somebody is sent for whatever the last village had, and '+
+    'for one evening the company eats like people somebody is glad to see.'+
+    (hasFit('fire')?'\n\nThe cook-fire in the wagon does half the work, so it costs one less.':''),
+    {t:'Throw them a party.',c:'−'+c+' provisions · the mood lifts hard'},
+    feastBlock(),
+    ()=>{layFeast();
+      say2('The good barrels come open and for one evening the company eats like people '+
+        'somebody is glad to see. The mood lifts, and stays lifted.');});
+}
+function openRationCard(){
+  const hurt=G.party.filter(p=>p.hpLoss>0);
+  actCard('DOUBLE RATIONS',
+    'The hurt eat first, and they eat twice. It does not close a wound on the spot: it '+
+    'doubles what every day of road gives back, for '+num(RATION_DAYS)+' days.'+
+    (hurt.length?'\n\nMending: '+hurt.map(p=>who(p)+' ('+p.hpLoss+' short)').join(', ')+'.':''),
+    {t:'Double rations for the hurt.',c:'−'+RATION_COST+' provisions · they mend twice as '+
+      'fast for '+num(RATION_DAYS)+' days of road'},
+    rationBlock(),
+    ()=>{takeRations();
+      say2('Double rations for the hurt, by order. '+hurt.length+' of yours eat first for '+
+        'the next '+num(RATION_DAYS)+' days on the road, and the mending goes twice as '+
+        'quick on it.');});
+}
 function openProvisions(){
   if(G.pending||G.moving)return;
   const dlg=$('wDlg');
   const fed=G.lastFeast===G.day;
-  const feastCost=hasFit('fire')?3:4;
+  /* ⚠ #106: a LOCAL named feastCost used to hold this number. It is the
+     module-level function's now, and the local had to be renamed rather
+     than kept: `const feastCost=feastCost()` is a temporal-dead-zone crash,
+     not a shadow. */
+  const fc=feastCost();
   const hurt=G.party.filter(p=>p.hpLoss>0).length;
   dlg.innerHTML='<h3>THE PROVISIONS</h3>'+
     '<div class="bd">'+G.run.food+' in the barrels. Wages buy bread; this is everything '+
@@ -20141,22 +20328,20 @@ function openProvisions(){
       :G.run.food<=2?'\n\n<span style="color:#c9a227">Nearly out. The next fight starts on '+
       'short rations — the line 6 morale down.</span>':'')+'</div>'+
     '<div id="wChoices" style="display:flex;flex-direction:column;gap:5px">'+
-    '<button class="choice" id="pvFeast"'+((fed||G.run.food<feastCost)?' disabled style="opacity:.4"':'')+
-      '><b>Lay out a proper meal.</b><i>−'+feastCost+' provisions · the mood lifts'+
+    '<button class="choice" id="pvFeast"'+(feastBlock()?' disabled style="opacity:.4"':'')+
+      '><b>Lay out a proper meal.</b><i>−'+fc+' provisions · the mood lifts'+
       (hasFit('fire')?' · the cook-fire earns its keep':'')+
-      (fed?' · already eaten well today':G.run.food<feastCost?' · not enough in the barrels':'')+
+      (feastBlock()?' · '+feastBlock():'')+
       '</i></button>'+
-    '<button class="choice" id="pvRation"'+((G.doubleRations>0||G.run.food<RATION_COST||!hurt)?
-      ' disabled style="opacity:.4"':'')+
+    '<button class="choice" id="pvRation"'+(rationBlock()?' disabled style="opacity:.4"':'')+
       '><b>Double rations for the hurt.</b><i>−'+RATION_COST+' provisions · wounds mend twice as '+
       'fast for '+num(RATION_DAYS)+' days of road'+
-      (G.doubleRations>0?' · already running':!hurt?' · nobody is carrying a wound':
-      G.run.food<RATION_COST?' · not enough in the barrels':'')+'</i></button>'+
+      (rationBlock()?' · '+rationBlock():'')+'</i></button>'+
     '<button class="choice" id="pvGo"><b>Close the lid</b><i>it keeps</i></button></div>';
   dlg.classList.add('on');placeDlg();
   const close=()=>{dlg.classList.remove('on');worldTick();};
   const fb=$('pvFeast');if(fb&&!fb.disabled)fb.onclick=()=>{
-    pay('food',-feastCost);G.morale+=12;G.lastFeast=G.day;sfx('coin');
+    layFeast();                        /* #106: the one door, never a second copy */
     say2('The good barrels come open and for one evening the company eats like people '+
       'somebody is glad to see. The mood lifts, and stays lifted.');close();};
   const rb=$('pvRation');if(rb&&!rb.disabled)rb.onclick=()=>{
@@ -20230,7 +20415,9 @@ function forkCard(br){
     return '<button class="choice'+(r.fights>1?' danger':'')+'" id="tR'+i+'">'+
       '<span class="rd"><span class="nm2">'+n.n+'</span>'+
       '<span class="pr" style="color:'+fundedCol(after)+'">'+r.leg+' DAY'+(r.leg>1?'S':'')+
-        ' · ~'+bill+'c</span>'+
+        ' · ~◉'+bill+'</span>'+       /* #104 point 6, finished in #106: the fork
+                                          card was the last place still printing
+                                          a bare-letter crown */
       '<span class="dang d-'+d+'">'+WORD[d]+'</span></span>'+
       '<i>'+((e&&e[4])?e[4]+' · ':'')+tail.join(', ')+'</i></button>';
   }).join('');
