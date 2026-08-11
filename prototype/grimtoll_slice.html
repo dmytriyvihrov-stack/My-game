@@ -89,9 +89,34 @@ button:disabled{cursor:not-allowed}
 #bCap #bRound{font-family:var(--mono);font-size:10px;letter-spacing:.16em;color:var(--gold);white-space:nowrap}
 /* the order rail: heads only, in turn order, the current one lit. The
    initiative NUMBER left the surface entirely (#91 point 17): the ORDER of
-   the rail is the readout, and a name is one hover away on the head. */
-#bTop{position:absolute;top:36px;left:50%;transform:translateX(-50%);z-index:39;
-  display:flex;gap:3px;align-items:flex-end}
+   the rail is the readout, and a name is one hover away on the head.
+   ── #94 point 7 · IT LEFT THE TOP AND JOINED THE CARDS ──────────────────
+   (User: "Turn order - maybe place under the skills?") It sat top-centre,
+   three hundred pixels from the only place the eye is during your own turn,
+   and it was the only readout on the screen you had to look UP for.
+   ── #95 point 2 · AND THEN LEFT AND VERTICAL ────────────────────────────
+   (User: "turn order lets put to the left and vertically.") The bottom edge
+   was the wrong answer for a reason worth writing down: a queue read left to
+   right competes with the CARD ROW for the same band and the same reading
+   direction, so two different lists sat in one strip. Down the left edge it
+   is a column of faces beside a board, which is the shape it always was.
+   ⚑ IT IS GIVEN A BAND, NOT A CENTRE, and the difference is load-bearing.
+   The log owns the top-left corner and the plaque the bottom-left, so a rail
+   anchored to top:50% is only clear of them at the head counts you happened
+   to test - measured, eleven heads centre to 158-562 and the plaque's real
+   top is 561, so it collided on the first board that had eleven bodies in
+   it. Pinned top AND bottom, the band is 490px whatever is in it and the
+   heads centre inside it: 13 heads (the widest legal board) is 478px, which
+   fits, and any future overflow is clipped rather than laid on the plaque. */
+#bTop{position:absolute;left:8px;top:60px;bottom:170px;z-index:39;
+  display:flex;flex-direction:column;gap:3px;align-items:flex-start;
+  justify-content:center;overflow:hidden}
+/* the lit edge is the LEFT edge now, not the top: the rail turned, so the
+   mark that says "this one" turns with it */
+#bTop .ord{border-top:none;border-left:2px solid #3d5250}
+#bTop .ord.foe{border-left-color:var(--blood)}
+#bTop .ord.cap{border-left-color:var(--gold)}
+#bTop .ord.now{transform:translateX(3px)}
 .ord{width:30px;height:34px;background:rgba(20,30,31,.88);border-top:2px solid #3d5250;
   display:flex;flex-direction:column;align-items:center;justify-content:flex-end;
   position:relative;flex:none;padding-bottom:1px;overflow:hidden}
@@ -100,8 +125,19 @@ button:disabled{cursor:not-allowed}
 .ord img{image-rendering:pixelated;width:22px;height:auto}
 .ord .flag{position:absolute;top:1px;left:1px;font-size:9px;line-height:1}
 /* AUTO · PACE · WITHDRAW as icon buttons. Same ids, same handlers - the
-   words moved into the title. */
-#bIcons{position:absolute;top:8px;right:8px;z-index:40;display:flex;gap:6px}
+   words moved into the title.
+   ── #94 point 2 · THEY COME DOWN TO END TURN ────────────────────────────
+   (User: "Withdraw and speed near it.") They were top-right, at the far end
+   of a 1280px diagonal from the button they belong beside: three controls
+   that end or change the shape of a turn, in two corners.
+   ── #95 point 6 · AND UP ONTO ITS SHOULDER ──────────────────────────────
+   (User: "move a bit speed and withdraw.") Beside END TURN they were still
+   sharing its row and reading as part of the same press. Directly above it,
+   right-aligned to the same edge, they are the same group and plainly a
+   different kind of control. UNDO takes the slot above them when it exists,
+   which is the only time anything else is in this stack. */
+#bIcons{position:absolute;right:8px;bottom:86px;z-index:40;display:flex;gap:6px;
+  align-items:center;justify-content:flex-end;height:28px}
 #bIcons button{width:28px;height:28px;background:#1f2d2e;border:1px solid #35494c;
   display:flex;align-items:center;justify-content:center;font-size:13px;color:#9fb3ae;
   font-family:var(--body);padding:0}
@@ -122,7 +158,20 @@ button:disabled{cursor:not-allowed}
 #bPlq .pr1{display:flex;gap:8px;align-items:flex-start}
 #bPortrait{width:40px;height:40px;border:1px solid #33474a;flex:none;display:block}
 #bPlq .pcol{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
-#bName{font-family:var(--display);font-size:13.5px;color:var(--t4);font-weight:600;line-height:1.1}
+/* ── #94 point 3 · THE NICKNAME COMES UP ONTO THE NAME'S LINE ────────────
+   (User: "nickname same line as name.") It was a <br>, which spent a whole
+   line of the panel on two words in quotation marks and pushed the class
+   line down with it. One row now; the name takes what it needs and the nick
+   takes what is left, ellipsised rather than wrapped, because a nickname
+   that costs a second line is exactly what this change is deleting. */
+#bName{font-family:var(--display);font-size:13.5px;color:var(--t4);font-weight:600;line-height:1.15;
+  display:flex;align-items:baseline;gap:5px;min-width:0}
+#bName .nm{flex:0 1 auto;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* shrink factor 2: when the row is tight the NICKNAME gives way first. The
+   name is identity, the nickname is colour. */
+#bName .nick{flex:0 2 auto;font-family:var(--body);font-size:10.5px;color:var(--g3);
+  font-style:italic;font-weight:400;white-space:nowrap;overflow:hidden;
+  text-overflow:ellipsis;min-width:0}
 #bClass{font-family:var(--mono);font-size:9.5px;letter-spacing:.04em;color:#b09a6e;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 /* the personality: NAME only (#91 point 13). The sentence is the hover,
@@ -130,14 +179,58 @@ button:disabled{cursor:not-allowed}
 #bTrait{font-family:var(--body);font-size:11px;color:#d8cfae;line-height:1.25;cursor:help;
   display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
 #bTrait b{color:var(--g4);font-weight:600;font-style:normal;border-bottom:1px dotted #6b6046}
-#bStats{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:4px}
+/* ── #95 point 4 · THREE CELLS, NOT FOUR ─────────────────────────────────
+   (User: "delete amount of movment from characters card - it is already
+   seenible in the direct skill.") #94 put the hex count on the MOVE card's
+   face and left the plaque cell standing, which made it a duplicate the day
+   it shipped - and duplicates are the first half of the original 2026-08-10
+   report ("too many numbers everywhere"). The card is where the decision is
+   made, so the card keeps it. Same `moveBudget()` call, one reader now. */
+#bStats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px}
 #bStats .pcell{background:#101a1b;border:1px solid #24383a;padding:3px 2px 2px;
-  display:flex;flex-direction:column;align-items:center;gap:1px}
+  display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:2px}
 #bStats .pnum{font-family:var(--display);font-size:15px;font-weight:700;color:var(--t4);line-height:1}
 #bStats .plbl{font-family:var(--mono);font-size:8px;letter-spacing:.04em;color:#8fa5a2;
   line-height:1.2;text-align:center}
+/* ── #94 point 4 · THE ACTIONS ARE CRYSTALS AGAIN ───────────────────────
+   (User: "Actions show as crystals (as wildermyth, rather then number).")
+   Wildermyth's read, and it is a better one: how many are left is a SHAPE
+   you count without reading, and a spent one is still on the panel, dark,
+   so the price of what you just did stays visible for the rest of the turn.
+   ⚠ THIS IS THE THIRD FORM THESE HAVE TAKEN - three pips, then #88's "2 OF
+   2" numeral, now pips again - and the reason it is not a circle is that
+   #88 cut the pips because they were the THIRD way of saying one fact
+   beside a numeral and a word. The numeral is gone with them. One fact,
+   one shape, one cell. */
+#bStats .pips{display:flex;gap:3px;align-items:center;justify-content:center;
+  height:15px;line-height:1}
+#bStats .pip{font-size:14px;line-height:1;color:#2c3b3d}
+#bStats .pip.on{color:var(--gold);text-shadow:0 0 6px rgba(217,189,126,.45)}
 #bPlq .pbars{display:flex;gap:8px;align-items:center}
 #bPlq .pbwrap{flex:1;display:flex;flex-direction:column;gap:2px;min-width:0}
+/* ═══ #94 point 6 · THE TWO POOLS ARE SECTIONED ═══════════════════════════
+   (User: "Health and armor you can add some section logic, as shield in arc
+   raiders (the more general pool the smaller each section). Both in the
+   bottom left corner and battlefield map.")
+
+   ONE UNBROKEN BAR CAN ONLY SAY A FRACTION. 60% of a ratkin and 60% of the
+   Fen-Mother are the same picture, and the question at the table is never
+   "what fraction" - it is "how many more blows". Sectioned, the width of one
+   section IS a blow's worth, so a big pool reads as many thin sections and a
+   small one as three fat ones, and "two left" is a thing you see from across
+   the board instead of a fraction you convert.
+
+   ⚠ `--seg` IS COMPUTED FROM THE MAX AND NEVER FROM THE CURRENT VALUE, so
+   the sections stay nailed to the bar while the pool drains. It is written
+   at one site, setBar(), which is the same door the width goes through - the
+   two cannot come apart. SEG() is deliberately sublinear and capped: a boss
+   at 120 would otherwise draw sixty hairlines.
+   ⚠ SCOPED TO #bPlq. `.bar` is the company screen's and the sheet's too. */
+#bPlq .bar{position:relative}
+#bPlq .bar::after{content:'';position:absolute;inset:0;pointer-events:none;
+  background:repeating-linear-gradient(90deg,
+    rgba(0,0,0,0) 0, rgba(0,0,0,0) calc(100%/var(--seg,4) - 1.5px),
+    rgba(7,11,12,.92) calc(100%/var(--seg,4) - 1.5px), rgba(7,11,12,.92) calc(100%/var(--seg,4)))}
 /* nerve is one coloured word (#91 point 10); the ladder is its hover */
 #bState{font-family:var(--mono);font-size:10px;letter-spacing:.02em;font-weight:600;
   border:1px solid #3a4f52;background:#16211f;padding:3px 6px;cursor:help;white-space:nowrap;flex:none}
@@ -184,7 +277,8 @@ button:disabled{cursor:not-allowed}
    clearance to the right-hand column, and the longest name in the file
    wraps to two clamped lines with nothing clipped. The hotkey keeps a
    corner nothing else may enter; the cooldown veils the whole face. */
-#bActions{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);z-index:40;
+/* #94 point 7: the order rail took bottom:8px, so the row sits on top of it */
+#bActions{position:absolute;bottom:48px;left:50%;transform:translateX(-50%);z-index:40;
   display:flex;flex-direction:row;align-items:flex-end;gap:5px}
 .act{width:60px;height:84px;background:linear-gradient(#1e2c2d,#141f20);border:1px solid #3a4f52;
   flex:none;position:relative;display:flex;flex-direction:column;align-items:center;
@@ -203,8 +297,22 @@ button:disabled{cursor:not-allowed}
   width:100%;box-sizing:border-box}
 .act.sel b{color:var(--t4)}
 .act.cool b{color:#c9a227}
-/* B's element: the damage range on the card's face (#91 point 1) */
+/* B's element: the damage range on the card's face (#91 point 1).
+   ── #94 point 8 · AND THE MOVE CARD PUTS ITS HEXES IN THE SAME SLOT ─────
+   (User: "Where is '1 move' skill - add ammount of hexes.") Every other card
+   in the row answers "what does this do to them" on its face; MOVE answered
+   it only on hover, so the one card you press most was the one card you had
+   to interrogate. Teal rather than gold, because it is not damage - and it
+   is the SAME moveBudget() call as the plaque's HEXES cell, so the two
+   cannot drift apart. */
 .act .adm{font-family:var(--mono);font-size:9px;color:var(--gold);line-height:1;margin-top:2px}
+/* ⛔ NOT `.adm.hex`. `.hex` IS THE BOARD'S OWN HEX BUTTON - width 37, HEIGHT
+   42, display:flex - and a card is a flex column, so the modifier silently
+   gave this one span a 42px box and squeezed the skill's NAME down to 3px.
+   Caught by measuring the card's children, not by reading the rule. This is
+   the specificity trap in README §6 wearing a different coat: a class name
+   that already belongs to something else. */
+.act .adm.stride{color:#8fb0aa}
 .act .cost{position:absolute;bottom:3px;left:0;right:0;text-align:center;
   font-size:8px;color:var(--gold);letter-spacing:.18em}
 .act .key{position:absolute;top:2px;left:2px;font-family:var(--mono);font-size:10px;
@@ -335,9 +443,49 @@ button:disabled{cursor:not-allowed}
 .coach .cok{align-self:flex-end;font-family:var(--display);font-size:11.5px;color:var(--g4);
             border:1px solid #4d3c22;background:#2a2114;padding:4px 16px;letter-spacing:.08em}
 .coach .cok:hover{background:#3a2b16;border-color:var(--g3)}
-/* statuses and auras, worn on the unit */
+/* ═══ #96 point 3 · STATUSES MOVE ONTO THE HEAD ══════════════════════════
+   (User: "status effect on the head of the character (if you haven`t done
+   it)".) They WERE done, and that is the finding: they were stacked down the
+   LEFT EDGE of the hex at 10px from top:11 downward, which is the busiest
+   strip on a token - the weapon badge, the formation marks and the sprite's
+   own left shoulder all live there - so a real feature read as an absent one.
+   ⚑ A BAND ABOVE THE HEAD IS THE ONLY EMPTY PLACE ON A 37px HEX, and the
+   things already up there own single points rather than the row: the crest
+   is at top:-2 dead centre, the mood face at top:-2 hard right. The bar sits
+   ABOVE both of them, at -13, in its own strip.
+   ⚠ Rows overlap by 10px and are painted top-to-bottom, so a badge up there
+   draws over the row behind - which is correct, because the row behind is
+   further away.
+   ⚠ AND IT CLEARS THE MOOD FACE BY MEASUREMENT, NOT BY EYE. The face sits at
+   top:-2 and its line box is ~11px, so it really occupies -2 to 9; the bar's
+   own box is 11px at top:-15, which is -15 to -4. Four glyphs at 10px with
+   1px gaps is 43px against a 37px hex, and the 6px it spills each side lands
+   on the corners the hexagon clip has already cut away. */
+.stbar{position:absolute;left:-6px;right:-6px;top:-15px;height:11px;display:flex;
+       justify-content:center;align-items:center;gap:1px;pointer-events:none}
+.stbar .stbadge{position:static;font-size:10px;line-height:1;font-family:var(--body);
+       text-shadow:0 0 3px #000,0 0 3px #000,0 1px 2px #000;pointer-events:auto}
+/* the gilled mark keeps its own corner - it is a body, not a status */
 .stbadge{position:absolute;font-size:10px;line-height:1;font-family:var(--body);
          text-shadow:0 0 3px #000,0 0 3px #000}
+/* ═══ #96 point 1 · THE ONE THE CURSOR IS ON, LIT ON THE BOARD ═══════════
+   (User: "when i hower on character into character order highlight this
+   character on the battle screen".) The rail is faces with no names (#91),
+   which is right - and it left the rail unable to answer the one question a
+   face raises, which is WHICH of the eleven bodies out there that is.
+   ⚠ THE RING IS A ::before ON .hedge AND NOT A box-shadow. `.hedge` carries
+   the hexagon clip-path, so a shadow outside it is clipped away entirely and
+   a shadow inside it is a rectangle with its corners cut off; and its
+   `background` is written INLINE by render() from `edge`, so a class can
+   never win against it. A pseudo-element under its own clip-path is the one
+   layer here that is both hexagonal and free. */
+.hex.spot .hedge::before{content:'';position:absolute;left:0;top:0;right:0;bottom:0;
+  clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);
+  background:rgba(217,189,126,.32);box-shadow:inset 0 0 0 2px rgba(240,230,192,.8)}
+/* and the body itself, because the ground is under the sprite and the sprite
+   is what the player is looking for. !important beats .usp.now's animation. */
+.hex.spot img.usp{filter:drop-shadow(0 0 4px #f7efd0) drop-shadow(0 0 11px #d9bd7e)!important}
+#bTop .ord:hover{background:#33494a;cursor:pointer}
 /* formation state, worn on the unit */
 .fbadge{position:absolute;bottom:1px;left:2px;font-size:11px;line-height:1;color:#c9a227;
         text-shadow:0 0 3px #000,0 0 3px #000}
@@ -351,10 +499,26 @@ button:disabled{cursor:not-allowed}
         font-family:var(--body);text-shadow:0 0 3px #000,0 0 3px #000,0 1px 2px #000}
 /* what it costs. It is the line that answers "can I afford this", so it is
    read type now and not a watermark. #91: it is the popover's receipt line. */
-/* ── THE BATTLE LOG (#91 point 11): a floating box, bottom-right, collapsed
-   to the last lines. The header is the accordion, and COMBAT LOGIC lives on
-   it as the ? chip. Sits above #reactBar, which keeps the corner. ── */
-#bLogWrap{position:absolute;right:8px;bottom:44px;width:308px;z-index:41;
+/* ── THE BATTLE LOG (#91 point 11): a floating box, collapsed to the last
+   lines. The header is the accordion, and COMBAT LOGIC lives on it as the ?
+   chip.
+   ── #94 points 1 and 12 · IT MOVES TO THE TOP LEFT AND STOPS HIDING ─────
+   (User: "Battle log - top left", and "по умолчанию батл лог свернутый
+   настолько, что в нем не видно деталей".) Both are the same complaint from
+   two ends. It sat bottom-right in the corner the eye is already spending on
+   the cards and END TURN, and it was 46px tall - three lines, of which the
+   third was cut in half, in a game where one exchange is two lines and one
+   round of a six-body fight is six. So it said just enough to prove it was
+   saying something. 92px is six whole lines: a round.
+   ⚠ And the corner it vacates is the one END TURN needed to get smaller in.
+   ── #95 · IT STARTS SHUT, AND THE RAIL TAKES THE EDGE BESIDE IT ─────────
+   (User: "Combat log fully closed at the begining of the fight.") #94 read
+   the complaint as "not deep enough" and made it six lines; the answer was
+   that a log you did not ask for is furniture whatever depth it is. Header
+   only at the start of every fight, and one click gives the whole 300px.
+   ⚠ `left:48px`, NOT 8: the order rail is the left EDGE now (#95 point 2)
+   and the two must never be able to overlap, at any log height. ── */
+#bLogWrap{position:absolute;left:48px;top:8px;width:308px;z-index:41;
   background:rgba(13,19,20,.93);border:1px solid #33474a;
   display:flex;flex-direction:column}
 #bLogHead{display:flex;align-items:center;gap:6px;padding:4px 8px;cursor:pointer;
@@ -362,8 +526,10 @@ button:disabled{cursor:not-allowed}
 #bLogHead>.lgcar{font-size:8px;color:#8a9a5c;transition:transform .12s}
 #bLogWrap.open #bLogHead>.lgcar{transform:rotate(90deg)}
 #bLogRound{font-family:var(--mono);font-size:8px;color:#5d7472;letter-spacing:.1em;margin-left:auto}
-#bLog{height:46px;overflow-y:auto;padding:2px 8px 4px;display:flex;flex-direction:column;gap:1px}
-#bLogWrap.open #bLog{height:330px}
+/* #95 point 1 - shut is a real zero, not a peek. The header alone is the
+   resting state and `openLog(false)` re-asserts it at the top of every fight. */
+#bLog{height:0;overflow:hidden;padding:0 8px;display:flex;flex-direction:column;gap:1px}
+#bLogWrap.open #bLog{height:300px;overflow-y:auto;padding:3px 8px 4px}
 #bLog::-webkit-scrollbar{width:6px}
 #bLog::-webkit-scrollbar-thumb{background:#35494c}
 #bLog .ll{font-size:10.5px;line-height:1.3;color:#8b9a99;font-family:var(--body);
@@ -375,16 +541,23 @@ button:disabled{cursor:not-allowed}
              margin-top:3px;border-left-color:transparent}
 /* #bTip is gone (#91): its act-note job moved to the card popover, and its
    ticker job was always the log's. say() already guards the missing box. */
-/* END TURN and UNDO, the right-hand column above the log. Geometry measured
-   in the bench: the log box is 79px tall collapsed, so END sits at 126. */
-#bEnd{position:absolute;right:8px;bottom:126px;width:308px;height:40px;z-index:40;
-  background:var(--blood);border:1px solid var(--blood-lit);
+/* ── #94 point 2 · END TURN, SMALLER AND QUIETER ─────────────────────────
+   (User: "End turn a bit smaller and maybe not that bright.") It was 308x40
+   in full blood - the largest and the loudest object on a painted
+   battlefield, and it is the one control the player presses without looking.
+   190x34 in a dark blood that lights to the full colour under the hand: the
+   press does not get any harder to find, the shouting stops. The log left
+   this corner in the same edit, which is what paid for the room.
+   Geometry measured in shots/94_css_bench.html. */
+#bEnd{position:absolute;right:8px;bottom:44px;width:190px;height:34px;z-index:40;
+  background:#33201f;border:1px solid #6d2f2f;
   display:flex;align-items:center;justify-content:center;font-family:var(--display);
-  font-weight:700;font-size:14px;color:#eae7de;letter-spacing:.1em}
-#bEnd:hover{background:#93292c}
-#bEnd:disabled{background:#3a2426;border-color:#4a2e30;color:#7d6f6c}
-/* #91 point 12 - shown only while the last move can still be taken back */
-#bUndo{position:absolute;right:8px;bottom:170px;width:308px;height:26px;z-index:40;
+  font-weight:700;font-size:12.5px;color:#cbb6b1;letter-spacing:.14em}
+#bEnd:hover{background:var(--blood);border-color:var(--blood-lit);color:#eae7de}
+#bEnd:disabled{background:#20191a;border-color:#3a2b2c;color:#6b6260}
+/* #91 point 12 - shown only while the last move can still be taken back.
+   #95: one slot higher, because ⏱ ⚑ took bottom:86 above END TURN. */
+#bUndo{position:absolute;right:8px;bottom:120px;width:190px;height:24px;z-index:40;
   display:none;align-items:center;justify-content:center;gap:6px;
   background:#1f2d2e;border:1px solid #4d6b6c;font-family:var(--mono);
   font-size:10px;letter-spacing:.12em;color:#9fb3ae}
@@ -395,7 +568,9 @@ button:disabled{cursor:not-allowed}
 #bLegend>.lbl{display:flex;align-items:center;justify-content:center;cursor:pointer;
   border:1px solid #35494c;background:#16211f;width:16px;height:14px;color:#8fa5a2;font-size:9px}
 #bLegend>.lbl:hover{color:#c9c6bb;border-color:#4d6b6c}
-#bLegend .lgbody{display:none;position:absolute;bottom:22px;right:-9px;width:300px;
+/* ⚠ #94: IT OPENS DOWNWARD NOW. The log is at the TOP of the screen, so a
+   body anchored to bottom:22px hangs off the top edge of the stage. */
+#bLegend .lgbody{display:none;position:absolute;top:22px;right:-9px;width:300px;
   background:rgba(12,17,19,.96);border:1px solid #33474a;padding:8px 10px;
   flex-direction:column;gap:3px;z-index:60}
 #bLegend.open .lgbody{display:flex}
@@ -403,6 +578,14 @@ button:disabled{cursor:not-allowed}
 #bLegend .sw{width:12px;height:12px;flex:none}
 /* the whisper stays clear of the card row while a battle is up */
 body:has(#battle.on) .whisp{bottom:138px}
+/* ⚠ #95 point 7, THE SECOND COLLISION AND NOBODY HAD REPORTED IT: ♪ sound
+   has lived at right:10 bottom:44 since long before there was a battle
+   screen, and #94 moved END TURN to exactly that spot. It was sitting ON the
+   button, which is why the sweep now measures the GLOBAL chrome (⚙ TEST, ♪,
+   ? RULES) and not only the battle's own boxes - both of this entry's
+   overlaps were between a battle box and a piece of furniture older than the
+   screen. On the battle screen it joins the ⏱ ⚑ row above END TURN. */
+body:has(#battle.on) #audioBtn{bottom:86px;right:110px;font-size:11px;padding:3px 8px}
 /* ⚠ #66 — overflow:hidden is what makes the camera safe. Past FULL the board
    is larger than the field, and without this it would spill over the chrome.
    #bRead already clamps itself inside the field (placeRead).
@@ -424,8 +607,16 @@ body:has(#battle.on) .whisp{bottom:138px}
 #bTerrain{position:absolute;left:0;top:0;pointer-events:none;width:600px;height:440px}
 /* ═══ #66 — the three stops. A state, not a number: no slider, no percentage.
    Top-right because bottom-right belongs to #53's reaction bar. ═══ */
-/* #91: shifted left so the AUTO/PACE/WITHDRAW icons keep the corner */
-#bZoom{position:absolute;right:112px;top:8px;z-index:9;display:flex}
+/* #91 shifted this left so the AUTO/PACE/WITHDRAW icons could keep the
+   corner. #94 sent those icons down to END TURN and moved this back to
+   right:8px - straight underneath ⚙ TEST, which has lived at right:10 top:10
+   since long before the battle screen was full-bleed and which #94 never
+   looked at because it is global chrome rather than battle chrome.
+   ⚠ #95 point 7: THE COLLISION WAS REAL AND IT ATE `CLOSE`. ⚙ TEST measures
+   77px, not the 62 it looks, so the camera bar sits at right:96 and clears
+   it by 9. Anything else that wants this corner has to move TEST, not
+   squeeze past it. */
+#bZoom{position:absolute;right:96px;top:8px;z-index:9;display:flex}
 #bZoom b{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;padding:5px 8px;
   background:rgba(12,17,19,.92);border:1px solid #2c3d3f;border-right:none;
   color:#6b8280;font-weight:400;cursor:pointer;user-select:none}
@@ -580,8 +771,17 @@ body:has(#battle.on) .whisp{bottom:138px}
   transform:scaleX(var(--flip,1))}
 .usp.routed{opacity:.55;transform:rotate(-8deg) scaleX(var(--flip,1))}
 .ubars{position:absolute;left:50%;transform:translateX(-50%);bottom:-6px;width:26px}
-.ubars div{height:3px;background:#2a1e1f;border:1px solid rgba(0,0,0,.6)}
+.ubars div{height:3px;background:#2a1e1f;border:1px solid rgba(0,0,0,.6);position:relative}
 .ubars div i{display:block;height:100%}
+/* #94 point 6, the board's half of it: the SAME rule at token scale, so the
+   bar under a body and the bar on the plaque are obviously one reading. The
+   dividers are 1px here and 1.5px there - at 26px wide, 1.5px of divider in
+   a 4px section is more divider than pool. `--seg` is set per unit in
+   render(), off the same SEG() the plaque uses. */
+.ubars div::after{content:'';position:absolute;inset:0;pointer-events:none;
+  background:repeating-linear-gradient(90deg,
+    rgba(0,0,0,0) 0, rgba(0,0,0,0) calc(100%/var(--seg,4) - 1px),
+    rgba(6,9,10,.9) calc(100%/var(--seg,4) - 1px), rgba(6,9,10,.9) calc(100%/var(--seg,4)))}
 /* ═══ THE ARMOUR BAR SITS ON TOP OF THE HEALTH BAR ══════════════════════
    (User's request.) Armour and hitpoints are independent pools in this game,
    Battle Brothers style, and until now only ONE of them was on the token —
@@ -1387,6 +1587,12 @@ a.popt.sendit{display:block;text-decoration:none}
   font-family:var(--mono);font-size:13px;color:#8a7449;background:rgba(16,12,6,.8);
   border:1px solid #3d2f1d;padding:3px 9px}
 #helpBtn:hover{color:var(--g4)}
+/* #95 point 9 - the same button, sitting as the log's footer on the battle
+   screen. Static, not absolute, so it rides the box whatever height it is. */
+#helpBtn.inlog{position:static;left:auto;bottom:auto;background:none;border:none;
+  border-top:1px solid #223335;font-size:10px;letter-spacing:.1em;color:#7d8f8c;
+  padding:4px 8px;text-align:left;width:100%;box-sizing:border-box}
+#helpBtn.inlog:hover{color:var(--t4);background:#1a2729}
 /* only on the world screen: a menu you can only reach by reloading the page is
    half a menu, and mid-battle is not a coherent moment to save at */
 #menuBtn{position:absolute;left:86px;bottom:10px;z-index:20;display:none;
@@ -1466,9 +1672,14 @@ a.popt.sendit{display:block;text-decoration:none}
       <div class="pcol"><div id="bName"></div><div id="bClass"></div><div id="bTrait"></div></div>
     </div>
     <div id="bStats">
-      <div class="pcell"><span class="pnum" id="bAPnum">2</span><span class="plbl" id="bAPtxt">OF 2<br>ACTIONS</span></div>
-      <div class="pcell"><span class="pnum" id="bStepNum">4</span><span class="plbl" id="bStepTxt">HEXES<br>THIS MOVE</span></div>
-      <div class="pcell"><span class="pnum" id="bHitN">—</span><span class="plbl">CHANCE<br>TO HIT</span></div>
+      <!-- #94 point 4: crystals, not a numeral. #bAPnum holds the pips now. -->
+      <div class="pcell"><span class="pips" id="bAPnum"></span><span class="plbl" id="bAPtxt">ACTIONS</span></div>
+      <!-- #95 point 4: the HEXES cell is gone. The MOVE card's face carries
+           it, off the same moveBudget() call, and one fact wants one reader.
+           #94 point 5: "61% hit" and "15% dodge" - the dodge was the only one
+           missing its unit, and CHANCE TO HIT was the only label spending two
+           lines on what TO HIT says in one. -->
+      <div class="pcell"><span class="pnum" id="bHitN">—</span><span class="plbl">TO HIT</span></div>
       <div class="pcell"><span class="pnum" id="bDodgeN">—</span><span class="plbl">DODGE</span></div>
     </div>
     <div class="pbars">
@@ -1677,6 +1888,26 @@ const show=i=>{
   if(typeof syncTest==='function')syncTest();
   /* a "? RULES" button on the rules screen is a control that does nothing */
   const hb=$('helpBtn');if(hb)hb.style.display=(i==='help')?'none':'';
+  /* ═══ #95 point 9 - ? RULES WAS UNDER THE PLAQUE, WHICH IS TO SAY GONE ═══
+     (User: "you hided the button 'how to play'. Maybe it is nice to put it
+     under the backlog, just in case." - the battle log.) Nobody hid it: it
+     has lived at left:10 bottom:10 since before the battle screen was
+     full-bleed, and #91 put the plaque on exactly that corner at z-index 40
+     against its 20. It was covered, not moved, which is the worst kind of
+     missing - the control still exists, still works, and cannot be found.
+
+     ⚑ IT IS REPARENTED RATHER THAN REPOSITIONED, and that is the whole
+     trick: the log's height changes (shut, or 300px open), so anything
+     placed under it by coordinate is right in one state and wrong in the
+     other. Inside the box it is a footer and follows it for free.
+     ⚠ It goes home to #stage on every other screen, because bottom-left is
+     right everywhere the plaque does not exist. */
+  if(hb){
+    const inLog=(i==='battle');
+    const home=$('stage'),box=$('bLogWrap');
+    if(inLog&&box&&hb.parentNode!==box){box.appendChild(hb);hb.classList.add('inlog');}
+    else if(!inLog&&home&&hb.parentNode!==home){home.appendChild(hb);hb.classList.remove('inlog');}
+  }
   /* the way back to the menu, offered only where leaving is a coherent moment:
      standing on the map. Not mid-battle — a battle is regenerated, never
      restored, so walking out of one would silently discard it. */
@@ -6098,6 +6329,11 @@ function startBattle(kind){
       if(!all&&x.side!==k.side)return;
       if(udist(k,x)<=2)mor(x,TRAITS[k.trait].aura,'');});});
   if($('bLog'))$('bLog').innerHTML='';
+  /* #95 point 1 - and it comes up SHUT. A log left open from the last fight
+     is 300px of the new board covered before a single blow is struck, and
+     the player never asked for it: opening it is the ask, and it lasts
+     exactly as long as the fight it was opened in. */
+  if($('bLogWrap'))$('bLogWrap').classList.remove('open');
   /* ⚠ `coach('fight')` WAS HERE AND IS GONE, 2026-08-01 (user: "I prefer
      tutorial as capitan says, rather than in unit card"). It was a card with a
      GOT IT button, shown once ever, carrying four rules at the moment the
@@ -6872,6 +7108,105 @@ function pathTo(rm,c,r){
   const p=[];let k=K(c,r);
   while(rm.prev[k]){p.unshift(k.split(',').map(Number));k=K(rm.prev[k][0],rm.prev[k][1]);}
   return p;
+}
+/* ═══ #94 point 9 - A BODY CROSSES THE GROUND, IT DOES NOT ARRIVE ═════════
+   (User: "Movement show tile by tile - so I see how unit moves.")
+
+   Until now every walk in the game was a teleport between two renders. On
+   your own turn that is merely flat; on THEIRS it deletes information you
+   are entitled to - which way something came, whether it went round the
+   boulder or through the water, and therefore where it will be next round.
+   #87 already fixed this for the three acts that really do teleport (SINK
+   BELOW, DISENGAGE, SNAP-AND-AWAY get the GHOST primitive) and the great
+   beast already walked her head hex by hex in the DATA so her tail could
+   follow. Ordinary movement was the one that still blinked.
+
+   ⚑ ONE DOOR, AND IT IS render(). Every mover in the file already ends on a
+   render(), so `walkTo` writes the hexes AND parks the picture, and render()
+   plays whatever is parked as its last act. That is why this needed no
+   change to either AI brain's control flow: aiTurn, autoStep, the pet, the
+   fallback, the kite and the player's own click all inherit it by having
+   called walkTo instead of assigning two fields.
+
+   ⚠ AND IT IS PURE DECORATION, DELIBERATELY. The hexes are committed BEFORE
+   a single frame is drawn, so nothing waits on it and no timer of its own
+   carries a B.busy release - which is the exact shape of B02, the AUTO
+   deadlock. If every timer below were dropped on the floor the worst that
+   happens is a token stays hidden for one render.
+   ⚠ Nothing here may use requestAnimationFrame: it never fires in the hidden
+   preview pane, and a walk that never lands would leave a body invisible. */
+const WALK_HEX=95, WALK_CAP=300;      /* per hex, and the whole walk's ceiling */
+/* record the route without moving anybody - the great beast writes her own
+   hexes so the tail keeps up, and only wants the picture */
+function walkMark(u,from,path){
+  if(!B||!path||!path.length)return;
+  if(from[0]===u.col&&from[1]===u.row)return;
+  B.walk={u:u,from:from,path:path};
+}
+/* the one call every mover makes instead of writing u.col / u.row */
+function walkTo(u,c,r,rm){
+  const from=[u.col,u.row];
+  let path=[];
+  try{
+    /* the mover's OWN map when it has one, so the drawn route is the route
+       the rules costed; a fresh unbudgeted map only as the fallback */
+    if(rm&&rm.prev&&rm.prev[K(c,r)])path=pathTo(rm,c,r);
+    if(!path.length)path=pathTo(reachMap(u,999),c,r);
+  }catch(e){path=[];}
+  u.col=c;u.row=r;
+  walkMark(u,from,path.length?path:[[c,r]]);
+}
+/* the picture. Called by render(), once, at the end, on the board it just
+   drew - so every hex it measures exists and is at the current camera stop. */
+function walkFx(u,from,path){
+  const g=$('bGrid'),L=fxLayer(),f=$('bField');
+  if(!g||!L||!f||!path||!path.length)return;
+  if(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  const hexAt=(c,r)=>g.querySelector('[data-k="'+K(c,r)+'"]');
+  const dest=hexAt(u.col,u.row);
+  const s=dest&&dest.querySelector('img.usp');
+  if(!s)return;
+  /* the same anchor ghostFx uses, for the same reason: it is the one that
+     puts a loose sprite exactly where a standing one is */
+  const pt=(c,r)=>{const h=hexAt(c,r);if(!h)return null;
+    const p=relPt(h,f);return{x:p.x+p.w/2,y:p.y+p.h/2};};
+  const start=pt(from[0],from[1]);
+  const pts=path.map(p=>pt(p[0],p[1]));
+  if(!start||pts.some(p=>!p))return;
+  /* long walks do not take proportionally longer: every tile is shown, the
+     step simply gets quicker, so a six-hex stride never outstays the turn */
+  const total=Math.min(paced(WALK_CAP),pts.length*paced(WALK_HEX));
+  const step=Math.max(40,Math.round(total/pts.length));
+  const w=s.width||26,h=s.height||34;
+  const walker=s.cloneNode(true);
+  walker.className='usp';
+  walker.style.cssText='position:absolute;pointer-events:none;z-index:6;'+
+    'image-rendering:pixelated;'+
+    'margin:'+(-Math.round(hexSpan()*0.62))+'px 0 0 '+(-Math.round(w/2))+'px;'+
+    'width:'+w+'px;height:'+h+'px;left:'+start.x+'px;top:'+start.y+'px;'+
+    'transition:left '+step+'ms linear, top '+step+'ms linear';
+  /* ⚠ --flip survives cssText being overwritten. A mirrored body that
+     un-mirrors for the length of its walk is the bug the .usp note warns of. */
+  const flip=s.style.getPropertyValue('--flip');
+  if(flip)walker.style.setProperty('--flip',flip);
+  L.appendChild(walker);
+  void walker.offsetWidth;              /* lay it down at `start` first */
+  s.style.visibility='hidden';
+  let i=0;
+  const done=()=>{walker.remove();
+    /* the board may have been rebuilt under us; that render drew a fresh
+       visible token and this one is already gone */
+    if(s.isConnected)s.style.visibility='';};
+  const hop=()=>{
+    if(i>=pts.length){done();return;}
+    const p=pts[i++];
+    walker.style.left=p.x+'px';walker.style.top=p.y+'px';
+    setTimeout(hop,step);
+  };
+  hop();
+  /* a belt-and-braces sweep: whatever happens to the chain above, the clone
+     goes and the body comes back */
+  setTimeout(done,total+step+400);
 }
 /* ═══ WALKING DISTANCE, NOT AS THE CROW FLIES ═════════════════════════════
    Both AI brains close the ground with the same fallback: "the reachable hex
@@ -8003,7 +8338,7 @@ function beginTurn(){
         const d=hdist(p,[cap.col,cap.row]);
         const sc=Math.abs(d-1)*10+rm.dist[k];   // wants to stand right beside him
         if(sc<bs){bs=sc;best=p;}});
-      if(best){u.col=best[0];u.row=best[1];faceToward(u,cap.col,cap.row);}
+      if(best){walkTo(u,best[0],best[1],rm);faceToward(u,cap.col,cap.row);}
       /* morale from the back — small, but it reaches whoever is near the pet.
          NOTE: `cap` here is the battle unit, which has no .pet field — that
          lives on the party record, so look it up there. */
@@ -8506,6 +8841,17 @@ function canUse(u,a){
   if(u.state==='routed')return false;
   /* the ambition has turned into something else and it is not stepping back */
   if(a.k==='dis'&&raging(u))return false;
+  /* ═══ #94 point 1 - THERE IS NOTHING TO DISENGAGE FROM ═══════════════════
+     (User: "Show disengage only when engaged.") DISENGAGE buys exactly one
+     thing: a step that does not pay a parting swing. With nobody engaging,
+     that step is a MOVE, one hex, for the same action - so the card was
+     offering a worse version of the card beside it, on every sheet in every
+     fight, to bodies who have never been touched.
+     ⚠ IT GOES IN canUse AND NOT IN THE RENDERER. This is the one door both
+     AI brains, AUTO, the hotkeys and the click already ask, so the refusal
+     is inherited rather than copied - and #94's card filter can then be a
+     pure question about what is usable, with nothing to keep in step. */
+  if(a.k==='dis'&&!engaged(u))return false;
   /* transfixed: you can swing, you can cast, you cannot make your feet work */
   if((a.move||a.k==='dis')&&u.rooted>0)return false;
   /* ONE real spell a turn (the mage gets a second, at half). EMBER is a
@@ -8533,6 +8879,17 @@ function canUse(u,a){
   if(onCool(u,a))return false;
   return true;
 }
+/* ═══ #94 point 1 - WHICH ACTS DO NOT GET A CARD AT ALL ═══════════════════
+   Distinct from `canUse`, deliberately. A card that is present and greyed
+   says "you could do this, but not right now", which is true of a cooldown
+   and of an action you cannot afford, and it is teaching. DISENGAGE with
+   nobody engaging is not that: there is no state of this turn in which it
+   becomes the right button, so a greyed card would be a permanent piece of
+   furniture that never lights. It leaves the row and comes back the moment
+   somebody takes hold of you, which is itself the lesson.
+   ⛔ ONE MEMBER, AND KEEP IT THAT WAY. Every act hidden here is an act a
+   player cannot discover by looking at the screen. */
+function hideAct(u,a){return a.k==='dis'&&!engaged(u);}
 function spend(u,a){
   /* #91 - any paid act closes the undo window. spend() is the one door every
      paid act passes through (#87's lesson), so this is the ONE line that
@@ -9224,7 +9581,9 @@ function clickHex(c,r){
     B.undo=(clean&&!u.dead)?snap:null;
     if(!u.dead){
       faceToward(u,c,r);                      /* you look where you walked */
-      u.col=c;u.row=r;
+      /* #94 point 9 - B.reach IS the map this move was costed against, so
+         the route the player watches is the route the rules charged for */
+      walkTo(u,c,r,B.reach);
       /* ...then turn to the nearest threat, so nobody is caught facing a wall */
       const near=alive().filter(x=>x.side!==u.side)
         .sort((p,q)=>hdist([u.col,u.row],[p.col,p.row])-hdist([u.col,u.row],[q.col,q.row]))[0];
@@ -9742,7 +10101,7 @@ function aiTurn(u){
       const edgy=Math.min(p[1],ROWS-1-p[1])<=1?3:0;
       const sc=away*10+edgy-rm.dist[k]*0.5;
       if(sc>bs){bs=sc;best=p;}});
-    if(best){u.col=best[0];u.row=best[1];faceToward(u,T[0].col,T[0].row);}
+    if(best){walkTo(u,best[0],best[1],rm);faceToward(u,T[0].col,T[0].row);}
     render();B.busy=false;later(nextTurn,260);
     return;
   }
@@ -9943,7 +10302,7 @@ function aiTurn(u){
           const p=k.split(',').map(Number);
           const sc=hdist(p,u.post)*10+rm.dist[k];
           if(sc<bs){bs=sc;bp=p;}});
-        if(bp&&hdist(bp,u.post)<now){u.col=bp[0];u.row=bp[1];}
+        if(bp&&hdist(bp,u.post)<now)walkTo(u,bp[0],bp[1],rm);
       }
       const nn=T.slice().sort((x,y)=>udist(u,x)-udist(u,y))[0];
       if(nn)faceToward(u,nn.col,nn.row);
@@ -10013,7 +10372,7 @@ function aiTurn(u){
       u.fellBack=(u.fellBack||0)+1;
       if(u.fellBack===FALLBACKS)say(u.name+' has run out of ground to give.');
       spend(u,mv);u.moved=true;u.movesUsed=(u.movesUsed||0)+1;
-      u.col=bp[0];u.row=bp[1];
+      walkTo(u,bp[0],bp[1],rm);
       const nn=T.slice().sort((x,y)=>udist(u,x)-udist(u,y))[0];
       if(nn)faceToward(u,nn.col,nn.row);
       B.busy=false;render();later(nextTurn,240);return true;
@@ -10177,11 +10536,15 @@ function aiTurn(u){
                tail are always touching — never teleport the head and leave
                the body behind. */
             const path=pathTo(rm,best[0],best[1]);
+            const wfrom=[u.col,u.row];
             path.forEach(hop=>{                 /* NOT named `step` — that shadows the turn loop above */
               u.tail=[u.col,u.row];
               u.col=hop[0];u.row=hop[1];
             });
-          }else{u.col=best[0];u.row=best[1];}
+            /* #94 point 9 - she already wrote her own hexes above; this only
+               hands render() the picture. walkTo would re-walk them. */
+            walkMark(u,wfrom,path);
+          }else{walkTo(u,best[0],best[1],rm);}
           const nn=alive().filter(x=>x.side!==u.side)
             .sort((p,q)=>hdist([u.col,u.row],[p.col,p.row])-hdist([u.col,u.row],[q.col,q.row]))[0];
           if(nn)faceToward(u,nn.col,nn.row);
@@ -11264,7 +11627,19 @@ const hexCentre=(c,r)=>({x:c*HEXW+(r&1?HEXOFF:0)+19, y:r*HEXH+21});
    between at the first z that pans on both axes. Every stop shows the same
    or more board than its old self AND draws every body bigger - the x1.306
    gain the approved mockups promised is exactly FULL's 1.30 to 1.73. */
-const CAMS=[{k:'full',n:'FULL',z:1.73},{k:'field',n:'FIELD',z:2.20},{k:'close',n:'CLOSE',z:2.50}];
+/* ── #95 point 8 · FULL GETS A MARGIN ────────────────────────────────────
+   (User: "On the full map scale a little bit more space from top and buttom -
+   so if the charecter maximum up i can steel see it.")
+   1.73 was "the whole board exactly fits", height-exact - and exact was the
+   bug. A body is drawn BOTTOM-ANCHORED in its hex and a human sprite is 38px
+   in a 37px box, so it stands ~8px proud of its own hex; at 1.73 that is 14px
+   of head above the top row, and #bField is overflow:hidden. So the one stop
+   whose promise is "you can see everything" was cropping the skulls off the
+   top rank and the boots off the bottom one.
+   1.58 leaves 416*(1.73-1.58)/2 ≈ 31px clear at each end, which covers the
+   overhang twice over. It is still 1.22x the pre-#91 FULL, so the stop is
+   nowhere near the "control with no job" it was rescued from. */
+const CAMS=[{k:'full',n:'FULL',z:1.58},{k:'field',n:'FIELD',z:2.20},{k:'close',n:'CLOSE',z:2.50}];
 /* the stop is a SETTING — it outlives the run and the launch, like the audio
    toggle, and is deliberately not part of the save (see the state bands) */
 const CAM={i:1,tx:undefined,ty:undefined,z:0};
@@ -11273,6 +11648,10 @@ try{const j=CAMS.findIndex(c=>c.k===localStorage.getItem('gt_cam'));if(j>=0)CAM.
    Without it the board would slide under the cursor on every step of a walk;
    with it the camera only reacts when the subject is genuinely near an edge. */
 const CAM_EDGE=.30;
+/* #95 point 8 - how much of FULL's slack goes above the board rather than
+   below it. See the note in camApply: the top is the only end that can crop
+   a body AND the only end with chrome floating over it. */
+const CAM_TOPBIAS=18;
 /* WHO THE CAMERA IS FRAMING: whoever is acting. One rule for both sides — if
    it is yours you are about to act with it, if it is theirs you watch it act. */
 function camSubject(){
@@ -11303,7 +11682,14 @@ function camApply(snap){
   }
   /* clamped to the board, so the view never shows off-board emptiness */
   tx=panX?Math.max(VW-w,Math.min(0,VW/2-z*p.x)):(VW-w)/2;
-  ty=panY?Math.max(VH-h,Math.min(0,VH/2-z*p.y)):(VH-h)/2;
+  /* #95 point 8 - THE SLACK IS NOT SPLIT EVENLY, because the two ends are
+     not symmetrical. A sprite is bottom-anchored in its hex and stands ~8
+     board-pixels proud of it, so only the TOP end can crop a body - and only
+     the top end has the counts capsule floating over it. 18px of the 31 goes
+     upward, which puts a top-row head at y36 against a capsule that ends at
+     34. Applies to FULL alone: the other two stops pan, and a panning camera
+     is clamped to the board on purpose. */
+  ty=panY?Math.max(VH-h,Math.min(0,VH/2-z*p.y)):(VH-h)/2+CAM_TOPBIAS;
   const first=CAM.tx===undefined;
   CAM.tx=tx;CAM.ty=ty;CAM.z=z;
   /* the very first placement must not GLIDE in from the top-left corner of an
@@ -11851,15 +12237,27 @@ function render(){
        THE PET TOO (playtest #5's recurring TypeError: the cub is side 'you',
        not an ally, and has no class either). */
     const mine=u.side==='you'&&!u.ally&&!u.pet;
-    $('bRound').textContent='ROUND '+roman(B.round)+' · '+
-      (mine?(u.leader?'YOUR TURN':u.name.split(' ')[0].toUpperCase()+'’S TURN')
-        :u.ally?'THEY MOVE WITH YOU':'THEIR TURN');
-    $('bName').innerHTML=(u.leader||u.captain?'⚑ ':'')+youName(u)+
-      (u.nick?'<br><span style="font-size:10px;color:var(--g3);font-style:italic">“'+u.nick+'”</span>':'');
+    /* ── #95 point 3 · THE CAPSULE SAYS THE ROUND AND NOTHING ELSE ────────
+       (User: "from the top delte 'characters name + turn' - you already see
+       this from the main battle screen.") He is right, and the reason is
+       #95's own point 2: with the order rail down the left edge, the gold
+       ring IS whose turn it is, the plaque under it is who they are, and the
+       card row appearing or not is whether it is yours. Three answers to one
+       question, and the one at the top of the screen was the least useful of
+       them - it was reading a name off a panel the player is already looking
+       at. Only the round is left, which nothing else says. */
+    $('bRound').textContent='ROUND '+roman(B.round);
+    /* #94 point 3 - the nickname rides on the name's line now. `.nick`
+       ellipsises rather than wraps: a nickname that costs a second line is
+       precisely the thing this change deletes. */
+    $('bName').innerHTML='<span class="nm">'+(u.leader||u.captain?'⚑ ':'')+youName(u)+'</span>'+
+      (u.nick?'<span class="nick">“'+u.nick+'”</span>':'');
     /* CLASSES ARE A HUMAN IDEA. A wyrm does not have a profession — it has a
        BESTIARY entry, which is a different register and reads differently on
        purpose. Monsters get their kind and their nature, never a class. */
-    $('bClass').textContent=mine?(cIcon(u.cls)+' '+CLASSES[u.cls].n+' · LEVEL '+u.level+
+    /* #95 point 10 - "Lv 1", not "LEVEL 1". The word was the longest thing
+       on a line that has to hold a class, a level and a race inside 194px. */
+    $('bClass').textContent=mine?(cIcon(u.cls)+' '+CLASSES[u.cls].n+' · Lv '+u.level+
         ' · '+rIcon(u.race)+' '+u.race):
       u.pet?'♥ THE COMPANY’S — IT FOLLOWS THE CAPTAIN':
       u.ally?'⚔ FIGHTING ON YOUR SIDE — NOT YOURS TO COMMAND':
@@ -11897,16 +12295,31 @@ function render(){
       if(src)drawArt($('bPortrait'),src);
       else bust($('bPortrait'),u.noFace?'unknown':'ratkin',u.caster);
     }
-    $('bAPnum').textContent=u.actions;$('bAPtxt').innerHTML='OF '+u.actionsMax+'<br>ACTIONS';
+    /* #94 point 4 - the crystals. Spent ones stay on the panel, dark, so the
+       price of what was just done is still readable for the rest of the turn;
+       the numeral and the "OF n" both left, because the row already says both. */
+    $('bAPnum').innerHTML=apPips(u.actions,u.actionsMax);
+    $('bAPnum').title=u.actions+' of '+u.actionsMax+' actions left this turn';
+    $('bAPtxt').textContent='ACTIONS';
     /* ⚑ THE OTHER HALF OF THE TURN, AND IT IS `moveBudget` - the SAME call
        the MOVE button, the reach preview, aiTurn and autoStep all make. So
        the loud number at the top of the panel cannot drift from the hexes
        the board is about to light up, and it teaches its own rules by
        changing in front of you: a second move in one turn is a hex shorter,
        water and an open bloom take more off, crippled halves it. */
-    $('bStepNum').textContent=moveBudget(u);
-    setBar('bArm','bArmN',u.armour,u.armourMax||1);
-    setBar('bHp','bHpN',u.hp,u.hpMax);
+    /* #95 point 4 - the plaque's HEXES cell is gone; the MOVE card's face is
+       the one reader. The id may be absent, so this stays guarded rather
+       than being deleted: `moveBudget` is still THE call, and if a later
+       session wants the number back on the panel it plugs in here. */
+    if($('bStepNum'))$('bStepNum').textContent=moveBudget(u);
+    /* #95 point 5 - armour counts in tens, hitpoints in fifteens, on
+       everybody. The plaque has room for the true count at any pool size:
+       the Fen-Mother's 31 hitpoint sections are 7.7px each here. */
+    setBar('bArm','bArmN',u.armour,u.armourMax||1,SEG_ARM);
+    setBar('bHp','bHpN',u.hp,u.hpMax,SEG_HP);
+    /* #96 point 2 - the plaque takes the same colour off the same helper as
+       the token, or the two readings of one body would disagree. */
+    $('bHp').style.background=hpCol(u,Math.max(0,u.hp)/u.hpMax);
     /* #91 point 10 - nerve is ONE coloured word on the plaque. The five-rung
        ladder moved whole into its hover, which is where the full scale
        always lived. The word stays because the token face now only appears
@@ -11929,9 +12342,31 @@ function render(){
        the panel: the red threat edges and the rings say it on the board,
        where it happens. */
     $('bHitN').textContent=u.mskill+'%';
-    $('bDodgeN').textContent=dodgeOf(u);
+    /* #94 point 5 - the only one of the four numbers that carried no unit,
+       and it is a percentage exactly like the one beside it: hitBreakdown
+       subtracts it straight off the attacker's roll. */
+    $('bDodgeN').textContent=dodgeOf(u)+'%';
+    $('bDodgeN').title='Comes straight off the chance of anybody hitting them.';
     if(mine){
-      $('bActions').innerHTML=u.acts.map((a,i)=>{
+      /* ═══ #94 point 1 - DISENGAGE IS A CARD ONLY WHILE IT IS AN ANSWER ═══
+         (User: "Show disengage only when engaged.") It is the one act on the
+         sheet whose entire subject is a condition somebody else put you in,
+         and it stood in the row of every body in every fight, including the
+         archer who has never been touched. `canUse` refuses it now when
+         nothing is engaging - ONE door, so both AI brains inherit the refusal
+         free and the card, the hotkey and the click can never disagree.
+
+         ⚠ THE ROW IS FILTERED, SO THE HOTKEY NUMBERS ARE THE VISIBLE
+         POSITION AND NOT THE INDEX INTO u.acts. DISENGAGE is not last on
+         every sheet - a gilled or bloom-handed body has SINK BELOW or ROOTING
+         GRASP pushed after it - so hiding it in place would have left a hole
+         in the numbering for exactly the people with the most to read.
+         `B.cards` is that mapping, rebuilt here every render, and the keydown
+         handler reads it. */
+      const shown=u.acts.map((a,i)=>i).filter(i=>!hideAct(u,u.acts[i]));
+      B.cards=shown;
+      $('bActions').innerHTML=shown.map((i,slot)=>{
+        const a=u.acts[i];
         const used=u.used[a.k]||0;
         const cd=(a.cool&&u.cd&&u.cd[a.k])||0;
         /* the receipt line: the MOVE card shows what this move will actually
@@ -11960,11 +12395,15 @@ function render(){
           (cd?' cool':'')+(gath?' gath':'')+'" data-a="'+i+'"'+
           (cd?' data-cd="'+cd+'"':'')+
           (canUse(u,a)?'':' disabled')+'>'+
-          /* the number key that fires it — 1 is always MOVE, 2 the weapon */
-          (i<9?'<span class="key">'+(i+1)+'</span>':'')+
+          /* the number key that fires it — 1 is always MOVE, 2 the weapon.
+             #94: the VISIBLE slot, so a filtered row still counts 1,2,3… */
+          (slot<9?'<span class="key">'+(slot+1)+'</span>':'')+
           '<span class="gi">'+iconFor(a)+'</span><b>'+a.n+'</b>'+
-          /* B's on-card damage (#91 point 1): the range, on the face */
+          /* B's on-card damage (#91 point 1): the range, on the face.
+             #94 point 8: and MOVE puts its hex count in the same slot, off
+             the same moveBudget() call the plaque and the reach preview use. */
           (a.dmg?'<span class="adm">'+a.dmg[0]+'-'+a.dmg[1]+'</span>':'')+
+          (a.move?'<span class="adm stride">'+moveBudget(u)+' HEXES</span>':'')+
           '<span class="cost">'+'◆'.repeat(a.cost)+'</span>'+
           (!cd&&!gath&&used?'<u>'+used+'/2</u>':'')+
           '<span class="pop"><span class="pt">'+a.n+'</span>'+
@@ -11985,7 +12424,8 @@ function render(){
       $('bFlee').classList.toggle('locked',noFlee);
       $('bFlee').title=noFlee?'NO WAY OUT — this one is life or death; there is nowhere to withdraw to.'
         :'WITHDRAW — leave the field. No spoils, the company takes it badly, and the place is done with.';
-    }else{$('bActions').innerHTML='';$('bEnd').disabled=true;$('bFlee').disabled=true;}}
+    }else{$('bActions').innerHTML='';B.cards=null;
+      $('bEnd').disabled=true;$('bFlee').disabled=true;}}
   /* #91 point 12 - the UNDO offer, shown exactly while it is real */
   $('bUndo').classList.toggle('on',
     !!(B.undo&&u&&u.side==='you'&&!u.ally&&!u.pet&&B.undo.id===u.id&&!B.busy));
@@ -12009,6 +12449,11 @@ function render(){
     d.innerHTML=(o.state==='routed'?'<span class="flag">🏳</span>':'')+
       '<img src="'+sp.src+'" width="'+Math.round(sp.w*.58)+'" height="'+Math.round(sp.h*.58)+
       '" alt="'+o.name+'">';
+    /* #96 point 1 - resting on a head lights the body it belongs to. The
+       rail carries no names by design (#91), so this is the only thing that
+       answers "which of the eleven out there is that". */
+    d.onmouseenter=()=>spotOn(o);
+    d.onmouseleave=spotOff;
     top.appendChild(d);});
   /* ⚠ THE CARD GOES DOWN BEFORE THE BOARD IT IS ABOUT IS DELETED. The line
      below destroys every hex, and A REMOVED ELEMENT NEVER FIRES `mouseleave`
@@ -12056,6 +12501,27 @@ function render(){
     :(B.sel&&B.sel.move&&u&&u.side==='you'&&!u.ally&&!u.pet)?
       (w=>w&&canUse(u,w)?w:null)(mainAtk(u)):null;
   const laneAct=offA&&needsLane(offA)?offA:null;
+  /* ═══ #94 point 10 - A SELECTED SKILL DRAWS ITS OWN REACH ════════════════
+     (User: "Когда выбираю скил - показывать его рендж на карте (для лука он
+     больше, логично, для мили атаки токо вокруг перса, для копья чуть
+     больше).")
+
+     The board has always lit the TARGETS an act can hit, which answers "whom
+     can I swing at" and silently refuses to answer "how far does this thing
+     go". With nobody standing in range those are the same picture - an empty
+     board - so a bow, a spear and a fist were indistinguishable at the
+     moment of choosing between them, and the one number that separates the
+     three classes was on a hover.
+
+     ⚠ IT IS GATED ON A CARD ACTUALLY BEING PICKED, not on `offA`. MOVE is
+     the standing default since #91 and `offA` falls through to the weapon in
+     their hands, so painting the footprint whenever offA exists would put a
+     five-hex amber blob under the teal move overlay on every single turn
+     before the player had asked anything. The request says "когда выбираю" -
+     when I choose - and that is exactly the condition. */
+  const rngA=(B.sel&&!B.sel.move&&!B.sel.buff&&!B.sel.thrower&&
+              (B.sel.range||B.sel.reach))?B.sel:null;
+  const rngR=rngA?(rngA.range||rngA.reach):0;
   let losOf=null,inWay=null;
   if(u&&u.side==='you'&&laneAct){
     losOf={};inWay={};
@@ -12088,6 +12554,23 @@ function render(){
       const d=B.reach?B.reach.dist[K(c,r)]:undefined;
       if(d!==undefined&&u&&u.side==='you'&&!occ){
         fill=t==='marsh'?'rgba(70,130,130,.32)':'rgba(110,180,160,.24)';badge=String(d);}
+      /* ═══ #94 point 10 - THE FOOTPRINT, AND IT OUTRANKS THE MOVE REACH ═══
+         It has to be written AFTER the block above and not before it, and
+         that ordering is the whole of what makes the feature exist. `B.sel`
+         being an attack does not clear `B.reach` - the walk preview from the
+         MOVE that was standing a moment ago is still on the board - so a
+         footprint drawn first was overpainted teal on every hex the body
+         could also walk to. Measured: a bow at range 5 kept 22 of its 59
+         hexes and A KICK AT REACH 1 KEPT NONE, which is the exact case the
+         request names ("для мили атаки токо вокруг перса").
+         So while a blow is selected the board is about that blow: inside the
+         footprint the reach yields its wash AND its number, outside it the
+         walk preview is untouched. One wash, one meaning. Nothing below is
+         disturbed - a priced target, a lane, a lift and a landing are all
+         written after this and all still win. */
+      if(rngA&&u&&u.side==='you'&&!blockedHere&&!occRaw&&
+         !(c===u.col&&r===u.row)&&udist([c,r],u)<=rngR){
+        fill='rgba(201,162,39,.15)';badge='';}
       /* a hint of red, not a wall of it — seven enemies used to paint half the board */
       if(u&&u.side==='you'&&threatsAt(c,r,'you')>0)edge='rgba(150,40,45,.34)';
       /* #46 — a body this act cannot move is NOT offered. The hex is left
@@ -12288,11 +12771,26 @@ function render(){
            empty second bar; and it goes dark before it goes away, which is
            the tell that the next blow is the first one that reaches flesh. */
         const arF=occ.armourMax?Math.max(0,occ.armour)/occ.armourMax:0;
+        /* #94 point 6 and #95 point 5, the board's half: the same fixed
+           section values as the plaque, so a notch means 15 hitpoints under
+           every body on the field. THIS is where the rule earns its keep -
+           the plaque describes ONE person, and the question the board asks is
+           which of six to swing at.
+           ⚠ THE BAR WIDENS RATHER THAN THINNING PAST ~8 SECTIONS. Two bodies
+           in the act do that, both bosses, and a longer bar under them is a
+           truer picture than 31 hairlines: the LENGTH says the pool is
+           enormous before a notch is counted. Nothing else on the board is
+           affected - 26px is the floor and the whole roster sits on it. */
+        const hSec=SEG(occ.hpMax,SEG_HP),aSec=occ.armourMax?SEG(occ.armourMax,SEG_ARM):0;
+        bars.style.width=barW(Math.max(hSec,aSec))+'px';
         bars.innerHTML=(occ.armourMax?
-          '<div class="arm'+(arF<=.35?' thin':'')+'"><i style="width:'+
-            (100*arF)+'%"></i></div>':'')+
-          '<div><i style="width:'+(100*hpF)+'%;background:'+
-          (hpF>.6?'#a33b34':hpF>.3?'#c07a2c':'#e0544c')+'"></i></div>';
+          '<div class="arm'+(arF<=.35?' thin':'')+'" style="--seg:'+aSec+
+            '"><i style="width:'+(100*arF)+'%"></i></div>':'')+
+          /* #96 point 2 - the hue says whose it is, the lightness says how
+             badly hurt. One helper, so the token and the plaque cannot
+             disagree about either half. */
+          '<div style="--seg:'+hSec+'"><i style="width:'+(100*hpF)+'%;background:'+
+          hpCol(occ,hpF)+'"></i></div>';
         inn.appendChild(img);inn.appendChild(mf);inn.appendChild(bars);
         /* Painted creature PNGs cannot bake a rolled mutation into every
            possible class variant. Keep the old three-gill read as one clean
@@ -12336,14 +12834,19 @@ function render(){
            below. Everything else is drawn on its own hex, as before. */
         if(!occ.big){const bk=backRing(occ);if(bk)inn.appendChild(bk);}
         /* every status and aura currently on this body, drawn from the one
-           register — stacked up the left edge so several can show at once */
-        statusesOn(occ).slice(0,4).forEach((st,si)=>{
-          const sb=document.createElement('span');sb.className='stbadge';
-          sb.textContent=st.g;sb.style.color=st.col;
-          sb.style.left='2px';sb.style.top=(11+si*10)+'px';
-          sb.title=st.n+(st.turns?' ('+st.turns+')':'')+' · '+st.d+
-            (st.from?' [from '+st.from+']':'');
-          inn.appendChild(sb);});
+           register. #96 point 3: a ROW ABOVE THE HEAD instead of a column
+           down the left edge - see the .stbar note in the CSS. Four is still
+           the cap, because a fifth glyph is wider than the hex. */
+        const stl=statusesOn(occ).slice(0,4);
+        if(stl.length){
+          const bar=document.createElement('div');bar.className='stbar';
+          stl.forEach(st=>{
+            const sb=document.createElement('span');sb.className='stbadge';
+            sb.textContent=st.g;sb.style.color=st.col;
+            sb.title=st.n+(st.turns?' ('+st.turns+')':'')+' · '+st.d+
+              (st.from?' [from '+st.from+']':'');
+            bar.appendChild(sb);});
+          inn.appendChild(bar);}
         /* formations, visible on the field — a line is worth seeing and so is
            a swarm, or the bonuses are just numbers the player has to trust */
         if(!occ.pet&&!occ.passive&&inLine(occ)){
@@ -12425,6 +12928,13 @@ function render(){
   camApply();
   /* a peek that survived a real state change gets its tint back */
   if(B.peek)paintPeek();
+  /* #96 point 1 - and so does a rail head the cursor is still resting on */
+  if(B.spot)paintSpot();
+  /* ⚑ #94 point 9 - THE ONE PLACE A WALK IS PLAYED, and it is last on
+     purpose: the board underneath it is finished, the camera has already
+     moved, so every hex the walker measures is where it will still be when
+     the walker gets there. Parked by walkTo(), consumed exactly once. */
+  if(B.walk){const wk=B.walk;B.walk=null;walkFx(wk.u,wk.from,wk.path);}
 }
 /* ═══ HOVERING IS NOT A STATE CHANGE, AND IT USED TO COST ONE ═══════════
    (User, 2026-08-01: "On the battle map hovers quit often freze and block
@@ -12470,6 +12980,23 @@ function peekOff(){
   B.peek=null;B.peekReach=null;B.peekStamp=null;
   paintPeek();
 }
+/* ═══ #96 point 1 - THE HEAD IN THE RAIL POINTS AT THE BODY ON THE BOARD ═══
+   Same shape as the peek above and for the same reason: the state lives on
+   `B`, so a render that happens while the cursor is resting on a head puts
+   the ring back instead of losing it. `hexesOf` rather than one hex, because
+   a great beast is two of them and lighting only her head would point at
+   half a body. */
+function paintSpot(){
+  const g=$('bGrid');if(!g)return;
+  g.querySelectorAll('.hex.spot').forEach(h=>h.classList.remove('spot'));
+  const u=B&&B.spot;
+  if(!u||u.dead||u.fled||u.col===undefined)return;
+  hexesOf(u).forEach(p=>{
+    const h=g.querySelector('[data-k="'+K(p[0],p[1])+'"]');
+    if(h)h.classList.add('spot');});
+}
+function spotOn(u){if(!B||B.spot===u)return;B.spot=u;paintSpot();}
+function spotOff(){if(!B||!B.spot)return;B.spot=null;paintSpot();}
 /* ═══ WHAT IS CURRENTLY ON THAT BODY ═══════════════════════════════════
    (User, 2026-08-01: "In the battle when you hower on enemy - show active
    effects and statuses (negative statuses, for example and withard magic
@@ -12514,8 +13041,75 @@ function statusStripHTML(t){
 }
 /* `wide` gives the entry the whole row - the block holds an odd three now */
 const dv=(k,v,wide)=>'<span'+(wide?' class="wide"':'')+'>'+k+' <b>'+v+'</b></span>';
-function setBar(bar,num,v,max){v=v>0?Math.ceil(v):0;
-  $(bar).style.width=(100*v/max)+'%';$(num).textContent=v+'/'+Math.round(max);}
+/* ═══ #95 point 5 - A SECTION IS THE SAME AMOUNT ON EVERYBODY ═════════════
+   (User: "each section of hitpoint respresent same ammount of health for all
+   the units. Same with armor. So visually you can calculate who has how much
+   without checking actuall stats. I feel one section more 15 health and 1
+   secion of armor is 10 armor.")
+
+   ⛔ #94 GOT THIS WRONG AND THE CORRECTION IS THE WHOLE POINT. It made the
+   COUNT sublinear and capped, so a section meant "about a blow" on a ratkin
+   and something quite different on a boss - which is a nicer-looking bar and
+   answers no question at all. A section only becomes an INSTRUMENT when it is
+   a fixed quantity: count the notches, multiply, and you know the pool
+   without hovering anybody. That is the entire request and it kills the cap.
+
+   ⚑ THE TWO CONSTANTS ARE PLAYER-FACING AND ARE THE USER'S TO TUNE. 15 and
+   10 are his numbers. Measured against every unit in the act: hitpoints run
+   18 to 112 (1 to 7 sections) and armour 3 to 66 (1 to 7), so the whole
+   roster and every ordinary foe land in a range a 26px token bar draws
+   cleanly at 3.7px a section.
+   ⚠ THE TWO BOSSES ARE THE ONLY BODIES THAT BREAK THAT, and they break it by
+   an order of magnitude: the Fen-Mother is 470/170 (31 and 17 sections) and
+   the Thing in Armour 342/162. `barW()` below is the answer, and it is a
+   better one than a cap: their bar gets LONGER instead of finer, so the
+   length itself says "this pool is enormous" before a single notch is
+   counted. Nothing under 8 sections moves at all, so the board is unchanged
+   for every other body in the game.
+   ⚠ BOTH TAKE THE MAX, NEVER THE CURRENT VALUE. Sections that moved while
+   the pool drained would be a second, wrong reading of the same fact. */
+/* ═══ #96 point 2 - WHOSE BODY IS THAT, READ OFF THE BLOOD ════════════════
+   (User: "lets make your characters health on exact battle screen blue, and
+   enemies stay red, and allies golden. So even if you don`t understed design
+   figure, you can understand that color.")
+
+   ⚑ THE SENTENCE AFTER THE REQUEST IS THE REQUEST. The side has always been
+   readable - the sprite is tinted by side and the order rail borders by side
+   - but every one of those cues asks the player to already know what a
+   ratkin looks like, and the report this whole pass answers was that they do
+   not. A bar is the one mark on a token that is the same shape on every body
+   in the game, so it is the only place a side can be said in a way that
+   needs no prior knowledge at all.
+
+   ⚠ THE HUE IS THE SIDE AND THE LIGHTNESS IS THE WOUND, and both have to
+   survive. Red-for-hurt was the old scheme's whole job, so each side keeps
+   the same three-step ramp inside its own family: full, hurt, nearly done -
+   brighter as it drops, which is the alarm the old bar had.
+   ⚠ THE ARMOUR BAR STAYS STEEL ON EVERYBODY. It is the shell and not the
+   person, it sits directly above this one, and giving both a side colour
+   would be two marks saying one thing and neither saying its own. */
+const HPCOL={
+  you :['#2f6f9e','#3f92c8','#63b8ea'],   /* yours: blue */
+  foe :['#a33b34','#c74a40','#e8564c'],   /* theirs: red, as it always was */
+  ally:['#9a7a2c','#c9a227','#e8cf6a']};  /* fighting beside you: gold */
+/* an ally is anybody on your side who is not on your roster - the NPC who
+   took your part, and the pet, which is the company's but not commandable */
+const hpSide=u=>u.side!=='you'?'foe':(u.ally||u.pet)?'ally':'you';
+const hpCol=(u,f)=>{const r=HPCOL[hpSide(u)];return f>.6?r[0]:f>.3?r[1]:r[2];};
+const SEG_HP=15, SEG_ARM=10;
+const SEG=(max,per)=>Math.max(1,Math.round((max||1)/(per||SEG_HP)));
+/* the token bar widens only once a section would go under ~3px */
+const barW=secs=>Math.round(Math.max(26,Math.min(54,secs*3.4)));
+/* #94 point 4 - the action crystals, filled then spent */
+const apPips=(n,max)=>{let s='';
+  for(let i=0;i<(max||0);i++)s+='<span class="pip'+(i<n?' on':'')+'">◆</span>';
+  return s;};
+/* ⚠ the width and the section count go through the SAME door, so a bar can
+   never be drawn at one scale and sectioned at another. */
+function setBar(bar,num,v,max,per){v=v>0?Math.ceil(v):0;
+  const el=$(bar);el.style.width=(100*v/max)+'%';
+  if(el.parentNode)el.parentNode.style.setProperty('--seg',SEG(max,per));
+  $(num).textContent=v+'/'+Math.round(max);}
 const roman=n=>['0','I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII','XIII','XIV',
   'XV','XVI','XVII','XVIII','XIX','XX'][n]||n;
 /* hovering ANY unit tells you about it. Hovering one of yours tells you more. */
@@ -13657,8 +14251,13 @@ document.addEventListener('keydown',e=>{
   const u=cur();
   if(!u||u.side!=='you'||u.ally||u.pet||u.state==='routed')return;
   if(e.key>='1'&&e.key<='9'){
-    const i=+e.key-1;
-    if(u.acts[i]&&canUse(u,u.acts[i])){e.preventDefault();selectAct(i);}
+    /* #94 point 1 - the key is the CARD'S position in the row, not its index
+       in u.acts, because the row is filtered now. B.cards is that map and
+       render() rebuilds it every time it draws the row, so the two cannot
+       drift. The fallback keeps a keypress working in any state that has not
+       drawn a row yet (the practice field's first frame). */
+    const i=(B.cards&&B.cards.length)?B.cards[+e.key-1]:(+e.key-1);
+    if(i!==undefined&&u.acts[i]&&canUse(u,u.acts[i])){e.preventDefault();selectAct(i);}
     return;
   }
   if(e.key===' '||e.key==='Enter'){e.preventDefault();nextTurn();return;}

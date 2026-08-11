@@ -408,10 +408,10 @@ feel like filler too.
 |---|---|
 | **`README.md`** *(this)* | **Orientation.** What the game is, the pillar, the traps. Start here |
 | [`00_PLAN_AND_BACKLOG.md`](00_PLAN_AND_BACKLOG.md) | **The work.** The current focus, then one line per entry. **Everything in it is actionable** |
-| [`archive/BACKLOG_ENTRY_SPECS.md`](archive/BACKLOG_ENTRY_SPECS.md) | the full text of every unbuilt entry, for when a session picks one up |
+| [`archive/BACKLOG_ENTRY_SPECS.md`](archive/BACKLOG_ENTRY_SPECS.md) | the full text of every unbuilt entry, for when a session picks one up. **152 KB: open the one entry, never the file** |
 | [`SHIPPED.md`](SHIPPED.md) | **The registry.** One line per shipped entry, **every open remainder named**, which numbers are spent |
-| [`CHANGELOG.md`](CHANGELOG.md) | **The record.** The build log with the reasoning, and shipped entries in full. **History, never instructions** |
-| [`WHAT_TO_TEST.md`](WHAT_TO_TEST.md) | **The test bench, and it is the USER'S file.** How to reach each new thing in three steps, what should happen, what would be a bug. A session **writes** to it and never takes instructions from it |
+| [`CHANGELOG.md`](CHANGELOG.md) | **The record.** The build log with the reasoning, and shipped entries in full. **History, never instructions.** **640 KB: open one dated row, never the file** |
+| [`WHAT_TO_TEST.md`](WHAT_TO_TEST.md) | **The test bench, and it is the USER'S file.** How to reach each new thing in three steps, what should happen, what would be a bug. A session **writes** to it and never takes instructions from it. **63 KB: open one section** |
 | [`DEPLOY.md`](DEPLOY.md) | one command, and why the hosted page is generated rather than copied |
 | [`PARALLEL_SESSIONS.md`](PARALLEL_SESSIONS.md) | **two sessions, one working tree.** How to claim a number, who owns the prototype, and why *"do not commit"* was the wrong rule |
 | [`DRAMATURGE.md`](DRAMATURGE.md) | the manual for `tools/dramaturge.html`. ⛔ **It live-reads the prototype: there must never be a second copy of the event data** |
@@ -420,8 +420,20 @@ feel like filler too.
 | [`10_ART_ASSET_BIBLE_AND_PROMPTS.md`](10_ART_ASSET_BIBLE_AND_PROMPTS.md) | the painted-art manifest and one prompt per picture |
 | [`08_MUTATIONS.md`](08_MUTATIONS.md) · [`09_SETTLEMENTS_AND_LEGACY.md`](09_SETTLEMENTS_AND_LEGACY.md) | two designed systems, partly built |
 | `content/` | authoring source. **`events_book.html` runs the other way**: every authored word generated OUT of the running build for the user to edit |
-| `docs/archive/` | the long-form history: what shipped and what it taught, and why an entry waits |
+| `docs/archive/` | the long-form history. **Three files are live references** and are linked from here where they are wanted: `BACKLOG_ENTRY_SPECS.md`, `PLAN_REASONING.md`, `README_WHERE_IT_STOOD.md`. **Everything else in it is a dated snapshot nobody has to read**, kept because git is easier to trust when the file is also on disk |
 | **the running build** | **what is actually true. It wins over every document.** |
+
+### ⛔ Open the big files by section, never whole
+
+`CHANGELOG.md` (640 KB), `archive/BACKLOG_ENTRY_SPECS.md` (152 KB), `WHAT_TO_TEST.md` (63 KB) and
+the four dated snapshots in `archive/` (60 to 227 KB each) are **records, not reading**. Grep for the
+entry number or the dated heading and read that range. A session that reads any of them end to end
+spends a fifth of its context on history before it has opened the game.
+
+**Nothing in `archive/` is ever an obligation.** The four `2026-08-10_*_before_cleanup.md`
+snapshots are superseded by the files they are snapshots of, `WHAT_TO_TEST_OLDER.md` is superseded
+by `WHAT_TO_TEST.md`, and `MEMORY_SESSION_LOG_2026-07-28_to_08-02.md` is the session log that used
+to be loaded into every session as a memory file. They are there to be searched, not read.
 
 ---
 

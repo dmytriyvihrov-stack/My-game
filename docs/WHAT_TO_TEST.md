@@ -23,6 +23,175 @@
 
 ---
 
+## ⚔ WHOSE BODY IS THAT  *(#96 · 2026-08-11 · build log 8f.124)*
+
+**How to reach it.** ⚙ TEST → **PRACTICE FIELD** → **Blood on the Road**. That fight is the only
+one in the act with all three sides on the board at once.
+
+**⬢ The health bar says whose body it is.** **Blue is yours · red is theirs · gold is fighting
+beside you.** The hue is the side and the lightness is the wound, so each keeps its own three-step
+ramp and gets brighter as it drops - the alarm the old bar had is still there. The plaque's bar
+takes the same colour off the same helper, so the two readings of one body cannot disagree.
+
+⚠ **The armour bar stays steel on everybody.** It is the shell, not the person, it sits directly
+above the health bar, and colouring both would be two marks saying one thing and neither saying its
+own. **Tell me if that reads as an oversight rather than a decision.**
+
+⚠ **The pet counts as an ally** (gold), not as yours. It is the company's but it is not on the
+roster and you do not command it. Say if you want it blue.
+
+**⬢ Resting on a head in the turn rail lights that body on the board.** A gold ring on the ground
+and a gold glow on the sprite. The rail carries no names by design, so this is the thing that
+answers *"which of the eleven out there is that"*. A great beast lights **both** her hexes.
+
+**⬢ Statuses moved onto the head.** They were already drawn - stacked **down the left edge** of the
+hex, which is the busiest strip on a token (the weapon badge, the formation marks and the sprite's
+own shoulder all live there), so a real feature read as an absent one. They are a row **above the
+head** now, clear of the crest and the mood face by measurement: the band is -15 to -4, the mood
+face starts at -2. Up to four; the hover card still lists all of them with what they do.
+
+### What would be a bug
+
+- a status band overlapping the mood face or the ⚑ crest at any camera stop
+- the rail highlight sticking after the cursor leaves, or surviving into the next fight
+- a health bar in the wrong family - especially the **clash allies**, who are side `you` and must
+  be **gold**, not blue
+- the plaque's bar and the token's bar disagreeing about a colour
+
+---
+
+## ⚔ THE BATTLE SCREEN, ROUND FOUR - YOUR TEN POINTS  *(#95 · 2026-08-11 · build log 8f.123)*
+
+**How to reach it.** ⚙ TEST → **PRACTICE FIELD** → any fight. Or play.
+
+| | what you asked | what is there |
+|---|---|---|
+| 1 | *"Combat log fully closed at the beginning of the fight"* | header only, and it re-shuts at the top of **every** fight. One click gives the full 300px |
+| 2 | *"turn order to the left and vertically"* | a column down the left edge. The lit mark turned with it: it is the **left** border of a head now, not the top |
+| 3 | *"delete character's name + turn from the top"* | the capsule says **⛊ 6 · ROUND III · ☠ 3** and nothing else |
+| 4 | *"delete amount of movement from the character card"* | three cells now: **ACTIONS · TO HIT · DODGE**. The MOVE card's face keeps the hexes |
+| 6 | *"move a bit speed and withdraw"* | **⏱ ⚑** and **♪** sit in a row directly above END TURN, right-aligned to it |
+| 7 | *"fix collision of screen sizes and TEST"* | fixed - **and a second one you had not reported**: ♪ sound was sitting on top of END TURN |
+| 9 | *"you hid how to play"* | **? RULES is the log's footer now.** Nobody hid it: it has been at bottom-left since before this screen was full-bleed, and #91 put the plaque on that exact corner |
+| 10 | *"Lv 1"* | `➹ ARCHER · Lv 1 · ◆ human` |
+
+### The two worth actually playing
+
+**⬢ A section is now the same amount on everybody** *(point 5)*. **One hitpoint section = 15. One
+armour section = 10.** Everywhere - the plaque and every bar on the field. So you can count notches
+across six enemies and know who has what without hovering anything.
+
+⛔ **#94 had this wrong and this is the correction.** It scaled the *count* and capped it, so a
+section meant "about a blow" on a ratkin and something else entirely on a boss - prettier, and it
+answered no question. **What to look for:** stand next to two different enemies and check that
+"three sections" means the same thing on both.
+
+⚠ **The two bosses are the only bodies that break the scale**, and they break it by an order of
+magnitude - the Fen-Mother is **470 hitpoints and 170 armour**, which is 31 and 17 sections. Rather
+than cap her (which would have broken the promise exactly where it matters most), **her bar gets
+LONGER instead of finer**: 54px against everybody else's 26. The length itself should read as
+*"this pool is enormous"* before you count a single notch. **Tell me if it reads as a bug instead.**
+
+**⬢ FULL shows the top and bottom ranks again** *(point 8)*. FULL was `×1.73`, which fit the board
+*exactly* - and exact was the bug: a body stands about 8px proud of its own hex, so **the top rank
+was losing 14px of head** to the field's edge. It is `×1.58` now, with **49px clear above and 13
+below** (deliberately uneven - only the top end can crop a body, and only the top end has the
+counts capsule floating over it). A top-rank head lands at y=37 against a capsule that ends at 34.
+**What to look for:** put somebody on the top row, press FULL, and check you can see all of them.
+The trade is that everything at FULL is **9% smaller** than yesterday. If that is too much, the
+number is one constant.
+
+### What would be a bug
+
+- the log open at the start of a fight, or after leaving and re-entering one
+- the turn-order rail touching the plaque or running off the top or bottom (measured clean at
+  **13 heads**, the widest legal board, but that was geometry)
+- ? RULES not following the log when you open and close it
+- the camera bar under ⚙ TEST again at any window size
+- a bar's sections **moving** as the pool drains - they are computed from the maximum
+- anything cropped at the top or bottom at FULL
+
+### Still open
+
+- **The order rail's cells are unchanged in size.** Turned vertical they are 30×34 each; at 13 heads
+  the column is 478px of a 490px band. If a later fight ever fields more, the extra heads are
+  clipped rather than laid over the plaque. Worth knowing, not worth building for yet.
+- **Nobody has played this with a hand on a mouse** - unchanged from #91 and #94, and it is the
+  caveat that matters most for the FULL zoom, which is a judgement about how big a body should look.
+
+---
+
+## ⚔ THE BATTLE SCREEN, ROUND THREE - YOUR TWELVE POINTS  *(#94 · 2026-08-11 · build log 8f.122)*
+
+**What it is.** Your annotated screenshot, built. Twelve changes on top of #91's frame, nothing
+else touched. Three of them are new *behaviour* and the rest are the screen doing what you drew.
+
+**How to reach it in three steps.** ⚙ TEST → **PRACTICE FIELD** → pick any fight. Or just play: it
+is every battle from now on.
+
+### The nine on the panel
+
+| | what you asked | what is there |
+|---|---|---|
+| 1 | *"Show disengage only when engaged"* | the DISENGAGE card is **gone from the row** until somebody actually has hold of you, and it comes back the instant they do. The hotkeys renumber with it, so the row always counts **1, 2, 3…** with no hole |
+| 2 | *"Battle log - top left"* | it is top-left |
+| 3 | *"...collapsed so far you cannot see details"* | **six whole lines** now instead of three-and-a-half (46px → 92px). Click the header for the full 300px as before |
+| 4 | *"End turn a bit smaller and not that bright"* | **190×34** instead of 308×40, in a dark blood that **lights up to the old colour under the mouse** |
+| 5 | *"Withdraw and speed near it"* | **⏱ PACE** and **⚑ WITHDRAW** now sit immediately left of END TURN. The **FULL / FIELD / CLOSE** camera stops took the top-right corner back |
+| 6 | *"nickname same line as name"* | one line. On a very long name the **nickname** gives way first, never the name |
+| 7 | *"Actions show as crystals (as wildermyth)"* | **◆ ◆** - filled for what is left, dark for what you have spent, and the numeral is gone |
+| 8 | *"61% hit and 15% dodge"* | dodge carries its **%** now, and CHANCE TO HIT is **TO HIT** on one line |
+| 9 | *"Turn order - maybe place under the skills?"* | the rail is under the card row, at the bottom edge. **This is the one I want you to rule on** - the alternative (rail *above* the cards, cards on the floor) is drawn as **FRAME B** in `shots/94_css_bench.html` and is a one-line switch |
+
+### The three that are new behaviour - these are the ones worth playing
+
+**⬢ Health and armour are cut into sections** *(your ARC Raiders shield note)*. Both bars on the
+plaque **and every bar under every body on the field.** The bigger the pool the more sections and
+the thinner each, so one section is roughly one blow's worth on anybody: a ratkin's 6 armour is
+**3 fat sections**, your 45 hitpoints are **6**, a boss at 120 is **8**. **What to look for:** can
+you now pick which of six enemies is closest to breaking without hovering any of them?
+
+**⬢ The MOVE card shows how far.** *"4 HEXES"* on its face, where the attacks show their damage.
+It is the same number as the plaque's HEXES cell and cannot disagree with it: watch it drop by one
+when you move a second time in one turn, and watch it halve on a crippled body.
+
+**⬢ Choosing a skill draws its reach on the ground.** Click **HUNTING BOW** and an amber wash
+covers everything within 5. Click **KICK** and it is the six hexes around you. Click a spear and it
+is a little further. **This only happens when you actually pick a card** - MOVE is the standing
+default and paints its own teal walk preview, exactly as before. Press **ESC** and you are back to
+MOVE and the walk numbers.
+
+**⬢ A body crosses the ground instead of arriving on it.** Every walk in the game, yours and
+theirs, now goes **tile by tile along the real route** - round the boulder, through the water,
+whichever way the rules actually charged for. **The one worth watching is an enemy's**: you can now
+see which way something came, which tells you where it can be next round. A long stride does not
+take proportionally longer; the steps just get quicker.
+
+### What would be a bug
+
+- a hole in the hotkey numbers (1, 2, 3, **5**) on anybody, especially a **gilled** or
+  **bloom-handed** body - they are the two whose extra cards sit *after* DISENGAGE on the sheet
+- DISENGAGE missing while somebody is plainly engaging you
+- a body **invisible** after a walk, or two of the same body on the board at once
+- the amber reach wash still on the board after you press ESC, or appearing before you click a card
+- END TURN, the log or the rail overlapping anything at **CLOSE** (measured clean at all three
+  stops, but the measurement is geometry and your eye is the test)
+- the sections on a bar **moving** as the pool drains. They are computed from the maximum and must
+  stay nailed where they are
+
+### Honest caveats
+
+- **Nobody has played this with a hand on a mouse.** The preview pane composites no frames, so
+  everything above is a DOM-and-geometry assertion plus eight AI-driven fights. The *feel* of the
+  walk speed is yours to judge - it is one constant, `WALK_HEX`, currently 95ms a tile before the
+  ×1.75 board clock.
+- **The phone layout has not been exercised.** The chrome is stage-anchored so it turns with the
+  stage by construction, but the log moving to the top left wants one real look in portrait.
+- The board lost **2% of the screen** to the taller log (85.5% → 83.5%). That was the price of
+  point 3 and it is worth naming.
+
+---
+
 ## ⚔ THE BATTLE SCREEN, REDONE  *(#91 · 2026-08-11 · build log 8f.121)*
 
 **What it is.** Your seventeen-point relayout, built to the frame you picked from the three
