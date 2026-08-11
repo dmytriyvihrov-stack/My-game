@@ -149,6 +149,21 @@ remainders are in [`SHIPPED.md`](SHIPPED.md).*
 > **The existing files are full of them and have not been purged.** Roughly 1,300 in the prototype.
 > A purge is a separate job. Everything written from 2026-08-01 on is dash-free.
 
+> ## ⛔ ARE YOU THE SECOND SESSION? ASK FOR YOUR NUMBER, DO NOT PICK ONE
+>
+> ```
+> powershell -NoProfile -ExecutionPolicy Bypass -File tools\claim.ps1 number
+> ```
+>
+> **Working in two or three sessions at once is normal here and it is not the danger.** There is one
+> working tree and one branch, so git isolates nothing between them, and *"do not commit"* protects
+> nothing while removing the restore point. Three things actually collide: **the number** (five
+> collisions, because it lived in a sentence that is written last), **the prototype** (`inject.ps1`
+> rewrites it whole), and **`deploy.ps1`**, which runs `git add -A` and **pushes**, so a deploy ships
+> the other session's half-finished file to the live link. All three are guarded now.
+> **If you are going to change the prototype, take it first:** `claim.ps1 lock -Title "..."`.
+> Full rules in [`PARALLEL_SESSIONS.md`](PARALLEL_SESSIONS.md).
+
 > ## ⛔ THE GATE: rules, then a picture, then code, then the test note
 >
 > Full version in [`00_PLAN_AND_BACKLOG.md`](00_PLAN_AND_BACKLOG.md). In one line: **if it cannot be
@@ -398,6 +413,7 @@ feel like filler too.
 | [`CHANGELOG.md`](CHANGELOG.md) | **The record.** The build log with the reasoning, and shipped entries in full. **History, never instructions** |
 | [`WHAT_TO_TEST.md`](WHAT_TO_TEST.md) | **The test bench, and it is the USER'S file.** How to reach each new thing in three steps, what should happen, what would be a bug. A session **writes** to it and never takes instructions from it |
 | [`DEPLOY.md`](DEPLOY.md) | one command, and why the hosted page is generated rather than copied |
+| [`PARALLEL_SESSIONS.md`](PARALLEL_SESSIONS.md) | **two sessions, one working tree.** How to claim a number, who owns the prototype, and why *"do not commit"* was the wrong rule |
 | [`DRAMATURGE.md`](DRAMATURGE.md) | the manual for `tools/dramaturge.html`. ⛔ **It live-reads the prototype: there must never be a second copy of the event data** |
 | [`01_GAME_CONCEPT.md`](01_GAME_CONCEPT.md) | the accepted design. If the code and this disagree, one of them is a bug: decide which |
 | [`02_ART_DIRECTION.md`](02_ART_DIRECTION.md) · [`03_WORLD_LORE.md`](03_WORLD_LORE.md) | painted direction · **the lore book, and it is canon.** When an event and the book disagree, one of them is a bug |

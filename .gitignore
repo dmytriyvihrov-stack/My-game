@@ -33,8 +33,14 @@ shots/
 # tarball of the docs as they stood before the 2026-07-31 cleanup
 _archive_docs_*.tar.gz
 
-# per-machine Claude Code state. .claude/rules/ and .claude/skills/ ARE tracked.
+# per-machine Claude Code state. .claude/rules/, .claude/skills/ and
+# .claude/settings.json ARE tracked: the last one carries the collision hook.
 .claude/settings.local.json
+
+# who currently holds which number and which file, written by tools/claim.ps1.
+# Deliberately NOT committed: it is live state about the two sessions running on
+# this machine right now, and both of them read it off the same disk.
+.grimtoll/
 
 __pycache__/
 Thumbs.db

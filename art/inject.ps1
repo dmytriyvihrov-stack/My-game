@@ -8,6 +8,11 @@ $root  = Split-Path $PSScriptRoot -Parent
 $html  = Join-Path $root 'prototype\grimtoll_slice.html'
 $data  = Join-Path $PSScriptRoot 'out\art_data.js'
 
+# This script reads the whole prototype and writes the whole prototype back, so
+# it is the exact shape that erases a parallel session's work. Ask first.
+& powershell -NoProfile -ExecutionPolicy Bypass -File (Join-Path $root 'tools\claim.ps1') gate
+if ($LASTEXITCODE -ne 0) { throw "another session owns the prototype. Not injecting." }
+
 if (-not (Test-Path $data)) { throw "run build_assets.ps1 first" }
 
 $src = Get-Content $html -Raw -Encoding utf8

@@ -37,6 +37,14 @@ function Die($t) { Write-Host ""; Write-Host "STOPPED: $t" -ForegroundColor Red;
 
 if (-not (Test-Path (Join-Path $root '.git'))) { Die "this is not a git repo. Run: git init -b main" }
 
+# ---- 0. the other session --------------------------------------------------
+# Step 4 below runs `git add -A`, which sweeps the ENTIRE working tree, and step
+# 5 pushes it to the live link. Two Claude sessions share one working tree here,
+# so a deploy from this one would publish the other one's half-finished
+# prototype to every playtester. See docs\PARALLEL_SESSIONS.md.
+& powershell -NoProfile -ExecutionPolicy Bypass -File (Join-Path $root 'tools\claim.ps1') gate
+if ($LASTEXITCODE -ne 0) { Die "another session owns the prototype. Its work would go live with yours." }
+
 # ---- 1. sound --------------------------------------------------------------
 # Skipped by default because ffmpeg takes about half a minute and the approved
 # pack almost never changes. Pass -Audio the day it does.
@@ -68,6 +76,13 @@ if ($art  -lt 100) { Die "only $art pictures in the built page. Something is wro
 
 # ---- 4. commit -------------------------------------------------------------
 Step 4 "committing"
+# Say out loud what -A is about to sweep up. A deploy that quietly carries eight
+# files you did not touch is how another session's work ends up in your commit.
+$sweep = & git status --porcelain
+if ($sweep) {
+  "      this commit will contain:"
+  foreach ($line in $sweep) { "        $line" }
+}
 & git add -A
 $dirty = & git status --porcelain
 if (-not $dirty) {

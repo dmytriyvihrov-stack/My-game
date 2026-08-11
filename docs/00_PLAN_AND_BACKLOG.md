@@ -16,8 +16,22 @@
 >
 > **And the ruling that came with it: *"I think this version we will work only on it."***
 >
-> **⏳ MORE OF THE FEEDBACK IS COMING.** The user has more and will send it. Until it arrives this
-> block is the whole brief, and the work below is scoped to the one line above.
+> ### The second round arrived the same day, with a screenshot of the battle panel
+>
+> > *"1) What is hard - understanding what is going on even in the menu - very small type and lots
+> > of numbers everywhere. 2) It took me a very long time to see where to read a character's step
+> > count - also hidden in small type. 3) Make the hot keys either smaller or not overlapping."*
+>
+> **#88 shipped against all three on 2026-08-10** *(8f.117, see [`CHANGELOG.md`](CHANGELOG.md))*, and
+> the finding is worth carrying into the rest of the pass: **all three were one measurable cause.**
+> The skill list was a two-column grid, a 133px column leaves a card 116px of inner width, and the
+> longest skill name in the game wants 128px of it. **The card was structurally unable to show its
+> own contents, so the type could not be raised - there was nowhere to put it.** One column gave it
+> 213px and paid for all three fixes at once. ⚑ **The lesson: "the type is too small" was a
+> SYMPTOM of a box that was too narrow. Measure the box before you argue about the font.**
+>
+> **⏳ MORE OF THE FEEDBACK MAY STILL COME.** Until it does, the two blocks above are the whole
+> brief, and the work below is scoped to them.
 
 ## What that sentence actually says, and it is two complaints, not one
 
@@ -54,7 +68,7 @@ fifteen minutes to stop being a wall, and that is a subtraction job.
 |---|---|---|
 | **1** | **Measure the opening before touching it.** Words shown, cards opened, clicks made, and systems introduced, from launch to the first decision that costs something. | there is a number, and it is written down here |
 | **2** | **[#86 - the first fifteen minutes](#86--the-first-fifteen-minutes)** | the numbers from step 1 are cut hard, and the teaching survives the cut |
-| **3** | **The screen pass**, five surfaces, one at a time, before-and-after shots | 🗺 road · 🎒 company · 📜 aftermath · 🚪 front door · practice field. *(⚔ the battle board already passed, 8f.65)* |
+| **3** | **The screen pass**, five surfaces, one at a time, before-and-after shots | 🗺 road · 🎒 company · 📜 aftermath · 🚪 front door · practice field. *(⚔ is DONE three times over: the board passed 8f.65, the unit panel as **#88**, and the **whole battle frame as #91**, 8f.121, 2026-08-11 - the user's own seventeen-point relayout, mocked, picked and built in a day. Board 57.8% → 85.5%, words 262 → ~160. See `WHAT_TO_TEST.md`.)* ⚑ **The target for the rest is a number: 61 declarations below 10px** live outside the battle screen (2 at 7px · 5 at 7.5px · 9 at 8px · 16 at 8.5px · 13 at 9px · 16 at 9.5px). ⚠ And take #88's lesson with you: **measure the box before you argue about the font** |
 | **4** | **[#39 - Meet the Rabble](archive/BACKLOG_ENTRY_SPECS.md)** | the crew is introduced without a fourth modal. **It must replace or enrich the arrival cards, never add to them** |
 | **5** | **Re-measure**, and hand it to the ten friends | step 1's numbers, run again |
 
@@ -105,6 +119,7 @@ name them, not because they stopped mattering.*
 | # | what it is | why it waits here | full spec |
 |---|---|---|---|
 | **13** | **The balance harness earns its keep** | ⚑ **the instrument.** Without it every balance session below is somebody's opinion. `window.ARENA` exists and has gone stale around every combat change since | [spec](archive/BACKLOG_ENTRY_SPECS.md) |
+| **89** | **The combat benchmark, and the three things it did not measure** - ✅ the document is written: [`COMBAT_BENCHMARK_2026-08-11.md`](COMBAT_BENCHMARK_2026-08-11.md) | ⚑ **the second instrument.** #13 measures *win rates*, this one measures **shape**: Grimtoll now sits in a table beside Battle Brothers, Wildermyth and Wartales at **8.45 rounds · 71.4 unit-turns · 115 actions · 1.61 actions per unit-turn · 4.6 skills per unit**, all measured. ⛔ **The remainder is three MEASUREMENTS, not builds** - the mop-up tail, a real stopwatch, and hit-rate distribution - so it does not argue with the clarity pass. Two readings are already live: **`brigand` runs 2.4x the opener at an even 6 v 6**, which is the exact shape of Wartales' *"longer, not harder"*, and the **enemy skill gap is 2:1** in the player's favour, which is what "one strategy beats everything" looks like from the inside | [spec](archive/BACKLOG_ENTRY_SPECS.md) |
 | - | **The class pass** - pick up each of the seven and adjust | the human test the arena cannot run: **can the class be said in one sentence.** A class that needs a paragraph is a balance problem wearing a UI problem's clothes | [reasoning](archive/PLAN_REASONING.md) |
 | - | **The race pass** - three ways to play, not three stat blocks | three banked questions: the poison stack is uncapped · a gilled body reaches 62% further in the swamp · is an ogre's 3 stride a tax or a shape | [reasoning](archive/PLAN_REASONING.md) |
 | **50** | **The balance pass, at playtest grade only** | make the eight fights survivable, readable and fair. **Not the terminal pass.** Order matters: classes, then races, then fights | [spec](archive/BACKLOG_ENTRY_SPECS.md) |
@@ -265,11 +280,26 @@ disturb.
 · a one-line row → [`SHIPPED.md`](SHIPPED.md) · **strike it from this file entirely** · a section →
 [`WHAT_TO_TEST.md`](WHAT_TO_TEST.md).
 
-**⚠ Before taking a new number, grep the build log AND all three docs AND the prototype.** Two
-sessions have worked these files in parallel repeatedly and it has cost **five** number collisions.
-**Next free number: #88** *(#86 is claimed above; **#87 shipped 2026-08-10**, and it is the fifth
-collision - it was written as #86 and renumbered after the fact, because a parallel session claimed
-#86 and took build log 8f.115 on the same day).*
+> ## ⛔ DO NOT PICK A NUMBER. ASK FOR ONE.
+>
+> ```
+> powershell -NoProfile -ExecutionPolicy Bypass -File tools\claim.ps1 number
+> ```
+>
+> **Run it before you write anything.** It scans the docs, the prototype and `shots/`, hands you a
+> `#NN` and an `8f.NNN`, and reserves them in a file that cannot be created twice, so a session
+> running beside you cannot be given the same ones. `claim.ps1 status` says who holds what.
+> **`git commit` now refuses a change that spends a number somebody else is holding.**
+>
+> **This replaced a sentence in this document, and the sentence was the bug.** It said *next free
+> #NN*, it was maintained by hand, and it was written **last**: the code and `shots/` get the number
+> first. So at the moment the other session grepped, this line was already wrong. That cost **five
+> collisions** and nearly two more on 2026-08-11, when both docs said *next free #89* while two
+> sessions were both building #89. ⚑ **Neither tell was in a document.** `ls -t shots/` caught both,
+> which is why the script reads `shots/` too.
+>
+> Full rules, and what else two sessions collide on: [`PARALLEL_SESSIONS.md`](PARALLEL_SESSIONS.md).
+> **If you are going to change the prototype, take it first:** `claim.ps1 lock -Title "..."`.
 
 **Which model builds it.** 🧠 **STRONG** for anything touching the two AI brains, morale, the save,
 combat rules or the game's voice: every expensive bug here was subtle-systemic, and the tone is as

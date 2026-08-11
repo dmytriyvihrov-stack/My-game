@@ -209,6 +209,82 @@ hard at 4, comfortable at 6+).
 
 ---
 
+## 89 - The combat benchmark, and the three things it did not measure
+
+> ⚙ **NO SCREEN** (a tool and a document) - it measures ⚔ the battle board
+> **SYSTEMS** `tools/harness.js` (`runFight`, `measure`) · `paced()` / `PACE` · the eight fights ·
+> `u.acts` · `actionsMax` · `moveBudget`
+> **DOCUMENT** [`COMBAT_BENCHMARK_2026-08-11.md`](../COMBAT_BENCHMARK_2026-08-11.md) - **already
+> written, this entry is the remainder**
+> **RELATED** #13 (the other instrument: that one measures *win rates*, this one measures *shape*) ·
+> #50 ⇠ feeds it · #47 (reading 5 argues for it) · #86 (reading 6 hands it one number) · #84 (its
+> dodge regression is the nearest thing to the hit-rate gap below)
+> **STATE** ✅ **part one and part two are done and saved.** ⛔ Part three's three gaps are open.
+
+**Where it came from (user, 2026-08-11).** Two asks in a row, and the second is the one that made it
+a document:
+
+> *"Can you make analysys of battle system rewiws of: wildermyth, wartales, battle brothers. What is
+> people like and dislike, specifically about the battle? Gather list of them"*
+
+> *"Add also avarage number of turns / action of units / time for battle / skills in avarage per
+> unit - for these games. So we can compare longness and speed and skills easily between that games
+> and mint."*
+
+And then, on filing it: *"Lets save this branch and this thing in backlog. I feel, this is important
+one."*
+
+**Why it earns a number.** It is #88's lesson applied one level up. ⛔ **Measure the box before you
+argue about the font** became ⛔ **measure the fight before you argue about the combat.** Grimtoll
+now has a row in a table beside its three nearest neighbours, so the next "is combat too long / too
+thin / too samey" argument starts from **8.45 rounds, 71.4 unit-turns, 115 actions, 1.61 actions per
+unit-turn, 4.6 skills per unit** instead of from somebody's feeling.
+
+**What is already done.** The document holds three things, none of which needs redoing:
+
+1. **What players like and dislike about all three neighbours**, per game, and **eight patterns that
+   repeat across all three.** The patterns are the transferable part. A complaint in one game is
+   that game's problem; a complaint in all three is a property of the genre.
+2. **The comparison table**, measured for Grimtoll and community-sourced for the other three, plus
+   the per-fight breakdown of all eight canonical fights over five runs each.
+3. **Six readings**, of which the two that matter are `brigand` (2.4x the opener at an even 6 v 6,
+   which is the exact shape of Wartales' *"longer, not harder"*) and the **2:1 enemy skill gap**
+   (4.6 acts on your units against about 2 on theirs).
+
+⚑ **And it closed an open question without setting out to.** #50's parking lot below carries the
+line *"any read below that was about fight LENGTH needs re-measuring before it is trusted - the
+brigand 14-round line especially"*, written after the morale rework. **This is that re-measure:
+`brigand` was 9-11 rounds before #36, 14 after it, and it is 13.6 now.** The morale rework did not
+bring it back down. The parking lot's instruction not to retune the line-of-fire penalties still
+stands on its own terms: it waits on #46 (shipped) and **#47 (not shipped)**.
+
+**The remainder, and it is three measurements.** ⛔ **All three are measurements, not builds.** None
+of them adds a system, which is why this can sit in 🟡 NEXT without arguing with the clarity pass.
+
+| | what is missing | why it is the gap | done when |
+|---|---|---|---|
+| **a** | **The mop-up tail.** No number above isolates *rounds after the outcome was decided* | Patterns 4 and 5 both point at the **end** of a fight, and it is where all three neighbours bleed players. Battle Brothers never closed this wound and it is its second-loudest complaint | `measure()` reports, per fight, the round at which the loser's outcome became inevitable and how many rounds ran after it. **Start with `brigand`** |
+| **b** | **A real stopwatch.** The minutes column is derived from `paced(240)`, not timed | ⚠ A timed AUTO run in the preview pane measures **the pane's throttle**, not the game: `setTimeout` is floored at ~1s there and `rAF` never fires, which is why `tools/harness.js` exists at all. The derivation is written out in the document so it can be argued with, but it is arithmetic | one human, a visible window, a stopwatch, three of the eight fights. Twenty minutes of work, worth more than any refinement of the formula |
+| **c** | **Hit rates were not measured at all** | ⚑ **The loudest single complaint in the loudest of the three games is that honest RNG reads as dishonest** (pattern 3), and Grimtoll's own hit numbers are absent from this document. #84's regression counted 51 dodges to 169 misses, which is the nearest existing data and was gathered for a different question | a distribution, not an average: the streak is what players judge, so what matters is how often a 70% shot misses three times running |
+
+**⚠ The trap in reading 5.** The 2:1 enemy skill gap must **not** be read as *give enemies more
+skills*. Pattern 1 says the anti-repetition mechanic is **composition** variety, not per-unit skill
+count: three enemy types that each demand a different formation beat one enemy type with three more
+buttons. #47 (the spear becomes a zone) is already the right shape - a rework of what a lane means,
+not an addition.
+
+**⚠ The trap in reading 3.** Grimtoll's 1.61 actions per unit-turn is the lowest of the four, and
+Wildermyth's most-praised mechanic (**the swift action, a third thing for free**) is the cheapest
+known fix, costing only a cost change on acts that already exist. ⛔ **It is still an addition and
+the clarity pass forbids additions.** Written down here so it is not rediscovered as a new idea.
+
+**Verify:** all three measurements land in
+[`COMBAT_BENCHMARK_2026-08-11.md`](../COMBAT_BENCHMARK_2026-08-11.md) under part three, replacing
+the "what this does not cover" section item by item; the derived minutes column is replaced with a
+timed one and marked as measured; and the mop-up number for `brigand` is compared against `clash`.
+
+---
+
 ## 32 — Routing needs help to come back from (the rally rule)
 
 > ⚔ **THE BATTLE BOARD** — every fight that has routing in it, which is all of them
@@ -1386,6 +1462,11 @@ touch, because it is downstream of everything else in the list.
   a rarer thing now, so any read below that was about fight LENGTH needs re-measuring before it is
   trusted** — the brigand 14-round line especially. The eight fights were run clean at the time
   and their outcomes did not move, but that is a smoke test, not a balance measurement.
+  ✅ **RE-MEASURED 2026-08-11 by #89** ([`COMBAT_BENCHMARK_2026-08-11.md`](../COMBAT_BENCHMARK_2026-08-11.md)):
+  **`brigand` reads 13.6 rounds over five runs, so the morale rework did NOT bring it back down**
+  (9-11 before #36, 14 after it, 13.6 now). All eight fights have a current length in that document.
+  ⛔ The instruction below not to retune the line-of-fire penalties for it is untouched by this and
+  still stands: it waits on #46 (shipped) and **#47 (not shipped)**.
 - **#27** — Hill Steading 1/30 vs Snare 30/30, pre-rework, needs re-measuring.
 - **#30's survivors** — the Oversized Quiver and the mage wind-up outlived the repeat penalty that
   justified them; the quiver's contract needs a new job before it can be costed.
@@ -1950,6 +2031,153 @@ arena sweep when it ships, and the sweep is part of the entry rather than follow
 
 ---
 
+
+## 91 - The battle screen, redone to the user's seventeen points
+
+> ⚔ **THE BATTLE BOARD**, the whole frame this time, not one panel
+> **SYSTEMS** `render()` · `#bLeft` (dies) · `#bTop` · `#bLogWrap` · `#bTip` (dies) · `#bLegend`
+> (merges) · the `.act` list (becomes cards) · `selectAct` · `clickHex` · the hover path ·
+> `moveBudget` · `LADDER` / `umood` · `statusesOn` · the `CAM` default stop · `#bRead` (unchanged)
+> **RELATED** #88 (the unit panel pass this supersedes in part; its open warmage-scroll remainder
+> dissolves, a horizontal row fits all seven) · #86 (the clarity pass this belongs to) · #66 (camera
+> stops) · #81 (PACE stays, as an icon) · #84 (the floats stay) · #87 (the verb animations are the
+> other half of "the board explains itself") · #83 (the phone rotation must survive this)
+> **STATE: ✅ SHIPPED 2026-08-11, build log 8f.121** - mocked, picked (A · THE FRAME with B's
+> on-card damage) and built in one day. The record is the changelog row; the test bench section is
+> in `WHAT_TO_TEST.md`; the pictures are `shots/91_before.html`, `shots/91_after.html` and the
+> three-frame mockup page. **This section stays on the shelf, against its own convention, for one
+> reason: it holds the user's seventeen points verbatim**, and the shared ruleset below is the
+> reference for what each behaviour promised.
+
+**The request, verbatim (2026-08-11), all seventeen points.** *Kept whole because every one is a
+ruling; the numbers below refer back to these.*
+
+> *"0) I want completly redo some of battle logic screen - so it is simplier and smoother and ui
+> elements take less space. 1) Show active damage from main atack. 2) Show dagame recived or done
+> (i think it works now?). 3) Skills on the bottom in the midle of the screen. Wildermyth style -
+> picture and a name. Hower description and more details (still question about actions and damage
+> direct). 4) basic movment is defalt action - so you don't need to click it 10 times. 5) When you
+> hover on enemy and he is on your reach - defalt atack. 6) (while hovering on movment or enemy for
+> that default actions highlight this choice of the screen). 7) Engagment and other statuses
+> (poison, bleed) - show icon on top of character) more warteles style (still not sure, will we
+> have enought space). 8) Left down / stats of character: actions left armor, health, chance to
+> hit, dodge chance (battlebrothers / wyldermyth), hexes speed. Also Final Fantasy Tactics - could
+> be inspiration for it. 9) Make descriptions of skills shorter and more specific. 10) Nerve - 100%
+> make smaller taking space. 11) Combat log make smaller, adjusteble and with accordion - on high
+> left up part or down right part. It takes small amount on screen (wyldermyth or battlebrothers).
+> 12) undo movement if the movement hasn't changed the state of the game. 13) Only name of the
+> trait, other on hover. 14) On the top ammount of your guys and enemies lef and turn. Like
+> battlebrothers. 15) on default combat field a bit closer (it would happen when we will reduce
+> noise abowe). 16) Mood state visible only when it gives buffs and debufs. Change icon as raised
+> white flag when running. 17) Order of turns - without initative and make it a bit smaller itself,
+> so it can be put also down. So as main result - ui takes less space and show the main information
+> and battlfield. Less clutter, more importance. Create 2-3-4 possible placement of all this
+> ellements and send me for aprove and pcik"*
+
+**The measurement, before anything was drawn** *(the clarity-pass rule: measure the box first)*:
+the stage is 1280x720 and the board gets **980x544 = 57.8%** of it; **42.2% is chrome**: the 300px
+left column (23.4% of width, full height), the 72px order strip, the 104px log, plus a 330px legend
+float and a 262px hover card. **262 words** are on screen at round I before the player has acted.
+Skill rows are 270x38 in a scrolling column; the warmage overflows it by about one card (#88's open
+remainder).
+
+**What already exists and only needed confirming, not building:** damage floats on give and take
+(point 2: `fx()` plus #84's six miss/dodge lines) · per-target hit % and the honest hitpoint range
+drawn on the board when an attack is live (`hodds`/`hdmg`, points 1 and 5's numbers) · status and
+formation badges stacked on the token edge with hover text (point 7: `statusesOn`, `stbadge`) · the
+white flag on a routed body (point 16 half: `wflag`) · the trait clamped with full text on hover
+(point 13 half, 8f.117) · the full nerve ladder as a hover (point 10 half: the `TIP` explainer).
+**The redesign's job is the chrome, not the facts.**
+
+### The shared ruleset (ships with any pick; behaviour, not placement)
+
+1. **MOVE is the standing default** *(4)*. Nothing selected means a click on a reachable hex walks
+   there; after every resolved act the selection returns to MOVE. The MOVE card stays visible as
+   the lit DEFAULT card. Touch: `selectAct`/`clickHex`/`render` only. ⛔ **Not the brains**: `aiTurn`
+   and `autoStep` never read the selection.
+2. **Hover an enemy the current weapon can reach and the attack self-selects** *(5, 6)*: the
+   weapon's card lights, the board prints the existing odds and range numbers on the target, the
+   cursor says strike, click swings. Alternates (KICK, CRIPPLING SHOT) are still chosen by card or
+   hotkey. The main weapon is `acts[k==='main']`.
+3. **The card that would fire lights while its trigger is hovered** *(6)*, both directions: hover a
+   hex, MOVE lights; hover a target, the weapon lights.
+4. **UNDO MOVE** *(12)*, the entry's one genuinely new control, user-ordered. One undo per turn.
+   Restores hex, facing and the spent move budget. **Forfeited the moment the move changed anything
+   but position**: a parting swing taken, a body seen that was not visible before the step, a
+   terrain trigger, any roll. AUTO never uses it.
+5. **A card face is a glyph, a name, the hotkey and the cost pips** *(3)*. The receipt line
+   (acts · range or reach · cooldown · nerve) plus **one effect sentence** live on hover *(9)*.
+   KICK's paragraph is the test case: the paragraph stays in `? RULES`, the hover says one line.
+6. **The plaque** *(8)*: portrait, name, class glyph, trait **name only** *(13)*, then the big
+   numbers: actions left, hexes this move (the same `moveBudget` call, #88's rule), chance to hit,
+   dodge, armour and hitpoint bars, the main weapon's damage range *(1)*, and **nerve as one
+   colored word** *(10)* whose hover is the full ladder.
+7. **The token mood face appears only on rungs that change numbers** *(16)*: 😄 +5/+5% · 😐 −8/−3 ·
+   😟 −12/−5 · 💀 routed under the white flag. 🙂 is the only rung with no modifier and it
+   disappears. *(Today's `loud` split already knows the extremes; the change is that quiet faces
+   go, and 😐 joins the shown set because it does carry a penalty.)*
+8. **The top capsule** *(14)*: standing bodies each side and the round, `⛊ 4 · ROUND I · ☠ 6`,
+   plus whose turn. Routed bodies still count, they can rally.
+9. **The order rail loses its initiative numbers and its printed names** *(17)*: heads only,
+   current lit, name on hover. Where it sits is the pick.
+10. **The log collapses to a live line or two with an accordion** *(11)*; the COMBAT LOGIC legend
+    box dies as a float and becomes the **?** chip on the log header. `#bTip` dies: its act-note
+    job moves to card hover, its ticker job was always the log's.
+11. **The board draws one camera stop closer by default** *(15)*: the freed frame is exactly a
+    ×1.306 linear gain (980 → 1280 of usable width), so the default stop moves one in and the
+    stops themselves stay #66's.
+12. **Unchanged, by name**: the hover readout card `#bRead` with the full to-hit breakdown, the
+    floats, hotkeys 1-9, AUTO / WITHDRAW / PACE (as three icon buttons ▶ ⏱ ⚑), the verb
+    animations, every game rule, both AI brains.
+
+### The three frames sent *(the pick)*
+
+- **A · THE FRAME** (closest to Battle Brothers): counts capsule top-center, the order rail as a
+  34px strip of faces under it, plaque bottom-left, cards bottom-center with END TURN beside them,
+  log collapsed bottom-right. Board ≈ 90%.
+- **B · THE STAGE** (closest to Wildermyth): top edge empty but the capsule, END TURN top-right,
+  log one line top-left, the order a vertical rail of faces down the right edge, bigger cards.
+  **The weapon card carries its damage on its face**, which is one answer to the request's open
+  "actions and damage direct" question; A answers it with the plaque chip, C with hover only.
+  Board ≈ 90%.
+- **C · THE DOCK**: one 98px bottom bar holding plaque, order film, cards, END TURN and log;
+  **nothing ever floats over the board**. Board ≈ 86% and never covered. Tightest fit on a phone.
+
+**The audit against the pass rule (nothing added, only cut, delay, merge):** cut - the 300px
+sidebar as a surface, `#bTip`, the legend float, initiative numbers, printed order names, the
+🙂 faces, and (flagged for the user) `#bFlavor`'s mood line, which the capsule does not carry and
+the log could. Merged - seven sidebar readouts into one plaque, three buttons into three icons,
+legend into the log header. Moved to hover - the nerve ladder, the trait sentence, skill prose,
+order names. **Added: UNDO MOVE and the counts capsule, both ordered in the request itself.**
+
+### Build notes for the session that gets the pick
+
+- **Everything is presentation except rules 1, 2 and 4 of the shared set**, and those live in the
+  click path (`selectAct`, `clickHex`, hover), never in `aiTurn`/`autoStep`. AUTO and enemy turns
+  render through the same chrome untaught.
+- ⚠ **The camera transform stays on `#bGround` and `#bFx` stays outside it** (the README trap).
+  Floating chrome must not re-anchor the fx layer; everything positioned over the board goes
+  through `relPt`.
+- ⚠ **The phone rotation (#83) must be re-verified**: the dock and the floats are new rect readers,
+  and a rect is axis-aligned in screen space. 393x852 portrait, `gt_rot` both ways.
+- **The warmage fits**: seven cards in a row is about 470px against a 1280px band, so #88's
+  scroll remainder dissolves instead of being solved.
+- **Measure the card before the font** (#88's lesson): the longest of the 59 act names must
+  survive the card width at two wrapped lines; three lines is a fail, widen the card.
+- The mockups were built by serializing the live board out of the running game (the hidden pane
+  composites no frames, so `shots/91_part_*.html` hold the field, order strip, log and styles as
+  data; the assembly script pattern is in the session log). **When a picture disagrees with the
+  running build, distrust the serialiser first.**
+
+**Verify when built:** `LINT()` 0 · `regress()` all eight fights · the harness card sweep reads 0
+overlaps and 0 clipped cards at all three camera stops · hotkeys 1-7 land visibly on archer,
+Captain and warmage · word count at round I lands near 60 against 262 · board share ≥ 85% against
+57.8% · UNDO restores hex+facing+budget exactly and refuses after a parting swing, a reveal and a
+bloom trigger · default-move and hover-attack click paths on a reach weapon, a range weapon and
+inside a scrum · the capsule counts track dead/fled/downed/routed correctly · the mood table shows
+exactly the four modifier rungs · a routed body flies the flag on token and rail both.
+
+---
 
 ## Standing rules for whoever picks these up
 

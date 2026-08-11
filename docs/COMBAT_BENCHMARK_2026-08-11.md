@@ -290,14 +290,32 @@ before the next thing that grows it. **The number to watch is unit-turns, not ro
 round means something different at each party size. Twelve units for fifteen rounds is 200-350
 individual decisions. Grimtoll runs 71.
 
-### 2. `brigand` is the outlier and it looks like the Wartales failure mode
+### 2. `brigand` is the outlier, and this measurement answers a question the docs left open
 
 13.6 rounds and 176.6 actions for a 6 v 6. That is **2.4x the opener** and **1.5x the average**, and
-it is not a boss fight. `mother`, which IS the boss, runs 10.6 rounds against two enemies. The
-question `brigand` has to answer is the one Wartales failed: **is it harder, or is it only slower to
-close?** Two candidate causes worth checking before any balance change: an even 6 v 6 with no
-numerical edge either way takes longer to resolve arithmetically, and there may be a cleanup tail
-after the outcome is decided.
+it is not a boss fight. `mother`, which IS the boss, runs 10.6 rounds against two enemies.
+
+⚑ **This was not a new discovery, and that is what makes it worth something.** `brigand` already has
+a written history in #50's parking lot
+([`BACKLOG_ENTRY_SPECS.md`](archive/BACKLOG_ENTRY_SPECS.md)):
+
+| when | read | note |
+|---|---|---|
+| before #36 | **9-11 rounds** | the baseline |
+| after #36 (line of fire) | **14 rounds** | *"the fight most exposed to it"*, with 10 OBSTRUCTED and 10 SCREENED shots in one game. Banked deliberately, not acted on |
+| general tail | median 10, **excursions past 20 at about one run in ten** | banked beside the water-stride entry |
+| after the morale rework | **unknown, and flagged as such** | *"any read below that was about fight LENGTH needs re-measuring before it is trusted - the brigand 14-round line especially"* |
+| **2026-08-11, here** | **13.6 over five runs** | **the re-measure that line asked for** |
+
+**So the answer is: the morale rework did not bring it back down.** It was 14 before and it is 13.6
+after. The parking lot's own instruction was not to retune the line-of-fire penalties for it,
+because #46 and #47 were about to change what a shooter's turn is worth. #46 has since shipped. #47
+has not.
+
+The question `brigand` still has to answer is the one Wartales failed: **is it harder, or is it only
+slower to close?** Nothing measured here separates those. ⚑ **That is precisely why gap (a) below,
+the mop-up tail, is the most valuable of the three open measurements, and why `brigand` is where to
+run it.**
 
 ### 3. The action density is the lowest of the four, which cuts both ways
 

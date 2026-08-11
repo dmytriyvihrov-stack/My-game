@@ -76,54 +76,89 @@ button:disabled{cursor:not-allowed}
 
 /* ================= BATTLE ================= */
 #battle{background:var(--field)}
-#bLeft{width:300px;background:var(--panel);border-right:2px solid var(--line);display:flex;
-       flex-direction:column;flex:none}
-#bMain{flex:1;display:flex;flex-direction:column;min-width:0}
-#bTop{height:72px;background:#111b1c;border-bottom:2px solid var(--line);display:flex;
-      align-items:center;gap:4px;padding:0 9px;flex:none;overflow:hidden}
-#bTop .ohead{font-family:var(--mono);font-size:8px;letter-spacing:.16em;color:#6b8280;
-             writing-mode:vertical-rl;transform:rotate(180deg);margin-right:2px}
-.ord{width:48px;height:58px;background:#1b2728;border-top:3px solid #3d5250;display:flex;
-     flex-direction:column;align-items:center;justify-content:flex-end;position:relative;
-     flex:none;padding-bottom:2px}
-.ord.now{background:#2b3f3e;box-shadow:0 0 0 2px var(--gold),0 0 14px rgba(217,189,126,.45);transform:translateY(-3px)}
+/* ═══ #91 · THE FRAME. The 300px column, the 72px strip and the 104px log
+   are gone: the field is the whole screen and the chrome floats over it.
+   Geometry pre-verified in shots/91_css_bench.html - if a number here looks
+   arbitrary, it was measured there. ═══ */
+/* the counts capsule: standing bodies each side, the round, whose turn */
+#bCap{position:absolute;top:6px;left:50%;transform:translateX(-50%);z-index:40;
+  display:flex;gap:12px;align-items:baseline;background:rgba(13,19,20,.93);
+  border:1px solid #33474a;padding:5px 14px;pointer-events:none}
+#bYouN{font-family:var(--mono);font-size:13px;color:#8ca35a}
+#bFoeN{font-family:var(--mono);font-size:13px;color:#c15d55}
+#bCap #bRound{font-family:var(--mono);font-size:10px;letter-spacing:.16em;color:var(--gold);white-space:nowrap}
+/* the order rail: heads only, in turn order, the current one lit. The
+   initiative NUMBER left the surface entirely (#91 point 17): the ORDER of
+   the rail is the readout, and a name is one hover away on the head. */
+#bTop{position:absolute;top:36px;left:50%;transform:translateX(-50%);z-index:39;
+  display:flex;gap:3px;align-items:flex-end}
+.ord{width:30px;height:34px;background:rgba(20,30,31,.88);border-top:2px solid #3d5250;
+  display:flex;flex-direction:column;align-items:center;justify-content:flex-end;
+  position:relative;flex:none;padding-bottom:1px;overflow:hidden}
+.ord.now{background:#2b3f3e;box-shadow:0 0 0 2px var(--gold),0 0 14px rgba(217,189,126,.45);transform:translateY(-2px)}
 .ord.foe{border-top-color:var(--blood)}.ord.cap{border-top-color:var(--gold)}
-.ord img{image-rendering:pixelated}
-.ord .init{position:absolute;top:1px;right:3px;font-family:var(--mono);font-size:8px;color:#8fa5a2}
-.ord .nm{font-family:var(--mono);font-size:8px;color:#93a8a4;max-width:46px;overflow:hidden;
-         text-overflow:ellipsis;white-space:nowrap}
-.ord .flag{position:absolute;top:12px;left:2px;font-size:10px;line-height:1}
-#bHead{padding:7px 14px;border-bottom:2px solid var(--line)}
-#bRound{font-family:var(--display);font-size:15px;color:var(--t4);font-weight:600}
-#bFlavor{font-size:12px;font-style:italic;color:var(--t3)}
-#bWho{padding:7px 14px;display:flex;flex-direction:column;gap:5px;border-bottom:2px solid var(--line)}
-#bPortrait{width:64px;height:64px;border:1px solid #33474a;flex:none;display:block}
-#bName{font-family:var(--display);font-size:14px;color:var(--t4);font-weight:600;line-height:1.15}
-#bClass{font-family:var(--mono);font-size:9px;letter-spacing:.1em;color:#b09a6e}
-/* THE PERSONALITY, READABLE MID-FIGHT (user: "traits readable on char screen
-   in fight — it would influence"). It was 10.5px grey italic, which is what you
-   use for something nobody needs to read; a personality changes how the unit
-   behaves, so it is now a bordered, legible line with the full text on hover. */
-#bTrait{font-family:var(--body);font-size:11.5px;color:#d8cfae;line-height:1.28;
-  border-left:2px solid #8a7449;padding:1px 0 1px 6px;cursor:help}
-#bTrait b{color:var(--g4);font-weight:600;font-style:normal}
-#bAPbox{display:flex;align-items:center;gap:6px;background:#1a2829;border:1px solid #35494c;
-        padding:3px 7px}
-#bAPnum{font-family:var(--display);font-size:14px;font-weight:700;color:var(--t4)}
-#bAPtxt{font-family:var(--mono);font-size:8px;letter-spacing:.1em;color:#6b8280;line-height:1.15}
-.pip{width:12px;height:12px;background:var(--t4)}
-.pip.spent{background:#2b3a3b;border:1px solid #3d5250}
-.statLine{display:flex;justify-content:space-between;font-family:var(--mono);font-size:9px;color:var(--t3)}
-#bState{font-family:var(--display);font-size:10.5px;letter-spacing:.08em;font-weight:600}
-/* two columns, because these are short phrases now and not four integers */
-#bCore{display:grid;grid-template-columns:1fr 1fr;gap:3px}
-#bCore span{background:#1a2526;border:1px solid #2c3d3f;padding:2px 5px;text-align:center;
-            font-family:var(--body);font-size:10.5px;cursor:help;
-            white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-/* THE MORALE LADDER — see LADDER in the script. Compact in the panel: the
-   current rung named and boxed, the others thin coloured strips, so you can see
-   at a glance both where they are and how far there is to fall. */
-#bLadder{display:flex;flex-direction:column;gap:1px;cursor:help}
+.ord img{image-rendering:pixelated;width:22px;height:auto}
+.ord .flag{position:absolute;top:1px;left:1px;font-size:9px;line-height:1}
+/* AUTO · PACE · WITHDRAW as icon buttons. Same ids, same handlers - the
+   words moved into the title. */
+#bIcons{position:absolute;top:8px;right:8px;z-index:40;display:flex;gap:6px}
+#bIcons button{width:28px;height:28px;background:#1f2d2e;border:1px solid #35494c;
+  display:flex;align-items:center;justify-content:center;font-size:13px;color:#9fb3ae;
+  font-family:var(--body);padding:0}
+#bIcons button:hover:not(:disabled){background:#294041;color:var(--t4);border-color:#4d6b6c}
+#bIcons button:disabled{opacity:.35}
+/* ⚠ SCOPED #bIcons #bAuto for the same reason the old #bOpts rule was:
+   the `#bIcons button` rule above outranks a bare id on display. */
+#bIcons #bAuto{display:none}
+#bIcons #bAuto.on{display:flex}
+#bAuto.live{background:#2c4a3a;border-color:#8ca35a;color:#c3d18a}
+#bPace.off{color:#d9bd7e;border-color:#8a6a34}
+#bFlee:hover:not(:disabled){background:#3a1d18;border-color:var(--blood-lit);color:#e0b0a8}
+#bFlee.locked{opacity:1;background:#241416;border-color:#5a2a2c;color:#8a5a58;cursor:not-allowed}
+/* ═══ the plaque (#91 point 8): the whole left panel at plaque size ═══ */
+#bPlq{position:absolute;left:10px;bottom:10px;width:262px;z-index:40;
+  background:rgba(14,21,22,.95);border:1px solid #35494c;padding:8px 10px;
+  display:flex;flex-direction:column;gap:6px}
+#bPlq .pr1{display:flex;gap:8px;align-items:flex-start}
+#bPortrait{width:40px;height:40px;border:1px solid #33474a;flex:none;display:block}
+#bPlq .pcol{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
+#bName{font-family:var(--display);font-size:13.5px;color:var(--t4);font-weight:600;line-height:1.1}
+#bClass{font-family:var(--mono);font-size:9.5px;letter-spacing:.04em;color:#b09a6e;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* the personality: NAME only (#91 point 13). The sentence is the hover,
+   exactly where 8f.117 already put the full text. */
+#bTrait{font-family:var(--body);font-size:11px;color:#d8cfae;line-height:1.25;cursor:help;
+  display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
+#bTrait b{color:var(--g4);font-weight:600;font-style:normal;border-bottom:1px dotted #6b6046}
+#bStats{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:4px}
+#bStats .pcell{background:#101a1b;border:1px solid #24383a;padding:3px 2px 2px;
+  display:flex;flex-direction:column;align-items:center;gap:1px}
+#bStats .pnum{font-family:var(--display);font-size:15px;font-weight:700;color:var(--t4);line-height:1}
+#bStats .plbl{font-family:var(--mono);font-size:8px;letter-spacing:.04em;color:#8fa5a2;
+  line-height:1.2;text-align:center}
+#bPlq .pbars{display:flex;gap:8px;align-items:center}
+#bPlq .pbwrap{flex:1;display:flex;flex-direction:column;gap:2px;min-width:0}
+/* nerve is one coloured word (#91 point 10); the ladder is its hover */
+#bState{font-family:var(--mono);font-size:10px;letter-spacing:.02em;font-weight:600;
+  border:1px solid #3a4f52;background:#16211f;padding:3px 6px;cursor:help;white-space:nowrap;flex:none}
+/* ═══ THE TWO THINGS A TURN SPENDS, IN ONE BOX, AT ONE SIZE ═════════════
+   Playtest 2026-08-10, the second of three: "it took me a very long time to
+   see where to read a character's step count - it is hidden in small type
+   too." It was true and it was structural. STEP sat in #bDerived, which is
+   a 9.5px grey grid at the BOTTOM of the panel, wedged between four other
+   integers - and a player asking "how far can I walk" had no reason on
+   earth to look there.
+   A turn spends exactly two things: actions and hexes. So they are read in
+   the same box, at the same size, in the same idiom, and that box is the
+   one bordered thing at the top of the panel.
+   ⚠ THE THREE ACTION PIPS PAID FOR THE ROOM, and they were the cheapest
+   thing on the panel to lose: the numeral beside them already said "3 OF
+   3" in words. Three ways of saying one fact is the FIRST half of the same
+   report ("too many numbers everywhere"), so cutting them answers a
+   complaint rather than merely making space. */
+.statLine{display:flex;justify-content:space-between;font-family:var(--mono);font-size:10px;color:var(--t3)}
+/* THE MORALE LADDER lives in the nerve chip's hover now (#91 point 10):
+   .lrung and .ladfull stay because ladderHTML() still draws it there. */
 .lrung{display:flex;align-items:center;gap:5px;border:1px solid transparent;padding:1px 5px;
   min-height:0}
 .lrung.off{height:4px;padding:0;opacity:.55}
@@ -137,31 +172,68 @@ button:disabled{cursor:not-allowed}
 .ladfull .lrung .lnm{width:74px;flex:none}
 .ladfull .lrung .lpc{font-family:var(--mono);font-size:9px;color:#7a6238;flex:none}
 .ladfull .lrung .lds{flex:1 1 100%;padding-left:22px}
-#bDerived{display:grid;grid-template-columns:1fr 1fr;gap:1px 9px;font-family:var(--mono);
-          font-size:9.5px;color:#7d9490;border-top:1px solid #243435;padding-top:4px}
-#bDerived span{display:flex;justify-content:space-between}#bDerived b{color:#a8b5b3;font-weight:500}
-#bActions{padding:6px 14px;display:grid;grid-template-columns:1fr 1fr;gap:5px}
-.act{height:46px;background:#1f2d2e;border:1px solid #35494c;padding:0 8px;display:flex;
-     flex-direction:column;justify-content:center;gap:1px;position:relative}
-.act:hover:not(:disabled){background:#294041;border-color:#4d6b6c}
-.act.sel{background:#243a38;border-color:var(--t4)}
-.act.arc{border-color:#5d3350}.act.arc b{color:var(--bloom-lit)}
-.act:disabled{opacity:.3}
-/* still warm. Reads as "coming back", not as "broken" — a cooling ability is
-   a promise about next turn, so it stays legible instead of greyed to nothing */
-.act.cool{opacity:.62;border-color:#5a4a2a;background:#241f14}
-.act.cool:disabled{opacity:.62}
-.act.cool b{color:#c9a227}
-.act u.cd{position:absolute;right:6px;top:5px;font-family:var(--display);font-size:13px;
-  font-weight:700;color:#c9a227;text-decoration:none;line-height:1}
-/* the number key that fires this action — see the keydown handler */
-.act .key{position:absolute;left:4px;top:3px;font-family:var(--mono);font-size:8.5px;
-  color:#6b8280;border:1px solid #35494c;border-radius:2px;padding:0 3px;line-height:1.4}
-.act.sel .key{color:var(--t4);border-color:var(--t4)}
-.act b{font-family:var(--display);font-size:11px;color:var(--t4);font-weight:600;
-       display:flex;align-items:center;gap:4px}
-.act .gi{font-size:12px;line-height:1;color:#8fb0aa;font-family:var(--body)}
+/* #bDerived is gone (#91): CHANCE TO HIT and DODGE are two of the plaque's
+   four big numbers, and ENGAGED was the board's fact all along - the red
+   threat edges and the rings say it where it happens. */
+/* ═══ THE CARDS (#91 point 3, the picked frame): one horizontal row,
+   bottom-centre, Wildermyth face - glyph, name, hotkey, cost pips, and B's
+   on-card damage. The receipt line and ONE effect sentence live on the
+   hover popover; the paragraph stays in ? RULES.
+   #88's lesson carried over sideways: measured in shots/91_css_bench.html,
+   the warmage's seven cards run 450px against a 1280px band with 98px of
+   clearance to the right-hand column, and the longest name in the file
+   wraps to two clamped lines with nothing clipped. The hotkey keeps a
+   corner nothing else may enter; the cooldown veils the whole face. */
+#bActions{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);z-index:40;
+  display:flex;flex-direction:row;align-items:flex-end;gap:5px}
+.act{width:60px;height:84px;background:linear-gradient(#1e2c2d,#141f20);border:1px solid #3a4f52;
+  flex:none;position:relative;display:flex;flex-direction:column;align-items:center;
+  padding:0;transition:transform .12s ease}
+.act:hover:not(:disabled){background:linear-gradient(#25383a,#182425);border-color:#4d6b6c}
+.act.sel{border-color:var(--gold);transform:translateY(-6px);
+  box-shadow:0 0 0 1px var(--gold),0 6px 16px rgba(0,0,0,.5)}
+.act.arc{border-color:#5d3350}
+.act:disabled{opacity:.35}
+.act.cool{border-color:#5a4a2a}
+.act .gi{font-size:21px;line-height:1;color:#cfd8d6;margin-top:10px;font-family:var(--body)}
 .act.arc .gi{color:var(--bloom-lit)}
+.act b{font-family:var(--mono);font-size:8px;letter-spacing:.02em;color:#b8c4c1;font-weight:500;
+  text-align:center;line-height:1.25;margin-top:4px;padding:0 2px;
+  display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;
+  width:100%;box-sizing:border-box}
+.act.sel b{color:var(--t4)}
+.act.cool b{color:#c9a227}
+/* B's element: the damage range on the card's face (#91 point 1) */
+.act .adm{font-family:var(--mono);font-size:9px;color:var(--gold);line-height:1;margin-top:2px}
+.act .cost{position:absolute;bottom:3px;left:0;right:0;text-align:center;
+  font-size:8px;color:var(--gold);letter-spacing:.18em}
+.act .key{position:absolute;top:2px;left:2px;font-family:var(--mono);font-size:10px;
+  background:#16211f;color:#93a8a4;border:1px solid #3d5250;border-radius:2px;
+  width:14px;height:14px;display:flex;align-items:center;justify-content:center;line-height:1}
+.act.sel .key{color:var(--t4);border-color:var(--t4)}
+/* the used-counter, top-right, its own ground */
+.act u{position:absolute;top:2px;right:2px;font-family:var(--mono);font-size:9.5px;
+  color:#6b8280;text-decoration:none;line-height:1;background:rgba(16,22,21,.85);
+  padding:2px 3px;border:1px solid #2c3f41}
+/* still warm reads as coming back: the veil carries the number, big */
+.act.cool:before{content:attr(data-cd);position:absolute;inset:0;z-index:2;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--display);font-size:24px;font-weight:700;color:#c9b98a;
+  background:rgba(10,14,15,.55);pointer-events:none}
+/* #67 - holding a working is not a cooldown, and the veil says which */
+.act.gath:before{content:'✷';position:absolute;inset:0;z-index:2;
+  display:flex;align-items:center;justify-content:center;font-size:22px;color:var(--bloom-lit);
+  background:rgba(20,10,18,.5);pointer-events:none}
+/* the popover: receipt line + one sentence. CSS-only, so it cannot leak */
+.act .pop{position:absolute;bottom:92px;left:50%;transform:translateX(-50%);width:210px;
+  background:rgba(10,15,16,.97);border:1px solid #4c6a6d;padding:8px 10px;z-index:60;
+  display:none;flex-direction:column;gap:3px;pointer-events:none;text-align:left}
+.act:hover .pop{display:flex}
+.act .pop .pt{font-family:var(--display);font-size:12px;color:#e0d3b4;font-weight:600}
+.act .pop .pr{font-family:var(--mono);font-size:9px;color:#8a9a5c;letter-spacing:.04em;font-style:normal}
+.act .pop .pd{font-family:var(--body);font-size:11px;color:#b9c6c3;line-height:1.4;font-style:normal}
+/* #91 rule 3: the card that would fire lights while its trigger is hovered */
+.act.hoverfire{border-color:#8fb0aa;box-shadow:0 0 0 1px #8fb0aa,0 0 10px rgba(143,176,170,.35)}
 /* the Captain, unmistakable — the crest above the token, one size larger */
 .crest.big{font-size:15px;top:-5px;filter:drop-shadow(0 0 4px #000) drop-shadow(0 0 7px #d9bd7e)}
 /* ═══ WHICH WAY THEY ARE LOOKING ══════════════════════════════════════
@@ -277,70 +349,66 @@ button:disabled{cursor:not-allowed}
    above the 25% line, and the badge was losing half of itself to it */
 .wbadge{position:absolute;top:13px;right:2px;font-size:12px;line-height:1;
         font-family:var(--body);text-shadow:0 0 3px #000,0 0 3px #000,0 1px 2px #000}
-.act i{font-family:var(--mono);font-size:9px;color:#8fa5a2;font-style:normal}
-.act u{position:absolute;top:2px;right:3px;font-family:var(--mono);font-size:7px;color:#4d6b6c;
-       text-decoration:none}
-/* ── THE BATTLE LOG, along the bottom of the field ──────────────────
-   The left panel's tip line shows the CURRENT thing; this shows the whole
-   fight in order, because an entire enemy turn used to scroll past in a
-   single-line box and the player never saw what hit them. */
-#bLogWrap{flex:none;height:104px;background:#111b1c;border-top:2px solid var(--line);
-          display:flex;flex-direction:column;min-height:0}
-#bLogHead{display:flex;align-items:center;gap:10px;padding:3px 12px 1px}
-#bLogRound{font-family:var(--mono);font-size:8px;color:#5d7472;letter-spacing:.1em}
-#bLog{flex:1;overflow-y:auto;padding:0 12px 5px;display:flex;flex-direction:column;gap:1px}
-#bLog .ll{font-size:12px;line-height:1.3;color:#8b9a99;font-family:var(--body);
-          border-left:2px solid transparent;padding-left:7px}
+/* what it costs. It is the line that answers "can I afford this", so it is
+   read type now and not a watermark. #91: it is the popover's receipt line. */
+/* ── THE BATTLE LOG (#91 point 11): a floating box, bottom-right, collapsed
+   to the last lines. The header is the accordion, and COMBAT LOGIC lives on
+   it as the ? chip. Sits above #reactBar, which keeps the corner. ── */
+#bLogWrap{position:absolute;right:8px;bottom:44px;width:308px;z-index:41;
+  background:rgba(13,19,20,.93);border:1px solid #33474a;
+  display:flex;flex-direction:column}
+#bLogHead{display:flex;align-items:center;gap:6px;padding:4px 8px;cursor:pointer;
+  border-bottom:1px solid #223335;user-select:none}
+#bLogHead>.lgcar{font-size:8px;color:#8a9a5c;transition:transform .12s}
+#bLogWrap.open #bLogHead>.lgcar{transform:rotate(90deg)}
+#bLogRound{font-family:var(--mono);font-size:8px;color:#5d7472;letter-spacing:.1em;margin-left:auto}
+#bLog{height:46px;overflow-y:auto;padding:2px 8px 4px;display:flex;flex-direction:column;gap:1px}
+#bLogWrap.open #bLog{height:330px}
+#bLog::-webkit-scrollbar{width:6px}
+#bLog::-webkit-scrollbar-thumb{background:#35494c}
+#bLog .ll{font-size:10.5px;line-height:1.3;color:#8b9a99;font-family:var(--body);
+          border-left:2px solid transparent;padding-left:6px}
 #bLog .ll.mine{color:#cfe3d8;border-left-color:#4d6b6c}
 #bLog .ll.foe{color:#e0a89c;border-left-color:var(--blood)}
 #bLog .ll.big{color:#e0d3b4;font-style:italic;border-left-color:var(--gold)}
-#bLog .ll.rd{color:#5d7472;font-family:var(--mono);font-size:8.5px;letter-spacing:.14em;
-             margin-top:4px;border-left-color:transparent}
-#bTip{margin:0 14px 6px;padding:6px 9px;background:#1a2728;border-left:3px solid var(--blood);
-      font-size:13px;color:#bcc3c5;font-style:italic;line-height:1.35;min-height:44px}
-#bOpts{margin:0 14px 6px;display:grid;grid-template-columns:1fr 1fr;gap:6px}
-#bOpts button{height:30px;background:#1f2d2e;border:1px solid #35494c;display:flex;
-              align-items:center;justify-content:center;font-family:var(--display);
-              font-size:11px;letter-spacing:.06em;color:#9fb3ae}
-#bOpts button:hover:not(:disabled){background:#294041;color:var(--t4);border-color:#4d6b6c}
-#bOpts button:disabled{opacity:.35}
-/* ⚠ AUTO IS A TESTER TOOL NOW, NOT A PLAYER CONTROL (user, 2026-08-02: "make
-   auto battle workble only it test mode. It is good placment - but for now
-   hide from the main uild. I want to see how people would play without this
-   shortcut"). The PLACEMENT is kept exactly as it was, because he said it was
-   right - it is only the visibility that moved, so turning it back on is one
-   line and nothing has to be re-found. Same `display:none` / `.on` gate as
-   WIN NOW and LINT, driven from the one authority, syncTest(). It used to
-   give its whole row to WITHDRAW when hidden; #81's PACE button is now the
-   other half of that row, so the odd one out is PACE when AUTO is showing.
-
-   ⚠ SCOPED `#bOpts #bAuto` AND NOT `#bAuto`: the `#bOpts button` rule above
-   sets `display:flex`, and an id PLUS a type outranks a bare id. A plain
-   `#bAuto{display:none}` loses silently and the button stays on screen
-   looking exactly as though the gate were working. */
-#bOpts #bAuto{display:none}
-#bOpts #bAuto.on{display:flex}
-/* three buttons only ever happen in test mode; PACE takes the second row */
-#bOpts:has(#bAuto.on) #bPace{grid-column:1/-1}
-#bAuto.live{background:#2c4a3a;border-color:#8ca35a;color:#c3d18a}
-/* #81 - off the shipped default reads as a deliberate setting, not a default */
-#bPace{font-family:var(--mono)!important;font-size:10px!important;letter-spacing:.1em!important}
-#bPace.off{color:#d9bd7e;border-color:#8a6a34}
-#bFlee:hover:not(:disabled){background:#3a1d18;border-color:var(--blood-lit);color:#e0b0a8}
-/* a fight you cannot leave says it plainly instead of being a dead grey button */
-#bFlee.locked{opacity:1;background:#241416;border-color:#5a2a2c;color:#8a5a58;
-  text-decoration:line-through;cursor:not-allowed}
-#bEnd{margin:0 14px 9px;height:38px;flex:none;background:var(--blood);border:1px solid var(--blood-lit);
-      display:flex;align-items:center;justify-content:center;font-family:var(--display);
-      font-weight:700;font-size:14px;color:#eae7de;letter-spacing:.08em}
+#bLog .ll.rd{color:#6e8785;font-family:var(--mono);font-size:9px;letter-spacing:.14em;
+             margin-top:3px;border-left-color:transparent}
+/* #bTip is gone (#91): its act-note job moved to the card popover, and its
+   ticker job was always the log's. say() already guards the missing box. */
+/* END TURN and UNDO, the right-hand column above the log. Geometry measured
+   in the bench: the log box is 79px tall collapsed, so END sits at 126. */
+#bEnd{position:absolute;right:8px;bottom:126px;width:308px;height:40px;z-index:40;
+  background:var(--blood);border:1px solid var(--blood-lit);
+  display:flex;align-items:center;justify-content:center;font-family:var(--display);
+  font-weight:700;font-size:14px;color:#eae7de;letter-spacing:.1em}
 #bEnd:hover{background:#93292c}
 #bEnd:disabled{background:#3a2426;border-color:#4a2e30;color:#7d6f6c}
+/* #91 point 12 - shown only while the last move can still be taken back */
+#bUndo{position:absolute;right:8px;bottom:170px;width:308px;height:26px;z-index:40;
+  display:none;align-items:center;justify-content:center;gap:6px;
+  background:#1f2d2e;border:1px solid #4d6b6c;font-family:var(--mono);
+  font-size:10px;letter-spacing:.12em;color:#9fb3ae}
+#bUndo.on{display:flex}
+#bUndo:hover{background:#294041;color:var(--t4)}
+/* the legend as the ? chip on the log header; its body opens above the box */
+#bLegend{position:relative;margin-left:4px}
+#bLegend>.lbl{display:flex;align-items:center;justify-content:center;cursor:pointer;
+  border:1px solid #35494c;background:#16211f;width:16px;height:14px;color:#8fa5a2;font-size:9px}
+#bLegend>.lbl:hover{color:#c9c6bb;border-color:#4d6b6c}
+#bLegend .lgbody{display:none;position:absolute;bottom:22px;right:-9px;width:300px;
+  background:rgba(12,17,19,.96);border:1px solid #33474a;padding:8px 10px;
+  flex-direction:column;gap:3px;z-index:60}
+#bLegend.open .lgbody{display:flex}
+#bLegend .lg{display:flex;align-items:center;gap:6px;font-size:11px;color:#a8b5b3}
+#bLegend .sw{width:12px;height:12px;flex:none}
+/* the whisper stays clear of the card row while a battle is up */
+body:has(#battle.on) .whisp{bottom:138px}
 /* ⚠ #66 — overflow:hidden is what makes the camera safe. Past FULL the board
-   is larger than the field, and without this it would spill over the unit
-   panel and the order bar. #bRead already clamps itself inside the field
-   (placeRead), so nothing legitimate is cut by it. */
-#bField{flex:1;position:relative;background:radial-gradient(ellipse at 42% 60%,#2b3a3b,#101819 78%);
-        display:flex;align-items:center;justify-content:center;overflow:hidden}
+   is larger than the field, and without this it would spill over the chrome.
+   #bRead already clamps itself inside the field (placeRead).
+   #91: the field IS the screen now - the chrome floats over it. */
+#bField{position:absolute;inset:0;background:radial-gradient(ellipse at 42% 60%,#2b3a3b,#101819 78%);
+        overflow:hidden}
 /* painted ground under the hex overlay.
    ═══ #66 — THE CAMERA LIVES ON THIS ELEMENT AND ONLY ON THIS ELEMENT ═══
    It used to be an in-flow box centred by #bField's flex. It is absolute now
@@ -356,7 +424,8 @@ button:disabled{cursor:not-allowed}
 #bTerrain{position:absolute;left:0;top:0;pointer-events:none;width:600px;height:440px}
 /* ═══ #66 — the three stops. A state, not a number: no slider, no percentage.
    Top-right because bottom-right belongs to #53's reaction bar. ═══ */
-#bZoom{position:absolute;right:10px;top:10px;z-index:9;display:flex}
+/* #91: shifted left so the AUTO/PACE/WITHDRAW icons keep the corner */
+#bZoom{position:absolute;right:112px;top:8px;z-index:9;display:flex}
 #bZoom b{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;padding:5px 8px;
   background:rgba(12,17,19,.92);border:1px solid #2c3d3f;border-right:none;
   color:#6b8280;font-weight:400;cursor:pointer;user-select:none}
@@ -706,32 +775,17 @@ button:disabled{cursor:not-allowed}
       background:linear-gradient(#0f1618 0%,rgba(15,22,24,0) 24%,rgba(15,22,24,0) 76%,
                  rgba(15,22,24,.55) 100%)}
 /* the Winds of Magic strip lived here. Cut — see "THE COST OF CASTING". */
-#bRead{position:absolute;width:240px;background:rgba(12,17,19,.96);border:1px solid #3d5250;
+#bRead{position:absolute;width:262px;background:rgba(12,17,19,.96);border:1px solid #3d5250;
        border-top:3px solid var(--blood);padding:9px 11px;display:none;flex-direction:column;gap:4px;
        pointer-events:none;z-index:8}
 #bRead.on{display:flex}
-#bRead .rr{display:flex;justify-content:space-between;font-family:var(--mono);font-size:9.5px;color:#a8b5b3}
+/* the card the player reads before EVERY swing, and it was 9.5px. 11px, and
+   the card widened by 22px to hold it without wrapping. */
+#bRead .rr{display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;color:#b9c6c3}
 #bRead .big{font-family:var(--display);font-size:20px;font-weight:700}
-/* ═══ COMBAT LOGIC IS AN ACCORDION ═════════════════════════════════════
-   User, after a playthrough: "make as accordion, so it doesn't overlap the
-   screen." It was a permanent four-line block sitting on the bottom-left
-   corner of the board — useful on the first fight and in the way on every
-   one after it. Now it is one collapsed strip that opens on click and stays
-   however the player left it (`G.legendOpen`, saved with the run). It also
-   has `pointer-events` again, which it deliberately did not: it is the only
-   thing over the field that is allowed to take a click, and it sits outside
-   the hex grid, so no hex is covered by a control. */
-#bLegend{position:absolute;left:9px;bottom:9px;background:rgba(12,17,19,.92);border:1px solid #33474a;
-         padding:5px 8px;display:flex;flex-direction:column;gap:3px;max-width:330px;
-         pointer-events:auto;cursor:pointer;user-select:none}
-#bLegend:hover{border-color:#4c6a6d}
-#bLegend .lbl{display:flex;align-items:center;gap:5px}
-#bLegend .lgcar{font-size:8px;color:#6f8785;transition:transform .12s}
-#bLegend.open .lgcar{transform:rotate(90deg)}
-#bLegend .lgbody{display:none;flex-direction:column;gap:3px;margin-top:4px}
-#bLegend.open .lgbody{display:flex}
-#bLegend .lg{display:flex;align-items:center;gap:6px;font-size:11px;color:#a8b5b3}
-#bLegend .sw{width:12px;height:12px;flex:none}
+/* COMBAT LOGIC was an accordion in the field's corner; #91 folded it into
+   the log header as the ? chip. Its rules live beside the log CSS now, and
+   `G.legendOpen` still remembers how the player left it. */
 
 /* ================= WORLD ================= */
 #world{background:var(--g-ink);flex-direction:column}
@@ -1372,66 +1426,74 @@ a.popt.sendit{display:block;text-decoration:none}
 </section>
 
 <section class="screen" id="battle">
-  <div id="bLeft">
-    <div id="bHead"><div id="bRound">ROUND I</div><div id="bFlavor">the fog is picking sides</div></div>
-    <div id="bWho">
-      <div style="display:flex;gap:8px">
-        <canvas id="bPortrait" width="64" height="64"></canvas>
-        <div style="flex:1;display:flex;flex-direction:column;gap:2px;min-width:0">
-          <div id="bName"></div><div id="bClass"></div><div id="bTrait"></div>
-          <div id="bAPbox" style="margin-top:2px">
-            <span id="bAPnum">3</span><span id="bAPtxt">OF 3<br>ACTIONS</span>
-            <span id="bAp" style="display:flex;gap:3px;margin-left:auto"></span></div>
-        </div>
-      </div>
-      <div id="bCore"></div>
-      <div style="display:flex;flex-direction:column;gap:3px">
+  <!-- ═══ #91 · THE FRAME. The field is the whole screen and the chrome
+       floats over it: counts capsule top-centre, the order rail of faces
+       under it, plaque bottom-left, cards bottom-centre with the damage on
+       their faces, END TURN and the accordion log bottom-right. Every id
+       render() writes to survived the move, so the panel logic did not. ═══ -->
+  <div id="bField">
+    <div id="bGround"><canvas id="bTerrain" width="600" height="440"></canvas>
+      <div id="bGrid"></div></div>
+    <div id="bFx"></div><div id="bVig"></div><div id="bZoom"></div>
+    <div id="bRead">
+      <div id="rName" style="font-family:var(--display);font-size:13.5px;color:var(--t4)"></div>
+      <div style="display:flex;align-items:baseline;gap:8px">
+        <span class="big" id="rHit">—</span>
+        <span style="font-family:var(--mono);font-size:10.5px;color:#8fa5a2">CHANCE TO HIT</span></div>
+      <div class="rr"><span>your skill</span><span id="rSkill"></span></div>
+      <div class="rr"><span>their dodge</span><span id="rDodge" style="color:#8ca35a"></span></div>
+      <div class="rr"><span>flanking</span><span id="rFlank"></span></div>
+      <div class="rr"><span>other</span><span id="rOther"></span></div>
+      <div style="height:1px;background:#2c3d3f"></div>
+      <div class="rr"><span>ARMOUR DAMAGE</span><span id="rArm" style="color:var(--steel)"></span></div>
+      <div class="rr"><span>HITPOINT DAMAGE</span><span id="rHp" style="color:#c15d55"></span></div>
+      <div class="rr"><span>MORALE</span><span id="rMor"></span></div>
+      <div id="rNote" style="font-size:12px;font-style:italic;color:var(--t3);line-height:1.28"></div>
+    </div>
+  </div>
+  <!-- the counts capsule: standing bodies each side, the round, whose turn -->
+  <div id="bCap"><span id="bYouN">⛊ —</span><span id="bRound">ROUND I</span><span id="bFoeN">☠ —</span></div>
+  <!-- the order rail: faces in turn order, no numbers, names on hover -->
+  <div id="bTop"></div>
+  <!-- AUTO · PACE · WITHDRAW as icons. Same ids, same handlers. -->
+  <div id="bIcons"><button id="bAuto" title="AUTO — the company fights itself">▶</button><button id="bPace" title="How fast the battlefield plays. Nothing about the fight changes - only how long you get to watch it.">⏱</button><button id="bFlee" title="Leave the field. No spoils, the company takes it badly, and the place is done with.">⚑</button></div>
+  <!-- ═══ the plaque (#91 point 8): the whole left panel at plaque size.
+       The big four are what the turn spends (#88's box, same moveBudget
+       call) and what the aiming layer reads. Nerve is one coloured word
+       whose hover is the five-rung ladder. ═══ -->
+  <div id="bPlq">
+    <div class="pr1"><canvas id="bPortrait" width="64" height="64"></canvas>
+      <div class="pcol"><div id="bName"></div><div id="bClass"></div><div id="bTrait"></div></div>
+    </div>
+    <div id="bStats">
+      <div class="pcell"><span class="pnum" id="bAPnum">2</span><span class="plbl" id="bAPtxt">OF 2<br>ACTIONS</span></div>
+      <div class="pcell"><span class="pnum" id="bStepNum">4</span><span class="plbl" id="bStepTxt">HEXES<br>THIS MOVE</span></div>
+      <div class="pcell"><span class="pnum" id="bHitN">—</span><span class="plbl">CHANCE<br>TO HIT</span></div>
+      <div class="pcell"><span class="pnum" id="bDodgeN">—</span><span class="plbl">DODGE</span></div>
+    </div>
+    <div class="pbars">
+      <div class="pbwrap">
         <div class="statLine"><span>ARMOUR</span><span id="bArmN"></span></div>
         <div class="bar" style="background:#243133"><i id="bArm" style="background:var(--steel)"></i></div>
         <div class="statLine"><span>HITPOINTS</span><span id="bHpN"></span></div>
         <div class="bar" style="background:#3b2126"><i id="bHp" style="background:var(--blood)"></i></div>
-        <div class="statLine"><span id="bState">NERVE</span><span id="bMorN"></span></div>
-        <!-- THE MORALE LADDER (user's mock): one band lit, the rest dim, and
-             hovering shows the whole scale with what each step means. A bar
-             said "43/93" — a number the player cannot act on and which looked
-             like the damage numbers. A ladder says "Ok, and one step from
-             Depressed", which is a thing you can decide about. -->
-        <div id="bLadder" tabindex="0"></div>
       </div>
-      <div id="bDerived"></div>
+      <span id="bState" tabindex="0">—</span>
     </div>
-    <div id="bActions"></div>
-    <div style="flex:1"></div><div id="bTip"></div>
-    <div id="bOpts"><button id="bAuto">▶ AUTO</button><button id="bFlee">⚑ WITHDRAW</button>
-      <!-- #81 - how fast the board plays. A player control on purpose: how
-           much time you need to read a blow is a fact about the person, not a
-           balance number, and nothing behind it can change the outcome of a
-           fight. Remembered in gt_pace. -->
-      <button id="bPace" title="How fast the battlefield plays. Nothing about the fight changes - only how long you get to watch it.">⏱ PACE ×1.75</button></div>
-    <button id="bEnd">END TURN</button>
   </div>
-  <div id="bMain">
-    <div id="bTop"><div class="ohead">ORDER</div></div>
-    <div id="bField">
-      <div id="bGround"><canvas id="bTerrain" width="600" height="440"></canvas>
-        <div id="bGrid"></div></div>
-      <div id="bFx"></div><div id="bVig"></div><div id="bZoom"></div>
-      <div id="bRead">
-        <div id="rName" style="font-family:var(--display);font-size:13.5px;color:var(--t4)"></div>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="big" id="rHit">—</span>
-          <span style="font-family:var(--mono);font-size:9px;color:#7d9490">CHANCE TO HIT</span></div>
-        <div class="rr"><span>your skill</span><span id="rSkill"></span></div>
-        <div class="rr"><span>their dodge</span><span id="rDodge" style="color:#8ca35a"></span></div>
-        <div class="rr"><span>flanking</span><span id="rFlank"></span></div>
-        <div class="rr"><span>other</span><span id="rOther"></span></div>
-        <div style="height:1px;background:#2c3d3f"></div>
-        <div class="rr"><span>ARMOUR DAMAGE</span><span id="rArm" style="color:var(--steel)"></span></div>
-        <div class="rr"><span>HITPOINT DAMAGE</span><span id="rHp" style="color:#c15d55"></span></div>
-        <div class="rr"><span>MORALE</span><span id="rMor"></span></div>
-        <div id="rNote" style="font-size:12px;font-style:italic;color:var(--t3);line-height:1.28"></div>
-      </div>
-      <div id="bLegend"><div class="lbl"><span class="lgcar">▶</span>COMBAT LOGIC</div>
+  <!-- the cards (#91 point 3): glyph, name, hotkey, cost pips and the
+       damage on the face. The receipt line and one effect sentence are the
+       hover popover; the paragraph stays in ? RULES. -->
+  <div id="bActions"></div>
+  <!-- #91 point 12, the one genuinely new control, ordered in the request -->
+  <button id="bUndo">⟲ UNDO MOVE</button>
+  <button id="bEnd">END TURN</button>
+  <!-- THE BATTLE LOG (#91 point 11): collapsed to the last lines, the header
+       is the accordion, and COMBAT LOGIC lives on it as the ? chip. -->
+  <div id="bLogWrap">
+    <div id="bLogHead"><span class="lgcar">▸</span><span class="lbl">THE FIGHT</span>
+      <span id="bLogRound"></span>
+      <div id="bLegend"><div class="lbl" title="COMBAT LOGIC — the rules the board plays by">?</div>
         <div class="lgbody">
         <div class="lg"><span class="sw" style="background:#46615f"></span>2 actions a turn — move + strike, or strike twice</div>
         <div class="lg"><span class="sw" style="background:#2c4749"></span>water — 2 hexes to enter, −10% to hit, and one hex off your stride while you stand in it</div>
@@ -1440,14 +1502,7 @@ a.popt.sendit{display:block;text-decoration:none}
         </div>
       </div>
     </div>
-    <!-- THE BATTLE LOG. Every line of the fight, in order, along the bottom
-         of the field — the single-line tip could only ever show the last
-         thing that happened, so a whole enemy turn scrolled past unread. -->
-    <div id="bLogWrap">
-      <div id="bLogHead"><span class="lbl">THE FIGHT, AS IT HAPPENS</span>
-        <span id="bLogRound"></span></div>
-      <div id="bLog"></div>
-    </div>
+    <div id="bLog"></div>
   </div>
 </section>
 
@@ -2261,7 +2316,9 @@ function setPace(v,save){
   document.documentElement.style.setProperty('--pace',String(v));
   const b=$('bPace');
   if(b){
-    b.textContent='⏱ PACE ×'+(v%1?v.toFixed(2).replace(/0$/,''):v);
+    /* #91 - an icon button now; the multiplier lives in the title */
+    b.title='PACE ×'+(v%1?v.toFixed(2).replace(/0$/,''):v)+
+      ' — how fast the battlefield plays. Nothing about the fight changes.';
     b.classList.toggle('off',v!==1.75);
   }
   /* an interval keeps the period it was created with, so a live AUTO would go
@@ -8187,6 +8244,7 @@ function beginTurn(){
     if(u.side==='you')fx(u,'OUTWEIGHED','#c07a2c',true);
   }
   B.sel=null;B.reach=null;
+  B.undo=null;               /* #91 - a new turn owes nobody last turn's step */
   /* the people you sided with fight their own fight. They are on your side of
      the board and they are not yours to command — you never get to spend their
      turns, which is most of the point of standing next to them. */
@@ -8490,6 +8548,11 @@ function canUse(u,a){
   return true;
 }
 function spend(u,a){
+  /* #91 - any paid act closes the undo window. spend() is the one door every
+     paid act passes through (#87's lesson), so this is the ONE line that
+     guarantees "until you do anything else". The move that opens the window
+     sets B.undo again right after its own spend. */
+  B.undo=null;
   /* #60 lesson 3, read BEFORE the counter moves: this is the second time this
      body has done this particular thing in one turn, which is the exact moment
      the rule the user asked about starts costing them. It covers both halves
@@ -8781,6 +8844,28 @@ const ICON={move:'⇢',dis:'⇤',main:'⚔',fists:'✊',sword:'⚔',spear:'⌇',
      should wear one: a boot, a lifted weight, a drop of something. */
   kick:'⇥',throw:'⬆',venom:'☣'};
 const iconFor=a=>ICON[a.k]||(a.arcane?'✷':a.range?'➹':a.reach?'⚔':'✦');
+/* ═══ #91 — the two helpers the default-attack layer stands on ═══════════
+   mainAtk: the weapon in their hands. `k==='main'` is the gear slot every
+   rostered body fills; the fallback covers anything odd that still swings.
+   ⚠ Test what it DOES (a.dmg), never its shape - the range-without-damage
+   trap has fooled five sites in this file already. */
+const mainAtk=u=>u.acts.find(a=>a.k==='main'&&a.dmg)||
+  u.acts.find(a=>a.dmg&&!a.arcane&&(a.reach||a.range))||null;
+/* would a click on `t` swing? The SAME checks render uses to light the
+   offer and clickHex uses to accept it, so the three can never disagree. */
+function offerAtk(u,w,t){
+  return !!(w&&t&&w.dmg&&canUse(u,w)&&sizeOK(w,t)&&!reachBlocked(u,t,w)&&
+    udist(u,t)<=(w.range||w.reach||0)&&
+    !(needsLane(w)&&losState(u,t).k==='BLOCKED'));
+}
+/* #91 point 9 - the popover's one sentence: the note's own first sentences,
+   cut at a boundary, never past ~110 characters. The paragraph stays in
+   ? RULES; a summary nobody wrote would be worse than a clean cut. */
+function noteLine(a){
+  const n=a.note||'';if(n.length<=110)return n;
+  const cut=n.slice(0,110),p=cut.lastIndexOf('. ');
+  return p>30?n.slice(0,p+1):cut+'…';
+}
 /* ═══════════════════════════════════════════════════════════════════════
    #46 — PICK UP AND THROW. One verb, three cargoes, and ONE set of answers
    to "what can this ogre lift" so the player, `aiTurn` and `autoStep` can
@@ -8922,7 +9007,17 @@ function throwRock(u,act,from,c,r){
 function clickHex(c,r){
   const u=cur();
   if(!u||u.side!=='you'||B.busy||u.state==='routed')return;
-  const tgt=at(c,r),a=B.sel;
+  let tgt=at(c,r),a=B.sel;
+  /* ═══ #91 - THE DEFAULT ATTACK. MOVE is standing, so a click on an enemy
+     the weapon can reach IS the swing - the same offerAtk gate that lit the
+     hex and drew the odds accepts the click, so nothing can be lit and then
+     refused. An unlit enemy falls through silently, exactly like clicking
+     any other hex the board did not offer. The weapon becomes the selection
+     and the ordinary attack branch below does the rest untouched. */
+  if(a&&a.move&&tgt&&tgt.side==='foe'&&!u.ally&&!u.pet){
+    const w=mainAtk(u);
+    if(w&&offerAtk(u,w,tgt)){B.sel=w;a=w;}
+  }
   /* ═══ #46 THROW, step one: pick up the thing ══════════════════════════
      `B.hurl` holds a unit, `B.hurlRock` holds a hex — never both. The old
      HURL A RATKIN lived here and is now the case where the thing you grabbed
@@ -9128,7 +9223,19 @@ function clickHex(c,r){
     if(!checkEnd())autoEnd(u);
     return;}
   if(a&&a.move&&B.reach&&B.reach.dist[K(c,r)]!==undefined&&!tgt){
+    /* ═══ #91 point 12 - UNDO, decided BEFORE the step is taken. A move is
+       takeable-back only if it will change nothing but position: no
+       parting swing was even possible (nobody engaged with a reach act and
+       a swing left in them, or the mover is safe), so no roll happens on
+       the way out. The snapshot is everything the move branch writes.
+       spend() clears B.undo on every OTHER paid act, so the offer dies the
+       moment anything else is done; nextTurn clears it at the handover. */
+    const clean=u.safeMove||has(u,'footwork')||
+      !engagers(u.col,u.row,u.side).some(e=>!e.usedParting&&e.acts.some(x=>x.reach));
+    const snap={id:u.id,col:u.col,row:u.row,facing:u.facing,actions:u.actions,
+      usedMove:u.used[a.k]||0,movesUsed:u.movesUsed||0,moved:!!u.moved};
     spend(u,a);u.moved=true;u.movesUsed=(u.movesUsed||0)+1;partingShots(u);
+    B.undo=(clean&&!u.dead)?snap:null;
     if(!u.dead){
       faceToward(u,c,r);                      /* you look where you walked */
       u.col=c;u.row=r;
@@ -9139,6 +9246,20 @@ function clickHex(c,r){
     }
     B.sel=null;B.reach=null;render();
     if(!checkEnd())autoEnd(u);}
+}
+/* ═══ #91 point 12 - the step, taken back. Restores exactly what the move
+   branch wrote: hex, facing, the action, the move counters. Once per move,
+   and only the move: DISENGAGE writes `safeMove`, SINK writes `sunk`, so
+   neither is undoable - they change more than position, which is the rule.
+   ⛔ AUTO never sees this: B.undo is only ever set on the player's click. */
+function undoMove(){
+  const s=B.undo;if(!s||B.busy)return;
+  const u=cur();if(!u||u.side!=='you'||u.id!==s.id)return;
+  B.undo=null;
+  u.col=s.col;u.row=s.row;u.facing=s.facing;
+  u.actions=s.actions;u.used.move=s.usedMove;u.movesUsed=s.movesUsed;u.moved=s.moved;
+  say(u.name+' steps back. The ground keeps no record of it.');
+  B.sel=null;B.reach=null;render();
 }
 function routStep(u,done){
   const away=p=>Math.min.apply(null,alive().filter(x=>x.side!==u.side)
@@ -10148,17 +10269,49 @@ function scatterProps(terr){
    it. That is inherited and deliberately not renamed, because renaming it
    would have made the "nothing changed" proof unreadable.
    ═══════════════════════════════════════════════════════════════════════ */
+/* ⚠ #90 REPLACED `scat` WITH `pat`, AND THE OLD KEY'S NAME WAS THE WHOLE
+   ARGUMENT FOR DOING IT. `scat:'trees'` planted no tree anywhere: it meant
+   "three clumps, cap sixteen" and nothing else, so six of the eight shipped
+   fights were labelled with a word for an object none of them contained.
+   `pat` names the ARRANGEMENT, which is the thing that was actually being
+   chosen. See PATTERNS.
+
+   ═══ #93 - AND THE ARRANGEMENT IS DRAWN, NOT ASSIGNED ════════════════════
+   (User, 2026-08-11: "make it so these diferent fields get into drawn in
+   every batle randomly (so if it is in the forrest or rock terrains - theres
+   is more to drow from). So if you have same battle different layout can
+   give you an extra flavor".)
+
+   ⚑ SO A PLACE OWNS A `pool` RATHER THAN A PATTERN, AND THE POOL IS WHAT THE
+   TERRAIN CAN PLAUSIBLY BUILD OUT OF WHAT IS LYING AROUND. That is the whole
+   of why the ridge draws from six and the swamp from three: stone stacks,
+   spans, scatters and stands alone, and a drowned channel does none of it.
+
+   ⚠ THE POOL IS A PROMISE ABOUT WHAT MAY HAPPEN TO A FIGHT, NOT A LIST OF
+   WHAT LOOKS NICE. Four rows below narrow it, every one of them because a
+   measurement said the fight breaks otherwise. Adding an arrangement to a
+   pool is a balance change; read the notes on those four rows first. */
 const TERRAIN={
   /* the drowned country. The default, and most of the act. */
-  fen    :{paint:'teal',  marsh:.87, rock:.985, scat:'trees'},
-  /* open, dry, and there is nothing to get behind */
-  plains :{paint:'teal',  marsh:.975,rock:.995, scat:'sparse', trees:5,  huge:1},
-  /* the ridge and the ogres' hill: the only real cover in the game */
-  rocky  :{paint:'dust',  marsh:.93, rock:.975, scat:'boulders',trees:2},
+  fen    :{paint:'teal',  marsh:.87, rock:.985,
+           pool:['anvil','flanks','spine','broken','strewn']},
+  /* open, dry, and there is nothing to get behind - so the pool is the small
+     one on purpose: `plains` is DEFINED as the place with nothing in it, and
+     a spine across it would make it somewhere else */
+  plains :{paint:'teal',  marsh:.975,rock:.995, trees:5,  huge:1,
+           pool:['open','broken','anvil']},
+  /* the ridge and the ogres' hill: the only real cover in the game, and THE
+     RICHEST POOL IN THE REGISTER at all six. Stone is the one material that
+     does every arrangement - it stacks into a spine, scatters into cover,
+     piles into an anvil and lies about as rubble - which is exactly the
+     "more to draw from" the request asks for. */
+  rocky  :{paint:'dust',  marsh:.93, rock:.975, trees:2,
+           pool:['broken','spine','anvil','flanks','strewn','open']},
   /* the ogres' own camp — a ring of stacked timber with two gaps in it */
   camp   :{paint:'teal',  marsh:.99, rock:.99,  layout:'camp'},
   /* under the corruption. `flowers` is #64 and the only place it is set. */
-  bloom  :{paint:'bloom', marsh:.78, rock:.985, scat:'trees',  trees:3,  flowers:4},
+  bloom  :{paint:'bloom', marsh:.78, rock:.985, trees:3,  flowers:4,
+           pool:['anvil','broken','strewn']},
   /* ═══ #63 — AND THESE TWO NUMBERS ARE MEASURED, NOT CHOSEN ═════════════
      `deep` is a FRACTION of the board; `marsh` is a threshold like everyone
      else's. floodDeep converts hexes AFTER the base roll, so a fight with
@@ -10183,19 +10336,43 @@ const TERRAIN={
      the `swamp` palette — the dry 76% is painted wet, the fog is the
      heaviest in the game — and the water that CHARGES you is this. The
      board reads as drowned; only the channel actually drowns you. */
-  swamp  :{paint:'swamp', marsh:.82, rock:.995, scat:'sparse', trees:7,  huge:1, deep:.16},
+  swamp  :{paint:'swamp', marsh:.82, rock:.995, trees:7,  huge:1, deep:.16,
+           /* the channel IS the arrangement here, so the pool stays small and
+              stays out of its way: a spine laid across a swamp is two walls */
+           pool:['open','anvil','broken']},
   /* #56. The forest IS this dial, and nothing else: the tree is #62's
-     object, and turning `trees` up is the whole of what makes a wood. */
-  forest :{paint:'forest',marsh:.94, rock:.99,  scat:'sparse', trees:26, huge:2},
+     object, and turning `trees` up is the whole of what makes a wood.
+     ⚑ #93 - AND THIS IS WHERE "MORE TO DRAW FROM" GETS ITS SECOND MEANING.
+     The first cut of this drew `open` only, on the reasoning that a spine of
+     trees laid through twenty-six trees is a wall nobody can see. That
+     reasoning is right about the MATERIAL and wrong about the pool: in a
+     wood the masses are STONE (see MASSMAT), and an outcrop among the trunks
+     reads instantly. So the forest draws from four, and it is the one
+     terrain where both materials are on the board at once. */
+  forest :{paint:'forest',marsh:.94, rock:.99,  trees:26, huge:2,
+           pool:['open','broken','anvil','spine']},
   /* #65. You are outside it. */
   outpost:{paint:'dust',  marsh:.975,rock:.99,  layout:'outpost',trees:3}
 };
 /* WHICH FIGHT IS FOUGHT WHERE, and the per-place numbers that are the
-   PLACE rather than the KIND. Every row below reproduces exactly what that
-   fight generated before #61 — same seed, same thresholds, same scat — so
-   the register is provably a rename and not a redesign. */
+   PLACE rather than the KIND.
+
+   ═══ #93 - WHAT IS AND IS NOT IN A ROW NOW ══════════════════════════════
+   ⚑ A ROW SAYS WHAT IS TRUE OF THE PLACE. It no longer says which
+   arrangement the fight gets, because that is DRAWN per battle from the
+   terrain's pool - see fieldFor. A row carries a `pool` only to NARROW the
+   terrain's, and every one of the four that does is there because a
+   measurement said the fight breaks otherwise.
+
+   ⛔ `seed` MEANS PINNED, AND EXACTLY ONE FIGHT HAS ONE. A row with a seed
+   generates the same board for ever; a row without one is rolled fresh every
+   time you take the field. The old table pinned all nine, which is why the
+   act had nine boards and not nine kinds of board. */
 const FIELDS={
-  snare    :{t:'fen',   seed:11, marsh:.87, rock:.985, scat:'trees'},
+  /* the finale, and it is fought in and out of cover rather than across open
+     ground: the Snare Clan set the trap. Takes the fen's whole pool of five,
+     which is right for the fight the act has been walking toward. */
+  snare    :{t:'fen',   marsh:.87, rock:.985},
   /* THE BLOOM. Already called one everywhere except in the terrain:
      `art:'bloom'` on her event card, a `weird` node on the map, and an
      aftermath about the bloom-light going out under her hide.
@@ -10204,23 +10381,117 @@ const FIELDS={
      here is a change to a hand-tuned boss whose round band cost real work
      to move to 12-14. The flowers are reachable today from the practice
      field, which is where they get played before they get to her. */
-  mother   :{t:'bloom', seed:29, marsh:.78, rock:.985, scat:'trees', flowers:0, trees:0},
-  brigand  :{t:'fen',   seed:53, marsh:.93, rock:.985, scat:'trees'},
-  clash    :{t:'fen',   seed:67, marsh:.90, rock:.99,  scat:'trees'},
+  /* ⚠ SHE GETS THE ONE MASS, AND THIS ROW IS THE ONLY ONE IN THE TABLE THAT
+     WAS DECIDED BY MEASUREMENT RATHER THAN BY INTENT. She was written down
+     as `broken` first, on the reasoning that lone boulders are cover you may
+     use. Six runs a side said otherwise, against a noise floor of ±2.2
+     rounds taken off the camp (whose code both sides share):
+
+       pattern   rounds   won
+       clumps      12.7   5/6   ← what she was
+       anvil       15.0   5/6   ← what she is
+       open        19.3   4/6
+       spine       19.3   2/6
+       broken      25.0   0/6   ← what she was nearly shipped as
+       flanks      23.8   0/6
+
+     ⚑ AND THE REASON GENERALISES, WHICH IS WHY IT IS WRITTEN HERE RATHER
+     THAN DELETED WITH THE BAD ROW: AN OBSTACLE HELPS WHOEVER WANTS THE LINE
+     BROKEN. Her entire fight is taking your formation apart, so every hex of
+     cover on the board is working for her and not for you - #63 says the
+     same thing from the other end ("without dry islands a swamp is a board
+     on which no line can ever form"). The anvil is the only arrangement that
+     leaves enough open ground to re-form on, and it keeps her closest to the
+     12-14 band #64 paid for.
+     ⛔ AND THEN THE MEASUREMENT SENT HER BACK. She is the ONE fight in the
+     act #90 does not re-ground: the full table, the mechanism and the
+     ruling waiting on the user are all written out at PATTERNS.strewn.
+     ⛔⛔ #93 - AND SHE IS THE ONE FIGHT THAT DOES NOT ROLL EITHER, WHICH IS
+     THE SAME RULING ARRIVING A SECOND TIME. `seed:29` is the only pin left
+     in this table. Rolling her seed while holding the pattern still moves
+     her: 11.5rd worst 17, won 6/6 pinned, against 15.7rd worst 27, won 5/6
+     rolled. That is #90's own finding restated - her board is tuned by WHERE
+     the blob lands relative to her approach, so a fresh blob is a fresh
+     difficulty - and #32 was filed against this exact fight for never
+     ending. Variety is not worth reopening that. 👤 Her re-tune is still
+     the user's ruling; until it comes, she is the fixed point. */
+  mother   :{t:'bloom', seed:29, marsh:.78, rock:.985, pool:['strewn'],
+             flowers:0, trees:0},
+  /* men who break and run need somewhere to break TO. Full fen pool. */
+  brigand  :{t:'fen',   marsh:.93, rock:.985},
+  /* ⚑ THE TEACHING FIGHT DRAWS FROM THREE AND NOT FIVE, and that is a
+     clarity-pass decision rather than a terrain one: Blood on the Road is
+     already carrying eleven Captain lessons, allied NPCs, a side to pick and
+     six rules arriving at once, so its ground may ask ONE question at a
+     time. `anvil`, `flanks` and `strewn` each read at a glance. ⛔ `spine`
+     and `broken` are held back on purpose: a wall that punishes committing
+     to the wrong gap, and eleven separate objects to keep track of, are both
+     a second lesson on a board that is already teaching. They arrive at the
+     next fight, which is what "delay it rather than explain it" means. */
+  clash    :{t:'fen',   marsh:.90, rock:.99, pool:['anvil','flanks','strewn']},
   /* dogs that bite and leave are the perfect thing to meet in a place with
-     only two ways through it — the gap is the whole fight */
-  pack     :{t:'camp',  seed:83, marsh:.99, rock:.99,  layout:'camp'},
-  /* kiting needs something to break line behind */
-  steading :{t:'rocky', seed:97, marsh:.91, rock:.975, scat:'boulders',trees:0},
-  /* fought across open ground on purpose: there is nowhere to hide while
-     you cross it, which is the fight */
-  slingline:{t:'rocky', seed:109,marsh:.93, rock:.995, scat:'sparse', trees:0},
+     only two ways through it, and the gap is the whole fight.
+     ⚠ THE SEED IS GONE HERE TOO AND THE LAYOUT IS NOT. `camp` is hand-built
+     and identical every time; what rolls is the gravel, the marsh and the
+     props around it, which is all a hand-built layout should ever let move. */
+  pack     :{t:'camp',  marsh:.99, rock:.99,  layout:'camp'},
+  /* kiting needs something to break line behind, and the ridge's whole pool
+     of six is fair game: a 3-stride ogre pays for every hex of every long
+     way round, whichever arrangement puts one there */
+  steading :{t:'rocky', marsh:.91, rock:.975, trees:0},
+  /* fought across open ground on purpose: there is nowhere to hide while you
+     cross it, which is the fight.
+     ⛔ THE ONE POOL WITH A SINGLE ENTRY THAT IS NOT ABOUT TUNING. Cover on
+     this board does not make the fight harder or easier, it makes it a
+     different fight - "cross the open" is the entire brief. It still looks
+     different every time you take it, because the seed rolls: the water, the
+     dead grass and the litter all move. That is the honest amount of variety
+     this fight can take. */
+  slingline:{t:'rocky', marsh:.93, rock:.995, trees:0, pool:['open']},
   /* the broken ground the road card promises — the skirmish answer needs
-     somewhere to skirmish TO */
-  armour   :{t:'rocky', seed:157,marsh:.96, rock:.98,  scat:'boulders',trees:0},
-  /* #74 - their fire, off the road, at night. Open enough that ten bodies
-     can get round six, which is most of what the fight is. */
-  circle   :{t:'fen',   seed:181,marsh:.94, rock:.99,  scat:'trees'}
+     somewhere to skirmish TO, and #82's lone boulder is the only obstacle in
+     the game you can shoot over and thrust over while standing behind it.
+     Full ridge pool: the card promises broken country, not one arrangement. */
+  armour   :{t:'rocky', marsh:.96, rock:.98,  trees:0},
+  /* #74 - their fire, off the road, at night, and THE ONE FIGHT YOU ARE NOT
+     MEANT TO WIN. It was written down as `anvil` and the measurement threw
+     that out too, n=8 a side:
+
+       clumps (control)  8.0rd   won 0/8
+       broken            6.8rd   won 0/8   ← this row
+       open              9.4rd   won 1/8
+       spine            11.0rd   won 2/8
+       flanks           11.1rd   won 3/8
+       anvil            10.5rd   won 4/8   ← would have shipped a winnable Circle
+
+     ⚑ AND THE READING IS ONE SENTENCE: AGAINST TEN BODIES, ANY WALL IS A
+     CHOKEPOINT, AND A CHOKEPOINT IS EXACTLY HOW SIX BEAT TEN. Every
+     arrangement that puts a solid thing on this board hands the player the
+     one tactic the fight exists to deny - #33 says a mandatory corridor is
+     a queue and not a map, and here the queue is a GIFT. Lone boulders are
+     the only obstacle that gives cover without giving a line to hold, which
+     is why this is the pattern, and it holds the fight harder than the
+     accident it replaces.
+     ⛔ #93 RE-RAN THAT TABLE WITH THE SEED ROLLING, and it corrected the
+     table above as well as answering the new question. n=40 a side:
+
+       broken, seed 181 pinned    won 2/40
+       broken, seed rolled        won 4/40
+
+     ⚑ TWO READINGS, AND THE SECOND IS THE ONE WORTH KEEPING.
+     (1) ROLLING THE SEED DOES NOT MOVE THIS FIGHT. 4/40 against 2/40 is not
+     a difference, so the pool stays at one and the seed does the varying:
+     eleven boulders land somewhere new every time you take the field.
+     (2) ⚠ THE "0/8" IN THE TABLE ABOVE WAS NEVER 0. At n=40 this fight is
+     five to ten percent winnable by AUTO and always has been; eight runs
+     had simply not seen one. The ARRANGEMENT still matters enormously -
+     `anvil` at 4/8 is a different order of magnitude and not a sampling
+     artefact - but any row in that table reading exactly 0 should be read
+     as "under 10%", never as "never". ⛔ AND THE LESSON IS THE ONE THIS
+     WHOLE ENTRY KEPT RE-LEARNING: n=6 CANNOT TELL 0% FROM 20%. Three
+     decisions here were nearly taken on eight runs and two of them would
+     have been wrong. */
+  circle   :{t:'fen',   marsh:.94, rock:.99, pool:['broken']}
 };
 /* Merge: the TERRAIN kind, then the place's own overrides on top.
    ⚠ THE PRACTICE FIELD MAY REPLACE THE KIND, AND ONLY THERE. `SIM.ground`
@@ -10229,16 +10500,56 @@ const FIELDS={
    before (`whisper()` writing `LEGACY.seen`). When a ground is chosen the
    place's overrides are DROPPED: picking "swamp" and then quietly keeping
    the Snare's 13%-water thresholds would hand back a fen with a new name. */
-function fieldFor(kind){
+/* ═══════════════════════════════════════════════════════════════════════
+   #93 - AND HERE IS WHERE THE BOARD IS DRAWN.
+
+   ⚑ TWO DICE, NOT ONE, AND THEY ARE INDEPENDENT ON PURPOSE:
+     THE POOL DRAW decides the ARRANGEMENT - anvil, spine, flanks and so on.
+     THE SEED DRAW decides everything else - where the marsh lies, where the
+     stones fall inside that arrangement, which hexes the props litter.
+   That split is what lets a fight vary honestly even when its arrangement is
+   fixed. The Sling-Line draws from a pool of one and still never gives you
+   the same field twice, because the second die is always rolling.
+
+   ⚠ `pin` IS FOR TESTS AND NOTHING ELSE. `fieldFor(k,{pat:'spine',seed:11})`
+   reproduces one exact board, which is the only way a regression can compare
+   like with like now that the live path is random. Nothing in the game
+   passes it.
+
+   ⚠ THIS IS SAFE ONLY BECAUSE A BATTLE IS REGENERATED AND NEVER RESTORED
+   (see saveRun: `B` is never serialised, and no save is ever taken
+   mid-fight). A rolled board would be a bug the moment that stopped being
+   true, so the two facts belong in each other's sight.
+
+   ⚑ AND IT MEANS RE-ENTERING A FIGHT GIVES YOU A NEW FIELD. Flee the
+   Steading-Line, come back, and the ridge is arranged differently. That is a
+   consequence rather than a feature, and it is a good one: the old build let
+   you learn a board by heart and reload onto it.
+   ═══════════════════════════════════════════════════════════════════════ */
+function fieldFor(kind,pin){
   const place=FIELDS[kind]||FIELDS.snare;
   const pick=(typeof SIM!=='undefined'&&SIM.on&&SIM.ground&&SIM.ground!=='as')?SIM.ground:null;
   const name=pick||place.t;
   const base=TERRAIN[name]||TERRAIN.fen;
-  const out={t:name,seed:place.seed||11};
+  const out={t:name};
   Object.keys(base).forEach(k=>out[k]=base[k]);
   if(!pick)Object.keys(place).forEach(k=>{if(k!=='t')out[k]=place[k];});
   out.trees=out.trees||0;out.huge=out.huge||0;
   out.deep=out.deep||0;out.flowers=out.flowers||0;
+  /* THE ARRANGEMENT. A place with no pool at all is OPEN, never "whatever
+     the base roll left there" - the old default was three random clumps and
+     deleting it is what #90 was for. */
+  const pool=(out.pool&&out.pool.length)?out.pool:['open'];
+  out.pat=(pin&&pin.pat)||pool[(Math.random()*pool.length)|0];
+  if(!PATTERNS[out.pat])out.pat='open';
+  /* THE BOARD. A row carrying its own `seed` is PINNED and does not roll;
+     exactly one does, and the note on it says why.
+     ⚠ READ OFF `out` AND NOT OFF `place`, so that a practice-field ground
+     pick DROPS the pin along with the rest of the place's overrides. Reading
+     `place.seed` here would have kept the Fen-Mother's board frozen while
+     the player stood her on a swamp, which is the one thing that picker
+     exists to let you look at. */
+  out.seed=(pin&&pin.seed)||out.seed||(1+((Math.random()*2147483000)|0));
   return out;
 }
 /* the columns nothing generated may stand in: both deployment ends */
@@ -10540,6 +10851,194 @@ function outpostTurned(){
      'comes out to find whoever is doing it.');
   return true;
 }
+/* ═══════════════════════════════════════════════════════════════════════
+   #90 - FOUR BATTLEFIELDS, AND THE MEASUREMENT THAT SAID THERE WAS ONE.
+
+   (User, 2026-08-11: "create 3-4 different battfield patterns for fields
+   using in a fights in the first act (diffrent position of rocks, trees and
+   other objects)".)
+
+   ⛔ THE ARGUMENT FOR THE ENTRY IS A DUMP OF THE NINE BOARDS THE ACT
+   ACTUALLY GENERATED, AND IT IS WORSE THAN THE REQUEST IMPLIES:
+
+     · SEVEN OF THE NINE FIGHTS RAN THE SAME CODE - two to four random
+       blobs of `rock`, 6-22 hexes, and the only dial between them was how
+       many blobs. Two hand-built layouts (camp, outpost) were the only
+       boards in the game with a shape somebody chose.
+     · NOT ONE ACT-1 FIGHT CONTAINED A SINGLE TREE. `scat:'trees'` was a
+       label meaning "three clumps", `TERRAIN.fen` sets no `trees` count,
+       and `plantTrees` is guarded on that count being non-zero. Six fights
+       were tagged with the name of an object none of them had.
+     · AND THE BLOBS LANDED WHERE NOTHING MEETS. You deploy in columns 0-3
+       and they deploy in 10-13, so the lines meet in COLUMNS 5-9. Measured
+       across the nine seeds, the obstacle mass sat at rows 9-12 on five
+       boards, and on the Thing in Armour it sat at columns 1-5 - inside
+       your own approach, behind you before the fight started.
+
+   So the middle of every board was empty, and the terrain was decoration.
+
+   ⚑ THE RULE THAT DECIDED WHAT GETS AN ENTRY HERE, and it is #61's rule
+   one layer down:
+     A PATTERN IS A DECISION THE GROUND FORCES. A DENSITY IS NOT A PATTERN.
+   "Four blobs instead of three" is a density. "One thing, and you go round
+   it north or south" is a decision. Each of the four below is named for
+   the question it asks, and each asks a DIFFERENT one - which is the whole
+   of why there are four and not eleven.
+
+   ⚑ AND THE MATERIAL IS THE TERRAIN'S, NOT THE PATTERN'S. The same spine is
+   a run of boulders on the ridge and a line of trees in the fen, because
+   #82 already made them behave the same when they are massed (a rock that
+   touches a rock is TALL, and so is a tree) and #46 already made them
+   behave differently when they are alone (an ogre lifts a boulder and will
+   never lift a tree). So the shape can be shared and the noun cannot.
+   ⛔ `broken` IS THE ONE EXCEPTION AND IT IS ALWAYS ROCK: its entire point
+   is #82's MED height - cover you shoot over, thrust over, and stand
+   behind - and a lone tree is TALL, which is the opposite of the offer.
+
+   ⚠ EVERY PATTERN OWNS ITS BAND AND CLEARS IT FIRST. The base roll still
+   sprinkles ~1.5% `rock` as gravel, and one stray pebble beside a placed
+   boulder promotes BOTH of them from cover to a wall (#82: height depends
+   on your neighbours). A pattern that can be silently contradicted by the
+   dice is not a pattern, so the middle of the board is wiped before it is
+   written. The deployment ends keep their gravel.
+   ═══════════════════════════════════════════════════════════════════════ */
+/* the band a pattern owns. BAND is what gets cleared and where a scatter may
+   land; MASS is the tighter box a solid mass may stand in, one hex further
+   in at each end so a wall never grows into a hex somebody deploys onto. */
+const BAND=[DEPLOY_EDGE,COLS-DEPLOY_EDGE-1];        /* 3..11 */
+const MASS=[DEPLOY_EDGE+1,COLS-DEPLOY_EDGE-2];      /* 4..10 */
+/* what a massed obstacle is MADE of here. Dry ground stacks stone, wet and
+   growing ground stands timber. Anything unlisted is stone.
+   ⚠ #93 MOVED THE FOREST TO STONE, and it is the one entry here decided by
+   legibility rather than by plausibility. A wood is the obvious material for
+   a wood, and it is invisible: against twenty-six scattered trunks a stand
+   of six more is not an arrangement, it is more forest. An outcrop reads
+   instantly, and it makes the forest the only ground in the game carrying
+   both materials at once. */
+const MASSMAT={fen:'tree',bloom:'tree',swamp:'tree',plains:'tree'};
+const PATTERNS={
+  /* ═══ NOTHING, AND IT IS A CHOICE ══════════════════════════════════════
+     The Sling-Line is fought here on purpose: shooters, and a field you
+     have to cross in the open. Cover on this board deletes the fight. */
+  open  :{n:'open ground',
+          q:'there is nowhere to be but in front of them',
+          build:function(){}},
+  /* ═══ STREWN - THE OLD ROLL, ALIVE FOR EXACTLY ONE FIGHT ═══════════════
+     Two to four random blobs, 1-2 hexes across: the generator this entry
+     retired, kept because ONE fight was balanced against it. It is not on
+     any other row and it is not a template for a new one.
+
+     ⚠ IT IS HERE FOR THE FEN-MOTHER AND THE REASON IS #64's, VERBATIM:
+     "a hand-tuned boss whose round band cost real work". Measured, n=16 a
+     side: the old roll gives 10.6 rounds and 15/16, a deliberate anvil
+     gives 15.8 and 13/16. The win rate is the same inside the noise; the
+     LENGTH is not, and a boss fight that runs half again as long is a
+     pacing change to a tuned fight, which #50 owns and this entry does not.
+     ⚑ Chasing that gap is what produced this entry's second finding, and it
+     is worth more than the row it saved: A CENTRED MASS TAXES WHOEVER NEEDS
+     RANGE. The same anvil moved to the top edge measures 16.4rd 7/8 against
+     17.0rd 5/8 in the middle - the mass itself costs almost nothing, and
+     standing it between a shooter and a closing boss costs a great deal.
+     So her old board was never neutral: its blob happened to sit ON HER
+     APPROACH, and the 12-14 band everyone has quoted since is partly the
+     work of an accident of seed 29. Naming that is the point of the entry.
+     👤 THE RULING IS THE USER'S: leave her tuned as she is, or move her onto
+     a real arrangement and re-tune the band around it. */
+  strewn:{n:'strewn',
+          q:'none, and that is why it is the only fight still fought on it',
+          build:function(rnd,mat,put,keep,terr){
+            let placed=0;
+            for(let i=0;i<3&&placed<16;i++){
+              const cc=3+((rnd()*(COLS-7))|0);
+              let cr=(rnd()*ROWS)|0;
+              /* off the middle row: a blob on row 4/5 dead centre was the
+                 one that walled the board */
+              if(cr===4||cr===5)cr=rnd()>.5?2:7;
+              const size=1+((rnd()*2)|0);
+              for(let r=0;r<ROWS;r++)for(let c=0;c<COLS;c++){
+                if(placed>=16)break;
+                if(hdist([c,r],[cc,cr])<=size&&rnd()>0.22&&terr[K(c,r)]!=='rock'&&
+                   put(c,r,'rock'))placed++;}}}},
+  /* ═══ THE ANVIL - one thing, and you go round it ═══════════════════════
+     The simplest board the game can build, and the teaching fight's, for
+     that reason. It sits ONE ROW ABOVE CENTRE so the two ways round are
+     not the same length: north is short and tight against the edge, south
+     is long and open. A decision with two identical answers is not one. */
+  anvil :{n:'the anvil',
+          q:'which side of it do you go round',
+          build:function(rnd,mat,put){
+            const cx=7,cy=(ROWS>>1)-1;
+            for(let r=0;r<ROWS;r++)for(let c=MASS[0];c<=MASS[1];c++){
+              const d=hdist([c,r],[cx,cy]);
+              /* the rim is ragged, or it reads as a drawn circle */
+              if(d<=1||(d===2&&rnd()<.55))put(c,r,mat);}}},
+  /* ═══ THE SPINE - a wall with two gaps, and you commit to one ══════════
+     Two hexes thick, because one is not a wall: a single file of rock
+     leaves the column beside it open the whole height of the board, which
+     is the exact hole #68 found in the outpost's first line and the reason
+     that line is computed off nbrs() rather than off the eye.
+
+     THE GAPS ARE THE ENTRY. Two of them, two rows each, seven rows apart,
+     about two turns' walk for a human, and NEITHER IS THE MIDDLE ROW. The
+     ends are walled, so you cannot go round it; picking the near gap and
+     finding them massed at it is a decision you have to live with.
+     ⚠ Both gaps are `keep()`-ed, so no later generator may plant a tree, a
+     flower or a channel of deep water in the one hex the board is about. */
+  spine :{n:'the spine',
+          q:'which gap do you take, and can you change your mind',
+          gaps:[[2,3],[9,10]],
+          build:function(rnd,mat,put,keep){
+            const cx=7,gaps=PATTERNS.spine.gaps;
+            for(let r=0;r<ROWS;r++){
+              if(gaps.some(g=>r>=g[0]&&r<=g[1])){
+                for(let c=cx-1;c<=cx+2;c++)keep(c,r);continue;}
+              put(cx,r,mat);put(cx+1,r,mat);
+              /* the silhouette wanders so it does not read as masonry */
+              if(r%3===0)put(cx-1,r,mat);else if(r%4===2)put(cx+2,r,mat);}}},
+  /* ═══ BROKEN GROUND - cover everywhere, a wall nowhere ═════════════════
+     Eleven boulders and no two of them touching, which is the whole spec:
+     #82 makes a rock that touches another rock TALL and a rock standing on
+     its own MED, so this is the only board in the game where every obstacle
+     is cover you shoot over rather than a lane you lose. #46 makes every
+     one of them liftable, so it is also an ogre's ammunition dump.
+     ⚠ THE `hdist>=2` TEST IS THE PATTERN, not tidiness. At distance 1 two
+     boulders promote each other and the board silently becomes a bad spine. */
+  broken:{n:'broken ground',
+          q:'is there a stone between you and the shot',
+          build:function(rnd,mat,put,keep,terr){
+            const far=function(c,r){
+              for(let rr=0;rr<ROWS;rr++)for(let cc=0;cc<COLS;cc++)
+                if(terr[K(cc,rr)]==='rock'&&hdist([c,r],[cc,rr])<2)return false;
+              return true;};
+            for(let i=0,tries=0;i<11&&tries<400;tries++){
+              const c=MASS[0]+((rnd()*(BAND[1]-MASS[0]+1))|0),r=(rnd()*ROWS)|0;
+              if(!far(c,r))continue;
+              if(put(c,r,'rock'))i++;}}},   /* always stone, see the header */
+  /* ═══ THE FLANKS - the short way is the exposed one ════════════════════
+     The spine inverted: mass at the top and the bottom, the middle left
+     open on purpose. Cross the middle and it is three hexes and everybody
+     can see you; go through a wood and it is slow, winding, and nothing
+     can take a shot at you while you are in it.
+
+     ⚑ THE MASSES ARE RAGGED AND THAT IS LOAD-BEARING. Solid ones would
+     make the open middle the ONLY road, and a board with one road is #33's
+     queue with scenery on it. At ~85% in the core and ~55% on the rim you
+     can thread them, and threading them costs turns.
+     They stand at different columns, so the board is not a mirror. */
+  flanks:{n:'the flanks',
+          q:'the short way in the open, or the long way out of sight',
+          build:function(rnd,mat,put,keep){
+            const wood=function(cx,cy){
+              for(let r=0;r<ROWS;r++)for(let c=MASS[0];c<=MASS[1];c++){
+                const d=hdist([c,r],[cx,cy]);
+                if(d<=2&&rnd()<(d<=1?.85:.55))put(c,r,mat);}};
+            wood(6,1);wood(9,ROWS-2);
+            /* the middle stays open, and it is DECLARED open so that
+               plantTrees, sowFlowers and floodDeep cannot close it */
+            const mid=(ROWS>>1);
+            for(let r=mid-1;r<=mid+1;r++)
+              for(let c=MASS[0];c<=MASS[1];c++)keep(c,r);}}
+};
 let FIREPIT=null;
 function makeObstacles(terr,TF,rnd){
   FIREPIT=null;LAYOUT_KEEP={};
@@ -10618,24 +11117,26 @@ function makeObstacles(terr,TF,rnd){
       if(terr[K(p[0],p[1])]!==undefined)terr[K(p[0],p[1])]='rock';});
     return;
   }
-  /* 2-4 clumps, each 1-2 hexes across. That is 8-18 hexes of real obstacle on
-     a 150-hex board — enough that you choose a side of a thing, not so much
-     that the middle silts up and the two lines never meet. */
-  const clumps=TF.scat==='sparse'?1:TF.scat==='boulders'?4:3;
-  const cap=TF.scat==='sparse'?6:TF.scat==='boulders'?22:16;
-  let placed=0;
-  for(let i=0;i<clumps&&placed<cap;i++){
-    /* keep out of the deployment columns at either end, and off the middle
-       row — a clump on row 4/5 dead-centre is the one that walls the board */
-    const cc=3+((rnd()*(COLS-7))|0);
-    let cr=(rnd()*ROWS)|0;
-    if(cr===4||cr===5)cr=rnd()>.5?2:7;
-    const size=TF.scat==='boulders'?2:1+((rnd()*2)|0);
-    for(let r=0;r<ROWS;r++)for(let c=0;c<COLS;c++){
-      if(placed>=cap)break;
-      if(hdist([c,r],[cc,cr])<=size&&rnd()>0.22&&terr[K(c,r)]!=='rock'){
-        terr[K(c,r)]='rock';placed++;}}
-  }
+  /* ═══ #90 - AND EVERY OTHER BOARD IS ONE OF THE FOUR PATTERNS ══════════
+     The random clumps that used to live here are gone; see PATTERNS for
+     the measurement that retired them. */
+  const P=PATTERNS[TF.pat]||PATTERNS.open;
+  const mat=MASSMAT[TF.t]||'rock';
+  /* the band is wiped before it is written, see the header. Gravel at the
+     two deployment ends survives, because nothing is being said there. */
+  for(let r=0;r<ROWS;r++)for(let c=BAND[0];c<=BAND[1];c++){
+    const k=K(c,r);if(terr[k]==='rock')terr[k]='field';}
+  /* ONE DOOR WRITES THE GROUND, so a pattern cannot reach past its band, sit
+     on a hex a hand-built layout reserved, or overwrite something that is
+     already an obstacle. It returns whether the hex took, which `broken`
+     counts so a refused placement does not spend one of its eleven. */
+  const put=function(c,r,m){
+    if(c<BAND[0]||c>BAND[1]||r<0||r>=ROWS)return false;
+    if(reserved(c,r))return false;
+    const k=K(c,r);
+    if(terr[k]===undefined||!openable(terr[k]))return false;
+    terr[k]=m;return true;};
+  P.build(rnd,mat,put,keep,terr);
 }
 /* THE BOARD MUST STAY CONNECTED, and this has to run LAST — after the units
    are down and after the "nobody starts walled in" rescue, because opening a
@@ -10769,7 +11270,15 @@ const hexCentre=(c,r)=>({x:c*HEXW+(r&1?HEXOFF:0)+19, y:r*HEXH+21});
    when the battle screen is not laid out, which is how AUTO and the harness
    (where render() is stubbed) never touch it.
    ═══════════════════════════════════════════════════════════════════════ */
-const CAMS=[{k:'full',n:'FULL',z:1.30},{k:'field',n:'FIELD',z:1.80},{k:'close',n:'CLOSE',z:2.50}];
+/* #91 - the field grew from 980x544 to the whole 1280x720 stage, so the
+   stops were recomputed to keep their DEFINITIONS, not their numbers:
+   FULL still means "the whole 15x13 board exactly fits" (720/416 = 1.73,
+   height-exact), CLOSE stays 2.50 because that is the size the sprites are
+   painted for and a fourth stop past it would only blur them, FIELD sits
+   between at the first z that pans on both axes. Every stop shows the same
+   or more board than its old self AND draws every body bigger - the x1.306
+   gain the approved mockups promised is exactly FULL's 1.30 to 1.73. */
+const CAMS=[{k:'full',n:'FULL',z:1.73},{k:'field',n:'FIELD',z:2.20},{k:'close',n:'CLOSE',z:2.50}];
 /* the stop is a SETTING — it outlives the run and the launch, like the audio
    toggle, and is deliberately not part of the save (see the state bands) */
 const CAM={i:1,tx:undefined,ty:undefined,z:0};
@@ -11320,6 +11829,25 @@ function paintObjects(g,P,rnd){
 }
 function render(){
   const u=cur();
+  /* ═══ #91 — MOVE IS THE STANDING DEFAULT ═══════════════════════════════
+     One site, self-healing: every path that used to end on `B.sel=null`
+     (an act resolving, ESC, a turn starting) falls through here on its next
+     render and comes back holding MOVE, so the player never clicks the MOVE
+     card at all. Deliberately in render() and not in fifteen call sites, and
+     deliberately NOT during AUTO (autoStep picks its own acts) or while the
+     board is busy animating. ⛔ The brains never read B.sel - this is the
+     click path's convenience and nothing else. */
+  if(u&&u.side==='you'&&!u.ally&&!u.pet&&!u.dead&&u.state!=='routed'&&
+     !B.sel&&!B.busy&&!B.auto&&u.actions>0){
+    const mv=u.acts.find(a=>a.move);
+    if(mv&&canUse(u,mv)){
+      B.sel=mv;B.reach=reachMap(u,moveBudget(u));
+      /* #60 lesson 8 used to fire on clicking MOVE while engaged; the click
+         is gone, so the moment the default lands on an engaged body is the
+         same moment the choice exists */
+      if(engaged(u))learn('learn_step');
+    }
+  }
   /* ═══ THE STAMP IS WHAT MAKES THE HOVER CACHE SAFE ═════════════════════
      Bumped once per render, which is once per thing the player can see
      change. A cached reach map is valid for exactly as long as the stamp
@@ -11351,16 +11879,21 @@ function render(){
       u.ally?'⚔ FIGHTING ON YOUR SIDE — NOT YOURS TO COMMAND':
       u.monster?monTag(u.monster):
       (u.captain?'⚑ CAPTAIN':u.caster?'✷ CASTER':u.big?'⬢ GREAT BEAST':'RABBLE');
-    /* the personality is a rule, not decoration — name it in bold, say what it
-       does, and put the whole race-specific text one hover away */
+    /* #91 point 13 - the personality shows its NAME and nothing else. Both
+       sentences (the short read and the race-specific text) are the hover,
+       where 8f.117 already put the long one. A body with no trait keeps its
+       one descriptive line, because for an ally or a monster that line IS
+       the name. */
     const tk=u.trait&&TRAITS[u.trait];
-    $('bTrait').innerHTML=tk?'<b>'+tk.n+'</b> — '+traitShort(u)
+    $('bTrait').innerHTML=tk?'<b>'+tk.n+'</b>'
       :u.ally?'You took their side an hour ago. They have not decided what they think of you yet.'
       :u.monster&&MONSTERS[u.monster]?MONSTERS[u.monster].nature
       :u.passive?'It will not fight. It only wants to be somewhere else.':'';
     $('bTrait').onmouseenter=tk?(e=>{
       TIP.innerHTML='<div style="font-family:var(--display);font-size:14px;color:var(--g4);'+
-        'margin-bottom:4px">'+tk.n.toUpperCase()+'</div><div>'+(tr(u,'d')||tk.d)+'</div>';
+        'margin-bottom:4px">'+tk.n.toUpperCase()+'</div>'+
+        '<div style="margin-bottom:4px">'+traitShort(u)+'</div>'+
+        '<div>'+(tr(u,'d')||tk.d)+'</div>';
       TIP.style.display='block';moveTip(e);}):null;
     $('bTrait').onmousemove=tk?moveTip:null;
     $('bTrait').onmouseleave=tk?(()=>{TIP.style.display='none';}):null;
@@ -11379,22 +11912,24 @@ function render(){
       else bust($('bPortrait'),u.noFace?'unknown':'ratkin',u.caster);
     }
     $('bAPnum').textContent=u.actions;$('bAPtxt').innerHTML='OF '+u.actionsMax+'<br>ACTIONS';
-    $('bAp').innerHTML=Array.from({length:u.actionsMax},(_,i)=>
-      '<span class="pip'+(i<u.actions?'':' spent')+'"></span>').join('');
-    /* CUT (playtest #5): the four tells came off this panel entirely — the
-       words live on the SHEET, where hiring and promotion decisions happen.
-       Mid-fight none of it is actionable, and the panel gets the room back
-       for the bars and skills, which are. */
-    $('bCore').innerHTML='';$('bCore').style.display='none';
+    /* ⚑ THE OTHER HALF OF THE TURN, AND IT IS `moveBudget` - the SAME call
+       the MOVE button, the reach preview, aiTurn and autoStep all make. So
+       the loud number at the top of the panel cannot drift from the hexes
+       the board is about to light up, and it teaches its own rules by
+       changing in front of you: a second move in one turn is a hex shorter,
+       water and an open bloom take more off, crippled halves it. */
+    $('bStepNum').textContent=moveBudget(u);
     setBar('bArm','bArmN',u.armour,u.armourMax||1);
     setBar('bHp','bHpN',u.hp,u.hpMax);
-    /* the ladder replaces the morale bar — see LADDER */
+    /* #91 point 10 - nerve is ONE coloured word on the plaque. The five-rung
+       ladder moved whole into its hover, which is where the full scale
+       always lived. The word stays because the token face now only appears
+       on rungs that change numbers, so the plaque is the constant readout. */
     const lb=LADDER[ladderAt(u)];
-    $('bLadder').innerHTML=ladderHTML(u,false);
-    $('bMorN').textContent='';
-    $('bState').textContent='NERVE: '+lb.n.toUpperCase();
+    $('bState').textContent=lb.ic+' '+lb.n.toUpperCase();
     $('bState').style.color=lb.col;
-    $('bLadder').onmouseenter=e=>{
+    $('bState').style.borderColor=lb.col;
+    $('bState').onmouseenter=e=>{
       TIP.innerHTML='<div style="font-family:var(--display);font-size:14px;color:'+lb.col+
         ';margin-bottom:5px">NERVE: '+lb.n.toUpperCase()+'</div>'+
         '<div class="ladfull">'+ladderHTML(u,true)+'</div>'+
@@ -11402,24 +11937,21 @@ function render(){
         'It slides down when somebody near them falls, and a quiet turn walks it back '+
         'to where they started. Above that line is earned: a kill, a rally, an order.</div>';
       TIP.style.display='block';moveTip(e);};
-    $('bLadder').onmousemove=moveTip;
-    $('bLadder').onmouseleave=()=>{TIP.style.display='none';};
-    /* SKILL → CHANCE TO HIT (it always was one, and "skill" read like an RPG
-       stat you might raise). FLANK is gone from this panel entirely: it is a
-       per-target number, so a single figure here was never true of any actual
-       swing — the real one is in the hover readout where the target is known. */
-    $('bDerived').innerHTML=dv('CHANCE TO HIT',u.mskill+'%')+dv('DODGE',dodgeOf(u))+
-      dv('STEP',moveBudget(u)+' hex')+dv('INIT',u.init)+
-      dv('ENGAGED',threatsAt(u.col,u.row,u.side)||'no');
+    $('bState').onmousemove=moveTip;
+    $('bState').onmouseleave=()=>{TIP.style.display='none';};
+    /* #91 point 8 - the other two big numbers on the plaque. ENGAGED left
+       the panel: the red threat edges and the rings say it on the board,
+       where it happens. */
+    $('bHitN').textContent=u.mskill+'%';
+    $('bDodgeN').textContent=dodgeOf(u);
     if(mine){
       $('bActions').innerHTML=u.acts.map((a,i)=>{
         const used=u.used[a.k]||0;
         const cd=(a.cool&&u.cd&&u.cd[a.k])||0;
-        /* the MOVE button shows what this move will actually be — the second
-           one of a turn is a hex shorter, and the cutter's first is longer */
+        /* the receipt line: the MOVE card shows what this move will actually
+           be (the second of a turn is a hex shorter), DISENGAGE says it is
+           the step (#72), everything else says cost · reach · the prices */
         const sub=a.move?moveBudget(u)+' hexes · 1 act'
-          /* #72 - DISENGAGE is a one-hex move now, and the row has to say so
-             or it still reads as the old permission slip */
           :a.k==='dis'?'1 hex · 1 act · clean'
           :a.range?a.cost+' act · range '+a.range
           :a.reach?a.cost+' act · reach '+a.reach:a.cost+' act';
@@ -11428,49 +11960,69 @@ function render(){
            telling you to wait, this is the game telling you it is already
            happening and where it is pointed. */
         const gath=!!(u.gather&&u.gather.a.k===a.k);
+        const receipt=gath?'HELD · IT IS ALREADY HAPPENING'
+          :cd?'READY IN '+cd+' TURN'+(cd>1?'S':'')
+          :(sub+(a.strain?' · '+strainCost(u,a)+' nerve':'')+
+            (a.cool?' · '+a.cool+'-turn cooldown':'')+
+            (gathers(a)?' · lands next turn':'')).toUpperCase();
+        /* #91 point 9 - ONE effect sentence on the hover, cut at a sentence
+           boundary. The paragraph stays in ? RULES; a summary nobody wrote
+           would be a lie, so the cut is the note's own first sentences. */
+        const line=gath?'It lands on '+u.gather.t.name+' at the start of your next turn.'
+          :noteLine(a);
         return '<button class="act'+(B.sel===a?' sel':'')+(a.arcane?' arc':'')+
-          (cd||gath?' cool':'')+'" data-a="'+i+'"'+
+          (cd?' cool':'')+(gath?' gath':'')+'" data-a="'+i+'"'+
+          (cd?' data-cd="'+cd+'"':'')+
           (canUse(u,a)?'':' disabled')+'>'+
-          /* the number key that fires it — 1 is always MOVE, 2 the weapon,
-             and the rest follow the order they are drawn in */
+          /* the number key that fires it — 1 is always MOVE, 2 the weapon */
           (i<9?'<span class="key">'+(i+1)+'</span>':'')+
-          '<b><span class="gi">'+iconFor(a)+'</span>'+a.n+'</b><i>'+
-          (gath?'gathering. It lands on '+u.gather.t.name+' at the start of your next turn'
-            :cd?'ready in '+cd+' turn'+(cd>1?'s':'')
-            :sub+(a.strain?' · '+strainCost(u,a)+' nerve':'')+
-             (a.cool?' · '+a.cool+'-turn cooldown':'')+
-             /* the rule said on the control that obeys it, before it is spent */
-             (gathers(a)?' · lands next turn':''))+'</i>'+
-          (gath?'<u class="cd">✷</u>':cd?'<u class="cd">'+cd+'</u>':used?'<u>'+used+'/2</u>':'')+
+          '<span class="gi">'+iconFor(a)+'</span><b>'+a.n+'</b>'+
+          /* B's on-card damage (#91 point 1): the range, on the face */
+          (a.dmg?'<span class="adm">'+a.dmg[0]+'-'+a.dmg[1]+'</span>':'')+
+          '<span class="cost">'+'◆'.repeat(a.cost)+'</span>'+
+          (!cd&&!gath&&used?'<u>'+used+'/2</u>':'')+
+          '<span class="pop"><span class="pt">'+a.n+'</span>'+
+          '<span class="pr">'+receipt+'</span>'+
+          (line?'<span class="pd">'+line+'</span>':'')+'</span>'+
           '</button>';
       }).join('');
       $('bActions').querySelectorAll('.act').forEach(b=>{
-        b.onclick=()=>selectAct(+b.dataset.a);
-        b.onmouseenter=()=>{const a=u.acts[+b.dataset.a];if(a.note)$('bTip').textContent=a.note;};});
+        b.onclick=()=>selectAct(+b.dataset.a);});
+      /* #88's warmage-scroll remainder dissolved sideways: seven cards in a
+         row are 450px against a 1280px band, measured in the bench, so
+         every kit in the game fits with no scroller at all. */
       $('bEnd').disabled=false;
-      /* the no-withdraw fights say so on the button itself — a disabled
-         control that looks live is worse than no control */
+      /* the no-withdraw fights say so on the control - it is an icon now,
+         so the words go in the title and the strike-through looks the part */
       const noFlee=NOWITHDRAW.indexOf(G.battleKind)>=0;
       $('bFlee').disabled=noFlee;
       $('bFlee').classList.toggle('locked',noFlee);
-      $('bFlee').textContent=noFlee?'⚑ NO WAY OUT':'⚑ WITHDRAW';
-      $('bFlee').title=noFlee?'This one is life or death — there is nowhere to withdraw to.'
-        :'Leave the field. No spoils, the company takes it badly, and the place is done with.';
+      $('bFlee').title=noFlee?'NO WAY OUT — this one is life or death; there is nowhere to withdraw to.'
+        :'WITHDRAW — leave the field. No spoils, the company takes it badly, and the place is done with.';
     }else{$('bActions').innerHTML='';$('bEnd').disabled=true;$('bFlee').disabled=true;}}
-  $('bFlavor').textContent=B.ambushRound&&B.round===1?'they have not heard you yet'
-    :'the fog is picking sides';
-  const top=$('bTop');top.innerHTML='<div class="ohead">ORDER</div>';
+  /* #91 point 12 - the UNDO offer, shown exactly while it is real */
+  $('bUndo').classList.toggle('on',
+    !!(B.undo&&u&&u.side==='you'&&!u.ally&&!u.pet&&B.undo.id===u.id&&!B.busy));
+  /* ═══ #91 point 14 - the counts capsule. Standing bodies each side: the
+     downed, the dead and the fled are out; the routed still count, they can
+     rally. The foe's passives (the cub) are not a reason to keep fighting,
+     so they are not a number on the wall either - same test checkEnd uses. */
+  $('bYouN').textContent='⛊ '+B.units.filter(x=>x.side==='you'&&!x.dead&&!x.fled&&!x.downed).length;
+  $('bFoeN').textContent='☠ '+B.units.filter(x=>x.side==='foe'&&!x.dead&&!x.fled&&!x.downed&&!x.passive).length;
+  /* the order rail (#91 point 17): faces only, in turn order. The initiative
+     number is gone from the surface - the ORDER is the readout - and the
+     name is the head's hover. */
+  const top=$('bTop');top.innerHTML='';
   B.order.forEach((o,i)=>{
     if(o.dead||o.fled||o.downed)return;
     const sp=sprite(o.kind,o.side,{unit:o,leader:o.leader||o.captain,caster:o.caster,bow:o.bow});
     const d=document.createElement('div');
     d.className='ord '+(o.side==='foe'?'foe ':'')+((o.leader||o.captain)?'cap ':'')+
       (i===B.idx?'now':'');
-    d.innerHTML='<span class="init">'+o.init+'</span>'+
-      (o.state==='routed'?'<span class="flag">🏳</span>':'')+
+    d.title=(o.leader?'You':o.name)+(o.state==='routed'?' — broken and running':'');
+    d.innerHTML=(o.state==='routed'?'<span class="flag">🏳</span>':'')+
       '<img src="'+sp.src+'" width="'+Math.round(sp.w*.58)+'" height="'+Math.round(sp.h*.58)+
-      '" alt="'+o.name+'"><span class="nm">'+
-      (o.leader?'YOU':o.name.replace('Ratkin, ','').replace('Ratkin ',''))+'</span>';
+      '" alt="'+o.name+'">';
     top.appendChild(d);});
   /* ⚠ THE CARD GOES DOWN BEFORE THE BOARD IT IS ABOUT IS DELETED. The line
      below destroys every hex, and A REMOVED ELEMENT NEVER FIRES `mouseleave`
@@ -11508,11 +12060,21 @@ function render(){
      ⚠ THE HOVER TITLE IS NOT GATED. "Rock. Nobody gets over it." is on the
      hex in every state; this only decides whether the mark is painted. */
   const askingWhereToWalk=!!(B.peekReach||(B.sel&&(B.sel.move||B.sel.thrower)));
+  /* ═══ #91 — THE OFFER ACT. With an attack selected it is that attack, as
+     ever. With MOVE standing (the default now), it is the weapon in their
+     hands - so the board shows move reach AND live targets AT ONCE, and a
+     click on a lit enemy swings without anybody touching a card. One
+     variable, so the lit hex, the odds, the damage preview, the lane word
+     and the accepting click can never disagree about which act they mean. */
+  const offA=(B.sel&&!B.sel.move&&!B.sel.buff)?B.sel
+    :(B.sel&&B.sel.move&&u&&u.side==='you'&&!u.ally&&!u.pet)?
+      (w=>w&&canUse(u,w)?w:null)(mainAtk(u)):null;
+  const laneAct=offA&&needsLane(offA)?offA:null;
   let losOf=null,inWay=null;
-  if(u&&u.side==='you'&&B.sel&&needsLane(B.sel)){
+  if(u&&u.side==='you'&&laneAct){
     losOf={};inWay={};
-    alive().filter(t=>t.side!==u.side&&udist(u,t)<=B.sel.range).forEach(t=>{
-      const S=shotState(u,t,B.sel);losOf[K(t.col,t.row)]=S;
+    alive().filter(t=>t.side!==u.side&&udist(u,t)<=laneAct.range).forEach(t=>{
+      const S=shotState(u,t,laneAct);losOf[K(t.col,t.row)]=S;
       if(S.los.who)inWay[K(S.los.who.col,S.los.who.row)]=S.los.k;
       if(S.los.at)inWay[K(S.los.at[0],S.los.at[1])]='TERR';});
   }
@@ -11546,16 +12108,16 @@ function render(){
          alone entirely rather than drawn live-and-then-refused, because a
          control that looks live and does nothing is worse than one that is
          plainly not there (B05, and the same rule the withdraw button follows). */
-      if(B.sel&&!B.sel.move&&occ&&occ.side==='foe'&&!B.sel.buff&&
-         sizeOK(B.sel,occ)&&
+      if(offA&&occ&&occ.side==='foe'&&
+         sizeOK(offA,occ)&&
          /* #82 - a thrust with an oak in the way is NOT OFFERED, the same as a
             body this act cannot move: the hex is left alone rather than lit
             and then refused. Read the note directly above - it is the same
             rule and this is its second customer. */
-         !reachBlocked(u,occ,B.sel)&&
-         udist(u,occ)<=(B.sel.range||B.sel.reach||0)){
+         !reachBlocked(u,occ,offA)&&
+         udist(u,occ)<=(offA.range||offA.reach||0)){
         edge='#c9c6bb';fill='rgba(150,190,180,.26)';badge='';
-        if(B.sel.dmg)odds=hitBreakdown(u,occ,B.sel).total;
+        if(offA.dmg)odds=hitBreakdown(u,occ,offA).total;
         /* #36 — the target wears its own lane. BLOCKED withdraws the offer
            entirely rather than showing a very bad number: there is no shot,
            and a percentage would imply there was one. */
@@ -11718,12 +12280,17 @@ function render(){
            existing. The morale bar is gone — the ladder in the panel and this
            face carry it now. */
         const li=ladderAt(occ),lb=LADDER[li];
+        /* ═══ #91 point 16 - the face appears ONLY on rungs that change
+           numbers. HAPPY is the one rung with no modifier, so it is the one
+           face that vanishes: a token with no face IS the steady state, and
+           a face appearing means something moved. 😄 +5/+5% · 😐 −8/−3 ·
+           😟 −12/−5 · 💀 routed under the white flag. The plaque's nerve
+           word stays constant for whoever is acting. */
         const mf=document.createElement('span');
-        /* only the top and bottom rungs are worth shouting — the middle three
-           are the default state of most people most of the time */
         mf.className='umood'+((li===0||li>=3)?' loud':'');
         mf.textContent=lb.ic;
         mf.title=lb.n;
+        mf.style.display=(li===1)?'none':'';
         const bars=document.createElement('div');bars.className='ubars';
         const hpF=Math.max(0,occ.hp)/occ.hpMax;
         /* ═══ THE SHELL, ABOVE THE PERSON (user's request) ═════════════════
@@ -11810,7 +12377,7 @@ function render(){
              keep. "3-5" on an armoured body is the useful, honest answer:
              you are not getting through yet. The armour half is one hover
              away on the readout card, which is where the breakdown lives. */
-          const dp=dmgPreview(u,occ,B.sel);
+          const dp=dmgPreview(u,occ,offA);
           if(dp&&dp.hp){const dd=document.createElement('div');dd.className='hdmg';
             dd.textContent=dp.hp[0]+'-'+dp.hp[1];inn.appendChild(dd);}}
         /* #36 — the word, always, even when the percentage is withdrawn */
@@ -11823,9 +12390,17 @@ function render(){
            thin line between two bodies that are already on the board, it
            covers nothing and it is the answer to "can I even shoot that",
            which is a question asked while the cursor is still moving. */
+        /* #91 rule 3 - while a target is hovered, the card that would fire
+           says so. `odds` being a number IS "this click swings", so the
+           same fact lights the hex, the odds and the card. */
+        const fireIdx=(odds!==null&&offA)?u.acts.indexOf(offA):-1;
         hx.onmouseenter=e=>{armRead(ev=>readout(occ,ev),e);
-          if(rayTo)drawLosRay(u,rayTo,B.sel);};
-        hx.onmouseleave=()=>{hideRead();if(rayTo)clearLosRay();};
+          if(rayTo)drawLosRay(u,rayTo,laneAct||B.sel);
+          if(fireIdx>=0){const fc=$('bActions').querySelector('.act[data-a="'+fireIdx+'"]');
+            if(fc)fc.classList.add('hoverfire');}};
+        hx.onmouseleave=()=>{hideRead();if(rayTo)clearLosRay();
+          $('bActions').querySelectorAll('.act.hoverfire')
+            .forEach(c=>c.classList.remove('hoverfire'));};
         /* the target's click pad — see the .aimpad note in the CSS. Drawn
            only where the selected blow can legally land, which is exactly
            what `odds` being a number means at this point in the loop. */
@@ -11951,7 +12526,8 @@ function statusStripHTML(t){
       (s.turns?' ('+s.turns+')':'')+'</span>').join('<span style="color:#3d4f4d"> · </span>')+
     '</div>';
 }
-const dv=(k,v)=>'<span>'+k+' <b>'+v+'</b></span>';
+/* `wide` gives the entry the whole row - the block holds an odd three now */
+const dv=(k,v,wide)=>'<span'+(wide?' class="wide"':'')+'>'+k+' <b>'+v+'</b></span>';
 function setBar(bar,num,v,max){v=v>0?Math.ceil(v):0;
   $(bar).style.width=(100*v/max)+'%';$(num).textContent=v+'/'+Math.round(max);}
 const roman=n=>['0','I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII','XIII','XIV',
@@ -12073,7 +12649,15 @@ function hideRead(){
   peekOff();
 }
 function readout(t,e){
-  const u=cur(),a=B.sel;
+  const u=cur();let a=B.sel;
+  /* #91 - MOVE is the standing default, so the aiming question on an enemy
+     is answered with the weapon the click would use. Same offerAtk gate the
+     lit hex and clickHex use, so the card never describes a swing the click
+     would refuse. */
+  if(u&&u.side==='you'&&!u.ally&&!u.pet&&t.side==='foe'&&a&&a.move){
+    const w=mainAtk(u);
+    if(w&&offerAtk(u,w,t))a=w;
+  }
   if(!u||u.side!=='you'||t.side!=='foe'||!a||a.move){inspect(t,e);return;}
   const rng=a.range||a.reach||0;
   if(udist(u,t)>rng||!a.dmg){inspect(t,e);return;}
@@ -12083,7 +12667,7 @@ function readout(t,e){
     '<div id="rName" style="font-family:var(--display);font-size:13.5px;color:var(--t4)"></div>'+
     '<div style="display:flex;align-items:baseline;gap:8px">'+
       '<span class="big" id="rHit">—</span>'+
-      '<span style="font-family:var(--mono);font-size:9px;color:#7d9490">CHANCE TO HIT</span></div>'+
+      '<span style="font-family:var(--mono);font-size:10.5px;color:#8fa5a2">CHANCE TO HIT</span></div>'+
     '<div class="rr"><span>your skill</span><span id="rSkill"></span></div>'+
     '<div class="rr"><span>their dodge</span><span id="rDodge" style="color:#8ca35a"></span></div>'+
     '<div class="rr"><span>surrounded</span><span id="rFlank"></span></div>'+
@@ -12128,6 +12712,15 @@ function readout(t,e){
   placeRead($('bRead'),e);
 }
 $('bEnd').onclick=()=>{if(!B.busy&&cur()&&cur().side==='you'&&!cur().ally)nextTurn();};
+/* #91 point 12 - the button only exists while render says the offer is real */
+$('bUndo').onclick=()=>undoMove();
+/* #91 point 11 - the log header is the accordion. The ? chip inside it is
+   its own control (the legend), so its clicks stay its own. */
+$('bLogHead').onclick=e=>{
+  if(e.target.closest('#bLegend'))return;
+  $('bLogWrap').classList.toggle('open');
+  const lg=$('bLog');lg.scrollTop=lg.scrollHeight;
+};
 /* leaving the board at all clears the inspect card */
 $('bField').addEventListener('mouseleave',hideRead);
 $('bGrid').addEventListener('mouseleave',hideRead);
@@ -12565,10 +13158,68 @@ window.LINT=function(){
       '", which is not in TERRAIN — it will silently be served the fen');
     if(!GROUND[(TERRAIN[f.t]||{}).paint])
       hit('structure','TERRAIN','terrain "'+f.t+'" paints with "'+
-        (TERRAIN[f.t]||{}).paint+'", which is not in GROUND');});
+        (TERRAIN[f.t]||{}).paint+'", which is not in GROUND');
+    /* ═══ 9e - AND EVERY POOL DRAWS ARRANGEMENTS THAT EXIST (#90, #93) ═══
+       Exactly 9d again, one key across: `fieldFor` falls back to `open` on a
+       name it does not know, so a typo does not crash and does not warn -
+       the fight is simply fought on bare ground some fraction of the time
+       and looks like a balance problem for the rest of the project.
+       ⚠ AND #93 MADE IT WORSE BEFORE THIS CHECK MADE IT BETTER: a bad name
+       inside a pool of five now shows up on ONE BOARD IN FIVE, so the bug
+       hides behind the variety it is hiding in. */
+    (f.pool||[]).forEach(p=>{if(!PATTERNS[p])
+      hit('structure','FIELDS','"'+k+'" draws pattern "'+p+
+        '", which is not in PATTERNS - one board in '+f.pool.length+
+        ' will silently be fought on open ground');});
+    if(f.pool&&!f.pool.length)
+      hit('structure','FIELDS','"'+k+'" has an EMPTY pool - it will always be open ground');});
   Object.keys(TERRAIN).forEach(t=>{
-    if(!GROUND[TERRAIN[t].paint])
-      hit('structure','TERRAIN','"'+t+'" paints with "'+TERRAIN[t].paint+'", not in GROUND');});
+    const T=TERRAIN[t];
+    if(!GROUND[T.paint])
+      hit('structure','TERRAIN','"'+t+'" paints with "'+T.paint+'", not in GROUND');
+    (T.pool||[]).forEach(p=>{if(!PATTERNS[p])
+      hit('structure','TERRAIN','"'+t+'" draws pattern "'+p+'", which is not in PATTERNS');});
+    /* a ground with neither a layout nor a pool is the old silent fallback
+       wearing a new name */
+    if(!T.layout&&!(T.pool&&T.pool.length))
+      hit('structure','TERRAIN','"'+t+'" names no layout and no pool');
+    /* ⚠ #93 - A POOL MAY NOT NAME THE SAME ARRANGEMENT TWICE. It is not a
+       crash and it is not visible: it silently doubles that board's odds,
+       which is a balance change made by a typo. */
+    if(T.pool&&T.pool.length!==new Set(T.pool).size)
+      hit('structure','TERRAIN','"'+t+'" repeats an arrangement in its pool, which '+
+        'silently doubles that board\'s odds');});
+  /* every pattern is a decision with a question attached, and the question is
+     what the docs and the gate picture are written from */
+  Object.keys(PATTERNS).forEach(p=>{
+    if(typeof PATTERNS[p].build!=='function')
+      hit('structure','PATTERNS','"'+p+'" has no build function');
+    if(!PATTERNS[p].q)
+      hit('structure','PATTERNS','"'+p+'" states no question - a pattern that '+
+        'forces no decision is a density, not a pattern');});
+  /* ═══ 9f - THE THREE FIGHTS WHOSE POOL IS A PROMISE (#93) ══════════════
+     Each of these was narrowed because a measurement said the fight breaks
+     otherwise, and the measurements are in the FIELDS rows. A later session
+     widening one of them back "for variety" is the exact move this check
+     exists to stop, because nothing about the resulting board looks wrong -
+     the Circle simply becomes winnable one run in three. */
+  [['circle',['broken'],'#74 stops being unwinnable: any wall is a chokepoint, '+
+      'and a chokepoint is how six beat ten'],
+   ['slingline',['open'],'the fight is "cross open ground" and cover deletes it'],
+   ['mother',['strewn'],'a hand-tuned boss, and #32 was filed against this fight '+
+      'for never ending']].forEach(r=>{
+    const f=FIELDS[r[0]]||{};
+    if(String(f.pool)!==String(r[1]))
+      hit('structure','FIELDS','"'+r[0]+'" must draw exactly ['+r[1]+'] and draws ['+
+        (f.pool||'nothing')+'] - '+r[2]);});
+  /* and the one pinned board stays pinned, for the reason on its row */
+  if(FIELDS.mother.seed!==29)
+    hit('structure','FIELDS','the Fen-Mother\'s seed is no longer pinned to 29 - her '+
+      'round band is tuned by where the blob lands, so a rolled board is a re-tune');
+  Object.keys(FIELDS).forEach(k=>{
+    if(k!=='mother'&&FIELDS[k].seed!==undefined)
+      hit('structure','FIELDS','"'+k+'" pins a seed, so its board never varies - only '+
+        'the Fen-Mother is supposed to');});
   SIM_GROUNDS.forEach(g=>{
     if(g.k!=='as'&&!TERRAIN[g.k])
       hit('structure','SIM_GROUNDS','the practice field offers "'+g.k+
@@ -12798,7 +13449,9 @@ function toggleAuto(){
   if(!B)return;
   B.auto=!B.auto;
   $('bAuto').classList.toggle('live',B.auto);
-  $('bAuto').textContent=B.auto?'❚❚ AUTO ON':'▶ AUTO';
+  /* #91 - an icon button now; the words live in the title */
+  $('bAuto').textContent=B.auto?'❚❚':'▶';
+  $('bAuto').title=B.auto?'AUTO ON — press to take the reins back':'AUTO — the company fights itself';
   if(B.auto){
     say('The company fights on its own. Press AUTO again to take the reins back.');
     /* #81 - paced with everything else. AUTO is a tester tool, and the tester

@@ -23,6 +23,328 @@
 
 ---
 
+## ⚔ THE BATTLE SCREEN, REDONE  *(#91 · 2026-08-11 · build log 8f.121)*
+
+**What it is.** Your seventeen-point relayout, built to the frame you picked from the three
+mockups: **A · THE FRAME, with B's on-card damage.** The 300px left panel, the 72px order strip and
+the 104px log are gone; the battlefield is the whole screen and everything floats over it. The
+board went from **57.8% of the screen to 85.5%**, the words on it at round I from **262 to about
+160**, and the camera's default framing is **a third closer** because the chrome paid for it.
+
+**Where everything lives now.** Counts capsule top-centre (**⛊ yours · ROUND · whose turn · ☠
+theirs** - the routed still count, they can rally). Under it the **order rail**: faces only, in
+turn order, gold ring on whoever acts, **no initiative numbers, name on hover**, white flag on the
+broken. Top-right: **▶ ⏱ ⚑** icons (AUTO in test mode · PACE · WITHDRAW - words in the hover) and
+the FULL/FIELD/CLOSE stops beside them. Bottom-left: **the plaque** - portrait, name, class, the
+trait's **name only** (sentence on hover), four big numbers (**ACTIONS · HEXES · CHANCE TO HIT ·
+DODGE**), the two bars, and **nerve as one coloured word** whose hover is the whole five-rung
+ladder. Bottom-centre: **the cards** - glyph, name, hotkey, cost pips, **damage on the face**
+(14-21 under HUNTING BOW); the receipt line and one effect sentence are the hover. Bottom-right:
+**END TURN**, and under it the **log, collapsed to its last lines** - click the header to open the
+whole fight, and the **? chip on it holds COMBAT LOGIC** now.
+
+**The three new behaviours, and they are the point:**
+1. **You never click MOVE again.** It is the standing selection: your reach is already lit when
+   your turn starts, and after every act the selection returns to MOVE on its own.
+2. **Click an enemy and you swing.** With MOVE standing, every enemy your weapon can reach is
+   already ringed with its hit % and honest damage range. Click one: the weapon fires. KICK and
+   the rest are still their cards and their number keys.
+3. **⟲ UNDO MOVE.** Step somewhere that changed nothing but your position and a thin button
+   appears over END TURN: one click puts you back, with the action and the hexes refunded. It
+   refuses honestly: a parting swing taken, or any other act spent, and the step is permanent.
+
+**How to reach it in three steps.** ⚙ **TEST** → **THE PRACTICE FIELD** → any fight. Or just play:
+every battle uses it.
+
+**What should happen.** The fight fills the screen. A turn reads left to right: who am I (plaque) →
+what can I do (cards) → who is next (rail). Hover an enemy in reach: the weapon card lights, the
+readout card with the full to-hit breakdown appears after its usual dwell. Mood faces on tokens
+appear **only when the rung changes numbers** (😄 +5/+5% · 😐 −8/−3 · 😟 −12/−5 · 💀 routed);
+a token with no face is simply steady - 🙂 is gone.
+
+**What would be a bug.**
+- Anything overlapping anything at any of the three camera stops *(swept clean at all three here,
+  including the warmage's seven cards)*.
+- A lit enemy that refuses the click, or an unlit one that accepts it - the ring, the odds and the
+  click all run through one gate and must agree.
+- UNDO appearing after a parting swing, or failing to refund exactly what the move spent.
+- The undo button surviving into the next turn, or appearing on AUTO's moves.
+- A move that spends your LAST action ends the turn as always, so no undo there - **that is the
+  designed limit, tell me if it feels wrong in play.**
+- The log ticker missing a line the old bottom box would have carried, or the accordion losing your
+  scroll position.
+- **On the phone** (this could not be exercised in the build harness): portrait rotation with the
+  new chrome - anything anchored wrong will be a right angle out, instantly obvious.
+
+**Also worth judging, not bugs:** whether ~160 words on screen still reads as too many · whether
+the FULL/FIELD/CLOSE stops at their new sizes (1.73 / 2.20 / 2.50) feel right, since FULL is now
+exactly the old default view a third bigger · whether the flavour line ("the fog is picking
+sides") is missed - it was cut with the old header and can come back as a log line.
+
+---
+
+## 🎲 THE SAME FIGHT, A DIFFERENT FIELD  *(#93 · 2026-08-11 · build log 8f.120)*
+
+**What it is.** Your note straight after the last one: *"make it so these diferent fields get into
+drawn in every batle randomly (so if it is in the forrest or rock terrains - theres is more to drow
+from). So if you have same battle different layout can give you an extra flavor."*
+
+**You were correcting a real mistake in what I had just shipped.** #90 built four arrangements and
+then handed each fight exactly one, pinned. So the boards were still frozen - just frozen at four
+instead of at one - and replaying a fight gave you the same field for ever.
+
+**Now a place owns a POOL, and the board is dealt from it every time you take the field.**
+
+| the ground | draws from | why that many |
+|---|---|---|
+| **the ridge** *(rocky)* | **six** | stone does everything: it stacks into a wall, scatters into cover, piles into one mass, lies about as rubble, or leaves the ground bare |
+| **the fen** | **five** | timber stands and scatters, but it does not do all six |
+| **the forest** | **four** | |
+| **the swamp · the plains** | **three** | a drowned channel and a dry plain are *already* an arrangement; a wall across either makes it somewhere else |
+
+**⚑ Two dice, not one.** One picks the *arrangement*; the other picks **everything else** - where the
+water lies, where each stone falls inside that arrangement, where the litter is. That is why the
+Sling-Line still never looks the same twice even though it only ever draws open ground.
+
+**How to reach it in three steps.** ⚙ **TEST** → **THE PRACTICE FIELD** → take the same fight three
+or four times in a row. **The Ruined Steading** is the best one to sit on: it is on the ridge, so it
+draws from all six. **The Snare** draws from five and is the best place to see the material rule -
+in the fen a mass is **trees**, on the ridge the same shape is **boulders**.
+
+**What should happen.** Replaying a fight should feel like arriving somewhere slightly different
+rather than reloading a puzzle. Nothing about the fight itself changes: same enemies, same numbers.
+**And a fight you flee and come back to is now on new ground**, which is a side effect I did not plan
+and think is right - the old build let you learn a board by heart and reload onto it.
+
+**What would be a bug.**
+- The same fight giving you the **identical** field twice in a row *(except the two below, which are
+  supposed to)*.
+- An **empty ridge**. Actually - not a bug. `open` is a real member of the rocky pool, so a bare
+  field is a hand you can be dealt about one time in six. Tell me if it feels like a mistake anyway.
+- A board you cannot cross. *2,664 rolled boards were generated and validated, but that checks the
+  shape, not the feel.*
+- **Blood on the Road** feeling busy. It draws from three, not five, on purpose: the wall-with-gaps
+  and the eleven-boulder field are held back to the second fight, because the first one is already
+  teaching you eleven other things. If it still feels like a lot, that is worth knowing.
+
+**👤 Two boards deliberately do NOT roll, and both are refusals rather than oversights.**
+
+1. **The Fen-Mother is pinned** - hers is the only fixed board left in the game. Rolling it measured
+   15.7 rounds (worst 27) against 11.5 (worst 17) pinned, and **#32 was originally filed against this
+   exact fight for never ending.** Your ruling on re-tuning her is still open from last time.
+2. **The Sling-Line always draws open ground**, and this one is not about difficulty: cover there
+   does not make the fight harder or easier, it makes it a *different fight*, because "cross the
+   open" is the whole brief.
+
+**⚑ And a correction to what I told you an hour ago.** I said the Circle was 0-wins-in-8 on its
+board. Re-run at 40 runs a side it is **5 to 10% winnable and always was** - eight runs just had not
+seen one. The arrangement still matters enormously (on the wrong one it was 4-in-8), but **six runs
+cannot tell 0% from 20%**, and I nearly made three decisions on that few.
+
+**The picture:** `shots/93_pattern_draw.html` - thirteen real boards: the fen's whole hand of five on
+one fight, four consecutive unpinned rolls of the ridge, and the two fixed points.
+
+---
+
+## 🚦 THE COLLISION GUARDS  *(#92 · 2026-08-11 · build log 8f.119)*
+
+**⚠ Nothing in the game changed. There is nothing to play here.** This one is for you at the desk,
+because you asked whether working in several parallel sessions is fine and whether the rule is not to
+commit.
+
+**The answer was no.** There is one working tree and one branch, so both sessions edit the same bytes
+on the same disk and git separates nothing between them. Not committing does not isolate them, it
+just leaves you without a restore point. What actually collides is the **number**, the **prototype**,
+and **`deploy.ps1`**, which runs `git add -A` and pushes, so a deploy from one session was publishing
+the other's half-finished file to the live link.
+
+**What you do now, at the start of a session, before anything is written:**
+
+```bash
+powershell -NoProfile -ExecutionPolicy Bypass -File tools\claim.ps1 number
+```
+
+It hands you a `#NN` and an `8f.NNN` that the other session cannot be given. If you are going to
+change the prototype, add:
+
+```bash
+powershell -NoProfile -ExecutionPolicy Bypass -File tools\claim.ps1 lock -Title "what you are doing"
+```
+
+**Three steps to see it work.** 1. Run `claim.ps1 status` in both sessions: the same picture, because
+they read the same disk. 2. Take the lock in one, then ask the other to edit
+`prototype/grimtoll_slice.html` - **it is refused**, and told who holds it and what they are doing.
+3. `claim.ps1 release all` when you are done with a session.
+
+**What should happen.**
+
+- Two sessions asking for a number in the same minute get **different** numbers. This already
+  happened for real on the day it shipped: session `38e9215b` got #93 while this one got #92.
+- `deploy.ps1` **refuses** while another session owns the prototype, and when it does run it now
+  **lists every file it is about to commit** before committing.
+- `git commit` refuses a change that spends a number somebody else holds.
+- A lock **expires after 4 hours**, so a session that closes without releasing does not block you.
+
+**What would be a bug.**
+
+- A number you are handed that is **already used** anywhere in the docs, the prototype or `shots/`.
+  *(The first cut had exactly this: it read `#373` out of a CSS colour. Tell me if you see a jump.)*
+- A refusal you cannot get past. Every guard has a way through on purpose: `claim.ps1 lock -Steal`,
+  `claim.ps1 release all`, `git commit --no-verify`. **If a guard ever blocks you with no exit, that
+  is the bug**, because a guard you cannot escape is a guard that gets deleted.
+- Being blocked from editing a file **no session is holding**, or `status` showing a lock you know is
+  from a session you closed hours ago as still live.
+
+**Where it is written down.** [`PARALLEL_SESSIONS.md`](PARALLEL_SESSIONS.md).
+
+---
+
+## 🏔 FOUR BATTLEFIELDS INSTEAD OF ONE  *(#90 · 2026-08-11 · build log 8f.118)*
+
+**What it is.** Your ask: *"create 3-4 different battfield patterns for fields using in a fights in
+the first act (diffrent position of rocks, trees and other objects)."*
+
+**Before touching it I dumped the nine boards the act was actually generating, and the dump is worse
+than the request implies.** Seven of the nine fights ran the *same* code - two to four random blobs
+of rock, and the only thing that differed between fights was how many blobs. **Not one act-1 fight
+contained a single tree** (the setting was called `scat:'trees'` but it only ever meant "three
+clumps"; six fights carried the name of an object none of them had). **And the blobs landed where
+nothing happens:** you deploy on the left, they deploy on the right, the two lines meet in the
+middle - and across the nine boards the rock sat along the bottom edge on five of them, and on the
+Thing in Armour it sat *behind you*, in your own deployment, before the fight started.
+
+**So there are four arrangements now, and each one is named for the question it asks you.**
+
+| | what you will see | the question |
+|---|---|---|
+| **ANVIL** | one big mass in the middle, sitting one row high of centre so the two ways round are **not** the same length | which side of it do you go round |
+| **SPINE** | a wall straight down the middle, two hexes thick, **ends walled** and **two gaps in it** - one high, one low, about two turns' walk apart | which gap do you take, and can you afford to change your mind |
+| **BROKEN** | eleven boulders scattered about, and **no two of them touching** | is there a stone between you and the shot |
+| **FLANKS** | mass along the top and the bottom, the middle deliberately left open | the short way in the open, or the long way out of sight |
+| **OPEN** | nothing at all | *(the Sling-Line keeps this on purpose - cover on that board deletes the fight)* |
+
+**⚑ The same shape is made of different stuff depending on where you are.** A spine is a **line of
+trees** in the fen and a **run of boulders** on the ridge. That is not decoration: a lone boulder is
+something you shoot over and thrust over from behind (and an ogre can pick it up), while a *group*
+of rocks, or any tree, stops an arrow dead. So **BROKEN is the only board where every obstacle is
+cover rather than a wall**, and it is always stone.
+
+**⚠ READ THE #93 SECTION ABOVE THIS ONE BEFORE TESTING.** It shipped an hour later, on your next
+note, and it **replaced the one-arrangement-per-fight table that used to be here**: a fight no longer
+carries an arrangement, it draws one per battle. The four arrangements and the rules about them are
+all still exactly as described below - only the *assignment* changed.
+
+**How to reach it in three steps.** ⚙ **TEST** → **THE PRACTICE FIELD** → pick any fight, and take
+it more than once.
+
+**What should happen.** The middle of the board should now be **worth thinking about**. On the
+spine, committing to the near gap and finding them massed at it should feel like a decision you have
+to live with. On broken ground you should catch yourself stepping *behind* a stone before shooting.
+On the flanks, crossing the open middle should feel fast and exposed, and going through a wood
+should feel slow and safe. **Nothing was added to your screen** - no card, no option, no hint, not
+one word of text. This is the same game on ground that means something.
+
+**What would be a bug.**
+- A board you cannot cross, or one where the two sides never meet *(135 boards were generated across
+  every fight × every pattern × every practice-field ground and all pass the validator - but the
+  validator checks the shape, not how it feels)*.
+- A gap in the spine with a tree or a pool of water sitting in it. Those hexes are reserved and
+  nothing is allowed to fill them.
+- Two boulders touching each other on **BROKEN**. They are supposed to be independent, and a pair of
+  them quietly stops being cover and starts being a wall.
+- Any fight feeling markedly longer or shorter than you remember. Every fight was measured ten times
+  a side against the old generator and all of them came back inside the noise - but ten runs of a
+  robot is not you playing it.
+
+**👤 TWO THINGS THAT NEED YOUR RULING, and neither is a bug.**
+
+1. **The Fen-Mother did not get a new board, and I want you to decide whether she should.** Hers is
+   byte-identical to what it always was. When I gave her a real arrangement her fight ran **half
+   again as long** (10.6 rounds → 15.8) for the same win rate, and lengthening a boss you hand-tuned
+   is a balance change, not a terrain change. ⚑ **But chasing that turned up something worth more
+   than the row it saved: a mass in the middle of the board taxes whoever needs to *shoot*.** The
+   same obstacle moved to the top edge costs almost nothing. Her old board was never neutral - its
+   blob happened to sit **on her approach lane** - which means the 12-14 round band we have all been
+   quoting is partly an accident of the random seed. Leave her, or re-ground her and re-tune the
+   band around it. Your call.
+2. **The Circle** *(the fight you are not meant to win)* was nearly shipped **winnable**. Written as
+   ANVIL it went to 4 wins in 8; the reason is one sentence - **against ten bodies any wall is a
+   chokepoint, and a chokepoint is exactly how six beat ten.** It is on BROKEN instead, which gives
+   cover without giving a line to hold, and it now holds at 0 wins in 10. Worth confirming it still
+   feels hopeless in the right way rather than merely hopeless.
+
+**The picture:** `shots/90_battlefield_patterns.html` - six boards, the old roll beside the new one
+for the same fight, all of it photographed out of the running game rather than drawn.
+
+---
+
+## 🔎 THE UNIT PANEL, REBUILT AROUND YOUR THREE NOTES  *(#88 · 2026-08-10 · build log 8f.117)*
+
+**What it is.** Your three notes, with the screenshot: *"very small type and lots of numbers
+everywhere"*, *"it took me a very long time to see where to read a character's step count"*, and
+*"make the hot keys either smaller or not overlapping"*.
+
+**All three turned out to be one thing, and it was measurable rather than a matter of taste.** The
+skill list was two columns. Two columns of 133px leave a card **116px of inner width** - and the
+longest skill name in the game, POISON THE BLADE, needs **128px** of that with its icon. Any skill
+with a cooldown wrapped its cost line onto a second line, so KICK and CRIPPLING SHOT were holding
+**48px of content in a 46px box**. And the hotkey was pinned to the exact corner the icon sits in,
+so it was **on** the icon on every card. The card physically could not show what was in it, which is
+why nothing could be made bigger.
+
+**So the list is one column now**, which gives each card **213px** instead of 116px - and that one
+move paid for all three fixes at once.
+
+| your note | what changed |
+|---|---|
+| **3 · hotkeys overlap** | the key has a **25px column of its own** down the left of every card and nothing else may enter it. It also got **bigger**, not smaller: 8.5 → 10.5px. A hotkey you cannot read is not a hotkey - the overlap was the real fault. The cooldown number got the matching column on the right |
+| **1 · very small type** | skill name 11 → **12.5px** · cost line 9 → **10.5px** and no longer watermark-grey · icon 12 → **13.5px** · the stat rows under the bars 9.5 → **11.5px** · the class line 9 → **10px** · **the hover card you read before every swing** 9.5 → **11px**, and it is 22px wider so it stops wrapping |
+| **1 · numbers everywhere** | **five integers under the bars are three.** INIT is gone - the ORDER strip along the top of the field already shows initiative for *everybody*, which is the only way that number means anything, and it got bigger. The three action pips are gone - the numeral beside them already said "3 OF 3" in words |
+| **2 · where is the step count** | it is now **the second big number in the box at the top**, beside ACTIONS: *the two things a turn spends, one box, one size*. It was buried in the small grey grid at the foot of the panel, which is exactly why you could not find it |
+
+**How to reach it in three steps.** ⚙ TEST → **PRACTICE FIELD** → start any fight. The panel is the
+whole left side. (Or just play - it is every fight.)
+
+**What should happen.**
+
+1. **No hotkey ever touches a word or an icon**, on any body, with any skill, in any state.
+2. **The box at the top of the panel reads `3 OF 3 ACTIONS` and `4 HEXES THIS MOVE`.** Move once,
+   then look again: the hex number **drops by one**, because a second move in a turn is shorter.
+   Stand in water or beside an open bloom and it drops further. That is the number teaching its own
+   rule instead of a note explaining it.
+3. **Every skill name sits on one line** and every cost line reads without squinting.
+4. Press **1-7**. The card lights up, and if the list is long enough to scroll, **the card you
+   picked comes into view by itself**.
+
+**What would be a bug.**
+
+- A hotkey sitting on an icon or a letter. That is the thing this entry exists to make impossible,
+  so one instance is a real failure and not a nitpick.
+- The hex number in the top box disagreeing with the hexes the board lights up when you pick MOVE.
+  They come off the same call, so they cannot drift - if they ever do, something else broke.
+- The panel jumping or the skill list moving as you hover along the cards.
+
+**⚠ The one thing I already know is imperfect, so you do not have to find it.** **Marrow the warmage
+has seven skills and her list is about one card too tall** - it scrolls by 47-58px. Everybody else
+(archer 5, Captain 6, rabble 3) fits with room. The selected card scrolls itself into view so no
+hotkey can pick something off-screen, but **a skill you have to scroll to is still a skill you might
+not know you have.** Two things would close it and **both are your call, not mine**:
+
+- **cut the three-stat block under the bars** (CHANCE TO HIT · DODGE · ENGAGED, 41px). All three
+  exist somewhere better - the hover card gives you the real, target-specific chance to hit, which
+  the panel's figure never was;
+- **or put the ARMOUR / HITPOINTS labels on top of their own bars** instead of above them (26px).
+
+**⚠ And this is the battle screen only.** Your screenshot and all three notes were that screen, so
+that is what I changed. The rest of the game still carries **61 pieces of type below 10px** - the
+road, the company screen, the aftermath, the front door. Say the word and that is the next pass; the
+count is written down so it is a target and not an impression.
+
+**Pictures.** `shots/88_panel_before.html` and `shots/88_panel_after.html` - the same two bodies, the
+same fight, the same badge states. Open them side by side.
+
+---
+
 ## 💥 EVERY SKILL HAS ITS OWN ANIMATION NOW  *(#87 · 2026-08-10 · build log 8f.116)*
 
 **What it is.** Your request: *"proper animation for all skill moves... small but distinct. If push

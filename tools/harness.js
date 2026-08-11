@@ -175,7 +175,9 @@ window.shotUI=async function(name,caption,note,panels){
     '.leftcap{width:270px;background:var(--panel);border:1px solid #2c3d3f;padding:0;flex:none}'+
     '.caplbl{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;color:#d9bd7e;'+
       'background:#0e1414;padding:5px 8px;border-bottom:1px solid #2c3d3f}'+
-    '.leftcap #bLeft{display:flex;flex-direction:column;width:270px;height:auto}'+
+    /* #91 - #bLeft is gone; the chrome pieces come through as-is, unpinned */
+    '.leftcap #bPlq,.leftcap #bActions,.leftcap #bLogWrap{position:static;transform:none;'+
+      'width:auto;margin:6px}'+
     '.board{position:relative;width:600px;height:440px;overflow:hidden;'+
       'border:1px solid #2c3d3f;background:#16201f;flex:none}'+
     '.board>img.terr{position:absolute;left:0;top:0;width:600px;height:440px}'+
@@ -201,7 +203,11 @@ window.grabUI=function(label){
   const Gn=document.getElementById('bGround');
   const dx=Gn.offsetLeft,dy=Gn.offsetTop;
   const tag=label?'<div class="caplbl">'+label+'</div>':'';
-  return {left:'<div class="leftcap">'+tag+flatten(document.getElementById('bLeft'))+'</div>',
+  /* #91 - the 300px column is gone. The "left half" of a UI shot is now the
+     plaque and the card row, which is everything the old panel said. */
+  const chrome=['bPlq','bActions','bLogWrap'].map(id=>{
+    const e=document.getElementById(id);return e?flatten(e):'';}).join('');
+  return {left:'<div class="leftcap">'+tag+chrome+'</div>',
           board:'<div class="board"><img class="terr" src="'+document.getElementById('bTerrain').toDataURL('image/png')+
                 '"><div class="gridholder">'+document.getElementById('bGrid').outerHTML+'</div>'+
                 '<div class="fxholder" style="position:absolute;left:'+(-dx)+'px;top:'+(-dy)+
