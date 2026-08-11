@@ -23,6 +23,45 @@
 
 ---
 
+## 🗺 THE ROAD SCREEN, ROUND ONE: THE TOP BAR  *(#103 · 2026-08-11 · build log 8f.130)*
+
+**Your friends' "unclear what he is seeing", answered with your five points, on the Battle
+Brothers shape.** All five are in.
+
+**How to reach it.** Front door → **Continue the road** (or any run). Everything here is on the
+map screen; no fight needed.
+
+**The bar (1, 2).** Top LEFT is the company: **♟ seats** (click it: the company screen), a **🎒**
+sack (click: the same screen), **UPKEEP N/DAY** with the horizon beside it in digits, the **mood**
+word, and a new **✚ SOUND / MENDING / BLOODIED** word for the company's blood (hover it: who is
+short how many hitpoints). Top RIGHT is what you own as one connected strip, mirrored off BB:
+**◉ crowns · ❦ provisions · ▤ salvage · ◈ gems**, numbers first, names on hover. Provisions still
+opens the barrels on click.
+
+**The second row (2.5, 3).** Left: **✦ THE CONTRACT: the head out of Skelbrook's hall · pays on
+delivery**. Hover it for the full brief. There is no secondary-quest line because there is no
+secondary quest in this build; the slot only appears when something fills it. Centre: **☀ DAY N**
+and the ground underfoot: the place you stand, or **"the road to X"** while the company walks.
+⚠ The sun is an emblem, not a clock. The run has no hours to rotate it by, and I did not fake a
+day cycle; if you want a real one, it needs your ruling on what an hour IS on this map.
+
+**The deleted line and the red spot (4).** The italic sentence ("4 of you, 8 crowns a day...")
+and the ◷ FUNDED chip are gone. The horizon rides the upkeep chip in digits now: dim **"14 days
+of pay"** while it is nobody's problem, amber at five and under, **red "2 days left"** at two, and
+a separate **red UNPAID N DAYS** chip the day wages are missed. To see the red without ruining a
+run: ⚙ DEV.MODE console, `G.run.crowns=14;worldTick()`, look at the bar, then reload.
+
+**The corner that collided (5).** Bottom left is one row now: **? RULES · ☰ MENU · the legend**,
+no overlap. **♪ sits in the bar, top right**, on this screen only; everywhere else it stays where
+it was.
+
+**What would be a bug:** any node standing off its painted road (the map box must stay exactly
+638px tall, and that is the thing this build protected hardest) · the plaque naming the place you
+LEFT while the company walks · a chip with no hover · ♟ or 🎒 not opening the company · the legend
+under MENU again · ♪ floating top right on the battle or menu screens.
+
+---
+
 ## 🗡 THE BATTLE SCREEN, ROUND EIGHT  *(#102 · 2026-08-11 · build log 8f.129)*
 
 **Your twelve points off the fifth annotated shot.** All twelve are in. Two of them turned out to
