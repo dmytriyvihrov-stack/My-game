@@ -23,6 +23,47 @@
 
 ---
 
+## 🗺 THE ROAD SCREEN, ROUND TWO: THE BB DESIGN PASS  *(#104 · 2026-08-11 · build log 8f.131)*
+
+**Your nine points off the annotated shot, all in.** This round supersedes half of the #103
+section below it (the pawn, the pink pack, the "sun is an emblem" note, the second row).
+
+**How to reach it.** Front door → **Continue the road**. Then click any open road once: half the
+list only shows while the company walks.
+
+**The chips (1, 2, 7, 8).** The party chip wears **the Captain's actual painted head** now, the
+same portrait the map token wears. The sack is **drawn, leather-coloured**, no more pink emoji.
+The mood chip speaks the **battle ladder's language**: same faces, same colours (😐 AT EASE is
+the ladder's Ok, 💀 ON THE BRINK is Broken; road names, battle smiles). The company's blood is a
+**painted heart**: full green when nobody is mending, **half amber** when somebody is, **empty
+red** when it is a quarter of all hitpoints or half the bodies. Hover it for who and how much.
+
+**The crown sign (6).** ◉ everywhere a crown amount shows on this screen: the upkeep chip
+(**◉8/DAY**), the road labels (**1d · ◉8**), the TRAVEL button (**~◉8**). Same gold, same sign,
+same meaning as the resource strip.
+
+**The contract frame (3).** THE CONTRACT sits in a proper BB-style plaque now: badge, double
+frame, floating over the map top left. Hover unchanged.
+
+**The sun and the moon (4), and the slower road (5).** The black second row is **gone (9)**; the
+day plaque hangs top centre over the map with a **round sky disc** under it. Standing still it
+holds daylight. **Click a road and watch it: the sun sets behind the ground line, the moon comes
+over, and it keeps turning until the company arrives.** The walk itself is **three times slower**
+than yesterday, so a one-day leg is an actual journey and the disc gets its show. ⚠ The disc
+turns only while walking, by design: the run still has no hours, so a standing sun that crept
+would be a clock lying about a unit the game does not keep.
+
+**The map got taller (9).** The 40px the dead row spent went to the map (638 → 678). Every node,
+label, card and the walking token are re-mapped through one function; **if any node stands off
+its painted road, that is the bug to report first.**
+
+**What would be a bug:** a node off its road anywhere on the map · the disc turning while you
+stand still, or holding still while you walk · the heart green while somebody mends · a bare
+crown number without ◉ on this screen · the old ♟/🎒 glyphs anywhere · the contract plaque
+covering a node or a road label.
+
+---
+
 ## 🗺 THE ROAD SCREEN, ROUND ONE: THE TOP BAR  *(#103 · 2026-08-11 · build log 8f.130)*
 
 **Your friends' "unclear what he is seeing", answered with your five points, on the Battle

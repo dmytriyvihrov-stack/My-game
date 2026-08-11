@@ -1242,14 +1242,16 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:11px;pa
 
 /* ================= WORLD ================= */
 #world{background:var(--g-ink);flex-direction:column}
-/* ═══ #103 · THE TOP BAR, REBUILT ON THE BATTLE BROTHERS SHAPE ═══════════
+/* ═══ #103/#104 · THE TOP BAR, REBUILT ON THE BATTLE BROTHERS SHAPE ══════
    (Friends' feedback, 2026-08-11: on the map it is "unclear what is he
-   seeing".) Company on the left, counted resources on the right as one
-   connected strip, and the day and the contract on their own 40px row
-   below. ⚠ THE TWO ROWS SPEND EXACTLY THE 82px THE OLD TWO ROWS SPENT:
-   nodes, travel labels and placeDlg all position in raw px against the
-   1280x638 map, so #wMap's height is load-bearing. Grow these rows and
-   the painted roads part company with the buttons standing on them. */
+   seeing"; #104 the same day: "use battle brother as referance".) Company
+   on the left, counted resources on the right as one connected strip. One
+   42px row: #104 deleted the second one, so the contract, the day plaque
+   and the sun/moon disc float over the map instead, and the map grew from
+   638 to 678 view px. ⚠ That growth is paid for ONCE, at vy() beside MAPH:
+   nodes, travel labels, the token and placeDlg all position through it.
+   A new absolute overlay on the map either goes through vy() or anchors
+   to the CONTAINER (top/bottom), never to a design-space y. */
 #wBar{height:42px;background:var(--g0);border-bottom:1px solid #3d2f1d;display:flex;align-items:center;
       padding:0 64px 0 12px;gap:8px;flex:none}
 #wBar .sep{flex:1}
@@ -1270,21 +1272,52 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:11px;pa
 .cchip i{font-style:normal;font-size:10px}
 .cchip.click{cursor:pointer}
 .cchip.click:hover{background:#2a2114;border-color:var(--g3)}
-/* ── row two: the contract on the left, the day on a centre plaque ── */
-#wSub{height:40px;background:#0e0a05;border-bottom:2px solid #3d2f1d;position:relative;
-      display:flex;align-items:center;padding:0 12px;flex:none}
-#wQuest{display:flex;align-items:center;gap:8px;max-width:44%;cursor:help;overflow:hidden;
-        white-space:nowrap}
+/* ── #104: the second row is DELETED ("delete this big black empty space").
+   The contract, the day plaque and the sun/moon disc float OVER the map,
+   which is what Battle Brothers does with all three. They are children of
+   #wMap so drawNodes' sweep (.node,.elab,.mlegend) never touches them. ── */
+#wQuest{position:absolute;top:10px;left:10px;z-index:6;display:flex;align-items:center;gap:8px;
+        max-width:470px;cursor:help;overflow:hidden;white-space:nowrap;
+        padding:6px 12px 6px 7px;background:linear-gradient(180deg,#241b0e,#180f07);
+        border:1px solid #6b5330;
+        box-shadow:inset 0 0 0 1px rgba(16,12,6,.95),inset 0 0 16px rgba(0,0,0,.5),
+                   0 3px 10px rgba(0,0,0,.65)}
+#wQuest .qbdg{width:20px;height:20px;border:1px solid #5a4426;background:#14100a;flex:none;
+              display:flex;align-items:center;justify-content:center;color:var(--g4);
+              font-size:11px}
 #wQuest .qlab{font-family:var(--display);font-size:11px;color:var(--g4);letter-spacing:.09em;flex:none}
 #wQuest .qtx{font-family:var(--mono);font-size:10.5px;color:#a38652;overflow:hidden;
              text-overflow:ellipsis}
-#wPlaque{position:absolute;left:50%;top:0;height:100%;transform:translateX(-50%);
-         display:flex;align-items:center;gap:10px;padding:0 18px;background:#161009;
-         border:1px solid #3d2f1d;border-top:none;cursor:help;white-space:nowrap}
-#wPlaque .sun{font-size:15px;color:var(--g4)}
+#wPlaque{position:absolute;left:50%;top:0;transform:translateX(-50%);z-index:6;height:32px;
+         display:flex;align-items:center;gap:9px;padding:0 16px;
+         background:linear-gradient(180deg,#221a10,#14100a);
+         border:1px solid #6b5330;border-top:none;cursor:help;white-space:nowrap;
+         box-shadow:inset 0 0 0 1px rgba(16,12,6,.95),0 3px 10px rgba(0,0,0,.55)}
 #wPlaque .d1{font-family:var(--display);font-size:13px;letter-spacing:.07em;color:#c2b493}
 #wPlaque .d1 b{font-size:18px;color:#e0d3b4}
 #wPlaque .pl{font-family:var(--mono);font-size:10px;color:#8a7449;letter-spacing:.05em}
+/* the sun-and-moon disc, hanging under the day plaque, BB's own wheel: a
+   sky window, a rotating face pair, and a fixed ground silhouette the pair
+   sets behind. It TURNS while the company walks (worldTick toggles
+   .turning off G.moving) and rests at daylight while you stand. */
+#wDisc{position:absolute;left:50%;top:28px;transform:translateX(-50%);z-index:7;width:40px;
+       height:40px;border-radius:50%;border:1px solid #6b5330;overflow:hidden;cursor:help;
+       background:radial-gradient(circle at 50% 32%,#26334a,#0b0f18 78%);
+       box-shadow:0 0 0 1px #14100a,0 3px 9px rgba(0,0,0,.6)}
+#wDisc .wh{position:absolute;inset:0;z-index:1}
+#wDisc .su{position:absolute;left:50%;top:3px;transform:translateX(-50%);font-size:13px;
+           line-height:1;color:#e8c86a;text-shadow:0 0 7px rgba(232,200,106,.85)}
+#wDisc .mo{position:absolute;left:50%;bottom:3px;transform:translateX(-50%) rotate(180deg);
+           font-size:12px;line-height:1;color:#c5cede;text-shadow:0 0 6px rgba(197,206,222,.6)}
+#wDisc .gd{position:absolute;left:0;right:0;bottom:0;height:30%;z-index:2;
+           background:linear-gradient(180deg,#1c1409,#0e0a05);border-top:1px solid #5a4426}
+#wDisc.turning .wh{animation:daycycle 4s linear infinite}
+@keyframes daycycle{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){#wDisc.turning .wh{animation:none}}
+/* the Captain's painted head in the party chip, and the inline-SVG glyphs
+   (sack, heart, paw) that replaced the font glyphs in #104 */
+.cchip .bust{width:24px;height:24px;border:1px solid #3d2f1d;display:block;flex:none}
+.cchip svg{display:block;flex:none}
 .tchip{display:flex;align-items:center;gap:4px;background:#2a1420;border:1px solid #5d2f45;
        padding:3px 7px;font-family:var(--mono);font-size:9.5px;color:var(--bloom-lit);cursor:help}
 /* Blessings & Curses — Total War style named company states */
@@ -1939,26 +1972,26 @@ a.popt.sendit{display:block;text-decoration:none}
 <div id="stage">
 
 <section class="screen" id="world">
-  <!-- ═══ #103 · THE ROAD'S TOP BAR, ON THE BATTLE BROTHERS SHAPE ═════════
-       Two rows, 82px total: the same 82px the old two rows spent, because
-       every node, travel label and dialog on the map is placed in raw px
-       against 1280x638, so #wMap's height is load-bearing. Row one: the
-       company on the left (bodies, kit, upkeep, mood, blood), the counted
-       resources on the right as one connected strip, ♪ pinned at the row's
-       far end. Row two: the contract on the left, the day and the ground
-       underfoot on a centre plaque. worldTick() builds all of it; nothing
-       lives here but the sockets. -->
+  <!-- ═══ #103/#104 · THE ROAD'S TOP BAR, ON THE BATTLE BROTHERS SHAPE ════
+       One 42px bar (#104 deleted the second row: "delete this big black
+       empty space"). The company on the left (the Captain's painted head,
+       the sack, upkeep, mood, the heart), the counted resources on the
+       right as one connected strip, ♪ pinned at the row's far end. The
+       contract plaque, the day plaque and the sun/moon disc float OVER the
+       map, BB style. ⚠ The map is designed in 1280x638 and shown in
+       1280x678: every DOM overlay goes through vy() - see the note at
+       MAPH. worldTick() builds the bar; nothing lives here but sockets. -->
   <div id="wBar">
     <div id="wCompany"></div>
     <div class="sep"></div>
     <div id="wRes"></div>
   </div>
-  <div id="wSub">
-    <div id="wQuest"></div>
-    <div id="wPlaque"></div>
-  </div>
   <div id="wMap">
     <canvas id="wCanvas" width="1280" height="638"></canvas>
+    <div id="wQuest"></div>
+    <div id="wPlaque"></div>
+    <div id="wDisc"><div class="wh"><span class="su">☀</span><span class="mo">☾</span></div>
+      <div class="gd"></div></div>
     <div id="wToken"><canvas id="wFace" width="40" height="40"></canvas>
       <span class="tl">THE COMPANY</span></div>
     <div id="wDlg"></div>
@@ -4154,11 +4187,13 @@ let DLGAX,DLGAY;
 function placeDlg(ax,ay,again){
   if(!again){DLGAX=ax;DLGAY=ay;}
   const dlg=$('wDlg'),map=$('wMap');
-  const MW=map.offsetWidth||1280, MH=map.offsetHeight||638, PAD=10;
+  const MW=map.offsetWidth||1280, MH=map.offsetHeight||VIEWH, PAD=10;
   const CAP=MH-PAD*2;
   dlg.style.maxHeight=CAP+'px';
   const h=Math.min(dlg.offsetHeight||dlg.scrollHeight,CAP);
-  const top=clamp((ay===undefined?MH/2:ay)-h/2,PAD,Math.max(PAD,MH-h-PAD));
+  /* #104: callers hand NODE coords, which are design space - vy() here so
+     every card door maps once. An undefined ay centres in VIEW space. */
+  const top=clamp((ay===undefined?MH/2:vy(ay))-h/2,PAD,Math.max(PAD,MH-h-PAD));
   const left=clamp((ax===undefined?MW/2:ax)-DLGW/2,PAD,Math.max(PAD,MW-DLGW-PAD));
   dlg.style.top=Math.round(top)+'px';
   dlg.style.left=Math.round(left)+'px';
@@ -4241,16 +4276,21 @@ G.aidLeft=LEGACY.built.indexOf('aid')>=0?1:0;
    maths underneath (battle starting morale, a few event odds); this is
    only how the player reads it.
    ═══════════════════════════════════════════════════════════════════════ */
+/* #104 point 7: the faces and colours are the battle LADDER's own
+   (💀 😟 😐 🙂 😄), so the company's road mood and a body's nerve in a
+   fight speak one visual language. The NAMES stay the road's: a company
+   grumbles, a person breaks. If the ladder's faces ever change, change
+   these with them. */
 const MOODSTATES=[
-  {max:-40,n:'ON THE BRINK',ic:'☠',col:'#c15d55',
+  {max:-40,n:'ON THE BRINK',ic:'💀',col:'#c15d55',
    d:'One bad day from walking off. Every fight starts with the company already rattled.'},
-  {max:-15,n:'GRUMBLING RANKS',ic:'☹',col:'#c07a2c',
+  {max:-15,n:'GRUMBLING RANKS',ic:'😟',col:'#c9a227',
    d:'Quiet complaints, slow to break camp in the mornings. It costs you at the start of every fight.'},
-  {max:15, n:'AT EASE',ic:'—',col:'#8a9a5c',
+  {max:15, n:'AT EASE',ic:'😐',col:'#c9b98a',
    d:'Neither glad nor sorry to be here. Nothing to report.'},
-  {max:40, n:'STEADY MARCH',ic:'☺',col:'#8ca35a',
+  {max:40, n:'STEADY MARCH',ic:'🙂',col:'#a3bd6c',
    d:'The column moves well together. A little steadier walking into a fight.'},
-  {max:999,n:'HIGH SPIRITS',ic:'★',col:'#a8d06a',
+  {max:999,n:'HIGH SPIRITS',ic:'😄',col:'#7fae4e',
    d:'They would follow you into the sea, and it shows on the field.'}
 ];
 const moodState=v=>MOODSTATES.find(s=>v<s.max)||MOODSTATES[MOODSTATES.length-1];
@@ -18127,9 +18167,9 @@ function ask(title,body,opts){
     box.appendChild(b);});
   ASK.classList.add('on');
 }
-/* #103: the INVENTORY button became the ♟ and 🎒 chips in #wCompany, and
-   those are rebuilt (and rebound) by every worldTick, so nothing to wire
-   at boot any more. */
+/* #103/#104: the INVENTORY button became the head and sack chips in
+   #wCompany, and those are rebuilt (and rebound) by every worldTick, so
+   nothing to wire at boot any more. */
 $('iBack').onclick=()=>{G.mustKit=false;show('world');worldTick();};
 
 /* ============================================================
@@ -18334,6 +18374,20 @@ const NODES={
    that gets moved later — by hand, or by the map rebuild in backlog #6 —
    lands inside the safe area or gets pulled into it. */
 const MAPW=1280,MAPH=638,NODEW=104,NODEH=64;
+/* ═══ #104 · DESIGN SPACE vs VIEW SPACE ═══════════════════════════════════
+   The map is DESIGNED in 1280x638 (every NODES coordinate, every bez()
+   sample, clampNodes, labelSpot) and SHOWN in 1280x678: deleting the top
+   bar's second row gave the map 40px and the design coordinates did not
+   move. The canvas keeps its 638 backing store and CSS stretches it, so
+   the PAINTING lands in view space for free; every DOM overlay placed in
+   px has to make the same 6.3% stretch by hand, and vy() is that hand.
+   ⚠ THE DOORS THAT ALREADY GO THROUGH IT: drawNodes (nodes + travel
+   labels), tokenAt (the walking company), placeDlg (every card on the
+   map). A new absolute overlay positioned from a NODE's y goes through
+   vy() too, or it stands 6% above the thing it points at and the drift
+   grows toward the map's foot. x needs nothing: the width did not change. */
+const VIEWH=678;
+const vy=y=>y*VIEWH/MAPH;
 (function clampNodes(){
   const padX=NODEW/2+8, padY=NODEH/2+6, out=[];
   Object.keys(NODES).forEach(k=>{
@@ -19152,7 +19206,7 @@ function drawNodes(){
        for the walk, and the place being walked to says so. */
     if(G.moving){st=(k===G.dest)?'walking':(k===G.at?'here':'locked');}
     b.className='node '+st+' t-'+n.t+(n.mark?' mark':'');
-    b.style.left=n.x+'px';b.style.top=n.y+'px';
+    b.style.left=n.x+'px';b.style.top=vy(n.y)+'px';   /* #104: design -> view */
     /* the TYPETAG used to be a permanent third line under every live node, and
        on a crowded map it landed squarely on the neighbour's name. It is on
        the glyph now (and in the hover card), where it costs no vertical room. */
@@ -19210,10 +19264,13 @@ function drawNodes(){
     const wide=!!(e[4]&&forkHere);
     const l=document.createElement('div');l.className='elab live';
     const s=labelSpot(a,b,wide,placed);
-    placed.push({x:s[0],y:s[1],w:s[2],h:s[3]});
-    l.style.left=s[0]+'px';l.style.top=s[1]+'px';
-    /* days and the wage bill — provisions stopped being a travel tax */
-    l.innerHTML=e[2]+'d · '+(e[2]*dailyUpkeep())+'c'+(wide?'<i>'+e[4]+'</i>':'');
+    placed.push({x:s[0],y:s[1],w:s[2],h:s[3]});      /* collisions in design space */
+    l.style.left=s[0]+'px';l.style.top=vy(s[1])+'px'; /* #104: design -> view */
+    /* days and the wage bill — provisions stopped being a travel tax.
+       #104 point 6: ◉ is the crown sign everywhere a crown amount shows,
+       so the label says ◉8, not the bare-letter 8c. */
+    l.innerHTML=e[2]+'d · <span style="color:var(--g4)">◉</span>'+(e[2]*dailyUpkeep())+
+      (wide?'<i>'+e[4]+'</i>':'');
     map.appendChild(l);});
   $('wLock').classList.toggle('on',!!G.pending);
   const lg=document.createElement('div');lg.className='mlegend';
@@ -19293,6 +19350,38 @@ function say2(t){
   void el.offsetWidth;                 /* restart the css animation */
   el.classList.add('fade');
 }
+/* ═══ #104 · THE BAR'S DRAWN GLYPHS ═══════════════════════════════════════
+   ("More old school sack · paint a heart full medium or empty.") The font
+   glyphs the chips wore in #103 rendered as whatever the platform's emoji
+   set decided (the 🎒 came out pink), so the sack, the heart and the paw
+   are inline SVG now, drawn in the palette's own leather and verdigris.
+   The heart is the company's blood: FULL green when nobody is mending,
+   HALF amber when somebody is, EMPTY red when it is a quarter of all
+   hitpoints or half the bodies. The paw took over from ♥ on the companion
+   chip so the heart could mean blood alone. */
+const SACK_SVG='<svg width="15" height="16" viewBox="0 0 16 17">'+
+  '<path d="M5.6 4.6 C2.9 6.2 1.9 9.1 1.9 11.4 C1.9 14.6 4.5 16 8 16 '+
+  'C11.5 16 14.1 14.6 14.1 11.4 C14.1 9.1 13.1 6.2 10.4 4.6 Z" '+
+  'fill="#8a6a3c" stroke="#2c2011" stroke-width="1.1"/>'+
+  '<path d="M5.9 4.7 L5 2.4 C4.9 2 5.3 1.6 5.7 1.8 L7 2.5 L8 1.4 L9 2.5 '+
+  'L10.3 1.8 C10.7 1.6 11.1 2 11 2.4 L10.1 4.7 Z" '+
+  'fill="#a58248" stroke="#2c2011" stroke-width="1"/>'+
+  '<path d="M5.4 4.9 C6.9 5.6 9.1 5.6 10.6 4.9" fill="none" '+
+  'stroke="#2c2011" stroke-width="1.1"/></svg>';
+const PAW_SVG='<svg width="13" height="12" viewBox="0 0 13 12" fill="#8ca35a">'+
+  '<circle cx="2.1" cy="4.6" r="1.4"/><circle cx="4.9" cy="2.6" r="1.5"/>'+
+  '<circle cx="8.1" cy="2.6" r="1.5"/><circle cx="10.9" cy="4.6" r="1.4"/>'+
+  '<ellipse cx="6.5" cy="8.2" rx="3.5" ry="2.9"/></svg>';
+const heartSVG=st=>{
+  const P='M8 13.6 C1.2 8.9 0.6 4.9 2.6 3.0 C4.2 1.5 6.6 1.9 8 3.9 '+
+    'C9.4 1.9 11.8 1.5 13.4 3.0 C15.4 4.9 14.8 8.9 8 13.6 Z';
+  const col=st==='full'?'#8ca35a':st==='half'?'#c9a227':'#c15d55';
+  return '<svg width="15" height="14" viewBox="0 0 16 15">'+
+    (st==='half'?'<defs><clipPath id="wHalfH"><rect x="0" y="7" width="16" height="8"/>'+
+      '</clipPath></defs>':'')+
+    (st!=='empty'?'<path d="'+P+'" fill="'+col+'"'+
+      (st==='half'?' clip-path="url(#wHalfH)"':'')+'/>':'')+
+    '<path d="'+P+'" fill="none" stroke="'+col+'" stroke-width="1.2"/></svg>';};
 function worldTick(){
   /* condition news travels as road-news; a RESOLUTION gets a proper card —
      it is one of the biggest things that can happen to a person and must
@@ -19326,34 +19415,40 @@ function worldTick(){
   let hpMaxAll=0,hpLossAll=0;
   G.party.forEach(p=>{hpMaxAll+=unitFrom(p).hpMax;hpLossAll+=p.hpLoss||0;});
   const bloodied=hurt.length&&(hpLossAll/Math.max(1,hpMaxAll)>=.25||hurt.length*2>=G.party.length);
-  const hs=!hurt.length?{n:'SOUND',col:'#7f9a58',d:'Nobody is mending. Whole skins all round.'}
-    :{n:bloodied?'BLOODIED':'MENDING',col:bloodied?'#c15d55':'#c9a227',
+  const hs=!hurt.length?{st:'full',n:'SOUND',col:'#8ca35a',
+      d:'Nobody is mending. Whole skins all round.'}
+    :{st:bloodied?'empty':'half',n:bloodied?'BLOODIED':'MENDING',
+      col:bloodied?'#c15d55':'#c9a227',
       d:hurt.map(p=>who(p)+' is '+p.hpLoss+' hitpoints short').join('. ')+'.'};
   /* the funded horizon rides the upkeep chip: digits, and red exactly when
      it has become the problem (user: "so you can see the problematic spot") */
-  const fdTxt=fd<=0?'nothing left':fd===1?'1 day left':fd<=5?fd+' days left':fd+' days of pay';
+  const fdTxt=fd<=0?'nothing left':fd===1?'1 day left':fd<=5?fd+' days left':fd+' days';
   const petKey=hasPet();
   /* company relics work from the baggage; nobody wears them, so they sit
      with the company chips rather than on any one character's sheet */
   const relics=heldGear().filter(k=>GEAR[k]&&GEAR[k].company);
   $('wCompany').innerHTML=
-    '<span class="cchip click" data-w="party"><span class="ri">♟</span><b>'+
-      partyUsed()+'/'+PARTYCAP+'</b></span>'+
-    '<span class="cchip click" data-w="kit"><span class="ri">🎒</span></span>'+
-    '<span class="cchip" data-w="keep"><span class="nm">UPKEEP</span><b>'+u+'</b>'+
-      '<span class="nm">/DAY</span>'+
+    '<span class="cchip click" data-w="party"><canvas class="bust" width="24" height="24">'+
+      '</canvas><b>'+partyUsed()+'/'+PARTYCAP+'</b></span>'+
+    '<span class="cchip click" data-w="kit">'+SACK_SVG+'</span>'+
+    '<span class="cchip" data-w="keep"><span class="nm">UPKEEP</span>'+
+      '<b><span style="color:var(--g4)">◉</span>'+u+'</b><span class="nm">/DAY</span>'+
       (u>0?'<i style="color:'+fundedCol(fd)+'">· '+fdTxt+'</i>':'')+'</span>'+
     (owedDays>=1?'<span class="cchip" data-w="owed" style="border-color:#c15d55">'+
       '<b style="color:#c15d55;font-size:10.5px">UNPAID '+owedDays+' DAY'+(owedDays>1?'S':'')+
       '</b></span>':'')+
     '<span class="bcchip" data-w="mood" style="border-color:'+ms.col+'66">'+
-      '<span style="color:'+ms.col+'">'+ms.ic+'</span><b style="color:'+ms.col+'">'+ms.n+'</b></span>'+
+      '<span>'+ms.ic+'</span><b style="color:'+ms.col+'">'+ms.n+'</b></span>'+
     '<span class="bcchip" data-w="blood" style="border-color:'+hs.col+'66">'+
-      '<span style="color:'+hs.col+'">✚</span><b style="color:'+hs.col+'">'+hs.n+'</b></span>'+
+      heartSVG(hs.st)+'</span>'+
     (petKey?'<span class="bcchip" data-w="pet" style="border-color:#8ca35a66">'+
-      '<span style="color:#8ca35a">♥</span></span>':'')+
+      PAW_SVG+'</span>':'')+
     relics.map(k=>'<span class="tchip" data-tri="'+k+'">'+
       (GEAR[k].g||'✧')+' '+GEAR[k].n+'</span>').join('');
+  /* #104 point 1: the party chip wears the Captain's actual painted head
+     (or whoever leads what is left), the same bustFor() the token uses */
+  const bc=$('wCompany').querySelector('canvas.bust');
+  if(bc){const lead=member('you')||G.party[0];if(lead)bustFor(bc,lead);}
   /* the counted resources, Battle Brothers' strip mirrored to the right.
      One SALVAGE segment on purpose: wood and iron alias the same pool,
      and showing both was the same number twice with different names on it */
@@ -19364,12 +19459,14 @@ function worldTick(){
     seg('prov',RES_ICON.food,G.run.food,'var(--grain)',' style="cursor:pointer"')+
     seg('salvage',RES_ICON.salvage,G.camp.salvage,'var(--wood)')+
     seg('gems',RES_ICON.gems,G.camp.gems,'var(--gem)');
-  /* row two: the day and the ground underfoot, centre; the contract, left */
+  /* floating over the map (#104): the day plaque centre with the sun-and-
+     moon disc under it, the framed contract top left. The disc turns only
+     while the company is on the road; standing still, it holds daylight. */
   const hereN=NODES[G.at],destN=G.moving&&G.dest?NODES[G.dest]:null;
-  $('wPlaque').innerHTML='<span class="sun">☀</span>'+
-    '<span class="d1">DAY <b>'+G.day+'</b></span>'+
+  $('wPlaque').innerHTML='<span class="d1">DAY <b>'+G.day+'</b></span>'+
     '<span class="pl">'+(destN?'the road to '+destN.n:hereN?hereN.n:'')+'</span>';
-  $('wQuest').innerHTML='<span class="qlab">✦ THE CONTRACT</span>'+
+  $('wDisc').classList.toggle('turning',!!G.moving);
+  $('wQuest').innerHTML='<span class="qbdg">✦</span><span class="qlab">THE CONTRACT</span>'+
     '<span class="qtx">the head out of Skelbrook\'s hall · pays on delivery</span>';
   /* every chip answers for itself: one table, rebound each tick because
      the elements it binds to were just rebuilt */
@@ -19443,7 +19540,7 @@ function worldTick(){
     el.onmousemove=moveTip;el.onmouseleave=()=>{TIP.style.display='none';};};
   document.querySelectorAll('#wBar [data-w]').forEach(el=>{
     const inf=WTIPS[el.dataset.w];if(inf)bindW(el,inf);});
-  bindW($('wPlaque'),WTIPS.day);bindW($('wQuest'),WTIPS.quest);
+  bindW($('wPlaque'),WTIPS.day);bindW($('wDisc'),WTIPS.day);bindW($('wQuest'),WTIPS.quest);
   /* hovering a company relic says exactly what it does */
   $('wCompany').querySelectorAll('[data-tri]').forEach(el=>{
     bindTip(el,el.dataset.tri,null);});
@@ -19614,7 +19711,9 @@ function passDays(n){
   }
 }
 /* ---------- the company walks, and things happen on the way ---------- */
-function tokenAt(x,y){const t=$('wToken');t.style.left=x+'px';t.style.top=y+'px';}
+/* #104: the one door the walking company passes through, so the design ->
+   view stretch happens here and bez()/walk() stay in design space */
+function tokenAt(x,y){const t=$('wToken');t.style.left=x+'px';t.style.top=vy(y)+'px';}
 function placeToken(){const n=NODES[G.at];if(n)tokenAt(n.x,n.y-26);}
 function bez(a,b,t){
   const cx=(a.x+b.x)/2,cy=(a.y+b.y)/2-((b.y-a.y)*.14),m=1-t;
@@ -19791,8 +19890,8 @@ function legCard(k,e){
        :after>=10?'the purse still holds.'
        :'about '+after+' day'+(after>1?'s':'')+' of wages left in the purse.')+'</div>'+
     '</div>'+
-    '<button class="choice" id="tGo"><b>TRAVEL — '+e[2]+' DAY'+(e[2]>1?'S':'')+
-    ' · ~'+bill+' CROWNS</b><i>commit to the road</i></button>'+
+    '<button class="choice" id="tGo"><b>TRAVEL · '+e[2]+' DAY'+(e[2]>1?'S':'')+
+    ' · ~◉'+bill+'</b><i>commit to the road</i></button>'+
     '<button class="choice" id="tStay"><b>Not yet</b><i>look at the map a moment longer</i></button>';
   dlg.classList.add('on');
   placeDlg(n.x,n.y);
@@ -20048,14 +20147,17 @@ function travel(k){
     /* something already happened on this road: walk the rest of it in peace.
        `at1(i-1)` is where the company is standing, because `i` is the stop
        that is being skipped and `i-1` is the one that fired. */
-    if(legHad.fired&&i>0){walk(a,b,at1(i-1),1,620,arrive);return;}
-    if(i>=stops){walk(a,b,at1(stops-1),1,620,arrive);return;}
+    /* #104 point 5: every segment is x3 what it was (620/700/520 -> 1860/
+       2100/1560). The walk is the pause the user asked for, and the sun
+       disc turns against exactly this pace. */
+    if(legHad.fired&&i>0){walk(a,b,at1(i-1),1,1860,arrive);return;}
+    if(i>=stops){walk(a,b,at1(stops-1),1,1860,arrive);return;}
     const from=i===0?0:at1(i-1),to=at1(i);
     /* ⚠ `arrive` must stay the ONLY thing that clears G.moving and moves
        G.at — every extra stop is just another walk segment in front of it.
        A road that resolved early here would strand the token, which is the
        exact failure that moved the dog ambush onto a node. */
-    walk(a,b,from,to,i===0?700:520,()=>{
+    walk(a,b,from,to,i===0?2100:1560,()=>{
       rollCampAt(a,b,to,()=>leg(i+1),i>0,legHad);
     });
   };
