@@ -23,6 +23,49 @@
 
 ---
 
+## 🏹 THE ARCHER THAT WOULD NOT SHOOT  *(#99 · 2026-08-11 · build log 8f.127)*
+
+**This is your bug.** *"found a bag - that sometimes archer don`t shoot (at least in autobattle)"*.
+
+**How to reach it.** ⚙ TEST → **PRACTICE FIELD** → **The Pack** (that board improved most), then
+press **▶ AUTO** and watch Ilka. Run it three or four times: the old behaviour was intermittent by
+nature, so one clean fight proves nothing either way.
+
+**What was wrong.** Both AI brains picked a shooter's hex on **distance alone**. The archer walked
+to a textbook shooting distance, two to four hexes back, and never once asked whether an arrow
+could actually leave that hex. Behind your own shieldwall, or behind an oak, the answer was no. So
+it stood there. Next turn it scored the same hexes by the same rule and stood there again. **It was
+never refusing to shoot. It was standing where shooting is impossible.**
+
+**What should happen now.** The archer should **step sideways out from behind its own line** to
+open a lane, and it should be willing to leave its perfect distance to do it. A hex it cannot shoot
+from is now worth twelve hexes of walking to avoid, which is more than the whole distance band, so
+having a shot beats standing at the ideal range.
+
+**Measured**, 112 battles each way: turns where the archer had a target in range and every lane was
+blocked went **82 → 17** (run twice: 72 → 22). It looses an arrow on slightly more of its turns
+(0.99 → 1.04 per turn). **Win rate and fight length did not move**, which is the point: this was
+meant to stop a body doing nothing, not to make the archer stronger.
+
+⚠ **It will now sometimes stand somewhere more dangerous.** A hex with a clean lane is usually a
+more exposed hex, and the numbers show the trade honestly: fifty fewer turns lost to a blocked
+lane, twenty-six more turns where something has closed on the archer. I judged that worth taking.
+**Tell me if the archer now feels reckless rather than useful** and I will price exposure higher.
+
+⛔ **Three things I did NOT fix, all of them measured, none of them what you reported:**
+
+- **An archer with something standing on it still does nothing at all.** That is now the single
+  biggest reason it is silent. A bow is off the table while engaged, which is the design, but the
+  step-away-and-shoot behaviour exists only in the enemy brain and even there it is switched off the
+  moment contact is made. **AUTO has none of it.** This is the next one worth doing.
+- **About a quarter of archer turns have a decent shot available and spend the whole turn walking.**
+- The Fen-Mother fight barely improved. Her board is the one still pinned by hand.
+
+**What would be a bug.** The archer walking into the middle of the enemy line to get a lane; the
+archer oscillating between two hexes and never shooting; any fight where it stands still for three
+rounds with an unobstructed enemy in front of it. All three would mean the weight is wrong, and the
+weight is one number.
+
 ## ⚔ WHOSE BODY IS THAT  *(#96 · 2026-08-11 · build log 8f.124)*
 
 **How to reach it.** ⚙ TEST → **PRACTICE FIELD** → **Blood on the Road**. That fight is the only

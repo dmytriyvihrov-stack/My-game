@@ -4897,12 +4897,27 @@ function boardIndex(){
   B._occSig=sig;B._occ=m;B._losCache={};
   return m;
 }
-function losState(a,d){
+/* ═══ #99 - AND IT ANSWERS FOR A HEX YOU ARE NOT STANDING ON YET ═════════
+   `from` is optional and changes nothing about what the lane MEANS: it only
+   moves the eye. Without it this is the question the board has always asked
+   ("can I shoot from here"); with it, it is the question a shooter has to ask
+   before it walks ("could I shoot from THERE"), which is the whole of #99.
+
+   ⚠ IT GOES IN THE CACHE KEY. `_losCache` is keyed on the pair of bodies, and
+   a hypothetical eye is a different question about the same pair - without the
+   suffix the first hex scored would answer for every hex after it, and a
+   movement scorer asking about forty hexes would get one verdict forty times.
+   That is not a slow bug, it is a silent one.
+
+   `o!==a` below already keeps the body out of its own lane, so a shooter
+   whose CURRENT hex lies across the traced line does not block itself. */
+function losState(a,d,from){
   const r={k:'CLEAR',who:null,at:null,cover:null,line:[]};
   if(!a||!d||a.col===undefined||d.col===undefined)return r;
-  const occ=boardIndex(),ck=uid(a)+'>'+uid(d);
+  const eye=from||[a.col,a.row];
+  const occ=boardIndex(),ck=uid(a)+'>'+uid(d)+(from?'@'+eye[0]+','+eye[1]:'');
   if(B._losCache[ck])return B._losCache[ck];
-  const line=hexLine([a.col,a.row],[d.col,d.row]);
+  const line=hexLine(eye,[d.col,d.row]);
   r.line=line;
   const seen=[];
   for(let i=0;i<line.length;i++){
@@ -4953,8 +4968,14 @@ function losState(a,d){
      almost impossible to form on purpose: the feature would have existed and
      never fired, which is worse than not building it. Sectors 2, 3 and 4 are
      the rear 180°, and "his back is to you" is what that means. */
-  if(s.side===a.side&&udist(a,s)<=1&&s.facing!==undefined&&!s.noArc){
-    const sec=(sectorOf([s.col,s.row],[a.col,a.row])-s.facing+6)%6;
+  /* #99 - `eye`, not `a`: both halves of this test are about where the shot is
+     taken FROM. Left reading `a` it would have said "screened" off the shield
+     standing beside the archer's current hex while scoring a hex six steps
+     away, which is the exact class of lie the `from` parameter exists to
+     stop - a scorer that believes a lane is good because of furniture it is
+     about to walk away from. */
+  if(s.side===a.side&&udist(eye,s)<=1&&s.facing!==undefined&&!s.noArc){
+    const sec=(sectorOf([s.col,s.row],eye)-s.facing+6)%6;
     if(sec>=2&&sec<=4){r.k='SCREENED';r.who=s;return withCover();}
   }
   r.k='OBSTRUCTED';r.who=s;return B._losCache[ck]=r;
@@ -4964,6 +4985,37 @@ function losState(a,d){
    caster is deliberately exempt. That is also the only thing that keeps the
    battle-mage distinct from the archer once screening exists. */
 const needsLane=act=>!!(act&&act.range&&!act.arcane&&act.dmg);
+
+/* ═══ #99 - WHAT A LANE IS WORTH, IN HEXES OF WALKING ════════════════════
+   The bug this exists for: BOTH movement scorers chose a shooter's hex on
+   DISTANCE alone. An archer picked its band - two to four hexes back - and
+   was completely blind to whether an arrow could leave that hex at all. So
+   it walked to a textbook shooting position behind its own shieldwall, or
+   behind an oak, found the lane BLOCKED, and did the only thing left: stood
+   there. Next turn it scored the same hexes by the same rule and stood there
+   again. That is the reported "sometimes the archer doesn't shoot", and the
+   archer was not refusing to shoot - it was standing where shooting is
+   impossible and nothing in either brain had ever asked.
+
+   The cost is stated in HEXES OF WALKING because that is the currency both
+   scorers already use (aiTurn pays 6 a hex, autoStep 7), so one table reads
+   correctly in both without either being re-tuned:
+
+     CLEAR / SCREENED   0   nothing wrong with it. A screen is deliberate.
+     COVER              2   -14 to hit. Worth two hexes of walking to avoid.
+     OBSTRUCTED         5   -22, and #36 refuses it outright when a clean
+                            lane exists - so the hex is often worth nothing.
+     BLOCKED           12   NO SHOT AT ALL. More than the whole band range,
+                            which is the point: a shooter leaves its perfect
+                            distance rather than stand where it cannot shoot.
+
+   ⚠ 12 deliberately does NOT swamp exposure (up to ~36 for a thin skin). An
+   archer will take a more dangerous hex to have a shot, and should - an
+   archer that cannot shoot is worth nothing at all - but it will not walk
+   into the middle of them to get one. */
+const LANETIER={CLEAR:0,SCREENED:0,COVER:1,OBSTRUCTED:2,BLOCKED:3};
+const LANEHEX=[0,2,5,12];
+const laneCost=(u,t,from)=>LANEHEX[LANETIER[losState(u,t,from).k]||0];
 
 /* ═══ ONE VERDICT PER SHOT (user, on seeing the first version) ═══════════
    *"if it is blocked highlight by red … if the range is not optimal (too
@@ -10616,7 +10668,14 @@ function aiTurn(u){
           }
           /* shooters live at their sweet band, not merely "in range" */
           const distScore=(doc.band&&!engaged(u))?Math.abs(dd-doc.band)*6:dd*6;
-          const sc=distScore+i*6+rm.dist[k]+knot+chase[t.id]+exposed+fireP
+          /* ═══ #99 - AND AT A BAND THEY CAN ACTUALLY SHOOT FROM ═══════════
+             Only a shooter asks this. A body walking to a swing has its own
+             version of the question - `reachBlocked`, the oak that refuses a
+             spear - and asks it in mayAim before it picks, so nothing here
+             needs to know about it. Priced at 6, the same as a hex of walking
+             everywhere else in this scorer. */
+          const lane=(shot&&!engaged(u)&&dd<=rng)?laneCost(u,t,p)*6:0;
+          const sc=distScore+i*6+rm.dist[k]+knot+chase[t.id]+exposed+fireP+lane
             -arcBon-lineB-(piled[t.id]||0)*doc.pack*aip(u).pile;
           if(dd<=rng&&sc<bs){bs=sc;best=p;}});});
       if(!best){let bd=1e9;
@@ -13575,7 +13634,13 @@ function autoStep(){
           if(shoot){
             /* a shooter wants its own band (2–4), never the target's face */
             const band=Math.abs(dd-Math.min(rng-1,3));
-            const sc=band*7+i*4+exp*soft+knot*0.5+step;
+            /* #99 - and it wants a hex the arrow can leave. The other half of
+               the pair; see laneCost(). Both brains or neither - an AUTO whose
+               archer stands behind its own shieldwall all fight while the
+               enemy archer steps out to shoot is the divergence the player
+               notices, and it is the one this file keeps being bitten by. */
+            const lane=laneCost(u,t,p)*7;
+            const sc=band*7+i*4+exp*soft+knot*0.5+step+lane;
             if(sc<bs){bs=sc;best=p;}
           }else{
             let arcB=0;
