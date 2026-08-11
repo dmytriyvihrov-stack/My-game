@@ -1402,38 +1402,48 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:11px;pa
 #wQuest .qtx{font-family:var(--mono);font-size:10.5px;color:#c2b493;white-space:nowrap;
              overflow:hidden;text-overflow:ellipsis}
 #wQuest .qpay{font-family:var(--mono);font-size:9px;color:#8a7449;letter-spacing:.04em}
-/* the day, hard against the map's top-right corner (#106 point 2: "it could
-   be on the edge for emersion"), with its sky inside it rather than as a
-   second floating box. ⚠ The dev-chrome column lives in this corner too and
-   is pushed down on the world screen only - see #testBtn. */
-#wPlaque{position:absolute;right:10px;top:8px;z-index:6;height:36px;
+/* ⚠ #107 point 2 SENT IT BACK TO THE MIDDLE, and that is not a mistake being
+   corrected, it is the user seeing his own #106 request built and changing
+   his mind about it: "days and time of the day in the midle". The wheel and
+   the word ride with it, because they are one fact. The dev column went back
+   to its own top-right home in the same edit - a shift that exists to dodge
+   a box is a shift that has to leave when the box does. */
+#wPlaque{position:absolute;left:50%;transform:translateX(-50%);top:0;z-index:6;height:36px;
          display:flex;align-items:center;gap:9px;padding:0 13px 0 6px;
          background:linear-gradient(180deg,#221a10,#14100a);
          border:1px solid #6b5330;cursor:help;white-space:nowrap;
          box-shadow:inset 0 0 0 1px rgba(16,12,6,.95),0 3px 10px rgba(0,0,0,.55)}
 #wPlaque .d1{font-family:var(--display);font-size:13px;letter-spacing:.07em;color:#c2b493}
 #wPlaque .d1 b{font-size:18px;color:#e0d3b4}
+#wPlaque .tod{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;color:var(--g4)}
 #wPlaque .pl{font-family:var(--mono);font-size:10px;color:#8a7449;letter-spacing:.05em;
              display:block;margin-top:1px}
 #wPlaque .dtx{display:flex;flex-direction:column;justify-content:center}
 /* the sun-and-moon wheel, BB's own: a sky window, a rotating face pair, and
    a fixed ground silhouette the pair sets behind. It TURNS while the company
-   walks (worldTick toggles .turning off G.moving) and rests at daylight
-   while you stand, because the walk is when the days actually pass. */
+   walks (#107: `skyStep()`, one quarter turn per stretch of road) and holds
+   the band it landed on while you stand, because the walk is when the days
+   actually pass. The angle IS the time - see TOD beside skyStep. */
 #wDisc{position:relative;flex:none;width:28px;height:28px;
        border-radius:50%;border:1px solid #6b5330;overflow:hidden;
        background:radial-gradient(circle at 50% 32%,#26334a,#0b0f18 78%);
        box-shadow:0 0 0 1px #14100a,0 2px 6px rgba(0,0,0,.6)}
-#wDisc .wh{position:absolute;inset:0;z-index:1}
+/* ⚑ #107 point 2 · THE WHEEL STOPPED SPINNING AND STARTED TELLING THE TIME.
+   #104 shipped it as a 4s CSS loop while walking, and wrote down that
+   driving it from the walk was the upgrade if the day ever had to be
+   COUNTED. "days and time of the day" is that ask: the wheel now holds an
+   angle that IS `G.tod`, one quarter turn per stretch of road walked, and
+   it transitions between them - so the sun visibly crosses the sky as the
+   company covers ground, and where it stands when they stop is the time
+   they arrived. Nothing decorative left in it. */
+#wDisc .wh{position:absolute;inset:0;z-index:1;transition:transform .85s ease-in-out}
 #wDisc .su{position:absolute;left:50%;top:2px;transform:translateX(-50%);font-size:10px;
            line-height:1;color:#e8c86a;text-shadow:0 0 7px rgba(232,200,106,.85)}
 #wDisc .mo{position:absolute;left:50%;bottom:2px;transform:translateX(-50%) rotate(180deg);
            font-size:9px;line-height:1;color:#c5cede;text-shadow:0 0 6px rgba(197,206,222,.6)}
 #wDisc .gd{position:absolute;left:0;right:0;bottom:0;height:30%;z-index:2;
            background:linear-gradient(180deg,#1c1409,#0e0a05);border-top:1px solid #5a4426}
-#wDisc.turning .wh{animation:daycycle 4s linear infinite}
-@keyframes daycycle{to{transform:rotate(360deg)}}
-@media (prefers-reduced-motion:reduce){#wDisc.turning .wh{animation:none}}
+@media (prefers-reduced-motion:reduce){#wDisc .wh{transition:none}}
 /* the Captain's painted head in the party chip, and the inline-SVG glyphs
    (sack, heart, paw) that replaced the font glyphs in #104 */
 .cchip .bust{width:24px;height:24px;border:1px solid #3d2f1d;display:block;flex:none}
@@ -1640,8 +1650,15 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:11px;pa
    a ratkin reads as a ratkin from the map without a second art path.
    ⚠ The row is centred and the whole token is translate(-50%,-50%), so a
    company of four and a company of thirteen both sit ON the node. */
-#wToken .wSpr{display:flex;align-items:flex-end;justify-content:center;
+   ⚑ #107 point 1: 20% taller (22 -> 26) and PACKED IN TWO ROWS, which is
+   the change that actually made it read as a company - one row of eight is
+   a queue, two rows of four is a group of people travelling together. The
+   back row is drawn first and the front row overlaps its feet by 9px, so
+   the pack has depth rather than being a grid. */
+#wToken .wSpr{display:flex;flex-direction:column;align-items:center;
               filter:drop-shadow(0 2px 4px rgba(0,0,0,.85))}
+#wToken .wSpr .wRow{display:flex;align-items:flex-end;justify-content:center}
+#wToken .wSpr .wRow+.wRow{margin-top:-9px}
 #wToken .wSpr img{image-rendering:pixelated;max-width:none;display:block;margin:0 -2px}
 #wToken.walking .wSpr{animation:trudge .55s ease-in-out infinite alternate}
 #wToken .tl{font-family:var(--mono);font-size:8.5px;letter-spacing:.12em;color:var(--g4);
@@ -1912,15 +1929,10 @@ body:has(#world.on) #audioBtn{top:8px;bottom:auto;font-size:11px;padding:3px 8px
    test the game, rather than the switch that shows the developer's tools. */
 #testBtn{position:absolute;right:10px;top:44px;z-index:22;font-family:var(--mono);font-size:11px;
   color:#6b5836;background:rgba(16,12,6,.8);border:1px dashed #3d2f1d;padding:3px 9px}
-/* ⚠ #106 point 2: the day plaque took the map's top-right corner, so on the
-   WORLD screen the whole developer column steps down past it (plaque bottom
-   is stage y=86). Developer chrome yields to player chrome, same ruling as
-   #102 - and IT IS A STACK: all four move together or the gap they leave is
-   worse than the collision. The battle screen is untouched. */
-body:has(#world.on) #testBtn{top:96px}
-body:has(#world.on) #winBtn{top:186px}
-body:has(#world.on) #lintBtn{top:216px}
-body:has(#world.on) #wipeBtn{top:246px}
+/* ⚠ #106 pushed this whole column down on the world screen to clear the day
+   plaque, and #107 moved the plaque back to the centre, so the shift was
+   deleted with it. A layout dodge outlives the thing it dodged unless it is
+   removed in the same edit, and then it reads as a mysterious gap forever. */
 #testBtn:hover{color:var(--g4)}
 #testBtn.on{color:#8ca35a;border-color:#5a7a3a;border-style:solid}
 /* ⚠ #102 points 2 and 3 · THE TESTER STACK DROPPED 60px TO LET THE TWO
@@ -15100,6 +15112,11 @@ function saveRun(){
         campSeen:G.campSeen,campChose:G.campChose,campDay:G.campDay,campCast:G.campCast,
         recruits:G.recruits,hiredHere:G.hiredHere,lateHireRolled:G.lateHireRolled,
         vill:G.vill,qm:G.qm,dismissed:G.dismissed,doubleRations:G.doubleRations,
+        /* #107: where the sky stands. It is presentation, but it is the kind
+           of presentation a reload must not reset to noon on a company that
+           went to sleep at dusk. `||0` on the read side, so an older save
+           simply arrives at MIDDAY. */
+        tod:G.tod,
         /* ═══ #85 — THE TWO PEOPLE THE COMPANY NO LONGER HAS ══════════════
            `dismissed` on the line above has always been saved; these two
            never were, and they are the same kind of fact. THE DREAM reads
@@ -19807,6 +19824,43 @@ const SACK_SVG='<svg width="15" height="16" viewBox="0 0 16 17">'+
   'fill="#a58248" stroke="#2c2011" stroke-width="1"/>'+
   '<path d="M5.4 4.9 C6.9 5.6 9.1 5.6 10.6 4.9" fill="none" '+
   'stroke="#2c2011" stroke-width="1.1"/></svg>';
+/* ═══ #107 point 2 · THE TIME OF DAY, AND WHY IT IS HONEST ════════════════
+   ("days and time of the day in the midle.")
+
+   #104 refused a day cycle and wrote down why: the run has no hours, so a
+   sun that crept while the player stood still would be a readout printing a
+   unit the game does not keep - #102's own lesson. What the game DOES keep
+   is walking. A stretch of road is the one thing that reliably takes time
+   here, so the sky is driven off exactly that: `skyStep()` advances one
+   band per walked segment and nothing else in the file may move it.
+
+   FOUR BANDS, and the angle IS the state: the wheel carries ☀ at its top
+   and ☾ opposite, so rotating it by the band's degrees puts the right one
+   in the sky. MIDDAY 0 · DUSK 90 (the sun going down the right-hand side) ·
+   NIGHT 180 (moon up) · DAWN 270. The word and the wheel therefore cannot
+   disagree - they are the same number read twice.
+
+   ⚠ IT IS NOT A CLOCK AND MUST NOT GROW INTO ONE. Nothing mechanical reads
+   `G.tod`: no night penalty, no dawn bonus, no camping rule. The moment
+   something does, it needs a real rule about how long a day is, and that is
+   a design decision nobody has made. */
+const TOD=[{n:'MIDDAY',deg:0},{n:'DUSK',deg:90},{n:'NIGHT',deg:180},{n:'DAWN',deg:270}];
+const todNow=()=>TOD[((G.tod|0)%TOD.length+TOD.length)%TOD.length];
+/* one stretch of road walked = one band. Called from travel()'s leg chain,
+   which is the only place in the file that knows the company covered ground. */
+function skyStep(){G.tod=((G.tod|0)+1)%TOD.length;paintSky();}
+/* the wheel and the word, without redrawing the whole map: worldTick does
+   the map, and a walk touches this four times a leg. */
+function paintSky(){
+  const wh=$('wDisc')&&$('wDisc').querySelector('.wh');
+  if(wh)wh.style.transform='rotate('+todNow().deg+'deg)';
+  const t=$('wPlaque')&&$('wPlaque').querySelector('.tod');
+  if(t)t.textContent=todNow().n;
+}
+/* how tall one body on the road is drawn. #107 point 1 took it 22 -> 26,
+   which is the user's 20%, and it is a constant because the two-row pack's
+   -9px overlap was chosen against this number. */
+const TOKEN_H=26;
 /* #106 point 3: BB marks the main quest with a trophy, and a trophy says
    "this is the one that ends the run" in a way a bullet never did */
 const TROPHY_SVG='<svg width="19" height="20" viewBox="0 0 19 20">'+
@@ -19864,14 +19918,22 @@ function worldTick(){
   if(spr){
     const lead=member('you');
     const marching=(lead?[lead]:[]).concat(G.party.filter(p=>p!==lead));
-    spr.innerHTML=marching.map(p=>{
+    const draw=p=>{
       const un=unitFrom(p);
       const s=sprite(un.kind,'you',{unit:un,leader:p.id==='you',
         caster:isCaster(p.cls),bow:!!un.bow});
-      const f=22/s.h;                 /* fit on HEIGHT: a row of people, not of boxes */
+      const f=TOKEN_H/s.h;            /* fit on HEIGHT: a row of people, not of boxes */
       return '<img src="'+s.src+'" width="'+Math.round(s.w*f)+'" height="'+
         Math.round(s.h*f)+'" alt="">';
-    }).join('');
+    };
+    /* two rows (#107 point 1), and the FRONT rank is drawn second because it
+       overlaps the back one's feet. `marching` leads with the Captain, so
+       the front slice takes the odd body and he stands in it - the one body
+       the player is, at the head of the pack, not alone behind it. */
+    const frontN=Math.ceil(marching.length/2);
+    const front=marching.slice(0,frontN),back=marching.slice(frontN);
+    spr.innerHTML=(back.length?'<div class="wRow">'+back.map(draw).join('')+'</div>':'')+
+      '<div class="wRow">'+front.map(draw).join('')+'</div>';
   }
   if(!G.moving)placeToken();
   /* ═══ #103 · THE BAR, BUILT FRESH EACH TICK ═══════════════════════════
@@ -19961,9 +20023,9 @@ function worldTick(){
      while the company is on the road; standing still, it holds daylight. */
   const hereN=NODES[G.at],destN=G.moving&&G.dest?NODES[G.dest]:null;
   $('wPlaque').querySelector('.dtx').innerHTML=
-    '<span class="d1">DAY <b>'+G.day+'</b></span>'+
+    '<span class="d1">DAY <b>'+G.day+'</b> <span class="tod">'+todNow().n+'</span></span>'+
     '<span class="pl">'+(destN?'the road to '+destN.n:hereN?hereN.n:'')+'</span>';
-  $('wDisc').classList.toggle('turning',!!G.moving);
+  paintSky();
   $('wQuest').innerHTML=TROPHY_SVG+'<span class="qcol">'+
     '<span class="qlab">THE CONTRACT</span>'+
     '<span class="qtx">the head out of Skelbrook\'s hall</span>'+
@@ -20003,10 +20065,14 @@ function worldTick(){
          job, which is right once in a card and unreadable as a column of
          thirteen. The Captain is the word "You" on the roster, so he goes
          through the same nickname door every other line uses. */
+      /* #107 point 4: the class and the race beside the name, dim, because
+         "who is that 17/57" is the question the list was leaving unanswered
+         on a roster of thirteen strangers. */
       d:G.party.map(p=>{const un=unitFrom(p),now=un.hpMax-(p.hpLoss||0);
         const c=p.hpLoss?(now/un.hpMax<.6?'#c15d55':'#c9a227'):'#8ca35a';
-        return '<span style="color:'+c+'">'+capName(p)+' <b>'+now+'/'+un.hpMax+
-          '</b></span>';}).join('<br>'),
+        return '<span style="color:'+c+'">'+capName(p)+
+          ' <span style="color:#8a7449">'+p.race+' '+CLASSES[p.cls].n.toLowerCase()+
+          '</span> <b>'+now+'/'+un.hpMax+'</b></span>';}).join('<br>'),
       x:'Days on the road are the only medicine in this game. '+
         '<b>CLICK: double rations</b> - '+RATION_COST+' provisions, and they mend twice '+
         'as fast for '+num(RATION_DAYS)+' days.'},
@@ -20572,11 +20638,47 @@ const armourDue=k=>{
    would be written to the save for no reason and could strand a leg if the
    player reloaded between the question and the answer. */
 let rationsAskedFor=null;
-const rationsDue=k=>{
-  const n=NODES[k];
-  return !!(n&&n.t==='battle'&&!G.doubleRations&&G.run.food>=RATION_COST&&
-            G.party.some(p=>p.hpLoss>0));
+/* ═══ #107 point 3 · THE OFFER GOT RARE, AND RARE IS THE POINT ════════════
+   ("Offer double rations only before bigger boss fights and at the end of
+   act. And write 'you feel danger'. And offer it only if characters +- 70%
+   of health in avarage.")
+
+   #75's gate was "the road ends at a t:'battle' node and somebody is hurt",
+   which is SEVEN of the act's nine fights and any scratch at all - so a
+   card meant to be a warning turned up on ordinary Tuesdays and became
+   another thing to click past. Two narrowings, and they are different in
+   kind: WHICH fight (three named ones, not a node type) and HOW BADLY the
+   company needs it (a fraction of the whole company's blood, not "anybody
+   has lost a hitpoint").
+
+   THE THREE, by name and for a reason:
+     · `mother` - the Fen-Mother, the act's first great beast
+     · `snare`  - the last fight of the act, which is the "end of act"
+     · the Thing in Armour, which is not a node at all: `armourDue(k)` is an
+       AMBUSH the player cannot see coming, and a warning is the only thing
+       the game ever gives them about it. It says danger and never what.
+   ⚠ NAMED, NOT TYPED. `t:'battle'` was the old test and it is what made
+   this fire everywhere; a hand-picked list is a thing a future session has
+   to update deliberately when a boss is added, which is the correct cost.
+   `LINT` guards the node ids elsewhere, so a rename cannot leave this
+   silently pointing at nothing.
+
+   ⚠ THE 70% IS AN AVERAGE OVER THE WHOLE COMPANY, not per person: one
+   badly hurt body in a healthy company of eight does not need the barrels
+   opened, and eight lightly scratched ones do. Same shape as #106's heart
+   correction - a state that counts PEOPLE instead of measuring a QUANTITY
+   lies at one end. */
+const BOSS_NODES=['mother','snare'];
+const dangerAhead=k=>BOSS_NODES.indexOf(k)>=0||armourDue(k);
+/* how much of the company's blood is still in it, 0..1 */
+const partyHealth=()=>{
+  let max=0,now=0;
+  G.party.forEach(p=>{const m=unitFrom(p).hpMax;max+=m;now+=m-(p.hpLoss||0);});
+  return max?now/max:1;
 };
+const RATION_ASK_AT=0.70;
+const rationsDue=k=>!!(dangerAhead(k)&&!G.doubleRations&&G.run.food>=RATION_COST&&
+  G.party.some(p=>p.hpLoss>0)&&partyHealth()<=RATION_ASK_AT);
 function offerRations(k,e){
   const days=e[2],n=NODES[k];
   const hurt=G.party.filter(p=>p.hpLoss>0);
@@ -20592,6 +20694,10 @@ function offerRations(k,e){
   const paid=Math.min(days,RATION_DAYS);
   const before=days*MEND_BASE, after=(paid*MEND_DOUBLE)+((days-paid)*MEND_BASE);
   ask('THE BARRELS, OR THE ROAD',
+    /* #107: the user's line, verbatim and first. It names no enemy on
+       purpose - the Thing in Armour is an ambush, and the two named bosses
+       are things the company has only heard about. */
+    '<b style="color:#c15d55">You feel danger.</b>\n\n'+
     '<b>'+who+'</b> '+(hurt.length>1?'are':'is')+' still carrying the last fight, and there is '+
     'a fight at the end of this road.\n\nDouble rations mend twice as quick, a day at a time. '+
     'This road is '+num(days)+' day'+(days>1?'s':'')+' long, so it hands back <b>'+after+
@@ -20738,6 +20844,11 @@ function travel(k){
      8f.51's fix and this must not undo it. */
   const legHad={fired:false};
   const leg=i=>{
+    /* #107: the sky turns because the company covered ground, and this is
+       the only place in the file that knows it did. One band per segment,
+       so a one-day road is a quarter turn and a three-day haul is most of
+       a full one. */
+    skyStep();
     /* something already happened on this road: walk the rest of it in peace.
        `at1(i-1)` is where the company is standing, because `i` is the stop
        that is being skipped and `i-1` is the one that fired. */
