@@ -79,6 +79,44 @@ take a click · the ground looking misaligned on any of the six battlefields.
 
 ---
 
+## 🗺 THE ROAD SCREEN, ROUND FOUR  *(#107 · 2026-08-11 · build log 8f.134)*
+
+**Your four points.** Point 2 reverses your own #106 ask (the day went to the edge, now it is back
+in the middle) — that is you seeing it built and changing your mind, which is the cheapest kind of
+change there is. The dev buttons went back up with it.
+
+**How to reach it.** Front door → **Continue the road**, then walk one road.
+
+**The company on the road (1).** Every body is **20% taller** (22 → 26px) and they are **packed in
+two rows**, front rank overlapping the back by 9px, **Captain in the front rank**. Four bodies
+read as 2+2; eight read as 4+4.
+
+**Day and time of day, in the middle (2).** The plaque says **DAY 1 MIDDAY** with the wheel beside
+it. **Walk a road and watch the wheel**: it turns **one quarter per stretch of road**, MIDDAY →
+DUSK → NIGHT → DAWN, and the word changes with it, because the word and the angle are the same
+number read twice. Where it stops is the time you arrived, and it survives a reload.
+⚠ **It is not a clock and nothing mechanical reads it** — no night penalty, no dawn bonus. If you
+want the time to *do* something, that needs a rule about how long a day is, and that is your call.
+
+**The rations offer went rare (3).** It used to appear before **any** battle node if anybody had a
+scratch. Now all of these must be true: the road ends at **the Fen-Mother, the Snare, or the Thing
+in Armour ambush**, and the **whole company averages 70% health or worse**. The card opens with
+**"You feel danger."** ⚠ Measured: at 85% company health it stays silent even in front of the
+Fen-Mother; at 65% it fires there and stays silent in front of the ordinary fights.
+⚠ **The heart chip still sells rations any time you ask for it** — I gated the *offer* (the thing
+that interrupts you), not the purchase, because the provisions chip is no longer a door and
+gating both would leave no way to buy them at all. Say the word if you want the manual door gated
+the same way.
+
+**The health hover (4).** Every line now reads **name · race and class · hp** —
+`Vesna human spearwoman 26/57`.
+
+**What would be a bug:** the wheel turning while you stand still, or not turning as you walk · the
+word disagreeing with where the sun is · the offer appearing before an ordinary fight or on a
+healthy company · the Captain in the back row · the day plaque covering a node.
+
+---
+
 ## 🗺 THE ROAD SCREEN, ROUND THREE  *(#106 · 2026-08-11 · build log 8f.133)*
 
 **Your eight points, all in.** Two of them turned into more than they looked: point 4 was a real
