@@ -23,6 +23,72 @@
 
 ---
 
+## 🗡 THE BATTLE SCREEN, ROUND EIGHT  *(#102 · 2026-08-11 · build log 8f.129)*
+
+**Your twelve points off the fifth annotated shot.** All twelve are in. Two of them turned out to
+be more than furniture: **SPEED and NERVE were both telling you something that was not true**, and
+those are the two worth a proper look.
+
+**How to reach it.** ⚙ **DEV.MODE** → **PRACTICE FIELD** → **Blood on the Road**, which puts a
+**spearwoman** and an **archer** in the same fight, so points 4 and 12 are both one click apart.
+
+**⏱ SPEED, and why it "didn't work" (3).** It is at the **top right now**, under ♪ MUSIC, and
+**the number is on its face**. It worked before: what it could not do was say so. The old label
+counted in the engine's own unit, which is *how long a beat lasts*, so `PACE ×2.5` read like the
+fastest setting in the game and was in fact the slowest one. It counts in **speed** now, the way
+you meant it: **×1 is exactly the board you have been playing** and it cycles
+**×1 → ×1.25 → ×1.5 → ×1.75 → ×0.7 → ×1**. **×0.7 is your "1.0, 30% slower"**. Press it mid-fight
+and the very next blow should be visibly different.
+
+**NERVE stopped being a green block (1).** Bottom left, it is the **third bar** now, in the same
+shape as ARMOUR and HITPOINTS: the word in the rung's colour on the right, and a bar under it
+saying where on the scale they are standing. **The four notches on that bar are the rung gates**
+(Broken · Breaking · Ok · Happy · It rocks), so you can finally see *how close* somebody is to
+slipping, which the chip never said. Hover it for the full ladder, exactly as before.
+
+**The ? moved to the character panel (7).** It is the small square at the bottom right of the
+plaque, beside the bars, and it **opens upward**. It cost no height: it took the slot the nerve
+chip left.
+
+**The two right-hand groups (2, 6).** Top right, one column: **FULL/FIELD/CLOSE · ⚙ DEV.MODE ·
+♪ MUSIC · ⏱ SPEED**. Bottom right, one row: **END TURN with ⚑ WITHDRAW hard on its right**. The
+withdraw button still goes dark red and refuses on the fights with no way out.
+
+**The skill cards (4, 10, 12).** **KICK says PUSH. SPEAR WALL says AREA CONTROL.** COMMAND says
+RALLY, HOLD THE LINE says GUARDS ALLIES, CRIPPLING SHOT says SLOWS THEM. **A plain weapon card
+says nothing**, on purpose: its damage range is already the whole answer, and a tag under it
+reading "damage" is the duplicate we have been cutting all week. The gap above the icon went from
+10px to 3px and the card is 82px instead of 84.
+⚠ **Be honest with me about point 10 when you see it: that is two pixels of board, not a row.**
+The role line ate nine of the eleven the top gave back. If you want a real row back, the card has
+to lose something, and I would want your ruling on what.
+
+**The archer's two icons (12).** Her basic attack drew a **sword**, because in the code "main
+weapon" is a *slot* and every slot got the sword glyph. It asks the weapon whether it shoots now.
+**CRIPPLING SHOT is an arrow with a bar through it**, and the badge that lands on the target's head
+is the same mark.
+
+**The queue (9, 11).** The heads **fill their boxes** - a person now reaches top to bottom instead
+of sitting in the bottom two thirds. A dog is still short, because a dog is short. And **rest on
+any head for a moment and you get the same card the board gives you** when you hover that body out
+there: same wait, same panel, same everything.
+
+**The top of the board (8).** The shadow band is **gone**, not reduced. You asked twice and the
+second time you said you were not sure what it was for, which was the answer: at the bottom it
+sinks the ground under the cards, at the top it only ever dimmed the people standing up there.
+
+**What would be a bug.** SPEED showing a number that does not match how fast the board actually
+plays; the nerve bar and the nerve word disagreeing about which rung; the ? popover running off
+the left edge or under the plaque; WITHDRAW and END TURN overlapping at any width; a queue head
+clipped at the sides badly enough to lose a shoulder; the readout sticking after you leave a queue
+head; a role line clipped mid-word.
+
+⚠ **Still nobody has played this screen with a hand on a mouse.** Eight passes, all measured, none
+played, and this round adds a **dwell** (rest on a queue head) which is exactly the kind of thing a
+measurement cannot judge. That is the thing I would most like you to do with this build.
+
+---
+
 ## 🗡 THE BATTLE SCREEN, ROUND SIX  *(#100 · 2026-08-11 · build log 8f.128)*
 
 **Your fourteen points off the fourth annotated shot.** All fourteen are in. Open any fight and
