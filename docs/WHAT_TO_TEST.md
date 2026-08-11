@@ -23,6 +23,52 @@
 
 ---
 
+## 🗡 THE BATTLE SCREEN, ROUND SIX  *(#100 · 2026-08-11 · build log 8f.128)*
+
+**Your fourteen points off the fourth annotated shot.** All fourteen are in. Open any fight and
+look at four places: **the left column**, **the top right**, **the plaque**, **the top row of the
+board**.
+
+**How to reach it.** ⚙ **DEV.MODE** (it used to say TEST) → **PRACTICE FIELD** → **The Clash**,
+which is the one fight with **allies** in it, so you can check point 6 in the same look.
+
+**The left column (1, 2, 8, 10, 11).**
+
+- The **shut** log now starts at the same left edge as the heads under it, so the two read as one
+  column. Open, it is **300x300** instead of 360x380 and **steps to the right** so it never lies on
+  the rail.
+- The **queue hangs off the top** of its band instead of floating in the middle of it.
+- The gold ring on the acting head is **whole**. ⚑ It was never the log cutting it: the rail's own
+  box was exactly one head wide and clipping the ring's right-hand half in every state, log or no
+  log. Check it with the log open and with it shut - that was your ask.
+
+**The rail's colours (5, 6).** Your whole company is **one teal edge**, the Captain included, and
+the ring is the only thing that says *acting now*. **Gold is an ALLY** - somebody fighting on your
+side who is not yours to command. Hover any head for the name; an ally's hover says so.
+
+**The top right (3, 4).** **FULL / FIELD / CLOSE** has the corner back. Under it: **♪ sound**, up
+from beside END TURN, and **⚙ DEV.MODE**, down from the corner and renamed.
+
+**The plaque (7, 9, 12).** The line reads **Lv 1 · ⌇ SPEARWOMAN · ◆ human**, in that order.
+**Hover the class or the race** and you get the same explanation the character sheet has been
+giving since 8f.117, including what is on *that person's* bar right now. Beside **ARMOUR** there is
+now a weight: **LIGHT · MEDIUM · HEAVY**, and its hover says what that costs. It is read off the
+size of the pool, so an enemy who was never handed a gear entry still gets an honest answer.
+
+**The capsule (14).** **↻ II**, no word, the same glyph the rail's round divider uses.
+
+**The board (13).** The top band of shadow was **solid black fading out over four hex rows**, so a
+body standing on the top row was painted through it. It is a third of that now. Put somebody on the
+top row and they should read like a body standing in the open.
+
+**What would be a bug.** The log lying on the rail at any width; the ring on the acting head cut on
+any edge; two gold edges in one rail; a tooltip on the class or race that names the wrong person's
+skills; an armour weight that disagrees with what is on the body; the top of the board looking
+*flat* rather than merely unshadowed.
+
+⚠ **Still nobody has played this screen with a hand on a mouse.** Six passes, all measured, none
+played. That is the thing I would most like you to do with this build.
+
 ## 🏹 THE ARCHER THAT WOULD NOT SHOOT  *(#99 · 2026-08-11 · build log 8f.127)*
 
 **This is your bug.** *"found a bag - that sometimes archer don`t shoot (at least in autobattle)"*.

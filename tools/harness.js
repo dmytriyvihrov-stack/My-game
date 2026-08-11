@@ -132,6 +132,59 @@ window.shotBoard=async function(name,caption,note){
   return (await fetch('/__shot/'+name,{method:'POST',body:html})).text();
 };
 
+/* shotStage — THE WHOLE SCREEN, at its real geometry. Added for #100, whose
+   fourteen points are all about WHERE THINGS SIT on a 1280x720 battle screen:
+   shotBoard() photographs the field with none of the chrome on it, and
+   shotUI() photographs three chrome boxes with none of their positions. A
+   layout entry needs the one picture neither of them takes.
+
+   ⚠ THE STAGE CARRIES fit()'s SCALE, so the clone is pinned to transform:none
+   at 1280x720. Everything inside is absolutely positioned against the stage,
+   so it all lands exactly where the running game puts it.
+   ⚠ EVERY <canvas> BECOMES AN <img>. outerHTML copies the element, not its
+   pixels: the terrain and the portrait serialise as empty boxes otherwise.
+   That trap has cost this project four wrong gate pictures already.
+   ⚠ AND A TRANSITIONED PROPERTY IS STUCK AT ITS START VALUE IN THIS PANE.
+   No frames are composited, so a `transition:width` never advances - the log
+   opened to its full height (untransitioned) and kept its shut width for as
+   long as anybody watched. Kill the transition, toggle, then shoot. */
+window.grabStage=function(label){
+  const src=document.getElementById('stage');
+  const c=src.cloneNode(true);
+  const sc=[...src.querySelectorAll('canvas')],dc=[...c.querySelectorAll('canvas')];
+  dc.forEach((cv,i)=>{
+    const im=document.createElement('img');
+    try{im.src=sc[i].toDataURL('image/png');}catch(e){}
+    im.width=sc[i].width;im.height=sc[i].height;
+    im.style.cssText=sc[i].style.cssText;
+    if(cv.id)im.id=cv.id;
+    cv.parentNode.replaceChild(im,cv);});
+  c.removeAttribute('id');c.className='stagecap';
+  c.style.cssText='transform:none;position:relative;width:1280px;height:720px;flex:none';
+  return '<div class="stagewrap">'+(label?'<div class="caplbl">'+label+'</div>':'')+
+    c.outerHTML+'</div>';
+};
+window.shotStage=async function(name,caption,note,panels){
+  const style=[...document.querySelectorAll('style')].map(s=>s.textContent).join('\n');
+  const body=(panels||[]).map(p=>
+    '<div class="shotpanel"><h2 class="shotsub">'+(p.cap||'')+'</h2>'+
+    (p.note?'<p class="shotnote">'+p.note+'</p>':'')+(p.html||'')+'</div>').join('');
+  const html='<meta charset="utf-8"><title>Grimtoll · '+caption+'</title><style>'+style+
+    '\nbody{margin:0;background:#0e1414;color:#d8d5cc;display:block}.shotwrap{padding:18px}'+
+    '.shotcap{font-family:var(--display);font-size:21px;color:#d9bd7e;margin:0 0 6px}'+
+    '.shotsub{font-family:var(--display);font-size:16px;color:#c9c6bb;margin:26px 0 4px;'+
+      'border-top:1px solid #2c3d3f;padding-top:14px}'+
+    '.shotnote{font-family:var(--mono);font-size:11px;color:#8a9a5c;margin:0 0 12px;'+
+      'line-height:1.7;max-width:1180px}.shotnote b{color:#d9bd7e}'+
+    '.shotnote i{color:#c07a2c;font-style:normal}'+
+    '.caplbl{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;color:#d9bd7e;'+
+      'background:#0e1414;padding:5px 8px;border:1px solid #2c3d3f;border-bottom:none}'+
+    '.stagewrap{width:1282px}.stagecap{border:1px solid #2c3d3f}</style>'+
+    '<div class="shotwrap"><h1 class="shotcap">'+caption+'</h1>'+
+    '<p class="shotnote">'+note+'</p>'+body+'</div>';
+  return (await fetch('/__shot/'+name,{method:'POST',body:html})).text();
+};
+
 /* shotUI — the LEFT PANEL beside the board, for gates about a control.
    shotBoard() photographs the field and nothing else, which is right for a
    rule you read off a hex (#36, #48) and useless for a rule you read off a

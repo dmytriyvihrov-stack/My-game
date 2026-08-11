@@ -119,6 +119,22 @@ forever, and `status` marks an expired lock rather than hiding it.
 > starts working against you: the other session edits a doc, their diff quotes your number, and
 > `pre-commit` blocks a commit that was never a collision. **Claim early, release at the four
 > writes.**
+>
+> **And on 2026-08-11 that is exactly what happened, word for word.** A session shipped #98 and
+> 8f.126, wrote all four documents, and left both claims standing; the next entry on the same
+> screen cited *"the glyph the rail has been drawing since #98"* in a comment and in two docs, and
+> `pre-commit` refused the commit. The number was in `SHIPPED.md`, in the changelog and in the
+> prototype, so **it could never have been re-issued anyway** - `Get-UsedNumbers` scans the repo,
+> not the claims. The claim was doing nothing but blocking a sentence.
+>
+> **Clearing somebody else's spent claim is a one-liner, and `-By` is the supported door:**
+>
+> ```
+> powershell -NoProfile -ExecutionPolicy Bypass -File tools\claim.ps1 release 98 -By 053d905a
+> ```
+>
+> ⛔ **Only ever for a number that has SHIPPED** - a row in `SHIPPED.md` and a commit in `main` are
+> the proof. A claim on unbuilt work is somebody's seat and you leave it alone.
 
 ---
 

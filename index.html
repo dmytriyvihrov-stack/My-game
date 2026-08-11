@@ -108,14 +108,44 @@ button:disabled{cursor:not-allowed}
    it. Pinned top AND bottom, the band is 490px whatever is in it and the
    heads centre inside it: 13 heads (the widest legal board) is 478px, which
    fits, and any future overflow is clipped rather than laid on the plaque. */
-#bTop{position:absolute;left:8px;top:60px;bottom:170px;z-index:39;
+/* ── #100 points 10 and 11 · THE BAND STOPS CENTRING, AND IT GETS ITS
+      RIGHT-HAND MARGIN BACK ────────────────────────────────────────────
+   (User: "There are still huge space on top of move order - so you can
+   make some of the units higher there", and "the border in turn order for
+   the unit that is moving feels a bit cutted from the right side - i want
+   it to look nice with or without battle backlog".)
+
+   ⚑ TWO SEPARATE FAULTS, AND BOTH WERE THE BOX RATHER THAN THE HEADS.
+   The band is 490px and holds at most nine heads (RAIL_MAX), so at a
+   normal count `justify-content:center` left a third of it empty ABOVE
+   the queue - and a queue that starts in the middle of the screen reads
+   as a list floating in space rather than as a column under the log.
+   flex-start hangs it off the top, where the eye already is.
+   ⚠ AND `overflow:hidden` WAS CUTTING THE GOLD RING OFF THE ACTING HEAD.
+   The box is shrink-to-fit, so it was exactly 40px wide - the width of a
+   head - while `.ord.now` draws a 2px ring OUTSIDE its border box and is
+   pushed 3px right on top of that. Nothing was wrong with the ring; there
+   was no room in the box for its right-hand half. 12px of padding is the
+   ring, the 3px shift and a little of the glow. The clip stays: it is the
+   guard that keeps a future longer rail off the plaque. */
+#bTop{position:absolute;left:4px;top:60px;bottom:170px;z-index:39;
   display:flex;flex-direction:column;gap:3px;align-items:flex-start;
-  justify-content:center;overflow:hidden}
+  justify-content:flex-start;overflow:hidden;padding:0 12px 0 4px}
 /* the lit edge is the LEFT edge now, not the top: the rail turned, so the
-   mark that says "this one" turns with it */
+   mark that says "this one" turns with it.
+   ── #100 points 5 and 6 · ONE COLOUR FOR YOURS, GOLD FOR SOMEBODY ELSE'S
+   (User: "all your units in the order same color, except the one that
+   chosen", and "Allies like a capitan now frame - in move order, golden".)
+   The gold left edge used to mean CAPTAIN - which put a second gold mark
+   in a rail whose one gold mark already means "acting now", on a body the
+   player can find perfectly well from the ★ on the board. So the company
+   is one colour, the ring is the only thing that singles anybody out, and
+   the gold edge moves to the one body in the rail nobody could identify:
+   an ALLY, who is on your side, in your half of the queue, and not yours
+   to command. */
 #bTop .ord{border-top:none;border-left:2px solid #3d5250}
 #bTop .ord.foe{border-left-color:var(--blood)}
-#bTop .ord.cap{border-left-color:var(--gold)}
+#bTop .ord.ally{border-left-color:var(--gold)}
 #bTop .ord.now{transform:translateX(3px)}
 /* #98 point 3 - bigger. 30x34 was a thumbnail of a thumbnail: the whole job
    of a face in this rail is to be recognised, and at 22px of sprite it was
@@ -125,7 +155,7 @@ button:disabled{cursor:not-allowed}
   display:flex;flex-direction:column;align-items:center;justify-content:flex-end;
   position:relative;flex:none;padding-bottom:1px;overflow:hidden}
 .ord.now{background:#2b3f3e;box-shadow:0 0 0 2px var(--gold),0 0 14px rgba(217,189,126,.45);transform:translateY(-2px)}
-.ord.foe{border-top-color:var(--blood)}.ord.cap{border-top-color:var(--gold)}
+.ord.foe{border-top-color:var(--blood)}.ord.ally{border-top-color:var(--gold)}
 .ord img{image-rendering:pixelated;width:30px;height:auto}
 .ord .flag{position:absolute;top:1px;left:1px;font-size:10px;line-height:1}
 /* ═══ #98 point 3 · THE ROUND TURNS OVER, AND THE RAIL SAYS SO ════════════
@@ -273,6 +303,14 @@ button:disabled{cursor:not-allowed}
    report ("too many numbers everywhere"), so cutting them answers a
    complaint rather than merely making space. */
 .statLine{display:flex;justify-content:space-between;font-family:var(--mono);font-size:10px;color:var(--t3)}
+/* ═══ #100 point 9 · WHAT KIND OF ARMOUR THAT IS ══════════════════════════
+   (User: "near armor in the left bottom - right which class of armor is
+   that (light, medium, heavy)".) The bar said how much was left and never
+   what it was: 34 and 96 are the same picture at full, and the difference
+   between a padded jack and foundry plate is the whole of what the player
+   is deciding when they hand it out. One word, quieter than the label it
+   follows, and the hover is what the word costs. */
+#bArmK{font-weight:400;color:#7f9490;letter-spacing:.04em;cursor:help}
 /* THE MORALE LADDER lives in the nerve chip's hover now (#91 point 10):
    .lrung and .ladfull stay because ladderHTML() still draws it there. */
 .lrung{display:flex;align-items:center;gap:5px;border:1px solid transparent;padding:1px 5px;
@@ -542,18 +580,32 @@ button:disabled{cursor:not-allowed}
    the complaint as "not deep enough" and made it six lines; the answer was
    that a log you did not ask for is furniture whatever depth it is. Header
    only at the start of every fight, and one click gives the whole 300px.
-   ⚠ `left:48px`, NOT 8: the order rail is the left EDGE now (#95 point 2)
-   and the two must never be able to overlap, at any log height.
+   ⚠ IT MUST NEVER LIE ON THE ORDER RAIL, which is the left EDGE now (#95
+   point 2). #100 keeps that promise per STATE rather than with one number:
+   see below.
    ── #98 point 4 · SHUT IT IS A BUTTON, OPEN IT IS A PANEL ───────────────
    (User: "when backlog is in accordion - make it also less wide, so it is
    more a button. And when it open - wider and taller.") A 308px bar holding
    two words was a panel pretending to be shut. 150px reads as a control you
    press; 360x380 open is a panel you read. The width transitions, so the two
-   states are visibly the same object rather than two boxes swapping. */
-#bLogWrap{position:absolute;left:48px;top:8px;width:150px;z-index:41;
+   states are visibly the same object rather than two boxes swapping.
+   ── #100 points 1, 2 and 8 · SHUT IT JOINS THE RAIL, OPEN IT STEPS ASIDE
+   (User: "a bit smaller battle log when it is open", "a bit less wide when
+   is open", and "when battle log closed - it alligned with order".)
+   ⚑ THE SHUT BOX AND THE OPEN BOX WANT DIFFERENT LEFT EDGES, and pinning
+   both to one number is what made this corner look untidy from the day the
+   rail moved to the left edge. Shut, it is a 150px button that belongs to
+   the same column as the heads under it, so it takes their x. Open, it is
+   a panel that must not lie on the rail OR on the acting head's ring, so
+   it steps right of the rail's whole padded box (60px) and reads as a
+   second column. The left edge transitions with the width, so it is still
+   visibly one object moving rather than two boxes swapping.
+   300x300 open: #98 asked for a panel and got one, and then the panel was
+   the biggest object on the screen. */
+#bLogWrap{position:absolute;left:8px;top:8px;width:150px;z-index:41;
   background:rgba(13,19,20,.93);border:1px solid #33474a;
-  display:flex;flex-direction:column;transition:width .16s ease}
-#bLogWrap.open{width:360px}
+  display:flex;flex-direction:column;transition:width .16s ease,left .16s ease}
+#bLogWrap.open{left:64px;width:300px}
 #bLogHead{display:flex;align-items:center;gap:6px;padding:4px 8px;cursor:pointer;
   border-bottom:1px solid #223335;user-select:none}
 #bLogHead>.lgcar{font-size:8px;color:#8a9a5c;transition:transform .12s}
@@ -562,7 +614,7 @@ button:disabled{cursor:not-allowed}
 /* #95 point 1 - shut is a real zero, not a peek. The header alone is the
    resting state and `openLog(false)` re-asserts it at the top of every fight. */
 #bLog{height:0;overflow:hidden;padding:0 8px;display:flex;flex-direction:column;gap:1px}
-#bLogWrap.open #bLog{height:380px;overflow-y:auto;padding:3px 8px 4px}
+#bLogWrap.open #bLog{height:300px;overflow-y:auto;padding:3px 8px 4px}
 /* shut, the header is the whole control: the round chip would wrap a 150px
    bar onto two lines and it says nothing the capsule does not */
 #bLogWrap:not(.open) #bLogRound{display:none}
@@ -622,8 +674,17 @@ body:has(#battle.on) .whisp{bottom:138px}
    button, which is why the sweep now measures the GLOBAL chrome (⚙ TEST, ♪,
    ? RULES) and not only the battle's own boxes - both of this entry's
    overlaps were between a battle box and a piece of furniture older than the
-   screen. On the battle screen it joins the ⏱ ⚑ row above END TURN. */
-body:has(#battle.on) #audioBtn{bottom:70px;right:110px;font-size:11px;padding:3px 8px}
+   screen. On the battle screen it joins the ⏱ ⚑ row above END TURN.
+   ── #100 point 4 · AND OFF THAT ROW AGAIN, UPWARDS ──────────────────────
+   (User: "music button - up.") It was the odd one out down there: ⏱ ⚑
+   END TURN UNDO are all things that change the fight, and the sound toggle
+   is a setting that has nothing to do with any of it, sitting in the one
+   corner the hand is over all fight. It goes to the chrome row that ⚙
+   DEV.MODE just moved down into, at the top right, where the other
+   settings-shaped controls live.
+   ⚠ `bottom:auto` IS LOAD-BEARING. The base rule pins bottom:44, and an
+   absolutely positioned box given both edges stretches instead of moving. */
+body:has(#battle.on) #audioBtn{top:44px;bottom:auto;right:130px;font-size:11px;padding:3px 8px}
 /* ⚠ #66 — overflow:hidden is what makes the camera safe. Past FULL the board
    is larger than the field, and without this it would spill over the chrome.
    #bRead already clamps itself inside the field (placeRead).
@@ -650,11 +711,12 @@ body:has(#battle.on) #audioBtn{bottom:70px;right:110px;font-size:11px;padding:3p
    right:8px - straight underneath ⚙ TEST, which has lived at right:10 top:10
    since long before the battle screen was full-bleed and which #94 never
    looked at because it is global chrome rather than battle chrome.
-   ⚠ #95 point 7: THE COLLISION WAS REAL AND IT ATE `CLOSE`. ⚙ TEST measures
-   77px, not the 62 it looks, so the camera bar sits at right:96 and clears
-   it by 9. Anything else that wants this corner has to move TEST, not
-   squeeze past it. */
-#bZoom{position:absolute;right:96px;top:8px;z-index:9;display:flex}
+   ⚠ #95 point 7: THE COLLISION WAS REAL AND IT ATE `CLOSE`. ⚙ TEST measured
+   77px, not the 62 it looked, so the camera bar sat at right:96 and cleared
+   it by 9. Anything else that wanted this corner had to move TEST, not
+   squeeze past it.
+   ⚑ #100 point 3 DID EXACTLY THAT, so the corner is the camera's again. */
+#bZoom{position:absolute;right:8px;top:8px;z-index:9;display:flex}
 #bZoom b{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;padding:5px 8px;
   background:rgba(12,17,19,.92);border:1px solid #2c3d3f;border-right:none;
   color:#6b8280;font-weight:400;cursor:pointer;user-select:none}
@@ -1013,8 +1075,25 @@ body:has(#battle.on) #audioBtn{bottom:70px;right:110px;font-size:11px;padding:3p
   .usp.lunge,.usp.recoil,.usp.evade,.usp.shudder{animation:none}
   .hitflash,.spark,.shot,
   .gust,.swarc,.aring,.tether,.mote,.plate,.ghost{display:none}}
+/* ═══ #100 point 13 · THE TOP ROW IS A ROW YOU FIGHT ON ═══════════════════
+   (User: "when character on the toppest tile, it is still good visible
+   (right now it is a bit shadowed)".)
+   ⚑ THE TOP OF THIS GRADIENT WAS FULLY OPAQUE AND FADED OVER A QUARTER OF
+   THE SCREEN. 24% of 720px is 173px, which is four hex rows: everything
+   standing on the top of the board was being painted through a black wash
+   that got heavier the further up it stood, and the body on the top row
+   was the one paying most. MEASURED: the board's top row occupies y15 to
+   y83, where the old curve ran .91 down to .52 - a body in daylight, in
+   shadow. At .42 clearing by 8% (58px) the same row runs .31 to 0, most of
+   it under .1. The bottom edge is unchanged at .55, because nothing stands
+   below the board - that end is sinking the ground under the card row,
+   which is what a vignette is for.
+   ⚠ FIVE MORE COPIES LIVE IN `GROUND{}` (one per battlefield, in that
+   ground's own colour) and they are what actually paints: this rule is
+   only what a battle sees before drawTerrain() runs. Change one, change
+   all six, or the fen is fixed and the ridge is not. */
 #bVig{position:absolute;inset:0;pointer-events:none;
-      background:linear-gradient(#0f1618 0%,rgba(15,22,24,0) 24%,rgba(15,22,24,0) 76%,
+      background:linear-gradient(rgba(15,22,24,.42) 0%,rgba(15,22,24,0) 8%,rgba(15,22,24,0) 76%,
                  rgba(15,22,24,.55) 100%)}
 /* the Winds of Magic strip lived here. Cut — see "THE COST OF CASTING". */
 #bRead{position:absolute;width:262px;background:rgba(12,17,19,.96);border:1px solid #3d5250;
@@ -1496,24 +1575,35 @@ body:has(#battle.on) #audioBtn{bottom:70px;right:110px;font-size:11px;padding:3p
           font-size:13px;color:#8a7449;background:rgba(16,12,6,.8);border:1px solid #3d2f1d;
           padding:3px 9px}
 #audioBtn:hover{color:var(--g4)}
-/* tester tools — top right, and unmistakably not part of the game */
-#testBtn{position:absolute;right:10px;top:10px;z-index:22;font-family:var(--mono);font-size:11px;
+/* tester tools — top right, and unmistakably not part of the game.
+   ── #100 points 3 and 4 · IT COMES DOWN A ROW AND IT SAYS WHAT IT IS ────
+   (User: "Move Test a bit lower (as on screenshot). Call it dev.mode.")
+   It had sat at top:10 since long before the battle screen was full-bleed,
+   in the one corner the battlefield's own camera bar wants - which is why
+   #95 had to push FULL/FIELD/CLOSE 96px inboard to clear it. Moved to the
+   second row it gives that corner back, and the row it lands on becomes
+   the chrome row: ♪ sound joins it there from the bottom of the screen.
+   ⚠ THE THREE TESTER BUTTONS BELOW IT MOVE THE SAME 34px. They are a
+   stack, and a stack that only half moves is worse than one that did not.
+   And DEV.MODE is the honest name: TEST read like a thing you press to
+   test the game, rather than the switch that shows the developer's tools. */
+#testBtn{position:absolute;right:10px;top:44px;z-index:22;font-family:var(--mono);font-size:11px;
   color:#6b5836;background:rgba(16,12,6,.8);border:1px dashed #3d2f1d;padding:3px 9px}
 #testBtn:hover{color:var(--g4)}
 #testBtn.on{color:#8ca35a;border-color:#5a7a3a;border-style:solid}
-#winBtn{position:absolute;right:10px;top:40px;z-index:22;display:none;font-family:var(--mono);
+#winBtn{position:absolute;right:10px;top:74px;z-index:22;display:none;font-family:var(--mono);
   font-size:11px;color:#8ca35a;background:rgba(20,30,16,.92);border:1px solid #5a7a3a;
   padding:4px 10px}
 #winBtn.on{display:block}
 #winBtn:hover{background:#2c4a3a;color:#c3d18a}
-#lintBtn{position:absolute;right:10px;top:70px;z-index:22;display:none;
+#lintBtn{position:absolute;right:10px;top:104px;z-index:22;display:none;
   font-family:var(--mono);font-size:11px;color:#b09a6e;background:rgba(28,22,12,.92);
   border:1px solid #6b5330;padding:4px 10px}
 #lintBtn.on{display:block}
 #lintBtn:hover{background:#3a2b16;color:var(--g4)}
 /* WIPE is red, and it is the only tester control that is. The other three
    are reversible; this one throws away the camp, the run and the journal. */
-#wipeBtn{position:absolute;right:10px;top:100px;z-index:22;display:none;
+#wipeBtn{position:absolute;right:10px;top:134px;z-index:22;display:none;
   font-family:var(--mono);font-size:11px;color:#c15d55;background:rgba(32,14,12,.92);
   border:1px solid #6b3330;padding:4px 10px}
 #wipeBtn.on{display:block}
@@ -1734,7 +1824,7 @@ a.popt.sendit{display:block;text-decoration:none}
     </div>
   </div>
   <!-- the counts capsule: standing bodies each side, the round, whose turn -->
-  <div id="bCap"><span id="bYouN">⛊ —</span><span id="bRound">ROUND I</span><span id="bFoeN">☠ —</span></div>
+  <div id="bCap"><span id="bYouN">⛊ —</span><span id="bRound">↻ I</span><span id="bFoeN">☠ —</span></div>
   <!-- the order rail: faces in turn order, no numbers, names on hover -->
   <div id="bTop"></div>
   <!-- AUTO · PACE · WITHDRAW as icons. Same ids, same handlers. -->
@@ -1760,7 +1850,8 @@ a.popt.sendit{display:block;text-decoration:none}
     </div>
     <div class="pbars">
       <div class="pbwrap">
-        <div class="statLine"><span>ARMOUR</span><span id="bArmN"></span></div>
+        <!-- #100 point 9: what CLASS of armour that is, beside the count -->
+        <div class="statLine"><span>ARMOUR <b id="bArmK"></b></span><span id="bArmN"></span></div>
         <div class="bar" style="background:#243133"><i id="bArm" style="background:var(--steel)"></i></div>
         <div class="statLine"><span>HITPOINTS</span><span id="bHpN"></span></div>
         <div class="bar" style="background:#3b2126"><i id="bHp" style="background:var(--blood)"></i></div>
@@ -1834,7 +1925,7 @@ a.popt.sendit{display:block;text-decoration:none}
 <!-- TESTER TOOLS (user's request). Off by default and remembered; when on, a
      WIN NOW button appears on the battle screen. It is deliberately plain and
      ugly so it can never be mistaken for part of the game. -->
-<button id="testBtn" title="tester tools">⚙ TEST</button>
+<button id="testBtn" title="developer tools">⚙ DEV.MODE</button>
 <button id="winBtn" title="end this fight as a win">✓ WIN NOW</button>
 <button id="lintBtn" title="read every content table and report">☰ LINT</button>
 <button id="wipeBtn" title="forget this player completely and start from the front door">⌫ WIPE HISTORY</button>
@@ -2685,7 +2776,9 @@ function syncTest(){
   const t=$('testBtn'),w=$('winBtn'),l=$('lintBtn'),wp=$('wipeBtn');
   if(!t)return;
   t.classList.toggle('on',TEST.on);
-  t.textContent=TEST.on?'⚙ TEST ON':'⚙ TEST';
+  /* #100 point 3 - DEV.MODE. The switch shows the developer's tools; it is
+     not a thing the player presses to test the game. */
+  t.textContent=TEST.on?'⚙ DEV.MODE ON':'⚙ DEV.MODE';
   w.classList.toggle('on',TEST.on&&$('battle').classList.contains('on'));
   if(l)l.classList.toggle('on',TEST.on);
   if(wp)wp.classList.toggle('on',TEST.on);
@@ -8169,7 +8262,9 @@ function logRound(n){
   const d=document.createElement('div');d.className='ll rd';
   d.textContent='── ROUND '+roman(n)+' ──';
   box.appendChild(d);box.scrollTop=box.scrollHeight;
-  const h=$('bLogRound');if(h)h.textContent='ROUND '+roman(n);
+  /* #100 point 14 - the chip is a readout and takes the glyph; the divider
+     above it is a LINE IN THE LOG, which is prose, and keeps its word. */
+  const h=$('bLogRound');if(h)h.textContent='↻ '+roman(n);
 }
 function fx(u,txt,col,small){
   const hx=$('bGrid').querySelector('[data-k="'+K(u.col,u.row)+'"]');
@@ -11946,7 +12041,10 @@ const GROUND={
     rut:'#20282a', rutA:.16,
     mist:'150,170,168', mistA:.5, mistBands:7,
     field:'radial-gradient(ellipse at 42% 60%,#2b3a3b,#101819 78%)',
-    vig:'linear-gradient(#0f1618 0%,rgba(15,22,24,0) 24%,rgba(15,22,24,0) 76%,'+
+    /* #100 point 13 - the top band is .42 fading out by 8%, not solid
+       fading out by 24%. See the note on #bVig: four hex rows were being
+       painted through it, and the body on the top row paid most. */
+    vig:'linear-gradient(rgba(15,22,24,.42) 0%,rgba(15,22,24,0) 8%,rgba(15,22,24,0) 76%,'+
         'rgba(15,22,24,.55) 100%)'},
   /* DUST & GOLD — dry, open and hot. The rock is the feature here: it is the
      only cover on a board whose whole argument is that there is none. */
@@ -11972,7 +12070,7 @@ const GROUND={
        and much weaker — the point of this ground is that you can see across it */
     mist:'210,190,140', mistA:.22, mistBands:4,
     field:'radial-gradient(ellipse at 42% 60%,#413a2a,#171208 78%)',
-    vig:'linear-gradient(#1a1408 0%,rgba(26,20,8,0) 24%,rgba(26,20,8,0) 76%,'+
+    vig:'linear-gradient(rgba(26,20,8,.42) 0%,rgba(26,20,8,0) 8%,rgba(26,20,8,0) 76%,'+
         'rgba(26,20,8,.55) 100%)'},
   /* THE BLOOM — the light has no source and the moss is nearly black. The
      flowers are the loud ones on purpose: #e05fa8 is the Blooming Hand's own
@@ -11987,7 +12085,7 @@ const GROUND={
     rut:'#180f1c', rutA:.18,
     mist:'224,95,168', mistA:.34, mistBands:8,
     field:'radial-gradient(ellipse at 42% 60%,#2e1c34,#0c060e 78%)',
-    vig:'linear-gradient(#140a18 0%,rgba(20,10,24,0) 24%,rgba(20,10,24,0) 76%,'+
+    vig:'linear-gradient(rgba(20,10,24,.42) 0%,rgba(20,10,24,0) 8%,rgba(20,10,24,0) 76%,'+
         'rgba(20,10,24,.6) 100%)'},
   /* ═══ SWAMP (#63) ══════════════════════════════════════════════════════
      ⚠ BUILT AGAINST TEAL'S LUMINANCE ON PURPOSE. #15's rule is that no
@@ -12008,7 +12106,7 @@ const GROUND={
        not being able to see across it is part of the argument */
     mist:'150,175,165', mistA:.60, mistBands:9,
     field:'radial-gradient(ellipse at 42% 60%,#293a37,#0d1514 78%)',
-    vig:'linear-gradient(#0d1514 0%,rgba(13,21,20,0) 24%,rgba(13,21,20,0) 76%,'+
+    vig:'linear-gradient(rgba(13,21,20,.42) 0%,rgba(13,21,20,0) 8%,rgba(13,21,20,0) 76%,'+
         'rgba(13,21,20,.58) 100%)'},
   /* ═══ FOREST (#56) ═════════════════════════════════════════════════════
      Same discipline as the swamp: teal's lightness, hue turned to leaf.
@@ -12026,7 +12124,7 @@ const GROUND={
     /* light coming down through a canopy rather than fog off water */
     mist:'190,200,150', mistA:.26, mistBands:5,
     field:'radial-gradient(ellipse at 42% 60%,#2a3a2c,#0e150f 78%)',
-    vig:'linear-gradient(#0e150f 0%,rgba(14,21,15,0) 24%,rgba(14,21,15,0) 76%,'+
+    vig:'linear-gradient(rgba(14,21,15,.42) 0%,rgba(14,21,15,0) 8%,rgba(14,21,15,0) 76%,'+
         'rgba(14,21,15,.55) 100%)'}
 };
 function paintTerrain(){
@@ -12437,7 +12535,13 @@ function render(){
        question, and the one at the top of the screen was the least useful of
        them - it was reading a name off a panel the player is already looking
        at. Only the round is left, which nothing else says. */
-    $('bRound').textContent='ROUND '+roman(B.round);
+    /* ── #100 point 14 · THE GLYPH SAYS ROUND ─────────────────────────────
+       (User: "make round without actual word - more battle brothers
+       standart".) The two numbers either side of it are already ⛊ and ☠
+       rather than YOURS and THEIRS, so the one word left in the capsule
+       was the odd one out - and the rail's own round divider has been
+       drawing ↻ III since #98, so the glyph is already taught. */
+    $('bRound').textContent='↻ '+roman(B.round);
     /* #94 point 3 - the nickname rides on the name's line now. `.nick`
        ellipsises rather than wraps: a nickname that costs a second line is
        precisely the thing this change deletes. */
@@ -12447,13 +12551,40 @@ function render(){
        BESTIARY entry, which is a different register and reads differently on
        purpose. Monsters get their kind and their nature, never a class. */
     /* #95 point 10 - "Lv 1", not "LEVEL 1". The word was the longest thing
-       on a line that has to hold a class, a level and a race inside 194px. */
-    $('bClass').textContent=mine?(cIcon(u.cls)+' '+CLASSES[u.cls].n+' · Lv '+u.level+
-        ' · '+rIcon(u.race)+' '+u.race):
-      u.pet?'♥ THE COMPANY’S — IT FOLLOWS THE CAPTAIN':
-      u.ally?'⚔ FIGHTING ON YOUR SIDE — NOT YOURS TO COMMAND':
-      u.monster?monTag(u.monster):
-      (u.captain?'★ CAPTAIN':u.caster?'✷ CASTER':u.big?'⬢ GREAT BEAST':'RABBLE');
+       on a line that has to hold a class, a level and a race inside 194px.
+       ═══ #100 points 7 and 12 · THE LINE IS RE-ORDERED AND IT EXPLAINS
+           ITSELF ═══════════════════════════════════════════════════════════
+       (User: "order in left buttom corner: lvl, class, race", and "when i
+       hover on class or race - show, what does it mean".)
+       ⚑ THE SECOND ONE WAS ALREADY WRITTEN AND THE BATTLE SCREEN WAS THE
+       ONE PLACE THAT DID NOT ASK FOR IT. RACEHELP, CLASSHELP and
+       bindLoreTips have explained both words on the character sheet since
+       8f.117; the plaque printed the same two words as flat text, in the
+       one screen where somebody meets a spearwoman for the first time. So
+       this is a wiring job, not a writing one - and it is the same text, so
+       the sheet and the plaque cannot drift.
+       ⚠ IT IS BOUND ON CHANGE, NOT ON RENDER. bindLoreTips builds a whole
+       unit to list what is on their bar, and render() runs on every visible
+       change; keyed on the body it is describing, it runs once per turn.
+       ⚠ AND IT IS HANDED THE LIVE UNIT. Left to build its own from the
+       roster it would re-roll a caster's schools (see rollSpells), so the
+       tooltip would list spells that are not on the bar behind it. */
+    const clsKey=mine?('m'+u.id+'|'+u.cls+'|'+u.level+'|'+u.race)
+      :('o'+(u.pet?'pet':u.ally?'ally':u.monster||'')+'|'+
+        (u.captain?'c':'')+(u.caster?'s':'')+(u.big?'b':''));
+    if($('bClass').dataset.k!==clsKey){
+      $('bClass').dataset.k=clsKey;
+      $('bClass').innerHTML=mine?
+        ('Lv '+u.level+' · <span data-cls="'+u.cls+'" style="cursor:help">'+
+          cIcon(u.cls)+' '+CLASSES[u.cls].n+'</span> · '+
+          '<span data-race="'+u.race+'" style="cursor:help">'+
+          rIcon(u.race)+' '+u.race+'</span>'):
+        u.pet?'♥ THE COMPANY’S. IT FOLLOWS THE CAPTAIN':
+        u.ally?'⚔ FIGHTING ON YOUR SIDE, NOT YOURS TO COMMAND':
+        u.monster?monTag(u.monster):
+        (u.captain?'★ CAPTAIN':u.caster?'✷ CASTER':u.big?'⬢ GREAT BEAST':'RABBLE');
+      if(mine)bindLoreTips($('bClass'),member(u.id),u);
+    }
     /* #91 point 13 - the personality shows its NAME and nothing else. Both
        sentences (the short read and the race-specific text) are the hover,
        where 8f.117 already put the long one. A body with no trait keeps its
@@ -12508,6 +12639,20 @@ function render(){
        the Fen-Mother's 31 hitpoint sections are 7.7px each here. */
     setBar('bArm','bArmN',u.armour,u.armourMax||1,SEG_ARM);
     setBar('bHp','bHpN',u.hp,u.hpMax,SEG_HP);
+    /* #100 point 9 - and WHAT that armour is. Off armourMax, so it names the
+       suit rather than how much of it is left: a mail hauberk beaten down to
+       9 points is still a mail hauberk, and the sections beside it are
+       already saying how many blows are left in it. */
+    {const ak=ARMOURKIND(u.armourMax||0),ke=$('bArmK');
+     ke.textContent=ak;
+     ke.onmouseenter=e=>{
+       TIP.innerHTML='<div style="font-family:var(--display);font-size:14px;color:var(--g4);'+
+         'margin-bottom:4px">'+ak+' ARMOUR</div><div>'+ARMOURWHY[ak]+'</div>'+
+         '<div style="font-style:italic;color:#a38652;margin-top:5px">Armour takes the hit '+
+         'first. Only what gets through it reaches the body.</div>';
+       TIP.style.display='block';moveTip(e);};
+     ke.onmousemove=moveTip;
+     ke.onmouseleave=()=>{TIP.style.display='none';};}
     /* #96 point 2 - the plaque takes the same colour off the same helper as
        the token, or the two readings of one body would disagree. */
     $('bHp').style.background=hpCol(u,Math.max(0,u.hp)/u.hpMax);
@@ -12652,9 +12797,19 @@ function render(){
       top.appendChild(dv);turned=true;}
     const sp=sprite(o.kind,o.side,{unit:o,leader:o.leader||o.captain,caster:o.caster,bow:o.bow});
     const d=document.createElement('div');
-    d.className='ord '+(o.side==='foe'?'foe ':'')+((o.leader||o.captain)?'cap ':'')+
+    /* ═══ #100 points 5 and 6 · WHOSE, NOT WHO ══════════════════════════════
+       `cap` is gone from the rail. It painted a second gold edge next to the
+       gold ring that means "acting now", to name a body the board already
+       names with a ★ - and the user's read of that was the right one: the
+       company should be one colour so the ring is the only thing that picks
+       anybody out. The gold goes to the one body in this queue the player
+       genuinely cannot place: an ALLY. On your side, in your half of the
+       order, and not yours to command. */
+    d.className='ord '+(o.side==='foe'?'foe ':(o.ally?'ally ':''))+
       (k===0?'now':'');
-    d.title=(o.leader?'You':o.name)+(o.state==='routed'?' — broken and running':'');
+    d.title=(o.leader?'You':o.name)+
+      (o.ally?' - fighting on your side, not yours to command':'')+
+      (o.state==='routed'?' - broken and running':'');
     d.innerHTML=(o.state==='routed'?'<span class="flag">🏳</span>':'')+
       '<img src="'+sp.src+'" width="'+Math.round(sp.w*.78)+'" height="'+Math.round(sp.h*.78)+
       '" alt="'+o.name+'">';
@@ -13333,6 +13488,29 @@ const apPips=(n,max)=>{let s='';
   return s;};
 /* ⚠ the width and the section count go through the SAME door, so a bar can
    never be drawn at one scale and sectioned at another. */
+/* ═══ #100 point 9 · THE THREE WEIGHTS OF ARMOUR ══════════════════════════
+   ⚑ CLASSIFIED OFF THE POOL, NOT OFF THE ITEM, and that is deliberate: an
+   ogre in stitched hides, a ratkin in a scrap harness and a brigand who was
+   never handed a GEAR entry at all must all get an answer. `armourValue`
+   already puts a wrong-size penalty through the same number, so a human
+   wearing an ogre's plates is honestly reported as the lesser thing it has
+   become on him.
+   The boundaries are the rack: rags 6, a bucket 9, a cook-pot 12, a scrap
+   harness 18 and a door-plank 20 are all LIGHT; stitched hides 26, a
+   rat-silk shroud 30 and a padded jack 34 are MEDIUM; a mail hauberk 66,
+   lashed plates 74, foundry plate 96 and ogre scale 104 are HEAVY, and
+   every one of those is a suit that costs its wearer a step of agility. */
+const ARMOURKIND=v=>v<=0?'NONE':v<25?'LIGHT':v<60?'MEDIUM':'HEAVY';
+const ARMOURWHY={
+  NONE  :'Cloth, and whatever they are standing behind. Every blow that lands goes '+
+         'straight into the body.',
+  LIGHT :'Rags, hides, a cook-pot, somebody’s door. One good blow and it is gone, and '+
+         'the next one is on them.',
+  MEDIUM:'A padded jack, a rat-silk shroud, stitched hides. Two or three blows before '+
+         'the body takes any, and nothing it costs to move in.',
+  HEAVY :'Mail, foundry plate, lashed ogre scale. It eats blows for most of a fight, '+
+         'and the heavy suits are slower: they take a step of agility off the wearer, '+
+         'which is dodge.'};
 function setBar(bar,num,v,max,per){v=v>0?Math.ceil(v):0;
   const el=$(bar);el.style.width=(100*v/max)+'%';
   if(el.parentNode)el.parentNode.style.setProperty('--seg',SEG(max,per));
@@ -17412,12 +17590,17 @@ function actLineHTML(a){
    later appears here without this function being told.
 
    `p` is optional. The muster field names classes for people you have not
-   hired and has no unit to build, so it keeps the prose alone. */
-function bindLoreTips(root,p){
+   hired and has no unit to build, so it keeps the prose alone.
+
+   ⚑ `live` IS THE UNIT WHEN THE CALLER ALREADY HAS ONE (#100 point 7: the
+   battle plaque does). It matters beyond saving the work: unitFrom() ROLLS,
+   so a caster's schools come out different from the ones standing on the
+   board, and the tooltip would list a spell the body does not have. */
+function bindLoreTips(root,p,live){
   if(!root)return;
   /* built once per call, never per hover */
-  let u=null;
-  if(p){try{u=unitFrom(p);}catch(e){u=null;}}
+  let u=live||null;
+  if(!u&&p){try{u=unitFrom(p);}catch(e){u=null;}}
   const SKIP={move:1,dis:1};
   root.querySelectorAll('[data-race]').forEach(el=>{
     const r=el.dataset.race,h=RACEHELP[r];if(!h)return;
