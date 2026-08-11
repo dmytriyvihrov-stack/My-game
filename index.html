@@ -132,14 +132,42 @@ button:disabled{cursor:not-allowed}
    measure and it grew upward by about twenty pixels. The band is 470px and
    RAIL_MAX still needs 461, which is the check that has to be re-run every
    time either box changes height.
+   ⚑ #105 STOPPED RE-RUNNING IT BY HAND. The sentence above has been true and
+   fragile for three entries running: a constant nine, a band whose height is
+   decided by a box at the OTHER end of the screen, and nothing that fails
+   when the two stop agreeing. `railMax()` reads the live band instead, so the
+   plaque may grow all it likes and the queue simply gets one head shorter.
    ⚠ AND THE BOX STOPPED TAKING THE POINTER. It is a 56px column with no
    background, so an overlap with the plaque was invisible AND ate the
    plaque's hovers - and the two boxes have overlapped by a few pixels since
    #100 without anybody noticing. The heads take the pointer, the band does
    not, so the overlap can never matter again. */
-#bTop{position:absolute;left:4px;top:60px;bottom:190px;z-index:39;
+/* ═══ #105 point 4 · THE RAIL GETS ITS AIR BACK, TOP AND LEFT ═════════════
+   (User: "20% wider and 10% higher characters in turn order. And a little
+   bit more space from battle log. And proper top border for picked soldier
+   (as the other three)".)
+
+   ⚑ THE THIRD OF THOSE IS #100 POINT 11 AGAIN, ON THE OTHER EDGE. That one
+   read "the border in turn order for the unit that is moving feels a bit
+   cutted from the right side" and was answered with 12px of right-hand
+   padding, because `.ord.now` draws its gold ring OUTSIDE its border box.
+   Nothing was done about the TOP - and the acting head is always the FIRST
+   head in the queue, sitting flush against a band that is overflow:hidden,
+   so the ring's top edge has been clipped on every turn of every fight since.
+   Three sides of a frame and a gap where the fourth should be, which is
+   exactly what the user described. 8px of padding-top is the 2px ring, the
+   2px lift `.ord.now` carries, and a little of the glow.
+   `top:74px` is the other half of the same line: the log box ends at y48, so
+   the rail started twelve pixels under it and read as attached to it. */
+/* ⚠ 223, AND IT IS THE WORST CASE RATHER THAN THE ONE ON SCREEN. The plaque
+   measures 191 with a one-line trait and #bTrait clamps at TWO, so its real
+   ceiling is 207; 207 + its own bottom:10 + 6 of air is this number. Measuring
+   the plaque live would have been exact and wrong - its height changes with
+   whose trait is showing, so the rail would gain and lose a head as you clicked
+   between your own people. railMax() reads whatever band this leaves. */
+#bTop{position:absolute;left:4px;top:74px;bottom:223px;z-index:39;
   display:flex;flex-direction:column;gap:3px;align-items:flex-start;
-  justify-content:flex-start;overflow:hidden;padding:0 12px 0 4px;
+  justify-content:flex-start;overflow:hidden;padding:8px 12px 0 4px;
   pointer-events:none}
 #bTop .ord{pointer-events:auto}
 /* the lit edge is the LEFT edge now, not the top: the rail turned, so the
@@ -161,8 +189,12 @@ button:disabled{cursor:not-allowed}
 /* #98 point 3 - bigger. 30x34 was a thumbnail of a thumbnail: the whole job
    of a face in this rail is to be recognised, and at 22px of sprite it was
    a coloured smudge. 40x46 with the sprite at .78 is the smallest size a
-   ratkin and a poacher are actually told apart at. */
-.ord{width:40px;height:46px;background:rgba(20,30,31,.88);border-top:2px solid #3d5250;
+   ratkin and a poacher are actually told apart at.
+   ⚠ #105 point 4 - 48x51, which is 40x46 with the twenty per cent and the
+   ten the user asked for. THE FIT SQUARE IN render() MOVES WITH IT (44 ->
+   48): it is the box's size plus the deliberate bleed, not a constant, and
+   leaving it behind would have put the dead space back above every head. */
+.ord{width:48px;height:51px;background:rgba(20,30,31,.88);border-top:2px solid #3d5250;
   display:flex;flex-direction:column;align-items:center;justify-content:flex-end;
   position:relative;flex:none;padding-bottom:1px;overflow:hidden}
 .ord.now{background:#2b3f3e;box-shadow:0 0 0 2px var(--gold),0 0 14px rgba(217,189,126,.45);transform:translateY(-2px)}
@@ -256,11 +288,18 @@ button:disabled{cursor:not-allowed}
 #bName .nick{flex:0 2 auto;font-family:var(--body);font-size:10.5px;color:var(--g3);
   font-style:italic;font-weight:400;white-space:nowrap;overflow:hidden;
   text-overflow:ellipsis;min-width:0}
-#bClass{font-family:var(--mono);font-size:9.5px;letter-spacing:.04em;color:#b09a6e;
+/* ═══ #105 point 5 · THE WORDS UNDER THE FACE GET FIFTEEN PER CENT ════════
+   (User: "15% bigger font for words in the left buttom - hero description".)
+   These two lines and the trait below them are the only PROSE on the battle
+   screen - who this is and what they are like - and they were set smaller
+   than the mono labels on the numbers beside them. 9.5 -> 11 and 11 -> 12.5,
+   which is the fifteen per cent asked for on both. The name is untouched: it
+   is 13.5px already and it is not what was hard to read. */
+#bClass{font-family:var(--mono);font-size:11px;letter-spacing:.04em;color:#b09a6e;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 /* the personality: NAME only (#91 point 13). The sentence is the hover,
    exactly where 8f.117 already put the full text. */
-#bTrait{font-family:var(--body);font-size:11px;color:#d8cfae;line-height:1.25;cursor:help;
+#bTrait{font-family:var(--body);font-size:12.5px;color:#d8cfae;line-height:1.25;cursor:help;
   display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
 #bTrait b{color:var(--g4);font-weight:600;font-style:normal;border-bottom:1px dotted #6b6046}
 /* ── #95 point 4 · THREE CELLS, NOT FOUR ─────────────────────────────────
@@ -270,9 +309,29 @@ button:disabled{cursor:not-allowed}
    it shipped - and duplicates are the first half of the original 2026-08-10
    report ("too many numbers everywhere"). The card is where the decision is
    made, so the card keeps it. Same `moveBudget()` call, one reader now. */
-#bStats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px}
+/* ── #105 point 7 · THREE EQUAL CELLS BECOME ONE CELL AND TWO CHIPS ──────
+   The grid gave a third of the row to ACTIONS and a third each to two
+   percentages, which is the panel saying they are worth the same. They are
+   not: the pips are what this turn has left to spend and the other two are
+   a property of a shot that has not been aimed yet. ACTIONS takes the room
+   it needs, the two chips take what a mark and four characters need, and
+   the ? sits at the end of the row it has always ended. */
+#bStats{display:flex;align-items:stretch;gap:4px}
 #bStats .pcell{background:#101a1b;border:1px solid #24383a;padding:3px 2px 2px;
-  display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:2px}
+  display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:2px;
+  flex:1;min-width:0}
+/* the two quiet ones: a mark and a number on one line, no caption, and no
+   more width than that costs. `.pic` is where the drawn sword and the drawn
+   foot land - see ICO_HIT / ICO_DODGE, which are written in as SVG because
+   this file has no glyph for a foot that is not an emoji. */
+#bStats .pcell.mini{flex:0 0 auto;flex-direction:row;align-items:center;
+  justify-content:center;gap:4px;padding:3px 6px;cursor:help}
+#bStats .pcell.mini .pnum{font-size:12.5px;font-weight:600;color:#b9c6c3}
+#bStats .pcell.mini:hover{border-color:#3d5250}
+#bStats .pcell.mini:hover .pnum{color:var(--t4)}
+#bStats .pic{display:flex;align-items:center;color:#7f9490;flex:none}
+#bStats .pic svg{display:block}
+#bStats .pcell.mini:hover .pic{color:#a7bab6}
 #bStats .pnum{font-family:var(--display);font-size:15px;font-weight:700;color:var(--t4);line-height:1}
 #bStats .plbl{font-family:var(--mono);font-size:8px;letter-spacing:.04em;color:#8fa5a2;
   line-height:1.2;text-align:center}
@@ -365,6 +424,26 @@ button:disabled{cursor:not-allowed}
    report ("too many numbers everywhere"), so cutting them answers a
    complaint rather than merely making space. */
 .statLine{display:flex;justify-content:space-between;font-family:var(--mono);font-size:10px;color:var(--t3)}
+/* ═══ #105 point 6 · WHAT IS LEFT, AT THE SIZE OF THE QUESTION ════════════
+   (User: "Almost double size of ammount hitpoints and armor left - i want it
+   visibilly easy readeble".) 10px mono to 19px display is the double asked
+   for, and it is spent on the RIGHT-hand end of each row on purpose: the
+   label answers "which pool" and is read once, the number answers "how much
+   is left" and is read on every blow. The bar under it says how many more
+   blows that is (#94 point 6's sections); the numeral says how much, and at
+   this size the two are read together instead of the bar being read alone.
+   ⚠ SCOPED TO #bPlq. `.statLine` is the company screen's row too, and it is
+   read at a desk with time to spare rather than mid-fight.
+   ⚠ NERVE'S VALUE IS A WORD, so it takes the same weight and not the same
+   size: "◔ STEADY" at 19px is a headline where a measure was wanted, and it
+   would set the third row two sizes away from the two above it. */
+#bPlq .statLine{align-items:baseline;line-height:1.1}
+#bPlq .pv{font-family:var(--display);font-size:19px;font-weight:700;color:var(--t4);
+  line-height:1;letter-spacing:.01em}
+#bPlq .pv .of{font-family:var(--mono);font-size:10px;font-weight:400;color:var(--t3);
+  letter-spacing:0}
+#bPlq .pv.word{font-size:12.5px;letter-spacing:.05em}
+#bPlq #bArmN{color:var(--steel)}
 /* ═══ #100 point 9 · WHAT KIND OF ARMOUR THAT IS ══════════════════════════
    (User: "near armor in the left bottom - right which class of armor is
    that (light, medium, heavy)".) The bar said how much was left and never
@@ -423,7 +502,20 @@ button:disabled{cursor:not-allowed}
    change away from reading as broken. */
 #bActions{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);z-index:40;
   display:flex;flex-direction:row;align-items:flex-end;gap:5px}
-.act{width:60px;height:82px;background:linear-gradient(#1e2c2d,#141f20);border:1px solid #3a4f52;
+/* ═══ #105 point 1 · A CARD YOU CAN READ WITHOUT LEANING IN ════════════════
+   (User: "A little bit wider skills and font - so it is better readeble".)
+   The card was 60px wide with an 8px name on it, which is the narrowest
+   thing on the screen carrying the longest words in the file - and every
+   pixel of that width was spent by #102 point 4's role line and #91's damage
+   range, both of which land on the same 60px. 72px and a 9px name is about
+   fifteen per cent on both, so BRACE AND SHOVE and CRIPPLING SHOT still clamp
+   at two lines but at a size the eye does not have to work at.
+   ⚠ THE HEIGHT MOVES WITH IT OR THE FLOOR OF 82 STOPS BEING A FLOOR. That
+   number was measured against the worst card in the file at an 8px name;
+   a 9px name is 1.2px taller per line and there are two lines of it, so 86
+   keeps the same clearance between the name's last line and the cost band.
+   ⚠ Nine cards at 72+5 is 688px in a 1280 band. Still clear. */
+.act{width:72px;height:86px;background:linear-gradient(#1e2c2d,#141f20);border:1px solid #3a4f52;
   flex:none;position:relative;display:flex;flex-direction:column;align-items:center;
   padding:0;transition:transform .12s ease}
 .act:hover:not(:disabled){background:linear-gradient(#25383a,#182425);border-color:#4d6b6c}
@@ -432,9 +524,9 @@ button:disabled{cursor:not-allowed}
 .act.arc{border-color:#5d3350}
 .act:disabled{opacity:.35}
 .act.cool{border-color:#5a4a2a}
-.act .gi{font-size:19px;line-height:1;color:#cfd8d6;margin-top:3px;font-family:var(--body)}
+.act .gi{font-size:21px;line-height:1;color:#cfd8d6;margin-top:3px;font-family:var(--body)}
 .act.arc .gi{color:var(--bloom-lit)}
-.act b{font-family:var(--mono);font-size:8px;letter-spacing:.02em;color:#b8c4c1;font-weight:500;
+.act b{font-family:var(--mono);font-size:9px;letter-spacing:.02em;color:#b8c4c1;font-weight:500;
   text-align:center;line-height:1.2;margin-top:3px;padding:0 2px;
   display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;
   width:100%;box-sizing:border-box}
@@ -448,7 +540,7 @@ button:disabled{cursor:not-allowed}
    to interrogate. Teal rather than gold, because it is not damage - and it
    is the SAME moveBudget() call as the plaque's HEXES cell, so the two
    cannot drift apart. */
-.act .adm{font-family:var(--mono);font-size:9px;color:var(--gold);line-height:1;margin-top:2px}
+.act .adm{font-family:var(--mono);font-size:10.5px;color:var(--gold);line-height:1;margin-top:2px}
 /* ⛔ NOT `.adm.hex`. `.hex` IS THE BOARD'S OWN HEX BUTTON - width 37, HEIGHT
    42, display:flex - and a card is a flex column, so the modifier silently
    gave this one span a 42px box and squeezed the skill's NAME down to 3px.
@@ -469,7 +561,7 @@ button:disabled{cursor:not-allowed}
    of the 2026-08-10 report wearing a new coat. See ROLE{}.
    ⚠ ONE LINE, CLIPPED. Two lines here would put the card back where #102
    point 10 found it. */
-.act .role{font-family:var(--mono);font-size:7px;letter-spacing:.02em;color:#7f9490;
+.act .role{font-family:var(--mono);font-size:8px;letter-spacing:.02em;color:#7f9490;
   line-height:1.1;margin-top:2px;padding:0 1px;text-align:center;
   max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:clip}
 .act.sel .role{color:#a7bab6}
@@ -478,7 +570,7 @@ button:disabled{cursor:not-allowed}
    the card's floor, so those three extra pixels came off the top of the
    band - straight out of the gap the role line above it needs. */
 .act .cost{position:absolute;bottom:3px;left:0;right:0;text-align:center;
-  font-size:8px;line-height:1;color:var(--gold);letter-spacing:.18em}
+  font-size:9px;line-height:1;color:var(--gold);letter-spacing:.18em}
 .act .key{position:absolute;top:2px;left:2px;font-family:var(--mono);font-size:10px;
   background:#16211f;color:#93a8a4;border:1px solid #3d5250;border-radius:2px;
   width:14px;height:14px;display:flex;align-items:center;justify-content:center;line-height:1}
@@ -831,7 +923,27 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:11px;pa
    Breaking either half breaks all of them at once, and silently. */
 #bGround{position:absolute;left:0;top:0;transform-origin:0 0;
          transition:transform .22s cubic-bezier(.25,.6,.3,1)}
-#bTerrain{position:absolute;left:0;top:0;pointer-events:none;width:600px;height:440px}
+/* ═══ #105 point 2 · THE BLACK LINE ACROSS THE TOP OF THE BOARD ══════════
+   (User: "A big black line that covers part of the top tile - we don't need
+   it and can delete it".)
+
+   ⚑ IT WAS NOT A LINE ANYBODY DREW. `.hrow{margin-top:-10px}` is on EVERY
+   row including the first, so the grid's content starts ten board-pixels
+   ABOVE its own box - and the painted ground started at zero. The top ten
+   pixels of the top rank of tiles were therefore standing on #bField's dark
+   surround instead of on ground, which at ×2.20 is a 22px black band the
+   width of the whole board with the tips of thirteen hexes cut out of it.
+
+   ⚠ AND IT WAS HALF OF A SECOND FAULT. hexCentre() - the one function the
+   painter places every puddle, tuft and stone from - returned `r*32+21`
+   while the hex it names actually centres at `r*32+11`, so every painted
+   feature in the game has been ten pixels below its own tile. Moving the
+   canvas up by ten fixes both at once: the strip is painted AND the ground
+   lands on its hexes, because the canvas origin is now the grid's true
+   origin rather than its box's. See hexCentre for the x half of the same
+   drift. The canvas is 440 tall against a 416 board, so the bottom stays
+   covered with fourteen pixels to spare. */
+#bTerrain{position:absolute;left:0;top:-10px;pointer-events:none;width:600px;height:440px}
 /* ═══ #66 — the three stops. A state, not a number: no slider, no percentage.
    Top-right because bottom-right belongs to #53's reaction bar. ═══ */
 /* #91 shifted this left so the AUTO/PACE/WITHDRAW icons could keep the
@@ -1276,39 +1388,47 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:11px;pa
    The contract, the day plaque and the sun/moon disc float OVER the map,
    which is what Battle Brothers does with all three. They are children of
    #wMap so drawNodes' sweep (.node,.elab,.mlegend) never touches them. ── */
-#wQuest{position:absolute;top:10px;left:10px;z-index:6;display:flex;align-items:center;gap:8px;
-        max-width:470px;cursor:help;overflow:hidden;white-space:nowrap;
-        padding:6px 12px 6px 7px;background:linear-gradient(180deg,#241b0e,#180f07);
+/* #106 point 3: the contract is TWO LINES now - what it is on top, what it
+   pays under - which took it from 451px of map to about 300, and the badge
+   is BB's golden trophy, the mark that says MAIN QUEST rather than a bullet. */
+#wQuest{position:absolute;top:10px;left:10px;z-index:6;display:flex;align-items:center;gap:9px;
+        max-width:340px;cursor:help;overflow:hidden;
+        padding:5px 13px 5px 8px;background:linear-gradient(180deg,#241b0e,#180f07);
         border:1px solid #6b5330;
         box-shadow:inset 0 0 0 1px rgba(16,12,6,.95),inset 0 0 16px rgba(0,0,0,.5),
                    0 3px 10px rgba(0,0,0,.65)}
-#wQuest .qbdg{width:20px;height:20px;border:1px solid #5a4426;background:#14100a;flex:none;
-              display:flex;align-items:center;justify-content:center;color:var(--g4);
-              font-size:11px}
-#wQuest .qlab{font-family:var(--display);font-size:11px;color:var(--g4);letter-spacing:.09em;flex:none}
-#wQuest .qtx{font-family:var(--mono);font-size:10.5px;color:#a38652;overflow:hidden;
-             text-overflow:ellipsis}
-#wPlaque{position:absolute;left:50%;top:0;transform:translateX(-50%);z-index:6;height:32px;
-         display:flex;align-items:center;gap:9px;padding:0 16px;
+#wQuest .qcol{display:flex;flex-direction:column;gap:1px;min-width:0}
+#wQuest .qlab{font-family:var(--display);font-size:10.5px;color:var(--g4);letter-spacing:.09em}
+#wQuest .qtx{font-family:var(--mono);font-size:10.5px;color:#c2b493;white-space:nowrap;
+             overflow:hidden;text-overflow:ellipsis}
+#wQuest .qpay{font-family:var(--mono);font-size:9px;color:#8a7449;letter-spacing:.04em}
+/* the day, hard against the map's top-right corner (#106 point 2: "it could
+   be on the edge for emersion"), with its sky inside it rather than as a
+   second floating box. ⚠ The dev-chrome column lives in this corner too and
+   is pushed down on the world screen only - see #testBtn. */
+#wPlaque{position:absolute;right:10px;top:8px;z-index:6;height:36px;
+         display:flex;align-items:center;gap:9px;padding:0 13px 0 6px;
          background:linear-gradient(180deg,#221a10,#14100a);
-         border:1px solid #6b5330;border-top:none;cursor:help;white-space:nowrap;
+         border:1px solid #6b5330;cursor:help;white-space:nowrap;
          box-shadow:inset 0 0 0 1px rgba(16,12,6,.95),0 3px 10px rgba(0,0,0,.55)}
 #wPlaque .d1{font-family:var(--display);font-size:13px;letter-spacing:.07em;color:#c2b493}
 #wPlaque .d1 b{font-size:18px;color:#e0d3b4}
-#wPlaque .pl{font-family:var(--mono);font-size:10px;color:#8a7449;letter-spacing:.05em}
-/* the sun-and-moon disc, hanging under the day plaque, BB's own wheel: a
-   sky window, a rotating face pair, and a fixed ground silhouette the pair
-   sets behind. It TURNS while the company walks (worldTick toggles
-   .turning off G.moving) and rests at daylight while you stand. */
-#wDisc{position:absolute;left:50%;top:28px;transform:translateX(-50%);z-index:7;width:40px;
-       height:40px;border-radius:50%;border:1px solid #6b5330;overflow:hidden;cursor:help;
+#wPlaque .pl{font-family:var(--mono);font-size:10px;color:#8a7449;letter-spacing:.05em;
+             display:block;margin-top:1px}
+#wPlaque .dtx{display:flex;flex-direction:column;justify-content:center}
+/* the sun-and-moon wheel, BB's own: a sky window, a rotating face pair, and
+   a fixed ground silhouette the pair sets behind. It TURNS while the company
+   walks (worldTick toggles .turning off G.moving) and rests at daylight
+   while you stand, because the walk is when the days actually pass. */
+#wDisc{position:relative;flex:none;width:28px;height:28px;
+       border-radius:50%;border:1px solid #6b5330;overflow:hidden;
        background:radial-gradient(circle at 50% 32%,#26334a,#0b0f18 78%);
-       box-shadow:0 0 0 1px #14100a,0 3px 9px rgba(0,0,0,.6)}
+       box-shadow:0 0 0 1px #14100a,0 2px 6px rgba(0,0,0,.6)}
 #wDisc .wh{position:absolute;inset:0;z-index:1}
-#wDisc .su{position:absolute;left:50%;top:3px;transform:translateX(-50%);font-size:13px;
+#wDisc .su{position:absolute;left:50%;top:2px;transform:translateX(-50%);font-size:10px;
            line-height:1;color:#e8c86a;text-shadow:0 0 7px rgba(232,200,106,.85)}
-#wDisc .mo{position:absolute;left:50%;bottom:3px;transform:translateX(-50%) rotate(180deg);
-           font-size:12px;line-height:1;color:#c5cede;text-shadow:0 0 6px rgba(197,206,222,.6)}
+#wDisc .mo{position:absolute;left:50%;bottom:2px;transform:translateX(-50%) rotate(180deg);
+           font-size:9px;line-height:1;color:#c5cede;text-shadow:0 0 6px rgba(197,206,222,.6)}
 #wDisc .gd{position:absolute;left:0;right:0;bottom:0;height:30%;z-index:2;
            background:linear-gradient(180deg,#1c1409,#0e0a05);border-top:1px solid #5a4426}
 #wDisc.turning .wh{animation:daycycle 4s linear infinite}
@@ -1512,14 +1632,23 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:11px;pa
         display:flex;flex-direction:column;align-items:center;gap:2px;pointer-events:none}
 /* the company on the road is the CAPTAIN'S FACE, not an abstract diamond —
    the one screen where you are a marker was the one screen you were nobody */
-#wToken #wFace{width:34px;height:34px;border:2px solid var(--g4);background:#221a10;
-               box-shadow:0 0 14px rgba(217,189,126,.5),0 3px 10px rgba(0,0,0,.7);display:block}
-#wToken.walking #wFace{animation:trudge .55s ease-in-out infinite alternate}
+/* ═══ #106 point 5 · THE COMPANY IS THE COMPANY ══════════════════════════
+   ("When party move on the global map - can you use all small icons of
+   battle-units, just reduced and small.") One painted face said CAPTAIN;
+   a marching row of every body says what is actually walking down there,
+   and it is the same sprite() the battlefield and the order rail draw, so
+   a ratkin reads as a ratkin from the map without a second art path.
+   ⚠ The row is centred and the whole token is translate(-50%,-50%), so a
+   company of four and a company of thirteen both sit ON the node. */
+#wToken .wSpr{display:flex;align-items:flex-end;justify-content:center;
+              filter:drop-shadow(0 2px 4px rgba(0,0,0,.85))}
+#wToken .wSpr img{image-rendering:pixelated;max-width:none;display:block;margin:0 -2px}
+#wToken.walking .wSpr{animation:trudge .55s ease-in-out infinite alternate}
 #wToken .tl{font-family:var(--mono);font-size:8.5px;letter-spacing:.12em;color:var(--g4);
             background:rgba(16,12,6,.8);padding:1px 4px;white-space:nowrap}
 #wToken.walking .tk{animation:trudge .55s ease-in-out infinite alternate}
 @keyframes trudge{from{transform:translateY(-1.5px)}to{transform:translateY(2px)}}
-@media (prefers-reduced-motion:reduce){#wToken.walking #wFace{animation:none}}
+@media (prefers-reduced-motion:reduce){#wToken.walking .wSpr{animation:none}}
 #wLock{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);font-family:var(--mono);
        font-size:10px;color:#c15d55;background:rgba(16,12,6,.9);border:1px solid #6b2a24;
        padding:5px 12px;letter-spacing:.1em;display:none;z-index:11}
@@ -1783,6 +1912,15 @@ body:has(#world.on) #audioBtn{top:8px;bottom:auto;font-size:11px;padding:3px 8px
    test the game, rather than the switch that shows the developer's tools. */
 #testBtn{position:absolute;right:10px;top:44px;z-index:22;font-family:var(--mono);font-size:11px;
   color:#6b5836;background:rgba(16,12,6,.8);border:1px dashed #3d2f1d;padding:3px 9px}
+/* ⚠ #106 point 2: the day plaque took the map's top-right corner, so on the
+   WORLD screen the whole developer column steps down past it (plaque bottom
+   is stage y=86). Developer chrome yields to player chrome, same ruling as
+   #102 - and IT IS A STACK: all four move together or the gap they leave is
+   worse than the collision. The battle screen is untouched. */
+body:has(#world.on) #testBtn{top:96px}
+body:has(#world.on) #winBtn{top:186px}
+body:has(#world.on) #lintBtn{top:216px}
+body:has(#world.on) #wipeBtn{top:246px}
 #testBtn:hover{color:var(--g4)}
 #testBtn.on{color:#8ca35a;border-color:#5a7a3a;border-style:solid}
 /* ⚠ #102 points 2 and 3 · THE TESTER STACK DROPPED 60px TO LET THE TWO
@@ -1989,10 +2127,16 @@ a.popt.sendit{display:block;text-decoration:none}
   <div id="wMap">
     <canvas id="wCanvas" width="1280" height="638"></canvas>
     <div id="wQuest"></div>
-    <div id="wPlaque"></div>
-    <div id="wDisc"><div class="wh"><span class="su">☀</span><span class="mo">☾</span></div>
-      <div class="gd"></div></div>
-    <div id="wToken"><canvas id="wFace" width="40" height="40"></canvas>
+    <!-- #106 point 2: the day and its sky went to the TOP-RIGHT EDGE, one
+         object, so the middle of the sky is map again. The disc is inside
+         the plaque now, not a second floating box. -->
+    <div id="wPlaque"><div id="wDisc"><div class="wh"><span class="su">☀</span>
+        <span class="mo">☾</span></div><div class="gd"></div></div>
+      <span class="dtx"></span></div>
+    <!-- #106 point 5: the company on the road is the COMPANY - every body
+         in the party as its own battle sprite, shrunk. `wSpr` is filled by
+         worldTick; the face canvas it replaced is gone. -->
+    <div id="wToken"><div class="wSpr"></div>
       <span class="tl">THE COMPANY</span></div>
     <div id="wDlg"></div>
     <div id="wLock">DECIDE FIRST — THE COMPANY WILL NOT MOVE UNTIL YOU DO</div>
@@ -2052,6 +2196,41 @@ a.popt.sendit{display:block;text-decoration:none}
     <div class="pr1"><canvas id="bPortrait" width="64" height="64"></canvas>
       <div class="pcol"><div id="bName"></div><div id="bClass"></div><div id="bTrait"></div></div>
     </div>
+    <!-- ═══ #105 points 6 and 7 · THE ORDER OF THE PANEL IS AN ARGUMENT ═════
+         (User: "Almost double size of ammount hitpoints and armor left - i
+         want it visibilly easy readeble. Probably under charter armor, health,
+         morale, and below everething else (basically switch it with this
+         block)", and "In general i prefere visible more significant health and
+         armor and mood then % to hit and dodge (right now it is too huge
+         numbers)".)
+
+         WHAT THE PANEL SAID BEFORE THIS WAS THAT TO HIT MATTERED MOST. Two
+         percentages sat directly under the face in 15px display type with the
+         pools below them in 10px mono - so the loudest numbers on the panel
+         were the two that change every time you point at a different tile,
+         and the two that decide whether this body lives were the quietest.
+         The pools are the body's STATE; hit and dodge are a property of the
+         shot you are lining up, and the aiming card already prints both in
+         full the moment there is a target. So the blocks change places and
+         they change weight with it.
+         ⚠ THE ? KEEPS THE BOTTOM-RIGHT CORNER by moving into the row that is
+         now the bottom, which is where #102 point 7 put it and where it costs
+         no height. -->
+    <div class="pbars">
+      <div class="pbwrap">
+        <!-- #100 point 9: what CLASS of armour that is, beside the count -->
+        <div class="statLine"><span>ARMOUR <b id="bArmK"></b></span><span class="pv" id="bArmN"></span></div>
+        <div class="bar" style="background:#243133"><i id="bArm" style="background:var(--steel)"></i></div>
+        <div class="statLine"><span>HITPOINTS</span><span class="pv" id="bHpN"></span></div>
+        <div class="bar" style="background:#3b2126"><i id="bHp" style="background:var(--blood)"></i></div>
+        <!-- #102 point 1: nerve is the third measure, in the same idiom as
+             the two above it. The chip it replaces is described in the CSS. -->
+        <div id="bState" tabindex="0">
+          <div class="statLine"><span>NERVE</span><span class="pv word" id="bStateN">—</span></div>
+          <div class="bar nrv" style="background:#20272a"><i id="bNerve"></i></div>
+        </div>
+      </div>
+    </div><!-- /.pbars -->
     <div id="bStats">
       <!-- #94 point 4: crystals, not a numeral. #bAPnum holds the pips now. -->
       <div class="pcell"><span class="pips" id="bAPnum"></span><span class="plbl" id="bAPtxt">ACTIONS</span></div>
@@ -2059,29 +2238,21 @@ a.popt.sendit{display:block;text-decoration:none}
            it, off the same moveBudget() call, and one fact wants one reader.
            #94 point 5: "61% hit" and "15% dodge" - the dodge was the only one
            missing its unit, and CHANCE TO HIT was the only label spending two
-           lines on what TO HIT says in one. -->
-      <div class="pcell"><span class="pnum" id="bHitN">—</span><span class="plbl">TO HIT</span></div>
-      <div class="pcell"><span class="pnum" id="bDodgeN">—</span><span class="plbl">DODGE</span></div>
-    </div>
-    <div class="pbars">
-      <div class="pbwrap">
-        <!-- #100 point 9: what CLASS of armour that is, beside the count -->
-        <div class="statLine"><span>ARMOUR <b id="bArmK"></b></span><span id="bArmN"></span></div>
-        <div class="bar" style="background:#243133"><i id="bArm" style="background:var(--steel)"></i></div>
-        <div class="statLine"><span>HITPOINTS</span><span id="bHpN"></span></div>
-        <div class="bar" style="background:#3b2126"><i id="bHp" style="background:var(--blood)"></i></div>
-        <!-- #102 point 1: nerve is the third measure, in the same idiom as
-             the two above it. The chip it replaces is described in the CSS. -->
-        <div id="bState" tabindex="0">
-          <div class="statLine"><span>NERVE</span><span id="bStateN">—</span></div>
-          <div class="bar nrv" style="background:#20272a"><i id="bNerve"></i></div>
-        </div>
-      </div>
+           lines on what TO HIT says in one.
+           ── #105 point 7 · AND NOW THE WORDS GO TOO ────────────────────────
+           (User: "Maybe instead of words you paint near one - a sword (to hit)
+           and a feet (to dodge) and hower with description".) A drawn mark is
+           read without being spelled out, which is the whole reason these two
+           can be quiet and still be found; the sentence they used to be
+           labelled with is better as a hover than as a caption, because it can
+           say what the number MEANS rather than repeat what it is. The two
+           marks are drawn rather than typed - see ICO_HIT / ICO_DODGE. -->
+      <div class="pcell mini" id="bHitCell"><span class="pic" id="bHitIc"></span><span class="pnum" id="bHitN">—</span></div>
+      <div class="pcell mini" id="bDodgeCell"><span class="pic" id="bDodgeIc"></span><span class="pnum" id="bDodgeN">—</span></div>
       <!-- #102 point 7 (user: "Simple question mark move to char info screen -
            buttom left"). COMBAT LOGIC was a chip on the battle log's header,
            which is the box for what HAS happened; the rules of the board belong
-           beside the body they are applied to. It takes the slot the nerve
-           chip vacated in the same edit, so it costs no height. -->
+           beside the body they are applied to. -->
       <div id="bLegend"><div class="lbl" title="COMBAT LOGIC — the rules the board plays by">?</div>
       <div class="lgbody">
       <div class="lg"><span class="sw" style="background:#46615f"></span>2 actions a turn — move + strike, or strike twice</div>
@@ -2090,7 +2261,7 @@ a.popt.sendit{display:block;text-decoration:none}
       <div class="lg"><span class="sw" style="background:#c9a227"></span>morale broken — white flag, and they run</div>
       </div>
       </div><!-- /#bLegend -->
-    </div><!-- /.pbars -->
+    </div><!-- /#bStats -->
   </div><!-- /#bPlq -->
   <!-- the cards (#91 point 3): glyph, name, hotkey, cost pips and the
        damage on the face. The receipt line and one effect sentence are the
@@ -7703,13 +7874,39 @@ function walkFx(u,from,path){
      step simply gets quicker, so a six-hex stride never outstays the turn */
   const total=Math.min(paced(WALK_CAP),pts.length*paced(WALK_HEX));
   const step=Math.max(40,Math.round(total/pts.length));
-  const w=s.width||26,h=s.height||34;
+  /* ═══ #105 point 8 · THE WALKER IS THE SIZE OF THE BODY THAT SET OFF ═════
+     (User: "When units move through the field - make it only 10% smaller,
+     rigth now it is too significant reducment".)
+
+     ⚑ NOBODY CHOSE THE OLD SIZE. #bFx sits OUTSIDE the zoomed layer on
+     purpose (see #bGround's note - it is what makes every floating number
+     and LOS ray correct at any stop), so a clone measured in BOARD pixels
+     and dropped into the effects layer is drawn at 1x while the body it
+     left behind is drawn at the camera's zoom. At FIELD that is 45% of the
+     standing size and at CLOSE it is 40%: every walk in the game was a body
+     shrinking to a doll, crossing the ground and growing back.
+     The standing sprite's own on-screen rect is the answer, because it is
+     measured through relPt and therefore already carries the zoom AND the
+     stage scale. Ninety per cent of it is the ten the user asked for, and
+     it is worth keeping: a body slightly smaller than the one standing
+     reads as further from the camera, which is what walking looks like.
+     ⚠ IT IS ANCHORED BY THE FEET AND NOT BY THE HEAD. The old margin was
+     -0.62 of a hex span, tuned so a 34px human's TOP landed right; scaling
+     from there would have grown every body downward through the ground.
+     `foot` is the measured distance from the hex's centre to the sprite's
+     bottom edge, so the walker stands on the same line the token does at
+     any zoom, for a ratkin and for the Fen-Mother alike. */
+  const dc=(()=>{const p=relPt(dest,f);return{x:p.x+p.w/2,y:p.y+p.h/2};})();
+  const sr=relPt(s,f);
+  const foot=(sr.y+sr.h)-dc.y;
+  const w=Math.max(4,sr.w*0.9),h=Math.max(4,sr.h*0.9);
   const walker=s.cloneNode(true);
   walker.className='usp';
   walker.style.cssText='position:absolute;pointer-events:none;z-index:6;'+
     'image-rendering:pixelated;'+
-    'margin:'+(-Math.round(hexSpan()*0.62))+'px 0 0 '+(-Math.round(w/2))+'px;'+
-    'width:'+w+'px;height:'+h+'px;left:'+start.x+'px;top:'+start.y+'px;'+
+    'margin:'+(foot-h).toFixed(1)+'px 0 0 '+(-w/2).toFixed(1)+'px;'+
+    'width:'+w.toFixed(1)+'px;height:'+h.toFixed(1)+'px;'+
+    'left:'+start.x+'px;top:'+start.y+'px;'+
     'transition:left '+step+'ms linear, top '+step+'ms linear';
   /* ⚠ --flip survives cssText being overwritten. A mirrored body that
      un-mirrors for the length of its walk is the bug the .usp note warns of. */
@@ -9763,6 +9960,34 @@ const ROLE={
   cripple:'SLOWS THEM', venom:'POISON', distract:'OPENS ITS BACK',
   sweep:'HITS ALL NEAR', sink:'ESCAPE'};
 const roleOf=a=>ROLE[a.k]||'';
+/* ═══ #105 point 7 · THE TWO MARKS ON THE PLAQUE ══════════════════════════
+   (User: "Maybe instead of words you paint near one - a sword (to hit) and a
+   feet (to dodge) and hower with description".)
+
+   ⛔ THESE ARE DRAWN AND NOT TYPED, and that is not a preference. Everything
+   else on this screen is a unicode glyph off ICON{} above, and there is no
+   glyph for a foot in any font this game can count on: 👣 exists only as an
+   emoji, which Windows paints in FULL COLOUR at whatever size it likes - a
+   brown-and-orange sticker in a panel drawn in three greys. A sword glyph
+   (⚔) does exist and is used on the cards, but a typed sword beside a drawn
+   foot would sit at a different weight and on a different baseline, and the
+   pair has to read as a pair. Both drawn, both `currentColor`, both sized in
+   the same box, so the cell can light them together on hover.
+   ⚠ FILLED SHAPES, NOT STROKES. At thirteen pixels a 1px stroke is a grey
+   suggestion; a filled silhouette survives the size, which is the whole
+   reason these two exist rather than the words they replace. */
+const ICO_HIT=
+  '<svg width="12" height="14" viewBox="0 0 12 14" fill="currentColor" aria-hidden="true">'+
+  '<path d="M6 0 L7.6 4.6 V8.1 H4.4 V4.6 Z"/>'+
+  '<rect x="1.1" y="8.3" width="9.8" height="1.7" rx=".5"/>'+
+  '<rect x="5.1" y="10.2" width="1.8" height="2.4"/>'+
+  '<rect x="4" y="12.4" width="4" height="1.6" rx=".6"/></svg>';
+const ICO_DODGE=
+  '<svg width="11" height="14" viewBox="0 0 11 14" fill="currentColor" aria-hidden="true">'+
+  '<ellipse cx="5.4" cy="7.4" rx="3.4" ry="3.7"/>'+
+  '<ellipse cx="5.7" cy="12.3" rx="2.2" ry="1.6"/>'+
+  '<circle cx="2.4" cy="3" r=".95"/><circle cx="4.6" cy="2.1" r="1.05"/>'+
+  '<circle cx="6.9" cy="2.2" r=".95"/><circle cx="8.8" cy="3.4" r=".85"/></svg>';
 /* ═══ #91 — the two helpers the default-attack layer stands on ═══════════
    mainAtk: the weapon in their hands. `k==='main'` is the gear slot every
    rostered body fills; the fallback covers anything odd that still swings.
@@ -12183,8 +12408,18 @@ function terrainCheck(terr,units){
    somebody left behind.
    ═══════════════════════════════════════════════════════════════════════ */
 /* must track the .hex CSS above: 37px wide + 1px gap, rows overlap by 10 */
-const HEXW=38,HEXH=32,HEXOFF=19;
-const hexCentre=(c,r)=>({x:c*HEXW+(r&1?HEXOFF:0)+19, y:r*HEXH+21});
+/* ⚠ #105 point 2 - HEXOFF IS 27 AND NOT 19, and that is measured off the
+   live board rather than derived from the pitch. render() writes the odd
+   rows' indent as an inline `margin-left:27px`; a half-pitch 19 is what the
+   geometry SAYS it should be and is not what the DOM does, so the painter
+   was placing every odd row's ground eight pixels to the left of the tiles
+   it belongs to. Same class of drift as the ten pixels the canvas offset
+   above fixes: two numbers describing one board, kept in two places.
+   ⚠ The +19/+21 are the half-hex, and they stay in CANVAS coordinates -
+   #bTerrain is pinned at top:-10px, so canvas y21 IS board y11, which is
+   where row 0 actually centres. Move one and you must move the other. */
+const HEXW=38,HEXH=32,HEXOFF=27;
+const hexCentre=(c,r)=>({x:c*HEXW+(r&1?HEXOFF:0)+18.5, y:r*HEXH+21});
 
 /* ═══════════════════════════════════════════════════════════════════════
    THE CAMERA — three stops (backlog #66)
@@ -12235,7 +12470,9 @@ const hexCentre=(c,r)=>({x:c*HEXW+(r&1?HEXOFF:0)+19, y:r*HEXH+21});
 const CAMS=[{k:'full',n:'FULL',z:1.64},{k:'field',n:'FIELD',z:2.20},{k:'close',n:'CLOSE',z:2.50}];
 /* the stop is a SETTING — it outlives the run and the launch, like the audio
    toggle, and is deliberately not part of the save (see the state bands) */
-const CAM={i:1,tx:undefined,ty:undefined,z:0};
+/* `free` and `subj`: #105 point 3 - the player has taken the camera, and who
+   was acting when they took it. See camApply and panInit. */
+const CAM={i:1,tx:undefined,ty:undefined,z:0,free:false,subj:null};
 try{const j=CAMS.findIndex(c=>c.k===localStorage.getItem('gt_cam'));if(j>=0)CAM.i=j;}catch(e){}
 /* How far from the middle the acting body may drift before the camera moves.
    Without it the board would slide under the cursor on every step of a walk;
@@ -12245,9 +12482,25 @@ const CAM_EDGE=.30;
    below it. See the note in camApply: the top is the only end that can crop
    a body AND the only end with chrome floating over it. */
 const CAM_TOPBIAS=12;
-/* #98 point 3 - how many heads the rail's 490px band holds at 40x46 plus the
-   round divider. Derived, not guessed: 9x49 + 20 = 461. */
-const RAIL_MAX=9;
+/* ═══ #105 point 4 · HOW MANY HEADS FIT IS A MEASUREMENT, NOT A CONSTANT ══
+   This was 9, "derived, not guessed: 9x49 + 20 = 461" against a 490px band.
+   It was derived correctly and then went stale twice, because the band's
+   height is set by `bottom:190px` and 190 is whatever the PLAQUE happens to
+   need - a box at the other end of the screen, changed by four entries in
+   two weeks. Nothing failed when they disagreed: the rail simply overflowed
+   into a clip, which looks like a design decision.
+   So it is read off the live band. RAIL_H and RAIL_GAP are the only numbers
+   that still have to match the sheet, they are the two the sheet declares
+   three lines apart, and a wrong one here costs a head rather than a bug.
+   ⚠ RAIL_TURN is the round divider's row: it is only in the rail when the
+   queue actually wraps, and reserving it always is the honest floor. */
+const RAIL_H=51,RAIL_GAP=3,RAIL_TURN=20;
+function railMax(){
+  const t=$('bTop');if(!t)return 8;
+  const band=t.clientHeight-(parseFloat(getComputedStyle(t).paddingTop)||0);
+  if(!band)return 8;
+  return Math.max(3,Math.floor((band-RAIL_TURN+RAIL_GAP)/(RAIL_H+RAIL_GAP)));
+}
 /* WHO THE CAMERA IS FRAMING: whoever is acting. One rule for both sides — if
    it is yours you are about to act with it, if it is theirs you watch it act. */
 function camSubject(){
@@ -12268,6 +12521,22 @@ function camApply(snap){
   let tx,ty;
   if(!panX&&!panY&&CAM.z===z&&!snap&&CAM.tx!==undefined)return;   /* FULL: nothing moves */
   const u=camSubject();
+  /* ═══ #105 point 3 · THE PLAYER IS ALLOWED TO LOOK SOMEWHERE ELSE ════════
+     (User: "If i zoom in - allow me to move mouse throug the map - so it
+     isn't only stuck with that character".)
+     The camera framed the acting body and there was no other way to see the
+     board, so at CLOSE the far half of the field could not be looked at at
+     all - and the one moment you most want to look at it is before you spend
+     the turn. `CAM.free` is set by a drag or an edge push (see panInit) and
+     holds the view exactly where the player left it.
+     ⚠ IT ENDS ON ITS OWN, AND THAT IS THE WHOLE DESIGN. A camera the player
+     has to hand back is a camera they forget they took, and the next body
+     acts off-screen. It is released the moment the SUBJECT changes - a new
+     turn, either side - so looking around costs nothing and is never sticky.
+     `snap` (a stop change, a resize, a battle opening) takes it back too. */
+  const sid=u?u.id:null;
+  if(CAM.free&&!snap&&CAM.subj===sid)return;
+  CAM.free=false;CAM.subj=sid;
   const p=u?hexCentre(u.col,u.row):{x:BW/2,y:BH/2};
   /* still comfortably inside the view, and the stop has not changed: leave it */
   if(!snap&&CAM.z===z&&CAM.tx!==undefined&&(panX||panY)){
@@ -12304,6 +12573,116 @@ function camSet(i){
   if(typeof B!=='undefined'&&B)render();
 }
 function camStep(d){camSet(CAM.i+d);}
+/* ═══════════════════════════════════════════════════════════════════════
+   #105 point 3 · MOVING THE CAMERA BY HAND.
+
+   Two ways, because the user named one and Battle Brothers has the other,
+   and they are the same gesture at different distances from the edge:
+   DRAG the ground, or push the pointer against the rim of the field.
+
+   ⚠ EVERYTHING HERE IS PRESENTATION, and it inherits the camera's one rule
+   unchanged: no reachable hex, no hit chance and no decision moves because
+   of it. The only thing it can affect is `CAM.tx/ty`, which is a transform.
+
+   ⚠ AND IT MUST NOT EAT A CLICK. The field is 195 hex buttons; a press that
+   turns into a drag has to stop being a click, and a press that does not has
+   to stay one. The threshold does that, and the capture-phase listener is
+   what actually cancels it - a click fires after pointerup on the element the
+   press started on, so the flag is still set when it arrives and is cleared
+   on the next tick. Touch gets a wider threshold: a finger never holds still.
+   ═══════════════════════════════════════════════════════════════════════ */
+const PAN_EDGE=30;        /* field px from the rim where the push starts */
+const PAN_SPEED=11;       /* field px per tick, hard against the rim */
+const PAN_TICK=32;
+let PAN=null,PANNED=false,PAN_V=null,PAN_T=0;
+/* the stage is scaled to the window and may be turned on its side, so a
+   pointer delta is not a field delta. Same maths relPt is written against. */
+function panScale(F){
+  const b=F.getBoundingClientRect();
+  return (ROT?b.height/F.offsetWidth:b.width/F.offsetWidth)||1;
+}
+/* the only writer of the camera that is not camApply. Clamped to the board by
+   the same rules, so a hand-driven camera can never show off-board emptiness
+   or land somewhere camApply would refuse to. */
+function camNudge(tx,ty){
+  const el=$('bGround'),F=$('bField');if(!el||!F)return;
+  const VW=F.offsetWidth,VH=F.offsetHeight;if(!VW||!VH)return;
+  const z=CAMS[CAM.i].z,w=(el.offsetWidth||596)*z,h=(el.offsetHeight||416)*z;
+  CAM.tx=w>VW?Math.max(VW-w,Math.min(0,tx)):(VW-w)/2;
+  CAM.ty=h>VH?Math.max(VH-h,Math.min(0,ty)):(VH-h)/2+CAM_TOPBIAS;
+  CAM.z=z;CAM.free=true;
+  /* the .22s glide is what makes a STOP CHANGE read as a camera move; on a
+     drag it is 220ms of the board trailing the cursor, which reads as lag */
+  el.style.transition='none';
+  el.style.transform='translate('+CAM.tx.toFixed(1)+'px,'+CAM.ty.toFixed(1)+'px) scale('+z+')';
+}
+function panSettle(){const el=$('bGround');if(el)el.style.transition='';}
+const camPans=()=>{
+  const el=$('bGround'),F=$('bField');
+  if(!el||!F||!F.offsetWidth)return false;
+  const z=CAMS[CAM.i].z;
+  return (el.offsetWidth||596)*z>F.offsetWidth||(el.offsetHeight||416)*z>F.offsetHeight;
+};
+/* ⚠ A CHAINED setTimeout AND NOT setInterval, for the reason README §5 gives
+   about requestAnimationFrame: in the hidden preview pane an interval fires
+   ZERO times (measured: 0 ticks in 1200ms at a 32ms period) while setTimeout
+   is merely floored, and the harness's MessageChannel shim unclamps that one
+   and not the other. An unverifiable control is a control nobody checks. */
+function panTick(){
+  PAN_T=0;
+  if(!PAN_V||!camPans()||!$('battle').classList.contains('on')){panStop();return;}
+  camNudge(CAM.tx+PAN_V.x,CAM.ty+PAN_V.y);
+  PAN_T=setTimeout(panTick,PAN_TICK);
+}
+function panStop(){if(PAN_T){clearTimeout(PAN_T);PAN_T=0;}PAN_V=null;panSettle();}
+function panInit(){
+  const F=$('bField');if(!F||F.__pan)return;F.__pan=1;
+  F.addEventListener('pointerdown',e=>{
+    if(e.button)return;                       /* left button and touch only */
+    if(e.target.closest&&e.target.closest('#bZoom'))return;
+    if(!camPans())return;
+    panStop();
+    PAN={x:e.clientX,y:e.clientY,tx:CAM.tx,ty:CAM.ty,s:panScale(F),
+         grab:e.pointerType==='touch'?12:5};
+    PANNED=false;
+  });
+  addEventListener('pointermove',e=>{
+    if(!PAN)return;
+    const dx=e.clientX-PAN.x,dy=e.clientY-PAN.y;
+    if(!PANNED&&Math.hypot(dx,dy)<PAN.grab)return;
+    PANNED=true;F.style.cursor='grabbing';
+    /* rotated: a screen point (x,y) is a layout point (y,-x) - see relPt */
+    const lx=ROT?dy/PAN.s:dx/PAN.s, ly=ROT?-dx/PAN.s:dy/PAN.s;
+    camNudge(PAN.tx+lx,PAN.ty+ly);
+  });
+  addEventListener('pointerup',()=>{
+    if(!PAN)return;
+    PAN=null;F.style.cursor='';panSettle();
+    /* the click is still to come. Let it arrive, then forget. */
+    if(PANNED)setTimeout(()=>{PANNED=false;},0);
+  });
+  F.addEventListener('click',e=>{
+    if(PANNED){e.stopPropagation();e.preventDefault();}},true);
+  /* THE RIM PUSH. Only on the axis that can actually pan, only in the outer
+     30px, and the speed grows with how hard you lean on it. It stops dead
+     when the pointer leaves the field, which is what makes reaching for the
+     cards or the plaque cost nothing. */
+  F.addEventListener('pointermove',e=>{
+    if(PAN||e.pointerType==='touch')return;
+    if(!camPans()||!$('battle').classList.contains('on')){panStop();return;}
+    const b=F.getBoundingClientRect(),s=panScale(F);
+    const x=ROT?(e.clientY-b.top)/s:(e.clientX-b.left)/s;
+    const y=ROT?(b.right-e.clientX)/s:(e.clientY-b.top)/s;
+    const VW=F.offsetWidth,VH=F.offsetHeight;
+    const push=(v,max)=>v<PAN_EDGE?(PAN_EDGE-v)/PAN_EDGE
+      :v>max-PAN_EDGE?-(PAN_EDGE-(max-v))/PAN_EDGE:0;
+    const vx=push(x,VW)*PAN_SPEED,vy=push(y,VH)*PAN_SPEED;
+    if(!vx&&!vy){panStop();return;}
+    PAN_V={x:vx,y:vy};
+    if(!PAN_T)PAN_T=setTimeout(panTick,PAN_TICK);
+  });
+  F.addEventListener('pointerleave',panStop);
+}
 function camBar(){
   const bar=$('bZoom');if(!bar)return;
   bar.innerHTML='';
@@ -12965,8 +13344,12 @@ function render(){
      ke.onmousemove=moveTip;
      ke.onmouseleave=()=>{TIP.style.display='none';};}
     /* #96 point 2 - the plaque takes the same colour off the same helper as
-       the token, or the two readings of one body would disagree. */
-    $('bHp').style.background=hpCol(u,Math.max(0,u.hp)/u.hpMax);
+       the token, or the two readings of one body would disagree.
+       #105 point 6 - and so does the numeral now that it is the loud half of
+       the row. Same call, so a body who is bleeding says so in the number and
+       in the bar at once rather than in the bar alone. */
+    {const hc=hpCol(u,Math.max(0,u.hp)/u.hpMax);
+     $('bHp').style.background=hc;$('bHpN').style.color=hc;}
     /* #91 point 10 - nerve is the plaque's constant readout, because the token
        face only appears on rungs that change numbers.
        ── #102 point 1 - AND IT IS A MEASURE NOW, NOT A CHIP. The word says
@@ -12990,15 +13373,33 @@ function render(){
       TIP.style.display='block';moveTip(e);};
     $('bState').onmousemove=moveTip;
     $('bState').onmouseleave=()=>{TIP.style.display='none';};
-    /* #91 point 8 - the other two big numbers on the plaque. ENGAGED left
-       the panel: the red threat edges and the rings say it on the board,
-       where it happens. */
+    /* #91 point 8 - the other two numbers on the plaque. ENGAGED left the
+       panel: the red threat edges and the rings say it on the board, where
+       it happens.
+       ── #105 point 7 · TWO MARKS AND TWO HOVERS ──────────────────────────
+       The captions went (see the markup). A caption reading "TO HIT" only
+       repeats what the number obviously is; what the player actually wants
+       from these two is what they MEAN - that one is this body's own skill
+       before the ground and the target are counted, and that the other is
+       taken off everybody who swings at them - and that is a sentence, which
+       is a hover. The marks are drawn once here and written into the cells
+       every render, because render() rebuilds nothing else in this panel. */
     $('bHitN').textContent=u.mskill+'%';
     /* #94 point 5 - the only one of the four numbers that carried no unit,
        and it is a percentage exactly like the one beside it: hitBreakdown
        subtracts it straight off the attacker's roll. */
     $('bDodgeN').textContent=dodgeOf(u)+'%';
-    $('bDodgeN').title='Comes straight off the chance of anybody hitting them.';
+    if(!$('bHitIc').firstChild){$('bHitIc').innerHTML=ICO_HIT;$('bDodgeIc').innerHTML=ICO_DODGE;}
+    tipOn($('bHitCell'),'<div style="font-family:var(--display);font-size:14px;color:var(--g4);'+
+      'margin-bottom:4px">CHANCE TO HIT</div>'+
+      '<div>What this body lands a blow on an average target with, before the ground, '+
+      'the target and where you are standing are counted.</div>'+
+      '<div style="font-style:italic;color:#a38652;margin-top:5px">Point at somebody and the '+
+      'card beside them shows the real number, and every part of it.</div>');
+    tipOn($('bDodgeCell'),'<div style="font-family:var(--display);font-size:14px;color:var(--g4);'+
+      'margin-bottom:4px">DODGE</div>'+
+      '<div>Comes straight off the chance of anybody hitting them. Armour stops a blow that '+
+      'lands; this stops it from landing at all.</div>');
     if(mine){
       /* ═══ #94 point 1 - DISENGAGE IS A CARD ONLY WHILE IT IS AN ANSWER ═══
          (User: "Show disengage only when engaged.") It is the one act on the
@@ -13103,9 +13504,9 @@ function render(){
      body appears exactly once whatever the wrap point is; `dead || fled ||
      downed` are skipped rather than shown greyed, as before. */
   const top=$('bTop');top.innerHTML='';
-  const N=B.order.length;
+  const N=B.order.length,cap=railMax();
   let shown=0,turned=false;
-  for(let k=0;k<N&&shown<RAIL_MAX;k++){
+  for(let k=0;k<N&&shown<cap;k++){
     const idx=(B.idx+k)%N,o=B.order[idx];
     if(o.dead||o.fled||o.downed)continue;
     /* the wrap: everything from here on belongs to the NEXT round */
@@ -13144,8 +13545,13 @@ function render(){
        and `.ord` is overflow:hidden, so a wide body loses air rather than
        shoulder. Capping at the true 38 instead would put the dead space back
        on every ratkin. A short wide body (a dog) still does not reach the
-       top, and that is honest: it is a dog. */
-    const fit=Math.min(44/sp.w,44/sp.h);
+       top, and that is honest: it is a dog.
+       ⚠ #105 point 4 - 48, because the box is 48x51 now. This number is the
+       box plus the deliberate bleed and it is NOT a constant that stands on
+       its own: leaving it at 44 while the box grew would have handed the ten
+       per cent of extra height straight back as dead space above every head,
+       which is the exact thing #102 point 9 was fixing. */
+    const fit=Math.min(48/sp.w,48/sp.h);
     d.innerHTML=(o.state==='routed'?'<span class="flag">🏳</span>':'')+
       '<img src="'+sp.src+'" width="'+Math.round(sp.w*fit)+'" height="'+Math.round(sp.h*fit)+
       '" alt="'+o.name+'">';
@@ -13859,10 +14265,14 @@ const ARMOURWHY={
   HEAVY :'Mail, foundry plate, lashed ogre scale. It eats blows for most of a fight, '+
          'and the heavy suits are slower: they take a step of agility off the wearer, '+
          'which is dodge.'};
+/* #105 point 6 - the two halves of "34/60" are not one number and they are
+   not read equally. What is LEFT is the fact the fight turns on and it takes
+   the 19px; the pool it is out of is context and it takes the old 10px. Both
+   are still there, so nothing was cut to make the change. */
 function setBar(bar,num,v,max,per){v=v>0?Math.ceil(v):0;
   const el=$(bar);el.style.width=(100*v/max)+'%';
   if(el.parentNode)el.parentNode.style.setProperty('--seg',SEG(max,per));
-  $(num).textContent=v+'/'+Math.round(max);}
+  $(num).innerHTML=v+'<span class="of">/'+Math.round(max)+'</span>';}
 const roman=n=>['0','I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII','XIII','XIV',
   'XV','XVI','XVII','XVIII','XIX','XX'][n]||n;
 /* hovering ANY unit tells you about it. Hovering one of yours tells you more. */
@@ -14070,7 +14480,7 @@ $('bGrid').addEventListener('mouseleave',hideRead);
 $('bField').addEventListener('wheel',e=>{
   e.preventDefault();camStep(e.deltaY>0?-1:1);},{passive:false});
 addEventListener('resize',()=>camApply(true));
-camBar();
+camBar();panInit();
 
 /* ============================================================
    Two ways out of a fight you do not want to play by hand
@@ -18141,6 +18551,21 @@ function bindTip(el,key,p){
    The unturned branch now measures the box instead of assuming 310x160, which
    is why a long trinket tooltip no longer runs off the bottom of a short
    window. */
+/* ═══ #105 · ONE DOOR ONTO #gtTip ═════════════════════════════════════════
+   Fifteen hover sources across three screens each write the same three
+   handlers by hand, and the note above is about the one thing all fifteen
+   have to get right (a tip whose element is rebuilt under the cursor never
+   fires `mouseleave` and hangs there forever). Anything added from here on
+   goes through this instead: the html is a thunk or a string, and hiding is
+   not the caller's business. Nothing existing was rewritten onto it - that
+   is a sweep, not this entry. */
+function tipOn(el,html){
+  if(!el)return;
+  el.onmouseenter=e=>{TIP.innerHTML=typeof html==='function'?html():html;
+    TIP.style.display='block';moveTip(e);};
+  el.onmousemove=moveTip;
+  el.onmouseleave=()=>{TIP.style.display='none';};
+}
 function moveTip(e){
   const W=TIP.offsetWidth||290,H=TIP.offsetHeight||140;
   if(ROT){
@@ -19382,6 +19807,18 @@ const SACK_SVG='<svg width="15" height="16" viewBox="0 0 16 17">'+
   'fill="#a58248" stroke="#2c2011" stroke-width="1"/>'+
   '<path d="M5.4 4.9 C6.9 5.6 9.1 5.6 10.6 4.9" fill="none" '+
   'stroke="#2c2011" stroke-width="1.1"/></svg>';
+/* #106 point 3: BB marks the main quest with a trophy, and a trophy says
+   "this is the one that ends the run" in a way a bullet never did */
+const TROPHY_SVG='<svg width="19" height="20" viewBox="0 0 19 20">'+
+  '<path d="M4.6 2h9.8v5.2c0 2.9-2.2 5-4.9 5s-4.9-2.1-4.9-5Z" fill="#d9bd7e" '+
+  'stroke="#5a4426" stroke-width="1.1" stroke-linejoin="round"/>'+
+  '<path d="M4.6 3.3H2.4v1.9c0 1.7 1 2.9 2.5 3.1M14.4 3.3h2.2v1.9c0 1.7-1 2.9-2.5 3.1" '+
+  'fill="none" stroke="#a58248" stroke-width="1.3"/>'+
+  '<path d="M8.2 12.1h2.6v3.2H8.2Z" fill="#a58248" stroke="#5a4426" stroke-width="1"/>'+
+  '<path d="M5.6 15.3h7.8v2.4H5.6Z" fill="#d9bd7e" stroke="#5a4426" stroke-width="1.1" '+
+  'stroke-linejoin="round"/>'+
+  '<path d="M7.4 4.6 8.5 6.7l2.3.3-1.7 1.6.4 2.3-2.1-1.1-2 1.1.4-2.3-1.7-1.6 2.3-.3Z" '+
+  'fill="#f0e6c0" opacity=".55" transform="translate(2)"/></svg>';
 const PAW_SVG='<svg width="13" height="12" viewBox="0 0 13 12" fill="#8ca35a">'+
   '<circle cx="2.1" cy="4.6" r="1.4"/><circle cx="4.9" cy="2.6" r="1.5"/>'+
   '<circle cx="8.1" cy="2.6" r="1.5"/><circle cx="10.9" cy="4.6" r="1.4"/>'+
@@ -19410,10 +19847,33 @@ function worldTick(){
     dlg.classList.add('on');placeDlg();
     $('wMut').onclick=()=>{dlg.classList.remove('on');worldTick();};
   }
-  /* the face on the road: the Captain if he lives, otherwise whoever is
-     leading what is left of the company */
-  const face=$('wFace');
-  if(face){const who1=member('you')||G.party[0];if(who1)bustFor(face,who1);}
+  /* ═══ #106 point 5 · THE COMPANY ON THE ROAD IS EVERY BODY IN IT ═══════
+     Each party member drawn by the same `sprite()` the battlefield uses,
+     fitted to 22px tall and overlapped, Captain first. The old single
+     painted face (and its #wFace canvas) is gone with it.
+     ⚠ #106 point 4 · AND THE TOKEN PLACES ITSELF HERE. `enterWorld` never
+     called placeToken, so a NEW company's token sat at its CSS default of
+     (0,0) with translate(-50%,-50%) on it: half of a sprite and the word
+     "MPANY" clipped by the map's top-left corner, which is exactly the
+     "cutted picture of something that doesnt work" in the report. It was
+     not spare art, it was the company itself, unplaced. One door now, and
+     ⚠ GUARDED ON `G.moving`, because worldTick also runs mid-walk (a camp
+     card closing) and an unguarded call would teleport the walkers back to
+     the node they set out from. */
+  const spr=$('wToken').querySelector('.wSpr');
+  if(spr){
+    const lead=member('you');
+    const marching=(lead?[lead]:[]).concat(G.party.filter(p=>p!==lead));
+    spr.innerHTML=marching.map(p=>{
+      const un=unitFrom(p);
+      const s=sprite(un.kind,'you',{unit:un,leader:p.id==='you',
+        caster:isCaster(p.cls),bow:!!un.bow});
+      const f=22/s.h;                 /* fit on HEIGHT: a row of people, not of boxes */
+      return '<img src="'+s.src+'" width="'+Math.round(s.w*f)+'" height="'+
+        Math.round(s.h*f)+'" alt="">';
+    }).join('');
+  }
+  if(!G.moving)placeToken();
   /* ═══ #103 · THE BAR, BUILT FRESH EACH TICK ═══════════════════════════
      (Friends' map feedback plus the user's five points, 2026-08-11.)
      Left: who the company is and what it costs. Right: what it owns, one
@@ -19428,15 +19888,30 @@ function worldTick(){
   const hurt=G.party.filter(p=>p.hpLoss>0);
   let hpMaxAll=0,hpLossAll=0;
   G.party.forEach(p=>{hpMaxAll+=unitFrom(p).hpMax;hpLossAll+=p.hpLoss||0;});
-  const bloodied=hurt.length&&(hpLossAll/Math.max(1,hpMaxAll)>=.25||hurt.length*2>=G.party.length);
+  /* ⚠ #106, MEASURED AND CORRECTED: the heart's empty state used to fire on
+     `hurt.length*2>=G.party.length`, so two scratches across four people
+     (15 hitpoints out of 207, seven per cent of the company's blood) painted
+     the heart fully EMPTY and the hover said BLOODIED. Half the company
+     having a graze is not the same fact as the company being in trouble.
+     Empty now means one of the two things that actually are trouble: a
+     third of all the blood is gone, or SOMEBODY is close enough to falling
+     that the next fight could take them. */
+  const worstFrac=Math.min.apply(null,[1].concat(G.party.map(p=>{
+    const m=unitFrom(p).hpMax;return m?(m-(p.hpLoss||0))/m:1;})));
+  const bloodied=hurt.length&&(hpLossAll/Math.max(1,hpMaxAll)>=.35||worstFrac<=.45);
   const hs=!hurt.length?{st:'full',n:'SOUND',col:'#8ca35a',
       d:'Nobody is mending. Whole skins all round.'}
     :{st:bloodied?'empty':'half',n:bloodied?'BLOODIED':'MENDING',
       col:bloodied?'#c15d55':'#c9a227',
       d:hurt.map(p=>who(p)+' is '+p.hpLoss+' hitpoints short').join('. ')+'.'};
-  /* the funded horizon rides the upkeep chip: digits, and red exactly when
-     it has become the problem (user: "so you can see the problematic spot") */
-  const fdTxt=fd<=0?'nothing left':fd===1?'1 day left':fd<=5?fd+' days left':fd+' days';
+  /* ═══ #106 point 1 · THE HORIZON IS SILENT UNTIL IT IS A PROBLEM ═══════
+     ("delete days - show it only when 3 or less left and highlight with
+     red then.") A number that is on screen every day is furniture and gets
+     read as furniture; a number that appears ONLY when the chest is three
+     days from empty is an alarm. The full arithmetic stays on the hover,
+     which is where a curious player looks and a busy one does not. */
+  const fdRed=fd<=3;
+  const fdTxt=fd<=0?'nothing left':fd===1?'1 day left':fd+' days left';
   const petKey=hasPet();
   /* company relics work from the baggage; nobody wears them, so they sit
      with the company chips rather than on any one character's sheet */
@@ -19447,13 +19922,15 @@ function worldTick(){
     '<span class="cchip click" data-w="kit">'+SACK_SVG+'</span>'+
     '<span class="cchip" data-w="keep"><span class="nm">UPKEEP</span>'+
       '<b><span style="color:var(--g4)">◉</span>'+u+'</b><span class="nm">/DAY</span>'+
-      (u>0?'<i style="color:'+fundedCol(fd)+'">· '+fdTxt+'</i>':'')+'</span>'+
+      (u>0&&fdRed?'<i style="color:#c15d55">· '+fdTxt+'</i>':'')+'</span>'+
     (owedDays>=1?'<span class="cchip" data-w="owed" style="border-color:#c15d55">'+
       '<b style="color:#c15d55;font-size:10.5px">UNPAID '+owedDays+' DAY'+(owedDays>1?'S':'')+
       '</b></span>':'')+
-    '<span class="bcchip" data-w="mood" style="border-color:'+ms.col+'66">'+
+    /* #106 points 7 and 8: both of these are doors now, and each opens the
+       one thing that changes what it measures */
+    '<span class="bcchip click" data-w="mood" style="border-color:'+ms.col+'66">'+
       '<span>'+ms.ic+'</span><b style="color:'+ms.col+'">'+ms.n+'</b></span>'+
-    '<span class="bcchip" data-w="blood" style="border-color:'+hs.col+'66">'+
+    '<span class="bcchip click" data-w="blood" style="border-color:'+hs.col+'66">'+
       heartSVG(hs.st)+'</span>'+
     (petKey?'<span class="bcchip" data-w="pet" style="border-color:#8ca35a66">'+
       PAW_SVG+'</span>':'')+
@@ -19470,18 +19947,27 @@ function worldTick(){
     '><span class="ri" style="color:'+col+'">'+ic+'</span><b>'+v+'</b></span>';
   $('wRes').innerHTML=
     seg('crowns',RES_ICON.crowns,G.run.crowns,'var(--g4)')+
-    seg('prov',RES_ICON.food,G.run.food,'var(--grain)',' style="cursor:pointer"')+
+    /* #106 point 6: the barrels are a READOUT, not a door. Both things you
+       could do with them moved onto the chips that name their effect (the
+       mood chip and the heart), and a chip that opens a card the player has
+       no reason to expect is exactly the clutter this pass is cutting.
+       ⚠ `openProvisions` is kept, unwired: the user's "later we will use
+       it" is a plan, and both new doors call its two halves. */
+    seg('prov',RES_ICON.food,G.run.food,'var(--grain)')+
     seg('salvage',RES_ICON.salvage,G.camp.salvage,'var(--wood)')+
     seg('gems',RES_ICON.gems,G.camp.gems,'var(--gem)');
   /* floating over the map (#104): the day plaque centre with the sun-and-
      moon disc under it, the framed contract top left. The disc turns only
      while the company is on the road; standing still, it holds daylight. */
   const hereN=NODES[G.at],destN=G.moving&&G.dest?NODES[G.dest]:null;
-  $('wPlaque').innerHTML='<span class="d1">DAY <b>'+G.day+'</b></span>'+
+  $('wPlaque').querySelector('.dtx').innerHTML=
+    '<span class="d1">DAY <b>'+G.day+'</b></span>'+
     '<span class="pl">'+(destN?'the road to '+destN.n:hereN?hereN.n:'')+'</span>';
   $('wDisc').classList.toggle('turning',!!G.moving);
-  $('wQuest').innerHTML='<span class="qbdg">✦</span><span class="qlab">THE CONTRACT</span>'+
-    '<span class="qtx">the head out of Skelbrook\'s hall · pays on delivery</span>';
+  $('wQuest').innerHTML=TROPHY_SVG+'<span class="qcol">'+
+    '<span class="qlab">THE CONTRACT</span>'+
+    '<span class="qtx">the head out of Skelbrook\'s hall</span>'+
+    '<span class="qpay">pays on delivery</span></span>';
   /* every chip answers for itself: one table, rebound each tick because
      the elements it binds to were just rebuilt */
   const WTIPS={
@@ -19507,10 +19993,23 @@ function worldTick(){
         'the personalities disagree about how loudly.',
       x:'Fill the chest and the wages catch up on their own at day\'s end.'},
     mood:{t:ms.ic+' '+ms.n,col:ms.col,d:ms.d,
-      x:'Every fight, the whole company starts closer to this mood than to steady. '+
-        'It comes from what you choose on the road.'},
-    blood:{t:'✚ '+hs.n,col:hs.col,d:hs.d,
-      x:'Days on the road are the only medicine in this game.'},
+      x:'Every fight starts closer to this mood than to steady. '+
+        '<b>CLICK: throw them a party</b> - '+feastCost()+' provisions.'},
+    /* #106 point 8: "when i hower on the health thing - you can show exactly
+       how much health each unit has". Every body, one line, hp out of hpMax,
+       and the ones who are short of it are the ones in colour. */
+    blood:{t:hs.n,col:hs.col,
+      /* ⚠ the SHORT name: who() introduces a person with nickname, race and
+         job, which is right once in a card and unreadable as a column of
+         thirteen. The Captain is the word "You" on the roster, so he goes
+         through the same nickname door every other line uses. */
+      d:G.party.map(p=>{const un=unitFrom(p),now=un.hpMax-(p.hpLoss||0);
+        const c=p.hpLoss?(now/un.hpMax<.6?'#c15d55':'#c9a227'):'#8ca35a';
+        return '<span style="color:'+c+'">'+capName(p)+' <b>'+now+'/'+un.hpMax+
+          '</b></span>';}).join('<br>'),
+      x:'Days on the road are the only medicine in this game. '+
+        '<b>CLICK: double rations</b> - '+RATION_COST+' provisions, and they mend twice '+
+        'as fast for '+num(RATION_DAYS)+' days.'},
     crowns:{t:'CROWNS',col:'var(--g4)',
       d:'The purse of THIS run - wages, tolls, hires, bribes. It does not survive the '+
         'company. Spend it like somebody who knows that.',
@@ -19523,7 +20022,8 @@ function worldTick(){
         '<b>Lay out a proper meal</b> - the mood lifts hard (once a day).<br>'+
         '<b>Double rations</b> - wounds mend twice as fast for three days.<br>'+
         '<b>The road asks for it</b> - feeding a stranger, a wedding, a hungry ogre.',
-      x:'CLICK the chip to open the barrels.'},
+      x:'A count, not a door (#106). What you spend them ON is on the two '+
+        'chips that name it: the mood throws a party, the heart doubles the rations.'},
     salvage:{t:'SALVAGE',col:'var(--wood)',
       d:'Timber, iron and fittings pulled off the road. It builds things INTO THE WAGON '+
         'between runs - beds, chests, fires - and pays village craftsmen.',
@@ -19558,12 +20058,14 @@ function worldTick(){
   /* hovering a company relic says exactly what it does */
   $('wCompany').querySelectorAll('[data-tri]').forEach(el=>{
     bindTip(el,el.dataset.tri,null);});
-  /* the doors: both left-hand chips open the company screen; the barrels
-     open on the provisions segment, as before */
+  /* the doors: both left-hand chips open the company screen, and #106 gave
+     the mood and the heart the one act that changes each of them */
   $('wCompany').querySelectorAll('[data-w="party"],[data-w="kit"]').forEach(el=>{
     el.onclick=openInv;});
-  const pv=$('wRes').querySelector('[data-w="prov"]');
-  if(pv)pv.onclick=()=>{whisper('prov');openProvisions();};
+  const mc=$('wCompany').querySelector('[data-w="mood"]');
+  if(mc)mc.onclick=()=>{whisper('prov');openFeastCard();};
+  const bl=$('wCompany').querySelector('[data-w="blood"]');
+  if(bl)bl.onclick=()=>{whisper('prov');openRationCard();};
   /* #103 point 4: the italic sentence that lived here ("N of you, N crowns
      a day, and a contract that pays on delivery") is deleted, per the user.
      What it carried moved to where each piece belongs: the contract clause
@@ -19748,11 +20250,89 @@ function walk(a,b,from,to,ms,done){
    price tag and a second click. Playtest #2 kept reading the old single
    click as "nothing happened" — and the old two-click had no visible cost. */
 /* THE PROVISIONS MENU — the store is a decision, not a meter. Click the chip. */
+/* ═══ #106 points 7 and 8 · THE TWO ACTS GOT DOORS THAT NAME THEM ════════
+   ("Let click on the mood - and offer 'a party' - morale boost, but costs 3
+   provision" · "and on state - double rations and double the healing
+   spead".) Neither act is new: the provisions card has sold both since the
+   provisions redesign, behind a chip labelled with a barrel. What was
+   missing is that the thing you want to change (the mood, the wounded) was
+   never the thing you could click. Now the mood chip throws the party and
+   the heart orders the rations.
+
+   ⚠ THREE DOORS, ONE PRICE, ONE MUTATION PATH. A card that quotes a price
+   it does not itself charge is the oldest bug in this file, and #75 already
+   paid for it once. `feastCost()` is the only place the number lives and
+   `layFeast()` is the only thing that spends it, exactly as `takeRations()`
+   already owns the other half.
+   ⚠ THE BASE COST IS THE USER'S 3, so the cook-fire fitting discounts to 2
+   rather than being deleted: a fitting that stops mattering the day a price
+   moves is a fitting somebody rebuilds by accident later.
+   ⚠ ALL FOUR ARE FUNCTION DECLARATIONS, NOT const ARROWS. `worldTick` sits
+   four hundred lines above this block and calls three of them to label the
+   chips, and this file has already shipped one temporal-dead-zone crash
+   that aborted the whole script. A hoisted declaration cannot do that. */
+function feastCost(){return hasFit('fire')?2:3;}
+function layFeast(){
+  pay('food',-feastCost());G.morale+=12;G.lastFeast=G.day;sfx('coin');
+}
+/* what stops each act, in words, or null when it can be done. One reader
+   for the card and the button label both. */
+function feastBlock(){return G.lastFeast===G.day?'they already ate well today'
+  :G.run.food<feastCost()?'not enough in the barrels':null;}
+function rationBlock(){return G.doubleRations>0?'already running'
+  :!G.party.some(p=>p.hpLoss>0)?'nobody is carrying a wound'
+  :G.run.food<RATION_COST?'not enough in the barrels':null;}
+/* a small card on the map, anchored where the company stands, with one act
+   on it and the way out. Both #106 doors are this shape. */
+function actCard(title,body,btn,block,go){
+  if(G.pending||G.moving)return;
+  const dlg=$('wDlg');
+  dlg.innerHTML='<h3>'+title+'</h3><div class="bd">'+body+'</div>'+
+    '<div id="wChoices" style="display:flex;flex-direction:column;gap:5px">'+
+    '<button class="choice" id="acDo"'+(block?' disabled style="opacity:.4"':'')+'><b>'+
+      btn.t+'</b><i>'+btn.c+(block?' · '+block:'')+'</i></button>'+
+    '<button class="choice" id="acNo"><b>Not now</b><i>it keeps</i></button></div>';
+  dlg.classList.add('on');
+  const n=NODES[G.at];placeDlg(n?n.x:undefined,n?n.y:undefined);
+  const close=()=>{dlg.classList.remove('on');worldTick();};
+  const b=$('acDo');if(b&&!block)b.onclick=()=>{go();close();};
+  $('acNo').onclick=close;
+}
+function openFeastCard(){
+  const c=feastCost();
+  actCard('A PARTY',
+    'The good barrels come open, somebody is sent for whatever the last village had, and '+
+    'for one evening the company eats like people somebody is glad to see.'+
+    (hasFit('fire')?'\n\nThe cook-fire in the wagon does half the work, so it costs one less.':''),
+    {t:'Throw them a party.',c:'−'+c+' provisions · the mood lifts hard'},
+    feastBlock(),
+    ()=>{layFeast();
+      say2('The good barrels come open and for one evening the company eats like people '+
+        'somebody is glad to see. The mood lifts, and stays lifted.');});
+}
+function openRationCard(){
+  const hurt=G.party.filter(p=>p.hpLoss>0);
+  actCard('DOUBLE RATIONS',
+    'The hurt eat first, and they eat twice. It does not close a wound on the spot: it '+
+    'doubles what every day of road gives back, for '+num(RATION_DAYS)+' days.'+
+    (hurt.length?'\n\nMending: '+hurt.map(p=>who(p)+' ('+p.hpLoss+' short)').join(', ')+'.':''),
+    {t:'Double rations for the hurt.',c:'−'+RATION_COST+' provisions · they mend twice as '+
+      'fast for '+num(RATION_DAYS)+' days of road'},
+    rationBlock(),
+    ()=>{takeRations();
+      say2('Double rations for the hurt, by order. '+hurt.length+' of yours eat first for '+
+        'the next '+num(RATION_DAYS)+' days on the road, and the mending goes twice as '+
+        'quick on it.');});
+}
 function openProvisions(){
   if(G.pending||G.moving)return;
   const dlg=$('wDlg');
   const fed=G.lastFeast===G.day;
-  const feastCost=hasFit('fire')?3:4;
+  /* ⚠ #106: a LOCAL named feastCost used to hold this number. It is the
+     module-level function's now, and the local had to be renamed rather
+     than kept: `const feastCost=feastCost()` is a temporal-dead-zone crash,
+     not a shadow. */
+  const fc=feastCost();
   const hurt=G.party.filter(p=>p.hpLoss>0).length;
   dlg.innerHTML='<h3>THE PROVISIONS</h3>'+
     '<div class="bd">'+G.run.food+' in the barrels. Wages buy bread; this is everything '+
@@ -19762,22 +20342,20 @@ function openProvisions(){
       :G.run.food<=2?'\n\n<span style="color:#c9a227">Nearly out. The next fight starts on '+
       'short rations — the line 6 morale down.</span>':'')+'</div>'+
     '<div id="wChoices" style="display:flex;flex-direction:column;gap:5px">'+
-    '<button class="choice" id="pvFeast"'+((fed||G.run.food<feastCost)?' disabled style="opacity:.4"':'')+
-      '><b>Lay out a proper meal.</b><i>−'+feastCost+' provisions · the mood lifts'+
+    '<button class="choice" id="pvFeast"'+(feastBlock()?' disabled style="opacity:.4"':'')+
+      '><b>Lay out a proper meal.</b><i>−'+fc+' provisions · the mood lifts'+
       (hasFit('fire')?' · the cook-fire earns its keep':'')+
-      (fed?' · already eaten well today':G.run.food<feastCost?' · not enough in the barrels':'')+
+      (feastBlock()?' · '+feastBlock():'')+
       '</i></button>'+
-    '<button class="choice" id="pvRation"'+((G.doubleRations>0||G.run.food<RATION_COST||!hurt)?
-      ' disabled style="opacity:.4"':'')+
+    '<button class="choice" id="pvRation"'+(rationBlock()?' disabled style="opacity:.4"':'')+
       '><b>Double rations for the hurt.</b><i>−'+RATION_COST+' provisions · wounds mend twice as '+
       'fast for '+num(RATION_DAYS)+' days of road'+
-      (G.doubleRations>0?' · already running':!hurt?' · nobody is carrying a wound':
-      G.run.food<RATION_COST?' · not enough in the barrels':'')+'</i></button>'+
+      (rationBlock()?' · '+rationBlock():'')+'</i></button>'+
     '<button class="choice" id="pvGo"><b>Close the lid</b><i>it keeps</i></button></div>';
   dlg.classList.add('on');placeDlg();
   const close=()=>{dlg.classList.remove('on');worldTick();};
   const fb=$('pvFeast');if(fb&&!fb.disabled)fb.onclick=()=>{
-    pay('food',-feastCost);G.morale+=12;G.lastFeast=G.day;sfx('coin');
+    layFeast();                        /* #106: the one door, never a second copy */
     say2('The good barrels come open and for one evening the company eats like people '+
       'somebody is glad to see. The mood lifts, and stays lifted.');close();};
   const rb=$('pvRation');if(rb&&!rb.disabled)rb.onclick=()=>{
@@ -19851,7 +20429,9 @@ function forkCard(br){
     return '<button class="choice'+(r.fights>1?' danger':'')+'" id="tR'+i+'">'+
       '<span class="rd"><span class="nm2">'+n.n+'</span>'+
       '<span class="pr" style="color:'+fundedCol(after)+'">'+r.leg+' DAY'+(r.leg>1?'S':'')+
-        ' · ~'+bill+'c</span>'+
+        ' · ~◉'+bill+'</span>'+       /* #104 point 6, finished in #106: the fork
+                                          card was the last place still printing
+                                          a bare-letter crown */
       '<span class="dang d-'+d+'">'+WORD[d]+'</span></span>'+
       '<i>'+((e&&e[4])?e[4]+' · ':'')+tail.join(', ')+'</i></button>';
   }).join('');
