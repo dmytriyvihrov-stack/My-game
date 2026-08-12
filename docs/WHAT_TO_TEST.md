@@ -29,9 +29,10 @@
 the world map. Two drawn cursors now: **boots** and **a blade**, in the game's own gold and steel.
 
 **How to reach it (three steps):** 1. Open the map: the cursor over the map, the nodes and the
-road labels is boots. 2. Any fight, your turn: with MOVE selected the floor shows boots, and any
-enemy body shows the blade (clicking them IS the swing). 3. Select your weapon: the blade
-everywhere you could stand to swing.
+road labels is boots. 2. Any fight, your turn: with MOVE selected the floor shows boots, and an
+enemy body shows the blade **only when clicking them would actually swing** (the same gate that
+lights the hex; corrected in 8f.137 - it used to show over out-of-reach enemies too). 3. Select
+your weapon: the blade everywhere you could stand to swing.
 
 **What should happen:** blocked hexes still show the barred circle · buttons and cards keep the
 ordinary pointer · allies' turns and enemy turns change nothing. **What would be a bug:** a boot
