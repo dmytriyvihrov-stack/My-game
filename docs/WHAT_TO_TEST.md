@@ -23,6 +23,25 @@
 
 ---
 
+## 🖱 THE CURSOR NAMES THE ACT  *(#109 · 2026-08-12 · build log 8f.136)*
+
+**Your order:** the cursor follows the skill in battle (movement or strike) and shows travel on
+the world map. Two drawn cursors now: **boots** and **a blade**, in the game's own gold and steel.
+
+**How to reach it (three steps):** 1. Open the map: the cursor over the map, the nodes and the
+road labels is boots. 2. Any fight, your turn: with MOVE selected the floor shows boots, and any
+enemy body shows the blade (clicking them IS the swing). 3. Select your weapon: the blade
+everywhere you could stand to swing.
+
+**What should happen:** blocked hexes still show the barred circle · buttons and cards keep the
+ordinary pointer · allies' turns and enemy turns change nothing. **What would be a bug:** a boot
+cursor during an enemy turn, a blade over an empty hex while MOVE is up, or either cursor drawing
+as a blurry or invisible smudge at real size. **The one thing only your eye can judge: do the two
+drawings READ at cursor size?** They were verified to decode and to be applied, but nobody has
+looked at them at 100% on a real screen.
+
+---
+
 ## 🚪⚔ THE THREE BELLS BRAWL - the intro fight  *(#108 · 2026-08-12 · build log 8f.135)*
 
 **Your order, built while you were out:** the run now opens with a scripted tavern brawl between

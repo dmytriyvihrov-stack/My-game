@@ -1021,6 +1021,20 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:11px;pa
 /* GROUND YOU CANNOT ENTER. Dark, hard-edged, and a glyph dead centre — the
    painted stones alone were ambiguous once the hexes got small. */
 .hex.blocked{cursor:not-allowed}
+/* ═══ #109 - THE CURSOR NAMES THE ACT ════════════════════════════════════
+   (User, 2026-08-12: battle cursor follows the skill - movement or strike -
+   and the world map gets a travel cursor.) Two drawn cursors in the game's
+   own palette: boots for a walk, a blade for a swing. The blade also shows
+   over an enemy hex while MOVE is up, because since #91 that click IS the
+   swing. `.blocked` keeps not-allowed by the :not() below, not by luck. */
+:root{
+  --curWalk:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='26' height='26'><g transform='rotate(-14 8 10)'><ellipse cx='8' cy='8' rx='3.4' ry='4.6' fill='%23d9bd7e'/><ellipse cx='8' cy='14.4' rx='1.8' ry='1.3' fill='%23d9bd7e'/></g><g transform='rotate(12 18 15)'><ellipse cx='18' cy='13' rx='3.4' ry='4.6' fill='%23a38652'/><ellipse cx='18' cy='19.4' rx='1.8' ry='1.3' fill='%23a38652'/></g></svg>") 13 13,pointer;
+  --curStrike:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='28' height='28'><path d='M3 3 L17 17' stroke='%23151b1c' stroke-width='5.4' stroke-linecap='round'/><path d='M3 3 L17 17' stroke='%23c9c6bb' stroke-width='3.2' stroke-linecap='round'/><path d='M3.6 3.6 L15 15' stroke='%23eeeadf' stroke-width='1.2' stroke-linecap='round'/><path d='M13.4 20.6 L20.6 13.4' stroke='%23a38652' stroke-width='3.2' stroke-linecap='round'/><path d='M17.8 17.8 L22.4 22.4' stroke='%235a4326' stroke-width='4.2' stroke-linecap='round'/><circle cx='23.6' cy='23.6' r='2.2' fill='%23d9bd7e'/></svg>") 3 3,pointer;
+}
+#bGrid.cMove .hex:not(.blocked){cursor:var(--curWalk)}
+#bGrid.cMove .hex.hfoe:not(.blocked){cursor:var(--curStrike)}
+#bGrid.cStrike .hex:not(.blocked){cursor:var(--curStrike)}
+#wMap,#wMap .node,#wMap .elab{cursor:var(--curWalk)}
 /* The glyph used to sit on a flat plate, so 15px and a soft shadow were
    enough. It now sits on a PAINTED OBJECT, so it is smaller (it is a mark,
    not a lid) and carries a hard halo on all four sides - without that it
@@ -14082,6 +14096,15 @@ function render(){
   /* every hex's tint layer, kept so paintPeek() can repaint the board
      without rebuilding it. See the note above peekOn(). */
   B.hexEls=[];
+  /* #109 - the cursor names the pending act. Grid-level classes read by the
+     CSS beside .hex.blocked; the per-hex `hfoe` below covers #91's default
+     attack, where a click on an enemy is the swing even while MOVE is up. */
+  const uCur=cur();
+  const mineTurn=uCur&&uCur.side==='you'&&!uCur.ally&&!uCur.pet&&
+    B.won===null&&uCur.state!=='routed';
+  g.classList.toggle('cMove',!!(mineTurn&&B.sel&&B.sel.move));
+  g.classList.toggle('cStrike',
+    !!(mineTurn&&B.sel&&!B.sel.move&&(B.sel.dmg||B.sel.push||B.sel.range)));
   /* ═══ #36 — every lane, worked out once ════════════════════════════════
      Computed here rather than per hex because the board has to show BOTH
      ends of the same fact: the state on the target, and the highlight on
@@ -14255,6 +14278,7 @@ function render(){
       const hx=document.createElement('button');
       const wayHere=inWay&&inWay[K(c,r)];
       hx.className='hex'+(stab?' stabhere':'')+(blockedHere?' blocked':'')+
+        (occ&&occ.side==='foe'?' hfoe':'')+   /* #109 - a blade over a body */
         (wayHere?' inway'+(wayHere==='SCREENED'?' screen':''):'');
       hx.dataset.k=K(c,r);
       /* the hexagon lives on its own layer so the token can stand proud of it */
