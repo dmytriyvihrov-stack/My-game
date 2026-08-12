@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Grimtoll · Skill Tree Lab</title>
+<style>
+  /* ------------------------------------------------------------------
+     SKILL TREE LAB. A test bench, wired to nothing.
+     Tab 1 collects the reference trees (BB, The Last Spell, Wildermyth,
+     Wartales, Banner Saga). Tab 2 is the Grimtoll draft: one character
+     on top, the full tree with every choice below. Every draft skill
+     carries a number so feedback can point at it.
+     Levels run DOWNWARD: each grid row is a level, each column a lane.
+     ------------------------------------------------------------------ */
+  :root{
+    --bg:#161210; --panel:#1e1915; --line:#3a322a; --ink:#d8cfc0;
+    --dim:#8a7f6f; --gold:#c9a45c; --green:#7fb069; --red:#b0605c;
+    --lock:#55483c;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);
+    font:14px/1.45 Georgia,'Times New Roman',serif;padding:18px 22px 60px}
+  h1{font-size:20px;letter-spacing:2px;color:var(--gold);margin-bottom:2px}
+  .sub{color:var(--dim);font-size:12px;margin-bottom:14px}
+  h2{font-size:15px;letter-spacing:1.5px;color:var(--gold);margin:26px 0 8px;
+    border-bottom:1px solid var(--line);padding-bottom:4px}
+  h3{font-size:13px;letter-spacing:1px;color:var(--ink);margin:14px 0 6px}
+  .tabs{display:flex;gap:8px;margin-bottom:18px}
+  .tabbtn{background:var(--panel);border:1px solid var(--line);color:var(--dim);
+    padding:8px 18px;cursor:pointer;font:inherit;font-size:13px;letter-spacing:1px}
+  .tabbtn.on{color:var(--gold);border-color:var(--gold)}
+  .note{background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--gold);
+    padding:10px 12px;font-size:13px;margin:10px 0;color:var(--ink)}
+  .note b{color:var(--gold)}
+  .qbox{border-left-color:var(--red)}
+  .dim{color:var(--dim)}
+  .small{font-size:12px}
+
+  /* reference chips (tab 1) */
+  .tierband{margin-bottom:14px}
+  .tiername{font-size:12px;letter-spacing:1px;color:var(--gold);margin-bottom:5px}
+  .chips{display:flex;flex-wrap:wrap;gap:6px}
+  .rchip{background:var(--panel);border:1px solid var(--line);padding:6px 9px;
+    max-width:260px;font-size:12px}
+  .rchip b{display:block;color:var(--ink);font-size:12px;letter-spacing:.5px}
+  .rchip span{color:var(--dim)}
+  .chips .sk{max-width:260px}
+
+  /* controls (tab 2) */
+  .controls{display:flex;flex-wrap:wrap;gap:14px;align-items:center;
+    background:var(--panel);border:1px solid var(--line);padding:10px 14px;margin:10px 0}
+  .controls label{font-size:12px;color:var(--dim);letter-spacing:1px}
+  select,input[type=range]{font:inherit;background:var(--bg);color:var(--ink);
+    border:1px solid var(--line);padding:4px 6px}
+  button.act{background:var(--bg);border:1px solid var(--line);color:var(--dim);
+    font:inherit;font-size:12px;padding:4px 10px;cursor:pointer}
+  button.act:hover{color:var(--gold);border-color:var(--gold)}
+  #hud{font-size:13px;color:var(--gold);letter-spacing:.5px}
+  #status{min-height:18px;font-size:12px;color:var(--red);margin:4px 2px}
+
+  /* the weapon strip: attacks that come with the weapon, not the tree */
+  .kit{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
+  .kitcard{border:1px dashed var(--gold);padding:7px 10px;font-size:12px;max-width:270px}
+  .kitcard b{color:var(--gold);letter-spacing:.5px}
+  .kitcard div{color:var(--dim)}
+
+  /* the tree grid, TRANSPOSED: one row per level, one column per lane */
+  .treewrap{overflow-x:auto;border:1px solid var(--line);background:var(--panel);
+    padding:8px;margin:8px 0}
+  .grid{display:grid;grid-template-columns:56px repeat(5,minmax(190px,1fr));gap:4px;
+    min-width:1050px}
+  .colhead{font-size:11px;letter-spacing:1px;color:var(--gold);text-align:center;
+    padding:4px 2px;border-bottom:1px solid var(--line)}
+  .colhead .dim{display:block;letter-spacing:0}
+  .lvltag{font-size:11px;letter-spacing:1px;color:var(--dim);padding:6px 2px;
+    border-right:1px solid var(--line);text-align:center}
+  .lvltag.cur{color:var(--gold);font-weight:bold}
+  .cell{display:flex;flex-direction:column;gap:4px;min-height:24px;
+    border-bottom:1px dotted #2a241e;padding:2px 2px 6px}
+  .cell.currow{background:#221c16}
+
+  /* skill chips (tab 2) */
+  .sk{border:1px solid var(--line);background:var(--bg);padding:5px 7px;
+    font-size:11.5px;cursor:pointer;position:relative}
+  .sk .num{color:var(--dim);font-size:10px;letter-spacing:1px}
+  .sk b{display:block;font-size:11.5px;letter-spacing:.5px;color:var(--ink)}
+  .sk .what{color:var(--ink)}
+  .sk .fl{color:var(--dim);font-style:italic}
+  .sk .tag{font-size:9.5px;letter-spacing:1px;color:var(--dim)}
+  .sk .who{font-size:9.5px;letter-spacing:1px;color:var(--gold)}
+  .sk.avail{border-color:var(--gold)}
+  .sk.avail b{color:var(--gold)}
+  .sk.picked{border-color:var(--green);background:#1d241a}
+  .sk.picked b{color:var(--green)}
+  .sk.locked{border-style:dashed;color:var(--lock);cursor:not-allowed}
+  .sk.locked b,.sk.locked .what,.sk.locked .fl{color:var(--lock)}
+  .sk.far{opacity:.45;cursor:default}
+  .sk.static{cursor:default}
+  .picklist{font-size:12px;color:var(--ink);margin:6px 2px}
+  .picklist b{color:var(--green)}
+</style>
+</head>
+<body>
+
+<h1>GRIMTOLL · SKILL TREE LAB</h1>
+<div class="sub">A test bench. Nothing here touches the game. When the shape is agreed it moves
+into the character sheet as a SKILLS tab. Give feedback by skill code: the code names the
+branch and never moves when skills are added (CAP1 is always the captain door, GEN4 always
+the same general skill).</div>
+
+<div class="tabs">
+  <button class="tabbtn" id="tb1" onclick="showTab(1)">1 · REFERENCE SHELF</button>
+  <button class="tabbtn" id="tb2" onclick="showTab(2)">2 · GRIMTOLL DRAFT</button>
+</div>
+
+<!-- ════════════════════════ TAB 1 · REFERENCE ════════════════════════ -->
+<div id="tab1" style="display:none">
+
+  <h2>BATTLE BROTHERS · the full perk tree</h2>
+  <div class="note"><b>How it works:</b> one perk point per level, 11 levels, 44 perks.
+    A row does not unlock by level: row N+1 opens after N points are <i>spent</i>.
+    No prerequisites inside the tree. You finish with about 10 of 44, so every pick hurts.
+    <span class="dim">(Source: the Perks page on the BB wiki, checked 2026-08-12.)</span></div>
+  <div id="bbtree"></div>
+
+  <h2>THE LAST SPELL · summary</h2>
+  <div class="note"><b>Shape:</b> the attacks live on the WEAPON. Each weapon carries its own
+    2 to 4 actives; swap the weapon and the hero's whole move set changes. The hero levels into
+    PASSIVES only: every level deals a small random hand of perks, you keep one, rerolls are a
+    scarce resource. Rarer perks start appearing at higher levels.<br>
+    <b>What to steal:</b> weapon-owned attacks (already our rule), and the dealt hand:
+    two heroes of the same build still end up different.
+    <span class="dim">(Written from memory, not fetched. Correct me where it is off.)</span></div>
+
+  <h2>WILDERMYTH · the full ability list</h2>
+  <div class="note"><b>How it works:</b> three callings. Each starts with one signature move
+    (warrior GUARDIAN overwatch, hunter SILKSTEP stealth, mystic INTERFUSE object-bonding).
+    On every promotion the game deals about four abilities: one class non-upgrade and one
+    upgrade guaranteed. You keep ONE. Rerolls cost Legacy points and each reroll costs more.
+    Every ability has a "+" version that is only offered if you own the base.
+    The wild things (wolf limbs, crow wings, fire arms) never sit in the tree: EVENTS
+    graft them on, and each theme brings its own upgrades (Fly, Howl, Meteor Strike ...).<br>
+    <b>What to steal:</b> the dealt hand with one guaranteed class pick, and event-gated
+    transformations: that is exactly our BATTLE-MAGE door.
+    <span class="dim">(Source: wildermyth.com/wiki/Abilities, checked 2026-08-12.)</span></div>
+  <div id="wmtree"></div>
+
+  <h2>WARTALES · classes, one skeleton</h2>
+  <div class="note"><b>How it works:</b> the attacks come from the weapon and class; every
+    companion climbs the SAME level skeleton. Level 2: pick a valor generator or your first
+    strike. Level 3: pick a SPECIALIZATION: it renames the job and grants its signature skill.
+    Levels 5 and 8: one passive of four. Level 10: one utility of three (SECOND WEAPON is
+    offered to everyone). Level 12: a "bravery" skill plus CLASS SPECIALISATION (upgrade one
+    earlier skill). Level 15: MASTER CLASS (a new specialization opens). Valor is a shared
+    party pool that these passives feed.<br>
+    <b>What to steal:</b> the level 3 specialization asks the class question once, out loud,
+    and never again; fixed pick-levels keep choices rare and heavy.
+    <span class="dim">(Source: the Wartales fandom wiki, checked 2026-08-12. Two classes are
+    still "tba" there.)</span></div>
+  <h3>THE NINE CLASSES AND THEIR SPECIALIZATIONS</h3>
+  <div id="wtclasses"></div>
+  <h3>ONE CLASS WORKED IN FULL · THE SWORDSMAN</h3>
+  <div id="wttree"></div>
+
+  <h2>BANNER SAGA · one passive, one active</h2>
+  <div class="note"><b>How it works:</b> there is no tree of picks. A hero is a BASE CLASS
+    (one always-on passive) promoted into a SUB-CLASS (one active ability). Promotions raise
+    the active's rank 1 to 3: same trick, bigger. At rank 6 the hero gains a SECOND active
+    from a sibling sub-class, and that is the only branching choice in the game. Stats are
+    five numbers (Armor, Strength, Willpower, Exertion, Break) with per-class caps, and
+    Strength is both your health and your damage.<br>
+    <b>What to steal:</b> one passive plus one active keeps a twelve-body roster readable at
+    a glance, and the borrowed sibling trick at rank 6 is a late reward that adds no new
+    system. Stat caps are the real class identity.
+    <span class="dim">(Source: the Banner Saga wiki, checked 2026-08-12.)</span></div>
+  <div id="bstree"></div>
+</div>
+
+<!-- ════════════════════════ TAB 2 · GRIMTOLL DRAFT ════════════════════════ -->
+<div id="tab2" style="display:none">
+
+  <div class="note">
+    <b>Rules of the draft:</b><br>
+    1. One skill point per level, starting at level 2. Level 1 gives the race's faction skill free.<br>
+    2. Five lanes: <b>1</b> class and armor · <b>2</b> class skills · <b>3</b> race ·
+       <b>4 and 5</b> general. Levels run DOWNWARD. Level 9 tops out ordinary growth and
+       LEVEL 10 is the capstone: one choice, multiclass or mastery. Some levels are empty
+       on purpose.<br>
+    3. The weapon owns the attacks (spear: THRUST and SPEAR WALL). The tree buys passives,
+       stances and unlocks only.<br>
+    4. The CLASS is the level 2 door, and the door IS the weapon mastery: the brute swings
+       club and axe alike. The door then GRANTS its two class skills free at levels 3 and 6;
+       only the class's level 9 skill is bought, and it carries a real downside.
+       One door per life (until the level 10 capstone).<br>
+    5. Level 5 offers ARMOR MASTERY: one of three, once.<br>
+    6. BATTLE-MAGE and BARD crown the tree at level 9. Battle-mage is never a pick
+       (the road gives it, events only); bard is parked for later.
+  </div>
+
+  <div class="note"><b>Migration note:</b> in the live game SPEAR WALL belongs to the spearwoman
+    and AIMED SHOT to the archer (their <i>sig</i>). Under rule 3 the stance moves to the weapon
+    itself, every spear-holder gets it, and the class door keeps the competence (+5 with the
+    family weapon and one sweetener). Same migration for BACKSTAB (knife) and SWEEP (club).</div>
+
+  <h2>ONE CHARACTER</h2>
+  <div class="controls">
+    <label>RACE <select id="selRace" onchange="onControls()">
+      <option value="human">HUMAN</option>
+      <option value="ratkin">RATKIN</option>
+      <option value="ogre">OGRE</option>
+    </select></label>
+    <label>WEAPON <select id="selWeapon" onchange="onControls()">
+      <option value="spear">SPEAR</option>
+      <option value="sword">SWORD</option>
+      <option value="axe">AXE</option>
+      <option value="club">CLUB</option>
+      <option value="knife">KNIFE</option>
+      <option value="bow">BOW</option>
+    </select></label>
+    <label>LEVEL <input type="range" id="selLevel" min="1" max="10" value="1"
+      oninput="onControls()"> <span id="lvlOut">1</span></label>
+    <button class="act" onclick="resetPicks()">RESET PICKS</button>
+    <span id="hud"></span>
+  </div>
+  <div id="status"></div>
+
+  <h3>FROM THE WEAPON, NOT THE TREE</h3>
+  <div class="kit" id="kit"></div>
+
+  <h3>THE TREE OF THIS CHARACTER <span class="dim small">(gold = can take now ·
+    green = taken · dashed = locked · faded = above your level)</span></h3>
+  <div class="treewrap" id="charTree"></div>
+  <div class="picklist" id="picks"></div>
+
+  <div class="note"><b>Three spearwomen, one class</b> (all legal at level 9; the door,
+    BRACED WALL and KILLING ZONE are the shared carcase):<br>
+    <b>THE WALL</b> · SPR1 + ARM3 heavy + SPR4 LONG REACH + GEN5 COLOSSUS + GEN11 FORTIFIED
+    MIND + GEN16 UNDERDOG + GEN4 DODGE. She stands in the road and the road closes.<br>
+    <b>THE SKIRMISHER</b> · SPR1 + ARM1 light + GEN14 LONE WOLF + GEN6 TACTICIAN + GEN3
+    PATHFINDER + GEN7 GOOD ARM + GEN15 FRENZY + GEN10 NINE LIVES. No level 9 class skill:
+    she spent that point on the fen. She fights where the line is not.<br>
+    <b>THE THIRD RANK</b> · SPR1 + ARM2 medium + SPR4 LONG REACH + GEN13 SHIELD MASTERY +
+    GEN12 QUICK HANDS + GEN2 TALENTED + GEN10 NINE LIVES. Long spear over a shield rim,
+    never touched.</div>
+
+  <h2>2.1 · THE FULL TREE, ALL CHOICES</h2>
+  <div class="dim small" style="margin-bottom:6px">Everything at once, all races, all classes.
+    Read-only. This is the sheet to give feedback on.</div>
+  <div class="treewrap" id="fullTree"></div>
+
+  <h2>2.2 · EACH BRANCH ON ITS OWN</h2>
+  <div class="dim small" style="margin-bottom:6px">The same skills, cut by branch, so a
+    class or a race can be adjusted without reading the whole grid.</div>
+  <div id="branches"></div>
+
+  <div class="note qbox">
+    <b>Open questions for you:</b><br>
+    Q1 · ROTATION went to the CAPTAIN, TAUNT to the BRUTE. Right homes?<br>
+    Q2 · "Throvble" in your list: I read it as throwing weapons and drafted GOOD ARM.
+        If it meant something else, say the word and I redo it.<br>
+    Q3 · ANSWERED 2026-08-12: class skills are granted with the door, not bought.<br>
+    Q4 · ANSWERED 2026-08-12: the second door is the level 10 MULTICLASS capstone.<br>
+    Q5 · MAGIC POTION: I read "gets 15% damage" as the rat paying 15% of its own health
+        for the refill. If you meant +15% damage dealt, it changes the skill completely.<br>
+    Q6 · BATTLE-MAGE and BARD now sit at level 9, still locked (events only / parked),
+        per the original ruling. If level 9 should make them a real PICK, say so.<br>
+    Q7 · The five level 9 class skills (THE BANNER, LONG REACH, OVERDRAW, THROAT WORK,
+        RECKLESS SWING) are my drafts. Each downside needs your yes or your better one.
+  </div>
+</div>
+
+<script>
+/* ═════════════════════════ TAB PLUMBING ═════════════════════════ */
+function showTab(n){
+  document.getElementById('tab1').style.display=n===1?'':'none';
+  document.getElementById('tab2').style.display=n===2?'':'none';
+  document.getElementById('tb1').classList.toggle('on',n===1);
+  document.getElementById('tb2').classList.toggle('on',n===2);
+}
+/* shared renderer for reference bands: [bandName,[[name,desc],...]] */
+function refBands(hostId,bands){
+  const host=document.getElementById(hostId);
+  bands.forEach(([tier,perks])=>{
+    const band=document.createElement('div');band.className='tierband';
+    band.innerHTML='<div class="tiername">'+tier+'</div>';
+    const chips=document.createElement('div');chips.className='chips';
+    perks.forEach(([n,d])=>{
+      const c=document.createElement('div');c.className='rchip';
+      c.innerHTML='<b>'+n+'</b><span>'+d+'</span>';chips.appendChild(c);
+    });
+    band.appendChild(chips);host.appendChild(band);
+  });
+}
+
+/* ═════════════════ TAB 1 DATA · BATTLE BROTHERS ═════════════════ */
+const BB=[
+ ['TIER 1',[
+  ['Fast Adaptation','+10% to hit after each miss, stacking. A hit resets it.'],
+  ['Crippling Strikes','Injuries come 33% easier off your hits.'],
+  ['Colossus','+25% hitpoints.'],
+  ['Nine Lives','Once per battle, survive a killing blow with a few HP left.'],
+  ['Bags and Belts','Two extra bag slots; bagged gear stops costing fatigue.'],
+  ['Pathfinder','Rough ground and slopes cost less to cross.'],
+  ['Adrenaline','Skill: act first next round, for fatigue.'],
+  ['Recover','Skill: rest a turn, shed half your fatigue.'],
+  ['Student','+20% experience. Refunds its point at level 11.']]],
+ ['TIER 2',[
+  ['Executioner','+20% damage against anything already injured.'],
+  ['Bullseye','Shooting past cover: penalty 50% instead of 75%.'],
+  ['Dodge','+15% of your initiative as defense.'],
+  ['Fortified Mind','+25% resolve.'],
+  ['Resilient','Any bad status lasts one turn.'],
+  ['Steel Brow','Head hits do you no bonus damage.'],
+  ['Quick Hands','One free item swap per turn.'],
+  ['Gifted','An instant level-up with maximum rolls.']]],
+ ['TIER 3',[
+  ['Backstabber','Flanking bonus doubled: +10% per ally on the target.'],
+  ['Anticipation','Ranged defense grows with the shooter’s distance.'],
+  ['Shield Expert','+25% shield bonus; the shield takes half damage.'],
+  ['Brawny','Armor fatigue penalty cut by 30%.'],
+  ['Relentless','Fatigue only halves your initiative. Waiting costs nothing.'],
+  ['Rotation','Skill: swap places with an adjacent ally.'],
+  ['Rally the Troops','Skill: pull fleeing allies back into the line.'],
+  ['Taunt','Skill: make an enemy come at you, not at the weak one.']]],
+ ['TIER 4 · WEAPON MASTERIES (all: -25% fatigue with the weapon, plus)',[
+  ['Mace','Stuns become certain.'],
+  ['Flail','Lash ignores shields.'],
+  ['Hammer','+33% damage against armor.'],
+  ['Axe','Split Shield chops 50% harder.'],
+  ['Cleaver','Bleeds doubled.'],
+  ['Sword','Riposte without penalty; swings +10% to hit.'],
+  ['Dagger','Puncture cheap enough to strike twice.'],
+  ['Polearm','Cheaper swings; no penalty point-blank.'],
+  ['Spear','Spearwall survives being beaten once, and can start in contact.'],
+  ['Crossbow','+20% of damage ignores armor.'],
+  ['Bow','+1 vision, +1 range.'],
+  ['Throwing','+30%/+20% damage at 2/3 tiles.']]],
+ ['TIER 5',[
+  ['Reach Advantage','Two-hander hits stack +5 melee defense each.'],
+  ['Overwhelm','Attacking first lowers their skill 10%, stacking.'],
+  ['Lone Wolf','+15% to five stats with no ally within 3 tiles.'],
+  ['Underdog','Being surrounded gives them no bonus against you.'],
+  ['Footwork','Skill: step out of engagement without the parting swing.']]],
+ ['TIER 6',[
+  ['Berserk','A kill refunds 4 action points, once a turn.'],
+  ['Head Hunter','A head hit guarantees your next attack goes to the head.'],
+  ['Nimble','Light armor: up to 60% less hitpoint damage taken.'],
+  ['Battle Forged','Heavy armor: armor damage cut by 5% of your total armor.']]],
+ ['TIER 7',[
+  ['Fearsome','Every wounding hit forces a morale check on them.'],
+  ['Duelist','Free off-hand: +25% of your damage ignores armor.'],
+  ['Killing Frenzy','A kill: +25% damage for two turns.'],
+  ['Indomitable','Skill: halve all incoming damage for a turn.']]]
+];
+
+/* ═════════════════ TAB 1 DATA · WILDERMYTH ═════════════════ */
+const WM=[
+ ['STARTING MOVES (free with the calling)',[
+  ['Guardian (Warrior)','End the turn on watch: strike the first enemy in reach.'],
+  ['Silkstep (Hunter)','Slip into Grayplane: hidden, and attacks ignore armor.'],
+  ['Interfuse (Mystic)','Bond with scenery or a blaze; it becomes your tool and eyes.']]],
+ ['GENERAL (any hero; every entry has a stronger "+" version)',[
+  ['Aid','Once per combat, heal and cleanse an adjacent ally.'],
+  ['Bard','Party-wide stunt chance; cheaper recruits.'],
+  ['Endurance','+2 armor, +1 warding.'],
+  ['Hardiness','+30% health.'],
+  ['Heroism','Once per combat: +1 action, attacks cost one action this turn.'],
+  ['Inspiration','Adjacent allies deal +1 damage.'],
+  ['Long Reach','+1 range on all attacks and abilities.'],
+  ['Riposte','Counter-attack after a successful block or dodge.'],
+  ['Sharpshooter','+1 damage and +1 range on ranged attacks.'],
+  ['Tinker','Swift: gift armor and warding to an ally for two turns.'],
+  ['Viciousness','Melee attacks deal +1 damage.'],
+  ['Windwalk','Swift: wind-dash to a distant tile, once per combat.'],
+  ['Wisdom','Campaign jobs go faster with age.']]],
+ ['WARRIOR',[
+  ['Backslam','Swift: knock an enemy away; damage equals your armor.'],
+  ['Battledance','Melee attacks cost one action.'],
+  ['Bloodrage','More damage the more health you are missing.'],
+  ['Broadswipes','Melee hits splash every other foe in range.'],
+  ['Engage','Swift: force a foe to fight YOU; +1 armor per engaged foe.'],
+  ['Paladin','End the turn by moving and Guardian starts for free.'],
+  ['Raider','Swift: start fires or smash scenery onto the enemy.'],
+  ['Sentinel','Replaces Guardian: leap two tiles to intercept a passer-by.'],
+  ['Shieldshear','Swift: shred a foe’s armor with your weapon.'],
+  ['Stalwart','Stance: +3 armor and warding, half speed.'],
+  ['Thundering Challenge','Once per combat: frighten a foe into running.'],
+  ['Untouchable','After a kill, the next attack on you misses.'],
+  ['Vigilance','Two reaction strikes per turn.'],
+  ['Wolfcall','A kill grants speed to all allies.'],
+  ['Zealous Leap','Swift leap over the field, every other turn.']]],
+ ['HUNTER',[
+  ['Ambush','Overwatch shot at +2 damage; unsprung, it becomes a free attack.'],
+  ['Archery','Answer ranged attacks with a ranged counter.'],
+  ['Crippling Strikes','Your attacks hobble.'],
+  ['Ember Arrows','By a fire: burning arrows with bonus damage and shred.'],
+  ['Flashcone','Once per combat: blind an area, or hide an ally.'],
+  ['Foxflight','+1 speed; trade it to dodge the next two hits.'],
+  ['Jumpjaw','Throw a trap that bites and pins the first walker.'],
+  ['Piercing Shots','Ranged attacks pierce armor.'],
+  ['Quellingmoss','Attacks poison; or throw the burning moss at a crowd.'],
+  ['Rogue','Every kill drops you back into hiding.'],
+  ['Thornfang','A melee kill refunds an action, once per turn.'],
+  ['Through Shot','The arrow passes through the first body into the next.']]],
+ ['MYSTIC (everything feeds on INTERFUSE)',[
+  ['Arches','Grow a tree that pins everything around it.'],
+  ['Compulsion','Briefly ride an enemy’s mind and walk it where you please.'],
+  ['Earthscribe','Advanced interfusion: stone and bone become walls and shields.'],
+  ['Elementalist','Advanced interfusion: fire that lasts, wood that splinters.'],
+  ['Humanist','Advanced interfusion: tools, metal and shards turn hostile.'],
+  ['Ignite','Pull heat from the air: a blaze appears where you need one.'],
+  ['Indignance','Your presence burns: true damage to anything that steps close.'],
+  ['Mythweaver','Advanced interfusion: statues, books and garb answer you.'],
+  ['Naturalist','Advanced interfusion: plants grasp, trees hide you.'],
+  ['Openmind','Interfuse one more object at a time.'],
+  ['Soulsplitting','Interfused objects soak damage meant for you.'],
+  ['Spiritblade','Allies beside your objects hit harder; blazes arm their weapons.'],
+  ['Vigorflow','+2 damage per interfused object; the objects pay for it.']]],
+ ['THEME UPGRADES (from events, not the tree)',[
+  ['Fly (Crow wings)','Swift: fly three tiles, +25 dodge.'],
+  ['Howl (Wolf-touched)','Once per combat: +2 speed to every hero.'],
+  ['Meteor Strike (Celestial arm)','Call a falling star down on an area.'],
+  ['... and some forty more','Every transformation event brings its own. The tree never offers them.']]]
+];
+
+/* ═════════════════ TAB 1 DATA · WARTALES ═════════════════ */
+const WT_CLASSES=[
+ ['THE NINE, EACH WITH FIVE SPECIALIZATIONS',[
+  ['Swordsman (swords)','Protector · Fighter · Swordmaster · Duellist · Swordsman.'],
+  ['Brute (maces)','Vanguard · Smasher · Destroyer · Brawler · Titan.'],
+  ['Warrior (axes)','Berserker · Executioner · Sentinel · Barbarian · Hero.'],
+  ['Spearman (polearms)','Harpooner · Herald · Pikeman · Halberdier · Standard Bearer.'],
+  ['Ranger (daggers)','Cutthroat · Strategist · Poisoner · Assassin · Demon.'],
+  ['Archer (bows)','Hunter · Beastmaster · Infantryman · Marksman · Virtuoso.'],
+  ['Crossbowman','Scorpion · Gunner · Cannoneer · Machinist · Engineer.'],
+  ['Pugilist (fists)','Wrestler · Bruiser · Slayer · Tyrant · Scourge.'],
+  ['Thaumaturge','The newest class; the wiki has not filled its tree in yet.']]]
+];
+const WT=[
+ ['LEVEL 2 · pick one strike',[
+  ['Encouragement','Area: you and nearby allies gain Protection.'],
+  ['Destabilising Strike','Damage plus Destabilisation for two rounds.'],
+  ['Laceration','Cone, hits twice; earned by landing ordinary attacks first.'],
+  ['Final Blow','Damage, and you gain Riposte.'],
+  ['Blinding Rush','Two fast hits; opening-move bonus.']]],
+ ['LEVEL 3 · pick a valor engine (the party pool)',[
+  ['Defensive Stance','Soaking a skill hit earns the party 1 valor.'],
+  ['Valorous Chain','Hitting several enemies at once earns 1 valor.'],
+  ['Valorous Duel','Engaging earns 1 valor.']]],
+ ['LEVEL 5 · pick one passive of five',[
+  ['Bulwark','Deflection every time you engage.'],
+  ['Counter-attack','First engage each turn: Riposte and Fury.'],
+  ['Daring','While buffed, your attacks Weaken.'],
+  ['Duellist’s Instinct','Brutality as long as you are engaged.'],
+  ['Unwavering Support','Take half of what hits the ally beside you.']]],
+ ['LEVEL 8 · pick one passive of five',[
+  ['Last Stand','Brutality once your armor is half gone.'],
+  ['Hand-to-hand Combat','Disarm the target for a round.'],
+  ['Hardcore Training','Immune to bleed, poison and burn.'],
+  ['Master Opportunist','Opportunity strikes: yours +25%, theirs -25%.'],
+  ['Engaging Strike','Free damage every time you engage.']]],
+ ['LEVEL 10 · pick one utility of three',[
+  ['Second Weapon','Carry a second sword; swap in combat.'],
+  ['Defensive Riposte','Disengaging: 50% to strike instead of being struck.'],
+  ['Intervention','Swap places with an engaged ally and take the fight.']]],
+ ['LEVEL 12',[
+  ['Exhort','Bravery skill: area Zeal for two rounds.'],
+  ['Class Specialisation','Upgrade one skill from a previous level.']]],
+ ['LEVEL 15',[
+  ['Master Class','A new specialization opens for this class.']]]
+];
+
+/* ═════════════════ TAB 1 DATA · BANNER SAGA ═════════════════ */
+const BS=[
+ ['RAIDER (human, shield) · passive SHIELD WALL: +1 armor to you and each adjacent ally',[
+  ['Raidmaster · Stone Wall','Brace: every hit this turn is blunted to almost nothing.'],
+  ['Thrasher · Bloody Flail','A flurry of small random hits; the last grows per adjacent ally.'],
+  ['Backbiter · Run Through','Run through bodies to the target; 2 armor damage to each passed.'],
+  ['Grudgewielder · Guts','Slam the ground: damage and knockback all around.']]],
+ ['ARCHER (human) · passive PUNCTURE: +1 damage per 2 armor the target has lost',[
+  ['Bowmaster · Bird of Prey','Shoot far beyond normal range, cannot miss.'],
+  ['Skystriker · Rain of Arrows','Trap a tile from the sky; the walker is stopped cold.'],
+  ['Siege Archer · Slag and Burn','Explode an area, leave burning coals.']]],
+ ['WARRIOR (varl, two-hander) · passive HEAVY IMPACT: hits shockwave 1 damage to bystanders',[
+  ['Warmaster · Sundering Impact','A harder hit that cannot miss and feeds the shockwave.'],
+  ['Warhawk · Tempest','Sweep everything adjacent, friend or foe.'],
+  ['Warleader · Forge Ahead','Command an ally to act next in line.']]],
+ ['SHIELDBANGER (varl, shield) · passive RETURN THE FAVOR: attackers lose 1 armor per strike',[
+  ['Shieldmaster · Bring the Pain','Strike, then hunker: the counter-damage doubles.'],
+  ['Strongarm · Battering Ram','Smash a body 4 tiles back through everyone in the way.'],
+  ['Provoker · Malice','Curse a foe into attacking YOU, into your armor.']]],
+ ['SAGA 1 ADDITIONS',[
+  ['Landsman · Light Step, then RALLY','Pass through allies; gift willpower where it is needed.'],
+  ['Spearman · Embolden, then IMPALE','Kills feed willpower; skewer and kick back, bleeding per tile.'],
+  ['Mender · MEND','Restore an ally’s armor anywhere, paid from willpower.']]],
+ ['THE RANK LADDER (same for everyone)',[
+  ['Rank 1 to 5','Stat points into five stats with class caps; the active deepens rank 1 to 3.'],
+  ['Rank 6','The one choice: borrow a sibling sub-class’s active as your second.'],
+  ['Ranks 8 and 10','The borrowed trick deepens.']]]
+];
+
+refBands('bbtree',BB);
+refBands('wmtree',WM);
+refBands('wtclasses',WT_CLASSES);
+refBands('wttree',WT);
+refBands('bstree',BS);
+
+/* ═════════════════ TAB 2 DATA · THE GRIMTOLL DRAFT ═════════════════
+   Numbers are assigned in array order and are STABLE: feedback points
+   at them. src marks where a skill came from:
+   'user'   = named or ruled by the user in the brief
+   'live'   = already exists in the game's PERKS/RACESKILL tables
+   'draft'  = my template, argue with it freely
+   NOTE: the game has no fatigue system, so nothing here spends or
+   restores fatigue (user ruling, 2026-08-12).                       */
+const WEAPONS={
+  spear:{n:'SPEAR', kit:[['THRUST','Main attack. Reach 2.'],
+    ['SPEAR WALL','Stance: a free thrust at anyone stepping into your reach.']]},
+  sword:{n:'SWORD', kit:[['SLASH','Main attack.'],
+    ['RIPOSTE','Stance: answer the next miss against you with a cut.']]},
+  axe:{n:'AXE', kit:[['HACK','Main attack.'],
+    ['SPLIT SHIELD','Chop the shield instead of the man.']]},
+  club:{n:'CLUB', kit:[['SWING','Main attack.'],
+    ['STAGGER','A hit that costs them an action.']]},
+  knife:{n:'KNIFE', kit:[['STAB','Main attack.'],
+    ['PUNCTURE','Slip the point under armor: less damage, none of it stopped.']]},
+  bow:{n:'BOW', kit:[['LOOSE','Main attack. Range 6.'],
+    ['AIMED SHOT','Slower, +10 to hit, likes the head.']]}
+};
+/* which class a weapon suggests (the door you would naturally take) */
+const OPENS={spear:'spear',sword:'captain',axe:'brute',club:'brute',
+  knife:'cutter',bow:'archer'};
+const CLASSNAME={captain:'CAPTAIN',spear:'SPEARWOMAN',archer:'ARCHER',
+  cutter:'CUTTER',brute:'BRUTE',warmage:'BATTLE-MAGE'};
+const CLASSWEAPON={captain:['sword'],spear:['spear'],archer:['bow'],
+  cutter:['knife'],brute:['club','axe']};
+/* one-of-N groups, named for the refusal message */
+const GROUPNAME={armor:'armor mastery',capstone:'capstone'};
+
+/* row: 1 class door + armor · 2 class skills · 3 race · 4/5 general
+   lvl: the level the cell sits at. auto: free at level 1.
+   door: picking it sets your class (mastery merged into it, user ruling).
+   group:'armor' = the one-of-five rule. lock = never pickable here. */
+const SKILLS=[
+/* ── LANE 1 · CLASS DOORS + ARMOR (opens level 2) ─────────────── */
+ {row:1,lvl:2,door:true,cls:'captain',name:'CAPTAIN',src:'user',
+  what:'The sword and the line. +5 to hit with swords. The captain column opens behind this door.',
+  fl:'The class IS the weapon mastery now.'},
+ {row:1,lvl:2,door:true,cls:'spear',name:'SPEARWOMAN',src:'user',
+  what:'+5 to hit with spears, and SPEAR WALL keeps standing after the first body breaks it.',
+  fl:'The point does the thinking.'},
+ {row:1,lvl:2,door:true,cls:'archer',name:'ARCHER',src:'user',
+  what:'+5 to hit with bows and +1 range.',
+  fl:''},
+ {row:1,lvl:2,door:true,cls:'cutter',name:'CUTTER',src:'user',
+  what:'+5 to hit with knives, and PUNCTURE costs one action less.',
+  fl:''},
+ {row:1,lvl:2,door:true,cls:'brute',name:'BRUTE',src:'user',
+  what:'+5 to hit with clubs AND axes: to a brute they are the same argument. Your STAGGER also drains one action.',
+  fl:'One door, two weapons.'},
+ {row:1,lvl:5,group:'armor',name:'ARMOR MASTERY · LIGHT',src:'draft',
+  what:'Light armor stops slowing your step at all.',fl:'Pick one of three, once.'},
+ {row:1,lvl:5,group:'armor',name:'ARMOR MASTERY · MEDIUM',src:'draft',
+  what:'+15% armor value from medium pieces.',fl:'Pick one of three, once.'},
+ {row:1,lvl:5,group:'armor',name:'ARMOR MASTERY · HEAVY',src:'draft',
+  what:'Heavy armor no longer costs you a hex of step.',fl:'Pick one of three, once.'},
+ {row:1,lvl:9,lock:'event',cls:'warmage',name:'BATTLE-MAGE AWAKENING',src:'user',
+  what:'Two schools and a sword. Never a pick: the road gives it or nobody does.',
+  fl:'Events only, and rare.'},
+ {row:1,lvl:9,lock:'later',cls:'bard',name:'BARD',src:'user',
+  what:'Songs for the line. Parked until the class exists.',
+  fl:'Not available. On purpose.'},
+ /* LEVEL 10 IS THE CAPSTONE and it is one choice, not two picks: go wider
+    or go deeper. Small classes are what make MULTICLASS legible: a second
+    door is a known three-skill package, not a second shop. */
+ {row:1,lvl:10,group:'capstone',name:'CAPSTONE · MULTICLASS',src:'user',
+  what:'Walk through a second class door: its weapon bonus and its two granted skills. Its level 9 stays closed.',
+  fl:'Breadth. Two trades, one body.'},
+ {row:1,lvl:10,group:'capstone',name:'CAPSTONE · MASTERY',src:'user',
+  what:'Your two granted class skills become their advanced versions.',
+  fl:'Depth. The reward for never splitting your attention. (Advanced versions: to be designed per class.)'},
+
+/* ── LANE 2 · CLASS SKILLS. Two are FREE: the door grants them at
+   levels 3 and 6, no point spent, and they cannot be given back.
+   The level 9 one is BOUGHT and carries a real downside.
+   (user ruling 2026-08-12: the class is a carcase, not a shop) ──── */
+ {row:2,lvl:3,cls:'captain',free:true,name:'ROTATION',src:'user',
+  what:'Swap places with an adjacent ally. Neither of you provokes a swing.',
+  fl:'Granted with the door. Q1: right home?'},
+ {row:2,lvl:6,cls:'captain',free:true,name:'STEADYING',src:'live',
+  what:'+4 morale to every ally within 2 hexes at the start of your turn.',
+  fl:'Granted with the door.'},
+ {row:2,lvl:9,cls:'captain',name:'THE BANNER',src:'draft',
+  what:'Allies within 2 hexes cannot rout. DOWNSIDE: every enemy that can reach you prefers you.',
+  fl:'Bought, not granted. The line holds because you are the target.'},
+
+ {row:2,lvl:3,cls:'spear',free:true,name:'BRACED WALL',src:'live',
+  what:'Your SPEAR WALL keeps working even with somebody already inside your reach.',
+  fl:'Granted with the door.'},
+ {row:2,lvl:6,cls:'spear',free:true,name:'KILLING ZONE',src:'live',
+  what:'Your parting swings deal 100% damage instead of 50%.',
+  fl:'Granted with the door.'},
+ {row:2,lvl:9,cls:'spear',name:'LONG REACH',src:'draft',
+  what:'Your THRUST reaches 3 hexes. DOWNSIDE: anyone right next to you gets +10 to hit you.',
+  fl:'Bought. A spear is a promise about distance.'},
+
+ {row:2,lvl:3,cls:'archer',free:true,name:'SURE SHOT',src:'live',
+  what:'Shooting while engaged: -15 to hit instead of -35.',
+  fl:'Granted with the door.'},
+ {row:2,lvl:6,cls:'archer',free:true,name:'EAGLE EYE',src:'live',
+  what:'+2 range on every ranged attack.',
+  fl:'Granted with the door.'},
+ {row:2,lvl:9,cls:'archer',name:'OVERDRAW',src:'draft',
+  what:'+30% damage on every shot. DOWNSIDE: each shot costs you 2 nerve.',
+  fl:'Bought. The body pays for what the string does.'},
+
+ {row:2,lvl:3,cls:'cutter',free:true,name:'SHADOW-STEP',src:'live',
+  what:'After you DISTRACT something, your next attack on it this turn costs no action.',
+  fl:'Granted with the door.'},
+ {row:2,lvl:6,cls:'cutter',free:true,name:'BUTCHER',src:'live',
+  what:'+17% damage against anything under half hitpoints.',
+  fl:'Granted with the door.'},
+ {row:2,lvl:9,cls:'cutter',name:'THROAT WORK',src:'draft',
+  what:'+30% damage against anything flanked. DOWNSIDE: you cannot wear medium or heavy armor.',
+  fl:'Bought. Speed is the only shirt that fits.'},
+
+ {row:2,lvl:3,cls:'brute',free:true,name:'TAUNT',src:'user',
+  what:'Enemies within 3 hexes come at you, not at the thin one behind you.',
+  fl:'Granted with the door. Q1: right home?'},
+ {row:2,lvl:6,cls:'brute',free:true,name:'THICK HIDE',src:'live',
+  what:'+18 armor.',
+  fl:'Granted with the door.'},
+ {row:2,lvl:9,cls:'brute',name:'RECKLESS SWING',src:'draft',
+  what:'Your SWING also hits everything adjacent to your target. DOWNSIDE: including your own people.',
+  fl:'Bought. Stand behind the brute, never beside him.'},
+
+ {row:2,lvl:3,cls:'warmage',lock:'event',name:'COLD HANDS',src:'live',
+  what:'Casting costs you 5 less of your own nerve.',fl:'Battle-mage only.'},
+ {row:2,lvl:4,cls:'warmage',lock:'event',name:'CONDUIT',src:'live',
+  what:'+20% spell damage.',fl:'Battle-mage only.'},
+
+/* ── LANE 3 · RACE (faction skill free at level 1) ────────────── */
+ {row:3,lvl:1,race:'human',auto:true,name:'KICK',src:'live',
+  what:'Almost no damage. Puts them ONE HEX straight back, away from you. No aiming it: walk round first.',
+  fl:'The faction skill. Every human has it from day one.'},
+ {row:3,lvl:3,race:'human',name:'VERSATILE',src:'draft',
+  what:'General skills (lanes 4 and 5) open to you one level early.',
+  fl:'Humans specialize in not specializing.'},
+ {row:3,lvl:6,race:'human',name:'SECOND WIND',src:'draft',
+  what:'Once per battle, your nerve climbs back to full.',
+  fl:'The tenth mile is the human mile.'},
+
+ {row:3,lvl:1,race:'ratkin',auto:true,name:'POISON THE BLADE',src:'live',
+  what:'For two rounds everything that hits them takes 15% more. It stacks.',
+  fl:'The faction skill. It is not poison that kills; it makes the next blow matter.'},
+ {row:3,lvl:3,race:'ratkin',name:'UNNOTICEABLE',src:'user',
+  what:'Enemies prefer any other target while an ally stands nearer than you.',
+  fl:'Nobody counts the rats until the rats count.'},
+ {row:3,lvl:4,race:'ratkin',name:'STRONG',src:'user',
+  what:'+1 strength.',
+  fl:'For a ratkin, one point is a career.'},
+ {row:3,lvl:6,race:'ratkin',name:'MAGIC POTION',src:'user',
+  what:'Drink: pay 15% of your own health, refill all action points this turn. Once per battle.',
+  fl:'Do not ask what is in it. Q5: check my reading of the 15%.'},
+
+ {row:3,lvl:1,race:'ogre',auto:true,name:'PICK UP AND THROW',src:'live',
+  what:'Pick up anything on the next tile and throw it: one of yours, one of theirs, or a boulder.',
+  fl:'The faction skill. Nothing ogre-sized gets lifted.'},
+ {row:3,lvl:3,race:'ogre',name:'THICK SKULL',src:'draft',
+  what:'Head hits deal you no bonus damage.',
+  fl:'It has been tried.'},
+ {row:3,lvl:4,race:'ogre',name:'FEARSOME',src:'user',
+  what:'Every hit of yours that draws blood forces a nerve check, however small the wound.',
+  fl:'As in BB. They do not run from the wound; they run from the next one.'},
+ {row:3,lvl:6,race:'ogre',name:'BOULDER SHOULDER',src:'draft',
+  what:'PICK UP AND THROW recharges in one round instead of two, and boulders fly 4 hexes.',
+  fl:'Practice.'},
+
+/* ── LANE 4 · GENERAL, EARLY (opens level 2) ──────────────────── */
+ {row:4,lvl:2,name:'STUDENT',src:'user',
+  what:'+20% experience from battle.',fl:'The one who watches.'},
+ {row:4,lvl:2,name:'TALENTED',src:'user',
+  what:'+1 to one basic stat, your choice, when you take this.',fl:''},
+ {row:4,lvl:2,name:'PATHFINDER',src:'draft',
+  what:'Mud, water and slope cost you no extra step.',fl:'The fen does not argue with feet that know it.'},
+ {row:4,lvl:3,name:'DODGE',src:'draft',
+  what:'+8 dodge.',fl:''},
+ {row:4,lvl:3,name:'COLOSSUS',src:'draft',
+  what:'+25% health.',fl:''},
+ {row:4,lvl:3,name:'TACTICIAN',src:'user',
+  what:'When you disengage, you keep a free 1-hex step that same turn.',
+  fl:'Leaving is a move, not a retreat.'},
+ {row:4,lvl:4,name:'GOOD ARM',src:'user',
+  what:'Unlocks throwing weapons: a knife or javelin from the pocket, range 3.',
+  fl:'Q2: my reading of "Throvble". Rename or redo freely.'},
+ {row:4,lvl:4,name:'TWO-HANDED WEAPONS',src:'user',
+  what:'Two-handed weapons swing at full skill in your hands. Without this they are -10 to hit.',
+  fl:'A soft gate, not a hard one. Argue with the -10.'},
+ {row:4,lvl:4,name:'TWO WEAPONS HANDLER',src:'user',
+  what:'Hold two one-handed weapons. The second strikes at 50% damage.',fl:''},
+
+/* ── LANE 5 · GENERAL, LATE (opens level 5) ───────────────────── */
+ {row:5,lvl:5,name:'NINE LIVES',src:'user',
+  what:'Once per battle, the blow that would drop you leaves you standing at 1 health.',
+  fl:'As in BB.'},
+ {row:5,lvl:5,name:'FORTIFIED MIND',src:'draft',
+  what:'+20 nerve.',fl:''},
+ {row:5,lvl:5,name:'QUICK HANDS',src:'draft',
+  what:'Once a turn, swapping what you hold costs nothing.',fl:''},
+ {row:5,lvl:5,name:'SHIELD MASTERY',src:'draft',
+  what:'+25% shield bonus. Your shield takes half damage from axes.',
+  fl:'Moved out of the armor trio: any build may earn a shield.'},
+ {row:5,lvl:6,name:'LONE WOLF',src:'user',
+  what:'No ally within 3 hexes: +15% to hit, dodge and nerve.',fl:'As in BB.'},
+ {row:5,lvl:6,name:'FRENZY',src:'user',
+  what:'A kill gives +20% damage until the end of your next turn.',fl:''},
+ {row:5,lvl:7,name:'UNDERDOG',src:'draft',
+  what:'Being surrounded gives them no bonus against you.',fl:''},
+ {row:5,lvl:8,name:'BERSERK',src:'draft',
+  what:'Once a turn, a kill refunds 1 action point.',fl:''}
+];
+/* BRANCH CODES. A number must never move when skills are added, because
+   feedback arrives as a list of numbers ("06 delete") and a shifted number
+   deletes the wrong skill. A new entry appends inside its OWN branch and
+   nothing else renumbers. CAP1 is always the captain door. */
+const BRANCH={captain:'CAP',spear:'SPR',archer:'ARC',cutter:'CUT',brute:'BRU',
+  warmage:'MAG',bard:'BRD',human:'HUM',ratkin:'RAT',ogre:'OGR'};
+function branchOf(s){
+  if(s.group==='armor')return 'ARM';
+  if(s.group==='capstone')return 'TOP';
+  if(s.cls)return BRANCH[s.cls];
+  if(s.race)return BRANCH[s.race];
+  return 'GEN';
+}
+const bseq={};
+SKILLS.forEach((s,i)=>{s.id=i;const b=branchOf(s);
+  bseq[b]=(bseq[b]||0)+1;s.num=b+bseq[b];});
+
+/* ═════════════════════ INTERACTIVE STATE ═════════════════════ */
+const S={race:'human',weapon:'spear',level:1,picks:[]}; // picks: ids in pick order
+
+const byId=id=>SKILLS[id];
+const autoFor=race=>SKILLS.find(s=>s.auto&&s.race===race);
+const spent=()=>S.picks.filter(id=>{const s=byId(id);return !s.auto&&!s.free;}).length;
+const budget=()=>S.level-1;
+const clsOf=()=>{const p=S.picks.map(byId).find(s=>s.door);return p?p.cls:null;};
+const hasVersatile=()=>S.picks.map(byId).some(s=>s.name==='VERSATILE');
+const effLvl=s=>(s.row>=4&&hasVersatile())?s.lvl-1:s.lvl;
+
+/* one gatekeeper. Returns null when pickable, else the reason. */
+function why(s){
+  if(S.picks.includes(s.id))return null;
+  if(s.lock==='event')return 'never a pick: the road gives it, in events only';
+  if(s.lock==='later')return 'parked: this class does not exist yet';
+  if(s.free)return 'granted free with the '+CLASSNAME[s.cls]+' door at level '+s.lvl+', not bought';
+  if(s.group==='capstone'&&!clsOf())return 'no class to cap: walk through a door first';
+  if(s.row===3&&s.race!==S.race)return 'wrong race';
+  if(effLvl(s)>S.level)return 'needs level '+effLvl(s);
+  if(spent()>=budget())return 'no points left at level '+S.level;
+  if(s.group&&S.picks.map(byId).some(p=>p.group===s.group))
+    return 'one '+(GROUPNAME[s.group]||s.group)+' only';
+  if(s.door&&clsOf())return 'you are a '+CLASSNAME[clsOf()]+' already: one door per life';
+  if(s.row===2){
+    const c=clsOf();
+    if(!c)return 'walk through a class door first (level 2, lane 1)';
+    if(c!==s.cls)return 'you are a '+CLASSNAME[c]+', not a '+CLASSNAME[s.cls];
+  }
+  return null;
+}
+
+function pick(id){
+  const s=byId(id);
+  if(S.picks.includes(id)){ // unpick, then replay so dependents fall out
+    if(s.free){setStatus(s.num+' '+s.name+
+      ': granted with the door, it cannot be given back.');return;}
+    S.picks=S.picks.filter(x=>x!==id&&!byId(x).auto);
+    replay();setStatus('');render();return;
+  }
+  const r=why(s);
+  if(r){setStatus(s.num+' '+s.name+': '+r+'.');return;}
+  S.picks.push(id);grantFree();setStatus('');render();
+}
+
+/* the door GRANTS its two class skills once the level is reached:
+   no point spent, and replay() re-derives them from the door alone */
+function grantFree(){
+  const c=clsOf();if(!c)return;
+  SKILLS.filter(s=>s.free&&s.cls===c&&!s.lock&&s.lvl<=S.level)
+    .forEach(s=>{if(!S.picks.includes(s.id))S.picks.push(s.id);});
+}
+
+/* replay the pick order through the gatekeeper so a control change
+   (race, level down, an unpick) drops what no longer stands */
+function replay(){
+  const want=S.picks.slice();
+  S.picks=[autoFor(S.race).id];
+  want.forEach(id=>{const s=byId(id);
+    if(!s.auto&&!s.free&&!S.picks.includes(id)&&!why(s))S.picks.push(id);});
+  grantFree();
+}
+
+function onControls(){
+  const race=document.getElementById('selRace').value;
+  S.weapon=document.getElementById('selWeapon').value;
+  S.level=+document.getElementById('selLevel').value;
+  if(race!==S.race){S.race=race;S.picks=[autoFor(race).id];}
+  replay();setStatus('');render();
+}
+function resetPicks(){S.picks=[autoFor(S.race).id];setStatus('');render();}
+function setStatus(t){document.getElementById('status').textContent=t;}
+
+/* ═════════════════════ RENDER ═════════════════════ */
+function chip(s,mode){ // mode: 'live' (interactive) | 'static'
+  const el=document.createElement('div');
+  let cls='sk';
+  if(mode==='live'){
+    if(S.picks.includes(s.id))cls+=' picked';
+    else if(s.lock)cls+=' locked';
+    else if(!why(s))cls+=' avail';
+    else if(effLvl(s)>S.level)cls+=' far';
+    el.onclick=()=>pick(s.id);
+  }else{cls+=' static';if(s.lock)cls+=' locked';}
+  el.className=cls;
+  const tag=s.src==='user'?'yours':(s.src==='live'?'in game now':'draft');
+  const who=(mode==='static'&&s.row===2)?CLASSNAME[s.cls]+' · '
+    :(mode==='static'&&s.row===3)?s.race.toUpperCase()+' · ':'';
+  el.innerHTML='<span class="num">'+s.num+' · L'+s.lvl+
+    (s.auto||s.free?' · free':'')+' · <span class="tag">'+tag+'</span></span>'+
+    (who?'<span class="who">'+who+'</span>':'')+
+    '<b>'+s.name+'</b><span class="what">'+s.what+'</span>'+
+    (s.fl?'<span class="fl">'+s.fl+'</span>':'');
+  return el;
+}
+
+/* the transposed grid: header of lanes, then one row per level */
+function grid(host,lanes,mode){
+  host.innerHTML='';
+  const g=document.createElement('div');g.className='grid';
+  const corner=document.createElement('div');corner.className='colhead';
+  corner.textContent='LVL';g.appendChild(corner);
+  lanes.forEach(l=>{const h=document.createElement('div');h.className='colhead';
+    h.innerHTML=l.label+(l.sub?'<span class="dim">'+l.sub+'</span>':'');
+    g.appendChild(h);});
+  for(let lvl=1;lvl<=10;lvl++){
+    const t=document.createElement('div');t.className='lvltag';
+    if(mode==='live'&&lvl===S.level)t.className+=' cur';
+    t.textContent=lvl;g.appendChild(t);
+    lanes.forEach(l=>{
+      const cell=document.createElement('div');cell.className='cell';
+      if(mode==='live'&&lvl===S.level)cell.className+=' currow';
+      l.skills.filter(s=>s.lvl===lvl).forEach(s=>cell.appendChild(chip(s,mode)));
+      g.appendChild(cell);
+    });
+  }
+  host.appendChild(g);
+}
+
+function render(){
+  document.getElementById('lvlOut').textContent=S.level;
+  /* hud */
+  const c=clsOf();
+  document.getElementById('hud').textContent=
+    'LEVEL '+S.level+' · '+S.race.toUpperCase()+' · '+WEAPONS[S.weapon].n+
+    (c?' · '+CLASSNAME[c]:' · no class yet')+
+    ' · POINTS '+spent()+'/'+budget();
+  /* weapon kit */
+  const kit=document.getElementById('kit');kit.innerHTML='';
+  WEAPONS[S.weapon].kit.forEach(([n,d])=>{
+    const k=document.createElement('div');k.className='kitcard';
+    k.innerHTML='<b>'+n+'</b><div>'+d+'</div>';kit.appendChild(k);});
+  const hint=document.createElement('div');hint.className='kitcard';
+  hint.innerHTML='<b>SWAP THE WEAPON, SWAP THE KIT</b><div>These are not tree picks. '+
+    'They come with the '+WEAPONS[S.weapon].n.toLowerCase()+' and leave with it.</div>';
+  kit.appendChild(hint);
+  /* character tree: lane 2 shows your door's class, or the class your
+     weapon suggests until a door is taken (plus the event door) */
+  const showCls=c||OPENS[S.weapon];
+  grid(document.getElementById('charTree'),[
+    {label:'1 · CLASS + ARMOR',sub:'the doors',
+     skills:SKILLS.filter(s=>s.row===1)},
+    {label:'2 · '+CLASSNAME[showCls]+' SKILLS',
+     sub:c?'your class':'suggested by your '+WEAPONS[S.weapon].n.toLowerCase(),
+     skills:SKILLS.filter(s=>s.row===2&&(s.cls===showCls||s.cls==='warmage'))},
+    {label:'3 · RACE',sub:S.race.toUpperCase(),
+     skills:SKILLS.filter(s=>s.row===3&&s.race===S.race)},
+    {label:'4 · GENERAL',sub:'for everyone',
+     skills:SKILLS.filter(s=>s.row===4)},
+    {label:'5 · GENERAL, LATE',sub:'the build-definers',
+     skills:SKILLS.filter(s=>s.row===5)}
+  ],'live');
+  /* pick list */
+  const pl=S.picks.map(byId);
+  document.getElementById('picks').innerHTML='TAKEN: '+
+    (pl.length?pl.map(s=>'<b>'+s.num+' '+s.name+'</b>').join(' · '):'nothing')+
+    ' <span class="dim">(click a taken skill to give it back)</span>';
+  /* full tree, once (it never changes) */
+  const f=document.getElementById('fullTree');
+  if(!f.dataset.done){
+    grid(f,[
+      {label:'1 · CLASS + ARMOR',sub:'',skills:SKILLS.filter(s=>s.row===1)},
+      {label:'2 · CLASS SKILLS',sub:'all six classes',
+       skills:SKILLS.filter(s=>s.row===2)},
+      {label:'3 · RACE',sub:'all three races',
+       skills:SKILLS.filter(s=>s.row===3)},
+      {label:'4 · GENERAL',sub:'',skills:SKILLS.filter(s=>s.row===4)},
+      {label:'5 · GENERAL, LATE',sub:'',skills:SKILLS.filter(s=>s.row===5)}
+    ],'static');
+    f.dataset.done=1;
+  }
+}
+
+/* 2.2: the same skills cut by branch, so one class or race can be
+   read and adjusted on its own. Built once; chips are read-only. */
+function buildBranches(){
+  const host=document.getElementById('branches');
+  const blocks=[];
+  ['captain','spear','archer','cutter','brute'].forEach(k=>{
+    blocks.push(['CLASS · '+CLASSNAME[k]+' (from '+
+      CLASSWEAPON[k].map(w=>WEAPONS[w].n.toLowerCase()).join(' or ')+')',
+      SKILLS.filter(s=>(s.door&&s.cls===k)||(s.row===2&&s.cls===k))]);
+  });
+  blocks.push(['CLASS · BATTLE-MAGE (events only)',
+    SKILLS.filter(s=>s.name==='BATTLE-MAGE AWAKENING'||(s.row===2&&s.cls==='warmage'))]);
+  blocks.push(['CLASS · BARD (parked)',SKILLS.filter(s=>s.name==='BARD')]);
+  blocks.push(['ARMOR MASTERY (one of three, at level 5)',
+    SKILLS.filter(s=>s.group==='armor')]);
+  blocks.push(['CAPSTONE (one of two, at level 10)',
+    SKILLS.filter(s=>s.group==='capstone')]);
+  ['human','ratkin','ogre'].forEach(r=>{
+    blocks.push(['RACE · '+r.toUpperCase(),
+      SKILLS.filter(s=>s.row===3&&s.race===r)]);
+  });
+  blocks.push(['GENERAL (lane 4)',SKILLS.filter(s=>s.row===4)]);
+  blocks.push(['GENERAL, LATE (lane 5)',SKILLS.filter(s=>s.row===5)]);
+  blocks.forEach(([name,skills])=>{
+    const band=document.createElement('div');band.className='tierband';
+    band.innerHTML='<div class="tiername">'+name+'</div>';
+    const chips=document.createElement('div');chips.className='chips';
+    skills.slice().sort((a,b)=>a.lvl-b.lvl)
+      .forEach(s=>chips.appendChild(chip(s,'static')));
+    band.appendChild(chips);host.appendChild(band);
+  });
+}
+
+/* boot */
+S.picks=[autoFor(S.race).id];
+showTab(2);
+render();
+buildBranches();
+</script>
+</body>
+</html>

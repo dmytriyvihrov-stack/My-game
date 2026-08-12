@@ -2171,8 +2171,29 @@ function step(id){ const t = threadsOf(id).find(t => t.id === 'main'); return t 
    13. THE MAP
    ═══════════════════════════════════════════════════════════════════════ */
 const MAPW = 1280, MAPH = 638;
-const MAP_MIN_GAP = 90, NODE_PLATE_W = 110, NODE_PLATE_H = 72;
-const NAME_W = 104, NAME_H = 28, NAME_DY = 21;
+/* ⚠ THESE ARE A SECOND COPY, AND THEY HAVE DRIFTED ONCE ALREADY. Everything
+   else on this page live-reads the prototype through grab(); these six do not,
+   because they are plain `const a=1, b=2` declarators rather than a literal
+   grab() can slice. #113 grew the node's glyph chip from 33px to 40px to hold
+   a painted map sight, which moved NODE_PLATE_H 72 -> 79 and NAME_H 28 -> 30
+   in prototype/grimtoll_slice.html — and until this line was edited by hand
+   the map editor was approving layouts the game would have flagged.
+   #115/#116/#117 note (2026-08-12): a sighted node's painting (96px since
+   #116) is position:absolute in the prototype and adds nothing to the
+   node's layout column, so NODE_PLATE stays chip-true. THE NAME NOW HANGS
+   AT TWO DIFFERENT DEPTHS: a chip node's plate rides the column at +21,
+   a sighted node's caption sits under the painting at +54 (#117 dropped it
+   there so the full art shows). #116's union box is gone from the
+   prototype - `plateBox(n)` asks the node - but THIS page has no sight
+   table to ask, so it keeps the chip offset below and is therefore
+   OPTIMISTIC about sighted nodes by ~33px of y. ⚠ That is the direction to
+   know about when moving a coordinate here: the game may flag a plate
+   overlap this editor passed. The prototype's own TEST-mode overlay is the
+   authority. The paintings themselves may overlap on tight pairs, which is
+   the user's 250% order; what these checks protect is the NAMES.
+   Source of truth is the prototype. Copy from it, never the other way. */
+const MAP_MIN_GAP = 90, NODE_PLATE_W = 110, NODE_PLATE_H = 79;
+const NAME_W = 104, NAME_H = 30, NAME_DY = 21;
 const ELAB_W = 64, ELAB_WD = 132, ELAB_H = 18, ELAB_HD = 32;
 const LABEL_TS = [0.50,0.42,0.58,0.34,0.66,0.27,0.73];
 const LABEL_DYS = [-40,-58,46,-76,64,-94,82];

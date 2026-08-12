@@ -23,6 +23,317 @@
 
 ---
 
+## 🍺⚔🏷 THE NEW OPENING: FIGHT FIRST, CONTRACT AFTER, A NAME, AND A MAP TOUR  *(#118 + #119 + #120 · 2026-08-12 · build logs 8f.145-147)*
+
+**Your five-task batch, built autonomously.** The whole opening is reordered to your script, so
+this one is best tested as a single fresh run: menu → **Take the road**.
+
+### The new order of the opening (#118)
+
+1. **One card, no lord yet.** You are a nobleman-venturer whose far-shore trade came to nothing,
+   who will not kill for money, alone with one ale. Harl needles you, his friends step out, he
+   tips YOUR pint over your head. One option: **Draw your sword.**
+2. **The brawl** - unchanged from #108/#111, spotlights and waves and all.
+3. **After you win:** THE ROOM SETTLES now ends at **The corner table** - the rich man who watched
+   from the corner with his two hired swords crosses over, drops the purse, and makes the
+   Skelbrook offer. **The three replies are still there** (floor him / take the purse / joke), same
+   money, same paintings, same verdict banner.
+4. **If you LOSE the brawl:** same offer, different arrival prose. Losing still opens the world.
+5. **Then the name** (see below), then the map.
+
+### The company name (#118)
+
+- After the contract's outcome card, **A NAME FOR THE LEDGER**: seven first words, seven second
+  words, a big preview, all combinations deliberately a bit ugly (THE HALFPENNY ORPHANS, THE
+  DROWNED COUSINS). Pick both halves, **Chalk it on the wagon**.
+- **The name is then written along the bottom of the world map**, small, centred, and it survives
+  save/reload.
+
+### The map tour (#120)
+
+- The first map card is SHORT now: the wagon, the letter, the pillar. Dismissing it starts
+  **five spotlights in the first-battle format**: the contract plaque · crowns and provisions
+  (with the real daily wage number) · the company strip · the day disc · the company token with
+  "click a place to see what it costs". Click anywhere to advance; after the fifth the map is
+  yours. **Once per run** - reloading and continuing must NOT replay it.
+
+### The menu (#119)
+
+- "How any of this works" is gone from the menu. In its place: **The tutorial fight** - the
+  brawl as a free practice fight, spotlights included, no run touched, losing costs nothing.
+  The rules themselves still live behind **? RULES**, bottom-left, on every screen.
+
+### What would be a bug
+
+- The old lord-insult card appearing anywhere before the brawl.
+- Reaching the map without being asked for a name, or a map with no name along the bottom.
+- The name signature blocking clicks on a node near the bottom edge (it must be click-through).
+- The map tour replaying on a continued run, or a spotlight pointing at empty space.
+- The tutorial fight from the menu touching your real save in any way.
+- Prices: floor 40 · silent purse 80 · failed joke 50 · landed joke 120, all after the brawl.
+
+---
+
+## 🗺🏷 ROUND NINE: NAMES UNDER THE PAINTING, PRICES OUT OF ITS WAY  *(#117 · 2026-08-12 · build log 8f.144)*
+
+**Your three points off the round-eight screenshot.**
+
+### What should happen
+
+- **The whole painting is visible.** The name sits below the art's bottom edge now (it used to
+  lie across the last 24px of it), so nothing covers the picture.
+- **No road price sits on a painting any more.** The label that lands the days and coins on the
+  map used to know only about the name plates - it had never been told the paintings exist,
+  which is why it parked itself on the wain and on the pedlar. It avoids both now. I did not
+  check this at the one spot in your screenshot: I drew the map from **all 24 places you can
+  stand** and measured every label against every painting and every name. Zero collisions.
+- **The price label is small: just `2d · ◉20`.** The character line under it ("longer, wet the
+  whole way") is gone from the map.
+- **That line is not lost.** It still appears on the card that opens when you pick a road at a
+  fork: *"This road: longer, wet the whole way."* That is the place where you are actually
+  weighing one road against another, which is the only place a description means anything.
+
+### What would be a bug
+
+- A price label touching a painting or a name anywhere on the map.
+- A name that still overlaps its own picture.
+- The fork card losing its "This road: ..." line.
+
+## 🗺🧼 ROUND EIGHT: CLEAN CUT-OUTS, FOOT CAPTIONS, NO MORE HIDDEN SIGHTS  *(#116 · 2026-08-12 · build log 8f.143)*
+
+**Your three points off the round-seven screenshots.** Reload the page first: the art bytes
+changed again.
+
+### What was actually wrong with the "background"
+
+The tinted square behind most paintings was not a background I drew. The source images carry a
+nearly invisible haze across their whole canvas, and the coloured outline effect lit it up as a
+solid slab. The pedlar never had the haze (he is one of the three chroma-cleaned icons), which is
+why he was the one that looked right. The build now scrubs that haze out of every icon, so **they
+are all made like the pedlar now**, exactly as asked.
+
+### What should happen
+
+- **No tinted square behind any painting.** Just the cut-out, its thin coloured outline, and a
+  soft ground shadow. If you still see a slab behind one specific icon, name it.
+- **20% smaller**: the landmarks are 96px now, down from 120.
+- **The name is a caption at the landmark's foot**, laid across the painting's bottom edge, not
+  floating in its middle.
+- **Every road slot that has a painting shows it from the start of the run.** The pedlar's cart,
+  the wedding awning, the toll frame: visible from minute one, permanently. What stays hidden
+  until you arrive is the NAME: an unvisited slot still calls itself *"Word of something ahead"*
+  under its own painting, and the hover still refuses details. Standing in it swaps the rumour
+  for the real title.
+
+### What would be a bug
+
+- A tinted slab behind a painting (one icon escaping the scrub).
+- A caption you cannot read against its own painting.
+- A slot whose painting appears only AFTER arrival: that is the old rule leaking back.
+- The map giving away an event's TITLE before you stand in it. The picture is free now; the words
+  are not.
+
+## 🗺🖼 ROUND SEVEN: THE SIGHTS AT 250%, THE CAPTAIN ON THE RIGHT  *(#115 · 2026-08-12 · build log 8f.142)*
+
+**Your two corrections to #114, shipped the same hour.**
+
+### How to reach it in three steps
+
+1. Reload the page (the art data changed, a stale tab shows the old size).
+2. Look at the map: the paintings are two and a half times the size, standing on their
+   node points like landmarks, each with a thin coloured outline. They come from the sharper
+   128px masters now, not the small files stretched.
+3. Find the company token: the Captain is the RIGHTMOST figure of the front rank, the way the
+   column faces. The named people stand to his left, the hired fill the ranks behind.
+
+### What should happen
+
+- **The name plates did not move and stay readable.** The painting towers over its own name.
+  Measured: no painting sits on any name plate on the current map. The Warm Spring moved 12px
+  east so the Hill Steading's painting clears its name.
+- **On the tightest pairs the paintings themselves may touch or overlap** (the Dead Company and
+  Bonepicker's Camp share a band). That is the price of 250% and mostly invisible in the
+  cut-outs' transparent padding. If a specific pair reads wrong on your screen, name it: the fix
+  is a small coordinate move, not shrinking everything.
+- **Clicking and hovering the painting works**: the whole landmark is part of its node's button.
+
+### What would be a bug
+
+- A blurry painting (would mean the old 48px files are still embedded; they are not).
+- The Captain anywhere but the right edge of the front rank, or not the tallest.
+- A painting covering a name so it cannot be read.
+
+## 🗺👣 THE MAP POLISH: BIGGER SIGHTS, A DEEPER COLUMN, UNPAID BITES  *(#114 · 2026-08-12 · build log 8f.141)*
+
+⚠ *Round seven above resizes this round's icons 48 -> 120px and moves the Captain to the right
+edge of the front rank. The rest of this section (ranks, UNPAID, the reveal rule) still stands.*
+
+**Your six map fixes.** The paintings left their boxes and grew to their full 48px, the company
+marches in ranks with the Captain and the named people at the head, and an unpaid day now costs
+real mood instead of printing a counter.
+
+**One point first, about "use icons for events that you know": that was already in.** All 22
+usable icons of the 23 went onto the nodes earlier today as #113. Your screenshot shows Blood on
+the Road as an outline X, which the current build does not do - it draws the ogre-and-ratkin
+painting there. That screenshot almost certainly came from a tab opened before #113 finished.
+⛔ **Reload the page first. If Blood on the Road still shows an X after a reload, that is a real
+bug and I need to know.**
+
+### How to reach it in three steps
+
+1. Continue (or start) a run and look at the map.
+2. Find the company token. Then hire past ten bodies (the two muster fields) and look again.
+3. Let the chest run dry and walk one leg of road with 0 crowns in it. Watch the mood chip.
+
+### What should happen
+
+- **A painted sight has no box any more.** The cut-out stands straight on the map at its full
+  48px (a third more painting than the boxed 36), with a thin coloured outline drawn around the
+  painting itself. The
+  outline speaks the old border's language: red on a battle place, gold when the road there is
+  open for you, blood-red under your cursor and where you stand. The soft pulse on a reachable
+  node is still there, behind the picture.
+- **The plain shapes keep their boxes.** A diamond or an X without a frame is a speck, so the
+  places with no painting (Grausen Hold, the Falling Star, the unrevealed road slots, the Snare
+  and the rest of #113's honest fallbacks) look as they did.
+- **Two road slots moved a few pixels** (one on the water road, and the Warm Spring) so the taller
+  paintings keep clean air between name plates. The spacing rule was re-run and returns zero.
+- **The company reads as a column with a head now.** The Captain stands in the front rank, first
+  in it, a head taller than everybody (10% on top of everybody's own 10% growth). Vesna, Skree,
+  Bruht, Marrow and the other named people stand in the front rank with him; hired spears fill
+  the ranks behind. Five to a rank: four people are one line, eight are two, thirteen are three
+  (5+4+4, and the fullest rank is the front one).
+- **UNPAID is one word now.** No day count on the chip. Instead, **every day the chest cannot pay
+  costs the company 10 mood**, which is roughly a rung a day on the ladder: three unpaid days walk
+  you from AT EASE to the edge of ON THE BRINK, and the mood chip is where you read it. The hover
+  on the chip explains all of it.
+- **What did not change about being unpaid:** the owed still lose nerve on the field (4 a day
+  each, personalities disagreeing), somebody may still walk at five days, and filling the chest
+  still settles everything at day's end.
+
+### What would be a bug
+
+- ~~A painting on a road slot you have never stood in.~~ *Reversed by your order in #116 (round
+  eight above): the painting shows from minute one now; only the name waits for arrival.*
+- The Captain not in the front rank, or drawn level with a recruit.
+- A mood drop that is not 10 on a day the wages went unpaid (a walkout costs 6 more on top, and
+  that one announces itself).
+- Any node's name plate sitting on another's after the two nudges. The check says they cannot.
+
+
+
+## 🗺🖼 THE SIGHTS ON THE ROAD  *(#113 · 2026-08-12 · build log 8f.140)*
+
+**Your icons are on the map.** Twenty-three of them, each on the node its event belongs to. No
+setup: start a run and look at the map.
+
+### How to reach it in three steps
+
+1. Start a run (or Continue).
+2. Look at the map. Eight nodes are already carrying a painted icon instead of the old outline
+   shape: **Blood on the Road · The Ruined Steading · The Black Fen · The Stone Field ·
+   Bonepicker's Camp · The Dead Company · The Hill Steading · The Door-Shrine**.
+3. Walk into any node called *"Something on the road"*. When you arrive, it puts up its real name
+   **and its icon at the same moment**.
+
+### What should happen
+
+- **The icon box is a little bigger than it was** - 40px instead of 33 - and its border is a little
+  thinner (2px instead of 3). The border colour still says what kind of place it is, and the legend
+  under the map still reads the same way.
+- **Nothing on the map moved.** Not one node coordinate changed. If two places look closer than
+  they used to, that is worth telling me, because the check says they are not.
+- ~~**A road slot keeps its secret.** Before you stand in it, a *"Something on the road"* node
+  draws the plain diamond it always drew - **no picture**.~~ *You reversed this in #116 (round
+  eight above): the painting shows from minute one; only the NAME waits for arrival.*
+- **A fixed, named place shows its sight from the start.** The Black Fen has the Fen-Mother on it
+  from the first screen. That is deliberate - the map has always printed the name, so there is
+  nothing left to hide.
+- **Some nodes still have the old outline shape, and that is not a gap.** Grausen Hold, The Falling
+  Star, The Broken Men, The Roadside Fire, The Muster Field, Coldharrow, The Long Fire, The Warm
+  Spring, The Last Muster and The Snare have no icon in this pack. Three of the floating cards have
+  none either (**The Circle**, **The Ground Opens** and **the shipwreck**), so a revealed slot that
+  drew one of those three keeps the outline shape. They fall back to the shape and always will
+  until somebody paints them.
+
+### What I could not check, and would like your eye on
+
+**I never saw the built map.** The screenshot path was not available this session, so everything
+above was verified by measuring the page rather than looking at it. Two questions only you can
+answer:
+
+1. **Does a 36px painted cut-out read against the painted ground underneath it?** These are
+   transparent cut-outs on a dark chip, sitting on a map that already has trees and hills on it.
+2. **Is the map busier than you want it?** Eight icons now, up to thirteen by the end of a run.
+
+If either answer is no, the fix is cheap and the number to move is the chip size - but it has a
+hard ceiling at 41px before two pairs of nodes start overlapping, so the real lever would be
+dropping the dark chip behind the art, not growing it.
+
+### What would be a bug
+
+- A node showing a picture that has nothing to do with it (an icon on the wrong event).
+- A broken-image mark, or an empty chip where an icon should be.
+- A node name plate landing on a neighbouring node, or a road price label landing on a name plate.
+  Both checks return clean, so if you see one, the checks are measuring the wrong thing.
+- An icon that stays bright when the rest of its node has gone dim (done, or too far).
+
+---
+
+## 🗺✨ THE ROAD SCREEN ROUND FIVE, AND THE FALLING STAR  *(#112 · 2026-08-12 · build log 8f.139)*
+
+**Your four map fixes, plus the new event.** Four of the five are on the first screen you see, so
+this one needs no setup: start a run and look at the top of the map.
+
+### The four map fixes
+
+- **The day came up out of the map.** DAY / time-of-day / where-you-are was a box hanging 36px
+  over the top of the painting; it is inside the top bar now, still dead centre. The map got 36px
+  back. Nothing about what it says changed.
+- **The company on the road is 10% bigger** (each body 26 → 29px).
+- **You are 10% bigger again, at the head of the pack** (32px, front rank, first place). Before
+  this, "the leader is first" was true of the code and invisible on the screen, because thirteen
+  bodies at one height have no head to them. **Look for the tallest figure in the front-left.**
+- **The mood chip and the heart chip now say they are doors.** ⛔ This was a real bug and not a
+  preference: both have opened a card since #106 and both were rendering with the *help* cursor
+  and no hover state, because the `click` class they carry was never given a CSS rule. Hovering
+  either now also draws a ruled **▸ CLICK: ...** line at the bottom of the tooltip, saying what it
+  will cost (a party is N provisions, double rations are 3). The party and kit chips got the same
+  row, since they had the same sentence buried in dim italic.
+
+**What would be a bug:** the day plaque overlapping the contract plaque or the ♪ button · the
+walking pack looking like a grid rather than a pack (the foot-overlap now tracks body height, so
+if the two rows separate, that is this) · a chip with the pointer cursor that opens nothing.
+
+### ✨ THE FALLING STAR - the new event
+
+**How to reach it: start a run, finish the tavern, click the one road east.** It is the first stop
+now, one day out of Grausen Hold, and every road runs through it.
+
+- **The opening is now: tavern brawl → one night → THE FALLING STAR → one day → Blood on the
+  Road.** Two fights with a decision between them instead of back to back.
+- **The road is two days where it was one, and the wagon starts with 17 more crowns for it**
+  (65 / 107 depending on whether your last company died). You should arrive at Blood on the Road
+  *with more* in the chest than before, not less: measured, day 3 with 49 crowns where it used to
+  be day 2 with 40.
+- **One wish, four ways to spend it, and they are four different currencies:** the company's mood,
+  the chest, one of *them* permanently, or *you* permanently. Nothing here is free.
+- **The two permanent doors give one point of the person's WEAKEST stat**, and the line they
+  speak is written from that stat. That is deliberate: a wish is for the thing you have not got,
+  so a battle-mage asks to be able to hold a door shut and an archer asks for their hands. **It is
+  written into their history and shows on their sheet for the rest of the run.**
+- *"Give it to whoever needs it most"* does not let you pick. It goes to whoever is carrying a
+  strange condition, then whoever is worst hurt, then whoever has gone longest unpaid.
+- **The game never says the star did any of it.** The silver is a cart that came off the road in
+  some other year. Low magic, and a wish is a thing people do, not a thing that works.
+
+**What would be a bug:** the person who explains the custom in the body being a different person
+from the one the outcome talks about · the outcome talking about you in the third person · a
+permanent point that is gone after a save and reload · the map saying anything other than 1 day
+for each of the two legs.
+
+---
+
 ## 🚪⚔ THE BRAWL, ROUND TWO - your nineteen points  *(#111 · 2026-08-12 · build log 8f.138)*
 
 **All nineteen shipped.** What to re-test, in the order you will meet it (the #108 section below

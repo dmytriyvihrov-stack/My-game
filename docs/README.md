@@ -108,11 +108,11 @@ several unstable foundations at once · is spectacle with no encounter contract 
 
 ## 3. Where it stands
 
-**Act 1 is feature-complete and playable end to end.** A full run: tavern prologue → Blood on the
-Road → a fork → the Ruined Steading and the dogs → the Muster Field and the armourer → the Black Fen
-and the Fen-Mother → Coldharrow → a fork → the Thing in Armour → the Warm Spring → the last fork →
-the shrine → the Last Muster → the Snare. **17 to 21 days, eight routes, eleven beats no road can
-skip.**
+**Act 1 is feature-complete and playable end to end.** A full run: tavern prologue → the Falling
+Star → Blood on the Road → a fork → the Ruined Steading and the dogs → the Muster Field and the
+armourer → the Black Fen and the Fen-Mother → Coldharrow → a fork → the Thing in Armour → the Warm
+Spring → the last fork → the shrine → the Last Muster → the Snare. **18 to 22 days, eight routes,
+twelve beats no road can skip.**
 
 **Built:** hex combat on 15x13 with facing arcs, engagement and parting swings · two AI brains
 (`aiTurn`, `autoStep`) · a five-rung nerve ladder · cooldowns · one-hand/two-hand equipment · forced
