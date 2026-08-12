@@ -23,6 +23,35 @@
 
 ---
 
+## 🎒 THE COMPANY SHEET TEMPLATE - A PICTURE TO JUDGE, NOT A BUILD  *(#133 · 2026-08-13 · build log 8f.161 · NOTHING IN THE GAME CHANGED)*
+
+**Your ask, the voice note with five screenshots:** *"too much information and not clear which
+one is important"* · *"start screen with main stats"* · *"paint very simplified picture of human
+or rat or ogre and place artifacts on top of it as in Caves of Qud"* · *"choice of perks in
+separate tab"* · *"skills... as in battle when you hover, but not more"* · and mid-session:
+*"start from building design template, as usual, rather than updating main file."* So this is a
+template to pick at, and the game is untouched.
+
+**How to reach it in two steps:** start the local server if it is not running (`tools\serve.ps1`
+or the usual preview) → open **`http://localhost:8777/shots/133_company_sheet.html`**. (Opening
+the file straight from disk also works, except the frozen current-screen frame stays empty:
+that frame needs the server.)
+
+**What you are looking at, top to bottom:** the measured numbers (your current sheet is 1241px
+of scroll in a 678px window, 564 words) → **the current screen, frozen from the running build**
+(scroll inside it, that is the finding) → **the proposal, live**: hover the five skill cards,
+switch THE STASH / ★ PERKS tabs, click a perk to spend the banked point, open the story
+accordion. Gold pins quote your own words at the zone that answers them → the three race
+silhouettes close up, with the battle sprite in the corner as calibration → what deliberately
+did not move, the parked bags, and **three questions for you** at the bottom.
+
+**What would be a "bug" here:** any zone where the template answers a different sentence than
+the one you said · the doll silhouettes reading as the wrong amount of picture · a thing you
+use today (medicine chest, dismiss, strip-to-stash, the perk point) that you cannot find on the
+new shape. Say it in any order; the next session builds the picked version into the prototype.
+
+---
+
 ## ⚔ THE AFTER-BATTLE SCREEN, ON THE BATTLE BROTHERS SHAPE  *(#122 · 2026-08-12 · build log 8f.149)*
 
 **Your ask, three rounds in one day with your BB screenshot:** *"I love battle brotheres info. It

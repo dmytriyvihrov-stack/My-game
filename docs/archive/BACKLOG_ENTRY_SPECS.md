@@ -2607,3 +2607,129 @@ the lock, not for anything else.
   smuggles a tax into an automatic haul.
 - The DEAD card state ships as CSS keyed on a field nothing sets (`p.deadBattle`), waiting for
   #34.
+
+
+## 133 - The company sheet on the one-screen shape (the 🎒 company surface of the clarity pass)
+
+**CLAIMED** 2026-08-13 (#133 / 8f.161). **STATE: design round one is BUILT AND WAITING FOR HIS
+PICK.** `shots/133_company_sheet.html` is the clickable template (his order mid-session: *"and of
+course strart from building design tmmplare, as usssual, rather the updating mian file"*), with
+`shots/133_current_capture.html` beside it, the live screen serialized out of the running build.
+⛔ **The prototype is untouched. Nothing ships until he has looked at the template.**
+
+### The brief, verbatim (voice transcript, 2026-08-13, errors his)
+
+> *"The main problem too much information and not clear whic one is important and what means
+> what. Good examples of screens: Urtuk [and Caves of Qud], I actually like that there is on one
+> screen information about stats and characteristics and character and artifacts. And Battle
+> Brothers, another example, I like clarity of information, using this to work with workspace
+> quick ability to move many many things in one tab. mentally think we should spend less space
+> for inventory because it will be just, like, in general, smaller and maybe a bit more space to
+> the history of character. Yeah. But it's maybe nice to start screen with main studs [stats].
+> And inventory, I think this current picture of character is too ugly. Maybe we can just paint
+> very simplified picture of human or red [rat] or ogre and also place artifacts on top of it
+> as, for example, inventory in case of good [Caves of Qud]. And, also, then I think it will be
+> more manageable to show transformations or injuries. Like, this body part, they can do it,
+> you know, red or maybe some kind of sticks on it or something, so it will be visually. Also, I
+> think maybe it's nice to show small icon of this character, how it looks important and how it
+> actually looks on battlefield. So person has a more clear understanding. choice of perks in
+> separate tab because I feel we will have, like, quite proper perk tree. It's still in process.
+> So it's, like, in other tab on character screen. So one could be always inventory, and the
+> other could be with, like, inventory and character information. And another would be with,
+> like, for example, tab with perks. Yeah. Or maybe character information. you've seen on both
+> of the screen and then the active tab changes between inventory and perks. So I can actually
+> choose passive development seeing all kind of stats. What I like from Battle Brothers and I
+> see, like, active skills for a pers... character. I think it's nice. make SKF of good, case of
+> good [like Caves of Qud]. And also make it like the shape of armor. So from the positioning, I
+> understand what is what is happening versus belongs. And also add maybe one bag to inventory
+> or one or maybe even, like, two slots for for for bags, like, for throwables or some other
+> stuff. Maybe change weapons, maybe just one bag of it. And, yeah, Okay. Much shorter
+> description of skills, like do it as in battle, kind of extended version as in battle when you
+> hover, but not more. Maybe if... yeah. But what happened directly on on... in the bottom and
+> also guardian options mutations and and injuries. And, definitely, it should be shown
+> somewhere very simple, like, a small icon and what it does. And, also, if it's nice if it's
+> showing on the body image. If not, it's also kinda fine. that they... there don't need extra
+> extra space. Like, I mean, like, characters, descriptions right now, they're too big and
+> taking that much space and not that much actually useful information. Find a way to make it
+> more compact. I mean, I like button brothers in this case."*
+
+He attached five reference screenshots: Wildermyth's gear screen, Battle Brothers' inventory,
+Caves of Qud's paper-doll equipment tree, Wartales' companion sheet, Urtuk's roster screen.
+
+### The measurement (taken in the running build, his day-1 save, restored after byte-identical)
+
+The screen is `#inv`: roster 224px + sheet 756px + stash 300px, window 678px tall.
+
+| what | measured |
+|---|---|
+| day-1 Captain's sheet | 880px tall, 309 words |
+| L4 spearwoman, 2 scars, 1 change, 2 memories, banked level + perk point | **1241px tall (183% of the window), 564 words** |
+| the SKILLS block alone (the battle says the same in a hover) | 281px, **230 words** |
+| where the four stats sit for that character | ~520px down, below the history prose |
+| gear | a 2x2 TEXT grid, 132-194px, nowhere near the body |
+| the doll | 88x128 grey wireframe boxes, all knowledge hover-only |
+| perks | inline cards + drawer, 173px, and the real tree still to come |
+
+⚑ The sheet already starts stats-last: identity prose, history, scars, THEN the tells. His
+*"start screen with main stats"* is a straight inversion of the current order.
+
+### The design, as built in the template (one screen, no scroll, 676px measured)
+
+CENTRE, top to bottom: **head** (name, three chips, one personality clause, ON THE FIELD tile =
+the battle's own `sprite()` unchanged) → **stats band** (four tells + the battle's three bars +
+the swing line; a banked level spends on a tell, as #122 shipped it) → **the body zone** (the
+doll IS the gear map: race silhouette with four slots anchored to the parts, off hand SHOWS the
+two-handed conflict; scars as red marks on the part + red chips beside, a change glows teal and
+names the skill it grants, medicine chest under the chips) → **skills** (the battle's cards:
+icon, damage, cost pips on the face, the battle's own pop on hover, receipt + one effect
+sentence, nothing longer; MOVE stays off the sheet) → **the story** (two memories + the roads
+walked, up from one line, accordion for the rest) → dismiss, small, last.
+
+RIGHT PANE, tabbed: **🎒 THE STASH** (unchanged grammar: click item to equip, click worn slot to
+strip) / **★ PERKS** (the whole tree by level rails: TAKEN · CLICK TO TAKE · NEEDS A PERK POINT
+· LEVEL N; the future proper tree grows into this tab and nothing else moves that day). ⚑ The
+★ tab carries a BADGE with the banked point count, visible from every tab, so the old
+"invisible perk point reads as a broken screen" lesson survives the tab wall.
+
+ROSTER RAIL: not in the brief, untouched except the trait line it said twice.
+
+Race dolls: one anatomy per race (wide-low ogre, small hunched tailed ratkin), silhouette not
+boxes, and **the battle sprite stands in the frame corner as calibration: the doll should rhyme
+with the figure on the field.** Marks land on the part: red slashes = scars, teal glow = change,
+dashed teal ring = condition still running.
+
+### What deliberately does not move
+
+The click grammar · the medicine chest and dismiss doors (address change only) · both
+spend-a-point flows · every existing hover card (race, class, trait, tells, nerve ladder,
+gear tips) · the Captain's PET slot (joins the doll as a fifth box, his sheet only) · the
+roster rail · `drawInv()` remains the one renderer, `SLOTS`/`GEAR`/`effStats`/`unitFrom` remain
+the one source; the reshape is presentation only, band-clean.
+
+### ⏸ PARKED for his ruling: the bags
+
+He said *"add maybe one bag... or maybe even two slots for bags, like, for throwables or some
+other stuff. Maybe change weapons, maybe just one bag of it."* The honest finding: **the game
+has no throwable and no mid-fight weapon swap rule**, so today a bag slot is furniture with
+nothing to do, and the clarity pass forbids adding it as decoration. If he rules the bags in,
+they come WITH their rule (swap in battle at an action's cost, Battle Brothers style) as their
+own numbered entry. The template reserves the floor space under the OFF HAND box and says so.
+
+### Open questions put to him on the template
+
+1. Doll style: are the silhouettes the right amount of picture, or closer to painted?
+2. Default tab: THE STASH always, or PERKS whenever a point is banked?
+3. Should both spend moments (stat levels on the tells, perks in the tab) live in one place?
+
+### For the build session, when he picks
+
+- The build is a `drawInv()` rewrite plus CSS; no new state, no new rules. The doll painter
+  (`drawDoll`) grows the race silhouettes and keeps `partOf`/`MUTPART` marks; slots become
+  positioned children of the doll box; the skill row reuses the battle's `.act` card markup and
+  `noteLine()`; the perks pane reuses the perk card builder with `TREEOPEN` retired.
+- ⚠ `whisper('hands')` fires from the slot loop today: keep the teach line alive wherever the
+  TAKEN state renders.
+- ⚠ The sheet is also reached from the promotion flow and the "NEW KIT" nag (`iNag`); both must
+  survive the tab wall (equip nag belongs to the STASH tab, a banked point to the ★ badge).
+- Measure after: the target the template sets is **no scroll for a 2-scar, 1-change, L4 body**
+  at 678px, and the fold rule for richer bodies is that STATS and the BODY never leave it.
