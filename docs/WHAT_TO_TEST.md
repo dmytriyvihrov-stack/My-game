@@ -23,6 +23,49 @@
 
 ---
 
+## 🗺 THE LAST NINE MAP SIGHTS  *(#121 · 2026-08-12 · build log 8f.148)*
+
+**Your ask: "more events icons - add them to a global map".** GPT's nine remaining icons are in.
+**Every event that has art now has it on the map** - 32 sights embedded, 31 mapped.
+
+### How to reach it in three steps
+
+1. Menu → **Continue the road** (or **Take the road** for a fresh run).
+2. Look at the map. Nothing to click.
+3. The five new fixed ones are **The Falling Star** (far west, the first stop), **The Broken Men**
+   (north), **The Snare** (south), and on the east side **The Long Fire** and **The Warm Spring**.
+
+### What should happen
+
+- Those five nodes are **paintings**, not the old abstract diamond. Same 96px as the ones you
+  already approved, same silhouette ring, same foot caption.
+- Four more (**a stranded ship** · **a hole opening in the peat** · **a woman in a broken cage** ·
+  **a hooded circle round a fire**) belong to floating slots, so they show up **only when a run
+  deals them**. You may need more than one run to see all four.
+- **The price chips on the two roads down the east side moved 64px west.** That is deliberate and
+  it is the only layout change in this build. Everything else on the map is exactly where it was
+  this morning.
+
+### What would be a bug
+
+- A **blank gap** or a broken-image mark where a painting should be.
+- A **price chip sitting on a painting or on a name**, anywhere on the map, from any place you
+  stand. This was the thing that broke when the nine went in, and it is fixed, but it is the
+  first thing to look at.
+- A price chip so far from its road that you cannot tell **which road it is pricing**. It is
+  capped at one name-plate's width, but that cap is my judgement and not a measurement.
+- One of the nine reading as **a pile of stuff rather than a place**. If one does, say which: the
+  fix is a new source from GPT, not a code change.
+
+### What nobody has done yet
+
+**Looked at it.** The preview pane composites no frames again, so this build was verified by
+counters and by measuring the DOM, not by eye. If you want the nine on their own before you play,
+open **`shots/121_new_sights.html`** - they are at their real 96px on the map's own ground colour,
+with four already-live sights underneath for calibration.
+
+---
+
 ## 🍺⚔🏷 THE NEW OPENING: FIGHT FIRST, CONTRACT AFTER, A NAME, AND A MAP TOUR  *(#118 + #119 + #120 · 2026-08-12 · build logs 8f.145-147)*
 
 **Your five-task batch, built autonomously.** The whole opening is reordered to your script, so
