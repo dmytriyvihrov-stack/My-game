@@ -23,6 +23,42 @@
 
 ---
 
+## ⚔ THE AFTER-BATTLE SCREEN, ON THE BATTLE BROTHERS SHAPE  *(#122 · 2026-08-12 · build log 8f.149)*
+
+**Your ask, three rounds in one day with your BB screenshot:** *"I love battle brotheres info. It
+gets you in one go - who did what"* · *"Don`t give choices about artifacts get - just give
+artefacts"* · *"Show name of your company"* · *"push it to a main build, when it is unlicked."*
+
+**How to reach it in three steps:** continue or start a run → walk into any road fight (Blood on
+the Road is two nodes in) → win it. The tavern brawl and the clash keep their own aftermath prose
+cards first; every fight then lands on the new report.
+
+**What should happen, screen one:** your company's name over the outcome title, one narrow
+paragraph of prose, then **a card per person**: their painted face, ☠ kills · ⚔ damage dealt ·
+🩸 damage taken. Somebody carried off wears a **bloody frame with the scar named on the card**;
+the one who levelled wears a **gold arrow and "level N · spend it on the sheet"**; both can sit
+on one card at once. Below: **the loot arrives by itself, no question** - a gear haul is a boxed
+strip with an empty dashed square (that square is where your item art will land), a plain
+resource haul is one mono line. Then a collapsed line "▸ THE FIELD THEY LEFT · N dead" that
+opens into who they were. **No crowns/provisions/salvage total on this screen any more.**
+
+**Screen two exists only when somebody is begging** and holds ONLY that decision. The pick
+settles in place and the road button lights. On a fight with no prisoners the first screen's
+button is already "Back to the road": one screen, done.
+
+**The level-up choice moved to the sheet.** After a stat level, open INVENTORY → that person:
+the WHO THIS IS label says **"1 LEVEL TO SPEND. CLICK A TRAIT"** and the four trait words are
+outlined green; click one and it spends. A perk level banks a perk point exactly as "Decide
+later" always did.
+
+**What would be a bug:** a levelled or scarred person with no mark on their card · numbers that
+look like floats · the accordion opening on its own · a resource haul drawn in the boxed strip ·
+any resource total at the foot of the screen · a mercy fight whose road button lights before the
+pick · a stat point that cannot be spent from the sheet · the company name missing on a run that
+has one (a save from before the naming card correctly shows none).
+
+---
+
 ## 🃏 THE CHOICE-WEIGHT PASS: NINE EVENTS GOT SIMPLER  *(#123 · 2026-08-12 · build log 8f.150)*
 
 **Your ask, off the ChatGPT conversation about decision fatigue:** *"for 30%-40% of events it

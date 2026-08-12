@@ -2409,9 +2409,10 @@ door-distance field with a two-turn stuck-breaker, and the brawl is exempt from 
 
 ## 122 - The after-battle screen, on the Battle Brothers shape
 
-**STATE: specced + mockup, 2026-08-12. ⛔ NOT BUILT. The picture gate is paid
-(`shots/122_after_battle.html`); the build waits for the user's review of the mockup and of the
-two interpretation calls below.**
+**STATE: ✅ SHIPPED 2026-08-12, build log 8f.149, after three user rounds on the mockup in one
+day. The record is [`CHANGELOG.md`](../CHANGELOG.md) 8f.149; the test bench section is in
+[`WHAT_TO_TEST.md`](../WHAT_TO_TEST.md). This spec stays as the reasoning and the verbatim
+rounds.**
 
 **The order, 2026-08-12, verbatim (with his Battle Brothers victory-screen screenshot attached):**
 
@@ -2570,3 +2571,39 @@ line, kills/dealt/taken sum sanely).
 flow for the sheet; the arrow badge is the after-battle's whole statement about a level), and
 call two (the one compressed prose paragraph above the grid) survived the rebuild. Screen two is
 now the prisoners and NOTHING else, so it exists on exactly the fights where `MERCYASK` fires.
+
+### Round three, 2026-08-12, the approval and the build order, verbatim
+
+> *"if you get resourses - show it simplier, nt as artifact*
+>
+> *Show name of your company*
+>
+> *Maybe text on the top a little bit less wide*
+>
+> *and everething else good - push it to a main build, when it is unlicked"*
+
+Three fixes and a green light. **"when it is unlicked" is the prototype lock**: another session
+held `claim.ps1 lock` for the choice-weight pass when the order arrived, so the build waits for
+the lock, not for anything else.
+
+1. **A resource haul is a plain receipt line** (mono, "◉ +45 crowns · their purses..."), no box
+   and no art slot. The boxed strip with the reserved ART SLOT square is for GEAR only.
+2. **The company name on the card**: `G.coName` (the #119 pick), mono caps kicker above the
+   title.
+3. **The top prose is narrower**: max-width ~540px, centered, on the paragraph only.
+
+**Build rulings settled while implementing (the spec is the record):**
+
+- `strike()` grows `d.taken` beside `a.dealt` at the one line both pass through: the 🩸 number
+  is accumulated body damage, so a downed body shows what it actually took, not the 0.7
+  write-off.
+- The promotion pick leaves the flow: a perk level banks `perkPoints` (machinery exists), a stat
+  level banks `p.statPoints`, and the sheet's WHO THIS IS tells become the spend buttons when
+  points wait. The card keeps hover; a click spends.
+- **The two remaining decision-row questions die with their prices, per the standing rule above
+  ("drop the price with the question")**: clash's "Bury what is left" and mother's "Drag her
+  clear" are retired (their −1 day was the question), mother's gem-cutting folds into the hauls
+  with its morale tax dropped. `lootIsChoice` and linter 9c stay as the guard that no future row
+  smuggles a tax into an automatic haul.
+- The DEAD card state ships as CSS keyed on a field nothing sets (`p.deadBattle`), waiting for
+  #34.

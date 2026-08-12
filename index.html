@@ -1883,13 +1883,9 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:11px;pa
 /* the compact who-is-this card (promotion screen) */
 .whoc{background:#221a10;border:1px solid #4d3c22;padding:8px 11px;margin:8px 0;
       display:flex;flex-direction:column;gap:2px;text-align:left}
-/* the orders of battle on the after-fight screen */
-/* Tightened after a playthrough (user: "smaller, and we don't need text
-   below"). The footer total went with it — see battleReport(). */
-.obrow{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin:2px 0 4px}
-.obcol{background:#1f1a10;border:1px solid #4d3c22;border-left:3px solid #8ca35a;padding:5px 7px}
-.obcol.foe{border-left-color:var(--blood)}
-.obh{font-family:var(--mono);font-size:8px;letter-spacing:.14em;color:#8a7449;margin-bottom:2px}
+/* the enemy roll on the after-fight screen. The two-column order of battle
+   (.obrow/.obcol/.obh) died with #122: the company's half is the crew grid
+   now and the enemy half lives in the accordion, rows only. */
 .orb{display:flex;justify-content:space-between;gap:8px;font-family:var(--body);font-size:10.5px;
   color:#bdb8a8;line-height:1.25}
 /* the second line of a roll entry: who they are, and what they dealt */
@@ -2123,6 +2119,89 @@ body:has(#world.on) #audioBtn{top:8px;bottom:auto;font-size:11px;padding:3px 8px
 .popt:disabled{cursor:default}
 .settledmark{font-family:var(--mono);font-size:9px;letter-spacing:.06em}
 .popt.danger{border-color:#6b2a24}.popt.danger:hover{background:#3a1d18}
+/* ═══ #122 - THE AFTER-BATTLE CARD, ON THE BATTLE BROTHERS SHAPE ═══════════
+   One report screen: the crew grid (state told by the FRAME: blood = carried
+   off, gold arrow = promoted, ash = dead-when-#34-arrives), the loot given
+   below it, the enemy accordion. Mocked and approved in
+   shots/122_after_battle.html; the classes are prefixed ab* because .crew
+   and .face already mean other things elsewhere on this file. */
+.abco{font-family:var(--mono);font-size:10px;letter-spacing:.28em;color:var(--g3);
+  text-align:center}
+.abtop{max-width:540px;margin:0 auto;text-align:center}
+.abtop p{font-size:13.5px}
+.absub{font-family:var(--mono);font-size:10px;letter-spacing:.12em;color:#7a6238;
+  text-align:center}
+.abgrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px}
+.abcrew{position:relative;border:1px solid var(--g2);
+  background:linear-gradient(170deg,#2a2010,#1a1309);
+  padding:9px 10px 8px;display:flex;gap:9px;align-items:flex-start;overflow:hidden}
+.abface{width:44px;height:44px;flex:none;border:1px solid var(--g2);object-fit:cover;
+  object-position:top;background:#1a1309;position:relative;z-index:1}
+.abname{font-family:var(--display);font-size:12.5px;letter-spacing:.05em;color:var(--g4);
+  line-height:1.15;position:relative;z-index:1}
+.abkind{font-family:var(--mono);font-size:8.5px;letter-spacing:.1em;color:#8a7449;margin-top:1px}
+.abnums{font-family:var(--mono);font-size:11px;margin-top:5px;display:flex;gap:10px;
+  color:#a89468;position:relative;z-index:1}
+.abk{color:var(--bone)}.abd{color:#8ca35a}.abt{color:#c15d55}
+/* the XP slot exists on every card and is HIDDEN until XP exists (user:
+   "i will add it in the futrue - for current stuff you can just hide it").
+   Flip to inline and the layout is already right. */
+.abx{color:var(--g3);display:none}
+.abline{font-size:10.5px;font-style:italic;margin-top:3px;position:relative;z-index:1}
+.abscarline{color:#a33b34}
+.abuplne{color:#8ca35a}
+.abbadge{position:absolute;top:-1px;left:-1px;width:17px;height:17px;background:#3d2f1d;
+  border:1px solid var(--g4);color:var(--g4);font-size:10px;line-height:15px;
+  text-align:center;z-index:2}
+/* DOWN: the bloody frame, blood dripping off the top edge, a pool low. */
+.abcrew.scar{border-color:#a33b34;box-shadow:inset 0 0 20px rgba(122,31,34,.65)}
+.abcrew.scar:before{content:'';position:absolute;inset:0;pointer-events:none;
+  background:
+    radial-gradient(26px 60px at 12% -8%,rgba(163,59,52,.8),transparent 65%),
+    radial-gradient(14px 42px at 30% -6%,rgba(122,31,34,.85),transparent 70%),
+    radial-gradient(20px 52px at 55% -10%,rgba(163,59,52,.6),transparent 65%),
+    radial-gradient(10px 34px at 76% -4%,rgba(122,31,34,.8),transparent 70%),
+    radial-gradient(48px 30px at 6% 78%,rgba(122,31,34,.5),transparent 70%),
+    radial-gradient(70px 34px at 100% 105%,rgba(163,59,52,.45),transparent 70%)}
+.abcrew.scar .abface{border-color:#5d2a26}
+.abcrew.up{border-color:var(--g4)}
+.abcrew.up.scar{border-color:#a33b34}
+/* DEAD: designed now, worn later. ⛔ Nothing on the roster dies in battle
+   today (#34 owns that chain); this state waits on `p.deadBattle`, which
+   nothing sets. It ships so the day somebody does die, the card already
+   knows what that looks like. */
+.abcrew.dead{border-color:#3a332b;background:#12100b;
+  box-shadow:inset 0 0 26px rgba(0,0,0,.8)}
+.abcrew.dead .abface{border-color:#3a332b;filter:grayscale(1) brightness(.45)}
+.abcrew.dead .abname{color:#8a8172}
+.abcrew.dead .abkind,.abcrew.dead .abnums,.abcrew.dead .abk,.abcrew.dead .abd,
+.abcrew.dead .abt{color:#57503f}
+.abdeadline{color:#8a8172}
+/* the loot: a GEAR haul is a strip with the reserved art square; a RESOURCE
+   haul is one plain receipt line (user, round three: "show it simplier, nt
+   as artifact"). The dashed square is the slot his item art lands in the
+   day it exists - no art ships with #122. */
+.abloot{display:flex;align-items:center;gap:12px;border:1px solid #3d2f1d;
+  background:#171208;padding:9px 12px}
+.abslot{width:40px;height:40px;flex:none;border:1px dashed var(--g2);display:flex;
+  align-items:center;justify-content:center;font-family:var(--mono);font-size:7.5px;
+  color:#7a6238;text-align:center;line-height:1.3}
+.abloot .abwhat{font-size:13px;color:#d3c194}
+.abloot .abgot{font-family:var(--mono);font-size:11px;color:#8ca35a;margin-top:2px}
+.abres{font-family:var(--mono);font-size:11.5px;color:#8ca35a;padding:2px 2px 0}
+.abres span{color:#a89468}
+/* the enemy accordion: collapsed by default, the count is the headline */
+.abacc{border:1px solid #3d2f1d;background:#141007;padding:8px 12px;width:100%;
+  font-family:var(--mono);font-size:10px;letter-spacing:.12em;color:#8a7449;
+  cursor:pointer;user-select:none;text-align:left}
+.abacc:hover{border-color:var(--g2)}
+.abacc b{color:#a89468;font-weight:400}
+.abaccbody{border:1px solid #3d2f1d;border-top:none;background:#141007;
+  padding:4px 12px 10px;display:none;margin-top:-12px}
+.abaccbody.on{display:block}
+/* the sheet's tells become the spend buttons when a stat level is banked */
+.tl.spend{outline:1px solid #8ca35a;cursor:pointer}
+.tl.spend:hover{background:#1e2416}
 .popt b{font-family:var(--display);font-size:14px;color:var(--g4);font-weight:600}
 .popt i{font-family:var(--mono);font-size:9px;color:#8a7449;font-style:normal;line-height:1.35}
 .tally{display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px 16px;font-family:var(--mono);
@@ -9252,6 +9331,11 @@ function strike(a,d,act,mult){
      dealt"). BODY damage only, so the per-person figures add up to the
      total the card has always printed. */
   a.dealt=(a.dealt||0)+Math.max(0,hpD);
+  /* #122 - and who took it, same line, same unit of account. The 🩸 number
+     on the after-battle card is what the body actually absorbed, which a
+     downed unit's hp cannot answer (the 0.7 write-off is a healing rule,
+     not a record of the fight). */
+  d.taken=(d.taken||0)+Math.max(0,hpD);
   fx(d,'−'+Math.round(hpD),'#e08a80');
   /* the collision: a hard white ring if the harness turned it, blood if it
      found the body. Ranged shots flash on the target without the lunge. */
@@ -16533,18 +16617,21 @@ const LOOT={
      fx:{salvage:3},gear:'spear'},
     {t:'Go through the packs. Both sides of the road.',c:'+30 crowns +2 provisions',
      fx:{crowns:30,food:2}},
-    {t:'Take the club. It takes two of you to lift it.',c:'a warclub',gear:'club'},
-    {t:'Bury what is left of them. Both lots.',c:'−1 day · they think better of you',
-     fx:{days:1,morale:10}}],
+    {t:'Take the club. It takes two of you to lift it.',c:'a warclub',gear:'club'}],
+  /* #122 - THE FIELD QUESTION IS GONE (user: "Don't give choices about
+     artifacts get - just give artefacts"), so the two fights that still
+     asked one stopped asking. Per the standing rule below, the price died
+     with the question: clash's burial and mother's "drag her clear" were
+     decisions about a DAY, not about loot, and are retired rather than
+     becoming a random tax; mother's gem-cutting folds into the hauls with
+     its morale price dropped. */
   mother:[
     {t:'Take the hide. It is most of a cart-load.',c:'+12 salvage +60 crowns',
      fx:{salvage:12,crowns:60}},
     {t:'The long tooth out of the front of her.',c:'a tooth, still warm at the root',
      gear:'tooth'},
     {t:'Cut out whatever the light under her skin was coming from.',
-     c:'+2 gems · it sits badly with them',fx:{gems:2,morale:-5}},
-    {t:'Drag her clear of the causeway and leave her be.',
-     c:'−1 day · quietly approved of',fx:{days:1,morale:12}}],
+     c:'+2 gems',fx:{gems:2}}],
   snare:[
     {t:'Strip the dead for iron and rivets.',c:'+10 salvage',fx:{salvage:10}},
     {t:'Take their coin-purses and the chieftain’s ring.',c:'+70 crowns',fx:{crowns:70}},
@@ -16966,34 +17053,16 @@ function afterBattle(){
   if(!G.party.length){toDefeat();return;}
   consequences(scarred);
 }
-/* ONE SCREEN: what you took, who is carrying what away, and who came out of
-   it better. Both picks live here; the road button unlocks when they are made. */
-/* ═══ WHO WAS THERE, AND WHAT IT COST THEM ═══════════════════════════════
-   (User: "the after-battle screen should show in general what happened, as in
-   Total War — who were you guys, who were the enemies, and briefly damage.")
-   Read off the battle before it is discarded: both orders of battle, what each
-   side lost, and the one line of arithmetic that actually describes the fight.
-   Called from consequences() while B is still alive. */
-function battleReport(){
-  if(!B||!B.units)return '';
-  const side=s=>B.units.filter(u=>s==='you'?(u.side==='you'&&!u.pet):u.side==='foe');
-  const mine=side('you'),theirs=side('foe');
-  const down=a=>a.filter(u=>u.dead||u.downed||u.fled).length;
-  /* ROUNDED. Damage is carried as a float all the way through `strike`, so this
-     was printing "118.65640762357248 hitpoints dealt" on the after-battle card.
-     Nothing that reaches the player may show a raw float. */
-  const nameOf=u=>u.ally?u.name+' (with you)':u.name;
-  /* ═══ WHO THEY WERE, AND WHAT THEY DID ════════════════════════════════
-     User, after a playthrough: "show class, race, and how much damage
-     dealt" — and, on the panel as a whole, "smaller, and we don't need text
-     below." Both are the same fix. The footer line was a *total* of exactly
-     the two things the rows now say themselves (who went down, how much was
-     dealt), so it was a summary of the table sitting directly under the
-     table. Rows carry it per person; the footer is gone.
-
-     The second line is the person, not the statblock: SPEARWOMAN · human.
-     A grouped enemy row ("Ogre, club ×2") already names its own kind, so it
-     only gets the line when the group is one body with a class on it. */
+/* ═══ #122 - THE AFTER-BATTLE REPORT, ON THE BATTLE BROTHERS SHAPE ════════
+   (User, with the BB victory screenshot: "I love battle brotheres info. It
+   gets you in one go - who did what.") The old two-column order of battle
+   split in half: the company's side became the CREW GRID (portraits, three
+   numbers, state told by the frame), the enemy side became the ACCORDION.
+   Both are read off B before it is discarded - called from consequences()
+   while B is still alive. Mocked and approved: shots/122_after_battle.html. */
+function foeReport(){
+  if(!B||!B.units)return {html:'',dead:0,fled:0};
+  const theirs=B.units.filter(u=>u.side==='foe');
   const kindOf=u=>{
     /* ⚠ A MONSTER IS NOT A RACE, and the report was the last screen that had
        not heard. `build()` hands every unit a race and falls back to 'ratkin'
@@ -17007,278 +17076,190 @@ function battleReport(){
     const r=u.race||'';
     return (c&&r)?c+' · '+r:(c||r);
   };
-  const roll=a=>{
-    /* group identical statblocks — "Ratkin, spear ×3" reads, six lines do not */
-    const seen={},order=[];
-    a.forEach(u=>{const k=nameOf(u);
-      if(!seen[k]){seen[k]={n:0,lost:0,dealt:0,kind:kindOf(u)};order.push(k);}
-      seen[k].n++;
-      seen[k].dealt+=(u.dealt||0);
-      if(u.dead||u.downed||u.fled)seen[k].lost++;});
-    return order.map(k=>{
-      const s=seen[k],dealt=Math.round(s.dealt),kind=s.n>1?'':s.kind;
-      /* no empty second line: a grouped allied statblock with no class and
-         no damage to its name would otherwise print a blank row */
-      return '<div class="orb"><span>'+k+(s.n>1?' ×'+s.n:'')+'</span>'+
-        '<span'+(s.lost?' style="color:#c15d55"':' style="color:#8ca35a"')+'>'+
-        (s.lost?s.lost+' down':'unhurt')+'</span></div>'+
-        ((kind||dealt)?'<div class="orbsub"><span>'+kind+'</span><span>'+
-          (dealt?dealt+' dealt':'')+'</span></div>':'');}).join('');
-  };
-  const rounds=B.round;
-  return '<div class="lbl" style="color:#8a7449">HOW IT WENT — '+rounds+' round'+
-      (rounds>1?'s':'')+' · '+down(mine)+' of '+mine.length+' of yours went down</div>'+
-    '<div class="obrow">'+
-      '<div class="obcol"><div class="obh">YOUR COMPANY</div>'+roll(mine)+'</div>'+
-      '<div class="obcol foe"><div class="obh">AGAINST YOU</div>'+roll(theirs)+'</div>'+
-    '</div>';
+  /* group identical statblocks - "Ratkin, spear ×3" reads, six lines do not.
+     ROUNDED: damage rides as a float through `strike`, and nothing that
+     reaches the player may show a raw float. */
+  const seen={},order=[];
+  theirs.forEach(u=>{const k=u.name;
+    if(!seen[k]){seen[k]={n:0,dead:0,fled:0,dealt:0,kind:kindOf(u)};order.push(k);}
+    const s=seen[k];s.n++;
+    if(u.fled)s.fled++;else if(u.dead||u.downed)s.dead++;
+    s.dealt+=(u.dealt||0);});
+  let dead=0,fled=0;
+  const html=order.map(k=>{
+    const s=seen[k];dead+=s.dead;fled+=s.fled;
+    const state=[s.dead?s.dead+' dead':'',s.fled?s.fled+' fled':'']
+      .filter(Boolean).join(' · ')||'walked away';
+    const dealt=Math.round(s.dealt);
+    return '<div class="orb"><span>'+k+(s.n>1?' ×'+s.n:'')+'</span>'+
+      '<span style="color:#c15d55">'+state+'</span></div>'+
+      '<div class="orbsub"><span>'+(s.n>1?'':s.kind)+'</span><span>'+
+      (dealt?'dealt '+dealt+' against you':'')+'</span></div>';}).join('');
+  return {html:html,dead:dead,fled:fled};
+}
+/* one card per person on the roster: the face the battle rail already draws,
+   three numbers off the unit's own ledger, and the STATE on the frame -
+   blood for carried off, the gold arrow for the level, ash for dead (which
+   nothing sets today; #34 owns that chain, the CSS just waits for it).
+   The hidden ✦ slot is the future XP number, per the user's order. */
+function crewCards(scarred,hero){
+  return '<div class="abgrid">'+G.party.map(p=>{
+    const u=B&&B.units?B.units.find(x=>x.id===p.id):null;
+    const sc=scarred.find(x=>x.p===p);
+    const up=p===hero;
+    const kills=(u&&u.killsShown)||0,dealt=Math.round((u&&u.dealt)||0),
+          taken=Math.round((u&&u.taken)||0);
+    const cls=p.cls&&CLASSES[p.cls]?CLASSES[p.cls].n:'';
+    return '<div class="abcrew'+(sc?' scar':'')+(up?' up':'')+(p.deadBattle?' dead':'')+'">'+
+      (up?'<div class="abbadge">▲</div>':'')+
+      '<img class="abface" src="'+faceURI(u||{id:p.id,race:p.race,cls:p.cls})+'" alt="">'+
+      '<div><div class="abname">'+fullName(p)+'</div>'+
+      '<div class="abkind">'+(cls?cls.toUpperCase()+' · ':'')+(p.race||'').toUpperCase()+'</div>'+
+      '<div class="abnums"><b class="abk">☠ '+kills+'</b><b class="abd">⚔ '+dealt+
+        '</b><b class="abt">🩸 '+taken+'</b><b class="abx">✦ 0</b></div>'+
+      (sc?'<div class="abline abscarline">carried off · '+sc.s.n.toLowerCase()+'</div>':'')+
+      (up?'<div class="abline abuplne">level '+p.level+' · spend it on the sheet</div>':'')+
+      '</div></div>';}).join('')+'</div>';
 }
 function consequences(scarred){
-  const report=battleReport();       /* while B still exists */
+  const foes=foeReport();            /* while B still exists */
+  const mine=B.units.filter(u=>u.side==='you'&&!u.pet);
+  const downN=mine.filter(u=>u.dead||u.downed||u.fled).length;
+  const rounds=B.round;
   show('spoils');
   const table=LOOT[G.battleKind]||LOOT.snare;
-  /* ═══ THE HAUL ARRIVES (#55) ═══════════════════════════════════════════
-     User, 2026-08-01, from the playthrough: *"Reward after battle automatical
-     (you don't need to choose. You chose only lvl and sometimes what to do
-     with prisoners)."*
-
-     One row, drawn from the HAULS only (see lootIsChoice above), applied at
-     once, and reported by name — the removal is of the question, not of the
-     receipt. Drawing at random from the pool IS "roughly what an average pick
-     was worth" by construction, so nothing is tuned here; if it turns out to
-     be generous or mean, that is a number for #50 and not a judgement for
-     this session.
-
-     What is left over is the fight's DECISIONS, and they stay a question —
-     the "sometimes" in the user's own sentence. Four of the eight fights have
-     one; the other four go straight through to the promotion. */
+  /* ═══ THE HAUL ARRIVES (#55), AND SINCE #122 IT IS THE WHOLE ANSWER ═════
+     User, 2026-08-01: *"Reward after battle automatical (you don't need to
+     choose...)"* - and 2026-08-12, on this screen's rework: *"Don't give
+     choices about artifacts get - just give artefacts."* One row, drawn at
+     random, applied at once, reported by name. The field QUESTION is gone:
+     the two fights that still asked one stopped asking (see the LOOT
+     tables), and `lootIsChoice` stays as the guard that keeps any future
+     decision row from being drawn as an automatic tax. */
   const hauls=table.filter(l=>!lootIsChoice(l));
   const haul=pickOne(hauls.length?hauls:table);
   takeLoot(haul);
-  /* the leave-it option is APPENDED here and not authored per fight, because
-     it is the one option that must exist on every one of these questions —
-     it is what makes the block impossible to softlock on, and it is a real
-     answer rather than a cancel button */
-  const field=table.filter(lootIsChoice);
-  if(field.length)field.push({t:'Leave it. The road is waiting.',
-    c:'nothing, either way',leave:true});
   const hero=pickOne(G.party);
   hero.level++;
+  /* ═══ #122 - THE PICK LEFT THE FLOW. The level happens HERE (the gold
+     arrow on the card is the receipt); the CHOICE waits on the sheet. A
+     perk level banks a perk point exactly as "Decide later" always did; a
+     stat level banks `statPoints`, and the WHO THIS IS tells on the sheet
+     are the spend buttons while any wait (see drawInv). */
   let isPerk=hero.nextIsPerk;
   if(isPerk&&!perksLeft(hero))isPerk=false;
   hero.nextIsPerk=!hero.nextIsPerk;
-  const statOpts=[['str','GETS STRONGER','carries more weight, every swing lands harder'],
-    ['agi','GETS HANDIER','faster with the weapon, harder to hit'],
-    ['int','SEES MORE OF IT','better at finding an opening, and off the field'],
-    ['mor','STEADIES','harder to break, and everything they do hurts more']];
-  const pool=isPerk?perkPool(hero).filter(k=>hero.perks.indexOf(k)<0):[];
   if(isPerk)hero.perkPoints=(hero.perkPoints||0)+1;
-  const perkMode=isPerk&&pool.length>0;
+  else hero.statPoints=(hero.statPoints||0)+1;
   /* the begging enemy, if this fight ended with one. Read ONCE and cleared:
      a flag that survives its own screen would ask the next fight the same
      question. */
   const mercy=MERCYASK;MERCYASK=null;
-  const st={mercy:!mercy,field:!field.length,promo:!perkMode&&!isPerk?false:false};
-  if(isPerk&&!pool.length)st.promo=true;      /* nothing to learn — nothing to pick */
   const a=AFTER[G.battleKind]||AFTER.def;
-  /* ═══ TWO BEATS, NOT ONE LEDGER (playtest #6) ═════════════════════════
-     Everything used to arrive on one card: outcome, orders of battle, loot,
-     scars, promotion, the character sheet, perk choices and the books. It
-     worked and it read as *a tax return after every fight* — the climax
-     dissolving into an administrative queue.
-
-     Split at the natural seam:
-       1. WHAT HAPPENED — the field, who fell, what it cost. You read it.
-       2. WHAT YOU TAKE / WHO CHANGED — the two decisions, and only the ones
-          that exist: no scar block when nobody was hurt, no promotion block
-          when there is nothing to choose.
-     The books shrink to one line at the foot of the second beat. */
-  st.beat=1;
-  const draw=()=>{
-    /* a function, because the books move when a choice is settled and the
-       card is no longer redrawn to catch up with them (see beat two) */
-    const booksLine=()=>'◉ '+G.run.crowns+' crowns · ❦ '+G.run.food+' provisions · ▤ '+
-      G.camp.salvage+' salvage · ◈ '+G.camp.gems+' gems · mood '+(G.morale>0?'+':'')+G.morale;
-    const books='<div class="bookline" id="cqBooks">'+booksLine()+'</div>';
-    if(st.beat===1){
-      $('sCard').innerHTML='<h1>'+a.t+'</h1>'+
-        '<p>'+(G.battleKind==='mother'?(G.cubLine?G.cubLine+' ':''):'')+a.b+'</p>'+
+  const crew=crewCards(scarred,hero);   /* also while B is alive */
+  /* ═══ ONE REPORT, THEN ONLY THE DECISION THAT EXISTS (#122) ═════════════
+     The two beats survive but changed jobs. Screen one is the WHOLE report
+     - the crew grid, the haul, the accordion - and on a fight with no
+     begging enemy it is the whole flow. Screen two exists only when
+     somebody is kneeling. #55's un-softlockable contract holds: everything
+     on screen one is a receipt, and the only gate left is the one question
+     that exists. The books line is GONE from this flow by the user's round
+     two ("you don't need to show all your resources at the end of battle
+     screen"): the receipt shows what was gained, the top bar shows what
+     you own. */
+  const finish=()=>{
+    G.spareLine=null;
+    /* the act finale ends here: the cage already had its say */
+    if(G.epiLine){const e=G.epiLine;G.epiLine=null;toEpilogue(e);return;}
+    afterPromotion();
+  };
+  const accHead=on=>(on?'▾':'▸')+' THE FIELD THEY LEFT · <b>'+foes.dead+' dead'+
+    (foes.fled?' · '+foes.fled+' fled':'')+'</b>';
+  /* a GEAR haul is a strip with the reserved art square (his item art lands
+     there the day it exists); a RESOURCE haul is one plain receipt line
+     (user, round three: "show it simplier, nt as artifact") */
+  const lootHtml=(haul.gear||haul.gear2)
+    ?'<div class="abloot"><div class="abslot">ART<br>SLOT</div>'+
+      '<div><div class="abwhat">'+haul.t+'</div><div class="abgot">'+haul.c+'</div></div></div>'
+    :'<div class="abres">'+haul.c+' <span>· '+haul.t+'</span></div>';
+  const drawOne=()=>{
+    $('sCard').innerHTML=
+      /* the company's own name over the outcome - user, round three:
+         "Show name of your company". Old saves may not have one. */
+      (G.coName?'<div class="abco">'+G.coName.toUpperCase()+'</div>':'')+
+      '<h1 style="text-align:center">'+a.t+'</h1>'+
+      '<div class="absub">'+rounds+' ROUND'+(rounds>1?'S':'')+' · '+
+        (downN?downN+' OF '+mine.length+' OF YOURS WENT DOWN'
+              :'NOBODY OF YOURS WENT DOWN')+'</div>'+
+      '<div class="abtop">'+
+        '<p>'+(G.battleKind==='mother'?(G.cubLine?G.cubLine+' ':''):'')+
+          a.b.replace(/\n\n/g,'</p><p>')+'</p>'+
         (G.spareLine?'<p style="color:#8a7449;font-style:italic">'+cast(G.spareLine)+'</p>':'')+
-        report+
-        (scarred.length?'<div class="lbl" style="color:#8a7449">CARRIED OFF THE FIELD AND '+
-          'PATCHED UP</div><div class="tally" style="grid-template-columns:1fr">'+scarred.map(x=>
-          '<div style="color:#c9a227">'+who(x.p)+' — <b style="float:none;color:var(--g4)">'+
-          x.s.n+'</b> <span style="color:#8a7449">'+x.s.d+'</span></div>').join('')+'</div>'+
-          '<p style="font-size:12.5px;color:#8a7449;font-style:italic">Everyone who has done this '+
-          'work for a season has a limp or a wrong-shaped hand. Replacing him is cheap. Replacing '+
-          '<b>him</b> is not.</p>':'')+
-        '<div class="popts"><button class="popt" id="cqNext"><b>'+
-        (mercy?'Go and see what they want':'Pick over the field')+'</b>'+
-        '<i>'+(mercy?'some of them are still alive and they are asking'
-          :field.length?'what came off it, what is left on it, and who is the better for it'
-          :'what came off it, and who is the better for it')+'</i></button></div>';
-      const nb=$('cqNext');
-      if(nb)nb.onclick=()=>{st.beat=2;draw();};
-      return;
-    }
-    /* ═══ BEAT TWO IS ONE SCREEN, NOT TWO ═════════════════════════════════
-       (User, 2026-08-01: "в меню после битвы щас три экрана. объедини экраны
-       2 и 3, т.к. 3й экран почти полностью копирует 2й.")
-
-       There was never a third screen in the code, and that is precisely why
-       it read as a wasted one. Beat two used to REDRAW ITSELF after each
-       pick: the buttons vanished, an italic sentence saying the same thing
-       took their place, the card jumped back to the top, and the player
-       pressed one more button on what looked like a near-copy of what they
-       had just been reading.
-
-       The pick SETTLES IN PLACE now. What you chose stays exactly where it
-       was with a tick on it, what you did not fades, the books at the foot
-       update, and the road button lights up. Nothing is redrawn and nothing
-       moves under the hand that just clicked. The receipt IS the choice.
-
-       ⚠ #55's un-softlockable contract is unchanged, and it now has one
-       reader instead of being re-derived in the markup: `markGo`. Both
-       halves start answerable (`st.field` is true on a fight with no
-       question, and every question that exists carries the appended
-       leave-it option), and the road button is the only thing that asks. */
-    $('sCard').innerHTML='<h1>WHAT YOU CARRY AWAY</h1>'+
-      /* ═══ THE PEOPLE BEFORE THE PROPERTY ══════════════════════════════
-         First on the card, and the only section that gets a paragraph of
-         its own: it is the one question here that the pillar is actually
-         about, and it used to be a whole screen. Everything below it is
-         arithmetic by comparison. */
-      (mercy?'<div class="lbl" style="color:#8a7449" id="sMercyLbl">'+MERCY.head+'</div>'+
-        /* the paragraph and the strip label are spoken by whoever is actually
-           kneeling. See MERCYSAY: `mercy` is people only by construction */
-        '<p style="margin:0 0 2px">'+mercyLine(mercyRace(mercy))+'</p>'+
-        '<div class="popts" id="sMercy">'+MERCY.opts.map((o,i)=>
-          '<button class="popt'+(o.danger?' danger':'')+'" data-i="'+i+'"><b>'+
+      '</div>'+
+      '<div class="lbl" style="color:#8a7449">THE COMPANY</div>'+crew+
+      '<div class="lbl" style="color:#8a7449">TAKEN OFF THE FIELD</div>'+lootHtml+
+      '<button class="abacc" id="abAcc">'+accHead(false)+'</button>'+
+      '<div class="abaccbody" id="abAccBody">'+foes.html+'</div>'+
+      '<div class="popts" style="grid-template-columns:1fr">'+
+        '<button class="popt" id="cqNext"><b>'+
+        (mercy?'Go and see what they want':'Back to the road')+'</b><i>'+
+        (mercy?'some of them are still alive and they are asking'
+              :'the company can move again')+'</i></button></div>';
+    const ac=$('abAcc');
+    if(ac)ac.onclick=()=>{
+      const body=$('abAccBody'),on=!body.classList.contains('on');
+      body.classList.toggle('on',on);ac.innerHTML=accHead(on);};
+    const nb=$('cqNext');
+    if(nb)nb.onclick=()=>{if(mercy)drawTwo();else finish();};
+  };
+  /* screen two: the prisoners, and nothing else. The pick SETTLES IN PLACE,
+     unchanged from the old beat two: what you chose keeps its colour and a
+     tick, what you did not fades, the road button lights. */
+  const drawTwo=()=>{
+    $('sCard').innerHTML=
+      '<h1 style="text-align:center">'+MERCY.head+'</h1>'+
+      /* the paragraph and the strip label are spoken by whoever is actually
+         kneeling. See MERCYSAY: `mercy` is people only by construction */
+      '<div class="abtop"><p>'+mercyLine(mercyRace(mercy))+'</p></div>'+
+      '<div class="popts" id="sMercy" style="grid-template-columns:1fr">'+
+        MERCY.opts.map((o,i)=>'<button class="popt'+(o.danger?' danger':'')+
+          '" data-i="'+i+'"><b>'+
           (o.strip?(MERCYSAY[mercyRace(mercy)]||MERCYSAY.ratkin).strip:o.t)+'</b>'+
-          '<i>'+o.c+'</i></button>').join('')+'</div>':'')+
-      /* the receipt. Not a choice and not a congratulation: the company
-         picked the field over while you were catching your breath. */
-      '<div class="lbl" style="color:#8a7449">TAKEN OFF THE FIELD</div>'+
-      '<p style="margin:0"><span style="color:#c9b98f">'+haul.t+'</span> '+
-        '<span style="color:#8ca35a">· '+haul.c+'</span></p>'+
-      (field.length?
-        '<div class="lbl" style="color:#8a7449" id="sFieldLbl">AND WHAT IS LEFT OF THEM</div>'+
-        '<div class="popts" id="sField">'+field.map((l,i)=>
-          '<button class="popt" data-i="'+i+'"><b>'+l.t+'</b><i>'+l.c+'</i></button>').join('')+
-          '</div>'
-        :'')+
-      '<div class="lbl" style="color:#8a7449" id="sPromoLbl">'+fullName(hero).toUpperCase()+
-        ' IS PROMOTED · LEVEL '+hero.level+'</div>'+
-      (st.promo?'<p style="color:#8ca35a;font-style:italic;margin:0">'+(st.promoT||
-          'Nothing left for them to learn tonight.')+'</p>'
-        :whoCard(hero)+'<div class="popts" id="sPromo">'+
-          (perkMode
-            ? pool.map((k,i)=>'<button class="popt" data-i="'+i+'"><b>'+PERKS[k].n+'</b><i>'+
-                PERKS[k].d+'</i></button>').join('')+
-              '<button class="popt" data-i="-1"><b>Decide later</b><i>keep the perk point. '+
-              'Spend it any time from the INVENTORY</i></button>'
-            : statOpts.map((o,i)=>{
-                const k=o[0],now=tell(k,hero.st[k]),then=tell(k,hero.st[k]+1),up=tellNext(k,hero.st[k]);
-                return '<button class="popt" data-i="'+i+'"><b>'+o[1]+'</b><i>'+
-                  (now!==then?'<span style="color:var(--g4)">'+now+' → '+then+'</span>'
-                    :up?now+' <span style="color:#7a6238">· closer to '+up+'</span>'
-                       :now+' <span style="color:#7a6238">· as far as it goes</span>')+
-                  ' · '+o[2]+'</i></button>';}).join(''))+'</div>')+
-      books+
-      /* NOT `disabled`. See cqGo's handler: a disabled button eats the click
-         and says nothing back, which is the same experience as a broken one. */
-      '<div class="popts"><button class="popt" id="cqGo" style="opacity:.4">'+
-        '<b>Back to the road</b><i>there is still something to settle</i></button></div>';
-    wireWhoCard(hero);            /* the promoted face, painted */
-    /* the one reader of "is everything answered" */
-    const markGo=()=>{
-      const g=$('cqGo');if(!g)return;
-      const done=st.mercy&&st.field&&st.promo;
-      g.dataset.done=done?'1':'';
-      g.style.opacity=done?'':'.4';
-      const sub=g.querySelector('i');
-      if(sub)sub.textContent=done?'the company can move again'
-                                 :'there is still something to settle';
-    };
-    /* ⚠ WHAT AN UNANSWERED SCREEN OWES A CLICK. This card used to grey the
-       exit out and disable it, so a player who had not read the subtitle
-       clicked a button that did nothing at all and had no way to learn why
-       (playthrough, 2026-08-02). The click is a QUESTION - "why can I not
-       leave" - and the screen already knows the answer, so it points at it. */
-    const nudge=()=>{
-      const id=!st.mercy?'sMercyLbl':!st.field?'sFieldLbl':'sPromoLbl';
-      const lbl=$(id);if(!lbl)return;
-      lbl.scrollIntoView({block:'center',behavior:'smooth'});
-      const box=lbl.nextElementSibling||lbl;
-      box.style.transition='none';box.style.outline='1px solid var(--g4)';
-      lbl.style.color='#c9b98f';
-      setTimeout(()=>{box.style.transition='outline .5s';box.style.outline='0 solid transparent';
-                      lbl.style.color='#8a7449';},520);
-    };
-    /* the pick stops being an offer and becomes the record of itself.
-       `line` is for a section whose answer has PROSE behind it (the begging
-       enemy has a sentence about what happened to them); a section whose
-       button already says the whole answer gets nothing but the mark. */
-    const settle=(box,btn,lblId,tail,line)=>{
-      box.querySelectorAll('.popt').forEach(x=>{
-        x.disabled=true;
-        x.classList.add(x===btn?'picked':'notpicked');});
-      const lbl=$(lblId);
-      if(lbl&&lbl.querySelector('.settledmark')===null){
-        const m=document.createElement('span');
-        m.className='settledmark';m.style.color='#8ca35a';
-        m.textContent=' · '+tail;lbl.appendChild(m);}
-      if(line){
-        const p=document.createElement('p');
-        p.style.cssText='color:#8a7449;font-style:italic;margin:6px 0 0';
-        p.textContent=cast(line);
-        box.parentNode.insertBefore(p,box.nextSibling);}
-      const bk=$('cqBooks');if(bk)bk.textContent=booksLine();
-      markGo();
-    };
+          '<i>'+o.c+'</i></button>').join('')+'</div>'+
+      /* NOT `disabled`. A disabled button eats the click and says nothing
+         back, which is the same experience as a broken one. */
+      '<div class="popts" style="grid-template-columns:1fr">'+
+        '<button class="popt" id="cqGo" style="opacity:.4"><b>Back to the road</b>'+
+        '<i id="cqGoSub">there is still something to settle</i></button></div>';
+    let done=false;
     const mb=$('sMercy');
-    if(mb)mb.querySelectorAll('.popt').forEach(b=>b.onclick=()=>{
-      if(st.mercy)return;
+    mb.querySelectorAll('.popt').forEach(b=>b.onclick=()=>{
+      if(done)return;done=true;
       const o=MERCY.opts[+b.dataset.i];
       sfx(o.sp==='killed'?'death':'coin');
       takeMercy(o);              /* the same one applier the old screen used */
-      st.mercy=true;
-      settle(mb,b,'sMercyLbl','settled',o.after);});
-    const fb=$('sField');
-    if(fb)fb.querySelectorAll('.popt').forEach(b=>b.onclick=()=>{
-      if(st.field)return;
-      const l=field[+b.dataset.i];
-      sfx(l.leave?'back':'coin');
-      if(!l.leave)takeLoot(l);    /* the same one applier: morale and days included */
-      st.field=true;st.fieldT=l.t;
-      settle(fb,b,'sFieldLbl','settled');});
-    const pb=$('sPromo');
-    if(pb)pb.querySelectorAll('.popt').forEach(b=>b.onclick=()=>{
-      if(st.promo)return;
-      const i=+b.dataset.i;
-      if(perkMode){
-        if(i>=0){hero.perks.push(pool[i]);hero.perkPoints--;
-          st.promoT=hero.name+' learns '+PERKS[pool[i]].n+'.';}
-        else st.promoT=hero.name+' keeps the perk point for now.';
-      }else{
-        hero.st[statOpts[i][0]]++;
-        st.promoT=hero.name+' '+statOpts[i][1].toLowerCase()+'.';
-      }
-      /* 'settled', not st.promoT: the button they clicked is already wearing
-         the answer, and printing it again beside the heading is the same
-         near-copy this whole change is here to delete */
-      sfx('promote');st.promo=true;
-      settle(pb,b,'sPromoLbl','settled');});
-    markGo();                     /* a fight with nothing to settle opens with it lit */
+      mb.querySelectorAll('.popt').forEach(x=>{x.disabled=true;
+        x.classList.add(x===b?'picked':'notpicked');});
+      if(o.after){
+        const pl=document.createElement('p');
+        pl.style.cssText='color:#8a7449;font-style:italic;margin:6px 0 0';
+        pl.textContent=cast(o.after);
+        mb.parentNode.insertBefore(pl,mb.nextSibling);}
+      const g=$('cqGo');if(g)g.style.opacity='';
+      const sub=$('cqGoSub');if(sub)sub.textContent='the company can move again';});
     const gb=$('cqGo');
     if(gb)gb.onclick=()=>{
-      if(!gb.dataset.done){nudge();return;}
-      G.spareLine=null;
-      /* the act finale ends here: the cage already had its say */
-      if(G.epiLine){const e=G.epiLine;G.epiLine=null;toEpilogue(e);return;}
-      afterPromotion();};
+      /* an unanswered screen owes the click an answer: point at the question
+         (playthrough, 2026-08-02 - the click is "why can I not leave") */
+      if(!done){
+        mb.scrollIntoView({block:'center',behavior:'smooth'});
+        mb.style.transition='none';mb.style.outline='1px solid var(--g4)';
+        setTimeout(()=>{mb.style.transition='outline .5s';
+          mb.style.outline='0 solid transparent';},520);
+        return;}
+      finish();};
   };
-  sfx('promote');draw();
+  sfx('promote');drawOne();
 }
 /* THE BUTCHER'S BILL and the standalone PROMOTION screen were DELETED
    (playtest #5: six screens after the Snare). Both are now sections inside
@@ -19109,7 +19090,12 @@ function drawInv(){
        here as numbers and the sheet read as a spreadsheet with a name on it.
        They are the same four values; they are just no longer an invitation to
        min-max a company you only get to keep for one run. */
-    '<div class="lbl" style="color:#8a7449">WHO THIS IS</div>'+
+    /* #122 - the promotion pick lives HERE now. A stat level banks
+       `statPoints` on the after-battle card, and the tells below become the
+       spend buttons: same shape as a banked perk point, same door. */
+    '<div class="lbl" style="color:#8a7449">WHO THIS IS'+
+      ((p.statPoints||0)>0?' · <span style="color:#8ca35a">'+p.statPoints+
+       ' LEVEL'+(p.statPoints>1?'S':'')+' TO SPEND. CLICK A TRAIT</span>':'')+'</div>'+
     '<div class="whorow">'+
       '<canvas id="iDoll" class="doll" width="88" height="128"></canvas>'+
       '<div class="whocol">'+
@@ -19117,7 +19103,8 @@ function drawInv(){
          the nerve ladder, so the player can find out where "Strong enough"
          actually sits without a number ever being printed */
       '<div class="tells">'+['str','agi','int','mor'].map(k=>
-        '<div class="tl" data-tell="'+k+'" style="cursor:help">'+
+        '<div class="tl'+((p.statPoints||0)>0?' spend':'')+'" data-tell="'+k+
+        '" style="cursor:help">'+
         '<span class="tk" style="color:'+TELLS[k].col+'">'+TELLS[k].lbl+
         '</span><span class="tv">'+tell(k,s[k])+'</span></div>').join('')+'</div>'+
       /* ═══ THE SAME BARS THE BATTLE PANEL USES ═══════════════════════════
@@ -19320,7 +19307,12 @@ function drawInv(){
         '<div style="font-style:italic;color:#a38652;margin-top:5px;font-size:11.5px">'+
         (STATHELP[k.toUpperCase()]?STATHELP[k.toUpperCase()].x:'')+'</div>';
       TIP.style.display='block';moveTip(e);};
-    el.onmousemove=moveTip;el.onmouseleave=()=>{TIP.style.display='none';};});
+    el.onmousemove=moveTip;el.onmouseleave=()=>{TIP.style.display='none';};
+    /* #122 - a banked stat level is spent on the tell itself */
+    if((p.statPoints||0)>0)el.onclick=()=>{
+      if((p.statPoints||0)<=0)return;
+      p.st[k]++;p.statPoints--;sfx('promote');
+      TIP.style.display='none';drawInv();};});
   /* class and race explain themselves wherever they are named — and here,
      where we know WHO is being looked at, they list what that person is
      actually carrying rather than what the class means in general */
@@ -25739,7 +25731,16 @@ function simFight(){startBattle(SIM.fight);}
    reports what happened, using the same order-of-battle the real after-fight
    screen uses — which is the whole reason to come here. */
 function simResult(how){
-  const report=(typeof battleReport==='function')?battleReport():'';
+  /* #122 - the same pieces the real after-fight screen uses: the crew grid
+     and the enemy roll. Built HERE, while B is alive and G.party is still
+     the borrowed sim roster; no scars and no promotion on a practice field,
+     so the grid gets an empty scar list and no hero. */
+  const report=(function(){
+    const f=foeReport();
+    return '<div class="lbl" style="color:#8a7449">THE COMPANY</div>'+
+      crewCards([],null)+
+      (f.html?'<div class="lbl" style="color:#8a7449">THE FIELD THEY LEFT</div>'+f.html:'');
+  })();
   const rounds=B?B.round:0;
   const downed=B?B.units.filter(u=>u.side==='you'&&!u.ally&&(u.dead||u.downed)) : [];
   const standing=B?B.units.filter(u=>u.side==='you'&&!u.ally&&!u.dead&&!u.downed&&!u.fled):[];
