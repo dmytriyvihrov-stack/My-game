@@ -2105,6 +2105,30 @@ a.popt.sendit{display:block;text-decoration:none}
   border:1px solid #3d2f1d;padding:3px 9px}
 #menuBtn.on{display:block}
 #menuBtn:hover{color:var(--g4)}
+/* ═══ #108 - THE SPOTLIGHT TEACH LAYER ════════════════════════════════════
+   One dim sheet inside #stage with a bright cutout over one REAL element.
+   z 61: above the battle chrome (39-41) and the card popovers (60), below
+   the retired .coach (70) and #gtTip (99). Lives inside #stage so the
+   phone rotation and the fit() scale are inherited for free. */
+#tutDim{position:absolute;inset:0;z-index:61;display:none;cursor:pointer}
+#tutDim.on{display:block}
+#tutHole{position:absolute;border:2px solid var(--gold);border-radius:9px;
+  box-shadow:0 0 0 4000px rgba(6,8,8,.66),0 0 14px rgba(217,189,126,.40);
+  animation:tutbeat calc(1.6s*var(--pace)) ease-in-out infinite;
+  transition:left .28s,top .28s,width .28s,height .28s}
+@keyframes tutbeat{
+  0%,100%{box-shadow:0 0 0 4000px rgba(6,8,8,.66),0 0 8px rgba(217,189,126,.28)}
+  50%{box-shadow:0 0 0 4000px rgba(6,8,8,.66),0 0 20px rgba(217,189,126,.60)}}
+@media (prefers-reduced-motion:reduce){#tutHole{animation:none}}
+#tutCard{position:absolute;width:292px;background:var(--panel);
+  border:1px solid var(--g3);padding:11px 13px;color:var(--t4);
+  font-family:var(--body);font-size:13.5px;line-height:1.45;
+  box-shadow:0 6px 22px rgba(0,0,0,.55)}
+#tutCard b{color:var(--g4);font-family:var(--mono);font-size:10px;
+  letter-spacing:.16em;display:block;margin:0 0 5px}
+#tutCard i{display:block;margin-top:8px;color:#6b8280;font-family:var(--mono);
+  font-size:9px;letter-spacing:.14em;font-style:normal}
+#tutArrow{position:absolute;width:0;height:0;border:9px solid transparent}
 /* ═══ #98 · THE SENTINEL. DO NOT MOVE IT, DO NOT DELETE IT ════════════════
    A stray comment terminator inside a comment ends that comment early, and
    every rule after it is silently discarded. Nothing throws, the console
@@ -6422,6 +6446,300 @@ function clashAllies(){
     return u;});
 }
 /* ═══════════════════════════════════════════════════════════════════════
+   #108 - THE THREE BELLS BRAWL. The intro fight, and the game's first
+   scripted one: a 1v1 that grows in waves, teaching one system at a time.
+
+   The script NEVER moves a body itself except through the engine's own
+   doors (mor, build, walkTo, the fled flag), so every readout, both AI
+   brains and the log stay truthful without being taught anything.
+
+   The teach layer is the SPOTLIGHT (tavTeach/tutShow below): a dim sheet
+   with a bright cutout over one real element and two sentences beside it.
+   The Captain-balloon lesson tier and the whisper toasts are muted for
+   this one fight (see learn()/whisper()), so Blood on the Road keeps its
+   eleven lessons unspent.
+   ═══════════════════════════════════════════════════════════════════════ */
+const TAVERN_T={
+  harl :{kind:'human',name:'Harl the carter',hp:52,armour:8,mor:52,skill:50,dodge:10,
+    speed:4,trait:'braggart',
+    acts:[{k:'club',n:'CUDGEL',cost:1,reach:1,dmg:[8,14],am:.55,ft:.35}]},
+  brakk:{kind:'human',name:'Brakk',hp:44,armour:6,mor:46,skill:44,dodge:12,
+    speed:4,trait:'cautious',
+    acts:[{k:'club',n:'CUDGEL',cost:1,reach:1,dmg:[7,12],am:.50,ft:.35}]},
+  osper:{kind:'human',name:'Osper',hp:40,armour:4,mor:42,skill:46,dodge:14,
+    speed:4,trait:'courage',
+    acts:[{k:'fists',n:'FISTS',cost:1,reach:1,dmg:[5,9],am:.30,ft:.45}]},
+  tull :{kind:'human',name:'Tull',hp:46,armour:6,mor:44,skill:42,dodge:10,
+    speed:4,trait:'stubborn',
+    acts:[{k:'club',n:'STOOL, SWUNG',cost:1,reach:1,dmg:[7,13],am:.45,ft:.35}]},
+  chitt:{kind:'ratkin',name:'Chitt',hp:34,armour:10,mor:60,skill:52,dodge:22,
+    speed:5,trait:'veteran',
+    acts:[{k:'knife',n:'KNIFE',cost:1,reach:1,dmg:[7,12],am:.35,ft:.55}]}
+};
+function tavernFoes(){
+  /* init 24: the Captain moves first, so every lesson lands on a player turn */
+  const f=build([[8,6,'harl',24]],TAVERN_T);
+  f[0].id='harl';f[0].drunk=true;
+  return f;
+}
+/* stand a scripted arrival on the board mid-fight. The first mid-battle
+   spawn in the game, so the checklist is written out: units, order (appended,
+   so an arrival acts at the end of the round and B.idx never re-runs a turn),
+   disposition, ground under their feet, render. */
+function tavernPlace(u){
+  const spots=[[u.col,u.row]].concat(nbrs(u.col,u.row));
+  const s=spots.find(p=>{const t=B.terr[K(p[0],p[1])];
+    return t!==undefined&&!BLOCKED[t]&&!at(p[0],p[1]);})||[u.col,u.row];
+  u.col=s[0];u.row=s[1];
+  B.units.push(u);
+  B.order.push(u);
+  B.disp={you:disposition('you'),foe:disposition('foe')};
+}
+function tavernWave1(){
+  if(!B.tut||B.tut.wave1)return;
+  B.tut.wave1=true;B.tut.phase=3;
+  const w=build([[10,6,'brakk',22],[11,6,'osper',21],[10,5,'tull',20]],TAVERN_T);
+  const ids=['tavB','tavO','tavT'];
+  w.forEach((u,i)=>{u.id=ids[i];u.facing=3;tavernPlace(u);});
+  say('The door bangs open. Three carters come through it, sober enough, and '+
+    'none of them is smiling.');
+  tavTeach('pocket');tavTeach('kick');
+  render();
+}
+function tavernWave2(){
+  if(!B.tut||B.tut.wave2)return;
+  B.tut.wave2=true;B.tut.phase=4;
+  const v=B.tut.bench.find(u=>u.id==='vesna');
+  if(v&&!B.units.some(x=>x.id==='vesna')){
+    v.col=5;v.row=5;v.facing=0;v.init=v.init||30;tavernPlace(v);
+    say('The woman at the bar has not moved all evening. She moves now, and '+
+      'the spear from behind the barrels was apparently hers.');
+  }
+  const c=build([[9,7,'chitt',19]],TAVERN_T)[0];
+  c.id='tavC';c.side='you';c.ally=true;c.facing=0;
+  tavernPlace(c);
+  say('The ratkin at the corner table finishes his drink, looks at the odds, '+
+    'and picks your side of them.');
+  tavTeach('crew');
+  render();
+}
+/* a broken brawler runs for the door, not for the map edge. Two stages on
+   purpose: reach the doorway one turn, gone the next, so the player SEES the
+   exit and the wave that follows it. */
+function tavernFlee(u,done){
+  const door=B.tut&&B.tut.door;
+  if(!door){routStep(u,done);return;}
+  if(u.col===door[0]&&u.row===door[1]){
+    if(u.id==='harl')tavernWave1();
+    u.fled=true;
+    say(u.name+' is through the door and gone into the dark.');
+    render();
+    if(checkEnd())return;
+    done&&done();return;
+  }
+  const rm=reachMap(u,moveBudget(u));
+  let best=null,bs=1e9;
+  Object.keys(rm.dist).forEach(k=>{
+    const p=k.split(',').map(Number);
+    if(at(p[0],p[1]))return;
+    const sc=hdist(p,door)*10+rm.dist[k];
+    if(sc<bs){bs=sc;best=p;}});
+  if(best&&hdist(best,door)<hdist([u.col,u.row],door)){
+    walkTo(u,best[0],best[1],rm);
+    if(u.id==='harl'&&u.col===door[0]&&u.row===door[1])
+      say('Harl is in the doorway, bawling names into the street.');
+  }
+  render();done&&done();
+}
+/* the script's clock, run once per turn from capTick */
+function tavernTick(){
+  const T=B.tut;if(!T)return;
+  const cap=B.units.find(u=>u.leader&&u.side==='you');
+  const harl=B.units.find(u=>u.id==='harl');
+  if(!T.taught.armour&&cap&&harl&&(cap.armour+harl.armour)<T.arm0)
+    tavTeach('armour');
+  if(T.phase===1&&harl&&!harl.dead&&!harl.fled){
+    if(harl.state!=='routed'&&(harl.hp<=harl.hpMax*0.55||B.round>=4)){
+      say('Harl looks at the blood on his own sleeve, and the ale goes out '+
+        'of him all at once.');
+      mor(harl,-harl.moraleMax,'');
+    }
+    if(harl.state==='routed'){T.phase=2;tavTeach('nerve');}
+  }
+  /* beaten down before he could run: his friends heard the furniture */
+  if(T.phase<3&&harl&&(harl.dead||harl.fled)&&!T.wave1)tavernWave1();
+  if(T.phase===3&&T.wave1){
+    if(!T.w1round)T.w1round=B.round;
+    if(B.round>=T.w1round+2||(cap&&cap.hp<=cap.hpMax*0.45))tavernWave2();
+  }
+}
+/* ─── the spotlight layer ─────────────────────────────────────────────── */
+const TUTSTEPS={
+  act:{h:'THE ROOM',
+    t:'One drunk carter wants your hide. Click a green hex to walk, click him '+
+      'to swing. Two actions a turn.',
+    a:()=>$('bActions')},
+  drunk:{h:'DRUNK',
+    t:'He is full of ale. Slower to land a blow, easier to catch with one, '+
+      'and his nerve was soft before the first swing. The badge on his head '+
+      'says so.',
+    a:()=>{const h=B.units.find(u=>u.id==='harl');
+      return h?{hexes:[[h.col,h.row]]}:null;}},
+  armour:{h:'ARMOUR',
+    t:'Iron soaks a blow before flesh does. The grey bar is the harness; the '+
+      'red one under it is the man inside.',
+    a:()=>{const w=document.querySelector('#bPlq .pbwrap');
+      return w?[].slice.call(w.children,0,4):null;}},
+  nerve:{h:'NERVE',
+    t:'Harl\'s nerve emptied before his body did. Every body carries this bar '+
+      'into a fight, and it breaks first. Watch the word.',
+    a:()=>$('bState')},
+  pocket:{h:'THREE ON ONE',
+    t:'Floor decides fights. Put your back in the corner by the hearth and '+
+      'they can only come at you one at a time.',
+    a:()=>({hexes:[[4,8],[5,8]]})},
+  kick:{h:'KICK',
+    t:'A boot is a human\'s oldest trick. Almost no blood, but it puts a man '+
+      'one hex straight back: off you, into a stool, out of your corner.',
+    a:()=>{const u=cur();if(!u)return $('bActions');
+      const i=u.acts.findIndex(x=>x.k==='kick');
+      return (i>=0&&document.querySelector('#bActions .act[data-a="'+i+'"]'))||$('bActions');}},
+  crew:{h:'NOT ALONE',
+    t:'Two more heads join the ladder: the woman from the bar, and a ratkin '+
+      'who owed Harl nothing. Not every friend on this island is human.',
+    a:()=>$('bTop')},
+  shove:{h:'HER TRADE',
+    t:'A spear fights at reach, and SPEAR WALL braces it: anything stepping '+
+      'into her front takes most of a spear on the way in. A class is a set '+
+      'of tricks like this one.',
+    a:()=>{const u=cur();if(!u)return $('bActions');
+      const i=u.acts.findIndex(x=>x.k==='wall'||x.k==='shove');
+      return (i>=0&&document.querySelector('#bActions .act[data-a="'+i+'"]'))||$('bActions');}}
+};
+function tutEl(){
+  let d=$('tutDim');
+  if(!d){
+    d=document.createElement('div');d.id='tutDim';
+    d.innerHTML='<div id="tutHole"></div><div id="tutArrow"></div>'+
+      '<div id="tutCard"><b id="tutH"></b><span id="tutT"></span>'+
+      '<i>CLICK TO GO ON</i></div>';
+    $('stage').appendChild(d);
+    d.onclick=e=>{e.stopPropagation();tutNext();};
+  }
+  return d;
+}
+/* stage-space rect of an element, a list of elements, or {hexes:[[c,r]..]}.
+   relPt carries the fit() scale and the phone rotation; the camera zoom is
+   inside the rects already, so this is correct at any stop. */
+function tutRect(a){
+  const st=$('stage');if(!st)return null;
+  let els=null;
+  if(a&&a.hexes)els=a.hexes.map(h=>document.querySelector(
+    '#bGrid [data-k="'+h[0]+','+h[1]+'"]')).filter(Boolean);
+  else if(Array.isArray(a))els=a.filter(Boolean);
+  else if(a)els=[a];
+  if(!els||!els.length)return null;
+  let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9,ok=false;
+  els.forEach(el=>{
+    const r=relPt(el,st);
+    if(!r||!r.w||!r.h)return;
+    ok=true;
+    x0=Math.min(x0,r.x);y0=Math.min(y0,r.y);
+    x1=Math.max(x1,r.x+r.w);y1=Math.max(y1,r.y+r.h);});
+  return ok?{x:x0,y:y0,w:x1-x0,h:y1-y0}:null;
+}
+function tutShow(step){
+  const S=TUTSTEPS[step];if(!S){tutNext();return;}
+  const r=tutRect(S.a&&S.a());
+  if(!r||r.w<2||r.h<2){tutNext();return;}   /* hidden pane, missing anchor */
+  const d=tutEl(),pad=6;
+  const hx=Math.max(0,r.x-pad),hy=Math.max(0,r.y-pad);
+  const hw=Math.min(1280,r.x+r.w+pad)-hx,hh=Math.min(720,r.y+r.h+pad)-hy;
+  const H=$('tutHole');
+  H.style.left=hx+'px';H.style.top=hy+'px';
+  H.style.width=hw+'px';H.style.height=hh+'px';
+  $('tutH').textContent=S.h;$('tutT').textContent=S.t;
+  d.classList.add('on');
+  if(B)B.tutLock=true;
+  const card=$('tutCard');
+  const cw=292,ch=card.offsetHeight||124;
+  const A=$('tutArrow');
+  let cx,cy,ar='';
+  if(hx+hw+18+cw<=1272){         /* room to the right */
+    cx=hx+hw+18;cy=clamp(hy+hh/2-ch/2,8,712-ch);
+    ar='left:'+(cx-17)+'px;top:'+(hy+hh/2-9)+'px;border-right-color:var(--gold);';
+  }else if(hx-18-cw>=8){         /* room to the left */
+    cx=hx-18-cw;cy=clamp(hy+hh/2-ch/2,8,712-ch);
+    ar='left:'+(cx+cw-1)+'px;top:'+(hy+hh/2-9)+'px;border-left-color:var(--gold);';
+  }else if(hy>360){              /* above */
+    cx=clamp(hx+hw/2-cw/2,8,1272-cw);cy=Math.max(8,hy-ch-24);
+    ar='left:'+(hx+hw/2-9)+'px;top:'+(hy-19)+'px;border-top-color:var(--gold);';
+  }else{                          /* below */
+    cx=clamp(hx+hw/2-cw/2,8,1272-cw);cy=Math.min(712-ch,hy+hh+24);
+    ar='left:'+(hx+hw/2-9)+'px;top:'+(hy+hh+1)+'px;border-bottom-color:var(--gold);';
+  }
+  card.style.left=cx+'px';card.style.top=cy+'px';
+  A.style.cssText='position:absolute;width:0;height:0;border:9px solid transparent;'+ar;
+}
+function tutNext(){
+  const q=B&&B.tut&&B.tut.q;
+  if(q&&q.length){tutShow(q.shift());return;}
+  const d=$('tutDim');if(d)d.classList.remove('on');
+  if(B)B.tutLock=false;
+}
+function tutFlush(){
+  if(window.TUT_SILENT)return;               /* the harness switches this on */
+  if(!B||!B.tut||!B.tut.q.length)return;
+  if(!$('battle')||!$('battle').classList.contains('on'))return;
+  const d=$('tutDim');
+  if(d&&d.classList.contains('on'))return;   /* already up; clicks drain it */
+  const u=cur();
+  if(!u||u.side!=='you'||u.ally||B.busy)return;
+  tutShow(B.tut.q.shift());
+}
+function tavTeach(k){
+  if(!B||!B.tut||B.tut.taught[k])return;
+  B.tut.taught[k]=true;
+  B.tut.q.push(k);
+  tutFlush();
+}
+/* ─── the two cards around the fight ──────────────────────────────────── */
+function tavernIntro(){
+  proCard('THE ROOM TURNS ROUND',
+    'The man in the good coat leaves the way men leave when the deal was the '+
+    'part they enjoyed. The room goes back to its noise. Most of it does.\n\n'+
+    'Harl the carter has been looking at the coin since it hit the table. '+
+    'Forty crowns, east, for a beggar in dead man\'s iron, and nobody has '+
+    'bought Harl a drink all year. He says most of this out loud. Then he '+
+    'stands up, and his stool goes over backwards, and the noise stops.',
+    [{t:'Stand up.',c:'you have been thrown out of better rooms than this',
+      go:()=>startBattle('tavern')}]);
+}
+function tavernAfter(){
+  G.tavernDone=true;
+  const kills=B.units.filter(u=>u.side==='foe'&&u.dead).length;
+  /* receipts carry, but a scar is not a thing fists and floorboards give */
+  G.party.forEach(p=>{
+    const u=B.units.find(x=>x.id===p.id);
+    if(u){p.hpLoss=clamp(Math.round(u.hpMax-Math.max(u.hp,1)),0,u.hpMax-1);
+      p.fights=(p.fights||0)+1;}});
+  const L=(LOOT.tavern&&LOOT.tavern[0])||{t:'',c:'',fx:{}};
+  pay('crowns',(L.fx&&L.fx.crowns)||0);
+  G.morale+=4;
+  B.tut=null;
+  show('spoils');
+  $('sCard').innerHTML='<h1>'+AFTER.tavern.t+'</h1>'+
+    '<p>'+AFTER.tavern.b.replace(/\n\n/g,'</p><p>')+'</p>'+
+    (kills?'<p style="color:#8a7449;font-style:italic">'+kills+' of them will '+
+      'not be getting up, and the barman is careful not to look at that side '+
+      'of the room.</p>':'')+
+    '<p style="color:#c9a227">'+L.t+' ('+L.c+') The room has seen what your '+
+    'iron is worth. (+4 morale)</p>'+
+    '<div class="popts"><button class="popt" id="tvGo"><b>Morning. The east '+
+    'road.</b><i>the crew, what it is worth, and what it is owed</i></button></div>';
+  $('tvGo').onclick=enterWorld;
+}
+/* ═══════════════════════════════════════════════════════════════════════
    THE PACK — a fight made entirely of things that will not stand still.
 
    Every dog bites and leaves, so there is nothing to hold a line against and
@@ -6735,7 +7053,7 @@ function build(plan,T){
              :t.kind==='wyrm'||t.kind==='cub'?'beast':'ratkin');
     /* the camp's dogs are placed by hand INSIDE the palisade, so the blanket
        push toward the far edge would throw them over their own wall */
-    const shift=G.battleKind==='pack'?0:FOE_SHIFT;
+    const shift=(G.battleKind==='pack'||G.battleKind==='tavern')?0:FOE_SHIFT;
     const cc=Math.min(COLS-2,e[0]+shift);
     /* PEOPLE ON THE OTHER SIDE HAVE PERSONALITIES TOO, and they change how
        that body moves — a cautious deserter hangs back out of reach, an
@@ -6842,7 +7160,15 @@ function startBattle(kind){
   if(!SIM.on)JOURNAL.put('battle','fight: '+G.battleKind,{pick:'joined'});
   $('bLegend').classList.toggle('open',!!LEGACY.legendOpen);
   const you=G.party.map(unitFrom);
-  const pet=petUnit();if(pet)you.push(pet);
+  /* #108 - the brawl opens with the Captain alone. The rest of the future
+     crew is built now (so the fight and the roster stay one set of bodies)
+     and benched; the script stands Vesna up in wave two. */
+  let tavBench=null;
+  if(G.battleKind==='tavern'){
+    tavBench=you.filter(u=>!u.leader);
+    for(let i=you.length-1;i>=0;i--)if(!you[i].leader)you.splice(i,1);
+  }
+  const pet=petUnit();if(pet&&G.battleKind!=='tavern')you.push(pet);
   /* deployment slots, generated so a hired company still fits on the field.
      THE CAMP IS THE EXCEPTION: there you are the ones being ambushed, so your
      line starts INSIDE the palisade around the fire and the pack comes at the
@@ -6894,6 +7220,7 @@ function startBattle(kind){
     ? [[7,CY-1],[7,CY+1],[9,CY-1],[9,CY+1],[8,CY-2],[8,CY+2],[7,CY],[9,CY],
        [6,CY],[10,CY],[8,CY-3],[8,CY+3]]
     : (kind==='armour'&&AR[G.armourPlan]) ? AR[G.armourPlan]
+    : G.battleKind==='tavern' ? [[6,6]]     /* #108 - mid-room, back to the hearth side */
     : [[2,CY-2],[2,CY],[1,CY-1],[1,CY+1],[2,CY+2],[3,CY-1],[1,CY-3],[3,CY+1],
        [1,CY+3],[3,CY-3],[0,CY],[0,CY-2]];
   you.forEach((u,i)=>{const p=slots[i%slots.length];
@@ -6908,6 +7235,7 @@ function startBattle(kind){
            :G.battleKind==='steading'?steading()
            :G.battleKind==='armour'?armourFoe()
            :G.battleKind==='circle'?circleFoes()
+           :G.battleKind==='tavern'?tavernFoes()
            :G.battleKind==='slingline'?slingline():foes();
   /* the side you took stands with you */
   if(G.battleKind==='clash')clashAllies().forEach(a=>you.push(a));
@@ -6979,8 +7307,13 @@ function startBattle(kind){
     if(!nbrs(u.col,u.row).some(p=>terr[K(p[0],p[1])]&&!BLOCKED[terr[K(p[0],p[1])]]))
       nbrs(u.col,u.row).forEach(p=>{if(terr[K(p[0],p[1])])terr[K(p[0],p[1])]='field';});
   });
-  openPockets(terr);              /* last, for the reason in its own comment */
-  scatterProps(terr);
+  /* #108 - the tavern is the one board NOT reachable from column 0: its
+     walls are the point, and openPockets would flood the whole room to rock.
+     Its props are hand-placed too, so the scatter pass stays out. */
+  if(TF.layout!=='tavern'){
+    openPockets(terr);            /* last, for the reason in its own comment */
+    scatterProps(terr);
+  }
   const flowers0=harvestFlowers(terr);   /* #64 — the hexes, all asleep */
   B={terr:terr,terrSeed:TF.seed*13+7,ground:TF.paint};  // temp, so paintTerrain can read it
   B={units:you.concat(foe),terr,round:1,idx:0,sel:null,reach:null,order:[],won:null,busy:false,
@@ -7013,6 +7346,16 @@ function startBattle(kind){
   /* #74 - THE ONE MARKED BODY, found once and held, because `circleNear` is
      read from inside both movement scorers and may not go looking. */
   B.marked=B.units.find(u=>u.mark==='circle')||null;
+  /* #108 - the brawl's script state rides on the battle band, regenerated
+     with the fight like everything else here. `noMercy`: routed brawlers
+     scramble out of the door instead of begging (see checkEnd). */
+  if(G.battleKind==='tavern'){
+    const harl=B.units.find(u=>u.id==='harl');
+    B.tut={phase:1,q:[],taught:{},door:[11,6],bench:tavBench||[],
+      arm0:((B.units.find(u=>u.leader&&u.side==='you')||{}).armour||0)+((harl||{}).armour||0)};
+    B.noMercy=true;
+    tavTeach('act');tavTeach('drunk');
+  }
   paintTerrain();
   /* The kind one lifts everyone standing near them — and `auraAll` means
      everyone, not everyone-on-your-side. Steadying the people who are about
@@ -7126,7 +7469,7 @@ function startBattle(kind){
      that has to be answered before any other lesson means anything. That
      ordering is why this stays ABOVE beginTurn(), which teaches the lessons
      that are about whoever is up. */
-  learnSides();
+  if(!B.tut)learnSides();   /* #108 - the brawl teaches with the spotlight */
   beginTurn();
   /* wounds do not close in a fight — they close on the road, a week at a time.
      Anybody already down is not "carrying the last fight", they are lying in
@@ -7235,7 +7578,10 @@ const mcost=(c,r,u)=>{
    becomes something he takes apart.
    `huge` is the second and third hex of a three-hex tree; `hugeA` is the one
    the picture is drawn from. Both block, only the anchor paints. */
-const BLOCKED={rock:1,fire:1,tree:1,huge:1,hugeA:1,wall:1,flower:1};
+/* #108 - the tap-room's furniture blocks a body like anything else; the
+   `door` is deliberately absent, it is walked through. */
+const BLOCKED={rock:1,fire:1,tree:1,huge:1,hugeA:1,wall:1,flower:1,
+  bar:1,table:1,stool:1};
 /* ═══ #82 - HOW TALL IS IT? ══════════════════════════════════════════════
    (User, 2026-08-03: "Spearmen can't hit through the tall objects (tree,
    group o rocks). Independent rock medium-small. But archers can shoot
@@ -7266,7 +7612,11 @@ const BLOCKED={rock:1,fire:1,tree:1,huge:1,hugeA:1,wall:1,flower:1};
    been true, which is why every mid-fight write to `B.terr` now throws the
    lane cache away. */
 const HEIGHT={tree:'TALL',huge:'TALL',hugeA:'TALL',wall:'TALL',
-              fire:'LOW',flower:'LOW'};
+              fire:'LOW',flower:'LOW',
+              /* #108 - the bar is a wall to an arrow; a table is #82's lone
+                 boulder wearing a tablecloth (COVER); a stool blocks a body
+                 and nothing else */
+              bar:'TALL',table:'MED',stool:'LOW'};
 const heightAt=(c,r)=>{
   const t=B.terr[K(c,r)];
   if(t==='rock')return loneRock(c,r)?'MED':'TALL';
@@ -7323,7 +7673,7 @@ const BLOCK_VEIL={
 /* Only two. The act finale has bells behind you; the camp ambush has you
    surrounded inside your own wall in the dark. Everywhere else you may leave —
    and pay for it (FLEECOST). */
-const NOWITHDRAW=['snare','pack'];
+const NOWITHDRAW=['snare','pack','tavern'];   /* #108 - your back is the corner */
 /* WHAT LEAVING COSTS, by what you are leaving. Walking out on a great beast is
    not the same act as walking out on four hungry deserters, and the price
    should say which one you just did. */
@@ -8089,6 +8439,7 @@ function dodgeOf(u){
   /* THE LINE: shoulder to shoulder, and nobody has to watch two sides */
   if(B&&inLine(u))d+=FORM.lineDodge;
   if(u.crippled>0)d-=10;               /* an arrow in the leg */
+  if(u.drunk)d-=8;                     /* #108 - the ale */
   d+=auraSum(u,'dodge');               /* somebody nearby is worth standing near */
   return Math.max(0,Math.round(softDodge(d)));
 }
@@ -8137,7 +8488,8 @@ function hitBreakdown(a,d,act){
       /* #82 - the receipt has to name the RIGHT thing in the way. One of these
          three is a person and one is a rock, and they are different problems:
          a body walks off, a boulder does not. */
-      parts.push((L.k==='SCREENED'?'screened ':L.k==='COVER'?'over a boulder ':
+      parts.push((L.k==='SCREENED'?'screened ':
+        L.k==='COVER'?(B.terrain==='tavern'?'over the table ':'over a boulder '):
         'a body in the way ')+LOS[L.k].hit);
     }
   }
@@ -8153,6 +8505,9 @@ function hitBreakdown(a,d,act){
   if(has(a,'duelist')&&threatsAt(a.col,a.row,a.side)===1){other+=8;parts.push('duellist +8');}
   if(a.trait==='counter'&&!a.moved){other+=8;parts.push('stood still +8');}
   if(tr(a,'vet')){other+=4;parts.push('old hand +4');}
+  /* #108 - both AI brains read this line for free, which is the whole reason
+     the status lives here rather than in a special case */
+  if(a.drunk){other-=12;parts.push('drunk −12');}
   if(tr(a,'cautious')&&a.hp>=a.hpMax*.5){other-=5;parts.push('cautious −5');}
   /* THE SWARM: too many small bodies on you to swing at any one of them */
   if(ringOf(a,'ratkin')>=FORM.swarmNeed){other+=FORM.swarmHit;
@@ -9310,7 +9665,10 @@ function beginTurn(){
     if(u.state==='routed'){say(u.name+' has broken. They will not hold this turn.');
       render();B.busy=true;later(()=>routStep(u,()=>{B.busy=false;nextTurn();}),440);return;}
     render();
-    learnTurn(u);}
+    learnTurn(u);
+    /* #108 - queued spotlight steps land at the top of a player turn, when
+       nothing is scheduled and the board is quiet */
+    if(B.tut){if(u.id==='vesna')tavTeach('shove');tutFlush();}}
 }
 /* ═══ #60 — THE LESSONS THAT ARE ABOUT WHOEVER IS UP ══════════════════════
    Hooked at the top of a PLAYER unit's turn, which is the moment that unit is
@@ -9535,6 +9893,16 @@ function checkEnd(){
      real exits below reaches into the campaign — spoils recruit people, defeat
      wipes the save, mercy sets `G.spared`. A practice fight resolves to a
      report and nothing else. */
+  /* #108 - the script may not be skipped by winning too fast. checkEnd runs
+     at strike resolution, so a killed Harl would end the fight before his
+     friends could come through the door: if the foe side empties before a
+     wave has entered, it enters NOW. Wave two is allies and cannot keep the
+     fight alive; it fires so the crew is standing there when the room
+     settles, which is what the aftermath card says happened. */
+  if(B.tut&&!foe.length){
+    if(!B.tut.wave1){tavernWave1();return false;}
+    if(!B.tut.wave2)tavernWave2();
+  }
   if(!foe.length){B.won=true;
     endLater(()=>SIM.on?simResult('won'):toSpoils([]),700);return true;}
   /* #74 - a fight in `BEATEN` does not end the run when you lose it. Its
@@ -9564,7 +9932,9 @@ function checkEnd(){
      `beg` is the broken PEOPLE, not the broken bodies, so a mixed field asks
      about the ones who can be asked about and nothing else. */
   const beg=foe.filter(f=>!f.monster);
-  if(beg.length&&foe.every(f=>f.state==='routed')&&B.round>=4){
+  /* #108 - `noMercy` is a fact about the FIGHT: a broken brawler scrambles
+     out of the door (tavernFlee) instead of begging on his knees */
+  if(!B.noMercy&&beg.length&&foe.every(f=>f.state==='routed')&&B.round>=4){
     B.won='mercy';
     endLater(()=>SIM.on?simResult('mercy'):toSpoils(beg),800);return true;}
   return false;
@@ -9819,6 +10189,7 @@ function partingShots(u,skip){
     strike(e,u,atk,has(e,'killzone')?1:.5);});
 }
 function selectAct(i){
+  if(B&&B.tutLock)return;      /* #108 - a spotlight is up */
   const u=cur(),a=u.acts[i];
   if(!canUse(u,a))return;
   if(a.move){
@@ -10148,7 +10519,7 @@ function throwRock(u,act,from,c,r){
 }
 function clickHex(c,r){
   const u=cur();
-  if(!u||u.side!=='you'||B.busy||u.state==='routed')return;
+  if(!u||u.side!=='you'||B.busy||B.tutLock||u.state==='routed')return;
   let tgt=at(c,r),a=B.sel;
   /* ═══ #91 - THE DEFAULT ATTACK. MOVE is standing, so a click on an enemy
      the weapon can reach IS the swing - the same offerAtk gate that lit the
@@ -10499,6 +10870,11 @@ function disposition(side){
    about the hex you are in.
    ═══════════════════════════════════════════════════════════════════════ */
 const STATUS={
+  /* #108 - the brawl's one status. A flag for the fight's whole length, so
+     it is the `u[k]===true` shape rather than a countdown. */
+  drunk:{n:'Drunk',g:'🍺',col:'#c9903a',
+    d:'Deep in his cups. −12 to hit, −8 dodge, and his nerve was soft before '+
+      'the first swing landed.'},
   /* #102 point 12 - the same mark CRIPPLING SHOT wears on its card. One
      fact, one glyph: the badge on the head and the card that put it there
      have to be recognisably the same thing. */
@@ -10883,7 +11259,9 @@ function raceVerb(u,T){
   return false;
 }
 function aiTurn(u){
-  if(u.state==='routed'){routStep(u,()=>{B.busy=false;if(!checkEnd())nextTurn();});return;}
+  if(u.state==='routed'){
+    (B.tut?tavernFlee:routStep)(u,()=>{B.busy=false;if(!checkEnd())nextTurn();});
+    return;}
   /* the cub will not close while its mother still stands. It circles,
      stays out of reach, and screams. Kill her and it stops being shy. */
   /* A passive creature never attacks and never will. It keeps to the edge of
@@ -11510,7 +11888,11 @@ const TERRAIN={
   forest :{paint:'forest',marsh:.94, rock:.99,  trees:26, huge:2,
            pool:['open','broken','anvil','spine']},
   /* #65. You are outside it. */
-  outpost:{paint:'dust',  marsh:.975,rock:.99,  layout:'outpost',trees:3}
+  outpost:{paint:'dust',  marsh:.975,rock:.99,  layout:'outpost',trees:3},
+  /* #108. The tap-room of the Sign of the Three Bells. Hand-built like the
+     camp and the outpost; the thresholds are set so the base roll writes
+     nothing but floor, and the layout branch does the rest. */
+  tavern :{paint:'tavern',marsh:.999,rock:.999, layout:'tavern'}
 };
 /* WHICH FIGHT IS FOUGHT WHERE, and the per-place numbers that are the
    PLACE rather than the KIND.
@@ -11649,7 +12031,12 @@ const FIELDS={
      WHOLE ENTRY KEPT RE-LEARNING: n=6 CANNOT TELL 0% FROM 20%. Three
      decisions here were nearly taken on eight runs and two of them would
      have been wrong. */
-  circle   :{t:'fen',   marsh:.94, rock:.99, pool:['broken']}
+  circle   :{t:'fen',   marsh:.94, rock:.99, pool:['broken']},
+  /* #108 - the intro brawl. Pinned like the Fen-Mother and for the same
+     reason: this board IS the tutorial, and the corner pocket by the hearth
+     is load-bearing. The layout is hand-built so the seed only moves the
+     floor stains. */
+  tavern   :{t:'tavern',seed:83, marsh:.999, rock:.999}
 };
 /* Merge: the TERRAIN kind, then the place's own overrides on top.
    ⚠ THE PRACTICE FIELD MAY REPLACE THE KIND, AND ONLY THERE. `SIM.ground`
@@ -12203,6 +12590,27 @@ function makeObstacles(terr,TF,rnd){
   /* a hand-built layout says which hexes are the POINT of it. Everything
      generated afterwards asks. See LAYOUT_KEEP. */
   const keep=(c,r)=>{if(terr[K(c,r)]!==undefined)LAYOUT_KEEP[K(c,r)]=true;};
+  /* ═══ #108 - THE TAP-ROOM OF THE THREE BELLS ═════════════════════════════
+     Hand-built, one door, and the whole board outside the room is `wall`
+     (painted as the dark of the rest of the house). Interior cols 4..10 x
+     rows 4..8. The load-bearing hex is the POCKET at (4,8): hearth above it,
+     walls west and south, so (5,8) is the only hex a body can fight it from.
+     That geometry IS the lesson the fight teaches, verified with nbrs() in
+     the gate shot - do not move the hearth without re-verifying it. */
+  if(TF.layout==='tavern'){
+    for(let r=0;r<ROWS;r++)for(let c=0;c<COLS;c++){
+      if(!(c>=4&&c<=10&&r>=4&&r<=8))terr[K(c,r)]='wall';
+    }
+    terr[K(11,6)]='door';keep(11,6);
+    [[4,4],[5,4],[6,4]].forEach(p=>{terr[K(p[0],p[1])]='bar';});
+    terr[K(4,7)]='fire';FIREPIT=[4,7];      /* the hearth */
+    [[8,5],[9,6],[6,7]].forEach(p=>{terr[K(p[0],p[1])]='table';});
+    [[5,6],[7,5],[8,8]].forEach(p=>{terr[K(p[0],p[1])]='stool';});
+    /* the pocket, its one approach, both start hexes and the doorway lane
+       stay open whatever a later generator thinks */
+    [[4,8],[5,8],[6,6],[8,6],[10,6],[10,5],[10,7]].forEach(p=>keep(p[0],p[1]));
+    return;
+  }
   if(TF.layout==='camp'){
     /* the palisade: a broken ring around the middle of the board, with two
        gaps left open on purpose. Centre and gaps follow ROWS so the ring stays
@@ -12718,6 +13126,21 @@ function camBar(){
              talks about the bloom-light going out under her hide. The
              battlefield was the last screen that had not been told. */
 const GROUND={
+  /* #108 - THE TAP-ROOM. Old timber, low light, one warm hearth. The wet and
+     stony keys exist because the painter reads them unconditionally; the
+     thresholds in TERRAIN.tavern mean they are never actually drawn. */
+  tavern:{
+    base:['#3a2d1e','#332818','#291f12'], damp:['#443423','#231a0f'],
+    water:'#2e2414', pool:'#3d2f1c', glint:'#6b5530', reed:'#4a3a22',
+    rockShadow:'#140d06', rockFace:'#4a3a26', rockLit:'#5d4a30',
+    bare:'#3d2f1c', tuft:['#4a3a22','#544128'], tufts:2, bareOdds:.30,
+    stone:'#4d4030', bone:'#a89678', branch:'#3a2c18',
+    stump:['#3a2c18','#45331e'], flower:['#6b3a4a','#5a4a6b'], shaft:'#4a3a22',
+    rut:'#1e1509', rutA:.14,
+    mist:'190,150,90', mistA:.10, mistBands:2,
+    field:'radial-gradient(ellipse at 42% 60%,#241a0e,#080502 78%)',
+    vig:'linear-gradient(rgba(10,6,2,0) 0%,rgba(10,6,2,0) 76%,'+
+        'rgba(10,6,2,.55) 100%)'},
   teal:{
     base:['#31403f','#2c3a3a','#263132'], damp:['#3a4a45','#232d2e'],
     water:'#24393d', pool:'#33525a', glint:'#557a80', reed:'#4a5a3e',
@@ -12850,6 +13273,18 @@ function paintTerrain(){
     g.fillStyle=rnd()>.5?P.damp[0]:P.damp[1];
     g.beginPath();g.ellipse(x,y,rr,rr*(.4+rnd()*.4),rnd()*3,0,7);g.fill();g.restore();
   }
+  /* #108 - the tap-room floor: plank seams over the base wash. Deterministic
+     (no rnd), so the shared stream is untouched. */
+  if(B&&B.terrain==='tavern'){
+    g.save();
+    g.strokeStyle='rgba(16,10,4,.38)';g.lineWidth=1.2;
+    for(let y=8;y<H;y+=13){
+      g.beginPath();g.moveTo(0,y+((y*7)%5));g.lineTo(W,y-((y*3)%4));g.stroke();}
+    g.strokeStyle='rgba(130,95,50,.10)';g.lineWidth=1;
+    for(let y=14;y<H;y+=13){
+      g.beginPath();g.moveTo(0,y);g.lineTo(W,y);g.stroke();}
+    g.restore();
+  }
   /* --- per hex: what kind of ground this is --- */
   for(let r=0;r<ROWS;r++)for(let c=0;c<COLS;c++){
     const t=B.terr[K(c,r)],p=hexCentre(c,r);
@@ -12884,6 +13319,68 @@ function paintTerrain(){
       g.globalAlpha=.30;g.strokeStyle=P.glint;g.lineWidth=1;
       g.beginPath();g.moveTo(p.x-11,p.y-2);g.lineTo(p.x+3,p.y-3);g.stroke();
       g.beginPath();g.moveTo(p.x-5,p.y+6);g.lineTo(p.x+10,p.y+5);g.stroke();
+      g.restore();
+    /* ═══ #108 - the tap-room's own words ═══════════════════════════════ */
+    }else if(t==='wall'&&B.terrain==='tavern'){
+      /* timber where it faces the room; the void beyond stays dark */
+      const faces=nbrs(c,r).some(q=>{const w=B.terr[K(q[0],q[1])];
+        return w!==undefined&&!BLOCKED[w];});
+      if(faces){
+        g.save();
+        g.fillStyle='#150e07';g.fillRect(p.x-24,p.y-18,48,34);
+        for(let i=0;i<4;i++){
+          const sx=p.x-21+i*11;
+          g.fillStyle=i%2?'#2e2114':'#261a0f';g.fillRect(sx,p.y-16,10,31);}
+        g.strokeStyle='#3d2c18';g.lineWidth=1.4;
+        g.beginPath();g.moveTo(p.x-24,p.y-16);g.lineTo(p.x+24,p.y-17);g.stroke();
+        g.beginPath();g.moveTo(p.x-24,p.y+11);g.lineTo(p.x+24,p.y+10);g.stroke();
+        g.restore();
+      }
+    }else if(t==='door'){
+      /* the one way out: posts, a lintel, and the night beyond */
+      g.save();
+      g.fillStyle='#080502';g.fillRect(p.x-14,p.y-17,28,28);
+      const dg=g.createLinearGradient(p.x-14,0,p.x+14,0);
+      dg.addColorStop(0,'rgba(95,65,28,.30)');dg.addColorStop(1,'rgba(20,12,5,0)');
+      g.fillStyle=dg;g.fillRect(p.x-14,p.y-17,28,28);
+      g.fillStyle='#3d2c18';
+      g.fillRect(p.x-19,p.y-19,5,33);g.fillRect(p.x+14,p.y-19,5,33);
+      g.fillRect(p.x-19,p.y-22,38,4);
+      g.restore();
+    }else if(t==='bar'){
+      /* the counter: a long polished top with a shadowed front */
+      g.save();
+      g.fillStyle='#171008';g.fillRect(p.x-23,p.y-2,46,14);
+      g.fillStyle='#553d22';g.fillRect(p.x-23,p.y-12,46,12);
+      g.fillStyle='#6b4e2c';g.fillRect(p.x-23,p.y-12,46,3);
+      g.strokeStyle='rgba(30,18,8,.6)';g.lineWidth=1;
+      for(let i=0;i<3;i++){
+        g.beginPath();g.moveTo(p.x-19+i*15,p.y-9);
+        g.lineTo(p.x-13+i*15,p.y-2);g.stroke();}
+      g.fillStyle='#8a7a55';g.beginPath();g.ellipse(p.x+9,p.y-13,3,2,0,0,7);g.fill();
+      g.restore();
+    }else if(t==='table'){
+      /* a round table: #82's lone boulder, indoors */
+      g.save();
+      g.globalAlpha=.5;g.fillStyle='#0d0805';
+      g.beginPath();g.ellipse(p.x+2,p.y+9,18,6,0,0,7);g.fill();
+      g.globalAlpha=1;
+      g.fillStyle='#33240f';g.beginPath();g.ellipse(p.x,p.y+3,17,10,0,0,7);g.fill();
+      g.fillStyle='#4d3820';g.beginPath();g.ellipse(p.x,p.y-1,17,10,0,0,7);g.fill();
+      g.strokeStyle='#5f4728';g.lineWidth=1;
+      g.beginPath();g.ellipse(p.x,p.y-1,12,6.5,0,0,7);g.stroke();
+      g.fillStyle='#7a6a48';g.beginPath();g.ellipse(p.x-5,p.y-3,3,2,0,0,7);g.fill();
+      g.restore();
+    }else if(t==='stool'){
+      g.save();
+      g.globalAlpha=.5;g.fillStyle='#0d0805';
+      g.beginPath();g.ellipse(p.x+1,p.y+8,9,4,0,0,7);g.fill();
+      g.globalAlpha=1;
+      g.strokeStyle='#2e2114';g.lineWidth=2;
+      g.beginPath();g.moveTo(p.x-5,p.y+7);g.lineTo(p.x-3,p.y-2);g.stroke();
+      g.beginPath();g.moveTo(p.x+5,p.y+7);g.lineTo(p.x+3,p.y-2);g.stroke();
+      g.fillStyle='#4d3820';g.beginPath();g.ellipse(p.x,p.y-4,8,4.5,0,0,7);g.fill();
+      g.fillStyle='#5f4728';g.beginPath();g.ellipse(p.x,p.y-5,8,4,0,0,7);g.fill();
       g.restore();
     }else if(t==='fire'){
       /* THE CAMP FIRE — the middle of the ogres' camp. Impassable, and the
@@ -13806,12 +14303,16 @@ function render(){
           t==='flower'?(open
             ?'An open bloom. Everything standing beside it is braver, slower and softer.'
             :'A bloom, closed. It opens the round after somebody stands beside it.'):
+          t==='bar'?'The bar. A wall to an arrow, and nobody walks through it.':
+          t==='table'?'A table. A body goes round it; a swing or a shot goes over it, at a price.':
+          t==='stool'?'A stool. In the way, and staying there.':
           FIREPIT?'Palisade. Nobody gets through it.':'Rock. Nobody gets over it.';
       }
       /* deep water is the one new kind you CAN stand in, so it gets a
          sentence rather than a glyph — exactly the way shallow marsh
          always has. The paint is the readout; this is the confirmation. */
       else if(t==='deep')hx.title='Deep water. Slow to get into, slower to be in.';
+      else if(t==='door')hx.title='The door of the Three Bells. The one way in, and the one way out.';
       /* ═══ #64 — THE SIX HEXES AN OPEN BLOOM REACHES ════════════════════
          Lit, not labelled. The rule is a STATE and the board shows states;
          the three numbers behind it live on the unit panel where every
@@ -14857,7 +15358,7 @@ window.LINT=function(){
   /* 9 — every fight the map can reach needs an aftermath. `armour` is not on
      a node — it fires from travel()'s arrive — but it is still a fight the
      run can reach, which is the thing this check is actually about. */
-  ['clash','brigand','pack','slingline','steading','snare','mother','armour','circle'].forEach(k=>{
+  ['clash','brigand','pack','slingline','steading','snare','mother','armour','circle','tavern'].forEach(k=>{
     if(!AFTER[k]&&k!=='snare')hit('structure','AFTER','no aftermath for "'+k+'"');});
   /* ═══ 9c - AND EVERY FIGHT NEEDS ITS OWN ARMY (#74) ═════════════════════
      `startBattle` picks the foe list from a hardcoded `kind==='x'?xFoes():`
@@ -14873,7 +15374,7 @@ window.LINT=function(){
      truth this check exists to prevent. */
   (function(){
     const src=String(startBattle);
-    ['clash','brigand','pack','slingline','steading','mother','armour','circle'].forEach(k=>{
+    ['clash','brigand','pack','slingline','steading','mother','armour','circle','tavern'].forEach(k=>{
       if(src.indexOf("==='"+k+"'")<0)
         hit('structure','startBattle','fight "'+k+'" has no foe builder in the dispatch — it '+
           'will silently fight the Snare\'s army');});
@@ -14881,7 +15382,7 @@ window.LINT=function(){
   /* 9b — and every fight needs somewhere for its spoils to come from. A
      missing LOOT table silently serves the Snare's, which hands out a ratkin
      chieftain's harness after a fight that had no chieftain in it. */
-  ['clash','brigand','pack','slingline','steading','mother','armour'].forEach(k=>{
+  ['clash','brigand','pack','slingline','steading','mother','armour','tavern'].forEach(k=>{
     if(!LOOT[k])hit('structure','LOOT','no spoils table for "'+k+'"');
     /* 9c — and at least one row of it has to be a HAUL rather than a
        decision (#55). The automatic haul falls back to the whole table if
@@ -14899,7 +15400,7 @@ window.LINT=function(){
      The picker's list is checked too: a ground offered on the practice
      field that no longer exists in the register would generate a fen and
      say "swamp" on the button. */
-  ['clash','brigand','pack','slingline','steading','snare','mother','armour'].forEach(k=>{
+  ['clash','brigand','pack','slingline','steading','snare','mother','armour','tavern'].forEach(k=>{
     const f=FIELDS[k];
     if(!f){hit('structure','FIELDS','no terrain named for fight "'+k+'"');return;}
     if(!TERRAIN[f.t])hit('structure','FIELDS','"'+k+'" names terrain "'+f.t+
@@ -14964,10 +15465,12 @@ window.LINT=function(){
   if(FIELDS.mother.seed!==29)
     hit('structure','FIELDS','the Fen-Mother\'s seed is no longer pinned to 29 - her '+
       'round band is tuned by where the blob lands, so a rolled board is a re-tune');
+  /* #108 - the tavern is the second legitimate pin: its board IS the
+     tutorial and the corner pocket is load-bearing */
   Object.keys(FIELDS).forEach(k=>{
-    if(k!=='mother'&&FIELDS[k].seed!==undefined)
+    if(k!=='mother'&&k!=='tavern'&&FIELDS[k].seed!==undefined)
       hit('structure','FIELDS','"'+k+'" pins a seed, so its board never varies - only '+
-        'the Fen-Mother is supposed to');});
+        'the Fen-Mother and the tavern are supposed to');});
   SIM_GROUNDS.forEach(g=>{
     if(g.k!=='as'&&!TERRAIN[g.k])
       hit('structure','SIM_GROUNDS','the practice field offers "'+g.k+
@@ -15130,6 +15633,8 @@ function saveRun(){
         /* the cache: which long arm it was planted on and which way it was
            asked for. The plate is saved with the node; this is the price. */
         cache:G.cache,
+        /* #108 - the brawl fires once per run, before the world opens */
+        tavernDone:G.tavernDone,
         epiLine:G.epiLine,battleKind:G.battleKind},
       /* a run stops being resumable once it is over */
       log:G.log.slice(-40),
@@ -15302,6 +15807,20 @@ function carryEverybodyOut(){
    owns its own prose and its own bill, because a beating is specific to who
    is doing the beating. */
 const BEATEN={
+  /* #108 - losing the intro brawl must not end a run that has not started.
+     `soft`: nobody is scarred by fists and floorboards; `go`: the world has
+     not been entered yet, so the continue button opens it. */
+  tavern:{
+    t:'THE FLOOR OF THE THREE BELLS',
+    soft:true,mor:8,
+    b:'You come round under a table, with sawdust stuck to the blood on your '+
+      'face and somebody\'s boot planted on your chest for balance while its '+
+      'owner finishes your drink. They do not rob you. In Grausen Hold that '+
+      'is close to good manners.\n\nThe man in the good coat watched all of '+
+      'it from the doorway, apparently. The coin is still on the table. His '+
+      'kind of work has no use for people who have never been on a floor, '+
+      'only for the ones who get up off it.',
+    go:()=>{G.tavernDone=true;if(B)B.tut=null;enterWorld();}},
   circle:{
     t:'THEY TAKE IT ANYWAY',
     /* the mark arrives here too. They wanted a member; you said no and stood
@@ -15322,7 +15841,16 @@ const BEATEN={
 function toBeaten(){
   const spec=BEATEN[G.battleKind];
   if(!spec){toDefeat();return;}            /* never silently: a missing entry is a real defeat */
-  const scarred=carryEverybodyOut();
+  /* #108 - a `soft` beating bruises and never scars: everybody wakes at
+     half blood, and injure() is not called */
+  let scarred;
+  if(spec.soft){
+    scarred=[];
+    G.party.forEach(p=>{
+      const u=B.units.find(x=>x.id===p.id);
+      if(u)p.hpLoss=u.downed?Math.round(u.hpMax*0.5)
+        :clamp(Math.round(u.hpMax-Math.max(u.hp,1)),0,u.hpMax-1);});
+  }else scarred=carryEverybodyOut();
   if(!G.party.length){toDefeat();return;}
   G.morale-=spec.mor||0;
   let bill='';
@@ -15353,6 +15881,9 @@ function toBeaten(){
     '<div class="popts"><button class="popt" id="btGo"><b>Back to the road</b>'+
     '<i>you are still on it, which is the whole of the good news</i></button></div>';
   $('btGo').onclick=()=>{
+    /* #108 - a beating with its own continuation (the tavern opens the
+       world; there is no node to spend yet) */
+    if(spec.go){spec.go();return;}
     /* the same resolution withdrawing does: the place is spent, and the
        company does not turn round and try it again */
     G.pending=null;G.visited[G.at]=true;
@@ -15423,7 +15954,7 @@ $('bLegend').onclick=()=>{
 document.addEventListener('keydown',e=>{
   if(!$('battle').classList.contains('on'))return;
   if(e.target&&/^(INPUT|TEXTAREA)$/.test(e.target.tagName))return;
-  if(!B||B.busy||B.won!==null)return;
+  if(!B||B.busy||B.tutLock||B.won!==null)return;
   const u=cur();
   if(!u||u.side!=='you'||u.ally||u.pet||u.state==='routed')return;
   if(e.key>='1'&&e.key<='9'){
@@ -15452,6 +15983,10 @@ document.addEventListener('keydown',e=>{
    the bug the per-fight AFTER titles were built to kill, one screen later.
    Found by the new LOOT check in LINT(); both tables written below. */
 const LOOT={
+  /* #108 - one haul, applied by tavernAfter() rather than the spoils screen:
+     the brawl's aftermath is one card, not an inventory pass */
+  tavern:[
+    {t:'Harl\'s tab, abandoned on the bar.',c:'+8 crowns',fx:{crowns:8}}],
   clash:[
     {t:'Their spears and whatever the slings were made of.',c:'a boar spear · +3 salvage',
      fx:{salvage:3},gear:'spear'},
@@ -15734,6 +16269,7 @@ function clashAfter(){
 function toSpoils(broken){
   if(G.battleKind==='mother'){cubChoice();return;}
   if(G.battleKind==='clash'){clashAfter();return;}
+  if(G.battleKind==='tavern'){tavernAfter();return;}   /* #108 */
   /* ═══ MERCY IS ASKED ON THE AFTERMATH CARD NOW (user, 2026-08-01: "'beg
      for mercy' you can add to the after battle stats screen") ══════════════
      It used to be a whole screen of its own, standing in front of the
@@ -16211,6 +16747,14 @@ function consequences(scarred){
    print over the dogs, the slingers and the ogres too — a title reporting on a
    boss the player had not met yet. An aftermath is part of the encounter. */
 const AFTER={
+  /* #108 - the brawl. tavernAfter() reads this row, so there is one copy. */
+  tavern:{t:'THE ROOM SETTLES',
+    b:'Somebody rights a table. Somebody else finds most of a chair. The man '+
+      'behind the bar looks at the wreckage, then at your iron, and decides '+
+      'against saying anything about either.\n\nThe woman with the spear '+
+      'leans it back where it was standing, which settles nothing and says '+
+      'plenty. The ratkin in the corner lifts what is left of his drink an '+
+      'inch off the table. In ratkin, that is a whole speech.'},
   /* #74 - it is not supposed to be reachable and it is reachable. Whoever
      gets here has done something no company in this act is built to do, and
      the card says so and does not gloat for them. */
@@ -17188,6 +17732,10 @@ const WHISPER={
    somebody ({N}) needs to be told who, and the toast never does. */
 function whisper(k,subj){
   if(!WHISPER[k])return;
+  /* #108 - muted during the brawl for the same reason as the lessons: one
+     teacher on screen at a time, and the toast's once-ever flag must not be
+     spent on a fight the spotlight is already teaching */
+  if(B&&B.tut&&B.won===null)return;
   LEGACY.seen=LEGACY.seen||{};
   /* the Captain says the human half of the same lesson, on the field, with
      no numbers in it — see capSay(). One trigger, two voices.
@@ -17659,7 +18207,9 @@ function learnSkip(){
    a moment that has passed is worse than silence, but a RULE is still true
    next round. The seen-flag is set from capSay's return, never before it. */
 function learn(id,subj){
-  if(!B||B.won!==null||!CAPLINES[id]||learnSkipped()||learnSeen(id))return false;
+  /* #108 - the brawl teaches with the spotlight; the balloon lessons stay
+     unspent for Blood on the Road */
+  if(!B||B.tut||B.won!==null||!CAPLINES[id]||learnSkipped()||learnSeen(id))return false;
   B.cap=B.cap||{round:0,tier:0,count:0,el:null,mute:false,said:{}};
   const C=B.cap;C.q=C.q||[];
   C.subj=subj||null;
@@ -17794,6 +18344,8 @@ function capTick(){
   if(!B||!B.units||B.won!==null)return;
   B.cap=B.cap||{round:0,tier:0,count:0,el:null,mute:false,said:{}};
   const C=B.cap;
+  /* #108 - the brawl's script runs on the same once-per-turn seam */
+  if(B.tut){tavernTick();if(B.won!==null)return;}
   const mine=B.units.filter(u=>u.side==='you'&&!u.ally&&!u.pet);
   const foe=B.units.filter(u=>u.side==='foe'&&!u.passive);
   const prev=C.snap||{};
@@ -23230,8 +23782,11 @@ function prologueEnd(txt,fx){
     (hurt.length&&!fx.hpNote?'\n\nWalking wounded: '+
       hurt.map(p=>who(p)+' ('+p.hpLoss+' hp short)').join(', ')+
       '. None of it is permanent. Days on the road are the only medicine in this game.':''),
-    [{t:'Morning. The east road.',c:'the crew, what it is worth, and what it is owed',
-      go:enterWorld}],
+    /* #108 - the road now runs through the brawl: the coin made you visible,
+       and Harl has been listening. enterWorld is reached from the brawl's
+       own aftermath (win or beaten), never directly from here. */
+    [{t:'Finish your drink.',c:'the room is not finished with you',
+      go:tavernIntro}],
     PRO_ART[fx.scene],banner);
 }
 
@@ -24018,6 +24573,7 @@ $('menuBtn').onclick=()=>{
    field, so the company you pick changes the fight as well as your side of
    it — which is most of what there is to learn here. */
 const SIM_FIGHTS=[
+  {k:'tavern',   n:'The Three Bells',   d:'The tap-room brawl the run opens with. One drunk, then his friends, then yours.'},
   {k:'clash',    n:'Blood on the Road', d:'Three ogres. The one the game teaches with.'},
   {k:'brigand',  n:'The Broken Men',    d:'Human deserters and two dogs. They break like people.'},
   {k:'pack',     n:'The Pack',          d:'You are inside the palisade. Hold the two gaps.'},

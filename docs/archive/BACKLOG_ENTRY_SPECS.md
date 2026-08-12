@@ -2214,3 +2214,152 @@ exactly the four modifier rungs · a routed body flies the flag on token and rai
   must call `checkEnd()` between turns or hold-disposition fights read several rounds long.
 
 ---
+
+## 108 - The Three Bells brawl: the intro fight
+
+> 🚪 **THE FRONT DOOR** and ⚔ **THE FIRST FIGHT** - a scripted tavern brawl between the prologue
+> and the world map. **SYSTEMS** a new fight kind `tavern` · a walled 9x7 room on the 15x13 board ·
+> new obstacle words (`bar`, `table`, `stool`, `door`) · a `drunk` status · mid-fight waves (the
+> first in the game) · a spotlight teach layer (also the first) **RELATED** #86 (this IS its
+> pacing fix) · #39 (covers its battle beat: the crew is met in action, not in a modal) ·
+> #60 (its lessons stay in Blood on the Road, muted here) · #3 (parked: "gives the tutorial
+> fight a cause" - this entry is that cause, without the mutation)
+> **STATE** built this session (8f.135), by the user's direct order, working autonomously.
+
+### The user's ask, 2026-08-12, verbatim (voice transcription, trimmed of filler)
+
+> "create introduction ... like Banner Saga where it starts in the small environment like a tavern.
+> So you will need to create a design for this tavern and maybe some tables and chairs as objects.
+> And it should be definitely much, much smaller than current field. And first it starts 1v1, and
+> your opponent is quite drunk. And then ... after kind of beating the point, he's running. So
+> expand moral. And then his kind of friends arrive, to also disengage and put yourself in the
+> corner where the only one opponent can get you. And at some moment your friends arrive, so we can
+> build like nice and smooth showing how it works. ... It will teach you about some skills like
+> kick and control, so it feels already a little bit different. From importance, I want to start
+> with human. And then when friends arrive somewhere with the [ratkin], so we can introduce new
+> race and maybe some class skills. So it will be a lot of introduction, but it's important:
+> introduction moral, armor, skills, etcetera, diversified, quite a lot scripted. And also a lot of
+> these education things: ideally not just the guy saying about moral, but maybe we can just
+> highlight only this part of moral and say, hey, this is moral, it works like this, and this is
+> armor, works like this. And their skills work like that. Not too much text, but short amount of
+> text, but clear arrows: where is it and how it works."
+
+**Two interpretation calls made while the user was away, both to be reviewed:**
+1. The transcription says "the correct king". No korrigan race exists; the game's three peoples
+   are human, ratkin, ogre, and the starting crew is deliberately four humans. Read as **the
+   ratkin**. The new race arrives as **a one-off ratkin ally** (a Three Bells regular who joins
+   the brawl and goes back to his drink), NOT a new crew member, so the canon "the crew is fresh
+   humans and Blood on the Road is where the island corrects them" stays intact.
+2. The other arriving friend is **Vesna Kolb**, deployed as her real roster self. The lore already
+   names her: "a woman who was already standing". Receipts carry: blood she loses here she keeps.
+
+### The collision with the clarity pass, named honestly
+
+The pass rule says NOTHING IS ADDED. This entry adds a fight, a status, a teach layer. It is
+built anyway because the user ordered it directly on 2026-08-12, and because it is the pacing fix
+complaint B asked for: today the opening drops eleven lessons, allied NPCs, facing, engagement,
+nerve, cooldowns and a side-pick into one four-round fight. This entry moves the teaching into a
+1v1 that grows one system at a time, each introduced by the fight's own script. #86's measurement
+still stands: Blood on the Road should get LIGHTER after this exists (its lessons stay live today;
+cutting them is #86's own call, not this entry's).
+
+### Where it sits in the run
+
+`prologueEnd()`'s outcome card currently ends on one button, `go:enterWorld` (the only caller of
+`enterWorld`). It becomes `go:()=>startBattle('tavern')`. The brawl's aftermath chain ends by
+calling `enterWorld()`. So: prologue cards -> the joke -> the coin -> **the brawl** -> "Morning.
+The east road." Nothing else moves. Continue-from-save never touches any of this.
+
+**The cause:** the lord's coin is on the table. Harl, a carter deep in his cups, has watched a
+ruined man in good iron take forty crowns for work Harl was not offered. He says so. He swings.
+All three prologue outcomes (coin, good joke, bad joke) funnel here; the card bridges in one line.
+
+### The room (the picture gate is paid with staged shots in shots/108_*.html)
+
+15x13 board, walled to a 9x7 room, interior cols 4..10 x rows 4..8 plus the door notch. Outside
+the walls: void (painted near-black, all `wall`). New terrain row `tavern` with a pinned seed and
+`layout:'tavern'`; `makeObstacles` gets a hand-built branch, no pattern roll. New words, all
+registered in BLOCKED and HEIGHT and painted in `paintTerrain`:
+
+| word | walk | height | meaning |
+|---|---|---|---|
+| `bar` | no | TALL | the counter, top wall; stops arrows and reach-2 thrusts |
+| `table` | no | MED | COVER (-14), same rule a lone boulder taught in #82 |
+| `stool` | no | LOW | blocks a body, never a shot |
+| `door` | yes | - | one gap in the east wall; Harl's exit, his friends' entrance |
+| `fire` | (existing) | LOW | the hearth, west wall |
+
+The southwest corner is the taught pocket: wall + hearth + a table + a stool leave a hex with
+EXACTLY ONE open neighbour. Verified with the game's own `nbrs`, not by eye, in the staged shot.
+`openPockets()` is skipped for the tavern layout (the room is not reachable from column 0 and must
+not be flood-converted to rock). `terrainCheck`'s choke>=2 expectation does not apply: one
+chokepoint is this board's entire lesson.
+
+### The script, five phases
+
+A tavern controller (`TUT` state object on `B`) advances on the `capTick()` seam plus explicit
+hooks; every unit obeys the normal engine (`aiTurn` untouched apart from honouring the flags).
+
+| phase | trigger | what happens | teaches |
+|---|---|---|---|
+| 1 | fight start | You (roster Captain, sword+jack) v Harl (drunk, club, low nerve). | move, swing, DRUNK status, armour soak |
+| 2 | Harl at <=55% blood, or round 4 | forced nerve dump through `mor()`: the real ladder empties, he routs; controller steers his rout to the door, he yells, `fled` | NERVE: the bar visibly empties before the body gives |
+| 3 | Harl exits | wave 1: Brakk, Osper, Tull spawn at the door (sober, clubs and fists, mid nerve). 3v1. | outnumbered; the corner pocket; KICK (human race skill, push 1) |
+| 4 | start of round +2 after wave 1, or Captain <=45% blood | wave 2: Vesna stands up by the bar (roster, spear), Chitt stands up from his corner table (ratkin ally, knife). 3v3. | the crew arrives; new race (ratkin, POISON THE BLADE); class skill (BRACE AND SHOVE, push 2, no parting swing) |
+| 5 | all foes fled or downed | small LOOT, AFTER card, then `enterWorld()` | - |
+
+Waves use the mid-fight spawn recipe (the first in the game): `B.units.push`, splice into
+`B.order` after `B.idx`, disposition refresh, `render()`. Spawn happens in the same tick Harl
+exits so `checkEnd` never sees an empty foe side.
+
+The `drunk` status: new STATUS register entry, badge on the head token; -12 to hit and -8 dodge
+inside `hitBreakdown`, both AI brains get it free since they read hitBreakdown. Whole-fight
+duration.
+
+Mercy is off (`B.noMercy`, read where checkEnd's mercy branch fires): routed brawlers scramble
+out the door as `fled` instead of begging, so the fight ends won, not in a MERCYASK card. No
+withdraw (`NOWITHDRAW`), no ambush, normal battle music. Defeat is authored, not run-ending:
+`BEATEN.tavern`, you wake on the floor, the coin is still there, east road anyway; no scar from
+fists and floorboards.
+
+### The teach layer (new, reusable): spotlight steps
+
+A dim layer inside `#stage` (z 61: above battle chrome at 39-41 and card popovers at 60, below
+the retired `.coach` at 70 and `#gtTip` at 99), with a bright cutout over one real element, a
+short card in the BG3 voice, an arrow from card to cutout, click anywhere to advance. Positioning
+via `relPt(target, stage)` so phone rotation and scaling are inherited; nothing measured in a
+zero-size frame (guard and skip). Input while a step is up: the layer swallows pointer events;
+`B.tut` is checked in `clickHex` and the keydown handler. NOT `B.busy` (the stall watchdog
+force-clears it after 8s and logs a regression). Steps only open when it is a player unit's turn
+and the board is quiet.
+
+Eight steps, each 1-2 sentences, anchors in order:
+`#bActions` (how to act) · Harl's hex (DRUNK) · `#bArm` row (armour soaks first) · `#bState`
+(NERVE, fired as Harl breaks) · the pocket hexes (corners make them come one at a time) · the
+KICK card (`#bActions .act` by act key) · the rail heads of the two arrivals (the crew) · Vesna's
+BRACE AND SHOVE card on her first turn. The old learn/whisper tiers are muted for this one fight
+(`B.tutMute` checked in `learn()` and `whisper()`), so the eleven Blood on the Road lessons stay
+unconsumed and fire there as today.
+
+### What a new fight kind owes the tables (all paid)
+
+foe dispatch arm in `startBattle` · `FIELDS.tavern` + `TERRAIN.tavern` (pinned seed, no pool
+roll) · `AFTER.tavern` · `LOOT.tavern` (>=1 haul row for LINT 9c) · `BEATEN.tavern` ·
+`NOWITHDRAW` · deployment branch (Captain alone, fixed hex) · `SIM_FIGHTS` entry (practice field)
+· LINT passes 14860/14876/14884/14902.
+
+### Save shape
+
+`G.tavernDone` in the flags blob (`saveRun`/`loadRun`). The aftermath's continue calls
+`enterWorld()` when the world was never entered. A run saved mid-act never replays the brawl.
+Practice-field replays run under `SIM.on` and touch nothing.
+
+### Open remainders, on purpose
+
+- #86 still owes the measurement and the cut of Blood on the Road's lesson load; this entry makes
+  that cut safer, it does not perform it.
+- The spotlight layer is built generic (anchor + text + trigger) but only the tavern uses it.
+  Whether map/company screens want spotlight steps is a later ruling.
+- Marrow and Ilka are named in the aftermath prose, not deployed; four bodies in that room is
+  already the ceiling.
+- The user reviews interpretation calls 1 and 2 above when back.

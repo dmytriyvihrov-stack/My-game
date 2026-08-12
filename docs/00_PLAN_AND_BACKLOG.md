@@ -110,6 +110,14 @@ step 1 has something to argue with:
 **⚠ The trap in this entry: the opening is crowded, not empty.** Every instinct to "make the opening
 clearer" adds a screen. Read the complaint again before writing anything.
 
+> ✅ **#108 SHIPPED against this entry (2026-08-12, 8f.135): the Three Bells brawl**, the user's
+> direct order. The run now opens with a scripted tavern 1v1 that grows in waves and teaches
+> morale, armour, kick, the corner, the ratkin and a class skill with spotlight callouts on the
+> real UI, while Blood on the Road's eleven balloon lessons stay muted there and unspent. **What
+> this changes for #86: the cut of the first fight's lesson load is now SAFE to make**, because the
+> teaching has somewhere else to live. The measurement in step 1 still comes first. Full record:
+> [`SHIPPED.md`](SHIPPED.md) #108 and [`CHANGELOG.md`](CHANGELOG.md) 8f.135.
+
 ---
 
 # 🟡 NEXT - after the clarity pass, still before the friends play

@@ -23,6 +23,53 @@
 
 ---
 
+## 🚪⚔ THE THREE BELLS BRAWL - the intro fight  *(#108 · 2026-08-12 · build log 8f.135)*
+
+**Your order, built while you were out:** the run now opens with a scripted tavern brawl between
+the prologue and the map, Banner Saga shaped. Small room, tables and stools, 1v1 against a drunk,
+and the game teaches itself with **spotlight callouts on the real UI** instead of the Captain's
+balloon (his eleven lessons stay in Blood on the Road, untouched and unspent).
+
+**How to reach it (three steps):** 1. Menu -> **A new company** (your live save was snapshotted and
+restored during the build; starting fresh is still a real wipe, so use a second browser profile if
+you want to keep the current run). 2. Answer the lord any way you like -> **"Finish your drink."**
+-> **"Stand up."** 3. You are in the tap-room. *(Safe replay any time: the practice field's first
+row, **The Three Bells**.)*
+
+**What should happen, in order:**
+- A dim screen with a bright hole on the skill row: **THE ROOM**. Click anywhere to go on; a second
+  hole lands on Harl's own hex: **DRUNK** (he carries a 🍺 badge, -12 to hit, -8 dodge).
+- Trade blows. The first time iron soaks a hit: **ARMOUR**, holed on the plaque's armour bar.
+- At about half blood Harl's nerve empties **on the real ladder**, he routs, runs for the door in
+  two visible stages, yells, and is gone. **NERVE** spotlights the plaque's nerve row as he breaks.
+  ⚠ If you kill him instead, his friends come through the door at that same instant: the waves
+  cannot be skipped by winning fast.
+- **Three carters come through the door.** Two spotlights: **THREE ON ONE** (the corner pocket by
+  the hearth, bottom-left: it has exactly one open neighbour, so they queue) and **KICK** (your own
+  race skill's card: push one hex straight back).
+- Two rounds later, or sooner if you are hurt: **Vesna stands up at the bar** (her real roster
+  self: blood she loses here she keeps) and **Chitt, a ratkin regular, picks your side** (ally,
+  gold ring, poisons his knife: the race skill working for you). Spotlight: **NOT ALONE** on the
+  turn rail. On Vesna's first turn: **HER TRADE**, holed on SPEAR WALL's card.
+- Their nerve is soft: expect them to break and scramble out of the door rather than die. Win card:
+  **THE ROOM SETTLES** (+8 crowns, +4 morale), then "Morning. The east road." and the map exactly
+  as before. Losing is safe: **THE FLOOR OF THE THREE BELLS**, no scar, the world opens anyway.
+
+**What would be a bug:** a spotlight holed on empty space or the wrong element · the balloon
+lessons or a whisper toast firing during the brawl (both muted here) · a beg-for-mercy card in the
+tavern · a live WITHDRAW button · a scar or injury from this fight, win or lose · the fight ending
+with no wave ever arriving · Blood on the Road later arriving SILENT (its lessons must still fire
+there; they are only muted inside the brawl).
+
+**Three calls made without you, flagged for your review** *(spec #108 in the archive)*: the
+transcription said "correct king"; no korrigan race exists, so the new-race friend is **the
+ratkin**, and he is a one-off ally rather than a crew member, keeping the all-human-crew canon
+until Blood on the Road. Vesna is the human friend who stands up (the lore's "woman who was
+already standing"). And her spear's real signature is **SPEAR WALL**, so that is the class trick
+taught, not BRACE AND SHOVE (the halberd's).
+
+---
+
 ## ⚔ THE BATTLE SCREEN, ROUND NINE  *(#105 · 2026-08-11 · build log 8f.132)*
 
 **All eight of your points, and three of them turned out to be real bugs rather than taste.** Worth
