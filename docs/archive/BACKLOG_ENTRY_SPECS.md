@@ -2363,3 +2363,44 @@ Practice-field replays run under `SIM.on` and touch nothing.
 - Marrow and Ilka are named in the aftermath prose, not deployed; four bodies in that room is
   already the ceiling.
 - The user reviews interpretation calls 1 and 2 above when back.
+
+## 111 - The Three Bells brawl, round two: the user's nineteen points
+
+> ⚔ **THE INTRO FIGHT** - the first correction round on #108, off the user's play of it
+> (2026-08-12, two annotated screenshots). **STATE** built the same day, 8f.138.
+> His points, near-verbatim and in his order; every one shipped unless marked:
+
+1. When circled, show the option to disengage *(the CIRCLED spotlight, on the DISENGAGE card)*
+2. Fix: got an opportunity attack even when disengaged *(resolved by point 8's redesign: clean
+   movement now covers the WHOLE turn, and the teach says disengage first, then move)*
+3. Show armour and health teach when YOU first receive damage, not the enemy: his bar blinks
+   too fast
+4. Add one more free row to the battlefield *(interior rows 3..8 now, bar against the new north wall)*
+5. When the enemy is running, make his status clear: breaking means running *(the BROKEN
+   spotlight on Harl's own hex)*
+6. When circled 3-on-1, message: moving now pays opportunity attacks; use disengage first, then
+   move *(the CIRCLED text)*
+7. More 1:1 pockets: keep lower-left, add higher-right and lower-right *(three pockets now, each
+   verified to exactly one open neighbour)*
+8. **Change disengage: free of engagement and zone of control for the rest of this turn's
+   movement, no bonus step; instead +1 hex of movement NEXT turn** *(global, all battles)*
+9. When allies join: all three crew members join, they follow the journey after
+10. When allies join: explain backstab and flanking, offer one free movement to get behind a
+    thug *(THE WRONG SIDE spotlight + one extra action, granted at the Captain's next turn)*
+11. Battle cursors: magic for a working, arrow for a shot *(cCast spark, cShot arrow)*
+12. When captain and an ally both have an enemy in reach, teach KICK as the first synergy
+13. The first skill spotlight says these are YOUR skills: move and fight, win with them
+14. Delay the teammates' arrival one more turn *(wave two at wave-one round +3)*
+15. **No ratkin allies** *(Chitt deleted; supersedes #108's interpretation call)*
+16. Before allies join, the watchers beat: strangers exchanged looks and drew weapons; on this
+    island most prefer watching unfairness to joining a lost fight *(polished, THE ROOM IS
+    WATCHING)*
+17. Only one ogre joins with the crew: the barman, saving his property, with a short race intro
+18. 20% smaller font for chance-to-hit and damage *(9.5px to 7.6px, both)*
+19. UNDO MOVE directly above END TURN *(bottom 102 to 72)*
+
+**Found while building:** the round-two furniture let ONE body standing west of a broken Harl
+seal his whole path to the door, and the straight-line flee paced in place for a fight-long
+stall that ended in a forced hunger retreat (which would also have skipped enterWorld). Three
+fixes: the mid-room east lane stays open (no table at 9,6), tavernFlee walks a real
+door-distance field with a two-turn stuck-breaker, and the brawl is exempt from battle hunger.

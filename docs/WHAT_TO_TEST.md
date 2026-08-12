@@ -23,6 +23,44 @@
 
 ---
 
+## 🚪⚔ THE BRAWL, ROUND TWO - your nineteen points  *(#111 · 2026-08-12 · build log 8f.138)*
+
+**All nineteen shipped.** What to re-test, in the order you will meet it (the #108 section below
+is superseded where it disagrees):
+
+- **The room is a row taller** and there are **three corner pockets** now: your lower-left by the
+  hearth, plus top-right and bottom-right. Each takes exactly one attacker at a time (verified
+  with the game's own adjacency, not by eye).
+- **The first spotlight says these are YOUR skills.** ARMOUR now fires when YOU first take a
+  dent, on your own plaque, not on his blinking bar.
+- **When Harl breaks, BROKEN gets its own spotlight on him**: breaking means running.
+- **When two of them get a hand on you: CIRCLED**, holed on the DISENGAGE card, teaching the
+  order: disengage first, then move.
+- ⚑ **DISENGAGE is redesigned, in every battle**: one action buys clean movement for the REST of
+  this turn (no parting swings, no zone of control) and one extra hex of movement NEXT turn. No
+  bonus step of its own any more. The card's cost line and note say all of it.
+- **The watchers beat** fires a round before the arrivals, with your line polished: on this
+  island most would rather watch an unfairness than join a fight that already looks lost.
+- **Wave two is a turn later and it is everybody**: Vesna, Marrow and Ilka (they walk out of the
+  room as your crew) **plus the ogre barman**, who comes over his own bar with a club and gets
+  the race intro spotlight. **No ratkin** anywhere on your side, per your ruling.
+- **THE WRONG SIDE**: when they arrive you get a backstab and flanking spotlight and ONE free
+  action that turn ("the legs for one more thing"). ⚠ Spend it on a STEP: a third swing with the
+  same weapon is refused by the twice-a-turn ceiling.
+- **KICK is taught as the first synergy** now: the moment an enemy has your blade and a friend's
+  on him at once.
+- **Cursors**: an arrow when a shot is aimed, a magenta spark when a working is, blade for melee,
+  boots for moving. The over-target hit% and damage are a fifth smaller. **UNDO MOVE sits
+  directly above END TURN.**
+
+**What would be a bug:** Harl failing to reach the door once broken (his path is a real
+pathfind now, and he scrambles even if you block his lane for two turns) · the brawl eating
+provisions or ending in a hunger retreat (both are off here) · any spotlight in the wrong order
+or on the wrong element · the free action arriving on any turn but the one after the crew stands
+up.
+
+---
+
 ## 🖱 THE CURSOR NAMES THE ACT  *(#109 · 2026-08-12 · build log 8f.136)*
 
 **Your order:** the cursor follows the skill in battle (movement or strike) and shows travel on

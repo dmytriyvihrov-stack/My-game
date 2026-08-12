@@ -839,7 +839,8 @@ button:disabled{cursor:not-allowed}
 #bEnd:disabled{background:#20191a;border-color:#3a2b2c;color:#6b6260}
 /* #91 point 12 - shown only while the last move can still be taken back.
    #95: one slot higher, because ⏱ ⚑ took bottom:86 above END TURN. */
-#bUndo{position:absolute;right:44px;bottom:102px;width:190px;height:24px;z-index:40;
+/* #111 - directly above END TURN (user's arrow): the two are one decision */
+#bUndo{position:absolute;right:44px;bottom:72px;width:190px;height:24px;z-index:40;
   display:none;align-items:center;justify-content:center;gap:6px;
   background:#1f2d2e;border:1px solid #4d6b6c;font-family:var(--mono);
   font-size:10px;letter-spacing:.12em;color:#9fb3ae}
@@ -1030,10 +1031,16 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:11px;pa
 :root{
   --curWalk:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='26' height='26'><g transform='rotate(-14 8 10)'><ellipse cx='8' cy='8' rx='3.4' ry='4.6' fill='%23d9bd7e'/><ellipse cx='8' cy='14.4' rx='1.8' ry='1.3' fill='%23d9bd7e'/></g><g transform='rotate(12 18 15)'><ellipse cx='18' cy='13' rx='3.4' ry='4.6' fill='%23a38652'/><ellipse cx='18' cy='19.4' rx='1.8' ry='1.3' fill='%23a38652'/></g></svg>") 13 13,pointer;
   --curStrike:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='28' height='28'><path d='M3 3 L17 17' stroke='%23151b1c' stroke-width='5.4' stroke-linecap='round'/><path d='M3 3 L17 17' stroke='%23c9c6bb' stroke-width='3.2' stroke-linecap='round'/><path d='M3.6 3.6 L15 15' stroke='%23eeeadf' stroke-width='1.2' stroke-linecap='round'/><path d='M13.4 20.6 L20.6 13.4' stroke='%23a38652' stroke-width='3.2' stroke-linecap='round'/><path d='M17.8 17.8 L22.4 22.4' stroke='%235a4326' stroke-width='4.2' stroke-linecap='round'/><circle cx='23.6' cy='23.6' r='2.2' fill='%23d9bd7e'/></svg>") 3 3,pointer;
+  /* #111 - a shot and a working get their own hands: a fletched arrow, and
+     the Bloom's own magenta spark */
+  --curShot:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='28' height='28'><path d='M6 6 L22 22' stroke='%23151b1c' stroke-width='4.6' stroke-linecap='round'/><path d='M6 6 L22 22' stroke='%235a4326' stroke-width='2.4' stroke-linecap='round'/><path d='M3 3 L12.5 5.8 L5.8 12.5 Z' fill='%23c9c6bb' stroke='%23151b1c' stroke-width='1'/><path d='M17 25 L25 17' stroke='%23a38652' stroke-width='2.2' stroke-linecap='round'/><path d='M14.6 22.6 L22.6 14.6' stroke='%23a38652' stroke-width='2.2' stroke-linecap='round'/></svg>") 3 3,pointer;
+  --curCast:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='28' height='28'><path d='M14 2.6 L16.6 11.4 L25.4 14 L16.6 16.6 L14 25.4 L11.4 16.6 L2.6 14 L11.4 11.4 Z' fill='%23e28fb4' stroke='%238a2f6a' stroke-width='1.3'/><circle cx='14' cy='14' r='2.7' fill='%23f7c8e6'/></svg>") 14 14,pointer;
 }
 #bGrid.cMove .hex:not(.blocked){cursor:var(--curWalk)}
 #bGrid.cMove .hex.hfoe:not(.blocked){cursor:var(--curStrike)}
 #bGrid.cStrike .hex:not(.blocked){cursor:var(--curStrike)}
+#bGrid.cShot .hex:not(.blocked){cursor:var(--curShot)}
+#bGrid.cCast .hex:not(.blocked){cursor:var(--curCast)}
 #wMap,#wMap .node,#wMap .elab{cursor:var(--curWalk)}
 /* The glyph used to sit on a flat plate, so 15px and a soft shadow were
    enough. It now sits on a PAINTED OBJECT, so it is smaller (it is a mark,
@@ -1049,8 +1056,10 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:11px;pa
    line below. Both rows are pinned, so both declare their own height. */
 /* #98 point 7 - 11px → 9.5px. The damage under it is the bigger figure now,
    and two numbers on one hex want a hierarchy. */
-.hodds{position:absolute;top:3px;left:0;right:0;text-align:center;font-family:var(--mono);
-       font-size:9.5px;line-height:1;font-weight:700;text-shadow:0 0 3px #000,0 0 3px #000}
+/* #111 - both a fifth smaller at the user's word: at the CLOSE camera stop
+   the pair was shouting over the bodies they describe */
+.hodds{position:absolute;top:4px;left:0;right:0;text-align:center;font-family:var(--mono);
+       font-size:7.6px;line-height:1;font-weight:700;text-shadow:0 0 3px #000,0 0 3px #000}
 /* WHAT IT WOULD ACTUALLY TAKE OFF (user: "show not only % to hit - but also
    potential damage"). It rides directly under the odds on the same hex, in
    the hitpoint red the readout card uses for the same number, so the two
@@ -1059,8 +1068,8 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:11px;pa
    damage is the consequence. */
 /* #98 point 7 - it moved up with the smaller odds and took the emphasis:
    9.5px, because it is the whole blow now and the figure being compared */
-.hdmg{position:absolute;top:14px;left:-4px;right:-4px;text-align:center;
-      font-family:var(--mono);font-size:9.5px;line-height:1;font-weight:700;color:#e08a80;
+.hdmg{position:absolute;top:13px;left:-4px;right:-4px;text-align:center;
+      font-family:var(--mono);font-size:7.6px;line-height:1;font-weight:700;color:#e08a80;
       text-shadow:0 0 3px #000,0 0 3px #000;pointer-events:none}
 /* ═══ LINE OF FIRE (backlog #36) ════════════════════════════════════════
    The costs are hidden in the odds like every other modifier; what is NOT
@@ -6210,10 +6219,13 @@ function unitFrom(p){
   /* The courageous do not get the button. It is not greyed out and it is not
      a penalty they pay — stepping back is simply not a thing they can be
      talked into, and the sheet reflects that. */
-  /* #72 - it is the STEP now, not a permission slip for one. See selectAct. */
+  /* #111 - the user's third shape for this act (2026-08-12): no step of its
+     own. It buys CLEAN MOVEMENT for the rest of this turn, and the legs
+     remember it: one extra hex of movement on the NEXT turn. */
   if(!tr(u,'courage'))acts.push({k:'dis',n:'DISENGAGE',cost:1,self:true,
-    note:'One action, one hex, and nobody gets a swing at you - click where you step. '+
-      'The rest of the turn is clean too, so a full MOVE after it is also free.'});
+    note:'One action. Every step you take for the rest of THIS turn is clean: no '+
+      'parting swings, no zone of control. And next turn your legs remember the '+
+      'trick: one extra hex of movement. Disengage first, then move.'});
   /* a mutation grants a RULE, not a number - see MUTS. The gilled can vanish
      into any water they are standing in or beside, once a fight. */
   u.mut=p.mut||null;
@@ -6495,9 +6507,11 @@ const TAVERN_T={
   tull :{kind:'human',name:'Tull',hp:46,armour:6,mor:44,skill:42,dodge:10,
     speed:4,trait:'stubborn',
     acts:[{k:'club',n:'STOOL, SWUNG',cost:1,reach:1,dmg:[7,13],am:.45,ft:.35}]},
-  chitt:{kind:'ratkin',name:'Chitt',hp:34,armour:10,mor:60,skill:52,dodge:22,
-    speed:5,trait:'veteran',
-    acts:[{k:'knife',n:'KNIFE',cost:1,reach:1,dmg:[7,12],am:.35,ft:.55}]}
+  /* #111 - the user's ruling: no ratkin allies here. The non-human helper is
+     the BARMAN, an ogre with a proprietary interest in the furniture. */
+  barman:{kind:'ogre',name:'The barman',hp:96,armour:12,mor:96,skill:48,dodge:6,
+    speed:3,trait:'stubborn',
+    acts:[{k:'club',n:'BAR CLUB',cost:1,reach:1,dmg:[18,27],am:1.1,ft:.25}]}
 };
 function tavernFoes(){
   /* init 24: the Captain moves first, so every lesson lands on a player turn */
@@ -6526,24 +6540,34 @@ function tavernWave1(){
   w.forEach((u,i)=>{u.id=ids[i];u.facing=3;tavernPlace(u);});
   say('The door bangs open. Three carters come through it, sober enough, and '+
     'none of them is smiling.');
-  tavTeach('pocket');tavTeach('kick');
+  tavTeach('pocket');
   render();
 }
 function tavernWave2(){
   if(!B.tut||B.tut.wave2)return;
   B.tut.wave2=true;B.tut.phase=4;
-  const v=B.tut.bench.find(u=>u.id==='vesna');
-  if(v&&!B.units.some(x=>x.id==='vesna')){
-    v.col=5;v.row=5;v.facing=0;v.init=v.init||30;tavernPlace(v);
-    say('The woman at the bar has not moved all evening. She moves now, and '+
-      'the spear from behind the barrels was apparently hers.');
-  }
-  const c=build([[9,7,'chitt',19]],TAVERN_T)[0];
-  c.id='tavC';c.side='you';c.ally=true;c.facing=0;
-  tavernPlace(c);
-  say('The ratkin at the corner table finishes his drink, looks at the odds, '+
-    'and picks your side of them.');
-  tavTeach('crew');
+  /* #111 - the whole future crew stands up, and the barman with them */
+  const spots={vesna:[5,4],marrow:[4,5],ilka:[4,4]};
+  ['vesna','marrow','ilka'].forEach(id=>{
+    const v=B.tut.bench.find(u=>u.id===id);
+    if(v&&!B.units.some(x=>x.id===id)){
+      const s=spots[id];
+      v.col=s[0];v.row=s[1];v.facing=0;v.init=v.init||30;
+      tavernPlace(v);
+    }
+  });
+  say('The woman at the bar takes up her spear like the end of an argument. '+
+    'The quiet man and the archer stand up with her, and none of the three '+
+    'looks surprised at the other two.');
+  const o=build([[6,4,'barman',18]],TAVERN_T)[0];
+  o.id='tavBar';o.side='you';o.ally=true;o.facing=0;
+  tavernPlace(o);
+  say('And the barman comes over his own bar with a club, because it is his '+
+    'furniture you are all breaking.');
+  /* #111 - the spare step, cashed at the Captain's next turn (beginTurn
+     resets actions, so granting it now would be overwritten) */
+  B.tut.freeStep=true;
+  tavTeach('crew');tavTeach('backstab');tavTeach('ogre');
   render();
 }
 /* a broken brawler runs for the door, not for the map edge. Two stages on
@@ -6560,14 +6584,35 @@ function tavernFlee(u,done){
     if(checkEnd())return;
     done&&done();return;
   }
+  /* #111 - the way out is not a straight line any more: the round-two
+     furniture walls off the direct east, so straight-line greed paced in
+     place for a whole fight. A door-distance field over walkable ground,
+     then the reachable hex that is fewest REAL steps from the door. */
+  const dd={};dd[K(door[0],door[1])]=0;
+  const q=[[door[0],door[1]]];
+  while(q.length){
+    const p=q.shift(),d0=dd[K(p[0],p[1])];
+    nbrs(p[0],p[1]).forEach(n=>{
+      const k=K(n[0],n[1]);
+      if(dd[k]!==undefined)return;
+      const t=B.terr[k];
+      if(t===undefined||BLOCKED[t])return;
+      dd[k]=d0+1;q.push(n);});
+  }
   const rm=reachMap(u,moveBudget(u));
   let best=null,bs=1e9;
   Object.keys(rm.dist).forEach(k=>{
     const p=k.split(',').map(Number);
     if(at(p[0],p[1]))return;
-    const sc=hdist(p,door)*10+rm.dist[k];
+    if(dd[k]===undefined)return;
+    const sc=dd[k]*10+rm.dist[k];
     if(sc<bs){bs=sc;best=p;}});
-  if(best&&hdist(best,door)<hdist([u.col,u.row],door)){
+  const here=dd[K(u.col,u.row)];
+  const better=best&&(here===undefined||dd[K(best[0],best[1])]<here);
+  /* a body can SEAL the lane by standing in it. Two turns of that and the
+     broken man scrambles anyway - wandering beats freezing a scripted fight */
+  if(!better)u._fleeStuck=(u._fleeStuck||0)+1;else u._fleeStuck=0;
+  if(best&&(better||u._fleeStuck>=2)){
     walkTo(u,best[0],best[1],rm);
     if(u.id==='harl'&&u.col===door[0]&&u.row===door[1])
       say('Harl is in the doorway, bawling names into the street.');
@@ -6579,28 +6624,47 @@ function tavernTick(){
   const T=B.tut;if(!T)return;
   const cap=B.units.find(u=>u.leader&&u.side==='you');
   const harl=B.units.find(u=>u.id==='harl');
-  if(!T.taught.armour&&cap&&harl&&(cap.armour+harl.armour)<T.arm0)
-    tavTeach('armour');
+  /* #111 - armour teaches on YOUR first dent, not the enemy's: your plaque
+     holds still, his bar only blinks */
+  if(!T.taught.armour&&cap&&cap.armour<T.arm0)tavTeach('armour');
   if(T.phase===1&&harl&&!harl.dead&&!harl.fled){
     if(harl.state!=='routed'&&(harl.hp<=harl.hpMax*0.55||B.round>=4)){
       say('Harl looks at the blood on his own sleeve, and the ale goes out '+
         'of him all at once.');
       mor(harl,-harl.moraleMax,'');
     }
-    if(harl.state==='routed'){T.phase=2;tavTeach('nerve');}
+    if(harl.state==='routed'){T.phase=2;tavTeach('broken');tavTeach('nerve');}
   }
   /* beaten down before he could run: his friends heard the furniture */
   if(T.phase<3&&harl&&(harl.dead||harl.fled)&&!T.wave1)tavernWave1();
+  /* #111 - CIRCLED: the moment two of them have a hand on you, teach the
+     disengage-then-move order */
+  if(T.wave1&&cap&&!cap.dead&&!T.taught.circled&&
+     engagers(cap.col,cap.row,cap.side).length>=2)
+    tavTeach('circled');
   if(T.phase===3&&T.wave1){
     if(!T.w1round)T.w1round=B.round;
-    if(B.round>=T.w1round+2||(cap&&cap.hp<=cap.hpMax*0.45))tavernWave2();
+    /* #111 - the watchers stir one round before they stand up */
+    if(B.round>=T.w1round+2&&!T.taught.watchers){
+      say('At the benches, somebody sets a drink down very carefully.');
+      tavTeach('watchers');
+    }
+    if(B.round>=T.w1round+3||(cap&&cap.hp<=cap.hpMax*0.45))tavernWave2();
+  }
+  /* #111 - KICK is taught as the first synergy: an enemy with your blade AND
+     a friend's on him is a body worth pushing */
+  if(T.phase>=4&&cap&&!cap.dead&&!T.taught.kick){
+    const both=B.units.some(f=>f.side==='foe'&&!f.dead&&!f.fled&&
+      f.state!=='routed'&&udist(cap,f)<=1&&
+      B.units.some(x=>x.side==='you'&&x!==cap&&!x.dead&&!x.fled&&udist(x,f)<=1));
+    if(both)tavTeach('kick');
   }
 }
 /* ─── the spotlight layer ─────────────────────────────────────────────── */
 const TUTSTEPS={
-  act:{h:'THE ROOM',
-    t:'One drunk carter wants your hide. Click a green hex to walk, click him '+
-      'to swing. Two actions a turn.',
+  act:{h:'YOUR SKILLS',
+    t:'These are your skills: to move, and to fight. Click a green hex to '+
+      'walk, click a man to swing. Two actions a turn. Win the room with them.',
     a:()=>$('bActions')},
   drunk:{h:'DRUNK',
     t:'He is full of ale. Slower to land a blow, easier to catch with one, '+
@@ -6613,23 +6677,57 @@ const TUTSTEPS={
       'red one under it is the man inside.',
     a:()=>{const w=document.querySelector('#bPlq .pbwrap');
       return w?[].slice.call(w.children,0,4):null;}},
+  broken:{h:'BROKEN',
+    t:'His nerve is empty, and the word means RUNNING: a broken man stops '+
+      'swinging and makes for the door.',
+    a:()=>{const h=B.units.find(u=>u.id==='harl');
+      return h&&!h.fled?{hexes:[[h.col,h.row]]}:null;}},
   nerve:{h:'NERVE',
     t:'Harl\'s nerve emptied before his body did. Every body carries this bar '+
       'into a fight, and it breaks first. Watch the word.',
     a:()=>$('bState')},
+  circled:{h:'CIRCLED',
+    t:'Moving while they touch you pays a free swing to each of them. '+
+      'DISENGAGE first: the rest of this turn\'s moving is clean, and next '+
+      'turn your legs get one extra hex. Then go where they come one at a time.',
+    a:()=>{const u=cur();if(!u)return $('bActions');
+      const i=u.acts.findIndex(x=>x.k==='dis');
+      return (i>=0&&document.querySelector('#bActions .act[data-a="'+i+'"]'))||$('bActions');}},
+  watchers:{h:'THE ROOM IS WATCHING',
+    t:'Strangers have been watching this from the benches. Now they trade one '+
+      'look, and hands find weapons. It took them a while. On this island, '+
+      'most would rather watch an unfairness than join a fight that already '+
+      'looks lost.',
+    a:()=>({hexes:[[4,3],[5,3],[6,3],[6,7]]})},
+  backstab:{h:'THE WRONG SIDE',
+    t:'A body guards its front. A flank is easier to hit; the small of the '+
+      'back is easier still, and hits harder. You have a spare step this '+
+      'turn: spend it getting behind one.',
+    a:()=>{const f=B.units.find(x=>x.side==='foe'&&!x.dead&&!x.fled);
+      return f?{hexes:[[f.col,f.row]]}:null;}},
+  ogre:{h:'THE BARMAN',
+    t:'An ogre. Bigger and stronger than anything human, slow on his feet, '+
+      'and not quick in the head. Every race carries its own skills and '+
+      'grows its own way.',
+    a:()=>{const o=B.units.find(u=>u.id==='tavBar');
+      return o?{hexes:[[o.col,o.row]]}:null;}},
   pocket:{h:'THREE ON ONE',
-    t:'Floor decides fights. Put your back in the corner by the hearth and '+
-      'they can only come at you one at a time.',
+    t:'Floor decides fights. The hearth corner, and the two corners on the '+
+      'far wall: each lets only one of them reach you at a time. Put your '+
+      'back in one.',
     a:()=>({hexes:[[4,8],[5,8]]})},
   kick:{h:'KICK',
-    t:'A boot is a human\'s oldest trick. Almost no blood, but it puts a man '+
-      'one hex straight back: off you, into a stool, out of your corner.',
+    t:'That one has your blade on him and a friend\'s as well. KICK: almost '+
+      'no blood, but it throws a man one hex straight back, and every other '+
+      'blade in reach gets a free half-swing as he goes. Push them onto your '+
+      'people.',
     a:()=>{const u=cur();if(!u)return $('bActions');
       const i=u.acts.findIndex(x=>x.k==='kick');
       return (i>=0&&document.querySelector('#bActions .act[data-a="'+i+'"]'))||$('bActions');}},
   crew:{h:'NOT ALONE',
-    t:'Two more heads join the ladder: the woman from the bar, and a ratkin '+
-      'who owed Harl nothing. Not every friend on this island is human.',
+    t:'Spear, focus and bow: three strangers stop being strangers, and their '+
+      'heads join the ladder. When this room settles, they will still be '+
+      'walking with you.',
     a:()=>$('bTop')},
   shove:{h:'HER TRADE',
     t:'A spear fights at reach, and SPEAR WALL braces it: anything stepping '+
@@ -7383,9 +7481,9 @@ function startBattle(kind){
      with the fight like everything else here. `noMercy`: routed brawlers
      scramble out of the door instead of begging (see checkEnd). */
   if(G.battleKind==='tavern'){
-    const harl=B.units.find(u=>u.id==='harl');
     B.tut={phase:1,q:[],taught:{},door:[11,6],bench:tavBench||[],
-      arm0:((B.units.find(u=>u.leader&&u.side==='you')||{}).armour||0)+((harl||{}).armour||0)};
+      /* #111 - the captain's armour only: his teach fires on HIS first dent */
+      arm0:((B.units.find(u=>u.leader&&u.side==='you')||{}).armour||0)};
     B.noMercy=true;
     tavTeach('act');tavTeach('drunk');
   }
@@ -8130,6 +8228,9 @@ function bloomTick(){
    that grew gills in the fen is not the one the fen slows down. */
 function moveBudget(u){
   if(u.rooted>0)return 0;
+  /* #111 - the hex DISENGAGE banked last turn. Declared here so the reach
+     preview, the MOVE card, the sheet and both AI brains all read it. */
+  const disB=u.disBonus||0;
   /* ═══ WHAT THE GROUND UNDER YOU TAKES OFF YOUR STRIDE ═══════════════════
      One place, read by the player's reach preview, `aiTurn` and `autoStep`,
      which is the entire reason this function exists. Three rules live here
@@ -8153,6 +8254,7 @@ function moveBudget(u){
     if(bloomNear(u))pen+=BLOOM_STRIDE;
   }
   let s=u.speed
+    +disB
     +((u.cls==='cutter'&&!(u.movesUsed||0))?1:0)
     -((u.movesUsed||0)>0?1:0)
     -pen;
@@ -9469,6 +9571,15 @@ function beginTurn(){
     render();later(nextTurn,180);return;
   }
   u.actions=u.actionsMax;u.used={};u.safeMove=false;u.moved=false;u.movesUsed=0;u.rallyBuff=0;
+  /* #111 - DISENGAGE's promise comes due: the turn after it was used, the
+     legs get one extra hex. One turn only, cashed and cleared here. */
+  u.disBonus=u.disNext?1:0;u.disNext=false;
+  /* #111 - the brawl's spare step: granted AFTER the reset above, once */
+  if(B.tut&&B.tut.freeStep&&u.side==='you'&&u.leader){
+    u.actions+=1;B.tut.freeStep=false;
+    say('There is an opening in the room, and you have the legs for one more '+
+      'thing this turn.');
+  }
   /* ═══ #64 — RE-READ EVERYBODY'S NERVE, BECAUSE THE GROUND CAN MOVE IT ═══
      `u.state` is a cached read of `nerveFrac`, and until the flower existed
      the only thing that could change that read was `mor()`, which restates
@@ -9836,6 +9947,10 @@ function rearOffer(u){
 const HUNGER_FROM=11, HUNGER_EVERY=2, HUNGER_MOR=-12;
 function hungerTick(){
   if(!B||B.won!==null)return false;
+  /* #111 - the brawl is minutes long in a warm room, and a forced hunger
+     retreat here would also skip enterWorld: the tutorial does not eat the
+     run's barrels and cannot end by starvation */
+  if(B.tut)return false;
   if(B.round<HUNGER_FROM)return false;
   if((B.round-HUNGER_FROM)%HUNGER_EVERY!==0)return false;
   const mine=alive().filter(u=>u.side==='you'&&!u.ally&&!u.pet);
@@ -10273,12 +10388,14 @@ function selectAct(i){
      not close the one that was there. Rooted still blocks it (canUse), and
      the courageous still do not have the button at all. */
   if(a.k==='dis'){
-    const spots={};
-    nbrs(u.col,u.row).forEach(p=>{if(walkable(p[0],p[1]))spots[K(p[0],p[1])]=1;});
-    if(!Object.keys(spots).length){
-      say('There is nowhere to step. They have you against something.');return;}
-    B.sel=a;B.reach={dist:spots,prev:{}};render();
-    say('One hex, and nobody gets a swing at it. Click where you step.');
+    /* #111 - resolves on the spot: clean movement for the rest of the turn
+       (`safeMove`, which partingShots already honours) and +1 stride next
+       turn (`disNext`, cashed at beginTurn, read by moveBudget). */
+    spend(u,a);u.safeMove=true;u.disNext=true;
+    ghostFx(u);fx(u,'CLEAN','#8ca35a',true);
+    say('You give ground without turning your back. Your moving is clean for the '+
+      'rest of this turn, and next turn your legs get one extra hex.');
+    B.sel=null;render();autoEnd(u);
     return;}
   if(a.k==='wall'){spend(u,a);u.spearwall=true;
     say(wallLive(u)
@@ -10747,27 +10864,9 @@ function clickHex(c,r){
     B.sel=null;B.reach=null;render();
     if(!checkEnd())autoEnd(u);
     return;}
-  /* #72 - the disengage step. Resolves like a move and is one, except that
-     nothing swings and it does not eat into the movement budget: `movesUsed`
-     is deliberately untouched, so stepping clear and THEN walking is still a
-     full first move rather than a shortened second one. */
-  if(a&&a.k==='dis'&&B.reach&&B.reach.dist[K(c,r)]!==undefined&&!tgt){
-    spend(u,a);u.moved=true;u.safeMove=true;
-    const was=threatsAt(u.col,u.row,u.side);
-    ghostFx(u);                     /* #87 — one clean step, and it shows */
-    faceToward(u,c,r);u.col=c;u.row=r;
-    const now=threatsAt(u.col,u.row,u.side);
-    const near=alive().filter(x=>x.side!==u.side)
-      .sort((p,q)=>hdist([u.col,u.row],[p.col,p.row])-hdist([u.col,u.row],[q.col,q.row]))[0];
-    if(near)faceToward(u,near.col,near.row);
-    fx(u,'CLEAN','#8ca35a',true);
-    say(now===0?'Out of it, and nobody laid a hand on '+(u.side==='you'?'them':'it')+'.'
-      :now<was?'One step, no swings - and '+(was-now)+' fewer of them on '+
-        (u.side==='you'?'them':'it')+'.'
-      :'A clean step, but they came with '+(u.side==='you'?'them':'it')+'.');
-    B.sel=null;B.reach=null;render();
-    if(!checkEnd())autoEnd(u);
-    return;}
+  /* #72's disengage STEP lived here; #111 removed it - DISENGAGE resolves in
+     selectAct now (clean movement this turn + one extra hex next turn) and
+     never owns a hex click. */
   if(a&&a.move&&B.reach&&B.reach.dist[K(c,r)]!==undefined&&!tgt){
     /* ═══ #91 point 12 - UNDO, decided BEFORE the step is taken. A move is
        takeable-back only if it will change nothing but position: no
@@ -12631,17 +12730,25 @@ function makeObstacles(terr,TF,rnd){
      That geometry IS the lesson the fight teaches, verified with nbrs() in
      the gate shot - do not move the hearth without re-verifying it. */
   if(TF.layout==='tavern'){
+    /* #111 - one more free row (interior rows 3..8 now), and THREE pockets:
+       the hearth corner (4,8) via (5,8) only, the top-right (10,3) via (9,3)
+       only, the bottom-right (10,8) via (10,7) only. Each verified with
+       nbrs() at stage time - a pocket is EXACTLY ONE open neighbour, and
+       that geometry is the fight's whole lesson. */
     for(let r=0;r<ROWS;r++)for(let c=0;c<COLS;c++){
-      if(!(c>=4&&c<=10&&r>=4&&r<=8))terr[K(c,r)]='wall';
+      if(!(c>=4&&c<=10&&r>=3&&r<=8))terr[K(c,r)]='wall';
     }
     terr[K(11,6)]='door';keep(11,6);
-    [[4,4],[5,4],[6,4]].forEach(p=>{terr[K(p[0],p[1])]='bar';});
+    [[4,3],[5,3],[6,3]].forEach(p=>{terr[K(p[0],p[1])]='bar';});
     terr[K(4,7)]='fire';FIREPIT=[4,7];      /* the hearth */
-    [[8,5],[9,6],[6,7]].forEach(p=>{terr[K(p[0],p[1])]='table';});
-    [[5,6],[7,5],[8,8]].forEach(p=>{terr[K(p[0],p[1])]='stool';});
-    /* the pocket, its one approach, both start hexes and the doorway lane
+    /* no table at (9,6): the mid-room east lane must stay open, or one body
+       standing west of a broken man seals his whole way to the door */
+    [[8,5],[9,7],[6,7]].forEach(p=>{terr[K(p[0],p[1])]='table';});
+    [[5,6],[7,5],[9,8],[10,4]].forEach(p=>{terr[K(p[0],p[1])]='stool';});
+    /* the pockets, their approaches, both start hexes and the doorway lane
        stay open whatever a later generator thinks */
-    [[4,8],[5,8],[6,6],[8,6],[10,6],[10,5],[10,7]].forEach(p=>keep(p[0],p[1]));
+    [[4,8],[5,8],[10,3],[9,3],[10,8],[10,7],[6,6],[8,6],[10,6],[10,5]]
+      .forEach(p=>keep(p[0],p[1]));
     return;
   }
   if(TF.layout==='camp'){
@@ -13954,7 +14061,7 @@ function render(){
            be (the second of a turn is a hex shorter), DISENGAGE says it is
            the step (#72), everything else says cost · reach · the prices */
         const sub=a.move?moveBudget(u)+' hexes · 1 act'
-          :a.k==='dis'?'1 hex · 1 act · clean'
+          :a.k==='dis'?'1 act · clean moving · +1 hex next turn'
           :a.range?a.cost+' act · range '+a.range
           :a.reach?a.cost+' act · reach '+a.reach:a.cost+' act';
         /* #67 · the school this body is currently holding. It is not a
@@ -14122,8 +14229,11 @@ function render(){
   const mineTurn=uCur&&uCur.side==='you'&&!uCur.ally&&!uCur.pet&&
     B.won===null&&uCur.state!=='routed';
   g.classList.toggle('cMove',!!(mineTurn&&B.sel&&B.sel.move));
-  g.classList.toggle('cStrike',
-    !!(mineTurn&&B.sel&&!B.sel.move&&(B.sel.dmg||B.sel.push||B.sel.range)));
+  /* #111 - the hand names the act's KIND: blade, arrow, or working */
+  const selAtk=mineTurn&&B.sel&&!B.sel.move&&(B.sel.dmg||B.sel.push||B.sel.range);
+  g.classList.toggle('cCast',!!(selAtk&&B.sel.arcane));
+  g.classList.toggle('cShot',!!(selAtk&&!B.sel.arcane&&B.sel.range));
+  g.classList.toggle('cStrike',!!(selAtk&&!B.sel.arcane&&!B.sel.range));
   /* 8f.137 - the blade under MOVE goes through the SAME offer gate as the
      click (#91), or the cursor promises a swing the click would refuse */
   const w0=mineTurn?mainAtk(uCur):null;
@@ -16796,12 +16906,13 @@ function consequences(scarred){
 const AFTER={
   /* #108 - the brawl. tavernAfter() reads this row, so there is one copy. */
   tavern:{t:'THE ROOM SETTLES',
-    b:'Somebody rights a table. Somebody else finds most of a chair. The man '+
-      'behind the bar looks at the wreckage, then at your iron, and decides '+
-      'against saying anything about either.\n\nThe woman with the spear '+
-      'leans it back where it was standing, which settles nothing and says '+
-      'plenty. The ratkin in the corner lifts what is left of his drink an '+
-      'inch off the table. In ratkin, that is a whole speech.'},
+    b:'Somebody rights a table. Somebody else finds most of a chair. The '+
+      'barman looks at the wreckage, then at your iron, and starts adding '+
+      'what is broken to Harl\'s tab.\n\nThe woman with the spear leans it '+
+      'back where it was standing, which settles nothing and says plenty. '+
+      'The quiet man pockets his focus. The archer is already at the door, '+
+      'counting the street. None of the three has anywhere better to be, '+
+      'and nobody says so out loud.'},
   /* #74 - it is not supposed to be reachable and it is reachable. Whoever
      gets here has done something no company in this act is built to do, and
      the card says so and does not gloat for them. */
