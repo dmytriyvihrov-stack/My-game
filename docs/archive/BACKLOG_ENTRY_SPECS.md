@@ -2404,3 +2404,169 @@ seal his whole path to the door, and the straight-line flee paced in place for a
 stall that ended in a forced hunger retreat (which would also have skipped enterWorld). Three
 fixes: the mid-room east lane stays open (no table at 9,6), tavernFlee walks a real
 door-distance field with a two-turn stuck-breaker, and the brawl is exempt from battle hunger.
+
+---
+
+## 122 - The after-battle screen, on the Battle Brothers shape
+
+**STATE: specced + mockup, 2026-08-12. ⛔ NOT BUILT. The picture gate is paid
+(`shots/122_after_battle.html`); the build waits for the user's review of the mockup and of the
+two interpretation calls below.**
+
+**The order, 2026-08-12, verbatim (with his Battle Brothers victory-screen screenshot attached):**
+
+> *"Hey, I want rework after battle sreen*
+>
+> *a) The biggest block*
+> *1) I love battle brotheres info. It gets you in one go - who did what (kills, damage dealt,
+> damage recived, expirience gained)*
+> *2) Who get ingjured (red bluddy squere)*
+> *3) Who get lvld up*
+> *4) Who died*
+> *I like protraits here*
+>
+> *b) Try to put on the button on the sreen - what did we get. You can also even show picture of
+> artifact, how it would be in inventory*
+>
+> *c) And as optional accordeon below - enemies, who we killed*
+>
+> *d) The things from second screen (like direct lvld upd delete) so far*
+>
+> *f) choice what to do with prisoners lets put as independent desigion on second screen. It is
+> optional and only after some of fights"*
+
+This is the 📜 **aftermath surface of the clarity pass's screen pass** (step 3 of the work order),
+arriving as a user brief with a reference picture, the same door #91 came through for the battle
+frame. The reference is Battle Brothers' victory screen: a grid of crew cards, portrait plus four
+numbers each, with state told by the FRAME of the card (bloody border = injured, gold arrow =
+levelled, greyed = dead), tabs for Statistics / Loot, one Continue.
+
+### What the screen is today, so the rework knows what it replaces
+
+Two beats inside `consequences()` (see the long comment "TWO BEATS, NOT ONE LEDGER"):
+
+1. **Beat 1, WHAT HAPPENED**: the encounter's own aftermath prose (`AFTER[kind]`), then
+   `battleReport()`: two text columns (YOUR COMPANY / AGAINST YOU), grouped rows, "N down /
+   unhurt" plus "dealt" per row, then the CARRIED OFF list, one button through.
+2. **Beat 2, WHAT YOU CARRY AWAY**: mercy (the begging enemy, `MERCYASK`, exists on some fights
+   only), the haul receipt (auto since #55), the field choice when the fight has one, and the
+   promotion block (one random hero levels every fight; stat pick or perk pick inline), the books
+   line, the road button gated by `markGo`.
+
+### The mapping, point by point
+
+**(a) The crew grid.** Beat 1's two text columns become a grid of per-person cards, portraits on
+them (the faces already exist for everybody: `faceURI()` / `bustFor()` paint the battle rail's
+heads, painted portraits for the named cast, busts for hires). Per card, THREE numbers, not BB's
+four, and the missing one is the honest one:
+
+| BB column | Grimtoll | source |
+|---|---|---|
+| kills | ☠ kills | `u.killsShown` (the `notally` rule holds; men/beasts split stays on the sheet) |
+| damage dealt | ⚔ dealt | `u.dealt`, rounded (body damage only, the #94-era rule) |
+| damage received | 🩸 taken | ⚠ NOT TRACKED today. Add `d.taken` in `strike()` at the same line that feeds `a.dealt` (~9240), the one door both numbers already pass through. Downed bodies show their real accumulated number, not the 0.7 write-off |
+| experience | (none) | ⛔ **Grimtoll has no XP.** Levelling is one random hero per fight. No fake column; the gold arrow badge carries "who got better" |
+
+Card states, told by the frame exactly as in the reference: **red bloody frame** = carried off /
+scarred (the scar's name printed small on the card; a fenwater condition marks here too), **gold
+arrow badge** = the promoted one, greyed = nothing (⛔ crew cannot die in battle: a fall is a scar,
+see the standing comment in `strike()`; the "who died" column of the reference belongs to the
+ENEMY accordion below). The CARRIED OFF prose list and its italic "replacing him is cheap" line
+fold into the frames; the carrier bond line (`#38`) still writes, it just is not read out here.
+
+**(b) The loot strip.** "on the button" read as **on the bottom**: the haul receipt moves onto
+beat 1 as a strip at the foot of the grid, name + effect + the books delta in the game's own
+glyphs (◉ ❦ ▤ ◈). ⚠ **"show picture of artifact, how it would be in inventory": the inventory has
+no item pictures anywhere in the build.** Phase 1 ships the strip with glyphs and the item's text
+row exactly as the inventory writes it; item art is his optional follow-up ("can also even"), his
+generator pipeline, and it lands in the strip's reserved square when it exists.
+
+**(c) The enemy accordion.** Collapsed line under the loot strip: "THE FIELD THEY LEFT · N dead,
+M fled". Open: the foe side of `battleReport()`'s grouped rows (name ×N, the BESTIARY tag or
+class · race via `kindOf`, dead/fled split). Collapsed by default, remembered per session, and it
+is the one place "who died" is a true sentence.
+
+**(d) INTERPRETATION CALL ONE, and it decides the flow.** Read as: *the second screen's forced
+blocks (the direct level-up pick) are deleted for now*. So: the promotion CHOICE leaves the
+after-battle flow. The level still happens (arrow badge on the grid), the stat/perk pick moves to
+the sheet/INVENTORY, where "Decide later" already banks perk points today; a stat level banks the
+same way (small ▲ on the sheet until spent). **On the roughly half of fights with no mercy and no
+field choice, the whole flow becomes ONE screen**, which is the kind of cut the clarity pass
+exists for. ⚠ The other reading ("keep the second screen as is for now") is cheaper and also
+consistent with (f); the mockup draws reading one, and the call is his.
+
+**(f) The decisions screen.** Mercy (prisoners) stays an independent decision on the second
+screen, exactly as gated today (`MERCYASK`, some fights only), alongside the field choice when
+one exists. The second screen appears ONLY when at least one decision exists; otherwise Continue
+on screen 1 goes straight to the road (`afterPromotion()` path unchanged, `markGo`'s
+un-softlockable contract inherited).
+
+**INTERPRETATION CALL TWO: the prose.** BB's screen has no story text; Grimtoll's aftermath prose
+(`AFTER[kind]`, the spare line, the epilogue hooks) is canon voice and some of it is
+load-bearing (#108's coat man, the cage). The mockup keeps the title plus ONE compressed
+paragraph above the grid. If he wants the pure BB ledger, the paragraph goes and the epilogue
+cards carry the story alone.
+
+### What this entry must NOT do
+
+- No XP system, no new resource, no new art dependency to ship (item art is a follow-up slot).
+- `takeMercy` / `takeLoot` / the promotion arithmetic are appliers with one door each; the rework
+  moves their SCREENS, never re-derives their logic.
+- The tavern brawl's aftermath (`tavernAfter`, "one card, not an inventory pass") and defeat/
+  epilogue paths are out of scope.
+- `regress()` and the QA harness read nothing from these screens; nothing to migrate.
+
+### The gate
+
+Mockup: `shots/122_after_battle.html`, three panels on the game's own CSS: screen 1 with the
+grid, strip and accordion (closed and open), screen 2 with the two decisions, and the one-screen
+case. Numbers in the mockup are a real brigand-fight shape (6 crew, 16 rounds is his screenshot's
+line, kills/dealt/taken sum sanely).
+
+### Round two, 2026-08-12, the user on the first mockup, verbatim
+
+> *"more yelowwish design as global map*
+>
+> *Don`t give choices about artifacts get - just give artefacts*
+>
+> *Show as accordion and proceed will work (as in real game - so i can actually click*
+>
+> *Add near recived xp - i will add it in the futrue - for current stuff you can just hide it*
+>
+> *you don`t need to show all your recorces at the end of battle screen*
+>
+> *And how it would look - as if someone is down and have a lvlup?*
+>
+> *When down - maybe more blood around*
+>
+> *Also, make if someone dead also spaesial design - it would work for future"*
+
+**What each point rules, and the mockup was rebuilt to all seven:**
+
+1. **The palette is the map's gold family** (`--g0..--g4`, ground `#100c06`), not the battle
+   screen's teal. The whole card, the grid, the strips.
+2. **⛔ LOOT IS GIVEN, NEVER CHOSEN.** This deletes the field choice ("AND WHAT IS LEFT OF
+   THEM") from the flow entirely, which is bigger than a screen change: the decision rows in
+   `LOOT{}` stop being questions. Build note: fold each fight's decision rows into its haul pool
+   (they become hauls, drawn by the same `pickOne`) or retire them; the appended leave-it row
+   dies with the question. `takeLoot` stays the one applier. Screen 1 shows the given items as
+   strips (multiple strips are fine); the reserved ART SLOT square stays for his future item art.
+3. **The mockup must CLICK like the game**: accordion toggles, proceed moves to screen two, a
+   mercy pick settles in place (picked/notpicked, the road button lights), road loops back. Done
+   in the rebuilt page; the build inherits `settle`/`markGo` semantics unchanged.
+4. **An XP slot exists on every card and is HIDDEN** (`.x`, `display:none`): he will add XP
+   himself in the future; the layout is ready and nothing shows today.
+5. **No resource totals on the after-battle screen**: the `booksLine` (◉ crowns · ❦ provisions ·
+   ▤ salvage · ◈ gems · mood) is CUT from this flow. The receipt shows only what was GAINED.
+6. **Down + level-up stack on one card**: blood frame + gold arrow badge together (Skree in the
+   mockup). The states are independent layers, not exclusive.
+7. **More blood when down**: drips off the top edge, a pool behind the portrait, a smear low
+   right, heavier inset. And **a DEAD state is designed now for the future**: ash-dark card,
+   darkened face under a ☠, greyed name and numbers, "dead on the field". ⛔ Nothing in the
+   build kills a roster member today (#34 owns that chain); the state ships as CSS waiting for
+   its first corpse.
+
+**Interpretation call one stands unchallenged through round two** (the promotion pick leaves the
+flow for the sheet; the arrow badge is the after-battle's whole statement about a level), and
+call two (the one compressed prose paragraph above the grid) survived the rebuild. Screen two is
+now the prisoners and NOTHING else, so it exists on exactly the fights where `MERCYASK` fires.

@@ -22713,8 +22713,10 @@ const EVENTS={
       {t:'Buy the stitched hides. Ogre-sized.',c:'−55 crowns · ogre armour',fx:{crowns:-55},
        need:{crowns:55},gear:'hides',
        after:'On the rack nine years because nobody his size ever comes through.'},
-      {t:'Sell him a gem.',c:'−1 gem · +90 crowns',fx:{gems:-1,crowns:90},need:{gems:1},
-       after:'He does not ask where it came from, and you do not volunteer it.'},
+      /* the sell-a-gem door was cut in the 2026-08-12 choice-weight pass
+         round two (8f.151): two gem outlets on one road is one outlet twice,
+         and the pedlar's trade is the richer scene. This card is the food
+         and hides shop. */
       /* the rest-a-day door was cut by the user in the 2026-08-03 doc pass */
       /* the free door - see the note on PEDLAR ON THE RIDGE. `fx:{}`.
          ⚠ THIS CARD HAS NO ROB OPTION and it gets the door anyway, because
@@ -23102,11 +23104,11 @@ const EVENTS={
          'the woman does not correct you.\n\nSomething happens. Nobody afterwards will say what, '+
          'and nobody will say nothing did. The company walks east standing straighter than it has '+
          'any right to.'},
-      {t:'Leave an offering. Coin, and be quick about it.',c:'−60 crowns · a relic',
-       fx:{crowns:-60},need:{crowns:60},gear:'bone',
-       after:'You put sixty crowns on the swept ground and take, from the pile, a fingerbone that '+
-         'is faintly and consistently warm.\n\n“That was not a trade,” the woman says, without '+
-         'any particular emphasis. “But it will do.”'},
+      /* the coin-offering door was cut in the 2026-08-12 choice-weight pass
+         round two (8f.151): a purchase on a sacred card, the wedding-trade
+         shape again - and the woman's own line said so ("that was not a
+         trade"). The fingerbone keeps its home on the Dead Company's bury
+         door. The card is: give it time, give it words, or take it apart. */
       {t:'Take the door. It is good timber and we need it.',
        c:'+9 salvage · they watched you do it',danger:true,
        fx:{salvage:9,morale:-13},
@@ -23189,13 +23191,16 @@ const EVENTS={
       'will also work out, without appearing to ask, how many of you there are and which way you '+
       'are going.',
     choices:[
-      {t:'Buy salt properly. Pay the asking price.',c:'−45 crowns · +6 provisions · quietly approved of',
-       fx:{crowns:-45,food:6,morale:4},need:{crowns:45},
+      /* the ask-what-they-heard door was MERGED into the buy door in the
+         2026-08-12 choice-weight pass round two (8f.151): the buy door's own
+         aftermath already had one of them volunteering the road, so a
+         separate intel door was the same scene sold twice. `scout` rides the
+         purchase now - pay the wives properly and they talk. */
+      {t:'Buy salt properly. Pay the asking price.',
+       c:'−45 crowns · +6 provisions · quietly approved of · what is on the road ahead',
+       fx:{crowns:-45,food:6,morale:4},need:{crowns:45},scout:true,
        after:'The salt is very good. One of them tells you which ford is out. That was worth more '+
          'than the salt and she knows it.'},
-      {t:'Ask what they have heard.',c:'−20 crowns · what is on the road ahead',
-       fx:{crowns:-20},need:{crowns:20},scout:true,
-       after:'They talk for a while about nothing and then, all at once, about something.'},
       {t:'Take the salt and the pot.',c:'+4 provisions · word travels, and it travels ahead of you',
        fx:{food:4,morale:-11},rep:{human:-25},
        after:'It takes no time. They do not fight and they do not beg. They watch, and count, and '+
@@ -23215,10 +23220,9 @@ const EVENTS={
        fx:{days:1,morale:8},contact:true,rep:{ratkin:+18},
        after:'The strongest of you lifts the axle. The oldest of them watches it happen, then writes something '+
          'small in a book. A ratkin clan now knows your banner as a thing that stopped to help.'},
-      {t:'Buy fifty crossbows at scrap value.',c:'−60 crowns · +5 salvage',
-       fx:{crowns:-60,salvage:5},need:{crowns:60},
-       after:'They are delighted. You have bought fifty pieces of firewood with metal in them, and '+
-         'the metal is the point.'},
+      /* the buy-fifty-crossbows door was cut in the 2026-08-12 choice-weight
+         pass round two (8f.151): a shop line on a moral card, the same shape
+         the wedding's trade door was. The card is help, rob, or walk past. */
       {t:'Take the cart.',c:'+120 crowns +8 salvage · the clans will hear, and so will your own',
        fx:{crowns:120,salvage:8,morale:-12},rep:{ratkin:-30},
        after:'Four ratkin walk away down the road without hurrying. They do not look back and they '+
@@ -23305,8 +23309,9 @@ const EVENTS={
        fx:{days:1,salvage:7,gems:1,morale:-5},rep:{ratkin:-20},
        after:'Seven bodies and a great deal of good metal. {ANY} works with everyone else and does '+
          'not speak once, all afternoon.'},
-      {t:'Take the blade. Nothing else.',c:'a gut-knife · barely worth a word',fx:{morale:-1},gear:'knife',
-       after:'It comes free easily, which somehow makes it worse.'},
+      /* the take-the-blade door was cut in the 2026-08-12 choice-weight pass
+         round two (8f.151): a half-measure between the two real answers,
+         paying a knife the starting kit already owns. Dig it or cover it. */
       {t:'Cover it back over.',c:'the clans would approve, and your own do',fx:{morale:10},
        rep:{ratkin:+12},
        after:'{ANY} does the covering, and does not explain, and nobody asks them to.'},

@@ -50,6 +50,11 @@ were cut against them.
 - The Wain offers the risky strongbox or one merged safe door (salvage AND the maul together).
   The Hollow Tree lost "sleep in it", the Collector lost "explain kindly", the Wedding lost its
   trade door, the Waterworks lost "camp under it", the Last Ship lost the bell.
+- **Round two (your "additional 20%", build log 8f.151), five more, each down to three doors:**
+  the Bonepicker's Camp lost "sell him a gem" (the pedlar keeps the road's one gem trade), the
+  Salt-Wives fold the road gossip INTO the honest purchase (buy the salt properly and they also
+  tell you what is ahead; the separate paid question is gone), the Clan Cart lost the crossbow
+  purchase, the Door-Shrine lost the coin offering, and the peat grave lost "take the blade".
 - The rhythm this is buying: light cards answered instantly, so the heavy ones (the star, the
   toll-man, the fire) get your full attention when they land.
 

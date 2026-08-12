@@ -1547,9 +1547,13 @@ From the user's design conversation on decision fatigue, written into §5 as "Th
 The loop is **Choose → Fight → Suffer → Adapt**; events carry a LIGHT / MEDIUM / HEAVY weight and
 the road mixes them; heavy choices stay rare so they are remembered; a door that is not a decision
 (a duplicate, a fee-bearing nothing, a second button onto the same battle) is cut. Applied to the
-build the same day as **#123**: nine road events simplified, eleven doors removed or merged.
-The user's own examples set the tone: the sling-line is "fight or go around", the Drowned Chapel
-is a salvage pickup, the Fen-Mother lost her duplicate battle door.
+build the same day as **#123**, in two rounds: **fourteen road events simplified (48% of the
+multi-choice ones), sixteen doors removed or merged.** The user's own examples set the tone: the
+sling-line is "fight or go around", the Drowned Chapel is a salvage pickup, the Fen-Mother lost
+her duplicate battle door. Round two added camp, saltwives (intel merged into the honest
+purchase), ratcart, shrine and bogbody, all 4→3. The sixth round-two candidate was refused on
+purpose: everything left on the remaining cards is a distinct decision class, and cutting one
+would have taken a real decision with it.
 
 ### ⏳ Still open
 
