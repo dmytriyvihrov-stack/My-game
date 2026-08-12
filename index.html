@@ -3249,10 +3249,19 @@ function winNow(){
   if(!B||B.won!==null)return;
   if(B.autoTimer){clearInterval(B.autoTimer);B.autoTimer=null;}
   B.auto=false;
-  B.units.filter(u=>u.side==='foe').forEach(u=>{u.dead=true;u.hp=0;dropBody(u);});
+  /* 8f.137 - a scripted fight may SPAWN on the kill (#108's waves ride
+     checkEnd), so the dev win clears the field until checkEnd agrees it is
+     over. And the fallback consults SIM exactly like checkEnd does: its raw
+     toSpoils was a latent campaign leak that the waves made reachable, and a
+     practice tavern walked all the way to the world screen through it. */
+  let g=0;
+  do{B.units.filter(u=>u.side==='foe'&&!u.dead&&!u.fled)
+      .forEach(u=>{u.dead=true;u.hp=0;dropBody(u);});}
+  while(!checkEnd()&&++g<4);
   say('[TEST] The field is cleared.');
   render();
-  if(!checkEnd()){B.won=true;endLater(()=>toSpoils([]),300);}
+  if(B.won===null){B.won=true;
+    endLater(()=>SIM.on?simResult('won'):toSpoils([]),300);}
 }
 function syncTest(){
   const t=$('testBtn'),w=$('winBtn'),l=$('lintBtn'),wp=$('wipeBtn');
@@ -6715,9 +6724,16 @@ function tutNext(){
   const d=$('tutDim');if(d)d.classList.remove('on');
   if(B)B.tutLock=false;
 }
+/* 8f.137 - the hard close, for the fight's own endings: whatever is up comes
+   down and the lock opens, so a spotlight can never sit over the spoils card */
+function tutClose(){
+  const d=$('tutDim');if(d)d.classList.remove('on');
+  if(B){B.tutLock=false;if(B.tut)B.tut.q.length=0;}
+}
 function tutFlush(){
   if(window.TUT_SILENT)return;               /* the harness switches this on */
   if(!B||!B.tut||!B.tut.q.length)return;
+  if(B.auto)return;      /* 8f.137 - AUTO is nobody reading; steps keep until it is off */
   if(!$('battle')||!$('battle').classList.contains('on'))return;
   const d=$('tutDim');
   if(d&&d.classList.contains('on'))return;   /* already up; clicks drain it */
@@ -6744,6 +6760,9 @@ function tavernIntro(){
       go:()=>startBattle('tavern')}]);
 }
 function tavernAfter(){
+  /* 8f.137 - belt to winNow's braces: NOTHING a practice fight does may
+     reach the campaign, and this function is all campaign */
+  if(SIM.on){simResult('won');return;}
   G.tavernDone=true;
   const kills=B.units.filter(u=>u.side==='foe'&&u.dead).length;
   /* receipts carry, but a scar is not a thing fists and floorboards give */
@@ -6754,7 +6773,7 @@ function tavernAfter(){
   const L=(LOOT.tavern&&LOOT.tavern[0])||{t:'',c:'',fx:{}};
   pay('crowns',(L.fx&&L.fx.crowns)||0);
   G.morale+=4;
-  B.tut=null;
+  tutClose();B.tut=null;
   show('spoils');
   $('sCard').innerHTML='<h1>'+AFTER.tavern.t+'</h1>'+
     '<p>'+AFTER.tavern.b.replace(/\n\n/g,'</p><p>')+'</p>'+
@@ -14119,6 +14138,9 @@ function render(){
   g.classList.toggle('cMove',!!(mineTurn&&B.sel&&B.sel.move));
   g.classList.toggle('cStrike',
     !!(mineTurn&&B.sel&&!B.sel.move&&(B.sel.dmg||B.sel.push||B.sel.range)));
+  /* 8f.137 - the blade under MOVE goes through the SAME offer gate as the
+     click (#91), or the cursor promises a swing the click would refuse */
+  const w0=mineTurn?mainAtk(uCur):null;
   /* ═══ #36 — every lane, worked out once ════════════════════════════════
      Computed here rather than per hex because the board has to show BOTH
      ends of the same fact: the state on the target, and the highlight on
@@ -14292,7 +14314,8 @@ function render(){
       const hx=document.createElement('button');
       const wayHere=inWay&&inWay[K(c,r)];
       hx.className='hex'+(stab?' stabhere':'')+(blockedHere?' blocked':'')+
-        (occ&&occ.side==='foe'?' hfoe':'')+   /* #109 - a blade over a body */
+        /* #109 - a blade over a body, 8f.137 - only where the click would swing */
+        (occ&&occ.side==='foe'&&w0&&offerAtk(uCur,w0,occ)?' hfoe':'')+
         (wayHere?' inway'+(wayHere==='SCREENED'?' screen':''):'');
       hx.dataset.k=K(c,r);
       /* the hexagon lives on its own layer so the token can stand proud of it */
@@ -15858,7 +15881,7 @@ const BEATEN={
       'it from the doorway, apparently. The coin is still on the table. His '+
       'kind of work has no use for people who have never been on a floor, '+
       'only for the ones who get up off it.',
-    go:()=>{G.tavernDone=true;if(B)B.tut=null;enterWorld();}},
+    go:()=>{G.tavernDone=true;tutClose();if(B)B.tut=null;enterWorld();}},
   circle:{
     t:'THEY TAKE IT ANYWAY',
     /* the mark arrives here too. They wanted a member; you said no and stood
