@@ -23,6 +23,47 @@
 
 ---
 
+## 🃏 THE CHOICE-WEIGHT PASS: NINE EVENTS GOT SIMPLER  *(#123 · 2026-08-12 · build log 8f.150)*
+
+**Your ask, off the ChatGPT conversation about decision fatigue:** *"for 30%-40% of events it
+could be done of simplifieng: battle with rats: fight or go around · Broken church - just get
+resources from it (salvage) - no other choices · with fen mother 1 less choice · and etc."*
+The conversation's rules are in `01_GAME_CONCEPT.md` §5 now ("The choice economy"); nine events
+were cut against them.
+
+### How to reach it in three steps
+
+1. Menu → **Take the road** (a run; the changed cards are road events).
+2. Your three named ones: **The Stone Field** (sling-line) and **The Fen-Mother** are on every
+   run's road; **The Drowned Chapel** is a floating card, so it may take a run or two to draw.
+3. The other six are also floating: the Sunken Wain, the Hollow Tree, the Collector, the Wedding,
+   the Waterworks, the Last Ship.
+
+### What should happen
+
+- **THE SLING-LINE has exactly two doors: fight, or pay to go around.** The "answer them, ours
+  shoot too" door is gone (it started the identical battle).
+- **THE DROWNED CHAPEL is one button: wade in, take the salvage.** No praying, no sending anybody
+  under the altar. It should read in two seconds and feel like a pickup, not a question.
+- **THE FEN-MOTHER has three doors: back away · take the tooth · kill it.** The "go round the
+  back" ambush door is gone.
+- The Wain offers the risky strongbox or one merged safe door (salvage AND the maul together).
+  The Hollow Tree lost "sleep in it", the Collector lost "explain kindly", the Wedding lost its
+  trade door, the Waterworks lost "camp under it", the Last Ship lost the bell.
+- The rhythm this is buying: light cards answered instantly, so the heavy ones (the star, the
+  toll-man, the fire) get your full attention when they land.
+
+### What would be a bug
+
+- Any of the nine cards still showing its cut door, or a card with zero clickable doors.
+- A dead button, a battle that will not start from the remaining doors, or the maul not arriving
+  with the wain's salvage.
+- **One judgement call to veto if you meant it literally:** a company with the gills mutation
+  still gets a fourth chapel door ("send the gilled one down"). Everybody else sees one button.
+  If "no other choices" meant that one too, say so and it goes.
+
+---
+
 ## 🗺 THE LAST NINE MAP SIGHTS  *(#121 · 2026-08-12 · build log 8f.148)*
 
 **Your ask: "more events icons - add them to a global map".** GPT's nine remaining icons are in.

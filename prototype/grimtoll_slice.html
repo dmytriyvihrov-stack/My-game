@@ -22683,23 +22683,19 @@ const EVENTS={
       'went first and then the floor.\n\nThe pews still stand in their rows, in four inches of '+
       'brown water. Nobody ever came back for them.\n\nSomething under the altar is still dry.',
     choices:[
+      /* ⚑ THE ACT'S FIRST LIGHT NODE, cut to it on purpose (#123, the user:
+         "Broken church - just get resources from it (salvage) - no other
+         choices"). Not every card earns a decision: a run that asks the
+         player to weigh every node numbs them for the cards that matter,
+         so this one is a pickup, not a question. The pious door and the
+         under-altar door went with the pass; fenwater still has its battle
+         origin, so the mutation chain lost nothing. */
       {t:'Wade in. Take what the water left.',c:'+6 salvage · −1 day',fx:{salvage:6,days:1},
        after:'Altar fittings, mostly. Iron does not care what it used to be for.'},
-      /* the lead-roof door was cut by the user in the 2026-08-03 doc pass:
-         it almost copied the wade-in */
-      {t:'Say the words and go.',c:'a saint’s fingerbone · quietly approved of',fx:{morale:5},gear:'bone',
-       after:'{ANY} knows the words. Under the altar there was a fingerbone, and it is faintly '+
-         'warm, which is how you know a real one.'},
       /* the mutation paying rent OUTSIDE combat — a door only the changed can
-         open. The crypt under the nave has been flooded since the roof went. */
-      /* ORIGIN — a mutation must come from an event you can point at. Wading
-         chest-deep in old fen-water for an afternoon is one. */
-      {t:'Somebody has to go under the altar. It is only water.',
-       c:'−1 day · whatever is down there · and a long time breathing it',danger:true,
-       fx:{days:1,crowns:40},gear:'bone',cond:'fenwater',
-       after:'It takes an hour and most of a rope. Under the altar: forty crowns of somebody '+
-         'else\'s tithe and a fingerbone, faintly warm.\n\nWhoever went down comes up coughing, '+
-         'and keeps coughing, and what comes up is grey.'},
+         open, and invisible to everybody else, so it does not put a decision
+         back on a card that was cut to a pickup. The crypt under the nave has
+         been flooded since the roof went. */
       {t:'Send the gilled one down. The crypt has been under water for years.',
        c:'what nobody else could reach · they are gone a long time',needMut:'gills',
        fx:{crowns:65,morale:-2},gear:'charm',
@@ -22740,10 +22736,14 @@ const EVENTS={
        hurt:{n:'Torn back',d:'−1 STR. He lifted it. It was heavier than the fen.',str:-1},
        after:'An hour, and a great deal of ogre. Inside: coin, and two stones the wrong colour '+
          'for this country.'},
-      {t:'Take the wheels and the iron banding.',c:'+6 salvage',fx:{salvage:6},
-       after:'Less glamorous. Just as useful, four weeks from now, at a forge.'},
-      {t:'Take the guard’s maul from the seat.',c:'a two-hand maul',fx:{},gear:'maul',
-       after:'Whoever carried this did not get to use it. It is in very good condition.'}]},
+      /* the wheels door and the maul door were MERGED in the 2026-08-12
+         choice-weight pass (#123): both were "take the safe thing and go",
+         and two flavours of the same answer is one answer. Nothing was lost,
+         the merged door pays both. */
+      {t:'Strip it for parts. And take the guard’s maul off the seat.',
+       c:'+6 salvage · a two-hand maul',fx:{salvage:6},gear:'maul',
+       after:'Less glamorous. Just as useful, four weeks from now, at a forge.\n\nWhoever '+
+         'carried the maul did not get to use it. It is in very good condition.'}]},
   bloom:{title:'UNDER THE BLOOM',art:'bloom',seed:12,
     body:'The light between the trees is pale pink and nothing is making it. It comes up off '+
       'the ground. The moss it touches has gone black.\n\nNo birds here. A dead deer lies just '+
@@ -22781,10 +22781,14 @@ const EVENTS={
        fx:{gems:1,morale:-5},gear:'tooth',
        after:'A shed tooth, half-buried where she has been lying. She sees you take it. She lets you. '+
          'That is somehow much worse.'},
+      /* the go-round-the-back ambush door was cut in the 2026-08-12
+         choice-weight pass (#123, the user: "with fen mother 1 less choice").
+         It was the second door onto the same fight, and #18's lesson already
+         ruled on that shape: two buttons that start the identical battle are
+         a deployment choice wearing a decision's clothes. `ambush` itself
+         stays a live flag - the Snare still uses it. */
       {t:'Kill it. That hide is worth a season’s wages.',
-       c:'BATTLE · she is enormous and she is not alone',danger:true,battle:'mother'},
-      {t:'Marrow wants a bloom-spitter’s gland. Go round the back.',
-       c:'BATTLE · −1 day · you strike first',danger:true,battle:'mother',ambush:true,fx:{days:1}}]},
+       c:'BATTLE · she is enormous and she is not alone',danger:true,battle:'mother'}]},
   /* the last stop before the snare — it exists to hand you gear and make
      you open the inventory before the fight that will test it */
   deadco:{title:'THE DEAD COMPANY',art:'teal',seed:64,
@@ -23118,10 +23122,13 @@ const EVENTS={
       'between is open and they have all afternoon.\n\n"Off the road," one of them calls, quite '+
       'reasonably. Then another stone.',
     choices:[
+      /* the "answer them, ours shoot too" door was cut in the 2026-08-12
+         choice-weight pass (#123, the user: "battle with rats: fight or go
+         around"). Both doors sent the identical battle:'slingline' with no
+         distinguishing flag - a duplicate option, style rule 6. The card is
+         now the clean pair: fight, or pay to go around. */
       {t:'Cross the open ground and get in among them.',
        c:'BATTLE · they shoot the whole way in',danger:true,battle:'slingline',after:''},
-      {t:'Answer them. Ours shoot too.',c:'BATTLE · it sits well with them · a fight at distance',
-       fx:{morale:6},battle:'slingline',after:''},
       {t:'Back off the road and go round the long way.',
        c:'−1 day −2 provisions · it sits badly with them',need:{food:2},fx:{days:1,food:-2,morale:-5},
        after:'You go down off the road and across the wet ground, and they watch you do it, and '+
@@ -23227,10 +23234,12 @@ const EVENTS={
     choices:[
       {t:'Take the knife and go.',c:'an off-hand dirk',fx:{},gear:'offhand',
        after:'It is better steel than anything you are carrying, which raises a question nobody asks.'},
+      /* the sleep-in-it door was cut in the 2026-08-12 choice-weight pass
+         (#123): a door that only ever costs and buys nothing is not a
+         decision, it is a trap with a label. Two answers now, take or
+         respect, and the card reads in two seconds. */
       {t:'Count the marks properly. Bury the bedroll.',c:'it sits well with them',fx:{morale:8},
-       after:'Forty-one. {ANY} says it out loud so that it has been said, and then you go.'},
-      {t:'Sleep in it. It is dry and it is free.',c:'they will remember this',fx:{morale:-6},
-       after:'It is dry. Nobody sleeps.'}]},
+       after:'Forty-one. {ANY} says it out loud so that it has been said, and then you go.'}]},
   ogrestone:{title:'THE SITTING STONE',art:'gold',seed:160,
     body:'An ogre is sitting on a rock beside the road. By his own account he has been there two '+
       'winters.\n\nHe is not hostile. He is not, as far as anyone can tell, anything.\n\nThe '+
@@ -23273,9 +23282,9 @@ const EVENTS={
        need:{crowns:4},fx:{crowns:-4,morale:10},
        after:'He stamps the ledger with enormous care and wishes you good roads. The company talks '+
          'about him for three days. It is the best four crowns you have ever spent.'},
-      {t:'Explain, kindly, about the kingdom.',c:'it sits badly with them',fx:{morale:-4},
-       after:'He listens. He thanks you for the information. He does not change anything about his '+
-         'day, and you are the one who has to walk away from it.'},
+      /* the explain-kindly door was cut in the 2026-08-12 choice-weight pass
+         (#123): it resolved exactly like walking past, with a mood fee on
+         top - a duplicate of the free door wearing a price tag. */
       {t:'Rob the tax collector.',c:'+25 crowns · they will remember this',fx:{crowns:25,morale:-7},
        after:'Even {ANY} thinks this is beneath you, and says so, which is a first.'},
       /* the free door - see the note on PEDLAR ON THE RIDGE. `fx:{}`.
@@ -23330,11 +23339,12 @@ const EVENTS={
        after:'It takes four of them to lift one of him, and they manage it twice, and by the end '+
          'of it {OGRE} has been adopted by at least two separate clan-lines. They do not '+
          'seem to mind. He rarely does.'},
+      /* the trade door was cut in the 2026-08-12 choice-weight pass (#123):
+         a shop bolted onto a mood card. The card is about whether you give
+         the wedding your time, and a price list on it made the warm thing
+         read as a transaction. */
       {t:'Push politely through.',c:'barely worth a word',fx:{morale:-1},
-       after:'They let you by without complaint and go back to it. You hear them for an hour.'},
-      {t:'Trade with the wedding party.',c:'−30 crowns · +5 provisions +1 trinket',
-       fx:{crowns:-30,food:5},need:{crowns:30},gear:'charm',
-       after:'Drunk ratkin are the best customers and the worst negotiators on the island.'}]},
+       after:'They let you by without complaint and go back to it. You hear them for an hour.'}]},
   aqueduct:{title:'THE RATKIN WATERWORKS',art:'gold',seed:216,
     body:'A stone aqueduct running forty feet overhead. Beautifully engineered, catastrophically '+
       'built. It has leaked for a century and will stand for another.\n\nIt was built to carry '+
@@ -23342,8 +23352,10 @@ const EVENTS={
       'water that moves does not bloom.\n\nAt the base, a clan-mark. Under the clan-mark, a very '+
       'rude word.',
     choices:[
-      {t:'Camp under it. Shelter of a sort.',c:'quietly approved of',fx:{morale:4},
-       after:'It drips all night in a rhythm that eventually becomes restful, which nobody admits.'},
+      /* the camp-under-it door was cut in the 2026-08-12 choice-weight pass
+         (#123): a third answer that neither cost nor revealed anything. The
+         card is the pair it was always about - break the thing, or learn
+         from it. */
       {t:'Strip the lead jointing.',c:'+6 salvage · a village downstream, and they know it',
        fx:{salvage:6,morale:-6},rep:{ratkin:-15,human:-10},
        after:'The leak becomes a flood before you are half a mile off. There is a village down '+
@@ -23362,9 +23374,9 @@ const EVENTS={
        fx:{days:1,crowns:40,salvage:3,morale:-4},
        after:'Ship’s nails, a strongbox with the lock already broken, and a name carved by the '+
          'bunk that you half recognise from a muster-roll a lifetime ago.'},
-      {t:'Take the ship’s bell.',c:'a bell that rings wrong',fx:{},gear:'brass',
-       after:'It rings flat. It has been ringing flat for sixty years and there is nobody left to '+
-         'tell it was ever otherwise.'},
+      /* the ship's-bell door was cut in the 2026-08-12 choice-weight pass
+         (#123): a free trinket beside a search door is a smaller copy of the
+         search door. The brass token keeps its real home on Wynn's card. */
       {t:'Stand and look at it a while.',c:'it sits well with them',fx:{morale:8},
        after:'You came over on the last one there will ever be. Everyone here knows it. Nobody says it.'}]},
   sinkhole:{title:'THE GROUND OPENS',art:'gold',seed:244,

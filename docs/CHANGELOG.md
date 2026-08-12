@@ -201,6 +201,7 @@
 | 8f.146 | **#119 SHIPPED - THE TUTORIAL FIGHT ON THE FRONT DOOR.** *(User, 2026-08-12: "Опция туториал файт в меню - вместо хов ту плей.")* The menu row "How any of this works" is gone - it duplicated a door that already exists on every screen including the menu (`? RULES`, bottom-left, untouched) - and **"The tutorial fight"** stands where it stood: the Three Bells brawl with every #108 spotlight, launched through the practice field's own machinery (`SIM.fight='tavern'` + `simStart()`), so `G` is borrowed and restored, a live campaign is never touched, and losing costs nothing. `B.tut` keys off `battleKind==='tavern'` alone, so every spotlight fires there exactly as in a run. ⚑ **One pre-existing gap became prominent and was closed: `tavernAfter()` reached its SIM early-return BEFORE `tutClose()`**, so a practice brawl ending with a spotlight step queued left the dim sheet sitting over the result card - the hard close now runs first, and the campaign path repeats it harmlessly. **Verified in the running page:** the menu row present with a live run saved · click → brawl in SIM with Harl and the spotlight up · `tavernAfter()` → THE FIELD IS YOURS with `SIM.on` false and the dim down · the row that follows a won practice fight offers Again / the practice field as everywhere else. **#119 and 8f.146 spent.** | ✅ DONE |
 | 8f.147 | **#120 SHIPPED - THE MAP'S OWN FIVE STEPS: THE LONG FIRST TEXT BECAME A SHORT CARD AND A SPOTLIGHT TOUR.** *(User, 2026-08-12: "Едд туториал на глобал меп - обьясняющий ресурсы и состояние. Похожего формата как в первой битве с подсветами" · "Карта мира с простым туторидом без длинного первого текста".)* The four-paragraph opener on the first map card is down to the two facts only prose can carry - the job (Skelbrook, the letter, the purse) and the pillar - and the map/resources/company/day instruction paragraphs became **five spotlight steps on the #108 sheet**, each sentence sitting NEXT TO the element it describes instead of two screens before it: THE CONTRACT (`#wQuest`) · THE CHEST (`#wRes`, and the wage line reads `dailyUpkeep()` **at show time**, because a step's text may be a function now - a copied number in a tutorial is a readout that lies later) · THE COMPANY (`#wCompany`, where B06's junk-is-a-joke rule kept the stash line) · THE DAY (`#wPlaque`) · THE ROAD (`#wToken`, "click a place to see what it costs, click again to walk"). **The plumbing is deliberately thin:** the battle's queue lives on `B.tut` and dies with the fight; the tour's lives in `WTUT`, drained by the same `tutNext` (battle wins when both exist), shown by the same `tutShow`, so the cutout, the beat, the arrow and the phone rotation all came for free. Runs **once per run**: `G.wTutDone` rides the save's flags row, fires from the first card's dismiss in `enterWorld`, and a resumed road never re-tours. Every anchor is a REAL element of the bar, so the tour can never describe furniture that moved - and a missing/zero-sized anchor skips its step by the sheet's own existing rule. **Verified in the running page:** all five steps fired in order with non-zero cutout rects measured on each anchor · the sheet closed after the fifth · `wTutDone` true in the save · resume: no re-fire · LINT 0 · zero console errors. **#120 and 8f.147 spent.** | ✅ DONE |
 | 8f.148 | **#121 SHIPPED - THE LAST NINE SIGHTS, AND THE ROAD LABEL LEARNS TO STEP ASIDE.** *(User, 2026-08-12: "more events icons - add them to a global map".)* GPT delivered the nine remaining event icons into `art/src/world-map-sites/` with its brief updated; **not one line of the pipeline needed changing**, which is the good news and the whole point of #113's fourth pass. `build_event_sites.py` had already written the 128/48 exports, `build_assets.ps1` embedded the nine masters (haze scrubbed, 7-9k px each), `inject.ps1` put them in: **32 sights embedded, 31 mapped** - `armour` stays deliberately unmapped because it is an ambush and not a place, and `cache` still has no art on purpose. Five land on fixed nodes (**star** The Falling Star · **broken** The Broken Men · **snare** The Snare · **bonfire** The Long Fire · **oasis** The Warm Spring) and four on floating slots (**shipwreck** · **sinkhole** · **wynn** · **circle**), which closes #113's own open remainder that three of those had no art. **Measured in the running build: 20 of 25 nodes painted, every image 128x128 drawn at 96px, 0 broken, 0 entries in `MAP_SIGHT` without art, 0 console errors.** ⛔ **THE FIND, AND IT IS #117 ONE TURN DEEPER. Painting five more nodes broke two price labels, and the cause was not those two coordinates: `labelSpot` has two search axes and on a vertical road they are the SAME axis.** `t` walks ALONG the road and `off` lifts vertically, so for dead → bonfir (dx 16, dy 100) all 63 candidates sat on a line sixteen pixels wide, straight down the middle of the column of paintings it was trying to dodge. The search had no escape to find, returned its least-bad box, and the linter reported a collision nobody could place. ⚑ **The comment above the search says "the cheap axis is up and down" and it is TRUE FOR A HORIZONTAL ROAD only:** a plate hangs below its glyph, so on an east-west road the empty map is above, and on a north-south road the two endpoints stack ~113px of painting and plate on top of one another and the only empty map is to the SIDE. So a steep road gets `LABEL_DXS`, nearest first, capped at 118 (one plate width, past which the chip stops reading as this road's price). ⚑ **It is a second PASS and not another rung in the first, and that is the whole of the care in this change:** tried inline it re-placed nine labels across the map, all of them already clean; run after the shipped search it moves **exactly the two that were broken, both 64px west**, and leaves every other label where it stands. **Verified: spacingViolations 0 · labelViolations 0 across all 24 stands · the two labels measured at x=1144 and x=1139, clear of the 1190-1216 column · in-DOM, 0 label-on-art and 0 label-on-plate.** Also: the procedure is now a standing rule, `.claude/rules/world-map-sights.md`, so the next pack does not re-derive the pipeline, the 128-not-48 rule, the alpha-40 scrub, the TDZ trap or the three counters that must read zero. **#121 and 8f.148 spent.** | ✅ DONE |
+| 8f.150 | **#123 SHIPPED - THE CHOICE-WEIGHT PASS: THE CONCEPT LEARNS THAT A DECISION HAS A WEIGHT, AND NINE ROAD EVENTS PAY IT.** *(User, 2026-08-12, with a ChatGPT design conversation attached: "You can summirise it and Add it to a game concpet and rule / recomendation for events and update concept. After do it - check events - and for 30%-40% of events it could be done of simplifieng: For example battle with rats: fight or go around · Broken church - just get resources from it (salvage) - no other choices · with fen mother 1 less choice · and etc.")* **The doc half:** the conversation's conclusions are now `01_GAME_CONCEPT.md` §5 - the loop restated as **Choose → Fight → Suffer → Adapt** with the reference-game axis (Wartales world-management → BB company → Urtuk buildcraft → Grimtoll character consequences), the principle "do not give the player more things to manage, give fewer things more consequences", and **"The choice economy": every card carries a LIGHT / MEDIUM / HEAVY weight and the road mixes them**; the route pick is already a decision; the fight is the climax of a small chapter; 2-4 options was never the problem, uniform density is; the fatigue measurement is *the event at which the player stops reading options*. A decisions-log entry and a new question on README's before-an-event-ships list carry it forward. **The build half, nine events and eleven doors** (9 of 29 multi-choice road events = 31%, inside the asked 30-40%): **slingline 3→2** (the user's "fight or go around" - both battle doors sent the identical `battle:'slingline'` with no distinguishing flag, a duplicate per style rule 6) · **chapel 4→1 visible** (the user's "just get resources - no other choices": the pious door and the under-altar door cut; ⚑ the gilled door STAYS because `needMut` keeps it invisible to anybody without the mutation, and fenwater keeps its battle origin at the swamp pools, so the mutation chain lost nothing - 👤 flagged for review since "no other choices" could also mean cutting that one) · **mother 4→3** (the user's "1 less choice": the go-round-the-back ambush door was the second button onto the same fight, #18's exact shape) · **wain 3→2** (wheels + maul MERGED into one safe door, both rewards kept) · **hollow 3→2** (the sleep door only ever cost) · **taxman 4→3** (explain-kindly resolved like walking past with a fee on it) · **wedding 5→4** (the trade door was a shop bolted onto a mood card) · **aqueduct 3→2** (camp-under-it neither cost nor revealed) · **shipwreck 3→2** (the bell was a smaller copy of the search door; brass stays granted on Wynn's card). Untouched on purpose: every authored set piece (star, toll, oasis, bonfire, circle, deadco, broken, wynn), every shop with its free door, and every race-gated door - the conversation itself praises those as the fast-reading kind. **Verified in the running page: LINT 0, zero console errors, choice counts confirmed per event in the live EVENTS object.** **#123 and 8f.150 spent.** | ✅ DONE |
 | **NEXT** | **The plan lives in [`00_PLAN_AND_BACKLOG.md`](00_PLAN_AND_BACKLOG.md). Nothing in this file is next.** | - |
 | 8g | **First 15 Minutes Pass - DONE.** The consequence numbers are gone and the linter exists; the stat wall went with THE ARITHMETIC (8f.26) and the first battle now sells screening and facing (8f.29's three tougher ogres). | ✅ DONE |
 | 8h | Painted portraits P1–P5 + three event illustrations | |
@@ -270,6 +271,72 @@ before the clipboard started carrying both halves at once.
 [`00_PLAN_AND_BACKLOG.md`](00_PLAN_AND_BACKLOG.md); open remainders are noted there too.
 **#32 (the Fen-Mother defect, closed) stays in the working file** — its details block holds
 the rally-rule spec that Tier 1 still points at.*
+
+## 123 - THE CHOICE-WEIGHT PASS ✅ BUILT
+
+> **SHIPPED 2026-08-12, build log 8f.150.** Two halves in one order: the user's ChatGPT design
+> conversation on decision fatigue written into the concept as standing event rules, then those
+> rules applied to the road - nine events simplified, eleven doors cut or merged.
+
+**The user's order, verbatim:** *"You can summirise it and Add it to a game concpet and rule /
+recomendation for events and update concept. After do it - check events - and for 30%-40% of
+events it could be done of simplifieng: For example battle with rats : fight or go around ·
+Broken church - just get resources from it (salvage) - no other choices · with fen mother 1 less
+choice · and etc. After file from other session free - do it."*
+
+**What the conversation actually concluded** (now `01_GAME_CONCEPT.md` §5, "What the loop is
+really selling" + "The choice economy"):
+
+1. The loop the player lives is **Choose → Fight → Suffer → Adapt → Choose**, and the Suffer →
+   Adapt half is the identity none of the reference games own. The axis is Wartales (world
+   management) → Battle Brothers (company management) → Urtuk (buildcraft) → **Grimtoll
+   (character consequences)**, and the game must not drift left by growing systems.
+2. **The principle: do not give the player more things to manage; give fewer things more
+   consequences.**
+3. Decision fatigue does not come from the number of events. It comes from **constant, uniform
+   decision density**. So a card carries one of three weights - LIGHT (a two-second pickup),
+   MEDIUM (a look at the ledger), HEAVY (a decision the player retells) - and the road mixes
+   them. Heavy stays rare, because if everything is important nothing is.
+4. **The route pick is already a decision**; a card that re-asks "enter / scout / leave" behind
+   the click asks the same question twice. The fight is the climax of a small chapter, not
+   another node.
+5. 2-4 options is the right band. A card fatigues through **bookkeeping labels**, not breadth -
+   which is §7's intent-not-receipt rule doing pacing work.
+6. **The playtest measurement:** find the event at which the player stops reading options and
+   starts clicking the first acceptable one. That event, not the event count, is where fatigue
+   begins - and the fix is demoting cards to LIGHT, not deleting events.
+
+**The nine events, and why each cut is the rule and not taste:**
+
+| Event | Was → is | The reason |
+|---|---|---|
+| slingline | 3 → 2 | user's example, "fight or go around". Both battle doors sent the identical `battle:'slingline'`, no distinguishing flag: a duplicate, style rule 6 |
+| chapel | 4 → 1 visible | user's example, "just get resources - no other choices". Pious door and under-altar door cut; the card is the act's first deliberate LIGHT node |
+| mother | 4 → 3 | user's example, "1 less choice". The ambush door was a second button onto the same fight - #18 (the Thing in Armour, three answers to one) already ruled on that shape |
+| wain | 3 → 2 | wheels and maul MERGED: two flavours of "take the safe thing" is one answer. Both rewards kept on the merged door |
+| hollow | 3 → 2 | the sleep door only ever cost (−6 mood, nothing back): a trap with a label, not a decision |
+| taxman | 4 → 3 | explain-kindly resolved exactly like the free walk-past, with a mood fee on top: a duplicate wearing a price tag |
+| wedding | 5 → 4 | the trade door was a shop bolted onto a mood card |
+| aqueduct | 3 → 2 | camp-under-it neither cost nor revealed anything; the card is the pair it was about (break the thing or learn from it) |
+| shipwreck | 3 → 2 | the free bell beside the search door was a smaller copy of it; brass keeps its real home on Wynn's card |
+
+Nine of the 29 multi-choice road events is **31%**, inside the asked 30-40%.
+
+**👤 One interpretation call, flagged for the user:** the chapel keeps its `needMut:'gills'` door.
+"No other choices" could mean cutting it too, but the door is invisible to any company without the
+mutation (so it adds zero reading to the card the complaint is about), it is the one place a
+mutation pays rent outside combat, and the conversation itself praises state-gated doors as the
+fast-reading kind. Cheap to remove if he wants the literal version. Fenwater was verified to keep
+its battle origin (swamp pools, `d.fenwater` → `p.cond`), so no mutation chain was orphaned.
+
+**Deliberately untouched:** every authored set piece (star, toll, oasis, bonfire, circle, deadco,
+broken, wynn - each is a designed HEAVY or a reference card), every shop with its free door
+(pedlar, camp, saltwives, ratcart - a shop must stay a place you can walk out of), the race-gated
+doors everywhere (they are the personality gold), and ogrestone (its five doors are mostly gated,
+so at most four show; its leave door is load-bearing for a broke, full company).
+
+**Verified in the running page:** LINT 0 · zero console errors · per-event choice counts read out
+of the live `EVENTS` object and matched the table above.
 
 ## 113 - THE SIGHTS ON THE ROAD ✅ BUILT
 

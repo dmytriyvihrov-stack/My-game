@@ -387,6 +387,9 @@ Every bug on the list above is one of those arrows pointing backwards.
 missing ids. It cannot cover the half that matters, so read the event once and answer these:
 
 - What **decision** does this ask for, and is it a decision at all if one option is obviously right?
+- What **weight** is this card: a two-second pickup, a look at the ledger, or a decision the player
+  will retell? All three are legitimate, but a card must know which it is, and heavy cards must be
+  rare. *(`01_GAME_CONCEPT.md` §5, "The choice economy".)*
 - Does it work with **any legal party**: no ogre, no ratkin, four people, thirteen people, the person
   it wants dismissed or dead?
 - Does it fire **twice** in a run, and is that intended?

@@ -60,6 +60,72 @@ Overworld node map (choose path)
 → Act boss → next act (or death → metaprogression → new run)
 ```
 
+### What the loop is really selling (design conversation, 2026-08-12)
+
+The node diagram above is the plumbing. The loop the player actually lives is:
+
+> **Choose → Fight → Suffer → Adapt → Choose.**
+
+Or spelled out: DIRECTION (where am I taking these people) → SITUATION (what am I doing here) →
+BATTLE (how do I get out of this) → CONSEQUENCE (what happened to us) → ADAPTATION (how do we
+live with it now) → new DIRECTION. The interesting part of this game is the **Suffer → Adapt**
+half, which none of the reference games own:
+
+| Game | Core loop | What it rewards |
+|---|---|---|
+| Battle Brothers | contract → fight → loot → repair/recruit | an efficient, replaceable company |
+| Wartales | explore → gather → craft → upgrade | opening up the world; lots of maintenance play |
+| Urtuk | fight → mutate → build → harder fight | buildcraft: mutations as synergy pieces |
+| **Grimtoll** | **choose → fight → suffer → adapt** | **a company you had to remake out of what happened to it** |
+
+The axis runs world management → company management → character buildcraft → **character
+consequences**. Grimtoll sits at the far end and must not drift left: adding Wartales-style
+systems (professions, crafting, cooking, more resources) makes it a small poor Wartales. The
+2026-08-10 playtest said the opposite is needed anyway.
+
+> **The principle: do not give the player more things to manage. Give fewer things more
+> consequences.** In Urtuk a mutation is a build choice; here it is the residue of a story.
+> Not "−2 AGI, drink a potion" but "he lost the hand three fights ago, and he is still my best
+> frontliner. What do I do with him now?" The player optimises a working company out of what
+> went wrong, not an ideal build. That is also why the arithmetic stays hidden: the optimisation
+> the game wants is narrative, not spreadsheet.
+
+### The choice economy: a decision has a weight, and the road has a rhythm
+
+The risk on a node map is not the number of events. It is **constant, uniform decision
+density**: if every node asks for a considered choice, the player is clicking on autopilot
+within the hour, and then the choices that matter get the autopilot too. **If everything is
+important, nothing is.** The rules:
+
+1. **Every event card carries one of three weights, and the road mixes them.**
+   - **LIGHT, a pickup.** "A broken wain. Strip it for parts." One or two doors, no real
+     tension, answered in two seconds. These are not failed events; they are the rhythm section,
+     and roughly a third of the road should be them.
+   - **MEDIUM, a look at the ledger.** Route picks, shops, rest-or-push. Answered by checking
+     the company's state, ten seconds or so.
+   - **HEAVY, a decision the player retells later.** A named person, a moral cost, no clean
+     answer. Thirty seconds of sitting still. **These only work if they are rare**; the space
+     between them is what makes them land.
+2. **The route choice is already a decision.** Picking the cave over the village spent the
+   player's judgement; a card behind the click that asks "enter / scout / camp / leave" asks the
+   same question twice. The card a route leads to should mostly *happen*, not re-negotiate.
+3. **The fight is the climax of a small chapter, not another node.** The shape to aim at:
+   route pick → one or two quick nodes → the significant encounter → battle → consequences →
+   a short management beat → new route pick.
+4. **Two to four options is the right band; the count was never the problem.** A card fatigues
+   through bookkeeping, not breadth: four doors that each read as an intent ("Intervene." /
+   "Walk past." / "[RATKIN] I know him.") scan instantly, while two doors written as receipts
+   (−20 crowns +5 morale vs +10 provisions −3 health) are accounting homework. This is §7's
+   intent-not-receipt rule again, doing pacing work.
+5. **Cut the door that is not a decision.** A duplicate of another door with different flavour,
+   a "nothing happens" door with a fee on it, a second button onto the identical battle: each
+   is a door the player must read and never needed. (The Thing in Armour going from three
+   answers to one is the precedent; the 2026-08-12 #123 pass applied it road-wide.)
+6. **The playtest measurement that decides all of this:** find the event at which the player
+   stops reading options and starts clicking the first acceptable one. That event, not the
+   event count, is where fatigue begins. If the first thirty minutes are deliberate and the
+   second hour is autopilot, the fix is demoting cards to LIGHT, not deleting events.
+
 ## 6. You, the Captain — and the party
 
 **You are a character, not a cursor.** The player is the company's Captain: a unit on the battlefield who fights, bleeds, and can die, but who is marked as the leader everywhere — a banner crest on the sprite, a gold edge on the turn-order card, his own line in the roster. This gives the whole design a spine it was missing:
@@ -1474,6 +1540,16 @@ Wounds carry between battles and **mend slowly with time** (~6 hp/day on the roa
 ### ✅ One backstab, not two (decided)
 
 The facing system's rear arc IS the backstab. The cutter's BACKSTAB ability requires the same rear hex as everyone else's positional bonus — his just cuts far deeper. One mental model: get behind them.
+
+### ✅ Decisions have weights, and a third of the road is deliberately light (decided 2026-08-12)
+
+From the user's design conversation on decision fatigue, written into §5 as "The choice economy".
+The loop is **Choose → Fight → Suffer → Adapt**; events carry a LIGHT / MEDIUM / HEAVY weight and
+the road mixes them; heavy choices stay rare so they are remembered; a door that is not a decision
+(a duplicate, a fee-bearing nothing, a second button onto the same battle) is cut. Applied to the
+build the same day as **#123**: nine road events simplified, eleven doors removed or merged.
+The user's own examples set the tone: the sling-line is "fight or go around", the Drowned Chapel
+is a salvage pickup, the Fen-Mother lost her duplicate battle door.
 
 ### ⏳ Still open
 
