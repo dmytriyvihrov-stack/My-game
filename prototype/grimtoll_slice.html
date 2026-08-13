@@ -7647,6 +7647,18 @@ const TAVERN_T={
      is not a preference, it is the difference between the two halves of a
      fight. Thin everywhere else on purpose: he is a puzzle, not a threat,
      and he must go down in two landed blows once the player solves him. */
+  /* ⛔ AND THE KNIFE WAS NEARLY NERFED ON A NUMBER THAT WAS NOT THERE. Two
+     batches of sixteen AI-driven brawls read "the Captain's worst finish
+     falls from 29% of his hitpoints to 10%" against the build without him,
+     which is a frightening number for the opening fight, and the answer
+     drafted here was [4,8]. At n=50 a side the two builds are the SAME
+     fight - average finish 45% and 45%, runs under 25% two and three, runs
+     under 15% one and one, worst 13% and 12%. The tail was always in the
+     brawl; sixteen runs had simply not sampled it.
+     ⚑ A MINIMUM OVER n IS NOT A MEASUREMENT, IT IS THE UNLUCKIEST SAMPLE,
+     and it gets worse every time you look. Measure a tail as the FRACTION
+     of runs under a threshold, which is stable, and this file's own rule
+     (n=6 cannot tell 0% from 20%) applies to worst cases twice over. */
   weft :{kind:'human',name:'Weft',hp:34,armour:3,mor:44,skill:40,dodge:20,
     speed:5,trait:'nimble',
     acts:[{k:'knife',n:'BONING KNIFE',cost:1,reach:1,dmg:[6,11],am:.25,ft:.55}]},
@@ -7821,20 +7833,44 @@ function tavernTick(){
   if(T.wave1&&cap&&!cap.dead&&!T.taught.circled&&
      engagers(cap.col,cap.row,cap.side).length>=2)
     tavTeach('circled');
+  /* ═══ #145 - THE OGRE MOVED FORWARD, THE CREW DID NOT MOVE BACK ══════════
+     ⛔ AND THE DIFFERENCE IS ABOUT A FIFTH OF THE CAPTAIN'S BLOOD. The first
+     cut of this read the request as "the crew arrives a round later" and put
+     the barman wave at +3 with the crew at +4. Measured over 8 AI-driven
+     brawls a side, that costs exactly what an extra round alone against four
+     men costs: the Captain left the tap-room at 39% of his hitpoints against
+     43%, and the WORST case fell from 37% to 23% - and he walks out of this
+     fight into a run whose only medicine is days on the road.
+     The ask was "Ogr joins your fight one more turn BEFORE main team", which
+     is a statement about the OGRE. So the barman and the knife land at +2,
+     the crew still stands up at +3 exactly as it always did, and the fight
+     is the same length it was. The teaching round is bought from the
+     watchers' warning instead of from the Captain. */
   if(T.phase===3&&T.wave1){
     if(!T.w1round)T.w1round=B.round;
-    /* #111 - the watchers stir one round before they stand up */
-    if(B.round>=T.w1round+2&&!T.taught.watchers){
+    /* #145 - the watchers now stir two rounds before they stand up, because
+       the round that used to be their last one belongs to the barman */
+    if(B.round>=T.w1round+1&&!T.taught.watchers){
       say('At the benches, somebody sets a drink down very carefully.');
       tavTeach('watchers');
     }
-    if(B.round>=T.w1round+3||(cap&&cap.hp<=cap.hpMax*0.45))tavernWave2();
+    if(B.round>=T.w1round+2||(cap&&cap.hp<=cap.hpMax*0.5))tavernWave2();
   }
-  /* #145 - the crew is one full round behind the barman and the knife. The
-     `||` is the safety valve: if the Captain is being taken apart while the
-     lesson runs, the three at the bar stop watching a round early. */
+  /* #145 - and the crew keeps its original arrival: one round behind the
+     barman, which is +3 from wave one, which is where it has always been.
+     The `||` is the safety valve: if the Captain is being taken apart while
+     the lesson runs, the three at the bar stop watching early.
+     ⚠ 0.45 AND NOT THE OLD 0.30, and it is the only part of this that is a
+     judgement rather than a measurement. A rescue that waits until a third
+     of the Captain is left arrives after the damage rather than instead of
+     it: he still has to live through the round it lands in, with whoever is
+     already on him taking their turns. Half is where the plaque still reads
+     as a man in trouble and the rescue still reads as a rescue.
+     ⚠ It is NOT here because the brawl got harder. It did not: n=50 a side,
+     this build and the one before it finish the Captain at the same 45%.
+     See the note on `weft` for the measurement that said otherwise. */
   if(T.phase===4&&T.wave2&&
-     (B.round>=(T.w2round||B.round)+1||(cap&&cap.hp<=cap.hpMax*0.3)))tavernWave3();
+     (B.round>=(T.w2round||B.round)+1||(cap&&cap.hp<=cap.hpMax*0.45)))tavernWave3();
   /* #111 - KICK is taught as the first synergy: an enemy with your blade AND
      a friend's on him is a body worth pushing */
   if(T.phase>=4&&cap&&!cap.dead&&!T.taught.kick){
@@ -9553,6 +9589,21 @@ const mayAim=(u,a,t)=>
   (!a.maxSize||sizeOK(a,t))&&
   (!a.rear||arcOn(u,t).n==='BACK')&&
   (!a.distract||!(t.big||t.noArc))&&
+  /* ═══ #148 - AND THE LANE, WHICH IS THE ONE REFUSAL THIS GATE WAS WRITTEN
+     FOR AND THE ONE IT DID NOT HOLD ════════════════════════════════════════
+     Found by playing: a hand-driven shooter with its own people in the way
+     was told "you would be shooting your own people" by clickHex while
+     `mayAim` said the shot was legal. Nothing stalled, because the rule had
+     been copied into FOUR places instead - `clickHex` (to print the line),
+     `offerAtk` (to light the hex), `aiTurn` and `autoStep` - and all four
+     happened to agree. ⚑ THAT IS THE BUG, NOT THE SYMPTOM: this gate exists
+     precisely so a refusal is stated once, and #36's lane was the only one
+     in clickHex that never made it here. Four copies of a rule is four
+     chances for the fifth caller to be written without it.
+     ⚠ BLOCKED ONLY, exactly matching clickHex. OBSTRUCTED is a bad shot, not
+     an illegal one: the two brains still PREFER a clean lane, and that is a
+     preference and stays where preferences live. */
+  !(needsLane(a)&&losState(u,t).k==='BLOCKED')&&
   /* #82 - and BOTH BRAINS get the oak for free, because both of them ask here
      before they pick. Put it only in clickHex and the enemy line keeps
      spearing through trees while the player's cannot, which is the two-brain
@@ -12120,9 +12171,12 @@ const mainAtk=u=>u.acts.find(a=>a.k==='main'&&a.dmg)||
 /* would a click on `t` swing? The SAME checks render uses to light the
    offer and clickHex uses to accept it, so the three can never disagree. */
 function offerAtk(u,w,t){
-  return !!(w&&t&&w.dmg&&canUse(u,w)&&sizeOK(w,t)&&!reachBlocked(u,t,w)&&
-    udist(u,t)<=(w.range||w.reach||0)&&
-    !(needsLane(w)&&losState(u,t).k==='BLOCKED'));
+  /* #148 - the size gate, the tree, the lane and the rest were re-listed
+     here beside mayAim's copies of them. It asks mayAim now, so "would the
+     click swing" and "may a brain aim this" are the same sentence and a new
+     refusal added to mayAim reaches the lit hex for free. */
+  return !!(w&&t&&w.dmg&&canUse(u,w)&&
+    udist(u,t)<=(w.range||w.reach||0)&&mayAim(u,w,t));
 }
 /* #91 point 9 - the popover's one sentence: the note's own first sentences,
    cut at a boundary, never past ~110 characters. The paragraph stays in
@@ -13140,12 +13194,12 @@ function aiTurn(u){
           /* the rules the player's click enforces. This brain never goes
              through clickHex, so without this it kicked an ogre for 2 damage
              and no shove: a thing the player is not allowed to try at all */
+          /* #148 - BLOCKED left this block and lives in mayAim above, which
+             is where every other refusal the click enforces already was.
+             What is left here is the PREFERENCE: a shot through a friend is
+             legal and it is not taken while a clean one exists. */
           if(!mayAim(u,a,t))return;
-          if(needsLane(a)){
-            const L=losState(u,t);
-            if(L.k==='BLOCKED')return;                    /* never on the table */
-            if(L.k==='OBSTRUCTED'&&hasCleanLane)return;   /* not while a lane is open */
-          }
+          if(needsLane(a)&&hasCleanLane&&losState(u,t).k==='OBSTRUCTED')return;
           const hb=hitBreakdown(u,t,a);
           const avg=(a.dmg?(a.dmg[0]+a.dmg[1])/2:14)*arcOn(u,t).dmg;
           /* profile off = the old rush: biggest dice, blind to the odds */
@@ -17037,12 +17091,10 @@ function autoStep(){
         /* THE FREEZE LIVED HERE. AUTO clicks the board the player clicks, so
            an act the click refuses is an act AUTO retries every 240ms with
            nothing spent. See mayAim() for the whole story. */
+        /* #148 - the same shape as the enemy brain: BLOCKED is a refusal and
+           now lives in mayAim, OBSTRUCTED is a preference and lives here. */
         if(!mayAim(u,a,t))return;
-        if(needsLane(a)){
-          const L=losState(u,t);
-          if(L.k==='BLOCKED')return;
-          if(L.k==='OBSTRUCTED'&&hasCleanLane)return;
-        }
+        if(needsLane(a)&&hasCleanLane&&losState(u,t).k==='OBSTRUCTED')return;
         const hb=hitBreakdown(u,t,a);
         const avg=(a.dmg[0]+a.dmg[1])/2*arcOn(u,t).dmg;
         let ev=hb.total/100*avg;
