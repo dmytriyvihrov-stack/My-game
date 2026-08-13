@@ -507,7 +507,25 @@ function Verb-Hook {
   # lock was a queue, and a worktree is isolation, so the queue is not needed.
   # In the MAIN worktree it still fires, because two sessions sharing one
   # directory still overwrite each other.
-  if (-not (In-MainWorktree)) { exit 0 }
+  #
+  # WHICH WORKTREE IS DECIDED BY THE FILE BEING EDITED, NOT BY WHERE THIS
+  # SCRIPT LIVES. (#141, and it is #139's own lesson landing on #139.) Claude
+  # Code runs a PreToolUse hook out of $CLAUDE_PROJECT_DIR, so the MAIN
+  # folder's copy of this file executes for every session on the machine,
+  # including the ones standing in a desk. $Root is therefore always the main
+  # worktree, In-MainWorktree() always answered "yes", and the desk exemption
+  # written directly above it never fired once: a desk was still queued behind
+  # the main lock while both PARALLEL_SESSIONS.md and this comment said it was
+  # not. The path in the call is the only thing here that knows where the
+  # session is actually standing.
+  $inMain = $true
+  try {
+    $full = [System.IO.Path]::GetFullPath($file).TrimEnd('\', '/')
+    $main = (Resolve-Path -LiteralPath $StoreRoot -ErrorAction Stop).Path.TrimEnd('\', '/')
+    $inMain = $full.StartsWith($main + [System.IO.Path]::DirectorySeparatorChar,
+                               [StringComparison]::OrdinalIgnoreCase)
+  } catch { $inMain = $true }     # cannot tell where it is: gate, as before
+  if (-not $inMain) { exit 0 }
 
   if (-not (Test-Path $LockDir)) { exit 0 }
   foreach ($f in (Get-ChildItem $LockDir -Filter *.lock -File -ErrorAction SilentlyContinue)) {
