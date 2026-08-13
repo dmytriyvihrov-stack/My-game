@@ -4706,7 +4706,31 @@ const GEAR={
            forCls:'archer',bonus:{agi:2},bonusD:'+2 AGI more on an archer',
            d:'Two discs of ground glass in a bent wire frame. Whoever wears them can suddenly '+
              'count the rivets on a man at forty paces and cannot find their own feet. The '+
-             'company has decided this is witchcraft and has stopped short of saying so.'}
+             'company has decided this is witchcraft and has stopped short of saying so.'},
+  /* ═══ #141 · THE COIN THAT WILL NOT SAY WHAT IT DOES ════════════════════
+     (User: "you found an unusial coin. 'It feels goood to keep in the hand,
+     but you don`t know why'. It is trinket and it increses dodge and hit
+     chance by 7%, but never writes about it openly in the item description
+     (but stat changes noticibly)".)
+
+     ⚑ `hush` IS THE WHOLE MECHANISM AND IT IS ONE WORD ON ONE ROW. Two
+     renderers write a piece of kit out - `gearLine` for the inventory row
+     and `tipFor` for the hover - and both build their numbers by walking the
+     SAME fields the engine reads. `hush` tells those two to skip the numeric
+     block and print the flavour alone. It does not touch what the item DOES:
+     `unitFrom` adds the +7s exactly the way it adds a shield's, so the
+     battle plaque's CHANCE TO HIT and DODGE both move seven points the
+     moment somebody puts it on. The item is silent. The body is not.
+
+     ⛔ DO NOT HIDE IT BY LEAVING THE FIELDS OFF AND APPLYING THE BONUS
+     SOMEWHERE ELSE. That is a second source of truth for a stat, which is
+     the shape this file has already paid for half a dozen times. The fields
+     stay canonical and the RENDERER is what keeps its mouth shut.
+
+     ⚠ It costs nothing at all, which every other strange trinket here does
+     not, and nothing in the slice ever explains it. That is the hook. */
+  oddcoin:{n:'An Unusual Coin',   slot:'trinket',g:'⊚',hit:+7,dodge:+7,hush:true,
+           d:'It feels good to keep in the hand. Nobody can say why.'}
 };
 /* MAIN/SECOND WEAPON → MAIN HAND / OFF HAND (user). The old names described
    what you put there; the new ones describe what is holding it, which is what
@@ -5105,38 +5129,69 @@ const rIcon=k=>RACE_ICON[k]||'◆';
    The sheet named both and explained neither, which is fine on your fourth
    run and useless on your first. Each is one sentence about what the thing is
    FOR, then the mechanical facts that follow from it. */
+/* ═══ #142 · THE RACE BOX WAS LONG BECAUSE IT WAS SAYING EVERYTHING TWICE ══
+   (User, 2026-08-13: "shorten description of race (now it is huge thing with
+   too little info)".)
+
+   MEASURED FIRST, ARGUED AFTERWARDS, which is #88's rule. The three boxes ran
+   125 / 116 / 159 WORDS of prose in a 290px tooltip, and then the derived
+   block underneath printed the race's skill with its real numbers and the
+   line `takes N of the party · N crowns a day`. So the ogre's box spent 123
+   words on `x` alone, and the facts inside those words were:
+
+     step · party seats · wage   - all three ALREADY PRINTED underneath it
+     the race skill, in prose    - ALREADY PRINTED underneath it, off the act
+                                   itself, with the numbers this body's
+                                   weapon actually gives it
+     the group formation         - the only fact in there that is nowhere else
+     "slightly quicker, slightly weaker" - the stat lean, as an adjective
+
+   ⚑ THAT IS THE WHOLE COMPLAINT IN ONE LINE: it was huge because it was a
+   hand-typed second copy of the block below it, and it had too little info
+   because the two facts that were NOT duplicated were the two it stated
+   worst. The lean is ±1 and ±2 on four named axes and it was two adjectives;
+   THE LINE's +5 dodge was the one formation number never written down.
+
+   ⛔ AND THE SECOND COPY HAD ALREADY GONE WRONG, which is why this is a fix
+   and not a trim. `human.x` said "No lean either way". RACEMOD.human is
+   `int:+2`. The prose has been contradicting the table for as long as both
+   have existed, and no reader could have caught it, because the box that
+   would have shown the truth was the box being replaced by the sentence.
+
+   So `x` is gone. What replaces it is DERIVED in bindLoreTips from RACEMOD,
+   RACESTEP, COST, WAGE and FORM, and cannot go stale. What stays authored is
+   `d` (who they are, cut to the bone) and `form` (the name of the group
+   trick and the shape you have to stand in to get it), because a formation
+   is a decision about placement and no table holds the sentence for it.
+   The NUMBER in the formation line is read from FORM, never typed here.
+
+   ⚠ `form.k` NAMES A FIELD OF `FORM`, WHICH IS DECLARED FOUR THOUSAND LINES
+   BELOW THIS ONE. That is fine only because nothing reads it until a hover.
+   Do not "simplify" it by putting FORM.lineDodge in this table: it is a
+   temporal-dead-zone throw that aborts the entire script, and this file has
+   shipped that crash once already. */
 const RACEHELP={
   human:{t:'HUMAN',
-    d:'Two generations off the ships and militarily a joke, which the ratkin will tell you at '+
-      'length. What humans are good at is farming, breeding animals and turning up — which is '+
-      'why anybody employs them at all.',
-    x:'Step 4. Takes 2 of your party room and 2 crowns a day. No lean either way - the LINE '+
-      'formation is the trick anybody can learn, and humans are who it was written for. '+
-      'Every human has the KICK: one hex straight back, away from you, almost no damage - and '+
-      'anybody else still in reach of them gets a free half-swing as they are torn away. It is '+
-      'the cheapest way to decide where somebody else is standing, and the cheapest combo in '+
-      'the game.'},
+    d:'Two generations off the ships and militarily a joke. What they are good at is farming, '+
+      'breeding animals, and turning up.',
+    form:{n:'THE LINE',w:'of anyone, in a row',k:'lineDodge',u:'dodge to each of them',
+          note:'The one formation anybody can stand in. It was written for them.'}},
   ratkin:{t:'RATKIN',
-    d:'The most advanced people on the island and the worst manufacturers on it: their edge is '+
-      'making a great deal of cheap rubbish very fast. Organised in clans, and most of their '+
-      'glorious history is ratkin killing ratkin.',
-    x:'Step 5 — the fastest thing you can hire. Takes only 1 of your party room and 1 crown a '+
-      'day. Slightly quicker, slightly weaker. Three of them on one enemy is THE SWARM: −14 to '+
-      'that enemy\'s chance to hit. Every ratkin can POISON THE BLADE — for two rounds '+
-      'everything that hits that body does 15% more, and it stacks. They are the '+
-      'weakest thing you can hire and they are what makes everybody else hurt.'},
+    d:'The most advanced people on the island and the worst manufacturers on it: cheap rubbish, '+
+      'very fast. Organised in clans, mostly at war with each other.',
+    form:{n:'THE SWARM',w:'ratkin, on one enemy',k:'swarmHit',u:'to its chance to hit',
+          note:'The weakest thing you can hire, and what makes everybody else hurt.'}},
   ogre:{t:'OGRE',
+    /* ⚠ THE WAGE JOKE SURVIVES THE CUT ON PURPOSE. It is the one sentence in
+       the old block that was not a second copy of a number: it explains why
+       the biggest body on the field is the cheapest line in the ledger, which
+       otherwise reads as a bug. A line that makes a number legible is not the
+       same thing as a line that repeats one. */
     d:'Huge, slow, and profoundly uninterested. They live where nobody else wants to and farm '+
-      'it badly. Mostly they want to be left alone, which is exactly why they and the ratkin '+
-      'manage to share a country.',
-    x:'Step 3, the slowest. Takes 3 of your party room, the seats of three ratkin, and is paid '+
-      'ONE crown a day like the smallest of them, because nobody has told him otherwise and he '+
-      'has never thought to ask. Stronger, clumsier. Three within two hexes is THE WEIGHT: −9 '+
-      'morale a turn to everything nearby. And only an ogre can PICK UP AND THROW — anything '+
-      'on the next tile: one of yours (it keeps its own turn), one of theirs, or a boulder '+
-      'standing on its own. The boulder comes back down where it lands, which makes an ogre '+
-      'the only body on the field that can change what the map is. Nothing ogre-sized gets '+
-      'lifted, kicked or shoved by anybody.'}
+      'it badly. Mostly they want to be left alone. Paid one crown a day, like the smallest '+
+      'ratkin, because nobody has told him otherwise and he has never thought to ask.',
+    form:{n:'THE WEIGHT',w:'ogres, near each other',k:'weightMor',u:'nerve a turn to everything nearby',
+          note:'Slow enough that they arrive together anyway. Keep them that way.'}}
 };
 const CLASSHELP={
   captain:{d:'You. On the field, in reach, and worth killing — which is the point: leadership '+
@@ -7021,8 +7076,16 @@ function unitFrom(p){
   if(off&&off.dodge)u.dodgeBase+=off.dodge;
   if(off&&off.hit)u.mskill+=off.hit;
   /* a trinket can sharpen the eye too — the ground-glass eyes are gear, not a stat */
+  /* ⚠ #141 - AND `dodge` WAS THE HALF THAT WAS NEVER WIRED. `hit` has been
+     read off a trinket since the ground-glass eyes went in; `dodge` was read
+     off the OFF HAND only, so a trinket carrying it was a field the GEAR
+     table would happily accept, both renderers would happily print, and
+     nothing on the board would ever apply. It is the file's own recurring
+     shape one more time: two slots, one vocabulary, and only one of them
+     taught the second word. */
   const trk=GEAR[p.eq.trinket];
   if(trk&&trk.hit)u.mskill+=trk.hit;
+  if(trk&&trk.dodge)u.dodgeBase+=trk.dodge;
   if(p.perks.indexOf('quickfoot')>=0)u.speed+=1;
   /* THE DAMAGE DEALERS ARE THINNER (playtest #6, user's call): with all
      damage down 20% the archer and the casters still carry the fight from
@@ -20622,6 +20685,37 @@ function bindLoreTips(root,p,live){
   const SKIP={move:1,dis:1};
   root.querySelectorAll('[data-race]').forEach(el=>{
     const r=el.dataset.race,h=RACEHELP[r];if(!h)return;
+    /* ═══ #142 - THE FACTS, READ OFF THE TABLES THAT OWN THEM ══════════════
+       Everything below used to be a sentence in `RACEHELP[r].x`, hand-kept
+       against five other tables, and one of the sentences had already gone
+       wrong (see the note on RACEHELP). Nothing here is typed twice now:
+       RACESTEP owns the stride, COST the seats, WAGE the pay, RACEMOD the
+       lean, FORM the formation's threshold and its number.
+
+       ⚑ AND IT SHOWS WITHOUT A BODY, which the old block did not: `extra`
+       only ever built when the hover was over somebody you had already
+       hired, so the MUSTER FIELD - the one screen where the numbers decide
+       a purchase - printed prose and no numbers at all. */
+    const sgn=v=>(v>0?'+':'−')+Math.abs(v);
+    const plur=(n,w)=>n+' '+w+(n===1?'':'s');
+    const facts='<div style="font-family:var(--mono);font-size:9.5px;color:#8fa5a2;'+
+      'margin-bottom:3px">STEP '+(RACESTEP[r]||4)+' · '+plur(COST[r],'seat')+' · '+
+      plur(WAGE[r],'crown')+' a day</div>';
+    const lean=['str','agi','int','mor'].filter(s=>RACEMOD[r]&&RACEMOD[r][s])
+      .map(s=>'<span style="color:'+TELLS[s].col+'">'+sgn(RACEMOD[r][s])+' '+TELLS[s].lbl+'</span>')
+      .join(' · ');
+    const leanRow='<div style="font-family:var(--mono);font-size:9.5px;margin-bottom:5px;'+
+      'color:var(--t3)">'+(lean||'No lean on any axis.')+'</div>';
+    /* the formation's own numbers: `k` names the value in FORM, and the
+       threshold beside it is that key's prefix + Need. Two fields, one
+       source, so a retune of FORM cannot leave this sentence behind. */
+    const F=h.form,fNeed=FORM[F.k.replace(/[A-Z].*$/,'')+'Need'],fVal=FORM[F.k];
+    const formRow='<div style="margin-bottom:5px"><span style="font-family:var(--mono);'+
+      'font-size:9px;letter-spacing:.1em;color:#d9bd7e">'+F.n+'</span> '+
+      '<span style="font-family:var(--mono);font-size:9.5px;color:#8fa5a2">'+
+        fNeed+' '+F.w+' · '+sgn(fVal)+' '+F.u+'</span>'+
+      '<div style="font-size:11.5px;font-style:italic;color:#a38652;line-height:1.3">'+
+        F.note+'</div></div>';
     let extra='';
     if(u&&p&&p.race===r){
       const rs=(u.acts||[]).filter(a=>RACESKILL[r]&&a.k===RACESKILL[r].k);
@@ -20629,15 +20723,13 @@ function bindLoreTips(root,p,live){
         '<div style="font-family:var(--mono);font-size:8.5px;color:#8a7449;letter-spacing:.1em">'+
           'EVERY '+r.toUpperCase()+' CAN DO THIS</div>'+
         (rs.length?rs.map(actLineHTML).join('')
-          :'<div style="font-size:10.5px;color:var(--t3);font-style:italic">Nothing of its own.</div>')+
-        '<div style="font-family:var(--mono);font-size:9.5px;color:#8fa5a2;margin-top:4px">'+
-          'takes '+COST[r]+' of the party · '+WAGE[r]+' crowns a day</div>';
+          :'<div style="font-size:10.5px;color:var(--t3);font-style:italic">Nothing of its own.</div>');
     }
     el.onmouseenter=e=>{
       TIP.innerHTML='<div style="font-family:var(--display);font-size:15px;color:var(--g4);'+
         'margin-bottom:4px">'+rIcon(r)+' '+h.t+'</div>'+
         '<div style="margin-bottom:5px">'+h.d+'</div>'+
-        '<div style="font-style:italic;color:#a38652">'+h.x+'</div>'+extra;
+        facts+leanRow+formRow+extra;
       TIP.style.display='block';moveTip(e);};
     el.onmousemove=moveTip;el.onmouseleave=()=>{TIP.style.display='none';};});
   root.querySelectorAll('[data-cls]').forEach(el=>{
@@ -20716,14 +20808,19 @@ function gearLine(g,p){
     (g.reach>1?', and reaches '+g.reach+' hexes':g.range?' at up to '+g.range+' hexes':'')+'.');
   else if(g.reach>1)b.push('Reaches '+g.reach+' hexes.');
   else if(g.range)b.push('Shoots up to '+g.range+' hexes.');
+  /* #141 - `hush`: a piece of kit that declines to itemise itself. The fields
+     are still the real ones and the engine still reads every one of them;
+     this renderer and `tipFor` are the only two mouths, and both are shut. */
   const small=[];
-  if(g.hit)small.push((g.hit>0?'+':'')+g.hit+' to hit');
-  if(g.dodge)small.push((g.dodge>0?'+':'')+g.dodge+' dodge');
-  if(g.rangedDmg)small.push('+'+g.rangedDmg+' damage with a bow');
-  if(g.hp)small.push((g.hp>0?'+':'')+g.hp+' hitpoints');
-  if(g.windsCut)small.push('spells cost '+g.windsCut+' less nerve');
-  ['str','agi','int','mor'].forEach(s=>{if(g[s])
-    small.push('a little '+(g[s]>0?'':'less ')+STATWORD[s]+' ('+(g[s]>0?'+':'')+g[s]+')');});
+  if(!g.hush){
+    if(g.hit)small.push((g.hit>0?'+':'')+g.hit+' to hit');
+    if(g.dodge)small.push((g.dodge>0?'+':'')+g.dodge+' dodge');
+    if(g.rangedDmg)small.push('+'+g.rangedDmg+' damage with a bow');
+    if(g.hp)small.push((g.hp>0?'+':'')+g.hp+' hitpoints');
+    if(g.windsCut)small.push('spells cost '+g.windsCut+' less nerve');
+    ['str','agi','int','mor'].forEach(s=>{if(g[s])
+      small.push('a little '+(g[s]>0?'':'less ')+STATWORD[s]+' ('+(g[s]>0?'+':'')+g[s]+')');});
+  }
   if(small.length)b.push(cap1(small.join(', '))+'.');
   if(g.bonusD)b.push((p&&trinketFires(g,p))
     ? '★ WORKS ON THIS ONE: '+g.bonusD+'.'
@@ -20772,6 +20869,9 @@ function tipFor(key,p){
   /* every line answers "and what does that mean for me" — the raw token is
      kept in brackets for anybody who wants it, never on its own */
   const rows=[];
+  /* #141 - and the same silence here. See `hush` on the GEAR row: the numbers
+     are real, they are applied, and this box does not read them out. */
+  if(!g.hush){
   if(g.armour)rows.push('Stops <b>'+g.armour+'</b> damage before it reaches them.');
   if(g.dmg)rows.push('Hits for <b>'+g.dmg[0]+'–'+g.dmg[1]+'</b>'+
     (g.range?' at up to '+g.range+' hexes.':g.reach>1?', reaching '+g.reach+' hexes.':'.'));
@@ -20787,6 +20887,7 @@ function tipFor(key,p){
       (g[s]>0?'+':'')+g[s]+' '+s.toUpperCase()+'</b>).');});
   if(g.size&&g.size!=='any')rows.push('Cut for a <b>'+g.size+'</b> body. On anybody else it '+
     'still works, at 70% and a sour mood.');
+  }
   let html='<div style="font-family:var(--display);font-size:15px;color:var(--g4);'+
     'margin-bottom:4px">'+(g.g?g.g+' ':'')+g.n+'</div>';
   if(scope)html+='<div style="font-family:var(--mono);font-size:9px;letter-spacing:.12em;'+
@@ -20986,8 +21087,25 @@ const NODES={
      `clash` moves 12px. Checked, not eyeballed: spacingViolations() and
      labelViolations() both return empty, and the built plates were measured
      in the running page (43px of air under Grausen Hold's plate, no overlap
-     with Blood on the Road or the water road's first slot). */
-  star  :{x:168,y:424,n:'The Falling Star',    t:'event',ev:'star'},
+     with Blood on the Road or the water road's first slot).
+
+     ⚑ #141 - THE SLOT KEPT ITS JOB AND CHANGED ITS CARD. (User: "after
+     tavern fight - next event instead of faling star (it could be a random
+     event somwhere)".) Everything the comment above argues for is about the
+     BEAT - one night between two fights, at these coordinates, for the
+     arithmetic reason given - and none of it is about which card is dealt
+     here. The star is now in `FLOATING`, so it still happens, somewhere the
+     player did not schedule it, which is the better place for a wish.
+
+     ⚠ AND THE PLATE MOVED 33px UP WITHOUT ANYBODY TOUCHING IT. `star` has a
+     painting in MAP_SIGHT and `coin` has none, so this node dropped from
+     NAME_DY_SIGHT (54) to NAME_DY (21) purely by changing its event key.
+     That is the world-map rule's standing warning arriving from the one
+     direction it does not spell out: art can be LOST as well as gained. The
+     name is shorter than the star's for the same reason (13 chars against
+     16, so the plate can only get narrower), and all three counters were
+     re-run. */
+  coin  :{x:168,y:424,n:'The Wheel-Rut',       t:'event',ev:'coin'},
   clash :{x:240,y:330,n:'Blood on the Road',   t:'battle',ev:'clash'},
   /* ── NORTH: shorter, and the Broken Men are standing on it. One slot,
        one fight, and a fire between that fight and the next one ──────── */
@@ -21451,8 +21569,8 @@ const EDGES=[
      wages, so the extra day is a beat added and not a tax. Both legs carry
      the same description because there is nothing to compare them to - only
      a fork ever draws one (see `forkHere`). */
-  ['hold','star',1,1,'the only road east'],
-  ['star','clash',1,1,'the only road east'],
+  ['hold','coin',1,1,'the only road east'],
+  ['coin','clash',1,1,'the only road east'],
   /* ══ CROSSROAD A — TWO ROADS, NOT THREE ═══════════════════════════════
      (User, 2026-08-01: "on one fork more fights and more money, but your
      people get crippled. On the other, safer, but the chance to get less.")
@@ -21616,7 +21734,17 @@ const FLOATING=['toll','pedlar','chapel','wain','bloom','milestone','saltwives',
   /* #74 - the heaviest card in the deck. It is in the floating pool rather
      than on a node because meeting them is a thing that happens to you, not
      a place you decided to walk to. */
-  'circle'];
+  'circle',
+  /* #141 - AND THE FALLING STAR JOINS THEM, for the same reason and by the
+     user's own aside ("it could be a random event somwhere"). It was a fixed
+     node between the tavern and Blood on the Road; a wish you can see coming
+     two days out is a stop on an itinerary. Everything it needs travels with
+     it: `openEvent` sets its {TELLER} off the EVENT key, not the node, and
+     MAP_SIGHT is keyed the same way, so a slot dealt the star paints the
+     star. ⚠ Its body used to open "A day east of Grausen", which was true of
+     exactly one node and is a lie on the other seven. Rewritten to name no
+     place at all. */
+  'star'];
 /* Seven slots across three forks, of which a single run walks two to five —
    one or three on fork A, one on fork B's quiet arm, one on either arm of
    fork C. Fewer slots than the sixteen-card pool on purpose: the deck should
@@ -23700,6 +23828,57 @@ function openVignette(spot,next,atPlace){
 }
 
 const EVENTS={
+  /* ═══ #141 · THE COIN IN THE ROAD ══════════════════════════════════════
+     (User: "after tavern fight - next event instead of faling star... add
+     event - you found an unusial coin.")
+
+     ⚑ IT IS A LIGHT CARD AND IT KNOWS IT. `01_GAME_CONCEPT.md` §5 asks every
+     card which of the three weights it is, and this one is the two-second
+     pickup: two doors, no arithmetic to work out, nothing to weigh against
+     the chest. It is standing in the slot a FOUR-door wish card stood in, on
+     the second node of the game, which is #86's whole complaint about the
+     opening answered without deleting the beat #112 bought.
+
+     ⚑ BOTH DOORS GIVE YOU THE COIN, AND THAT IS WHY IT IS A DECISION. What
+     is actually being decided is who the company thinks it belongs to: the
+     rule (everything found is the company's, and you pick the wearer) or the
+     finder (they keep it, they wear it tonight, and you do not get a say).
+     Nobody is punished and nobody is rewarded, so neither door is the
+     obviously right one, which is the test the README puts on every card.
+
+     ⚠ NO OPTION LEAVES IT IN THE MUD. An early draft had one, and it was the
+     card handing the player a chance to walk past the only reason the card
+     exists. A door that deletes the content is not a decision, it is a
+     trapdoor.
+
+     ⚠ THE CARD NEVER SAYS WHAT THE COIN DOES, because the coin does not
+     either - see `oddcoin` in GEAR and the `hush` note on it. The prose is
+     allowed to say it is strange. It is not allowed to say it is lucky. */
+  coin:{title:'THE COIN IN THE ROAD',art:'teal',seed:141,
+    body:'The road east runs through old wheel-ruts, filled and refilled and never once '+
+      'mended.\n\n{TELLER} stops walking, which stops everybody, and comes back up out of the '+
+      'mud holding a coin in two fingers.\n\nIt is not a crown. It is not any coin this '+
+      'company has ever been paid in, and between them they have been paid in most of the '+
+      'coins on this island. No head on it. No writing. Heavier than a thing that size has '+
+      'any business being, and warm, and it has been lying in cold mud since before the ruts '+
+      'were ruts.\n\nIt goes down the line, because everybody wants to hold it. It comes back. '+
+      'Every one of them handed it on, and then had nothing at all to say about it.',
+    choices:[
+      {t:'Into the wagon. Everything found on this road is the company\'s.',
+       c:'you decide who carries it · it sits badly with them',
+       fx:{morale:-4},gear:'oddcoin',
+       after:'You put your hand out and it is put into it, which takes a moment longer than it '+
+         'ought to.\n\nNobody argues. Nobody has to. It is the rule, you did not invent it, and '+
+         'every company on this island walks on it. The coin goes in the wagon with the salt '+
+         'and the spare boots, and the road is quiet for an hour afterwards.'},
+      {t:'Whoever found it, keeps it.',
+       c:'it sits well with them · you do not get to say who carries it',
+       fx:{morale:8},coinKeep:true,
+       after:'It goes into a pocket. Then out of that pocket and into a better one, and by the '+
+         'second mile it is on a cord round {TELLER1}\'s neck, under the shirt, where a thing '+
+         'goes when somebody has stopped intending to hand it over.\n\nThe company thinks '+
+         'better of you for an afternoon, and an afternoon is what it is worth.\n\n'+
+         '{TELLER1} has stopped talking.'}]},
   /* FIXED, and the first thing on the road. Three humans meet the island
      properly for the first time: a fight that has nothing to do with them,
      between two peoples who were here first. Helping a side is how Skree
@@ -23740,7 +23919,7 @@ const EVENTS={
      line anywhere claims a cause. This is a low-magic world and a wish is a
      thing people do, not a thing that works. */
   star:{title:'THE FALLING STAR',art:'teal',seed:29,
-    body:'A day east of Grausen the light goes out of the sky, and something comes down '+
+    body:'An hour before dark the light goes out of the sky, and something comes down '+
       'through it.\n\nWhite. Slower than it has any business being. Low enough to put a '+
       'shadow under every tree on the road, once, and then it is gone behind the eastern '+
       'ones. There is no sound. Not then, and not after.\n\nThe company stands in the road '+
@@ -25108,7 +25287,13 @@ function openEvent(k){
      source for exactly the string below.
      ⚠ NOT THE CAPTAIN. He is the one being told, his name is literally
      "You", and "You knows the custom" is not a sentence. */
-  if(k==='star'){
+  /* #141 - THE COIN IS CAST THE SAME WAY AND OUT OF THE SAME LINE. Its whole
+     point is that one named body found it and one named body ends up wearing
+     it, and the card says that name three times across two cast() calls. A
+     second copy of these four lines would be four lines that can disagree.
+     ⚠ LINT check 1b greps this function for `k==='<key>'`, so the || form has
+     to keep both keys spelled out. */
+  if(k==='star'||k==='coin'){
     const others=G.party.filter(p=>!p.leader&&p.id!=='you');
     const one=pickOne(others.length?others:G.party);
     G.fireTeller=one?one.id:null;
@@ -25464,6 +25649,28 @@ function pickChoice(k,i){
         remember(one,'Asked for the long fire past the Dead Company and was told no.');
       }
     }
+  }
+  /* ═══ #141 - THE FINDER PUTS ON WHAT THE FINDER FOUND ═══════════════════
+     The other door hands the coin to the STASH, which is `c.gear` and which
+     forces the inventory open so the player chooses a wearer. This door is
+     the opposite half of the same decision, so it has to land somewhere the
+     player did not choose: straight into that person's amulet slot, worn on
+     the road, tonight.
+
+     ⚠ THE FINDER IS `G.fireTeller`, READ AND NOT RE-ROLLED. It was cast when
+     the card opened and the body has already named them twice; picking a
+     fresh person here would put the coin round the neck of somebody who was
+     not in the story. Same rule, and the same comment, as the long fire.
+     ⚠ Nobody is wearing a trinket this early, but the displaced one goes to
+     the stash rather than being overwritten, because "this can only happen
+     at the second node" is exactly the assumption that rots. */
+  if(c.coinKeep){
+    const one=member(G.fireTeller)||G.party.find(p=>!p.leader)||G.party[0];
+    if(one&&one.eq){
+      if(one.eq.trinket)G.stash.push(one.eq.trinket);
+      one.eq.trinket='oddcoin';
+      remember(one,'Found a coin in a wheel-rut on the road east, and was allowed to keep it.');
+    }else G.stash.push('oddcoin');       /* no roster to put it on: do not lose it */
   }
   /* ═══ #74 - THE CIRCLE GOES ON THE CAPTAIN'S FACE ═══════════════════════
      It lands on the leader and on nobody else, because the card is addressed

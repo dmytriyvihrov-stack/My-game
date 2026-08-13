@@ -149,6 +149,20 @@ clearer" adds a screen. Read the complaint again before writing anything.
 > candidate cuts above are to be re-argued against that number rather than against the one in the
 > complaint. Full record: [`SHIPPED.md`](SHIPPED.md) #112 and
 > [`CHANGELOG.md`](CHANGELOG.md) 8f.139.
+>
+> ⚑ **AND ON 2026-08-13 THE STAR LEFT THAT SLOT AGAIN, WHICH IS THE FIRST TIME THIS PASS HAS
+> SUBTRACTED FROM THE OPENING RATHER THAN ARGUED ABOUT IT** *(#141, 8f.169, the user: "after tavern
+> fight - next event instead of faling star (it could be a random event somwhere)")*. **The node
+> stays. The beat stays. The two days stay. The CARD changed**, and it changed from a four-door wish
+> that spends a permanent stat to a two-door pickup that costs nothing to understand. The star went
+> into `FLOATING`, so it still happens, later, somewhere nobody scheduled.
+>
+> ⛔ **The number step 1 has to carry forward is therefore not "the opening is one card longer" any
+> more, it is "the opening is one card longer and that card is now LIGHT."** #123's choice-weight
+> rules (`01_GAME_CONCEPT.md` §5) are what make that a measurable difference rather than a taste:
+> the second node used to ask for a decision the player would retell and now asks for one they will
+> make in two seconds. **Whether the opening still needs the beat AT ALL is the question step 1 was
+> always going to answer, and it is now the only thing left to argue about here.**
 
 > ✅ **AND #118 + #119 + #120 RESHAPED THE OPENING ON 2026-08-12** *(8f.145-147, the user's
 > five-task batch, built autonomously - the same door as #108 and #112)*. **The opening is the
