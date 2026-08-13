@@ -116,3 +116,5 @@ bisection: the share check reads the page whole, gives one sentence and no reaso
 refused the build with no way to find out why. See `CHANGELOG.md` 8f.109 and 8f.110.
 On a real host the `window.claude` ban also evaporates, so the save-as-a-file row that
 8f.104 cost you can come back whenever you want it.
+
+<!-- round-trip marker rt139 -->
