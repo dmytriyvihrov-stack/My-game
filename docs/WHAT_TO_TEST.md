@@ -79,6 +79,61 @@ the purse is warned about before you commit to a six-day road. Say the word and 
 **One thing I did NOT do, on purpose:** *"it sits well with them"*, the positive twin of the phrase
 you boxed, is still on 6 cards. You pointed at the negative one; deleting its mirror is a one-line
 change if you want it.
+## 🎟 A SPENT NUMBER GIVES ITSELF BACK  *(#144 · 2026-08-13 · build log 8f.172)*
+
+**Nothing in the game changed. This is the tool that hands out `#NN` and `8f.NNN`,** and it is here
+because it was quietly refusing honest commits.
+
+### What was wrong
+
+A session was blocked from committing its own #143 work because the changelog row it was writing
+**mentioned** #141 and 8f.169: numbers another session had shipped hours earlier and never released.
+That is not a collision, it is a footnote. Six more dead claims were sitting behind it, ready to do
+the same to whoever cited them next.
+
+### Reach it in three steps
+
+1. Open a terminal in the repo folder.
+2. Run it:
+
+```bash
+powershell -NoProfile -ExecutionPolicy Bypass -File tools\claim.ps1 status
+```
+
+3. Read the **NUMBERS HELD** block at the bottom.
+
+### What is supposed to happen
+
+- Any number in that block is **work somebody is doing right now**. Shipped numbers clear themselves
+  the next time anybody runs `number`, `status` or `verify`, and the tool prints one grey line
+  saying which ones it swept and where it found them.
+- **You never run `release` again** for normal work. The old instruction was "release once it is in
+  the docs", and in three weeks it was followed zero times, which is a fact about the instruction
+  rather than about the sessions.
+- Committing a changelog row that **cites** old numbers just works.
+- Committing a row that spends a number somebody is still holding is **still refused**, and the
+  message now ends with a line telling you that anything listed has not shipped.
+
+**Would be a bug:** a number vanishing from NUMBERS HELD while that work is still unfinished (say
+so loudly, that is somebody's seat) · a commit refused for citing something already in
+`SHIPPED.md` · two sessions issued the same number, which is the failure this whole file exists to
+prevent. **The one case that still needs you:** work finished on a desk whose branch was never
+merged into `main` is invisible to this, on purpose, because it is not shared yet. Merge it.
+
+### The bigger thing this turned up, which you should know about
+
+Building the above found that **the commit guard had been switched off inside every branch desk
+since #139, and was printing the word "clear" every time it ran.** It was reading a private, empty
+list of claimed numbers instead of the shared one, because the hook runs under a different shell
+whose text encoding mangles this repo's folder path (`Google Диск`). It is fixed, and it now
+complains loudly instead of going quiet if it ever cannot find the shared list again.
+
+**Nothing was lost by it** and no numbers were duplicated: the part that hands out numbers was
+always reading the right list. Only the last-line commit check was blind.
+
+**The tell, if you ever want to check:** a folder called `.grimtoll` appearing *inside* a desk
+means the guard is reading the wrong list. There should only ever be one, in the main project
+folder.
 
 ---
 

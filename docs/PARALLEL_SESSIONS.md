@@ -142,13 +142,38 @@ Three layers still, and the first one is the one that cannot be replaced by git:
 |---|---|---|
 | **claim** | reserves the next free `#NN` / `8f.NNN` so it cannot be issued twice | `.grimtoll/claims/`, **in the main folder, shared by every desk** |
 | **lock** | one session owns `prototype/grimtoll_slice.html` **on the main desk** | `.grimtoll/locks/` |
-| **verify** | refuses a commit that spends a number somebody else holds | `.git/hooks/pre-commit` |
+| **verify** | refuses a commit that spends a number somebody else holds **and has not shipped** | `.git/hooks/pre-commit` |
 
 The claim is a **file created with `CreateNew`**, which fails if the file already exists. NTFS makes
 the check and the create one indivisible operation, so two sessions asking at the same instant cannot
 both win. Nothing else in this repo has that property: a counter in a document does not, and a
 "check, then write" in a script does not either, because the gap between the check and the write is
 where the collision lives.
+
+> ### ⛔ The pre-commit guard was OFF in every desk from #139 until #144, and it printed "clear"
+>
+> Found on 2026-08-13 by watching a commit from a desk report *"clear: no other session is holding a
+> number"* while **twelve claims sat in the store**, four of them a live session's.
+>
+> `.git/hooks/pre-commit` is a **shell** script, so `claim.ps1` runs under `sh`, where the console is
+> **cp866**. git hands back `C:/Users/USER/Google Диск/...` as UTF-8 bytes, cp866 turns that into a
+> path that does not exist, `Resolve-Path` throws, and `Get-StoreRoot`'s catch quietly answered
+> `$Root`. **So the store became the desk's own empty `.grimtoll\`, created fresh on the spot**, and
+> every desk had a private claim directory with nothing in it.
+>
+> ⚑ **The lesson is the fallback, not the codepage.** `Get-StoreRoot` had one `catch` covering two
+> completely different situations: *"this machine has no git"*, which is fine and should be quiet,
+> and *"git answered and I could not read it"*, which is a bug. **A fallback that cannot be told
+> apart from success will wear the word "clear" for as long as nobody looks.** Git is read as UTF-8
+> now, and the second case prints a loud block saying the store is private and the guards are off.
+>
+> ⚠ **And `2>$null` was part of it.** Under `$ErrorActionPreference='Stop'`, *redirecting* a native
+> command's stderr is what promotes a harmless warning into a terminating `NativeCommandError`.
+> Unredirected stderr is inert. The redirection that looks like tidiness was the trap.
+>
+> **If you are ever unsure whether the guard is live in your desk**, stage a line spending a number
+> `status` says somebody else holds, and check that the commit is refused. A `.grimtoll\` folder
+> appearing inside a desk is the tell that it is not.
 
 > ⚠ **`#NN` and a three-digit CSS hex colour are the same string.** The first version of the repo
 > scan read `#373` out of a stylesheet and issued it as a backlog number. Entry numbers are read from
@@ -164,23 +189,45 @@ where the collision lives.
 > name and no edit was ever going to match that string. `lock` now refuses a target that is not a
 > file in the repo. The title goes in `-t`.
 
-> ### ⚠ Release the number once it is written into the docs
+> ### ⚑ You do not release a number any more. A spent claim gives itself back (#144)
 >
-> ```
-> powershell -NoProfile -ExecutionPolicy Bypass -File tools\claim.ps1 release all
-> ```
+> `number`, `status` and `verify` each drop **any** claim, anybody's, whose number is already in
+> main's committed record. Nothing to run, nothing to remember.
 >
-> A claim's whole job is to hold a number **while it exists nowhere**. The moment it is in
-> `CHANGELOG.md` and `SHIPPED.md` the repo scan defends it on its own, and a claim left standing
-> starts working against you: the other session edits a doc, their diff quotes your number, and
-> `pre-commit` blocks a commit that was never a collision. **Claim early, release at the four
-> writes.**
+> **The instruction this replaces was "claim early, release at the four writes", and it was obeyed
+> exactly never.** On 2026-08-13 a session was refused its own #143 commit because the CHANGELOG
+> row it was adding mentioned #141 and 8f.169, work another session had shipped hours earlier and
+> left claimed. That commit was not a collision. **It was a citation, which is what a changelog row
+> is made of**, and six more dead claims were sitting behind it waiting to do the same thing.
 >
-> Clearing somebody else's spent claim, and `-By` is the supported door:
+> **Why dropping it is safe, and the argument is arithmetic rather than trust.** `claim.ps1` takes
+> its floor from **the repo**, never from the claims. So the moment a number is written down, the
+> floor is above it and no session can be issued it again, with or without the claim file. From
+> then on the claim is not holding a seat, it is holding a **word**, and the only thing left it can
+> do is refuse somebody's honest sentence.
+>
+> ⛔ **It reads COMMITTED `main`, never the working tree, and that is the whole difference between a
+> fix and a hole.** A working tree is something the session being guarded can write to. Let session
+> Y hand-write a `#NN` it never claimed (the sixth collision, 2026-08-11, and the first caused by a
+> document): a working-tree scan would see Y's own uncommitted line, drop the real holder's claim,
+> and then wave through the very commit `pre-commit` exists to refuse. **Committed `main` is the one
+> piece of evidence a session cannot manufacture for itself** - and `main` rather than `HEAD`
+> because it is the only ref every desk and the main folder agree on. Measured: with the number in
+> the working tree only, the repo scan sees it and the sweep does not, so the claim stands and the
+> commit is still refused.
+>
+> **`NUMBERS HELD` in `status` therefore means work in flight again**, which is the one question
+> anybody reads it for.
+>
+> Two things still want a hand, and `-By` is the supported door for both:
 >
 > ```
 > powershell -NoProfile -ExecutionPolicy Bypass -File tools\claim.ps1 release 98 -By 053d905a
 > ```
+>
+> - work that **shipped on a desk whose branch was never merged**. The sweep cannot see it, correctly:
+>   it is not shared yet. Merge it, or clear it by hand.
+> - a session that **vanished mid-work**. That claim is a real seat and the sweep will never touch it.
 >
 > ⛔ **Only ever for a number that has SHIPPED.** A row in `SHIPPED.md` and a commit in `main` are the
 > proof. A claim on unbuilt work is somebody's seat and you leave it alone.
@@ -201,6 +248,37 @@ where the collision lives.
 > after `git worktree` would have removed the question. Nobody re-asked whether the constraint was
 > still there. ⚑ **When a rule costs more every week, re-read the sentence it was derived from, not
 > the rule.**
+
+> **A guard that fails open, quietly, is worse than no guard.**
+>
+> Twice now on this one file. #139's desk exemption never fired because the hook asked where the
+> *script* lived; #144's store resolution fell back to a private folder because a path would not
+> decode. Both **looked exactly like working**, and the second one printed the word "clear" while
+> doing nothing at all. ⚑ **Every fallback in a guard needs to be able to say which fallback it
+> took** - "no git here" and "git answered and I could not read it" cannot share a `catch`.
+
+> **A rule nobody has ever obeyed is a rule the tool should have been keeping.**
+>
+> "Release the number at the four writes" was written down, was correct, and was followed zero times
+> in three weeks, because it asks a session to do housekeeping at the exact moment it is finished
+> and moving on. ⚑ **When compliance is zero, stop editing the instruction.** The question is
+> whether the machine can work it out for itself, and here it always could: the fact the rule was
+> asking a human to report was already sitting in `main`.
+
+> **One fact, two readers, and only one of them was taught.**
+>
+> This is the third time on this surface. `Verb-Verify`'s own comment describes it happening with
+> the CSS-colour guard, which was written into the repo scan and never reached the pre-commit scan,
+> so the two readers of "what is an entry number" disagreed for weeks. The regexes are now written
+> **once** and all three callers share them. ⚑ **Where two scans genuinely must differ, name the
+> difference in the signature so it cannot drift**: `-Markdown` is off for the diff scan because a
+> diff's code fences arrive as loose halves, which is a fact about the corpus, not a preference.
+>
+> ⛔ **And the two scans here want OPPOSITE conservatism, which is why they stay two.** "What may I
+> not be issued" casts the widest possible net, because a number it misses is a collision. "What has
+> definitely shipped" takes the narrowest and most authoritative source there is, because a number it
+> wrongly counts is somebody's live seat thrown away. Both are the careful direction. They are just
+> careful about opposite things, and a future tidy-up that merges them will silently pick one.
 
 > **The load-bearing line of a change is rarely the feature.**
 >

@@ -16,6 +16,11 @@
 # before you take a number" could never work, and it cost five collisions. A
 # claim is taken FIRST, and it is a file that cannot be created twice.
 #
+# A CLAIM IS ALSO GIVEN BACK BY ITSELF. `number`, `status` and `verify` drop
+# any claim whose number is in main's committed record, because a number that
+# is written down is one the repo scan already defends and no claim can add to.
+# Nobody ever ran `release` and the tool has stopped needing them to. (#144)
+#
 # The two sessions share ONE working tree and ONE branch, so git isolates
 # nothing between them. The filesystem is the only thing they both see, so the
 # filesystem is where the lock goes: .grimtoll\, which is gitignored.
@@ -57,19 +62,63 @@ $Root      = Split-Path $PSScriptRoot -Parent
 # lives. Everything else in this file reads $Store, so this is the only place
 # that has to know.
 # ---------------------------------------------------------------------------
+# GIT SPEAKS UTF-8 AND POWERSHELL DECODES IT WITH THE CONSOLE CODEPAGE, AND
+# THIS REPO'S PATH IS CYRILLIC. (#144)
+#
+# Found by watching a commit from a desk print "clear: no other session is
+# holding a number" while twelve claims sat in the store. `.git/hooks/pre-commit`
+# is a SHELL script, so this file runs under sh, where the console is cp866
+# rather than whatever an interactive PowerShell happens to be. git hands back
+# "C:/Users/USER/Google <Cyrillic>/..." as UTF-8 bytes, cp866 turns them into a
+# path that does not exist, Resolve-Path throws, and the catch below quietly
+# answered $Root.
+#
+# So the store became the worktree's own empty .grimtoll: every desk got a
+# private claim directory, `verify` found nothing in it, and THE PRE-COMMIT
+# BACKSTOP HAS BEEN OFF IN EVERY DESK SINCE #139 while printing the word
+# "clear" each time. #139's whole load-bearing idea is that the store is shared;
+# this is that idea failing in the one place nobody watches, for a reason that
+# has nothing to do with git.
+#
+# Two fixes, and the second matters as much as the first. Read git's answer as
+# UTF-8. And NEVER FALL BACK SILENTLY: a fallback that cannot be distinguished
+# from success is what let a decoding bug wear the word "clear" for days.
 function Get-StoreRoot {
+  try { Push-Location $Root -ErrorAction Stop } catch { return $Root }
+
+  $common = ''
+  $enc    = $null
+  try { $enc = [Console]::OutputEncoding } catch { }
   try {
-    Push-Location $Root -ErrorAction Stop
-    try   { $common = & git rev-parse --git-common-dir 2>$null }
-    finally { Pop-Location }
-    if ($LASTEXITCODE -eq 0 -and $common) {
-      $common = $common.Trim()
-      if (-not [System.IO.Path]::IsPathRooted($common)) { $common = Join-Path $Root $common }
-      $common = (Resolve-Path -LiteralPath $common -ErrorAction Stop).Path
-      return (Split-Path $common -Parent)
-    }
-  } catch { }
-  return $Root          # not a git repo, or git is missing: behave as before
+    try { [Console]::OutputEncoding = [System.Text.Encoding]::UTF8 } catch { }
+    # No 2>$null: under $ErrorActionPreference='Stop', REDIRECTING a native
+    # command's stderr is itself what turns a harmless warning into a
+    # terminating NativeCommandError. Unredirected stderr is inert.
+    $common = & git rev-parse --git-common-dir
+  } catch {
+    $common = ''
+  } finally {
+    if ($enc) { try { [Console]::OutputEncoding = $enc } catch { } }
+    Pop-Location
+  }
+
+  # No git, or not a repo. This is the honest fallback and it stays quiet.
+  if ($LASTEXITCODE -ne 0 -or -not $common) { return $Root }
+
+  $common = $common.Trim()
+  if (-not [System.IO.Path]::IsPathRooted($common)) { $common = Join-Path $Root $common }
+  try {
+    $common = (Resolve-Path -LiteralPath $common -ErrorAction Stop).Path
+  } catch {
+    # Git answered and the answer did not survive the trip. That is a bug in
+    # here, not a machine without git, and it must never look like success.
+    [Console]::Error.WriteLine("claim.ps1: git named a common dir that will not resolve:")
+    [Console]::Error.WriteLine("  " + $common)
+    [Console]::Error.WriteLine("claim.ps1: FALLING BACK TO A PRIVATE STORE. Numbers are not shared and")
+    [Console]::Error.WriteLine("           the pre-commit guard is off. Fix this before trusting either.")
+    return $Root
+  }
+  return (Split-Path $common -Parent)
 }
 
 $StoreRoot = Get-StoreRoot
@@ -160,6 +209,51 @@ function Age-Hours($rec) {
 #           out of a stylesheet and issued it as a backlog number. So entry
 #           numbers are read from PROSE and from shots\ only, with fenced and
 #           inline code stripped first, and capped at a sane ceiling.
+#
+# ---------------------------------------------------------------------------
+# ONE PARSER, THREE CORPORA. (#144)
+#
+# "Which numbers does this text spend" is asked in three places now - the repo
+# scan below, the shipped-record scan under it, and the pre-commit diff scan at
+# the bottom of this file - and it was answered by three hand-written copies of
+# the same regexes. Verb-Verify's own comment already names that as the bug it
+# was shipped with: the colour guard was written there and never reached the
+# repo scan, so each reader knew a trap the other did not. The rules live here
+# and only here. Add a defence and all three get it.
+#
+# The colour guard, the pointer guard and the ceiling apply to every corpus.
+# -Markdown adds the two that need a WHOLE DOCUMENT to be meaningful, and the
+# switch exists because a git diff is the one corpus that is not one: its
+# fences arrive as loose halves, so pairing them there could strip a real
+# reference out of the backstop's own eyes. It is a fact about the corpus, not
+# a preference, which is why it is named rather than left to drift.
+# ---------------------------------------------------------------------------
+function Add-BuildNumbers([string] $txt, [hashtable] $build, [string] $src) {
+  foreach ($m in [regex]::Matches($txt, '8f\.(\d{1,3})')) {
+    $n = [int] $m.Groups[1].Value
+    if ($n -ge 1 -and $n -le $MaxBuild -and -not $build.ContainsKey($n)) { $build[$n] = $src }
+  }
+}
+
+function Add-EntryNumbers([string] $txt, [hashtable] $entry, [string] $src, [switch] $Markdown) {
+  $bare = $txt
+  if ($Markdown) {
+    $bare = [regex]::Replace($bare, '(?s)```.*?```', ' ')
+    $bare = [regex]::Replace($bare, '`[^`\r\n]*`', ' ')
+  }
+  # A six or eight digit colour whose fourth character is a letter satisfies
+  # the (?!\d) guard below, so its leading three digits read as a reference.
+  $bare = [regex]::Replace($bare, '#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?\b', ' ')
+  # "next free #92" is a POINTER, not a use. Old build-log rows are frozen by
+  # the changelog's own rule, so every one of these left standing would burn a
+  # real number for good. The pointers are what this script replaces anyway.
+  $bare = [regex]::Replace($bare, '(?i)next\s+free(\s+number)?\s*(is|:)?\s*#?\d{1,3}', ' ')
+  foreach ($m in [regex]::Matches($bare, '(?<![\w#])#(\d{1,3})(?!\d)')) {
+    $n = [int] $m.Groups[1].Value
+    if ($n -ge 1 -and $n -le $MaxEntry -and -not $entry.ContainsKey($n)) { $entry[$n] = $src }
+  }
+}
+
 function Get-UsedNumbers {
   $entry = @{}
   $build = @{}
@@ -190,29 +284,14 @@ function Get-UsedNumbers {
   foreach ($f in $prose) {
     $txt = ''
     try { $txt = Get-Content $f.FullName -Raw -Encoding utf8 } catch { continue }
-    foreach ($m in [regex]::Matches($txt, '8f\.(\d{1,3})')) {
-      $n = [int] $m.Groups[1].Value
-      if ($n -ge 1 -and $n -le $MaxBuild -and -not $build.ContainsKey($n)) { $build[$n] = $f.Name }
-    }
-    $bare = [regex]::Replace($txt, '(?s)```.*?```', ' ')
-    $bare = [regex]::Replace($bare, '`[^`\r\n]*`', ' ')
-    # "next free #92" is a POINTER, not a use. Old build-log rows are frozen by
-    # the changelog's own rule, so every one of these left standing would burn a
-    # real number for good. The pointers are what this script replaces anyway.
-    $bare = [regex]::Replace($bare, '(?i)next\s+free(\s+number)?\s*(is|:)?\s*#?\d{1,3}', ' ')
-    foreach ($m in [regex]::Matches($bare, '(?<![\w#])#(\d{1,3})(?!\d)')) {
-      $n = [int] $m.Groups[1].Value
-      if ($n -ge 1 -and $n -le $MaxEntry -and -not $entry.ContainsKey($n)) { $entry[$n] = $f.Name }
-    }
+    Add-BuildNumbers $txt $build $f.Name
+    Add-EntryNumbers $txt $entry $f.Name -Markdown
   }
 
   foreach ($f in $code) {
     $txt = ''
     try { $txt = Get-Content $f.FullName -Raw -Encoding utf8 } catch { continue }
-    foreach ($m in [regex]::Matches($txt, '8f\.(\d{1,3})')) {
-      $n = [int] $m.Groups[1].Value
-      if ($n -ge 1 -and $n -le $MaxBuild -and -not $build.ContainsKey($n)) { $build[$n] = $f.Name }
-    }
+    Add-BuildNumbers $txt $build $f.Name
   }
 
   # shots\NN_name.html - written before any document is, so it decides the floor
@@ -243,10 +322,149 @@ function Claim-One([string] $kind, [hashtable] $used) {
   throw "could not claim a $kind number: 50 consecutive candidates were already taken"
 }
 
+# ---------------------------------------------------------------------------
+# A SPENT CLAIM PROTECTS NOTHING, AND IT BLOCKS SENTENCES. (#144)
+#
+# Nobody ever runs `release` after shipping, and the tool spent months quietly
+# treating that as a discipline problem. It is not one. On 2026-08-13 a session
+# was refused its own #143 commit because the CHANGELOG row it was adding
+# mentioned #141 and 8f.169 - work another session had shipped hours earlier
+# and left claimed. The commit was not a collision. It was a CITATION, which is
+# what a changelog row is made of.
+#
+# WHY IT IS SAFE TO DROP IT, AND THE ARGUMENT IS ARITHMETIC RATHER THAN TASTE.
+# Claim-One takes its floor from the REPO, not from the claims. So the instant
+# a number is written into the record, the floor is above it and no session can
+# ever be issued it again - with or without the claim file. From that moment
+# the claim is not holding a seat, it is holding a word, and the only thing it
+# can still do is refuse somebody else's honest sentence.
+#
+# THE TWO SCANS WANT OPPOSITE CONSERVATISM, WHICH IS WHY THIS IS NOT THE ONE
+# ABOVE. Get-UsedNumbers answers "what may I not be ISSUED", so it casts the
+# widest net it can - every root, prose and code and shots\ - because a number
+# it misses is a collision. This one answers "what has definitely SHIPPED", so
+# it takes the narrowest and most authoritative source there is, because a
+# number it wrongly counts is somebody's live seat thrown away. Widest and
+# narrowest are both the careful direction; they are just careful about
+# opposite things. Do not "simplify" these into one scan.
+#
+# AND IT READS COMMITTED main, NEVER THE WORKING TREE, WHICH IS THE WHOLE
+# DIFFERENCE BETWEEN A FIX AND A HOLE. A working tree is something the session
+# being guarded can write to. Session Y hand-writes a #NN it never claimed -
+# the sixth collision, 2026-08-11, and the first caused by a document - a
+# working-tree scan sees Y's own uncommitted line, drops the real holder's
+# claim, and then waves through the exact commit pre-commit exists to refuse.
+# Committed main is the one piece of evidence a session cannot manufacture for
+# itself. main and not HEAD, because main is the only ref every desk and the
+# main folder agree on: #139's lesson is that the store is shared, and the
+# evidence about the store has to be shared too.
+#
+# So the proof the sweep is safe runs: a correctly issued claim's number was
+# NOT in the record when it was issued (the floor was above everything there);
+# nobody writes down a number they were not issued, and if they try, this scan
+# cannot see their uncommitted line so verify still refuses them; therefore a
+# claimed number appearing in main's committed record means the work that held
+# it shipped.
+#
+# The four files are the four writes named in SHIPPED.md's own header, which is
+# what "shipped" means in this repo. A number in shots\ or in the prototype but
+# not in these is work in flight, and its claim is meant to survive.
+# ---------------------------------------------------------------------------
+$ShipRecord = @(
+  'docs/CHANGELOG.md',
+  'docs/SHIPPED.md',
+  'docs/WHAT_TO_TEST.md',
+  'docs/00_PLAN_AND_BACKLOG.md'
+)
+
+function Get-ShippedNumbers {
+  $entry = @{}
+  $build = @{}
+  $read  = 0
+  $enc   = $null
+  try { $enc = [Console]::OutputEncoding } catch { }
+
+  Push-Location $Root
+  try {
+    # Ask which of them main actually carries FIRST. `git show` on a missing
+    # path writes to stderr, and under $ErrorActionPreference='Stop' that is a
+    # terminating NativeCommandError, so the cheap listing keeps the reads
+    # quiet instead of turning a renamed doc into a thrown exception.
+    # UTF-8 before the first git call, not after: see Get-StoreRoot for what a
+    # console codepage does to this repo's paths.
+    try { [Console]::OutputEncoding = [System.Text.Encoding]::UTF8 } catch { }
+
+    $have = @()
+    try { $have = @(& git ls-tree -r --name-only main -- docs) } catch { $have = @() }
+    if ($have.Count -eq 0) { return $null }
+
+    foreach ($f in $ShipRecord) {
+      if ($have -notcontains $f) { continue }
+      $txt = ''
+      try { $txt = ((& git show ("main:" + $f)) -join "`n") } catch { continue }
+      if (-not $txt) { continue }
+      Add-BuildNumbers $txt $build $f
+      Add-EntryNumbers $txt $entry $f -Markdown
+      $read++
+    }
+  } catch {
+    return $null
+  } finally {
+    if ($enc) { try { [Console]::OutputEncoding = $enc } catch { } }
+    Pop-Location
+  }
+
+  # No git, no main, no record on it: say nothing rather than guess, and the
+  # sweep becomes a no-op. Every failure here has to leave claims standing.
+  if ($read -eq 0) { return $null }
+  return @{ entry = $entry; build = $build }
+}
+
+# Drops every claim, anybody's, whose number is in main's record. Returns what
+# it took so the caller can say so: a claim vanishing silently is how a session
+# would come to distrust the one file it has to trust.
+function Sweep-SpentClaims {
+  if (-not (Test-Path $ClaimDir)) { return @() }
+  $claims = @(Get-ChildItem $ClaimDir -Filter *.claim -File -ErrorAction SilentlyContinue)
+  if ($claims.Count -eq 0) { return @() }
+
+  $ship = Get-ShippedNumbers
+  if (-not $ship) { return @() }
+
+  $gone = @()
+  foreach ($f in $claims) {
+    $rec = Read-Record $f.FullName
+    if (-not $rec -or -not $rec.kind) { continue }
+    $n = -1
+    try { $n = [int] $rec.number } catch { continue }
+    if ($n -lt 0) { continue }
+
+    $tbl = $null
+    if     ($rec.kind -eq 'entry') { $tbl = $ship.entry }
+    elseif ($rec.kind -eq 'build') { $tbl = $ship.build }
+    if (-not $tbl -or -not $tbl.ContainsKey($n)) { continue }
+
+    try { Remove-Item $f.FullName -Force } catch { continue }
+    $label = ("#{0}" -f $n)
+    if ($rec.kind -eq 'build') { $label = ("8f.{0}" -f $n) }
+    $gone += ("{0}  held by {1}, and in {2} on main" -f $label, $rec.by, $tbl[$n])
+  }
+  return $gone
+}
+
+function Show-Swept($gone) {
+  if (-not $gone -or @($gone).Count -eq 0) { return }
+  Write-Host ""
+  Write-Host ("swept {0} spent claim(s) - shipped, so the repo scan defends them now" -f @($gone).Count) -ForegroundColor DarkGray
+  foreach ($g in $gone) { Write-Host ("  {0}" -f $g) -ForegroundColor DarkGray }
+}
+
 # --- verbs -----------------------------------------------------------------
 
 function Verb-Number {
   Ensure-Store
+  $swept = Sweep-SpentClaims
+  if (-not $Json) { Show-Swept $swept }
   $used = Get-UsedNumbers
   $want = $Arg
   if (-not $want) { $want = 'both' }
@@ -360,6 +578,10 @@ function Verb-Release {
 
 function Verb-Status {
   Ensure-Store
+  # Sweeping here is what puts the meaning back into NUMBERS HELD. Left
+  # unswept it fills with shipped work and stops answering the only question
+  # anybody reads it for: is somebody mid-batch, or is this desk free.
+  Show-Swept (Sweep-SpentClaims)
   $me = Get-Me
   Write-Host ""
   Write-Host "this session: '$me'" -ForegroundColor Cyan
@@ -427,6 +649,16 @@ function Verb-Verify {
   Ensure-Store
   $me = Get-Me
 
+  # SPENT CLAIMS GO FIRST, AND THAT IS THE WHOLE OF #144 ON THIS SIDE. What
+  # this scan can see is an ADDED LINE MENTIONING A NUMBER, and it cannot tell
+  # a spend from a citation - a changelog row is made of citations. So the
+  # difference has to be made before the diff is ever read, by asking whether
+  # the number has shipped. Sweeping here rather than adding a second "but is
+  # it spent" test below is deliberate: this file has already paid once for
+  # answering one question in two places.
+  $swept = Sweep-SpentClaims
+  if (-not $Json) { Show-Swept $swept }
+
   $held = @{}
   foreach ($f in (Get-ChildItem $ClaimDir -Filter *.claim -File -ErrorAction SilentlyContinue)) {
     $rec = Read-Record $f.FullName
@@ -449,32 +681,38 @@ function Verb-Verify {
   if ($added.Count -eq 0) { Write-Host "clear: nothing added" -ForegroundColor Green; return }
   $text = ($added -join "`n")
 
-  $bad = @()
-  # ⚠ A CSS HEX COLOUR IS NOT AN ENTRY NUMBER, AND THIS SCAN DID NOT KNOW IT.
+  # A CSS HEX COLOUR IS NOT AN ENTRY NUMBER, AND THIS SCAN DID NOT KNOW IT.
   # A six-digit colour whose first three characters are digits and whose
-  # fourth is a letter matches the pattern below: the (?!\d) guard sees the
+  # fourth is a letter matches the entry pattern: the (?!\d) guard sees the
   # letter and passes happily, so the leading three digits are read as a
   # backlog reference. Get-UsedNumbers was hardened against exactly this trap
-  # when it read a stylesheet value and issued it as a backlog number (see the
-  # note above it), but the hardening never reached the pre-commit side, so the
-  # trap survived here and refused an honest commit whose only crime was a
-  # background colour on a new panel.
-  # ⚑ THE LESSON IS THE ONE PARALLEL_SESSIONS.md ALREADY TELLS ABOUT NUMBERS:
-  # one fact, two readers, and only one of them was taught. When a rule gets a
-  # second implementation, fix both or the old bug is still shipping.
-  # Six and eight digit colours go before the entry scan; a bare three-digit
-  # shorthand (#131 as a colour) stays ambiguous on purpose, because it is
-  # genuinely indistinguishable from a reference and is vanishingly rare.
-  $scan = [regex]::Replace($text, '#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?\b', '')
-  foreach ($m in [regex]::Matches($scan, '(?<![\w#])#(\d{1,3})(?!\d)')) {
-    $k = "entry-" + $m.Groups[1].Value
-    if ($held.ContainsKey($k)) { $bad += ("#{0} is held by session {1} ({2})" -f $m.Groups[1].Value, $held[$k].by, $held[$k].title) }
+  # when it read a stylesheet value and issued it as a backlog number, but the
+  # hardening never reached the pre-commit side, so the trap survived here and
+  # refused an honest commit whose only crime was a background colour on a new
+  # panel.
+  # THE LESSON IS THE ONE PARALLEL_SESSIONS.md ALREADY TELLS ABOUT NUMBERS:
+  # one fact, two readers, and only one of them was taught. That is why the
+  # regexes are no longer written here at all - this call and the repo scan and
+  # the shipped scan are the same parser now, and a guard added to it cannot
+  # reach two of the three and miss the third. A bare three-digit shorthand
+  # (#131 as a colour) stays ambiguous on purpose, because it is genuinely
+  # indistinguishable from a reference and is vanishingly rare.
+  # No -Markdown: a diff's fences arrive as loose halves. See the parser.
+  $de = @{}
+  $db = @{}
+  Add-EntryNumbers $text $de '(this change)'
+  Add-BuildNumbers $text $db '(this change)'
+
+  $bad = @()
+  foreach ($n in ($de.Keys | Sort-Object)) {
+    $k = "entry-$n"
+    if ($held.ContainsKey($k)) { $bad += ("#{0} is held by session {1} ({2})" -f $n, $held[$k].by, $held[$k].title) }
   }
-  foreach ($m in [regex]::Matches($text, '8f\.(\d{1,3})')) {
-    $k = "build-" + $m.Groups[1].Value
-    if ($held.ContainsKey($k)) { $bad += ("8f.{0} is held by session {1} ({2})" -f $m.Groups[1].Value, $held[$k].by, $held[$k].title) }
+  foreach ($n in ($db.Keys | Sort-Object)) {
+    $k = "build-$n"
+    if ($held.ContainsKey($k)) { $bad += ("8f.{0} is held by session {1} ({2})" -f $n, $held[$k].by, $held[$k].title) }
   }
-  $bad = $bad | Select-Object -Unique
+  $bad = @($bad)
 
   if ($bad.Count -eq 0) { Write-Host "clear: this change uses no number another session holds" -ForegroundColor Green; return }
 
@@ -484,6 +722,7 @@ function Verb-Verify {
   Write-Host ""
   Write-Host "Take your own with:  powershell -NoProfile -File tools\claim.ps1 number" -ForegroundColor Yellow
   Write-Host "If the number really is yours:  tools\claim.ps1 release <NN>" -ForegroundColor DarkGray
+  Write-Host "A number listed here has NOT shipped: a shipped one clears itself." -ForegroundColor DarkGray
   exit 1
 }
 
