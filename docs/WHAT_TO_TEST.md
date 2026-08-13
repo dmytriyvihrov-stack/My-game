@@ -245,6 +245,40 @@ deliberate decision back in 8f.105 and it has not changed.
 
 ---
 
+## 🎒 THE COMPANY SHEET, ROUND THREE  *(#140 · 2026-08-13 · build log 8f.168)*
+
+**Your twelve points off the stats-band screenshot.** Same three steps: continue the run, open the
+company screen, click anybody.
+
+| # | your words | what to look for |
+|---|---|---|
+| 1 | *"reorginise this block - probably a bit mor info about damage"* | the damage is its own big gold cell with the reach beside it. **Hover it**: the dice the weapon rolls, what their arm adds, what build and nerve add as a percentage, and what it therefore lands for |
+| 2 | *"put it while hovering on 'light'"* | ARMOUR STOPS is out of that row. **Hover the LIGHT / MEDIUM / HEAVY word** in the armour bar instead: it gives the absorb rule, the split, and how many points there are to chew through |
+| 3 | *"at least 50% more space for perks / inventory"* | the right pane is 450px where it was 300 |
+| 4 | *"could be written below figure"* | the scars and changes are a row of chips **under** the figure now, not a column beside it |
+| 5 | *"Portrain and icon feel better at the left sied"* | portrait and battlefield token lead the top row from the left |
+| 6 | *"delete phrase"* | the label is just THE BODY |
+| 7 | *"Add one more item slot - a bag"* | bottom left of the figure, wired to the hip. **It is deliberately empty and says so**: nothing in the game can go in it yet, and it is there so the first throwable has somewhere to land |
+| 8 | *"Main hand = right hand. Right now is left"* | the weapon is drawn on **your** left, which is the figure's right hand, and the MAIN HAND box moved to that side with it |
+| 9 | *"more space between hand and body"* | there is daylight between each arm and the torso |
+| 10, 11 | *"Delete WHO THIS IS" · "Delete click a stash item..."* | both gone |
+| 12 | *"Use the name of company"* | the top-left title is the two words you picked at the Three Bells |
+
+**What would be a bug:** the damage hover disagreeing with the number beside it · the weapon drawn
+on the wrong side for one race but not another · the bag accepting an item · a wire crossing the
+body · the company name missing on an old save (it should fall back to THE COMPANY, not go blank).
+
+**One correction to what round two told you:** that note said the ACTIONS crystals would show a
+three-action Captain. **They will not, because no such body exists** - every person on your roster
+has two actions, and the three-action line in the code belongs to enemy statblocks. The row is
+still worth having for exactly the reason you gave (later builds, stronger characters); it just is
+not doing anything for the Captain today.
+
+**Numbers:** 678px with **zero scroll on all three races and the Captain**, across four kits.
+Shot: `shots/140_company_sheet_round3.html`.
+
+---
+
 ## 🎒 THE COMPANY SHEET, ROUND TWO  *(#136 · 2026-08-13 · build log 8f.164)*
 
 **Your eleven points, all of them in the build.** Same three steps to reach it: continue the run,
