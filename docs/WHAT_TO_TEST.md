@@ -23,6 +23,119 @@
 
 ---
 
+## 🌙 THE OVERNIGHT BATCH: NINE THINGS YOU ASKED FOR  *(#124-#132 · 2026-08-13 · build logs 8f.152-155)*
+
+**Your nine-item voice batch, built in one go. Take them in this order: the first four are thirty
+seconds each, the last two need a fight.**
+
+### 1. START NEW GAME actually starts one  *(#124)*
+
+1. Have a run in progress, then open the menu and press **A new company**.
+2. Confirm **Start again anyway**.
+3. **You should land on the first card of a new run** (the Three Bells backstory), not back on the
+   menu having to press it a second time.
+
+Also: from the wagon after a run ends, **Take the road again** goes straight into a new run.
+⚠ **A bug would be:** opening the wagon from the menu *mid-run* and pressing it throwing your live
+company away. It should land back on the menu with **Continue the road** still there.
+
+### 2. A reload mid-battle gives you the fight back  *(#131)*
+
+1. Walk onto a node with a fight and take the fight choice.
+2. **Once the battle screen is up, refresh the page** (F5).
+3. Menu → **Continue the road**. The event card should re-open and you take the fight **from the
+   beginning**.
+
+⛔ **This was the bug you reported and it was real.** Before this, the road marked the node done and
+walked straight past it: the fight, its loot, its XP and its scars were gone. The node hovered
+*"Done with. The road remembers, and so do you."*
+⚠ **A bug now would be:** a fight you have already WON re-offering itself after a reload. It should
+not.
+
+### 3. The menu button, and Esc  *(#130)*
+
+1. Press **Esc** on the map, on the roster, in the wagon, in a fight.
+2. The **☰ MENU** button sits in the same place (bottom left, next to ? RULES) on all of them.
+3. In a fight, Esc should **first** clear whatever action you have picked, exactly as before. Press
+   it again with nothing selected and the menu opens.
+
+Leaving a fight **asks first** and tells you the price: the road is saved, the fight starts over.
+Esc also closes the confirm box now, and it always takes the **safe** answer.
+⚠ **A bug would be:** Esc committing a dangerous choice, or the button appearing on a screen that is
+mid-transaction (the after-battle screens, the promotion, the endings).
+
+### 4. The stats have normal names  *(#132)*
+
+Open the roster. **STRENGTH · AGILITY · INTELLECT · MORALE**, and hovering each one shows **nine**
+bands instead of seven.
+
+⚑ **Why MORALE and not NERVE:** the sheet used to print "NERVE" twice, from two different scales.
+**MORALE is how much nerve this person has. NERVE, on the battle plaque, is how much is left right
+now.**
+👤 **One thing I want your ruling on.** You said "two other levels between them" and also "eight". I
+read it as one new band at the top and one at the bottom, which is nine, and **kept every existing
+threshold exactly where it was** so nobody in your save changed. If you meant *finer steps in the
+middle*, say so and the whole scale gets re-cut.
+
+### 5. Morale slides instead of falling off  *(#129)*
+
+Take a beating in any fight and watch the nerve plaque. Six rungs now, not five:
+**It rocks → Happy → Ok → Shaken → Breaking → Broken.**
+
+- **Ok** costs 5 to hit and 2 dodge *(was 8 and 3)*
+- **Shaken** is new, at 9 and 4
+- **Breaking** and **Broken** are exactly as they were
+
+⚠ **What to judge:** whether the slide now feels gradual or merely fiddly. It reads better on paper;
+only playing it settles that.
+
+### 6. The archers  *(#126 · #127)* - **the sling-line is the fight to take**
+
+1. Practice field → **The Sling-Line**.
+2. Walk at them.
+
+**They should now:** advance if they have nothing in range instead of standing still all fight, and
+**back off when you close**, paying you a parting swing to do it.
+
+⛔ **Two things worth knowing, because one of them is not what you asked for.**
+
+**Your bow was already 5 tiles, with the outermost tile at −18 and the one inside it at −8.** It has
+been since the first build. The reason it never felt like it: **both AI brains parked every shooter
+at 3 hexes** whatever it was carrying, so that range was never used by anybody. Shooters now stand
+at range−1, which for the bow is hex 4. Measured over six runs: **hex 4 is now the commonest place a
+shot is fired from**, where it used to pile up at 3 and below.
+
+**And 3 was inside your reach anyway** - a body crosses 4 and strikes, so 5 total. That is why I did
+**not** raise the bow to 6: it would clear a plain human and still lose to a ratkin, a spear, a dog,
+any captain and the Thing in Armour. Distance gets held by *moving*, not by standing further off.
+
+👤 **YOUR CALL:** enemy slings are still **4**, and I left them there on purpose. The chaff slings
+are 4 and the good shooters (the Sling-master, the Marked, the circle) are already 5, which looks
+like a gradient you designed rather than an oversight. **Say the word and they all go to 5.**
+
+### 7. The spear line  *(#128)* - same fight
+
+Watch the two **Ratkin, long spear** in front of the slingers.
+
+**They should plant the spear and brace**, and anything of yours stepping into that reach takes the
+point of it. They should **stand in front of the archers** rather than running at you.
+
+⛔ **This formation already existed in that fight and its spear wall had never once fired** - not in
+any battle, ever. Three separate reasons, all of them "only the player's click could raise a wall".
+**And your own spearwoman under AUTO could not raise one either.** She can now.
+
+Measured over six runs: walls raised **0 → 12**, bodies caught stepping into one **0 → 16**.
+
+### 8. Feedback at the end of a run  *(#125)*
+
+Win or lose, the ending card now has **two** buttons: the wagon, and **Say how it went**, which opens
+the questionnaire. Back returns you to the ending card.
+
+⚠ Nothing about it *sends* anywhere - it copies to your clipboard, as it always has. That was a
+deliberate decision back in 8f.105 and it has not changed.
+
+---
+
 ## 🎒 THE COMPANY SHEET, REBUILT  *(#133 · 2026-08-13 · build log 8f.161 · IT IS IN THE GAME NOW)*
 
 **Your ask, the voice note with five screenshots** (Urtuk, Battle Brothers, Caves of Qud, Wartales,
