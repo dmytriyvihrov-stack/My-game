@@ -202,6 +202,35 @@ deliberate decision back in 8f.105 and it has not changed.
 
 ---
 
+## 🎒 THE COMPANY SHEET, ROUND TWO  *(#136 · 2026-08-13 · build log 8f.164)*
+
+**Your eleven points, all of them in the build.** Same three steps to reach it: continue the run,
+open the company screen, click anybody in the left rail.
+
+| # | your words | what to look for |
+|---|---|---|
+| 1 | *"the middle part take a bit smaller space"* | the body block is 196px where it was 232, and the doll box 362 where it was 400 |
+| 2 | *"More proper char image... like caves of qud"* | **the kit is worn now.** Put mail on somebody and the torso goes steel with shoulder caps; put plate on and they get a helm; leather goes brown. The weapon is in the hand: a bow is an arc, a spear a long shaft, a two-hander a heavy head, anything else a blade. A shield or a quiver shows in the off hand |
+| 3 | *"Taking too much space now... like in battle logic"* | armour, hitpoints and nerve are stacked in a narrow column, exactly the battle plaque's shape, and the four attributes take the width that frees up |
+| 4 | *"Delete: hover for the rest"* | gone |
+| 5 | *"Picture on the field closer to a portarait"* | top right is a painted portrait, with the battlefield token under it |
+| 6 | *"follow the showing of battle"* | hover a **gear slot** or a **scar/change chip**, not just a skill: same dark popover, same name / receipt / one sentence |
+| 7 | *"You still need to show action"* | ACTIONS sits first on the stats line, drawn as the battle's crystals. The Captain shows three |
+| 8 | *"Icon of stush also consistent with global map"* | the stash tab wears the road bar's drawn leather sack, not the emoji |
+| 9 | *"More classical rename"* | STRENGTH / AGILITY / INTELLECT / MORALE. **This one was already done** in another session's #134 before your note arrived; nothing was changed for it |
+| 10 | *"accordion. And I 100% want number of kills (with heads)"* | WHAT HAPPENED TO THEM is one clickable line, and **its head carries the heads and the count** (◉◉◉ ⬩⬩⬩⬩⬩ · 8 DEAD) |
+| 11 | *"Make it very clear, when i have perk to spend"* | four signals: the tab turns gold and pulses and reads **SPEND IT**, a badge counts them, a banner under the tabs jumps you there, and **a ★ appears in the roster rail** so you can see who is owed without opening them |
+
+**What would be a bug:** a weapon drawn that is not the one equipped · armour drawn on a body
+wearing none · a slot's leader line pointing at the wrong body part on an ogre or ratkin · the
+kill heads disagreeing with the after-battle screen · the perk star staying after you spend.
+
+**Numbers:** still **678px, no scroll**, now including a body carrying a change, a condition, the
+circle, three scars and ill-fitting armour all at once (that case used to scroll; the marks list
+scrolls inside itself instead). Shot of both tabs: `shots/136_company_sheet_round2.html`.
+
+---
+
 ## 🎒 THE COMPANY SHEET, REBUILT  *(#133 · 2026-08-13 · build log 8f.161 · IT IS IN THE GAME NOW)*
 
 **Your ask, the voice note with five screenshots** (Urtuk, Battle Brothers, Caves of Qud, Wartales,
