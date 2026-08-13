@@ -183,8 +183,17 @@ clearer" adds a screen. Read the complaint again before writing anything.
 
 ## 137 · The seven-item pack, and 138 · the opening's post-brawl chain
 
-> 🔴 **IN FLIGHT, 2026-08-13.** One brief from the user, split across two numbers because five of
-> its items are ordinary surface work and two of them are the front door.
+> ✅ **BOTH SHIPPED 2026-08-13** (8f.165, 8f.166) and both are on the live link. One brief from the
+> user, split across two numbers because five of its items were ordinary surface work and two of
+> them were the front door.
+>
+> ⚑ **#138 got smaller after the mockup, and that is the entry's best moment.** The drawn card was
+> built to carry the two existing doors settling in place. He looked at it and cut one of them
+> outright - *"delete option 'put him on the floor' it is irrelevant"* - and turned the other into
+> *"Finish your drink and leave"* straight to the map. **So the opening now contains no decision at
+> all**, which is further than the spec dared go and is right: the card hands over a contract, a
+> crew and a name, and the first real decision becomes the fork on the road, in a game about the
+> road. **The mockup earned its keep by being cheap enough to be overruled.**
 >
 > **[#137](archive/BACKLOG_ENTRY_SPECS.md)** *(8f.165)* - the aftermath's haul line rebuilt off
 > `haul.fx` with the top bar's own `RES_ICON` glyphs instead of 11.5px prose · **DISENGAGE's extra
