@@ -1829,24 +1829,143 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:11px;pa
 .rmem .race.human {border-left:2px solid #d8d5cc;padding-left:5px}
 .rmem .race.ratkin{border-left:2px solid #c98a4b;padding-left:5px}
 .rmem .race.ogre  {border-left:2px solid #7fa8c9;padding-left:5px}
-#iChar{flex:1;padding:14px;display:flex;flex-direction:column;gap:9px;min-width:0;overflow:auto}
-#iName{font-family:var(--display);font-size:20px;color:#e0d3b4;font-weight:600}
-#iTrait{font-size:13px;font-style:italic;color:var(--g3);line-height:1.3}
-.slots{display:grid;grid-template-columns:1fr 1fr;gap:7px}
-.slot{background:#221a10;border:1px solid #4d3c22;padding:7px 9px;display:flex;flex-direction:column;
-      gap:1px;min-height:56px}
-.slot .sl{font-family:var(--mono);font-size:7.5px;letter-spacing:.14em;color:#8a7449}
-.slot .si{font-family:var(--display);font-size:13px;color:var(--g4)}
-.slot .sd{font-family:var(--mono);font-size:8.5px;color:#a38652;line-height:1.3}
-.slot.empty .si{color:#5c4a2c;font-style:italic}
+/* ═══ #133 · THE COMPANY SHEET ON ONE SCREEN ══════════════════════════════
+   (User, 2026-08-13, a voice brief over five reference screenshots: Urtuk,
+   Battle Brothers, Caves of Qud, Wartales, Wildermyth. "too much information
+   and not clear whic one is important and what means what" · "it's maybe nice
+   to start screen with main studs [stats]" · "this current picture of
+   character is too ugly. Maybe we can just paint very simplified picture of
+   human or red [rat] or ogre and also place artifacts on top of it as, for
+   example, inventory in case of good [Caves of Qud]" · "make it like the shape
+   of armor. So from the positioning, I understand what is what belongs" ·
+   "choice of perks in separate tab" · "Much shorter description of skills,
+   like do it as in battle, kind of extended version as in battle when you
+   hover, but not more" · "characters descriptions right now, they're too big
+   and taking that much space and not that much actually useful information.
+   Find a way to make it more compact. I mean, I like button brothers".)
+
+   ⚑ WHAT THE MEASUREMENT SAID BEFORE ANY OF THIS WAS DESIGNED. A level-4
+   spearwoman with two scars, one change and two memories rendered a sheet
+   1241px tall inside a 678px window: 564 words, of which the SKILLS block
+   alone spent 230 re-typing what the battle's own hover already says, while
+   the four stats that decide everything sat ~520px down, UNDER the prose.
+   The complaint was not "the sheet is ugly", it was that the sheet's ORDER
+   argued that the history mattered most and the numbers least. So the order
+   inverts and the words are cut, and every zone below is one reference:
+
+     Urtuk         · one screen. Stats, body, gear and history in one view,
+                     no scroll, because a sheet is glanced at, not read.
+     Battle Bros   · the compactness. Mono rows, tight type, a dense pane on
+                     the right, and TABS rather than a longer column.
+     Caves of Qud  · the doll IS the gear map. Slots sit beside the part they
+                     hang on and are WIRED to it, so position carries meaning
+                     before a word is read.
+     Wartales      · the attribute list as one banded block under the name.
+     Wildermyth    · a piece of kit states what it CHANGES (▲▼), not only
+                     what it is. That is the "which one is important" answer:
+                     the comparison was the thing the player was doing by
+                     hand between two cards.
+
+   ⚠ The fold rule for a body richer than this: the LEDGER and the STORY
+   scroll inside themselves. The stats band and the body never leave view. */
+#iChar{flex:1;padding:10px 14px 8px;display:flex;flex-direction:column;gap:6px;
+       min-width:0;overflow:auto}
+/* ── the head: three lines, and everything longer is a hover ─────────────
+   (BB reference: the name and what somebody IS costs three lines there too.
+   The old header was a name, a class line, a personality line, a kill row, a
+   clan block, a circle block and every tie, all before a single number.) */
+#iHead{display:flex;gap:12px;align-items:flex-start}
+#iHeadCol{flex:1;min-width:0}
+#iName{font-family:var(--display);font-size:19px;color:#e0d3b4;font-weight:600;line-height:1.12}
+#iChips{display:flex;gap:5px;margin-top:3px;flex-wrap:wrap;align-items:center}
+.ichip{font-family:var(--mono);font-size:8.5px;letter-spacing:.1em;color:var(--g3);
+  border:1px solid #3d2f1d;background:#1c150c;padding:2px 7px;cursor:help;white-space:nowrap}
+.ichip b{color:var(--g4);font-weight:400}
+.ichip.race.human {border-left:2px solid #d8d5cc}
+.ichip.race.ratkin{border-left:2px solid #c98a4b}
+.ichip.race.ogre  {border-left:2px solid #7fa8c9}
+.ichip.kills{cursor:help;font-size:11px;letter-spacing:0;padding:1px 6px;color:#c9c6bb}
+#iTrait{font-size:12.5px;font-style:italic;color:var(--g3);line-height:1.3;margin-top:4px;
+  cursor:help}
+#iTrait b{color:var(--g4);font-style:normal}
+/* how they actually look on the field (user: "show small icon of this
+   character, how it looks... how it actually looks on battlefield. So person
+   has a more clear understanding"). The battle's own sprite(), untouched. */
+#iField{flex:none;width:92px;border:1px solid #3d2f1d;background:#131b17;display:flex;
+  flex-direction:column;align-items:center;justify-content:flex-end;gap:3px;padding:5px 4px 4px}
+#iField img{image-rendering:pixelated;display:block}
+#iField .fc{font-family:var(--mono);font-size:7.5px;letter-spacing:.13em;color:#7d9490}
+/* ── the stats band: FIRST, one box (Urtuk + Wartales) ──────────────────── */
+#iStats{border:1px solid #3d2f1d;background:#171208;padding:7px 11px;display:flex;
+  flex-direction:column;gap:6px}
+.itells{display:flex}
+.itl{flex:1;display:flex;flex-direction:column;gap:1px;border-left:1px solid #2a2114;
+  padding:0 9px;cursor:help;min-width:0}
+.itl:first-child{border-left:none;padding-left:0}
+.itl .tk{font-family:var(--mono);font-size:7.5px;letter-spacing:.15em}
+.itl .tv{font-family:var(--body);font-size:12.5px;color:#d8d5cc;line-height:1.2}
+/* a banked promotion is spent by clicking the tell itself (#122's door) */
+.itl.spend{cursor:pointer}
+.itl.spend .tv:after{content:' ▲';color:#8ca35a;font-size:10px}
+.itl.spend:hover{background:#1e1810}
+.ibars{display:flex;gap:13px}
+.ibars .bcell{flex:1;display:flex;flex-direction:column;gap:2px;min-width:0}
+.ibars .statLine{color:#8a7449}
+.ibars .bar{height:7px;border:1px solid rgba(0,0,0,.5)}
+.ibars .bar i{display:block;height:100%}
+/* what they DO, as one mono line under the bars */
+.idrv{display:flex;gap:14px;flex-wrap:wrap;font-family:var(--mono);font-size:9.5px;
+  color:#8a7449;letter-spacing:.04em;border-top:1px solid #2a2114;padding-top:5px}
+.idrv b{color:var(--g4);font-weight:400}
+/* ── the body: the doll IS the gear map (Caves of Qud) ──────────────────── */
+#iBody{display:flex;gap:11px;align-items:stretch;flex:none}
+#iDollBox{flex:none;width:400px;height:232px;position:relative;background:#1c150c;
+  border:1px solid #3d3020}
+#iDollBox canvas.doll{position:absolute;top:9px;left:125px;background:none;border:none}
+#iDollBox svg.wire{position:absolute;inset:0;pointer-events:none}
+/* a slot is a BUTTON at a body part. 118px is the widest box two columns and a
+   150px figure will take inside 400, and every gear name in the file clamps to
+   two lines in it. ⚠ .slot is this sheet's own class and nothing else's. */
+.slot{position:absolute;width:118px;background:#221a10;border:1px solid #4d3c22;
+  padding:4px 7px;display:flex;flex-direction:column;gap:1px;text-align:left;
+  font-family:var(--body)}
+.slot:hover{border-color:var(--g3);background:#2a2114}
+.slot .sl{font-family:var(--mono);font-size:7px;letter-spacing:.13em;color:#8a7449;line-height:1.2}
+.slot .si{font-family:var(--display);font-size:11.5px;color:var(--g4);line-height:1.16}
+.slot .sd{font-family:var(--mono);font-size:7.5px;color:#a38652;line-height:1.3}
+.slot.empty{border-style:dashed}
+.slot.empty .si{color:#5c4a2c;font-style:italic;font-size:11px}
 .slot.bad{border-color:#8a4b2a;background:#2a1a10}
 /* the off hand, while both hands are on something else */
-.slot.blockedslot{border-color:#5a4325;background:#231a10;opacity:.82}
-.slot.blockedslot .si{font-style:italic}
-.slot .warnx{font-family:var(--mono);font-size:8.5px;color:#c15d55;line-height:1.3}
-/* (the `.core` four-box stat grid lived here. It went with THE ARITHMETIC —
-   the sheet shows tells now, not numbers. Nothing has carried the class since,
-   so the rules went too.) */
+.slot.blockedslot{border-color:#5a4325;background:#231a10;opacity:.85}
+.slot.blockedslot .si{font-style:italic;font-size:10.5px;color:#c07a2c}
+/* ── the ledger: what happened to this body, beside the body ─────────────
+   (User: "guardian options mutations and injuries... should be shown
+   somewhere very simple, like, a small icon and what it does. And also if
+   it's nice if it's showing on the body image.") Both: marked on the part,
+   named here. Saturation means one thing on this sheet: teal is the strange,
+   red is violence. */
+#iLedger{flex:1;min-width:0;display:flex;flex-direction:column;gap:5px;overflow:auto}
+.wchip{display:flex;gap:7px;align-items:baseline;border:1px solid #4a2a24;background:#241310;
+  padding:4px 8px;font-family:var(--body);font-size:11px;line-height:1.32;cursor:help;
+  text-align:left}
+.wchip .ic{flex:none;font-size:11px;color:#c15d55;line-height:1.3}
+.wchip b{color:#d99a90;font-weight:600}
+.wchip.chg{border-color:#1f4a44;background:#0f1d1a}
+.wchip.chg .ic{color:#35e0c8}
+.wchip.chg b{color:#35e0c8}
+.wchip.mark{border-color:#4a4030;background:#1d1810}
+.wchip.mark .ic{color:#c9a227}
+.wchip.mark b{color:#d9bd7e}
+.wchip .gives{font-family:var(--mono);font-size:8px;letter-spacing:.06em;color:#5ec8b8;
+  display:block;margin-top:1px}
+.wchip.none{border-color:#2a2114;background:#171208;color:#6b5836;font-style:italic;cursor:default}
+.wchip.none .ic{color:#5c4a2c}
+.iaid{border:1px solid #5a7a6a;background:#16211b;padding:4px 8px;text-align:left;
+  font-family:var(--body);font-size:11px;color:#9db8a6;line-height:1.3}
+.iaid:hover{background:#1c2a22}
+.iaid b{color:#c3d9c9;font-weight:600;display:block}
+.iaid i{font-family:var(--mono);font-size:8px;color:#6f8a78;font-style:normal}
 /* road news — one narrated line over the map, fades by itself */
 #wNews{position:absolute;left:50%;bottom:26px;transform:translateX(-50%);max-width:640px;
   background:rgba(16,22,20,.92);border:1px solid #4d3c22;padding:8px 16px;
@@ -1863,23 +1982,67 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:11px;pa
   padding-left:9px;border-left:2px solid #46502c}
 .memlist .mh{font-family:var(--mono);font-size:9px;color:#7a6238;letter-spacing:.05em;
   padding-bottom:2px}
-/* the paper doll beside the four tells — head, body, four limbs, and every
-   scar and change marked on the part it happened to */
-.whorow{display:flex;gap:12px;align-items:flex-start}
-.doll{flex:none;background:#1c150c;border:1px solid #3d3020;cursor:help}
-/* the column beside the doll: four tells, then the same bars the fight uses.
-   It also fills the dead space the doll's height used to leave behind. */
-.whocol{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:7px}
-.whorow .tells{flex:0 0 auto}
-.sbars{display:flex;flex-direction:column;gap:2px}
-.sbars .statLine{color:#8a7449}
-.sbars .bar{height:7px;background:#243133;border:1px solid rgba(0,0,0,.5)}
-.sbars .bar i{display:block;height:100%}
-/* the four stats as words — see the TELLS block in the script */
-.tells{display:grid;grid-template-columns:repeat(2,1fr);gap:3px 12px}
-.tl{display:flex;align-items:baseline;gap:7px;border-bottom:1px dotted #3d3020;padding-bottom:2px}
-.tl .tk{font-family:var(--mono);font-size:7.5px;letter-spacing:.14em;flex:none;width:44px}
-.tl .tv{font-family:var(--body);font-size:12.5px;color:#d8d5cc}
+.doll{cursor:help}
+/* ── the skills, in the battle's own idiom (#133) ────────────────────────
+   (User: "Much shorter description of skills, like do it as in battle, kind
+   of extended version as in battle when you hover, but not more.")
+   ⚑ THE OLD BLOCK WAS 230 WORDS AND THE BATTLE SAYS THE SAME THING IN A
+   HOVER. `.iact` is `.act` re-cut for a parchment ground: same furniture in
+   the same places (icon, name, damage top-right, role bottom-right, cost
+   pips on the floor, the pop above), so the card a player learns on the
+   sheet is the card they press in the fight. ⛔ NOT the class `.act` itself:
+   that one is 72x86 and tuned to the board's dark band, and borrowing it
+   would drag the battlefield's palette onto this screen. */
+#iSkills{display:flex;gap:5px;flex-wrap:wrap}
+.iact{width:78px;height:78px;flex:none;position:relative;background:#1f2416;
+  border:1px solid #46502c;display:flex;flex-direction:column;align-items:center;
+  padding:0;cursor:help}
+.iact:hover{background:#262e1a;border-color:#6a7a44}
+.iact.arc{border-color:#5d3350}
+.iact.chg{border-color:#1f4a44}
+.iact .gi{font-size:18px;line-height:1;color:#c3d18a;margin-top:4px;font-family:var(--body)}
+.iact.arc .gi{color:var(--bloom-lit)}
+.iact.chg .gi{color:#35e0c8}
+.iact b{font-family:var(--mono);font-size:8.5px;letter-spacing:.02em;color:#c3d18a;
+  font-weight:500;text-align:center;line-height:1.18;margin-top:3px;padding:0 2px;width:100%;
+  box-sizing:border-box;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;
+  overflow:hidden}
+.iact .adm{position:absolute;top:3px;right:4px;font-family:var(--mono);font-size:9.5px;
+  color:var(--g4);line-height:1}
+.iact .role{position:absolute;bottom:12px;left:0;right:0;text-align:center;
+  font-family:var(--mono);font-size:7px;letter-spacing:.02em;color:#8a9a5c;line-height:1;
+  white-space:nowrap;overflow:hidden}
+.iact .cost{position:absolute;bottom:3px;left:0;right:0;text-align:center;font-size:8.5px;
+  line-height:1;color:var(--g4);letter-spacing:.16em}
+.iact .pop{position:absolute;bottom:82px;left:50%;transform:translateX(-50%);width:224px;
+  background:rgba(14,16,10,.98);border:1px solid #6a7a44;padding:8px 10px;z-index:60;
+  display:none;flex-direction:column;gap:3px;pointer-events:none;text-align:left}
+.iact:hover .pop{display:flex}
+.iact .pop .pt{font-family:var(--display);font-size:12px;color:#c3d18a;font-weight:600}
+.iact .pop .pr{font-family:var(--mono);font-size:8.5px;color:#8fa5a2;letter-spacing:.05em}
+.iact .pop .pd{font-family:var(--body);font-size:11px;color:#c2b493;line-height:1.4}
+.iact .pop .src{font-family:var(--mono);font-size:8px;letter-spacing:.1em;color:#35e0c8}
+/* the last card in the row is the way in to everything they know but cannot
+   do right now: it is a DOOR, not a skill, so it does not wear a skill's
+   ground. (The old sheet printed all of it, always.) */
+.iact.more{background:none;border-style:dashed;border-color:#4d3c22;cursor:pointer}
+.iact.more:hover{border-color:#8a7449;background:#1c1509}
+.iact.more .gi{color:#8a7449}
+.iact.more b{color:#8a7449}
+/* ── the story: the room the inventory gave back (#133) ──────────────────
+   (User: "we should spend less space for inventory... and maybe a bit more
+   space to the history of character.") Two lines instead of one, the roads
+   walked, ties and clan folded in, and the rest one click away. */
+#iStory{flex:1 1 auto;min-height:44px;overflow:auto;display:flex;flex-direction:column;gap:2px}
+#iStory .lbl{margin-top:2px}
+.imem{display:flex;gap:7px;align-items:baseline}
+.iacc{width:100%;background:none;border:1px dashed #4d3c22;color:#8a7449;font-family:var(--mono);
+  font-size:8px;letter-spacing:.1em;text-align:left;padding:3px 7px;margin-top:3px;cursor:pointer}
+.iacc:hover{border-color:#8a7449;color:#c9b98f;background:#1c1509}
+#iFoot{display:flex;justify-content:flex-end;align-items:center;gap:9px;flex:none;padding-top:2px}
+#iDismiss{font-family:var(--mono);font-size:8.5px;letter-spacing:.1em;color:#8a5a4a;
+  background:none;border:1px solid #4a3028;padding:4px 10px}
+#iDismiss:hover{color:#c07a6a;border-color:#6a3a30;background:#241310}
 /* the compact who-is-this card (promotion screen) */
 .whoc{background:#221a10;border:1px solid #4d3c22;padding:8px 11px;margin:8px 0;
       display:flex;flex-direction:column;gap:2px;text-align:left}
@@ -1904,44 +2067,79 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:11px;pa
 .whoc .wc1{font-family:var(--display);font-size:13px;color:var(--g4)}
 .whoc .wc2{font-family:var(--body);font-size:11.5px;color:#bdb8a8;font-style:italic}
 .whoc .wc3{font-family:var(--mono);font-size:9.5px;color:#8a7449;letter-spacing:.05em}
-.drv{display:grid;grid-template-columns:repeat(3,1fr);gap:2px 12px;font-family:var(--mono);
-     font-size:9.5px;color:#8a7449}
-.drv span{display:flex;justify-content:space-between}.drv b{color:var(--g4);font-weight:500}
-.abil{display:grid;grid-template-columns:1fr 1fr;gap:5px}
-.ab{background:#1f2416;border:1px solid #46502c;padding:6px 8px}
-.ab b{font-family:var(--display);font-size:11.5px;color:#c3d18a;display:block}
-.ab i{font-family:var(--mono);font-size:8.5px;color:#8a9a5c;font-style:normal;line-height:1.35}
-.perkrow{display:grid;grid-template-columns:1fr 1fr;gap:5px}
-.pk{background:#221a10;border:1px solid #4d3c22;padding:6px 8px}
-.pk.have{border-color:#8ca35a;background:#1e2416}
-.pk.locked{opacity:.42}
-.pk.buy{cursor:pointer;border-color:#8ca35a;text-align:left;width:100%;font:inherit}
-.pk.buy:hover{background:#2a3a20}
-.pk b{font-family:var(--display);font-size:11.5px;color:var(--g4);display:block}
-.pk i{font-family:var(--mono);font-size:8.5px;color:#8a7449;font-style:normal;line-height:1.35}
-.pk .tag{font-family:var(--mono);font-size:7.5px;letter-spacing:.1em;color:#8ca35a}
-.pk.locked .tag{color:#7a6238}
-/* the tree drawer. Deliberately quiet: it is a way in, not a decision, so it
-   reads as a label with an arrow rather than as a ninth perk card. */
-.pktoggle{width:100%;background:none;border:1px dashed #4d3c22;color:#8a7449;
-  font-family:var(--mono);font-size:8.5px;letter-spacing:.12em;text-align:left;
-  padding:5px 8px;margin-top:5px;cursor:pointer}
-.pktoggle:hover{border-color:#8a7449;color:#c9b98f;background:#1c1509}
-.pktoggle+.perkrow{margin-top:5px}
-.pknone{font-family:var(--mono);font-size:8.5px;color:#7a6238;font-style:italic}
-#iStash{width:300px;background:#161009;border-left:2px solid #3d2f1d;padding:11px;overflow:auto;
-        flex:none;display:flex;flex-direction:column;gap:6px}
-.item{width:100%;background:#221a10;border:1px solid #4d3c22;padding:6px 8px;display:flex;
-      flex-direction:column;gap:1px}
+/* ═══ #133 · THE RIGHT PANE IS TABBED (Battle Brothers) ═══════════════════
+   (User: "choice of perks in separate tab because I feel we will have, like,
+   quite proper perk tree. It's still in process... So one could be always
+   inventory, and the other could be with perks... So I can actually choose
+   passive development seeing all kind of stats.")
+
+   ⚑ THE POINT OF THE TAB IS THE THING THAT DOES NOT MOVE. Perks used to
+   print INSIDE the character column, so opening the tree pushed the stats,
+   the body and the gear off the bottom of the screen: the one moment a
+   player is comparing a passive against what they already have is the one
+   moment the sheet stopped showing it. Behind a tab, the whole left side
+   stays put while the right side changes. That is his sentence, exactly.
+   ⚠ AND A BANKED POINT MUST SURVIVE THE WALL. A perk point with nothing
+   visible to spend it on reads as a broken screen (the lesson the tree
+   drawer was written around), and a tab can hide one completely. Hence the
+   ★ badge on the tab head: it is visible from either side. */
+#iStash{width:300px;background:#161009;border-left:2px solid #3d2f1d;flex:none;
+        display:flex;flex-direction:column;min-height:0;padding:0;overflow:hidden}
+#iTabs{display:flex;flex:none;border-bottom:2px solid #3d2f1d}
+.itab{flex:1;position:relative;font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;
+  color:#8a7449;background:#120d07;border:none;border-right:1px solid #2a2114;padding:9px 4px;
+  cursor:pointer}
+.itab:last-child{border-right:none}
+.itab:hover{color:#c9b98f}
+.itab.on{background:#221a10;color:var(--g4)}
+.itab .tbadge{position:absolute;top:3px;right:6px;min-width:14px;height:14px;background:#8ca35a;
+  color:#10140c;font-family:var(--mono);font-size:9px;line-height:14px;border-radius:7px;
+  font-weight:700;letter-spacing:0}
+.itabbody{flex:1;overflow:auto;padding:10px;display:none;flex-direction:column;gap:5px}
+.itabbody.on{display:flex}
+.item{width:100%;background:#221a10;border:1px solid #4d3c22;padding:5px 8px;display:flex;
+      flex-direction:column;gap:1px;text-align:left}
 .item:hover:not(:disabled){background:#372a18;border-color:var(--g3)}
 .item.sizebad{border-color:#6b3a20}
 .item.relic{border-color:#7a6a2a;background:#241f10}
 .item.relic .id{color:#c9a227}
-.item .in{font-family:var(--display);font-size:12.5px;color:var(--g4)}
-.gg{font-family:var(--body);font-size:15px;color:var(--g3);line-height:1;
-    display:inline-block;width:17px;text-align:center}
-.item .id{font-family:var(--mono);font-size:8.5px;color:#8a7449;line-height:1.3}
-.item .iw{font-family:var(--mono);font-size:8.5px;color:#c07a2c}
+.item .in{font-family:var(--display);font-size:12px;color:var(--g4);line-height:1.15}
+.gg{font-family:var(--body);font-size:14px;color:var(--g3);line-height:1;
+    display:inline-block;width:16px;text-align:center}
+.item .id{font-family:var(--mono);font-size:8px;color:#8a7449;line-height:1.3}
+.item .iw{font-family:var(--mono);font-size:8px;color:#c07a2c}
+/* ⚑ WILDERMYTH'S ONE IDEA, AND IT IS THE ANSWER TO "which one is important".
+   His first reference screenshot is a gear screen whose whole right half is
+   a BEFORE/AFTER: 1▲ Armor · 5▲ Melee Accuracy · 10▼ Ranged Accuracy. The
+   player was doing that subtraction in their head between two cards, which
+   is exactly the work "not clear which one is important" describes. Nothing
+   new is computed here: it is the values already in GEAR{}, stated as the
+   change they make rather than as a fact about the object. ⛔ Only shown
+   where it is a REPLACEMENT - an empty slot has nothing to compare with. */
+.item .idelta{font-family:var(--mono);font-size:8.5px;letter-spacing:.04em;margin-top:2px;
+  display:flex;gap:8px;flex-wrap:wrap}
+.idelta .up{color:#8ca35a}
+.idelta .dn{color:#c07a6a}
+.idelta .same{color:#6b5836}
+/* the perk tab. Cards are full width here (they have a 278px column to
+   themselves), and the tree is grouped by the level that opens it, which is
+   the question a player actually has: what does the NEXT promotion buy. */
+.pklv{font-family:var(--mono);font-size:7.5px;letter-spacing:.18em;color:#7a6238;
+  display:flex;align-items:center;gap:8px;margin-top:4px}
+.pklv:after{content:'';flex:1;height:1px;background:#2a2114}
+.pk{width:100%;background:#221a10;border:1px solid #4d3c22;padding:5px 8px;text-align:left;
+  font-family:var(--body)}
+.pk.have{border-color:#8ca35a;background:#1e2416}
+.pk.locked{opacity:.45}
+.pk.buy{cursor:pointer;border-color:#8ca35a}
+.pk.buy:hover{background:#2a3a20}
+.pk b{font-family:var(--display);font-size:11.5px;color:var(--g4);display:block;line-height:1.15}
+.pk i{font-family:var(--mono);font-size:8px;color:#8a7449;font-style:normal;line-height:1.35}
+.pk .tag{font-family:var(--mono);font-size:7px;letter-spacing:.1em;color:#8ca35a;display:block}
+.pk.locked .tag{color:#7a6238}
+.pknone{font-family:var(--mono);font-size:8.5px;color:#7a6238;font-style:italic}
+.pkfoot{font-family:var(--mono);font-size:8px;color:#5c4a2c;line-height:1.5;
+  border-top:1px dashed #2a2114;padding-top:7px;margin-top:3px}
 
 /* every full-screen card sits centred on the ink. `#sim` and `#help` MUST be
    on this list — a `.screen` is a bare flex row, so a pcard left off it renders
@@ -2741,6 +2939,25 @@ const $=i=>document.getElementById(i);
    Nothing is needed to HIDE the card on the way out: `.screen` is
    display:none, so it goes with the map and comes back with it. */
 const DETOUR={inv:1,help:1};
+/* ═══ #130 - WHICH SCREENS CARRY THE MENU BUTTON ══════════════════════════
+   (User, 2026-08-13: "on all screens made a consistent button menu in one
+   place so person can reach it, and make it work on esc.")
+
+   It used to be the map alone, and the reason written down was that a battle
+   is regenerated rather than restored, so walking out of one would silently
+   discard it. #131 removed that reason: the unresolved card is saved now, so
+   leaving a fight costs the fight's progress and nothing else, and the confirm
+   on the button says exactly that.
+
+   The flow screens stay out on purpose. spoils, promo, epilogue and prologue
+   are mid-transaction; help, notes and poll each already own a Back that
+   restores where they came from; and `menu` is where the button goes. Two
+   doors onto one decision is how they drift apart.
+
+   ⚠ The button never MOVES: left 100px, bottom 10px on every one of these.
+   "One place" is the whole request, so a screen that cannot host that
+   coordinate does not get the button rather than getting it somewhere else. */
+const MENU_ON={world:1,battle:1,inv:1,camp:1,sim:1};
 const show=i=>{
   if(i!=='world'&&!DETOUR[i]){const d=$('wDlg');if(d)d.classList.remove('on');}
   hideTip();
@@ -2775,10 +2992,9 @@ const show=i=>{
     if(inLog&&box&&hb.parentNode!==box){box.appendChild(hb);hb.classList.add('inlog');}
     else if(!inLog&&home&&hb.parentNode!==home){home.appendChild(hb);hb.classList.remove('inlog');}
   }
-  /* the way back to the menu, offered only where leaving is a coherent moment:
-     standing on the map. Not mid-battle — a battle is regenerated, never
-     restored, so walking out of one would silently discard it. */
-  const mb=$('menuBtn');if(mb)mb.classList.toggle('on',i==='world'&&!SIM.on);
+  /* #130 - the way back to the menu, on every screen that has a coherent out.
+     See MENU_ON above for which and why. */
+  const mb=$('menuBtn');if(mb)mb.classList.toggle('on',!!MENU_ON[i]);
   /* the REAL screen id, not a pre-collapsed battle/world. Which cue a screen
      gets is setMusicMode's question and nobody else's; this line answering
      half of it early is what made a menu cue impossible to add. */
@@ -3692,22 +3908,52 @@ const D={
    swing does, what the armour stops, how far the legs go. Everything else
    is folded away under THE ARITHMETIC for anybody who wants to see it.
    ═══════════════════════════════════════════════════════════════════════ */
+/* ═══ #132 - THE FAMILIAR NAMES, AND NINE BANDS INSTEAD OF SEVEN ══════════
+   (User, 2026-08-13: "rename the strength agility intellect morale things, so
+   it is easy for people to navigate and more readable" and "adding maybe two
+   other levels between them... from very weak to very very strong. And then in
+   the future some artifacts can modify it.")
+
+   BUILD/HANDS/WITS/NERVE were house words for four things every player of this
+   genre already has a word for, so they cost a beat of translation on the one
+   screen that is meant to be read at a glance.
+
+   ⚑ THE RENAME ALSO FIXES SOMETHING THAT WAS ALREADY WRONG. The roster sheet
+   printed "NERVE" TWICE, thirty lines apart, off two different scales: this
+   stat's bands, and the battle ladder's rungs. They are now the two things
+   they actually are. MORALE IS THE CAPACITY. NERVE IS WHAT IS LEFT OF IT.
+
+   On nine: every existing threshold keeps its exact meaning. One band is added
+   at the top (17+) and the old catch-all bottom bucket (0-4) is split at 3, so
+   NOBODY in a current save changes band except a body sitting under 5, and the
+   new room is headroom for the artifacts remark. Live stats run about 4 to 14
+   at the start (Skree agi 14, Bruht str 13, the Captain 9/8/9/11), so 17 is
+   deliberately somewhere nobody starts.
+
+   ⚠ `tell()` reads this with .find(v>=threshold), so the rows MUST stay sorted
+   descending. Out of order, a stat silently reads the wrong word. */
 const TELLS={
-  str:{lbl:'BUILD',  col:'var(--str)',
-    s:[[15,'Enormously strong'],[13,'Very strong'],[11,'Strong'],[9,'Strong enough'],
-       [7,'Not strong'],[5,'Weak'],[0,'Feeble']]},
-  agi:{lbl:'HANDS',  col:'var(--agi)',
+  str:{lbl:'STRENGTH',  col:'var(--str)',
+    s:[[17,'Monstrously strong'],[15,'Enormously strong'],[13,'Very strong'],[11,'Strong'],
+       [9,'Strong enough'],[7,'Not strong'],[5,'Weak'],[3,'Feeble'],
+       [0,'No use lifting anything']]},
+  agi:{lbl:'AGILITY',   col:'var(--agi)',
     /* deliberately not "slow" anywhere on this axis — that word belongs to
        STEP, and a player reading "Slow" next to "STEP 2 hex" will think it is
        the same fact stated twice */
-    s:[[15,'Very quick'],[13,'Quick'],[11,'Handy'],[9,'Steady enough'],
-       [7,'Heavy-handed'],[5,'Clumsy'],[0,'Hopeless with their hands']]},
-  int:{lbl:'WITS',   col:'var(--int)',
-    s:[[15,'Sharp'],[13,'Clever'],[11,'Quick to see it'],[9,'Sensible'],
-       [7,'Plain'],[5,'Slow-witted'],[0,'Simple']]},
-  mor:{lbl:'NERVE',  col:'var(--mor)',
-    s:[[15,'Fearless'],[13,'Brave'],[11,'Steady'],[9,'Fairly brave'],
-       [7,'Nervous'],[5,'Easily frightened'],[0,'A coward, and knows it']]}
+    s:[[17,'Uncannily quick'],[15,'Very quick'],[13,'Quick'],[11,'Handy'],
+       [9,'Steady enough'],[7,'Heavy-handed'],[5,'Clumsy'],[3,'Hopeless with their hands'],
+       [0,'All thumbs, every time']]},
+  int:{lbl:'INTELLECT', col:'var(--int)',
+    s:[[17,'Brilliant'],[15,'Sharp'],[13,'Clever'],[11,'Quick to see it'],
+       [9,'Sensible'],[7,'Plain'],[5,'Slow-witted'],[3,'Simple'],
+       [0,'Not all there']]},
+  /* MORALE, not NERVE. The battle ladder owns the word NERVE, and both of them
+     used to print on this same sheet. See the block above. */
+  mor:{lbl:'MORALE',    col:'var(--mor)',
+    s:[[17,'Afraid of nothing'],[15,'Fearless'],[13,'Brave'],[11,'Steady'],
+       [9,'Fairly brave'],[7,'Nervous'],[5,'Easily frightened'],[3,'A coward, and knows it'],
+       [0,'Runs before it starts']]}
 };
 const tell=(k,v)=>(TELLS[k].s.find(r=>v>=r[0])||['','—'])[1];
 /* the description one band better than the one they have — so a promotion can
@@ -3870,61 +4116,166 @@ const BODYPART=[
 const partOf=n=>{const m=BODYPART.find(r=>r[0].test(n||''));return m?m[1]:'body';};
 /* where a mutation shows */
 const MUTPART={gills:'head'};
+/* ═══ #133 · THE DOLL IS A BODY NOW, AND IT IS THE GEAR MAP ═══════════════
+   (User: "this current picture of character is too ugly. Maybe we can just
+   paint very simplified picture of human or red [rat] or ogre and also place
+   artifacts on top of it as, for example, inventory in case of good [Caves
+   of Qud]... make it like the shape of armor. So from the positioning, I
+   understand what is what belongs.")
+
+   ⚑ SIX RECTANGLES WERE NOT A CHEAP PICTURE, THEY WERE A PICTURE THAT SAID
+   NOTHING. The old doll drew every race as the same tin soldier at three
+   scales, so the one fact the sheet most needs to carry - what KIND of body
+   this is, which decides what armour fits and how far the legs go - was a
+   14% size difference nobody could see. A silhouette says it in one glance:
+   an ogre is a mass, a ratkin is small and low and tailed, a human is the
+   baseline both are measured against.
+
+   ⚠ THE ANATOMY IS PARAMETRIC, NOT THREE DRAWINGS. One set of joints with a
+   per-race table, because the marks have to keep landing on the right part:
+   `partOf` maps a scar name to head/body/armR/legL and every one of those
+   keys must exist for all three races or a veteran ratkin's scars quietly
+   pile up on its chest. Three hand-drawn outlines would have drifted apart
+   the first time one of them was nudged.
+
+   ⚑ AND IT EXPORTS `cv._anchor`, WHICH IS WHAT MAKES THE QUD LAYOUT REAL.
+   The gear boxes are wired to the body with drawn leaders, and a leader that
+   points at a hardcoded coordinate is a lie the moment the ogre is wider
+   than the human. The joint positions come out of the same table that drew
+   them, so the wire always lands on the shoulder it is naming. */
+const DOLL_W=150,DOLL_H=214;
+const DOLLBODY={
+  /*        head        shoulder        waist      hip        knee foot  arm  hunch tail snout */
+  human :{hy:26,hrx:14,hry:16.5,sy:48,sw:38,wy:88,ww:30,hpy:114,hw:34,ky:154,fy:190,aw:9,hn:0,tail:0,snout:0},
+  ratkin:{hy:32,hrx:12,hry:10.5,sy:52,sw:28,wy:84,ww:23,hpy:104,hw:26,ky:142,fy:178,aw:7,hn:7,tail:1,snout:1},
+  ogre  :{hy:24,hrx:13,hry:14  ,sy:47,sw:52,wy:92,ww:44,hpy:120,hw:46,ky:162,fy:198,aw:12,hn:3,tail:0,snout:0}
+};
 function drawDoll(cv,p){
   if(!cv)return;
-  const g=cv.getContext('2d'),W=cv.width,H=cv.height;
+  /* drawn at 2x and displayed at 1x: a silhouette outline goes to mush at
+     device resolution otherwise, and this canvas is looked at up close. */
+  const W=DOLL_W,H=DOLL_H,S=2;
+  cv.width=W*S;cv.height=H*S;cv.style.width=W+'px';cv.style.height=H+'px';
+  const g=cv.getContext('2d');
+  g.setTransform(S,0,0,S,0,0);
   g.clearRect(0,0,W,H);
   const line='#8a7d63',fill='#2c2318';
-  /* one anatomy for everybody, scaled by race — an ogre is wide, a ratkin
-     is small and low-slung */
-  const sc=p.race==='ogre'?1.14:p.race==='ratkin'?0.86:1;
-  const cx=W/2, top=12;
-  const P={};                                    /* remembered hit-boxes */
-  const box=(k,x,y,w,h)=>{P[k]=[x,y,w,h];
-    g.fillStyle=fill;g.strokeStyle=line;g.lineWidth=1.4;
-    g.beginPath();g.rect(x,y,w,h);g.fill();g.stroke();};
-  const hw=13*sc,hh=13*sc;                                    /* head */
-  box('head',cx-hw/2,top,hw,hh);
-  const bw=20*sc,bh=34*sc;                                    /* body */
-  box('body',cx-bw/2,top+hh+3,bw,bh);
-  const aw=6*sc,ah=30*sc;                                     /* arms */
-  box('armR',cx-bw/2-aw-2,top+hh+6,aw,ah);
-  box('armL',cx+bw/2+2,top+hh+6,aw,ah);
-  const lw=8*sc,lh=34*sc;                                     /* legs */
-  box('legL',cx-lw-2,top+hh+3+bh+2,lw,lh);
-  box('legR',cx+2,top+hh+3+bh+2,lw,lh);
+  const B=DOLLBODY[p.race]||DOLLBODY.human;
+  const cx=W/2;
+  const P={},poly={};
+  /* every part is a polygon; its bounding box is what the marks land in */
+  const shape=(k,pts)=>{
+    poly[k]=pts;
+    let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;
+    pts.forEach(q=>{x0=Math.min(x0,q[0]);y0=Math.min(y0,q[1]);
+                    x1=Math.max(x1,q[0]);y1=Math.max(y1,q[1]);});
+    P[k]=[x0,y0,x1-x0,y1-y0];
+  };
+  const paint=(pts,f,st)=>{
+    g.beginPath();g.moveTo(pts[0][0],pts[0][1]);
+    for(let i=1;i<pts.length;i++)g.lineTo(pts[i][0],pts[i][1]);
+    g.closePath();
+    if(f){g.fillStyle=f;g.fill();}
+    if(st){g.strokeStyle=st;g.lineWidth=1.6;g.lineJoin='round';g.stroke();}
+  };
+  /* the torso: shoulders, a waist, hips. `hn` leans a ratkin forward. */
+  const lean=B.hn;
+  shape('body',[[cx-B.sw/2+lean,B.sy],[cx+B.sw/2+lean,B.sy],
+                [cx+B.ww/2+lean*0.5,B.wy],[cx+B.hw/2,B.hpy],
+                [cx-B.hw/2,B.hpy],[cx-B.ww/2+lean*0.5,B.wy]]);
+  /* the arms hang off the shoulder corners and end just past the hip: that
+     end point is the HAND, and it is where the weapon boxes wire to. */
+  const armDrop=B.hpy+8;
+  shape('armR',[[cx-B.sw/2+lean,B.sy+2],[cx-B.sw/2-B.aw+lean,B.sy+6],
+                [cx-B.ww/2-B.aw,armDrop],[cx-B.ww/2-1,armDrop-3],
+                [cx-B.sw/2+lean+2,B.sy+22]]);
+  shape('armL',[[cx+B.sw/2+lean,B.sy+2],[cx+B.sw/2+B.aw+lean,B.sy+6],
+                [cx+B.ww/2+B.aw,armDrop],[cx+B.ww/2+1,armDrop-3],
+                [cx+B.sw/2+lean-2,B.sy+22]]);
+  const lw=B.hw/2-2;
+  shape('legL',[[cx-B.hw/2,B.hpy-2],[cx-1.5,B.hpy-2],[cx-3,B.ky],[cx-5,B.fy],
+                [cx-lw-3,B.fy],[cx-lw-1,B.ky]]);
+  shape('legR',[[cx+1.5,B.hpy-2],[cx+B.hw/2,B.hpy-2],[cx+lw+1,B.ky],[cx+lw+3,B.fy],
+                [cx+5,B.fy],[cx+3,B.ky]]);
+  /* the head is an ellipse, and a ratkin gets a snout so the silhouette is
+     legible at a glance rather than "a smaller human" */
+  const hcx=cx+lean*1.4,hcy=B.hy;
+  P.head=[hcx-B.hrx,hcy-B.hry,B.hrx*2,B.hry*2];
+  /* the feet: a flat mark under each leg, so nobody stands on points */
+  const foot=(x)=>{paint([[x-lw*0.5,B.fy],[x+lw*0.7,B.fy],[x+lw*0.9,B.fy+5],[x-lw*0.6,B.fy+5]],
+    fill,line);};
+  ['body','armR','armL','legL','legR'].forEach(k=>paint(poly[k],fill,line));
+  foot(cx-lw*0.6-2);foot(cx+lw*0.6+2);
+  g.beginPath();g.ellipse(hcx,hcy,B.hrx,B.hry,0,0,7);
+  g.fillStyle=fill;g.fill();g.strokeStyle=line;g.lineWidth=1.6;g.stroke();
+  if(B.snout){
+    paint([[hcx+B.hrx-2,hcy-2],[hcx+B.hrx+10,hcy+2],[hcx+B.hrx-2,hcy+5]],fill,line);
+    /* two ears, high and round */
+    [[-6,-B.hry-2],[5,-B.hry-3]].forEach(o=>{
+      g.beginPath();g.ellipse(hcx+o[0],hcy+o[1],4,4.6,0,0,7);
+      g.fillStyle=fill;g.fill();g.strokeStyle=line;g.lineWidth=1.4;g.stroke();});
+  }
+  if(B.tail){
+    g.beginPath();g.moveTo(cx-B.hw/2+2,B.hpy-6);
+    g.quadraticCurveTo(cx-B.hw-16,B.hpy+14,cx-B.hw-6,B.fy-2);
+    g.strokeStyle=line;g.lineWidth=2.4;g.stroke();
+  }
+  /* how much of them is still standing: the torso fills from the feet up.
+     The bars above print the number; this is the shape of it. */
+  const uu={st:effStats(p)},hpMax=D.hp(uu),left=Math.max(0,hpMax-(p.hpLoss||0));
+  const frac=hpMax?left/hpMax:1;
+  if(frac<1){
+    const b=P.body;
+    g.save();
+    paint(poly.body,null,null);g.clip();
+    g.fillStyle='rgba(122,31,34,.42)';
+    g.fillRect(b[0]-2,b[1]-2,b[2]+4,(b[3]+4)*(1-frac));
+    g.restore();
+    paint(poly.body,null,line);
+  }
   /* the marks. Scars are dull red slashes; a change is a saturated teal
-     glow on the part it took — the saturation rule, on the sheet. */
+     glow on the part it took - the saturation rule, on the sheet. */
   const marks={};
   (p.injuries||[]).forEach(s=>{const k=partOf(s.n);marks[k]=(marks[k]||0)+1;});
   Object.keys(marks).forEach(k=>{
     const b=P[k];if(!b)return;
-    g.strokeStyle='#c15d55';g.lineWidth=1.6;
+    g.save();g.strokeStyle='#c15d55';g.lineWidth=1.8;g.lineCap='round';
+    if(poly[k]){paint(poly[k],null,null);g.clip();}
     for(let i=0;i<Math.min(4,marks[k]);i++){
-      const yy=b[1]+4+i*5;
-      g.beginPath();g.moveTo(b[0]+2,yy);g.lineTo(b[0]+b[2]-2,yy+3);g.stroke();}
+      const yy=b[1]+b[3]*0.28+i*6;
+      g.beginPath();g.moveTo(b[0]-1,yy);g.lineTo(b[0]+b[2]+1,yy+4);g.stroke();}
+    g.restore();
   });
+  /* the mark somebody cut into their own face (#74). It is on the body, so
+     it belongs on the body, and it is the one scar with a colour of its own. */
+  if(p.mark==='circle'){
+    g.save();g.strokeStyle='#c9a227';g.lineWidth=1.8;g.shadowColor='#c9a227';g.shadowBlur=5;
+    g.beginPath();g.ellipse(hcx-B.hrx*0.36,hcy-1,4.6,4.6,0,0,7);g.stroke();g.restore();
+  }
   if(p.mut){
-    const b=P[MUTPART[p.mut]||'body'];
-    if(b){
-      g.save();g.shadowColor='#35e0c8';g.shadowBlur=7;
-      g.strokeStyle='#35e0c8';g.lineWidth=1.6;
-      g.beginPath();g.rect(b[0]-1,b[1]-1,b[2]+2,b[3]+2);g.stroke();
-      g.restore();
-    }
+    const k=MUTPART[p.mut]||'body';
+    g.save();g.shadowColor='#35e0c8';g.shadowBlur=8;
+    g.strokeStyle='#35e0c8';g.lineWidth=1.8;
+    if(k==='head'){g.beginPath();g.ellipse(hcx,hcy,B.hrx+1.5,B.hry+1.5,0,0,7);g.stroke();}
+    else if(poly[k])paint(poly[k],null,'#35e0c8');
+    g.restore();
   }
   if(p.cond){
     const b=P.body;
-    g.strokeStyle='#2fa898';g.lineWidth=1;g.setLineDash([3,3]);
-    g.beginPath();g.rect(b[0]-2,b[1]-2,b[2]+4,b[3]+4);g.stroke();g.setLineDash([]);
+    g.save();g.strokeStyle='#2fa898';g.lineWidth=1.2;g.setLineDash([3,3]);
+    g.strokeRect(b[0]-4,b[1]-4,b[2]+8,b[3]+8);g.restore();
   }
-  /* how much of them is still standing, drawn as a fill in the body */
-  const uu={st:effStats(p)},hpMax=D.hp(uu),left=Math.max(0,hpMax-(p.hpLoss||0));
-  const frac=hpMax?left/hpMax:1;
-  const b=P.body;
-  g.fillStyle=frac>0.66?'#4a5a3a':frac>0.33?'#6a5a2a':'#5a2a26';
-  g.fillRect(b[0]+2,b[1]+b[3]-2-(b[3]-4)*frac,b[2]-4,(b[3]-4)*frac);
-  g.strokeStyle=line;g.lineWidth=1.4;g.strokeRect(b[0],b[1],b[2],b[3]);
+  /* ⚑ THE JOINTS, IN THE CANVAS'S OWN COORDINATES, FOR THE WIRED SLOTS.
+     armR is screen-LEFT and armL is screen-RIGHT (they are the body's own
+     left and right, as the scar map has always named them), and the weapon
+     goes in the hand on the side the battle sprites face: screen right. */
+  cv._anchor={
+    trinket:{x:hcx+B.hrx*0.6,y:hcy-B.hry*0.5},
+    armour :{x:cx-B.ww*0.35,y:(B.sy+B.hpy)/2},
+    main   :{x:cx+B.ww/2+B.aw*0.6,y:armDrop-4},
+    off    :{x:cx-B.ww/2-B.aw*0.6,y:armDrop-4},
+    pet    :{x:cx+B.hw*0.30,y:B.fy-4}
+  };
 }
 /* the compact character card — one glance at who somebody is. Used wherever a
    decision is being made ABOUT a person away from the full inventory sheet
@@ -4527,7 +4878,7 @@ const CLASSHELP={
       'is a real decision: a quiver, or a dirk for when something reaches her anyway.'},
   warmage:{d:'A mediocre swordsman who occasionally does something appalling. Two schools, one '+
     'working a turn, and a short sword for the rest of it — low magic written as a class.',
-    x:'Casting costs his own nerve, and a working is aimed with the WITS, so a stupid one misses.'},
+    x:'Casting costs his own nerve, and a working is aimed with the INTELLECT, so a stupid one misses.'},
   mage:{d:'Three schools and a second working each turn at half strength, and almost nothing '+
     'else. Bad with a blade, bad at dodging, thin. The line exists to keep him alive.',
     x:'Deliberately worse in melee than the battle-mage — the best offence in the company should '+
@@ -5847,7 +6198,7 @@ function losState(a,d,from){
   r.k='OBSTRUCTED';r.who=s;return B._losCache[ck]=r;
 }
 /* one place decides whether an act cares about the lane at all. A WORKING IS
-   NOT AN ARROW — it is aimed with the wits and goes where it is sent, so the
+   NOT AN ARROW — it is aimed with the INTELLECT and goes where it is sent, so the
    caster is deliberately exempt. That is also the only thing that keeps the
    battle-mage distinct from the archer once screening exists. */
 const needsLane=act=>!!(act&&act.range&&!act.arcane&&act.dmg);
@@ -5969,9 +6320,36 @@ function nearWeight(a,b){
   const d=hdist([a.col,a.row],[b.col,b.row]);
   return clamp(1.05-d*0.09,0.35,1);
 }
+/* ═══ #129 - SOFTER AT THE TOP OF THE SLIDE, AND A RUNG IN BETWEEN ════════
+   (User, 2026-08-13, and this is his SECOND pass on the same complaint:
+   "for morale I feel it should be less severe penalties, especially for normal
+   state and a bit less severe for wavering... or maybe also split wavering
+   into a bit wavering and really wavering... more gradual going down scale
+   rather than, it feels very steep.")
+
+   The first pass softened BREAKING from -18/-7, and the note recording it is
+   below. What this pass found is that the size of the numbers was never the
+   whole story: the first bad rung arrived after a single 30-point drop and
+   cost 8 immediately, so the slide read as a cliff with one landing on it.
+   WAVERING drops to -5/-2 and SHAKEN is new between it and BREAKING.
+
+   ⛔ THE FLOOR AND THE TOP DO NOT MOVE. A routed body is exactly as routed,
+   and IT ROCKS still has to be earned. The change is entirely in the middle,
+   which is the part being described.
+
+   ⚑ THE NOTE THAT USED TO SIT HERE SAID THE MECHANICAL TIERS MUST STAY FOUR,
+   and it was right about its own case: a fifth state ABOVE steady would make a
+   surging body read as not-steady and drop it into branches written for the
+   shaken. SHAKEN is BELOW steady, so every `state!=='steady'` test SHOULD
+   include it, and all five of them want to: the ogre will not throw a shaken
+   ally, CALLED IN reaches them, fear acts count them, the AI withdraw branch
+   opens, and `feral` gains its damage. The two readers that needed a new case
+   by hand are the ones that name the states one at a time, targetScore and the
+   scream's hold odds. */
 const STATES={
   steady  :{n:'STEADY',   col:'#8ca35a', hit:0,  dodge:0},
-  wavering:{n:'WAVERING', col:'#c9a227', hit:-8, dodge:-3},
+  wavering:{n:'WAVERING', col:'#c9a227', hit:-5, dodge:-2},
+  shaken  :{n:'SHAKEN',   col:'#c2a86a', hit:-9, dodge:-4},
   /* softened from −18/−7 (user: "less severe penalties"): at those numbers a
      breaking unit could not meaningfully act, so the ladder had four rungs
      and a corpse. They are losing it now, not gone. */
@@ -5982,21 +6360,29 @@ const STATES={
    Five named steps, worst at the bottom, with the current one boxed and the
    rest dimmed — and on hover you see the whole scale and what each step does.
 
-   Note it is FIVE display bands over FOUR mechanical states: the top band is
+   Note it is SIX display bands over FIVE mechanical states: the top band is
    a distinction the player can see but the engine does not act on. That is
    deliberate — a great deal of code asks `state==='steady'`, and a fifth real
-   state would have made a *surging* unit read as not-steady, which would (for
-   one example) have sent it into the fall-back branch reserved for the shaken.
-   The mechanical tiers stay four; the ladder just tells the truth in more
-   detail than STEADY/WAVERING/BREAKING/ROUTED could. */
+   state ABOVE steady would have made a *surging* unit read as not-steady,
+   which would (for one example) have sent it into the fall-back branch
+   reserved for the shaken. #129 added a state BELOW steady instead, where
+   every one of those tests wants to include it. See the note on STATES. */
 const LADDER=[
   {at:.90,n:'It rocks',    ic:'😄',col:'#7fae4e',bg:'rgba(127,174,78,.30)',
    d:'<b>+5 to hit and +5% damage.</b> Nothing here frightens them, and it shows. '+
      'Hard to reach and easy to lose — you have to earn it in the fight.'},
   {at:.70,n:'Happy',       ic:'🙂',col:'#a3bd6c',bg:'rgba(163,189,108,.20)',
    d:'Steady. No penalties, full skill, full dodge. This is where most fights start.'},
-  {at:.40,n:'Ok',          ic:'😐',col:'#c9b98a',bg:'rgba(180,170,140,.20)',
-   d:'Wavering — 8 off their skill, 3 off their dodge. Watching the line.'},
+  /* #129 - was .40 and 8/3. The first bad rung is a shallower step now, and it
+     is a longer band, so a company that takes one bad turn does not fall two
+     rungs on it. */
+  {at:.52,n:'Ok',          ic:'😐',col:'#c9b98a',bg:'rgba(180,170,140,.20)',
+   d:'Wavering — 5 off their skill, 2 off their dodge. Watching the line.'},
+  /* #129 - the new rung, and the whole reason this pass exists: the drop from
+     "watching the line" to "one bad thing from breaking" used to be one step. */
+  {at:.34,n:'Shaken',      ic:'😕',col:'#c2a86a',bg:'rgba(194,168,106,.22)',
+   d:'9 off their chance to hit, 4 off their dodge. They are looking at the way out, '+
+     'and they have not taken it.'},
   /* renamed from "Depressed" and softened (user): 18/7 plus no heavy actions
      meant this rung was effectively out of the fight, so the whole ladder
      bottomed out one step early. 12/5 and they can still swing the big thing —
@@ -6105,7 +6491,9 @@ function restate(u){
   }
   if(u.noRout)u.morale=Math.max(u.morale,max*.16);
   const p=nerveFrac(u);
-  u.state=p>=.70?'steady':p>=.40?'wavering':p>=.15?'breaking':'routed';
+  /* #129 - five tiers. The cut-offs match LADDER's `at` values exactly, and
+     they have to: the player reads the rung and the engine reads the state. */
+  u.state=p>=.70?'steady':p>=.52?'wavering':p>=.34?'shaken':p>=.15?'breaking':'routed';
 }
 /* ═══ WHAT FRACTION OF ITS NERVE A BODY IS READING AT (#64) ══════════════
    ⚑ THE FLOWER'S LIFT IS A MODIFIER AND IS NEVER WRITTEN INTO `u.morale`.
@@ -6550,7 +6938,7 @@ function foes(){
        (User: "add one more ogre to the final fight — an ogre mage, so because
        of low intellect he almost always should miss.")
 
-       Now that magic is aimed with the WITS (see hitBreakdown), an INT of 3
+       Now that magic is aimed with the INTELLECT (see hitBreakdown), an INT of 3
        makes him land roughly one working in three — and when he does land one
        it is enormous, because nothing about the spell itself is weak. He is
        the best joke in the act and a real threat about a third of the time,
@@ -7705,7 +8093,7 @@ function build(plan,T){
       monster:t.monster||(ANIMAL.indexOf(t.kind)>=0?t.kind:null),
       used:{},dead:false,fled:false,safeMove:false,
       /* `int` is the one stat a template may override, because magic is aimed
-         with the wits now (see hitBreakdown) and a stupid caster has to be
+         with the INTELLECT now (see hitBreakdown) and a stupid caster has to be
          genuinely unreliable rather than merely flavoured that way */
       spearwall:false,moved:false,rallyBuff:0,
       st:{str:6,agi:6,int:(t.int===undefined?7:t.int),mor:6}};
@@ -9036,7 +9424,7 @@ function dodgeOf(u){
 }
 function hitBreakdown(a,d,act){
   /* ═══ MAGIC CAN MISS TOO (user) ═══════════════════════════════════════
-     A working is aimed with the WITS, not the hands: a caster's chance to
+     A working is aimed with the INTELLECT, not the hands: a caster's chance to
      land one runs off INT rather than their weapon skill, and the target's
      dodge counts for much less (you do not sidestep a blight-wind, you just
      fail to be where it lands). That makes a stupid caster genuinely
@@ -10261,12 +10649,16 @@ function beginTurn(){
   /* the people you sided with fight their own fight. They are on your side of
      the board and they are not yours to command — you never get to spend their
      turns, which is most of the point of standing next to them. */
+  /* ⛔ #128 - THE FLAG IS ON THE BODY, SO THE RESET BELONGS TO EVERY BODY.
+     This line used to sit inside the player-only branch below, which was
+     invisible for as long as no enemy could raise a wall at all. The moment
+     one can, a foe that braced would stay braced for the rest of the fight. */
+  u.spearwall=false;
   if(u.side==='foe'||u.ally){
     if(B.ambushRound&&B.round===1){say(u.name+' has not heard you yet.');
       render();later(nextTurn,320);return;}
     render();B.busy=true;later(()=>aiTurn(u),380);
   }else{
-    u.spearwall=false;
     if(u.state==='routed'){say(u.name+' has broken. They will not hold this turn.');
       render();B.busy=true;later(()=>routStep(u,()=>{B.busy=false;nextTurn();}),440);return;}
     render();
@@ -10751,6 +11143,7 @@ function fearBurst(src,act){
        move. Anyone already shaken is in real trouble. */
     let hold=pct*0.82;
     if(t.state==='wavering')hold-=0.12;
+    if(t.state==='shaken')hold-=0.20;   /* #129 - see targetScore */
     if(t.state==='breaking')hold-=0.28;
     if(t.leader||t.captain)hold+=0.15;      // he is the reason they are here
     const holds=Math.random()<clamp(hold,0.05,0.85);
@@ -11409,6 +11802,9 @@ function targetScore(t){
      one already paid for. */
   if(t.gather)s-=30;
   if(t.state==='breaking')s-=25;
+  if(t.state==='shaken')s-=18;      /* #129 - between the two, or a shaken body
+                                       reads to both brains as no worse than a
+                                       steady one and stops being hunted */
   if(t.state==='wavering')s-=12;
   if(t.leader)s-=18;
   return s;
@@ -11604,6 +12000,29 @@ const aip=u=>AIP[u.side]||AIP.foe;
    All of it is movement/choice WEIGHTS, not new rules — the same engine,
    leaned on differently per body. AIP.doct=0 turns it off for arena A/Bs.
    ═══════════════════════════════════════════════════════════════════════ */
+/* ═══ #127 - THE STANDOFF COMES OFF THE WEAPON, NOT OFF A CONSTANT ════════
+   (User, 2026-08-13: "my archers more like shoot from this safe distance".)
+
+   Both brains pinned a shooter's preferred distance at 3 hexes whatever it was
+   carrying: `band:3` below, and Math.min(rng-1,3) in autoStep, which saturates
+   at that same 3 for any range above 4. So the hunting bow's range-5 hex and
+   the whole accuracy falloff written for it (-8 at range-1, -18 at the limit,
+   in hitBreakdown since the first commit) had never once been chosen by a body
+   making its own decision. Every archer on the board walked to 3 and stood.
+
+   ⚠ AND 3 IS INSIDE A MAN'S REACH. A body crosses `first-move 4 + reach 1 = 5`
+   and strikes in the same turn, so a shooter at 3 is not standing at a safe
+   distance, it is standing two hexes inside one. The furthest hex the shot
+   still works from is the one worth wanting, and paying -8 to stand there is
+   the trade those bands were written for.
+
+   ⛔ THE ANSWER IS NOT A BIGGER `range`. At 6 a bow would clear a baseline
+   human and still lose to a ratkin (6), a spear (6), a dog (6), any captain
+   (8) and the WARDEN (10): one matchup bought, every other inflated. Distance
+   on this board is held by MOVING, which is the kite, not by standing further
+   off. A range-4 sling still wants 3, so the chaff behaves exactly as before
+   and only the long weapons change. */
+const bandFor=a=>Math.max(2,((a&&a.range)||4)-1);
 function doctrine(u){
   /* ⚠ `a.dmg` REQUIRED — see targetScore(). `band:3` tells a body to live at
      shooting distance, and this test decided who gets it. With PICK UP AND
@@ -11641,7 +12060,10 @@ function doctrine(u){
     lineSeek: on&&u.race==='human'&&!shoot&&!u.caster?6:0,
     herd: on&&ogre?1:0,                        /* stay near the other ogres */
     noChase: on&&ogre,                         /* mass does not run sprints */
-    band: on&&shoot?3:0                        /* shooters live at ~3 hexes */
+    /* #127 - off the weapon now. `shotAct` is found with the same `a.dmg`
+       test as `shoot` above, so PICK UP AND THROW still cannot buy an ogre a
+       bowman's stance. */
+    band: on&&shoot?bandFor(u.acts.find(a=>a.range&&!a.arcane&&a.dmg)):0
   };
 }
 /* would standing at p put a body of this side into a row of three? */
@@ -12117,9 +12539,81 @@ function aiTurn(u){
     const iShoot=u.acts.some(a=>(a.range||a.arcane)&&a.dmg&&canUse(u,a));
     const canSwing=u.acts.some(a=>a.dmg&&!a.range&&!a.arcane&&
       T.some(t=>udist(u,t)<=(a.reach||1)));
-    if(holds&&aip(u).hold&&iShoot&&!canSwing&&!engaged(u)){
+    /* ═══ #126 - A LINE HOLDS WHILE IT HAS SOMETHING TO SHOOT AT ═══════════
+       (User, 2026-08-13: "they are more standard weighted... make them a bit
+       more aggressive so they're coming and they're shooting at you.")
+
+       The hold is why the sling-line waits and makes you cross the ground, and
+       that stays. What it must not do is freeze a body with NOTHING in range:
+       the damage scorer above has already filtered targets to those it can
+       reach, so `pick` was null, and this gate then returned before the
+       movement block. The result was a shooter standing still doing literally
+       nothing, for the whole battle, at the coordinates its plan dealt it.
+       Measured behaviour, not a guess: the whole enemy line was fixed in place
+       from round one.
+
+       With this, an out-of-range shooter falls through and walks. It still
+       does not charge, because the band below decides where it stops. */
+    const shotInRange=u.acts.some(a=>(a.range||a.arcane)&&a.dmg&&canUse(u,a)&&
+      T.some(t=>udist(u,t)<=(a.range||a.reach||0)));
+
+    /* ═══ #128 - THE SCREEN BRACES, AND FIRST OF ALL IT STOPS CHARGING ═════
+       (User: "two spear reds and their archers behind them, and the spears can
+       use spear wall before their archers, so they protect it. And then you
+       need to kind of force your way.")
+
+       ⛔ THE FORMATION ALREADY EXISTED AND ITS WALL WAS DEAD DATA. slingline
+       stands two `Ratkin, long spear` screens at [10,3] and [10,5] in front of
+       the boss and three slingers, each carrying {k:'wall',cost:2,self:true},
+       and it had never once fired: `u.spearwall=true` is written only in
+       clickHex (the player's path), both damage scorers drop `!a.self` and
+       require `a.dmg` so a self act is invisible to them, and beginTurn's
+       reset sat in the player-only branch.
+
+       ⚑ AND SWITCHING IT ON WAS NOT ENOUGH, WHICH IS THE FINDING. Measured
+       with the wall branch in and nothing else changed: 0 raises in a 7-round
+       sling-line. A screen carries no ranged damage, so `iShoot` is false, so
+       the hold gate below never applied to it and the movement scorer sent it
+       CHARGING like any other melee body. By the time anything was within
+       bracing distance it was already adjacent, and adjacency is precisely
+       what kills a wall. The spears were running out in front of the archers
+       they exist to stand in front of.
+
+       So a screen on a holding side is held by the same gate its shooters are.
+       It jabs what it can reach (the damage scorer above has already returned
+       if so), otherwise it braces, otherwise it stands. It never advances. */
+    const wallAct=u.acts.find(a=>a.k==='wall'&&a.self);
+    /* ⛔ NOT `wallLive(u)`. IT ANSWERS A DIFFERENT QUESTION, and the first
+       measured pass of this branch raised exactly zero walls because of it:
+       `wallLive` opens with `if(!u.spearwall)return false`, so it means "is
+       this body's wall up AND working", not "would one work if raised". Asked
+       before bracing, `!u.spearwall && wallLive(u)` is a contradiction that
+       can never be true. The question here is only whether anything is already
+       in contact, and `engaged` is the file's word for that. */
+    if(wallAct&&holds&&canUse(u,wallAct)&&!u.spearwall&&!engaged(u)){
+      const myReach=Math.max.apply(null,
+        u.acts.filter(a=>a.dmg&&a.reach).map(a=>a.reach).concat([1]));
+      /* one ordinary stride from being inside it. Bracing costs a body that is
+         holding nothing it was going to use, so this can afford to be early.
+         It cannot afford to be late: the wall is what the NEXT step walks
+         into, and one raised after contact does nothing at all. */
+      if(T.some(t=>udist(u,t)<=myReach+3)){
+        spend(u,wallAct);u.spearwall=true;
+        if(!u.saidWall){u.saidWall=true;
+          say(u.name+' plants the spear and braces. Anything stepping into that reach '+
+            'gets the point of it.');}
+        B.busy=false;render();later(nextTurn,260);return;
+      }
+    }
+    if(holds&&aip(u).hold&&!canSwing&&!engaged(u)&&
+       ((iShoot&&shotInRange)||wallAct)){
       if(!u.saidHold){u.saidHold=true;
-        say(u.name+' holds its ground. It has the bows — you can come to it.');}
+        /* #128 - a spear screen holds for a different reason than a bowman,
+           and "it has the bows" in its mouth is the wrong sentence. */
+        say(u.name+(iShoot
+          ? ' holds its ground. It has the bows — you can come to it.'
+          : ' holds the line. It is not coming to you: it is standing in front of the ones '+
+            'who are shooting.'));}
       B.busy=false;render();later(nextTurn,220);return;}
     /* opening the ground back up: pick the reachable hex furthest from all of
        them and end the turn there. Used by kiting shooters and by the hurt. */
@@ -12145,16 +12639,72 @@ function aiTurn(u){
       u.fellBack=(u.fellBack||0)+1;
       if(u.fellBack===FALLBACKS)say(u.name+' has run out of ground to give.');
       spend(u,mv);u.moved=true;u.movesUsed=(u.movesUsed||0)+1;
+      /* ⛔ #126 - BREAKING CONTACT IS PAID FOR. The kite below may now fire
+         while something is adjacent, and `walkTo` is not `clickHex`: nothing
+         on this path fires the parting swing by itself. Without this the kite
+         would be a free disengage, which is strictly better than the DISENGAGE
+         act that exists to buy exactly this. A swing can put the body down, so
+         check before walking it anywhere. */
+      if(engaged(u)){
+        partingShots(u);
+        if(u.dead||u.downed){B.busy=false;render();later(nextTurn,240);return true;}
+      }
       walkTo(u,bp[0],bp[1],rm);
       const nn=T.slice().sort((x,y)=>udist(u,x)-udist(u,y))[0];
       if(nn)faceToward(u,nn.col,nn.row);
       B.busy=false;render();later(nextTurn,240);return true;
     };
-    /* KITING — a shooter with somebody two steps away has one job: not be
-       there. It shoots first if it can; the retreat is what the spare action
-       is for. Battle Brothers' skirmishers made whole fights out of this. */
+    /* ═══ #128 - THE SCREEN RAISES ITS WALL ═══════════════════════════════
+       (User, 2026-08-13: "you can also add two spear reds and their archers
+       behind them, and the spears can use spear wall before their archers, so
+       they protect it. And then you need to kind of force your way.")
+
+       ⛔ THE FORMATION HE DESCRIBES ALREADY EXISTED, AND ITS WALL WAS DEAD
+       DATA. `slingline`'s plan stands two `Ratkin, long spear` screens at
+       [10,3] and [10,5] in front of the boss and three slingers, and each one
+       carries {k:'wall',cost:2,self:true}. It had never once fired, for three
+       independent reasons: `u.spearwall=true` is written in exactly one place,
+       clickHex, which is the player's path; both damage scorers filter on
+       `!a.self` and require `a.dmg`, so a self act is invisible to them; and
+       beginTurn's reset sat in the player-only branch. The two spears have
+       been plain reach-2 jabbers since the day they were written.
+
+       It braces INSTEAD of stepping, never as well. For this template the act
+       costs 2 of its 2 actions, and that is what makes forcing the line a real
+       price rather than a tax the player pays without noticing.
+
+       ⚑ The trigger that CATCHES somebody, in the movement block below, reads
+       `wallLive` on any side and needed no change at all. It has been sitting
+       there waiting for a wall no enemy could raise. And a live wall next to a
+       shooter already softens shooting-while-engaged from -35 to -18, so the
+       screen protecting the archers behind it was costed years ago. */
+    /* ═══ KITING — #126, and it is backlog #101 from the enemy's side ═══════
+       A shooter with somebody closing has one job: not be there. It shoots
+       first if it can; the retreat is what the spare action is for. Battle
+       Brothers' skirmishers made whole fights out of this.
+
+       (User, 2026-08-13: "they kind of run away if you try to approach.")
+
+       ⛔ TWO GATES WERE WRONG AND BOTH WERE MEASURED, NOT GUESSED.
+
+       `nearD<=2` meant a body had to be two hexes away before the archer
+       reacted, but a man CROSSES FIVE AND STRIKES in one turn. Reacting at 2
+       is reacting after the danger has already arrived. It triggers inside the
+       band now, which is where the threat actually is.
+
+       `!engaged(u)` was the larger one. `engaged` is adjacency, so the kite
+       switched off at exactly the moment it was for, and an engaged shooter
+       fell through to a movement scorer that had already collapsed its range
+       to 1 - it shuffled to another hex still in contact, paid a parting swing
+       to do it, and never shot again. #101 measured the cost: ENGAGED is the
+       single biggest reason an archer is silent, 119 dry turns out of 874.
+       It may break contact now, and `fallBack` charges it the parting swing.
+
+       ⚑ THE THREE-FALLBACK CAP IS UNTOUCHED AND MUST STAY. A ratkin stride of
+       5 against your 4 lets a shooting line retreat forever; that is what took
+       the sling-line from 9 rounds to 15-18 before the cap went in. */
     const kshot=u.acts.find(a=>a.range&&!a.arcane&&a.dmg);   /* `a.dmg` — see targetScore() */
-    if(kshot&&aip(u).kite&&!engaged(u)&&nearD<=2&&canUse(u,mv)&&
+    if(kshot&&aip(u).kite&&nearD<=bandFor(kshot)&&canUse(u,mv)&&
        (!canUse(u,kshot)||(u.used[kshot.k]||0)>0)){
       if(fallBack())return;
     }
@@ -14987,11 +15537,14 @@ function render(){
         /* ═══ #91 point 16 - the face appears ONLY on rungs that change
            numbers. HAPPY is the one rung with no modifier, so it is the one
            face that vanishes: a token with no face IS the steady state, and
-           a face appearing means something moved. 😄 +5/+5% · 😐 −8/−3 ·
-           😟 −12/−5 · 💀 routed under the white flag. The plaque's nerve
-           word stays constant for whoever is acting. */
+           a face appearing means something moved. 😄 +5/+5% · 😐 −5/−2 ·
+           😕 −9/−4 · 😟 −12/−5 · 💀 routed under the white flag. The plaque's
+           nerve word stays constant for whoever is acting. (#129 numbers.) */
         const mf=document.createElement('span');
-        mf.className='umood'+((li===0||li>=3)?' loud':'');
+        /* #129 - was li>=3, which meant Breaking and worse. A rung was inserted
+           above Breaking, so the same bodies are loud at >=4. An index compared
+           against a literal is exactly what a new rung silently shifts. */
+        mf.className='umood'+((li===0||li>=4)?' loud':'');
         mf.textContent=lb.ic;
         mf.title=lb.n;
         mf.style.display=(li===1)?'none':'';
@@ -15659,6 +16212,30 @@ function autoStep(){
         if(!pick||ev>pick.ev)pick={a:a,t:t,ev:ev,hc:hb.total};});});
   if(pick&&(pick.hc>=20||u.moved||engaged(u)||!canUse(u,u.acts[0]))){
     B.sel=pick.a;clickHex(pick.t.col,pick.t.row);return;}
+  /* ═══ #128 - AUTO BRACES TOO ══════════════════════════════════════════════
+     The other half of the two-brain rule. `u.spearwall` was only ever written
+     by a human clicking the card, so the player's spearwoman under AUTO was
+     the one body on the field that could not do the thing her class is named
+     after. Same shape as the enemy screen: nothing inside the reach yet,
+     something one stride from being, and it is spent instead of a step.
+
+     ⚠ Placed AFTER the attack pick above deliberately. A wall is what you do
+     when you cannot hit anybody; bracing while a swing is available is the
+     one thing this must never produce, which is the rule the enemy hold gate
+     learned the hard way. */
+  (function(){
+    const wa=u.acts.find(a=>a.k==='wall'&&a.self);
+    /* ⛔ `engaged`, NOT `wallLive` - see the note in aiTurn. wallLive returns
+       false for any body that has not already braced, so asking it here can
+       only ever refuse. */
+    if(!wa||!canUse(u,wa)||u.spearwall||engaged(u))return;
+    const myReach=Math.max.apply(null,
+      u.acts.filter(a=>a.dmg&&a.reach).map(a=>a.reach).concat([1]));
+    if(!fo.some(t=>udist(u,t)<=myReach+3))return;
+    const i=u.acts.indexOf(wa);
+    if(i>=0){selectAct(i);clickHex(u.col,u.row);}
+  })();
+  if(u.spearwall&&u.actions<=0){nextTurn();return;}
   const mv=u.acts[0];
   if(canUse(u,mv)){
     selectAct(0);
@@ -15700,8 +16277,14 @@ function autoStep(){
           const dd=udist(p,t);
           if(dd>rng)return;
           if(shoot){
-            /* a shooter wants its own band (2–4), never the target's face */
-            const band=Math.abs(dd-Math.min(rng-1,3));
+            /* a shooter wants its own band, never the target's face. #127 - it
+               comes off the weapon now; this used to saturate at 3, so an AUTO
+               archer would never voluntarily stand on hex 4 or 5 of a range-5
+               bow. Scoring by distance FROM the band is also what gives AUTO a
+               kite for free: with an enemy at 1, the hexes four away score
+               best, so the archer backs off by preference. It pays the parting
+               swing on the way, because AUTO moves through clickHex. */
+            const band=Math.abs(dd-bandFor(shoot));
             /* #99 - and it wants a hex the arrow can leave. The other half of
                the pair; see laneCost(). Both brains or neither - an AUTO whose
                archer stands behind its own shieldwall all fight while the
@@ -16248,6 +16831,10 @@ function saveRun(){
            two. `armourPlan`/`armourSac` are deliberately NOT saved — a battle
            is regenerated, never restored, so the plan cannot outlive it. */
         armourDone:G.armourDone,queuedEv:G.queuedEv,
+        /* #131 - the unresolved card, so a reload mid-battle re-offers the
+           fight instead of walking past it. Distinct from `queuedEv`, which
+           is what happens AFTER this one is dealt with. */
+        openEv:G.openEv,
         /* the cache: which long arm it was planted on and which way it was
            asked for. The plate is saved with the node; this is the price. */
         cache:G.cache,
@@ -16514,6 +17101,7 @@ function toBeaten(){
     G.pending=null;G.visited[G.at]=true;
     if(NODES[G.at])NODES[G.at].ev=null;
     G.queuedEv=null;
+    G.openEv=null;      /* #131 - the card is answered; do not re-offer it */
     show('world');worldTick();saveRun();
   };
 }
@@ -16546,6 +17134,7 @@ function toRetreat(){
        place it caught you at goes with it. Same rule this screen already
        applies to the node itself: the company does not turn around. */
     G.queuedEv=null;
+    G.openEv=null;      /* #131 - you went round it; it is not waiting for you */
     show('world');worldTick();
     say2('You went round it. Whatever was worth having back there stays back there — the company '+
       'does not turn around, and there is still road in front of you.');
@@ -16577,8 +17166,51 @@ $('bLegend').onclick=()=>{
    always the weapon in their hands. SPACE ends the turn, ESC cancels a
    selection — the two things a player reaches for after picking wrong. */
 document.addEventListener('keydown',e=>{
-  if(!$('battle').classList.contains('on'))return;
   if(e.target&&/^(INPUT|TEXTAREA)$/.test(e.target.tagName))return;
+  /* ═══ #130 - ESC IS LAYERED, AND THE FIRST MATCH WINS ═══════════════════
+     (User: "make it work on esc.") Esc used to reach exactly one screen,
+     because this whole handler returned early unless the battle was up. The
+     guards below it (busy, tutLock, somebody else's turn) then swallowed it
+     again, so the one place it worked was also the place it most often did
+     nothing. It closes the topmost thing now, whatever that is.
+
+     ⚠ Clearing a battle selection stays the FIRST battle meaning, ahead of
+     the menu, because that is what the key already did for anyone who has
+     played this build. A second press, with nothing selected, opens the menu. */
+  if(e.key==='Escape'){
+    e.preventDefault();
+    /* 1. a confirm is up. Take its LAST door: `ask` is written throughout this
+       file with the safe answer last ("No. Go back.", "Stay in it."), and Esc
+       must never be able to commit the dangerous one. Until now nothing on the
+       keyboard could dismiss this modal at all. */
+    if(ASK.classList.contains('on')){
+      const doors=ASK.querySelectorAll('#askOpts button');
+      if(doors.length)doors[doors.length-1].click();
+      return;
+    }
+    /* 2. mid-fight with something picked: put it down. */
+    if($('battle').classList.contains('on')&&B&&!B.busy&&!B.tutLock&&B.won===null&&
+       (B.sel||B.reach||B.hurl)){
+      B.sel=null;B.reach=null;
+      B.hurl=null;B.hurlFrom=null;B.hurlRock=null;B.hurlRocks=null;render();
+      return;
+    }
+    const on=[].slice.call(document.querySelectorAll('.screen.on')).map(s=>s.id)[0];
+    /* 3. a screen that carries the menu button: go through the BUTTON, never
+       round it, so the battle confirm and the practice-field restore are not
+       written a second time here and left to drift. */
+    if(MENU_ON[on]){
+      const mb=$('menuBtn');
+      if(mb&&mb.classList.contains('on'))mb.click();
+      return;
+    }
+    /* 4. a screen that owns a Back: press the one it already has. */
+    const back={help:'hBack',notes:'nBack',poll:'qBack'}[on];
+    if(back){const b=$(back);if(b)b.click();}
+    return;
+  }
+  /* the action hotkeys are battle-only, and keep every guard they had */
+  if(!$('battle').classList.contains('on'))return;
   if(!B||B.busy||B.tutLock||B.won!==null)return;
   const u=cur();
   if(!u||u.side!=='you'||u.ally||u.pet||u.state==='routed')return;
@@ -16593,8 +17225,8 @@ document.addEventListener('keydown',e=>{
     return;
   }
   if(e.key===' '||e.key==='Enter'){e.preventDefault();nextTurn();return;}
-  if(e.key==='Escape'){B.sel=null;B.reach=null;
-    B.hurl=null;B.hurlFrom=null;B.hurlRock=null;B.hurlRocks=null;render();}
+  /* Escape is handled at the top now, ahead of every guard on this handler.
+     See #130. */
 });
 
 /* ============================================================
@@ -17345,6 +17977,9 @@ const AFTER={
 function afterPromotion(){
   show('world');worldTick();
   G.pending=null;
+  /* #131 - the fight WAS the card's answer. Clear it BEFORE the save below, or
+     the next resume re-opens the event whose battle has just been won. */
+  G.openEv=null;
   drawNodes();
   saveRun();          /* the fight is resolved and the map is live again */
   /* A ROAD AMBUSH DOES NOT CONSUME THE PLACE IT CAUGHT YOU AT. The Thing in
@@ -18941,13 +19576,45 @@ function coach(key){
 }
 const openInv=()=>{show('inv');drawInv();
   $('iNag').style.display=G.mustKit?'inline':'none';};
-/* the sheet's skill-tree drawer, open or shut. It lives out here so that
-   buying a perk (which redraws the whole sheet) does not slam it shut under
-   the hand that just clicked. One flag for the screen, not one per person:
-   a player who has opened the tree is reading trees. */
-let TREEOPEN=false;
-const treeLbl=(n,open)=>(open?'▾':'▸')+' THE REST OF THE TREE · '+n+
-  ' they cannot take yet';
+/* #133 - which tab the right pane is showing. It lives out here for the same
+   reason the tree drawer's flag used to: buying a perk redraws the whole
+   sheet, and a pane that snapped back to THE STASH under the hand that just
+   spent a point would be the old bug wearing a new coat. One flag for the
+   screen, not one per person: a player reading trees is reading trees.
+   (`TREEOPEN` and `treeLbl` retired with the drawer: the tree has a tab.) */
+let ITAB='stash';
+/* which acts a change hands out. The sheet marks them teal and says where
+   they came from, because "why does this one have a skill the others do not"
+   is a question the old sheet answered nowhere. ⚠ One line per mutation as
+   #16 lands them; the keys are the act keys pushed in unitFrom(). */
+const MUTACT={gills:['sink']};
+/* ═══ #133 · WHAT A PIECE OF KIT CHANGES, NOT WHAT IT IS ══════════════════
+   Wildermyth's gear screen (his first reference screenshot) spends its whole
+   right-hand column on a before/after: 1▲ Armor · 5▲ Melee Accuracy · 10▼
+   Ranged Accuracy. That comparison is the work the player was doing in their
+   head between two cards, and doing it in their head is precisely what "not
+   clear whic one is important" describes.
+   ⛔ NOTHING NEW IS COMPUTED. These are the numbers already in GEAR{}, said
+   as a difference. And it is deliberately EMPTY against an empty slot: with
+   nothing worn there is no comparison to make, only the item's own line,
+   which the row above already prints. */
+function gearDelta(g,cur){
+  if(!cur)return [];
+  const n=(o,k)=>(o&&o[k])||0;
+  const avg=o=>(o&&o.dmg)?(o.dmg[0]+o.dmg[1])/2:0;
+  const out=[];
+  /* #132 - the same four words the sheet uses. A gear comparison that named
+     the stats differently from the sheet beside it was two vocabularies for
+     one thing, which is the whole complaint this entry answers. */
+  [['armour','STOPS'],['reach','REACH'],['range','RANGE'],['agi','AGILITY'],
+   ['mor','MORALE'],['str','STRENGTH']].forEach(r=>{
+    const d=Math.round(n(g,r[0])-n(cur,r[0]));
+    if(d)out.push([r[1],d]);
+  });
+  const dd=Math.round(avg(g)-avg(cur));
+  if(dd)out.unshift(['DAMAGE',dd]);
+  return out.slice(0,4);
+}
 function drawInv(){
   const rost=$('iRoster');rost.innerHTML='';
   G.party.forEach(p=>{
@@ -18975,262 +19642,231 @@ function drawInv(){
     b.onclick=()=>{iSel=p.id;drawInv();};
     rost.appendChild(b);});
 
-  const p=member(iSel),s=effStats(p),uu={st:s},u=unitFrom(p);
-  $('iChar').innerHTML='<div id="iName">'+fullName(p)+'</div>'+
-    /* both of these explain themselves on hover — see RACEHELP / CLASSHELP.
-       ═══ NOISE OFF THE HEADER (user, 2026-07-31, marked up on a screenshot):
-       "(human-sized)" and "signature: X + Y" were both said again a few
-       lines down — size only matters when armour is the wrong one for this
-       body, and that already has its own red warning; the signature is
-       already a card in SKILLS below with the same name on it. Saying a fact
-       twice on one sheet is not emphasis, it is noise. */
-    '<div class="lbl" style="color:#8a7449"><span data-cls="'+p.cls+'" style="cursor:help">'+
-      cIcon(p.cls)+' '+CLASSES[p.cls].n+'</span> · LEVEL '+p.level+
-      ' · <span class="race '+p.race+'" data-race="'+p.race+'" style="cursor:help">'+
-      rIcon(p.race)+' '+p.race.toUpperCase()+'</span></div>'+
-    /* SKILLS and PERSONALITY are different things (skills are what they can
-       DO; the personality is who they ARE) — but the sheet said so out loud
-       right above a line that already says it ("Stubborn — Gets their nerve
-       back fast." needs no header explaining what a personality is). Cut,
-       same session, same reason as the header noise above. */
-    '<div id="iTrait" style="cursor:help"><b style="color:var(--g4)">'+TRAITS[p.trait].n+
-      '</b> — '+traitShort(p)+
-      '<span style="color:#6b5836;font-size:10px;font-family:var(--mono)"> · hover for the rest</span></div>'+
-    /* the tally rides under the personality as a row of HEADS — one per race,
-       so it says who this one has been killing as well as how many */
-    (killHeads(p)?'<div class="kills" title="what this one has put in the ground">'+
-      killHeads(p)+'</div>':'')+
-    /* ═══ #38 — WHO THEY ARE WITH ═══════════════════════════════════════
-       A tie sits between the personality and the album on purpose: a tie
-       is who somebody is WITH, and that belongs beside who they are, not
-       buried in the list of things that have happened to them.
 
-       The whole point of the entry is that BOTH sheets show the same fact
-       and NEITHER shows the same sentence. Which side of the tie this
-       person is on decides the role word and the line — read off `x.a`,
-       which is the direction the bond was written in. No number, no bar,
-       and nothing here can be farmed: the only thing that writes a tie is
-       an actual rescue. */
-    /* #74 - what somebody cut into their face. Above HIS CLAN because a
-       stranger can read this one off them at fifteen paces. */
-    (p.mark==='circle'?'<div class="lbl" style="color:#8a7449">THE CIRCLE</div>'+
-      '<div class="memlist"><div class="mb">A black ring cut round the left eye, and it does '+
-      'not come off. Anybody standing right next to '+(p.leader?'you':p.name)+' in a fight is '+
-      '10 morale worse for it, whichever side they are on.</div></div>':'')+
-    /* #73 - HIS CLAN sits above the ties, because it is not a tie: it is
-       between one person and the whole company, and the company is not a
-       body the bond machinery can hold one end of. Stated in words, like
-       everything else on this sheet. */
-    (p.clan?'<div class="lbl" style="color:#8a9a5c">HIS CLAN</div>'+
-      '<div class="memlist"><div class="mb">This is his clan now. The first time his nerve goes '+
-      'in a battle it holds, and after that he does not leave the field. He will not walk out '+
-      'over money either.</div></div>':'')+
-    (function(){
-      const ts=tiesFor(p);
-      if(!ts.length)return '';
-      return ts.map(x=>{
-        const T=TIES[x.t],mine=x.a===p.id,oid=mine?x.b:x.a;
-        const om=member(oid);
-        /* a tie outlives the pair — if they are gone the words go to past
-           tense and the NAME STAYS, off the tie's own copy of it */
-        const oname=(x.names?x.names[mine?'b':'a']:null)||(om?fullName(om):'somebody');
-        const where=x.where||'the road';
-        const line=om?(mine?T.aLine(fst(oname),where):T.bLine(fst(oname),where))
-                     :(mine?T.aGone(fst(oname)):T.bGone(fst(oname)));
-        return '<div class="lbl" style="color:#8a9a5c">'+(mine?T.aRole:T.bRole)+'</div>'+
-          '<div class="memlist"><div class="mb">'+
-          '<b style="color:#b9c98c;font-style:normal">'+oname+'</b> — '+line+'</div></div>';
-      }).join('');
-    })()+
-    /* WHAT HAPPENED TO THEM — the album, COLLAPSED (user: "show only one
-       latest big event, and click to open the rest"). A sheet is a thing you
-       glance at; the last thing that happened to somebody is the line that
-       belongs on it, and their whole history is one click away for when you
-       actually want to read it. */
-    (function(){
-      /* #38 — a TIE has its own block above with its own words, so the
-         album takes the UNTYPED bonds only. Left in, the shared
-         third-person line ("Vesna dragged Skree out of the Black Fen")
-         would say the same thing a second time, nine lines lower, in the
-         one voice the tie was written to replace. */
-      const mem=(p.mem||[]),bonds=bondsFor(p).filter(x=>!x.t),hist=(p.roadHist||[]);
-      const total=mem.length+bonds.length;
-      if(!total&&!hist.length)return '';
-      const latest=mem.length?mem[mem.length-1]:(bonds.length?bonds[0].line:'');
-      const more=total-1+ (hist.length?1:0);
-      return '<div class="lbl" style="color:#8a7449">WHAT HAPPENED TO THEM</div>'+
-        '<div class="memlist"><div class="mm">'+latest+'</div></div>'+
-        (more>0
-          ? '<button class="choice" id="iMemBtn" style="padding:4px 9px">'+
-            '<b style="font-size:11px">'+(G.showMem?'▾':'▸')+' EVERYTHING ELSE</b>'+
-            '<i>'+more+' more thing'+(more>1?'s':'')+' this one has been through</i></button>'+
-            '<div id="iMem" class="memlist" style="display:'+(G.showMem?'flex':'none')+'">'+
-            (hist.length?'<div class="mh">Road history: '+hist.join(' · ')+'</div>':'')+
-            mem.slice(0,-1).map(l=>'<div class="mm">'+l+'</div>').join('')+
-            bonds.map(x=>'<div class="mb">'+x.line+'</div>').join('')+
-            '</div>'
-          : '');
-    })()+
-    /* CHANGE — kept visually apart from personality and scars: a scar is what
-       violence did, a change is what the strange did. Teal, because on this
-       sheet saturation means exactly one thing. */
-    (p.mut?'<div class="lbl" style="color:#2fa898">CHANGE — WHAT THE ROAD DID</div>'+
-      '<div style="cursor:help" title="'+MUTS[p.mut].d.replace(/"/g,'&quot;')+'">'+
-      '<b style="color:#35e0c8">'+MUTS[p.mut].n+'</b> — '+MUTS[p.mut].short+'</div>':'')+
-    (p.cond?'<div class="slot bad" style="min-height:0;border-color:#2fa898"><div class="warnx" '+
-      'style="color:#5ec8b8"><b>'+CONDS[p.cond.k].n+'</b> — '+CONDS[p.cond.k].short+
-      ' Day '+(p.cond.days+1)+'.</div></div>':'')+
-    /* the one exception to "scars are forever", and you had to build it */
-    ((p.injuries&&p.injuries.length&&G.aidLeft>0)?
-      '<button class="choice" id="iAid" style="border-color:#5a7a6a"><b>✚ Open the medicine chest</b>'+
-      '<i>take one scar off '+p.name+' — you get ONE of these a run, and this is it</i></button>':'')+
-    ((p.injuries&&p.injuries.length)?'<div class="slot bad" style="min-height:0"><div class="warnx">'+
-      p.injuries.map(i=>'<b>'+i.n+'</b> — '+i.d).join('<br>')+'</div></div>':'')+
-    /* WHO THIS IS, IN WORDS — see the TELLS block. The four stats used to sit
-       here as numbers and the sheet read as a spreadsheet with a name on it.
-       They are the same four values; they are just no longer an invitation to
-       min-max a company you only get to keep for one run. */
-    /* #122 - the promotion pick lives HERE now. A stat level banks
-       `statPoints` on the after-battle card, and the tells below become the
-       spend buttons: same shape as a banked perk point, same door. */
+  /* ═══ #133 · THE SHEET IN THE ORDER THE QUESTIONS ARE ASKED ══════════════
+     The old order was: name, class, personality, kills, ties, clan, the mark,
+     the album, the change, the scars, THEN the four stats, then what they can
+     do, then the gear, then every skill written out, then the perk tree. It
+     read as a biography with a stat block buried in it, and the measurement
+     said so: 1241px of column inside a 678px window for a body with two scars
+     and one change, 564 words, the stats ~520px down.
+
+     The order now answers the three questions a player actually opens this
+     screen with, in the order they ask them:
+       WHO IS THIS      the head, three lines, everything longer on hover
+       WHAT ARE THEY    the stats band, first, one box (Urtuk / Wartales)
+       WHAT DO THEY     the body and its gear (Qud), then the acts as the
+                        battle's own cards, then what has happened to them.
+     The stash and the tree moved to tabs, so the left side never moves while
+     the right side is being read. ⚠ Anything that can grow without bound (the
+     ledger, the story) scrolls INSIDE itself: the stats and the body do not
+     leave the screen for anybody. */
+  const p=member(iSel),s=effStats(p),uu={st:s},u=unitFrom(p);
+  const hpMax=D.hp(uu),hpNow=Math.max(1,hpMax-(p.hpLoss||0)),hpF=hpNow/hpMax;
+  const arm=armourValue(p),bd=bandOf(u),sw=swingOf(u);
+  const nu={morale:D.moral(uu)*0.78,moraleMax:D.moral(uu)},nl=LADDER[ladderAt(nu)];
+  const statPts=p.statPoints||0,perkPts=p.perkPoints||0;
+  const mutActs=p.mut?u.acts.filter(a=>(MUTACT[p.mut]||[]).indexOf(a.k)>=0).map(a=>a.n):[];
+  /* the figure that will stand on the field, at the size it stands there.
+     (User: "show small icon of this character, how it actually looks on
+     battlefield. So person has a more clear understanding.") Same sprite()
+     the board and the road token call, so it can never drift. */
+  const spr=sprite(u.kind,'you',{unit:u,leader:p.id==='you',
+    caster:isCaster(p.cls),bow:!!u.bow});
+  const sf=Math.min(1.6,58/spr.h);
+
+  const chips='<span class="ichip race '+p.race+'" data-race="'+p.race+'">'+rIcon(p.race)+
+      ' <b>'+p.race.toUpperCase()+'</b></span>'+
+    '<span class="ichip" data-cls="'+p.cls+'">'+cIcon(p.cls)+' <b>'+CLASSES[p.cls].n+'</b></span>'+
+    '<span class="ichip">LEVEL <b>'+p.level+'</b></span>'+
+    (killHeads(p)?'<span class="ichip kills" title="what this one has put in the ground">'+
+      killHeads(p)+'</span>':'');
+
+  const tellCell=k=>'<div class="itl'+(statPts>0?' spend':'')+'" data-tell="'+k+'">'+
+    '<span class="tk" style="color:'+TELLS[k].col+'">'+TELLS[k].lbl+'</span>'+
+    '<span class="tv">'+tell(k,s[k])+'</span></div>';
+
+  /* ── the ledger: every mark on this body, named once, beside the picture
+     of where it is. Scars, the change, a running condition, the ring somebody
+     cut round their own eye, and the armour that does not fit. */
+  const led=[];
+  if(p.mut)led.push('<div class="wchip chg" title="'+MUTS[p.mut].d.replace(/"/g,'&quot;')+'">'+
+    '<span class="ic">◈</span><span><b>'+MUTS[p.mut].n+'</b> · '+MUTS[p.mut].short+
+    (mutActs.length?'<span class="gives">GIVES: '+mutActs.join(' · ')+'</span>':'')+
+    '</span></div>');
+  if(p.cond){
+    const C=CONDS[p.cond.k];
+    led.push('<div class="wchip chg" title="'+String(C.d||C.short||'').replace(/"/g,'&quot;')+'">'+
+      '<span class="ic">◌</span><span><b>'+C.n+'</b> · '+C.short+
+      ' Day '+(p.cond.days+1)+'.</span></div>');
+  }
+  if(p.mark==='circle')led.push('<div class="wchip mark"><span class="ic">◎</span>'+
+    '<span><b>THE CIRCLE</b> · a black ring cut round the left eye, and it does not come off. '+
+    'Anybody standing right next to '+(p.leader?'you':p.name)+' in a fight is 10 morale worse '+
+    'for it, whichever side they are on.</span></div>');
+  (p.injuries||[]).forEach(i=>led.push('<div class="wchip" title="'+
+    i.d.replace(/"/g,'&quot;')+'"><span class="ic">✕</span><span><b>'+i.n+'</b> · '+
+    i.d+'</span></div>'));
+  if(sizeMismatch(p))led.push('<div class="wchip"><span class="ic">⚠</span>'+
+    '<span><b>ILL-FITTING ARMOUR</b> · '+sizeJoke(p)+' Armour ×0.70, -1 AGI, -3 MOR.</span></div>');
+  if(!led.length)led.push('<div class="wchip none"><span class="ic">·</span>'+
+    '<span>Nothing has happened to this one yet.</span></div>');
+  /* the one exception to "scars are forever", and you had to build it */
+  if(p.injuries&&p.injuries.length&&G.aidLeft>0)
+    led.push('<button class="iaid" id="iAid"><b>✚ Open the medicine chest</b>'+
+      '<i>take one scar off '+p.name+' · you get ONE of these a run, and this is it</i></button>');
+
+  /* ── the acts, as the battle draws them (#133). One card, one hover, and
+     the hover is the battle's own receipt line plus the note's first
+     sentence: the same noteLine() the board's popover uses. */
+  const actCard=a=>{
+    const isMut=!!(p.mut&&(MUTACT[p.mut]||[]).indexOf(a.k)>=0);
+    const sub=a.range?a.cost+' act · range '+a.range
+      :a.reach?a.cost+' act · reach '+a.reach:a.cost+' act';
+    const strain=(typeof strainCost==='function')?strainCost(u,a):(a.strain||0);
+    const receipt=(sub+(strain?' · '+strain+' nerve':'')+
+      (a.cool?' · '+a.cool+'-turn cooldown':'')).toUpperCase();
+    const line=noteLine(a);
+    return '<div class="iact'+(a.arcane?' arc':'')+(isMut?' chg':'')+'">'+
+      '<span class="gi">'+iconFor(a)+'</span><b>'+a.n+'</b>'+
+      (a.dmg?'<span class="adm">'+a.dmg[0]+'-'+a.dmg[1]+'</span>':'')+
+      (roleOf(a)?'<span class="role">'+roleOf(a)+'</span>':'')+
+      '<span class="cost">'+'◆'.repeat(a.cost)+'</span>'+
+      '<span class="pop"><span class="pt">'+a.n+'</span>'+
+      '<span class="pr">'+receipt+'</span>'+
+      (isMut?'<span class="src">FROM THE CHANGE</span>':'')+
+      (line?'<span class="pd">'+line+'</span>':'')+'</span></div>';
+  };
+  const acts=u.acts.filter(a=>!a.move);
+
+  /* ── the story. Ties and the clan sit here, not in the header: they are
+     things that HAPPENED to this person, which is what this block is. */
+  const ties=tiesFor(p).map(x=>{
+    const T=TIES[x.t],mine=x.a===p.id,oid=mine?x.b:x.a,om=member(oid);
+    const oname=(x.names?x.names[mine?'b':'a']:null)||(om?fullName(om):'somebody');
+    const where=x.where||'the road';
+    const line=om?(mine?T.aLine(fst(oname),where):T.bLine(fst(oname),where))
+                 :(mine?T.aGone(fst(oname)):T.bGone(fst(oname)));
+    return '<div class="mb"><b style="color:#b9c98c;font-style:normal">'+
+      (mine?T.aRole:T.bRole)+' · '+oname+'</b> · '+line+'</div>';
+  }).join('');
+  const clan=p.clan?'<div class="mb"><b style="color:#b9c98c;font-style:normal">HIS CLAN</b> · '+
+    'This is his clan now. The first time his nerve goes in a battle it holds, and after that '+
+    'he does not leave the field. He will not walk out over money either.</div>':'';
+  const mem=(p.mem||[]),bonds=bondsFor(p).filter(x=>!x.t),hist=(p.roadHist||[]);
+  const recent=mem.slice(-2).reverse();
+  const rest=Math.max(0,mem.length-2)+bonds.length;
+  const storyHTML=(ties||clan||mem.length||hist.length||bonds.length)
+    ? '<div class="lbl" style="color:#8a7449">WHAT HAPPENED TO THEM</div>'+
+      '<div class="memlist">'+ties+clan+
+        recent.map(l=>'<div class="mm">'+l+'</div>').join('')+
+        (hist.length?'<div class="mh">THE ROAD SO FAR: '+hist.join(' · ')+'</div>':'')+
+      '</div>'+
+      (rest>0?'<button class="iacc" id="iMemBtn">'+(G.showMem?'▾':'▸')+' EVERYTHING ELSE · '+
+        rest+' more thing'+(rest>1?'s':'')+' this one has been through</button>'+
+        '<div id="iMem" class="memlist" style="display:'+(G.showMem?'flex':'none')+'">'+
+        mem.slice(0,-2).map(l=>'<div class="mm">'+l+'</div>').join('')+
+        bonds.map(x=>'<div class="mb">'+x.line+'</div>').join('')+'</div>':'')
+    : '<div class="lbl" style="color:#8a7449">WHAT HAPPENED TO THEM</div>'+
+      '<div class="memlist"><div class="mh">Nothing yet. The road is long.</div></div>';
+
+  $('iChar').innerHTML=
+    '<div id="iHead"><div id="iHeadCol">'+
+      '<div id="iName">'+fullName(p)+'</div>'+
+      '<div id="iChips">'+chips+'</div>'+
+      /* the personality, one clause, the rest on hover. It is who they ARE
+         and the sheet says so once. */
+      '<div id="iTrait"><b>'+TRAITS[p.trait].n+'</b> · '+traitShort(p)+
+      '<span style="color:#6b5836;font-size:9.5px;font-family:var(--mono)"> · hover for the rest'+
+      '</span></div>'+
+    '</div>'+
+    '<div id="iField"><img src="'+spr.src+'" width="'+Math.round(spr.w*sf)+'" height="'+
+      Math.round(spr.h*sf)+'" alt=""><span class="fc">ON THE FIELD</span></div>'+
+    '</div>'+
+
     '<div class="lbl" style="color:#8a7449">WHO THIS IS'+
-      ((p.statPoints||0)>0?' · <span style="color:#8ca35a">'+p.statPoints+
-       ' LEVEL'+(p.statPoints>1?'S':'')+' TO SPEND. CLICK A TRAIT</span>':'')+'</div>'+
-    '<div class="whorow">'+
-      '<canvas id="iDoll" class="doll" width="88" height="128"></canvas>'+
-      '<div class="whocol">'+
-      /* one word each, and the full seven-step scale on hover — same logic as
-         the nerve ladder, so the player can find out where "Strong enough"
-         actually sits without a number ever being printed */
-      '<div class="tells">'+['str','agi','int','mor'].map(k=>
-        '<div class="tl'+((p.statPoints||0)>0?' spend':'')+'" data-tell="'+k+
-        '" style="cursor:help">'+
-        '<span class="tk" style="color:'+TELLS[k].col+'">'+TELLS[k].lbl+
-        '</span><span class="tv">'+tell(k,s[k])+'</span></div>').join('')+'</div>'+
-      /* ═══ THE SAME BARS THE BATTLE PANEL USES ═══════════════════════════
-         (User: "make health and armour consistent with the battle screen".)
-         The sheet was printing BODY 50 / ARMOUR 6 as text while the fight
-         showed them as bars — two readings of the same fact, and the one on
-         the sheet was the one you look at when deciding whether this person
-         can survive the next fight. Same colours, same shape, and the wound
-         shows as the unfilled part rather than as a "mending" footnote. */
-      (function(){
-        const hpMax=D.hp(uu),hpNow=Math.max(1,hpMax-(p.hpLoss||0)),arm=armourValue(p);
-        const hpF=hpNow/hpMax;
-        /* ═══ NERVE, MOVED UP AND QUIETED (user, 2026-07-31, arrow on the
-           screenshot: move it near HP/armour, and stop it shouting). It used
-           to sit as a full-width `.lrung` — the ladder's own coloured-and-
-           bordered rung, built for the fight panel where a fast read under
-           time pressure earns the colour — nine lines further down the
-           sheet, between the swing stats and the equipment slots. On a sheet
-           you sit and read, one more quiet mono row beside ARMOUR and
-           HITPOINTS says the same thing without out-shouting the two numbers
-           that actually decide whether this person survives the next fight.
-           Same id, so the existing hover tooltip binds it wherever it sits. */
-        const nu={morale:D.moral(uu)*0.78,moraleMax:D.moral(uu)},nl=LADDER[ladderAt(nu)];
-        return '<div class="sbars">'+
-          '<div class="statLine"><span>ARMOUR</span><span>'+arm+'</span></div>'+
-          '<div class="bar" style="background:#243133"><i style="width:'+
-            (arm?100:0)+'%;background:var(--steel)"></i></div>'+
-          '<div class="statLine"><span>HITPOINTS</span><span'+
-            (p.hpLoss?' style="color:#c15d55"':'')+'>'+hpNow+'/'+hpMax+'</span></div>'+
+      (statPts>0?' · <span style="color:#8ca35a">'+statPts+' LEVEL'+(statPts>1?'S':'')+
+        ' TO SPEND. CLICK A TRAIT</span>':'')+'</div>'+
+    '<div id="iStats">'+
+      '<div class="itells">'+['str','agi','int','mor'].map(tellCell).join('')+'</div>'+
+      '<div class="ibars">'+
+        '<div class="bcell"><div class="statLine"><span>ARMOUR <b style="color:'+bd.col+'">'+
+          bd.n+'</b></span><span class="pv">'+arm+'</span></div>'+
+          '<div class="bar" style="background:#243133"><i style="width:'+(arm?100:0)+
+          '%;background:var(--steel)"></i></div></div>'+
+        '<div class="bcell"><div class="statLine"><span>HITPOINTS</span><span class="pv"'+
+          (p.hpLoss?' style="color:#c15d55"':'')+'>'+hpNow+'/'+hpMax+'</span></div>'+
           '<div class="bar" style="background:#3b2126"><i style="width:'+(100*hpF)+
-            '%;background:'+(hpF>.6?'var(--blood)':hpF>.3?'#c07a2c':'#e0544c')+'"></i></div>'+
-          '<div class="statLine" id="iNerve" style="cursor:help"><span>NERVE</span>'+
-            '<span style="color:'+nl.col+'">'+nl.ic+' '+nl.n+'</span></div>'+
-        '</div>';})()+
+          '%;background:'+(hpF>.6?'var(--blood)':hpF>.3?'#c07a2c':'#e0544c')+'"></i></div></div>'+
+        '<div class="bcell" id="iNerve" style="cursor:help"><div class="statLine"><span>NERVE'+
+          '</span><span class="pv" style="color:'+nl.col+'">'+nl.ic+' '+nl.n+'</span></div>'+
+          '<div class="bar" style="background:#20272a"><i style="width:78%;background:'+nl.col+
+          '"></i></div></div>'+
+      '</div>'+
+      /* what they DO with all that, in one mono line rather than a grid */
+      '<div class="idrv">'+
+        (sw?'<span>'+sw.n+' <b>'+sw.lo+'-'+sw.hi+'</b></span>'
+           :'<span>BLOW <b>nothing much</b></span>')+
+        '<span>TO HIT <b>'+u.mskill+'%</b></span>'+
+        '<span>DODGE <b>'+dodgeOf(u)+'</b></span>'+
+        '<span>STEP <b>'+(RACESTEP[p.race]||4)+' hex'+
+          (p.cls==='cutter'?' (+1 first)':'')+'</b></span>'+
+        '<span>ARMOUR STOPS <b>'+Math.round(bd.absorb*100)+'%</b></span>'+
       '</div>'+
     '</div>'+
-    /* WHAT THEY CAN DO NOW — the numbers that are actually a decision on the
-       field: what the swing does, what the armour stops, how far the legs go,
-       and whether the nerve will hold. */
-    /* armour and hitpoints moved up into the bars beside the doll — what is
-       left here is what they DO: the swing, the odds of landing it, the odds
-       of not being hit back, and how far the legs go. */
-    '<div class="lbl" style="color:#8a7449">WHAT THEY CAN DO NOW</div>'+
-    '<div class="drv" style="font-size:11px">'+
-      (function(){const sw=swingOf(u);
-        return sw?dv2(sw.n,sw.lo+'–'+sw.hi):dv2('BLOW','nothing much');})()+
-      /* the two numbers the fight is actually decided by, and the ones the
-         battle panel shows — the sheet had neither (user) */
-      dv2('CHANCE TO HIT',u.mskill+'%')+
-      dv2('DODGE',dodgeOf(u))+
-      dv2('STEP',(RACESTEP[p.race]||4)+' hex'+(p.cls==='cutter'?' (+1 first)':''))+
-      /* #79 - the band belongs beside DODGE and not beside the armour number,
-         because it is the thing that explains why the dodge reads low. It is
-         read off the UNIT, so it already carries the ill-fitting ×0.70. */
-      (function(){const bd=bandOf(u);
-        return dv2('ARMOUR','<span style="color:'+bd.col+'">'+bd.n+'</span> · stops '+
-          Math.round(bd.absorb*100)+'%');})()+
+
+    '<div class="lbl" style="color:#8a7449">THE BODY · what it carries, and what happened to it'+
       '</div>'+
-    /* THE ARITHMETIC IS GONE (user: "delete arithmetic completely"). Every
-       number it held is either on the sheet already in words, or is an
-       internal value the player was never meant to optimise against. If
-       something in there was worth knowing, it belongs in a hover on the
-       thing it describes — not in a drawer of raw stats. */
-    (sizeMismatch(p)?'<div class="slot bad" style="min-height:0"><div class="warnx">ILL-FITTING '+
-      'ARMOUR — '+sizeJoke(p)+' Armour ×0.70, −1 AGI, −3 MOR.</div></div>':'')+
-    '<div class="slots" id="iSlots"></div>'+
-    '<div class="lbl" style="color:#8a7449">SKILLS</div>'+
-    '<div class="abil">'+u.acts.filter(a=>!a.move).map(a=>'<div class="ab"><b>'+a.n+'</b><i>'+
-      a.cost+' action'+(a.cost>1?'s':'')+(a.range?' · range '+a.range:a.reach?' · reach '+a.reach:'')+
-      (a.dmg?' · '+a.dmg[0]+'–'+a.dmg[1]+' dmg':'')+(a.strain?' · '+a.strain+' nerve':'')+
-      '<br>'+(a.note||'')+'</i></div>').join('')+'</div>'+
-    '<div class="lbl" style="color:#8a7449">SKILLS LEARNED ON PROMOTION · '+p.perks.length+' taken'+
-      ((p.perkPoints||0)>0?' · <span style="color:#8ca35a">'+p.perkPoints+
-       ' PERK POINT'+(p.perkPoints>1?'S':'')+' TO SPEND. CLICK ONE</span>':'')+'</div>'+
-    /* ═══ THE SHEET SHOWS WHAT THIS PERSON CAN DO. THE TREE IS A DRAWER ═════
-       (User: "скилы, которые не можеш взять у класса, показывать акордеоном.
-       на странице персонажа видны токо активные скилы, и чтобы увидеть все
-       скилл три надо розвернуть.")
+    '<div id="iBody">'+
+      '<div id="iDollBox"><canvas id="iDoll" class="doll"></canvas>'+
+      '<svg class="wire" id="iWire" width="400" height="232"></svg></div>'+
+      '<div id="iLedger">'+led.join('')+'</div>'+
+    '</div>'+
 
-       Eight cards were printed at every visit and six of them were greyed
-       LEVEL 4 / LEVEL 5 promises, so the two that described the person you
-       were actually looking at were outnumbered three to one. The sheet is
-       read to answer "what is this one FOR" and the locked half of a tree
-       answers a different question, on a different day.
+    '<div class="lbl" style="color:#8a7449">WHAT THEY CAN DO</div>'+
+    '<div id="iSkills">'+acts.map(actCard).join('')+'</div>'+
 
-       What stays out is what is TRUE NOW: everything taken, plus anything
-       buyable this second. That second clause is not a courtesy, it is the
-       old lesson kept intact - a perk point with nothing visible to spend
-       it on reads as a broken screen, and hiding the tree would have put
-       it straight back. Everything else is one click away and the click
-       says how many are behind it. */
-    (function(){
-      const rows=[];
-      [2,3,4,5].forEach(lv=>(CLASSES[p.cls].perks[lv]||[]).forEach(k=>{
-        const have=p.perks.indexOf(k)>=0,open=p.level>=lv;
-        const canBuy=!have&&open&&(p.perkPoints||0)>0;
-        rows.push({live:have||canBuy,
-          html:'<'+(canBuy?'button':'div')+' class="pk'+(have?' have':open?'':' locked')+
-            (canBuy?' buy':'')+'"'+(canBuy?' data-perk="'+k+'"':'')+'><span class="tag">'+
-            (have?'TAKEN':canBuy?'★ CLICK TO TAKE':open?'NEEDS A PERK POINT':'LEVEL '+lv)+
-            '</span><b>'+PERKS[k].n+'</b><i>'+PERKS[k].d+'</i></'+(canBuy?'button':'div')+'>'});
-      }));
-      const live=rows.filter(r=>r.live),rest=rows.filter(r=>!r.live);
-      return (live.length
-          ? '<div class="perkrow">'+live.map(r=>r.html).join('')+'</div>'
-          : '<div class="pknone">Nothing learned yet. The first promotion decides it.</div>')+
-        (rest.length
-          ? '<button class="pktoggle" id="iTree">'+treeLbl(rest.length,TREEOPEN)+'</button>'+
-            '<div class="perkrow" id="iTreeRest"'+(TREEOPEN?'':' style="display:none"')+'>'+
-            rest.map(r=>r.html).join('')+'</div>'
-          : '');
-    })()+
-    /* DISMISS — at the very bottom, because it is the last thing you should
-       reach for. Not the Captain, and not mid-battle. They walk with whatever
-       they are wearing — strip them first if you want it back. */
-    (!p.leader?'<button class="choice" id="iDismiss" style="border-color:#6a3a30;margin-top:8px">'+
-      '<b style="color:#c07a6a">Let them go</b>'+
-      '<i>costs nothing — frees '+COST[p.race]+' of party room and '+WAGE[p.race]+'/day in wages. '+
-      'They keep what they are wearing, and the road keeps them</i></button>':'');
-  const sl=$('iSlots');
+    '<div id="iStory">'+storyHTML+'</div>'+
+
+    '<div id="iFoot">'+
+      (!p.leader?'<button id="iDismiss" title="They walk out with whatever they are wearing. '+
+        'Strip them first if you want it back.">LET THEM GO · frees '+COST[p.race]+
+        ' of room and '+WAGE[p.race]+'/day</button>':'')+
+    '</div>';
+
+  /* ═══ THE DOLL, AND THE GEAR WIRED TO IT (Caves of Qud) ══════════════════
+     drawDoll hands back the joint positions it actually drew, so a slot's
+     leader lands on the shoulder it is naming for a ratkin and for an ogre
+     without a second table. The BOXES sit in two fixed columns (a slot that
+     floated with the anatomy would overlap its neighbour on a wide body);
+     the WIRE is what carries the meaning. */
+  const dollCv=$('iDoll');
+  drawDoll(dollCv,p);
+  const AX=dollCv._anchor||{},DOLL_X=125,DOLL_Y=9,BOXW=400,SLOTW=118;
+  const dbox=$('iDollBox'),wires=[];
+  const SLOTPOS={trinket:['r',4],main:['r',84],pet:['r',164],armour:['l',44],off:['l',132]};
+  const placeSlot=(key,el)=>{
+    const pos=SLOTPOS[key]||['l',4];
+    el.style.top=pos[1]+'px';
+    el.style.left=(pos[0]==='l'?3:BOXW-SLOTW-3)+'px';
+    dbox.appendChild(el);
+    const a=AX[key];
+    if(!a)return;
+    const h=el.offsetHeight||46;
+    wires.push([pos[0]==='l'?3+SLOTW:BOXW-SLOTW-3, pos[1]+h/2, DOLL_X+a.x, DOLL_Y+a.y]);
+  };
+  /* what a slot says on its face: the receipt is one short line, because the
+     full one is already the tooltip bindTip() puts on it. */
+  const shortGear=g=>g.dmg?(g.dmg[0]+'-'+g.dmg[1]+
+      (g.reach>1?' · reach '+g.reach:'')+(g.range?' · range '+g.range:'')+
+      (g.hands===2?' · both hands':''))
+    :(g.armour!=null?'stops '+g.armour+(g.agi?' · '+(g.agi>0?'+':'')+g.agi+' hands':''):'');
   SLOTS.forEach(([slot,label])=>{
     const g=GEAR[p.eq[slot]];
     /* THE OFF HAND IS FULL when the main weapon needs both. It says so, names
        the thing that is using it, and greys whatever is nominally in the slot
-       — the slot stays filled so the player can SEE the conflict rather than
-       find their shield has quietly stopped working. */
+       so the player can SEE the conflict rather than find their shield has
+       quietly stopped working. */
     const twoH=slot==='off'&&!handsFree(p);
     const mainG=GEAR[p.eq.main];
     if(twoH)whisper('hands');       /* first time both hands are taken */
@@ -19238,67 +19874,134 @@ function drawInv(){
     b.className='slot'+(g?'':' empty')+(twoH?' blockedslot':'')+
       ((slot==='armour'&&sizeMismatch(p))?' bad':'');
     b.innerHTML='<div class="sl">'+(SLOT_ICON[slot]||'')+' '+label+
-      (twoH?' — <span style="color:#c07a2c">TAKEN</span>':'')+'</div>'+
+      (twoH?' · <span style="color:#c07a2c">TAKEN</span>':'')+'</div>'+
       '<div class="si">'+
-      (twoH?'<span style="color:#c07a2c">Both hands are on the '+mainG.n.toLowerCase()+'.</span>'
-        :g?'<span class="gg">'+gGlyph(g)+'</span> '+g.n:'— empty —')+'</div>'+
+      (twoH?'Both hands are on the '+mainG.n.toLowerCase()+'.'
+        :g?'<span class="gg">'+gGlyph(g)+'</span> '+g.n:'- empty -')+'</div>'+
       '<div class="sd">'+(twoH
-        ? (g?'<span style="color:#8a7449">'+g.n+' is in the pack, doing nothing. Put the '+
-             mainG.n.toLowerCase()+' down to use it.</span>':
-             'Carry something one-handed and this opens up.')
-        : g?gearLine(g,p):'')+'</div>';
+        ? (g?g.n+' is in the pack, doing nothing.':'Carry something one-handed and this opens up.')
+        : g?shortGear(g):'')+'</div>';
     if(g){b.onclick=()=>{G.stash.push(p.eq[slot]);p.eq[slot]=null;drawInv();};
       bindTip(b,p.eq[slot],p);}
-    sl.appendChild(b);});
-  /* the pet slot — Captain only, and pets never come from the stash */
+    placeSlot(slot,b);});
+  /* the pet slot - Captain only, and pets never come from the stash */
   if('pet' in p){
     const pd=p.pet&&PETS[p.pet];
     const pb=document.createElement('button');
     pb.className='slot'+(pd?'':' empty');
     pb.innerHTML='<div class="sl">♥ PET</div><div class="si">'+
-      (pd?pd.n:'— none —')+'</div><div class="sd">'+
-      (pd?pd.d+' · +6 dodge on you while it stands beside you · +'+pd.aura+
-        ' morale to allies near it, every turn':'Found on the road, not bought.')+'</div>';
-    if(pd)pb.onclick=()=>ask('LET '+pd.n.toUpperCase()+' GO?',
-      'It will not come back.',
-      [{t:'Let it go.',c:'it will not come back',danger:true,
-        go:()=>{p.pet=null;drawInv();}},
-       {t:'Keep it.',c:''}]);
-    sl.appendChild(pb);
+      (pd?pd.n:'- none -')+'</div><div class="sd">'+
+      (pd?'+6 dodge on you · +'+pd.aura+' morale near it':'Found on the road, not bought.')+
+      '</div>';
+    if(pd){pb.title=pd.d;
+      pb.onclick=()=>ask('LET '+pd.n.toUpperCase()+' GO?','It will not come back.',
+        [{t:'Let it go.',c:'it will not come back',danger:true,
+          go:()=>{p.pet=null;drawInv();}},
+         {t:'Keep it.',c:''}]);}
+    placeSlot('pet',pb);
   }
-  const st=$('iStash');
-  st.innerHTML='<div class="lbl" style="color:#8a7449">THE STASH — click to equip on '+p.name+'</div>';
-  if(!G.stash.length)st.innerHTML+='<div style="font-family:var(--mono);font-size:10px;'+
+  /* the leaders. An elbow, not a straight line: a diagonal across the whole
+     box reads as a slash through the picture at this size. */
+  $('iWire').innerHTML=wires.map(w=>{
+    const mid=w[0]+(w[2]-w[0])*0.45;
+    return '<path d="M'+w[0]+' '+w[1]+' L'+mid+' '+w[1]+' L'+w[2]+' '+w[3]+'" fill="none" '+
+      'stroke="#4d3c22" stroke-width="1"/><circle cx="'+w[2]+'" cy="'+w[3]+
+      '" r="2.4" fill="#6b5330"/>';}).join('');
+  /* the body's own summary, on the picture */
+  if(dollCv){
+    const bits=['Head, body, two arms, two legs. Every mark is on the part it happened to.'];
+    (p.injuries||[]).forEach(sc=>bits.push('<b style="color:#c15d55">'+sc.n+'</b> · '+sc.d));
+    if(p.mut)bits.push('<b style="color:#35e0c8">'+MUTS[p.mut].n+'</b> · '+MUTS[p.mut].short);
+    if(p.cond)bits.push('<b style="color:#5ec8b8">'+CONDS[p.cond.k].n+'</b> · '+
+      CONDS[p.cond.k].short);
+    if(bits.length===1)bits.push('<i>Nothing has happened to this one yet.</i>');
+    dollCv.onmouseenter=e=>{TIP.innerHTML='<div style="font-family:var(--display);font-size:14px;'+
+      'color:var(--g4);margin-bottom:4px">THE BODY</div>'+bits.join('<br>');
+      TIP.style.display='block';moveTip(e);};
+    dollCv.onmousemove=moveTip;dollCv.onmouseleave=()=>{TIP.style.display='none';};
+  }
+
+  /* ═══ THE RIGHT PANE: TWO TABS ══════════════════════════════════════════
+     ⚠ ITAB lives outside this function on purpose. Buying a perk redraws the
+     whole sheet, and a tab that reset to THE STASH under the hand that just
+     spent a point would be the tree drawer's old bug in a new coat. */
+  const pane=$('iStash');
+  pane.innerHTML=
+    '<div id="iTabs">'+
+      '<button class="itab'+(ITAB==='stash'?' on':'')+'" data-t="stash">🎒 THE STASH'+
+        (G.mustKit?'<span class="tbadge">!</span>':'')+'</button>'+
+      '<button class="itab'+(ITAB==='perks'?' on':'')+'" data-t="perks">★ PERKS'+
+        (perkPts>0?'<span class="tbadge">'+perkPts+'</span>':'')+'</button>'+
+    '</div>'+
+    '<div class="itabbody'+(ITAB==='stash'?' on':'')+'" data-b="stash" id="iStashBody"></div>'+
+    '<div class="itabbody'+(ITAB==='perks'?' on':'')+'" data-b="perks" id="iPerkBody"></div>';
+  pane.querySelectorAll('.itab').forEach(b=>b.onclick=()=>{
+    ITAB=b.dataset.t;
+    pane.querySelectorAll('.itab').forEach(x=>x.classList.toggle('on',x===b));
+    pane.querySelectorAll('.itabbody').forEach(x=>x.classList.toggle('on',x.dataset.b===ITAB));});
+
+  const st=$('iStashBody');
+  st.innerHTML='<div class="lbl" style="color:#8a7449">CLICK A THING TO PUT IT ON '+
+    p.name.toUpperCase()+'</div>';
+  if(!G.stash.length)st.innerHTML+='<div style="font-family:var(--mono);font-size:9px;'+
     'color:#5c4a2c">Empty. Everything is on somebody.</div>';
   G.stash.forEach((k,idx)=>{
     const g=GEAR[k];if(!g)return;
     const wrong=g.slot==='armour'&&g.size&&g.size!=='any'&&g.size!==RACEMOD[p.race].size;
     const b=document.createElement('button');
     b.className='item'+(wrong?' sizebad':'')+(g.company?' relic':'');
+    const dl=g.company?[]:gearDelta(g,GEAR[p.eq[g.slot]]);
     b.innerHTML='<div class="in"><span class="gg">'+gGlyph(g)+'</span> '+g.n+'</div>'+
-      '<div class="id">'+(g.company?'COMPANY RELIC — works from the baggage, no wearer needed'
-        :g.slot.toUpperCase())+' · '+gearLine(g,p)+'</div>'+
-      (wrong?'<div class="iw">'+g.size+'-sized — wrong for a '+RACEMOD[p.race].size+'</div>':'');
+      '<div class="id">'+(g.company?'COMPANY RELIC · works from the baggage, no wearer needed'
+        :g.slot.toUpperCase()+' · '+shortGear(g))+'</div>'+
+      (dl.length?'<div class="idelta">'+dl.map(d=>'<span class="'+(d[1]>0?'up':'dn')+'">'+
+        (d[1]>0?'▲':'▼')+' '+d[0]+' '+(d[1]>0?'+':'')+d[1]+'</span>').join('')+'</div>':'')+
+      (wrong?'<div class="iw">'+g.size+'-sized · wrong for a '+RACEMOD[p.race].size+'</div>':'');
     b.onclick=()=>{const old=p.eq[g.slot];p.eq[g.slot]=k;G.stash.splice(idx,1);
       if(old)G.stash.push(old);drawInv();};
     bindTip(b,k,p);
     st.appendChild(b);});
-  /* the paper doll, and what it is telling you */
-  const doll=$('iDoll');
-  if(doll){
-    drawDoll(doll,p);
-    const bits=['Head, body, two arms, two legs — every mark is on the part it happened to.'];
-    (p.injuries||[]).forEach(s=>bits.push('<b style="color:#c15d55">'+s.n+'</b> — '+s.d));
-    if(p.mut)bits.push('<b style="color:#35e0c8">'+MUTS[p.mut].n+'</b> — '+MUTS[p.mut].short);
-    if(p.cond)bits.push('<b style="color:#5ec8b8">'+CONDS[p.cond.k].n+'</b> — '+CONDS[p.cond.k].short);
-    if(bits.length===1)bits.push('<i>Nothing has happened to this one yet.</i>');
-    doll.onmouseenter=e=>{TIP.innerHTML='<div style="font-family:var(--display);font-size:14px;'+
-      'color:var(--g4);margin-bottom:4px">THE BODY</div>'+bits.join('<br>');
-      TIP.style.display='block';moveTip(e);};
-    doll.onmousemove=moveTip;doll.onmouseleave=()=>{TIP.style.display='none';};
-  }
-  /* the four stats and the nerve rung all explain themselves the same way:
-     one word on the sheet, the whole scale on hover */
+
+  /* ═══ THE TREE, WHOLE, IN ITS OWN TAB ═══════════════════════════════════
+     (User: "choice of perks in separate tab because I feel we will have,
+     like, quite proper perk tree. It's still in process.")
+     The old sheet hid everything unbuyable behind a drawer, because eight
+     cards inline outnumbered the person they belonged to three to one. In a
+     tab of its own that pressure is gone, and the honest shape returns:
+     the WHOLE tree, grouped by the level that opens each rung, so the
+     question "what does the next promotion buy" can actually be answered.
+     ⚑ THE ROOM THIS TAB HAS IS THE ROOM THE REAL TREE WILL NEED. */
+  const pk=$('iPerkBody');
+  let pkHTML=perkPts>0
+    ? '<div class="lbl" style="color:#8ca35a">'+perkPts+' PERK POINT'+(perkPts>1?'S':'')+
+      ' · CLICK A CARD TO TAKE IT</div>'
+    : '<div class="lbl" style="color:#8a7449">'+p.perks.length+' TAKEN · a promotion buys the next</div>';
+  let any=false;
+  [2,3,4,5].forEach(lv=>{
+    const list=CLASSES[p.cls].perks[lv]||[];
+    if(!list.length)return;
+    pkHTML+='<div class="pklv">LEVEL '+lv+'</div>';
+    list.forEach(k=>{
+      any=true;
+      const have=p.perks.indexOf(k)>=0,open=p.level>=lv;
+      const canBuy=!have&&open&&perkPts>0;
+      pkHTML+='<'+(canBuy?'button':'div')+' class="pk'+(have?' have':open?'':' locked')+
+        (canBuy?' buy':'')+'"'+(canBuy?' data-perk="'+k+'"':'')+'><span class="tag">'+
+        (have?'TAKEN':canBuy?'★ CLICK TO TAKE':open?'NEEDS A PERK POINT':'NEEDS LEVEL '+lv)+
+        '</span><b>'+PERKS[k].n+'</b><i>'+PERKS[k].d+'</i></'+(canBuy?'button':'div')+'>';
+    });
+  });
+  if(!any)pkHTML+='<div class="pknone">Nothing to learn. This one is finished.</div>';
+  pkHTML+='<div class="pkfoot">A promotion buys one rung. Everything above the line this one '+
+    'has reached is what the road still owes them.</div>';
+  pk.innerHTML=pkHTML;
+  pk.querySelectorAll('.pk.buy').forEach(b=>b.onclick=()=>{
+    if((p.perkPoints||0)<=0)return;
+    p.perks.push(b.dataset.perk);p.perkPoints--;sfx('promote');drawInv();});
+
+  /* ═══ THE HOVERS AND THE DOORS, ALL OF WHICH ONLY CHANGED ADDRESS ══════ */
+  /* the four stats and the nerve rung explain themselves the same way: one
+     word on the sheet, the whole scale on hover */
   $('iChar').querySelectorAll('[data-tell]').forEach(el=>{
     const k=el.dataset.tell,T=TELLS[k];
     el.onmouseenter=e=>{
@@ -19309,13 +20012,11 @@ function drawInv(){
       TIP.style.display='block';moveTip(e);};
     el.onmousemove=moveTip;el.onmouseleave=()=>{TIP.style.display='none';};
     /* #122 - a banked stat level is spent on the tell itself */
-    if((p.statPoints||0)>0)el.onclick=()=>{
+    if(statPts>0)el.onclick=()=>{
       if((p.statPoints||0)<=0)return;
       p.st[k]++;p.statPoints--;sfx('promote');
       TIP.style.display='none';drawInv();};});
-  /* class and race explain themselves wherever they are named — and here,
-     where we know WHO is being looked at, they list what that person is
-     actually carrying rather than what the class means in general */
+  /* class and race explain themselves wherever they are named */
   bindLoreTips($('iChar'),p);
   const memBtn=$('iMemBtn');
   if(memBtn)memBtn.onclick=()=>{G.showMem=!G.showMem;drawInv();};
@@ -19335,10 +20036,10 @@ function drawInv(){
   const disBtn=$('iDismiss');
   if(disBtn)disBtn.onclick=()=>{
     ask('LET '+p.name.toUpperCase()+' GO?',
-      'They walk out with whatever they are wearing — strip them first if you want it back.\n\n'+
+      'They walk out with whatever they are wearing. Strip them first if you want it back.\n\n'+
       'It frees '+COST[p.race]+' of party room and '+WAGE[p.race]+' crowns a day.\n\n'+
       ((p.fights||0)>=3
-        ? 'You have stood in '+p.fights+' fights together. That does not just stop — the road '+
+        ? 'You have stood in '+p.fights+' fights together. That does not just stop. The road '+
           'may well bring them back to your fire.'
         : 'You barely know them. Out there they owe you nothing, and the road keeps whoever '+
           'it finds.'),
@@ -19348,8 +20049,6 @@ function drawInv(){
   };
   const aidBtn=$('iAid');
   if(aidBtn)aidBtn.onclick=()=>{
-    /* was a prompt() asking the player to TYPE A NUMBER, which is both bad and
-       — in the published sandbox — impossible. It is a list of buttons now. */
     ask('THE MEDICINE CHEST',
       'It opens once a run, and this is it. Which scar comes off '+p.name+'?',
       p.injuries.map((inj,n)=>({t:inj.n,c:inj.d,go:()=>{
@@ -19372,18 +20071,6 @@ function drawInv(){
     tEl.onmousemove=moveTip;
     tEl.onmouseleave=()=>{TIP.style.display='none';};
   }
-  /* the drawer. Toggled in place rather than through drawInv(), so the sheet
-     does not scroll back to the top every time somebody looks at the tree. */
-  const tg=$('iTree');
-  if(tg)tg.onclick=()=>{
-    TREEOPEN=!TREEOPEN;
-    const box=$('iTreeRest');
-    if(box)box.style.display=TREEOPEN?'':'none';
-    tg.innerHTML=treeLbl(box?box.children.length:0,TREEOPEN);};
-  /* spend a perk point straight from the sheet */
-  $('iChar').querySelectorAll('.pk.buy').forEach(b=>b.onclick=()=>{
-    if((p.perkPoints||0)<=0)return;
-    p.perks.push(b.dataset.perk);p.perkPoints--;sfx('promote');drawInv();});
 }
 /* WHAT EACH AXIS IS FOR, in words. The old version of this quoted exact
    coefficients ("+4 hitpoints and +0.8 melee damage per point") — which was
@@ -19391,18 +20078,21 @@ function drawInv(){
    is the sentence a player can actually decide with. Keyed UPPERCASE; the
    sheet's data-tell is lowercase, so the one reader upper-cases on the way in. */
 const STATHELP={
-  STR:{t:'BUILD',c:'var(--str)',
+  STR:{t:'STRENGTH',c:'var(--str)',
     x:'Carries the weight and puts it behind the swing — hitpoints and melee damage. '+
       'Nothing for bows or workings.'},
-  AGI:{t:'HANDS',c:'var(--agi)',
+  AGI:{t:'AGILITY',c:'var(--agi)',
     x:'How well they land a blow and how hard they are to land one on. Movement belongs '+
       'to the RACE, not to this.'},
-  INT:{t:'WITS',c:'var(--int)',
+  INT:{t:'INTELLECT',c:'var(--int)',
     x:'Finds the opening, and aims a working — a stupid caster misses a great deal. '+
       'Off the field it is how well the company reads a situation.'},
-  MOR:{t:'NERVE',c:'var(--mor)',
-    x:'The only axis that adds damage to EVERYTHING — sword, bow and spell alike — and '+
-      'it is how long they stay in the fight before the white flag goes up.'}
+  /* #132 - MORALE is the capacity this body has. NERVE, on the battle plaque
+     and on the ladder, is how much of it is left right now. Both used to be
+     called NERVE and both used to print on this sheet. */
+  MOR:{t:'MORALE',c:'var(--mor)',
+    x:'How much nerve they have to spend before the white flag goes up, and the only axis '+
+      'that adds damage to EVERYTHING — sword, bow and spell alike.'}
 };
 /* CLASS AND RACE EXPLAIN THEMSELVES (user). Call on any container that names
    one with data-cls / data-race — the sheet, the muster field, anywhere. */
@@ -23937,6 +24627,17 @@ function openEvent(k){
   if(k==='village'){openVillage();return;}
   const e=EVENTS[k];
   G.pending=k;
+  /* ═══ #131 - THE CARD ON SCREEN SURVIVES A RELOAD ═══════════════════════
+     `G.pending` is deliberately NOT saved (loadRun forces it null), because a
+     half-open dialog is not a coherent state to restore. `openEv` is the
+     saveable half of the same fact: WHICH card was unresolved, so the resume
+     can open a fresh one. It is cleared the moment the card is done with -
+     see the wGo/wKit handlers, toBeaten, the withdraw screen and
+     afterPromotion. Without it, arriving set `visited[k]` BEFORE the event
+     fired, `drawNodes`' re-entry click is gated on `!visited[k]`, and a
+     player who reloaded mid-battle came back standing on a dead node with
+     the fight, its spoils and its scars silently skipped. */
+  G.openEv=k;
   mark('event: '+(e.title||k));   /* so a ★/▼ lands on THIS card, not on "world" */
   const dlg=$('wDlg');
   const node=NODES[G.at]||{x:640,y:300};
@@ -24388,11 +25089,11 @@ function pickChoice(k,i){
     $('wChoices').innerHTML='<button class="choice" id="wKit"><b>⛨ Open the inventory</b>'+
       '<i>'+got.length+' new piece'+(got.length>1?'s':'')+
       ' — none of it works in the cart</i></button>';
-    $('wKit').onclick=()=>{$('wDlg').classList.remove('on');saveRun();openInv();};
+    $('wKit').onclick=()=>{$('wDlg').classList.remove('on');G.openEv=null;saveRun();openInv();};
   }else{
     $('wChoices').innerHTML='<button class="choice" id="wGo"><b>Back to the road</b>'+
       '<i>the company can move again</i></button>';
-    $('wGo').onclick=()=>{$('wDlg').classList.remove('on');worldTick();saveRun();};
+    $('wGo').onclick=()=>{$('wDlg').classList.remove('on');G.openEv=null;worldTick();saveRun();};
   }
   worldTick();
 }
@@ -24407,8 +25108,15 @@ function toDefeat(){
     '<p style="color:#8a7449;font-style:italic">Battle ran '+G.battleRounds+' rounds. What was '+
     'hauled this run is lost with the men who hauled it. The wagon is still out there somewhere, '+
     'wherever they left it — it does not know they are not coming back.</p>'+
-    '<button class="popt" id="toCamp"><b>The Wagon</b><i>what survives a dead company</i></button>';
+    /* #125 - the questionnaire is offered HERE, at the end of the run, where
+       the player has just finished having the opinion. See toEpilogue. */
+    '<div class="popts" style="grid-template-columns:1fr 1fr">'+
+      '<button class="popt" id="toCamp"><b>The Wagon</b>'+
+      '<i>what survives a dead company</i></button>'+
+      '<button class="popt sendit" id="toPoll"><b>Say how it went</b>'+
+      '<i>seven questions, none of them required</i></button></div>';
   $('toCamp').onclick=()=>openCampScreen(false);
+  $('toPoll').onclick=openPoll;
 }
 
 /* ============================================================
@@ -24559,7 +25267,11 @@ function openCampScreen(bankIt){
       LEGACY.built.push(k);saveLegacy();sfx('promote');
       openCampScreen(false);};
     fit.appendChild(b);});
-  $('again').onclick=()=>location.reload();
+  /* #124 - "Take the road again" means a run, not a title screen. Armed ONLY
+     when nothing is out there: this screen is also reachable from the menu
+     mid-run, and there the reload must land back on the menu so Continue is
+     still offered rather than a live company being thrown away unasked. */
+  $('again').onclick=()=>{if(!hasSavedRun())BOOT_NEW.arm();location.reload();};
 }
 function toEpilogue(txt){
   JOURNAL.endRun('reached the end, day '+G.day);
@@ -24598,9 +25310,28 @@ function toEpilogue(txt){
       t2('Upkeep',dailyUpkeep()+'/day')+t2('Salvage',G.camp.salvage)+
       t2('Gems',G.camp.gems)+t2('Morale',(G.morale>0?'+':'')+G.morale)+
       t2('Ashmoor',G.contact?'yes':'no')+t2('Battle',G.battleRounds+' rounds')+'</div>'+
-    '<button class="popt" id="toCamp"><b>Walk back to the wagon</b>'+
-    '<i>bank the haul · forge what outlives this company</i></button>';
+    /* ═══ #125 - THE QUESTIONNAIRE RIDES THE LAST PAGE ════════════════════
+       (User, 2026-08-13: "after a successful and unsuccessful run, offer to
+       send this feedback and questionnaire there, rather than an independent
+       button, and then many people don't use it.")
+
+       It had two doors, a menu row and a chip on the notes screen, and NOTHING
+       at the end of a run mentioned it: finishing a run changed the sub-caption
+       on a menu row and nothing else. This is the moment the player has just
+       finished having the opinion.
+
+       The wagon keeps the left seat and is not hijacked, because it is the
+       progression. The second seat carries `sendit`, which is the emphasis
+       this game already uses for exactly this on the notes screen, rather than
+       a new one. `openPoll` records the screen it was called from, so Back
+       lands back on this card with no new state. */
+    '<div class="popts" style="grid-template-columns:1fr 1fr">'+
+      '<button class="popt" id="toCamp"><b>Walk back to the wagon</b>'+
+      '<i>bank the haul · forge what outlives this company</i></button>'+
+      '<button class="popt sendit" id="toPoll"><b>Say how it went</b>'+
+      '<i>seven questions, none of them required</i></button></div>';
   $('toCamp').onclick=()=>{LEGACY.priorDied=false;saveLegacy();openCampScreen(true);};
+  $('toPoll').onclick=openPoll;
 }
 /* hoisted as a function declaration, not a const — the post-battle
    consequences screen is defined earlier in the file and calls it */
@@ -25018,8 +25749,8 @@ const HELP=[
   {t:'HOW NERVE WORKS',
    b:'Nerve is not health. It decides whether a body <span class="k">keeps standing there at '+
      'all</span> — and it is the real reason fights end.\n\n'+
-     'Five rungs, worst at the bottom: <span class="k">Broken · Breaking · Ok · Happy · It '+
-     'rocks</span>. Hover the ladder to see the whole scale and what each step costs. Most fights '+
+     'Six rungs, worst at the bottom: <span class="k">Broken · Breaking · Shaken · Ok · Happy · '+
+     'It rocks</span>. Hover the ladder to see the whole scale and what each step costs. Most fights '+
      'start at <i>Happy</i>; the top rung is earned, and it pays.\n\n'+
      'What moves it: being hit, watching somebody drop, being surrounded, and '+
      '<span class="k">standing on your own</span> — which is the worst of them, and the reason a '+
@@ -25295,7 +26026,11 @@ function drawPoll(){
     '<div class="popts" style="grid-template-columns:1fr 1.5fr">'+
       '<button class="popt" id="qBack"><b>Back</b><i>it is saved either way</i></button>'+
       '<button class="popt sendit big" id="qDone"><b>Done - send it</b>'+
-      '<i>the answers and the journal, in one box, with the button that mails them</i></button></div>';
+      /* #125 - was "with the button that mails them". That button has not
+         existed since 8f.105, when the mailto route was cut: the published
+         page's CSP refuses every outbound request, so the clipboard is the
+         whole send. The caption says what the next screen actually does. */
+      '<i>the answers and the journal, in one box, ready to copy</i></button></div>';
   /* SAVES AS YOU TYPE, so closing the tab mid-sentence costs nothing. `input`
      rather than `change`, because `change` does not fire until focus leaves and
      the last box a person fills is the one they never leave. */
@@ -25548,7 +26283,37 @@ function drawNotes(log,who){
   $('nBack').onclick=()=>{const b=NOTES_BACK||'menu';NOTES_BACK=null;
     show(b);if(b==='world')worldTick();};
 }
+/* ═══ #130 - THE ONE WAY OUT, AND WHAT IT COSTS ON EACH SCREEN ════════════
+   Three exits behind one button, because "the menu" means something slightly
+   different depending on what you are standing in.
+     a practice fight  give `G` back first, then go. Nothing is riding on it.
+     a real fight      ASK. This is the one exit that throws work away, and the
+                       wording names the cost exactly: #131 makes the node
+                       re-offer its card, so the fight starts again from the
+                       top rather than being skipped.
+     anywhere else     save and go, unless a card is open or the token is
+                       walking, which is the guard this button already had. */
 $('menuBtn').onclick=()=>{
+  const inFight=$('battle').classList.contains('on');
+  if(SIM.on){simRestore();openMenu();return;}
+  if(inFight){
+    ask('LEAVE THE FIGHT?',
+      'The road is saved where it stands, and the company is where it was before this started.\n\n'+
+      'This fight begins again from the beginning. Everything that has happened on the field, '+
+      'the wounds and the ground you have taken, is undone.',
+      [{t:'Leave it.',danger:true,c:'the fight will be waiting',
+        go:()=>{
+          /* the teardown withdraw() uses. `B=null` is what makes every pending
+             later() callback drop itself: they compare against the captured B
+             and silently give up when it is not the current one. */
+          if(B&&B.autoTimer){clearInterval(B.autoTimer);B.autoTimer=null;}
+          if(B)B.auto=false;
+          B=null;
+          saveRun();openMenu();
+        }},
+       {t:'Stay in it.',c:'you are still standing'}]);
+    return;
+  }
   if(G.pending||G.moving){say2('Finish what you are standing in first.');return;}
   saveRun();openMenu();
 };
@@ -25730,6 +26495,21 @@ function simFight(){startBattle(SIM.fight);}
 /* the only exit from a practice fight. Puts `G` back exactly as it was and
    reports what happened, using the same order-of-battle the real after-fight
    screen uses — which is the whole reason to come here. */
+/* ═══ #130 - GIVING `G` BACK IS ITS OWN JOB NOW ═══════════════════════════
+   It used to live inside simResult, which was the only way out of a practice
+   fight. The menu button is a second way out, and a practice fight abandoned
+   without this leaves the borrowed roster sitting in `G`. `saveRun` bails on
+   SIM.on so it can never be written over the real save, but the in-memory
+   company would be the practice one until something reloaded it. */
+function simRestore(){
+  if(SIM.snap){
+    Object.keys(G).forEach(k=>{delete G[k];});
+    Object.keys(SIM.snap).forEach(k=>{G[k]=SIM.snap[k];});
+    PARTYCAP=SIM.cap;
+    SIM.snap=null;SIM.cap=null;
+  }
+  SIM.on=false;B=null;
+}
 function simResult(how){
   /* #122 - the same pieces the real after-fight screen uses: the crew grid
      and the enemy roll. Built HERE, while B is alive and G.party is still
@@ -25747,13 +26527,7 @@ function simResult(how){
   const f=SIM_FIGHTS.find(x=>x.k===SIM.fight)||{n:'the field'};
   /* restore BEFORE drawing anything, so nothing on the card can read a
      borrowed roster and write it somewhere */
-  if(SIM.snap){
-    Object.keys(G).forEach(k=>{delete G[k];});
-    Object.keys(SIM.snap).forEach(k=>{G[k]=SIM.snap[k];});
-    PARTYCAP=SIM.cap;
-    SIM.snap=null;SIM.cap=null;
-  }
-  SIM.on=false;B=null;
+  simRestore();
   const head={won:'THE FIELD IS YOURS',lost:'THEY PUT ALL OF YOU DOWN',
     mercy:'THEY ASK FOR MERCY',fled:'YOU WALK OFF IT'}[how]||'IT IS OVER';
   const line={
@@ -25778,18 +26552,54 @@ function simResult(how){
   $('simPick').onclick=openSim;
 }
 
+/* ═══ #124 - "A NEW COMPANY" HAS TO ACTUALLY START ONE ════════════════════
+   (User, 2026-08-13: "when in menu, I press start new game. I do actually
+   start new game... just start new run physically.")
+
+   The reload is load-bearing and it STAYS. `const G` and `G.party=makeParty()`
+   are module-level, so a fresh page is the only thing that rebuilds them;
+   resetting G in place would be this file's fifth second-source-of-truth. What
+   was missing is that the player's INTENT did not survive the reload - the
+   page came back to this same menu and the button had to be pressed twice.
+
+   ⚠ TAKE IT BEFORE YOU ACT ON IT, never after. A throw between the read and
+   the prologue would boot every future launch straight into a new run with no
+   way back to the menu. `take()` deletes first and returns second. */
+const BOOT_NEW={
+  k:'gt_boot_new',        /* gt_ prefixed, so the wipe-all enumeration gets it */
+  arm(){try{localStorage.setItem(this.k,'1');}catch(e){}},
+  take(){
+    let v=null;
+    try{v=localStorage.getItem(this.k);localStorage.removeItem(this.k);}catch(e){return false;}
+    return v==='1';
+  }
+};
+
 /* ---------- the menu ---------- */
 function openMenu(){
   SIM.on=false;
+  /* #124 - the reload above landed here. Honour it and go straight to the
+     first card of a new run, rather than showing the menu a second time. */
+  if(BOOT_NEW.take()){openPrologue();return;}
   const r=simLive();
   const opts=[];
   if(r)opts.push({t:'Continue the road',
     c:'day '+r.day+' · '+r.party.length+' in the company · '+
       ((NODES[r.at]||{}).n||'somewhere east')+' · '+r.run.crowns+' crowns',
     go:()=>{if(loadRun()){show('world');worldTick();placeToken();drawNodes();
-        say2('The road is where you left it.');
-        if(G.queuedEv){const ev=G.queuedEv;G.queuedEv=null;
-          setTimeout(()=>{if(!G.over&&!G.pending&&!G.moving)openEvent(ev);},400);}
+        /* ═══ #131 - AN UNRESOLVED CARD COMES BACK, AND SO DOES ITS FIGHT ═══
+           `openEv` outranks `queuedEv`. The armour ambush's pushed-aside event
+           is what happens AFTER the thing in front of you is dealt with, so
+           re-opening the card leaves that queue alone to fire in its turn. */
+        const back=G.openEv||null;
+        if(back){
+          say2('The road is where you left it, and so is whatever was standing in it.');
+          setTimeout(()=>{if(!G.over&&!G.pending&&!G.moving)openEvent(back);},400);
+        }else{
+          say2('The road is where you left it.');
+          if(G.queuedEv){const ev=G.queuedEv;G.queuedEv=null;
+            setTimeout(()=>{if(!G.over&&!G.pending&&!G.moving)openEvent(ev);},400);}
+        }
       }else{clearRun();openMenu();}}});
   opts.push({t:r?'A new company':'Take the road',
     c:r?'the one out there is not coming back':'four of you, a wagon, and a tavern full of people '+
@@ -25800,7 +26610,8 @@ function openMenu(){
       ask('START AGAIN?','There is a company on the road right now — '+r.party.length+' of them, '+
         'day '+r.day+'. Starting a new one leaves them where they are, for good.',
         [{t:'Start again anyway.',danger:true,c:'they are not coming back',
-          go:()=>{clearRun();location.reload();}},
+          /* #124 - arm the flag so the reload comes back INTO the new run */
+          go:()=>{clearRun();BOOT_NEW.arm();location.reload();}},
          {t:'No. Go back.',c:'they are still out there',go:openMenu}]);
     }});
   opts.push({t:'The practice field',
