@@ -34,6 +34,10 @@ Measured on the shipped build, 2026-08-13: **34 cards, 3,652 words, shortest 45 
 41% of the road light, which is the concept's *"roughly a third should be pickups"* arriving as a
 count rather than as an intention.
 
+*(#150, the same day, re-measured after the clash's third door was rewritten: **3,668 words, still
+34 cards, still none outside the bands.** A card that GAINS words is not automatically a
+regression; a card that leaves its band is.)*
+
 Measure in the running build, never by reading:
 
 ```js
@@ -58,6 +62,17 @@ card exists.**
 3. **Stage directions between two beats.** The company walking, arriving, standing, looking at
    each other, before the thing happens.
 4. **The second adjective, then the second clause.** Simple words, one image.
+5. **A stock clause that stands in for the receipt.** #150 deleted *"it sits badly with them"* from
+   **24 cards** at the user's order: it appeared on every door with a morale cost, said nothing the
+   chip did not, and by the twentieth card it had stopped being read at all. ⚑ **A phrase you can
+   grep 24 times is furniture, whatever it says.** (Its positive twin, *"it sits well with them"*,
+   is still on six cards and is the same shape; it survives only because he pointed at one of them.)
+
+⚠ **A label built by concatenation cannot survive its parts going empty.** Deleting that phrase
+emptied twelve `c:` strings, and every fragment of a choice's sub-line used to carry its own leading
+`" · "` - so those twelve would have opened on a floating middle dot. **`choiceNote()` is now the
+one builder for both the EVENTS and the CAMPS renderer** and it JOINS parts. Add a new fragment
+there, never as another `+' · '+` at a call site.
 
 ### What never comes out
 
@@ -71,8 +86,19 @@ card exists.**
 ## The receipt: chips, and they are built off the payment
 
 Every outcome renders `evFxChips(paid)` plus `evGearStrip(got)`. The chips are the aftermath's own
-`.abfx`/`.fxc` furniture from #137, with two rows the battle screen never needed: **♥ MORALE**
-(signed, green up and red down) and **◐ DAYS** (a day spent prints as a minus).
+`.abfx`/`.fxc` furniture from #137, with three rows the battle screen never needed: **MORALE**,
+**◐ DAYS** (a day spent prints as a minus) and **♥ MENDED**.
+
+⛔ **THE GLYPHS ARE NOT INTERCHANGEABLE, AND #150 FIXED THEM ONCE.** A morale chip wears the
+company's own **face** out of `MOODSTATES` (💀 😟 😐 🙂 😄), the same ladder the map's mood chip and
+the battle's nerve rungs use, and it shows the mood the choice **lands** the company in. **♥ means
+BLOOD and only blood**: it is the MENDED row, paid by `healAll` and the spring, and it is the same
+heart the road bar's health chip wears. Putting a heart on a morale row was a readout printing the
+wrong unit, which is #102's rule, and it survived from #143 to #150 because nobody said it aloud.
+
+⚠ **`evFxChips(f, moodAt)`**: the second argument exists for the one caller that draws chips
+BEFORE paying, which is the one-door pickup below. Pass the projected morale there. Everywhere
+else it defaults to `G.morale`, which by then is the post-payment figure.
 
 ⛔ **THE CHIPS ARE BUILT BESIDE THE `pay()` CALL, NEVER OFF THE HAND-WRITTEN `c:` STRING.** In
 `pickChoice` that is `paid`/`addPaid`, and every new payment site added to that function has to

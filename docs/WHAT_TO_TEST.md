@@ -23,6 +23,65 @@
 
 ---
 
+## 🧭 THE OPENING, THE EVENT CARDS AND THE ROAD BAR  *(#150 · 2026-08-13 · build log 8f.178)*
+
+**Reach it in three steps:** menu → **A new company** → play the brawl and read the card after it.
+Everything below is on the way from there to the second fork.
+
+**Your eleven, and what each one should now do:**
+
+1. **The Three Bells card** has no title in the corner and no small line under DRAW YOUR SWORD.
+   The prose is 170 words, down from 191; the money-and-killing point is made once, in the first
+   paragraph.
+2. **The man in the corner is now ONE screen.** The strip at the top says **◉ +88 CROWNS** (the
+   whole purse, brawl plus advance, not the old +8), the three who joined show their **painted
+   faces**, there is no morale chip, the **name picker is on that same card**, and the one button
+   says the name you picked: *"Chalk THE SOUR DOGS on the wagon, and go."* Clicking it goes
+   straight to the map. **A bug would be:** having to scroll the card, or a second screen.
+3. **Event outcome chips.** A morale chip wears the company's **face** (😐 🙂 😄 😟 💀) for the mood
+   the choice lands you in. **♥ is healing only** now: the Door-Shrine's rest door prints
+   `♥ +2 MENDED`.
+4. **The coin** goes into the **wagon**, not round somebody's neck, and the whole company feels
+   better. Open the kit and it is there to put on.
+5. **Choice consequence lines are bigger** (12.5px, was 10.5).
+6. **Blood on the Road** reads `3 spears beside you · 3 ogres against · 2 may join after`, and the
+   third door is now **"Wait. Then finish the winners."** Take it and the aftermath pays
+   **+55 crowns +5 salvage +2 provisions** on top of the usual haul. ⚠ The fight is *not* easier
+   for it: two ogres, nobody beside you, and they are not wounded. That is deliberate.
+7. **The contract plate** (top left) says Skelbrook, what is to be done there, that you carry the
+   letter, that 80 is paid and the rest is on delivery, and that **the road east ends at The
+   Snare**.
+8. **The Snare wears a gold trophy** from the first screen. Hover it: *"THE CONTRACT ENDS HERE."*
+   It goes away once you have stood in it.
+9. **The heart chip is a percentage** of the whole company, not the worst body. One badly hurt
+   spearman in a company of four now reads **79%** with a small **red pip** on the corner (that is
+   the "somebody could go down next fight" alarm, given its own mark). Everybody scratched reads
+   91% and no pip.
+10. **The party chip wears a gold ★** with the number of unspent levels; **the sack wears a green
+    !** when something in the wagon beats what somebody is wearing or fits an empty slot. Hover
+    either for the sentence. Equip the thing and the ! clears.
+11. **The fork card is one line a road:** `4 days · 1-2 fights · ~◉32 · TROUBLE` over
+    `6 days · 0-1 fights · ~◉48 · PEACEFUL` over `Not yet`. No small print under any of them. The
+    days are the **whole road** to where the two roads meet again (named in the line under the
+    heading), not the first leg. Hover a row for which place comes first and whether there is
+    anywhere to stop.
+12. **"It sits badly with them" is gone from all 24 cards it was on.** The peat-cutting card now
+    reads `−1 day · +7 salvage +1 gem · it is a clan grave · morale -5`.
+
+**What would be a bug:** any choice line starting with a floating " · " · a card you have to
+scroll · the trophy on a node you have already walked through · the ! badge that will not clear
+after you kit everybody out · the fork card promising fewer fights than the road holds.
+
+**One thing I left in that you may want out:** the fork row still carries the road's **wage bill**
+(`~◉32`). You listed three things to keep and that was not one of them, but it is the only place
+the purse is warned about before you commit to a six-day road. Say the word and it goes.
+
+**One thing I did NOT do, on purpose:** *"it sits well with them"*, the positive twin of the phrase
+you boxed, is still on 6 cards. You pointed at the negative one; deleting its mirror is a one-line
+change if you want it.
+
+---
+
 ## 📜 EVERY ROAD CARD IS SHORTER, AND THE OUTCOME PAYS IN CHIPS  *(#143 · 2026-08-13 · build log 8f.171)*
 
 **Reach it in three steps:** menu → **A new company** → play to the map and walk onto any event.

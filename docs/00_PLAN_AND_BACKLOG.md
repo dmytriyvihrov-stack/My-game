@@ -86,6 +86,18 @@ fifteen minutes to stop being a wall, and that is a subtraction job.
 > was added; prose was cut and a receipt the aftermath already owned was reused. Full record:
 > [`SHIPPED.md`](SHIPPED.md) #143 and [`CHANGELOG.md`](CHANGELOG.md) 8f.171.
 
+> **⚑ #150 SHIPPED the same day (8f.178): eleven of the user's own notes across the opening, the
+> event cards and the road bar.** The opening lost a title, a button sub-label and a whole screen
+> (the contract card absorbed its own outcome and the company naming); the receipt chips learned
+> which glyph means what (a face for mood, ♥ for healing only); the stock clause *"it sits badly
+> with them"* went from 24 cards; the fork card became one line a road; and the road bar grew the
+> three signs it had never had - **where the contract ends** (BB's trophy on the Snare), **what
+> the company's health actually is** (an average, not its worst body), and **what is waiting
+> behind each of its two doors** (unspent levels, better kit). ⚑ **Every one of those signals
+> already existed INSIDE the room it was about; what shipped is them being visible from where the
+> player decides whether to open it.** Full record: [`SHIPPED.md`](SHIPPED.md) #150 and
+> [`CHANGELOG.md`](CHANGELOG.md) 8f.178.
+
 ## The work, in order
 
 | | | done when |
