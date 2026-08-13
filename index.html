@@ -6938,7 +6938,7 @@ function foes(){
              note:'Small damage, and it drags them a hex toward the pole — out of your line.'},
             {k:'jab',n:'JAB',cost:1,reach:2,dmg:[9,14],am:.55,ft:.30}]},
     slinger:{kind:'ratkin',name:'Ratkin slinger',hp:30,armour:22,mor:52,skill:59,dodge:20,speed:4,
-      bow:true,acts:[{k:'sling',n:'SLING',cost:1,range:4,dmg:[11,17],am:.50,ft:.40}]},
+      bow:true,acts:[{k:'sling',n:'SLING',cost:1,range:5,dmg:[11,17],am:.50,ft:.40}]},   /* #135 */
     sniffer:{kind:'ratkin',name:'Ratkin warp-sniffer',hp:32,armour:20,mor:48,skill:47,dodge:20,
       speed:4,caster:true,acts:[
       {k:'warp',n:'WARP-LIGHT',cost:2,strain:14,range:3,dmg:[15,23],am:0,ft:1,arcane:true},
@@ -7003,7 +7003,7 @@ function brigands(){
     spearman:{kind:'human',name:'Deserter, spear',hp:36,armour:28,mor:50,skill:54,dodge:15,speed:4,
       acts:[{k:'jab',n:'PIKE',cost:1,reach:2,dmg:[11,17],am:.70,ft:.28}]},
     poacher:{kind:'archer',name:'Poacher',hp:30,armour:12,mor:46,skill:60,dodge:20,speed:4,
-      bow:true,acts:[{k:'bow',n:'POACHER’S BOW',cost:1,range:4,dmg:[11,17],am:.50,ft:.42}]},
+      bow:true,acts:[{k:'bow',n:'POACHER’S BOW',cost:1,range:5,dmg:[11,17],am:.50,ft:.42}]},   /* #135 */
     /* THE DOG — the first enemy that fights by not being there. Fast, thin,
        and armed with a bite that ends somewhere else: SNAP-AND-AWAY is one
        action, deals its damage, and then takes the dog two hexes clear
@@ -7098,7 +7098,7 @@ const CLASH_T={
   ratspear:{kind:'ratkin',name:'Ratkin, spear',hp:46,armour:34,mor:72,skill:53,dodge:18,speed:5,
     acts:[{k:'jab',n:'JAB',cost:1,reach:2,dmg:[10,15],am:.60,ft:.30}]},
   ratsling:{kind:'ratkin',name:'Ratkin slinger',hp:38,armour:22,mor:66,skill:57,dodge:20,speed:5,
-    bow:true,acts:[{k:'sling',n:'SLING',cost:1,range:4,dmg:[10,16],am:.50,ft:.40}]},
+    bow:true,acts:[{k:'sling',n:'SLING',cost:1,range:5,dmg:[10,16],am:.50,ft:.40}]},   /* #135 */
   /* ⚠ ARMOUR 72 -> 27, WHICH IS 20 ON THE FIELD (user, 2026-08-02: "В первом
      бою если выбираешь помочь ретлингам - у огров противников 20 брони,
      вместо 50ти. Когда 50 - сложновато"). The number he saw was 54, because
@@ -7797,7 +7797,7 @@ function slingline(){
       acts:[{k:'sling',n:'LEAD SLING',cost:1,range:5,dmg:[14,21],am:.55,ft:.42},
             {k:'maul',n:'CUDGEL',cost:1,reach:1,dmg:[14,21],am:.95,ft:.26}]},
     slinger:{kind:'ratkin',name:'Ratkin slinger',hp:28,armour:16,mor:50,skill:59,dodge:22,speed:5,
-      bow:true,acts:[{k:'sling',n:'SLING',cost:1,range:4,dmg:[10,16],am:.50,ft:.40}]},
+      bow:true,acts:[{k:'sling',n:'SLING',cost:1,range:5,dmg:[10,16],am:.50,ft:.40}]},   /* #135 */
     screen:{kind:'ratkin',name:'Ratkin, long spear',hp:36,armour:30,mor:58,skill:54,dodge:18,speed:4,
       acts:[{k:'jab',n:'LONG SPEAR',cost:1,reach:2,dmg:[11,17],am:.65,ft:.30},
             {k:'wall',n:'SPEAR WALL',cost:2,self:true,
@@ -12037,8 +12037,17 @@ const aip=u=>AIP[u.side]||AIP.foe;
    human and still lose to a ratkin (6), a spear (6), a dog (6), any captain
    (8) and the WARDEN (10): one matchup bought, every other inflated. Distance
    on this board is held by MOVING, which is the kite, not by standing further
-   off. A range-4 sling still wants 3, so the chaff behaves exactly as before
-   and only the long weapons change. */
+   off.
+
+   ⚑ #135 UPDATE, AND IT CHANGES WHAT THIS PARAGRAPH USED TO SAY. When #127
+   shipped, the line here read "a range-4 sling still wants 3, so the chaff
+   behaves exactly as before and only the long weapons change" - true then,
+   because the four chaff shooters were still range 4. The user has since ruled
+   that **every bow and sling in the game reaches 5**, so there is no range-4
+   physical shooter left and every one of them now wants hex 4. The chaff
+   sentence is gone rather than left standing: a comment that was true on the
+   day it was written and is quietly false afterwards is this file's own
+   most-repeated trap. */
 const bandFor=a=>Math.max(2,((a&&a.range)||4)-1);
 function doctrine(u){
   /* ⚠ `a.dmg` REQUIRED — see targetScore(). `band:3` tells a body to live at
