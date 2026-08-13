@@ -125,6 +125,21 @@ important, nothing is.** The rules:
    stops reading options and starts clicking the first acceptable one. That event, not the
    event count, is where fatigue begins. If the first thirty minutes are deliberate and the
    second hour is autopilot, the fix is demoting cards to LIGHT, not deleting events.
+7. **A card's LENGTH is part of its weight, and it is a measured number.** *(2026-08-13, the
+   user: "reduce them 30-70% each... easier to read, eseier to make choices.")* A light card
+   written at heavy length is a heavy card wearing a pickup's clothes: the player pays the
+   reading cost of a decision and gets a two-second one. The road was cut a third on that
+   argument, and the bands it now sits in are **LIGHT 45-90 words · MEDIUM 90-140 · HEAVY
+   140-175**, counting the body and every outcome together. **175 is the ceiling for the whole
+   road**, because the three heaviest cards in the game land there. ⚠ **A percentage is not the
+   goal.** Four cards finished under the asked 30% because their remaining lines were
+   load-bearing, and cutting to a quota costs the joke or the fact, which are the reasons the
+   card exists.
+8. **A card with one live door is a pickup, and a pickup may show what it gives.** The
+   hide-the-score rule protects a decision; with one door there is no decision to protect, so
+   hiding the outcome only costs a click to learn what the player had no say in. The coin is
+   the shape: three lines, the loot on the card, one button. **A card with two or more doors
+   still shows nothing before the pick.**
 
 ## 6. You, the Captain — and the party
 
@@ -451,6 +466,27 @@ the mechanism the pillar runs on. What is hidden is the *score*, not the *stake*
 *(A linter enforces this. `LINT()` reads every content table and fails on any label that prints a
 morale number — along with literal tokens, impossible race gates, hardcoded names in floating
 events, reward keys nothing consumes, and fights with no aftermath.)*
+
+### And the receipt is a row of chips, in one language, game-wide
+
+*(2026-08-13, the user: "If resurses are consiquences of the choise - make them more vissually
+readeble (like when they are after battle loot)". Built as #143.)*
+
+A label states an intent **before**; the outcome states a fact **after**, and it states it the way
+the battle screen already does: **a row of icon chips**: ◉ crowns, ❦ provisions, ▤ salvage,
+◈ gems, plus ♥ morale (signed, and this is the one place a morale number is legitimate, because
+the choice is already made) and ◐ days. A piece of kit arrives as a loot strip with its own glyph.
+Events, camp incidents and vignettes all use it, because **two receipt vocabularies on one road is
+the same defect as two priority systems in one document.**
+
+Two rules hold it together, and both have been paid for:
+
+1. **The chip is built beside the payment, never off the label.** The label is hand-written and
+   the payment is code; when they disagree, only the chip is guaranteed right. Six content rows
+   were once caught printing a price the game did not charge.
+2. **The prose then stops saying the number.** *"Thirty-eight crowns."* under a chip reading
+   ◉ +38 is a second receipt, and the day a multiplier touches one of them it is a wrong one.
+   This is what makes the receipt a length saving as well as a clarity one.
 
 ### What a person is
 
@@ -1554,6 +1590,27 @@ her duplicate battle door. Round two added camp, saltwives (intel merged into th
 purchase), ratcart, shrine and bogbody, all 4→3. The sixth round-two candidate was refused on
 purpose: everything left on the remaining cards is a distinct decision class, and cutting one
 would have taken a real decision with it.
+
+### ✅ A card's length is a measured number, and the receipt is chips (decided 2026-08-13)
+
+The user's own brief, executed as **#143**: *"check all events texts - and reduce them 30-70%
+each. Feel free to cut. Idea - easier to read, eseier to make choices"*, and *"If resurses are
+consiquences of the choise - make them more vissually readeble (like when they are after battle
+loot)."* Written into §5 as choice-economy rules 7 and 8, and into §7 under the intent-not-receipt
+section.
+
+**Measured, not felt: 5,474 words of card prose became 3,652 across all 34 road cards**, and the
+bands the road now runs in are LIGHT 45-90 · MEDIUM 90-140 · HEAVY 140-175. The outcome's numbers
+left the prose entirely and became the aftermath's own chip row, built beside the payment rather
+than off the label, so the two can never disagree. **The pillar found its boundary in the same
+pass**: a multi-door card still shows nothing before the pick, and a one-door pickup wears its
+loot on the card, because there is no score to hide where there is no decision.
+
+⚑ **The general lesson, and it is why this is a decision rather than a cleanup: reading cost is
+part of a card's weight, and it was the half nobody was measuring.** The choice-economy rules from
+#123 counted doors; a two-door card written at 259 words was still charging the player a heavy
+card's attention for a light card's decision. Procedure:
+[`.claude/rules/event-cards.md`](../.claude/rules/event-cards.md).
 
 ### ⏳ Still open
 
