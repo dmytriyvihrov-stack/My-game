@@ -1,112 +1,168 @@
-# Two sessions, one working tree
+# Two sessions, two desks
 
 **Working in two or three Claude sessions at once is fine and it is how this project has been
-built.** What is not fine is the way the two sessions have been finding out about each other, which
-until now was afterwards.
+built.** Until 2026-08-13 they took turns on the one file that matters. Now they do not.
 
 > ## The one command
 >
 > ```
-> powershell -NoProfile -ExecutionPolicy Bypass -File tools\claim.ps1 number
+> powershell -NoProfile -ExecutionPolicy Bypass -File tools\branch.ps1 new battle-panel -t "what it is"
 > ```
 >
-> Run it **before you write anything**, not after. It hands you a `#NN` and an `8f.NNN` that no
-> other session can be given. Then take the prototype if you are going to change it:
+> That makes a **branch** (`work/battle-panel`) and a **desk** (a folder of its own at
+> `%USERPROFILE%\grimtoll-desks\battle-panel`). Point a Claude session at that folder and the whole
+> repo is yours: no lock, no queue, the prototype is yours to edit while somebody else edits theirs.
+>
+> When it is done, from the **main** folder:
 >
 > ```
-> powershell -NoProfile -ExecutionPolicy Bypass -File tools\claim.ps1 lock -Title "what you are doing"
+> powershell -NoProfile -ExecutionPolicy Bypass -File tools\branch.ps1 done battle-panel
 > ```
 >
-> `tools\claim.ps1 status` says who holds what. `tools\claim.ps1 release all` gives it back.
+> `branch.ps1 list` shows every desk and how far ahead it is. `branch.ps1 where` says which one you
+> are standing in.
 
 ---
 
-## 1. What the danger actually is, because it is not committing
+## 1. Why the lock had to go, and what was actually right about it
 
-There is **one working tree and one branch**. `git worktree list` returns a single line. Both
-sessions edit the same bytes on the same disk at the same instant, so **git isolates nothing between
-them**: a branch is not a room, it is a label on the one room you are both standing in.
+The old rule was correct for the situation it was written in, and the situation was the problem:
 
-That means "do not commit" protects nothing. It only removes the restore point. The three things
-that actually go wrong:
+> There is one working tree and one branch, so **git isolates nothing between the two sessions**: a
+> branch is not a room, it is a label on the one room you are both standing in.
 
-**1. The number.** Five collisions, and nearly a sixth twice in one day. The cause is structural and
-worth stating exactly: the number lived in **a sentence in a document**, and the document is written
-**last**. The code and `shots/` get the number first. So at the moment session B greps for the next
-free number, session A has already decided on it and written nothing. *"Grep before you take a
-number"* could never have worked. Both docs still said *next free #89* while two sessions were both
-building #89.
+That is still true of a branch **on its own**. It stops being true the moment each session gets its
+own directory. A `git worktree` is a second checkout on the same `.git`: two folders, two branches,
+one history. The room becomes two rooms, and the lock becomes a queue with nothing left to protect.
 
-**2. The whole-file rewrite.** Two string edits in different parts of the prototype coexist fine.
-A **read-everything, write-everything** pass does not, and
-[`art/inject.ps1`](../art/inject.ps1) is exactly that shape: it slurps the whole prototype, swaps the
-art block, and writes the whole thing back. Its sibling
-[`tools/build_site.ps1`](../tools/build_site.ps1) is the mirror hazard. It does not touch the
-prototype, it **reads** it into `index.html`, so what it ships is whatever state the other session
-happened to have the file in.
+**The lock's real cost was never waiting, it was waiting out the wrong unit of work.** Session B
+wanted to change six lines of CSS and had to sit through session A's whole feature, because the lock
+is per-file and the file is the entire game.
 
-**3. The deploy, and this is the worst one.** [`deploy.ps1`](../deploy.ps1) runs `git add -A` and
-then **pushes to the live link**. A deploy from your session publishes the other session's
-half-finished prototype to every playtester. Nothing about that is theoretical: `-A` means `-A`.
+⛔ **The lock is not deleted, and it is still live on the main desk.** Two sessions that both open the
+main folder still share one directory, and everything that was true in 2026-08-11 is still true
+there. What changed is that there is now somewhere else to stand.
 
 ---
 
-## 2. The mechanism
+## 2. The three things that go wrong, and which layer answers each now
 
-Three layers, because one is never enough: **claim** before, **lock** during, **verify** at the gate.
+**1. The number.** Unchanged, and it is the one thing branches make *worse* rather than better.
+**Git cannot merge a counter.** Two desks that each invent `#140` produce two entries with one
+number and no merge in the world can tell them apart. So `claim.ps1` stays exactly as it was, with
+one change: it resolves `.grimtoll\` through `git rev-parse --git-common-dir`, so **every desk asks
+the same store**. Take a number before you write one.
+
+> ⚠ **This was the piece that would have failed silently.** A store that followed the current folder
+> would have given each desk its own empty counter, and three desks would have been issued `#140`
+> three times while every one of them believed the tool had protected it. The fix is four lines and
+> it is the load-bearing part of the whole change.
+
+**2. The whole-file rewrite.** Solved by isolation. `art/inject.ps1` slurps the whole prototype and
+writes the whole thing back, which is catastrophic in a shared folder and completely safe in a desk:
+it rewrites **your** copy. `claim.ps1 gate` therefore returns clear in a desk and still gates the
+main folder.
+
+**3. The deploy.** [`deploy.ps1`](../deploy.ps1) runs `git add -A` and pushes to the live link, so it
+now **refuses to run anywhere but the main desk on `main`**. A deploy from a branch would publish
+half a feature to every playtester with the branch name attached.
+
+---
+
+## 3. What a merge does with each kind of file
+
+This is the part that decides whether parallel work is real or just deferred pain.
+
+| | rule | why |
+|---|---|---|
+| `prototype/grimtoll_slice.html` | ordinary line merge | two desks in different functions merge clean. Two desks in the same twenty lines conflict, and that conflict is **correct**: somebody has to decide |
+| `index.html` | `merge=ours` | 10 MB of generated base64. A conflict in it is unresolvable by hand and the resolution was always "rebuild it" |
+| `art/embed/art_data.js` | `merge=ours` | same, generated out of `art/src` |
+| `CHANGELOG.md` · `WHAT_TO_TEST.md` · `SHIPPED.md` | `merge=union` | append-only logs. Both desks add a row at the top and would conflict **every single time**; union keeps both sides and the order is a two-second tidy |
+
+> ## NOTHING GENERATED IS EVER MERGED. IT IS REBUILT AFTER THE MERGE.
+>
+> `merge=ours` leaves those files **stale on purpose**, which is why `merge.ps1` ends by naming what
+> to rebuild. A generated file that survives a merge untouched is a generated file that is now lying
+> about the source it came from.
+
+⛔ **`merge=ours` is not a built-in driver.** It has to be declared once per clone or the lines in
+`.gitattributes` do nothing at all and you find out inside a 10 MB conflict:
+
+```
+git config merge.ours.driver true
+```
+
+`branch.ps1 setup` does it, `branch.ps1 new` calls that, and `merge.ps1` checks before it merges.
+
+---
+
+## 4. Merging, and the rule that is deliberately not "main must be clean"
+
+`branch.ps1 done <name>` runs [`tools/merge.ps1`](../tools/merge.ps1) and then removes the desk.
+`merge.ps1` on its own merges but keeps the desk open.
+
+It refuses if **main has uncommitted changes to a file the merge would overwrite**. It does *not*
+refuse merely because main is dirty, and the difference matters here: the main desk is shared and
+somebody is very often mid-edit on something unrelated, so a blanket clean-tree rule would refuse
+every merge and hand the queue straight back.
+
+⛔ **Never stash to get a merge through.** On this repo the stash you take is somebody else's work in
+progress.
+
+If it conflicts, the merge is left half-done and waiting: fix the files, `git add`, `git commit`. Or
+`merge.ps1 -Abort` and main is exactly where it was.
+
+---
+
+## 5. Which desk am I supposed to be in
+
+| you are | use |
+|---|---|
+| changing the game for more than a few minutes | **a branch desk.** `branch.ps1 new <name>` |
+| two sessions both changing the game | **two branch desks.** This is the case the whole thing exists for |
+| deploying, merging, or looking at the live build | **the main desk, on `main`.** Deploy refuses anywhere else |
+| a one-line doc fix while nobody else is running | main desk is fine. Take the lock if the prototype is involved |
+
+**A desk is cheap and disposable.** `branch.ps1 drop <name> -Force` throws one away unmerged. Do not
+keep one open for a week: the further it drifts from main the more of the merge you pay for.
+
+> **Why desks live outside the repo folder.** The repo is in a Google Drive folder. A worktree is a
+> full checkout, and pointing Drive at three more copies of a 5.6 MB prototype and a 10 MB
+> `index.html` is both wasteful and a genuine corruption risk while git is writing. Desks default to
+> `%USERPROFILE%\grimtoll-desks\`, outside Drive. `-Path` overrides it.
+
+---
+
+## 6. The claim, which did not change
+
+Three layers still, and the first one is the one that cannot be replaced by git:
 
 | | What it does | Where it lives |
 |---|---|---|
-| **claim** | reserves the next free `#NN` / `8f.NNN` so it cannot be issued twice | `.grimtoll/claims/` |
-| **lock** | one session owns `prototype/grimtoll_slice.html` at a time | `.grimtoll/locks/` |
+| **claim** | reserves the next free `#NN` / `8f.NNN` so it cannot be issued twice | `.grimtoll/claims/`, **in the main folder, shared by every desk** |
+| **lock** | one session owns `prototype/grimtoll_slice.html` **on the main desk** | `.grimtoll/locks/` |
 | **verify** | refuses a commit that spends a number somebody else holds | `.git/hooks/pre-commit` |
-
-**`.grimtoll/` is gitignored on purpose.** It is live state about the two sessions running on this
-machine right now, not repo content, and both sessions read it off the same disk. That shared disk is
-exactly why this works when a branch would not.
-
-### Why a claim cannot be issued twice
 
 The claim is a **file created with `CreateNew`**, which fails if the file already exists. NTFS makes
 the check and the create one indivisible operation, so two sessions asking at the same instant cannot
-both win: the loser gets an exception, takes the next number, and never learns there was a race.
+both win. Nothing else in this repo has that property: a counter in a document does not, and a
+"check, then write" in a script does not either, because the gap between the check and the write is
+where the collision lives.
 
-Nothing else in this repo has that property. A counter in a document does not. A "check, then write"
-in a script does not either, because the gap between the check and the write is where the collision
-lives.
+> ⚠ **`#NN` and a three-digit CSS hex colour are the same string.** The first version of the repo
+> scan read `#373` out of a stylesheet and issued it as a backlog number. Entry numbers are read from
+> **prose and `shots/` only**, with fenced and inline code stripped, and capped at 200. `8f.NNN` is
+> unambiguous and is read from everywhere. The scan now reads **both** the desk and the main folder,
+> because a desk's checkout is behind main and `shots/` is gitignored so it exists in main only.
 
-### The floor
-
-`claim.ps1 number` reads every number the repo has already spent before it issues one: the docs,
-`content/`, the prototype, the tools, and **`shots/`**, which matters most because it is written
-first and is therefore the only honest source. `ls -t shots/` was what caught both near-misses on
-2026-08-11, and the script now does that for you.
-
-> ⚠ **`#NN` and a three-digit CSS hex colour are the same string.** The first version of this scan
-> read `#373` out of a stylesheet and issued it as a backlog number. Entry numbers are therefore
-> read from **prose and `shots/` only**, with fenced and inline code stripped, and capped at 200.
-> `8f.NNN` is unambiguous and is read from everywhere.
-
----
-
-## 3. What is enforced without you remembering
-
-A script you have to remember to run prevents nothing, so four things run on their own:
-
-- **Claude Code refuses the edit.** A `PreToolUse` hook in [`.claude/settings.json`](../.claude/settings.json)
-  blocks `Write`, `Edit` and `NotebookEdit` on a file another live session holds, and tells that
-  session why.
-- **`inject.ps1` refuses to run** while somebody else owns the prototype.
-- **`deploy.ps1` refuses to run**, and when it does run it now **prints every file `git add -A` is
-  about to sweep up** before it commits. A deploy that quietly carries eight files you did not touch
-  is how the other session's work ends up in your commit.
-- **`git commit` refuses** a change that spends a number another session is holding.
-
-Every one of them is escapable, because a guard you cannot get past becomes a guard somebody deletes:
-`claim.ps1 lock -Steal`, `claim.ps1 release`, `git commit --no-verify`.
-
-**A lock expires after 4 hours.** A session that ends without releasing does not block the desk
-forever, and `status` marks an expired lock rather than hiding it.
+> ### ⚠ A lock is on a PATH. A lock on a sentence protects nothing.
+>
+> Found live on 2026-08-13: a session ran `lock "#137 + #138: the seven-item pack and the opening
+> chain"`, passing its title where the path goes. The lock file was written, `status` listed it, and
+> the session believed it owned the prototype. **It did not.** The hook matches on the file's leaf
+> name and no edit was ever going to match that string. `lock` now refuses a target that is not a
+> file in the repo. The title goes in `-t`.
 
 > ### ⚠ Release the number once it is written into the docs
 >
@@ -120,43 +176,34 @@ forever, and `status` marks an expired lock rather than hiding it.
 > `pre-commit` blocks a commit that was never a collision. **Claim early, release at the four
 > writes.**
 >
-> **And on 2026-08-11 that is exactly what happened, word for word.** A session shipped #98 and
-> 8f.126, wrote all four documents, and left both claims standing; the next entry on the same
-> screen cited *"the glyph the rail has been drawing since #98"* in a comment and in two docs, and
-> `pre-commit` refused the commit. The number was in `SHIPPED.md`, in the changelog and in the
-> prototype, so **it could never have been re-issued anyway** - `Get-UsedNumbers` scans the repo,
-> not the claims. The claim was doing nothing but blocking a sentence.
->
-> **Clearing somebody else's spent claim is a one-liner, and `-By` is the supported door:**
+> Clearing somebody else's spent claim, and `-By` is the supported door:
 >
 > ```
 > powershell -NoProfile -ExecutionPolicy Bypass -File tools\claim.ps1 release 98 -By 053d905a
 > ```
 >
-> ⛔ **Only ever for a number that has SHIPPED** - a row in `SHIPPED.md` and a commit in `main` are
-> the proof. A claim on unbuilt work is somebody's seat and you leave it alone.
+> ⛔ **Only ever for a number that has SHIPPED.** A row in `SHIPPED.md` and a commit in `main` are the
+> proof. A claim on unbuilt work is somebody's seat and you leave it alone.
 
 ---
 
-## 4. What to do when you are the second session
-
-If the prototype is taken, the answer is not to wait. **Take work that does not touch it:** the docs,
-a measurement, a `shots/` study, the dramaturge, a plan for the entry you just claimed a number for.
-The build is one file, and it is the one genuinely serial resource here. Almost nothing else is.
-
-And **commit scoped to what you touched**: `git add docs/CHANGELOG.md`, never `git add -A` by hand.
-`deploy.ps1` is allowed `-A` because its job is to ship everything, which is exactly why it is gated.
-
----
-
-## 5. The lesson, for the next thing that looks like this
+## 7. The lessons, for the next thing that looks like this
 
 > **A counter that lives in prose is not a counter, it is a note about a counter.**
 >
 > Five collisions were read as a discipline problem and answered five times with a stricter
-> instruction to grep. It was never a discipline problem. **The document was structurally
-> incapable of being right**, because it was written after the thing it described. The fix is not a
-> better instruction, it is moving the fact into something that can refuse.
+> instruction to grep. It was never a discipline problem. **The document was structurally incapable
+> of being right**, because it was written after the thing it described.
 
-Same shape as the one already on the trap list in [`README.md`](README.md): *one map was answering
-two questions.* Here it was **one document holding a fact it could not hold**.
+> **A queue is what you build when isolation is not available. Check whether it still is not.**
+>
+> The lock was the right answer to "one working tree", and it went on being the answer for two days
+> after `git worktree` would have removed the question. Nobody re-asked whether the constraint was
+> still there. ⚑ **When a rule costs more every week, re-read the sentence it was derived from, not
+> the rule.**
+
+> **The load-bearing line of a change is rarely the feature.**
+>
+> Branch-per-session is worktrees plus four lines that point the claim store at
+> `--git-common-dir`. Without those four lines everything above still *works*, feels faster, and
+> hands out the same number to three desks. ⚑ **When you distribute a thing, find the counter first.**
