@@ -23,6 +23,38 @@
 
 ---
 
+## 🃏 THE JOKE IS OUT OF THE OPENING  *(#134 · 2026-08-13 · build log 8f.162)*
+
+1. New game → the Three Bells → the brawl → **THE MAN IN THE CORNER**.
+2. **Two replies now, not three.** "Put him on the floor." and "Say nothing. Take the purse."
+
+**"Agree with him. Cheerfully." is gone and parked**, with all its text kept, as backlog #134.
+
+⛔ **Why that one.** It was resolved on a coin flip: 50/50 for either 120 crowns and his respect, or
+50 and a cudgel in your ribs. That is **a lottery ticket on the player's first real decision**. The
+two that remain are the pillar in one card: **40 crowns and a beating for your pride, 80 crowns and
+no pride for the purse.** Nothing is lost - the prose, both purses and the painting are all kept, so
+it comes back as a paste the day it has a reason a player can *read* (a stat, a trait, a
+personality) instead of a dice roll.
+
+👤 **Your eye:** does the card feel thin at two doors, or sharper? I think sharper, but that is a
+judgement and it is yours.
+
+### Two small fixes that came out of looking at it
+
+**The enemy card was speaking a different language from the plaque.** Hover an enemy in a fight: it
+used to say **"47 · WAVERING"** while that same body's own plaque said **"😐 Ok"** - the raw morale
+pool plus the engine's internal word, and three of the five names are called something else on the
+ladder. Both now say exactly what the plaque says, and both rows are labelled **NERVE**, because
+#132 gave the word MORALE to the stat. *Nothing to do here but notice it stopped being confusing.*
+
+**A latent bug closed before it fired.** The board's shot colour and the hit receipt each worked out
+the range bands separately, agreeing only because both were typed the same way. #127 made those
+bands load-bearing days ago, so the fuse was shorter than it looked. One rule now. *Verified as
+identical maths, not a change: same numbers at every range and distance.*
+
+---
+
 ## 🌙 THE OVERNIGHT BATCH: NINE THINGS YOU ASKED FOR  *(#124-#132 · 2026-08-13 · build logs 8f.152-155)*
 
 **Your nine-item voice batch, built in one go. Take them in this order: the first four are thirty

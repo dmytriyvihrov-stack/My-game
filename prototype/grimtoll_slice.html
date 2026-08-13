@@ -6247,6 +6247,27 @@ const laneCost=(u,t,from)=>LANEHEX[LANETIER[losState(u,t,from).k]||0];
    The range bands are NOT new numbers — they are the `extreme range −18` and
    `long shot −8` that hitBreakdown has always charged. They were simply
    invisible until now. */
+/* ═══ #134 - ONE PLACE DECIDES WHICH DISTANCE BAND A SHOT IS IN ═══════════
+   `shotState` (the colour and the dash the board paints) and `hitBreakdown`
+   (the penalty and the line on the receipt) each hand-wrote `dd>=act.range`
+   and `dd>=act.range-1`. They agreed only because both were typed the same
+   way, which is this file's most-repeated bug shape: one rule, two readers,
+   and the day they drift the board paints a hex CLEAR over a shot that is
+   quietly paying 18.
+
+   ⚑ #127 made these load-bearing in a way they were not before: a shooter's
+   preferred hex is now derived from `range`, so both brains deliberately
+   stand ON these bands instead of never reaching them.
+
+   POINT has no entry in SHOT{} on purpose - a hex you are standing next to
+   needs no colour to explain why the bow is a bad idea there. */
+const SHOTBAND=(a,act,dd)=>{
+  if(!act||!act.range)return null;
+  if(dd<=1)return {k:'POINT',hit:has(a,'sureshot')?-20:-40,why:'point blank'};
+  if(dd>=act.range)return {k:'FAR',hit:-18,why:'extreme range'};
+  if(dd>=act.range-1)return {k:'LONG',hit:-8,why:'long shot'};
+  return null;
+};
 const SHOT={
   BLOCKED   :{n:'BLOCKED',   col:'#c15d55',dash:'3 4'},
   OBSTRUCTED:{n:'OBSTRUCTED',col:'#c07a2c',dash:'3 4'},
@@ -6262,9 +6283,10 @@ function shotState(a,d,act){
   if(L.k==='OBSTRUCTED')return {k:'OBSTRUCTED',los:L};
   const dd=udist(a,d);
   if(act&&act.range){
-    if(dd>=act.range)return {k:'FAR',los:L};
+    const b=SHOTBAND(a,act,dd);                  /* #134 - the one band rule */
+    if(b&&b.k==='FAR')return {k:'FAR',los:L};
     if(L.k==='COVER')return {k:'COVER',los:L};   /* -14 beats the long shot's -8 */
-    if(dd>=act.range-1)return {k:'LONG',los:L};
+    if(b&&b.k==='LONG')return {k:'LONG',los:L};
   }
   return {k:L.k,los:L};
 }
@@ -7528,7 +7550,8 @@ function tavTeach(k){
    His muscle is TWO PAID SWORDS now, not ten guards - the user's
    "парочка наемников" - and the floor beating is theirs. */
 function tavernContract(won){
-  const cap=member('you');
+  /* #134 - `const cap` went with the joke: it existed only to size the cudgel
+     in the ribs, and nothing else in this card ever asked who the Captain is. */
   proCard('THE MAN IN THE CORNER',
     (won
       ?'He crosses the wreckage without looking at any of it, sits down at your table '+
@@ -7591,39 +7614,34 @@ function tavernContract(won){
          'can watch it happen.\n\n'+
          'Nobody in the crew says a word about it that night, or the next morning, which is '+
          'how you know exactly how much they had to say.',
-         {crowns:80,morale:-5,scene:'coin'})},
-      {t:'Agree with him. Cheerfully.',
-       c:'a joke, at a man with paid swords · it goes one of two ways',
-       go:()=>{
-         if(Math.random()<0.5){
-           const dmg=Math.max(6,Math.round(D.hp({st:effStats(cap)})*0.16));
-           cap.hpLoss=(cap.hpLoss||0)+dmg;
-           prologueEnd(
-             '"Scum, my lord, and cheap with it. You will not find better value in this '+
-             'county, and you have clearly been looking."\n\n'+
-             'It is a good line. The room enjoys it. The man in the coat does not react at '+
-             'all, which is when you understand that he was never the problem, and the nearer '+
-             'of his two swords puts a cudgel into your ribs with the unhurried competence of '+
-             'a man paid by the week.\n\n'+
-             'The advance is still fifty crowns. You will simply be carrying it downhill for '+
-             'a while.',
-             {crowns:50,morale:2,scene:'joke_miss',
-              verdict:{ok:false,t:'THE JOKE DID NOT LAND'},
-              hpNote:who(cap)+' takes '+dmg+' hitpoints of it. It mends on the road.'});
-         }else{
-           prologueEnd(
-             '"Scum, my lord, and cheap with it. You will not find better value in this '+
-             'county, and you have clearly been looking."\n\n'+
-             'One breath of silence. Then the man in the coat laughs: genuinely, unpleasantly, '+
-             'the laugh of somebody who has not been surprised by another person in years and '+
-             'has missed it more than he knew.\n\n'+
-             'He counts out a hundred and twenty instead of eighty, tells his swords that '+
-             'this one can read, and leaves without shutting the door. Marrow spends the rest '+
-             'of the evening explaining that he would have said it first.',
-             {crowns:120,morale:6,scene:'joke_hit',
-              verdict:{ok:true,t:'THE JOKE LANDED'}});
-         }
-       }}
+         {crowns:80,morale:-5,scene:'coin'})}
+      /* ═══ #134 - THE JOKE IS OUT OF THE OPENING, AND IT IS PARKED ═══════
+         (User, 2026-08-13: "make a joke option put from the opning to our
+         ideas/things for future set.")
+
+         "Agree with him. Cheerfully." was the third reply: a line at a man
+         with two paid swords, resolved on `Math.random()<0.5` for either 50
+         crowns and a cudgel in the ribs, or 120 and his respect.
+
+         ⛔ It is CUT rather than deleted, and the reason it was the right one
+         of the three to go is worth keeping: it put a COIN FLIP on the
+         player's first real decision. The other two are a decision - pride
+         costs money, money costs pride, which is the pillar in one card - and
+         a fifty-fifty beside them is not a third option, it is a lottery
+         ticket the player cannot reason about. Cutting it also takes the
+         opening from three doors to two, which is the clarity pass's own
+         instruction (cut, delay, merge).
+
+         ⚑ NOTHING ELSE WAS TORN OUT, ON PURPOSE. `PRO_ART.joke_hit` stays
+         mapped to EV00C: `.claude/rules/static-event-art.md` requires that
+         mapping to be preserved exactly, the painting exists and is good, and
+         the scene name must not be invented again when this comes back. The
+         `verdict` banner machinery in prologueEnd stays for the same reason.
+         Both are dormant, not dead.
+
+         The full prose, both outcomes and both purses are preserved in
+         CHANGELOG 8f.162 and the entry is parked in 00_PLAN_AND_BACKLOG.md,
+         so bringing it back later is a paste, not a rewrite. */
     ]);
 }
 /* ═══ #118 - THE NAME. Two words, picked half and half ═══════════════════
@@ -9461,11 +9479,10 @@ function hitBreakdown(a,d,act){
   /* A bow is a bad weapon at both ends of its own range: you cannot draw it
      with somebody's face in it, and at the very limit you are guessing. */
   if(act.range){
-    const dd=udist(a,d);
-    if(dd<=1){const p=has(a,'sureshot')?-20:-40;other+=p;
-      parts.push('point blank '+p);}
-    else if(dd>=act.range){other-=18;parts.push('extreme range −18');}
-    else if(dd>=act.range-1){other-=8;parts.push('long shot −8');}
+    /* #134 - the same SHOTBAND the board paints from, so the colour on a hex
+       and the penalty on the receipt can no longer disagree. */
+    const b=SHOTBAND(a,act,udist(a,d));
+    if(b){other+=b.hit;parts.push(b.why+' −'+Math.abs(b.hit));}
   }
   if(has(a,'duelist')&&threatsAt(a.col,a.row,a.side)===1){other+=8;parts.push('duellist +8');}
   if(a.trait==='counter'&&!a.moved){other+=8;parts.push('stood still +8');}
@@ -15955,8 +15972,18 @@ function inspect(t,e){
       Math.max(0,Math.ceil(t.hp))+' / '+t.hpMax+'</span></div>'+
     '<div class="rr"><span>ARMOUR</span><span style="color:var(--steel)">'+
       Math.max(0,Math.ceil(t.armour))+' / '+t.armourMax+'</span></div>'+
-    '<div class="rr"><span>MORALE</span><span style="color:'+STATES[t.state].col+'">'+
-      Math.round(t.morale)+' · '+STATES[t.state].n+'</span></div>'+
+    /* ═══ #134 - THE RUNG, NOT THE RAW POOL AND NOT THE ENGINE'S WORD ══════
+       Hitpoints and armour above are numbers on purpose: they are what the
+       swing does and what it has to get through, and the player decides with
+       them. NERVE is not that kind of measure. It is the game's one named
+       ladder, and this row printed the raw pool AND `STATES[...].n`, which is
+       the ENGINE's vocabulary, not the player's. A hovered enemy said
+       "47 · WAVERING" while its own plaque said "😐 Ok": three of the five
+       states are called something else on the ladder. It says what the plaque
+       says now. (The last surviving breach of "show a state, hide the
+       number" in the nerve system.) */
+    '<div class="rr"><span>NERVE</span><span style="color:'+LADDER[ladderAt(t)].col+'">'+
+      LADDER[ladderAt(t)].ic+' '+LADDER[ladderAt(t)].n.toUpperCase()+'</span></div>'+
     /* directly under the three bars it modifies, and above the movement it
        often halves — a condition is read as a change to the numbers around
        it, so it sits between them rather than at the foot of the card */
@@ -16075,7 +16102,11 @@ function readout(t,e){
     '<div style="height:1px;background:#2c3d3f"></div>'+
     '<div class="rr"><span>ARMOUR DAMAGE</span><span id="rArm" style="color:var(--steel)"></span></div>'+
     '<div class="rr"><span>HITPOINT DAMAGE</span><span id="rHp" style="color:#c15d55"></span></div>'+
-    '<div class="rr"><span>MORALE</span><span id="rMor"></span></div>'+
+    /* #134 - NERVE, not MORALE. #132 gave the STAT the word MORALE (how much
+       nerve this body has); this row is how much is left right now, which is
+       the ladder, which is NERVE. Two rows called MORALE meaning different
+       things is the collision #132 just took off the roster sheet. */
+    '<div class="rr"><span>NERVE</span><span id="rMor"></span></div>'+
     /* the strip of what is already on it — a caster holding a working is the
        reason to swing at THIS one, and the aiming card is where that has to
        be said */
@@ -16105,8 +16136,10 @@ function readout(t,e){
   $('rOther').style.color=bd.other<0?'#c15d55':'#8ca35a';
   $('rArm').textContent=p.arm[0]+'–'+p.arm[1];
   $('rHp').textContent=p.hp[0]+'–'+p.hp[1];
-  $('rMor').textContent=Math.round(t.morale)+' · '+STATES[t.state].n;
-  $('rMor').style.color=STATES[t.state].col;
+  /* #134 - the ladder's word, matching the plaque and the enemy card. See the
+     note on the MORALE row in the inspect panel. */
+  $('rMor').textContent=LADDER[ladderAt(t)].ic+' '+LADDER[ladderAt(t)].n.toUpperCase();
+  $('rMor').style.color=LADDER[ladderAt(t)].col;
   $('rNote').textContent=bd.parts.join(' · ')||(a.note||'');
   placeRead($('bRead'),e);
 }
