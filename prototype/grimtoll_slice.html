@@ -13813,7 +13813,32 @@ const FIELDS={
   /* the finale, and it is fought in and out of cover rather than across open
      ground: the Snare Clan set the trap. Takes the fen's whole pool of five,
      which is right for the fight the act has been walking toward. */
-  snare    :{t:'fen',   marsh:.87, rock:.985},
+  /* ═══ #147 - THE PALETTE, AND DELIBERATELY NOT THE CHANNEL ═══════════════
+     The second door on THE RATKIN SNARE is *"Through the marsh. Slower, but
+     quiet"*, and the board it led to was the same 13%-water fen as every
+     other fight in the act. `swamp` is the other ground built and never
+     shown in a campaign (#63), and it is the one the finale's own card
+     describes.
+
+     ⛔ `deep:0`, `trees:0`, `huge:0` AND THE FEN'S OWN THRESHOLDS AND POOL,
+     WHICH IS THE ENTIRE CARE IN THIS ROW. #63's note says the swamp is two
+     things wearing one word: *"the WATER EVERYWHERE is carried by the
+     palette - the dry 76% is painted wet, the fog is the heaviest in the
+     game - and the water that CHARGES you"* is the deep channel. This row
+     takes the first and refuses the second, because the second is a balance
+     change to the act's last fight and nobody asked for one.
+     ⛔ AND THE MEASUREMENT IS WHY IT IS SPLIT THAT WAY, n=16 a side:
+
+       fen (what it was)          7.7rd · 4.6 down · lost 10/16
+       swamp, palette only        7.9rd · 4.8 down · lost 11/16  ← this row
+       swamp, with the channel    7.6rd · 2.9 down · lost  6/16
+
+     ⚑ The full swamp SOFTENS THE FINALE BY A THIRD, and the reason is the
+     one this table has written down twice already: a deep channel is a wall,
+     dry islands are a line to form on, and against ten bodies any wall is
+     how six beat ten. The palette on its own changes nothing but the light. */
+  snare    :{t:'swamp', marsh:.87, rock:.985, deep:0, trees:0, huge:0,
+             pool:['anvil','flanks','spine','broken','strewn']},
   /* THE BLOOM. Already called one everywhere except in the terrain:
      `art:'bloom'` on her event card, a `weird` node on the map, and an
      aftermath about the bloom-light going out under her hide.
@@ -13858,8 +13883,27 @@ const FIELDS={
      the user's ruling; until it comes, she is the fixed point. */
   mother   :{t:'bloom', seed:29, marsh:.78, rock:.985, pool:['strewn'],
              flowers:0, trees:0},
-  /* men who break and run need somewhere to break TO. Full fen pool. */
-  brigand  :{t:'fen',   marsh:.93, rock:.985},
+  /* ═══ #147 - THE CARD HAS SAID "TREELINE" SINCE THE DAY IT SHIPPED ═══════
+     (User, 2026-08-13: "check which exshsting backgrounds you can add to
+     current battles, so they feel better / more uniq".)
+
+     THE BROKEN MEN opens with *"Four of them out of the treeline, and two
+     lean dogs that do not sit down"* - and it was fought on open wet fen
+     with `trees:0`, so the one noun the card puts in the reader's head was
+     the one thing the board did not contain. One of the four is a POACHER.
+     The `forest` ground has existed, finished and legibility-checked, since
+     #56 and NO CAMPAIGN FIGHT HAS EVER USED IT: it was reachable only from
+     the practice field. So this is not a new look, it is a look that was
+     built and then never shown to anybody.
+
+     ⚑ AND THE OLD COMMENT ON THIS ROW ARGUES FOR IT: *"men who break and run
+     need somewhere to break TO"*. Twenty-six trunks are somewhere to break
+     to. It keeps the forest's own pool of four (open · broken · anvil ·
+     spine), which is the pool #93 measured for a wood.
+     ⛔ MEASURED BEFORE IT SHIPPED, n=16 a side: fen 7.6rd · 1.2 down · 0/16
+     lost, forest 6.3rd · 1.1 down · 0/16 lost. The trees do not move this
+     fight; they only stop the card from lying. */
+  brigand  :{t:'forest',marsh:.94, rock:.99},
   /* ⚑ THE TEACHING FIGHT DRAWS FROM THREE AND NOT FIVE, and that is a
      clarity-pass decision rather than a terrain one: Blood on the Road is
      already carrying eleven Captain lessons, allied NPCs, a side to pick and
