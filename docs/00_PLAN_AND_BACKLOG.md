@@ -86,6 +86,40 @@ fifteen minutes to stop being a wall, and that is a subtraction job.
 > was added; prose was cut and a receipt the aftermath already owned was reused. Full record:
 > [`SHIPPED.md`](SHIPPED.md) #143 and [`CHANGELOG.md`](CHANGELOG.md) 8f.171.
 
+> **⚑ #145 · #146 · #147 · #148 · #149 SHIPPED 2026-08-13** *(8f.173-8f.177, one autonomous batch
+> while the user was away: "For first intro battle… For chances to hit and dodge show what is
+> others… increse chances to hit… Then play full game - check how is it working and fix bugs…
+> check which exshsting backgrounds you can add to current battles… Check becklog… After this
+> butch deploy everething on the prod")*.
+>
+> **#145** the brawl's second wave splits (the barman and a *Very nimble* knife-man at +2, the crew
+> unmoved at +3) · **#146** the aiming pass: `HIT_EASE {you:10, foe:5}` where `mskill` is SET, and
+> every summed row on the aiming card carries a caption naming its contributors · **#147** two
+> finished palettes reach the campaign at last (the Broken Men into the `forest` its card has
+> always described, the Snare into the `swamp` its second door names) · **#148** #36's blocked lane
+> joins `mayAim`, the one gate, and the harness stops writing to the player's journal · **#149**
+> AUTO leaves `setInterval` for a chained `setTimeout`.
+>
+> **⛔ Three findings outlive the rows, and all three are about MEASUREMENT.**
+>
+> 1. **A MINIMUM OVER n IS NOT A MEASUREMENT, IT IS THE UNLUCKIEST SAMPLE**, and it gets worse
+>    every time you look. Two nerfs were drafted against "the Captain's worst brawl finish falls
+>    from 29% to 10%" over two batches of sixteen; at n=50 a side the two builds were **identical**
+>    (45%/45%, worst 13%/12%). **Measure a tail as the FRACTION of runs under a threshold.** This
+>    file's own *"n=6 cannot tell 0% from 20%"* applies to worst cases twice over.
+> 2. **BUILD THE LITERAL ASK FIRST WHEN IT IS CHEAP, THEN MEASURE IT, THEN REFUSE IT IF IT DOES
+>    NOTHING.** "Lower a big body's dodge" was built exactly as asked and moved almost nothing,
+>    because every big body already sits on the zero floor. The measurement is what earned the
+>    right to ship the better version (a named bonus to hit) instead of arguing about it.
+> 3. **A NAMED OPEN REMAINDER CAN BE CASHED BY THE NEXT ROUND OF ITS OWN SURFACE.** #133's
+>    "the sheet still scrolls 65px" was closed by #136/#140 and nobody noticed; it re-measured at
+>    zero overflow. **Re-measure a remainder before scheduling work against it.**
+>
+> ⚑ **And the two bugs were both found by PLAYING, not by reading**, which is README §5's whole
+> argument arriving twice in one session: AUTO could not be driven in the preview pane at all, and
+> the eight-fight regression could never have caught it, because the regression drives `aiTurn`
+> directly and never presses the button.
+
 ## The work, in order
 
 | | | done when |
