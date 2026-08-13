@@ -23,6 +23,40 @@
 
 ---
 
+## 🏹 EVERY BOW AND SLING REACHES 5  *(#135 · 2026-08-13 · build log 8f.163)*
+
+You said unify them, so they are unified. Four enemies went from 4 tiles to 5: the **snare slinger**,
+the **brigand poacher**, the **clash ratsling** and the **sling-line slinger**. The Marked, the
+circle and the Sling-master were already 5. **There is no range-4 bow or sling left in the game.**
+Spells and the ogre's thrown rock are untouched, because they are not bows.
+
+⛔ **AND HERE IS THE THING I DID NOT EXPECT, SO READ THIS BEFORE YOU PLAY IT: giving the enemy more
+range made those fights EASIER, not harder.**
+
+| fight | rounds | your people down | where they shoot from |
+|---|---|---|---|
+| brigand | 6.5 → **5.2** | 2.1 → **0.9** | 2.6 → **3.5** |
+| sling-line | 7.2 → **6.4** | 1.3 → 1.3 | 3.2 → **3.4** |
+| clash | 5.0 → 4.8 | 1.0 → 0.9 | flat |
+| snare | 8.3 → **9.2** | 4.8 → 4.9 | 3.0 → 3.2 |
+
+**Two losses in ten on the brigand fight became none.**
+
+**Why.** A shooter stands at `range − 1`. At range 4 that was hex 3, which is free. At range 5 it is
+hex 4, which costs it **−8 to hit**. So they now stand one hex further away, shoot less accurately,
+and are one hex further from ever reaching you with a blade. **Range on this board turns out to be a
+positioning stat, not a power stat** - it buys standoff and it is paid for in accuracy.
+
+👤 **I did not compensate for this, deliberately.** You asked for range 5, not for a difficulty
+change, and quietly rebalancing behind a request is exactly what the project's tenth invariant
+forbids. **If those fights now feel too soft, that is a separate call and it is yours** - and the
+honest lever is their damage or their numbers, not their range.
+
+⚠ Ten runs per fight, which the project's own rule says is enough to trust the *direction* and not
+the *sizes*. The direction is trustworthy here mainly because the mechanism explains it.
+
+---
+
 ## 🃏 THE JOKE IS OUT OF THE OPENING  *(#134 · 2026-08-13 · build log 8f.162)*
 
 1. New game → the Three Bells → the brawl → **THE MAN IN THE CORNER**.
