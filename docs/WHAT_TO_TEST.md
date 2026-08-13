@@ -23,7 +23,63 @@
 
 ---
 
-## 🎒 THE COMPANY SHEET TEMPLATE - A PICTURE TO JUDGE, NOT A BUILD  *(#133 · 2026-08-13 · build log 8f.161 · NOTHING IN THE GAME CHANGED)*
+## 🎒 THE COMPANY SHEET, REBUILT  *(#133 · 2026-08-13 · build log 8f.161 · IT IS IN THE GAME NOW)*
+
+**Your ask, the voice note with five screenshots** (Urtuk, Battle Brothers, Caves of Qud, Wartales,
+Wildermyth): *"too much information and not clear whic one is important and what means what"* ·
+*"it's maybe nice to start screen with main studs"* · *"paint very simplified picture of human or
+red or ogre and also place artifacts on top of it as in case of good [Caves of Qud]"* · *"choice of
+perks in separate tab"* · *"Much shorter description of skills, like do it as in battle... when you
+hover, but not more"* · *"characters descriptions right now, they're too big... I like button
+brothers in this case."*
+
+**How to reach it in three steps:** continue your run → press the company/inventory button on the
+road bar → click anybody in the left rail.
+
+**What should happen.** The sheet is **one screen with no scrolling**. Top left: the name, three
+chips (race · class · level, each with its old hover) and ONE line of personality. Top right: a
+small picture of that person **as they look on the battlefield**. Under it, first, the stats: the
+four tells, then armour, hitpoints and nerve as the same bars the fight uses, then one line for
+swing, to-hit, dodge, step and what the armour stops.
+
+Then **the body**. It is a real silhouette now, and it is different for a human, a ratkin and an
+ogre. **The four gear slots sit around it with a line drawn to the part they hang on.** Click a
+slot to strip it, click a thing in the stash to put it on. Scars are red marks on the part they
+happened to; a change glows teal; both are also named in the list to the right of the body, and a
+change says which skill it gave you. The Captain's pet slot is there too, on his sheet only.
+
+Then **the skills, as the battle draws them**: one small card each, with the damage on its face and
+the cost as diamonds, and **hovering gives you the same receipt and one sentence the battle gives
+you**. The long written-out list is gone.
+
+Then **what happened to them**, which now has room for two memories and the roads walked.
+
+**The right-hand pane has two tabs: 🎒 THE STASH and ★ PERKS.** The perk tree is the whole tree,
+grouped by the level that opens each rung. **The green badge on the ★ tab is a banked perk point**,
+and it shows from either tab. Spending a point keeps you on the perks tab.
+
+**Numbers, if you want them:** the same character (level 4, two scars, the gills, two memories, a
+banked level and a banked perk point) was **1241px of scrolling sheet and 564 words**. It is now
+**678px, no scroll, 242 words**.
+
+**What would be a bug:** a slot's line pointing at the wrong part of the body · a scar drawn
+somewhere it did not happen · the perks tab losing your place after you spend a point · a stash
+item's ▲▼ comparison disagreeing with what actually happens when you equip it · anything from the
+old sheet you can no longer find (medicine chest, let-them-go, the nerve ladder hover, the stat
+ladders).
+
+**Still open, and small:** a body carrying *everything at once* (a change AND a condition AND the
+circle AND three scars AND ill-fitting armour) makes the marks list 65px taller than the window, so
+that one case still scrolls a little. The fix is written down and takes a minute; it was left
+because a second session took the file mid-build.
+
+**The design template that produced this is still there** if you want to compare what was proposed
+against what was built: `shots/133_company_sheet.html`. The build's own shot, both tabs, is
+`shots/133_company_sheet_built.html`.
+
+---
+
+## 🎒 THE COMPANY SHEET TEMPLATE - THE PICTURE THIS WAS JUDGED FROM  *(#133 · 2026-08-13)*
 
 **Your ask, the voice note with five screenshots:** *"too much information and not clear which
 one is important"* · *"start screen with main stats"* · *"paint very simplified picture of human

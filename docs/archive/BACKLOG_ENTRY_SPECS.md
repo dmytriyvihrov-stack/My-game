@@ -2611,8 +2611,10 @@ the lock, not for anything else.
 
 ## 133 - The company sheet on the one-screen shape (the 🎒 company surface of the clarity pass)
 
-**CLAIMED** 2026-08-13 (#133 / 8f.161). **STATE: design round one is BUILT AND WAITING FOR HIS
-PICK.** `shots/133_company_sheet.html` is the clickable template (his order mid-session: *"and of
+**SHIPPED** 2026-08-13 (#133 / 8f.161), designed and built the same night. **STATE: IN THE GAME**,
+with two named remainders at the foot of this entry. Round one was the template, by his order;
+his second order the same night (*"so can you update it according of spec first as prototype - use
+a lot references"*) built it. `shots/133_company_sheet.html` is the clickable template (his order mid-session: *"and of
 course strart from building design tmmplare, as usssual, rather the updating mian file"*), with
 `shots/133_current_capture.html` beside it, the live screen serialized out of the running build.
 ⛔ **The prototype is untouched. Nothing ships until he has looked at the template.**
@@ -2733,3 +2735,59 @@ own numbered entry. The template reserves the floor space under the OFF HAND box
   survive the tab wall (equip nag belongs to the STASH tab, a banked point to the ★ badge).
 - Measure after: the target the template sets is **no scroll for a 2-scar, 1-change, L4 body**
   at 678px, and the fold rule for richer bodies is that STATS and the BODY never leave it.
+
+
+---
+
+### WHAT WAS ACTUALLY BUILT, 2026-08-13 (8f.161)
+
+Everything in the design above shipped, verified in the running build with the user's save backed
+up and restored byte-identical. **1241px / 564 words became 678px / 242 words, no scroll**, for the
+identical character.
+
+**Where the code is.** `drawDoll` is a parametric silhouette (`DOLLBODY{}`, one anatomy with a
+per-race row) and **exports `cv._anchor`, the joints it actually drew** - that is what makes the
+Qud layout honest, because a leader pointing at a hardcoded coordinate lies the moment the ogre is
+wider than the human. `drawInv` renders head -> stats -> body -> skills -> story and then places
+the slots as positioned children of `#iDollBox`, drawing the leaders into `#iWire` from the
+anchors. `.iact` is `.act` re-cut for a parchment ground (deliberately NOT the class itself:
+`.act` is 72x86 and tuned to the board's dark band). `ITAB` lives outside `drawInv` for the same
+reason `TREEOPEN` did: buying a perk redraws the sheet.
+
+**Two things arrived from his reference screenshots rather than from this spec, and both are
+merges rather than additions:**
+
+- **Wildermyth's before/after** (`gearDelta`): a stash item states what it CHANGES, ▲▼, off values
+  already in `GEAR{}`, and only where something is being replaced. This is the direct answer to
+  *"not clear whic one is important"*: the comparison was work the player was doing in their head
+  between two cards.
+- **A change names the skill it gave** (`MUTACT{}`, one line per mutation): the teal card says FROM
+  THE CHANGE, because *"why does this one have a skill the others do not"* was answered nowhere.
+
+**Open remainders, both small and both named:**
+
+1. ⚠ **The fold rule is unapplied.** Two lines, and they are written out here so nobody has to
+   re-derive them: `#iBody` needs `height:232px`, and `.ibars .statLine .pv` needs
+   `color:#d8d5cc`. Without the height the ledger stretches that row instead of scrolling inside
+   itself, so a body carrying a change AND a condition AND the circle AND three scars AND
+   ill-fitting armour measures 743px and the sheet scrolls 65px. It was left because a parallel
+   session took the prototype back mid-build.
+2. ⏸ **The bags stay parked** on his ruling, for the reason in the spec above.
+
+**And the process lesson, which is the expensive half of this entry:** the lock was taken
+legitimately (expired at 8.2h) and taken back by the other session mid-build, which then committed
+this work itself as *"in progress, carried from the parallel session"*. ⛔ **An expired lock is not
+a free desk.** `claim.ps1 status` reports how old a lock is; it cannot report whether anybody is
+coming back to it, and 8.2h at 00:40 means something different from 8.2h at 08:45. Worth a rule:
+**before taking an expired lock, check whether that session's numbers are still unspent** - nine
+build numbers and nine entry numbers were outstanding, which said plainly that the session was
+mid-batch rather than gone.
+
+**And a real bug fell out of the same minute, in `tools/claim.ps1`.** The pre-commit `verify` read
+a six-digit CSS colour on a new panel as a claim on another session's entry number: its pattern
+guards with `(?!\d)`, which the letter after the digits satisfies. `Get-UsedNumbers` had been
+hardened against exactly that trap after it once issued a stylesheet value as a backlog number;
+**the hardening never reached the verify side.** Six and eight digit colours are stripped before
+the entry scan now. ⚑ **One fact, two readers, and only one of them was taught** - the same shape
+as the trap list's *"one map was answering two questions"*, and the third time this project has
+paid for it.
