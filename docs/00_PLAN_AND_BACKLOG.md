@@ -77,6 +77,15 @@ fifteen minutes to stop being a wall, and that is a subtraction job.
 > §5 now names - *the event at which a player stops reading options* - belongs to the next
 > playtest.
 
+> **⚑ #143 SHIPPED against complaint A on 2026-08-13 (8f.171), and it is the pass's biggest cut
+> by word count: every road card's prose reduced, 5,474 words to 3,652 across all 34 events,**
+> by the user's direct brief ("reduce them 30-70% each... easier to read, eseier to make
+> choices"). The outcome numbers left the prose entirely and became the aftermath's own loot
+> chips (#137's `.abfx`, now on events, camps and vignettes: one receipt language game-wide),
+> and the coin card is his sketch verbatim: one door, the loot on the card, one click. Nothing
+> was added; prose was cut and a receipt the aftermath already owned was reused. Full record:
+> [`SHIPPED.md`](SHIPPED.md) #143 and [`CHANGELOG.md`](CHANGELOG.md) 8f.171.
+
 ## The work, in order
 
 | | | done when |

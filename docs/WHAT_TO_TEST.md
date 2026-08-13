@@ -23,7 +23,39 @@
 
 ---
 
-## 🚪 THE OPENING IS ONE SCREEN NOW  *(#138 · 2026-08-13 · build log 8f.166)*
+## 📜 EVERY ROAD CARD IS SHORTER, AND THE OUTCOME PAYS IN CHIPS  *(#143 · 2026-08-13 · build log 8f.171)*
+
+**Reach it in three steps:** menu → **A new company** → play to the map and walk onto any event.
+The second node is the quickest proof: it is the coin.
+
+### What changed
+
+Your brief, executed across all 34 road cards: **the prose is a third shorter overall** (the fat
+cards lost 34-48% each), the outcome text stopped narrating numbers, and **what a choice paid now
+shows as the after-battle screen's own loot chips**: ◉ crowns, ❦ provisions, ▤ salvage, ◈ gems,
+plus two new ones, **♥ morale (green up, red down) and ◐ days**. A piece of kit arrives as a loot
+strip with its own glyph, the way an artifact does after a fight. Camp-fire incidents and the
+small road vignettes speak the same chips.
+
+### The coin, your example, exactly
+
+Walk onto **THE COIN IN THE ROAD**: three short lines, the coin already ON the card as a loot
+strip with the finder's name, **♥ +8 MORALE** beside it, and **one button: "Keep walking."** One
+click and you are back on the road, the finder wearing it. No second screen.
+
+### The rule that protects the game
+
+**A card with a real decision still shows no chips before you pick.** The chips appear on the
+outcome, after the click: prices stay on the buttons, the score stays hidden, which is the
+pillar's own corollary. Only one-door pickups (the coin, the cache, the chapel) wear their loot
+up front, because with one door there is nothing to hide.
+
+**Would be a bug:** a chip that disagrees with the top bar's actual change (they are built off
+the same payment now, so this should be impossible: say so loudly if you catch one) · chips
+visible on a card that still has two or more doors · an outcome screen that is an empty box with
+a button · any event text that lost a FACT you needed for the choice (the words were cut, the
+facts and every price line were kept: if a cut went too deep anywhere, name the card and I
+restore that line).
 
 **Reach it in three steps:** menu → **A new company** → play the tavern brawl to the end.
 

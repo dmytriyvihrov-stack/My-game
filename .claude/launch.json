@@ -1,8 +1,8 @@
 {
   "version": "0.0.1",
   "configurations": [
-    { "name": "opening-desk", "runtimeExecutable": "powershell",
-      "runtimeArgs": ["-NoProfile","-ExecutionPolicy","Bypass","-Command","$env:GT_PORT='8781'; & tools/serve.ps1"],
-      "port": 8781 }
+    { "name": "grimtoll", "runtimeExecutable": "powershell",
+      "runtimeArgs": ["-NoProfile","-ExecutionPolicy","Bypass","-Command","$env:GT_PORT=$env:PORT; & tools/serve.ps1"],
+      "port": 8777, "autoPort": true }
   ]
 }
