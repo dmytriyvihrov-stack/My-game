@@ -1735,7 +1735,15 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:11px;pa
 .choice{padding:7px 9px;background:#2a2114;border:1px solid #4d3c22;display:flex;flex-direction:column;
         gap:1px;width:100%}
 .choice:hover:not(:disabled){background:#372a18;border-color:var(--g3)}
-.choice.danger{border-color:#6b2a24}
+/* ═══ #137 - RED HAS TO BE READABLE AS RED ════════════════════════════════
+   A 1px #6b2a24 border on a #2a2114 plate is a border a player has to be
+   already looking for. His ask is *"make it red"*, so the state gets the
+   three things a state needs: a warmer ground, a lit edge, and a title in
+   the colour rather than in gold. ⚠ The TITLE moves and the receipt line
+   does not - the cost line is the one place the exact tactical arithmetic
+   lives (style rule 8) and it must stay legible, not atmospheric. */
+.choice.danger{border-color:#8c3a31;background:#2c1a15}
+.choice.danger b{color:#e08a7e}
 .choice.danger:hover:not(:disabled){background:#3a1d18;border-color:var(--blood-lit)}
 /* only visible because of who is already in the company */
 .choice.racey{border-color:#5a7a6a}
@@ -1874,8 +1882,13 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:11px;pa
    (BB reference: the name and what somebody IS costs three lines there too.
    The old header was a name, a class line, a personality line, a kill row, a
    clan block, a circle block and every tie, all before a single number.) */
+/* #140 point 5 ("Portrain and icon feel better at the left sied"): the tile
+   leads the row now. The name reads off the face rather than back to it, and
+   it puts the two pictures of this person (portrait, field token) in the same
+   corner as the rail of faces they were picked from. */
 #iHead{display:flex;gap:12px;align-items:flex-start}
 #iHeadCol{flex:1;min-width:0}
+#iHead #iField{order:-1}
 #iName{font-family:var(--display);font-size:19px;color:#e0d3b4;font-weight:600;line-height:1.12}
 #iChips{display:flex;gap:5px;margin-top:3px;flex-wrap:wrap;align-items:center}
 .ichip{font-family:var(--mono);font-size:8.5px;letter-spacing:.1em;color:var(--g3);
@@ -1888,45 +1901,103 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:11px;pa
 #iTrait{font-size:12.5px;font-style:italic;color:var(--g3);line-height:1.3;margin-top:4px;
   cursor:help}
 #iTrait b{color:var(--g4);font-style:normal}
-/* how they actually look on the field (user: "show small icon of this
-   character, how it looks... how it actually looks on battlefield. So person
-   has a more clear understanding"). The battle's own sprite(), untouched. */
-#iField{flex:none;width:92px;border:1px solid #3d2f1d;background:#131b17;display:flex;
-  flex-direction:column;align-items:center;justify-content:flex-end;gap:3px;padding:5px 4px 4px}
+/* ═══ #136 point 5 · THE TILE IS A PORTRAIT, WITH THE FIGURE UNDER IT ═════
+   (User: "Picture on the field closer to a portarait".)
+   #133 put the battle sprite here alone, at 58px, which answers "how do they
+   look on the field" and answers nothing about WHO this is: a 26x38 token is
+   a silhouette at any size. The painted bust the roster and the promotion
+   card already use is the portrait, so the tile carries both, stacked and in
+   that order: the FACE is who they are, the token underneath is what you
+   will be looking for on the board. Neither is new art. */
+#iField{flex:none;width:104px;border:1px solid #3d2f1d;background:#131b17;display:flex;
+  flex-direction:column;align-items:center;gap:2px;padding:4px}
+#iField canvas.pface{width:94px;height:74px;border:1px solid #4d3c22;background:#1c150c;
+  display:block}
+#iField .frow{display:flex;align-items:flex-end;gap:5px;height:32px}
 #iField img{image-rendering:pixelated;display:block}
-#iField .fc{font-family:var(--mono);font-size:7.5px;letter-spacing:.13em;color:#7d9490}
+#iField .fc{font-family:var(--mono);font-size:7px;letter-spacing:.11em;color:#7d9490;
+  writing-mode:vertical-rl;transform:rotate(180deg);line-height:1}
 /* ── the stats band: FIRST, one box (Urtuk + Wartales) ──────────────────── */
 #iStats{border:1px solid #3d2f1d;background:#171208;padding:7px 11px;display:flex;
   flex-direction:column;gap:6px}
-.itells{display:flex}
-.itl{flex:1;display:flex;flex-direction:column;gap:1px;border-left:1px solid #2a2114;
-  padding:0 9px;cursor:help;min-width:0}
-.itl:first-child{border-left:none;padding-left:0}
-.itl .tk{font-family:var(--mono);font-size:7.5px;letter-spacing:.15em}
-.itl .tv{font-family:var(--body);font-size:12.5px;color:#d8d5cc;line-height:1.2}
+/* ═══ #136 point 3 · THE POOLS STACK, THE WAY THE FIGHT STACKS THEM ═══════
+   (User, quoting the row back: "ARMOUR LIGHT / 6 / HITPOINTS / 51/57 /
+   NERVE / Happy - Taking too much space now (maybe it is nice to put it one
+   under anothr) - like in battle logic".)
+   ⚑ MEASURED BEFORE MOVING, and the measurement moved the fix: three cells
+   at 226px each, carrying fifteen characters apiece. The row was never TALL,
+   it was WIDE - 704px of band spent on three short readouts. The battle
+   plaque has always stacked these three in a narrow column, so the sheet
+   stacks them the same way and the attributes take the width that frees up.
+   One idiom, two screens, and the row is the same height it was. */
+#iStatTop{display:flex;gap:18px;align-items:flex-start}
+.itells{flex:1;min-width:0;display:grid;grid-template-columns:1fr 1fr;gap:3px 14px;
+  align-content:start}
+.itl{display:flex;align-items:baseline;justify-content:space-between;gap:8px;
+  border-bottom:1px dotted #332818;padding-bottom:2px;cursor:help;min-width:0}
+.itl .tk{font-family:var(--mono);font-size:7.5px;letter-spacing:.13em;flex:none}
+.itl .tv{font-family:var(--body);font-size:12px;color:#d8d5cc;line-height:1.2;
+  text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 /* a banked promotion is spent by clicking the tell itself (#122's door) */
-.itl.spend{cursor:pointer}
+.itl.spend{cursor:pointer;border-bottom-color:#8ca35a}
 .itl.spend .tv:after{content:' ▲';color:#8ca35a;font-size:10px}
 .itl.spend:hover{background:#1e1810}
-.ibars{display:flex;gap:13px}
-.ibars .bcell{flex:1;display:flex;flex-direction:column;gap:2px;min-width:0}
+.ibars{width:236px;flex:none;display:flex;flex-direction:column;gap:0}
 .ibars .statLine{color:#8a7449}
-.ibars .bar{height:7px;border:1px solid rgba(0,0,0,.5)}
+.ibars .statLine .pv{color:#d8d5cc}
+.ibars .bar{height:7px;border:1px solid rgba(0,0,0,.5);margin-bottom:3px}
 .ibars .bar i{display:block;height:100%}
-/* what they DO, as one mono line under the bars */
-.idrv{display:flex;gap:14px;flex-wrap:wrap;font-family:var(--mono);font-size:9.5px;
-  color:#8a7449;letter-spacing:.04em;border-top:1px solid #2a2114;padding-top:5px}
+/* ═══ #140 point 1 · WHAT THE SWING ACTUALLY DOES ═════════════════════════
+   ("reorginise this block - probably a bit mor info about damage".)
+   The line was six equal cells in one grey weight, so the weapon's damage -
+   the thing the whole row is about - read the same as STEP. It is a cell of
+   its own now, first after the actions, in the display face and gold, with
+   the reach beside it and the arithmetic behind it on hover: the base dice
+   the weapon rolls, and what this body's build and nerve add to them.
+   ⚑ #140 point 2 sent ARMOUR STOPS out of this row entirely. It was never a
+   property of the swing: it is what THIS person's own armour does to an
+   incoming blow, so it belongs on the band chip in the bar above, which is
+   where its sentence already lives (ARMOUR_BANDS[k].d). A defensive number
+   sitting in a row of offensive ones is the "readout printing the wrong
+   unit" trap in a milder coat. */
+.idrv{display:flex;gap:14px;flex-wrap:wrap;align-items:baseline;font-family:var(--mono);
+  font-size:9.5px;color:#8a7449;letter-spacing:.04em;border-top:1px solid #2a2114;padding-top:5px}
 .idrv b{color:var(--g4);font-weight:400}
+.idrv .dmg{font-family:var(--display);font-size:13px;color:#e0d3b4;letter-spacing:.02em;
+  cursor:help}
+.idrv .dmgw{cursor:help}
+/* the band chip in the armour row: it explains the whole absorb rule */
+.ibars .band{cursor:help;border-bottom:1px dotted currentColor}
 /* ── the body: the doll IS the gear map (Caves of Qud) ──────────────────── */
-#iBody{display:flex;gap:11px;align-items:stretch;flex:none}
-#iDollBox{flex:none;width:400px;height:232px;position:relative;background:#1c150c;
+/* ⚠ THE HEIGHT IS THE FOLD RULE AND IT IS LOAD-BEARING. Without it the
+   ledger stretches this row instead of scrolling inside itself, and a body
+   carrying a change AND a condition AND the circle AND three scars AND
+   ill-fitting armour measured 743px and put the screen back in a scroll.
+   ⚑ #136 point 1 ("the middle part take a bit smaller space"): 232 -> 196
+   and the box 400 -> 362. That is the DOLL drawn smaller, not furniture
+   moved: the figure and the slot columns are one picture and shrink together. */
+/* ⚑ #140 point 4 ("What happened to the body - i think it could be written
+   below figure"): the marks were a column to the RIGHT of the doll, which
+   made the figure share its row with a list and capped how wide the slot
+   columns could ever be. Underneath, the figure gets the whole width, the
+   slots get real boxes, and the marks become a wrapping row of chips whose
+   detail is in the popover anyway. */
+/* ⚠ AND THE BLOCK SHRINKS BEFORE THE SCREEN DOES. A ratkin in ill-fitting
+   human armour carries an extra mark AND wraps the swing line, which put the
+   sheet 17px over on exactly two of the three races. The FIGURE is fixed and
+   the LEDGER is the give: `flex:0 1 auto` here plus `flex:1 1 auto` with a
+   scroll on the ledger means a crowded body loses a row of chips (which have
+   their detail in the popover anyway) rather than pushing the whole column
+   into a scrollbar. Measured on all three races and the Captain. */
+#iBody{display:flex;flex-direction:column;gap:6px;flex:0 1 auto;min-height:0}
+#iDollBox{width:100%;height:196px;flex:none;position:relative;background:#1c150c;
   border:1px solid #3d3020}
-#iDollBox canvas.doll{position:absolute;top:9px;left:125px;background:none;border:none}
+#iDollBox canvas.doll{position:absolute;background:none;border:none}
 #iDollBox svg.wire{position:absolute;inset:0;pointer-events:none}
 /* a slot is a BUTTON at a body part. 118px is the widest box two columns and a
    150px figure will take inside 400, and every gear name in the file clamps to
    two lines in it. ⚠ .slot is this sheet's own class and nothing else's. */
-.slot{position:absolute;width:118px;background:#221a10;border:1px solid #4d3c22;
+.slot{position:absolute;width:150px;background:#221a10;border:1px solid #4d3c22;
   padding:4px 7px;display:flex;flex-direction:column;gap:1px;text-align:left;
   font-family:var(--body)}
 .slot:hover{border-color:var(--g3);background:#2a2114}
@@ -1945,12 +2016,19 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:11px;pa
    it's nice if it's showing on the body image.") Both: marked on the part,
    named here. Saturation means one thing on this sheet: teal is the strange,
    red is violence. */
-#iLedger{flex:1;min-width:0;display:flex;flex-direction:column;gap:5px;overflow:auto}
-.wchip{display:flex;gap:7px;align-items:baseline;border:1px solid #4a2a24;background:#241310;
-  padding:4px 8px;font-family:var(--body);font-size:11px;line-height:1.32;cursor:help;
-  text-align:left}
+/* #140 point 4 - a wrapping row under the figure, not a column beside it */
+#iLedger{flex:1 1 auto;min-height:24px;max-height:56px;display:flex;flex-wrap:wrap;gap:5px;
+  overflow:auto;align-content:flex-start}
+/* ⚑ #136 point 6 ("For skills and other description follow the showing of
+   battle"): a chip states the NAME and nothing else, and the sentence moves
+   into the same popover the skill cards use. A scar's full description sat
+   inline here and was the longest prose left on the sheet. */
+.wchip{position:relative;display:flex;gap:6px;align-items:baseline;border:1px solid #4a2a24;
+  background:#241310;padding:3px 8px;font-family:var(--body);font-size:11px;line-height:1.3;
+  cursor:help;text-align:left;flex:none;max-width:100%}
 .wchip .ic{flex:none;font-size:11px;color:#c15d55;line-height:1.3}
 .wchip b{color:#d99a90;font-weight:600}
+.wchip .cl{color:#a89a80;font-size:10.5px}
 .wchip.chg{border-color:#1f4a44;background:#0f1d1a}
 .wchip.chg .ic{color:#35e0c8}
 .wchip.chg b{color:#35e0c8}
@@ -2014,14 +2092,26 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:11px;pa
   white-space:nowrap;overflow:hidden}
 .iact .cost{position:absolute;bottom:3px;left:0;right:0;text-align:center;font-size:8.5px;
   line-height:1;color:var(--g4);letter-spacing:.16em}
-.iact .pop{position:absolute;bottom:82px;left:50%;transform:translateX(-50%);width:224px;
-  background:rgba(14,16,10,.98);border:1px solid #6a7a44;padding:8px 10px;z-index:60;
-  display:none;flex-direction:column;gap:3px;pointer-events:none;text-align:left}
-.iact:hover .pop{display:flex}
-.iact .pop .pt{font-family:var(--display);font-size:12px;color:#c3d18a;font-weight:600}
-.iact .pop .pr{font-family:var(--mono);font-size:8.5px;color:#8fa5a2;letter-spacing:.05em}
-.iact .pop .pd{font-family:var(--body);font-size:11px;color:#c2b493;line-height:1.4}
-.iact .pop .src{font-family:var(--mono);font-size:8px;letter-spacing:.1em;color:#35e0c8}
+/* ⚑ #136 point 6: ONE POPOVER FOR THE WHOLE SHEET, and it is the battle's.
+   Skills had it; the gear slots and the marks on the body were still
+   explaining themselves in inline prose or a browser title. Same panel, same
+   three lines (name · mono receipt · one sentence) wherever the sheet has
+   something to say. */
+.iact .pop,.slot .pop,.wchip .pop{position:absolute;bottom:calc(100% + 6px);left:50%;
+  transform:translateX(-50%);width:224px;background:rgba(14,16,10,.98);border:1px solid #6a7a44;
+  padding:8px 10px;z-index:60;display:none;flex-direction:column;gap:3px;pointer-events:none;
+  text-align:left}
+.slot .pop,.wchip .pop{border-color:#6b5330;background:rgba(20,15,8,.98)}
+.iact:hover .pop,.slot:hover .pop,.wchip:hover .pop{display:flex}
+.pop .pt{font-family:var(--display);font-size:12px;color:#c3d18a;font-weight:600}
+.slot .pop .pt,.wchip .pop .pt{color:var(--g4)}
+.pop .pr{font-family:var(--mono);font-size:8.5px;color:#8fa5a2;letter-spacing:.05em}
+.slot .pop .pr,.wchip .pop .pr{color:#a38652}
+.pop .pd{font-family:var(--body);font-size:11px;color:#c2b493;line-height:1.4}
+.pop .src{font-family:var(--mono);font-size:8px;letter-spacing:.1em;color:#35e0c8}
+/* a slot's pop hangs BELOW when the slot is near the top of the box, or it
+   would be clipped by the sheet's own scroll box */
+.slot.lowpop .pop,.wchip.lowpop .pop{bottom:auto;top:calc(100% + 6px)}
 /* the last card in the row is the way in to everything they know but cannot
    do right now: it is a DOOR, not a skill, so it does not wear a skill's
    ground. (The old sheet printed all of it, always.) */
@@ -2033,12 +2123,26 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:11px;pa
    (User: "we should spend less space for inventory... and maybe a bit more
    space to the history of character.") Two lines instead of one, the roads
    walked, ties and clan folded in, and the rest one click away. */
-#iStory{flex:1 1 auto;min-height:44px;overflow:auto;display:flex;flex-direction:column;gap:2px}
-#iStory .lbl{margin-top:2px}
-.imem{display:flex;gap:7px;align-items:baseline}
-.iacc{width:100%;background:none;border:1px dashed #4d3c22;color:#8a7449;font-family:var(--mono);
-  font-size:8px;letter-spacing:.1em;text-align:left;padding:3px 7px;margin-top:3px;cursor:pointer}
+/* ═══ #136 point 10 · THE STORY IS AN ACCORDION, AND ITS HEAD CARRIES THE
+   KILLS ═══ (User: "What happened to them accordion. And I 100% want number
+   of kills (with heads)".)
+   ⚑ The two asks are one control. A row of heads is the shortest true
+   summary of a life on this roster, so it belongs on the thing you click to
+   read the rest, not on a chip up in the header where it was competing with
+   the race and the class for the same eye. Shut, the block is one line.
+   ⚠ The heads come off `killsBy`, never `kills`. */
+#iStory{flex:0 0 auto;display:flex;flex-direction:column;gap:2px;min-height:0}
+#iStory.open{flex:1 1 auto;overflow:auto}
+#iStoryBody{display:none;flex-direction:column;gap:2px;padding-top:3px}
+#iStory.open #iStoryBody{display:flex}
+.iacc{width:100%;background:#171208;border:1px solid #3d2f1d;color:#8a7449;
+  font-family:var(--mono);font-size:8.5px;letter-spacing:.1em;text-align:left;padding:5px 9px;
+  cursor:pointer;display:flex;align-items:center;gap:10px}
 .iacc:hover{border-color:#8a7449;color:#c9b98f;background:#1c1509}
+.iacc .ah{flex:1;text-align:left}
+.iacc .kills{font-size:12px;letter-spacing:1px;cursor:pointer}
+.iacc .kn{font-family:var(--mono);font-size:8.5px;color:#a89468;letter-spacing:.06em}
+.iacc .none{color:#5c4a2c;font-style:italic;letter-spacing:0;font-size:8.5px}
 #iFoot{display:flex;justify-content:flex-end;align-items:center;gap:9px;flex:none;padding-top:2px}
 #iDismiss{font-family:var(--mono);font-size:8.5px;letter-spacing:.1em;color:#8a5a4a;
   background:none;border:1px solid #4a3028;padding:4px 10px}
@@ -2083,7 +2187,13 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:11px;pa
    visible to spend it on reads as a broken screen (the lesson the tree
    drawer was written around), and a tab can hide one completely. Hence the
    ★ badge on the tab head: it is visible from either side. */
-#iStash{width:300px;background:#161009;border-left:2px solid #3d2f1d;flex:none;
+/* ⚑ #140 point 3 ("at least 50% more space for perks / inventory - it is huge
+   part of the game"): 300 -> 450, which is his 50% exactly. The width comes
+   off the character column, which had room to give once the marks moved under
+   the figure (point 4) and the pools stopped spanning the band (#136 point 3).
+   ⚠ Every number in the body zone below is measured against the column this
+   leaves, so the two moves are one change. */
+#iStash{width:450px;background:#161009;border-left:2px solid #3d2f1d;flex:none;
         display:flex;flex-direction:column;min-height:0;padding:0;overflow:hidden}
 #iTabs{display:flex;flex:none;border-bottom:2px solid #3d2f1d}
 .itab{flex:1;position:relative;font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;
@@ -2095,6 +2205,28 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:11px;pa
 .itab .tbadge{position:absolute;top:3px;right:6px;min-width:14px;height:14px;background:#8ca35a;
   color:#10140c;font-family:var(--mono);font-size:9px;line-height:14px;border-radius:7px;
   font-weight:700;letter-spacing:0}
+/* ═══ #136 point 11 · A PERK POINT IS NOT A BADGE, IT IS AN ALARM ═════════
+   (User: "Make it very clear, when i have perk to spend".)
+   ⚑ #133 put a 14px dot on a tab head and called it solved. The failure it
+   was guarding against - a banked point with nothing visible to spend it on
+   reads as a broken screen - was never about whether the number EXISTS on
+   the surface, it is about whether the player is TOLD. So it now says so in
+   four places at once and one of them moves: the tab is gold and pulsing,
+   it carries the word, a banner sits under the tabs, and the ROSTER puts a
+   star on anybody with something unspent, which is the only one of the four
+   that can be seen without opening that person's sheet. */
+.itab.hot{background:#2e2611;color:#f0dCa0;animation:perkpulse 1.9s ease-in-out infinite}
+.itab.hot .tbadge{background:#d9bd7e;box-shadow:0 0 0 2px rgba(217,189,126,.28)}
+@keyframes perkpulse{0%,100%{box-shadow:inset 0 0 0 0 rgba(217,189,126,0)}
+                     50%{box-shadow:inset 0 0 14px 0 rgba(217,189,126,.30)}}
+@media (prefers-reduced-motion:reduce){.itab.hot{animation:none}}
+#iSpend{flex:none;background:#2e2611;border-bottom:1px solid #6b5330;color:#f0dca0;
+  font-family:var(--mono);font-size:9px;letter-spacing:.1em;padding:6px 9px;line-height:1.4;
+  cursor:pointer;text-align:left;width:100%}
+#iSpend:hover{background:#3a300f}
+#iSpend b{color:#fff0c8;font-weight:700}
+/* and on the rail, so it is visible without opening anybody */
+.rmem .star{font-size:11px;color:#d9bd7e;text-shadow:0 0 5px rgba(217,189,126,.6)}
 .itabbody{flex:1;overflow:auto;padding:10px;display:none;flex-direction:column;gap:5px}
 .itabbody.on{display:flex}
 .item{width:100%;background:#221a10;border:1px solid #4d3c22;padding:5px 8px;display:flex;
@@ -2386,6 +2518,36 @@ body:has(#world.on) #audioBtn{top:8px;bottom:auto;font-size:11px;padding:3px 8px
   color:#7a6238;text-align:center;line-height:1.3}
 .abloot .abwhat{font-size:13px;color:#d3c194}
 .abloot .abgot{font-family:var(--mono);font-size:11px;color:#8ca35a;margin-top:2px}
+/* ═══ #137 - THE HAUL IS A RECEIPT, AND A RECEIPT HAS ICONS ON IT ═════════
+   (User, 2026-08-13, with a red arrow drawn at the line: *"bigger what you
+   get + show curency or object icon."*)
+
+   `.abres` printed the loot row's hand-written `c` string at 11.5px mono -
+   smaller than the crew cards above it and smaller than the accordion below
+   it, on the one line of this screen that answers WHAT DID THAT FIGHT PAY.
+
+   ⛔ THE CHIPS ARE BUILT OFF `haul.fx`, NEVER OFF THAT STRING. `fx` is the
+   object `takeLoot()` actually pays out, so a chip and a payment cannot
+   disagree - which is not hypothetical: six rows of these tables were caught
+   printing a price the game did not charge, see the note above takeLoot.
+   The prose survives as the `.fxsub` line underneath, which is the flavour
+   it always was.
+
+   The glyphs are RES_ICON, unchanged, because that is what the top bar has
+   used since #103. A second set of resource icons on this screen would be
+   #112's "one row disagreeing with itself" all over again. */
+.abfx{display:flex;gap:9px;flex-wrap:wrap;align-items:stretch}
+.fxc{display:flex;align-items:center;gap:8px;border:1px solid #3d2f1d;
+  background:#171208;padding:7px 12px 7px 10px}
+.fxi{font-size:20px;line-height:1}
+.fxn{font-family:var(--mono);font-size:20px;font-weight:700;line-height:1;letter-spacing:-.01em}
+.fxl{font-family:var(--mono);font-size:8.5px;letter-spacing:.14em;color:#8a7449;
+  display:block;margin-top:3px}
+.fx-crowns .fxi,.fx-crowns .fxn{color:var(--gold)}
+.fx-food .fxi,.fx-food .fxn{color:var(--grain)}
+.fx-salvage .fxi,.fx-salvage .fxn{color:var(--wood)}
+.fx-gems .fxi,.fx-gems .fxn{color:var(--gem)}
+.fxsub{font-family:var(--mono);font-size:10px;color:#6b5330;padding:3px 2px 0}
 .abres{font-family:var(--mono);font-size:11.5px;color:#8ca35a;padding:2px 2px 0}
 .abres span{color:#a89468}
 /* the enemy accordion: collapsed by default, the count is the headline */
@@ -2619,8 +2781,13 @@ a.popt.sendit{display:block;text-decoration:none}
 </section>
 
 <section class="screen" id="inv">
-  <div id="iBar"><h2>THE COMPANY</h2>
-    <span class="lbl" style="color:#8a7449">click a stash item to equip · click a slot to strip</span>
+  <!-- #140 points 11+12: the standing instruction is gone (every control on
+       this screen says what it does on hover, and a line telling you how to
+       click is the one piece of text that can never be true of all of them),
+       and the title is the company's OWN name, the two words the player chose
+       at the Three Bells. drawInv fills it; an old save with no name falls
+       back to the generic. -->
+  <div id="iBar"><h2 id="iCoName">THE COMPANY</h2>
     <span id="iNag" class="lbl" style="color:#c9a227;display:none">NEW KIT IN THE STASH — PUT IT ON SOMEBODY</span>
     <div class="sep"></div><button id="iBack">BACK TO THE ROAD</button></div>
   <div id="iMain"><div id="iRoster"></div><div id="iChar"></div><div id="iStash"></div></div>
@@ -3974,8 +4141,14 @@ function swingOf(u){
   const a=(u.acts||[]).filter(x=>x.dmg&&!x.arcane).sort((x,y)=>y.dmg[1]-x.dmg[1])[0];
   if(!a)return null;
   const m=1+(u.morBonus||0)+thews(u,a);
+  /* ⚠ `a` and `m` ride along for #140 point 1's hover, which shows the dice
+     the weapon rolls and what this body adds to them. They are handed BACK
+     rather than recomputed at the call site: the choice of which act counts
+     as "the swing" is this function's rule, and a second copy of it in the
+     sheet is the shape that has bitten this file repeatedly. */
   return {n:a.n,lo:Math.round((a.dmg[0]+(u.dmgBonus||0))*m),
-              hi:Math.round((a.dmg[1]+(u.dmgBonus||0))*m)};
+              hi:Math.round((a.dmg[1]+(u.dmgBonus||0))*m),
+          a:a,mult:m,bonus:(u.dmgBonus||0)};
 }
 /* ═══════════════════════════════════════════════════════════════════════
    ROAD HISTORY — 2-4 remembered things per person, no bonuses attached.
@@ -4143,7 +4316,11 @@ const MUTPART={gills:'head'};
    points at a hardcoded coordinate is a lie the moment the ogre is wider
    than the human. The joint positions come out of the same table that drew
    them, so the wire always lands on the shoulder it is naming. */
-const DOLL_W=150,DOLL_H=214;
+/* the backing-store units the anatomy is authored in, and the box it is
+   DISPLAYED at. #136 point 1 shrank the display size and nothing else: the
+   anatomy table below is untouched and the anchors are scaled on the way out,
+   so a smaller doll cannot pull a leader off the shoulder it names. */
+const DOLL_W=150,DOLL_H=214,DOLL_DW=130,DOLL_DH=186;
 const DOLLBODY={
   /*        head        shoulder        waist      hip        knee foot  arm  hunch tail snout */
   human :{hy:26,hrx:14,hry:16.5,sy:48,sw:38,wy:88,ww:30,hpy:114,hw:34,ky:154,fy:190,aw:9,hn:0,tail:0,snout:0},
@@ -4155,7 +4332,7 @@ function drawDoll(cv,p){
   /* drawn at 2x and displayed at 1x: a silhouette outline goes to mush at
      device resolution otherwise, and this canvas is looked at up close. */
   const W=DOLL_W,H=DOLL_H,S=2;
-  cv.width=W*S;cv.height=H*S;cv.style.width=W+'px';cv.style.height=H+'px';
+  cv.width=W*S;cv.height=H*S;cv.style.width=DOLL_DW+'px';cv.style.height=DOLL_DH+'px';
   const g=cv.getContext('2d');
   g.setTransform(S,0,0,S,0,0);
   g.clearRect(0,0,W,H);
@@ -4184,13 +4361,18 @@ function drawDoll(cv,p){
                 [cx+B.ww/2+lean*0.5,B.wy],[cx+B.hw/2,B.hpy],
                 [cx-B.hw/2,B.hpy],[cx-B.ww/2+lean*0.5,B.wy]]);
   /* the arms hang off the shoulder corners and end just past the hip: that
-     end point is the HAND, and it is where the weapon boxes wire to. */
-  const armDrop=B.hpy+8;
+     end point is the HAND, and it is where the weapon boxes wire to.
+     ⚑ #140 point 9 ("add a bit more space between hand and body"): GAP pushes
+     the forearm and the hand outward, so the silhouette has daylight between
+     the arm and the waist instead of one solid mass. It is applied at the
+     WRIST end only: widening the shoulder too would just make everybody
+     broader, which is the ogre's whole distinguishing feature. */
+  const armDrop=B.hpy+8,GAP=B.aw*0.85+2;
   shape('armR',[[cx-B.sw/2+lean,B.sy+2],[cx-B.sw/2-B.aw+lean,B.sy+6],
-                [cx-B.ww/2-B.aw,armDrop],[cx-B.ww/2-1,armDrop-3],
+                [cx-B.ww/2-B.aw-GAP,armDrop],[cx-B.ww/2-1-GAP,armDrop-3],
                 [cx-B.sw/2+lean+2,B.sy+22]]);
   shape('armL',[[cx+B.sw/2+lean,B.sy+2],[cx+B.sw/2+B.aw+lean,B.sy+6],
-                [cx+B.ww/2+B.aw,armDrop],[cx+B.ww/2+1,armDrop-3],
+                [cx+B.ww/2+B.aw+GAP,armDrop],[cx+B.ww/2+1+GAP,armDrop-3],
                 [cx+B.sw/2+lean-2,B.sy+22]]);
   const lw=B.hw/2-2;
   shape('legL',[[cx-B.hw/2,B.hpy-2],[cx-1.5,B.hpy-2],[cx-3,B.ky],[cx-5,B.fy],
@@ -4219,6 +4401,95 @@ function drawDoll(cv,p){
     g.beginPath();g.moveTo(cx-B.hw/2+2,B.hpy-6);
     g.quadraticCurveTo(cx-B.hw-16,B.hpy+14,cx-B.hw-6,B.fy-2);
     g.strokeStyle=line;g.lineWidth=2.4;g.stroke();
+  }
+  /* ═══ #136 point 2 · THE KIT IS WORN, NOT LISTED BESIDE ═══════════════════
+     (User: "More proper char image and arts screen (like caves of qud)".)
+     #133 drew a bare body and hung four labelled boxes around it, which is
+     half of the paper doll: the boxes said what was equipped and the picture
+     did not. A doll that does not change when you put plate on it is a
+     diagram of a species, not of a person.
+     ⛔ CLASSIFIED OFF THE ARMOUR VALUE, NOT OFF THE ITEM, for the same reason
+     the battle's three weights are: an ogre in stitched hides, a ratkin in a
+     scrap harness and anything a future event invents must all get an answer.
+     Same for the weapon: it is drawn from what the weapon DOES (range, reach,
+     hands) and never from its key, so a new entry in GEAR{} arrives wearing
+     the right silhouette without being added to a list here. */
+  const eqOf=k=>GEAR[(p.eq||{})[k]];
+  const arm_=eqOf('armour'),main_=eqOf('main'),off_=eqOf('off'),trin_=eqOf('trinket');
+  if(arm_){
+    const v=arm_.armour||0;
+    const kit=v>=70?{f:'#8e9aa0',l:'#c3ced2',plate:true}
+             :v>=25?{f:'#5f676c',l:'#8d989d',plate:false}
+                   :{f:'#6b4a2a',l:'#8f6a3f',plate:false};
+    const bp=poly.body,inset=[];
+    /* the torso, pulled in a couple of pixels so the body's own line still
+       reads as the edge of the person */
+    const bc=[cx+lean*0.5,(B.sy+B.hpy)/2];
+    bp.forEach(q=>inset.push([q[0]+(bc[0]-q[0])*0.13,q[1]+(bc[1]-q[1])*0.10]));
+    paint(inset,kit.f,kit.l);
+    /* shoulders: a cap each side on anything heavier than leather */
+    if(v>=25){
+      [[-1,'armR'],[1,'armL']].forEach(sd=>{
+        const x=cx+lean+sd[0]*(B.sw/2);
+        g.beginPath();g.ellipse(x,B.sy+5,B.aw*0.95,6.5,0,0,7);
+        g.fillStyle=kit.f;g.fill();g.strokeStyle=kit.l;g.lineWidth=1.3;g.stroke();});
+    }
+    /* and a helm on plate */
+    if(kit.plate){
+      g.beginPath();g.ellipse(hcx,hcy-1.5,B.hrx*0.95,B.hry*0.85,0,Math.PI,0);
+      g.fillStyle=kit.f;g.fill();g.strokeStyle=kit.l;g.lineWidth=1.4;g.stroke();
+      g.beginPath();g.moveTo(hcx,hcy-B.hry*0.8);g.lineTo(hcx,hcy+B.hry*0.15);
+      g.strokeStyle=kit.l;g.lineWidth=1.2;g.stroke();
+    }
+  }
+  /* ⚑ #140 point 8 - the weapon goes in the figure's RIGHT hand, which on a
+     body facing the player is the viewer's LEFT. It was on the other side,
+     which read as left-handed to everybody who looked at it. */
+  const hand={x:cx-B.ww/2-B.aw*0.6-GAP,y:armDrop-4};
+  const steel='#b9c3c6',wood='#6b4a2a';
+  const shaft=(x,y1,y2,w,col)=>{g.strokeStyle=col;g.lineWidth=w;g.lineCap='butt';
+    g.beginPath();g.moveTo(x,y1);g.lineTo(x,y2);g.stroke();};
+  if(main_){
+    const hx=hand.x+3;
+    if(main_.range){                                   /* a bow: the arc */
+      g.strokeStyle=wood;g.lineWidth=2.2;
+      g.beginPath();g.arc(hx-2,hand.y-18,20,-1.25,1.25);g.stroke();
+      g.strokeStyle='#cfc9b4';g.lineWidth=1;
+      g.beginPath();g.moveTo(hx+4,hand.y-37);g.lineTo(hx+4,hand.y+1);g.stroke();
+    }else if((main_.reach||1)>=2){                     /* a spear: long shaft */
+      shaft(hx,hand.y-46,hand.y+12,2.6,wood);
+      g.beginPath();g.moveTo(hx,hand.y-58);g.lineTo(hx+4.5,hand.y-45);
+      g.lineTo(hx-4.5,hand.y-45);g.closePath();
+      g.fillStyle=steel;g.fill();g.strokeStyle='#5c6367';g.lineWidth=1;g.stroke();
+    }else if(main_.hands===2){                         /* two hands: a head */
+      shaft(hx,hand.y-40,hand.y+10,3.2,wood);
+      g.fillStyle=steel;g.strokeStyle='#5c6367';g.lineWidth=1;
+      g.beginPath();g.rect(hx-6,hand.y-48,12,10);g.fill();g.stroke();
+    }else{                                             /* a blade and a guard */
+      shaft(hx,hand.y-34,hand.y+8,2.4,steel);
+      g.strokeStyle='#6b5330';g.lineWidth=2.4;
+      g.beginPath();g.moveTo(hx-6,hand.y-6);g.lineTo(hx+6,hand.y-6);g.stroke();
+    }
+  }
+  if(off_){
+    const ox=cx+B.ww/2+B.aw*0.6+GAP+3,oy=armDrop-8;
+    if(off_.dodge){                                    /* a shield */
+      g.beginPath();g.ellipse(ox,oy,9.5,12,0,0,7);
+      g.fillStyle='#4a3a22';g.fill();g.strokeStyle='#8f7345';g.lineWidth=1.5;g.stroke();
+      g.beginPath();g.ellipse(ox,oy,3,3,0,0,7);g.fillStyle='#8f7345';g.fill();
+    }else if(off_.rangedDmg){                          /* a quiver of arrows */
+      g.fillStyle=wood;g.strokeStyle='#8f6a3f';g.lineWidth=1.2;
+      g.beginPath();g.rect(ox-4,oy-6,8,16);g.fill();g.stroke();
+      g.strokeStyle='#cfc9b4';g.lineWidth=1;
+      [-2,0,2].forEach(d=>{g.beginPath();g.moveTo(ox+d,oy-6);g.lineTo(ox+d,oy-13);g.stroke();});
+    }else{                                             /* something held */
+      shaft(ox,oy-10,oy+8,2,steel);
+    }
+  }
+  if(trin_){                                           /* a glint at the throat */
+    g.save();g.shadowColor='#d9bd7e';g.shadowBlur=5;
+    g.beginPath();g.ellipse(hcx,B.sy+1,2.6,2.6,0,0,7);
+    g.fillStyle='#d9bd7e';g.fill();g.restore();
   }
   /* how much of them is still standing: the torso fills from the feet up.
      The bars above print the number; this is the shape of it. */
@@ -4269,12 +4540,20 @@ function drawDoll(cv,p){
      armR is screen-LEFT and armL is screen-RIGHT (they are the body's own
      left and right, as the scar map has always named them), and the weapon
      goes in the hand on the side the battle sprites face: screen right. */
+  /* ⚠ scaled into DISPLAY pixels on the way out. The anatomy is authored in
+     150x214 and shown at 130x186, and a leader drawn from an unscaled anchor
+     lands a centimetre off the shoulder it is naming. */
+  const kx=DOLL_DW/W,ky=DOLL_DH/H;
+  const at=(x,y)=>({x:x*kx,y:y*ky});
   cv._anchor={
-    trinket:{x:hcx+B.hrx*0.6,y:hcy-B.hry*0.5},
-    armour :{x:cx-B.ww*0.35,y:(B.sy+B.hpy)/2},
-    main   :{x:cx+B.ww/2+B.aw*0.6,y:armDrop-4},
-    off    :{x:cx-B.ww/2-B.aw*0.6,y:armDrop-4},
-    pet    :{x:cx+B.hw*0.30,y:B.fy-4}
+    trinket:at(hcx+B.hrx*0.6, hcy-B.hry*0.5),
+    armour :at(cx-B.ww*0.35, (B.sy+B.hpy)/2),
+    /* main is the figure's RIGHT hand: viewer's left. See point 8 above. */
+    main   :at(cx-B.ww/2-B.aw*0.6-GAP, armDrop-4),
+    off    :at(cx+B.ww/2+B.aw*0.6+GAP, armDrop-4),
+    /* the bag rides the hip on the weapon side, low and behind the hand */
+    bag    :at(cx-B.hw*0.42, B.hpy+4),
+    pet    :at(cx+B.hw*0.30, B.fy-4)
   };
 }
 /* the compact character card — one glance at who somebody is. Used wherever a
@@ -4441,13 +4720,49 @@ const GEAR={
            forCls:'archer',bonus:{agi:2},bonusD:'+2 AGI more on an archer',
            d:'Two discs of ground glass in a bent wire frame. Whoever wears them can suddenly '+
              'count the rivets on a man at forty paces and cannot find their own feet. The '+
-             'company has decided this is witchcraft and has stopped short of saying so.'}
+             'company has decided this is witchcraft and has stopped short of saying so.'},
+  /* ═══ #141 · THE COIN THAT WILL NOT SAY WHAT IT DOES ════════════════════
+     (User: "you found an unusial coin. 'It feels goood to keep in the hand,
+     but you don`t know why'. It is trinket and it increses dodge and hit
+     chance by 7%, but never writes about it openly in the item description
+     (but stat changes noticibly)".)
+
+     ⚑ `hush` IS THE WHOLE MECHANISM AND IT IS ONE WORD ON ONE ROW. Two
+     renderers write a piece of kit out - `gearLine` for the inventory row
+     and `tipFor` for the hover - and both build their numbers by walking the
+     SAME fields the engine reads. `hush` tells those two to skip the numeric
+     block and print the flavour alone. It does not touch what the item DOES:
+     `unitFrom` adds the +7s exactly the way it adds a shield's, so the
+     battle plaque's CHANCE TO HIT and DODGE both move seven points the
+     moment somebody puts it on. The item is silent. The body is not.
+
+     ⛔ DO NOT HIDE IT BY LEAVING THE FIELDS OFF AND APPLYING THE BONUS
+     SOMEWHERE ELSE. That is a second source of truth for a stat, which is
+     the shape this file has already paid for half a dozen times. The fields
+     stay canonical and the RENDERER is what keeps its mouth shut.
+
+     ⚠ It costs nothing at all, which every other strange trinket here does
+     not, and nothing in the slice ever explains it. That is the hook. */
+  oddcoin:{n:'An Unusual Coin',   slot:'trinket',g:'⊚',hit:+7,dodge:+7,hush:true,
+           d:'It feels good to keep in the hand. Nobody can say why.'}
 };
 /* MAIN/SECOND WEAPON → MAIN HAND / OFF HAND (user). The old names described
    what you put there; the new ones describe what is holding it, which is what
    makes "this takes both hands" read as a fact about the body rather than an
    arbitrary rule. A shield, a quiver and a knife are not "second weapons". */
-const SLOTS=[['armour','ARMOUR'],['main','MAIN HAND'],['off','OFF HAND'],['trinket','TRINKET']];
+/* ⚑ #140 point 7 · THE BAG, AND IT IS DELIBERATELY EMPTY ══════════════════
+   (User: "Add 'one more' item slot for character - a bag. In the future you
+   will be able to take throwbles and potions there".)
+   #133 PARKED this on the honest ground that the game has no throwable and no
+   mid-fight swap rule, so a bag would be furniture. He has now ruled it in
+   anyway, and the ruling is right for a reason worth writing down: the slot
+   is not the feature, it is the PROMISE of one, and a promise on the sheet is
+   what makes the first throwable a thing the player already has somewhere to
+   put. ⛔ NOTHING IN `GEAR{}` CARRIES `slot:'bag'` YET, on purpose: the slot
+   renders empty, says what it is for, and cannot be filled by accident. The
+   day a potion exists it needs no code here. */
+const SLOTS=[['armour','ARMOUR'],['main','MAIN HAND'],['off','OFF HAND'],
+             ['trinket','TRINKET'],['bag','BAG']];
 
 /* ═══════════════════════════════════════════════════════════════════════
    PETS — the Captain only. A pet never fights. It follows him, stands at
@@ -4821,45 +5136,76 @@ function materialPool(o){
 }
 /* old saves carry separate wood/iron — fold them into one pool on load */
 materialPool(LEGACY.bank);
-const SLOT_ICON={armour:'⛨',main:'✊',off:'🤚',trinket:'✧'};
+const SLOT_ICON={armour:'⛨',main:'✊',off:'🤚',trinket:'✧',bag:'▣'};
 const cIcon=k=>CLASS_ICON[k]||'✦';
 const rIcon=k=>RACE_ICON[k]||'◆';
 /* ═══ HOVERING A CLASS OR A RACE SAYS WHAT IT IS (user) ══════════════════
    The sheet named both and explained neither, which is fine on your fourth
    run and useless on your first. Each is one sentence about what the thing is
    FOR, then the mechanical facts that follow from it. */
+/* ═══ #142 · THE RACE BOX WAS LONG BECAUSE IT WAS SAYING EVERYTHING TWICE ══
+   (User, 2026-08-13: "shorten description of race (now it is huge thing with
+   too little info)".)
+
+   MEASURED FIRST, ARGUED AFTERWARDS, which is #88's rule. The three boxes ran
+   125 / 116 / 159 WORDS of prose in a 290px tooltip, and then the derived
+   block underneath printed the race's skill with its real numbers and the
+   line `takes N of the party · N crowns a day`. So the ogre's box spent 123
+   words on `x` alone, and the facts inside those words were:
+
+     step · party seats · wage   - all three ALREADY PRINTED underneath it
+     the race skill, in prose    - ALREADY PRINTED underneath it, off the act
+                                   itself, with the numbers this body's
+                                   weapon actually gives it
+     the group formation         - the only fact in there that is nowhere else
+     "slightly quicker, slightly weaker" - the stat lean, as an adjective
+
+   ⚑ THAT IS THE WHOLE COMPLAINT IN ONE LINE: it was huge because it was a
+   hand-typed second copy of the block below it, and it had too little info
+   because the two facts that were NOT duplicated were the two it stated
+   worst. The lean is ±1 and ±2 on four named axes and it was two adjectives;
+   THE LINE's +5 dodge was the one formation number never written down.
+
+   ⛔ AND THE SECOND COPY HAD ALREADY GONE WRONG, which is why this is a fix
+   and not a trim. `human.x` said "No lean either way". RACEMOD.human is
+   `int:+2`. The prose has been contradicting the table for as long as both
+   have existed, and no reader could have caught it, because the box that
+   would have shown the truth was the box being replaced by the sentence.
+
+   So `x` is gone. What replaces it is DERIVED in bindLoreTips from RACEMOD,
+   RACESTEP, COST, WAGE and FORM, and cannot go stale. What stays authored is
+   `d` (who they are, cut to the bone) and `form` (the name of the group
+   trick and the shape you have to stand in to get it), because a formation
+   is a decision about placement and no table holds the sentence for it.
+   The NUMBER in the formation line is read from FORM, never typed here.
+
+   ⚠ `form.k` NAMES A FIELD OF `FORM`, WHICH IS DECLARED FOUR THOUSAND LINES
+   BELOW THIS ONE. That is fine only because nothing reads it until a hover.
+   Do not "simplify" it by putting FORM.lineDodge in this table: it is a
+   temporal-dead-zone throw that aborts the entire script, and this file has
+   shipped that crash once already. */
 const RACEHELP={
   human:{t:'HUMAN',
-    d:'Two generations off the ships and militarily a joke, which the ratkin will tell you at '+
-      'length. What humans are good at is farming, breeding animals and turning up — which is '+
-      'why anybody employs them at all.',
-    x:'Step 4. Takes 2 of your party room and 2 crowns a day. No lean either way - the LINE '+
-      'formation is the trick anybody can learn, and humans are who it was written for. '+
-      'Every human has the KICK: one hex straight back, away from you, almost no damage - and '+
-      'anybody else still in reach of them gets a free half-swing as they are torn away. It is '+
-      'the cheapest way to decide where somebody else is standing, and the cheapest combo in '+
-      'the game.'},
+    d:'Two generations off the ships and militarily a joke. What they are good at is farming, '+
+      'breeding animals, and turning up.',
+    form:{n:'THE LINE',w:'of anyone, in a row',k:'lineDodge',u:'dodge to each of them',
+          note:'The one formation anybody can stand in. It was written for them.'}},
   ratkin:{t:'RATKIN',
-    d:'The most advanced people on the island and the worst manufacturers on it: their edge is '+
-      'making a great deal of cheap rubbish very fast. Organised in clans, and most of their '+
-      'glorious history is ratkin killing ratkin.',
-    x:'Step 5 — the fastest thing you can hire. Takes only 1 of your party room and 1 crown a '+
-      'day. Slightly quicker, slightly weaker. Three of them on one enemy is THE SWARM: −14 to '+
-      'that enemy\'s chance to hit. Every ratkin can POISON THE BLADE — for two rounds '+
-      'everything that hits that body does 15% more, and it stacks. They are the '+
-      'weakest thing you can hire and they are what makes everybody else hurt.'},
+    d:'The most advanced people on the island and the worst manufacturers on it: cheap rubbish, '+
+      'very fast. Organised in clans, mostly at war with each other.',
+    form:{n:'THE SWARM',w:'ratkin, on one enemy',k:'swarmHit',u:'to its chance to hit',
+          note:'The weakest thing you can hire, and what makes everybody else hurt.'}},
   ogre:{t:'OGRE',
+    /* ⚠ THE WAGE JOKE SURVIVES THE CUT ON PURPOSE. It is the one sentence in
+       the old block that was not a second copy of a number: it explains why
+       the biggest body on the field is the cheapest line in the ledger, which
+       otherwise reads as a bug. A line that makes a number legible is not the
+       same thing as a line that repeats one. */
     d:'Huge, slow, and profoundly uninterested. They live where nobody else wants to and farm '+
-      'it badly. Mostly they want to be left alone, which is exactly why they and the ratkin '+
-      'manage to share a country.',
-    x:'Step 3, the slowest. Takes 3 of your party room, the seats of three ratkin, and is paid '+
-      'ONE crown a day like the smallest of them, because nobody has told him otherwise and he '+
-      'has never thought to ask. Stronger, clumsier. Three within two hexes is THE WEIGHT: −9 '+
-      'morale a turn to everything nearby. And only an ogre can PICK UP AND THROW — anything '+
-      'on the next tile: one of yours (it keeps its own turn), one of theirs, or a boulder '+
-      'standing on its own. The boulder comes back down where it lands, which makes an ogre '+
-      'the only body on the field that can change what the map is. Nothing ogre-sized gets '+
-      'lifted, kicked or shoved by anybody.'}
+      'it badly. Mostly they want to be left alone. Paid one crown a day, like the smallest '+
+      'ratkin, because nobody has told him otherwise and he has never thought to ask.',
+    form:{n:'THE WEIGHT',w:'ogres, near each other',k:'weightMor',u:'nerve a turn to everything nearby',
+          note:'Slow enough that they arrive together anyway. Keep them that way.'}}
 };
 const CLASSHELP={
   captain:{d:'You. On the field, in reach, and worth killing — which is the point: leadership '+
@@ -6744,8 +7090,16 @@ function unitFrom(p){
   if(off&&off.dodge)u.dodgeBase+=off.dodge;
   if(off&&off.hit)u.mskill+=off.hit;
   /* a trinket can sharpen the eye too — the ground-glass eyes are gear, not a stat */
+  /* ⚠ #141 - AND `dodge` WAS THE HALF THAT WAS NEVER WIRED. `hit` has been
+     read off a trinket since the ground-glass eyes went in; `dodge` was read
+     off the OFF HAND only, so a trinket carrying it was a field the GEAR
+     table would happily accept, both renderers would happily print, and
+     nothing on the board would ever apply. It is the file's own recurring
+     shape one more time: two slots, one vocabulary, and only one of them
+     taught the second word. */
   const trk=GEAR[p.eq.trinket];
   if(trk&&trk.hit)u.mskill+=trk.hit;
+  if(trk&&trk.dodge)u.dodgeBase+=trk.dodge;
   if(p.perks.indexOf('quickfoot')>=0)u.speed+=1;
   /* THE DAMAGE DEALERS ARE THINNER (playtest #6, user's call): with all
      damage down 20% the archer and the casters still carry the fight from
@@ -6896,12 +7250,36 @@ function unitFrom(p){
      a penalty they pay — stepping back is simply not a thing they can be
      talked into, and the sheet reflects that. */
   /* #111 - the user's third shape for this act (2026-08-12): no step of its
-     own. It buys CLEAN MOVEMENT for the rest of this turn, and the legs
-     remember it: one extra hex of movement on the NEXT turn. */
-  if(!tr(u,'courage'))acts.push({k:'dis',n:'DISENGAGE',cost:1,self:true,
-    note:'One action. Every step you take for the rest of THIS turn is clean: no '+
-      'parting swings, no zone of control. And next turn your legs remember the '+
-      'trick: one extra hex of movement. Disengage first, then move.'});
+     own. It buys CLEAN MOVEMENT for the rest of this turn.
+     ═══ #137 - AND THE HEX IT BUYS IS PAID NOW, NOT NEXT TURN ══════════════
+     (User, 2026-08-13: *"after disingage I don't see +1 to movment this turn
+     (so it makes sense and easier to esacape). You can/t use disngage again
+     for this and next turn."*)
+
+     He is describing the arithmetic correctly rather than misreading the
+     screen. #111 banked the extra hex on `disNext` and cashed it at the START
+     OF THE FOLLOWING TURN - which is one turn after the moment it was needed.
+     You spend an action to break off, so you have one action left to run
+     with, and the compensation arrives after the enemy has had its go. That
+     is why nobody left a scrum: the same complaint #72 was written against,
+     one layer deeper. The hex is now added to THIS turn's budget, where the
+     player can see it and spend it on the escape they bought it for.
+
+     ⚑ THE VISIBILITY IS FREE, AND THAT IS THE POINT. `moveBudget` is the one
+     function every mover asks, so the lit hexes, the MOVE card's own receipt
+     line, `aiTurn` and AUTO all tick up the instant the act resolves. Nothing
+     had to be taught.
+
+     `cool:2` is the whole lockout and it needs no new state: `spend()` writes
+     the cooldown, `beginTurn` decrements it, `onCool` refuses, and the card
+     paints READY IN N TURNS over itself. Used on turn N it is blocked on N
+     (already spent) and on N+1 (cd 1), and free on N+2 - which is his "not
+     again for this and next turn", exactly. */
+  if(!tr(u,'courage'))acts.push({k:'dis',n:'DISENGAGE',cost:1,self:true,cool:2,
+    note:'One action, and it pays for itself at once: one extra hex of movement '+
+      'right now, and every step you take for the rest of THIS turn is clean - no '+
+      'parting swings, no zone of control. Disengage first, then move. Your legs '+
+      'need this turn and the next one before they will do it again.'});
   /* a mutation grants a RULE, not a number - see MUTS. The gilled can vanish
      into any water they are standing in or beside, once a fight. */
   u.mut=p.mut||null;
@@ -7363,9 +7741,12 @@ const TUTSTEPS={
       'into a fight, and it breaks first. Watch the word.',
     a:()=>$('bState')},
   circled:{h:'CIRCLED',
+    /* #137 - teaches the rule the game HAS. The hex is this turn's now, so
+       the spotlight had to move with it or the brawl would be teaching a
+       promise the build no longer keeps. */
     t:'Moving while they touch you pays a free swing to each of them. '+
-      'DISENGAGE first: the rest of this turn\'s moving is clean, and next '+
-      'turn your legs get one extra hex. Then go where they come one at a time.',
+      'DISENGAGE first: it gives you an extra hex right now and the rest of '+
+      'this turn\'s moving is clean. Then go where they come one at a time.',
     a:()=>{const u=cur();if(!u)return $('bActions');
       const i=u.acts.findIndex(x=>x.k==='dis');
       return (i>=0&&document.querySelector('#bActions .act[data-a="'+i+'"]'))||$('bActions');}},
@@ -9762,13 +10143,10 @@ function strike(a,d,act,mult){
   }else animClash(a,d,flavour,false,!!act.sweep);
   sfxStrike(a,d,armD,hpD);
   if(armD>3)fx(d,'−'+Math.round(armD)+' arm','#96a1a5',true);
-  /* #60 — ARMOUR BEFORE BLOOD, said the first time the harness takes the
-     bigger half of a blow. Same gate as the figure above it deliberately: the
-     lesson may only name a number the player is looking at. strike() is not a
-     scorer (whisper('back') has been called from here since #14), and learn()
-     returns on its seen-flag, so this costs one comparison a blow for the life
-     of the save and nothing at all afterwards. */
-  if(armD>3&&armD>hpD)learn('learn_arm');
+  /* #60's ARMOUR BEFORE BLOOD lesson fired here, on the first blow where the
+     harness took the bigger half. #137 deleted it: TUTSTEPS.armour spotlights
+     the two bars in the brawl, on the player's own first dent, which is the
+     same rule said earlier and with an arrow on it. */
   say(a.name+' → '+d.name+': '+(armD?Math.round(armD)+' armour, ':'')+Math.round(hpD)+' hp.');
   /* an arrow through the leg: it still gets there, but not this round */
   /* DRAG UNDER — she does not knock them back, she takes them with her. The
@@ -10437,9 +10815,11 @@ function beginTurn(){
     render();later(nextTurn,180);return;
   }
   u.actions=u.actionsMax;u.used={};u.safeMove=false;u.moved=false;u.movesUsed=0;u.rallyBuff=0;
-  /* #111 - DISENGAGE's promise comes due: the turn after it was used, the
-     legs get one extra hex. One turn only, cashed and cleared here. */
-  u.disBonus=u.disNext?1:0;u.disNext=false;
+  /* #137 - DISENGAGE's hex is spent in the turn that bought it now, so this
+     line only has to CLEAR it. `disNext` is deleted rather than left set: an
+     unused field is a second source of truth, and the next reader of this
+     block would believe it. */
+  u.disBonus=0;
   /* #111 - the brawl's spare step: granted AFTER the reset above, once */
   if(B.tut&&B.tut.freeStep&&u.side==='you'&&u.leader){
     u.actions+=1;B.tut.freeStep=false;
@@ -11212,10 +11592,9 @@ function selectAct(i){
   const u=cur(),a=u.acts[i];
   if(!canUse(u,a))return;
   if(a.move){
-    /* #60 lesson 8, at the one moment the choice exists and before it is paid
-       for. A line after the swing has landed would be a receipt, and
-       whisper('parting') is already that. */
-    if(u.side==='you'&&!u.ally&&!u.pet&&engaged(u))learn('learn_step');
+    /* #60 lesson 8 (learn_step) fired here. #137 deleted it: TUTSTEPS.circled
+       spotlights the DISENGAGE card itself the moment two of them have a hand
+       on you, and whisper('parting') is still the receipt. */
     B.sel=a;B.reach=reachMap(u,moveBudget(u));render();return;}
   /* #46 THROW — two clicks: the thing, then where it goes. `B.hurlFrom` holds
      the bodies it could lift and `B.hurlRocks` the lone boulders; `B.hurl` /
@@ -11260,12 +11639,16 @@ function selectAct(i){
      the courageous still do not have the button at all. */
   if(a.k==='dis'){
     /* #111 - resolves on the spot: clean movement for the rest of the turn
-       (`safeMove`, which partingShots already honours) and +1 stride next
-       turn (`disNext`, cashed at beginTurn, read by moveBudget). */
-    spend(u,a);u.safeMove=true;u.disNext=true;
-    ghostFx(u);fx(u,'CLEAN','#8ca35a',true);
-    say('You give ground without turning your back. Your moving is clean for the '+
-      'rest of this turn, and next turn your legs get one extra hex.');
+       (`safeMove`, which partingShots already honours).
+       #137 - and the extra stride lands on THIS turn's budget. `moveBudget`
+       reads `disBonus`, so the lit hexes, the MOVE card's hex count, both AI
+       brains and AUTO all have it before the next line of this function runs.
+       The float is the receipt: the number on the MOVE card has already
+       changed by the time it is read. */
+    spend(u,a);u.safeMove=true;u.disBonus=(u.disBonus||0)+1;
+    ghostFx(u);fx(u,'CLEAN · +1 HEX','#8ca35a',true);
+    say('You give ground without turning your back. One extra hex this turn, and '+
+      'your moving is clean for the rest of it.');
     B.sel=null;render();autoEnd(u);
     return;}
   if(a.k==='wall'){spend(u,a);u.spearwall=true;
@@ -14865,10 +15248,7 @@ function render(){
     const mv=u.acts.find(a=>a.move);
     if(mv&&canUse(u,mv)){
       B.sel=mv;B.reach=reachMap(u,moveBudget(u));
-      /* #60 lesson 8 used to fire on clicking MOVE while engaged; the click
-         is gone, so the moment the default lands on an engaged body is the
-         same moment the choice exists */
-      if(engaged(u))learn('learn_step');
+      /* #60 lesson 8's second call site. Deleted with the lesson in #137. */
     }
   }
   /* ═══ THE STAMP IS WHAT MAKES THE HOVER CACHE SAFE ═════════════════════
@@ -15098,7 +15478,9 @@ function render(){
            be (the second of a turn is a hex shorter), DISENGAGE says it is
            the step (#72), everything else says cost · reach · the prices */
         const sub=a.move?moveBudget(u)+' hexes · 1 act'
-          :a.k==='dis'?'1 act · clean moving · +1 hex next turn'
+          /* #137 - the hex is THIS turn's now. The `a.cool` clause below
+             appends the lockout to the same line for free. */
+          :a.k==='dis'?'1 act · +1 hex now · clean moving'
           :a.range?a.cost+' act · range '+a.range
           :a.reach?a.cost+' act · reach '+a.reach:a.cost+' act';
         /* #67 · the school this body is currently holding. It is not a
@@ -17850,12 +18232,35 @@ function consequences(scarred){
   const accHead=on=>(on?'▾':'▸')+' THE FIELD THEY LEFT · <b>'+foes.dead+' dead'+
     (foes.fled?' · '+foes.fled+' fled':'')+'</b>';
   /* a GEAR haul is a strip with the reserved art square (his item art lands
-     there the day it exists); a RESOURCE haul is one plain receipt line
-     (user, round three: "show it simplier, nt as artifact") */
+     there the day it exists); a RESOURCE haul is a row of icon chips built
+     off `haul.fx` (#137 - see the CSS note on .abfx for why it is fx and not
+     the string). The prose keeps its place underneath, at the size prose
+     should be, which is round three's "show it simplier, nt as artifact"
+     with the numbers pulled out in front of it. */
+  const fxChips=f=>{
+    const rows=[['crowns','CROWNS'],['food','PROVISIONS'],['salvage','SALVAGE'],
+                ['gems','GEMS'],['iron','IRON'],['wood','TIMBER']]
+      .filter(r=>f&&f[r[0]]);
+    if(!rows.length)return '';
+    return '<div class="abfx">'+rows.map(r=>{
+      const v=f[r[0]];
+      return '<div class="fxc fx-'+r[0]+'"><span class="fxi">'+
+        (RES_ICON[r[0]]||'◉')+'</span><span><span class="fxn">'+
+        (v>0?'+':'')+v+'</span><span class="fxl">'+r[1]+'</span></span></div>';
+    }).join('')+'</div>';};
+  const chips=fxChips(haul.fx);
   const lootHtml=(haul.gear||haul.gear2)
     ?'<div class="abloot"><div class="abslot">ART<br>SLOT</div>'+
-      '<div><div class="abwhat">'+haul.t+'</div><div class="abgot">'+haul.c+'</div></div></div>'
-    :'<div class="abres">'+haul.c+' <span>· '+haul.t+'</span></div>';
+      '<div><div class="abwhat">'+haul.t+'</div><div class="abgot">'+haul.c+'</div></div></div>'+
+      /* a row can carry BOTH a thing and a number (the snare's bells: timber
+         and twenty-five crowns), and the old single-branch line could only
+         ever show one of them */
+      (chips?'<div style="margin-top:9px">'+chips+'</div>':'')
+    /* the fallback is the old line, and it is not dead code: a row with no
+       `fx` and no gear at all would otherwise render nothing where a receipt
+       belongs. */
+    : chips?chips+'<div class="fxsub">'+haul.t+'</div>'
+          :'<div class="abres">'+haul.c+' <span>· '+haul.t+'</span></div>';
   const drawOne=()=>{
     $('sCard').innerHTML=
       /* the company's own name over the outcome - user, round three:
@@ -19130,39 +19535,43 @@ const CAPLINES={
     'walls do not block it.',
     'Only one spell a turn, so spend it on what a sword cannot reach. It needs no clear '+
     'line to anybody.']},
-  /* ═══ THE FOURTH RULE OF THE DELETED CARD, FINALLY IN SOMEBODY'S MOUTH ════
-     User, 2026-08-02: *"Добавить про броню, которая смягчает удар"* -- add one
-     about armour softening the blow. This closes the last loose end of #60:
-     `coach('fight')` carried four rules, three of them became lessons, and
-     ARMOUR BEFORE BLOOD was the one left behind in `? RULES` where a player
-     has to go looking for it.
+  /* ═══════════════════════════════════════════════════════════════════════
+     #137 - FOUR LESSONS DELETED, BECAUSE THE BRAWL NOW TEACHES THEM FIRST
+     (User, 2026-08-13: *"delete some education from capitan, that copies
+     tutorial stuff."*)
 
-     WHEN: the first blow of the save where armour took MORE of it than the
-     body did, whoever swung it and whoever took it. Not the first blow ever,
-     because on the first blow nobody yet cares which pool moved. The teachable
-     moment is the one where the number LOOKS like a failure: two figures float
-     off a body, the grey one is large and the red one is small, and until now
-     nothing in the game had said which of the two ends a life.
+     This register was written for #60 in early August. #108 then gave the
+     opening brawl a SPOTLIGHT layer (`TUTSTEPS`) - a dimmed screen with an
+     arrow pointing at the actual thing - and four of these lessons became
+     the same rule said twice, ten minutes apart, in two voices:
 
-     IT IS GATED ON `armD>3` FOR ONE REASON: that is the threshold at which
-     strike() actually draws the "- N arm" figure. Teach what is on the screen.
-     A lesson pointing at a number the player cannot see is worse than no
-     lesson, because they go looking for it and conclude they have misread the
-     board.
+       learn_arm    <- TUTSTEPS.armour   "Iron soaks a blow before flesh does.
+                                          The grey bar is the harness; the red
+                                          one under it is the man inside."
+       learn_break  <- TUTSTEPS.broken + TUTSTEPS.nerve, which are both about
+                                          Harl doing exactly that, on the
+                                          screen, with a ring around him
+       learn_step   <- TUTSTEPS.circled, which spotlights the DISENGAGE CARD
+       learn_zone   <- TUTSTEPS.circled's first sentence, plus WHISPER.parting
 
-     It also cannot fire on an armour-ignoring act, since `act.am===0` leaves
-     `armD` at zero -- so the Weeping Hammer can never be the weapon that
-     teaches the armour rule. That is correct by construction: it is the
-     exception, and an exception is a bad teacher.
+     The four are DELETED and not left dark: this table's own standing note
+     says an unused entry is a second source of truth and the next person to
+     edit it will believe it. The prose is recoverable from CHANGELOG 8f.165.
 
-     ⚠ VOCABULARY MATCHES `? RULES` ON PURPOSE. "Armour comes off before blood"
-     is the sentence that screen already opens HOW A HIT WORKS with, so the two
-     places cannot teach the same rule in two dialects. */
-  learn_arm  :{tier:'learn',l:[
-    'Most of that went into armour and not into the body. Armour comes off before blood, it '+
-    'does not mend in a fight, and once it is gone every blow tells.',
-    'That spent armour, not blood. The top bar over a body is the harness and the one under it '+
-    'is the person: strip the first and the second goes fast.']},
+     ⚠ WHAT STAYED, AND WHY, BECAUSE THIS IS THE PART A LATER PASS GETS
+     WRONG. `learn_twice` reads like a duplicate of TUTSTEPS.act and is not:
+     `act` says "Two actions a turn" and stops, while the lesson teaches the
+     DIMINISHING RETURN on the second one, which nothing else in the game
+     says anywhere. `learn_sides`, `learn_close`, `learn_bow`, `learn_cast`,
+     `learn_round` and `w_rung` are about the ring colours, reach, a bow, a
+     spell, the back arc and standing alone - the brawl teaches none of the
+     six, so the Captain is their only voice.
+
+     ⛔ AND THE RULE THIS LEAVES BEHIND: this register and TUTSTEPS are two
+     teachers with one syllabus. Before adding a line to either, read the
+     other. Four duplicates accumulated in three days without anybody
+     deciding to write one.
+     ═══════════════════════════════════════════════════════════════════════ */
   /* THE OFFER, not the receipt. whisper('back') fires when a blow has ALREADY
      landed in a back, and the shipped CAPLINE w_back rode it -- so the Captain
      was congratulating you on something you had already worked out. The user
@@ -19174,42 +19583,11 @@ const CAPLINES={
   learn_round:{tier:'learn',l:[
     'The red arc under him is his back. Stand in it and you hit him harder and more often.',
     'Walk round behind him. His front is worth nothing to us, his back is worth the walk.']},
-  learn_break:{tier:'learn',l:[
-    'That one broke and ran, and he is not even wounded. Nerve runs out before blood does.',
-    'He is finished without being hurt. Frighten enough of them and we do not have to kill '+
-    'any of them.']},
-  /* THE WAY OUT, and the limit on it. It deliberately no longer leads with
-     "he gets a free swing", because learn_zone now says that one tick
-     earlier: 9 is the problem, 8 is the answer, and neither repeats the
-     other. The one-per-enemy-per-turn clause is the part that stops this
-     reading as a rule against ever moving. */
-  learn_step :{tier:'learn',l:[
-    'DISENGAGE is how you get out of it. One action, one hex, and nobody swings - and they '+
-    'only get one free swing each a turn anyway.',
-    'Break off with DISENGAGE and nobody swings at you: it costs the action and takes the '+
-    'step. Just walking is further and it costs blood.']},
-  /* ⚠ TEACH WHAT THE GAME DOES TODAY, NOT WHAT #29 WOULD DO. Grimtoll has no
-     HARD Zone of Control rule; #29 is parked, and its own entry says it was cut
-     for making movement unaffordable. What exists is engagement plus parting
-     swings, which is a SOFT zone: standing beside an enemy forbids nothing, it
-     puts a price on leaving. This line must describe the price and never a
-     prohibition, or the player believes they are pinned and stops moving,
-     which is precisely the failure that got the hard rule cut.
-
-     ⚠ AND IT NAMES THE TERM ON PURPOSE (user, 2026-08-01: "make it clearer.
-     For example - You are in enemy zone of control. to move you need to
-     disingage, or other wise you will be hit"). The first version said
-     "standing next to them is standing in a fight", which is flavour and does
-     not tell anybody what to do. "Zone of control" is a wargamer's phrase and
-     that is exactly why it works here: it is the phrase the player has
-     probably already met, and the sentence after it says what it costs. Note
-     the deliberate difference from the user's own wording -- you do NOT need
-     to disengage in order to move, you need it in order to move WITHOUT being
-     hit, and their second clause says as much. `? RULES` carries the term too,
-     so the vocabulary is the same in both places. */
-  learn_zone :{tier:'learn',l:[
-    'You are in their zone of control now. Move out of it and they get a free hit at you.',
-    'That is their reach you are standing in. Walk out of it and they swing at you for nothing.']},
+  /* #137 - learn_break, learn_step and learn_zone were deleted here. See the
+     block above learn_round for which spotlight step took each one over.
+     ⚠ `? RULES` still carries ZONE OF CONTROL by that name, and so does
+     TUTSTEPS.circled, so the vocabulary the deleted lesson was protecting is
+     still spoken in two places. */
   /* rides whisper('rung'), which has fired since #14 and never had a voice.
      THIS IS WHAT weBend SHOULD HAVE BEEN: the deleted call narrated the same
      subject every fight and told you nothing; this says it once, ever, and
@@ -19561,17 +19939,12 @@ function capTick(){
      from previous rounds is drained ahead of both, so lessons arrive in the
      order they came up rather than the order the board allowed. */
   learnFlush();
-  /* the first time anything of ours is in a fight at all. One tick after
-     "walk at them" in almost every first battle, which is the right order:
-     go to them, then this is what being there means. */
-  if(mine.some(m=>!m.dead&&!m.downed&&!m.fled&&engagers(m.col,m.row,m.side).length>0))
-    learn('learn_zone');
-  /* the first enemy to break. ⚠ IT TAKES THE ROUND OFF theyRun, which is why
-     it is evaluated before the CALL chain and why `lesson` is checked below:
-     theyRun outranks a lesson by tier, so without this the very first break
-     would spend its round on the comment and the rule would arrive a round
-     late, attached to nothing the player could still see. */
-  if(gone>0)learn('learn_break');
+  /* #137 - the two situational lessons that lived here (learn_zone on first
+     contact, learn_break on the first enemy to break) are DELETED. The brawl
+     spotlights both earlier and with an arrow on the body in question:
+     TUTSTEPS.circled for the zone, TUTSTEPS.broken and .nerve for the break.
+     ⚠ `learnFlush()` above stays - the surviving lessons still queue, and it
+     is what drains them in the order they came up. */
   const lesson=(C.round===B.round&&C.tier===0);
   if(C.mute)return;
   const cap=capUnit();
@@ -19669,13 +20042,19 @@ function drawInv(){
     /* the roster is a list of PEOPLE: the nickname, the personality clause
        and what they are carrying from the last fight belong on the card,
        not three clicks deep */
+    /* ⚑ #136 point 11 - and a ★ on anybody with something unspent. This is
+       the only one of the four spend-signals that can be seen WITHOUT
+       opening that person's sheet, which is the whole failure mode: a perk
+       point is invisible until you happen to click the right body. */
+    const owed=(p.perkPoints||0)+(p.statPoints||0);
     const wear=[];
     if(p.hpLoss)wear.push('<span style="color:#c15d55">mending '+p.hpLoss+'</span>');
     if(p.injuries&&p.injuries.length)
       wear.push('<span style="color:#c9a227">'+p.injuries.length+' scar'+
         (p.injuries.length>1?'s':'')+'</span>');
     if(sizeMismatch(p))wear.push('<span style="color:#c07a2c">ill-fit</span>');
-    box.innerHTML='<div class="rn">'+p.name+' “'+p.nick+'”'+(p.sur?' '+p.sur:'')+'</div>'+
+    box.innerHTML='<div class="rn">'+(owed?'<span class="star" title="'+owed+
+        ' unspent">★</span> ':'')+p.name+' “'+p.nick+'”'+(p.sur?' '+p.sur:'')+'</div>'+
       '<div class="race '+p.race+'">'+rIcon(p.race)+' '+p.race.toUpperCase()+' · '+
         cIcon(p.cls)+' '+CLASSES[p.cls].n+' L'+p.level+'</div>'+
       '<div class="rc" style="font-style:italic;color:#a08a5e">'+traitShort(p)+'</div>'+
@@ -19731,26 +20110,29 @@ function drawInv(){
   /* ── the ledger: every mark on this body, named once, beside the picture
      of where it is. Scars, the change, a running condition, the ring somebody
      cut round their own eye, and the armour that does not fit. */
+  /* ⚑ #136 point 6 - a chip is a NAME and a receipt now, and the sentence
+     lives in the battle's popover like everything else on this sheet. */
   const led=[];
-  if(p.mut)led.push('<div class="wchip chg" title="'+MUTS[p.mut].d.replace(/"/g,'&quot;')+'">'+
-    '<span class="ic">◈</span><span><b>'+MUTS[p.mut].n+'</b> · '+MUTS[p.mut].short+
-    (mutActs.length?'<span class="gives">GIVES: '+mutActs.join(' · ')+'</span>':'')+
-    '</span></div>');
+  const chip=(cls,ic,name,receipt,body,extra)=>
+    '<div class="wchip'+(cls?' '+cls:'')+'"><span class="ic">'+ic+'</span>'+
+    '<span><b>'+name+'</b>'+(receipt?' <span class="cl">'+receipt+'</span>':'')+
+    (extra||'')+'</span>'+
+    '<span class="pop"><span class="pt">'+name+'</span>'+
+    (receipt?'<span class="pr">'+receipt.toUpperCase()+'</span>':'')+
+    (body?'<span class="pd">'+body+'</span>':'')+'</span></div>';
+  if(p.mut)led.push(chip('chg','◈',MUTS[p.mut].n,MUTS[p.mut].short,MUTS[p.mut].d,
+    mutActs.length?'<span class="gives">GIVES: '+mutActs.join(' · ')+'</span>':''));
   if(p.cond){
     const C=CONDS[p.cond.k];
-    led.push('<div class="wchip chg" title="'+String(C.d||C.short||'').replace(/"/g,'&quot;')+'">'+
-      '<span class="ic">◌</span><span><b>'+C.n+'</b> · '+C.short+
-      ' Day '+(p.cond.days+1)+'.</span></div>');
+    led.push(chip('chg','◌',C.n,'day '+(p.cond.days+1),String(C.d||C.short||'')));
   }
-  if(p.mark==='circle')led.push('<div class="wchip mark"><span class="ic">◎</span>'+
-    '<span><b>THE CIRCLE</b> · a black ring cut round the left eye, and it does not come off. '+
-    'Anybody standing right next to '+(p.leader?'you':p.name)+' in a fight is 10 morale worse '+
-    'for it, whichever side they are on.</span></div>');
-  (p.injuries||[]).forEach(i=>led.push('<div class="wchip" title="'+
-    i.d.replace(/"/g,'&quot;')+'"><span class="ic">✕</span><span><b>'+i.n+'</b> · '+
-    i.d+'</span></div>'));
-  if(sizeMismatch(p))led.push('<div class="wchip"><span class="ic">⚠</span>'+
-    '<span><b>ILL-FITTING ARMOUR</b> · '+sizeJoke(p)+' Armour ×0.70, -1 AGI, -3 MOR.</span></div>');
+  if(p.mark==='circle')led.push(chip('mark','◎','THE CIRCLE','cut, and permanent',
+    'A black ring cut round the left eye, and it does not come off. Anybody standing right next '+
+    'to '+(p.leader?'you':p.name)+' in a fight is 10 morale worse for it, whichever side they '+
+    'are on.'));
+  (p.injuries||[]).forEach(i=>led.push(chip('','✕',i.n,'scar',i.d)));
+  if(sizeMismatch(p))led.push(chip('','⚠','ILL-FITTING ARMOUR','armour x0.70 · -1 AGI · -3 MOR',
+    sizeJoke(p)));
   if(!led.length)led.push('<div class="wchip none"><span class="ic">·</span>'+
     '<span>Nothing has happened to this one yet.</span></div>');
   /* the one exception to "scars are forever", and you had to build it */
@@ -19796,79 +20178,107 @@ function drawInv(){
     'This is his clan now. The first time his nerve goes in a battle it holds, and after that '+
     'he does not leave the field. He will not walk out over money either.</div>':'';
   const mem=(p.mem||[]),bonds=bondsFor(p).filter(x=>!x.t),hist=(p.roadHist||[]);
-  const recent=mem.slice(-2).reverse();
-  const rest=Math.max(0,mem.length-2)+bonds.length;
-  const storyHTML=(ties||clan||mem.length||hist.length||bonds.length)
-    ? '<div class="lbl" style="color:#8a7449">WHAT HAPPENED TO THEM</div>'+
-      '<div class="memlist">'+ties+clan+
-        recent.map(l=>'<div class="mm">'+l+'</div>').join('')+
-        (hist.length?'<div class="mh">THE ROAD SO FAR: '+hist.join(' · ')+'</div>':'')+
-      '</div>'+
-      (rest>0?'<button class="iacc" id="iMemBtn">'+(G.showMem?'▾':'▸')+' EVERYTHING ELSE · '+
-        rest+' more thing'+(rest>1?'s':'')+' this one has been through</button>'+
-        '<div id="iMem" class="memlist" style="display:'+(G.showMem?'flex':'none')+'">'+
-        mem.slice(0,-2).map(l=>'<div class="mm">'+l+'</div>').join('')+
-        bonds.map(x=>'<div class="mb">'+x.line+'</div>').join('')+'</div>':'')
-    : '<div class="lbl" style="color:#8a7449">WHAT HAPPENED TO THEM</div>'+
-      '<div class="memlist"><div class="mh">Nothing yet. The road is long.</div></div>';
+  /* ═══ #136 point 10 · ONE CONTROL CARRIES BOTH ASKS ═══════════════════════
+     ("What happened to them accordion. And I 100% want number of kills (with
+     heads)".) The heads ride on the accordion's own head, because a row of
+     heads IS the one-line summary of this life, which is exactly what a shut
+     accordion needs to be worth clicking. ⚠ `killsBy`, never `kills`. */
+  const heads=killHeads(p);
+  const killN=Object.values(p.killsBy||{}).reduce((a,b)=>a+b,0);
+  const inner=(ties||clan||mem.length||hist.length||bonds.length)
+    ? ties+clan+
+      mem.slice().reverse().map(l=>'<div class="mm">'+l+'</div>').join('')+
+      bonds.map(x=>'<div class="mb">'+x.line+'</div>').join('')+
+      (hist.length?'<div class="mh">THE ROAD SO FAR: '+hist.join(' · ')+'</div>':'')
+    : '<div class="mh">Nothing yet. The road is long.</div>';
+  const storyHTML=
+    '<button class="iacc" id="iMemBtn">'+
+      '<span>'+(G.showMem?'▾':'▸')+'</span>'+
+      '<span class="ah">WHAT HAPPENED TO THEM</span>'+
+      (heads?'<span class="kills" title="what this one has put in the ground">'+heads+
+        '</span><span class="kn">'+killN+' DEAD</span>'
+        :'<span class="none">nothing killed yet</span>')+
+    '</button>'+
+    '<div id="iStoryBody" class="memlist">'+inner+'</div>';
 
   $('iChar').innerHTML=
     '<div id="iHead"><div id="iHeadCol">'+
       '<div id="iName">'+fullName(p)+'</div>'+
       '<div id="iChips">'+chips+'</div>'+
       /* the personality, one clause, the rest on hover. It is who they ARE
-         and the sheet says so once. */
-      '<div id="iTrait"><b>'+TRAITS[p.trait].n+'</b> · '+traitShort(p)+
-      '<span style="color:#6b5836;font-size:9.5px;font-family:var(--mono)"> · hover for the rest'+
-      '</span></div>'+
+         and the sheet says so once. (#136 point 4: the " · hover for the rest"
+         hint is gone. Everything on this sheet explains itself on hover, so a
+         line saying so is a line the other twenty elements do not have.) */
+      '<div id="iTrait"><b>'+TRAITS[p.trait].n+'</b> · '+traitShort(p)+'</div>'+
     '</div>'+
-    '<div id="iField"><img src="'+spr.src+'" width="'+Math.round(spr.w*sf)+'" height="'+
-      Math.round(spr.h*sf)+'" alt=""><span class="fc">ON THE FIELD</span></div>'+
+    /* #136 point 5 - the portrait, and the token under it */
+    '<div id="iField"><canvas class="pface" id="iFace" width="188" height="148"></canvas>'+
+      '<div class="frow"><img src="'+spr.src+'" width="'+Math.round(spr.w*sf)+'" height="'+
+      Math.round(spr.h*sf)+'" alt=""><span class="fc">ON THE FIELD</span></div></div>'+
     '</div>'+
 
-    '<div class="lbl" style="color:#8a7449">WHO THIS IS'+
-      (statPts>0?' · <span style="color:#8ca35a">'+statPts+' LEVEL'+(statPts>1?'S':'')+
-        ' TO SPEND. CLICK A TRAIT</span>':'')+'</div>'+
+    /* #140 point 10 - the "WHO THIS IS" label is gone. A box of four named
+       attributes does not need a heading telling you it is about the person
+       whose name is directly above it. The spend prompt survives on its own,
+       because that one is a call to action rather than a caption. */
+    (statPts>0?'<div class="lbl" style="color:#8ca35a">'+statPts+' LEVEL'+
+      (statPts>1?'S':'')+' TO SPEND. CLICK A TRAIT</div>':'')+
+    /* #136 point 3 - the attributes take the width, the pools take the
+       battle's narrow stack. Same two blocks, side by side. */
     '<div id="iStats">'+
-      '<div class="itells">'+['str','agi','int','mor'].map(tellCell).join('')+'</div>'+
-      '<div class="ibars">'+
-        '<div class="bcell"><div class="statLine"><span>ARMOUR <b style="color:'+bd.col+'">'+
-          bd.n+'</b></span><span class="pv">'+arm+'</span></div>'+
+      '<div id="iStatTop">'+
+        '<div class="itells">'+['str','agi','int','mor'].map(tellCell).join('')+'</div>'+
+        '<div class="ibars">'+
+          /* #140 point 2 - the band carries the absorb rule on hover */
+          '<div class="statLine"><span>ARMOUR <b class="band" id="iBand" style="color:'+bd.col+
+            '">'+bd.n+'</b></span><span class="pv">'+arm+'</span></div>'+
           '<div class="bar" style="background:#243133"><i style="width:'+(arm?100:0)+
-          '%;background:var(--steel)"></i></div></div>'+
-        '<div class="bcell"><div class="statLine"><span>HITPOINTS</span><span class="pv"'+
-          (p.hpLoss?' style="color:#c15d55"':'')+'>'+hpNow+'/'+hpMax+'</span></div>'+
+            '%;background:var(--steel)"></i></div>'+
+          '<div class="statLine"><span>HITPOINTS</span><span class="pv"'+
+            (p.hpLoss?' style="color:#c15d55"':'')+'>'+hpNow+'/'+hpMax+'</span></div>'+
           '<div class="bar" style="background:#3b2126"><i style="width:'+(100*hpF)+
-          '%;background:'+(hpF>.6?'var(--blood)':hpF>.3?'#c07a2c':'#e0544c')+'"></i></div></div>'+
-        '<div class="bcell" id="iNerve" style="cursor:help"><div class="statLine"><span>NERVE'+
-          '</span><span class="pv" style="color:'+nl.col+'">'+nl.ic+' '+nl.n+'</span></div>'+
+            '%;background:'+(hpF>.6?'var(--blood)':hpF>.3?'#c07a2c':'#e0544c')+'"></i></div>'+
+          '<div class="statLine" id="iNerve" style="cursor:help"><span>NERVE</span>'+
+            '<span class="pv" style="color:'+nl.col+'">'+nl.ic+' '+nl.n+'</span></div>'+
           '<div class="bar" style="background:#20272a"><i style="width:78%;background:'+nl.col+
-          '"></i></div></div>'+
+            '"></i></div>'+
+        '</div>'+
       '</div>'+
-      /* what they DO with all that, in one mono line rather than a grid */
+      /* what they DO with all that, in one mono line rather than a grid.
+         ⚑ #136 point 7 ("You still need to show 'action' - for later builds
+         and stronger characters it could be more then 2"): the turn's action
+         budget is a PROPERTY OF THE PERSON and the sheet never printed it,
+         so a Captain's third action existed only on the battle plaque. Drawn
+         with the plaque's own apPips() so three crystals mean three
+         crystals wherever you meet them. */
       '<div class="idrv">'+
-        (sw?'<span>'+sw.n+' <b>'+sw.lo+'-'+sw.hi+'</b></span>'
-           :'<span>BLOW <b>nothing much</b></span>')+
+        '<span title="what one turn buys this body">ACTIONS <b class="apips">'+
+          apPips(u.actionsMax,u.actionsMax)+'</b></span>'+
+        (sw?'<span class="dmgw" id="iDmg">'+sw.n+' <b class="dmg">'+sw.lo+'-'+sw.hi+'</b>'+
+             (sw.a&&sw.a.reach>1?' <span style="color:#8a7449">reach '+sw.a.reach+'</span>':'')+
+             (sw.a&&sw.a.range?' <span style="color:#8a7449">range '+sw.a.range+'</span>':'')+
+             '</span>'
+           :'<span>BLOW <b class="dmg">nothing much</b></span>')+
         '<span>TO HIT <b>'+u.mskill+'%</b></span>'+
         '<span>DODGE <b>'+dodgeOf(u)+'</b></span>'+
         '<span>STEP <b>'+(RACESTEP[p.race]||4)+' hex'+
           (p.cls==='cutter'?' (+1 first)':'')+'</b></span>'+
-        '<span>ARMOUR STOPS <b>'+Math.round(bd.absorb*100)+'%</b></span>'+
       '</div>'+
     '</div>'+
 
-    '<div class="lbl" style="color:#8a7449">THE BODY · what it carries, and what happened to it'+
-      '</div>'+
+    /* #140 point 6 - the label is two words now. The picture underneath is
+       self-evidently a body wearing things. */
+    '<div class="lbl" style="color:#8a7449">THE BODY</div>'+
     '<div id="iBody">'+
       '<div id="iDollBox"><canvas id="iDoll" class="doll"></canvas>'+
-      '<svg class="wire" id="iWire" width="400" height="232"></svg></div>'+
+      '<svg class="wire" id="iWire"></svg></div>'+
       '<div id="iLedger">'+led.join('')+'</div>'+
     '</div>'+
 
     '<div class="lbl" style="color:#8a7449">WHAT THEY CAN DO</div>'+
     '<div id="iSkills">'+acts.map(actCard).join('')+'</div>'+
 
-    '<div id="iStory">'+storyHTML+'</div>'+
+    '<div id="iStory" class="'+(G.showMem?'open':'')+'">'+storyHTML+'</div>'+
 
     '<div id="iFoot">'+
       (!p.leader?'<button id="iDismiss" title="They walk out with whatever they are wearing. '+
@@ -19884,13 +20294,30 @@ function drawInv(){
      the WIRE is what carries the meaning. */
   const dollCv=$('iDoll');
   drawDoll(dollCv,p);
-  const AX=dollCv._anchor||{},DOLL_X=125,DOLL_Y=9,BOXW=400,SLOTW=118;
+  /* the box shrank with #136 point 1, so every number here did. The canvas
+     is centred in it and the anchors come back already in display pixels. */
   const dbox=$('iDollBox'),wires=[];
-  const SLOTPOS={trinket:['r',4],main:['r',84],pet:['r',164],armour:['l',44],off:['l',132]};
+  /* the box is the column's full width now (#140 point 4), so it is MEASURED
+     rather than assumed: the character column changes width whenever the
+     right pane does, and a hardcoded 362 would put the figure off centre the
+     next time it moves. */
+  const AX=dollCv._anchor||{},BOXW=dbox.clientWidth||578,BOXH=196,SLOTW=150;
+  const DOLL_X=Math.round((BOXW-DOLL_DW)/2),DOLL_Y=6;
+  dollCv.style.left=DOLL_X+'px';dollCv.style.top=DOLL_Y+'px';
+  /* ⚑ #140 point 8 ("Main hand = right hand. Right now is left"): the figure
+     faces the player, so its RIGHT hand is on the viewer's LEFT. The weapon,
+     its slot and its leader all moved to that side together, and the off hand
+     took the other. Three things had to agree or the wire would point across
+     the body. The BAG hangs at the hip on the shield side. */
+  const SLOTPOS={armour:['l',3],main:['l',70],bag:['l',137],
+                 trinket:['r',3],off:['r',70],pet:['r',137]};
   const placeSlot=(key,el)=>{
     const pos=SLOTPOS[key]||['l',4];
     el.style.top=pos[1]+'px';
     el.style.left=(pos[0]==='l'?3:BOXW-SLOTW-3)+'px';
+    /* a pop above a slot in the top half would be clipped by the sheet's
+       own scroll box, so those hang downward instead */
+    if(pos[1]<70)el.classList.add('lowpop');
     dbox.appendChild(el);
     const a=AX[key];
     if(!a)return;
@@ -19915,14 +20342,31 @@ function drawInv(){
     const b=document.createElement('button');
     b.className='slot'+(g?'':' empty')+(twoH?' blockedslot':'')+
       ((slot==='armour'&&sizeMismatch(p))?' bad':'');
+    /* #136 point 6 - the slot's own popover, in the battle's idiom */
+    /* #140 point 7 - the bag says what it is FOR, since nothing can fill it
+       yet. An empty slot with no explanation reads as a broken screen. */
+    const emptyLine=slot==='bag'
+      ? 'Nothing to carry yet. This is where throwables and potions will ride '+
+        'when the road starts handing them out.'
+      : 'Nothing here yet. Anything in the stash that fits this slot goes on with one click.';
+    const popBody=twoH
+      ? (g?g.n+' is in the pack, doing nothing. Put the '+mainG.n.toLowerCase()+
+         ' down to use it.':'Carry something one-handed and this opens up.')
+      : (g?(g.d||'')+(g.d?' ':'')+gearLine(g,p):emptyLine);
     b.innerHTML='<div class="sl">'+(SLOT_ICON[slot]||'')+' '+label+
       (twoH?' · <span style="color:#c07a2c">TAKEN</span>':'')+'</div>'+
       '<div class="si">'+
       (twoH?'Both hands are on the '+mainG.n.toLowerCase()+'.'
-        :g?'<span class="gg">'+gGlyph(g)+'</span> '+g.n:'- empty -')+'</div>'+
+        :g?'<span class="gg">'+gGlyph(g)+'</span> '+g.n
+          :slot==='bag'?'- nothing to carry -':'- empty -')+'</div>'+
       '<div class="sd">'+(twoH
         ? (g?g.n+' is in the pack, doing nothing.':'Carry something one-handed and this opens up.')
-        : g?shortGear(g):'')+'</div>';
+        : g?shortGear(g):(slot==='bag'?'throwables and potions, later':''))+'</div>'+
+      '<span class="pop"><span class="pt">'+(g?g.n:label)+'</span>'+
+      (g?'<span class="pr">'+(shortGear(g)||label).toUpperCase()+'</span>':'')+
+      '<span class="pd">'+popBody+'</span>'+
+      (g&&!twoH?'<span class="pr" style="color:#8a7449">CLICK TO TAKE IT OFF</span>':'')+
+      '</span>';
     if(g){b.onclick=()=>{G.stash.push(p.eq[slot]);p.eq[slot]=null;drawInv();};
       bindTip(b,p.eq[slot],p);}
     placeSlot(slot,b);});
@@ -19944,7 +20388,9 @@ function drawInv(){
   }
   /* the leaders. An elbow, not a straight line: a diagonal across the whole
      box reads as a slash through the picture at this size. */
-  $('iWire').innerHTML=wires.map(w=>{
+  const wireSvg=$('iWire');
+  wireSvg.setAttribute('width',BOXW);wireSvg.setAttribute('height',BOXH);
+  wireSvg.innerHTML=wires.map(w=>{
     const mid=w[0]+(w[2]-w[0])*0.45;
     return '<path d="M'+w[0]+' '+w[1]+' L'+mid+' '+w[1]+' L'+w[2]+' '+w[3]+'" fill="none" '+
       'stroke="#4d3c22" stroke-width="1"/><circle cx="'+w[2]+'" cy="'+w[3]+
@@ -19968,19 +20414,31 @@ function drawInv(){
      whole sheet, and a tab that reset to THE STASH under the hand that just
      spent a point would be the tree drawer's old bug in a new coat. */
   const pane=$('iStash');
+  /* ⚑ #136 point 8 ("Icon of stush also consistent with global map"): the
+     road bar stopped using the 🎒 glyph in #104 because the platform's emoji
+     set painted it pink, and drew a leather sack instead. This tab is the
+     same door to the same things, so it wears the same drawn sack. */
   pane.innerHTML=
     '<div id="iTabs">'+
-      '<button class="itab'+(ITAB==='stash'?' on':'')+'" data-t="stash">🎒 THE STASH'+
+      '<button class="itab'+(ITAB==='stash'?' on':'')+'" data-t="stash">'+SACK_SVG+' THE STASH'+
         (G.mustKit?'<span class="tbadge">!</span>':'')+'</button>'+
-      '<button class="itab'+(ITAB==='perks'?' on':'')+'" data-t="perks">★ PERKS'+
+      '<button class="itab'+(ITAB==='perks'?' on':'')+(perkPts>0?' hot':'')+
+        '" data-t="perks">★ '+(perkPts>0?'SPEND IT':'PERKS')+
         (perkPts>0?'<span class="tbadge">'+perkPts+'</span>':'')+'</button>'+
     '</div>'+
+    /* #136 point 11 - and it says so in words, under the tabs, on a button
+       that goes straight there */
+    (perkPts>0?'<button id="iSpend"><b>★ '+perkPts+' PERK POINT'+(perkPts>1?'S':'')+
+      ' WAITING</b> for '+p.name.toUpperCase()+' · CLICK TO CHOOSE</button>':'')+
     '<div class="itabbody'+(ITAB==='stash'?' on':'')+'" data-b="stash" id="iStashBody"></div>'+
     '<div class="itabbody'+(ITAB==='perks'?' on':'')+'" data-b="perks" id="iPerkBody"></div>';
-  pane.querySelectorAll('.itab').forEach(b=>b.onclick=()=>{
-    ITAB=b.dataset.t;
-    pane.querySelectorAll('.itab').forEach(x=>x.classList.toggle('on',x===b));
-    pane.querySelectorAll('.itabbody').forEach(x=>x.classList.toggle('on',x.dataset.b===ITAB));});
+  const showTab=t=>{
+    ITAB=t;
+    pane.querySelectorAll('.itab').forEach(x=>x.classList.toggle('on',x.dataset.t===t));
+    pane.querySelectorAll('.itabbody').forEach(x=>x.classList.toggle('on',x.dataset.b===t));};
+  pane.querySelectorAll('.itab').forEach(b=>b.onclick=()=>showTab(b.dataset.t));
+  const spendBtn=$('iSpend');
+  if(spendBtn)spendBtn.onclick=()=>showTab('perks');
 
   const st=$('iStashBody');
   st.innerHTML='<div class="lbl" style="color:#8a7449">CLICK A THING TO PUT IT ON '+
@@ -20060,8 +20518,60 @@ function drawInv(){
       TIP.style.display='none';drawInv();};});
   /* class and race explain themselves wherever they are named */
   bindLoreTips($('iChar'),p);
+  /* the accordion toggles in place: a redraw would scroll the sheet back to
+     the top under the hand that just opened it */
   const memBtn=$('iMemBtn');
-  if(memBtn)memBtn.onclick=()=>{G.showMem=!G.showMem;drawInv();};
+  if(memBtn)memBtn.onclick=()=>{
+    G.showMem=!G.showMem;
+    $('iStory').classList.toggle('open',G.showMem);
+    memBtn.firstChild.textContent=G.showMem?'▾':'▸';};
+  /* #136 point 5 - the painted portrait, same bust the roster and the
+     promotion card draw. It is 2x its box for the same reason the doll is. */
+  const face=$('iFace');
+  if(face)bustFor(face,p);
+  /* #140 point 12 - the company's own name over its own screen */
+  const coEl=$('iCoName');
+  if(coEl)coEl.textContent=(G.coName||'THE COMPANY').toUpperCase();
+  /* ═══ #140 point 1 · THE SWING, TAKEN APART ═══════════════════════════════
+     The dice the weapon rolls, and what this body adds to them. Everything
+     here comes off the object swingOf() already built, so the hover cannot
+     drift from the number beside it. */
+  const dmgEl=$('iDmg');
+  if(dmgEl&&sw&&sw.a){
+    dmgEl.onmouseenter=e=>{
+      const base=sw.a.dmg,up=Math.round((sw.mult-1)*100);
+      TIP.innerHTML='<div style="font-family:var(--display);font-size:14px;color:#e0d3b4;'+
+        'margin-bottom:4px">'+sw.n+'</div>'+
+        '<div style="font-family:var(--mono);font-size:10px;color:#8fa5a2;line-height:1.7">'+
+        'THE WEAPON ROLLS <b style="color:#c9c6bb">'+base[0]+'-'+base[1]+'</b><br>'+
+        (sw.bonus?'THEIR ARM ADDS <b style="color:#8ca35a">+'+sw.bonus+'</b><br>':'')+
+        (up?'BUILD AND NERVE <b style="color:#8ca35a">+'+up+'%</b><br>':'')+
+        'SO IT LANDS FOR <b style="color:#e0d3b4">'+sw.lo+'-'+sw.hi+'</b>'+
+        (sw.a.reach>1?'<br>REACH <b style="color:#c9c6bb">'+sw.a.reach+' hexes</b>':'')+
+        (sw.a.range?'<br>RANGE <b style="color:#c9c6bb">'+sw.a.range+' hexes</b>':'')+
+        (sw.a.hands===2?'<br><b style="color:#c07a2c">BOTH HANDS</b>':'')+
+        '</div>'+
+        '<div style="font-style:italic;color:#a38652;margin-top:5px;font-size:11.5px">'+
+        'What it does to a body once their armour has taken its share is the '+
+        'armour\'s business, not the weapon\'s. Hover their band to see it.</div>';
+      TIP.style.display='block';moveTip(e);};
+    dmgEl.onmousemove=moveTip;dmgEl.onmouseleave=()=>{TIP.style.display='none';};
+  }
+  /* #140 point 2 - and the band is where the absorb rule lives */
+  const bandEl=$('iBand');
+  if(bandEl){
+    bandEl.onmouseenter=e=>{
+      TIP.innerHTML='<div style="font-family:var(--display);font-size:14px;color:'+bd.col+
+        ';margin-bottom:4px">'+bd.n+' ARMOUR</div>'+
+        '<div style="font-size:11.5px;color:#c2b493;line-height:1.45">'+bd.d+'</div>'+
+        '<div style="font-family:var(--mono);font-size:10px;color:#8fa5a2;margin-top:5px">'+
+        'STOPS <b style="color:#c9c6bb">'+Math.round(bd.absorb*100)+'%</b> OF EVERY BLOW · '+
+        '<b style="color:#c9c6bb">'+Math.round(bd.through*100)+'%</b> REACHES THE BODY</div>'+
+        (arm?'<div style="font-family:var(--mono);font-size:10px;color:#8fa5a2">'+
+          'AND THERE ARE <b style="color:#c9c6bb">'+arm+'</b> POINTS OF IT TO CHEW THROUGH</div>':'');
+      TIP.style.display='block';moveTip(e);};
+    bandEl.onmousemove=moveTip;bandEl.onmouseleave=()=>{TIP.style.display='none';};
+  }
   const nv=$('iNerve');
   if(nv){
     nv.onmouseenter=e=>{
@@ -20189,6 +20699,37 @@ function bindLoreTips(root,p,live){
   const SKIP={move:1,dis:1};
   root.querySelectorAll('[data-race]').forEach(el=>{
     const r=el.dataset.race,h=RACEHELP[r];if(!h)return;
+    /* ═══ #142 - THE FACTS, READ OFF THE TABLES THAT OWN THEM ══════════════
+       Everything below used to be a sentence in `RACEHELP[r].x`, hand-kept
+       against five other tables, and one of the sentences had already gone
+       wrong (see the note on RACEHELP). Nothing here is typed twice now:
+       RACESTEP owns the stride, COST the seats, WAGE the pay, RACEMOD the
+       lean, FORM the formation's threshold and its number.
+
+       ⚑ AND IT SHOWS WITHOUT A BODY, which the old block did not: `extra`
+       only ever built when the hover was over somebody you had already
+       hired, so the MUSTER FIELD - the one screen where the numbers decide
+       a purchase - printed prose and no numbers at all. */
+    const sgn=v=>(v>0?'+':'−')+Math.abs(v);
+    const plur=(n,w)=>n+' '+w+(n===1?'':'s');
+    const facts='<div style="font-family:var(--mono);font-size:9.5px;color:#8fa5a2;'+
+      'margin-bottom:3px">STEP '+(RACESTEP[r]||4)+' · '+plur(COST[r],'seat')+' · '+
+      plur(WAGE[r],'crown')+' a day</div>';
+    const lean=['str','agi','int','mor'].filter(s=>RACEMOD[r]&&RACEMOD[r][s])
+      .map(s=>'<span style="color:'+TELLS[s].col+'">'+sgn(RACEMOD[r][s])+' '+TELLS[s].lbl+'</span>')
+      .join(' · ');
+    const leanRow='<div style="font-family:var(--mono);font-size:9.5px;margin-bottom:5px;'+
+      'color:var(--t3)">'+(lean||'No lean on any axis.')+'</div>';
+    /* the formation's own numbers: `k` names the value in FORM, and the
+       threshold beside it is that key's prefix + Need. Two fields, one
+       source, so a retune of FORM cannot leave this sentence behind. */
+    const F=h.form,fNeed=FORM[F.k.replace(/[A-Z].*$/,'')+'Need'],fVal=FORM[F.k];
+    const formRow='<div style="margin-bottom:5px"><span style="font-family:var(--mono);'+
+      'font-size:9px;letter-spacing:.1em;color:#d9bd7e">'+F.n+'</span> '+
+      '<span style="font-family:var(--mono);font-size:9.5px;color:#8fa5a2">'+
+        fNeed+' '+F.w+' · '+sgn(fVal)+' '+F.u+'</span>'+
+      '<div style="font-size:11.5px;font-style:italic;color:#a38652;line-height:1.3">'+
+        F.note+'</div></div>';
     let extra='';
     if(u&&p&&p.race===r){
       const rs=(u.acts||[]).filter(a=>RACESKILL[r]&&a.k===RACESKILL[r].k);
@@ -20196,15 +20737,13 @@ function bindLoreTips(root,p,live){
         '<div style="font-family:var(--mono);font-size:8.5px;color:#8a7449;letter-spacing:.1em">'+
           'EVERY '+r.toUpperCase()+' CAN DO THIS</div>'+
         (rs.length?rs.map(actLineHTML).join('')
-          :'<div style="font-size:10.5px;color:var(--t3);font-style:italic">Nothing of its own.</div>')+
-        '<div style="font-family:var(--mono);font-size:9.5px;color:#8fa5a2;margin-top:4px">'+
-          'takes '+COST[r]+' of the party · '+WAGE[r]+' crowns a day</div>';
+          :'<div style="font-size:10.5px;color:var(--t3);font-style:italic">Nothing of its own.</div>');
     }
     el.onmouseenter=e=>{
       TIP.innerHTML='<div style="font-family:var(--display);font-size:15px;color:var(--g4);'+
         'margin-bottom:4px">'+rIcon(r)+' '+h.t+'</div>'+
         '<div style="margin-bottom:5px">'+h.d+'</div>'+
-        '<div style="font-style:italic;color:#a38652">'+h.x+'</div>'+extra;
+        facts+leanRow+formRow+extra;
       TIP.style.display='block';moveTip(e);};
     el.onmousemove=moveTip;el.onmouseleave=()=>{TIP.style.display='none';};});
   root.querySelectorAll('[data-cls]').forEach(el=>{
@@ -20283,14 +20822,19 @@ function gearLine(g,p){
     (g.reach>1?', and reaches '+g.reach+' hexes':g.range?' at up to '+g.range+' hexes':'')+'.');
   else if(g.reach>1)b.push('Reaches '+g.reach+' hexes.');
   else if(g.range)b.push('Shoots up to '+g.range+' hexes.');
+  /* #141 - `hush`: a piece of kit that declines to itemise itself. The fields
+     are still the real ones and the engine still reads every one of them;
+     this renderer and `tipFor` are the only two mouths, and both are shut. */
   const small=[];
-  if(g.hit)small.push((g.hit>0?'+':'')+g.hit+' to hit');
-  if(g.dodge)small.push((g.dodge>0?'+':'')+g.dodge+' dodge');
-  if(g.rangedDmg)small.push('+'+g.rangedDmg+' damage with a bow');
-  if(g.hp)small.push((g.hp>0?'+':'')+g.hp+' hitpoints');
-  if(g.windsCut)small.push('spells cost '+g.windsCut+' less nerve');
-  ['str','agi','int','mor'].forEach(s=>{if(g[s])
-    small.push('a little '+(g[s]>0?'':'less ')+STATWORD[s]+' ('+(g[s]>0?'+':'')+g[s]+')');});
+  if(!g.hush){
+    if(g.hit)small.push((g.hit>0?'+':'')+g.hit+' to hit');
+    if(g.dodge)small.push((g.dodge>0?'+':'')+g.dodge+' dodge');
+    if(g.rangedDmg)small.push('+'+g.rangedDmg+' damage with a bow');
+    if(g.hp)small.push((g.hp>0?'+':'')+g.hp+' hitpoints');
+    if(g.windsCut)small.push('spells cost '+g.windsCut+' less nerve');
+    ['str','agi','int','mor'].forEach(s=>{if(g[s])
+      small.push('a little '+(g[s]>0?'':'less ')+STATWORD[s]+' ('+(g[s]>0?'+':'')+g[s]+')');});
+  }
   if(small.length)b.push(cap1(small.join(', '))+'.');
   if(g.bonusD)b.push((p&&trinketFires(g,p))
     ? '★ WORKS ON THIS ONE: '+g.bonusD+'.'
@@ -20339,6 +20883,9 @@ function tipFor(key,p){
   /* every line answers "and what does that mean for me" — the raw token is
      kept in brackets for anybody who wants it, never on its own */
   const rows=[];
+  /* #141 - and the same silence here. See `hush` on the GEAR row: the numbers
+     are real, they are applied, and this box does not read them out. */
+  if(!g.hush){
   if(g.armour)rows.push('Stops <b>'+g.armour+'</b> damage before it reaches them.');
   if(g.dmg)rows.push('Hits for <b>'+g.dmg[0]+'–'+g.dmg[1]+'</b>'+
     (g.range?' at up to '+g.range+' hexes.':g.reach>1?', reaching '+g.reach+' hexes.':'.'));
@@ -20354,6 +20901,7 @@ function tipFor(key,p){
       (g[s]>0?'+':'')+g[s]+' '+s.toUpperCase()+'</b>).');});
   if(g.size&&g.size!=='any')rows.push('Cut for a <b>'+g.size+'</b> body. On anybody else it '+
     'still works, at 70% and a sour mood.');
+  }
   let html='<div style="font-family:var(--display);font-size:15px;color:var(--g4);'+
     'margin-bottom:4px">'+(g.g?g.g+' ':'')+g.n+'</div>';
   if(scope)html+='<div style="font-family:var(--mono);font-size:9px;letter-spacing:.12em;'+
@@ -20553,8 +21101,25 @@ const NODES={
      `clash` moves 12px. Checked, not eyeballed: spacingViolations() and
      labelViolations() both return empty, and the built plates were measured
      in the running page (43px of air under Grausen Hold's plate, no overlap
-     with Blood on the Road or the water road's first slot). */
-  star  :{x:168,y:424,n:'The Falling Star',    t:'event',ev:'star'},
+     with Blood on the Road or the water road's first slot).
+
+     ⚑ #141 - THE SLOT KEPT ITS JOB AND CHANGED ITS CARD. (User: "after
+     tavern fight - next event instead of faling star (it could be a random
+     event somwhere)".) Everything the comment above argues for is about the
+     BEAT - one night between two fights, at these coordinates, for the
+     arithmetic reason given - and none of it is about which card is dealt
+     here. The star is now in `FLOATING`, so it still happens, somewhere the
+     player did not schedule it, which is the better place for a wish.
+
+     ⚠ AND THE PLATE MOVED 33px UP WITHOUT ANYBODY TOUCHING IT. `star` has a
+     painting in MAP_SIGHT and `coin` has none, so this node dropped from
+     NAME_DY_SIGHT (54) to NAME_DY (21) purely by changing its event key.
+     That is the world-map rule's standing warning arriving from the one
+     direction it does not spell out: art can be LOST as well as gained. The
+     name is shorter than the star's for the same reason (13 chars against
+     16, so the plate can only get narrower), and all three counters were
+     re-run. */
+  coin  :{x:168,y:424,n:'The Wheel-Rut',       t:'event',ev:'coin'},
   clash :{x:240,y:330,n:'Blood on the Road',   t:'battle',ev:'clash'},
   /* ── NORTH: shorter, and the Broken Men are standing on it. One slot,
        one fight, and a fire between that fight and the next one ──────── */
@@ -21018,8 +21583,8 @@ const EDGES=[
      wages, so the extra day is a beat added and not a tax. Both legs carry
      the same description because there is nothing to compare them to - only
      a fork ever draws one (see `forkHere`). */
-  ['hold','star',1,1,'the only road east'],
-  ['star','clash',1,1,'the only road east'],
+  ['hold','coin',1,1,'the only road east'],
+  ['coin','clash',1,1,'the only road east'],
   /* ══ CROSSROAD A — TWO ROADS, NOT THREE ═══════════════════════════════
      (User, 2026-08-01: "on one fork more fights and more money, but your
      people get crippled. On the other, safer, but the chance to get less.")
@@ -21183,7 +21748,17 @@ const FLOATING=['toll','pedlar','chapel','wain','bloom','milestone','saltwives',
   /* #74 - the heaviest card in the deck. It is in the floating pool rather
      than on a node because meeting them is a thing that happens to you, not
      a place you decided to walk to. */
-  'circle'];
+  'circle',
+  /* #141 - AND THE FALLING STAR JOINS THEM, for the same reason and by the
+     user's own aside ("it could be a random event somwhere"). It was a fixed
+     node between the tavern and Blood on the Road; a wish you can see coming
+     two days out is a stop on an itinerary. Everything it needs travels with
+     it: `openEvent` sets its {TELLER} off the EVENT key, not the node, and
+     MAP_SIGHT is keyed the same way, so a slot dealt the star paints the
+     star. ⚠ Its body used to open "A day east of Grausen", which was true of
+     exactly one node and is a lie on the other seven. Rewritten to name no
+     place at all. */
+  'star'];
 /* Seven slots across three forks, of which a single run walks two to five —
    one or three on fork A, one on fork B's quiet arm, one on either arm of
    fork C. Fewer slots than the sixteen-card pool on purpose: the deck should
@@ -21992,10 +22567,24 @@ function worldTick(){
      ⚠ GUARDED ON `G.moving`, because worldTick also runs mid-walk (a camp
      card closing) and an unguarded call would teleport the walkers back to
      the node they set out from. */
-  /* #118 - the signature. One writer, here, because worldTick is the one
-     function every road back to this screen already runs through. */
+  /* ═══ #137 - THE NAME IS ON THE COMPANY, NOT ALONG THE BOTTOM ═══════════
+     (User, 2026-08-13: *"put picked at the begining name of the company on
+     the map, instaed of 'the company'."*)
+
+     #118 signed the name across the foot of the map because the token's
+     caption was the literal string THE COMPANY in the markup, and the token
+     is the one thing on this screen that IS the company. Moving the name onto
+     it puts the label on its subject and takes a floating caption off a
+     screen the clarity pass is emptying. `#wName` goes with it: the same
+     fact, twice, on one screen was the whole reason to move it.
+
+     ⚠ An old save has no `coName`, so the caption falls back to what it has
+     always said rather than to nothing. A token with no label under it reads
+     as a bug. */
+  const wt=$('wToken')&&$('wToken').querySelector('.tl');
+  if(wt)wt.textContent=(G.coName||'THE COMPANY').toUpperCase();
   const wn=$('wName');
-  if(wn)wn.textContent=(G.coName||'').toUpperCase();
+  if(wn)wn.textContent='';
   const spr=$('wToken').querySelector('.wSpr');
   if(spr){
     /* ⚑ #114 points 3+4 ("Put your leader characters in front of crew ·
@@ -23253,6 +23842,57 @@ function openVignette(spot,next,atPlace){
 }
 
 const EVENTS={
+  /* ═══ #141 · THE COIN IN THE ROAD ══════════════════════════════════════
+     (User: "after tavern fight - next event instead of faling star... add
+     event - you found an unusial coin.")
+
+     ⚑ IT IS A LIGHT CARD AND IT KNOWS IT. `01_GAME_CONCEPT.md` §5 asks every
+     card which of the three weights it is, and this one is the two-second
+     pickup: two doors, no arithmetic to work out, nothing to weigh against
+     the chest. It is standing in the slot a FOUR-door wish card stood in, on
+     the second node of the game, which is #86's whole complaint about the
+     opening answered without deleting the beat #112 bought.
+
+     ⚑ BOTH DOORS GIVE YOU THE COIN, AND THAT IS WHY IT IS A DECISION. What
+     is actually being decided is who the company thinks it belongs to: the
+     rule (everything found is the company's, and you pick the wearer) or the
+     finder (they keep it, they wear it tonight, and you do not get a say).
+     Nobody is punished and nobody is rewarded, so neither door is the
+     obviously right one, which is the test the README puts on every card.
+
+     ⚠ NO OPTION LEAVES IT IN THE MUD. An early draft had one, and it was the
+     card handing the player a chance to walk past the only reason the card
+     exists. A door that deletes the content is not a decision, it is a
+     trapdoor.
+
+     ⚠ THE CARD NEVER SAYS WHAT THE COIN DOES, because the coin does not
+     either - see `oddcoin` in GEAR and the `hush` note on it. The prose is
+     allowed to say it is strange. It is not allowed to say it is lucky. */
+  coin:{title:'THE COIN IN THE ROAD',art:'teal',seed:141,
+    body:'The road east runs through old wheel-ruts, filled and refilled and never once '+
+      'mended.\n\n{TELLER} stops walking, which stops everybody, and comes back up out of the '+
+      'mud holding a coin in two fingers.\n\nIt is not a crown. It is not any coin this '+
+      'company has ever been paid in, and between them they have been paid in most of the '+
+      'coins on this island. No head on it. No writing. Heavier than a thing that size has '+
+      'any business being, and warm, and it has been lying in cold mud since before the ruts '+
+      'were ruts.\n\nIt goes down the line, because everybody wants to hold it. It comes back. '+
+      'Every one of them handed it on, and then had nothing at all to say about it.',
+    choices:[
+      {t:'Into the wagon. Everything found on this road is the company\'s.',
+       c:'you decide who carries it · it sits badly with them',
+       fx:{morale:-4},gear:'oddcoin',
+       after:'You put your hand out and it is put into it, which takes a moment longer than it '+
+         'ought to.\n\nNobody argues. Nobody has to. It is the rule, you did not invent it, and '+
+         'every company on this island walks on it. The coin goes in the wagon with the salt '+
+         'and the spare boots, and the road is quiet for an hour afterwards.'},
+      {t:'Whoever found it, keeps it.',
+       c:'it sits well with them · you do not get to say who carries it',
+       fx:{morale:8},coinKeep:true,
+       after:'It goes into a pocket. Then out of that pocket and into a better one, and by the '+
+         'second mile it is on a cord round {TELLER1}\'s neck, under the shirt, where a thing '+
+         'goes when somebody has stopped intending to hand it over.\n\nThe company thinks '+
+         'better of you for an afternoon, and an afternoon is what it is worth.\n\n'+
+         '{TELLER1} has stopped talking.'}]},
   /* FIXED, and the first thing on the road. Three humans meet the island
      properly for the first time: a fight that has nothing to do with them,
      between two peoples who were here first. Helping a side is how Skree
@@ -23293,7 +23933,7 @@ const EVENTS={
      line anywhere claims a cause. This is a low-magic world and a wish is a
      thing people do, not a thing that works. */
   star:{title:'THE FALLING STAR',art:'teal',seed:29,
-    body:'A day east of Grausen the light goes out of the sky, and something comes down '+
+    body:'An hour before dark the light goes out of the sky, and something comes down '+
       'through it.\n\nWhite. Slower than it has any business being. Low enough to put a '+
       'shadow under every tree on the road, once, and then it is gone behind the eastern '+
       'ones. There is no sound. Not then, and not after.\n\nThe company stands in the road '+
@@ -24661,7 +25301,13 @@ function openEvent(k){
      source for exactly the string below.
      ⚠ NOT THE CAPTAIN. He is the one being told, his name is literally
      "You", and "You knows the custom" is not a sentence. */
-  if(k==='star'){
+  /* #141 - THE COIN IS CAST THE SAME WAY AND OUT OF THE SAME LINE. Its whole
+     point is that one named body found it and one named body ends up wearing
+     it, and the card says that name three times across two cast() calls. A
+     second copy of these four lines would be four lines that can disagree.
+     ⚠ LINT check 1b greps this function for `k==='<key>'`, so the || form has
+     to keep both keys spelled out. */
+  if(k==='star'||k==='coin'){
     const others=G.party.filter(p=>!p.leader&&p.id!=='you');
     const one=pickOne(others.length?others:G.party);
     G.fireTeller=one?one.id:null;
@@ -24737,9 +25383,24 @@ function openEvent(k){
       c:'no cost · the road does not wait for a full purse',fx:{},
       after:'You have nothing to trade and nothing to give, and everybody here can see it. '+
         'The company walks on, in good order, looking at the middle distance.'});
+  /* ═══ #137 - A DOOR THAT STARTS A FIGHT IS RED, AND IT IS ONE GATE ═══════
+     (User, 2026-08-13: *"If some of the choices in event leads to a fight -
+     make it red."*)
+
+     Red was hand-tagged per option with `danger:true`, and five fight doors
+     had never been given it: both of the clash's wade-in doors (the WATCH IT
+     HAPPEN door had it and the two that actually put you in the fight did
+     not), armour, pack and brigand.
+
+     ⛔ NOT A SWEEP THROUGH THE TABLES ADDING FIVE FLAGS. That is the same
+     hand-kept second copy, and the sixth fight door written next month would
+     ship un-marked exactly the way these five did. A choice carrying
+     `battle:` IS the red one; the renderer can see that without being told
+     twice, and `danger` keeps its own job (the door that is dark rather than
+     violent - the prisoners, the coin), so the two reasons stack. */
   $('wChoices').innerHTML=visible.map((c,i)=>{
     const ok=canAfford(c.need);
-    return '<button class="choice'+(c.danger?' danger':'')+(c.needRace?' racey':'')+
+    return '<button class="choice'+((c.danger||c.battle)?' danger':'')+(c.needRace?' racey':'')+
       '" data-i="'+i+'"'+(ok?'':' disabled style="opacity:.38"')+'><b>'+c.t+'</b><i>'+c.c+
       moraleTag(c.fx)+((c.hurt&&!c.hideHurt)?'<span class="hurt"> · injury</span>':'')+
       (ok?'':' · '+needTag(c.need))+'</i></button>';}).join('');
@@ -25002,6 +25663,28 @@ function pickChoice(k,i){
         remember(one,'Asked for the long fire past the Dead Company and was told no.');
       }
     }
+  }
+  /* ═══ #141 - THE FINDER PUTS ON WHAT THE FINDER FOUND ═══════════════════
+     The other door hands the coin to the STASH, which is `c.gear` and which
+     forces the inventory open so the player chooses a wearer. This door is
+     the opposite half of the same decision, so it has to land somewhere the
+     player did not choose: straight into that person's amulet slot, worn on
+     the road, tonight.
+
+     ⚠ THE FINDER IS `G.fireTeller`, READ AND NOT RE-ROLLED. It was cast when
+     the card opened and the body has already named them twice; picking a
+     fresh person here would put the coin round the neck of somebody who was
+     not in the story. Same rule, and the same comment, as the long fire.
+     ⚠ Nobody is wearing a trinket this early, but the displaced one goes to
+     the stash rather than being overwritten, because "this can only happen
+     at the second node" is exactly the assumption that rots. */
+  if(c.coinKeep){
+    const one=member(G.fireTeller)||G.party.find(p=>!p.leader)||G.party[0];
+    if(one&&one.eq){
+      if(one.eq.trinket)G.stash.push(one.eq.trinket);
+      one.eq.trinket='oddcoin';
+      remember(one,'Found a coin in a wheel-rut on the road east, and was allowed to keep it.');
+    }else G.stash.push('oddcoin');       /* no roster to put it on: do not lose it */
   }
   /* ═══ #74 - THE CIRCLE GOES ON THE CAPTAIN'S FACE ═══════════════════════
      It lands on the leader and on nobody else, because the card is addressed
