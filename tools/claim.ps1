@@ -62,19 +62,63 @@ $Root      = Split-Path $PSScriptRoot -Parent
 # lives. Everything else in this file reads $Store, so this is the only place
 # that has to know.
 # ---------------------------------------------------------------------------
+# GIT SPEAKS UTF-8 AND POWERSHELL DECODES IT WITH THE CONSOLE CODEPAGE, AND
+# THIS REPO'S PATH IS CYRILLIC. (#144)
+#
+# Found by watching a commit from a desk print "clear: no other session is
+# holding a number" while twelve claims sat in the store. `.git/hooks/pre-commit`
+# is a SHELL script, so this file runs under sh, where the console is cp866
+# rather than whatever an interactive PowerShell happens to be. git hands back
+# "C:/Users/USER/Google <Cyrillic>/..." as UTF-8 bytes, cp866 turns them into a
+# path that does not exist, Resolve-Path throws, and the catch below quietly
+# answered $Root.
+#
+# So the store became the worktree's own empty .grimtoll: every desk got a
+# private claim directory, `verify` found nothing in it, and THE PRE-COMMIT
+# BACKSTOP HAS BEEN OFF IN EVERY DESK SINCE #139 while printing the word
+# "clear" each time. #139's whole load-bearing idea is that the store is shared;
+# this is that idea failing in the one place nobody watches, for a reason that
+# has nothing to do with git.
+#
+# Two fixes, and the second matters as much as the first. Read git's answer as
+# UTF-8. And NEVER FALL BACK SILENTLY: a fallback that cannot be distinguished
+# from success is what let a decoding bug wear the word "clear" for days.
 function Get-StoreRoot {
+  try { Push-Location $Root -ErrorAction Stop } catch { return $Root }
+
+  $common = ''
+  $enc    = $null
+  try { $enc = [Console]::OutputEncoding } catch { }
   try {
-    Push-Location $Root -ErrorAction Stop
-    try   { $common = & git rev-parse --git-common-dir 2>$null }
-    finally { Pop-Location }
-    if ($LASTEXITCODE -eq 0 -and $common) {
-      $common = $common.Trim()
-      if (-not [System.IO.Path]::IsPathRooted($common)) { $common = Join-Path $Root $common }
-      $common = (Resolve-Path -LiteralPath $common -ErrorAction Stop).Path
-      return (Split-Path $common -Parent)
-    }
-  } catch { }
-  return $Root          # not a git repo, or git is missing: behave as before
+    try { [Console]::OutputEncoding = [System.Text.Encoding]::UTF8 } catch { }
+    # No 2>$null: under $ErrorActionPreference='Stop', REDIRECTING a native
+    # command's stderr is itself what turns a harmless warning into a
+    # terminating NativeCommandError. Unredirected stderr is inert.
+    $common = & git rev-parse --git-common-dir
+  } catch {
+    $common = ''
+  } finally {
+    if ($enc) { try { [Console]::OutputEncoding = $enc } catch { } }
+    Pop-Location
+  }
+
+  # No git, or not a repo. This is the honest fallback and it stays quiet.
+  if ($LASTEXITCODE -ne 0 -or -not $common) { return $Root }
+
+  $common = $common.Trim()
+  if (-not [System.IO.Path]::IsPathRooted($common)) { $common = Join-Path $Root $common }
+  try {
+    $common = (Resolve-Path -LiteralPath $common -ErrorAction Stop).Path
+  } catch {
+    # Git answered and the answer did not survive the trip. That is a bug in
+    # here, not a machine without git, and it must never look like success.
+    [Console]::Error.WriteLine("claim.ps1: git named a common dir that will not resolve:")
+    [Console]::Error.WriteLine("  " + $common)
+    [Console]::Error.WriteLine("claim.ps1: FALLING BACK TO A PRIVATE STORE. Numbers are not shared and")
+    [Console]::Error.WriteLine("           the pre-commit guard is off. Fix this before trusting either.")
+    return $Root
+  }
+  return (Split-Path $common -Parent)
 }
 
 $StoreRoot = Get-StoreRoot
@@ -346,11 +390,14 @@ function Get-ShippedNumbers {
     # path writes to stderr, and under $ErrorActionPreference='Stop' that is a
     # terminating NativeCommandError, so the cheap listing keeps the reads
     # quiet instead of turning a renamed doc into a thrown exception.
+    # UTF-8 before the first git call, not after: see Get-StoreRoot for what a
+    # console codepage does to this repo's paths.
+    try { [Console]::OutputEncoding = [System.Text.Encoding]::UTF8 } catch { }
+
     $have = @()
     try { $have = @(& git ls-tree -r --name-only main -- docs) } catch { $have = @() }
     if ($have.Count -eq 0) { return $null }
 
-    try { [Console]::OutputEncoding = [System.Text.Encoding]::UTF8 } catch { }
     foreach ($f in $ShipRecord) {
       if ($have -notcontains $f) { continue }
       $txt = ''

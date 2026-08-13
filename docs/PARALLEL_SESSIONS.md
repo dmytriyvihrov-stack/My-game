@@ -150,6 +150,31 @@ both win. Nothing else in this repo has that property: a counter in a document d
 "check, then write" in a script does not either, because the gap between the check and the write is
 where the collision lives.
 
+> ### ⛔ The pre-commit guard was OFF in every desk from #139 until #144, and it printed "clear"
+>
+> Found on 2026-08-13 by watching a commit from a desk report *"clear: no other session is holding a
+> number"* while **twelve claims sat in the store**, four of them a live session's.
+>
+> `.git/hooks/pre-commit` is a **shell** script, so `claim.ps1` runs under `sh`, where the console is
+> **cp866**. git hands back `C:/Users/USER/Google Диск/...` as UTF-8 bytes, cp866 turns that into a
+> path that does not exist, `Resolve-Path` throws, and `Get-StoreRoot`'s catch quietly answered
+> `$Root`. **So the store became the desk's own empty `.grimtoll\`, created fresh on the spot**, and
+> every desk had a private claim directory with nothing in it.
+>
+> ⚑ **The lesson is the fallback, not the codepage.** `Get-StoreRoot` had one `catch` covering two
+> completely different situations: *"this machine has no git"*, which is fine and should be quiet,
+> and *"git answered and I could not read it"*, which is a bug. **A fallback that cannot be told
+> apart from success will wear the word "clear" for as long as nobody looks.** Git is read as UTF-8
+> now, and the second case prints a loud block saying the store is private and the guards are off.
+>
+> ⚠ **And `2>$null` was part of it.** Under `$ErrorActionPreference='Stop'`, *redirecting* a native
+> command's stderr is what promotes a harmless warning into a terminating `NativeCommandError`.
+> Unredirected stderr is inert. The redirection that looks like tidiness was the trap.
+>
+> **If you are ever unsure whether the guard is live in your desk**, stage a line spending a number
+> `status` says somebody else holds, and check that the commit is refused. A `.grimtoll\` folder
+> appearing inside a desk is the tell that it is not.
+
 > ⚠ **`#NN` and a three-digit CSS hex colour are the same string.** The first version of the repo
 > scan read `#373` out of a stylesheet and issued it as a backlog number. Entry numbers are read from
 > **prose and `shots/` only**, with fenced and inline code stripped, and capped at 200. `8f.NNN` is
@@ -223,6 +248,14 @@ where the collision lives.
 > after `git worktree` would have removed the question. Nobody re-asked whether the constraint was
 > still there. ⚑ **When a rule costs more every week, re-read the sentence it was derived from, not
 > the rule.**
+
+> **A guard that fails open, quietly, is worse than no guard.**
+>
+> Twice now on this one file. #139's desk exemption never fired because the hook asked where the
+> *script* lived; #144's store resolution fell back to a private folder because a path would not
+> decode. Both **looked exactly like working**, and the second one printed the word "clear" while
+> doing nothing at all. ⚑ **Every fallback in a guard needs to be able to say which fallback it
+> took** - "no git here" and "git answered and I could not read it" cannot share a `catch`.
 
 > **A rule nobody has ever obeyed is a rule the tool should have been keeping.**
 >

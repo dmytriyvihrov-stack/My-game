@@ -64,6 +64,21 @@ so loudly, that is somebody's seat) · a commit refused for citing something alr
 prevent. **The one case that still needs you:** work finished on a desk whose branch was never
 merged into `main` is invisible to this, on purpose, because it is not shared yet. Merge it.
 
+### The bigger thing this turned up, which you should know about
+
+Building the above found that **the commit guard had been switched off inside every branch desk
+since #139, and was printing the word "clear" every time it ran.** It was reading a private, empty
+list of claimed numbers instead of the shared one, because the hook runs under a different shell
+whose text encoding mangles this repo's folder path (`Google Диск`). It is fixed, and it now
+complains loudly instead of going quiet if it ever cannot find the shared list again.
+
+**Nothing was lost by it** and no numbers were duplicated: the part that hands out numbers was
+always reading the right list. Only the last-line commit check was blind.
+
+**The tell, if you ever want to check:** a folder called `.grimtoll` appearing *inside* a desk
+means the guard is reading the wrong list. There should only ever be one, in the main project
+folder.
+
 ---
 
 ## 📜 EVERY ROAD CARD IS SHORTER, AND THE OUTCOME PAYS IN CHIPS  *(#143 · 2026-08-13 · build log 8f.171)*
