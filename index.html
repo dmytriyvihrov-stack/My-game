@@ -2716,6 +2716,36 @@ a.popt.sendit{display:block;text-decoration:none}
   cursor:pointer;text-align:center}
 .nmcol button:hover{border-color:#5a4728;color:#c9b489}
 .nmcol button.on{border-color:var(--gold);color:var(--g4);background:#221b10}
+/* ═══ #138 - THE OPENING'S LAST CARD DOES ALL OF THIS ON ONE SCREEN ════════
+   The name picker moved onto the contract card, where the space is measured
+   rather than free. Two vertical lists of seven are 131px of column against
+   about 55px of slack, so the same seven buttons go 4 across in 2 rows and
+   the preview shares the label's line instead of owning one. Same words, same
+   49 combinations, ~90px less card. */
+#nmCols.flat{gap:14px}
+#nmCols.flat .nmcol{display:grid;grid-template-columns:repeat(4,1fr);gap:4px}
+#nmCols.flat .nmcol button{padding:4px 0}
+.nmhead{display:flex;align-items:baseline;justify-content:space-between;gap:14px;
+  margin:2px 0 6px}
+.nmhead #nmPrev{padding:4px 9px;margin:0;font-size:18px;text-align:right;
+  white-space:nowrap}
+/* the brawl's receipt, riding the top of the contract card (#138) */
+.tvr{border:1px solid #3d2f1d;background:#181209;padding:7px 11px;display:flex;
+  align-items:center;gap:13px;flex:none}
+.tvrt{font-family:var(--mono);font-size:10px;letter-spacing:.22em;color:var(--g3);flex:none}
+.tvrrow{display:flex;align-items:center;gap:13px;margin-left:auto}
+.tvrwho{display:flex;gap:7px}
+.tvrp{display:flex;align-items:center;gap:6px}
+.tvrf{width:26px;height:26px;flex:none;border:1px solid var(--g2);background:#241c11;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--display);font-size:12px;color:var(--g3)}
+.tvrn{font-family:var(--mono);font-size:8.5px;letter-spacing:.08em;color:#8a7449;line-height:1.25}
+.tvrn b{display:block;font-family:var(--display);font-size:11px;letter-spacing:.04em;
+  color:var(--g4);font-weight:600}
+.tvrsep{width:1px;align-self:stretch;background:#3d2f1d}
+/* what arrives after the door is answered, so it reads as an arrival */
+.reveal{animation:prRv .42s ease both}
+@keyframes prRv{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
 /* ═══ #98 · THE SENTINEL. DO NOT MOVE IT, DO NOT DELETE IT ════════════════
    A stray comment terminator inside a comment ends that comment early, and
    every rule after it is silently discarded. Nothing throws, the console
@@ -7960,56 +7990,52 @@ function tavernContract(won){
     '“There is a man of mine at Skelbrook, the far side of the valley. One village, one hall, '+
     'and bandits in it since the thaw. He writes to me every week. Carry his letter. Bring me '+
     'the head out of his chair. Keep the purse. My own men stay where they are.”\n\n'+
-    (won
-      ?'Behind you, the woman with the spear has not left, and neither have the other two. '+
-       'It appears you are a company now. Or a beggar\'s likeness of one.'
-      :'Behind you, the three who stood up for you are picking themselves off the same floor '+
-       'you were on. It appears you are a company now. Or a beggar\'s likeness of one.'),
+    /* ⛔ #138 - ONE SENTENCE CUT FROM EACH BRANCH, AND THE STRIP IS WHY.
+       They opened "Behind you, the woman with the spear has not left, and
+       neither have the other two" / "the three who stood up for you are
+       picking themselves off the same floor you were on". That is now three
+       faces with three names on them, eight lines higher up the same card:
+       the sentence had become the strip's caption, written out. Cutting it is
+       also what buys the merge - the card arrived 77px past its own 684px
+       ceiling with it in. What survives is the line the user quoted back. */
+    'It appears you are a company now. Or a beggar\'s likeness of one.',
     [
-      /* NOT a playable fight. Two professionals against a room-battered
-         crew is a foregone conclusion, and making the player push buttons
-         through a loss they cannot affect is worse than telling them what
-         happened. The cost is hitpoints, which mend on the road, so a
-         brand-new company can still afford to find out what happens. */
-      {t:'Put him on the floor.',
-       c:'his two swords will take you apart for it · blood mends · this will be told',
-       danger:true,
-       go:()=>{
-         G.party.forEach(p=>{
-           const u=unitFrom(p);
-           /* Math.max: the brawl already cost blood, and a beating on top
-              of it must never HEAL anybody back up to the beating's floor */
-           p.hpLoss=Math.max(p.hpLoss||0,
-             clamp(Math.round(u.hpMax*(0.52+Math.random()*0.16)),0,u.hpMax-1));});
-         sfx('rout');
-         prologueEnd(
-           'You do not say anything. He is sitting close enough, and there is nothing to say '+
-           'to it.\n\n'+
-           'It is one hit and it is a very good hit. He goes over a bench with his boots in '+
-           'the air, in front of forty people who drink in this room every night of their '+
-           'lives.\n\n'+
-           'Then the arithmetic arrives. Two of them, rested, paid by the month, and very good '+
-           'at exactly this. They are thorough and unhurried and they take turns, and the '+
-           'taller one stops it himself when he judges it has been enough.\n\n'+
-           'You come round in the yard, in the rain, with the job still yours: he still needs '+
-           'it done, and he is now completely certain he was right about you. Forty crowns, '+
-           'the advance less the bench.\n\n'+
-           'That story will travel faster than you do. Vesna has not stopped grinning. Marrow '+
-           'says, correctly, that you could simply have taken the money.',
-           /* the advances went up ~30% on the user's ruling (2026-08-02, off
-              the QA economy finding): 30/60/40/90 became 40/80/50/120,
-              rounded to figures the prose can say out loud. */
-           {crowns:40,morale:26,scene:'floor'});}},
-      {t:'Say nothing. Take the purse.',c:'morale −5 · he pays the advance in full',
-       go:()=>prologueEnd(
+      /* ═══ #138 - ONE DOOR, AND IT IS THE LAST SCREEN BEFORE THE MAP ═══════
+         (User, 2026-08-13: *"for 138 - delete option 'put him on the floor' it
+         is irrelevant. And instead of 'say nothing' finish tour drink and
+         levae - and next goint to the global map."*)
+
+         ⛔ "PUT HIM ON THE FLOOR" IS DELETED, and his word for it is the one
+         to keep: IRRELEVANT. It was not a bad scene - two paid swords take a
+         room-battered crew apart, you wake in the yard with the job still
+         yours - but it was a decision about a man the game never returns to,
+         priced in hitpoints that mend by the second node. The player pays
+         attention to it, learns the game is about pride, and then the game is
+         about a road. #134 cut the joke door for putting a COIN FLIP on the
+         first decision; this cuts the last one for putting the first decision
+         somewhere it does not lead.
+
+         ⚑ SO THE OPENING NO LONGER HAS A CHOICE IN IT, AND THAT IS THE POINT.
+         Under the clarity pass a card with one door is a LIGHT card (concept
+         §5), and this one is doing a job no decision could do better: it hands
+         over a contract, a crew and a name. The first real decision is now the
+         fork on the road, which is a decision about the road, in a game about
+         the road.
+
+         The purse is the full 80 the coin door paid. ⚠ ITS MORALE PENALTY IS
+         GONE ON PURPOSE: -5 was the price of CHOOSING to swallow it while a
+         prouder door sat beside it, and charging it for the only available
+         action is a receipt printing a price the player never agreed to pay -
+         the exact shape this project keeps catching in the LOOT tables. */
+      {t:'Finish your drink and leave.',
+       c:'+80 crowns · the advance in full · the letter is in the cart',
+       go:()=>contractSettle(
          'You look at the purse until he is finished, and then you pick it up, and that is '+
          'the whole of your answer.\n\n'+
          'He is satisfied. Men like him usually are: being agreed with is the only '+
          'conversation they have ever had. Eighty crowns, in full, counted out where the room '+
-         'can watch it happen.\n\n'+
-         'Nobody in the crew says a word about it that night, or the next morning, which is '+
-         'how you know exactly how much they had to say.',
-         {crowns:80,morale:-5,scene:'coin'})}
+         'can watch it happen.',
+         {crowns:80,scene:'coin'})}
       /* ═══ #134 - THE JOKE IS OUT OF THE OPENING, AND IT IS PARKED ═══════
          (User, 2026-08-13: "make a joke option put from the opning to our
          ideas/things for future set.")
@@ -8036,8 +8062,18 @@ function tavernContract(won){
 
          The full prose, both outcomes and both purses are preserved in
          CHANGELOG 8f.162 and the entry is parked in 00_PLAN_AND_BACKLOG.md,
-         so bringing it back later is a paste, not a rewrite. */
-    ]);
+         so bringing it back later is a paste, not a rewrite.
+
+         ⚑ AND THE SAME NOW APPLIES TO THE FLOOR DOOR (#138, 8f.166). Its four
+         paragraphs, its {crowns:40,morale:26} and its hpLoss roll are in
+         CHANGELOG 8f.166. `PRO_ART` is UNCHANGED and still maps coin -> EV00B
+         and joke_hit -> EV00C, exactly as the art rule requires; `scene:
+         'floor'` was never painted and simply has nothing pointing at it now.
+         ⛔ Do not "tidy up" PRO_ART because a scene went quiet. */
+    ],
+    /* the painting arrives at the outcome, not on the way in: the card opens
+       on the tavern and swaps to EV00B when the purse is picked up */
+    null,null,tavernReceipt());
 }
 /* ═══ #118 - THE NAME. Two words, picked half and half ═══════════════════
    (User: "выбор названия группы... генерация из 2х слов - где ты можеш
@@ -8051,19 +8087,95 @@ function tavernContract(won){
 const CO_FIRST=['SOUR','LIMPING','CROOKED','MANGY','HALFPENNY','BORROWED','DROWNED'];
 const CO_SECOND=['DOGS','CROWS','TEETH','BELLS','SHOVELS','COUSINS','ORPHANS'];
 function coTitle(a,b){return 'The '+cap1(a.toLowerCase())+' '+cap1(b.toLowerCase());}
-function nameCard(){
-  show('prologue');
+/* ═══ #138 - THE BRAWL'S RECEIPT, AS A STRIP AND NOT AS A SCREEN ═══════════
+   (User: *"combine this and next screen (after battle + consiquence). 'You got
+   offer and people. It is the only thing left to do.'"*)
+
+   The screen this replaces carried three paragraphs, a loot line, a morale
+   line, and one button that could not be refused. Its INFORMATION is this one
+   row; its PROSE is gone, because the card underneath is about to say the
+   same thing with a man in it. "You got people" is a fact about three people,
+   so it is drawn as three people rather than written as a sentence - which is
+   also what pays for the sentence cut out of the card's last paragraph.
+
+   ⚠ Reads the roster, not the battle: `B` is torn down by the time the card
+   is drawn, and the three who stood up are on `G.party` by then. Anybody
+   beyond the Captain is shown, so this cannot lie if the cast ever changes. */
+function tavernReceipt(){
+  const L=(LOOT.tavern&&LOOT.tavern[0])||{fx:{}};
+  const crowns=(L.fx&&L.fx.crowns)||0;
+  const joined=G.party.filter(p=>!p.leader).slice(0,3);
+  const chip=(ic,v,lab,col)=>'<div class="fxc"><span class="fxi" style="color:'+col+
+    '">'+ic+'</span><span><span class="fxn" style="color:'+col+'">+'+v+
+    '</span><span class="fxl">'+lab+'</span></span></div>';
+  return '<div class="tvr">'+
+    '<span class="tvrt">THE ROOM SETTLES</span>'+
+    '<div class="tvrrow">'+
+      '<div class="abfx">'+
+        chip(RES_ICON.crowns,crowns,'CROWNS','var(--gold)')+
+        chip('⚑',4,'MORALE','var(--morale)')+
+      '</div>'+
+      (joined.length?'<div class="tvrsep"></div><div class="tvrwho">'+
+        joined.map(p=>'<div class="tvrp"><div class="tvrf">'+
+          (p.name||'?').charAt(0)+'</div><div class="tvrn"><b>'+(p.name||'')+'</b>'+
+          ((p.cls&&CLASSES[p.cls]?CLASSES[p.cls].n:'')||'').toUpperCase()+
+          '</div></div>').join('')+'</div>':'')+
+    '</div></div>';
+}
+/* ═══ #138 - THE CARD TURNS OVER; IT DOES NOT HAND OFF TO ANOTHER ══════════
+   Everything the old `prologueEnd` card did, done to the card already on
+   screen: pay the advance, swap the painting, put the outcome where the
+   offer was, and only THEN offer the name.
+
+   ⛔ THE CONTRACT PROSE IS REMOVED WHEN THE OUTCOME ARRIVES, and that is not
+   tidiness, it is the measurement. Five paragraphs of a man making an offer
+   plus the outcome plus the namer is 331px past the card's own 684px ceiling
+   (measured in shots/138_opening_one_card.html). His offer has been answered;
+   what is left on screen is what happened. The PAINTING stays and swaps,
+   because the picture is the scene and not the speech. */
+function contractSettle(txt,fx){
+  pay('crowns',fx.crowns||0);
+  if(fx.morale)G.morale+=fx.morale;
+  sfx('coin');
+  proArtSwap(PRO_ART[fx.scene]);
+  const body=$('prBody');if(body)body.style.display='none';
+  const opts=$('prOpts');if(opts)opts.style.display='none';
+  const hurt=G.party.filter(p=>p.hpLoss>0);
+  const out=$('prOut');
+  out.innerHTML='<p style="white-space:pre-line">'+txt+'</p>'+
+    (hurt.length?'<p style="white-space:pre-line;color:#8a7449;font-style:italic;'+
+      'margin-top:10px">Walking wounded: '+
+      hurt.map(p=>who(p)+' ('+p.hpLoss+' hp short)').join(', ')+
+      '. None of it is permanent. Days on the road are the only medicine in this '+
+      'game.</p>':'');
+  out.className='reveal';
+  nameStrip();
+}
+/* ═══ #138 - THE NAME, OFFERED ONLY ONCE THE CONTRACT IS TAKEN ═════════════
+   (User: *"Offer to choise name after you except contract, not befor."*)
+
+   This was a whole card of its own, reached after the outcome card, which is
+   two page breaks after the sentence that motivates it. It is the same 7x7 and
+   the same words, revealed in place under the outcome - so the name is now
+   visibly a consequence of signing rather than a form on the way out.
+
+   ⚠ THE COLUMNS ARE LAID FLAT (`.flat`). Two vertical lists of seven are 131px
+   of column, and by this point the card has about 55px to give. Same buttons,
+   4 across, 2 rows. */
+function nameStrip(){
   let a=CO_FIRST[Math.floor(Math.random()*CO_FIRST.length)];
   let b=CO_SECOND[Math.floor(Math.random()*CO_SECOND.length)];
-  const card=$('prCard');
-  card.innerHTML='<h1>A NAME FOR THE LEDGER</h1>'+
-    '<p>The purse is on the table and the letter is in the cart, and then the man in the coat '+
-    'stops in the doorway. “The contract wants a name over the marks. Companies sign.”\n'+
-    'It had not come up until exactly now.</p>'+
-    '<div id="nmPrev"></div>'+
-    '<div id="nmCols"><div class="nmcol" id="nmA"></div><div class="nmcol" id="nmB"></div></div>'+
-    '<div class="popts"><button class="popt" id="nmGo"><b>Chalk it on the wagon.</b>'+
-    '<i>the road will learn it soon enough</i></button></div>';
+  const host=$('prName');
+  host.innerHTML=
+    '<div class="nmhead"><div class="lbl" style="color:#8a7449">'+
+      'THE CONTRACT WANTS A NAME OVER THE MARKS. COMPANIES SIGN.</div>'+
+      '<div id="nmPrev"></div></div>'+
+    '<div id="nmCols" class="flat"><div class="nmcol" id="nmA"></div>'+
+      '<div class="nmcol" id="nmB"></div></div>'+
+    '<div class="popts" style="grid-template-columns:1fr">'+
+      '<button class="popt" id="nmGo"><b>Chalk it on the wagon, and go.</b>'+
+      '<i>the road will learn it soon enough</i></button></div>';
+  host.className='reveal';
   const paint=()=>{
     $('nmPrev').textContent=coTitle(a,b).toUpperCase();
     $('nmA').querySelectorAll('button').forEach(x=>x.classList.toggle('on',x.dataset.w===a));
@@ -8074,12 +8186,15 @@ function nameCard(){
   $('nmA').querySelectorAll('button').forEach(x=>x.onclick=()=>{a=x.dataset.w;sfx('click');paint();});
   $('nmB').querySelectorAll('button').forEach(x=>x.onclick=()=>{b=x.dataset.w;sfx('click');paint();});
   paint();
+  host.scrollIntoView({block:'nearest',behavior:'smooth'});
   $('nmGo').onclick=()=>{
     G.coName=coTitle(a,b);
     if(typeof JOURNAL!=='undefined')JOURNAL.put('choice','company named',{pick:G.coName});
-    enterWorld();
+    enterWorld();          /* #138 - and the next screen is the map. */
   };
 }
+/* kept as its old name in case anything still routes here; it is the strip now */
+const nameCard=nameStrip;
 function tavernAfter(){
   /* 8f.137 - belt to winNow's braces: NOTHING a practice fight does may
      reach the campaign, and this function is all campaign */
@@ -8099,19 +8214,23 @@ function tavernAfter(){
   pay('crowns',(L.fx&&L.fx.crowns)||0);
   G.morale+=4;
   tutClose();B.tut=null;
-  show('spoils');
-  $('sCard').innerHTML='<h1>'+AFTER.tavern.t+'</h1>'+
-    '<p>'+AFTER.tavern.b.replace(/\n\n/g,'</p><p>')+'</p>'+
-    (kills?'<p style="color:#8a7449;font-style:italic">'+kills+' of them will '+
-      'not be getting up, and the barman is careful not to look at that side '+
-      'of the room.</p>':'')+
-    '<p style="color:#c9a227">'+L.t+' ('+L.c+') The room has seen what your '+
-    'iron is worth. (+4 morale)</p>'+
-    /* #118 - the contract is downstream of the fight now, so the brawl's
-       aftermath hands over to the corner table, never to the map */
-    '<div class="popts"><button class="popt" id="tvGo"><b>The corner table.</b>'+
-    '<i>somebody watched all of that, and he is coming over</i></button></div>';
-  $('tvGo').onclick=()=>tavernContract(true);
+  /* ═══ #138 - THE SCREEN THAT USED TO BE HERE IS NOW A STRIP ═══════════════
+     It drew AFTER.tavern's three paragraphs, the loot line, the morale line
+     and ONE BUTTON THAT COULD NOT BE REFUSED ("The corner table."), which is
+     the same defect #118's own comment describes killing once already - it
+     grew back on the other side of the decision.
+
+     ⚠ EVERY LINE ABOVE THIS COMMENT IS CAMPAIGN STATE AND STILL RUNS AT THE
+     SAME MOMENT: tavernDone, the hp receipts, the fight counters, the eight
+     crowns and the four morale. Only the drawing went. The SIM fork above is
+     still first, so a practice-field brawl can never reach any of it.
+     `kills` was only ever used by the deleted paragraph.
+     `AFTER.tavern` is now unread here and is deliberately LEFT IN PLACE: it is
+     the table every other fight's aftermath is keyed from, and pulling one row
+     out of it to match a screen that moved would be the second source of truth
+     this pass keeps deleting. */
+  void kills;
+  tavernContract(true);
 }
 /* ═══════════════════════════════════════════════════════════════════════
    THE PACK — a fight made entirely of things that will not stand still.
@@ -25398,9 +25517,34 @@ function openEvent(k){
      `battle:` IS the red one; the renderer can see that without being told
      twice, and `danger` keeps its own job (the door that is dark rather than
      violent - the prisoners, the coin), so the two reasons stack. */
+  /* ═══ #137's CORRECTION, AND IT IS THE PART WORTH KEEPING ════════════════
+     The gate above was written by READING the tables, and it was wrong on
+     three cards. Enumerating `battle:` doors in the RUNNING build returns 12,
+     not the 5 the reading found, and the three extra break the rule:
+
+       snare   both doors are fights (same fight; the choice is whether they
+               are ready or you strike first)
+       armour  one door, an ambush
+       packev  one door, the same
+
+     ⛔ SO RED IS NOT "THIS DOOR IS A FIGHT", IT IS "THIS DOOR IS THE FIGHT AND
+     THERE IS ANOTHER WAY". Red is a CONTRAST, and a mark that fires on every
+     door of a card is furniture - the same finding as #123's duplicate-option
+     rule and #106's "a number on screen every day gets read as furniture",
+     arriving a third time on a third surface.
+
+     Still ONE gate, just asked of the CARD instead of the option, which the
+     renderer can do because `visible` is already in hand. `danger:true` is
+     untouched and still marks its own door wherever an author put one, so the
+     Fen-Mother and the sling-line keep their red: those cards have a walk-away.
+
+     ⚑ And the lesson under it: the 5 came from grepping the source and the 12
+     came from asking the build. A table you can enumerate at runtime should
+     be enumerated at runtime. */
+  const anyWayOut=visible.some(c=>!c.battle);
   $('wChoices').innerHTML=visible.map((c,i)=>{
     const ok=canAfford(c.need);
-    return '<button class="choice'+((c.danger||c.battle)?' danger':'')+(c.needRace?' racey':'')+
+    return '<button class="choice'+((c.danger||(c.battle&&anyWayOut))?' danger':'')+(c.needRace?' racey':'')+
       '" data-i="'+i+'"'+(ok?'':' disabled style="opacity:.38"')+'><b>'+c.t+'</b><i>'+c.c+
       moraleTag(c.fx)+((c.hurt&&!c.hideHurt)?'<span class="hurt"> · injury</span>':'')+
       (ok?'':' · '+needTag(c.need))+'</i></button>';}).join('');
@@ -26090,20 +26234,45 @@ function t2(k,v){return '<div>'+k+' <b>'+v+'</b></div>';}
    say nothing. `floor` and `joke_miss` are deliberately still unpainted and
    keep falling back to the tavern. */
 const PRO_ART={coin:'EV00B',joke_hit:'EV00C'};
-function proCard(title,body,opts,artKey,banner){
+/* ⚠ #138 - `flex:none` ON THE CANVAS, AND IT IS A REAL BUG WITH A DELAY ON IT.
+   `.pcard` is a column flexbox, so this canvas is a flex item with the default
+   flex-shrink:1. Every card that has ever used proCard came in under the 684px
+   max-height, so it has never had to shrink and nobody has seen it. The moment
+   a card goes over - which the merged card below does - the PAINTING is what
+   gives: it squashed to 1px in the first draft of shots/138. Pinned here rather
+   than at the call site so no future card can inherit the fault.
+   ⛔ 460x190 is fixed by .claude/rules/static-event-art.md. Do not shrink the
+   box to make a tall card fit; cut the card. */
+function proCard(title,body,opts,artKey,banner,strip){
   show('prologue');
   const art=artFor(artKey||TAVERNART);
   $('prCard').innerHTML='<h1>'+title+'</h1>'+
+    /* #138 - the receipt for the scene just left sits ABOVE the painting of
+       the scene just arrived in. */
+    (strip||'')+
     (art?'<canvas id="prArt" width="460" height="190" style="width:100%;height:190px;'+
-      'border:1px solid #4d3c22;display:block;margin-bottom:11px"></canvas>':'')+
+      'flex:none;border:1px solid #4d3c22;display:block;margin-bottom:11px"></canvas>':'')+
     (banner||'')+
-    '<p style="white-space:pre-line">'+body+'</p>'+
-    '<div class="popts">'+opts.map((o,i)=>
+    '<p style="white-space:pre-line" id="prBody">'+body+'</p>'+
+    /* #138 - where the settled outcome and then the naming strip land, in that
+       order. Empty and taking no room until something puts them there. */
+    '<div id="prOut"></div><div id="prName"></div>'+
+    '<div class="popts" id="prOpts">'+opts.map((o,i)=>
       '<button class="popt'+(o.danger?' danger':'')+'" data-i="'+i+'"><b>'+o.t+'</b>'+
       '<i>'+o.c+'</i></button>').join('')+'</div>';
   if(art)drawArt($('prArt'),art);
-  $('prCard').querySelectorAll('.popt').forEach(b=>{
+  $('prCard').querySelectorAll('#prOpts .popt').forEach(b=>{
     b.onclick=()=>opts[+b.dataset.i].go();});
+}
+/* ═══ #138 - THE SAME CARD, TURNED OVER, RATHER THAN A NEW ONE ══════════════
+   `artFor` returns null for an unpainted scene, and in that case the tavern
+   art already on the canvas is exactly what should stay there - which is how
+   `floor` and `joke_miss` are specified to behave in
+   .claude/rules/static-event-art.md. So this is a no-op for them by
+   construction rather than by a guard somebody has to remember. */
+function proArtSwap(artKey){
+  const a=artFor(artKey),c=$('prArt');
+  if(a&&c)drawArt(c,a);
 }
 /* ═══ THE OPENING IS TWO CARDS, NOT THREE ═══════════════════════════════
    User, after a playthrough: "a bit much opening text (3 screens with text)."
@@ -26195,32 +26364,25 @@ function openPrologue(){
       go:()=>startBattle('tavern')}]);
 }
 const prologueInsult=openPrologue;   /* the merged middle card, by its old name */
-/* the last beat: what it cost, and then the road */
+/* ═══ #138 - `prologueEnd` DREW A CARD; IT IS A REDIRECT NOW ═══════════════
+   It was the third of four screens between the brawl and the map: the outcome
+   prose, the walking-wounded line, and one button that could not be refused
+   ("Finish your drink."). `contractSettle` does all of it to the card already
+   on screen, so the beat survives and the page break does not.
+
+   ⚠ IT IS KEPT RATHER THAN DELETED, and the reason is the parked joke. #134's
+   comment in tavernContract promises that bringing that door back is "a paste,
+   not a rewrite", and the pasted code calls prologueEnd with a `verdict`. So
+   the signature stays honoured.
+
+   ⛔ THE VERDICT BANNER IS THE ONE THING THAT DID NOT SURVIVE INTACT, and a
+   later paste must know: `contractSettle` has no banner argument, because
+   nothing in the shipped opening is a gamble any more. Restoring the joke
+   means restoring the banner in `contractSettle`, which is four lines and is
+   written out in CHANGELOG 8f.166. Do not discover this by pasting the joke
+   back and watching a coin flip resolve silently. */
 function prologueEnd(txt,fx){
-  pay('crowns',fx.crowns||0);
-  G.morale+=fx.morale||0;
-  sfx(fx.morale>0?'promote':'coin');
-  const hurt=G.party.filter(p=>p.hpLoss>0);
-  /* the joke is a gamble, and a gamble must READ as won or lost (user,
-     2026-08-01): one coloured line on top of the outcome, stated plainly.
-     Only an outcome that was a gamble carries a verdict; the other two are
-     purchases, not bets. */
-  const vc=fx.verdict?(fx.verdict.ok?'#8ca35a':'#c15d55'):'';
-  const banner=fx.verdict?'<div style="font-family:var(--mono);font-size:11px;'+
-    'letter-spacing:.14em;text-align:center;padding:7px 10px;margin:0 0 10px;'+
-    'border:1px solid '+vc+';color:'+vc+'">'+fx.verdict.t+'</div>':'';
-  proCard('AND THAT IS THE CONTRACT',
-    txt+
-    (fx.hpNote?'\n\n'+fx.hpNote:'')+
-    (hurt.length&&!fx.hpNote?'\n\nWalking wounded: '+
-      hurt.map(p=>who(p)+' ('+p.hpLoss+' hp short)').join(', ')+
-      '. None of it is permanent. Days on the road are the only medicine in this game.':''),
-    /* #118 - the outcome card sits AFTER the brawl now. What is left before
-       the road is the name: the world is entered through nameCard, and
-       through nothing else. */
-    [{t:'Finish your drink.',c:'the company needs a name before the road gives it one',
-      go:nameCard}],
-    PRO_ART[fx.scene],banner);
+  contractSettle(txt,fx||{});
 }
 
 /* ═══════════════════════════════════════════════════════════════════════
