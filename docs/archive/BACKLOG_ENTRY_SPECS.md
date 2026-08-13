@@ -2791,3 +2791,233 @@ hardened against exactly that trap after it once issued a stylesheet value as a 
 the entry scan now. ⚑ **One fact, two readers, and only one of them was taught** - the same shape
 as the trap list's *"one map was answering two questions"*, and the third time this project has
 paid for it.
+
+---
+
+## 137 - The seven-item pack: the receipt, the step, the red door, the doubled lesson, the token
+
+**STATE** ⛔ specced, not built. Numbers held: **#137 / 8f.165**. Its two opening-dramaturgy items
+were split out to **#138** because they are #86's territory and this one is not.
+
+**SYSTEMS** `consequences()` · `LOOT` + `takeLoot` · `RES_ICON` · DISENGAGE (`a.k==='dis'`,
+`moveBudget`, `beginTurn`) · the event choice renderer in `openEvent` · `CAPLINE`'s `learn` tier ·
+`TUTSTEPS` · `#wToken .tl`
+
+**RELATED** #86 (the first fifteen minutes; the lesson cut here is one of its named debts) ·
+#122 (the after-battle screen this reward line sits on) · #111 (DISENGAGE's current shape) ·
+#123 (the choice-weight pass, which is why the fight doors are worth marking) · #118 (the name)
+
+### The brief, verbatim (2026-08-13, errors his)
+
+> *"pack of diverse changes / improvments:*
+> *-bigger what you get + show curency or object icon (screen 1)*
+> *-after disingage I don`t see +1 to movment this turn (so it makes sense and easier to esacape).
+> You can/t use disngage again for this and next turn*
+> *-If some of the choices in event leads to a fight - make it red*
+> *-delete some education from capitan, that copies tutorial stuff*
+> *-combine this and next screen (after battle + consiquence). "You got offer and people. It is the
+> only thing left to do". It is on one screen then - so you see only one screen after the battle
+> before you start"*
+
+and, a minute later:
+
+> *"Additional ones for this buthc*
+> *put picked at the begining name of the company on the map, instaed of "the company"*
+> *"Offer to choise name after you except contract, not befor"*
+
+Two screenshots came with it: the road-battle aftermath with a red arrow drawn at the
+`+30 crowns +2 provisions` line, and THE MAN IN THE CORNER.
+
+### 1 · The haul is a receipt, and a receipt has icons on it
+
+`consequences()` prints the haul from `haul.c`, which is **prose the loot table hand-wrote**:
+`'+30 crowns +2 provisions'`, rendered by `.abres` at **11.5px mono**. That is smaller than the
+crew cards above it and smaller than the accordion below it, on the one line of the screen that
+answers *what did that fight pay*.
+
+⛔ **DO NOT PARSE `haul.c`.** Every row also carries `haul.fx`, which is the machine-readable
+version of the same fact and is what `takeLoot()` actually applies: `{crowns:30,food:2}`. Build the
+strip from `fx`, one chip per resource, and the prose line survives underneath as the flavour it
+always was. This is the same shape as the two lessons already written down here - a fact with two
+readers, where one of them is a string somebody has to keep in step by hand. **Six rows of the LOOT
+tables were caught printing a price the game did not charge** (see the note above `takeLoot`); a
+receipt built off `fx` cannot ever repeat that, because the chip and the payment read one object.
+
+The icons are **`RES_ICON`, unchanged** - ◉ crowns · ❦ food · ▤ salvage · ◈ gems - because that
+is the vocabulary the top bar has used since #103 and a second set of resource glyphs on the
+aftermath screen would be the "one row disagreeing with itself" failure #112 already paid for.
+Gear hauls keep `.abloot` and its reserved art square; only the resource rows change.
+
+### 2 · DISENGAGE pays now, and then it is gone for two turns
+
+Current shape, from #111: costs one action, resolves on the spot, sets `safeMove` (clean movement
+for the rest of this turn) and `disNext` - which `beginTurn` cashes into `disBonus` **on the
+following turn**, where `moveBudget` reads it.
+
+The user's report is *"after disingage I don't see +1 to movment this turn"*, and he is describing
+the arithmetic correctly, not misreading the screen: **the hex arrives one turn after the action
+that bought it, which is one turn after the moment it was needed.** You spend an action to break
+off, so you have one action left to run with, and the compensation lands after the enemy has had
+its turn. That is why nobody leaves a scrum - the same complaint #72 was written to fix, one layer
+deeper.
+
+So the hex moves to **this** turn: `u.disBonus=(u.disBonus||0)+1` at the moment of the act.
+`beginTurn` already zeroes `disBonus` at the top of every turn, so it stays a this-turn-only
+bonus with no new bookkeeping, and `disNext` is **deleted rather than left set** - an unused field
+is a second source of truth.
+
+⚑ **The visibility is free and that is the point.** `moveBudget` is the one function every mover
+asks, so the MOVE card's own receipt line (`moveBudget(u)+' hexes · 1 act'`) ticks up the instant
+the act resolves, and so do the lit hexes, `aiTurn` and AUTO. Nothing has to be taught. The
+DISENGAGE card's own sub-line must change with it: `+1 hex next turn` → `+1 hex now`.
+
+The lockout is `cool:2` and **nothing else**. `spend()` writes `u.cd[a.k]=a.cool`, `beginTurn`
+decrements, `onCool` refuses, and the card paints `READY IN N TURNS` over itself. Set on turn N:
+blocked on N (already used), blocked on N+1 (cd 1), free on N+2. That is *"you can't use disengage
+again for this and next turn"* exactly, with no new state and no new readout.
+
+⚠ **`TUTSTEPS.circled` says the old rule out loud** (*"next turn your legs get one extra hex"*) and
+must be corrected in the same commit, or the brawl teaches a rule the brawl no longer has.
+
+### 3 · A door that starts a fight is red, and it is one gate
+
+`openEvent` renders `'<button class="choice'+(c.danger?' danger':'')+...`, so red is **hand-tagged
+per option**, and five fight doors currently ship without it: `clash` ×2 (the ratkin side and the
+ogre side - the *watch it happen* door has it and the two that actually wade in do not), `armour`,
+`pack`, `brigand`.
+
+The fix is `c.danger||c.battle` in that one expression. ⛔ **Not a sweep through the tables adding
+`danger:true` to five rows** - that is the hand-kept second copy again, and the sixth fight door
+written next month would ship un-marked. A choice that carries `battle:` **is** the red one; the
+renderer can see that without being told twice.
+
+`danger` keeps its other job (the morally dark door: killing prisoners, taking the coin), so red
+means *this is the violent door*, which covers both.
+
+#### ⚠ CORRECTION, FOUND BY MEASURING IN THE RUNNING BUILD, AND IT IS THE ENTRY'S ONE LESSON
+
+The gate above was written from reading the tables and it was **wrong on three cards.** Counting
+`battle:` doors in the live build returns **12, not 5**, and the three the reading missed are the
+three that break the rule:
+
+| card | its doors | what red would say |
+|---|---|---|
+| `snare` | *"Straight down the road. Let the bells ring."* · *"Through the marsh. Slower, but quiet."* | **both** carry `battle:true`. Same fight either way; the choice is whether they are ready or you strike first. Two red doors on a two-door card. |
+| `armour` | *"Face it."* - the only door | an ambush. Red on the only way forward. |
+| `packev` | *"Up. Get to the gaps."* - the only door | the same. |
+
+⛔ **So the rule is not "a fight door is red". It is: A FIGHT DOOR IS RED WHERE THE CARD ALSO
+OFFERS A WAY OUT.** Red is a contrast, and a mark that fires on every door on a card is furniture -
+which is the same finding as #123's duplicate-option rule and #106's *"a number that is on screen
+every day gets read as furniture"*, arriving for the third time on a third surface.
+
+It stays ONE gate, just computed per CARD instead of per OPTION - the renderer already has
+`visible` in hand, so the test is whether any door on it lacks `battle:`. `danger:true` is
+unaffected and still marks its own door wherever an author put it, which is how the Fen-Mother and
+the sling-line keep their red: those cards have a walk-away.
+
+⚑ **And the general lesson, which is the reason this correction is written out rather than just
+applied: the five-door figure came from grepping the source, and the real figure came from asking
+the running build. A table you can enumerate at runtime should be enumerated at runtime.**
+
+### 4 · The Captain stops teaching what the spotlight just taught
+
+#108 gave the intro brawl a spotlight layer (`TUTSTEPS`), and `CAPLINE`'s `learn` tier predates it
+by two months. Four of its lessons now say, in a speech balloon, what a dimmed screen with an arrow
+on it said ten minutes earlier:
+
+| CAPLINE lesson | the spotlight step that already said it |
+|---|---|
+| `learn_arm` *"Armour comes off before blood... the top bar is the harness and the one under it is the person"* | `armour` *"Iron soaks a blow before flesh does. The grey bar is the harness; the red one under it is the man inside."* |
+| `learn_break` *"That one broke and ran, and he is not even wounded. Nerve runs out before blood does."* | `broken` + `nerve`, both of which are about Harl doing exactly that |
+| `learn_step` *"DISENGAGE is how you get out of it..."* | `circled`, which spotlights the DISENGAGE card itself |
+| `learn_zone` *"You are in their zone of control now..."* | `circled`, first sentence, plus `WHISPER.parting` |
+
+⛔ **Delete the rows, do not leave them dark.** The table's own standing note says an unused entry
+is a second source of truth and the next person to edit it will believe it.
+
+⚠ **`learn_twice`, `learn_sides`, `learn_close`, `learn_bow`, `learn_cast` and `w_rung` STAY.**
+`TUTSTEPS.act` says *"Two actions a turn"* and stops; `learn_twice` teaches the diminishing return
+on the second one, which nothing else says anywhere. The other four are about a bow, a spell, the
+ring colours and standing alone, and the brawl teaches none of them - the Captain is the only voice
+that ever does.
+
+### 5 · The company's own name on its own token
+
+`#wToken` is the company walking the road, and its caption is the literal string
+`<span class="tl">THE COMPANY</span>` in the markup. `G.coName` has existed since #118 and
+`worldTick` already paints it into `#wName`, the signature along the bottom of the map. The token
+takes the name; the bottom signature is then the same fact twice on one screen and goes.
+
+⚠ Old saves have no `coName`. Fall back to `THE COMPANY` rather than to an empty caption.
+
+---
+
+## 138 - The opening's post-brawl chain: four screens become one, and the name comes last
+
+**STATE** ⛔ specced, not built. Numbers held: **#138 / 8f.166**. Split out of the #137 pack because
+this is **#86's territory** - it is the front door, and #86 holds the ruling that the opening is
+crowded rather than empty.
+
+**SYSTEMS** `tavernAfter()` · `tavernContract()` · `prologueEnd()` · `nameCard()` · `proCard()` ·
+`PRO_ART` · `enterWorld()`
+
+**RELATED** #86 (the first fifteen minutes) · #118 (which put the contract after the brawl and
+wrote the name card) · #134 (which took the joke door out, leaving two) · #122 (the settle-in-place
+pattern this borrows from the mercy screen)
+
+### The brief, verbatim
+
+> *"combine this and next screen (after battle + consiquence). "You got offer and people. It is the
+> only thing left to do". It is on one screen then - so you see only one screen after the battle
+> before you start"*
+> *"Offer to choise name after you except contract, not befor"*
+
+### What is actually there, counted
+
+After the Three Bells brawl the player currently clicks through **four full-screen cards** before
+the map exists:
+
+1. `tavernAfter()` - the brawl's receipt: title, the kill line, `+8 crowns`, `+4 morale`, and one
+   button, *"The corner table."*
+2. `tavernContract()` - THE MAN IN THE CORNER: the painting, five paragraphs, two doors.
+3. `prologueEnd()` - AND THAT IS THE CONTRACT: the outcome prose, the walking-wounded line, one
+   button, *"Finish your drink."*
+4. `nameCard()` - A NAME FOR THE LEDGER: 7 × 7 words, one button.
+
+Card 1 and card 3 each carry **exactly one button that cannot be refused**, which is the same
+defect #118's own comment describes killing once already (*"the middle card existed only to carry a
+single 'Answer the call' button that nobody could refuse"*). It grew back, twice, on either side of
+the decision.
+
+### The shape
+
+**One card.** The brawl's receipt is a strip at the top of the corner-table card, not a screen of
+its own - *you got the offer and the people* is one moment, and the player has nothing to decide
+between the two halves of it.
+
+The pick then **settles in place**, exactly the way the mercy screen has since #122: the door you
+chose keeps its colour and takes a tick, the other fades, and the outcome prose is inserted below
+them. ⚠ The painting swap (`PRO_ART[fx.scene]`, EV00B for `coin`) has to happen on the card that is
+already on screen, so `proCard`'s art canvas must be redrawable in place rather than rebuilt.
+
+**Then, and only then, the naming strip appears.** That is the user's second line: the name is
+offered *after you accept the contract*, and it now reads as the consequence of accepting one
+rather than a form to fill in on the way out. The prose already assumes this order - *"The contract
+wants a name over the marks. Companies sign."* - it was simply on the wrong side of a page break.
+
+The road button lights last.
+
+⛔ **Nothing in the chain is deleted except the two dead buttons.** All five paragraphs of the
+corner-table card, both doors and both advances (40/80), the walking-wounded line, the verdict
+banner machinery, `PRO_ART` and all 49 name combinations survive unchanged. This is the clarity
+pass's own instruction - **cut, delay, merge** - and the move here is *merge*, not *cut*.
+
+⚠ **`.claude/rules/static-event-art.md` binds.** `PRO_ART.coin` is `EV00B` and stays `EV00B`; the
+outcome canvas is 460x190 and stays 460x190. Do not invent a scene name and do not resize the
+canvas to fit the taller card.
+
+⚠ **`G.tavernDone`, the hp receipts, `LOOT.tavern`'s payment and the `+4` morale all live in
+`tavernAfter()`** and are campaign state, not presentation. They must keep happening at the same
+moment even though the screen they used to draw is gone, and `SIM.on` must still fork to
+`simResult('won')` before any of it - a practice-field brawl may never reach the campaign.

@@ -167,6 +167,30 @@ clearer" adds a screen. Read the complaint again before writing anything.
 > fight. **Step 1's measurement must be taken against THIS opening.** Full record:
 > [`SHIPPED.md`](SHIPPED.md) #118-#120 and [`CHANGELOG.md`](CHANGELOG.md) 8f.145-147.
 
+## 137 · The seven-item pack, and 138 · the opening's post-brawl chain
+
+> 🔴 **IN FLIGHT, 2026-08-13.** One brief from the user, split across two numbers because five of
+> its items are ordinary surface work and two of them are the front door.
+>
+> **[#137](archive/BACKLOG_ENTRY_SPECS.md)** *(8f.165)* - the aftermath's haul line rebuilt off
+> `haul.fx` with the top bar's own `RES_ICON` glyphs instead of 11.5px prose · **DISENGAGE's extra
+> hex moves from NEXT turn to THIS turn** and takes a `cool:2` lockout, which is his *"so it makes
+> sense and easier to escape"* · every event door carrying `battle:` renders red from one gate in
+> the renderer (five fight doors ship un-marked today) · **four `learn`-tier Captain lessons
+> deleted** because the #108 spotlight now teaches the same four rules ten minutes earlier · the
+> map token wears the company's own name.
+>
+> **[#138](archive/BACKLOG_ENTRY_SPECS.md)** *(8f.166)* - **four full-screen cards between the
+> brawl and the map become one.** Two of the four carry a single button that cannot be refused,
+> which is the exact defect #118's own comment describes killing once already, on either side of
+> the decision. The receipt joins the corner-table card, the pick settles in place, and **the
+> naming strip appears only after the contract is accepted** - his second line, and the order the
+> name card's own prose already assumed. ⛔ Nothing is deleted but the two dead buttons.
+>
+> ⚑ **This is #86's measurement arriving as a bug report before the measurement was taken.** Step
+> 1 above still owes a number, and #138 changes the thing step 1 is supposed to count, so **the
+> count must be taken against the post-#138 opening.**
+
 ---
 
 # 🟡 NEXT - after the clarity pass, still before the friends play
