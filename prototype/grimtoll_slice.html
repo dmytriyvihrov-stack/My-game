@@ -1,4 +1,4 @@
-﻿<meta charset="utf-8">
+<meta charset="utf-8">
 <title>Grimtoll — Vertical Slice</title>
 <!-- #83 - WITHOUT THIS LINE A PHONE SHRINKS THE GAME TWICE. A page with no
      viewport tag is laid out at 980px and then zoomed out to fit the screen,
@@ -1829,24 +1829,143 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:11px;pa
 .rmem .race.human {border-left:2px solid #d8d5cc;padding-left:5px}
 .rmem .race.ratkin{border-left:2px solid #c98a4b;padding-left:5px}
 .rmem .race.ogre  {border-left:2px solid #7fa8c9;padding-left:5px}
-#iChar{flex:1;padding:14px;display:flex;flex-direction:column;gap:9px;min-width:0;overflow:auto}
-#iName{font-family:var(--display);font-size:20px;color:#e0d3b4;font-weight:600}
-#iTrait{font-size:13px;font-style:italic;color:var(--g3);line-height:1.3}
-.slots{display:grid;grid-template-columns:1fr 1fr;gap:7px}
-.slot{background:#221a10;border:1px solid #4d3c22;padding:7px 9px;display:flex;flex-direction:column;
-      gap:1px;min-height:56px}
-.slot .sl{font-family:var(--mono);font-size:7.5px;letter-spacing:.14em;color:#8a7449}
-.slot .si{font-family:var(--display);font-size:13px;color:var(--g4)}
-.slot .sd{font-family:var(--mono);font-size:8.5px;color:#a38652;line-height:1.3}
-.slot.empty .si{color:#5c4a2c;font-style:italic}
+/* ═══ #133 · THE COMPANY SHEET ON ONE SCREEN ══════════════════════════════
+   (User, 2026-08-13, a voice brief over five reference screenshots: Urtuk,
+   Battle Brothers, Caves of Qud, Wartales, Wildermyth. "too much information
+   and not clear whic one is important and what means what" · "it's maybe nice
+   to start screen with main studs [stats]" · "this current picture of
+   character is too ugly. Maybe we can just paint very simplified picture of
+   human or red [rat] or ogre and also place artifacts on top of it as, for
+   example, inventory in case of good [Caves of Qud]" · "make it like the shape
+   of armor. So from the positioning, I understand what is what belongs" ·
+   "choice of perks in separate tab" · "Much shorter description of skills,
+   like do it as in battle, kind of extended version as in battle when you
+   hover, but not more" · "characters descriptions right now, they're too big
+   and taking that much space and not that much actually useful information.
+   Find a way to make it more compact. I mean, I like button brothers".)
+
+   ⚑ WHAT THE MEASUREMENT SAID BEFORE ANY OF THIS WAS DESIGNED. A level-4
+   spearwoman with two scars, one change and two memories rendered a sheet
+   1241px tall inside a 678px window: 564 words, of which the SKILLS block
+   alone spent 230 re-typing what the battle's own hover already says, while
+   the four stats that decide everything sat ~520px down, UNDER the prose.
+   The complaint was not "the sheet is ugly", it was that the sheet's ORDER
+   argued that the history mattered most and the numbers least. So the order
+   inverts and the words are cut, and every zone below is one reference:
+
+     Urtuk         · one screen. Stats, body, gear and history in one view,
+                     no scroll, because a sheet is glanced at, not read.
+     Battle Bros   · the compactness. Mono rows, tight type, a dense pane on
+                     the right, and TABS rather than a longer column.
+     Caves of Qud  · the doll IS the gear map. Slots sit beside the part they
+                     hang on and are WIRED to it, so position carries meaning
+                     before a word is read.
+     Wartales      · the attribute list as one banded block under the name.
+     Wildermyth    · a piece of kit states what it CHANGES (▲▼), not only
+                     what it is. That is the "which one is important" answer:
+                     the comparison was the thing the player was doing by
+                     hand between two cards.
+
+   ⚠ The fold rule for a body richer than this: the LEDGER and the STORY
+   scroll inside themselves. The stats band and the body never leave view. */
+#iChar{flex:1;padding:10px 14px 8px;display:flex;flex-direction:column;gap:6px;
+       min-width:0;overflow:auto}
+/* ── the head: three lines, and everything longer is a hover ─────────────
+   (BB reference: the name and what somebody IS costs three lines there too.
+   The old header was a name, a class line, a personality line, a kill row, a
+   clan block, a circle block and every tie, all before a single number.) */
+#iHead{display:flex;gap:12px;align-items:flex-start}
+#iHeadCol{flex:1;min-width:0}
+#iName{font-family:var(--display);font-size:19px;color:#e0d3b4;font-weight:600;line-height:1.12}
+#iChips{display:flex;gap:5px;margin-top:3px;flex-wrap:wrap;align-items:center}
+.ichip{font-family:var(--mono);font-size:8.5px;letter-spacing:.1em;color:var(--g3);
+  border:1px solid #3d2f1d;background:#1c150c;padding:2px 7px;cursor:help;white-space:nowrap}
+.ichip b{color:var(--g4);font-weight:400}
+.ichip.race.human {border-left:2px solid #d8d5cc}
+.ichip.race.ratkin{border-left:2px solid #c98a4b}
+.ichip.race.ogre  {border-left:2px solid #7fa8c9}
+.ichip.kills{cursor:help;font-size:11px;letter-spacing:0;padding:1px 6px;color:#c9c6bb}
+#iTrait{font-size:12.5px;font-style:italic;color:var(--g3);line-height:1.3;margin-top:4px;
+  cursor:help}
+#iTrait b{color:var(--g4);font-style:normal}
+/* how they actually look on the field (user: "show small icon of this
+   character, how it looks... how it actually looks on battlefield. So person
+   has a more clear understanding"). The battle's own sprite(), untouched. */
+#iField{flex:none;width:92px;border:1px solid #3d2f1d;background:#131b17;display:flex;
+  flex-direction:column;align-items:center;justify-content:flex-end;gap:3px;padding:5px 4px 4px}
+#iField img{image-rendering:pixelated;display:block}
+#iField .fc{font-family:var(--mono);font-size:7.5px;letter-spacing:.13em;color:#7d9490}
+/* ── the stats band: FIRST, one box (Urtuk + Wartales) ──────────────────── */
+#iStats{border:1px solid #3d2f1d;background:#171208;padding:7px 11px;display:flex;
+  flex-direction:column;gap:6px}
+.itells{display:flex}
+.itl{flex:1;display:flex;flex-direction:column;gap:1px;border-left:1px solid #2a2114;
+  padding:0 9px;cursor:help;min-width:0}
+.itl:first-child{border-left:none;padding-left:0}
+.itl .tk{font-family:var(--mono);font-size:7.5px;letter-spacing:.15em}
+.itl .tv{font-family:var(--body);font-size:12.5px;color:#d8d5cc;line-height:1.2}
+/* a banked promotion is spent by clicking the tell itself (#122's door) */
+.itl.spend{cursor:pointer}
+.itl.spend .tv:after{content:' ▲';color:#8ca35a;font-size:10px}
+.itl.spend:hover{background:#1e1810}
+.ibars{display:flex;gap:13px}
+.ibars .bcell{flex:1;display:flex;flex-direction:column;gap:2px;min-width:0}
+.ibars .statLine{color:#8a7449}
+.ibars .bar{height:7px;border:1px solid rgba(0,0,0,.5)}
+.ibars .bar i{display:block;height:100%}
+/* what they DO, as one mono line under the bars */
+.idrv{display:flex;gap:14px;flex-wrap:wrap;font-family:var(--mono);font-size:9.5px;
+  color:#8a7449;letter-spacing:.04em;border-top:1px solid #2a2114;padding-top:5px}
+.idrv b{color:var(--g4);font-weight:400}
+/* ── the body: the doll IS the gear map (Caves of Qud) ──────────────────── */
+#iBody{display:flex;gap:11px;align-items:stretch;flex:none}
+#iDollBox{flex:none;width:400px;height:232px;position:relative;background:#1c150c;
+  border:1px solid #3d3020}
+#iDollBox canvas.doll{position:absolute;top:9px;left:125px;background:none;border:none}
+#iDollBox svg.wire{position:absolute;inset:0;pointer-events:none}
+/* a slot is a BUTTON at a body part. 118px is the widest box two columns and a
+   150px figure will take inside 400, and every gear name in the file clamps to
+   two lines in it. ⚠ .slot is this sheet's own class and nothing else's. */
+.slot{position:absolute;width:118px;background:#221a10;border:1px solid #4d3c22;
+  padding:4px 7px;display:flex;flex-direction:column;gap:1px;text-align:left;
+  font-family:var(--body)}
+.slot:hover{border-color:var(--g3);background:#2a2114}
+.slot .sl{font-family:var(--mono);font-size:7px;letter-spacing:.13em;color:#8a7449;line-height:1.2}
+.slot .si{font-family:var(--display);font-size:11.5px;color:var(--g4);line-height:1.16}
+.slot .sd{font-family:var(--mono);font-size:7.5px;color:#a38652;line-height:1.3}
+.slot.empty{border-style:dashed}
+.slot.empty .si{color:#5c4a2c;font-style:italic;font-size:11px}
 .slot.bad{border-color:#8a4b2a;background:#2a1a10}
 /* the off hand, while both hands are on something else */
-.slot.blockedslot{border-color:#5a4325;background:#231a10;opacity:.82}
-.slot.blockedslot .si{font-style:italic}
-.slot .warnx{font-family:var(--mono);font-size:8.5px;color:#c15d55;line-height:1.3}
-/* (the `.core` four-box stat grid lived here. It went with THE ARITHMETIC —
-   the sheet shows tells now, not numbers. Nothing has carried the class since,
-   so the rules went too.) */
+.slot.blockedslot{border-color:#5a4325;background:#231a10;opacity:.85}
+.slot.blockedslot .si{font-style:italic;font-size:10.5px;color:#c07a2c}
+/* ── the ledger: what happened to this body, beside the body ─────────────
+   (User: "guardian options mutations and injuries... should be shown
+   somewhere very simple, like, a small icon and what it does. And also if
+   it's nice if it's showing on the body image.") Both: marked on the part,
+   named here. Saturation means one thing on this sheet: teal is the strange,
+   red is violence. */
+#iLedger{flex:1;min-width:0;display:flex;flex-direction:column;gap:5px;overflow:auto}
+.wchip{display:flex;gap:7px;align-items:baseline;border:1px solid #4a2a24;background:#241310;
+  padding:4px 8px;font-family:var(--body);font-size:11px;line-height:1.32;cursor:help;
+  text-align:left}
+.wchip .ic{flex:none;font-size:11px;color:#c15d55;line-height:1.3}
+.wchip b{color:#d99a90;font-weight:600}
+.wchip.chg{border-color:#1f4a44;background:#0f1d1a}
+.wchip.chg .ic{color:#35e0c8}
+.wchip.chg b{color:#35e0c8}
+.wchip.mark{border-color:#4a4030;background:#1d1810}
+.wchip.mark .ic{color:#c9a227}
+.wchip.mark b{color:#d9bd7e}
+.wchip .gives{font-family:var(--mono);font-size:8px;letter-spacing:.06em;color:#5ec8b8;
+  display:block;margin-top:1px}
+.wchip.none{border-color:#2a2114;background:#171208;color:#6b5836;font-style:italic;cursor:default}
+.wchip.none .ic{color:#5c4a2c}
+.iaid{border:1px solid #5a7a6a;background:#16211b;padding:4px 8px;text-align:left;
+  font-family:var(--body);font-size:11px;color:#9db8a6;line-height:1.3}
+.iaid:hover{background:#1c2a22}
+.iaid b{color:#c3d9c9;font-weight:600;display:block}
+.iaid i{font-family:var(--mono);font-size:8px;color:#6f8a78;font-style:normal}
 /* road news — one narrated line over the map, fades by itself */
 #wNews{position:absolute;left:50%;bottom:26px;transform:translateX(-50%);max-width:640px;
   background:rgba(16,22,20,.92);border:1px solid #4d3c22;padding:8px 16px;
@@ -1863,23 +1982,67 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:11px;pa
   padding-left:9px;border-left:2px solid #46502c}
 .memlist .mh{font-family:var(--mono);font-size:9px;color:#7a6238;letter-spacing:.05em;
   padding-bottom:2px}
-/* the paper doll beside the four tells — head, body, four limbs, and every
-   scar and change marked on the part it happened to */
-.whorow{display:flex;gap:12px;align-items:flex-start}
-.doll{flex:none;background:#1c150c;border:1px solid #3d3020;cursor:help}
-/* the column beside the doll: four tells, then the same bars the fight uses.
-   It also fills the dead space the doll's height used to leave behind. */
-.whocol{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:7px}
-.whorow .tells{flex:0 0 auto}
-.sbars{display:flex;flex-direction:column;gap:2px}
-.sbars .statLine{color:#8a7449}
-.sbars .bar{height:7px;background:#243133;border:1px solid rgba(0,0,0,.5)}
-.sbars .bar i{display:block;height:100%}
-/* the four stats as words — see the TELLS block in the script */
-.tells{display:grid;grid-template-columns:repeat(2,1fr);gap:3px 12px}
-.tl{display:flex;align-items:baseline;gap:7px;border-bottom:1px dotted #3d3020;padding-bottom:2px}
-.tl .tk{font-family:var(--mono);font-size:7.5px;letter-spacing:.14em;flex:none;width:44px}
-.tl .tv{font-family:var(--body);font-size:12.5px;color:#d8d5cc}
+.doll{cursor:help}
+/* ── the skills, in the battle's own idiom (#133) ────────────────────────
+   (User: "Much shorter description of skills, like do it as in battle, kind
+   of extended version as in battle when you hover, but not more.")
+   ⚑ THE OLD BLOCK WAS 230 WORDS AND THE BATTLE SAYS THE SAME THING IN A
+   HOVER. `.iact` is `.act` re-cut for a parchment ground: same furniture in
+   the same places (icon, name, damage top-right, role bottom-right, cost
+   pips on the floor, the pop above), so the card a player learns on the
+   sheet is the card they press in the fight. ⛔ NOT the class `.act` itself:
+   that one is 72x86 and tuned to the board's dark band, and borrowing it
+   would drag the battlefield's palette onto this screen. */
+#iSkills{display:flex;gap:5px;flex-wrap:wrap}
+.iact{width:78px;height:78px;flex:none;position:relative;background:#1f2416;
+  border:1px solid #46502c;display:flex;flex-direction:column;align-items:center;
+  padding:0;cursor:help}
+.iact:hover{background:#262e1a;border-color:#6a7a44}
+.iact.arc{border-color:#5d3350}
+.iact.chg{border-color:#1f4a44}
+.iact .gi{font-size:18px;line-height:1;color:#c3d18a;margin-top:4px;font-family:var(--body)}
+.iact.arc .gi{color:var(--bloom-lit)}
+.iact.chg .gi{color:#35e0c8}
+.iact b{font-family:var(--mono);font-size:8.5px;letter-spacing:.02em;color:#c3d18a;
+  font-weight:500;text-align:center;line-height:1.18;margin-top:3px;padding:0 2px;width:100%;
+  box-sizing:border-box;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;
+  overflow:hidden}
+.iact .adm{position:absolute;top:3px;right:4px;font-family:var(--mono);font-size:9.5px;
+  color:var(--g4);line-height:1}
+.iact .role{position:absolute;bottom:12px;left:0;right:0;text-align:center;
+  font-family:var(--mono);font-size:7px;letter-spacing:.02em;color:#8a9a5c;line-height:1;
+  white-space:nowrap;overflow:hidden}
+.iact .cost{position:absolute;bottom:3px;left:0;right:0;text-align:center;font-size:8.5px;
+  line-height:1;color:var(--g4);letter-spacing:.16em}
+.iact .pop{position:absolute;bottom:82px;left:50%;transform:translateX(-50%);width:224px;
+  background:rgba(14,16,10,.98);border:1px solid #6a7a44;padding:8px 10px;z-index:60;
+  display:none;flex-direction:column;gap:3px;pointer-events:none;text-align:left}
+.iact:hover .pop{display:flex}
+.iact .pop .pt{font-family:var(--display);font-size:12px;color:#c3d18a;font-weight:600}
+.iact .pop .pr{font-family:var(--mono);font-size:8.5px;color:#8fa5a2;letter-spacing:.05em}
+.iact .pop .pd{font-family:var(--body);font-size:11px;color:#c2b493;line-height:1.4}
+.iact .pop .src{font-family:var(--mono);font-size:8px;letter-spacing:.1em;color:#35e0c8}
+/* the last card in the row is the way in to everything they know but cannot
+   do right now: it is a DOOR, not a skill, so it does not wear a skill's
+   ground. (The old sheet printed all of it, always.) */
+.iact.more{background:none;border-style:dashed;border-color:#4d3c22;cursor:pointer}
+.iact.more:hover{border-color:#8a7449;background:#1c1509}
+.iact.more .gi{color:#8a7449}
+.iact.more b{color:#8a7449}
+/* ── the story: the room the inventory gave back (#133) ──────────────────
+   (User: "we should spend less space for inventory... and maybe a bit more
+   space to the history of character.") Two lines instead of one, the roads
+   walked, ties and clan folded in, and the rest one click away. */
+#iStory{flex:1 1 auto;min-height:44px;overflow:auto;display:flex;flex-direction:column;gap:2px}
+#iStory .lbl{margin-top:2px}
+.imem{display:flex;gap:7px;align-items:baseline}
+.iacc{width:100%;background:none;border:1px dashed #4d3c22;color:#8a7449;font-family:var(--mono);
+  font-size:8px;letter-spacing:.1em;text-align:left;padding:3px 7px;margin-top:3px;cursor:pointer}
+.iacc:hover{border-color:#8a7449;color:#c9b98f;background:#1c1509}
+#iFoot{display:flex;justify-content:flex-end;align-items:center;gap:9px;flex:none;padding-top:2px}
+#iDismiss{font-family:var(--mono);font-size:8.5px;letter-spacing:.1em;color:#8a5a4a;
+  background:none;border:1px solid #4a3028;padding:4px 10px}
+#iDismiss:hover{color:#c07a6a;border-color:#6a3a30;background:#241310}
 /* the compact who-is-this card (promotion screen) */
 .whoc{background:#221a10;border:1px solid #4d3c22;padding:8px 11px;margin:8px 0;
       display:flex;flex-direction:column;gap:2px;text-align:left}
@@ -1904,44 +2067,79 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:11px;pa
 .whoc .wc1{font-family:var(--display);font-size:13px;color:var(--g4)}
 .whoc .wc2{font-family:var(--body);font-size:11.5px;color:#bdb8a8;font-style:italic}
 .whoc .wc3{font-family:var(--mono);font-size:9.5px;color:#8a7449;letter-spacing:.05em}
-.drv{display:grid;grid-template-columns:repeat(3,1fr);gap:2px 12px;font-family:var(--mono);
-     font-size:9.5px;color:#8a7449}
-.drv span{display:flex;justify-content:space-between}.drv b{color:var(--g4);font-weight:500}
-.abil{display:grid;grid-template-columns:1fr 1fr;gap:5px}
-.ab{background:#1f2416;border:1px solid #46502c;padding:6px 8px}
-.ab b{font-family:var(--display);font-size:11.5px;color:#c3d18a;display:block}
-.ab i{font-family:var(--mono);font-size:8.5px;color:#8a9a5c;font-style:normal;line-height:1.35}
-.perkrow{display:grid;grid-template-columns:1fr 1fr;gap:5px}
-.pk{background:#221a10;border:1px solid #4d3c22;padding:6px 8px}
-.pk.have{border-color:#8ca35a;background:#1e2416}
-.pk.locked{opacity:.42}
-.pk.buy{cursor:pointer;border-color:#8ca35a;text-align:left;width:100%;font:inherit}
-.pk.buy:hover{background:#2a3a20}
-.pk b{font-family:var(--display);font-size:11.5px;color:var(--g4);display:block}
-.pk i{font-family:var(--mono);font-size:8.5px;color:#8a7449;font-style:normal;line-height:1.35}
-.pk .tag{font-family:var(--mono);font-size:7.5px;letter-spacing:.1em;color:#8ca35a}
-.pk.locked .tag{color:#7a6238}
-/* the tree drawer. Deliberately quiet: it is a way in, not a decision, so it
-   reads as a label with an arrow rather than as a ninth perk card. */
-.pktoggle{width:100%;background:none;border:1px dashed #4d3c22;color:#8a7449;
-  font-family:var(--mono);font-size:8.5px;letter-spacing:.12em;text-align:left;
-  padding:5px 8px;margin-top:5px;cursor:pointer}
-.pktoggle:hover{border-color:#8a7449;color:#c9b98f;background:#1c1509}
-.pktoggle+.perkrow{margin-top:5px}
-.pknone{font-family:var(--mono);font-size:8.5px;color:#7a6238;font-style:italic}
-#iStash{width:300px;background:#161009;border-left:2px solid #3d2f1d;padding:11px;overflow:auto;
-        flex:none;display:flex;flex-direction:column;gap:6px}
-.item{width:100%;background:#221a10;border:1px solid #4d3c22;padding:6px 8px;display:flex;
-      flex-direction:column;gap:1px}
+/* ═══ #133 · THE RIGHT PANE IS TABBED (Battle Brothers) ═══════════════════
+   (User: "choice of perks in separate tab because I feel we will have, like,
+   quite proper perk tree. It's still in process... So one could be always
+   inventory, and the other could be with perks... So I can actually choose
+   passive development seeing all kind of stats.")
+
+   ⚑ THE POINT OF THE TAB IS THE THING THAT DOES NOT MOVE. Perks used to
+   print INSIDE the character column, so opening the tree pushed the stats,
+   the body and the gear off the bottom of the screen: the one moment a
+   player is comparing a passive against what they already have is the one
+   moment the sheet stopped showing it. Behind a tab, the whole left side
+   stays put while the right side changes. That is his sentence, exactly.
+   ⚠ AND A BANKED POINT MUST SURVIVE THE WALL. A perk point with nothing
+   visible to spend it on reads as a broken screen (the lesson the tree
+   drawer was written around), and a tab can hide one completely. Hence the
+   ★ badge on the tab head: it is visible from either side. */
+#iStash{width:300px;background:#161009;border-left:2px solid #3d2f1d;flex:none;
+        display:flex;flex-direction:column;min-height:0;padding:0;overflow:hidden}
+#iTabs{display:flex;flex:none;border-bottom:2px solid #3d2f1d}
+.itab{flex:1;position:relative;font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;
+  color:#8a7449;background:#120d07;border:none;border-right:1px solid #2a2114;padding:9px 4px;
+  cursor:pointer}
+.itab:last-child{border-right:none}
+.itab:hover{color:#c9b98f}
+.itab.on{background:#221a10;color:var(--g4)}
+.itab .tbadge{position:absolute;top:3px;right:6px;min-width:14px;height:14px;background:#8ca35a;
+  color:#10140c;font-family:var(--mono);font-size:9px;line-height:14px;border-radius:7px;
+  font-weight:700;letter-spacing:0}
+.itabbody{flex:1;overflow:auto;padding:10px;display:none;flex-direction:column;gap:5px}
+.itabbody.on{display:flex}
+.item{width:100%;background:#221a10;border:1px solid #4d3c22;padding:5px 8px;display:flex;
+      flex-direction:column;gap:1px;text-align:left}
 .item:hover:not(:disabled){background:#372a18;border-color:var(--g3)}
 .item.sizebad{border-color:#6b3a20}
 .item.relic{border-color:#7a6a2a;background:#241f10}
 .item.relic .id{color:#c9a227}
-.item .in{font-family:var(--display);font-size:12.5px;color:var(--g4)}
-.gg{font-family:var(--body);font-size:15px;color:var(--g3);line-height:1;
-    display:inline-block;width:17px;text-align:center}
-.item .id{font-family:var(--mono);font-size:8.5px;color:#8a7449;line-height:1.3}
-.item .iw{font-family:var(--mono);font-size:8.5px;color:#c07a2c}
+.item .in{font-family:var(--display);font-size:12px;color:var(--g4);line-height:1.15}
+.gg{font-family:var(--body);font-size:14px;color:var(--g3);line-height:1;
+    display:inline-block;width:16px;text-align:center}
+.item .id{font-family:var(--mono);font-size:8px;color:#8a7449;line-height:1.3}
+.item .iw{font-family:var(--mono);font-size:8px;color:#c07a2c}
+/* ⚑ WILDERMYTH'S ONE IDEA, AND IT IS THE ANSWER TO "which one is important".
+   His first reference screenshot is a gear screen whose whole right half is
+   a BEFORE/AFTER: 1▲ Armor · 5▲ Melee Accuracy · 10▼ Ranged Accuracy. The
+   player was doing that subtraction in their head between two cards, which
+   is exactly the work "not clear which one is important" describes. Nothing
+   new is computed here: it is the values already in GEAR{}, stated as the
+   change they make rather than as a fact about the object. ⛔ Only shown
+   where it is a REPLACEMENT - an empty slot has nothing to compare with. */
+.item .idelta{font-family:var(--mono);font-size:8.5px;letter-spacing:.04em;margin-top:2px;
+  display:flex;gap:8px;flex-wrap:wrap}
+.idelta .up{color:#8ca35a}
+.idelta .dn{color:#c07a6a}
+.idelta .same{color:#6b5836}
+/* the perk tab. Cards are full width here (they have a 278px column to
+   themselves), and the tree is grouped by the level that opens it, which is
+   the question a player actually has: what does the NEXT promotion buy. */
+.pklv{font-family:var(--mono);font-size:7.5px;letter-spacing:.18em;color:#7a6238;
+  display:flex;align-items:center;gap:8px;margin-top:4px}
+.pklv:after{content:'';flex:1;height:1px;background:#2a2114}
+.pk{width:100%;background:#221a10;border:1px solid #4d3c22;padding:5px 8px;text-align:left;
+  font-family:var(--body)}
+.pk.have{border-color:#8ca35a;background:#1e2416}
+.pk.locked{opacity:.45}
+.pk.buy{cursor:pointer;border-color:#8ca35a}
+.pk.buy:hover{background:#2a3a20}
+.pk b{font-family:var(--display);font-size:11.5px;color:var(--g4);display:block;line-height:1.15}
+.pk i{font-family:var(--mono);font-size:8px;color:#8a7449;font-style:normal;line-height:1.35}
+.pk .tag{font-family:var(--mono);font-size:7px;letter-spacing:.1em;color:#8ca35a;display:block}
+.pk.locked .tag{color:#7a6238}
+.pknone{font-family:var(--mono);font-size:8.5px;color:#7a6238;font-style:italic}
+.pkfoot{font-family:var(--mono);font-size:8px;color:#5c4a2c;line-height:1.5;
+  border-top:1px dashed #2a2114;padding-top:7px;margin-top:3px}
 
 /* every full-screen card sits centred on the ink. `#sim` and `#help` MUST be
    on this list — a `.screen` is a bare flex row, so a pcard left off it renders
@@ -3856,61 +4054,166 @@ const BODYPART=[
 const partOf=n=>{const m=BODYPART.find(r=>r[0].test(n||''));return m?m[1]:'body';};
 /* where a mutation shows */
 const MUTPART={gills:'head'};
+/* ═══ #133 · THE DOLL IS A BODY NOW, AND IT IS THE GEAR MAP ═══════════════
+   (User: "this current picture of character is too ugly. Maybe we can just
+   paint very simplified picture of human or red [rat] or ogre and also place
+   artifacts on top of it as, for example, inventory in case of good [Caves
+   of Qud]... make it like the shape of armor. So from the positioning, I
+   understand what is what belongs.")
+
+   ⚑ SIX RECTANGLES WERE NOT A CHEAP PICTURE, THEY WERE A PICTURE THAT SAID
+   NOTHING. The old doll drew every race as the same tin soldier at three
+   scales, so the one fact the sheet most needs to carry - what KIND of body
+   this is, which decides what armour fits and how far the legs go - was a
+   14% size difference nobody could see. A silhouette says it in one glance:
+   an ogre is a mass, a ratkin is small and low and tailed, a human is the
+   baseline both are measured against.
+
+   ⚠ THE ANATOMY IS PARAMETRIC, NOT THREE DRAWINGS. One set of joints with a
+   per-race table, because the marks have to keep landing on the right part:
+   `partOf` maps a scar name to head/body/armR/legL and every one of those
+   keys must exist for all three races or a veteran ratkin's scars quietly
+   pile up on its chest. Three hand-drawn outlines would have drifted apart
+   the first time one of them was nudged.
+
+   ⚑ AND IT EXPORTS `cv._anchor`, WHICH IS WHAT MAKES THE QUD LAYOUT REAL.
+   The gear boxes are wired to the body with drawn leaders, and a leader that
+   points at a hardcoded coordinate is a lie the moment the ogre is wider
+   than the human. The joint positions come out of the same table that drew
+   them, so the wire always lands on the shoulder it is naming. */
+const DOLL_W=150,DOLL_H=214;
+const DOLLBODY={
+  /*        head        shoulder        waist      hip        knee foot  arm  hunch tail snout */
+  human :{hy:26,hrx:14,hry:16.5,sy:48,sw:38,wy:88,ww:30,hpy:114,hw:34,ky:154,fy:190,aw:9,hn:0,tail:0,snout:0},
+  ratkin:{hy:32,hrx:12,hry:10.5,sy:52,sw:28,wy:84,ww:23,hpy:104,hw:26,ky:142,fy:178,aw:7,hn:7,tail:1,snout:1},
+  ogre  :{hy:24,hrx:13,hry:14  ,sy:47,sw:52,wy:92,ww:44,hpy:120,hw:46,ky:162,fy:198,aw:12,hn:3,tail:0,snout:0}
+};
 function drawDoll(cv,p){
   if(!cv)return;
-  const g=cv.getContext('2d'),W=cv.width,H=cv.height;
+  /* drawn at 2x and displayed at 1x: a silhouette outline goes to mush at
+     device resolution otherwise, and this canvas is looked at up close. */
+  const W=DOLL_W,H=DOLL_H,S=2;
+  cv.width=W*S;cv.height=H*S;cv.style.width=W+'px';cv.style.height=H+'px';
+  const g=cv.getContext('2d');
+  g.setTransform(S,0,0,S,0,0);
   g.clearRect(0,0,W,H);
   const line='#8a7d63',fill='#2c2318';
-  /* one anatomy for everybody, scaled by race — an ogre is wide, a ratkin
-     is small and low-slung */
-  const sc=p.race==='ogre'?1.14:p.race==='ratkin'?0.86:1;
-  const cx=W/2, top=12;
-  const P={};                                    /* remembered hit-boxes */
-  const box=(k,x,y,w,h)=>{P[k]=[x,y,w,h];
-    g.fillStyle=fill;g.strokeStyle=line;g.lineWidth=1.4;
-    g.beginPath();g.rect(x,y,w,h);g.fill();g.stroke();};
-  const hw=13*sc,hh=13*sc;                                    /* head */
-  box('head',cx-hw/2,top,hw,hh);
-  const bw=20*sc,bh=34*sc;                                    /* body */
-  box('body',cx-bw/2,top+hh+3,bw,bh);
-  const aw=6*sc,ah=30*sc;                                     /* arms */
-  box('armR',cx-bw/2-aw-2,top+hh+6,aw,ah);
-  box('armL',cx+bw/2+2,top+hh+6,aw,ah);
-  const lw=8*sc,lh=34*sc;                                     /* legs */
-  box('legL',cx-lw-2,top+hh+3+bh+2,lw,lh);
-  box('legR',cx+2,top+hh+3+bh+2,lw,lh);
+  const B=DOLLBODY[p.race]||DOLLBODY.human;
+  const cx=W/2;
+  const P={},poly={};
+  /* every part is a polygon; its bounding box is what the marks land in */
+  const shape=(k,pts)=>{
+    poly[k]=pts;
+    let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;
+    pts.forEach(q=>{x0=Math.min(x0,q[0]);y0=Math.min(y0,q[1]);
+                    x1=Math.max(x1,q[0]);y1=Math.max(y1,q[1]);});
+    P[k]=[x0,y0,x1-x0,y1-y0];
+  };
+  const paint=(pts,f,st)=>{
+    g.beginPath();g.moveTo(pts[0][0],pts[0][1]);
+    for(let i=1;i<pts.length;i++)g.lineTo(pts[i][0],pts[i][1]);
+    g.closePath();
+    if(f){g.fillStyle=f;g.fill();}
+    if(st){g.strokeStyle=st;g.lineWidth=1.6;g.lineJoin='round';g.stroke();}
+  };
+  /* the torso: shoulders, a waist, hips. `hn` leans a ratkin forward. */
+  const lean=B.hn;
+  shape('body',[[cx-B.sw/2+lean,B.sy],[cx+B.sw/2+lean,B.sy],
+                [cx+B.ww/2+lean*0.5,B.wy],[cx+B.hw/2,B.hpy],
+                [cx-B.hw/2,B.hpy],[cx-B.ww/2+lean*0.5,B.wy]]);
+  /* the arms hang off the shoulder corners and end just past the hip: that
+     end point is the HAND, and it is where the weapon boxes wire to. */
+  const armDrop=B.hpy+8;
+  shape('armR',[[cx-B.sw/2+lean,B.sy+2],[cx-B.sw/2-B.aw+lean,B.sy+6],
+                [cx-B.ww/2-B.aw,armDrop],[cx-B.ww/2-1,armDrop-3],
+                [cx-B.sw/2+lean+2,B.sy+22]]);
+  shape('armL',[[cx+B.sw/2+lean,B.sy+2],[cx+B.sw/2+B.aw+lean,B.sy+6],
+                [cx+B.ww/2+B.aw,armDrop],[cx+B.ww/2+1,armDrop-3],
+                [cx+B.sw/2+lean-2,B.sy+22]]);
+  const lw=B.hw/2-2;
+  shape('legL',[[cx-B.hw/2,B.hpy-2],[cx-1.5,B.hpy-2],[cx-3,B.ky],[cx-5,B.fy],
+                [cx-lw-3,B.fy],[cx-lw-1,B.ky]]);
+  shape('legR',[[cx+1.5,B.hpy-2],[cx+B.hw/2,B.hpy-2],[cx+lw+1,B.ky],[cx+lw+3,B.fy],
+                [cx+5,B.fy],[cx+3,B.ky]]);
+  /* the head is an ellipse, and a ratkin gets a snout so the silhouette is
+     legible at a glance rather than "a smaller human" */
+  const hcx=cx+lean*1.4,hcy=B.hy;
+  P.head=[hcx-B.hrx,hcy-B.hry,B.hrx*2,B.hry*2];
+  /* the feet: a flat mark under each leg, so nobody stands on points */
+  const foot=(x)=>{paint([[x-lw*0.5,B.fy],[x+lw*0.7,B.fy],[x+lw*0.9,B.fy+5],[x-lw*0.6,B.fy+5]],
+    fill,line);};
+  ['body','armR','armL','legL','legR'].forEach(k=>paint(poly[k],fill,line));
+  foot(cx-lw*0.6-2);foot(cx+lw*0.6+2);
+  g.beginPath();g.ellipse(hcx,hcy,B.hrx,B.hry,0,0,7);
+  g.fillStyle=fill;g.fill();g.strokeStyle=line;g.lineWidth=1.6;g.stroke();
+  if(B.snout){
+    paint([[hcx+B.hrx-2,hcy-2],[hcx+B.hrx+10,hcy+2],[hcx+B.hrx-2,hcy+5]],fill,line);
+    /* two ears, high and round */
+    [[-6,-B.hry-2],[5,-B.hry-3]].forEach(o=>{
+      g.beginPath();g.ellipse(hcx+o[0],hcy+o[1],4,4.6,0,0,7);
+      g.fillStyle=fill;g.fill();g.strokeStyle=line;g.lineWidth=1.4;g.stroke();});
+  }
+  if(B.tail){
+    g.beginPath();g.moveTo(cx-B.hw/2+2,B.hpy-6);
+    g.quadraticCurveTo(cx-B.hw-16,B.hpy+14,cx-B.hw-6,B.fy-2);
+    g.strokeStyle=line;g.lineWidth=2.4;g.stroke();
+  }
+  /* how much of them is still standing: the torso fills from the feet up.
+     The bars above print the number; this is the shape of it. */
+  const uu={st:effStats(p)},hpMax=D.hp(uu),left=Math.max(0,hpMax-(p.hpLoss||0));
+  const frac=hpMax?left/hpMax:1;
+  if(frac<1){
+    const b=P.body;
+    g.save();
+    paint(poly.body,null,null);g.clip();
+    g.fillStyle='rgba(122,31,34,.42)';
+    g.fillRect(b[0]-2,b[1]-2,b[2]+4,(b[3]+4)*(1-frac));
+    g.restore();
+    paint(poly.body,null,line);
+  }
   /* the marks. Scars are dull red slashes; a change is a saturated teal
-     glow on the part it took — the saturation rule, on the sheet. */
+     glow on the part it took - the saturation rule, on the sheet. */
   const marks={};
   (p.injuries||[]).forEach(s=>{const k=partOf(s.n);marks[k]=(marks[k]||0)+1;});
   Object.keys(marks).forEach(k=>{
     const b=P[k];if(!b)return;
-    g.strokeStyle='#c15d55';g.lineWidth=1.6;
+    g.save();g.strokeStyle='#c15d55';g.lineWidth=1.8;g.lineCap='round';
+    if(poly[k]){paint(poly[k],null,null);g.clip();}
     for(let i=0;i<Math.min(4,marks[k]);i++){
-      const yy=b[1]+4+i*5;
-      g.beginPath();g.moveTo(b[0]+2,yy);g.lineTo(b[0]+b[2]-2,yy+3);g.stroke();}
+      const yy=b[1]+b[3]*0.28+i*6;
+      g.beginPath();g.moveTo(b[0]-1,yy);g.lineTo(b[0]+b[2]+1,yy+4);g.stroke();}
+    g.restore();
   });
+  /* the mark somebody cut into their own face (#74). It is on the body, so
+     it belongs on the body, and it is the one scar with a colour of its own. */
+  if(p.mark==='circle'){
+    g.save();g.strokeStyle='#c9a227';g.lineWidth=1.8;g.shadowColor='#c9a227';g.shadowBlur=5;
+    g.beginPath();g.ellipse(hcx-B.hrx*0.36,hcy-1,4.6,4.6,0,0,7);g.stroke();g.restore();
+  }
   if(p.mut){
-    const b=P[MUTPART[p.mut]||'body'];
-    if(b){
-      g.save();g.shadowColor='#35e0c8';g.shadowBlur=7;
-      g.strokeStyle='#35e0c8';g.lineWidth=1.6;
-      g.beginPath();g.rect(b[0]-1,b[1]-1,b[2]+2,b[3]+2);g.stroke();
-      g.restore();
-    }
+    const k=MUTPART[p.mut]||'body';
+    g.save();g.shadowColor='#35e0c8';g.shadowBlur=8;
+    g.strokeStyle='#35e0c8';g.lineWidth=1.8;
+    if(k==='head'){g.beginPath();g.ellipse(hcx,hcy,B.hrx+1.5,B.hry+1.5,0,0,7);g.stroke();}
+    else if(poly[k])paint(poly[k],null,'#35e0c8');
+    g.restore();
   }
   if(p.cond){
     const b=P.body;
-    g.strokeStyle='#2fa898';g.lineWidth=1;g.setLineDash([3,3]);
-    g.beginPath();g.rect(b[0]-2,b[1]-2,b[2]+4,b[3]+4);g.stroke();g.setLineDash([]);
+    g.save();g.strokeStyle='#2fa898';g.lineWidth=1.2;g.setLineDash([3,3]);
+    g.strokeRect(b[0]-4,b[1]-4,b[2]+8,b[3]+8);g.restore();
   }
-  /* how much of them is still standing, drawn as a fill in the body */
-  const uu={st:effStats(p)},hpMax=D.hp(uu),left=Math.max(0,hpMax-(p.hpLoss||0));
-  const frac=hpMax?left/hpMax:1;
-  const b=P.body;
-  g.fillStyle=frac>0.66?'#4a5a3a':frac>0.33?'#6a5a2a':'#5a2a26';
-  g.fillRect(b[0]+2,b[1]+b[3]-2-(b[3]-4)*frac,b[2]-4,(b[3]-4)*frac);
-  g.strokeStyle=line;g.lineWidth=1.4;g.strokeRect(b[0],b[1],b[2],b[3]);
+  /* ⚑ THE JOINTS, IN THE CANVAS'S OWN COORDINATES, FOR THE WIRED SLOTS.
+     armR is screen-LEFT and armL is screen-RIGHT (they are the body's own
+     left and right, as the scar map has always named them), and the weapon
+     goes in the hand on the side the battle sprites face: screen right. */
+  cv._anchor={
+    trinket:{x:hcx+B.hrx*0.6,y:hcy-B.hry*0.5},
+    armour :{x:cx-B.ww*0.35,y:(B.sy+B.hpy)/2},
+    main   :{x:cx+B.ww/2+B.aw*0.6,y:armDrop-4},
+    off    :{x:cx-B.ww/2-B.aw*0.6,y:armDrop-4},
+    pet    :{x:cx+B.hw*0.30,y:B.fy-4}
+  };
 }
 /* the compact character card — one glance at who somebody is. Used wherever a
    decision is being made ABOUT a person away from the full inventory sheet
@@ -18936,13 +19239,42 @@ function coach(key){
 }
 const openInv=()=>{show('inv');drawInv();
   $('iNag').style.display=G.mustKit?'inline':'none';};
-/* the sheet's skill-tree drawer, open or shut. It lives out here so that
-   buying a perk (which redraws the whole sheet) does not slam it shut under
-   the hand that just clicked. One flag for the screen, not one per person:
-   a player who has opened the tree is reading trees. */
-let TREEOPEN=false;
-const treeLbl=(n,open)=>(open?'▾':'▸')+' THE REST OF THE TREE · '+n+
-  ' they cannot take yet';
+/* #133 - which tab the right pane is showing. It lives out here for the same
+   reason the tree drawer's flag used to: buying a perk redraws the whole
+   sheet, and a pane that snapped back to THE STASH under the hand that just
+   spent a point would be the old bug wearing a new coat. One flag for the
+   screen, not one per person: a player reading trees is reading trees.
+   (`TREEOPEN` and `treeLbl` retired with the drawer: the tree has a tab.) */
+let ITAB='stash';
+/* which acts a change hands out. The sheet marks them teal and says where
+   they came from, because "why does this one have a skill the others do not"
+   is a question the old sheet answered nowhere. ⚠ One line per mutation as
+   #16 lands them; the keys are the act keys pushed in unitFrom(). */
+const MUTACT={gills:['sink']};
+/* ═══ #133 · WHAT A PIECE OF KIT CHANGES, NOT WHAT IT IS ══════════════════
+   Wildermyth's gear screen (his first reference screenshot) spends its whole
+   right-hand column on a before/after: 1▲ Armor · 5▲ Melee Accuracy · 10▼
+   Ranged Accuracy. That comparison is the work the player was doing in their
+   head between two cards, and doing it in their head is precisely what "not
+   clear whic one is important" describes.
+   ⛔ NOTHING NEW IS COMPUTED. These are the numbers already in GEAR{}, said
+   as a difference. And it is deliberately EMPTY against an empty slot: with
+   nothing worn there is no comparison to make, only the item's own line,
+   which the row above already prints. */
+function gearDelta(g,cur){
+  if(!cur)return [];
+  const n=(o,k)=>(o&&o[k])||0;
+  const avg=o=>(o&&o.dmg)?(o.dmg[0]+o.dmg[1])/2:0;
+  const out=[];
+  [['armour','STOPS'],['reach','REACH'],['range','RANGE'],['agi','HANDS'],
+   ['mor','NERVE'],['str','BUILD']].forEach(r=>{
+    const d=Math.round(n(g,r[0])-n(cur,r[0]));
+    if(d)out.push([r[1],d]);
+  });
+  const dd=Math.round(avg(g)-avg(cur));
+  if(dd)out.unshift(['DAMAGE',dd]);
+  return out.slice(0,4);
+}
 function drawInv(){
   const rost=$('iRoster');rost.innerHTML='';
   G.party.forEach(p=>{
@@ -18970,262 +19302,231 @@ function drawInv(){
     b.onclick=()=>{iSel=p.id;drawInv();};
     rost.appendChild(b);});
 
-  const p=member(iSel),s=effStats(p),uu={st:s},u=unitFrom(p);
-  $('iChar').innerHTML='<div id="iName">'+fullName(p)+'</div>'+
-    /* both of these explain themselves on hover — see RACEHELP / CLASSHELP.
-       ═══ NOISE OFF THE HEADER (user, 2026-07-31, marked up on a screenshot):
-       "(human-sized)" and "signature: X + Y" were both said again a few
-       lines down — size only matters when armour is the wrong one for this
-       body, and that already has its own red warning; the signature is
-       already a card in SKILLS below with the same name on it. Saying a fact
-       twice on one sheet is not emphasis, it is noise. */
-    '<div class="lbl" style="color:#8a7449"><span data-cls="'+p.cls+'" style="cursor:help">'+
-      cIcon(p.cls)+' '+CLASSES[p.cls].n+'</span> · LEVEL '+p.level+
-      ' · <span class="race '+p.race+'" data-race="'+p.race+'" style="cursor:help">'+
-      rIcon(p.race)+' '+p.race.toUpperCase()+'</span></div>'+
-    /* SKILLS and PERSONALITY are different things (skills are what they can
-       DO; the personality is who they ARE) — but the sheet said so out loud
-       right above a line that already says it ("Stubborn — Gets their nerve
-       back fast." needs no header explaining what a personality is). Cut,
-       same session, same reason as the header noise above. */
-    '<div id="iTrait" style="cursor:help"><b style="color:var(--g4)">'+TRAITS[p.trait].n+
-      '</b> — '+traitShort(p)+
-      '<span style="color:#6b5836;font-size:10px;font-family:var(--mono)"> · hover for the rest</span></div>'+
-    /* the tally rides under the personality as a row of HEADS — one per race,
-       so it says who this one has been killing as well as how many */
-    (killHeads(p)?'<div class="kills" title="what this one has put in the ground">'+
-      killHeads(p)+'</div>':'')+
-    /* ═══ #38 — WHO THEY ARE WITH ═══════════════════════════════════════
-       A tie sits between the personality and the album on purpose: a tie
-       is who somebody is WITH, and that belongs beside who they are, not
-       buried in the list of things that have happened to them.
 
-       The whole point of the entry is that BOTH sheets show the same fact
-       and NEITHER shows the same sentence. Which side of the tie this
-       person is on decides the role word and the line — read off `x.a`,
-       which is the direction the bond was written in. No number, no bar,
-       and nothing here can be farmed: the only thing that writes a tie is
-       an actual rescue. */
-    /* #74 - what somebody cut into their face. Above HIS CLAN because a
-       stranger can read this one off them at fifteen paces. */
-    (p.mark==='circle'?'<div class="lbl" style="color:#8a7449">THE CIRCLE</div>'+
-      '<div class="memlist"><div class="mb">A black ring cut round the left eye, and it does '+
-      'not come off. Anybody standing right next to '+(p.leader?'you':p.name)+' in a fight is '+
-      '10 morale worse for it, whichever side they are on.</div></div>':'')+
-    /* #73 - HIS CLAN sits above the ties, because it is not a tie: it is
-       between one person and the whole company, and the company is not a
-       body the bond machinery can hold one end of. Stated in words, like
-       everything else on this sheet. */
-    (p.clan?'<div class="lbl" style="color:#8a9a5c">HIS CLAN</div>'+
-      '<div class="memlist"><div class="mb">This is his clan now. The first time his nerve goes '+
-      'in a battle it holds, and after that he does not leave the field. He will not walk out '+
-      'over money either.</div></div>':'')+
-    (function(){
-      const ts=tiesFor(p);
-      if(!ts.length)return '';
-      return ts.map(x=>{
-        const T=TIES[x.t],mine=x.a===p.id,oid=mine?x.b:x.a;
-        const om=member(oid);
-        /* a tie outlives the pair — if they are gone the words go to past
-           tense and the NAME STAYS, off the tie's own copy of it */
-        const oname=(x.names?x.names[mine?'b':'a']:null)||(om?fullName(om):'somebody');
-        const where=x.where||'the road';
-        const line=om?(mine?T.aLine(fst(oname),where):T.bLine(fst(oname),where))
-                     :(mine?T.aGone(fst(oname)):T.bGone(fst(oname)));
-        return '<div class="lbl" style="color:#8a9a5c">'+(mine?T.aRole:T.bRole)+'</div>'+
-          '<div class="memlist"><div class="mb">'+
-          '<b style="color:#b9c98c;font-style:normal">'+oname+'</b> — '+line+'</div></div>';
-      }).join('');
-    })()+
-    /* WHAT HAPPENED TO THEM — the album, COLLAPSED (user: "show only one
-       latest big event, and click to open the rest"). A sheet is a thing you
-       glance at; the last thing that happened to somebody is the line that
-       belongs on it, and their whole history is one click away for when you
-       actually want to read it. */
-    (function(){
-      /* #38 — a TIE has its own block above with its own words, so the
-         album takes the UNTYPED bonds only. Left in, the shared
-         third-person line ("Vesna dragged Skree out of the Black Fen")
-         would say the same thing a second time, nine lines lower, in the
-         one voice the tie was written to replace. */
-      const mem=(p.mem||[]),bonds=bondsFor(p).filter(x=>!x.t),hist=(p.roadHist||[]);
-      const total=mem.length+bonds.length;
-      if(!total&&!hist.length)return '';
-      const latest=mem.length?mem[mem.length-1]:(bonds.length?bonds[0].line:'');
-      const more=total-1+ (hist.length?1:0);
-      return '<div class="lbl" style="color:#8a7449">WHAT HAPPENED TO THEM</div>'+
-        '<div class="memlist"><div class="mm">'+latest+'</div></div>'+
-        (more>0
-          ? '<button class="choice" id="iMemBtn" style="padding:4px 9px">'+
-            '<b style="font-size:11px">'+(G.showMem?'▾':'▸')+' EVERYTHING ELSE</b>'+
-            '<i>'+more+' more thing'+(more>1?'s':'')+' this one has been through</i></button>'+
-            '<div id="iMem" class="memlist" style="display:'+(G.showMem?'flex':'none')+'">'+
-            (hist.length?'<div class="mh">Road history: '+hist.join(' · ')+'</div>':'')+
-            mem.slice(0,-1).map(l=>'<div class="mm">'+l+'</div>').join('')+
-            bonds.map(x=>'<div class="mb">'+x.line+'</div>').join('')+
-            '</div>'
-          : '');
-    })()+
-    /* CHANGE — kept visually apart from personality and scars: a scar is what
-       violence did, a change is what the strange did. Teal, because on this
-       sheet saturation means exactly one thing. */
-    (p.mut?'<div class="lbl" style="color:#2fa898">CHANGE — WHAT THE ROAD DID</div>'+
-      '<div style="cursor:help" title="'+MUTS[p.mut].d.replace(/"/g,'&quot;')+'">'+
-      '<b style="color:#35e0c8">'+MUTS[p.mut].n+'</b> — '+MUTS[p.mut].short+'</div>':'')+
-    (p.cond?'<div class="slot bad" style="min-height:0;border-color:#2fa898"><div class="warnx" '+
-      'style="color:#5ec8b8"><b>'+CONDS[p.cond.k].n+'</b> — '+CONDS[p.cond.k].short+
-      ' Day '+(p.cond.days+1)+'.</div></div>':'')+
-    /* the one exception to "scars are forever", and you had to build it */
-    ((p.injuries&&p.injuries.length&&G.aidLeft>0)?
-      '<button class="choice" id="iAid" style="border-color:#5a7a6a"><b>✚ Open the medicine chest</b>'+
-      '<i>take one scar off '+p.name+' — you get ONE of these a run, and this is it</i></button>':'')+
-    ((p.injuries&&p.injuries.length)?'<div class="slot bad" style="min-height:0"><div class="warnx">'+
-      p.injuries.map(i=>'<b>'+i.n+'</b> — '+i.d).join('<br>')+'</div></div>':'')+
-    /* WHO THIS IS, IN WORDS — see the TELLS block. The four stats used to sit
-       here as numbers and the sheet read as a spreadsheet with a name on it.
-       They are the same four values; they are just no longer an invitation to
-       min-max a company you only get to keep for one run. */
-    /* #122 - the promotion pick lives HERE now. A stat level banks
-       `statPoints` on the after-battle card, and the tells below become the
-       spend buttons: same shape as a banked perk point, same door. */
+  /* ═══ #133 · THE SHEET IN THE ORDER THE QUESTIONS ARE ASKED ══════════════
+     The old order was: name, class, personality, kills, ties, clan, the mark,
+     the album, the change, the scars, THEN the four stats, then what they can
+     do, then the gear, then every skill written out, then the perk tree. It
+     read as a biography with a stat block buried in it, and the measurement
+     said so: 1241px of column inside a 678px window for a body with two scars
+     and one change, 564 words, the stats ~520px down.
+
+     The order now answers the three questions a player actually opens this
+     screen with, in the order they ask them:
+       WHO IS THIS      the head, three lines, everything longer on hover
+       WHAT ARE THEY    the stats band, first, one box (Urtuk / Wartales)
+       WHAT DO THEY     the body and its gear (Qud), then the acts as the
+                        battle's own cards, then what has happened to them.
+     The stash and the tree moved to tabs, so the left side never moves while
+     the right side is being read. ⚠ Anything that can grow without bound (the
+     ledger, the story) scrolls INSIDE itself: the stats and the body do not
+     leave the screen for anybody. */
+  const p=member(iSel),s=effStats(p),uu={st:s},u=unitFrom(p);
+  const hpMax=D.hp(uu),hpNow=Math.max(1,hpMax-(p.hpLoss||0)),hpF=hpNow/hpMax;
+  const arm=armourValue(p),bd=bandOf(u),sw=swingOf(u);
+  const nu={morale:D.moral(uu)*0.78,moraleMax:D.moral(uu)},nl=LADDER[ladderAt(nu)];
+  const statPts=p.statPoints||0,perkPts=p.perkPoints||0;
+  const mutActs=p.mut?u.acts.filter(a=>(MUTACT[p.mut]||[]).indexOf(a.k)>=0).map(a=>a.n):[];
+  /* the figure that will stand on the field, at the size it stands there.
+     (User: "show small icon of this character, how it actually looks on
+     battlefield. So person has a more clear understanding.") Same sprite()
+     the board and the road token call, so it can never drift. */
+  const spr=sprite(u.kind,'you',{unit:u,leader:p.id==='you',
+    caster:isCaster(p.cls),bow:!!u.bow});
+  const sf=Math.min(1.6,58/spr.h);
+
+  const chips='<span class="ichip race '+p.race+'" data-race="'+p.race+'">'+rIcon(p.race)+
+      ' <b>'+p.race.toUpperCase()+'</b></span>'+
+    '<span class="ichip" data-cls="'+p.cls+'">'+cIcon(p.cls)+' <b>'+CLASSES[p.cls].n+'</b></span>'+
+    '<span class="ichip">LEVEL <b>'+p.level+'</b></span>'+
+    (killHeads(p)?'<span class="ichip kills" title="what this one has put in the ground">'+
+      killHeads(p)+'</span>':'');
+
+  const tellCell=k=>'<div class="itl'+(statPts>0?' spend':'')+'" data-tell="'+k+'">'+
+    '<span class="tk" style="color:'+TELLS[k].col+'">'+TELLS[k].lbl+'</span>'+
+    '<span class="tv">'+tell(k,s[k])+'</span></div>';
+
+  /* ── the ledger: every mark on this body, named once, beside the picture
+     of where it is. Scars, the change, a running condition, the ring somebody
+     cut round their own eye, and the armour that does not fit. */
+  const led=[];
+  if(p.mut)led.push('<div class="wchip chg" title="'+MUTS[p.mut].d.replace(/"/g,'&quot;')+'">'+
+    '<span class="ic">◈</span><span><b>'+MUTS[p.mut].n+'</b> · '+MUTS[p.mut].short+
+    (mutActs.length?'<span class="gives">GIVES: '+mutActs.join(' · ')+'</span>':'')+
+    '</span></div>');
+  if(p.cond){
+    const C=CONDS[p.cond.k];
+    led.push('<div class="wchip chg" title="'+String(C.d||C.short||'').replace(/"/g,'&quot;')+'">'+
+      '<span class="ic">◌</span><span><b>'+C.n+'</b> · '+C.short+
+      ' Day '+(p.cond.days+1)+'.</span></div>');
+  }
+  if(p.mark==='circle')led.push('<div class="wchip mark"><span class="ic">◎</span>'+
+    '<span><b>THE CIRCLE</b> · a black ring cut round the left eye, and it does not come off. '+
+    'Anybody standing right next to '+(p.leader?'you':p.name)+' in a fight is 10 morale worse '+
+    'for it, whichever side they are on.</span></div>');
+  (p.injuries||[]).forEach(i=>led.push('<div class="wchip" title="'+
+    i.d.replace(/"/g,'&quot;')+'"><span class="ic">✕</span><span><b>'+i.n+'</b> · '+
+    i.d+'</span></div>'));
+  if(sizeMismatch(p))led.push('<div class="wchip"><span class="ic">⚠</span>'+
+    '<span><b>ILL-FITTING ARMOUR</b> · '+sizeJoke(p)+' Armour ×0.70, -1 AGI, -3 MOR.</span></div>');
+  if(!led.length)led.push('<div class="wchip none"><span class="ic">·</span>'+
+    '<span>Nothing has happened to this one yet.</span></div>');
+  /* the one exception to "scars are forever", and you had to build it */
+  if(p.injuries&&p.injuries.length&&G.aidLeft>0)
+    led.push('<button class="iaid" id="iAid"><b>✚ Open the medicine chest</b>'+
+      '<i>take one scar off '+p.name+' · you get ONE of these a run, and this is it</i></button>');
+
+  /* ── the acts, as the battle draws them (#133). One card, one hover, and
+     the hover is the battle's own receipt line plus the note's first
+     sentence: the same noteLine() the board's popover uses. */
+  const actCard=a=>{
+    const isMut=!!(p.mut&&(MUTACT[p.mut]||[]).indexOf(a.k)>=0);
+    const sub=a.range?a.cost+' act · range '+a.range
+      :a.reach?a.cost+' act · reach '+a.reach:a.cost+' act';
+    const strain=(typeof strainCost==='function')?strainCost(u,a):(a.strain||0);
+    const receipt=(sub+(strain?' · '+strain+' nerve':'')+
+      (a.cool?' · '+a.cool+'-turn cooldown':'')).toUpperCase();
+    const line=noteLine(a);
+    return '<div class="iact'+(a.arcane?' arc':'')+(isMut?' chg':'')+'">'+
+      '<span class="gi">'+iconFor(a)+'</span><b>'+a.n+'</b>'+
+      (a.dmg?'<span class="adm">'+a.dmg[0]+'-'+a.dmg[1]+'</span>':'')+
+      (roleOf(a)?'<span class="role">'+roleOf(a)+'</span>':'')+
+      '<span class="cost">'+'◆'.repeat(a.cost)+'</span>'+
+      '<span class="pop"><span class="pt">'+a.n+'</span>'+
+      '<span class="pr">'+receipt+'</span>'+
+      (isMut?'<span class="src">FROM THE CHANGE</span>':'')+
+      (line?'<span class="pd">'+line+'</span>':'')+'</span></div>';
+  };
+  const acts=u.acts.filter(a=>!a.move);
+
+  /* ── the story. Ties and the clan sit here, not in the header: they are
+     things that HAPPENED to this person, which is what this block is. */
+  const ties=tiesFor(p).map(x=>{
+    const T=TIES[x.t],mine=x.a===p.id,oid=mine?x.b:x.a,om=member(oid);
+    const oname=(x.names?x.names[mine?'b':'a']:null)||(om?fullName(om):'somebody');
+    const where=x.where||'the road';
+    const line=om?(mine?T.aLine(fst(oname),where):T.bLine(fst(oname),where))
+                 :(mine?T.aGone(fst(oname)):T.bGone(fst(oname)));
+    return '<div class="mb"><b style="color:#b9c98c;font-style:normal">'+
+      (mine?T.aRole:T.bRole)+' · '+oname+'</b> · '+line+'</div>';
+  }).join('');
+  const clan=p.clan?'<div class="mb"><b style="color:#b9c98c;font-style:normal">HIS CLAN</b> · '+
+    'This is his clan now. The first time his nerve goes in a battle it holds, and after that '+
+    'he does not leave the field. He will not walk out over money either.</div>':'';
+  const mem=(p.mem||[]),bonds=bondsFor(p).filter(x=>!x.t),hist=(p.roadHist||[]);
+  const recent=mem.slice(-2).reverse();
+  const rest=Math.max(0,mem.length-2)+bonds.length;
+  const storyHTML=(ties||clan||mem.length||hist.length||bonds.length)
+    ? '<div class="lbl" style="color:#8a7449">WHAT HAPPENED TO THEM</div>'+
+      '<div class="memlist">'+ties+clan+
+        recent.map(l=>'<div class="mm">'+l+'</div>').join('')+
+        (hist.length?'<div class="mh">THE ROAD SO FAR: '+hist.join(' · ')+'</div>':'')+
+      '</div>'+
+      (rest>0?'<button class="iacc" id="iMemBtn">'+(G.showMem?'▾':'▸')+' EVERYTHING ELSE · '+
+        rest+' more thing'+(rest>1?'s':'')+' this one has been through</button>'+
+        '<div id="iMem" class="memlist" style="display:'+(G.showMem?'flex':'none')+'">'+
+        mem.slice(0,-2).map(l=>'<div class="mm">'+l+'</div>').join('')+
+        bonds.map(x=>'<div class="mb">'+x.line+'</div>').join('')+'</div>':'')
+    : '<div class="lbl" style="color:#8a7449">WHAT HAPPENED TO THEM</div>'+
+      '<div class="memlist"><div class="mh">Nothing yet. The road is long.</div></div>';
+
+  $('iChar').innerHTML=
+    '<div id="iHead"><div id="iHeadCol">'+
+      '<div id="iName">'+fullName(p)+'</div>'+
+      '<div id="iChips">'+chips+'</div>'+
+      /* the personality, one clause, the rest on hover. It is who they ARE
+         and the sheet says so once. */
+      '<div id="iTrait"><b>'+TRAITS[p.trait].n+'</b> · '+traitShort(p)+
+      '<span style="color:#6b5836;font-size:9.5px;font-family:var(--mono)"> · hover for the rest'+
+      '</span></div>'+
+    '</div>'+
+    '<div id="iField"><img src="'+spr.src+'" width="'+Math.round(spr.w*sf)+'" height="'+
+      Math.round(spr.h*sf)+'" alt=""><span class="fc">ON THE FIELD</span></div>'+
+    '</div>'+
+
     '<div class="lbl" style="color:#8a7449">WHO THIS IS'+
-      ((p.statPoints||0)>0?' · <span style="color:#8ca35a">'+p.statPoints+
-       ' LEVEL'+(p.statPoints>1?'S':'')+' TO SPEND. CLICK A TRAIT</span>':'')+'</div>'+
-    '<div class="whorow">'+
-      '<canvas id="iDoll" class="doll" width="88" height="128"></canvas>'+
-      '<div class="whocol">'+
-      /* one word each, and the full seven-step scale on hover — same logic as
-         the nerve ladder, so the player can find out where "Strong enough"
-         actually sits without a number ever being printed */
-      '<div class="tells">'+['str','agi','int','mor'].map(k=>
-        '<div class="tl'+((p.statPoints||0)>0?' spend':'')+'" data-tell="'+k+
-        '" style="cursor:help">'+
-        '<span class="tk" style="color:'+TELLS[k].col+'">'+TELLS[k].lbl+
-        '</span><span class="tv">'+tell(k,s[k])+'</span></div>').join('')+'</div>'+
-      /* ═══ THE SAME BARS THE BATTLE PANEL USES ═══════════════════════════
-         (User: "make health and armour consistent with the battle screen".)
-         The sheet was printing BODY 50 / ARMOUR 6 as text while the fight
-         showed them as bars — two readings of the same fact, and the one on
-         the sheet was the one you look at when deciding whether this person
-         can survive the next fight. Same colours, same shape, and the wound
-         shows as the unfilled part rather than as a "mending" footnote. */
-      (function(){
-        const hpMax=D.hp(uu),hpNow=Math.max(1,hpMax-(p.hpLoss||0)),arm=armourValue(p);
-        const hpF=hpNow/hpMax;
-        /* ═══ NERVE, MOVED UP AND QUIETED (user, 2026-07-31, arrow on the
-           screenshot: move it near HP/armour, and stop it shouting). It used
-           to sit as a full-width `.lrung` — the ladder's own coloured-and-
-           bordered rung, built for the fight panel where a fast read under
-           time pressure earns the colour — nine lines further down the
-           sheet, between the swing stats and the equipment slots. On a sheet
-           you sit and read, one more quiet mono row beside ARMOUR and
-           HITPOINTS says the same thing without out-shouting the two numbers
-           that actually decide whether this person survives the next fight.
-           Same id, so the existing hover tooltip binds it wherever it sits. */
-        const nu={morale:D.moral(uu)*0.78,moraleMax:D.moral(uu)},nl=LADDER[ladderAt(nu)];
-        return '<div class="sbars">'+
-          '<div class="statLine"><span>ARMOUR</span><span>'+arm+'</span></div>'+
-          '<div class="bar" style="background:#243133"><i style="width:'+
-            (arm?100:0)+'%;background:var(--steel)"></i></div>'+
-          '<div class="statLine"><span>HITPOINTS</span><span'+
-            (p.hpLoss?' style="color:#c15d55"':'')+'>'+hpNow+'/'+hpMax+'</span></div>'+
+      (statPts>0?' · <span style="color:#8ca35a">'+statPts+' LEVEL'+(statPts>1?'S':'')+
+        ' TO SPEND. CLICK A TRAIT</span>':'')+'</div>'+
+    '<div id="iStats">'+
+      '<div class="itells">'+['str','agi','int','mor'].map(tellCell).join('')+'</div>'+
+      '<div class="ibars">'+
+        '<div class="bcell"><div class="statLine"><span>ARMOUR <b style="color:'+bd.col+'">'+
+          bd.n+'</b></span><span class="pv">'+arm+'</span></div>'+
+          '<div class="bar" style="background:#243133"><i style="width:'+(arm?100:0)+
+          '%;background:var(--steel)"></i></div></div>'+
+        '<div class="bcell"><div class="statLine"><span>HITPOINTS</span><span class="pv"'+
+          (p.hpLoss?' style="color:#c15d55"':'')+'>'+hpNow+'/'+hpMax+'</span></div>'+
           '<div class="bar" style="background:#3b2126"><i style="width:'+(100*hpF)+
-            '%;background:'+(hpF>.6?'var(--blood)':hpF>.3?'#c07a2c':'#e0544c')+'"></i></div>'+
-          '<div class="statLine" id="iNerve" style="cursor:help"><span>NERVE</span>'+
-            '<span style="color:'+nl.col+'">'+nl.ic+' '+nl.n+'</span></div>'+
-        '</div>';})()+
+          '%;background:'+(hpF>.6?'var(--blood)':hpF>.3?'#c07a2c':'#e0544c')+'"></i></div></div>'+
+        '<div class="bcell" id="iNerve" style="cursor:help"><div class="statLine"><span>NERVE'+
+          '</span><span class="pv" style="color:'+nl.col+'">'+nl.ic+' '+nl.n+'</span></div>'+
+          '<div class="bar" style="background:#20272a"><i style="width:78%;background:'+nl.col+
+          '"></i></div></div>'+
+      '</div>'+
+      /* what they DO with all that, in one mono line rather than a grid */
+      '<div class="idrv">'+
+        (sw?'<span>'+sw.n+' <b>'+sw.lo+'-'+sw.hi+'</b></span>'
+           :'<span>BLOW <b>nothing much</b></span>')+
+        '<span>TO HIT <b>'+u.mskill+'%</b></span>'+
+        '<span>DODGE <b>'+dodgeOf(u)+'</b></span>'+
+        '<span>STEP <b>'+(RACESTEP[p.race]||4)+' hex'+
+          (p.cls==='cutter'?' (+1 first)':'')+'</b></span>'+
+        '<span>ARMOUR STOPS <b>'+Math.round(bd.absorb*100)+'%</b></span>'+
       '</div>'+
     '</div>'+
-    /* WHAT THEY CAN DO NOW — the numbers that are actually a decision on the
-       field: what the swing does, what the armour stops, how far the legs go,
-       and whether the nerve will hold. */
-    /* armour and hitpoints moved up into the bars beside the doll — what is
-       left here is what they DO: the swing, the odds of landing it, the odds
-       of not being hit back, and how far the legs go. */
-    '<div class="lbl" style="color:#8a7449">WHAT THEY CAN DO NOW</div>'+
-    '<div class="drv" style="font-size:11px">'+
-      (function(){const sw=swingOf(u);
-        return sw?dv2(sw.n,sw.lo+'–'+sw.hi):dv2('BLOW','nothing much');})()+
-      /* the two numbers the fight is actually decided by, and the ones the
-         battle panel shows — the sheet had neither (user) */
-      dv2('CHANCE TO HIT',u.mskill+'%')+
-      dv2('DODGE',dodgeOf(u))+
-      dv2('STEP',(RACESTEP[p.race]||4)+' hex'+(p.cls==='cutter'?' (+1 first)':''))+
-      /* #79 - the band belongs beside DODGE and not beside the armour number,
-         because it is the thing that explains why the dodge reads low. It is
-         read off the UNIT, so it already carries the ill-fitting ×0.70. */
-      (function(){const bd=bandOf(u);
-        return dv2('ARMOUR','<span style="color:'+bd.col+'">'+bd.n+'</span> · stops '+
-          Math.round(bd.absorb*100)+'%');})()+
+
+    '<div class="lbl" style="color:#8a7449">THE BODY · what it carries, and what happened to it'+
       '</div>'+
-    /* THE ARITHMETIC IS GONE (user: "delete arithmetic completely"). Every
-       number it held is either on the sheet already in words, or is an
-       internal value the player was never meant to optimise against. If
-       something in there was worth knowing, it belongs in a hover on the
-       thing it describes — not in a drawer of raw stats. */
-    (sizeMismatch(p)?'<div class="slot bad" style="min-height:0"><div class="warnx">ILL-FITTING '+
-      'ARMOUR — '+sizeJoke(p)+' Armour ×0.70, −1 AGI, −3 MOR.</div></div>':'')+
-    '<div class="slots" id="iSlots"></div>'+
-    '<div class="lbl" style="color:#8a7449">SKILLS</div>'+
-    '<div class="abil">'+u.acts.filter(a=>!a.move).map(a=>'<div class="ab"><b>'+a.n+'</b><i>'+
-      a.cost+' action'+(a.cost>1?'s':'')+(a.range?' · range '+a.range:a.reach?' · reach '+a.reach:'')+
-      (a.dmg?' · '+a.dmg[0]+'–'+a.dmg[1]+' dmg':'')+(a.strain?' · '+a.strain+' nerve':'')+
-      '<br>'+(a.note||'')+'</i></div>').join('')+'</div>'+
-    '<div class="lbl" style="color:#8a7449">SKILLS LEARNED ON PROMOTION · '+p.perks.length+' taken'+
-      ((p.perkPoints||0)>0?' · <span style="color:#8ca35a">'+p.perkPoints+
-       ' PERK POINT'+(p.perkPoints>1?'S':'')+' TO SPEND. CLICK ONE</span>':'')+'</div>'+
-    /* ═══ THE SHEET SHOWS WHAT THIS PERSON CAN DO. THE TREE IS A DRAWER ═════
-       (User: "скилы, которые не можеш взять у класса, показывать акордеоном.
-       на странице персонажа видны токо активные скилы, и чтобы увидеть все
-       скилл три надо розвернуть.")
+    '<div id="iBody">'+
+      '<div id="iDollBox"><canvas id="iDoll" class="doll"></canvas>'+
+      '<svg class="wire" id="iWire" width="400" height="232"></svg></div>'+
+      '<div id="iLedger">'+led.join('')+'</div>'+
+    '</div>'+
 
-       Eight cards were printed at every visit and six of them were greyed
-       LEVEL 4 / LEVEL 5 promises, so the two that described the person you
-       were actually looking at were outnumbered three to one. The sheet is
-       read to answer "what is this one FOR" and the locked half of a tree
-       answers a different question, on a different day.
+    '<div class="lbl" style="color:#8a7449">WHAT THEY CAN DO</div>'+
+    '<div id="iSkills">'+acts.map(actCard).join('')+'</div>'+
 
-       What stays out is what is TRUE NOW: everything taken, plus anything
-       buyable this second. That second clause is not a courtesy, it is the
-       old lesson kept intact - a perk point with nothing visible to spend
-       it on reads as a broken screen, and hiding the tree would have put
-       it straight back. Everything else is one click away and the click
-       says how many are behind it. */
-    (function(){
-      const rows=[];
-      [2,3,4,5].forEach(lv=>(CLASSES[p.cls].perks[lv]||[]).forEach(k=>{
-        const have=p.perks.indexOf(k)>=0,open=p.level>=lv;
-        const canBuy=!have&&open&&(p.perkPoints||0)>0;
-        rows.push({live:have||canBuy,
-          html:'<'+(canBuy?'button':'div')+' class="pk'+(have?' have':open?'':' locked')+
-            (canBuy?' buy':'')+'"'+(canBuy?' data-perk="'+k+'"':'')+'><span class="tag">'+
-            (have?'TAKEN':canBuy?'★ CLICK TO TAKE':open?'NEEDS A PERK POINT':'LEVEL '+lv)+
-            '</span><b>'+PERKS[k].n+'</b><i>'+PERKS[k].d+'</i></'+(canBuy?'button':'div')+'>'});
-      }));
-      const live=rows.filter(r=>r.live),rest=rows.filter(r=>!r.live);
-      return (live.length
-          ? '<div class="perkrow">'+live.map(r=>r.html).join('')+'</div>'
-          : '<div class="pknone">Nothing learned yet. The first promotion decides it.</div>')+
-        (rest.length
-          ? '<button class="pktoggle" id="iTree">'+treeLbl(rest.length,TREEOPEN)+'</button>'+
-            '<div class="perkrow" id="iTreeRest"'+(TREEOPEN?'':' style="display:none"')+'>'+
-            rest.map(r=>r.html).join('')+'</div>'
-          : '');
-    })()+
-    /* DISMISS — at the very bottom, because it is the last thing you should
-       reach for. Not the Captain, and not mid-battle. They walk with whatever
-       they are wearing — strip them first if you want it back. */
-    (!p.leader?'<button class="choice" id="iDismiss" style="border-color:#6a3a30;margin-top:8px">'+
-      '<b style="color:#c07a6a">Let them go</b>'+
-      '<i>costs nothing — frees '+COST[p.race]+' of party room and '+WAGE[p.race]+'/day in wages. '+
-      'They keep what they are wearing, and the road keeps them</i></button>':'');
-  const sl=$('iSlots');
+    '<div id="iStory">'+storyHTML+'</div>'+
+
+    '<div id="iFoot">'+
+      (!p.leader?'<button id="iDismiss" title="They walk out with whatever they are wearing. '+
+        'Strip them first if you want it back.">LET THEM GO · frees '+COST[p.race]+
+        ' of room and '+WAGE[p.race]+'/day</button>':'')+
+    '</div>';
+
+  /* ═══ THE DOLL, AND THE GEAR WIRED TO IT (Caves of Qud) ══════════════════
+     drawDoll hands back the joint positions it actually drew, so a slot's
+     leader lands on the shoulder it is naming for a ratkin and for an ogre
+     without a second table. The BOXES sit in two fixed columns (a slot that
+     floated with the anatomy would overlap its neighbour on a wide body);
+     the WIRE is what carries the meaning. */
+  const dollCv=$('iDoll');
+  drawDoll(dollCv,p);
+  const AX=dollCv._anchor||{},DOLL_X=125,DOLL_Y=9,BOXW=400,SLOTW=118;
+  const dbox=$('iDollBox'),wires=[];
+  const SLOTPOS={trinket:['r',4],main:['r',84],pet:['r',164],armour:['l',44],off:['l',132]};
+  const placeSlot=(key,el)=>{
+    const pos=SLOTPOS[key]||['l',4];
+    el.style.top=pos[1]+'px';
+    el.style.left=(pos[0]==='l'?3:BOXW-SLOTW-3)+'px';
+    dbox.appendChild(el);
+    const a=AX[key];
+    if(!a)return;
+    const h=el.offsetHeight||46;
+    wires.push([pos[0]==='l'?3+SLOTW:BOXW-SLOTW-3, pos[1]+h/2, DOLL_X+a.x, DOLL_Y+a.y]);
+  };
+  /* what a slot says on its face: the receipt is one short line, because the
+     full one is already the tooltip bindTip() puts on it. */
+  const shortGear=g=>g.dmg?(g.dmg[0]+'-'+g.dmg[1]+
+      (g.reach>1?' · reach '+g.reach:'')+(g.range?' · range '+g.range:'')+
+      (g.hands===2?' · both hands':''))
+    :(g.armour!=null?'stops '+g.armour+(g.agi?' · '+(g.agi>0?'+':'')+g.agi+' hands':''):'');
   SLOTS.forEach(([slot,label])=>{
     const g=GEAR[p.eq[slot]];
     /* THE OFF HAND IS FULL when the main weapon needs both. It says so, names
        the thing that is using it, and greys whatever is nominally in the slot
-       — the slot stays filled so the player can SEE the conflict rather than
-       find their shield has quietly stopped working. */
+       so the player can SEE the conflict rather than find their shield has
+       quietly stopped working. */
     const twoH=slot==='off'&&!handsFree(p);
     const mainG=GEAR[p.eq.main];
     if(twoH)whisper('hands');       /* first time both hands are taken */
@@ -19233,67 +19534,134 @@ function drawInv(){
     b.className='slot'+(g?'':' empty')+(twoH?' blockedslot':'')+
       ((slot==='armour'&&sizeMismatch(p))?' bad':'');
     b.innerHTML='<div class="sl">'+(SLOT_ICON[slot]||'')+' '+label+
-      (twoH?' — <span style="color:#c07a2c">TAKEN</span>':'')+'</div>'+
+      (twoH?' · <span style="color:#c07a2c">TAKEN</span>':'')+'</div>'+
       '<div class="si">'+
-      (twoH?'<span style="color:#c07a2c">Both hands are on the '+mainG.n.toLowerCase()+'.</span>'
-        :g?'<span class="gg">'+gGlyph(g)+'</span> '+g.n:'— empty —')+'</div>'+
+      (twoH?'Both hands are on the '+mainG.n.toLowerCase()+'.'
+        :g?'<span class="gg">'+gGlyph(g)+'</span> '+g.n:'- empty -')+'</div>'+
       '<div class="sd">'+(twoH
-        ? (g?'<span style="color:#8a7449">'+g.n+' is in the pack, doing nothing. Put the '+
-             mainG.n.toLowerCase()+' down to use it.</span>':
-             'Carry something one-handed and this opens up.')
-        : g?gearLine(g,p):'')+'</div>';
+        ? (g?g.n+' is in the pack, doing nothing.':'Carry something one-handed and this opens up.')
+        : g?shortGear(g):'')+'</div>';
     if(g){b.onclick=()=>{G.stash.push(p.eq[slot]);p.eq[slot]=null;drawInv();};
       bindTip(b,p.eq[slot],p);}
-    sl.appendChild(b);});
-  /* the pet slot — Captain only, and pets never come from the stash */
+    placeSlot(slot,b);});
+  /* the pet slot - Captain only, and pets never come from the stash */
   if('pet' in p){
     const pd=p.pet&&PETS[p.pet];
     const pb=document.createElement('button');
     pb.className='slot'+(pd?'':' empty');
     pb.innerHTML='<div class="sl">♥ PET</div><div class="si">'+
-      (pd?pd.n:'— none —')+'</div><div class="sd">'+
-      (pd?pd.d+' · +6 dodge on you while it stands beside you · +'+pd.aura+
-        ' morale to allies near it, every turn':'Found on the road, not bought.')+'</div>';
-    if(pd)pb.onclick=()=>ask('LET '+pd.n.toUpperCase()+' GO?',
-      'It will not come back.',
-      [{t:'Let it go.',c:'it will not come back',danger:true,
-        go:()=>{p.pet=null;drawInv();}},
-       {t:'Keep it.',c:''}]);
-    sl.appendChild(pb);
+      (pd?pd.n:'- none -')+'</div><div class="sd">'+
+      (pd?'+6 dodge on you · +'+pd.aura+' morale near it':'Found on the road, not bought.')+
+      '</div>';
+    if(pd){pb.title=pd.d;
+      pb.onclick=()=>ask('LET '+pd.n.toUpperCase()+' GO?','It will not come back.',
+        [{t:'Let it go.',c:'it will not come back',danger:true,
+          go:()=>{p.pet=null;drawInv();}},
+         {t:'Keep it.',c:''}]);}
+    placeSlot('pet',pb);
   }
-  const st=$('iStash');
-  st.innerHTML='<div class="lbl" style="color:#8a7449">THE STASH — click to equip on '+p.name+'</div>';
-  if(!G.stash.length)st.innerHTML+='<div style="font-family:var(--mono);font-size:10px;'+
+  /* the leaders. An elbow, not a straight line: a diagonal across the whole
+     box reads as a slash through the picture at this size. */
+  $('iWire').innerHTML=wires.map(w=>{
+    const mid=w[0]+(w[2]-w[0])*0.45;
+    return '<path d="M'+w[0]+' '+w[1]+' L'+mid+' '+w[1]+' L'+w[2]+' '+w[3]+'" fill="none" '+
+      'stroke="#4d3c22" stroke-width="1"/><circle cx="'+w[2]+'" cy="'+w[3]+
+      '" r="2.4" fill="#6b5330"/>';}).join('');
+  /* the body's own summary, on the picture */
+  if(dollCv){
+    const bits=['Head, body, two arms, two legs. Every mark is on the part it happened to.'];
+    (p.injuries||[]).forEach(sc=>bits.push('<b style="color:#c15d55">'+sc.n+'</b> · '+sc.d));
+    if(p.mut)bits.push('<b style="color:#35e0c8">'+MUTS[p.mut].n+'</b> · '+MUTS[p.mut].short);
+    if(p.cond)bits.push('<b style="color:#5ec8b8">'+CONDS[p.cond.k].n+'</b> · '+
+      CONDS[p.cond.k].short);
+    if(bits.length===1)bits.push('<i>Nothing has happened to this one yet.</i>');
+    dollCv.onmouseenter=e=>{TIP.innerHTML='<div style="font-family:var(--display);font-size:14px;'+
+      'color:var(--g4);margin-bottom:4px">THE BODY</div>'+bits.join('<br>');
+      TIP.style.display='block';moveTip(e);};
+    dollCv.onmousemove=moveTip;dollCv.onmouseleave=()=>{TIP.style.display='none';};
+  }
+
+  /* ═══ THE RIGHT PANE: TWO TABS ══════════════════════════════════════════
+     ⚠ ITAB lives outside this function on purpose. Buying a perk redraws the
+     whole sheet, and a tab that reset to THE STASH under the hand that just
+     spent a point would be the tree drawer's old bug in a new coat. */
+  const pane=$('iStash');
+  pane.innerHTML=
+    '<div id="iTabs">'+
+      '<button class="itab'+(ITAB==='stash'?' on':'')+'" data-t="stash">🎒 THE STASH'+
+        (G.mustKit?'<span class="tbadge">!</span>':'')+'</button>'+
+      '<button class="itab'+(ITAB==='perks'?' on':'')+'" data-t="perks">★ PERKS'+
+        (perkPts>0?'<span class="tbadge">'+perkPts+'</span>':'')+'</button>'+
+    '</div>'+
+    '<div class="itabbody'+(ITAB==='stash'?' on':'')+'" data-b="stash" id="iStashBody"></div>'+
+    '<div class="itabbody'+(ITAB==='perks'?' on':'')+'" data-b="perks" id="iPerkBody"></div>';
+  pane.querySelectorAll('.itab').forEach(b=>b.onclick=()=>{
+    ITAB=b.dataset.t;
+    pane.querySelectorAll('.itab').forEach(x=>x.classList.toggle('on',x===b));
+    pane.querySelectorAll('.itabbody').forEach(x=>x.classList.toggle('on',x.dataset.b===ITAB));});
+
+  const st=$('iStashBody');
+  st.innerHTML='<div class="lbl" style="color:#8a7449">CLICK A THING TO PUT IT ON '+
+    p.name.toUpperCase()+'</div>';
+  if(!G.stash.length)st.innerHTML+='<div style="font-family:var(--mono);font-size:9px;'+
     'color:#5c4a2c">Empty. Everything is on somebody.</div>';
   G.stash.forEach((k,idx)=>{
     const g=GEAR[k];if(!g)return;
     const wrong=g.slot==='armour'&&g.size&&g.size!=='any'&&g.size!==RACEMOD[p.race].size;
     const b=document.createElement('button');
     b.className='item'+(wrong?' sizebad':'')+(g.company?' relic':'');
+    const dl=g.company?[]:gearDelta(g,GEAR[p.eq[g.slot]]);
     b.innerHTML='<div class="in"><span class="gg">'+gGlyph(g)+'</span> '+g.n+'</div>'+
-      '<div class="id">'+(g.company?'COMPANY RELIC — works from the baggage, no wearer needed'
-        :g.slot.toUpperCase())+' · '+gearLine(g,p)+'</div>'+
-      (wrong?'<div class="iw">'+g.size+'-sized — wrong for a '+RACEMOD[p.race].size+'</div>':'');
+      '<div class="id">'+(g.company?'COMPANY RELIC · works from the baggage, no wearer needed'
+        :g.slot.toUpperCase()+' · '+shortGear(g))+'</div>'+
+      (dl.length?'<div class="idelta">'+dl.map(d=>'<span class="'+(d[1]>0?'up':'dn')+'">'+
+        (d[1]>0?'▲':'▼')+' '+d[0]+' '+(d[1]>0?'+':'')+d[1]+'</span>').join('')+'</div>':'')+
+      (wrong?'<div class="iw">'+g.size+'-sized · wrong for a '+RACEMOD[p.race].size+'</div>':'');
     b.onclick=()=>{const old=p.eq[g.slot];p.eq[g.slot]=k;G.stash.splice(idx,1);
       if(old)G.stash.push(old);drawInv();};
     bindTip(b,k,p);
     st.appendChild(b);});
-  /* the paper doll, and what it is telling you */
-  const doll=$('iDoll');
-  if(doll){
-    drawDoll(doll,p);
-    const bits=['Head, body, two arms, two legs — every mark is on the part it happened to.'];
-    (p.injuries||[]).forEach(s=>bits.push('<b style="color:#c15d55">'+s.n+'</b> — '+s.d));
-    if(p.mut)bits.push('<b style="color:#35e0c8">'+MUTS[p.mut].n+'</b> — '+MUTS[p.mut].short);
-    if(p.cond)bits.push('<b style="color:#5ec8b8">'+CONDS[p.cond.k].n+'</b> — '+CONDS[p.cond.k].short);
-    if(bits.length===1)bits.push('<i>Nothing has happened to this one yet.</i>');
-    doll.onmouseenter=e=>{TIP.innerHTML='<div style="font-family:var(--display);font-size:14px;'+
-      'color:var(--g4);margin-bottom:4px">THE BODY</div>'+bits.join('<br>');
-      TIP.style.display='block';moveTip(e);};
-    doll.onmousemove=moveTip;doll.onmouseleave=()=>{TIP.style.display='none';};
-  }
-  /* the four stats and the nerve rung all explain themselves the same way:
-     one word on the sheet, the whole scale on hover */
+
+  /* ═══ THE TREE, WHOLE, IN ITS OWN TAB ═══════════════════════════════════
+     (User: "choice of perks in separate tab because I feel we will have,
+     like, quite proper perk tree. It's still in process.")
+     The old sheet hid everything unbuyable behind a drawer, because eight
+     cards inline outnumbered the person they belonged to three to one. In a
+     tab of its own that pressure is gone, and the honest shape returns:
+     the WHOLE tree, grouped by the level that opens each rung, so the
+     question "what does the next promotion buy" can actually be answered.
+     ⚑ THE ROOM THIS TAB HAS IS THE ROOM THE REAL TREE WILL NEED. */
+  const pk=$('iPerkBody');
+  let pkHTML=perkPts>0
+    ? '<div class="lbl" style="color:#8ca35a">'+perkPts+' PERK POINT'+(perkPts>1?'S':'')+
+      ' · CLICK A CARD TO TAKE IT</div>'
+    : '<div class="lbl" style="color:#8a7449">'+p.perks.length+' TAKEN · a promotion buys the next</div>';
+  let any=false;
+  [2,3,4,5].forEach(lv=>{
+    const list=CLASSES[p.cls].perks[lv]||[];
+    if(!list.length)return;
+    pkHTML+='<div class="pklv">LEVEL '+lv+'</div>';
+    list.forEach(k=>{
+      any=true;
+      const have=p.perks.indexOf(k)>=0,open=p.level>=lv;
+      const canBuy=!have&&open&&perkPts>0;
+      pkHTML+='<'+(canBuy?'button':'div')+' class="pk'+(have?' have':open?'':' locked')+
+        (canBuy?' buy':'')+'"'+(canBuy?' data-perk="'+k+'"':'')+'><span class="tag">'+
+        (have?'TAKEN':canBuy?'★ CLICK TO TAKE':open?'NEEDS A PERK POINT':'NEEDS LEVEL '+lv)+
+        '</span><b>'+PERKS[k].n+'</b><i>'+PERKS[k].d+'</i></'+(canBuy?'button':'div')+'>';
+    });
+  });
+  if(!any)pkHTML+='<div class="pknone">Nothing to learn. This one is finished.</div>';
+  pkHTML+='<div class="pkfoot">A promotion buys one rung. Everything above the line this one '+
+    'has reached is what the road still owes them.</div>';
+  pk.innerHTML=pkHTML;
+  pk.querySelectorAll('.pk.buy').forEach(b=>b.onclick=()=>{
+    if((p.perkPoints||0)<=0)return;
+    p.perks.push(b.dataset.perk);p.perkPoints--;sfx('promote');drawInv();});
+
+  /* ═══ THE HOVERS AND THE DOORS, ALL OF WHICH ONLY CHANGED ADDRESS ══════ */
+  /* the four stats and the nerve rung explain themselves the same way: one
+     word on the sheet, the whole scale on hover */
   $('iChar').querySelectorAll('[data-tell]').forEach(el=>{
     const k=el.dataset.tell,T=TELLS[k];
     el.onmouseenter=e=>{
@@ -19304,13 +19672,11 @@ function drawInv(){
       TIP.style.display='block';moveTip(e);};
     el.onmousemove=moveTip;el.onmouseleave=()=>{TIP.style.display='none';};
     /* #122 - a banked stat level is spent on the tell itself */
-    if((p.statPoints||0)>0)el.onclick=()=>{
+    if(statPts>0)el.onclick=()=>{
       if((p.statPoints||0)<=0)return;
       p.st[k]++;p.statPoints--;sfx('promote');
       TIP.style.display='none';drawInv();};});
-  /* class and race explain themselves wherever they are named — and here,
-     where we know WHO is being looked at, they list what that person is
-     actually carrying rather than what the class means in general */
+  /* class and race explain themselves wherever they are named */
   bindLoreTips($('iChar'),p);
   const memBtn=$('iMemBtn');
   if(memBtn)memBtn.onclick=()=>{G.showMem=!G.showMem;drawInv();};
@@ -19330,10 +19696,10 @@ function drawInv(){
   const disBtn=$('iDismiss');
   if(disBtn)disBtn.onclick=()=>{
     ask('LET '+p.name.toUpperCase()+' GO?',
-      'They walk out with whatever they are wearing — strip them first if you want it back.\n\n'+
+      'They walk out with whatever they are wearing. Strip them first if you want it back.\n\n'+
       'It frees '+COST[p.race]+' of party room and '+WAGE[p.race]+' crowns a day.\n\n'+
       ((p.fights||0)>=3
-        ? 'You have stood in '+p.fights+' fights together. That does not just stop — the road '+
+        ? 'You have stood in '+p.fights+' fights together. That does not just stop. The road '+
           'may well bring them back to your fire.'
         : 'You barely know them. Out there they owe you nothing, and the road keeps whoever '+
           'it finds.'),
@@ -19343,8 +19709,6 @@ function drawInv(){
   };
   const aidBtn=$('iAid');
   if(aidBtn)aidBtn.onclick=()=>{
-    /* was a prompt() asking the player to TYPE A NUMBER, which is both bad and
-       — in the published sandbox — impossible. It is a list of buttons now. */
     ask('THE MEDICINE CHEST',
       'It opens once a run, and this is it. Which scar comes off '+p.name+'?',
       p.injuries.map((inj,n)=>({t:inj.n,c:inj.d,go:()=>{
@@ -19367,18 +19731,6 @@ function drawInv(){
     tEl.onmousemove=moveTip;
     tEl.onmouseleave=()=>{TIP.style.display='none';};
   }
-  /* the drawer. Toggled in place rather than through drawInv(), so the sheet
-     does not scroll back to the top every time somebody looks at the tree. */
-  const tg=$('iTree');
-  if(tg)tg.onclick=()=>{
-    TREEOPEN=!TREEOPEN;
-    const box=$('iTreeRest');
-    if(box)box.style.display=TREEOPEN?'':'none';
-    tg.innerHTML=treeLbl(box?box.children.length:0,TREEOPEN);};
-  /* spend a perk point straight from the sheet */
-  $('iChar').querySelectorAll('.pk.buy').forEach(b=>b.onclick=()=>{
-    if((p.perkPoints||0)<=0)return;
-    p.perks.push(b.dataset.perk);p.perkPoints--;sfx('promote');drawInv();});
 }
 /* WHAT EACH AXIS IS FOR, in words. The old version of this quoted exact
    coefficients ("+4 hitpoints and +0.8 melee damage per point") — which was

@@ -376,7 +376,23 @@ function Verb-Verify {
   $text = ($added -join "`n")
 
   $bad = @()
-  foreach ($m in [regex]::Matches($text, '(?<![\w#])#(\d{1,3})(?!\d)')) {
+  # ⚠ A CSS HEX COLOUR IS NOT AN ENTRY NUMBER, AND THIS SCAN DID NOT KNOW IT.
+  # A six-digit colour whose first three characters are digits and whose
+  # fourth is a letter matches the pattern below: the (?!\d) guard sees the
+  # letter and passes happily, so the leading three digits are read as a
+  # backlog reference. Get-UsedNumbers was hardened against exactly this trap
+  # when it read a stylesheet value and issued it as a backlog number (see the
+  # note above it), but the hardening never reached the pre-commit side, so the
+  # trap survived here and refused an honest commit whose only crime was a
+  # background colour on a new panel.
+  # ⚑ THE LESSON IS THE ONE PARALLEL_SESSIONS.md ALREADY TELLS ABOUT NUMBERS:
+  # one fact, two readers, and only one of them was taught. When a rule gets a
+  # second implementation, fix both or the old bug is still shipping.
+  # Six and eight digit colours go before the entry scan; a bare three-digit
+  # shorthand (#131 as a colour) stays ambiguous on purpose, because it is
+  # genuinely indistinguishable from a reference and is vanishingly rare.
+  $scan = [regex]::Replace($text, '#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?\b', '')
+  foreach ($m in [regex]::Matches($scan, '(?<![\w#])#(\d{1,3})(?!\d)')) {
     $k = "entry-" + $m.Groups[1].Value
     if ($held.ContainsKey($k)) { $bad += ("#{0} is held by session {1} ({2})" -f $m.Groups[1].Value, $held[$k].by, $held[$k].title) }
   }
