@@ -23,6 +23,108 @@
 
 ---
 
+## ⊚ THE COIN IN THE ROAD, AND WHAT IT WILL NOT TELL YOU  *(#141 · 2026-08-13 · build log 8f.169)*
+
+**Your ask:** *"after tavern fight - next event instead of faling star (it could be a random event
+somwhere) - add event - you found an unusial coin. 'It feels goood to keep in the hand, but you
+don`t know why'. It is trinket and it increses dodge and hit chane by 7%, but never writes about it
+openly in the item description (but stat changes noticibly)."*
+
+The node after the tavern brawl is now **The Wheel-Rut** and it deals **THE COIN IN THE ROAD**. The
+Falling Star is not gone: it went into the floating deck, so it turns up on a road slot somewhere,
+in a different place every run.
+
+### How to reach it, in three steps
+
+1. New company → the Three Bells brawl → the corner table → the road.
+2. Walk east one leg. The first node is **The Wheel-Rut**.
+3. Pick a door. **Both doors give you the coin**, so you cannot miss it by choosing wrong.
+
+### What is supposed to happen
+
+- Somebody in the company, **by name**, comes up out of the mud with it. The same name carries
+  through the rest of the card.
+- **"Into the wagon"** puts it in the stash (−4 mood) and forces the inventory open, so **you**
+  choose who wears it. **"Whoever found it, keeps it"** puts it round that person's neck on the spot
+  (+8 mood) and you do not get a say. It also goes into their history, which the company sheet shows.
+- **The item says nothing about what it does.** Hover it in the inventory and you get
+  *"It feels good to keep in the hand. Nobody can say why."* and the standard PERSONAL AMULET note
+  telling you it only works on the one person wearing it. **No numbers, no bullet list.** That is
+  deliberate and it is the whole point of the item.
+- **The body says everything.** Put it on somebody, start any fight, click them, and read the
+  plaque. **Measured live on Ilka Renn: CHANCE TO HIT 61% → 68%. DODGE 15% → 19%.**
+
+### The one number that will look wrong, and is not
+
+**Hit moves the full +7. Dodge often moves less than 7.** The coin gives +7 to both, but dodge runs
+through a soft cap at the very end (`softDodge`, from #79) that every contributor pays, a shield's
++9 included. On Ilka the raw dodge went 17 → 24 and the cap printed 19. **Nothing to fix; a shield
+behaves the same way.** Written down here so it is not reported as the coin being broken.
+
+### What would be a bug
+
+- The inventory or the hover listing **"+7 to hit"** or **"+7 dodge"** anywhere. That is the one
+  thing this item must never do.
+- Wearing it and seeing the plaque's **CHANCE TO HIT not move at all** *(dodge moving by less than
+  7 is the cap above and is fine)*.
+- The card naming **two different people** in the body and in the outcome.
+- **The Falling Star never turning up across three or four runs.** It is one card in an eighteen-card
+  deck across seven slots, so missing it in one run is normal and missing it in four is worth saying.
+- The Wheel-Rut's map plate **overlapping a neighbour**. It lost its painting when it stopped being
+  the star, which moves the plate up 33px. The counters read zero, but the eye is yours.
+
+👤 **Two calls that are yours.** The mood numbers (−4 for taking it, +8 for letting them keep it)
+are a guess at what the moment is worth. And **The Wheel-Rut has no map painting** - the star took
+its picture into the deck with it, so the node shows the plain event mark until an icon is made.
+
+---
+
+## ◆ THE RACE BOX GOT SHORTER AND SAYS MORE  *(#142 · 2026-08-13 · build log 8f.170)*
+
+**Your ask:** *"shorten description of race (now it is huge thing with too little info)."*
+
+### How to reach it, in three steps
+
+1. Open the company sheet (🎒) on anybody.
+2. Hover the **race** word beside their name.
+3. Do it for a human, a ratkin and an ogre. Also hover the race names on the **muster field**, which
+   is where it changed most.
+
+### What is supposed to happen
+
+**Measured, the same three boxes:** human **125 → 62 words**, ratkin **116 → 69**, ogre **159 → 94**.
+And each one now carries **numbers it did not carry before**:
+
+```
+STEP 4 · 2 seats · 2 crowns a day
++2 INTELLECT
+THE LINE   3 of anyone, in a row · +5 dodge to each of them
+```
+
+- **The prose that went was prose already printed underneath it.** The old text spelled out the step,
+  the seats, the wage and the race's own skill in sentences, and the block below the text prints all
+  four off the tables that own them.
+- **On the muster field the numbers are new.** The old box only ever showed them for somebody you had
+  already hired, which is the wrong way round: the muster field is where the numbers decide a purchase.
+- **The lean is exact now.** It used to be *"slightly quicker, slightly weaker"*.
+- ⛔ **One thing the old text said was simply wrong.** The human box read *"No lean either way"*.
+  Humans are **+2 INTELLECT** and always have been. So the "too little info" half of your sentence
+  had a real cause, and it was not taste.
+- **The ogre's wage joke survives the cut** *("paid one crown a day, like the smallest ratkin,
+  because nobody has told him otherwise")*, because it is the one sentence that made a number
+  legible rather than repeating one.
+
+### What would be a bug
+
+- A race box showing **`undefined`**, or a formation line with **no number in it**.
+- The numbers in the box **disagreeing with the skill card below it**, or with the muster field's price.
+- A box that still **repeats its own skill in a sentence**.
+
+**The picture:** `shots/142_race_box.html` shows all three, before and after, at the tooltip's real
+290px width.
+
+---
+
 ## 🪑 TWO SESSIONS, TWO DESKS  *(#139 · 2026-08-13 · build log 8f.167)*
 
 **This one is not in the game, it is in how we work.** You asked for parallel work on the file in
