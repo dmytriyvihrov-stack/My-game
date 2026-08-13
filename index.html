@@ -2547,6 +2547,11 @@ body:has(#world.on) #audioBtn{top:8px;bottom:auto;font-size:11px;padding:3px 8px
 .fx-food .fxi,.fx-food .fxn{color:var(--grain)}
 .fx-salvage .fxi,.fx-salvage .fxn{color:var(--wood)}
 .fx-gems .fxi,.fx-gems .fxn{color:var(--gem)}
+/* #143 - the same chips on an event outcome. Two rows the aftermath never
+   needed: morale (signed, so it carries its own colour) and days spent. */
+.fx-up .fxi,.fx-up .fxn{color:#8ca35a}
+.fx-down .fxi,.fx-down .fxn{color:#c15d55}
+.fx-days .fxi,.fx-days .fxn{color:#a89468}
 .fxsub{font-family:var(--mono);font-size:10px;color:#6b5330;padding:3px 2px 0}
 .abres{font-family:var(--mono);font-size:11.5px;color:#8ca35a;padding:2px 2px 0}
 .abres span{color:#a89468}
@@ -19377,8 +19382,10 @@ function openCamp(spot,next,atPlace){
       /* `after` may be a function for the same reason `body` is: a card about
          two named people has to be able to name them on the way out too. */
       const afterTxt=typeof o.after==='function'?o.after(cast1.a,cast1.b,bothHere):o.after;
-      dlg.querySelector('.bd').textContent=cast(afterTxt)+hurtLine+
-        (o.gear?'\n\n('+GEAR[o.gear].n+' goes into the stash.)':'')+moraleLine(f);
+      /* #143 - the receipt is chips now, same as an event outcome. Camp fx
+         go through payFx raw (no lootMul), so evPaidOf(f) is exact. */
+      dlg.querySelector('.bd').innerHTML=cast(afterTxt)+hurtLine+
+        evFxChips(evPaidOf(f))+evGearStrip(o.gear?[o.gear]:[]);
       $('wChoices').innerHTML='<button class="choice" id="wOn"><b>Carry on</b>'+
         '<i>'+(atPlace?'let the fire burn down':'reach the place ahead')+'</i></button>';
       $('wOn').onclick=()=>{dlg.classList.remove('on');worldTick();saveRun();next();};
@@ -23817,21 +23824,59 @@ function applyFx(f){
      wood/iron stay as write-through aliases for any old data. */
   ['salvage','wood','iron','gems'].forEach(r=>{if(f[r])G.camp[r]+=f[r];});
 }
-function fxLine(f){
-  if(!f)return '';
-  const bits=[];
-  if(f.crowns)bits.push((f.crowns>0?'+':'')+f.crowns+' crowns');
-  if(f.food)bits.push((f.food>0?'+':'')+f.food+' provisions');
-  /* salvage first, by name: content writes `salvage:N` since the pool merge,
-     and this line only read the old `iron` key, so a vignette paying salvage
-     printed no receipt at all. On a materialPool'd object iron/wood are
-     ALIASES of the same pool, so they are only summed when salvage is absent,
-     or one bag would be counted twice. */
+/* ═══ #143 - THE RECEIPT IS THE AFTERMATH'S OWN CHIPS ═══════════════════════
+   (User, 2026-08-13: "If resurses are consiquences of the choise - make them
+   more vissually readeble (like when they are after battle loot)".)
+
+   One chip language for the whole game: the battle screen built it in #137
+   (.abfx/.fxc, RES_ICON glyphs) and the road now speaks it too, on event
+   outcomes, camp outcomes and vignettes. Two rows the aftermath never needed
+   join here: MORALE (signed, green/red) and DAYS (a day spent is a minus).
+
+   ⛔ #137's rule holds on this surface as well: chips are built off the fx
+   OBJECT the code pays, never off the hand-written c: string. pickChoice
+   assembles its `paid` beside each pay() call; evPaidOf() is for the sites
+   whose payment IS the raw fx (camps, vignettes, the one-door card view).
+
+   `salvage` sums the wood/iron aliases the way the old fxLine did, and for
+   the same reason: on a materialPool'd object they are one pool, and a bag
+   must not be counted twice. */
+function evPaidOf(f,mulCrowns){
+  const p={};if(!f)return p;
+  if(f.days)p.days=f.days;
+  if(f.morale)p.morale=f.morale;
+  if(f.crowns)p.crowns=(mulCrowns&&f.crowns>0)?Math.round(f.crowns*lootMul()):f.crowns;
+  if(f.food)p.food=f.food;
   const mat=f.salvage!=null?f.salvage:(f.iron||0)+(f.wood||0);
-  if(mat)bits.push((mat>0?'+':'')+mat+' salvage');
-  if(f.morale)bits.push('the mood '+(f.morale>0?'lifts':'dips'));
-  if(f.days)bits.push('−'+f.days+' day');
-  return bits.join(' · ');
+  if(mat)p.salvage=mat;
+  if(f.gems)p.gems=f.gems;
+  return p;
+}
+const EVFX_ROWS=[['crowns','CROWNS'],['food','PROVISIONS'],['salvage','SALVAGE'],
+  ['gems','GEMS'],['days','DAYS'],['morale','MORALE']];
+function evFxChips(f){
+  const rows=EVFX_ROWS.filter(r=>f&&f[r[0]]);
+  if(!rows.length)return '';
+  return '<div class="abfx" style="margin-top:10px">'+rows.map(r=>{
+    const k=r[0];let v=f[k];
+    if(k==='days')v=-v;                       /* a day spent is a minus */
+    const icon=k==='morale'?'♥':k==='days'?'◐':(RES_ICON[k]||'◉');
+    const tone=k==='morale'?(v>0?'fx-up':'fx-down'):k==='days'?'fx-days':'fx-'+k;
+    return '<div class="fxc '+tone+'"><span class="fxi">'+icon+'</span><span>'+
+      '<span class="fxn">'+(v>0?'+':'−')+Math.abs(v)+'</span>'+
+      '<span class="fxl">'+r[1]+'</span></span></div>';}).join('')+'</div>';
+}
+/* the piece itself, when the road hands one over: the aftermath's loot strip
+   with the gear table's own glyph standing in the art slot until his item
+   art exists */
+function evGearStrip(keys,sub){
+  const ks=(keys||[]).filter(k=>GEAR[k]);
+  if(!ks.length)return '';
+  return ks.map(k=>{const g=GEAR[k];
+    return '<div class="abloot" style="margin-top:10px"><div class="abslot" '+
+      'style="font-size:20px;color:#a89468">'+(g.g||'◈')+'</div>'+
+      '<div><div class="abwhat">'+g.n+'</div>'+
+      '<div class="abgot">'+(sub||g.d||'into the wagon')+'</div></div></div>';}).join('');
 }
 /* ═══ THE SCORE, SHOWN — a deliberate, temporary exception to "hide the
    number" (user, 2026-07-31: "for events like Under the Bloom, show morale
@@ -23852,10 +23897,8 @@ function moraleTag(f){
   return ' · <span style="color:'+(f.morale>0?'#8ca35a':'#c15d55')+'">morale '+
     (f.morale>0?'+':'')+f.morale+'</span>';
 }
-function moraleLine(f){
-  if(!f||!f.morale)return '';
-  return '\n\n(morale '+(f.morale>0?'+':'')+f.morale+' — now '+moodState(G.morale).n+'.)';
-}
+/* moraleLine, the prose twin of the tag, retired in #143: the outcome's
+   morale chip says the same thing in the aftermath's own language. */
 /* ============================================================
    Dismissal — and what the road does with the people you let go.
 
@@ -23952,8 +23995,7 @@ function openVignette(spot,next,atPlace){
   const vLead=atPlace?'AT THE FIRE':'ON THE ROAD',
         vHead=(v.t==='ON THE ROAD'||v.t==='AT THE FIRE')?v.t:vLead+' — '+v.t;
   dlg.innerHTML='<h3>'+vHead+'</h3>'+
-    '<div class="bd">'+body+(fxLine(v.fx)?'\n\n<span style="color:#8a7449;font-family:var(--mono);'+
-      'font-size:10px">'+fxLine(v.fx)+'</span>':'')+'</div>'+
+    '<div class="bd">'+body+evFxChips(evPaidOf(v.fx))+'</div>'+
     '<button class="choice" id="wV"><b>Keep moving</b><i>it was not a decision</i></button>';
   dlg.classList.add('on');
   placeDlg(spot.x,spot.y);
@@ -23961,57 +24003,35 @@ function openVignette(spot,next,atPlace){
 }
 
 const EVENTS={
-  /* ═══ #141 · THE COIN IN THE ROAD ══════════════════════════════════════
-     (User: "after tavern fight - next event instead of faling star... add
-     event - you found an unusial coin.")
+  /* ═══ #141 · THE COIN IN THE ROAD · cut to a pickup in #143 ═════════════
+     (#141, user: "after tavern fight - next event instead of faling star...
+     add event - you found an unusial coin." Then #143, 2026-08-13, his own
+     example for the whole text diet: "coin event - make it very short: You
+     find a coin by the road. It shines - and when you picked it you sudenly
+     felt better. 'Get a coin' - like after battle screen - when you get
+     artifact. 'Keep walking' - only one option.")
 
-     ⚑ IT IS A LIGHT CARD AND IT KNOWS IT. `01_GAME_CONCEPT.md` §5 asks every
-     card which of the three weights it is, and this one is the two-second
-     pickup: two doors, no arithmetic to work out, nothing to weigh against
-     the chest. It is standing in the slot a FOUR-door wish card stood in, on
-     the second node of the game, which is #86's whole complaint about the
-     opening answered without deleting the beat #112 bought.
+     ⚑ SO THE TWO-DOOR DECISION #141 ARGUED FOR IS GONE, BY HIS ORDER. What
+     is left is the two-second pickup §5 always said this slot wanted: the
+     finder keeps the coin (the #141 door he kept the feel of - "you sudenly
+     felt better" is that door's morale), the loot stands ON the card the way
+     the aftermath shows a haul, and the one button is the road. The wagon
+     door's full prose is in CHANGELOG 8f.169 if it ever comes back.
 
-     ⚑ BOTH DOORS GIVE YOU THE COIN, AND THAT IS WHY IT IS A DECISION. What
-     is actually being decided is who the company thinks it belongs to: the
-     rule (everything found is the company's, and you pick the wearer) or the
-     finder (they keep it, they wear it tonight, and you do not get a say).
-     Nobody is punished and nobody is rewarded, so neither door is the
-     obviously right one, which is the test the README puts on every card.
-
-     ⚠ NO OPTION LEAVES IT IN THE MUD. An early draft had one, and it was the
-     card handing the player a chance to walk past the only reason the card
-     exists. A door that deletes the content is not a decision, it is a
-     trapdoor.
+     ⚠ NO OPTION LEAVES IT IN THE MUD - a door that deletes the content is a
+     trapdoor, not a decision. Still true with one door.
 
      ⚠ THE CARD NEVER SAYS WHAT THE COIN DOES, because the coin does not
      either - see `oddcoin` in GEAR and the `hush` note on it. The prose is
-     allowed to say it is strange. It is not allowed to say it is lucky. */
+     allowed to say the company feels better. It is not allowed to say the
+     word lucky. */
   coin:{title:'THE COIN IN THE ROAD',art:'teal',seed:141,
-    body:'The road east runs through old wheel-ruts, filled and refilled and never once '+
-      'mended.\n\n{TELLER} stops walking, which stops everybody, and comes back up out of the '+
-      'mud holding a coin in two fingers.\n\nIt is not a crown. It is not any coin this '+
-      'company has ever been paid in, and between them they have been paid in most of the '+
-      'coins on this island. No head on it. No writing. Heavier than a thing that size has '+
-      'any business being, and warm, and it has been lying in cold mud since before the ruts '+
-      'were ruts.\n\nIt goes down the line, because everybody wants to hold it. It comes back. '+
-      'Every one of them handed it on, and then had nothing at all to say about it.',
+    body:'A coin in the mud of the wheel-rut, shining where nothing else on this road '+
+      'shines.\n\n{TELLER} picks it up. No head, no writing, heavier than it should be. '+
+      'Warm.\n\nBy the next mile the whole company is walking easier, and nobody can say why.',
     choices:[
-      {t:'Into the wagon. Everything found on this road is the company\'s.',
-       c:'you decide who carries it · it sits badly with them',
-       fx:{morale:-4},gear:'oddcoin',
-       after:'You put your hand out and it is put into it, which takes a moment longer than it '+
-         'ought to.\n\nNobody argues. Nobody has to. It is the rule, you did not invent it, and '+
-         'every company on this island walks on it. The coin goes in the wagon with the salt '+
-         'and the spare boots, and the road is quiet for an hour afterwards.'},
-      {t:'Whoever found it, keeps it.',
-       c:'it sits well with them · you do not get to say who carries it',
-       fx:{morale:8},coinKeep:true,
-       after:'It goes into a pocket. Then out of that pocket and into a better one, and by the '+
-         'second mile it is on a cord round {TELLER1}\'s neck, under the shirt, where a thing '+
-         'goes when somebody has stopped intending to hand it over.\n\nThe company thinks '+
-         'better of you for an afternoon, and an afternoon is what it is worth.\n\n'+
-         '{TELLER1} has stopped talking.'}]},
+      {t:'Keep walking.',c:'the coin rides along',
+       fx:{morale:8},coinKeep:true,after:''}]},
   /* FIXED, and the first thing on the road. Three humans meet the island
      properly for the first time: a fight that has nothing to do with them,
      between two peoples who were here first. Helping a side is how Skree
@@ -24052,35 +24072,28 @@ const EVENTS={
      line anywhere claims a cause. This is a low-magic world and a wish is a
      thing people do, not a thing that works. */
   star:{title:'THE FALLING STAR',art:'teal',seed:29,
-    body:'An hour before dark the light goes out of the sky, and something comes down '+
-      'through it.\n\nWhite. Slower than it has any business being. Low enough to put a '+
-      'shadow under every tree on the road, once, and then it is gone behind the eastern '+
-      'ones. There is no sound. Not then, and not after.\n\nThe company stands in the road '+
-      'with its hands full of nothing.\n\n{TELLER} knows the custom, or says so. A star that '+
-      'comes down that close owes one wish. One. It has to be said out loud, and it belongs '+
-      'to whoever says it.\n\nNobody says it. They are waiting to see whether you will.',
+    body:'An hour before dark, something white comes down the sky, slow, and goes behind '+
+      'the eastern trees. No sound. Not then, and not after.\n\n{TELLER} knows the custom, '+
+      'or says so. A star that close owes one wish, said out loud, and it belongs to '+
+      'whoever says it.\n\nNobody says it. They are waiting to see whether you will.',
     choices:[
       {t:'"All of us home. That is the wish."',
        c:'spent on the whole company · nothing left over for anybody in it',
        fx:{morale:12},
-       after:'You say it to the trees, loudly, the way a thing is said when somebody has '+
-         'decided not to be embarrassed about it.\n\nNobody laughs. {ANY} repeats the last '+
-         'two words under their breath, which is either agreement or bad manners, and '+
-         'nobody asks which.\n\nThey walk better in the morning. That is all it bought, and '+
-         'it is not nothing.'},
+       after:'You say it to the trees, loudly. Nobody laughs.\n\nThey walk better in the '+
+         'morning. That is all it bought, and it is not nothing.'},
       {t:'"Silver. As much of it as the road can spare."',
        c:'+45 crowns · they heard exactly what you asked for',
        fx:{crowns:45,morale:-9},
        /* ⚠ THE PROSE DOES NOT RESTATE THE NUMBER. `pay()` runs the crowns
           through `lootMul()`, so a company carrying anything that skims
           takes more than 45 and a sentence saying "forty-five crowns" would
-          be a second, wrong receipt three lines under the right one. The
-          button says what it costs; the story says what happened. */
-       after:'A cart came off the road here in some other year and nobody came back for what '+
-         'went into the rut with it. You find it at first light, most of it, in a purse that '+
-         'has gone the colour of the ground.\n\nNobody says the wish worked. Nobody says it '+
-         'did not. What they say, and they say it where you can hear it, is what you asked a '+
-         'falling star for when you could have asked for anything.'},
+          be a second, wrong receipt under the right one - which since #143
+          is the chip row. The story says what happened, nothing else. */
+       after:'At first light there is a purse in a wheel-rut, gone the colour of the '+
+         'ground. Nobody says the wish worked. Nobody says it did not.\n\nWhat they do say, '+
+         'where you can hear it, is what you asked a falling star for when you could have '+
+         'asked for anything.'},
       {t:'Give it to whoever needs it most.',
        c:'one of them, and it does not wear off · you do not get to pick which',
        starWish:'them',
@@ -24090,17 +24103,17 @@ const EVENTS={
        fx:{morale:-6},starWish:'you',
        after:''}]},
   clash:{title:'BLOOD ON THE ROAD',art:'gold',seed:266,
-    body:'A ratkin foraging party and an ogre steading-line have met on the same stretch of '+
-      'road. The argument is a dead deer. It is not worth what it is '+
+    body:'A ratkin foraging party and an ogre steading-line have met over a dead deer. It '+
+      'is not worth what it is '+
       /* ⚠ THESE TWO NUMBERS ARE COUNTED FROM `clashFoes`, NOT REMEMBERED.
          Both were stale: the ogres went to three when the fight was retuned
          (see the comment in clashFoes), and the ratkin line said three spears
          when the ogre door fields FOUR of them plus the slinger. Measured in
          the running game, 2026-08-02: help the ratkin and 3 ogres come at you;
          help the ogres and 5 ratkin do; watch, and the 2 winners do. */
-      'about to cost either of them.\n\nFour ratkin with spears and a sling, foragers off some '+
-      'southern clan. Fast, loud, already committed. Three ogres with clubs, down off the Hunch, '+
-      'in no hurry at all.\n\nNeither side has seen you. That will not hold.',
+      'about to cost either of them.\n\nFour ratkin with spears and a sling, fast, loud, '+
+      'already committed. Three ogres with clubs, in no hurry at all.\n\nNeither side has '+
+      'seen you. That will not hold.',
     choices:[
       {t:'Wade in for the ratkin.',
        c:'three fight beside you · three ogres against you · two ratkin join after',
@@ -24117,16 +24130,14 @@ const EVENTS={
      consequence that follows you for the rest of the run. */
   toll:{title:'THE HANGED TOLL-MAN',art:'gold',seed:7,
     body:'He is still swinging when you reach the bridge. Good rope. Somebody went to trouble '+
-      'here, and trouble travels with a purse.\n\nA clan-mark is cut fresh into the rail, low '+
-      'down, where a toll-man would look for it. He was collecting on a road that had an owner. '+
-      'It has one again.\n\nThe boots are very good. Everyone has seen the boots. Nobody has '+
-      'said anything about the boots.',
+      'here, and trouble travels with a purse.\n\nA clan-mark is cut fresh into the rail: the '+
+      'road has an owner again.\n\nThe boots are very good. Nobody has said anything about '+
+      'the boots.',
     choices:[
       {t:'Cut him down. Bury what is left.',c:'it will cost you the afternoon',
        fx:{days:1,morale:5},
-       after:'Wet ground. It takes until dark. Nobody complains, which is its own kind of '+
-         'complaining.\n\nHe goes under a cairn with the boots still on. The company is quiet '+
-         'for two days, and steadier than it was.'},
+       after:'Wet ground, and it takes until dark. He goes under a cairn with the boots '+
+         'still on.\n\nThe company is quiet for two days, and steadier than it was.'},
       /* ⚠ THE LABELS ON THIS CARD STAY VAGUE ON PURPOSE and the 2026-08-02
          shorten-and-sharpen pass put two receipts on them before catching it.
          This is the REFERENCE event: the costs are stated as INTENT, the
@@ -24134,33 +24145,33 @@ const EVENTS={
          Concrete PROSE and a printed receipt are not the same thing. */
       {t:'Take the purse. And the boots.',c:'he has no further use for either',
        fx:{crowns:38,morale:-2},bootsOn:true,
-       after:'Thirty-eight crowns. More than a toll-man should be carrying. The boots have '+
-         'barely been walked in.\n\nNobody wants them. They sit on the cart until evening. Then '+
-         'SOMEBODY is wearing them and being extremely casual about it.'},
+       after:'More than a toll-man should be carrying, and the boots have barely been walked '+
+         'in.\n\nNobody wants them. Then SOMEBODY is wearing them and being extremely casual '+
+         'about it.'},
       {t:'Take the bridge apart. All of it.',c:'good wood · tired men',
        fx:{salvage:5,days:1},hideHurt:true,
        hurt:{n:'Crushed foot',d:'−1 AGI. A beam went where a beam should not.',agi:-1},
-       after:'The beams are dry and heavy and worth the trouble. The fourth one comes down '+
-         'early, with no warning at all.'}]},
+       after:'The beams are worth the trouble. The fourth one comes down early, with no '+
+         'warning at all.'}]},
   pedlar:{title:'PEDLAR ON THE RIDGE',art:'gold',seed:52,
     body:'A one-mule pedlar with a folding table, three miles from anywhere. Salt, arrowheads, '+
-      'little warding-bells.\n\nHe has counted your column and counted his own odds, and has '+
-      'decided to be extremely friendly about both.\n\nHe is alone.',
+      'warding-bells.\n\nHe has counted your column and his own odds, and is being extremely '+
+      'friendly about both.\n\nHe is alone.',
     choices:[
       /* the pay-properly door was cut by the user in the 2026-08-03 doc pass:
          maximum four options on a card */
       {t:'Buy the round shield.',c:'−40 crowns · a shield',
        fx:{crowns:-40},need:{crowns:40},gear:'shield',
        after:'A proper shield, straps and all. The other thing on his table is a barrel lid '+
-         'with a strap. He sees you notice, and puts it away.'},
+         'with a strap. He puts it away.'},
       {t:'Trade two gems for supplies.',c:'−2 gems · +10 provisions +6 salvage +40 crowns',
        fx:{gems:-2,food:10,salvage:6,crowns:40},need:{gems:2},
        after:'He turns them over twice, names a number, and does not haggle.'},
       {t:'Take the cart. He is one man.',c:'+150 crowns +8 provisions +5 salvage · nobody will look at you for a while',
        danger:true,fx:{crowns:150,food:8,salvage:5,morale:-13},gear:'mail',
        hurt:{n:'Pedlar’s knife',d:'−1 STR. He had a knife, and he was quicker than he looked.',str:-1},
-       after:'It takes no time at all. That is the part nobody sleeps well about.\n\nHe had a '+
-         'knife. Nobody expected the knife. {ANY} does not speak to you for two days.'},
+       after:'It takes no time at all. That is the part nobody sleeps well about.\n\nHe had '+
+         'a knife. {ANY} does not speak to you for two days.'},
       /* ═══ THE FREE DOOR (user, 2026-08-02) ══════════════════════════════
          "Each event with merchant where is choice to buy or rob - lets have
          one of options just leave. Without any morale fine and profit - just
@@ -24173,12 +24184,10 @@ const EVENTS={
          button reads clean. The receipt is allowed to be dry; it is not
          allowed to be a punishment. */
       {t:'Buy nothing. Wish him luck.',c:'no cost · no coin, no trouble',fx:{},
-       after:'He wishes you good roads, and means it, and starts folding the table before you '+
-         'are out of sight.'}]},
+       after:'He wishes you good roads, and means it.'}]},
   chapel:{title:'THE DROWNED CHAPEL',art:'gold',seed:23,
-    body:'A landing chapel. Sixty years of saints in it, drowned for the last twenty. The roof '+
-      'went first and then the floor.\n\nThe pews still stand in their rows, in four inches of '+
-      'brown water. Nobody ever came back for them.\n\nSomething under the altar is still dry.',
+    body:'A landing chapel, drowned these twenty years. The pews still stand in their rows, '+
+      'in four inches of brown water.\n\nSomething under the altar is still dry.',
     choices:[
       /* ⚑ THE ACT'S FIRST LIGHT NODE, cut to it on purpose (#123, the user:
          "Broken church - just get resources from it (salvage) - no other
@@ -24196,17 +24205,16 @@ const EVENTS={
       {t:'Send the gilled one down. The crypt has been under water for years.',
        c:'what nobody else could reach · they are gone a long time',needMut:'gills',
        fx:{crowns:65,morale:-2},gear:'charm',
-       after:'They are under longer than anybody can hold a breath. Long enough that the company '+
-         'stops joking about it.\n\nThen a strongbox comes up, and a silver charm, and then them. '+
-         'They stand in the water a moment before climbing out. Everybody pretends not to have '+
-         'seen that part.'}]},
+       after:'They are under longer than anybody can hold a breath.\n\nThen a strongbox comes '+
+         'up, and a silver charm, and then them. Everybody pretends not to have seen that '+
+         'part.'}]},
   camp:{title:'BONEPICKER’S CAMP',art:'gold',seed:44,
-    body:'Six tents, a cook-fire, and a man who buys teeth.\n\nThey go to the clans for dice and '+
-      'buttons, he says, before anybody asks.\n\nHe is friendly the way men '+
-      'are when they have decided you are not worth robbing. Take it as a compliment.',
+    body:'Six tents, a cook-fire, and a man who buys teeth. For dice and buttons, he says, '+
+      'before anybody asks.\n\nHe has decided you are not worth robbing. Take it as a '+
+      'compliment.',
     choices:[
       {t:'Buy food. Haggle badly.',c:'−60 crowns · +9 provisions',fx:{crowns:-60,food:9},need:{crowns:60},
-       after:'He wins the haggle. Everyone knew he would. The salt pork is genuinely good.'},
+       after:'He wins the haggle. The salt pork is genuinely good.'},
       {t:'Buy the stitched hides. Ogre-sized.',c:'−55 crowns · ogre armour',fx:{crowns:-55},
        need:{crowns:55},gear:'hides',
        after:'On the rack nine years because nobody his size ever comes through.'},
@@ -24223,33 +24231,28 @@ const EVENTS={
          appeared when NOTHING was affordable, so a company with money in the
          chest and a reason to keep it had no button. */
       {t:'Look at everything. Buy nothing.',c:'no cost · the chest stays shut',fx:{},
-       after:'He is not offended. He has been doing this a long time and knows the difference '+
-         'between a company with no money and a company saving it.'}]},
+       after:'He is not offended. He has been doing this a long time.'}]},
   wain:{title:'THE SUNKEN WAIN',art:'gold',seed:61,
-    body:'A merchant wagon up to its axles in the fen. Four days abandoned. A Coldharrow mark on '+
-      'the sideboard.\n\nThe oxen are gone. So is the merchant.\n\nThe strongbox is not gone. '+
-      'The strongbox is simply heavy.',
+    body:'A merchant wagon up to its axles in the fen, four days abandoned. The oxen are '+
+      'gone. So is the merchant.\n\nThe strongbox is not gone. The strongbox is simply heavy.',
     choices:[
       {t:'The strongest of you lifts. Everyone else pretends to help.',c:'+2 gems +40 crowns · −1 day · he strains',
        danger:true,fx:{gems:2,crowns:40,days:1},
        hurt:{n:'Torn back',d:'−1 STR. He lifted it. It was heavier than the fen.',str:-1},
-       after:'An hour, and a great deal of ogre. Inside: coin, and two stones the wrong colour '+
-         'for this country.'},
+       after:'Inside: coin, and two stones the wrong colour for this country.'},
       /* the wheels door and the maul door were MERGED in the 2026-08-12
          choice-weight pass (#123): both were "take the safe thing and go",
          and two flavours of the same answer is one answer. Nothing was lost,
          the merged door pays both. */
       {t:'Strip it for parts. And take the guard’s maul off the seat.',
        c:'+6 salvage · a two-hand maul',fx:{salvage:6},gear:'maul',
-       after:'Less glamorous. Just as useful, four weeks from now, at a forge.\n\nWhoever '+
-         'carried the maul did not get to use it. It is in very good condition.'}]},
+       after:'Less glamorous, and just as useful at a forge.\n\nWhoever carried the maul did '+
+         'not get to use it.'}]},
   bloom:{title:'UNDER THE BLOOM',art:'bloom',seed:12,
-    body:'The light between the trees is pale pink and nothing is making it. It comes up off '+
-      'the ground. The moss it touches has gone black.\n\nNo birds here. A dead deer lies just '+
-      'off the road. Nothing has been at it, and it has not started to rot.\n\nThis is the '+
-      'Bloom, leaking out of the fen for thirty years. The map says it ends two miles back. '+
-      'The map is four years old.\n\n{ANY} keeps a hand on their knife the whole way through, '+
-      'and says nothing.',
+    body:'The light between the trees is pale pink and nothing is making it. The moss under '+
+      'it has gone black.\n\nA dead deer lies just off the road. Nothing has been at it, and '+
+      'it has not started to rot.\n\nThe Bloom, leaking out of the fen. The map says it ends '+
+      'two miles back. The map is four years old.',
     choices:[
       {t:'Push straight through. Do not look up.',c:'−2 provisions · they will remember this',
        need:{food:2},fx:{food:-2,morale:-6},
@@ -24258,28 +24261,26 @@ const EVENTS={
          happens when you take hold of it with bare hands */
       {t:'Cut a bloom-stem and bag it.',c:'a bloom-stem · they think you should not have touched it',
        fx:{morale:-8},gear:'stem',cond:'nail',
-       after:'It weighs nothing and it is warm and it hums at a pitch you feel in your teeth.\n\n'+
-         'Whoever cut it did it barehanded, because nobody thought to say otherwise. There is a '+
-         'thin line across two fingers by evening and nobody mentions it.'},
+       after:'It weighs nothing, it is warm, and it hums at a pitch you feel in your '+
+         'teeth.\n\nWhoever cut it did it barehanded. There is a thin line across two fingers '+
+         'by evening.'},
       {t:'Camp at the edge and watch it all night.',c:'−1 day +1 gem · it sits badly with them · it gets close',
        danger:true,fx:{days:1,gems:1,morale:-4},
        hurt:{n:'Bloom-touched',d:'−1 INT. Whatever was in the light, some of it is in him.',int:-1},
        after:'By morning the light has moved forty paces closer, and the man on watch has not blinked in some time.'}]},
   mother:{title:'THE FEN-MOTHER',art:'bloom',seed:88,
-    body:'You took it for a fallen barn. It is the size of a hay-wain and it has not moved in a '+
-      'long time.\n\nSix legs. A head like a split anvil. Bloom-light running under the hide in '+
-      'slow bands.\n\nIt is not looking at you. It is looking at the small one behind it, which '+
-      'is the size of a large dog and is trying to eat a rock.\n\nHer kind live in the deep fen '+
-      'and were never this size. The cub is the first of its kind born inside it.\n\n'+
-      '{MAGE} says the word for it, quietly, twice, and then says you should all leave.',
+    body:'You took it for a fallen barn. Six legs. A head like a split anvil. Bloom-light '+
+      'running under the hide in slow bands.\n\nIt is not looking at you. It is looking at '+
+      'the small one behind it, which is trying to eat a rock.\n\n{MAGE} says the word for '+
+      'it, quietly, twice, and then says you should all leave.',
     choices:[
       {t:'Back away. Slowly. All of you.',c:'−1 day · it sits well with them',fx:{days:1,morale:6},
-       after:'It watches you go and does not follow. Two hundred paces on, the cub makes a sound like a '+
-         'gate, and the Fen-Mother answers it, and nobody speaks until dusk.'},
+       after:'It watches you go and does not follow. The cub makes a sound like a gate; she '+
+         'answers it. Nobody speaks until dusk.'},
       {t:'Take the shed tooth and go. Quietly.',c:'a great tooth +1 gem · it sits badly with them',
        fx:{gems:1,morale:-5},gear:'tooth',
-       after:'A shed tooth, half-buried where she has been lying. She sees you take it. She lets you. '+
-         'That is somehow much worse.'},
+       after:'A shed tooth, half-buried where she has been lying. She sees you take it. She '+
+         'lets you. That is somehow much worse.'},
       /* the go-round-the-back ambush door was cut in the 2026-08-12
          choice-weight pass (#123, the user: "with fen mother 1 less choice").
          It was the second door onto the same fight, and #18's lesson already
@@ -24291,12 +24292,11 @@ const EVENTS={
   /* the last stop before the snare — it exists to hand you gear and make
      you open the inventory before the fight that will test it */
   deadco:{title:'THE DEAD COMPANY',art:'teal',seed:64,
-    body:'Somebody else took this contract first.\n\nNine of them in the ditch, four or five '+
-      'days dead. From the way they are lying they were hit from the north while facing '+
-      'east.\n\nThe gear is still on them, and most of it is better than yours. The clan took '+
-      'the food and the boots and left everything a rat cannot lift or wear.\n\nNine people, '+
-      'bought with the same coin that bought you. Nobody at the Three Bells mentioned them.\n\n'+
-      'Your company says nothing for a while.',
+    body:'Somebody else took this contract first.\n\nNine of them in the ditch, four days '+
+      'dead, hit from the north while facing east. The clan took the food and the boots and '+
+      'left everything a rat cannot lift or wear. The gear is better than yours.\n\nNine '+
+      'people, bought with the same coin that bought you. Nobody at the Three Bells '+
+      'mentioned them.',
     choices:[
       /* deliberately NOT a shopping trip. Stripping nine dead men used to hand
          over five pieces at once, which turned the grimmest scene in the act
@@ -24304,23 +24304,20 @@ const EVENTS={
       {t:'Take what you can carry. Be quick about it.',
        c:'two pieces · they will remember this',fx:{morale:-7},
        gear2:['mail','sword'],
-       after:'An hour, and the worst hour of the week. You still leave most of it behind. There '+
-         'is only so much a company can walk east with.\n\nA mail hauberk and an arming sword. '+
-         'GO TO THE INVENTORY AND PUT THEM ON SOMEBODY. Neither is worth anything in the cart, '+
-         'and the bells are two miles east.'},
+       after:'An hour, and the worst hour of the week. You still leave most of it behind.\n\n'+
+         'The bells are two miles east.'},
       {t:'One harness. The best one. Nothing else.',
        c:'one piece · it sits badly with them',fx:{morale:-2},
        gear:'plate',
-       after:'The foundry plate comes off the biggest of them. The rest is left exactly as it '+
-         'lies, blades still in hands.\n\nThat distinction matters to about half your company '+
-         'and to nobody else in this country.\n\nOpen the INVENTORY. It does nothing in the '+
-         'cart.'},
+       after:'The foundry plate comes off the biggest of them. The rest is left exactly as '+
+         'it lies, blades still in hands.\n\nThat distinction matters to about half your '+
+         'company and to nobody else in this country.'},
       {t:'Bury them. Take nothing. You know how this ends.',c:'−1 day · the company stands taller for it',
        fx:{days:1,morale:16},gear:'bone',
-       after:'Nine graves is most of a day. The company does it without being told twice.\n\n'+
-         'Somebody puts a saint\'s fingerbone in the last one, and then takes it back out '+
-         'again.\n\nYou go east in the rags you arrived in. The company has not been this steady '+
-         'since Grausen Hold.'}]},
+       after:'Nine graves is most of a day. The company does it without being told twice. '+
+         'Somebody puts a saint\'s fingerbone in the last one, then takes it back out '+
+         'again.\n\nYou go east in the rags you arrived in, and the company has not been '+
+         'this steady since Grausen Hold.'}]},
   /* ═══ THE WARM SPRING (2026-08-01) ═══════════════════════════════════════
      (User: "and after it you can add some new event, like an oasis" · then
      "a warm spring. somebody wants to stay longer — one day and spirit".)
@@ -24345,13 +24342,11 @@ const EVENTS={
      option is available, it is never free, and it must not secretly pay
      better. */
   oasis:{title:'THE WARM SPRING',art:'teal',seed:311,
-    body:'The hollow is green. At this end of the year, in this country, that is the first thing '+
-      'anybody says about it, and nobody says it kindly.\n\nThen the smell. Not rot. Warm stone '+
-      'and iron.\n\nA spring comes up through cut kerbing of Old Work, dressed stone older than '+
-      'any clan\'s songs, still doing its job. The water is the temperature of a living '+
-      'thing.\n\nNo shrine. No offerings. No bones. Nobody has ever fought over this, and after '+
-      'the last three weeks that is the part the company cannot get past.\n\nThey stand at the '+
-      'edge with their boots on, waiting to be told what the catch is.',
+    body:'The hollow is green, and nobody says so kindly. On the air, warm stone and '+
+      'iron.\n\nA spring rises through cut kerbing of Old Work, older than any clan\'s songs, '+
+      'still doing its job. The water is the temperature of a living thing.\n\nNo shrine. No '+
+      'bones. Nobody has ever fought over this, and the company stands at the edge with its '+
+      'boots on, waiting to be told what the catch is.',
     choices:[
       /* ⚠ `need` ADDED. `pay()` floors at zero, so a company on an empty
          barrel was charged nothing and still had every wound closed - the
@@ -24363,23 +24358,18 @@ const EVENTS={
       {t:'A day in it. All of you. That is an order.',
        c:'−1 day −2 provisions · every wound in the company closes',
        fx:{days:1,food:-2,morale:14},need:{food:2},healAll:true,
-       after:'It takes twenty minutes for the last of them to stop watching the treeline. Then '+
-         'the company comes apart in the water like something unknotting.\n\n{ANY} falls asleep '+
-         'on the kerb with their feet in and has to be moved. Somebody washes a shirt that has '+
-         'not been a colour since Grausen Hold.\n\nNothing happens all day. That is the whole of '+
-         'what happened, and it is worth more than the day it cost.'},
+       after:'Twenty minutes of watching the treeline, and then the company comes apart in '+
+         'the water like something unknotting.\n\nNothing happens all day. That is the whole '+
+         'of what happened, and it is worth more than the day it cost.'},
       {t:'Fill every skin and barrel, and keep walking.',
        c:'+4 provisions · a warm hour, and no more than that',fx:{food:4,morale:4},
-       after:'Warm water is still water and the barrels do not care.\n\nThe company drinks '+
-         'standing up, in armour, the way it has drunk everything since the fen. Back on the '+
-         'road inside the hour, wet sleeves, and a slightly better opinion of the world.'},
+       after:'The company drinks standing up, in armour. Back on the road inside the hour, '+
+         'wet sleeves, a slightly better opinion of the world.'},
       {t:'Strip it. The votive coin in the basin, the kerb-stones, the orchard wall.',
        c:'+40 crowns +4 salvage · they will remember this',fx:{crowns:40,salvage:4,morale:-7},
-       after:'The coins come out of the basin in handfuls. Some are older than the language '+
-         'anybody here speaks. The dressed stone comes up with two bars and a lot of '+
-         'swearing.\n\nThe water is still warm when you leave. It is just no longer anywhere in '+
-         'particular.\n\n{ANY} works with everybody else and does not look at you once, all '+
-         'afternoon.'},
+       after:'The coins come out of the basin in handfuls. The dressed stone comes up with '+
+         'two bars and a lot of swearing.\n\nThe water is still warm when you leave. It is '+
+         'just no longer anywhere in particular.'},
       /* the user's own beat. Gated on there being somebody it can be ABOUT —
          a company that walked in unhurt does not get offered this. */
       {t:'Somebody asks for one more day here. Just them.',
@@ -24412,21 +24402,18 @@ const EVENTS={
      themselves, out of nothing, on purpose, for a night that feeds nobody
      tomorrow. */
   bonfire:{title:'THE LONG FIRE',art:'gold',seed:412,
-    body:'The fire is already too big when you reach it. Somebody has been feeding it since '+
-      'before the light went. It throws heat twenty feet. There is nothing on it, because it is '+
-      'not for cooking.\n\n{TELLER} stands beside it, waiting to be looked at.\n\nHe wants the '+
-      'barrels opened. All of them, tonight. This company walked away from the thing in the '+
-      'armour; nine men in a ditch three miles back did not.\n\nEverything else this road has '+
-      'put in front of you was made by something that was '+
-      'not a person. The dressed stone. The Bloom coming out of the fen. Whatever stood inside '+
-      'that armour.\n\nThis fire was built by hand, out of nothing, on purpose, for one night '+
-      'that feeds nobody tomorrow.',
+    body:'The fire is already too big when you reach it, and there is nothing on it, because '+
+      'it is not for cooking.\n\n{TELLER} stands beside it, waiting to be looked at. He wants '+
+      'the barrels opened. All of them, tonight. This company walked away from the thing in '+
+      'the armour; nine men in a ditch did not.\n\nEverything else on this road was made by '+
+      'something that was not a person. This was built by hand, out of nothing, for one '+
+      'night that feeds nobody tomorrow.',
     choices:[
       {t:'Open the barrels. All of them.',
        c:'−4 provisions · they will still be talking about it at the Snare',
        fx:{food:-4,morale:14},need:{food:4},clanFeast:true,
-       after:'It takes them about ten minutes to believe you meant it, and then the barrels come '+
-         'off the cart and the night stops being a night on the road.'},
+       after:'It takes them about ten minutes to believe you meant it, and then the night '+
+         'stops being a night on the road.'},
       /* THE CYNICAL ONE, and it is only drawn when it can bite - `needUnpaid`.
          It is SUPPOSED to pay better tonight: the same four provisions, plus
          every wage grievance in the company wiped. What it costs is the only
@@ -24439,11 +24426,9 @@ const EVENTS={
          'fire like that. Nobody argues about anything.'},
       {t:'No. Four days to the bells, and that food is the road.',
        c:'no cost · none you can see tonight',fx:{morale:-5},clanNo:true,
-       after:'He says of course, at once, before you have finished. He says it is a stupid '+
-         'custom and he only asked because somebody had to.\n\nThe fire is let down to a cooking '+
-         'fire. Everybody eats what they were going to eat.\n\nHe is not sulking. That is the '+
-         'part that stays with you. He agreed with you out loud, in front of everybody, and went '+
-         'and sat where he always sits.'}]},
+       after:'He says of course, at once, before you have finished. A stupid custom; he only '+
+         'asked because somebody had to.\n\nHe is not sulking. That is the part that stays '+
+         'with you.'}]},
   /* ═══ THE CIRCLE (#74, 2026-08-02) ══════════════════════════════════════
      The user's own event: "когда ты встречаешь странных сектантов… они
      предлагают сделать тебе тату лица - на лице. Чтобы войти в их круг и
@@ -24466,23 +24451,18 @@ const EVENTS={
      every fight after it. Whether that is a tax or a weapon is decided by
      where you put him, and nothing in the game says so. */
   circle:{title:'THE CIRCLE',art:'gold',seed:513,
-    body:'Three of them at a fire off the road. They wave you over before anybody has decided '+
-      'anything. There is a pot. There is bread better than yours. Nobody asks who you are.\n\n'+
-      'You are most of the way through the second bowl when the rest come in out of the dark. '+
-      'There are ten.\n\nAll of them wear the same mark: a ring cut round the left eye. Black, '+
-      'old, and done badly, the way it is done when the one cutting is not a surgeon and the one '+
-      'being cut is not lying still.\n\nThe oldest says that on '+
-      'this island passage is never free. That you have eaten. That nobody has left this fire '+
-      'without settling. He says there is room in the circle and it is a good thing to be inside '+
-      'of.\n\nHe is not wrong about the road. That is what ends the argument. Past the '+
-      'firelight, more shadows are getting up and moving wide of the fire. More than ten.',
+    body:'Three of them at a fire off the road wave you over. A pot, bread better than yours, '+
+      'and nobody asks who you are.\n\nYou are most of the way through the second bowl when '+
+      'the rest come in out of the dark. Ten, all wearing the same mark: a ring cut round the '+
+      'left eye, black, old, done badly.\n\nThe oldest says that on this island passage is '+
+      'never free. That you have eaten. That nobody leaves this fire without settling.\n\n'+
+      'Past the firelight, more shadows are getting up. More than ten.',
     choices:[
       {t:'Sit back down. Take the mark now, while the fire is hot.',
        c:'no coin, no provisions · it does not come off',
        fx:{morale:-6},markCircle:true,
-       after:'It takes a long time and it is not clean. Somebody holds your head. Somebody else '+
-         'works the needle, and the needle is not sharp.\n\nThey feed you again afterwards. '+
-         'From the moment it is done they are entirely warm about it.'},
+       after:'It takes a long time and it is not clean. Somebody holds your head, and the '+
+         'needle is not sharp.\n\nThey feed you again afterwards, entirely warm about it.'},
       /* ⚠ FLAT, AND IT MUST STAY FLAT. Under six barrels this door is shut and
          the only currencies left are your face and your blood, which is the
          whole pillar in one greyed-out button. A price that scales to what
@@ -24490,9 +24470,8 @@ const EVENTS={
       {t:'Pay them. Whatever is in the cart that they will take.',
        c:'−6 provisions · they count it twice',
        fx:{food:-6,morale:-4},need:{food:6},
-       after:'They take six barrels and leave the seventh. They are extremely pleasant about it. '+
-         'One of them shakes your hand at the end.\n\nNobody says anything until the fire is '+
-         'well out of sight.'},
+       after:'They take six barrels and leave the seventh, and they are extremely pleasant '+
+         'about it.\n\nNobody says anything until the fire is well out of sight.'},
       {t:'No. Stand up and fight your way out.',
        c:'BATTLE · there are ten of them · you will not win',
        danger:true,battle:'circle'}]},
@@ -24547,14 +24526,11 @@ const EVENTS={
      always sends: you meet it in a line, the way you were taught.
      ═══════════════════════════════════════════════════════════════════ */
   armour:{title:'SOMETHING IN ARMOUR',art:'teal',seed:181,
-    body:'It has been behind you since the middle of the afternoon.\n\nPlate from the '+
-      'throat down. Visor shut. A sword that would be two-handed on anybody else, carried in '+
-      'one, point down, so the tip draws a line in the road the whole way.\n\nThe plate is human '+
-      'work, landing pattern. {ANY} hails it once and gets '+
-      'nothing. Not a refusal. Not a turn of the head.\n\nYou try the broken ground. It costs an '+
-      'hour and gains nothing. Somebody suggests going wide and pulling it off the road; {ANY} '+
-      'points out that it has not once looked at anything except the middle of the road you are '+
-      'on.\n\nSo the last hour is walking, and being walked after, and running out of ideas.\n\n'+
+    body:'It has been behind you since the middle of the afternoon.\n\nPlate from the throat '+
+      'down, visor shut. A sword that would be two-handed on anybody else, carried in one, '+
+      'point down, so the tip draws a line in the road.\n\n{ANY} hails it once and gets '+
+      'nothing. You try the broken ground; it costs an hour and gains nothing. It has not '+
+      'once looked at anything except the middle of the road you are on.\n\n'+
       /* the user's ending (2026-08-03 doc pass): you stop and IT DOES NOT.
          The old beat had it stopping forty paces back to wait; the two
          cannot both be true, and the one that forces FACE IT is the one
@@ -24566,12 +24542,10 @@ const EVENTS={
        c:'BATTLE · shoulder to shoulder, because there was never anything else',
        battle:'armour',armourPlan:'form',after:''}]},
   packev:{title:'THEY COME OVER THE WALL',art:'teal',seed:131,
-    body:'You made camp inside somebody\'s old steading. The wall was still standing and the '+
-      'fire-pit was already dug.\n\nThat was the right call. It is about to be the only thing '+
+    body:'You made camp inside somebody\'s old steading. That is about to be the only thing '+
       'that saves you.\n\n{ANY} is on watch when the first one comes through the north gap '+
-      'without slowing down.\n\nMore than you can count in the dark. Long-legged, starved to the '+
-      'frame. One bigger than the rest does not come in at all: it waits outside the wall, where '+
-      'a captain waits.\n\nNobody chose this and there is nowhere to go.',
+      'without slowing down.\n\nMore than you can count in the dark, long-legged, starved to '+
+      'the frame. One bigger than the rest waits outside the wall, where a captain waits.',
     choices:[
       {t:'Up. Get to the gaps.',
        c:'you are already in it · hold the two ways in',battle:'pack',after:''}]},
@@ -24582,25 +24556,22 @@ const EVENTS={
      works: something here is doing something, and nobody knows what.
      ═══════════════════════════════════════════════════════════════════ */
   shrine:{title:'THE DOOR-SHRINE',art:'teal',seed:151,
-    body:'A door, upright in the middle of a field. Nothing on either side of it. No frame, no '+
-      'house, no hinges that lead anywhere.\n\nThe timber is Old Work: no grain, no joins, and '+
-      'sixty years of weather that has not weathered it. The ground in front has been swept. '+
-      'Somebody keeps sweeping it.\n\nOn this island a shrine is not where a god is. It is where '+
-      'something has been seen to work.\n\nThe offerings: bread, a shoe, four teeth, a coin so '+
-      'old it is only a shape. A woman sits a little way off. She does not get up and she does '+
-      'not ask you for anything.',
+    body:'A door, upright in the middle of a field. No frame, no house, no hinges that lead '+
+      'anywhere. The timber is Old Work: sixty years of weather that has not weathered '+
+      'it.\n\nThe ground in front has been swept. The offerings: bread, a shoe, four teeth, a '+
+      'coin worn to a shape. A woman sits a little way off and does not ask you for '+
+      'anything.\n\nOn this island a shrine is not where a god is. It is where something has '+
+      'been seen to work.',
     choices:[
       {t:'Rest here. Let the hurt mend.',c:'−2 days · everybody heals',
        fx:{days:2},healAll:true,
-       after:'Two days of doing nothing at all, in a field, in front of a door.\n\nIt is the '+
-         'longest anybody has slept since the hold. The wounds do not close entirely, but they '+
+       after:'Two days of doing nothing at all, in a field, in front of a door.\n\nThe wounds '+
          'close, and nobody wakes up in the night.'},
       {t:'Pray. All of you, properly, out loud.',c:'−1 day · a blessing on the company',
        fx:{days:1,morale:16},blessAll:true,
-       after:'You do not know the words and neither does anybody else, so you make some up, and '+
-         'the woman does not correct you.\n\nSomething happens. Nobody afterwards will say what, '+
-         'and nobody will say nothing did. The company walks east standing straighter than it has '+
-         'any right to.'},
+       after:'You do not know the words, so you make some up, and the woman does not correct '+
+         'you.\n\nSomething happens. Nobody afterwards will say what, and nobody will say '+
+         'nothing did.'},
       /* the coin-offering door was cut in the 2026-08-12 choice-weight pass
          round two (8f.151): a purchase on a sacred card, the wedding-trade
          shape again - and the woman's own line said so ("that was not a
@@ -24609,16 +24580,14 @@ const EVENTS={
       {t:'Take the door. It is good timber and we need it.',
        c:'+9 salvage · they watched you do it',danger:true,
        fx:{salvage:9,morale:-13},
-       after:'It comes apart more easily than a door standing in a field for that long has any '+
-         'business doing.\n\nThe woman watches the whole thing and says absolutely nothing, and '+
-         'that is what the company will remember about it. Nine loads of good seasoned timber, '+
-         'and not one person willing to be the one carrying the top plank.'}]},
+       after:'It comes apart more easily than it has any business doing.\n\nThe woman watches '+
+         'the whole thing and says absolutely nothing, and that is what the company will '+
+         'remember about it.'}]},
   slingline:{title:'THE SLING-LINE',art:'gold',seed:143,
-    body:'The first stone takes a chip off the wagon-board an inch from {ANY}\'s ear.\n\nThey '+
-      'are up on the ridge and they have been waiting. Slingers behind two long spears, and '+
-      'something further back making the pink light. That means a sniffer. A sniffer means a '+
-      'clan that can afford one.\n\nThey are not coming down. They do not have to. The ground '+
-      'between is open and they have all afternoon.\n\n"Off the road," one of them calls, quite '+
+    body:'The first stone takes a chip off the wagon-board an inch from {ANY}\'s '+
+      'ear.\n\nSlingers on the ridge behind two long spears, and something further back '+
+      'making the pink light: a sniffer, which means a clan that can afford one.\n\nThey are '+
+      'not coming down. They do not have to.\n\n"Off the road," one of them calls, quite '+
       'reasonably. Then another stone.',
     choices:[
       /* the "answer them, ours shoot too" door was cut in the 2026-08-12
@@ -24630,22 +24599,19 @@ const EVENTS={
        c:'BATTLE · they shoot the whole way in',danger:true,battle:'slingline',after:''},
       {t:'Back off the road and go round the long way.',
        c:'−1 day −2 provisions · it sits badly with them',need:{food:2},fx:{days:1,food:-2,morale:-5},
-       after:'You go down off the road and across the wet ground, and they watch you do it, and '+
-         'one of them keeps a sling loaded the entire time in case you change your mind.\n\n'+
-         'Nobody is hurt. Everybody is furious, mostly with the road.'}]},
+       after:'You go down across the wet ground, and they watch you do it the whole '+
+         'way.\n\nNobody is hurt. Everybody is furious, mostly with the road.'}]},
   steading:{title:'THE STEADING-LINE',art:'gold',seed:137,
-    body:'Four of them across the road, down off the Hunch for the season. A fire, something on '+
-      'it, and the ground around them packed flat. They have been here a while.\n\nThe one in '+
-      'the middle is old. Not slow. Old. It watches you come with the patience of a thing that '+
-      'has never once had to hurry, and it does not get up.\n\n"Road\'s ours today," it says. '+
-      '"Was yours yesterday. Be yours again tomorrow."\n\nWhich, if you think about it, is an '+
-      'offer.',
+    body:'Four of them across the road, down off the Hunch. A fire, and the ground around '+
+      'them packed flat.\n\nThe one in the middle is old. Not slow. Old. It does not get '+
+      'up.\n\n"Road\'s ours today," it says. "Was yours yesterday. Be yours again '+
+      'tomorrow."\n\nWhich, if you think about it, is an offer.',
     choices:[
       {t:'Take the long way round.',c:'−2 days −2 provisions · it sits badly with them · nobody dies',
        need:{food:2},fx:{days:2,food:-2,morale:-4},
-       after:'You go around. It costs the light and most of the water, and the company is very '+
-         'quiet about it.\n\nNobody says the word cowardice. Everybody has privately decided '+
-         'whether it applies, which is worse and lasts longer.'},
+       after:'It costs the light and most of the water.\n\nNobody says the word cowardice. '+
+         'Everybody has privately decided whether it applies, which is worse and lasts '+
+         'longer.'},
       {t:'“It is ours today.”',c:'BATTLE · four ogres · they will not chase you',danger:true,
        battle:'steading',after:''},
       /* both peaceful doors offer the same young ogre (user, 2026-08-03 doc
@@ -24655,38 +24621,31 @@ const EVENTS={
       {t:'Offer them the price of the road.',c:'−120 crowns · quietly approved of · one of them may join, 90 more',
        fx:{crowns:-120,morale:4},need:{crowns:120},
        recruit:{name:'Osk',race:'ogre',cls:'brute',price:90},
-       after:'The elder counts it twice, without hurrying, and then moves about a foot to the '+
-         'left. That turns out to be all the room you needed.\n\nThe most expensive foot of road '+
-         'on the island. Everybody agrees it was worth it.\n\nAnd one of them stands up, club '+
-         'and bedroll, and asks to walk with you. Ninety crowns, if there is room in the '+
-         'company.'},
+       after:'The elder counts it twice, without hurrying, then moves about a foot to the '+
+         'left. The most expensive foot of road on the island.\n\nAnd one of them stands up, '+
+         'club and bedroll, and asks to walk with you.'},
       {t:'Send your own ogre to talk.',c:'−40 crowns · a courtesy, not a toll · one of them may join, 90 more',
        needRace:'ogre',fx:{crowns:-40,morale:8},need:{crowns:40},
        recruit:{name:'Osk',race:'ogre',cls:'brute',price:90},
-       after:'{OGRE} walks up alone and sits down by the fire. Nine words in an hour.\n\nForty '+
-         'crowns changes hands and the line opens. On the way past, the elder says something to '+
-         '{OGRE} that nobody translates and everybody notices.\n\nAnd one of the line asks, '+
-         'through {OGRE}, to walk with you. Ninety crowns, if there is room in the company.'}]},
+       after:'{OGRE} walks up alone. Nine words in an hour, and the line opens.\n\nOn the way '+
+         'past, the elder says something to {OGRE} that nobody translates and everybody '+
+         'notices. And one of the line asks, through {OGRE}, to walk with you.'}]},
   milestone:{title:'THE MILESTONE',art:'gold',seed:104,
-    body:'A ratkin milestone, cut with a distance and a clan-mark. Somebody has been at it with a '+
-      'chisel, recently, to change the number.\n\nThe new number would send a company four days '+
-      'wrong.\n\nFour days wrong, out here, is not a joke played on strangers. It is a way of '+
-      'killing them without being present.\n\nA clan that owns a road cuts true miles on it. Law '+
-      'and pride in one stone. Which makes this murder, not mischief.',
+    body:'A ratkin milestone. Somebody has been at it with a chisel, recently, to change the '+
+      'number, and the new number would send a company four days wrong.\n\nFour days wrong, '+
+      'out here, is a way of killing strangers without being present. Murder, not mischief.',
     choices:[
       {t:'Re-cut it properly. It costs the evening.',c:'−1 day · it sits well with them',fx:{days:1,morale:6},
-       after:'{ANY} does the cutting, badly but correctly. Whoever comes next will never know, '+
-         'which is the entire point of it.'},
+       after:'{ANY} does the cutting, badly but correctly. Whoever comes next will never '+
+         'know, which is the entire point of it.'},
       {t:'Change it again. Worse. Then go.',c:'a chisel · it sits badly with them',fx:{morale:-4},gear:'offhand',
        after:'Somebody left the chisel behind. You take that too. Nobody says anything for a mile.'},
       {t:'Leave it. Not your road, not your milestone.',c:'no cost',fx:{},
-       after:'It is still there behind you, saying the wrong thing, and it will be there tomorrow.'}]},
+       after:'It is still there behind you, saying the wrong thing.'}]},
   saltwives:{title:'THE SALT-WIVES',art:'gold',seed:118,
     body:'Four human women boiling brine on the shingle. No village behind them.\n\nFirst-ship '+
-      'stock. Here before the Shorecrown rose, here when it fell, here long before your lord '+
-      'came. The island has decided they are part of the shore.\n\nThey will sell you salt. They '+
-      'will also work out, without appearing to ask, how many of you there are and which way you '+
-      'are going.',
+      'stock, here before the Shorecrown rose, here when it fell.\n\nThey will sell you salt. '+
+      'They will also count you, without appearing to.',
     choices:[
       /* the ask-what-they-heard door was MERGED into the buy door in the
          2026-08-12 choice-weight pass round two (8f.151): the buy door's own
@@ -24696,45 +24655,41 @@ const EVENTS={
       {t:'Buy salt properly. Pay the asking price.',
        c:'−45 crowns · +6 provisions · quietly approved of · what is on the road ahead',
        fx:{crowns:-45,food:6,morale:4},need:{crowns:45},scout:true,
-       after:'The salt is very good. One of them tells you which ford is out. That was worth more '+
-         'than the salt and she knows it.'},
+       after:'The salt is very good. One of them tells you which ford is out, and that was '+
+         'worth more than the salt.'},
       {t:'Take the salt and the pot.',c:'+4 provisions · word travels, and it travels ahead of you',
        fx:{food:4,morale:-11},rep:{human:-25},
-       after:'It takes no time. They do not fight and they do not beg. They watch, and count, and '+
-         'one of them starts walking inland before you are out of sight.\n\nThe island is small.'},
+       after:'They do not fight and they do not beg. They watch, and count, and one of them '+
+         'starts walking inland before you are out of sight.\n\nThe island is small.'},
       /* the free door - see the note on PEDLAR ON THE RIDGE. `fx:{}`. */
       {t:'Buy nothing. Keep walking.',c:'no cost · no salt, no story',fx:{},
-       after:'They go back to the brine before you have finished turning round. Whatever they were '+
-         'counting, they finish counting it.'}]},
+       after:'They go back to the brine before you have finished turning round.'}]},
   ratcart:{title:'THE CLAN CART',art:'gold',seed:132,
-    body:'A ratkin trade-cart with a broken wheel. Four ratkin sitting on it, wearing the exact '+
-      'resignation of people who have already decided how this goes.\n\nThe cargo is crossbows. '+
-      'Eleven hundred of them. Each will fire about eleven times before it comes apart in '+
-      'somebody\'s hands. It is the most ratkin thing you have ever seen.\n\nThe way-slip says '+
-      'they are bound for a clan war two valleys south. Both sides will be buying.',
+    body:'A ratkin trade-cart with a broken wheel. Four ratkin on it, already resigned to how '+
+      'this goes.\n\nThe cargo is crossbows: each fires about eleven times, then comes apart. '+
+      'The way-slip says a clan war, two valleys south. Both sides will be buying.',
     choices:[
       {t:'Fix the wheel. It takes an ogre and an hour.',c:'−1 day · it sits well with them · a clan owes you',
        fx:{days:1,morale:8},contact:true,rep:{ratkin:+18},
-       after:'The strongest of you lifts the axle. The oldest of them watches it happen, then writes something '+
-         'small in a book. A ratkin clan now knows your banner as a thing that stopped to help.'},
+       after:'The strongest of you lifts the axle. The oldest of them writes something small '+
+         'in a book.\n\nA clan now knows your banner as a thing that stopped to help.'},
       /* the buy-fifty-crossbows door was cut in the 2026-08-12 choice-weight
          pass round two (8f.151): a shop line on a moral card, the same shape
          the wedding's trade door was. The card is help, rob, or walk past. */
       {t:'Take the cart.',c:'+120 crowns +8 salvage · the clans will hear, and so will your own',
        fx:{crowns:120,salvage:8,morale:-12},rep:{ratkin:-30},
-       after:'Four ratkin walk away down the road without hurrying. They do not look back and they '+
-         'do not need to.\n\nA clan now knows your banner as something else entirely.'},
+       after:'Four ratkin walk away without hurrying. They do not look back and they do not '+
+         'need to.\n\nA clan now knows your banner as something else entirely.'},
       /* the free door - see the note on PEDLAR ON THE RIDGE. `fx:{}`. */
       {t:'Not our wheel, not our war. Walk past.',c:'no cost · nobody owes anybody anything',fx:{},
-       after:'You go by on the verge. One of them nods. That is the whole of it, and nothing at '+
-         'all comes of it, which is what walking past is for.'}]},
+       after:'One of them nods as you pass. Nothing at all comes of it, which is what walking '+
+         'past is for.'}]},
   hollow:{title:'THE HOLLOW TREE',art:'gold',seed:146,
-    body:'Something has been living in the trunk. Not recently.\n\nInside: a bedroll gone to mould, '+
-      'a very good knife, and forty-one tally-marks cut into the inner wall. Then a gap. Then no '+
-      'more marks.',
+    body:'Something has been living in the trunk. Not recently.\n\nInside: a bedroll gone to '+
+      'mould, a very good knife, and forty-one tally-marks. Then a gap. Then no more marks.',
     choices:[
       {t:'Take the knife and go.',c:'an off-hand dirk',fx:{},gear:'offhand',
-       after:'It is better steel than anything you are carrying, which raises a question nobody asks.'},
+       after:'Better steel than anything you are carrying, which raises a question nobody asks.'},
       /* the sleep-in-it door was cut in the 2026-08-12 choice-weight pass
          (#123): a door that only ever costs and buys nothing is not a
          decision, it is a trap with a label. Two answers now, take or
@@ -24742,16 +24697,14 @@ const EVENTS={
       {t:'Count the marks properly. Bury the bedroll.',c:'it sits well with them',fx:{morale:8},
        after:'Forty-one. {ANY} says it out loud so that it has been said, and then you go.'}]},
   ogrestone:{title:'THE SITTING STONE',art:'gold',seed:160,
-    body:'An ogre is sitting on a rock beside the road. By his own account he has been there two '+
-      'winters.\n\nHe is not hostile. He is not, as far as anyone can tell, anything.\n\nThe '+
-      'stone is Old Work and it is exactly the right height for him. They always are.\n\nHe '+
-      'would like to know whether you have bread. Whether the war is over. Then, after a long '+
-      'pause, which war you mean.',
+    body:'An ogre is sitting on a rock beside the road. Two winters now, by his own '+
+      'account.\n\nHe would like to know whether you have bread. Whether the war is over. '+
+      'Then, after a long pause, which war you mean.',
     choices:[
       {t:'Give him bread. Sit a while.',c:'−2 provisions · the steadings hear of it, and think better of you',
        need:{food:2},fx:{food:-2,morale:12},rep:{ogre:+15},
-       after:'He eats slowly and tells you, eventually, what is on the road ahead. It is accurate. '+
-         'He has had a great deal of time to watch it.'},
+       after:'He eats slowly and tells you, eventually, what is on the road ahead. It is '+
+         'accurate. He has had time.'},
       {t:'Ask him to come with you.',c:'an ogre may join',fx:{},
        recruit:{name:'Hoom',race:'ogre',cls:'brute'},
        after:'He thinks about it for the better part of a minute, which for him is impulsive.'},
@@ -24759,8 +24712,8 @@ const EVENTS={
          register you cannot follow, and it changes the whole scene */
       {t:'Let your own ogre do the talking.',c:'the company stands taller · needs an ogre',
        needRace:'ogre',fx:{morale:14},
-       after:'Eleven words in twenty minutes, and somehow that is a full conversation.\n\n{OGRE} '+
-         'walks taller for a day afterward, and does not explain, and nobody asks.'},
+       after:'Eleven words in twenty minutes, and somehow that is a full conversation.\n\n'+
+         '{OGRE} walks taller for a day afterward, and does not explain.'},
       {t:'Leave him to it.',c:'barely worth a word',fx:{morale:-1},
        after:'He is still sitting there when you look back, which you do, twice.'},
       /* a ratkin in the company reads this scene completely differently, and
@@ -24768,21 +24721,19 @@ const EVENTS={
       {t:'Your ratkin asks him what he is actually waiting for.',
        c:'+45 crowns · they think better of you · needs a ratkin',needRace:'ratkin',
        fx:{morale:10,crowns:45},
-       after:'{RATKIN} does not ask it kindly. There is a clan-word in there that the ogre '+
-         'understands and you do not. The silence afterwards goes on long enough to be '+
-         'uncomfortable for everybody.\n\nThen he laughs. It is enormous, slow and appalling. He '+
-         'gets up for the first time in two years, digs a purse out from under his own rock, and '+
-         'gives it to them.\n\nNot to you. To them.'}]},
+       after:'{RATKIN} does not ask it kindly. There is a clan-word in it that the ogre '+
+         'understands and you do not.\n\nThen he laughs, enormous and slow, gets up for the '+
+         'first time in two years, digs a purse from under his own rock, and hands it '+
+         'over.\n\nNot to you. To them.'}]},
   taxman:{title:'THE COLLECTOR',art:'gold',seed:174,
-    body:'A human in a good coat, with a ledger and no escort, collecting a road-toll for the '+
-      'Shorecrown.\n\nThe Shorecrown fell forty years ago.\n\nHe is entirely serious. He has a '+
-      'stamped writ. The writ is genuine and worthless, and he has been doing this for eleven '+
-      'years.',
+    body:'A human in a good coat, a ledger, no escort, collecting a road-toll for the '+
+      'Shorecrown.\n\nThe Shorecrown fell forty years ago.\n\nThe writ is genuine and '+
+      'worthless, and he has been at this eleven years.',
     choices:[
       {t:'Pay the toll. It is four crowns.',c:'−4 crowns · they think better of you',
        need:{crowns:4},fx:{crowns:-4,morale:10},
-       after:'He stamps the ledger with enormous care and wishes you good roads. The company talks '+
-         'about him for three days. It is the best four crowns you have ever spent.'},
+       after:'He stamps the ledger with enormous care and wishes you good roads.\n\nThe '+
+         'company talks about him for three days.'},
       /* the explain-kindly door was cut in the 2026-08-12 choice-weight pass
          (#123): it resolved exactly like walking past, with a mood fee on
          top - a duplicate of the free door wearing a price tag. */
@@ -24793,19 +24744,18 @@ const EVENTS={
          must not be turned into one: it costs mood because the company has
          to watch you do it. This one costs nothing because nothing happens. */
       {t:'Say nothing. Walk past him.',c:'no cost · he is not your problem',fx:{},
-       after:'He steps aside without being asked and wishes you good roads anyway. He is still '+
-         'there when the road bends, writing something in the ledger.'}]},
+       after:'He steps aside without being asked and wishes you good roads anyway.'}]},
   bogbody:{title:'WHAT THE PEAT KEPT',art:'gold',seed:188,
-    body:'The peat-cutting has opened a face.\n\nA ratkin, tanned dark, perfectly preserved, '+
-      'with a ratkin blade still between its ribs. The blade\'s mark and the dead one\'s mark '+
-      'are different clans.\n\nThat is what a war grave is. An old one, and a good one.\n\nWhich '+
-      'means there are others in this cutting, and metal with them.',
+    body:'The peat-cutting has opened a face.\n\nA ratkin, tanned dark, perfectly preserved, a '+
+      'blade still between its ribs. The blade and the dead one carry different '+
+      'clan-marks.\n\nA war grave, then. Which means others in this cutting, and metal with '+
+      'them.',
     choices:[
       {t:'Dig it properly. There is iron down there.',
        c:'−1 day · +7 salvage +1 gem · it sits badly with them · it is a clan grave',
        fx:{days:1,salvage:7,gems:1,morale:-5},rep:{ratkin:-20},
-       after:'Seven bodies and a great deal of good metal. {ANY} works with everyone else and does '+
-         'not speak once, all afternoon.'},
+       after:'Seven bodies and a great deal of good metal. {ANY} works with everyone else and '+
+         'does not speak once, all afternoon.'},
       /* the take-the-blade door was cut in the 2026-08-12 choice-weight pass
          round two (8f.151): a half-measure between the two real answers,
          paying a knife the starting kit already owns. Dig it or cover it. */
@@ -24815,44 +24765,40 @@ const EVENTS={
       {t:'Let your own ratkin decide what happens here.',
        c:'+3 salvage · they will not stop talking about it · needs a ratkin',needRace:'ratkin',
        fx:{morale:18,salvage:3},
-       after:'{RATKIN} goes down into the cutting alone and is gone a long time, and comes back up '+
-         'with three pieces of metal and an expression nobody asks about.\n\n"That one was a '+
-         'nobody," they say. "These two were somebody. Those stay." And that is the whole of the '+
-         'debate, and the company follows it exactly, and takes what it is given.'}]},
+       after:'{RATKIN} goes down into the cutting alone, and comes back up with three pieces '+
+         'of metal and an expression nobody asks about.\n\n"That one was a nobody. These two '+
+         'were somebody. Those stay." And the company follows it exactly.'}]},
   wedding:{title:'A WEDDING ON THE ROAD',art:'gold',seed:202,
     body:'A ratkin clan-wedding has spilled across the road and is not moving for anyone.\n\n'+
-      'They are drunk. They are enormously friendly. They have collectively decided that your '+
-      'company is the finest thing that has happened to them all season.',
+      'They are drunk, enormously friendly, and have collectively decided your company is the '+
+      'finest thing that has happened to them all season.',
     choices:[
       {t:'Stay for one drink. Only one.',c:'−1 day · the company stands taller for it',fx:{days:1,morale:16},
-       after:'It is not one drink. Somebody in your company is carried, briefly, on the shoulders '+
-         'of the wedding party. Nobody will ever stop talking about it.'},
+       after:'It is not one drink. Somebody in your company gets carried on the shoulders of '+
+         'the wedding party. Nobody will ever stop talking about it.'},
       /* only shown with a ratkin already in the company — they are not a
          guest at this wedding, they are being greeted like family */
       {t:'Let your ratkin lead the toast.',c:'they will not stop talking about it · needs a ratkin',
        needRace:'ratkin',fx:{morale:20},
-       after:'{RATKIN} knows the toast. The real one, the long one, the one with the clan-names '+
-         'in it. The whole wedding goes quiet to hear it done properly.\n\nFor about four '+
-         'minutes your company is the most important thing on this island.'},
+       after:'{RATKIN} knows the real toast, the long one, with the clan-names in it. The '+
+         'whole wedding goes quiet to hear it done properly.\n\nFor about four minutes your '+
+         'company is the most important thing on this island.'},
       /* only shown with an ogre already in the company — the joke the
          wedding is telling is a warmer one when it is YOUR ogre */
       {t:'Let them have your ogre for a dance.',c:'the company stands taller · needs an ogre',
        needRace:'ogre',fx:{morale:16},
-       after:'It takes four of them to lift one of him, and they manage it twice, and by the end '+
-         'of it {OGRE} has been adopted by at least two separate clan-lines. They do not '+
-         'seem to mind. He rarely does.'},
+       after:'It takes four of them to lift one of him. They manage it twice.\n\nBy the end, '+
+         '{OGRE} has been adopted by two separate clan-lines. He does not seem to mind.'},
       /* the trade door was cut in the 2026-08-12 choice-weight pass (#123):
          a shop bolted onto a mood card. The card is about whether you give
          the wedding your time, and a price list on it made the warm thing
          read as a transaction. */
       {t:'Push politely through.',c:'barely worth a word',fx:{morale:-1},
-       after:'They let you by without complaint and go back to it. You hear them for an hour.'}]},
+       after:'They let you by without complaint. You hear them for an hour.'}]},
   aqueduct:{title:'THE RATKIN WATERWORKS',art:'gold',seed:216,
-    body:'A stone aqueduct running forty feet overhead. Beautifully engineered, catastrophically '+
-      'built. It has leaked for a century and will stand for another.\n\nIt was built to carry '+
-      'drinking water. The clans have kept it working these thirty years for a different reason: '+
-      'water that moves does not bloom.\n\nAt the base, a clan-mark. Under the clan-mark, a very '+
-      'rude word.',
+    body:'A stone aqueduct forty feet overhead, leaking for a century and good for '+
+      'another.\n\nThe clans keep it working for one reason: water that moves does not '+
+      'bloom.\n\nAt the base, a clan-mark. Under the clan-mark, a very rude word.',
     choices:[
       /* the camp-under-it door was cut in the 2026-08-12 choice-weight pass
          (#123): a third answer that neither cost nor revealed anything. The
@@ -24864,44 +24810,40 @@ const EVENTS={
          'there. There was a village down there.'},
       {t:'Copy the joint design for the forge.',c:'+1 salvage · the camp learns something',
        fx:{salvage:2,morale:2},
-       after:'{MAGE} sketches it. Badly, but well enough. Whatever else the ratkin are, they '+
-         'understand water better than anyone who came off a ship.'}]},
+       after:'{MAGE} sketches it. Badly, but well enough. The ratkin understand water better '+
+         'than anyone who came off a ship.'}]},
   shipwreck:{title:'THE LAST SHIP',art:'gold',seed:230,
-    body:'A human vessel, sixty years up the shingle, far too far from any water that could have '+
-      'floated it.\n\nSomebody dragged it here, or the sea did. Neither explanation is '+
-      'comfortable.\n\nThis is one of the ships. Somebody has lived in it since. Somebody has '+
-      'died in it since.',
+    body:'A human vessel, sixty years up the shingle, far too far from any water that could '+
+      'have floated it.\n\nThis is one of the ships. Somebody has lived in it since. Somebody '+
+      'has died in it since.',
     choices:[
       {t:'Search it properly.',c:'−1 day · +40 crowns +3 salvage · it sits badly with them',
        fx:{days:1,crowns:40,salvage:3,morale:-4},
-       after:'Ship’s nails, a strongbox with the lock already broken, and a name carved by the '+
-         'bunk that you half recognise from a muster-roll a lifetime ago.'},
+       after:'Ship’s nails, a strongbox with the lock already broken, and a name carved by '+
+         'the bunk that you half recognise.'},
       /* the ship's-bell door was cut in the 2026-08-12 choice-weight pass
          (#123): a free trinket beside a search door is a smaller copy of the
          search door. The brass token keeps its real home on Wynn's card. */
       {t:'Stand and look at it a while.',c:'it sits well with them',fx:{morale:8},
        after:'You came over on the last one there will ever be. Everyone here knows it. Nobody says it.'}]},
   sinkhole:{title:'THE GROUND OPENS',art:'gold',seed:244,
-    body:'The peat gives way without a sound and takes {ANY} with it. Twelve feet, maybe twenty, '+
-      'into a black slot in the ground that was not there a moment ago.\n\nThen, from a long way '+
-      'down and off to one side: swearing. Steady, inventive, entirely alive.\n\nThere is a '+
-      'passage down there. It goes somewhere, and it does not come back up here.',
+    body:'The peat gives way without a sound and takes {ANY} with it.\n\nThen, from a long '+
+      'way down: swearing. Steady, inventive, entirely alive.\n\nThere is a passage down '+
+      'there, and it does not come back up here.',
     choices:[
       {t:'Go down after them. All of you.',c:'−1 day · opens a way under the hill',
        fx:{days:1},opensRoad:true,
-       after:'Down on a rope, into cold air that smells of old water. You find them in twenty '+
-         'minutes: filthy, furious, unhurt.\n\nThe walls are cut, not worn. Ratkin work, old and '+
-         'dry. Some clan\'s grand drainage scheme that outlived the clan.\n\nIt runs east, under '+
-         'everything, and comes out somewhere useful. A NEW ROAD has opened on the map.'},
+       after:'Down on a rope. You find them in twenty minutes: filthy, furious, unhurt.\n\n'+
+         'The walls are cut, not worn. Ratkin work, old and dry, running east under '+
+         'everything. A NEW ROAD has opened on the map.'},
       {t:'Shout down that you will meet them on the road east.',
        c:'no cost · they will catch you up, changed',fx:{},strandOne:true,
-       after:'They shout back something that is probably agreement. You go on without them.\n\n'+
-         'It is the practical decision. Everyone agrees it is the practical decision. Nobody '+
-         'enjoys making it, and the company is very quiet for the rest of the afternoon.'},
+       after:'They shout back something that is probably agreement.\n\nIt is the practical '+
+         'decision. Everyone agrees it is the practical decision. Nobody enjoys making it.'},
       {t:'Spend the day getting them out with ropes.',c:'−2 days · they are fine, and everybody saw you go back',
        fx:{days:2,morale:12},
-       after:'It takes the whole day and most of the rope and the strongest of you does the pulling. They come '+
-         'up covered in peat, entirely unharmed, and refuse to discuss it ever again.'}]},
+       after:'It takes the whole day and most of the rope. They come up covered in peat, '+
+         'entirely unharmed, and refuse to discuss it ever again.'}]},
   /* ═══ THE CACHE ═══════════════════════════════════════════════════════
      Only ever reached by walking to the node WHAT THEY DID BEFORE planted.
      It reads `G.cache.mode`, which was decided at a fire days ago, and the
@@ -24909,13 +24851,11 @@ const EVENTS={
      of them has the whole company standing round the hole. */
   cache:{title:'THE CACHE',art:'gold',seed:333,
     body:()=>(G.cache&&G.cache.mode==='open')
-      ? 'Four of them walk ahead of you the last mile. Everybody knows the count before the '+
-        'spade goes in, because everybody heard it.\n\nA soldier\'s bag under a stone: coin, '+
-        'good iron, and one cut stone kept separate from the rest.\n\nThey are already dividing '+
-        'it in their heads. You can watch them do it.'
-      : 'The marker is where you were told it would be, and so is the bag.\n\nCoin, good iron, '+
-        'one cut stone. Nobody asks how you knew. Two of them have worked it out and neither '+
-        'says so.',
+      ? 'Four of them walk ahead of you the last mile. Everybody knows the count, because '+
+        'everybody heard it.\n\nA soldier\'s bag under a stone. They are already dividing it '+
+        'in their heads.'
+      : 'The marker is where you were told it would be, and so is the bag.\n\nNobody asks how '+
+        'you knew. Two of them have worked it out, and neither says so.',
     choices:[
       /* the split is not offered as a choice on the open branch: it was
          already spent, out loud, at the fire. One button, and the receipt
@@ -24927,62 +24867,56 @@ const EVENTS={
          player gets a receipt for iron that never arrives. */
       {t:'Take it up.',c:'+6 salvage +1 gem · and the coin, by whatever was agreed',
        fx:{salvage:6,gems:1},cacheTake:true,
-       after:'It comes up wrapped in oilcloth and it is dry, which after this long in the '+
-         'ground means somebody did it properly.'}]},
+       after:'It comes up wrapped in oilcloth, dry, which after this long in the ground means '+
+         'somebody did it properly.'}]},
   broken:{title:'THE BROKEN MEN',art:'teal',seed:77,
     /* ⚠ COUNTED FROM `brigands()`, 2026-08-02: a captain, two deserters, a
        poacher and TWO LURCHERS. The card said five men and fielded four plus
        two dogs, so the count was wrong AND the dogs walked onto the board
        having never been mentioned - which on the one card whose whole argument
        is "they are people" is the detail worth getting right. */
-    body:'Four of them out of the treeline, with the confidence of men who have done this eleven '+
-      'times. Two lean dogs come with them and do not sit down.\n\nDeserters. Half a uniform '+
-      'each, and the buttons are Ashmoor\'s. Nobody has paid them since the foundry fell. A '+
-      'season of hunger, and a captain who still stands like one.\n\n"Food and the cart," he '+
-      'says. "Nobody has to be brave."\n\nThey are not monsters. They are what a company like '+
-      'yours turns into after one bad winter, and everybody on both sides of the road knows it.',
+    body:'Four of them out of the treeline, and two lean dogs that do not sit '+
+      'down.\n\nDeserters. Half a uniform each, and the buttons are Ashmoor\'s. Nobody has '+
+      'paid them since the foundry fell.\n\n"Food and the cart," the captain says. "Nobody '+
+      'has to be brave."\n\nThey are what a company like yours turns into after one bad '+
+      'winter, and everybody on both sides of the road knows it.',
     choices:[
       {t:'“No.”',c:'BATTLE · they are people, and they break like people',fx:{},battle:'brigand'},
       {t:'Give them four days of food.',c:'−4 provisions · it sits well with them · one of them stays',
        need:{food:4},fx:{food:-4,morale:6},recruit:{name:'Pell',race:'human',cls:'spear'},
-       after:'The captain looks at the sacks for a long moment, and then at you, and gives you a '+
-         'nod that is almost a salute.\n\nWhen they move off, one of them does not. A young one '+
-         'with a pike and half a uniform stands in the road looking at your banner. “Pell,” he '+
-         'says, as though that settles it.'},
+       after:'The captain gives you a nod that is almost a salute.\n\nWhen they move off, one '+
+         'of them does not. A young one with a pike stands in the road looking at your '+
+         'banner. “Pell,” he says, as though that settles it.'},
       {t:'Hand over the coin they can see.',c:'−40 crowns · it sits badly with them',
        fx:{crowns:-40,morale:-5},need:{crowns:40},
-       after:'They take it and go. Nobody feels good about it, least of all the people paid to '+
-         'prevent exactly this. {ANY} does the maths aloud: cheaper than arrows. Nobody thanks them.'}]},
+       after:'They take it and go. Nobody feels good about it.\n\n{ANY} does the maths aloud: '+
+         'cheaper than arrows. Nobody thanks them.'}]},
   snare:{title:'THE RATKIN SNARE',art:'teal',seed:5,
-    body:'They have strung the road with bells.\n\nThat is the first thing. Bells are for '+
-      'warning on this island, and even other clans spit at this use of them.\n\nThe second is '+
-      'the hauling-cage at the far end, built for a boar, with a woman folded up inside '+
-      'it.\n\nThe third is the big one under the standard giving orders. And the small one at '+
-      'the back, holding no weapon, humming.',
+    body:'They have strung the road with bells. Even other clans spit at this use of '+
+      'them.\n\nAt the far end, a hauling-cage built for a boar, with a woman folded up '+
+      'inside it.\n\nUnder the standard, the big one giving orders. At the back, the small '+
+      'one, holding no weapon. Humming.',
     choices:[
       {t:'Straight down the road. Let the bells ring.',c:'battle · they are ready',fx:{},battle:true},
       {t:'Through the marsh. Slower, but quiet.',c:'battle · −1 day · you strike first',
        fx:{days:1},battle:true,ambush:true}]},
   /* the post-battle dialog, now a map event where it happened */
   wynn:{title:'THE WOMAN IN THE CAGE',art:'teal',seed:17,
-    body:'The cage was built for hauling boar. It has been carrying a woman for three days.\n\n'+
-      'She makes no sound when Vesna cuts the withies. She counts you instead, and you can watch '+
-      'her do the sum.\n\n"You are late. I had made my peace with being a small course."\n\nHer '+
-      'name is Wynn Aldreth. Her husband ran the foundry at Ashmoor until the winter took him. '+
-      'Then the clan took the foundry.\n\nThe mark on the standard out there is the mark on '+
-      'Ashmoor\'s own iron. The clan that took her town is the clan that took her, and she has '+
-      'had three days in a cage to appreciate the symmetry.\n\nShe looks at the banner, then at '+
-      'you, and works out which one of you she needs to talk to.',
+    body:'The cage was built for hauling boar. It has been carrying a woman for three '+
+      'days.\n\nShe makes no sound when the withies are cut. She counts you instead.\n\n"You '+
+      'are late. I had made my peace with being a small course."\n\nWynn Aldreth. Ashmoor\'s '+
+      'foundry was her husband\'s; the clan took it, then the town, then her. The mark on '+
+      'the standard out there is the mark on Ashmoor\'s own iron.',
     choices:[
       {t:'“There is a fee.”',c:'+60 crowns',fx:{crowns:60},last:true,
        after:'She counts it into your palm like a woman paying a butcher. Which, she observes, you are.'},
       {t:'“Tell me about the foundry.”',c:'+13 salvage',fx:{salvage:13},last:true,
-       after:'She draws it in the mud: the wheel, the race, the two furnaces the rats never worked out '+
-         'how to light. Then she gives you what she carried out of it. That iron will outlive this contract.'},
+       after:'She draws it in the mud: the wheel, the race, the two furnaces the rats never '+
+         'worked out how to light. Then she gives you what she carried out of it.'},
       {t:'“Go home, mistress. No charge.”',c:'a brass token · a name that owes you · and they saw you take nothing',
        fx:{morale:10},gear:'brass',contact:true,last:true,
-       after:'She does not say thank you. She presses a small brass thing into your hand instead. At '+
-         'Ashmoor they will know your banner before you reach the gate.'}]}
+       after:'She does not say thank you. She presses a small brass thing into your hand '+
+         'instead.\n\nAt Ashmoor they will know your banner before you reach the gate.'}]}
 };
 function canAfford(need){
   if(!need)return true;
@@ -25542,11 +25476,26 @@ function openEvent(k){
      came from asking the build. A table you can enumerate at runtime should
      be enumerated at runtime. */
   const anyWayOut=visible.some(c=>!c.battle);
+  /* ═══ #143 - A ONE-DOOR CARD IS A PICKUP, AND A PICKUP WEARS ITS LOOT ════
+     (User, 2026-08-13: the coin "like after battle screen - when you get
+     artifact" · '"Keep walking" - only one option'.) One live door is not a
+     decision, so the receipt may stand on the card the way the aftermath
+     shows a haul: the pillar's hide-the-score rule only binds where there is
+     a score to hide. Battle doors are excluded - their receipt is the fight.
+     Positive crowns go through lootMul the way pickChoice will pay them, so
+     the card and the payment cannot disagree. */
+  const c0=(visible.length===1&&!visible[0].battle)?visible[0]:null;
+  if(c0){
+    dlg.querySelector('.bd').insertAdjacentHTML('beforeend',
+      evFxChips(evPaidOf(c0.fx,true))+
+      evGearStrip(c0.gear?[c0.gear]:c0.gear2||[])+
+      (c0.coinKeep?evGearStrip(['oddcoin'],cast('round {TELLER1}’s neck by evening')):''));
+  }
   $('wChoices').innerHTML=visible.map((c,i)=>{
     const ok=canAfford(c.need);
     return '<button class="choice'+((c.danger||(c.battle&&anyWayOut))?' danger':'')+(c.needRace?' racey':'')+
       '" data-i="'+i+'"'+(ok?'':' disabled style="opacity:.38"')+'><b>'+c.t+'</b><i>'+c.c+
-      moraleTag(c.fx)+((c.hurt&&!c.hideHurt)?'<span class="hurt"> · injury</span>':'')+
+      (c0?'':moraleTag(c.fx))+((c.hurt&&!c.hideHurt)?'<span class="hurt"> · injury</span>':'')+
       (ok?'':' · '+needTag(c.need))+'</i></button>';}).join('');
   $('wChoices').querySelectorAll('.choice').forEach(b=>{
     /* THE CHOICE OBJECT, not its index: the appended walk-away is not in
@@ -25575,14 +25524,21 @@ function pickChoice(k,i){
      `t`, and reading the wrong one silently labelled every event row with
      its raw id */
   JOURNAL.put('choice','event: '+(e.title||k),{pick:c.t});
-  if(f.days)passDays(f.days);
-  if(f.morale)G.morale+=f.morale;
+  /* ═══ #143 - WHAT THIS CHOICE PAYS IS COLLECTED AS IT IS PAID ═══════════
+     `paid` feeds the outcome's chip row. ⛔ #137's rule on a third surface:
+     the chips are built beside each pay() call, never read back off the
+     hand-written c: string, so a chip and a payment cannot disagree. */
+  const paid={},addPaid=(kk,v)=>{if(v)paid[kk]=(paid[kk]||0)+v;};
+  if(f.days){passDays(f.days);addPaid('days',f.days);}
+  if(f.morale){G.morale+=f.morale;addPaid('morale',f.morale);}
   /* the wagon's haul multiplier applies to what you FIND, never to what you
      are charged — and both go through the one door, which is what stops a
      −15 ruling on a nearly-empty chest producing a negative purse */
-  pay('crowns',f.crowns>0?Math.round(f.crowns*lootMul()):(f.crowns||0));
-  pay('food',f.food||0);
-  ['salvage','wood','iron','gems'].forEach(r=>{if(f[r])G.camp[r]+=f[r];});
+  const crownsPaid=f.crowns>0?Math.round(f.crowns*lootMul()):(f.crowns||0);
+  pay('crowns',crownsPaid);addPaid('crowns',crownsPaid);
+  pay('food',f.food||0);addPaid('food',f.food||0);
+  ['salvage','wood','iron','gems'].forEach(r=>{if(f[r]){G.camp[r]+=f[r];
+    addPaid(r==='gems'?'gems':'salvage',f[r]);}});
   if(c.gear)G.stash.push(c.gear);
   if(c.gear2)c.gear2.forEach(g=>G.stash.push(g));
   /* A STRANGE CONDITION lands on somebody, and the clock starts. One carrier
@@ -25649,17 +25605,16 @@ function pickChoice(k,i){
      second time off a stale mode. */
   if(c.cacheTake){
     const openly=!!(G.cache&&G.cache.mode==='open');
-    pay('crowns',openly?45:90);
+    pay('crowns',openly?45:90);addPaid('crowns',openly?45:90);
     if(openly){
-      G.morale+=12;
+      G.morale+=12;addPaid('morale',12);
       let owed=0;G.party.forEach(p=>{if(p.unpaid){owed++;p.unpaid=0;}});
-      hurtLine+='\n\nForty-five crowns of it reaches the chest. The rest goes round the '+
-        'circle by hand, and '+(owed
+      hurtLine+='\n\nHalf the coin reaches the chest. The rest goes round the circle by '+
+        'hand, and '+(owed
           ? owed+' of them stop counting what they are owed.'
           : 'nobody has to be told twice where their share is.');
     }else{
-      hurtLine+='\n\nNinety crowns, six of good iron, one stone. Into the chest, all of it, '+
-        'and nobody at the fire is any the wiser.';
+      hurtLine+='\n\nInto the chest, all of it, and nobody at the fire is any the wiser.';
     }
     G.cache=null;
   }
@@ -25692,11 +25647,11 @@ function pickChoice(k,i){
       const had=!!one.cond;
       delete one.cond;one.hpLoss=0;one.st.mor+=1;
       remember(one,'Stayed a day at the warm spring, alone, and came back steadier.');
-      hurtLine+='\n\nThey are still in the water when the rest of you bed down and still in it '+
-        'when you wake, and they will not be drawn on any of it afterwards.\n\n'+
-        who(one)+' comes back with '+(had?'whatever it was out of them, and ':'')+
-        'something settled that was not settled before. NERVE, permanently, for as long as they '+
-        'live. Nobody in the company asks what happened and '+one.name+' does not offer.';
+      hurtLine+='\n\nThey are still in the water when the rest of you bed down, and still in '+
+        'it when you wake.\n\n'+who(one)+' comes back with '+
+        (had?'whatever it was out of them, and ':'')+
+        'something settled that was not settled before. NERVE, permanently, for as long as '+
+        'they live. Nobody asks, and '+one.name+' does not offer.';
       sfx('promote');
     }
   }
@@ -25733,10 +25688,10 @@ function pickChoice(k,i){
       const mine=(c.starWish==='you');
       remember(one,'Was given the wish off the star east of Grausen, and asked to be '+word+'.');
       hurtLine+='\n\n'+(mine
-        ? 'You say it plainly, and you do not dress it up, and there is a silence afterwards '+
-          'that goes on slightly too long.\n\n'
-        : who(one)+' does not want it and takes it anyway, which takes a while.\n\nWhat '+
-          'they ask for, when they finally ask, is not what anybody expected.\n\n')+
+        ? 'You say it plainly, and there is a silence afterwards that goes on slightly too '+
+          'long.\n\n'
+        : who(one)+' does not want it and takes it anyway.\n\nWhat they ask for, when they '+
+          'finally ask, is not what anybody expected.\n\n')+
         '"'+STARWISH[k]+'"\n\n'+
         /* ⚠ SECOND PERSON WHEN IT IS YOU. `capName()` is the right door for
            every other line in the build and it hands back the Captain's
@@ -25748,8 +25703,7 @@ function pickChoice(k,i){
               word+'. '+lbl+', permanently, for as long as you live.'
             : capName(one)+' is '+word+' after that road, and stays '+word+'. '+lbl+
               ', permanently, for as long as they live.')+
-        (mine?' Nobody says anything about it, then or later, and that is its own kind of '+
-          'saying something.':'');
+        (mine?' Nobody says anything about it, then or later.':'');
       sfx('promote');
     }
   }
@@ -25779,30 +25733,27 @@ function pickChoice(k,i){
       if(c.clanFeast){
         one.clan=true;
         remember(one,'Was fed at the long fire past the Dead Company, and called it his clan.');
-        hurtLine+='\n\nLate, when the fire has gone down to something you can sit close to, '+
-          one.name+' tells you why there are still ratkin.\n\n'+
-          '"We are the smallest and the weakest and we make bad crossbows. You know why we are '+
-          'not gone? Clan. We hold on to each other with both hands and we do not let go. That '+
-          'is the whole of it. We held on. That thing in the armour did not break us. It broke '+
-          'nine men in a ditch who were holding on to nothing."\n\n'+
-          'Then, quieter, and not to anybody else:\n\n'+
-          '"A clan has to hold back, though. Mine sent me to a slaughter that was about a '+
-          'milestone. Not the road. The stone. I said no, so they took my name off the wall, '+
-          'and I have been out since."\n\n'+
-          'He looks at the fire and not at you.\n\n'+
-          '"You opened the barrels. So this is my clan now, and I will stand in it until it is '+
-          'over."\n\nHIS CLAN, for the rest of his life. The first time his nerve goes in a '+
-          'battle it holds, and after that '+one.name+' does not leave that field at all, '+
-          'whatever it costs him. And he will never walk out of this company over money.';
+        hurtLine+='\n\nLate, when the fire has gone down, '+one.name+' tells you why there '+
+          'are still ratkin.\n\n'+
+          '"We are the smallest and the weakest and we make bad crossbows. You know why we '+
+          'are not gone? Clan. We hold on to each other with both hands and we do not let '+
+          'go. We held on. That thing in the armour did not break us. It broke nine men in a '+
+          'ditch who were holding on to nothing."\n\n'+
+          'Then, quieter:\n\n'+
+          '"Mine sent me to a slaughter over a milestone. I said no, so they took my name '+
+          'off the wall.\n\nYou opened the barrels. So this is my clan now, and I will stand '+
+          'in it until it is over."\n\n'+
+          'HIS CLAN, for the rest of his life. The first time his nerve goes in a battle it '+
+          'holds; after that '+one.name+' does not leave that field, whatever it costs him. '+
+          'And he will never walk out of this company over money.';
         sfx('promote');
       }else if(c.clanBuy){
         remember(one,'Worked out what the long fire was for.');
-        hurtLine+='\n\nHe tells the first half of it anyway, late, when the fire has gone down: '+
-          'that ratkin are the smallest and the weakest and are still here because they hold on '+
-          'to each other with both hands, and that this company held on, and that the thing in '+
-          'the armour did not break it.\n\nIt is a good story and everybody listens to it.\n\n'+
-          'There is a second half. You can see him decide not to tell it. He looks at the '+
-          'barrels, and at you, and says goodnight, and that is the whole of what he says.';
+        hurtLine+='\n\nHe tells the first half of it anyway, late: that ratkin are the '+
+          'smallest and the weakest and are still here because they hold on to each other '+
+          'with both hands, and that this company held on.\n\nThere is a second half. You '+
+          'can see him decide not to tell it. He looks at the barrels, and at you, and says '+
+          'goodnight.';
       }else{
         remember(one,'Asked for the long fire past the Dead Company and was told no.');
       }
@@ -25873,7 +25824,7 @@ function pickChoice(k,i){
       hurtLine+='\n\n'+c.recruit.name+' would walk with you for '+price+' crowns. The chest '+
         'cannot say yes. (Not enough crowns.)';
     }else{
-      if(price)pay('crowns',-price);
+      if(price){pay('crowns',-price);addPaid('crowns',-price);}
       const nr=rollRecruit();
       nr.name=c.recruit.name;nr.race=c.recruit.race;nr.cls=c.recruit.cls;
       nr.kind=KIND_BY_CLS[nr.cls]||'human';delete nr.price;
@@ -25913,9 +25864,8 @@ function pickChoice(k,i){
     rat.eq.trinket='deadboots';
     if(old)G.stash.push(old);
     hurtLine+='\n\nIt is '+who(rat)+'. Of course it is '+rat.name+'.\n'+
-      'THE TOLL-MAN’S BOOTS — +3 AGI, −6 MOR. He walks better and he sleeps worse, and he will '+
-      'not take them off, and you can make him take them off in the INVENTORY if you have the '+
-      'stomach for that conversation.';
+      'THE TOLL-MAN’S BOOTS: +3 AGI, −6 MOR. He walks better, sleeps worse, and will not '+
+      'take them off. The INVENTORY can, if you have the stomach for that conversation.';
   }
   if(c.battle){G.pending=null;G.ambush=!!c.ambush;
     if(c.clashSide)G.clashSide=c.clashSide;
@@ -25949,9 +25899,18 @@ function pickChoice(k,i){
   }
   G.pending=null;
   const got=(c.gear?[c.gear]:[]).concat(c.gear2||[]);
-  $('wDlg').querySelector('.bd').textContent=cast(c.after)+hurtLine+
-    (got.length?'\n\n('+got.map(k=>GEAR[k].n).join(', ')+' — into the stash.)':'')+
-    moraleLine(f);
+  /* #143 - the receipt is the aftermath's own chips, plus the piece itself
+     when the road handed one over. The coin rides on a body, not in the
+     stash, so its strip says where it went instead. */
+  const chips=evFxChips(paid)+evGearStrip(got)+
+    (c.coinKeep?evGearStrip(['oddcoin'],cast('round {TELLER1}’s neck by evening')):'');
+  const prose=(cast(c.after||'')+hurtLine).replace(/^\n+/,'');
+  /* #143 - a one-door pickup already wore its loot on the card. With nothing
+     left to say, the outcome would be an empty box with a button in it:
+     close straight to the road instead. */
+  if(!prose&&!got.length){
+    $('wDlg').classList.remove('on');G.openEv=null;worldTick();saveRun();return;}
+  $('wDlg').querySelector('.bd').innerHTML=prose+chips;
   /* if the road just handed you kit, the only way on is through the inventory */
   if(got.length){
     G.mustKit=true;
