@@ -1735,7 +1735,15 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:11px;pa
 .choice{padding:7px 9px;background:#2a2114;border:1px solid #4d3c22;display:flex;flex-direction:column;
         gap:1px;width:100%}
 .choice:hover:not(:disabled){background:#372a18;border-color:var(--g3)}
-.choice.danger{border-color:#6b2a24}
+/* ═══ #137 - RED HAS TO BE READABLE AS RED ════════════════════════════════
+   A 1px #6b2a24 border on a #2a2114 plate is a border a player has to be
+   already looking for. His ask is *"make it red"*, so the state gets the
+   three things a state needs: a warmer ground, a lit edge, and a title in
+   the colour rather than in gold. ⚠ The TITLE moves and the receipt line
+   does not - the cost line is the one place the exact tactical arithmetic
+   lives (style rule 8) and it must stay legible, not atmospheric. */
+.choice.danger{border-color:#8c3a31;background:#2c1a15}
+.choice.danger b{color:#e08a7e}
 .choice.danger:hover:not(:disabled){background:#3a1d18;border-color:var(--blood-lit)}
 /* only visible because of who is already in the company */
 .choice.racey{border-color:#5a7a6a}
@@ -2467,6 +2475,36 @@ body:has(#world.on) #audioBtn{top:8px;bottom:auto;font-size:11px;padding:3px 8px
   color:#7a6238;text-align:center;line-height:1.3}
 .abloot .abwhat{font-size:13px;color:#d3c194}
 .abloot .abgot{font-family:var(--mono);font-size:11px;color:#8ca35a;margin-top:2px}
+/* ═══ #137 - THE HAUL IS A RECEIPT, AND A RECEIPT HAS ICONS ON IT ═════════
+   (User, 2026-08-13, with a red arrow drawn at the line: *"bigger what you
+   get + show curency or object icon."*)
+
+   `.abres` printed the loot row's hand-written `c` string at 11.5px mono -
+   smaller than the crew cards above it and smaller than the accordion below
+   it, on the one line of this screen that answers WHAT DID THAT FIGHT PAY.
+
+   ⛔ THE CHIPS ARE BUILT OFF `haul.fx`, NEVER OFF THAT STRING. `fx` is the
+   object `takeLoot()` actually pays out, so a chip and a payment cannot
+   disagree - which is not hypothetical: six rows of these tables were caught
+   printing a price the game did not charge, see the note above takeLoot.
+   The prose survives as the `.fxsub` line underneath, which is the flavour
+   it always was.
+
+   The glyphs are RES_ICON, unchanged, because that is what the top bar has
+   used since #103. A second set of resource icons on this screen would be
+   #112's "one row disagreeing with itself" all over again. */
+.abfx{display:flex;gap:9px;flex-wrap:wrap;align-items:stretch}
+.fxc{display:flex;align-items:center;gap:8px;border:1px solid #3d2f1d;
+  background:#171208;padding:7px 12px 7px 10px}
+.fxi{font-size:20px;line-height:1}
+.fxn{font-family:var(--mono);font-size:20px;font-weight:700;line-height:1;letter-spacing:-.01em}
+.fxl{font-family:var(--mono);font-size:8.5px;letter-spacing:.14em;color:#8a7449;
+  display:block;margin-top:3px}
+.fx-crowns .fxi,.fx-crowns .fxn{color:var(--gold)}
+.fx-food .fxi,.fx-food .fxn{color:var(--grain)}
+.fx-salvage .fxi,.fx-salvage .fxn{color:var(--wood)}
+.fx-gems .fxi,.fx-gems .fxn{color:var(--gem)}
+.fxsub{font-family:var(--mono);font-size:10px;color:#6b5330;padding:3px 2px 0}
 .abres{font-family:var(--mono);font-size:11.5px;color:#8ca35a;padding:2px 2px 0}
 .abres span{color:#a89468}
 /* the enemy accordion: collapsed by default, the count is the headline */
@@ -7122,12 +7160,36 @@ function unitFrom(p){
      a penalty they pay — stepping back is simply not a thing they can be
      talked into, and the sheet reflects that. */
   /* #111 - the user's third shape for this act (2026-08-12): no step of its
-     own. It buys CLEAN MOVEMENT for the rest of this turn, and the legs
-     remember it: one extra hex of movement on the NEXT turn. */
-  if(!tr(u,'courage'))acts.push({k:'dis',n:'DISENGAGE',cost:1,self:true,
-    note:'One action. Every step you take for the rest of THIS turn is clean: no '+
-      'parting swings, no zone of control. And next turn your legs remember the '+
-      'trick: one extra hex of movement. Disengage first, then move.'});
+     own. It buys CLEAN MOVEMENT for the rest of this turn.
+     ═══ #137 - AND THE HEX IT BUYS IS PAID NOW, NOT NEXT TURN ══════════════
+     (User, 2026-08-13: *"after disingage I don't see +1 to movment this turn
+     (so it makes sense and easier to esacape). You can/t use disngage again
+     for this and next turn."*)
+
+     He is describing the arithmetic correctly rather than misreading the
+     screen. #111 banked the extra hex on `disNext` and cashed it at the START
+     OF THE FOLLOWING TURN - which is one turn after the moment it was needed.
+     You spend an action to break off, so you have one action left to run
+     with, and the compensation arrives after the enemy has had its go. That
+     is why nobody left a scrum: the same complaint #72 was written against,
+     one layer deeper. The hex is now added to THIS turn's budget, where the
+     player can see it and spend it on the escape they bought it for.
+
+     ⚑ THE VISIBILITY IS FREE, AND THAT IS THE POINT. `moveBudget` is the one
+     function every mover asks, so the lit hexes, the MOVE card's own receipt
+     line, `aiTurn` and AUTO all tick up the instant the act resolves. Nothing
+     had to be taught.
+
+     `cool:2` is the whole lockout and it needs no new state: `spend()` writes
+     the cooldown, `beginTurn` decrements it, `onCool` refuses, and the card
+     paints READY IN N TURNS over itself. Used on turn N it is blocked on N
+     (already spent) and on N+1 (cd 1), and free on N+2 - which is his "not
+     again for this and next turn", exactly. */
+  if(!tr(u,'courage'))acts.push({k:'dis',n:'DISENGAGE',cost:1,self:true,cool:2,
+    note:'One action, and it pays for itself at once: one extra hex of movement '+
+      'right now, and every step you take for the rest of THIS turn is clean - no '+
+      'parting swings, no zone of control. Disengage first, then move. Your legs '+
+      'need this turn and the next one before they will do it again.'});
   /* a mutation grants a RULE, not a number - see MUTS. The gilled can vanish
      into any water they are standing in or beside, once a fight. */
   u.mut=p.mut||null;
@@ -7589,9 +7651,12 @@ const TUTSTEPS={
       'into a fight, and it breaks first. Watch the word.',
     a:()=>$('bState')},
   circled:{h:'CIRCLED',
+    /* #137 - teaches the rule the game HAS. The hex is this turn's now, so
+       the spotlight had to move with it or the brawl would be teaching a
+       promise the build no longer keeps. */
     t:'Moving while they touch you pays a free swing to each of them. '+
-      'DISENGAGE first: the rest of this turn\'s moving is clean, and next '+
-      'turn your legs get one extra hex. Then go where they come one at a time.',
+      'DISENGAGE first: it gives you an extra hex right now and the rest of '+
+      'this turn\'s moving is clean. Then go where they come one at a time.',
     a:()=>{const u=cur();if(!u)return $('bActions');
       const i=u.acts.findIndex(x=>x.k==='dis');
       return (i>=0&&document.querySelector('#bActions .act[data-a="'+i+'"]'))||$('bActions');}},
@@ -9988,13 +10053,10 @@ function strike(a,d,act,mult){
   }else animClash(a,d,flavour,false,!!act.sweep);
   sfxStrike(a,d,armD,hpD);
   if(armD>3)fx(d,'−'+Math.round(armD)+' arm','#96a1a5',true);
-  /* #60 — ARMOUR BEFORE BLOOD, said the first time the harness takes the
-     bigger half of a blow. Same gate as the figure above it deliberately: the
-     lesson may only name a number the player is looking at. strike() is not a
-     scorer (whisper('back') has been called from here since #14), and learn()
-     returns on its seen-flag, so this costs one comparison a blow for the life
-     of the save and nothing at all afterwards. */
-  if(armD>3&&armD>hpD)learn('learn_arm');
+  /* #60's ARMOUR BEFORE BLOOD lesson fired here, on the first blow where the
+     harness took the bigger half. #137 deleted it: TUTSTEPS.armour spotlights
+     the two bars in the brawl, on the player's own first dent, which is the
+     same rule said earlier and with an arrow on it. */
   say(a.name+' → '+d.name+': '+(armD?Math.round(armD)+' armour, ':'')+Math.round(hpD)+' hp.');
   /* an arrow through the leg: it still gets there, but not this round */
   /* DRAG UNDER — she does not knock them back, she takes them with her. The
@@ -10663,9 +10725,11 @@ function beginTurn(){
     render();later(nextTurn,180);return;
   }
   u.actions=u.actionsMax;u.used={};u.safeMove=false;u.moved=false;u.movesUsed=0;u.rallyBuff=0;
-  /* #111 - DISENGAGE's promise comes due: the turn after it was used, the
-     legs get one extra hex. One turn only, cashed and cleared here. */
-  u.disBonus=u.disNext?1:0;u.disNext=false;
+  /* #137 - DISENGAGE's hex is spent in the turn that bought it now, so this
+     line only has to CLEAR it. `disNext` is deleted rather than left set: an
+     unused field is a second source of truth, and the next reader of this
+     block would believe it. */
+  u.disBonus=0;
   /* #111 - the brawl's spare step: granted AFTER the reset above, once */
   if(B.tut&&B.tut.freeStep&&u.side==='you'&&u.leader){
     u.actions+=1;B.tut.freeStep=false;
@@ -11438,10 +11502,9 @@ function selectAct(i){
   const u=cur(),a=u.acts[i];
   if(!canUse(u,a))return;
   if(a.move){
-    /* #60 lesson 8, at the one moment the choice exists and before it is paid
-       for. A line after the swing has landed would be a receipt, and
-       whisper('parting') is already that. */
-    if(u.side==='you'&&!u.ally&&!u.pet&&engaged(u))learn('learn_step');
+    /* #60 lesson 8 (learn_step) fired here. #137 deleted it: TUTSTEPS.circled
+       spotlights the DISENGAGE card itself the moment two of them have a hand
+       on you, and whisper('parting') is still the receipt. */
     B.sel=a;B.reach=reachMap(u,moveBudget(u));render();return;}
   /* #46 THROW — two clicks: the thing, then where it goes. `B.hurlFrom` holds
      the bodies it could lift and `B.hurlRocks` the lone boulders; `B.hurl` /
@@ -11486,12 +11549,16 @@ function selectAct(i){
      the courageous still do not have the button at all. */
   if(a.k==='dis'){
     /* #111 - resolves on the spot: clean movement for the rest of the turn
-       (`safeMove`, which partingShots already honours) and +1 stride next
-       turn (`disNext`, cashed at beginTurn, read by moveBudget). */
-    spend(u,a);u.safeMove=true;u.disNext=true;
-    ghostFx(u);fx(u,'CLEAN','#8ca35a',true);
-    say('You give ground without turning your back. Your moving is clean for the '+
-      'rest of this turn, and next turn your legs get one extra hex.');
+       (`safeMove`, which partingShots already honours).
+       #137 - and the extra stride lands on THIS turn's budget. `moveBudget`
+       reads `disBonus`, so the lit hexes, the MOVE card's hex count, both AI
+       brains and AUTO all have it before the next line of this function runs.
+       The float is the receipt: the number on the MOVE card has already
+       changed by the time it is read. */
+    spend(u,a);u.safeMove=true;u.disBonus=(u.disBonus||0)+1;
+    ghostFx(u);fx(u,'CLEAN · +1 HEX','#8ca35a',true);
+    say('You give ground without turning your back. One extra hex this turn, and '+
+      'your moving is clean for the rest of it.');
     B.sel=null;render();autoEnd(u);
     return;}
   if(a.k==='wall'){spend(u,a);u.spearwall=true;
@@ -15091,10 +15158,7 @@ function render(){
     const mv=u.acts.find(a=>a.move);
     if(mv&&canUse(u,mv)){
       B.sel=mv;B.reach=reachMap(u,moveBudget(u));
-      /* #60 lesson 8 used to fire on clicking MOVE while engaged; the click
-         is gone, so the moment the default lands on an engaged body is the
-         same moment the choice exists */
-      if(engaged(u))learn('learn_step');
+      /* #60 lesson 8's second call site. Deleted with the lesson in #137. */
     }
   }
   /* ═══ THE STAMP IS WHAT MAKES THE HOVER CACHE SAFE ═════════════════════
@@ -15324,7 +15388,9 @@ function render(){
            be (the second of a turn is a hex shorter), DISENGAGE says it is
            the step (#72), everything else says cost · reach · the prices */
         const sub=a.move?moveBudget(u)+' hexes · 1 act'
-          :a.k==='dis'?'1 act · clean moving · +1 hex next turn'
+          /* #137 - the hex is THIS turn's now. The `a.cool` clause below
+             appends the lockout to the same line for free. */
+          :a.k==='dis'?'1 act · +1 hex now · clean moving'
           :a.range?a.cost+' act · range '+a.range
           :a.reach?a.cost+' act · reach '+a.reach:a.cost+' act';
         /* #67 · the school this body is currently holding. It is not a
@@ -18076,12 +18142,35 @@ function consequences(scarred){
   const accHead=on=>(on?'▾':'▸')+' THE FIELD THEY LEFT · <b>'+foes.dead+' dead'+
     (foes.fled?' · '+foes.fled+' fled':'')+'</b>';
   /* a GEAR haul is a strip with the reserved art square (his item art lands
-     there the day it exists); a RESOURCE haul is one plain receipt line
-     (user, round three: "show it simplier, nt as artifact") */
+     there the day it exists); a RESOURCE haul is a row of icon chips built
+     off `haul.fx` (#137 - see the CSS note on .abfx for why it is fx and not
+     the string). The prose keeps its place underneath, at the size prose
+     should be, which is round three's "show it simplier, nt as artifact"
+     with the numbers pulled out in front of it. */
+  const fxChips=f=>{
+    const rows=[['crowns','CROWNS'],['food','PROVISIONS'],['salvage','SALVAGE'],
+                ['gems','GEMS'],['iron','IRON'],['wood','TIMBER']]
+      .filter(r=>f&&f[r[0]]);
+    if(!rows.length)return '';
+    return '<div class="abfx">'+rows.map(r=>{
+      const v=f[r[0]];
+      return '<div class="fxc fx-'+r[0]+'"><span class="fxi">'+
+        (RES_ICON[r[0]]||'◉')+'</span><span><span class="fxn">'+
+        (v>0?'+':'')+v+'</span><span class="fxl">'+r[1]+'</span></span></div>';
+    }).join('')+'</div>';};
+  const chips=fxChips(haul.fx);
   const lootHtml=(haul.gear||haul.gear2)
     ?'<div class="abloot"><div class="abslot">ART<br>SLOT</div>'+
-      '<div><div class="abwhat">'+haul.t+'</div><div class="abgot">'+haul.c+'</div></div></div>'
-    :'<div class="abres">'+haul.c+' <span>· '+haul.t+'</span></div>';
+      '<div><div class="abwhat">'+haul.t+'</div><div class="abgot">'+haul.c+'</div></div></div>'+
+      /* a row can carry BOTH a thing and a number (the snare's bells: timber
+         and twenty-five crowns), and the old single-branch line could only
+         ever show one of them */
+      (chips?'<div style="margin-top:9px">'+chips+'</div>':'')
+    /* the fallback is the old line, and it is not dead code: a row with no
+       `fx` and no gear at all would otherwise render nothing where a receipt
+       belongs. */
+    : chips?chips+'<div class="fxsub">'+haul.t+'</div>'
+          :'<div class="abres">'+haul.c+' <span>· '+haul.t+'</span></div>';
   const drawOne=()=>{
     $('sCard').innerHTML=
       /* the company's own name over the outcome - user, round three:
@@ -19356,39 +19445,43 @@ const CAPLINES={
     'walls do not block it.',
     'Only one spell a turn, so spend it on what a sword cannot reach. It needs no clear '+
     'line to anybody.']},
-  /* ═══ THE FOURTH RULE OF THE DELETED CARD, FINALLY IN SOMEBODY'S MOUTH ════
-     User, 2026-08-02: *"Добавить про броню, которая смягчает удар"* -- add one
-     about armour softening the blow. This closes the last loose end of #60:
-     `coach('fight')` carried four rules, three of them became lessons, and
-     ARMOUR BEFORE BLOOD was the one left behind in `? RULES` where a player
-     has to go looking for it.
+  /* ═══════════════════════════════════════════════════════════════════════
+     #137 - FOUR LESSONS DELETED, BECAUSE THE BRAWL NOW TEACHES THEM FIRST
+     (User, 2026-08-13: *"delete some education from capitan, that copies
+     tutorial stuff."*)
 
-     WHEN: the first blow of the save where armour took MORE of it than the
-     body did, whoever swung it and whoever took it. Not the first blow ever,
-     because on the first blow nobody yet cares which pool moved. The teachable
-     moment is the one where the number LOOKS like a failure: two figures float
-     off a body, the grey one is large and the red one is small, and until now
-     nothing in the game had said which of the two ends a life.
+     This register was written for #60 in early August. #108 then gave the
+     opening brawl a SPOTLIGHT layer (`TUTSTEPS`) - a dimmed screen with an
+     arrow pointing at the actual thing - and four of these lessons became
+     the same rule said twice, ten minutes apart, in two voices:
 
-     IT IS GATED ON `armD>3` FOR ONE REASON: that is the threshold at which
-     strike() actually draws the "- N arm" figure. Teach what is on the screen.
-     A lesson pointing at a number the player cannot see is worse than no
-     lesson, because they go looking for it and conclude they have misread the
-     board.
+       learn_arm    <- TUTSTEPS.armour   "Iron soaks a blow before flesh does.
+                                          The grey bar is the harness; the red
+                                          one under it is the man inside."
+       learn_break  <- TUTSTEPS.broken + TUTSTEPS.nerve, which are both about
+                                          Harl doing exactly that, on the
+                                          screen, with a ring around him
+       learn_step   <- TUTSTEPS.circled, which spotlights the DISENGAGE CARD
+       learn_zone   <- TUTSTEPS.circled's first sentence, plus WHISPER.parting
 
-     It also cannot fire on an armour-ignoring act, since `act.am===0` leaves
-     `armD` at zero -- so the Weeping Hammer can never be the weapon that
-     teaches the armour rule. That is correct by construction: it is the
-     exception, and an exception is a bad teacher.
+     The four are DELETED and not left dark: this table's own standing note
+     says an unused entry is a second source of truth and the next person to
+     edit it will believe it. The prose is recoverable from CHANGELOG 8f.165.
 
-     ⚠ VOCABULARY MATCHES `? RULES` ON PURPOSE. "Armour comes off before blood"
-     is the sentence that screen already opens HOW A HIT WORKS with, so the two
-     places cannot teach the same rule in two dialects. */
-  learn_arm  :{tier:'learn',l:[
-    'Most of that went into armour and not into the body. Armour comes off before blood, it '+
-    'does not mend in a fight, and once it is gone every blow tells.',
-    'That spent armour, not blood. The top bar over a body is the harness and the one under it '+
-    'is the person: strip the first and the second goes fast.']},
+     ⚠ WHAT STAYED, AND WHY, BECAUSE THIS IS THE PART A LATER PASS GETS
+     WRONG. `learn_twice` reads like a duplicate of TUTSTEPS.act and is not:
+     `act` says "Two actions a turn" and stops, while the lesson teaches the
+     DIMINISHING RETURN on the second one, which nothing else in the game
+     says anywhere. `learn_sides`, `learn_close`, `learn_bow`, `learn_cast`,
+     `learn_round` and `w_rung` are about the ring colours, reach, a bow, a
+     spell, the back arc and standing alone - the brawl teaches none of the
+     six, so the Captain is their only voice.
+
+     ⛔ AND THE RULE THIS LEAVES BEHIND: this register and TUTSTEPS are two
+     teachers with one syllabus. Before adding a line to either, read the
+     other. Four duplicates accumulated in three days without anybody
+     deciding to write one.
+     ═══════════════════════════════════════════════════════════════════════ */
   /* THE OFFER, not the receipt. whisper('back') fires when a blow has ALREADY
      landed in a back, and the shipped CAPLINE w_back rode it -- so the Captain
      was congratulating you on something you had already worked out. The user
@@ -19400,42 +19493,11 @@ const CAPLINES={
   learn_round:{tier:'learn',l:[
     'The red arc under him is his back. Stand in it and you hit him harder and more often.',
     'Walk round behind him. His front is worth nothing to us, his back is worth the walk.']},
-  learn_break:{tier:'learn',l:[
-    'That one broke and ran, and he is not even wounded. Nerve runs out before blood does.',
-    'He is finished without being hurt. Frighten enough of them and we do not have to kill '+
-    'any of them.']},
-  /* THE WAY OUT, and the limit on it. It deliberately no longer leads with
-     "he gets a free swing", because learn_zone now says that one tick
-     earlier: 9 is the problem, 8 is the answer, and neither repeats the
-     other. The one-per-enemy-per-turn clause is the part that stops this
-     reading as a rule against ever moving. */
-  learn_step :{tier:'learn',l:[
-    'DISENGAGE is how you get out of it. One action, one hex, and nobody swings - and they '+
-    'only get one free swing each a turn anyway.',
-    'Break off with DISENGAGE and nobody swings at you: it costs the action and takes the '+
-    'step. Just walking is further and it costs blood.']},
-  /* ⚠ TEACH WHAT THE GAME DOES TODAY, NOT WHAT #29 WOULD DO. Grimtoll has no
-     HARD Zone of Control rule; #29 is parked, and its own entry says it was cut
-     for making movement unaffordable. What exists is engagement plus parting
-     swings, which is a SOFT zone: standing beside an enemy forbids nothing, it
-     puts a price on leaving. This line must describe the price and never a
-     prohibition, or the player believes they are pinned and stops moving,
-     which is precisely the failure that got the hard rule cut.
-
-     ⚠ AND IT NAMES THE TERM ON PURPOSE (user, 2026-08-01: "make it clearer.
-     For example - You are in enemy zone of control. to move you need to
-     disingage, or other wise you will be hit"). The first version said
-     "standing next to them is standing in a fight", which is flavour and does
-     not tell anybody what to do. "Zone of control" is a wargamer's phrase and
-     that is exactly why it works here: it is the phrase the player has
-     probably already met, and the sentence after it says what it costs. Note
-     the deliberate difference from the user's own wording -- you do NOT need
-     to disengage in order to move, you need it in order to move WITHOUT being
-     hit, and their second clause says as much. `? RULES` carries the term too,
-     so the vocabulary is the same in both places. */
-  learn_zone :{tier:'learn',l:[
-    'You are in their zone of control now. Move out of it and they get a free hit at you.',
-    'That is their reach you are standing in. Walk out of it and they swing at you for nothing.']},
+  /* #137 - learn_break, learn_step and learn_zone were deleted here. See the
+     block above learn_round for which spotlight step took each one over.
+     ⚠ `? RULES` still carries ZONE OF CONTROL by that name, and so does
+     TUTSTEPS.circled, so the vocabulary the deleted lesson was protecting is
+     still spoken in two places. */
   /* rides whisper('rung'), which has fired since #14 and never had a voice.
      THIS IS WHAT weBend SHOULD HAVE BEEN: the deleted call narrated the same
      subject every fight and told you nothing; this says it once, ever, and
@@ -19787,17 +19849,12 @@ function capTick(){
      from previous rounds is drained ahead of both, so lessons arrive in the
      order they came up rather than the order the board allowed. */
   learnFlush();
-  /* the first time anything of ours is in a fight at all. One tick after
-     "walk at them" in almost every first battle, which is the right order:
-     go to them, then this is what being there means. */
-  if(mine.some(m=>!m.dead&&!m.downed&&!m.fled&&engagers(m.col,m.row,m.side).length>0))
-    learn('learn_zone');
-  /* the first enemy to break. ⚠ IT TAKES THE ROUND OFF theyRun, which is why
-     it is evaluated before the CALL chain and why `lesson` is checked below:
-     theyRun outranks a lesson by tier, so without this the very first break
-     would spend its round on the comment and the rule would arrive a round
-     late, attached to nothing the player could still see. */
-  if(gone>0)learn('learn_break');
+  /* #137 - the two situational lessons that lived here (learn_zone on first
+     contact, learn_break on the first enemy to break) are DELETED. The brawl
+     spotlights both earlier and with an arrow on the body in question:
+     TUTSTEPS.circled for the zone, TUTSTEPS.broken and .nerve for the break.
+     ⚠ `learnFlush()` above stays - the surviving lessons still queue, and it
+     is what drains them in the order they came up. */
   const lesson=(C.round===B.round&&C.tier===0);
   if(C.mute)return;
   const cap=capUnit();
@@ -22354,10 +22411,24 @@ function worldTick(){
      ⚠ GUARDED ON `G.moving`, because worldTick also runs mid-walk (a camp
      card closing) and an unguarded call would teleport the walkers back to
      the node they set out from. */
-  /* #118 - the signature. One writer, here, because worldTick is the one
-     function every road back to this screen already runs through. */
+  /* ═══ #137 - THE NAME IS ON THE COMPANY, NOT ALONG THE BOTTOM ═══════════
+     (User, 2026-08-13: *"put picked at the begining name of the company on
+     the map, instaed of 'the company'."*)
+
+     #118 signed the name across the foot of the map because the token's
+     caption was the literal string THE COMPANY in the markup, and the token
+     is the one thing on this screen that IS the company. Moving the name onto
+     it puts the label on its subject and takes a floating caption off a
+     screen the clarity pass is emptying. `#wName` goes with it: the same
+     fact, twice, on one screen was the whole reason to move it.
+
+     ⚠ An old save has no `coName`, so the caption falls back to what it has
+     always said rather than to nothing. A token with no label under it reads
+     as a bug. */
+  const wt=$('wToken')&&$('wToken').querySelector('.tl');
+  if(wt)wt.textContent=(G.coName||'THE COMPANY').toUpperCase();
   const wn=$('wName');
-  if(wn)wn.textContent=(G.coName||'').toUpperCase();
+  if(wn)wn.textContent='';
   const spr=$('wToken').querySelector('.wSpr');
   if(spr){
     /* ⚑ #114 points 3+4 ("Put your leader characters in front of crew ·
@@ -25156,9 +25227,24 @@ function openEvent(k){
       c:'no cost · the road does not wait for a full purse',fx:{},
       after:'You have nothing to trade and nothing to give, and everybody here can see it. '+
         'The company walks on, in good order, looking at the middle distance.'});
+  /* ═══ #137 - A DOOR THAT STARTS A FIGHT IS RED, AND IT IS ONE GATE ═══════
+     (User, 2026-08-13: *"If some of the choices in event leads to a fight -
+     make it red."*)
+
+     Red was hand-tagged per option with `danger:true`, and five fight doors
+     had never been given it: both of the clash's wade-in doors (the WATCH IT
+     HAPPEN door had it and the two that actually put you in the fight did
+     not), armour, pack and brigand.
+
+     ⛔ NOT A SWEEP THROUGH THE TABLES ADDING FIVE FLAGS. That is the same
+     hand-kept second copy, and the sixth fight door written next month would
+     ship un-marked exactly the way these five did. A choice carrying
+     `battle:` IS the red one; the renderer can see that without being told
+     twice, and `danger` keeps its own job (the door that is dark rather than
+     violent - the prisoners, the coin), so the two reasons stack. */
   $('wChoices').innerHTML=visible.map((c,i)=>{
     const ok=canAfford(c.need);
-    return '<button class="choice'+(c.danger?' danger':'')+(c.needRace?' racey':'')+
+    return '<button class="choice'+((c.danger||c.battle)?' danger':'')+(c.needRace?' racey':'')+
       '" data-i="'+i+'"'+(ok?'':' disabled style="opacity:.38"')+'><b>'+c.t+'</b><i>'+c.c+
       moraleTag(c.fx)+((c.hurt&&!c.hideHurt)?'<span class="hurt"> · injury</span>':'')+
       (ok?'':' · '+needTag(c.need))+'</i></button>';}).join('');

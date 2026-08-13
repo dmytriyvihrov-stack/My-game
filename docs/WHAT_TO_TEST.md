@@ -122,6 +122,90 @@ THE LINE   3 of anyone, in a row · +5 dodge to each of them
 
 **The picture:** `shots/142_race_box.html` shows all three, before and after, at the tooltip's real
 290px width.
+## 🎁 FIVE OF YOUR SEVEN  *(#137 · 2026-08-13 · build log 8f.165)*
+
+Five items of the pack you sent with the two screenshots. **Two are NOT built** - see the bottom of
+this section.
+
+### 1 · What the fight paid, at a size you can read
+
+**Reach it in three steps:** start a run · win any road battle · look under **TAKEN OFF THE FIELD**.
+
+The line your red arrow pointed at was 11.5px of grey text. It is now **one chip per resource**:
+the coin, barrel, salvage and gem icons from the top bar, with the number at **20px**. A haul that
+gives you a thing *and* coin (the Snare's bells: timber and 25 crowns) now shows **both** - the old
+line could only ever print one of them.
+
+**Would be a bug:** a chip showing a number the purse did not actually change. The chips are built
+off the same object the game pays out from, so if you ever see one disagree with the top bar, that
+is worth telling me immediately.
+
+### 2 · DISENGAGE actually gets you out now
+
+**Reach it in three steps:** any battle · let two of them get a hand on somebody · click DISENGAGE.
+
+It used to give you the extra hex **next** turn, which is one turn after you needed it - you paid
+an action to break off and then had less movement to run with. **The hex is yours the moment you
+press it.** Watch the MOVE card: it goes from *4 HEXES* to *5 HEXES* on the click.
+
+The price: **you cannot use it again this turn or the next.** The card greys itself and says
+`READY IN 2 TURNS`.
+
+**Worth your judgement:** whether escaping is now *too* easy. This is the lever - if it is, the
+cooldown goes to 3 or the hex goes away and the action gets cheaper instead.
+
+### 3 · Doors that start a fight are red
+
+**Reach it in three steps:** walk the road · open any event card with a fight on it · look at the
+options.
+
+Five fight doors had never been marked, including **both** of the Blood on the Road doors that put
+you in it. Red is also stronger than it was: it was a thin dark border you had to already be
+looking for, and it is now a red ground with a red title.
+
+⚠ **This one is half-done on purpose and I want your eye on it.** Measuring in the running game
+found **12** fight doors, not 5, and three of them make red meaningless: the Snare card's two doors
+are *both* fights (same fight, you just arrive differently), and the ambush cards have exactly one
+door. **Red on every door of a card says nothing.** The fix is *red only where the card also offers
+a way out*, and it is specced but not in the code. So on those three cards you will currently see
+red everywhere. Tell me if you disagree with the fix before I build it.
+
+### 4 · The Captain stops repeating the tutorial
+
+**Reach it in three steps:** new company · play the tavern brawl · then play the next two fights.
+
+Four of his lessons said exactly what the brawl's spotlight had already said with an arrow pointing
+at it - armour before blood, nerve running out, zone of control, and DISENGAGE. **Those four are
+gone.** He still teaches the ring colours, reach, the bow, the spell, the back arc, standing alone,
+and the cost of doing the same thing twice in a turn - the brawl teaches none of those.
+
+**Would be a bug:** a rule you meet in a fight that nobody ever explains anywhere. If that happens,
+name it and I will put a voice back on it.
+
+### 5 · The company's name is on the company
+
+**Reach it in three steps:** get through the opening and name your company · look at the map · look
+at the little marching column.
+
+The caption under it said THE COMPANY for every company that has ever played. It says **your
+name** now, and the duplicate signature that was floating along the bottom of the map is gone.
+
+⚠ **Eye check wanted:** a long name (THE HALFPENNY COUSINS) is roughly twice as wide as the old
+caption. Tell me if it crowds the nodes it walks past.
+
+### ⛔ Not built: the two about the opening
+
+*"Combine after battle + consequence"* and *"offer to choose the name after you accept the
+contract"* are **#138**, and they are specced and drawn but not in the game. The drawing is
+`shots/138_opening_one_card.html` - **open it and click a door.** Today the brawl is followed by
+**four** full screens before the map, two of which carry a single button you cannot refuse. The
+mockup is one screen: the receipt for the brawl, the man, his two doors, and then - only after you
+answer - the naming strip.
+
+Measuring it turned up the thing worth knowing: **the contract card already fills 674px of the
+684px a card is allowed**, so the merge had to pay for itself. It does, and one sentence of the
+card's prose is cut to buy it (*"Behind you, the woman with the spear has not left..."*) because
+the new receipt strip shows those three people as three faces, which is the same sentence.
 
 ---
 
@@ -344,6 +428,40 @@ the questionnaire. Back returns you to the ending card.
 
 ⚠ Nothing about it *sends* anywhere - it copies to your clipboard, as it always has. That was a
 deliberate decision back in 8f.105 and it has not changed.
+
+---
+
+## 🎒 THE COMPANY SHEET, ROUND THREE  *(#140 · 2026-08-13 · build log 8f.168)*
+
+**Your twelve points off the stats-band screenshot.** Same three steps: continue the run, open the
+company screen, click anybody.
+
+| # | your words | what to look for |
+|---|---|---|
+| 1 | *"reorginise this block - probably a bit mor info about damage"* | the damage is its own big gold cell with the reach beside it. **Hover it**: the dice the weapon rolls, what their arm adds, what build and nerve add as a percentage, and what it therefore lands for |
+| 2 | *"put it while hovering on 'light'"* | ARMOUR STOPS is out of that row. **Hover the LIGHT / MEDIUM / HEAVY word** in the armour bar instead: it gives the absorb rule, the split, and how many points there are to chew through |
+| 3 | *"at least 50% more space for perks / inventory"* | the right pane is 450px where it was 300 |
+| 4 | *"could be written below figure"* | the scars and changes are a row of chips **under** the figure now, not a column beside it |
+| 5 | *"Portrain and icon feel better at the left sied"* | portrait and battlefield token lead the top row from the left |
+| 6 | *"delete phrase"* | the label is just THE BODY |
+| 7 | *"Add one more item slot - a bag"* | bottom left of the figure, wired to the hip. **It is deliberately empty and says so**: nothing in the game can go in it yet, and it is there so the first throwable has somewhere to land |
+| 8 | *"Main hand = right hand. Right now is left"* | the weapon is drawn on **your** left, which is the figure's right hand, and the MAIN HAND box moved to that side with it |
+| 9 | *"more space between hand and body"* | there is daylight between each arm and the torso |
+| 10, 11 | *"Delete WHO THIS IS" · "Delete click a stash item..."* | both gone |
+| 12 | *"Use the name of company"* | the top-left title is the two words you picked at the Three Bells |
+
+**What would be a bug:** the damage hover disagreeing with the number beside it · the weapon drawn
+on the wrong side for one race but not another · the bag accepting an item · a wire crossing the
+body · the company name missing on an old save (it should fall back to THE COMPANY, not go blank).
+
+**One correction to what round two told you:** that note said the ACTIONS crystals would show a
+three-action Captain. **They will not, because no such body exists** - every person on your roster
+has two actions, and the three-action line in the code belongs to enemy statblocks. The row is
+still worth having for exactly the reason you gave (later builds, stronger characters); it just is
+not doing anything for the Captain today.
+
+**Numbers:** 678px with **zero scroll on all three races and the Captain**, across four kits.
+Shot: `shots/140_company_sheet_round3.html`.
 
 ---
 
