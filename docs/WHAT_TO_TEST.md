@@ -23,6 +23,93 @@
 
 ---
 
+## 🎁 FIVE OF YOUR SEVEN  *(#137 · 2026-08-13 · build log 8f.165)*
+
+Five items of the pack you sent with the two screenshots. **Two are NOT built** - see the bottom of
+this section.
+
+### 1 · What the fight paid, at a size you can read
+
+**Reach it in three steps:** start a run · win any road battle · look under **TAKEN OFF THE FIELD**.
+
+The line your red arrow pointed at was 11.5px of grey text. It is now **one chip per resource**:
+the coin, barrel, salvage and gem icons from the top bar, with the number at **20px**. A haul that
+gives you a thing *and* coin (the Snare's bells: timber and 25 crowns) now shows **both** - the old
+line could only ever print one of them.
+
+**Would be a bug:** a chip showing a number the purse did not actually change. The chips are built
+off the same object the game pays out from, so if you ever see one disagree with the top bar, that
+is worth telling me immediately.
+
+### 2 · DISENGAGE actually gets you out now
+
+**Reach it in three steps:** any battle · let two of them get a hand on somebody · click DISENGAGE.
+
+It used to give you the extra hex **next** turn, which is one turn after you needed it - you paid
+an action to break off and then had less movement to run with. **The hex is yours the moment you
+press it.** Watch the MOVE card: it goes from *4 HEXES* to *5 HEXES* on the click.
+
+The price: **you cannot use it again this turn or the next.** The card greys itself and says
+`READY IN 2 TURNS`.
+
+**Worth your judgement:** whether escaping is now *too* easy. This is the lever - if it is, the
+cooldown goes to 3 or the hex goes away and the action gets cheaper instead.
+
+### 3 · Doors that start a fight are red
+
+**Reach it in three steps:** walk the road · open any event card with a fight on it · look at the
+options.
+
+Five fight doors had never been marked, including **both** of the Blood on the Road doors that put
+you in it. Red is also stronger than it was: it was a thin dark border you had to already be
+looking for, and it is now a red ground with a red title.
+
+⚠ **This one is half-done on purpose and I want your eye on it.** Measuring in the running game
+found **12** fight doors, not 5, and three of them make red meaningless: the Snare card's two doors
+are *both* fights (same fight, you just arrive differently), and the ambush cards have exactly one
+door. **Red on every door of a card says nothing.** The fix is *red only where the card also offers
+a way out*, and it is specced but not in the code. So on those three cards you will currently see
+red everywhere. Tell me if you disagree with the fix before I build it.
+
+### 4 · The Captain stops repeating the tutorial
+
+**Reach it in three steps:** new company · play the tavern brawl · then play the next two fights.
+
+Four of his lessons said exactly what the brawl's spotlight had already said with an arrow pointing
+at it - armour before blood, nerve running out, zone of control, and DISENGAGE. **Those four are
+gone.** He still teaches the ring colours, reach, the bow, the spell, the back arc, standing alone,
+and the cost of doing the same thing twice in a turn - the brawl teaches none of those.
+
+**Would be a bug:** a rule you meet in a fight that nobody ever explains anywhere. If that happens,
+name it and I will put a voice back on it.
+
+### 5 · The company's name is on the company
+
+**Reach it in three steps:** get through the opening and name your company · look at the map · look
+at the little marching column.
+
+The caption under it said THE COMPANY for every company that has ever played. It says **your
+name** now, and the duplicate signature that was floating along the bottom of the map is gone.
+
+⚠ **Eye check wanted:** a long name (THE HALFPENNY COUSINS) is roughly twice as wide as the old
+caption. Tell me if it crowds the nodes it walks past.
+
+### ⛔ Not built: the two about the opening
+
+*"Combine after battle + consequence"* and *"offer to choose the name after you accept the
+contract"* are **#138**, and they are specced and drawn but not in the game. The drawing is
+`shots/138_opening_one_card.html` - **open it and click a door.** Today the brawl is followed by
+**four** full screens before the map, two of which carry a single button you cannot refuse. The
+mockup is one screen: the receipt for the brawl, the man, his two doors, and then - only after you
+answer - the naming strip.
+
+Measuring it turned up the thing worth knowing: **the contract card already fills 674px of the
+684px a card is allowed**, so the merge had to pay for itself. It does, and one sentence of the
+card's prose is cut to buy it (*"Behind you, the woman with the spear has not left..."*) because
+the new receipt strip shows those three people as three faces, which is the same sentence.
+
+---
+
 ## 🪑 TWO SESSIONS, TWO DESKS  *(#139 · 2026-08-13 · build log 8f.167)*
 
 **This one is not in the game, it is in how we work.** You asked for parallel work on the file in
