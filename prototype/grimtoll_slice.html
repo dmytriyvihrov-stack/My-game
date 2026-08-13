@@ -3845,6 +3845,49 @@ let PACE=(function(){
   return (v>0&&v<=4)?v:PACE_NORM;          /* the shipped default: speed ×1 */
 })();
 const paced=ms=>Math.round(ms*PACE);
+/* ═══ #149 - AUTO RUNS ON A CHAINED setTimeout, AND THE REASON IS WRITTEN
+   FIFTEEN THOUSAND LINES BELOW ALREADY ═══════════════════════════════════
+   `panTick` carries this note verbatim: *"A CHAINED setTimeout AND NOT
+   setInterval... in the hidden preview pane an interval fires ZERO times
+   (measured: 0 ticks in 1200ms at a 32ms period) while setTimeout is merely
+   floored, and the harness's MessageChannel shim unclamps that one and not
+   the other. AN UNVERIFIABLE CONTROL IS A CONTROL NOBODY CHECKS."*
+
+   ⛔ AND AUTO WAS STILL ON `setInterval`, WHICH IS THE ONE CONTROL THAT
+   SENTENCE IS MOST ABOUT. It is the tester's own tool, it is how a fight is
+   watched end to end, `autoStep` carries a comment reading "THE FREEZE LIVED
+   HERE", and it could not be driven in the pane at all: found by playing the
+   opening, where AUTO turned on, said so in the log, and then sat at round 7
+   with a live unit, `busy:false` and three unspent actions. `autoStep()`
+   called by hand worked perfectly. Nothing was wrong with the brain; nothing
+   was calling it.
+   ⚑ THE CHAIN IS ALSO STRICTLY BETTER OUTSIDE THE PANE: it re-reads `paced()`
+   every tick, so the PACE button no longer needs to tear the timer down and
+   build it again, and a battle that ends stops rescheduling itself instead of
+   firing forever into a guard.
+   ⚠ `clearTimeout` AND NOT `clearInterval`, and it is not pedantry: the
+   harness replaces `clearTimeout` and leaves `clearInterval` alone, so the
+   wrong one would fail to stop a shimmed timer. Six call sites used to clear
+   this by hand; they all go through autoStop() now. */
+const AUTO_MS=240;
+function autoStop(){
+  if(typeof B!=='undefined'&&B&&B.autoTimer){clearTimeout(B.autoTimer);B.autoTimer=null;}
+}
+function autoTick(){
+  if(typeof B==='undefined'||!B)return;
+  B.autoTimer=null;
+  if(!B.auto||B.won!==null)return;
+  autoStep();
+  /* re-tested after the step: the step itself can end the fight, null B, or
+     hand the reins back */
+  if(typeof B!=='undefined'&&B&&B.auto&&B.won===null)
+    B.autoTimer=setTimeout(autoTick,paced(AUTO_MS));
+}
+function autoGo(){
+  autoStop();
+  if(typeof B!=='undefined'&&B&&B.auto&&B.won===null)
+    B.autoTimer=setTimeout(autoTick,paced(AUTO_MS));
+}
 /* `save` is false for the one call at boot: a player who has never touched the
    control should not have a key written on their behalf, and a key that exists
    only because somebody pressed the button is a much easier thing to reason
@@ -3865,10 +3908,9 @@ function setPace(v,save){
       'click to cycle.';
     b.classList.toggle('off',Math.abs(v-PACE_NORM)>0.001);
   }
-  /* an interval keeps the period it was created with, so a live AUTO would go
-     on running at the old speed until it was switched off and on again */
-  if(typeof B!=='undefined'&&B&&B.autoTimer){
-    clearInterval(B.autoTimer);B.autoTimer=setInterval(autoStep,paced(240));}
+  /* #149 - the chain re-reads paced() on every tick, so a live AUTO picks the
+     new speed up by itself. This used to tear the interval down and build a
+     new one, because an interval keeps the period it was created with. */
 }
 /* ═══ THE PRACTICE FIELD — battle simulator state ════════════════════════
    Declared UP HERE, beside TEST, and not down beside the screen that uses
@@ -3888,7 +3930,7 @@ function setPace(v,save){
 const SIM={on:false,snap:null,cap:null,fight:'clash',comp:'start',ground:'as'};
 function winNow(){
   if(!B||B.won!==null)return;
-  if(B.autoTimer){clearInterval(B.autoTimer);B.autoTimer=null;}
+  autoStop();
   B.auto=false;
   /* 8f.137 - a scripted fight may SPAWN on the kill (#108's waves ride
      checkEnd), so the dev win clears the field until checkEnd agrees it is
@@ -11624,7 +11666,7 @@ function hungerTick(){
   B.won='fled';
   G.fleeLine='Nobody chose it. You simply ran out of the things that let people keep standing '+
     'in one place being frightened, and the company walked off the field while it still could.';
-  if(B.autoTimer){clearInterval(B.autoTimer);B.autoTimer=null;}
+  autoStop();
   B.auto=false;
   endLater(()=>{if(SIM.on)simResult('fled');else toRetreat();},700);
   return true;
@@ -11686,7 +11728,7 @@ function checkEnd(){
   const you=alive().filter(u=>u.side==='you'&&!u.ally);
   /* something that will not fight is not a reason for the fight to continue */
   const foe=alive().filter(u=>u.side==='foe'&&!u.passive);
-  if(B.autoTimer&&(!you.length||!foe.length)){clearInterval(B.autoTimer);B.autoTimer=null;}
+  if(B.autoTimer&&(!you.length||!foe.length))autoStop();
   /* THE PRACTICE FIELD ENDS HERE AND GOES NO FURTHER. Every one of the three
      real exits below reaches into the campaign — spoils recruit people, defeat
      wipes the save, mercy sets `G.spared`. A practice fight resolves to a
@@ -17820,10 +17862,10 @@ function toggleAuto(){
     say('The company fights on its own. Press AUTO again to take the reins back.');
     /* #81 - paced with everything else. AUTO is a tester tool, and the tester
        who wants it fast has the PACE button sitting next to this one. */
-    if(!B.autoTimer)B.autoTimer=setInterval(autoStep,paced(240));
+    autoGo();                                 /* #149 - a chained timeout */
   }else{
     say('You take the reins back.');
-    if(B.autoTimer){clearInterval(B.autoTimer);B.autoTimer=null;}
+    autoStop();
   }
 }
 /* WITHDRAW — walk off the field. Costs the spoils, the nerve, and the road
@@ -17867,7 +17909,7 @@ function withdraw(){
         ' · the place is done with',
       go:()=>{
         if(!B)return;
-        if(B.autoTimer){clearInterval(B.autoTimer);B.autoTimer=null;}
+        autoStop();
         B.auto=false;B.won='fled';
         G.morale-=cost.mor;
         if(cost.crowns)pay('crowns',-cost.crowns);
@@ -27501,7 +27543,7 @@ $('menuBtn').onclick=()=>{
           /* the teardown withdraw() uses. `B=null` is what makes every pending
              later() callback drop itself: they compare against the captured B
              and silently give up when it is not the current one. */
-          if(B&&B.autoTimer){clearInterval(B.autoTimer);B.autoTimer=null;}
+          autoStop();
           if(B)B.auto=false;
           B=null;
           saveRun();openMenu();
