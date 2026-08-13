@@ -1888,40 +1888,68 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:11px;pa
 #iTrait{font-size:12.5px;font-style:italic;color:var(--g3);line-height:1.3;margin-top:4px;
   cursor:help}
 #iTrait b{color:var(--g4);font-style:normal}
-/* how they actually look on the field (user: "show small icon of this
-   character, how it looks... how it actually looks on battlefield. So person
-   has a more clear understanding"). The battle's own sprite(), untouched. */
-#iField{flex:none;width:92px;border:1px solid #3d2f1d;background:#131b17;display:flex;
-  flex-direction:column;align-items:center;justify-content:flex-end;gap:3px;padding:5px 4px 4px}
+/* ═══ #136 point 5 · THE TILE IS A PORTRAIT, WITH THE FIGURE UNDER IT ═════
+   (User: "Picture on the field closer to a portarait".)
+   #133 put the battle sprite here alone, at 58px, which answers "how do they
+   look on the field" and answers nothing about WHO this is: a 26x38 token is
+   a silhouette at any size. The painted bust the roster and the promotion
+   card already use is the portrait, so the tile carries both, stacked and in
+   that order: the FACE is who they are, the token underneath is what you
+   will be looking for on the board. Neither is new art. */
+#iField{flex:none;width:104px;border:1px solid #3d2f1d;background:#131b17;display:flex;
+  flex-direction:column;align-items:center;gap:2px;padding:4px}
+#iField canvas.pface{width:94px;height:74px;border:1px solid #4d3c22;background:#1c150c;
+  display:block}
+#iField .frow{display:flex;align-items:flex-end;gap:5px;height:32px}
 #iField img{image-rendering:pixelated;display:block}
-#iField .fc{font-family:var(--mono);font-size:7.5px;letter-spacing:.13em;color:#7d9490}
+#iField .fc{font-family:var(--mono);font-size:7px;letter-spacing:.11em;color:#7d9490;
+  writing-mode:vertical-rl;transform:rotate(180deg);line-height:1}
 /* ── the stats band: FIRST, one box (Urtuk + Wartales) ──────────────────── */
 #iStats{border:1px solid #3d2f1d;background:#171208;padding:7px 11px;display:flex;
   flex-direction:column;gap:6px}
-.itells{display:flex}
-.itl{flex:1;display:flex;flex-direction:column;gap:1px;border-left:1px solid #2a2114;
-  padding:0 9px;cursor:help;min-width:0}
-.itl:first-child{border-left:none;padding-left:0}
-.itl .tk{font-family:var(--mono);font-size:7.5px;letter-spacing:.15em}
-.itl .tv{font-family:var(--body);font-size:12.5px;color:#d8d5cc;line-height:1.2}
+/* ═══ #136 point 3 · THE POOLS STACK, THE WAY THE FIGHT STACKS THEM ═══════
+   (User, quoting the row back: "ARMOUR LIGHT / 6 / HITPOINTS / 51/57 /
+   NERVE / Happy - Taking too much space now (maybe it is nice to put it one
+   under anothr) - like in battle logic".)
+   ⚑ MEASURED BEFORE MOVING, and the measurement moved the fix: three cells
+   at 226px each, carrying fifteen characters apiece. The row was never TALL,
+   it was WIDE - 704px of band spent on three short readouts. The battle
+   plaque has always stacked these three in a narrow column, so the sheet
+   stacks them the same way and the attributes take the width that frees up.
+   One idiom, two screens, and the row is the same height it was. */
+#iStatTop{display:flex;gap:18px;align-items:flex-start}
+.itells{flex:1;min-width:0;display:grid;grid-template-columns:1fr 1fr;gap:3px 14px;
+  align-content:start}
+.itl{display:flex;align-items:baseline;justify-content:space-between;gap:8px;
+  border-bottom:1px dotted #332818;padding-bottom:2px;cursor:help;min-width:0}
+.itl .tk{font-family:var(--mono);font-size:7.5px;letter-spacing:.13em;flex:none}
+.itl .tv{font-family:var(--body);font-size:12px;color:#d8d5cc;line-height:1.2;
+  text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 /* a banked promotion is spent by clicking the tell itself (#122's door) */
-.itl.spend{cursor:pointer}
+.itl.spend{cursor:pointer;border-bottom-color:#8ca35a}
 .itl.spend .tv:after{content:' ▲';color:#8ca35a;font-size:10px}
 .itl.spend:hover{background:#1e1810}
-.ibars{display:flex;gap:13px}
-.ibars .bcell{flex:1;display:flex;flex-direction:column;gap:2px;min-width:0}
+.ibars{width:236px;flex:none;display:flex;flex-direction:column;gap:0}
 .ibars .statLine{color:#8a7449}
-.ibars .bar{height:7px;border:1px solid rgba(0,0,0,.5)}
+.ibars .statLine .pv{color:#d8d5cc}
+.ibars .bar{height:7px;border:1px solid rgba(0,0,0,.5);margin-bottom:3px}
 .ibars .bar i{display:block;height:100%}
 /* what they DO, as one mono line under the bars */
 .idrv{display:flex;gap:14px;flex-wrap:wrap;font-family:var(--mono);font-size:9.5px;
   color:#8a7449;letter-spacing:.04em;border-top:1px solid #2a2114;padding-top:5px}
 .idrv b{color:var(--g4);font-weight:400}
 /* ── the body: the doll IS the gear map (Caves of Qud) ──────────────────── */
-#iBody{display:flex;gap:11px;align-items:stretch;flex:none}
-#iDollBox{flex:none;width:400px;height:232px;position:relative;background:#1c150c;
+/* ⚠ THE HEIGHT IS THE FOLD RULE AND IT IS LOAD-BEARING. Without it the
+   ledger stretches this row instead of scrolling inside itself, and a body
+   carrying a change AND a condition AND the circle AND three scars AND
+   ill-fitting armour measured 743px and put the screen back in a scroll.
+   ⚑ #136 point 1 ("the middle part take a bit smaller space"): 232 -> 196
+   and the box 400 -> 362. That is the DOLL drawn smaller, not furniture
+   moved: the figure and the slot columns are one picture and shrink together. */
+#iBody{display:flex;gap:11px;align-items:stretch;flex:none;height:196px}
+#iDollBox{flex:none;width:362px;height:196px;position:relative;background:#1c150c;
   border:1px solid #3d3020}
-#iDollBox canvas.doll{position:absolute;top:9px;left:125px;background:none;border:none}
+#iDollBox canvas.doll{position:absolute;background:none;border:none}
 #iDollBox svg.wire{position:absolute;inset:0;pointer-events:none}
 /* a slot is a BUTTON at a body part. 118px is the widest box two columns and a
    150px figure will take inside 400, and every gear name in the file clamps to
@@ -1946,11 +1974,16 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:11px;pa
    named here. Saturation means one thing on this sheet: teal is the strange,
    red is violence. */
 #iLedger{flex:1;min-width:0;display:flex;flex-direction:column;gap:5px;overflow:auto}
-.wchip{display:flex;gap:7px;align-items:baseline;border:1px solid #4a2a24;background:#241310;
-  padding:4px 8px;font-family:var(--body);font-size:11px;line-height:1.32;cursor:help;
-  text-align:left}
+/* ⚑ #136 point 6 ("For skills and other description follow the showing of
+   battle"): a chip states the NAME and nothing else, and the sentence moves
+   into the same popover the skill cards use. A scar's full description sat
+   inline here and was the longest prose left on the sheet. */
+.wchip{position:relative;display:flex;gap:7px;align-items:baseline;border:1px solid #4a2a24;
+  background:#241310;padding:4px 8px;font-family:var(--body);font-size:11px;line-height:1.32;
+  cursor:help;text-align:left}
 .wchip .ic{flex:none;font-size:11px;color:#c15d55;line-height:1.3}
 .wchip b{color:#d99a90;font-weight:600}
+.wchip .cl{color:#a89a80;font-size:10.5px}
 .wchip.chg{border-color:#1f4a44;background:#0f1d1a}
 .wchip.chg .ic{color:#35e0c8}
 .wchip.chg b{color:#35e0c8}
@@ -2014,14 +2047,26 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:11px;pa
   white-space:nowrap;overflow:hidden}
 .iact .cost{position:absolute;bottom:3px;left:0;right:0;text-align:center;font-size:8.5px;
   line-height:1;color:var(--g4);letter-spacing:.16em}
-.iact .pop{position:absolute;bottom:82px;left:50%;transform:translateX(-50%);width:224px;
-  background:rgba(14,16,10,.98);border:1px solid #6a7a44;padding:8px 10px;z-index:60;
-  display:none;flex-direction:column;gap:3px;pointer-events:none;text-align:left}
-.iact:hover .pop{display:flex}
-.iact .pop .pt{font-family:var(--display);font-size:12px;color:#c3d18a;font-weight:600}
-.iact .pop .pr{font-family:var(--mono);font-size:8.5px;color:#8fa5a2;letter-spacing:.05em}
-.iact .pop .pd{font-family:var(--body);font-size:11px;color:#c2b493;line-height:1.4}
-.iact .pop .src{font-family:var(--mono);font-size:8px;letter-spacing:.1em;color:#35e0c8}
+/* ⚑ #136 point 6: ONE POPOVER FOR THE WHOLE SHEET, and it is the battle's.
+   Skills had it; the gear slots and the marks on the body were still
+   explaining themselves in inline prose or a browser title. Same panel, same
+   three lines (name · mono receipt · one sentence) wherever the sheet has
+   something to say. */
+.iact .pop,.slot .pop,.wchip .pop{position:absolute;bottom:calc(100% + 6px);left:50%;
+  transform:translateX(-50%);width:224px;background:rgba(14,16,10,.98);border:1px solid #6a7a44;
+  padding:8px 10px;z-index:60;display:none;flex-direction:column;gap:3px;pointer-events:none;
+  text-align:left}
+.slot .pop,.wchip .pop{border-color:#6b5330;background:rgba(20,15,8,.98)}
+.iact:hover .pop,.slot:hover .pop,.wchip:hover .pop{display:flex}
+.pop .pt{font-family:var(--display);font-size:12px;color:#c3d18a;font-weight:600}
+.slot .pop .pt,.wchip .pop .pt{color:var(--g4)}
+.pop .pr{font-family:var(--mono);font-size:8.5px;color:#8fa5a2;letter-spacing:.05em}
+.slot .pop .pr,.wchip .pop .pr{color:#a38652}
+.pop .pd{font-family:var(--body);font-size:11px;color:#c2b493;line-height:1.4}
+.pop .src{font-family:var(--mono);font-size:8px;letter-spacing:.1em;color:#35e0c8}
+/* a slot's pop hangs BELOW when the slot is near the top of the box, or it
+   would be clipped by the sheet's own scroll box */
+.slot.lowpop .pop,.wchip.lowpop .pop{bottom:auto;top:calc(100% + 6px)}
 /* the last card in the row is the way in to everything they know but cannot
    do right now: it is a DOOR, not a skill, so it does not wear a skill's
    ground. (The old sheet printed all of it, always.) */
@@ -2033,12 +2078,26 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:11px;pa
    (User: "we should spend less space for inventory... and maybe a bit more
    space to the history of character.") Two lines instead of one, the roads
    walked, ties and clan folded in, and the rest one click away. */
-#iStory{flex:1 1 auto;min-height:44px;overflow:auto;display:flex;flex-direction:column;gap:2px}
-#iStory .lbl{margin-top:2px}
-.imem{display:flex;gap:7px;align-items:baseline}
-.iacc{width:100%;background:none;border:1px dashed #4d3c22;color:#8a7449;font-family:var(--mono);
-  font-size:8px;letter-spacing:.1em;text-align:left;padding:3px 7px;margin-top:3px;cursor:pointer}
+/* ═══ #136 point 10 · THE STORY IS AN ACCORDION, AND ITS HEAD CARRIES THE
+   KILLS ═══ (User: "What happened to them accordion. And I 100% want number
+   of kills (with heads)".)
+   ⚑ The two asks are one control. A row of heads is the shortest true
+   summary of a life on this roster, so it belongs on the thing you click to
+   read the rest, not on a chip up in the header where it was competing with
+   the race and the class for the same eye. Shut, the block is one line.
+   ⚠ The heads come off `killsBy`, never `kills`. */
+#iStory{flex:0 0 auto;display:flex;flex-direction:column;gap:2px;min-height:0}
+#iStory.open{flex:1 1 auto;overflow:auto}
+#iStoryBody{display:none;flex-direction:column;gap:2px;padding-top:3px}
+#iStory.open #iStoryBody{display:flex}
+.iacc{width:100%;background:#171208;border:1px solid #3d2f1d;color:#8a7449;
+  font-family:var(--mono);font-size:8.5px;letter-spacing:.1em;text-align:left;padding:5px 9px;
+  cursor:pointer;display:flex;align-items:center;gap:10px}
 .iacc:hover{border-color:#8a7449;color:#c9b98f;background:#1c1509}
+.iacc .ah{flex:1;text-align:left}
+.iacc .kills{font-size:12px;letter-spacing:1px;cursor:pointer}
+.iacc .kn{font-family:var(--mono);font-size:8.5px;color:#a89468;letter-spacing:.06em}
+.iacc .none{color:#5c4a2c;font-style:italic;letter-spacing:0;font-size:8.5px}
 #iFoot{display:flex;justify-content:flex-end;align-items:center;gap:9px;flex:none;padding-top:2px}
 #iDismiss{font-family:var(--mono);font-size:8.5px;letter-spacing:.1em;color:#8a5a4a;
   background:none;border:1px solid #4a3028;padding:4px 10px}
@@ -2095,6 +2154,28 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:11px;pa
 .itab .tbadge{position:absolute;top:3px;right:6px;min-width:14px;height:14px;background:#8ca35a;
   color:#10140c;font-family:var(--mono);font-size:9px;line-height:14px;border-radius:7px;
   font-weight:700;letter-spacing:0}
+/* ═══ #136 point 11 · A PERK POINT IS NOT A BADGE, IT IS AN ALARM ═════════
+   (User: "Make it very clear, when i have perk to spend".)
+   ⚑ #133 put a 14px dot on a tab head and called it solved. The failure it
+   was guarding against - a banked point with nothing visible to spend it on
+   reads as a broken screen - was never about whether the number EXISTS on
+   the surface, it is about whether the player is TOLD. So it now says so in
+   four places at once and one of them moves: the tab is gold and pulsing,
+   it carries the word, a banner sits under the tabs, and the ROSTER puts a
+   star on anybody with something unspent, which is the only one of the four
+   that can be seen without opening that person's sheet. */
+.itab.hot{background:#2e2611;color:#f0dCa0;animation:perkpulse 1.9s ease-in-out infinite}
+.itab.hot .tbadge{background:#d9bd7e;box-shadow:0 0 0 2px rgba(217,189,126,.28)}
+@keyframes perkpulse{0%,100%{box-shadow:inset 0 0 0 0 rgba(217,189,126,0)}
+                     50%{box-shadow:inset 0 0 14px 0 rgba(217,189,126,.30)}}
+@media (prefers-reduced-motion:reduce){.itab.hot{animation:none}}
+#iSpend{flex:none;background:#2e2611;border-bottom:1px solid #6b5330;color:#f0dca0;
+  font-family:var(--mono);font-size:9px;letter-spacing:.1em;padding:6px 9px;line-height:1.4;
+  cursor:pointer;text-align:left;width:100%}
+#iSpend:hover{background:#3a300f}
+#iSpend b{color:#fff0c8;font-weight:700}
+/* and on the rail, so it is visible without opening anybody */
+.rmem .star{font-size:11px;color:#d9bd7e;text-shadow:0 0 5px rgba(217,189,126,.6)}
 .itabbody{flex:1;overflow:auto;padding:10px;display:none;flex-direction:column;gap:5px}
 .itabbody.on{display:flex}
 .item{width:100%;background:#221a10;border:1px solid #4d3c22;padding:5px 8px;display:flex;
@@ -4129,7 +4210,11 @@ const MUTPART={gills:'head'};
    points at a hardcoded coordinate is a lie the moment the ogre is wider
    than the human. The joint positions come out of the same table that drew
    them, so the wire always lands on the shoulder it is naming. */
-const DOLL_W=150,DOLL_H=214;
+/* the backing-store units the anatomy is authored in, and the box it is
+   DISPLAYED at. #136 point 1 shrank the display size and nothing else: the
+   anatomy table below is untouched and the anchors are scaled on the way out,
+   so a smaller doll cannot pull a leader off the shoulder it names. */
+const DOLL_W=150,DOLL_H=214,DOLL_DW=130,DOLL_DH=186;
 const DOLLBODY={
   /*        head        shoulder        waist      hip        knee foot  arm  hunch tail snout */
   human :{hy:26,hrx:14,hry:16.5,sy:48,sw:38,wy:88,ww:30,hpy:114,hw:34,ky:154,fy:190,aw:9,hn:0,tail:0,snout:0},
@@ -4141,7 +4226,7 @@ function drawDoll(cv,p){
   /* drawn at 2x and displayed at 1x: a silhouette outline goes to mush at
      device resolution otherwise, and this canvas is looked at up close. */
   const W=DOLL_W,H=DOLL_H,S=2;
-  cv.width=W*S;cv.height=H*S;cv.style.width=W+'px';cv.style.height=H+'px';
+  cv.width=W*S;cv.height=H*S;cv.style.width=DOLL_DW+'px';cv.style.height=DOLL_DH+'px';
   const g=cv.getContext('2d');
   g.setTransform(S,0,0,S,0,0);
   g.clearRect(0,0,W,H);
@@ -4206,6 +4291,93 @@ function drawDoll(cv,p){
     g.quadraticCurveTo(cx-B.hw-16,B.hpy+14,cx-B.hw-6,B.fy-2);
     g.strokeStyle=line;g.lineWidth=2.4;g.stroke();
   }
+  /* ═══ #136 point 2 · THE KIT IS WORN, NOT LISTED BESIDE ═══════════════════
+     (User: "More proper char image and arts screen (like caves of qud)".)
+     #133 drew a bare body and hung four labelled boxes around it, which is
+     half of the paper doll: the boxes said what was equipped and the picture
+     did not. A doll that does not change when you put plate on it is a
+     diagram of a species, not of a person.
+     ⛔ CLASSIFIED OFF THE ARMOUR VALUE, NOT OFF THE ITEM, for the same reason
+     the battle's three weights are: an ogre in stitched hides, a ratkin in a
+     scrap harness and anything a future event invents must all get an answer.
+     Same for the weapon: it is drawn from what the weapon DOES (range, reach,
+     hands) and never from its key, so a new entry in GEAR{} arrives wearing
+     the right silhouette without being added to a list here. */
+  const eqOf=k=>GEAR[(p.eq||{})[k]];
+  const arm_=eqOf('armour'),main_=eqOf('main'),off_=eqOf('off'),trin_=eqOf('trinket');
+  if(arm_){
+    const v=arm_.armour||0;
+    const kit=v>=70?{f:'#8e9aa0',l:'#c3ced2',plate:true}
+             :v>=25?{f:'#5f676c',l:'#8d989d',plate:false}
+                   :{f:'#6b4a2a',l:'#8f6a3f',plate:false};
+    const bp=poly.body,inset=[];
+    /* the torso, pulled in a couple of pixels so the body's own line still
+       reads as the edge of the person */
+    const bc=[cx+lean*0.5,(B.sy+B.hpy)/2];
+    bp.forEach(q=>inset.push([q[0]+(bc[0]-q[0])*0.13,q[1]+(bc[1]-q[1])*0.10]));
+    paint(inset,kit.f,kit.l);
+    /* shoulders: a cap each side on anything heavier than leather */
+    if(v>=25){
+      [[-1,'armR'],[1,'armL']].forEach(sd=>{
+        const x=cx+lean+sd[0]*(B.sw/2);
+        g.beginPath();g.ellipse(x,B.sy+5,B.aw*0.95,6.5,0,0,7);
+        g.fillStyle=kit.f;g.fill();g.strokeStyle=kit.l;g.lineWidth=1.3;g.stroke();});
+    }
+    /* and a helm on plate */
+    if(kit.plate){
+      g.beginPath();g.ellipse(hcx,hcy-1.5,B.hrx*0.95,B.hry*0.85,0,Math.PI,0);
+      g.fillStyle=kit.f;g.fill();g.strokeStyle=kit.l;g.lineWidth=1.4;g.stroke();
+      g.beginPath();g.moveTo(hcx,hcy-B.hry*0.8);g.lineTo(hcx,hcy+B.hry*0.15);
+      g.strokeStyle=kit.l;g.lineWidth=1.2;g.stroke();
+    }
+  }
+  /* the weapon, in the hand the sprites lead with (screen right) */
+  const hand={x:cx+B.ww/2+B.aw*0.6,y:armDrop-4};
+  const steel='#b9c3c6',wood='#6b4a2a';
+  const shaft=(x,y1,y2,w,col)=>{g.strokeStyle=col;g.lineWidth=w;g.lineCap='butt';
+    g.beginPath();g.moveTo(x,y1);g.lineTo(x,y2);g.stroke();};
+  if(main_){
+    const hx=hand.x+3;
+    if(main_.range){                                   /* a bow: the arc */
+      g.strokeStyle=wood;g.lineWidth=2.2;
+      g.beginPath();g.arc(hx-2,hand.y-18,20,-1.25,1.25);g.stroke();
+      g.strokeStyle='#cfc9b4';g.lineWidth=1;
+      g.beginPath();g.moveTo(hx+4,hand.y-37);g.lineTo(hx+4,hand.y+1);g.stroke();
+    }else if((main_.reach||1)>=2){                     /* a spear: long shaft */
+      shaft(hx,hand.y-46,hand.y+12,2.6,wood);
+      g.beginPath();g.moveTo(hx,hand.y-58);g.lineTo(hx+4.5,hand.y-45);
+      g.lineTo(hx-4.5,hand.y-45);g.closePath();
+      g.fillStyle=steel;g.fill();g.strokeStyle='#5c6367';g.lineWidth=1;g.stroke();
+    }else if(main_.hands===2){                         /* two hands: a head */
+      shaft(hx,hand.y-40,hand.y+10,3.2,wood);
+      g.fillStyle=steel;g.strokeStyle='#5c6367';g.lineWidth=1;
+      g.beginPath();g.rect(hx-6,hand.y-48,12,10);g.fill();g.stroke();
+    }else{                                             /* a blade and a guard */
+      shaft(hx,hand.y-34,hand.y+8,2.4,steel);
+      g.strokeStyle='#6b5330';g.lineWidth=2.4;
+      g.beginPath();g.moveTo(hx-6,hand.y-6);g.lineTo(hx+6,hand.y-6);g.stroke();
+    }
+  }
+  if(off_){
+    const ox=cx-B.ww/2-B.aw*0.6-3,oy=armDrop-8;
+    if(off_.dodge){                                    /* a shield */
+      g.beginPath();g.ellipse(ox,oy,9.5,12,0,0,7);
+      g.fillStyle='#4a3a22';g.fill();g.strokeStyle='#8f7345';g.lineWidth=1.5;g.stroke();
+      g.beginPath();g.ellipse(ox,oy,3,3,0,0,7);g.fillStyle='#8f7345';g.fill();
+    }else if(off_.rangedDmg){                          /* a quiver of arrows */
+      g.fillStyle=wood;g.strokeStyle='#8f6a3f';g.lineWidth=1.2;
+      g.beginPath();g.rect(ox-4,oy-6,8,16);g.fill();g.stroke();
+      g.strokeStyle='#cfc9b4';g.lineWidth=1;
+      [-2,0,2].forEach(d=>{g.beginPath();g.moveTo(ox+d,oy-6);g.lineTo(ox+d,oy-13);g.stroke();});
+    }else{                                             /* something held */
+      shaft(ox,oy-10,oy+8,2,steel);
+    }
+  }
+  if(trin_){                                           /* a glint at the throat */
+    g.save();g.shadowColor='#d9bd7e';g.shadowBlur=5;
+    g.beginPath();g.ellipse(hcx,B.sy+1,2.6,2.6,0,0,7);
+    g.fillStyle='#d9bd7e';g.fill();g.restore();
+  }
   /* how much of them is still standing: the torso fills from the feet up.
      The bars above print the number; this is the shape of it. */
   const uu={st:effStats(p)},hpMax=D.hp(uu),left=Math.max(0,hpMax-(p.hpLoss||0));
@@ -4255,12 +4427,17 @@ function drawDoll(cv,p){
      armR is screen-LEFT and armL is screen-RIGHT (they are the body's own
      left and right, as the scar map has always named them), and the weapon
      goes in the hand on the side the battle sprites face: screen right. */
+  /* ⚠ scaled into DISPLAY pixels on the way out. The anatomy is authored in
+     150x214 and shown at 130x186, and a leader drawn from an unscaled anchor
+     lands a centimetre off the shoulder it is naming. */
+  const kx=DOLL_DW/W,ky=DOLL_DH/H;
+  const at=(x,y)=>({x:x*kx,y:y*ky});
   cv._anchor={
-    trinket:{x:hcx+B.hrx*0.6,y:hcy-B.hry*0.5},
-    armour :{x:cx-B.ww*0.35,y:(B.sy+B.hpy)/2},
-    main   :{x:cx+B.ww/2+B.aw*0.6,y:armDrop-4},
-    off    :{x:cx-B.ww/2-B.aw*0.6,y:armDrop-4},
-    pet    :{x:cx+B.hw*0.30,y:B.fy-4}
+    trinket:at(hcx+B.hrx*0.6, hcy-B.hry*0.5),
+    armour :at(cx-B.ww*0.35, (B.sy+B.hpy)/2),
+    main   :at(cx+B.ww/2+B.aw*0.6, armDrop-4),
+    off    :at(cx-B.ww/2-B.aw*0.6, armDrop-4),
+    pet    :at(cx+B.hw*0.30, B.fy-4)
   };
 }
 /* the compact character card — one glance at who somebody is. Used wherever a
@@ -19655,13 +19832,19 @@ function drawInv(){
     /* the roster is a list of PEOPLE: the nickname, the personality clause
        and what they are carrying from the last fight belong on the card,
        not three clicks deep */
+    /* ⚑ #136 point 11 - and a ★ on anybody with something unspent. This is
+       the only one of the four spend-signals that can be seen WITHOUT
+       opening that person's sheet, which is the whole failure mode: a perk
+       point is invisible until you happen to click the right body. */
+    const owed=(p.perkPoints||0)+(p.statPoints||0);
     const wear=[];
     if(p.hpLoss)wear.push('<span style="color:#c15d55">mending '+p.hpLoss+'</span>');
     if(p.injuries&&p.injuries.length)
       wear.push('<span style="color:#c9a227">'+p.injuries.length+' scar'+
         (p.injuries.length>1?'s':'')+'</span>');
     if(sizeMismatch(p))wear.push('<span style="color:#c07a2c">ill-fit</span>');
-    box.innerHTML='<div class="rn">'+p.name+' “'+p.nick+'”'+(p.sur?' '+p.sur:'')+'</div>'+
+    box.innerHTML='<div class="rn">'+(owed?'<span class="star" title="'+owed+
+        ' unspent">★</span> ':'')+p.name+' “'+p.nick+'”'+(p.sur?' '+p.sur:'')+'</div>'+
       '<div class="race '+p.race+'">'+rIcon(p.race)+' '+p.race.toUpperCase()+' · '+
         cIcon(p.cls)+' '+CLASSES[p.cls].n+' L'+p.level+'</div>'+
       '<div class="rc" style="font-style:italic;color:#a08a5e">'+traitShort(p)+'</div>'+
@@ -19717,26 +19900,29 @@ function drawInv(){
   /* ── the ledger: every mark on this body, named once, beside the picture
      of where it is. Scars, the change, a running condition, the ring somebody
      cut round their own eye, and the armour that does not fit. */
+  /* ⚑ #136 point 6 - a chip is a NAME and a receipt now, and the sentence
+     lives in the battle's popover like everything else on this sheet. */
   const led=[];
-  if(p.mut)led.push('<div class="wchip chg" title="'+MUTS[p.mut].d.replace(/"/g,'&quot;')+'">'+
-    '<span class="ic">◈</span><span><b>'+MUTS[p.mut].n+'</b> · '+MUTS[p.mut].short+
-    (mutActs.length?'<span class="gives">GIVES: '+mutActs.join(' · ')+'</span>':'')+
-    '</span></div>');
+  const chip=(cls,ic,name,receipt,body,extra)=>
+    '<div class="wchip'+(cls?' '+cls:'')+'"><span class="ic">'+ic+'</span>'+
+    '<span><b>'+name+'</b>'+(receipt?' <span class="cl">'+receipt+'</span>':'')+
+    (extra||'')+'</span>'+
+    '<span class="pop"><span class="pt">'+name+'</span>'+
+    (receipt?'<span class="pr">'+receipt.toUpperCase()+'</span>':'')+
+    (body?'<span class="pd">'+body+'</span>':'')+'</span></div>';
+  if(p.mut)led.push(chip('chg','◈',MUTS[p.mut].n,MUTS[p.mut].short,MUTS[p.mut].d,
+    mutActs.length?'<span class="gives">GIVES: '+mutActs.join(' · ')+'</span>':''));
   if(p.cond){
     const C=CONDS[p.cond.k];
-    led.push('<div class="wchip chg" title="'+String(C.d||C.short||'').replace(/"/g,'&quot;')+'">'+
-      '<span class="ic">◌</span><span><b>'+C.n+'</b> · '+C.short+
-      ' Day '+(p.cond.days+1)+'.</span></div>');
+    led.push(chip('chg','◌',C.n,'day '+(p.cond.days+1),String(C.d||C.short||'')));
   }
-  if(p.mark==='circle')led.push('<div class="wchip mark"><span class="ic">◎</span>'+
-    '<span><b>THE CIRCLE</b> · a black ring cut round the left eye, and it does not come off. '+
-    'Anybody standing right next to '+(p.leader?'you':p.name)+' in a fight is 10 morale worse '+
-    'for it, whichever side they are on.</span></div>');
-  (p.injuries||[]).forEach(i=>led.push('<div class="wchip" title="'+
-    i.d.replace(/"/g,'&quot;')+'"><span class="ic">✕</span><span><b>'+i.n+'</b> · '+
-    i.d+'</span></div>'));
-  if(sizeMismatch(p))led.push('<div class="wchip"><span class="ic">⚠</span>'+
-    '<span><b>ILL-FITTING ARMOUR</b> · '+sizeJoke(p)+' Armour ×0.70, -1 AGI, -3 MOR.</span></div>');
+  if(p.mark==='circle')led.push(chip('mark','◎','THE CIRCLE','cut, and permanent',
+    'A black ring cut round the left eye, and it does not come off. Anybody standing right next '+
+    'to '+(p.leader?'you':p.name)+' in a fight is 10 morale worse for it, whichever side they '+
+    'are on.'));
+  (p.injuries||[]).forEach(i=>led.push(chip('','✕',i.n,'scar',i.d)));
+  if(sizeMismatch(p))led.push(chip('','⚠','ILL-FITTING ARMOUR','armour x0.70 · -1 AGI · -3 MOR',
+    sizeJoke(p)));
   if(!led.length)led.push('<div class="wchip none"><span class="ic">·</span>'+
     '<span>Nothing has happened to this one yet.</span></div>');
   /* the one exception to "scars are forever", and you had to build it */
@@ -19782,57 +19968,78 @@ function drawInv(){
     'This is his clan now. The first time his nerve goes in a battle it holds, and after that '+
     'he does not leave the field. He will not walk out over money either.</div>':'';
   const mem=(p.mem||[]),bonds=bondsFor(p).filter(x=>!x.t),hist=(p.roadHist||[]);
-  const recent=mem.slice(-2).reverse();
-  const rest=Math.max(0,mem.length-2)+bonds.length;
-  const storyHTML=(ties||clan||mem.length||hist.length||bonds.length)
-    ? '<div class="lbl" style="color:#8a7449">WHAT HAPPENED TO THEM</div>'+
-      '<div class="memlist">'+ties+clan+
-        recent.map(l=>'<div class="mm">'+l+'</div>').join('')+
-        (hist.length?'<div class="mh">THE ROAD SO FAR: '+hist.join(' · ')+'</div>':'')+
-      '</div>'+
-      (rest>0?'<button class="iacc" id="iMemBtn">'+(G.showMem?'▾':'▸')+' EVERYTHING ELSE · '+
-        rest+' more thing'+(rest>1?'s':'')+' this one has been through</button>'+
-        '<div id="iMem" class="memlist" style="display:'+(G.showMem?'flex':'none')+'">'+
-        mem.slice(0,-2).map(l=>'<div class="mm">'+l+'</div>').join('')+
-        bonds.map(x=>'<div class="mb">'+x.line+'</div>').join('')+'</div>':'')
-    : '<div class="lbl" style="color:#8a7449">WHAT HAPPENED TO THEM</div>'+
-      '<div class="memlist"><div class="mh">Nothing yet. The road is long.</div></div>';
+  /* ═══ #136 point 10 · ONE CONTROL CARRIES BOTH ASKS ═══════════════════════
+     ("What happened to them accordion. And I 100% want number of kills (with
+     heads)".) The heads ride on the accordion's own head, because a row of
+     heads IS the one-line summary of this life, which is exactly what a shut
+     accordion needs to be worth clicking. ⚠ `killsBy`, never `kills`. */
+  const heads=killHeads(p);
+  const killN=Object.values(p.killsBy||{}).reduce((a,b)=>a+b,0);
+  const inner=(ties||clan||mem.length||hist.length||bonds.length)
+    ? ties+clan+
+      mem.slice().reverse().map(l=>'<div class="mm">'+l+'</div>').join('')+
+      bonds.map(x=>'<div class="mb">'+x.line+'</div>').join('')+
+      (hist.length?'<div class="mh">THE ROAD SO FAR: '+hist.join(' · ')+'</div>':'')
+    : '<div class="mh">Nothing yet. The road is long.</div>';
+  const storyHTML=
+    '<button class="iacc" id="iMemBtn">'+
+      '<span>'+(G.showMem?'▾':'▸')+'</span>'+
+      '<span class="ah">WHAT HAPPENED TO THEM</span>'+
+      (heads?'<span class="kills" title="what this one has put in the ground">'+heads+
+        '</span><span class="kn">'+killN+' DEAD</span>'
+        :'<span class="none">nothing killed yet</span>')+
+    '</button>'+
+    '<div id="iStoryBody" class="memlist">'+inner+'</div>';
 
   $('iChar').innerHTML=
     '<div id="iHead"><div id="iHeadCol">'+
       '<div id="iName">'+fullName(p)+'</div>'+
       '<div id="iChips">'+chips+'</div>'+
       /* the personality, one clause, the rest on hover. It is who they ARE
-         and the sheet says so once. */
-      '<div id="iTrait"><b>'+TRAITS[p.trait].n+'</b> · '+traitShort(p)+
-      '<span style="color:#6b5836;font-size:9.5px;font-family:var(--mono)"> · hover for the rest'+
-      '</span></div>'+
+         and the sheet says so once. (#136 point 4: the " · hover for the rest"
+         hint is gone. Everything on this sheet explains itself on hover, so a
+         line saying so is a line the other twenty elements do not have.) */
+      '<div id="iTrait"><b>'+TRAITS[p.trait].n+'</b> · '+traitShort(p)+'</div>'+
     '</div>'+
-    '<div id="iField"><img src="'+spr.src+'" width="'+Math.round(spr.w*sf)+'" height="'+
-      Math.round(spr.h*sf)+'" alt=""><span class="fc">ON THE FIELD</span></div>'+
+    /* #136 point 5 - the portrait, and the token under it */
+    '<div id="iField"><canvas class="pface" id="iFace" width="188" height="148"></canvas>'+
+      '<div class="frow"><img src="'+spr.src+'" width="'+Math.round(spr.w*sf)+'" height="'+
+      Math.round(spr.h*sf)+'" alt=""><span class="fc">ON THE FIELD</span></div></div>'+
     '</div>'+
 
     '<div class="lbl" style="color:#8a7449">WHO THIS IS'+
       (statPts>0?' · <span style="color:#8ca35a">'+statPts+' LEVEL'+(statPts>1?'S':'')+
         ' TO SPEND. CLICK A TRAIT</span>':'')+'</div>'+
+    /* #136 point 3 - the attributes take the width, the pools take the
+       battle's narrow stack. Same two blocks, side by side. */
     '<div id="iStats">'+
-      '<div class="itells">'+['str','agi','int','mor'].map(tellCell).join('')+'</div>'+
-      '<div class="ibars">'+
-        '<div class="bcell"><div class="statLine"><span>ARMOUR <b style="color:'+bd.col+'">'+
-          bd.n+'</b></span><span class="pv">'+arm+'</span></div>'+
+      '<div id="iStatTop">'+
+        '<div class="itells">'+['str','agi','int','mor'].map(tellCell).join('')+'</div>'+
+        '<div class="ibars">'+
+          '<div class="statLine"><span>ARMOUR <b style="color:'+bd.col+'">'+bd.n+
+            '</b></span><span class="pv">'+arm+'</span></div>'+
           '<div class="bar" style="background:#243133"><i style="width:'+(arm?100:0)+
-          '%;background:var(--steel)"></i></div></div>'+
-        '<div class="bcell"><div class="statLine"><span>HITPOINTS</span><span class="pv"'+
-          (p.hpLoss?' style="color:#c15d55"':'')+'>'+hpNow+'/'+hpMax+'</span></div>'+
+            '%;background:var(--steel)"></i></div>'+
+          '<div class="statLine"><span>HITPOINTS</span><span class="pv"'+
+            (p.hpLoss?' style="color:#c15d55"':'')+'>'+hpNow+'/'+hpMax+'</span></div>'+
           '<div class="bar" style="background:#3b2126"><i style="width:'+(100*hpF)+
-          '%;background:'+(hpF>.6?'var(--blood)':hpF>.3?'#c07a2c':'#e0544c')+'"></i></div></div>'+
-        '<div class="bcell" id="iNerve" style="cursor:help"><div class="statLine"><span>NERVE'+
-          '</span><span class="pv" style="color:'+nl.col+'">'+nl.ic+' '+nl.n+'</span></div>'+
+            '%;background:'+(hpF>.6?'var(--blood)':hpF>.3?'#c07a2c':'#e0544c')+'"></i></div>'+
+          '<div class="statLine" id="iNerve" style="cursor:help"><span>NERVE</span>'+
+            '<span class="pv" style="color:'+nl.col+'">'+nl.ic+' '+nl.n+'</span></div>'+
           '<div class="bar" style="background:#20272a"><i style="width:78%;background:'+nl.col+
-          '"></i></div></div>'+
+            '"></i></div>'+
+        '</div>'+
       '</div>'+
-      /* what they DO with all that, in one mono line rather than a grid */
+      /* what they DO with all that, in one mono line rather than a grid.
+         ⚑ #136 point 7 ("You still need to show 'action' - for later builds
+         and stronger characters it could be more then 2"): the turn's action
+         budget is a PROPERTY OF THE PERSON and the sheet never printed it,
+         so a Captain's third action existed only on the battle plaque. Drawn
+         with the plaque's own apPips() so three crystals mean three
+         crystals wherever you meet them. */
       '<div class="idrv">'+
+        '<span title="what one turn buys this body">ACTIONS <b class="apips">'+
+          apPips(u.actionsMax,u.actionsMax)+'</b></span>'+
         (sw?'<span>'+sw.n+' <b>'+sw.lo+'-'+sw.hi+'</b></span>'
            :'<span>BLOW <b>nothing much</b></span>')+
         '<span>TO HIT <b>'+u.mskill+'%</b></span>'+
@@ -19854,7 +20061,7 @@ function drawInv(){
     '<div class="lbl" style="color:#8a7449">WHAT THEY CAN DO</div>'+
     '<div id="iSkills">'+acts.map(actCard).join('')+'</div>'+
 
-    '<div id="iStory">'+storyHTML+'</div>'+
+    '<div id="iStory" class="'+(G.showMem?'open':'')+'">'+storyHTML+'</div>'+
 
     '<div id="iFoot">'+
       (!p.leader?'<button id="iDismiss" title="They walk out with whatever they are wearing. '+
@@ -19870,13 +20077,20 @@ function drawInv(){
      the WIRE is what carries the meaning. */
   const dollCv=$('iDoll');
   drawDoll(dollCv,p);
-  const AX=dollCv._anchor||{},DOLL_X=125,DOLL_Y=9,BOXW=400,SLOTW=118;
+  /* the box shrank with #136 point 1, so every number here did. The canvas
+     is centred in it and the anchors come back already in display pixels. */
+  const AX=dollCv._anchor||{},BOXW=362,BOXH=196,SLOTW=108;
+  const DOLL_X=Math.round((BOXW-DOLL_DW)/2),DOLL_Y=6;
+  dollCv.style.left=DOLL_X+'px';dollCv.style.top=DOLL_Y+'px';
   const dbox=$('iDollBox'),wires=[];
-  const SLOTPOS={trinket:['r',4],main:['r',84],pet:['r',164],armour:['l',44],off:['l',132]};
+  const SLOTPOS={trinket:['r',3],main:['r',68],pet:['r',136],armour:['l',34],off:['l',110]};
   const placeSlot=(key,el)=>{
     const pos=SLOTPOS[key]||['l',4];
     el.style.top=pos[1]+'px';
     el.style.left=(pos[0]==='l'?3:BOXW-SLOTW-3)+'px';
+    /* a pop above a slot in the top half would be clipped by the sheet's
+       own scroll box, so those hang downward instead */
+    if(pos[1]<70)el.classList.add('lowpop');
     dbox.appendChild(el);
     const a=AX[key];
     if(!a)return;
@@ -19901,6 +20115,12 @@ function drawInv(){
     const b=document.createElement('button');
     b.className='slot'+(g?'':' empty')+(twoH?' blockedslot':'')+
       ((slot==='armour'&&sizeMismatch(p))?' bad':'');
+    /* #136 point 6 - the slot's own popover, in the battle's idiom */
+    const popBody=twoH
+      ? (g?g.n+' is in the pack, doing nothing. Put the '+mainG.n.toLowerCase()+
+         ' down to use it.':'Carry something one-handed and this opens up.')
+      : (g?(g.d||'')+(g.d?' ':'')+gearLine(g,p):'Nothing here yet. Anything in the stash that '+
+         'fits this slot goes on with one click.');
     b.innerHTML='<div class="sl">'+(SLOT_ICON[slot]||'')+' '+label+
       (twoH?' · <span style="color:#c07a2c">TAKEN</span>':'')+'</div>'+
       '<div class="si">'+
@@ -19908,7 +20128,12 @@ function drawInv(){
         :g?'<span class="gg">'+gGlyph(g)+'</span> '+g.n:'- empty -')+'</div>'+
       '<div class="sd">'+(twoH
         ? (g?g.n+' is in the pack, doing nothing.':'Carry something one-handed and this opens up.')
-        : g?shortGear(g):'')+'</div>';
+        : g?shortGear(g):'')+'</div>'+
+      '<span class="pop"><span class="pt">'+(g?g.n:label)+'</span>'+
+      (g?'<span class="pr">'+(shortGear(g)||label).toUpperCase()+'</span>':'')+
+      '<span class="pd">'+popBody+'</span>'+
+      (g&&!twoH?'<span class="pr" style="color:#8a7449">CLICK TO TAKE IT OFF</span>':'')+
+      '</span>';
     if(g){b.onclick=()=>{G.stash.push(p.eq[slot]);p.eq[slot]=null;drawInv();};
       bindTip(b,p.eq[slot],p);}
     placeSlot(slot,b);});
@@ -19930,7 +20155,9 @@ function drawInv(){
   }
   /* the leaders. An elbow, not a straight line: a diagonal across the whole
      box reads as a slash through the picture at this size. */
-  $('iWire').innerHTML=wires.map(w=>{
+  const wireSvg=$('iWire');
+  wireSvg.setAttribute('width',BOXW);wireSvg.setAttribute('height',BOXH);
+  wireSvg.innerHTML=wires.map(w=>{
     const mid=w[0]+(w[2]-w[0])*0.45;
     return '<path d="M'+w[0]+' '+w[1]+' L'+mid+' '+w[1]+' L'+w[2]+' '+w[3]+'" fill="none" '+
       'stroke="#4d3c22" stroke-width="1"/><circle cx="'+w[2]+'" cy="'+w[3]+
@@ -19954,19 +20181,31 @@ function drawInv(){
      whole sheet, and a tab that reset to THE STASH under the hand that just
      spent a point would be the tree drawer's old bug in a new coat. */
   const pane=$('iStash');
+  /* ⚑ #136 point 8 ("Icon of stush also consistent with global map"): the
+     road bar stopped using the 🎒 glyph in #104 because the platform's emoji
+     set painted it pink, and drew a leather sack instead. This tab is the
+     same door to the same things, so it wears the same drawn sack. */
   pane.innerHTML=
     '<div id="iTabs">'+
-      '<button class="itab'+(ITAB==='stash'?' on':'')+'" data-t="stash">🎒 THE STASH'+
+      '<button class="itab'+(ITAB==='stash'?' on':'')+'" data-t="stash">'+SACK_SVG+' THE STASH'+
         (G.mustKit?'<span class="tbadge">!</span>':'')+'</button>'+
-      '<button class="itab'+(ITAB==='perks'?' on':'')+'" data-t="perks">★ PERKS'+
+      '<button class="itab'+(ITAB==='perks'?' on':'')+(perkPts>0?' hot':'')+
+        '" data-t="perks">★ '+(perkPts>0?'SPEND IT':'PERKS')+
         (perkPts>0?'<span class="tbadge">'+perkPts+'</span>':'')+'</button>'+
     '</div>'+
+    /* #136 point 11 - and it says so in words, under the tabs, on a button
+       that goes straight there */
+    (perkPts>0?'<button id="iSpend"><b>★ '+perkPts+' PERK POINT'+(perkPts>1?'S':'')+
+      ' WAITING</b> for '+p.name.toUpperCase()+' · CLICK TO CHOOSE</button>':'')+
     '<div class="itabbody'+(ITAB==='stash'?' on':'')+'" data-b="stash" id="iStashBody"></div>'+
     '<div class="itabbody'+(ITAB==='perks'?' on':'')+'" data-b="perks" id="iPerkBody"></div>';
-  pane.querySelectorAll('.itab').forEach(b=>b.onclick=()=>{
-    ITAB=b.dataset.t;
-    pane.querySelectorAll('.itab').forEach(x=>x.classList.toggle('on',x===b));
-    pane.querySelectorAll('.itabbody').forEach(x=>x.classList.toggle('on',x.dataset.b===ITAB));});
+  const showTab=t=>{
+    ITAB=t;
+    pane.querySelectorAll('.itab').forEach(x=>x.classList.toggle('on',x.dataset.t===t));
+    pane.querySelectorAll('.itabbody').forEach(x=>x.classList.toggle('on',x.dataset.b===t));};
+  pane.querySelectorAll('.itab').forEach(b=>b.onclick=()=>showTab(b.dataset.t));
+  const spendBtn=$('iSpend');
+  if(spendBtn)spendBtn.onclick=()=>showTab('perks');
 
   const st=$('iStashBody');
   st.innerHTML='<div class="lbl" style="color:#8a7449">CLICK A THING TO PUT IT ON '+
@@ -20046,8 +20285,17 @@ function drawInv(){
       TIP.style.display='none';drawInv();};});
   /* class and race explain themselves wherever they are named */
   bindLoreTips($('iChar'),p);
+  /* the accordion toggles in place: a redraw would scroll the sheet back to
+     the top under the hand that just opened it */
   const memBtn=$('iMemBtn');
-  if(memBtn)memBtn.onclick=()=>{G.showMem=!G.showMem;drawInv();};
+  if(memBtn)memBtn.onclick=()=>{
+    G.showMem=!G.showMem;
+    $('iStory').classList.toggle('open',G.showMem);
+    memBtn.firstChild.textContent=G.showMem?'▾':'▸';};
+  /* #136 point 5 - the painted portrait, same bust the roster and the
+     promotion card draw. It is 2x its box for the same reason the doll is. */
+  const face=$('iFace');
+  if(face)bustFor(face,p);
   const nv=$('iNerve');
   if(nv){
     nv.onmouseenter=e=>{
