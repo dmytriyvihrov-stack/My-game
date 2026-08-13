@@ -1882,8 +1882,13 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:11px;pa
    (BB reference: the name and what somebody IS costs three lines there too.
    The old header was a name, a class line, a personality line, a kill row, a
    clan block, a circle block and every tie, all before a single number.) */
+/* #140 point 5 ("Portrain and icon feel better at the left sied"): the tile
+   leads the row now. The name reads off the face rather than back to it, and
+   it puts the two pictures of this person (portrait, field token) in the same
+   corner as the rail of faces they were picked from. */
 #iHead{display:flex;gap:12px;align-items:flex-start}
 #iHeadCol{flex:1;min-width:0}
+#iHead #iField{order:-1}
 #iName{font-family:var(--display);font-size:19px;color:#e0d3b4;font-weight:600;line-height:1.12}
 #iChips{display:flex;gap:5px;margin-top:3px;flex-wrap:wrap;align-items:center}
 .ichip{font-family:var(--mono);font-size:8.5px;letter-spacing:.1em;color:var(--g3);
@@ -1942,10 +1947,27 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:11px;pa
 .ibars .statLine .pv{color:#d8d5cc}
 .ibars .bar{height:7px;border:1px solid rgba(0,0,0,.5);margin-bottom:3px}
 .ibars .bar i{display:block;height:100%}
-/* what they DO, as one mono line under the bars */
-.idrv{display:flex;gap:14px;flex-wrap:wrap;font-family:var(--mono);font-size:9.5px;
-  color:#8a7449;letter-spacing:.04em;border-top:1px solid #2a2114;padding-top:5px}
+/* ═══ #140 point 1 · WHAT THE SWING ACTUALLY DOES ═════════════════════════
+   ("reorginise this block - probably a bit mor info about damage".)
+   The line was six equal cells in one grey weight, so the weapon's damage -
+   the thing the whole row is about - read the same as STEP. It is a cell of
+   its own now, first after the actions, in the display face and gold, with
+   the reach beside it and the arithmetic behind it on hover: the base dice
+   the weapon rolls, and what this body's build and nerve add to them.
+   ⚑ #140 point 2 sent ARMOUR STOPS out of this row entirely. It was never a
+   property of the swing: it is what THIS person's own armour does to an
+   incoming blow, so it belongs on the band chip in the bar above, which is
+   where its sentence already lives (ARMOUR_BANDS[k].d). A defensive number
+   sitting in a row of offensive ones is the "readout printing the wrong
+   unit" trap in a milder coat. */
+.idrv{display:flex;gap:14px;flex-wrap:wrap;align-items:baseline;font-family:var(--mono);
+  font-size:9.5px;color:#8a7449;letter-spacing:.04em;border-top:1px solid #2a2114;padding-top:5px}
 .idrv b{color:var(--g4);font-weight:400}
+.idrv .dmg{font-family:var(--display);font-size:13px;color:#e0d3b4;letter-spacing:.02em;
+  cursor:help}
+.idrv .dmgw{cursor:help}
+/* the band chip in the armour row: it explains the whole absorb rule */
+.ibars .band{cursor:help;border-bottom:1px dotted currentColor}
 /* ── the body: the doll IS the gear map (Caves of Qud) ──────────────────── */
 /* ⚠ THE HEIGHT IS THE FOLD RULE AND IT IS LOAD-BEARING. Without it the
    ledger stretches this row instead of scrolling inside itself, and a body
@@ -1954,15 +1976,28 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:11px;pa
    ⚑ #136 point 1 ("the middle part take a bit smaller space"): 232 -> 196
    and the box 400 -> 362. That is the DOLL drawn smaller, not furniture
    moved: the figure and the slot columns are one picture and shrink together. */
-#iBody{display:flex;gap:11px;align-items:stretch;flex:none;height:196px}
-#iDollBox{flex:none;width:362px;height:196px;position:relative;background:#1c150c;
+/* ⚑ #140 point 4 ("What happened to the body - i think it could be written
+   below figure"): the marks were a column to the RIGHT of the doll, which
+   made the figure share its row with a list and capped how wide the slot
+   columns could ever be. Underneath, the figure gets the whole width, the
+   slots get real boxes, and the marks become a wrapping row of chips whose
+   detail is in the popover anyway. */
+/* ⚠ AND THE BLOCK SHRINKS BEFORE THE SCREEN DOES. A ratkin in ill-fitting
+   human armour carries an extra mark AND wraps the swing line, which put the
+   sheet 17px over on exactly two of the three races. The FIGURE is fixed and
+   the LEDGER is the give: `flex:0 1 auto` here plus `flex:1 1 auto` with a
+   scroll on the ledger means a crowded body loses a row of chips (which have
+   their detail in the popover anyway) rather than pushing the whole column
+   into a scrollbar. Measured on all three races and the Captain. */
+#iBody{display:flex;flex-direction:column;gap:6px;flex:0 1 auto;min-height:0}
+#iDollBox{width:100%;height:196px;flex:none;position:relative;background:#1c150c;
   border:1px solid #3d3020}
 #iDollBox canvas.doll{position:absolute;background:none;border:none}
 #iDollBox svg.wire{position:absolute;inset:0;pointer-events:none}
 /* a slot is a BUTTON at a body part. 118px is the widest box two columns and a
    150px figure will take inside 400, and every gear name in the file clamps to
    two lines in it. ⚠ .slot is this sheet's own class and nothing else's. */
-.slot{position:absolute;width:118px;background:#221a10;border:1px solid #4d3c22;
+.slot{position:absolute;width:150px;background:#221a10;border:1px solid #4d3c22;
   padding:4px 7px;display:flex;flex-direction:column;gap:1px;text-align:left;
   font-family:var(--body)}
 .slot:hover{border-color:var(--g3);background:#2a2114}
@@ -1981,14 +2016,16 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:11px;pa
    it's nice if it's showing on the body image.") Both: marked on the part,
    named here. Saturation means one thing on this sheet: teal is the strange,
    red is violence. */
-#iLedger{flex:1;min-width:0;display:flex;flex-direction:column;gap:5px;overflow:auto}
+/* #140 point 4 - a wrapping row under the figure, not a column beside it */
+#iLedger{flex:1 1 auto;min-height:24px;max-height:56px;display:flex;flex-wrap:wrap;gap:5px;
+  overflow:auto;align-content:flex-start}
 /* ⚑ #136 point 6 ("For skills and other description follow the showing of
    battle"): a chip states the NAME and nothing else, and the sentence moves
    into the same popover the skill cards use. A scar's full description sat
    inline here and was the longest prose left on the sheet. */
-.wchip{position:relative;display:flex;gap:7px;align-items:baseline;border:1px solid #4a2a24;
-  background:#241310;padding:4px 8px;font-family:var(--body);font-size:11px;line-height:1.32;
-  cursor:help;text-align:left}
+.wchip{position:relative;display:flex;gap:6px;align-items:baseline;border:1px solid #4a2a24;
+  background:#241310;padding:3px 8px;font-family:var(--body);font-size:11px;line-height:1.3;
+  cursor:help;text-align:left;flex:none;max-width:100%}
 .wchip .ic{flex:none;font-size:11px;color:#c15d55;line-height:1.3}
 .wchip b{color:#d99a90;font-weight:600}
 .wchip .cl{color:#a89a80;font-size:10.5px}
@@ -2150,7 +2187,13 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:11px;pa
    visible to spend it on reads as a broken screen (the lesson the tree
    drawer was written around), and a tab can hide one completely. Hence the
    ★ badge on the tab head: it is visible from either side. */
-#iStash{width:300px;background:#161009;border-left:2px solid #3d2f1d;flex:none;
+/* ⚑ #140 point 3 ("at least 50% more space for perks / inventory - it is huge
+   part of the game"): 300 -> 450, which is his 50% exactly. The width comes
+   off the character column, which had room to give once the marks moved under
+   the figure (point 4) and the pools stopped spanning the band (#136 point 3).
+   ⚠ Every number in the body zone below is measured against the column this
+   leaves, so the two moves are one change. */
+#iStash{width:450px;background:#161009;border-left:2px solid #3d2f1d;flex:none;
         display:flex;flex-direction:column;min-height:0;padding:0;overflow:hidden}
 #iTabs{display:flex;flex:none;border-bottom:2px solid #3d2f1d}
 .itab{flex:1;position:relative;font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;
@@ -2738,8 +2781,13 @@ a.popt.sendit{display:block;text-decoration:none}
 </section>
 
 <section class="screen" id="inv">
-  <div id="iBar"><h2>THE COMPANY</h2>
-    <span class="lbl" style="color:#8a7449">click a stash item to equip · click a slot to strip</span>
+  <!-- #140 points 11+12: the standing instruction is gone (every control on
+       this screen says what it does on hover, and a line telling you how to
+       click is the one piece of text that can never be true of all of them),
+       and the title is the company's OWN name, the two words the player chose
+       at the Three Bells. drawInv fills it; an old save with no name falls
+       back to the generic. -->
+  <div id="iBar"><h2 id="iCoName">THE COMPANY</h2>
     <span id="iNag" class="lbl" style="color:#c9a227;display:none">NEW KIT IN THE STASH — PUT IT ON SOMEBODY</span>
     <div class="sep"></div><button id="iBack">BACK TO THE ROAD</button></div>
   <div id="iMain"><div id="iRoster"></div><div id="iChar"></div><div id="iStash"></div></div>
@@ -4079,8 +4127,14 @@ function swingOf(u){
   const a=(u.acts||[]).filter(x=>x.dmg&&!x.arcane).sort((x,y)=>y.dmg[1]-x.dmg[1])[0];
   if(!a)return null;
   const m=1+(u.morBonus||0)+thews(u,a);
+  /* ⚠ `a` and `m` ride along for #140 point 1's hover, which shows the dice
+     the weapon rolls and what this body adds to them. They are handed BACK
+     rather than recomputed at the call site: the choice of which act counts
+     as "the swing" is this function's rule, and a second copy of it in the
+     sheet is the shape that has bitten this file repeatedly. */
   return {n:a.n,lo:Math.round((a.dmg[0]+(u.dmgBonus||0))*m),
-              hi:Math.round((a.dmg[1]+(u.dmgBonus||0))*m)};
+              hi:Math.round((a.dmg[1]+(u.dmgBonus||0))*m),
+          a:a,mult:m,bonus:(u.dmgBonus||0)};
 }
 /* ═══════════════════════════════════════════════════════════════════════
    ROAD HISTORY — 2-4 remembered things per person, no bonuses attached.
@@ -4293,13 +4347,18 @@ function drawDoll(cv,p){
                 [cx+B.ww/2+lean*0.5,B.wy],[cx+B.hw/2,B.hpy],
                 [cx-B.hw/2,B.hpy],[cx-B.ww/2+lean*0.5,B.wy]]);
   /* the arms hang off the shoulder corners and end just past the hip: that
-     end point is the HAND, and it is where the weapon boxes wire to. */
-  const armDrop=B.hpy+8;
+     end point is the HAND, and it is where the weapon boxes wire to.
+     ⚑ #140 point 9 ("add a bit more space between hand and body"): GAP pushes
+     the forearm and the hand outward, so the silhouette has daylight between
+     the arm and the waist instead of one solid mass. It is applied at the
+     WRIST end only: widening the shoulder too would just make everybody
+     broader, which is the ogre's whole distinguishing feature. */
+  const armDrop=B.hpy+8,GAP=B.aw*0.85+2;
   shape('armR',[[cx-B.sw/2+lean,B.sy+2],[cx-B.sw/2-B.aw+lean,B.sy+6],
-                [cx-B.ww/2-B.aw,armDrop],[cx-B.ww/2-1,armDrop-3],
+                [cx-B.ww/2-B.aw-GAP,armDrop],[cx-B.ww/2-1-GAP,armDrop-3],
                 [cx-B.sw/2+lean+2,B.sy+22]]);
   shape('armL',[[cx+B.sw/2+lean,B.sy+2],[cx+B.sw/2+B.aw+lean,B.sy+6],
-                [cx+B.ww/2+B.aw,armDrop],[cx+B.ww/2+1,armDrop-3],
+                [cx+B.ww/2+B.aw+GAP,armDrop],[cx+B.ww/2+1+GAP,armDrop-3],
                 [cx+B.sw/2+lean-2,B.sy+22]]);
   const lw=B.hw/2-2;
   shape('legL',[[cx-B.hw/2,B.hpy-2],[cx-1.5,B.hpy-2],[cx-3,B.ky],[cx-5,B.fy],
@@ -4369,8 +4428,10 @@ function drawDoll(cv,p){
       g.strokeStyle=kit.l;g.lineWidth=1.2;g.stroke();
     }
   }
-  /* the weapon, in the hand the sprites lead with (screen right) */
-  const hand={x:cx+B.ww/2+B.aw*0.6,y:armDrop-4};
+  /* ⚑ #140 point 8 - the weapon goes in the figure's RIGHT hand, which on a
+     body facing the player is the viewer's LEFT. It was on the other side,
+     which read as left-handed to everybody who looked at it. */
+  const hand={x:cx-B.ww/2-B.aw*0.6-GAP,y:armDrop-4};
   const steel='#b9c3c6',wood='#6b4a2a';
   const shaft=(x,y1,y2,w,col)=>{g.strokeStyle=col;g.lineWidth=w;g.lineCap='butt';
     g.beginPath();g.moveTo(x,y1);g.lineTo(x,y2);g.stroke();};
@@ -4397,7 +4458,7 @@ function drawDoll(cv,p){
     }
   }
   if(off_){
-    const ox=cx-B.ww/2-B.aw*0.6-3,oy=armDrop-8;
+    const ox=cx+B.ww/2+B.aw*0.6+GAP+3,oy=armDrop-8;
     if(off_.dodge){                                    /* a shield */
       g.beginPath();g.ellipse(ox,oy,9.5,12,0,0,7);
       g.fillStyle='#4a3a22';g.fill();g.strokeStyle='#8f7345';g.lineWidth=1.5;g.stroke();
@@ -4473,8 +4534,11 @@ function drawDoll(cv,p){
   cv._anchor={
     trinket:at(hcx+B.hrx*0.6, hcy-B.hry*0.5),
     armour :at(cx-B.ww*0.35, (B.sy+B.hpy)/2),
-    main   :at(cx+B.ww/2+B.aw*0.6, armDrop-4),
-    off    :at(cx-B.ww/2-B.aw*0.6, armDrop-4),
+    /* main is the figure's RIGHT hand: viewer's left. See point 8 above. */
+    main   :at(cx-B.ww/2-B.aw*0.6-GAP, armDrop-4),
+    off    :at(cx+B.ww/2+B.aw*0.6+GAP, armDrop-4),
+    /* the bag rides the hip on the weapon side, low and behind the hand */
+    bag    :at(cx-B.hw*0.42, B.hpy+4),
     pet    :at(cx+B.hw*0.30, B.fy-4)
   };
 }
@@ -4648,7 +4712,19 @@ const GEAR={
    what you put there; the new ones describe what is holding it, which is what
    makes "this takes both hands" read as a fact about the body rather than an
    arbitrary rule. A shield, a quiver and a knife are not "second weapons". */
-const SLOTS=[['armour','ARMOUR'],['main','MAIN HAND'],['off','OFF HAND'],['trinket','TRINKET']];
+/* ⚑ #140 point 7 · THE BAG, AND IT IS DELIBERATELY EMPTY ══════════════════
+   (User: "Add 'one more' item slot for character - a bag. In the future you
+   will be able to take throwbles and potions there".)
+   #133 PARKED this on the honest ground that the game has no throwable and no
+   mid-fight swap rule, so a bag would be furniture. He has now ruled it in
+   anyway, and the ruling is right for a reason worth writing down: the slot
+   is not the feature, it is the PROMISE of one, and a promise on the sheet is
+   what makes the first throwable a thing the player already has somewhere to
+   put. ⛔ NOTHING IN `GEAR{}` CARRIES `slot:'bag'` YET, on purpose: the slot
+   renders empty, says what it is for, and cannot be filled by accident. The
+   day a potion exists it needs no code here. */
+const SLOTS=[['armour','ARMOUR'],['main','MAIN HAND'],['off','OFF HAND'],
+             ['trinket','TRINKET'],['bag','BAG']];
 
 /* ═══════════════════════════════════════════════════════════════════════
    PETS — the Captain only. A pet never fights. It follows him, stands at
@@ -5022,7 +5098,7 @@ function materialPool(o){
 }
 /* old saves carry separate wood/iron — fold them into one pool on load */
 materialPool(LEGACY.bank);
-const SLOT_ICON={armour:'⛨',main:'✊',off:'🤚',trinket:'✧'};
+const SLOT_ICON={armour:'⛨',main:'✊',off:'🤚',trinket:'✧',bag:'▣'};
 const cIcon=k=>CLASS_ICON[k]||'✦';
 const rIcon=k=>RACE_ICON[k]||'◆';
 /* ═══ HOVERING A CLASS OR A RACE SAYS WHAT IT IS (user) ══════════════════
@@ -20064,17 +20140,21 @@ function drawInv(){
       Math.round(spr.h*sf)+'" alt=""><span class="fc">ON THE FIELD</span></div></div>'+
     '</div>'+
 
-    '<div class="lbl" style="color:#8a7449">WHO THIS IS'+
-      (statPts>0?' · <span style="color:#8ca35a">'+statPts+' LEVEL'+(statPts>1?'S':'')+
-        ' TO SPEND. CLICK A TRAIT</span>':'')+'</div>'+
+    /* #140 point 10 - the "WHO THIS IS" label is gone. A box of four named
+       attributes does not need a heading telling you it is about the person
+       whose name is directly above it. The spend prompt survives on its own,
+       because that one is a call to action rather than a caption. */
+    (statPts>0?'<div class="lbl" style="color:#8ca35a">'+statPts+' LEVEL'+
+      (statPts>1?'S':'')+' TO SPEND. CLICK A TRAIT</div>':'')+
     /* #136 point 3 - the attributes take the width, the pools take the
        battle's narrow stack. Same two blocks, side by side. */
     '<div id="iStats">'+
       '<div id="iStatTop">'+
         '<div class="itells">'+['str','agi','int','mor'].map(tellCell).join('')+'</div>'+
         '<div class="ibars">'+
-          '<div class="statLine"><span>ARMOUR <b style="color:'+bd.col+'">'+bd.n+
-            '</b></span><span class="pv">'+arm+'</span></div>'+
+          /* #140 point 2 - the band carries the absorb rule on hover */
+          '<div class="statLine"><span>ARMOUR <b class="band" id="iBand" style="color:'+bd.col+
+            '">'+bd.n+'</b></span><span class="pv">'+arm+'</span></div>'+
           '<div class="bar" style="background:#243133"><i style="width:'+(arm?100:0)+
             '%;background:var(--steel)"></i></div>'+
           '<div class="statLine"><span>HITPOINTS</span><span class="pv"'+
@@ -20097,21 +20177,24 @@ function drawInv(){
       '<div class="idrv">'+
         '<span title="what one turn buys this body">ACTIONS <b class="apips">'+
           apPips(u.actionsMax,u.actionsMax)+'</b></span>'+
-        (sw?'<span>'+sw.n+' <b>'+sw.lo+'-'+sw.hi+'</b></span>'
-           :'<span>BLOW <b>nothing much</b></span>')+
+        (sw?'<span class="dmgw" id="iDmg">'+sw.n+' <b class="dmg">'+sw.lo+'-'+sw.hi+'</b>'+
+             (sw.a&&sw.a.reach>1?' <span style="color:#8a7449">reach '+sw.a.reach+'</span>':'')+
+             (sw.a&&sw.a.range?' <span style="color:#8a7449">range '+sw.a.range+'</span>':'')+
+             '</span>'
+           :'<span>BLOW <b class="dmg">nothing much</b></span>')+
         '<span>TO HIT <b>'+u.mskill+'%</b></span>'+
         '<span>DODGE <b>'+dodgeOf(u)+'</b></span>'+
         '<span>STEP <b>'+(RACESTEP[p.race]||4)+' hex'+
           (p.cls==='cutter'?' (+1 first)':'')+'</b></span>'+
-        '<span>ARMOUR STOPS <b>'+Math.round(bd.absorb*100)+'%</b></span>'+
       '</div>'+
     '</div>'+
 
-    '<div class="lbl" style="color:#8a7449">THE BODY · what it carries, and what happened to it'+
-      '</div>'+
+    /* #140 point 6 - the label is two words now. The picture underneath is
+       self-evidently a body wearing things. */
+    '<div class="lbl" style="color:#8a7449">THE BODY</div>'+
     '<div id="iBody">'+
       '<div id="iDollBox"><canvas id="iDoll" class="doll"></canvas>'+
-      '<svg class="wire" id="iWire" width="400" height="232"></svg></div>'+
+      '<svg class="wire" id="iWire"></svg></div>'+
       '<div id="iLedger">'+led.join('')+'</div>'+
     '</div>'+
 
@@ -20136,11 +20219,21 @@ function drawInv(){
   drawDoll(dollCv,p);
   /* the box shrank with #136 point 1, so every number here did. The canvas
      is centred in it and the anchors come back already in display pixels. */
-  const AX=dollCv._anchor||{},BOXW=362,BOXH=196,SLOTW=108;
+  const dbox=$('iDollBox'),wires=[];
+  /* the box is the column's full width now (#140 point 4), so it is MEASURED
+     rather than assumed: the character column changes width whenever the
+     right pane does, and a hardcoded 362 would put the figure off centre the
+     next time it moves. */
+  const AX=dollCv._anchor||{},BOXW=dbox.clientWidth||578,BOXH=196,SLOTW=150;
   const DOLL_X=Math.round((BOXW-DOLL_DW)/2),DOLL_Y=6;
   dollCv.style.left=DOLL_X+'px';dollCv.style.top=DOLL_Y+'px';
-  const dbox=$('iDollBox'),wires=[];
-  const SLOTPOS={trinket:['r',3],main:['r',68],pet:['r',136],armour:['l',34],off:['l',110]};
+  /* ⚑ #140 point 8 ("Main hand = right hand. Right now is left"): the figure
+     faces the player, so its RIGHT hand is on the viewer's LEFT. The weapon,
+     its slot and its leader all moved to that side together, and the off hand
+     took the other. Three things had to agree or the wire would point across
+     the body. The BAG hangs at the hip on the shield side. */
+  const SLOTPOS={armour:['l',3],main:['l',70],bag:['l',137],
+                 trinket:['r',3],off:['r',70],pet:['r',137]};
   const placeSlot=(key,el)=>{
     const pos=SLOTPOS[key]||['l',4];
     el.style.top=pos[1]+'px';
@@ -20173,19 +20266,25 @@ function drawInv(){
     b.className='slot'+(g?'':' empty')+(twoH?' blockedslot':'')+
       ((slot==='armour'&&sizeMismatch(p))?' bad':'');
     /* #136 point 6 - the slot's own popover, in the battle's idiom */
+    /* #140 point 7 - the bag says what it is FOR, since nothing can fill it
+       yet. An empty slot with no explanation reads as a broken screen. */
+    const emptyLine=slot==='bag'
+      ? 'Nothing to carry yet. This is where throwables and potions will ride '+
+        'when the road starts handing them out.'
+      : 'Nothing here yet. Anything in the stash that fits this slot goes on with one click.';
     const popBody=twoH
       ? (g?g.n+' is in the pack, doing nothing. Put the '+mainG.n.toLowerCase()+
          ' down to use it.':'Carry something one-handed and this opens up.')
-      : (g?(g.d||'')+(g.d?' ':'')+gearLine(g,p):'Nothing here yet. Anything in the stash that '+
-         'fits this slot goes on with one click.');
+      : (g?(g.d||'')+(g.d?' ':'')+gearLine(g,p):emptyLine);
     b.innerHTML='<div class="sl">'+(SLOT_ICON[slot]||'')+' '+label+
       (twoH?' · <span style="color:#c07a2c">TAKEN</span>':'')+'</div>'+
       '<div class="si">'+
       (twoH?'Both hands are on the '+mainG.n.toLowerCase()+'.'
-        :g?'<span class="gg">'+gGlyph(g)+'</span> '+g.n:'- empty -')+'</div>'+
+        :g?'<span class="gg">'+gGlyph(g)+'</span> '+g.n
+          :slot==='bag'?'- nothing to carry -':'- empty -')+'</div>'+
       '<div class="sd">'+(twoH
         ? (g?g.n+' is in the pack, doing nothing.':'Carry something one-handed and this opens up.')
-        : g?shortGear(g):'')+'</div>'+
+        : g?shortGear(g):(slot==='bag'?'throwables and potions, later':''))+'</div>'+
       '<span class="pop"><span class="pt">'+(g?g.n:label)+'</span>'+
       (g?'<span class="pr">'+(shortGear(g)||label).toUpperCase()+'</span>':'')+
       '<span class="pd">'+popBody+'</span>'+
@@ -20353,6 +20452,49 @@ function drawInv(){
      promotion card draw. It is 2x its box for the same reason the doll is. */
   const face=$('iFace');
   if(face)bustFor(face,p);
+  /* #140 point 12 - the company's own name over its own screen */
+  const coEl=$('iCoName');
+  if(coEl)coEl.textContent=(G.coName||'THE COMPANY').toUpperCase();
+  /* ═══ #140 point 1 · THE SWING, TAKEN APART ═══════════════════════════════
+     The dice the weapon rolls, and what this body adds to them. Everything
+     here comes off the object swingOf() already built, so the hover cannot
+     drift from the number beside it. */
+  const dmgEl=$('iDmg');
+  if(dmgEl&&sw&&sw.a){
+    dmgEl.onmouseenter=e=>{
+      const base=sw.a.dmg,up=Math.round((sw.mult-1)*100);
+      TIP.innerHTML='<div style="font-family:var(--display);font-size:14px;color:#e0d3b4;'+
+        'margin-bottom:4px">'+sw.n+'</div>'+
+        '<div style="font-family:var(--mono);font-size:10px;color:#8fa5a2;line-height:1.7">'+
+        'THE WEAPON ROLLS <b style="color:#c9c6bb">'+base[0]+'-'+base[1]+'</b><br>'+
+        (sw.bonus?'THEIR ARM ADDS <b style="color:#8ca35a">+'+sw.bonus+'</b><br>':'')+
+        (up?'BUILD AND NERVE <b style="color:#8ca35a">+'+up+'%</b><br>':'')+
+        'SO IT LANDS FOR <b style="color:#e0d3b4">'+sw.lo+'-'+sw.hi+'</b>'+
+        (sw.a.reach>1?'<br>REACH <b style="color:#c9c6bb">'+sw.a.reach+' hexes</b>':'')+
+        (sw.a.range?'<br>RANGE <b style="color:#c9c6bb">'+sw.a.range+' hexes</b>':'')+
+        (sw.a.hands===2?'<br><b style="color:#c07a2c">BOTH HANDS</b>':'')+
+        '</div>'+
+        '<div style="font-style:italic;color:#a38652;margin-top:5px;font-size:11.5px">'+
+        'What it does to a body once their armour has taken its share is the '+
+        'armour\'s business, not the weapon\'s. Hover their band to see it.</div>';
+      TIP.style.display='block';moveTip(e);};
+    dmgEl.onmousemove=moveTip;dmgEl.onmouseleave=()=>{TIP.style.display='none';};
+  }
+  /* #140 point 2 - and the band is where the absorb rule lives */
+  const bandEl=$('iBand');
+  if(bandEl){
+    bandEl.onmouseenter=e=>{
+      TIP.innerHTML='<div style="font-family:var(--display);font-size:14px;color:'+bd.col+
+        ';margin-bottom:4px">'+bd.n+' ARMOUR</div>'+
+        '<div style="font-size:11.5px;color:#c2b493;line-height:1.45">'+bd.d+'</div>'+
+        '<div style="font-family:var(--mono);font-size:10px;color:#8fa5a2;margin-top:5px">'+
+        'STOPS <b style="color:#c9c6bb">'+Math.round(bd.absorb*100)+'%</b> OF EVERY BLOW · '+
+        '<b style="color:#c9c6bb">'+Math.round(bd.through*100)+'%</b> REACHES THE BODY</div>'+
+        (arm?'<div style="font-family:var(--mono);font-size:10px;color:#8fa5a2">'+
+          'AND THERE ARE <b style="color:#c9c6bb">'+arm+'</b> POINTS OF IT TO CHEW THROUGH</div>':'');
+      TIP.style.display='block';moveTip(e);};
+    bandEl.onmousemove=moveTip;bandEl.onmouseleave=()=>{TIP.style.display='none';};
+  }
   const nv=$('iNerve');
   if(nv){
     nv.onmouseenter=e=>{
