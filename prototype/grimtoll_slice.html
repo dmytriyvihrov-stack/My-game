@@ -6306,9 +6306,36 @@ function nearWeight(a,b){
   const d=hdist([a.col,a.row],[b.col,b.row]);
   return clamp(1.05-d*0.09,0.35,1);
 }
+/* ═══ #129 - SOFTER AT THE TOP OF THE SLIDE, AND A RUNG IN BETWEEN ════════
+   (User, 2026-08-13, and this is his SECOND pass on the same complaint:
+   "for morale I feel it should be less severe penalties, especially for normal
+   state and a bit less severe for wavering... or maybe also split wavering
+   into a bit wavering and really wavering... more gradual going down scale
+   rather than, it feels very steep.")
+
+   The first pass softened BREAKING from -18/-7, and the note recording it is
+   below. What this pass found is that the size of the numbers was never the
+   whole story: the first bad rung arrived after a single 30-point drop and
+   cost 8 immediately, so the slide read as a cliff with one landing on it.
+   WAVERING drops to -5/-2 and SHAKEN is new between it and BREAKING.
+
+   ⛔ THE FLOOR AND THE TOP DO NOT MOVE. A routed body is exactly as routed,
+   and IT ROCKS still has to be earned. The change is entirely in the middle,
+   which is the part being described.
+
+   ⚑ THE NOTE THAT USED TO SIT HERE SAID THE MECHANICAL TIERS MUST STAY FOUR,
+   and it was right about its own case: a fifth state ABOVE steady would make a
+   surging body read as not-steady and drop it into branches written for the
+   shaken. SHAKEN is BELOW steady, so every `state!=='steady'` test SHOULD
+   include it, and all five of them want to: the ogre will not throw a shaken
+   ally, CALLED IN reaches them, fear acts count them, the AI withdraw branch
+   opens, and `feral` gains its damage. The two readers that needed a new case
+   by hand are the ones that name the states one at a time, targetScore and the
+   scream's hold odds. */
 const STATES={
   steady  :{n:'STEADY',   col:'#8ca35a', hit:0,  dodge:0},
-  wavering:{n:'WAVERING', col:'#c9a227', hit:-8, dodge:-3},
+  wavering:{n:'WAVERING', col:'#c9a227', hit:-5, dodge:-2},
+  shaken  :{n:'SHAKEN',   col:'#c2a86a', hit:-9, dodge:-4},
   /* softened from −18/−7 (user: "less severe penalties"): at those numbers a
      breaking unit could not meaningfully act, so the ladder had four rungs
      and a corpse. They are losing it now, not gone. */
@@ -6319,21 +6346,29 @@ const STATES={
    Five named steps, worst at the bottom, with the current one boxed and the
    rest dimmed — and on hover you see the whole scale and what each step does.
 
-   Note it is FIVE display bands over FOUR mechanical states: the top band is
+   Note it is SIX display bands over FIVE mechanical states: the top band is
    a distinction the player can see but the engine does not act on. That is
    deliberate — a great deal of code asks `state==='steady'`, and a fifth real
-   state would have made a *surging* unit read as not-steady, which would (for
-   one example) have sent it into the fall-back branch reserved for the shaken.
-   The mechanical tiers stay four; the ladder just tells the truth in more
-   detail than STEADY/WAVERING/BREAKING/ROUTED could. */
+   state ABOVE steady would have made a *surging* unit read as not-steady,
+   which would (for one example) have sent it into the fall-back branch
+   reserved for the shaken. #129 added a state BELOW steady instead, where
+   every one of those tests wants to include it. See the note on STATES. */
 const LADDER=[
   {at:.90,n:'It rocks',    ic:'😄',col:'#7fae4e',bg:'rgba(127,174,78,.30)',
    d:'<b>+5 to hit and +5% damage.</b> Nothing here frightens them, and it shows. '+
      'Hard to reach and easy to lose — you have to earn it in the fight.'},
   {at:.70,n:'Happy',       ic:'🙂',col:'#a3bd6c',bg:'rgba(163,189,108,.20)',
    d:'Steady. No penalties, full skill, full dodge. This is where most fights start.'},
-  {at:.40,n:'Ok',          ic:'😐',col:'#c9b98a',bg:'rgba(180,170,140,.20)',
-   d:'Wavering — 8 off their skill, 3 off their dodge. Watching the line.'},
+  /* #129 - was .40 and 8/3. The first bad rung is a shallower step now, and it
+     is a longer band, so a company that takes one bad turn does not fall two
+     rungs on it. */
+  {at:.52,n:'Ok',          ic:'😐',col:'#c9b98a',bg:'rgba(180,170,140,.20)',
+   d:'Wavering — 5 off their skill, 2 off their dodge. Watching the line.'},
+  /* #129 - the new rung, and the whole reason this pass exists: the drop from
+     "watching the line" to "one bad thing from breaking" used to be one step. */
+  {at:.34,n:'Shaken',      ic:'😕',col:'#c2a86a',bg:'rgba(194,168,106,.22)',
+   d:'9 off their chance to hit, 4 off their dodge. They are looking at the way out, '+
+     'and they have not taken it.'},
   /* renamed from "Depressed" and softened (user): 18/7 plus no heavy actions
      meant this rung was effectively out of the fight, so the whole ladder
      bottomed out one step early. 12/5 and they can still swing the big thing —
@@ -6442,7 +6477,9 @@ function restate(u){
   }
   if(u.noRout)u.morale=Math.max(u.morale,max*.16);
   const p=nerveFrac(u);
-  u.state=p>=.70?'steady':p>=.40?'wavering':p>=.15?'breaking':'routed';
+  /* #129 - five tiers. The cut-offs match LADDER's `at` values exactly, and
+     they have to: the player reads the rung and the engine reads the state. */
+  u.state=p>=.70?'steady':p>=.52?'wavering':p>=.34?'shaken':p>=.15?'breaking':'routed';
 }
 /* ═══ WHAT FRACTION OF ITS NERVE A BODY IS READING AT (#64) ══════════════
    ⚑ THE FLOWER'S LIFT IS A MODIFIER AND IS NEVER WRITTEN INTO `u.morale`.
@@ -10598,12 +10635,16 @@ function beginTurn(){
   /* the people you sided with fight their own fight. They are on your side of
      the board and they are not yours to command — you never get to spend their
      turns, which is most of the point of standing next to them. */
+  /* ⛔ #128 - THE FLAG IS ON THE BODY, SO THE RESET BELONGS TO EVERY BODY.
+     This line used to sit inside the player-only branch below, which was
+     invisible for as long as no enemy could raise a wall at all. The moment
+     one can, a foe that braced would stay braced for the rest of the fight. */
+  u.spearwall=false;
   if(u.side==='foe'||u.ally){
     if(B.ambushRound&&B.round===1){say(u.name+' has not heard you yet.');
       render();later(nextTurn,320);return;}
     render();B.busy=true;later(()=>aiTurn(u),380);
   }else{
-    u.spearwall=false;
     if(u.state==='routed'){say(u.name+' has broken. They will not hold this turn.');
       render();B.busy=true;later(()=>routStep(u,()=>{B.busy=false;nextTurn();}),440);return;}
     render();
@@ -11088,6 +11129,7 @@ function fearBurst(src,act){
        move. Anyone already shaken is in real trouble. */
     let hold=pct*0.82;
     if(t.state==='wavering')hold-=0.12;
+    if(t.state==='shaken')hold-=0.20;   /* #129 - see targetScore */
     if(t.state==='breaking')hold-=0.28;
     if(t.leader||t.captain)hold+=0.15;      // he is the reason they are here
     const holds=Math.random()<clamp(hold,0.05,0.85);
@@ -11746,6 +11788,9 @@ function targetScore(t){
      one already paid for. */
   if(t.gather)s-=30;
   if(t.state==='breaking')s-=25;
+  if(t.state==='shaken')s-=18;      /* #129 - between the two, or a shaken body
+                                       reads to both brains as no worse than a
+                                       steady one and stops being hunted */
   if(t.state==='wavering')s-=12;
   if(t.leader)s-=18;
   return s;
@@ -11941,6 +11986,29 @@ const aip=u=>AIP[u.side]||AIP.foe;
    All of it is movement/choice WEIGHTS, not new rules — the same engine,
    leaned on differently per body. AIP.doct=0 turns it off for arena A/Bs.
    ═══════════════════════════════════════════════════════════════════════ */
+/* ═══ #127 - THE STANDOFF COMES OFF THE WEAPON, NOT OFF A CONSTANT ════════
+   (User, 2026-08-13: "my archers more like shoot from this safe distance".)
+
+   Both brains pinned a shooter's preferred distance at 3 hexes whatever it was
+   carrying: `band:3` below, and Math.min(rng-1,3) in autoStep, which saturates
+   at that same 3 for any range above 4. So the hunting bow's range-5 hex and
+   the whole accuracy falloff written for it (-8 at range-1, -18 at the limit,
+   in hitBreakdown since the first commit) had never once been chosen by a body
+   making its own decision. Every archer on the board walked to 3 and stood.
+
+   ⚠ AND 3 IS INSIDE A MAN'S REACH. A body crosses `first-move 4 + reach 1 = 5`
+   and strikes in the same turn, so a shooter at 3 is not standing at a safe
+   distance, it is standing two hexes inside one. The furthest hex the shot
+   still works from is the one worth wanting, and paying -8 to stand there is
+   the trade those bands were written for.
+
+   ⛔ THE ANSWER IS NOT A BIGGER `range`. At 6 a bow would clear a baseline
+   human and still lose to a ratkin (6), a spear (6), a dog (6), any captain
+   (8) and the WARDEN (10): one matchup bought, every other inflated. Distance
+   on this board is held by MOVING, which is the kite, not by standing further
+   off. A range-4 sling still wants 3, so the chaff behaves exactly as before
+   and only the long weapons change. */
+const bandFor=a=>Math.max(2,((a&&a.range)||4)-1);
 function doctrine(u){
   /* ⚠ `a.dmg` REQUIRED — see targetScore(). `band:3` tells a body to live at
      shooting distance, and this test decided who gets it. With PICK UP AND
@@ -11978,7 +12046,10 @@ function doctrine(u){
     lineSeek: on&&u.race==='human'&&!shoot&&!u.caster?6:0,
     herd: on&&ogre?1:0,                        /* stay near the other ogres */
     noChase: on&&ogre,                         /* mass does not run sprints */
-    band: on&&shoot?3:0                        /* shooters live at ~3 hexes */
+    /* #127 - off the weapon now. `shotAct` is found with the same `a.dmg`
+       test as `shoot` above, so PICK UP AND THROW still cannot buy an ogre a
+       bowman's stance. */
+    band: on&&shoot?bandFor(u.acts.find(a=>a.range&&!a.arcane&&a.dmg)):0
   };
 }
 /* would standing at p put a body of this side into a row of three? */
@@ -12454,9 +12525,81 @@ function aiTurn(u){
     const iShoot=u.acts.some(a=>(a.range||a.arcane)&&a.dmg&&canUse(u,a));
     const canSwing=u.acts.some(a=>a.dmg&&!a.range&&!a.arcane&&
       T.some(t=>udist(u,t)<=(a.reach||1)));
-    if(holds&&aip(u).hold&&iShoot&&!canSwing&&!engaged(u)){
+    /* ═══ #126 - A LINE HOLDS WHILE IT HAS SOMETHING TO SHOOT AT ═══════════
+       (User, 2026-08-13: "they are more standard weighted... make them a bit
+       more aggressive so they're coming and they're shooting at you.")
+
+       The hold is why the sling-line waits and makes you cross the ground, and
+       that stays. What it must not do is freeze a body with NOTHING in range:
+       the damage scorer above has already filtered targets to those it can
+       reach, so `pick` was null, and this gate then returned before the
+       movement block. The result was a shooter standing still doing literally
+       nothing, for the whole battle, at the coordinates its plan dealt it.
+       Measured behaviour, not a guess: the whole enemy line was fixed in place
+       from round one.
+
+       With this, an out-of-range shooter falls through and walks. It still
+       does not charge, because the band below decides where it stops. */
+    const shotInRange=u.acts.some(a=>(a.range||a.arcane)&&a.dmg&&canUse(u,a)&&
+      T.some(t=>udist(u,t)<=(a.range||a.reach||0)));
+
+    /* ═══ #128 - THE SCREEN BRACES, AND FIRST OF ALL IT STOPS CHARGING ═════
+       (User: "two spear reds and their archers behind them, and the spears can
+       use spear wall before their archers, so they protect it. And then you
+       need to kind of force your way.")
+
+       ⛔ THE FORMATION ALREADY EXISTED AND ITS WALL WAS DEAD DATA. slingline
+       stands two `Ratkin, long spear` screens at [10,3] and [10,5] in front of
+       the boss and three slingers, each carrying {k:'wall',cost:2,self:true},
+       and it had never once fired: `u.spearwall=true` is written only in
+       clickHex (the player's path), both damage scorers drop `!a.self` and
+       require `a.dmg` so a self act is invisible to them, and beginTurn's
+       reset sat in the player-only branch.
+
+       ⚑ AND SWITCHING IT ON WAS NOT ENOUGH, WHICH IS THE FINDING. Measured
+       with the wall branch in and nothing else changed: 0 raises in a 7-round
+       sling-line. A screen carries no ranged damage, so `iShoot` is false, so
+       the hold gate below never applied to it and the movement scorer sent it
+       CHARGING like any other melee body. By the time anything was within
+       bracing distance it was already adjacent, and adjacency is precisely
+       what kills a wall. The spears were running out in front of the archers
+       they exist to stand in front of.
+
+       So a screen on a holding side is held by the same gate its shooters are.
+       It jabs what it can reach (the damage scorer above has already returned
+       if so), otherwise it braces, otherwise it stands. It never advances. */
+    const wallAct=u.acts.find(a=>a.k==='wall'&&a.self);
+    /* ⛔ NOT `wallLive(u)`. IT ANSWERS A DIFFERENT QUESTION, and the first
+       measured pass of this branch raised exactly zero walls because of it:
+       `wallLive` opens with `if(!u.spearwall)return false`, so it means "is
+       this body's wall up AND working", not "would one work if raised". Asked
+       before bracing, `!u.spearwall && wallLive(u)` is a contradiction that
+       can never be true. The question here is only whether anything is already
+       in contact, and `engaged` is the file's word for that. */
+    if(wallAct&&holds&&canUse(u,wallAct)&&!u.spearwall&&!engaged(u)){
+      const myReach=Math.max.apply(null,
+        u.acts.filter(a=>a.dmg&&a.reach).map(a=>a.reach).concat([1]));
+      /* one ordinary stride from being inside it. Bracing costs a body that is
+         holding nothing it was going to use, so this can afford to be early.
+         It cannot afford to be late: the wall is what the NEXT step walks
+         into, and one raised after contact does nothing at all. */
+      if(T.some(t=>udist(u,t)<=myReach+3)){
+        spend(u,wallAct);u.spearwall=true;
+        if(!u.saidWall){u.saidWall=true;
+          say(u.name+' plants the spear and braces. Anything stepping into that reach '+
+            'gets the point of it.');}
+        B.busy=false;render();later(nextTurn,260);return;
+      }
+    }
+    if(holds&&aip(u).hold&&!canSwing&&!engaged(u)&&
+       ((iShoot&&shotInRange)||wallAct)){
       if(!u.saidHold){u.saidHold=true;
-        say(u.name+' holds its ground. It has the bows — you can come to it.');}
+        /* #128 - a spear screen holds for a different reason than a bowman,
+           and "it has the bows" in its mouth is the wrong sentence. */
+        say(u.name+(iShoot
+          ? ' holds its ground. It has the bows — you can come to it.'
+          : ' holds the line. It is not coming to you: it is standing in front of the ones '+
+            'who are shooting.'));}
       B.busy=false;render();later(nextTurn,220);return;}
     /* opening the ground back up: pick the reachable hex furthest from all of
        them and end the turn there. Used by kiting shooters and by the hurt. */
@@ -12482,16 +12625,72 @@ function aiTurn(u){
       u.fellBack=(u.fellBack||0)+1;
       if(u.fellBack===FALLBACKS)say(u.name+' has run out of ground to give.');
       spend(u,mv);u.moved=true;u.movesUsed=(u.movesUsed||0)+1;
+      /* ⛔ #126 - BREAKING CONTACT IS PAID FOR. The kite below may now fire
+         while something is adjacent, and `walkTo` is not `clickHex`: nothing
+         on this path fires the parting swing by itself. Without this the kite
+         would be a free disengage, which is strictly better than the DISENGAGE
+         act that exists to buy exactly this. A swing can put the body down, so
+         check before walking it anywhere. */
+      if(engaged(u)){
+        partingShots(u);
+        if(u.dead||u.downed){B.busy=false;render();later(nextTurn,240);return true;}
+      }
       walkTo(u,bp[0],bp[1],rm);
       const nn=T.slice().sort((x,y)=>udist(u,x)-udist(u,y))[0];
       if(nn)faceToward(u,nn.col,nn.row);
       B.busy=false;render();later(nextTurn,240);return true;
     };
-    /* KITING — a shooter with somebody two steps away has one job: not be
-       there. It shoots first if it can; the retreat is what the spare action
-       is for. Battle Brothers' skirmishers made whole fights out of this. */
+    /* ═══ #128 - THE SCREEN RAISES ITS WALL ═══════════════════════════════
+       (User, 2026-08-13: "you can also add two spear reds and their archers
+       behind them, and the spears can use spear wall before their archers, so
+       they protect it. And then you need to kind of force your way.")
+
+       ⛔ THE FORMATION HE DESCRIBES ALREADY EXISTED, AND ITS WALL WAS DEAD
+       DATA. `slingline`'s plan stands two `Ratkin, long spear` screens at
+       [10,3] and [10,5] in front of the boss and three slingers, and each one
+       carries {k:'wall',cost:2,self:true}. It had never once fired, for three
+       independent reasons: `u.spearwall=true` is written in exactly one place,
+       clickHex, which is the player's path; both damage scorers filter on
+       `!a.self` and require `a.dmg`, so a self act is invisible to them; and
+       beginTurn's reset sat in the player-only branch. The two spears have
+       been plain reach-2 jabbers since the day they were written.
+
+       It braces INSTEAD of stepping, never as well. For this template the act
+       costs 2 of its 2 actions, and that is what makes forcing the line a real
+       price rather than a tax the player pays without noticing.
+
+       ⚑ The trigger that CATCHES somebody, in the movement block below, reads
+       `wallLive` on any side and needed no change at all. It has been sitting
+       there waiting for a wall no enemy could raise. And a live wall next to a
+       shooter already softens shooting-while-engaged from -35 to -18, so the
+       screen protecting the archers behind it was costed years ago. */
+    /* ═══ KITING — #126, and it is backlog #101 from the enemy's side ═══════
+       A shooter with somebody closing has one job: not be there. It shoots
+       first if it can; the retreat is what the spare action is for. Battle
+       Brothers' skirmishers made whole fights out of this.
+
+       (User, 2026-08-13: "they kind of run away if you try to approach.")
+
+       ⛔ TWO GATES WERE WRONG AND BOTH WERE MEASURED, NOT GUESSED.
+
+       `nearD<=2` meant a body had to be two hexes away before the archer
+       reacted, but a man CROSSES FIVE AND STRIKES in one turn. Reacting at 2
+       is reacting after the danger has already arrived. It triggers inside the
+       band now, which is where the threat actually is.
+
+       `!engaged(u)` was the larger one. `engaged` is adjacency, so the kite
+       switched off at exactly the moment it was for, and an engaged shooter
+       fell through to a movement scorer that had already collapsed its range
+       to 1 - it shuffled to another hex still in contact, paid a parting swing
+       to do it, and never shot again. #101 measured the cost: ENGAGED is the
+       single biggest reason an archer is silent, 119 dry turns out of 874.
+       It may break contact now, and `fallBack` charges it the parting swing.
+
+       ⚑ THE THREE-FALLBACK CAP IS UNTOUCHED AND MUST STAY. A ratkin stride of
+       5 against your 4 lets a shooting line retreat forever; that is what took
+       the sling-line from 9 rounds to 15-18 before the cap went in. */
     const kshot=u.acts.find(a=>a.range&&!a.arcane&&a.dmg);   /* `a.dmg` — see targetScore() */
-    if(kshot&&aip(u).kite&&!engaged(u)&&nearD<=2&&canUse(u,mv)&&
+    if(kshot&&aip(u).kite&&nearD<=bandFor(kshot)&&canUse(u,mv)&&
        (!canUse(u,kshot)||(u.used[kshot.k]||0)>0)){
       if(fallBack())return;
     }
@@ -15324,11 +15523,14 @@ function render(){
         /* ═══ #91 point 16 - the face appears ONLY on rungs that change
            numbers. HAPPY is the one rung with no modifier, so it is the one
            face that vanishes: a token with no face IS the steady state, and
-           a face appearing means something moved. 😄 +5/+5% · 😐 −8/−3 ·
-           😟 −12/−5 · 💀 routed under the white flag. The plaque's nerve
-           word stays constant for whoever is acting. */
+           a face appearing means something moved. 😄 +5/+5% · 😐 −5/−2 ·
+           😕 −9/−4 · 😟 −12/−5 · 💀 routed under the white flag. The plaque's
+           nerve word stays constant for whoever is acting. (#129 numbers.) */
         const mf=document.createElement('span');
-        mf.className='umood'+((li===0||li>=3)?' loud':'');
+        /* #129 - was li>=3, which meant Breaking and worse. A rung was inserted
+           above Breaking, so the same bodies are loud at >=4. An index compared
+           against a literal is exactly what a new rung silently shifts. */
+        mf.className='umood'+((li===0||li>=4)?' loud':'');
         mf.textContent=lb.ic;
         mf.title=lb.n;
         mf.style.display=(li===1)?'none':'';
@@ -15996,6 +16198,30 @@ function autoStep(){
         if(!pick||ev>pick.ev)pick={a:a,t:t,ev:ev,hc:hb.total};});});
   if(pick&&(pick.hc>=20||u.moved||engaged(u)||!canUse(u,u.acts[0]))){
     B.sel=pick.a;clickHex(pick.t.col,pick.t.row);return;}
+  /* ═══ #128 - AUTO BRACES TOO ══════════════════════════════════════════════
+     The other half of the two-brain rule. `u.spearwall` was only ever written
+     by a human clicking the card, so the player's spearwoman under AUTO was
+     the one body on the field that could not do the thing her class is named
+     after. Same shape as the enemy screen: nothing inside the reach yet,
+     something one stride from being, and it is spent instead of a step.
+
+     ⚠ Placed AFTER the attack pick above deliberately. A wall is what you do
+     when you cannot hit anybody; bracing while a swing is available is the
+     one thing this must never produce, which is the rule the enemy hold gate
+     learned the hard way. */
+  (function(){
+    const wa=u.acts.find(a=>a.k==='wall'&&a.self);
+    /* ⛔ `engaged`, NOT `wallLive` - see the note in aiTurn. wallLive returns
+       false for any body that has not already braced, so asking it here can
+       only ever refuse. */
+    if(!wa||!canUse(u,wa)||u.spearwall||engaged(u))return;
+    const myReach=Math.max.apply(null,
+      u.acts.filter(a=>a.dmg&&a.reach).map(a=>a.reach).concat([1]));
+    if(!fo.some(t=>udist(u,t)<=myReach+3))return;
+    const i=u.acts.indexOf(wa);
+    if(i>=0){selectAct(i);clickHex(u.col,u.row);}
+  })();
+  if(u.spearwall&&u.actions<=0){nextTurn();return;}
   const mv=u.acts[0];
   if(canUse(u,mv)){
     selectAct(0);
@@ -16037,8 +16263,14 @@ function autoStep(){
           const dd=udist(p,t);
           if(dd>rng)return;
           if(shoot){
-            /* a shooter wants its own band (2–4), never the target's face */
-            const band=Math.abs(dd-Math.min(rng-1,3));
+            /* a shooter wants its own band, never the target's face. #127 - it
+               comes off the weapon now; this used to saturate at 3, so an AUTO
+               archer would never voluntarily stand on hex 4 or 5 of a range-5
+               bow. Scoring by distance FROM the band is also what gives AUTO a
+               kite for free: with an enemy at 1, the hexes four away score
+               best, so the archer backs off by preference. It pays the parting
+               swing on the way, because AUTO moves through clickHex. */
+            const band=Math.abs(dd-bandFor(shoot));
             /* #99 - and it wants a hex the arrow can leave. The other half of
                the pair; see laneCost(). Both brains or neither - an AUTO whose
                archer stands behind its own shieldwall all fight while the
@@ -25503,8 +25735,8 @@ const HELP=[
   {t:'HOW NERVE WORKS',
    b:'Nerve is not health. It decides whether a body <span class="k">keeps standing there at '+
      'all</span> — and it is the real reason fights end.\n\n'+
-     'Five rungs, worst at the bottom: <span class="k">Broken · Breaking · Ok · Happy · It '+
-     'rocks</span>. Hover the ladder to see the whole scale and what each step costs. Most fights '+
+     'Six rungs, worst at the bottom: <span class="k">Broken · Breaking · Shaken · Ok · Happy · '+
+     'It rocks</span>. Hover the ladder to see the whole scale and what each step costs. Most fights '+
      'start at <i>Happy</i>; the top rung is earned, and it pays.\n\n'+
      'What moves it: being hit, watching somebody drop, being surrounded, and '+
      '<span class="k">standing on your own</span> — which is the worst of them, and the reason a '+
