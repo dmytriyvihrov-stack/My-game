@@ -23,6 +23,55 @@
 
 ---
 
+## 🚪 THE OPENING IS ONE SCREEN NOW  *(#138 · 2026-08-13 · build log 8f.166)*
+
+**Reach it in three steps:** menu → **A new company** → play the tavern brawl to the end.
+
+### What changed
+
+You used to click through **four full screens** between the last swing of the brawl and the map:
+*the room settles* → *the man in the corner* → *and that is the contract* → *a name for the ledger*.
+**Two of those four had a single button on them that you could not refuse**, which is not a choice,
+it is a page break with a button on it.
+
+It is **one card** now. The brawl's receipt is a strip along the top of it - the eight crowns, the
+four morale, and the three who stood up drawn as three faces, because *you got people* is a fact
+about people. Then the man, then his offer, then one door.
+
+### The door you asked for
+
+**"Put him on the floor" is gone.** Your word for it was the right one - it was a decision about a
+man the game never sees again, paid for in hitpoints that heal by the second stop.
+
+What is left is **"Finish your drink and leave."** → **+80 crowns**, the advance in full. When you
+click it the card *turns over* rather than handing you a new one: the painting changes to the one
+of you taking the purse, his speech is replaced by what happened, and **then** the naming strip
+appears underneath - so the name is offered after you take the contract, not before it.
+
+Chalk it on the wagon and the next thing you see is **the map**.
+
+**Would be a bug:** any second screen between that button and the map. Any point where the painting
+squashes to a sliver. The naming strip appearing before you have clicked the door.
+
+⚠ **One honest measurement.** On arrival the card is **56px taller than the window**, so it scrolls
+a little - the door is pinned to the bottom and always clickable. Once you have answered it, it
+fits exactly with 2px to spare. If the scroll annoys you the next thing to cut is one of the lord's
+three paragraphs, and I would want you to pick which.
+
+⚠ **I dropped the −5 morale** that the old "say nothing" door charged. That was the price of
+*choosing* to swallow it while a prouder door sat next to it; with only one door left, charging it
+is billing you for something you were never given the chance to refuse. Say the word and it goes
+back.
+
+### And the red doors got their correction
+
+The thing I flagged last time is fixed. Red now means **"this is the fight, and there is another
+way"**. On the three cards where *every* door is a fight - the Snare's two roads, and the two
+ambushes you cannot walk away from - nothing is red any more, because red on everything says
+nothing. Verified across all nine fight cards: no card is all-red.
+
+---
+
 ## ⊚ THE COIN IN THE ROAD, AND WHAT IT WILL NOT TELL YOU  *(#141 · 2026-08-13 · build log 8f.169)*
 
 **Your ask:** *"after tavern fight - next event instead of faling star (it could be a random event
