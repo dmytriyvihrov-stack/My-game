@@ -86,6 +86,40 @@ fifteen minutes to stop being a wall, and that is a subtraction job.
 > was added; prose was cut and a receipt the aftermath already owned was reused. Full record:
 > [`SHIPPED.md`](SHIPPED.md) #143 and [`CHANGELOG.md`](CHANGELOG.md) 8f.171.
 
+> **⚑ #145 · #146 · #147 · #148 · #149 SHIPPED 2026-08-13** *(8f.173-8f.177, one autonomous batch
+> while the user was away: "For first intro battle… For chances to hit and dodge show what is
+> others… increse chances to hit… Then play full game - check how is it working and fix bugs…
+> check which exshsting backgrounds you can add to current battles… Check becklog… After this
+> butch deploy everething on the prod")*.
+>
+> **#145** the brawl's second wave splits (the barman and a *Very nimble* knife-man at +2, the crew
+> unmoved at +3) · **#146** the aiming pass: `HIT_EASE {you:10, foe:5}` where `mskill` is SET, and
+> every summed row on the aiming card carries a caption naming its contributors · **#147** two
+> finished palettes reach the campaign at last (the Broken Men into the `forest` its card has
+> always described, the Snare into the `swamp` its second door names) · **#148** #36's blocked lane
+> joins `mayAim`, the one gate, and the harness stops writing to the player's journal · **#149**
+> AUTO leaves `setInterval` for a chained `setTimeout`.
+>
+> **⛔ Three findings outlive the rows, and all three are about MEASUREMENT.**
+>
+> 1. **A MINIMUM OVER n IS NOT A MEASUREMENT, IT IS THE UNLUCKIEST SAMPLE**, and it gets worse
+>    every time you look. Two nerfs were drafted against "the Captain's worst brawl finish falls
+>    from 29% to 10%" over two batches of sixteen; at n=50 a side the two builds were **identical**
+>    (45%/45%, worst 13%/12%). **Measure a tail as the FRACTION of runs under a threshold.** This
+>    file's own *"n=6 cannot tell 0% from 20%"* applies to worst cases twice over.
+> 2. **BUILD THE LITERAL ASK FIRST WHEN IT IS CHEAP, THEN MEASURE IT, THEN REFUSE IT IF IT DOES
+>    NOTHING.** "Lower a big body's dodge" was built exactly as asked and moved almost nothing,
+>    because every big body already sits on the zero floor. The measurement is what earned the
+>    right to ship the better version (a named bonus to hit) instead of arguing about it.
+> 3. **A NAMED OPEN REMAINDER CAN BE CASHED BY THE NEXT ROUND OF ITS OWN SURFACE.** #133's
+>    "the sheet still scrolls 65px" was closed by #136/#140 and nobody noticed; it re-measured at
+>    zero overflow. **Re-measure a remainder before scheduling work against it.**
+>
+> ⚑ **And the two bugs were both found by PLAYING, not by reading**, which is README §5's whole
+> argument arriving twice in one session: AUTO could not be driven in the preview pane at all, and
+> the eight-fight regression could never have caught it, because the regression drives `aiTurn`
+> directly and never presses the button.
+
 > **⚑ #150 SHIPPED the same day (8f.178): eleven of the user's own notes across the opening, the
 > event cards and the road bar.** The opening lost a title, a button sub-label and a whole screen
 > (the contract card absorbed its own outcome and the company naming); the receipt chips learned
@@ -246,7 +280,7 @@ name them, not because they stopped mattering.*
 |---|---|---|---|
 | ~~**101**~~ | ✅ **CASHED BY #126, 2026-08-13 (8f.155).** *"The archer that is not allowed to leave"* is closed from the enemy's side, and the two gates it named were exactly the two that were wrong: the kite's `!engaged(u)` (so it switched off at the moment it was for) and AUTO having no kite at all. `fallBack` charges the parting swing now, because `walkTo` is not `clickHex`. ⚠ **Its own measurement was NOT re-taken** - 26% of archer turns with a 20%-or-better shot spent walking, and 119 dry ENGAGED turns of 874 - so whether those numbers moved is still an open reading, and #99's instrument is still the harness for it. ⚠ AUTO's kite is emergent (it retreats because the band scores hexes that way) rather than an explicit rule, so a future band change moves it silently | see [`SHIPPED.md`](SHIPPED.md) #126 |
 | **13** | **The balance harness earns its keep** | ⚑ **the instrument.** Without it every balance session below is somebody's opinion. `window.ARENA` exists and has gone stale around every combat change since | [spec](archive/BACKLOG_ENTRY_SPECS.md) |
-| **89** | **The combat benchmark, and the three things it did not measure** - ✅ the document is written: [`COMBAT_BENCHMARK_2026-08-11.md`](COMBAT_BENCHMARK_2026-08-11.md) | ⚑ **the second instrument.** #13 measures *win rates*, this one measures **shape**: Grimtoll now sits in a table beside Battle Brothers, Wildermyth and Wartales at **8.45 rounds · 71.4 unit-turns · 115 actions · 1.61 actions per unit-turn · 4.6 skills per unit**, all measured. ⛔ **The remainder is three MEASUREMENTS, not builds** - the mop-up tail, a real stopwatch, and hit-rate distribution - so it does not argue with the clarity pass. Two readings are already live: **`brigand` runs 2.4x the opener at an even 6 v 6**, which is the exact shape of Wartales' *"longer, not harder"*, and the **enemy skill gap is 2:1** in the player's favour, which is what "one strategy beats everything" looks like from the inside | [spec](archive/BACKLOG_ENTRY_SPECS.md) |
+| **89** | **The combat benchmark, and the three things it did not measure** - ✅ the document is written: [`COMBAT_BENCHMARK_2026-08-11.md`](COMBAT_BENCHMARK_2026-08-11.md) | ⚑ **the second instrument.** #13 measures *win rates*, this one measures **shape**: Grimtoll now sits in a table beside Battle Brothers, Wildermyth and Wartales at **8.45 rounds · 71.4 unit-turns · 115 actions · 1.61 actions per unit-turn · 4.6 skills per unit**, all measured. ⛔ **The remainder was three MEASUREMENTS, not builds** - the mop-up tail, a real stopwatch, and hit-rate distribution - so it does not argue with the clarity pass. ✅ **HIT-RATE DISTRIBUTION IS NOW TAKEN** (2026-08-13, during #146, ~1,200 swings a side across all eight fights, probed at `hitBreakdown` inside `runFight`): **before the pass, mean 60.3% · yours 58.7% · theirs 61.8% · 30.5% of every swing in the game was a coin flip or worse.** After: **65.6% · 66.3% · 65.0% · 19.4% under fifty.** ⚑ **AND THE MEASUREMENT FOUND SOMETHING NOBODY HAD ASKED ABOUT: BEFORE THIS PASS THE ENEMY WAS THE BETTER-AIMING SIDE**, by three points, in every fight in the act. It is not in any statblock - it falls out of the penalties only the player's side pays (shooting in a scrum, their own nerve, cautious) against the flanking bonus a side with more bodies collects - which is **THE FIGURE IN A STATBLOCK IS NOT THE FIGURE ON THE BOARD** arriving on a quantity nobody had thought to point it at. ⏳ Two measurements still open: the mop-up tail and a real stopwatch. Two readings are already live: **`brigand` runs 2.4x the opener at an even 6 v 6**, which is the exact shape of Wartales' *"longer, not harder"*, and the **enemy skill gap is 2:1** in the player's favour, which is what "one strategy beats everything" looks like from the inside | [spec](archive/BACKLOG_ENTRY_SPECS.md) |
 | - | **The class pass** - pick up each of the seven and adjust | the human test the arena cannot run: **can the class be said in one sentence.** A class that needs a paragraph is a balance problem wearing a UI problem's clothes | [reasoning](archive/PLAN_REASONING.md) |
 | - | **The race pass** - three ways to play, not three stat blocks | three banked questions: the poison stack is uncapped · a gilled body reaches 62% further in the swamp · is an ogre's 3 stride a tax or a shape | [reasoning](archive/PLAN_REASONING.md) |
 | **50** | **The balance pass, at playtest grade only** | make the eight fights survivable, readable and fair. **Not the terminal pass.** Order matters: classes, then races, then fights | [spec](archive/BACKLOG_ENTRY_SPECS.md) |

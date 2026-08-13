@@ -47,8 +47,19 @@ window.FIGHTS=['clash','brigand','pack','slingline','steading','snare','mother',
 window.runFight=function(kind,opts){
   opts=opts||{};
   const _r=render,_f=fx,_s=say,_x=sfx,_p=paintTerrain,_strike=strike;
+  /* ⛔ AND THE JOURNAL, which is the one output of this rig that OUTLIVES the
+     page. `startBattle` writes a `battle` row unless SIM.on, so every
+     regression run has been appending to the player's own record - the
+     journal on the dev origin was measured at 1458 harness rows out of 1500,
+     and #57's analytics tab reads that file. The rest of this line has stubbed
+     the noisy outputs since the rig was written; the journal simply was not
+     one of them because it is the only one that makes no noise.
+     ⚠ Stubbed rather than solved with `SIM.on=true`: that flag also reroutes
+     checkEnd into simResult and would change the fight this measures. */
+  const _jp=(typeof JOURNAL!=='undefined'&&JOURNAL)?JOURNAL.put:null;
   const errs=[],notes=[],tally={};
   render=()=>{};fx=()=>{};sfx=()=>{};paintTerrain=()=>{};say=t=>{G.log.push(t);};
+  if(_jp)JOURNAL.put=()=>{};
   strike=function(a,d,act,mul){
     try{if(opts.probe)opts.probe(a,d,act,tally,notes);}catch(e){errs.push('probe: '+e.message);}
     return _strike(a,d,act,mul);};
@@ -80,7 +91,9 @@ window.runFight=function(kind,opts){
          down:B?B.units.filter(x=>x.side==='you'&&(x.dead||x.downed)).length:0,
          tally,notes,errs};
   }catch(e){res={kind,fatal:e.message,stack:(e.stack||'').split('\n')[1]};}
-  finally{render=_r;fx=_f;say=_s;sfx=_x;paintTerrain=_p;strike=_strike;B=null;}
+  finally{render=_r;fx=_f;say=_s;sfx=_x;paintTerrain=_p;strike=_strike;
+    if(_jp)JOURNAL.put=_jp;
+    B=null;}
   return res;
 };
 /* the whole regression, compactly enough to read in one glance */

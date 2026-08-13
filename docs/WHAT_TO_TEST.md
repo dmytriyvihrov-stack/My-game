@@ -134,6 +134,121 @@ always reading the right list. Only the last-line commit check was blind.
 **The tell, if you ever want to check:** a folder called `.grimtoll` appearing *inside* a desk
 means the guard is reading the wrong list. There should only ever be one, in the main project
 folder.
+## ⚔ THE BRAWL GETS AN OGRE AND A MAN YOU CANNOT HIT  *(#145 · 2026-08-13 · build log 8f.173)*
+
+**Reach it in three steps:** menu → **Take the road** → **Draw your sword.** (Or menu → **The
+tutorial fight**, which is the same brawl with nothing riding on it.)
+
+### What changed
+
+The wave that used to bring your whole future crew AND the barman up at once is now **two waves,
+one round apart**. First the **barman comes over his own bar** and **Weft** comes in off the
+street on the same turn - and Weft is the new thug: *Very nimble*, and very hard to touch. **The
+three at the bar stand up the round after that, exactly when they always did.** The fight is not
+longer; the ogre moved forward rather than the crew moving back.
+
+### Weft, and what he is for
+
+Hover him: **Very nimble - Never where the blade goes.** Swing at his face and you will land it
+about **four times in ten**. Take his flank and it is about six; take his back and it is about
+seven. He has almost no hitpoints and almost no armour, so once you solve him he goes down in two
+blows.
+
+**Miss him twice and the room tells you why**, on the spotlight sheet: *TOO QUICK TO HIT*. It
+names the two things that actually work - **come at his flank or his back**, and **get a second
+body on him**, because every extra man on one target makes him easier for everybody. The spare
+step and THE WRONG SIDE lesson now arrive on the same turn he does, so there is one obvious thing
+to spend the step on.
+
+**Would be a bug:** the crew arriving on the same turn as the barman (they should be one round
+behind) · the lesson firing when you have not missed him twice, or firing twice · Weft appearing
+anywhere but the door · walking out of the brawl on almost no hitpoints **more often than
+before** - it measured identical over fifty runs a side, so if it feels harsher, say so and I will
+re-measure rather than argue.
+
+---
+
+## 🎯 THE AIMING CARD EXPLAINS ITS OWN NUMBERS, AND EVERYBODY HITS MORE  *(#146 · 2026-08-13 · build log 8f.174)*
+
+**Reach it in three steps:** any fight → pick somebody of yours → hover an enemy in reach.
+
+### What changed
+
+**Everyone hits more.** Your people gained **10 points** of chance to hit and the other side
+gained **5**, so the net is five in your favour and both sides' turns get shorter - the point was
+to stop the whiffing, and only speeding up your own half would have left theirs exactly as long.
+
+**And the two rows that were a lump now say what is in them.** Under **their dodge** and under
+**other** there is a small line naming every contributor: *their footwork +20 · very nimble +16 ·
+hard to stack past 12 −10*, or *back +30 · a big body +6*. It appears only when there is something
+to say - a plain swing at a plain body is still five short rows.
+
+### The bit that is not what you asked for, and why
+
+You asked for **dodge** to fall on bigger targets. That was built first and measured, and it did
+almost nothing: **every big body in the game already sits on zero dodge** - Bruht, the steading
+elder and both snare ogres read 0 with the rule and 0 without it, and the Fen-Mother reads 3
+because her heavy plates have already taken ten of her thirteen. Subtracting from zero is a rule
+that never fires. So it is a **bonus to hit** instead: **a big body +6, a great deal of it +12**,
+and because it lives in `other` it is a **named line you can read** rather than a silent
+subtraction. Same intent, and now visible.
+
+**Would be a bug:** a caption whose numbers do not add to the row above it · the dodge caption
+appearing when the only thing in it is footwork · the SKILL/DODGE line on the hover card
+disagreeing with the aiming card · fights that now end too fast to be interesting (measured: the
+snare and the steading got slightly easier, the Fen-Mother went 11.8 rounds to 10.3 and is still
+won every time - **if she feels soft now, that is the one number worth your ruling**).
+
+---
+
+## 🗺 TWO BATTLEFIELDS YOU HAVE NEVER SEEN  *(#147 · 2026-08-13 · build log 8f.175)*
+
+**Reach it in three steps:** **THE BROKEN MEN** on the north road → *"No."* · and **THE SNARE**
+at the end of any route.
+
+### What changed
+
+Two painted grounds were finished long ago and **no campaign fight had ever used them** - you
+could only reach them from the practice field. Both fights' own cards already described the ground
+they did not have:
+
+- **THE BROKEN MEN** opens *"Four of them out of the treeline"* and one of the four is a poacher,
+  and it was fought on open water-meadow with **no trees at all**. It is a **forest** now.
+- **THE SNARE**'s second door is *"Through the marsh. Slower, but quiet."* It wears the **swamp**
+  palette now: the wettest base and the heaviest fog in the game.
+
+### What was deliberately NOT done
+
+The swamp's **deep-water channel is switched off** on the Snare. With it, the act finale got a
+third easier (six losses in sixteen against ten), because a channel is a wall and against ten
+bodies a wall is how six beat ten. **You get the look and not the softening.** If you want the
+harder-to-cross version, it is one line - say so.
+
+**Would be a bug:** anything unreadable on the new grounds - the state colours (wavering,
+breaking, routed) and the blue reach overlay were checked against them, but they were checked by
+me and not by an eye · the Broken Men becoming a slog (measured: 7.6 rounds to 6.3, no losses
+either way) · the Snare feeling different in difficulty (it measured identical).
+
+---
+
+## 🔧 TWO THINGS FOUND BY PLAYING IT  *(#148 · #149 · 2026-08-13 · build log 8f.176, 8f.177)*
+
+**Reach it in three steps:** start any fight → press **▶ AUTO**.
+
+**AUTO was broken in the preview pane and only there.** It ran on a timer that browsers stop
+firing in a hidden tab, so a fight would simply sit still. It runs on the right kind of timer now.
+**In a normal browser tab you would never have seen this** - but it also means AUTO now keeps
+working if you switch tabs mid-fight, and it picks up a change to **SPEED** immediately instead of
+on the next time you toggle it.
+
+**And a shot with your own people in the way** was refused by the click while the rules layer
+underneath thought it was legal. Nothing was visibly wrong - the board never lit the hex - but the
+rule was written out in four separate places, and four copies is four chances for the fifth one to
+be wrong. It is one rule in one place now.
+
+**Would be a bug:** AUTO stopping mid-fight · AUTO continuing after a fight ends · pressing SPEED
+while AUTO is running and the board not changing pace · a shot the board lights and then refuses,
+or refuses and then lights.
 
 ---
 
