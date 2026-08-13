@@ -1369,6 +1369,16 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:11px;pa
 /* the card the player reads before EVERY swing, and it was 9.5px. 11px, and
    the card widened by 22px to hold it without wrapping. */
 #bRead .rr{display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;color:#b9c6c3}
+/* ═══ #146 - THE CAPTION UNDER A ROW ══════════════════════════════════════
+   (User: "For chances to hit and dodge show what is others".) It sits under
+   the row it explains rather than in one run at the foot of the card,
+   because the question is "what is THAT number" and the answer has to be
+   reachable without counting clauses. Indented and quiet on purpose: the row
+   is the decision, this is the working. `:empty` collapses it, so a plain
+   swing at a plain body still reads as five short rows. */
+#bRead .rw{font-family:var(--mono);font-size:9px;line-height:1.32;color:#7d908d;
+           margin:-2px 0 1px 9px;white-space:normal}
+#bRead .rw:empty{display:none}
 #bRead .big{font-family:var(--display);font-size:20px;font-weight:700}
 /* COMBAT LOGIC was an accordion in the field's corner; #91 folded it into
    the log header as the ? chip and #102 point 7 moved that chip onto the
@@ -4077,6 +4087,27 @@ const D={
   moral:u=>60+u.st.mor*3,
   bonus:u=>u.st.mor*0.012
 };
+/* ═══ #146 - THE TWO EASE KNOBS, AND WHY THEY ARE NOT ONE ═════════════════
+   (User, 2026-08-13: "increse chances to hit for all units for 10% and for
+   enemy units for 5%".) Ten points on the roster, five on the other side, so
+   the net is +5 in the player's favour and a fight still gets faster for
+   BOTH of them: the complaint behind this is whiffing, and a pass that only
+   speeds up your own turns leaves the enemy's turns exactly as long.
+
+   ⛔ THEY GO WHERE `mskill` IS SET, NOT INTO hitBreakdown. `mskill` is
+   printed by the hover card (inspect) and read by both AI brains, so a bonus
+   applied only inside the preview would be the file's own recurring bug one
+   more time: one fact, two readers, and only one of them taught. Set it once
+   at the two doors a body can come through and every reader is correct for
+   free.
+   ⚠ THE TWO DOORS ARE `unitFrom` (the roster) AND `build` (a statblock).
+   build() also makes the NPCs who fight beside you - the clash allies and
+   the barman - and they are stamped up to the roster figure at the two
+   places their side is flipped. Points, not a percentage: every other
+   modifier on this scale is stated in points, and a chance to hit that is
+   scaled rather than shifted moves the good shooters and leaves the bad
+   ones exactly as bad, which is the opposite of the ask. */
+const HIT_EASE={you:10,foe:5};
 /* ═══════════════════════════════════════════════════════════════════════
    THE TELLS — what a person is, in words instead of numbers.
 
@@ -4918,6 +4949,22 @@ const TRAITS={
               d:'+14% melee damage. CANNOT DISENGAGE — the option is not on their sheet. '+
               'Walking away is not a thing they are able to do.',courage:true},
   /* casters only: wakes up every round having forgotten what they knew */
+  /* ═══ #145 - VERY NIMBLE, AND WHY NOBODY ON YOUR ROSTER CAN HAVE IT ══════
+     (User, 2026-08-13: "add - Very nimble - huge dodge. And when you get 2
+     miss on him - write info messege".) It is a teaching body: the brawl's
+     last lesson is that a dodge is beaten by an ANGLE, not by a bigger
+     number, and it needs somebody the player genuinely cannot hit from the
+     front to make that land.
+     ⛔ `foeOnly`, and the reason is the standing rule on this register:
+     "there are no good or bad traits, there are personalities - if you can
+     name the best one, they are traits again." +16 dodge with nothing paid
+     for it is instantly the best roll in the pool, and every other line here
+     costs something. Rather than invent a downside nobody asked for, it is
+     kept out of the roster roll entirely. traitFits() is the gate. */
+  nimble    :{n:'Very nimble',foeOnly:true,nimble:16,
+              d:'+16 dodge. Almost impossible to catch from the front - and a body that '+
+                'will not stand still is still a body, which can only watch one side of '+
+                'itself at a time.'},
   magpie    :{n:'Magpie-minded',cls:['mage','warmage'],
               d:'Forgets their spells every single round and remembers different ones instead. '+
               'You never know what they can do until their turn starts, and neither do they.',
@@ -4926,6 +4973,9 @@ const TRAITS={
 /* who is allowed to be this */
 function traitFits(k,race,cls){
   const t=TRAITS[k];if(!t)return false;
+  /* #145 - a personality written for the other side of the field. It can be
+     ASSIGNED by a statblock; it can never be ROLLED onto anybody. */
+  if(t.foeOnly)return false;
   if(t.race&&t.race.indexOf(race)<0)return false;
   if(t.notRace&&t.notRace.indexOf(race)>=0)return false;
   if(t.cls&&t.cls.indexOf(cls)<0)return false;
@@ -4960,6 +5010,7 @@ const TRAITSHORT={
   nofear    :'Will not run. Ever.',
   pacifist  :'Killing costs them something.',
   big       :'A great deal of them.',
+  nimble    :'Never where the blade goes.',
   courage   :'Hits harder. Cannot back off.',
   magpie    :'Different spells every round.'
 };
@@ -7092,7 +7143,9 @@ function unitFrom(p){
       (p.perks.indexOf('stoneskin')>=0?10:0),
     moraleMax:D.moral({st:s})+(p.perks.indexOf('ironjaw')>=0?12:0),
     /* the stride belongs to the race, not to agility — see RACESTEP */
-    mskill:D.hit({st:s}),dodgeBase:D.dodge({st:s}),speed:RACESTEP[p.race]||4,
+    /* #146 - the roster's ease knob, at the one door a roster body comes
+       through. See HIT_EASE. */
+    mskill:D.hit({st:s})+HIT_EASE.you,dodgeBase:D.dodge({st:s}),speed:RACESTEP[p.race]||4,
     flankPow:D.flank({st:s})+(p.perks.indexOf('opportune')>=0?10:0),
     spellPow:D.spell({st:s})*(p.perks.indexOf('conduit')>=0?1.2:1),
     dmgBonus:D.dmg({st:s}),morBonus:D.bonus({st:s}),
@@ -7550,7 +7603,8 @@ function clashAllies(){
   return build(plan,CLASH_T).map((u,i)=>{
     /* same side as you, but NOT yours: they are not on the roster, they take
        no spoils, and afterBattle() must never try to find them in G.party */
-    u.id='ally'+i;u.side='you';u.ally=true;u.facing=0;
+    /* #146 - besideYou() sets side and ally AND the ease knob. See there. */
+    u.id='ally'+i;besideYou(u);u.facing=0;
     /* build() pushes everything toward the enemy edge — these are on OUR side */
     u.col=Math.max(0,u.col-FOE_SHIFT);
     return u;});
@@ -7582,6 +7636,20 @@ const TAVERN_T={
   tull :{kind:'human',name:'Tull',hp:46,armour:6,mor:44,skill:42,dodge:10,
     speed:4,trait:'stubborn',
     acts:[{k:'club',n:'STOOL, SWUNG',cost:1,reach:1,dmg:[7,13],am:.45,ft:.35}]},
+  /* ═══ #145 - THE ONE YOU CANNOT HIT, AND HE IS HERE TO BE MISSED ═════════
+     (User: "One more thug who is coming add - Very nimble - huge dodge.")
+     He walks in with the barman, one round before your crew, so the room is
+     four against one-and-an-ogre at the moment the lesson is needed.
+     THE ARITHMETIC IS THE LESSON. dodge 20 plus the personality's 16 is 36
+     before the soft cap, which lands it at 26. Against the Captain's 68 that
+     is a 42% swing at his face, 57% at his flank and 72% at his back - so
+     the front is a coin the player will lose twice in a row, and the angle
+     is not a preference, it is the difference between the two halves of a
+     fight. Thin everywhere else on purpose: he is a puzzle, not a threat,
+     and he must go down in two landed blows once the player solves him. */
+  weft :{kind:'human',name:'Weft',hp:34,armour:3,mor:44,skill:40,dodge:20,
+    speed:5,trait:'nimble',
+    acts:[{k:'knife',n:'BONING KNIFE',cost:1,reach:1,dmg:[6,11],am:.25,ft:.55}]},
   /* #111 - the user's ruling: no ratkin allies here. The non-human helper is
      the BARMAN, an ogre with a proprietary interest in the furniture. */
   barman:{kind:'ogre',name:'The barman',hp:96,armour:12,mor:96,skill:48,dodge:6,
@@ -7618,10 +7686,54 @@ function tavernWave1(){
   tavTeach('pocket');
   render();
 }
+/* ═══ #145 - WAVE TWO IS THE BARMAN AND THE KNIFE, AND THE CREW IS BEHIND IT
+   (User: "Ogr joins your fight one more turn before main team. One more thug
+   joins opponents same turn.")
+
+   It used to be ONE wave: your three future crew, the barman, and no new
+   enemy, all standing up together. That is a rescue, and a rescue is not a
+   lesson - the room went from "you are losing" to "you have five friends"
+   between two clicks, and the two things the wave was carrying (an ogre is a
+   different kind of body / a dodge is beaten by an angle) had no round of
+   their own to be noticed in.
+
+   Split in two, one round apart, it is a shape instead: the door opens on a
+   man nobody can hit AND an ogre who is on your side, so the round the
+   player is given the spare step is the round there is exactly one thing
+   worth spending it on. The crew arrives after that, when the puzzle has
+   either been solved or been felt.
+   ⚠ THE ENEMY IS THE HALF THAT MATTERS FOR TIMING. Wave two adds a foe, so
+   the fight cannot end between the two waves and the crew can never be
+   skipped by a fast kill - which is exactly what could happen when the only
+   thing in the wave was friendly. */
 function tavernWave2(){
   if(!B.tut||B.tut.wave2)return;
   B.tut.wave2=true;B.tut.phase=4;
-  /* #111 - the whole future crew stands up, and the barman with them */
+  /* the round it landed on, so wave three can be one clear round behind it */
+  B.tut.w2round=B.round;
+  const n=build([[11,6,'weft',19]],TAVERN_T)[0];
+  n.id='tavN';n.facing=3;
+  tavernPlace(n);
+  say('The door swings again. A thin man comes in off the street sideways, '+
+    'already moving, with a boning knife held low and easy.');
+  const o=build([[6,4,'barman',18]],TAVERN_T)[0];
+  o.id='tavBar';besideYou(o);o.facing=0;
+  tavernPlace(o);
+  say('And the barman comes over his own bar with a club, because it is his '+
+    'furniture you are all breaking.');
+  /* #111 - the spare step, cashed at the Captain's next turn (beginTurn
+     resets actions, so granting it now would be overwritten).
+     #145 - it moved here with BACKSTAB. The step is only a gift if there is
+     something obvious to spend it on, and the thin man is that thing. */
+  B.tut.freeStep=true;
+  tavTeach('ogre');tavTeach('backstab');
+  render();
+}
+/* #145 - and one round later, the three at the bar stop watching */
+function tavernWave3(){
+  if(!B.tut||B.tut.wave3)return;
+  B.tut.wave3=true;B.tut.phase=5;
+  /* #111 - the whole future crew stands up */
   const spots={vesna:[5,4],marrow:[4,5],ilka:[4,4]};
   ['vesna','marrow','ilka'].forEach(id=>{
     const v=B.tut.bench.find(u=>u.id===id);
@@ -7634,15 +7746,7 @@ function tavernWave2(){
   say('The woman at the bar takes up her spear like the end of an argument. '+
     'The quiet man and the archer stand up with her, and none of the three '+
     'looks surprised at the other two.');
-  const o=build([[6,4,'barman',18]],TAVERN_T)[0];
-  o.id='tavBar';o.side='you';o.ally=true;o.facing=0;
-  tavernPlace(o);
-  say('And the barman comes over his own bar with a club, because it is his '+
-    'furniture you are all breaking.');
-  /* #111 - the spare step, cashed at the Captain's next turn (beginTurn
-     resets actions, so granting it now would be overwritten) */
-  B.tut.freeStep=true;
-  tavTeach('crew');tavTeach('backstab');tavTeach('ogre');
+  tavTeach('crew');
   render();
 }
 /* a broken brawler runs for the door, not for the map edge. Two stages on
@@ -7726,6 +7830,11 @@ function tavernTick(){
     }
     if(B.round>=T.w1round+3||(cap&&cap.hp<=cap.hpMax*0.45))tavernWave2();
   }
+  /* #145 - the crew is one full round behind the barman and the knife. The
+     `||` is the safety valve: if the Captain is being taken apart while the
+     lesson runs, the three at the bar stop watching a round early. */
+  if(T.phase===4&&T.wave2&&
+     (B.round>=(T.w2round||B.round)+1||(cap&&cap.hp<=cap.hpMax*0.3)))tavernWave3();
   /* #111 - KICK is taught as the first synergy: an enemy with your blade AND
      a friend's on him is a body worth pushing */
   if(T.phase>=4&&cap&&!cap.dead&&!T.taught.kick){
@@ -7783,6 +7892,21 @@ const TUTSTEPS={
       'turn: spend it getting behind one.',
     a:()=>{const f=B.units.find(x=>x.side==='foe'&&!x.dead&&!x.fled);
       return f?{hexes:[[f.col,f.row]]}:null;}},
+  /* ═══ #145 - THE LESSON THE PLAYER EARNS BY FAILING ══════════════════════
+     (User: "when you get 2 miss on him - write info messege - the best way to
+     hit enemy with big doge - circle or hit from the back".)
+     It names the TWO doors the engine actually has, and it is careful not to
+     be BACKSTAB again one card later: the arc is half of it, and the other
+     half is the `surrounded` row - every extra body on a target is +flankPow
+     to everybody swinging at it, which is the mechanical meaning of "circle
+     him" and the one the word on its own would not have taught. */
+  nimble:{h:'TOO QUICK TO HIT',
+    t:'Swinging harder will not catch him. Two things beat a dodge, and '+
+      'neither of them is a better weapon: take his flank or his back, where '+
+      'he cannot follow the blade - and get a second body on him, because '+
+      'every extra man on one target makes him easier for all of you.',
+    a:()=>{const n=B.units.find(u=>u.side==='foe'&&!u.dead&&!u.fled&&tr(u,'nimble'));
+      return n?{hexes:[[n.col,n.row]]}:null;}},
   ogre:{h:'THE BARMAN',
     t:'An ogre. Bigger and stronger than anything human, slow on his feet, '+
       'and not quick in the head. Every race carries its own skills and '+
@@ -8572,7 +8696,15 @@ function build(plan,T){
       /* the race sets the stride here too — the SAME first-move numbers the
          roster gets (RACESTEP), so a ratkin line moves like your ratkin do.
          Monsters are not a race and keep their authored speeds. */
-      mskill:t.skill,dodgeBase:t.dodge,
+      /* #146 - the other side's ease knob. A body built here that ends up on
+         YOUR side (a clash ally, the barman) is stamped up to HIT_EASE.you
+         where its side is flipped, so "which side is it on" answers this in
+         exactly one place per body. See HIT_EASE. */
+      mskill:t.skill+HIT_EASE.foe,dodgeBase:t.dodge,
+      /* #146 - a hand-tuned boss opts out of the SIZE dodge rule the same way
+         it opts out of the hp and armour trims above, so the flag has to
+         reach the unit rather than dying in this function. */
+      noTrim:!!t.noTrim,
       speed:RACESTEP[rc]||Math.max(2,t.speed),
       flankPow:10,spellPow:1,dmgBonus:2,morBonus:0,
       /* rabble 2, captains 3, great beasts get whatever they declare */
@@ -8619,6 +8751,20 @@ function build(plan,T){
        classes and race skills are a human idea (README §2). */
     if(!u.monster&&!u.big&&RACESKILL[rc])u.acts.push(Object.assign({},RACESKILL[rc]));
     restate(u);return u;});
+}
+/* ═══ #146 - A STATBLOCK BODY THAT ENDS UP ON YOUR SIDE ═══════════════════
+   build() makes a body out of a statblock and has no way of knowing which
+   side it will be standing on: the clash allies and the barman come out of
+   the same table as the people trying to kill you. So the ONE fact build()
+   guessed wrong - the ease knob - is corrected at the moment the side is
+   flipped, which is the moment it stops being a guess.
+   ⚑ ANY NEW ALLIED NPC BUILT FROM A STATBLOCK GOES THROUGH HERE. Setting
+   `side='you'` by hand is the version of this that silently keeps the other
+   side's number. */
+function besideYou(u){
+  u.side='you';u.ally=true;
+  u.mskill+=HIT_EASE.you-HIT_EASE.foe;
+  return u;
 }
 
 /* the Captain's pet: never fights, stays near him, wards off nothing by
@@ -9812,6 +9958,33 @@ const tr=(u,k)=>{
    not a race and gets nothing. Applied INSIDE dodgeOf, which means both AI
    brains, the hit preview and the tooltip inherit it without being told. */
 const RACEDODGE={ratkin:+5,ogre:-5};
+/* ═══ #146 - HOW MUCH OF YOU THERE IS TO MISS ════════════════════════════
+   (User, 2026-08-13: "update dodge modifiers for different tirget size, so
+   it is easier to hit bigger guys (we will do mor grounded render later)".)
+
+   ⛔ IT IS A BONUS TO HIT AND NOT A DODGE MODIFIER, AND THE MEASUREMENT IS
+   WHY. The literal version was built first - the ogre's −5 moved out of
+   RACEDODGE and onto sizeOf() as {1:0, 2:−7, 3:−14} - and then measured
+   across every statblock in all eight fights. It did almost nothing, for a
+   reason nothing in the request could have known:
+
+     EVERY BIG BODY IN THE GAME IS ALREADY ON THE ZERO FLOOR.
+
+   An ogre's base dodge is 7 to 10, its armour band takes 5 or 10 off, and
+   `Math.max(0, ...)` eats the rest - Bruht, the steading elder, the one-word
+   ogre and the clan-hired ogre all read 0 with the rule and 0 without it.
+   The Fen-Mother reads 3 either way, because her HEAVY band has already
+   taken ten of her thirteen. Subtracting from a number that is already zero
+   is a rule that exists and never fires, which is the exact shape this file
+   keeps writing down and paying for.
+
+   So the fact is stated on the side that has room for it. It lands in
+   `other` in hitBreakdown, which means it is a NAMED LINE in the aiming
+   card's new caption - "a big body +6" - rather than a silent subtraction
+   the player could never have found. Same rule, and now it can be read.
+   ⚑ The two questions stay apart: RACEDODGE above is how QUICK something is,
+   this is how BIG it is, and an ogre is honestly both. */
+const SIZEHIT={1:0,2:6,3:12};
 const raceKey=u=>(u.race==='ogre'||u.kind==='ogre')?'ogre'
   :(u.race==='ratkin'||u.kind==='ratkin')?'ratkin'
   :(u.race==='human'||u.kind==='human')?'human':null;
@@ -9903,33 +10076,68 @@ function splitFor(d,act){
 }
 const DODGE_SOFT=12,DODGE_RATE=0.6;
 const softDodge=v=>v<=DODGE_SOFT?v:DODGE_SOFT+(v-DODGE_SOFT)*DODGE_RATE;
-function dodgeOf(u){
+/* ═══ #146 - THE SECOND ARGUMENT IS THE WHOLE "WHAT IS OTHERS" ANSWER ═════
+   (User: "For chances to hit and dodge show what is others".) `their dodge`
+   was a single number with nothing behind it anywhere in the game: the
+   aiming card named five rows and explained four of them.
+
+   ⛔ IT IS A COLLECTOR, NOT A RETURN VALUE, AND THAT IS DELIBERATE. dodgeOf
+   is called from hitBreakdown, which is the innermost loop of BOTH AI brains
+   - a version of this that always built and returned an array of strings
+   would put an allocation and a dozen string concatenations inside the
+   scorer, and this file has already taken a five-round clash from instant to
+   23 seconds by putting one honest thing in that loop. Pass an array and it
+   is filled; pass nothing and not one string is built. The readout is the
+   only caller that passes one.
+   ⚑ ONE DEFINITION EITHER WAY. The alternative was a second function that
+   re-states the same fifteen rules for the tooltip, and a tooltip that
+   drifts from the number it is explaining is worse than no tooltip. */
+function dodgeOf(u,W){
+  /* ⚠ U+2212, not a hyphen-minus. Every other signed number on this card is
+     written with the real minus sign, and a caption mixing the two reads as
+     a different kind of value rather than as the same arithmetic. */
+  const w=W?(n,v)=>{if(v)W.push(n+' '+(v>0?'+'+Math.round(v):'−'+Math.abs(Math.round(v))));}:null;
   let d=u.dodgeBase+STATES[u.state].dodge+(u.rallyBuff||0);
+  if(w){w('their footwork',u.dodgeBase);
+    w('nerve, '+STATES[u.state].n.toLowerCase(),STATES[u.state].dodge);
+    w('rallied',u.rallyBuff||0);}
   const rk=raceKey(u);
-  if(rk&&RACEDODGE[rk])d+=RACEDODGE[rk];
+  if(rk&&RACEDODGE[rk]){d+=RACEDODGE[rk];w&&w(rk,RACEDODGE[rk]);}
   /* #79 - what you are wearing, before the cap, exactly like the racial ±5
      above it. Pre-cap means a nimble body in plate loses a little less than
      the stated ten, for the same reason the ratkin's +5 pays for part of
      itself: the cap is applied LAST, to the sum, and no contributor gets to
      opt out of it. The sheet's DODGE row is the number that is true. */
   d+=bandOf(u).dodge;
-  if(has(u,'bulwark')&&!u.moved)d+=8;
-  if(tr(u,'vet'))d+=4;
-  if(tr(u,'cautious'))d+=(u.hp<u.hpMax*.5?6:0);
+  if(w)w(bandOf(u).n.toLowerCase()+' harness',bandOf(u).dodge);
+  /* #146 - the personality the user asked for by name. See TRAITS.nimble. */
+  const nb=tr(u,'nimble');
+  if(nb){d+=nb;w&&w('very nimble',nb);}
+  if(has(u,'bulwark')&&!u.moved){d+=8;w&&w('bulwark, stood still',8);}
+  if(tr(u,'vet')){d+=4;w&&w('old hand',4);}
+  if(tr(u,'cautious')){const v=(u.hp<u.hpMax*.5?6:0);d+=v;w&&w('cautious, and hurt',v);}
   if(u.leader&&B&&B.units){
     const pet=B.units.find(x=>x.pet&&!x.dead&&x.side===u.side&&udist(u,x)<=1);
-    if(pet)d+=6;   // something is watching your back
+    if(pet){d+=6;w&&w('the beast at their heel',6);}   // something is watching your back
   }
   if(tr(u,'dutiful')){
     const cap=alive().find(x=>x.side===u.side&&(x.leader||x.captain));
-    d+=(cap&&cap!==u&&udist(u,cap)<=1)?8:-4;
+    const v=(cap&&cap!==u&&udist(u,cap)<=1)?8:-4;
+    d+=v;w&&w(v>0?'dutiful, beside their captain':'dutiful, and alone',v);
   }
   /* THE LINE: shoulder to shoulder, and nobody has to watch two sides */
-  if(B&&inLine(u))d+=FORM.lineDodge;
-  if(u.crippled>0)d-=10;               /* an arrow in the leg */
-  if(u.drunk)d-=8;                     /* #108 - the ale */
-  d+=auraSum(u,'dodge');               /* somebody nearby is worth standing near */
-  return Math.max(0,Math.round(softDodge(d)));
+  if(B&&inLine(u)){d+=FORM.lineDodge;w&&w('in line',FORM.lineDodge);}
+  if(u.crippled>0){d-=10;w&&w('crippled',-10);}    /* an arrow in the leg */
+  if(u.drunk){d-=8;w&&w('drunk',-8);}              /* #108 - the ale */
+  const au=auraSum(u,'dodge');                     /* somebody nearby is worth standing near */
+  if(au){d+=au;w&&w('somebody steadying them',au);}
+  /* ⚠ #146 - THE CAP IS WHY THE PARTS DO NOT ADD UP TO THE ROW, and the card
+     says so rather than pretending. Every contributor above is pre-cap by
+     design (see softDodge); printing the raw sum beside a capped total would
+     be a receipt that does not match the till. */
+  const raw=d,out=Math.max(0,Math.round(softDodge(d)));
+  if(w&&raw>DODGE_SOFT)W.push('hard to stack past '+DODGE_SOFT+' −'+Math.round(raw-softDodge(raw)));
+  return out;
 }
 function hitBreakdown(a,d,act){
   /* ═══ MAGIC CAN MISS TOO (user) ═══════════════════════════════════════
@@ -9939,7 +10147,18 @@ function hitBreakdown(a,d,act){
      fail to be where it lands). That makes a stupid caster genuinely
      unreliable — which is the entire point of the ogre battle-mage below. */
   const arcSkill=act.arcane?38+Math.round((a.st?a.st.int:8)*3.4):null;
-  const parts=[],skill=(arcSkill!==null?arcSkill:a.mskill)+(act.aim||0),
+  /* ═══ #146 - `other` HAS ITS OWN LIST NOW ════════════════════════════════
+     (User: "For chances to hit and dodge show what is others".) `parts` is
+     everything, and it has always been printed as one italic run at the foot
+     of the card - which is why the OTHER row could not be explained: its
+     caption sat mixed in with the four rows that already have a number of
+     their own, and the player had to work out by subtraction which of nine
+     clauses were the ones summing to the figure they were looking at.
+     `oth` is exactly the contributors that land in `other`, so the row and
+     its caption are the same arithmetic. `po()` writes to both, which is the
+     only way to add a contributor without being able to forget one. */
+  const parts=[],oth=[],po=s=>{parts.push(s);oth.push(s);},
+        skill=(arcSkill!==null?arcSkill:a.mskill)+(act.aim||0),
         dodge=act.arcane?Math.round(dodgeOf(d)*0.35):dodgeOf(d);
   let other=0;
   if(arcSkill!==null)parts.push('working it out '+arcSkill);
@@ -9953,17 +10172,24 @@ function hitBreakdown(a,d,act){
   if(around)parts.push(around+' on it +'+Math.round(fl));
   if(d.noArc)parts.push('no wrong side of it');
   const arc=arcOn(a,d);
-  if(arc.hit){other+=arc.hit;parts.push(arc.n.toLowerCase()+' +'+arc.hit);}
+  if(arc.hit){other+=arc.hit;po(arc.n.toLowerCase()+' +'+arc.hit);}
+  /* ═══ #146 - AND HOW BIG THE THING IS. See SIZEHIT for why it is here and
+     not in dodgeOf, which is where it was asked for and where it did
+     nothing. `noArc` does NOT cancel it: this is not a flanking bonus, it is
+     the size of the target, and a thing with no wrong side is still a thing
+     you can see from across the room. */
+  const szh=SIZEHIT[sizeOf(d)]||0;
+  if(szh){other+=szh;po((sizeOf(d)===3?'a great deal of it':'a big body')+' +'+szh);}
   /* wetproof(): the same exemption the stride gets. Aiming out of the water
      is only awkward for somebody the water is fighting. */
-  if(B.terr[K(a.col,a.row)]==='marsh'&&!wetproof(a)){other-=10;parts.push('water −10');}
+  if(B.terr[K(a.col,a.row)]==='marsh'&&!wetproof(a)){other-=10;po('water −10');}
   if(act.range&&engaged(a)){
     /* SYNERGY — SHIELD THE SHOOTER: a braced spear beside the archer keeps
        the scrum off the bow. The screen's whole job, made mechanical. */
     /* #72 - a wall with somebody inside it screens nothing either. One read. */
     const walled=alive().some(x=>x.side===a.side&&x!==a&&wallLive(x)&&udist(a,x)<=1);
     const p=has(a,'sureshot')?-15:walled?-18:-35;other+=p;
-    parts.push(walled&&!has(a,'sureshot')?'scrum, but screened '+p:'shooting in a scrum '+p);}
+    po(walled&&!has(a,'sureshot')?'scrum, but screened '+p:'shooting in a scrum '+p);}
   /* ═══ #36 — WHAT THE ARROW HAS TO GET PAST ════════════════════════════
      Folded in here on purpose rather than bolted onto the UI: hitBreakdown
      is what the preview prints AND what both AI brains score expected damage
@@ -9976,7 +10202,7 @@ function hitBreakdown(a,d,act){
       /* #82 - the receipt has to name the RIGHT thing in the way. One of these
          three is a person and one is a rock, and they are different problems:
          a body walks off, a boulder does not. */
-      parts.push((L.k==='SCREENED'?'screened ':
+      po((L.k==='SCREENED'?'screened ':
         L.k==='COVER'?(B.terrain==='tavern'?'over the table ':'over a boulder '):
         'a body in the way ')+LOS[L.k].hit);
     }
@@ -9987,25 +10213,25 @@ function hitBreakdown(a,d,act){
     /* #134 - the same SHOTBAND the board paints from, so the colour on a hex
        and the penalty on the receipt can no longer disagree. */
     const b=SHOTBAND(a,act,udist(a,d));
-    if(b){other+=b.hit;parts.push(b.why+' −'+Math.abs(b.hit));}
+    if(b){other+=b.hit;po(b.why+' −'+Math.abs(b.hit));}
   }
-  if(has(a,'duelist')&&threatsAt(a.col,a.row,a.side)===1){other+=8;parts.push('duellist +8');}
-  if(a.trait==='counter'&&!a.moved){other+=8;parts.push('stood still +8');}
-  if(tr(a,'vet')){other+=4;parts.push('old hand +4');}
+  if(has(a,'duelist')&&threatsAt(a.col,a.row,a.side)===1){other+=8;po('duellist +8');}
+  if(a.trait==='counter'&&!a.moved){other+=8;po('stood still +8');}
+  if(tr(a,'vet')){other+=4;po('old hand +4');}
   /* #108 - both AI brains read this line for free, which is the whole reason
      the status lives here rather than in a special case */
-  if(a.drunk){other-=12;parts.push('drunk −12');}
-  if(tr(a,'cautious')&&a.hp>=a.hpMax*.5){other-=5;parts.push('cautious −5');}
+  if(a.drunk){other-=12;po('drunk −12');}
+  if(tr(a,'cautious')&&a.hp>=a.hpMax*.5){other-=5;po('cautious −5');}
   /* THE SWARM: too many small bodies on you to swing at any one of them */
   if(ringOf(a,'ratkin')>=FORM.swarmNeed){other+=FORM.swarmHit;
-    parts.push('swarmed '+FORM.swarmHit);}
-  if(has(a,'deadeye')&&act.range){other+=6;parts.push('dead eye +6');}
+    po('swarmed '+FORM.swarmHit);}
+  if(has(a,'deadeye')&&act.range){other+=6;po('dead eye +6');}
   /* a pack-leader in earshot */
   const ah=auraSum(a,'hit');
-  if(ah){other+=ah;parts.push('the pack +'+ah);}
+  if(ah){other+=ah;po('the pack +'+ah);}
   /* ambition shoots badly with somebody breathing on it */
   const shy=tr(a,'closeShy');
-  if(shy&&udist(a,d)<=2){other-=shy;parts.push('nerves, up close −'+shy);}
+  if(shy&&udist(a,d)<=2){other-=shy;po('nerves, up close −'+shy);}
   /* THE ATTACKER'S OWN NERVE was folded into `other` with no line in `parts`
      — the one contributor the readout's own caption never named. An archer
      shooting from WAVERING or BREAKING took the full penalty and the tooltip
@@ -10013,11 +10239,11 @@ function hitBreakdown(a,d,act){
      from a real screenshot: shoulder +5, screened −8, nerves −5 add to −8,
      and the missing −8 was this line, silent. */
   if(STATES[a.state].hit){other+=STATES[a.state].hit;
-    parts.push('your own nerve, '+STATES[a.state].n.toLowerCase()+' '+STATES[a.state].hit);}
+    po('your own nerve, '+STATES[a.state].n.toLowerCase()+' '+STATES[a.state].hit);}
   /* the top rung of the ladder is the one that pays — see ROCKING */
-  if(rocking(a)){other+=5;parts.push('nerve up +5');}
+  if(rocking(a)){other+=5;po('nerve up +5');}
   return {skill:Math.round(skill),dodge:dodge,flank:Math.round(fl),other:Math.round(other),
-    arc:arc,total:clamp(Math.round(skill-dodge+fl+other),5,95),parts:parts};
+    arc:arc,total:clamp(Math.round(skill-dodge+fl+other),5,95),parts:parts,oth:oth};
 }
 /* An ogre with ambition rages after counting its own misses. Nobody else does
    — this is the one place the same word produces a different creature. */
@@ -10177,6 +10403,19 @@ function strike(a,d,act,mult){
     /* an ogre with ambition is keeping count of these, and there is a number
        at which it stops trying to look good about it */
     a.misses=(a.misses||0)+1;
+    /* ═══ #145 - TWO SWINGS AT SOMETHING TOO QUICK, AND THE ROOM EXPLAINS ═══
+       (User: "when you get 2 miss on him".) Counted on the DEFENDER, because
+       the question is "have I failed to touch this one twice", not "has this
+       body of mine missed twice" - the second reading would fire on the
+       Captain missing two different men, which teaches nothing about dodge.
+       ⚑ WRITTEN AS THE GENERAL RULE, not against a name: anything carrying
+       the personality arms it. `B.tut` scopes it to the brawl, which is where
+       the spotlight layer exists - and it is the only gate, so the day a
+       nimble body appears in a taught fight the lesson comes with it. */
+    if(B.tut&&a.side==='you'&&tr(d,'nimble')){
+      d.missedAt=(d.missedAt||0)+1;
+      if(d.missedAt>=2)tavTeach('nimble');
+    }
     const rageAt=tr(a,'missRage');
     if(rageAt&&a.misses===rageAt){
       fx(a,'ENOUGH','#c15d55');sfx('rout');
@@ -16610,10 +16849,14 @@ function readout(t,e){
       '<span class="big" id="rHit">—</span>'+
       '<span style="font-family:var(--mono);font-size:10.5px;color:#8fa5a2">CHANCE TO HIT</span></div>'+
     '<div class="rr"><span>your skill</span><span id="rSkill"></span></div>'+
+    '<div class="rw" id="rSkillWhy"></div>'+
     '<div class="rr"><span>their dodge</span><span id="rDodge" style="color:#8ca35a"></span></div>'+
+    /* #146 - every row that is a SUM now carries its own working. See .rw. */
+    '<div class="rw" id="rDodgeWhy"></div>'+
     '<div class="rr"><span>surrounded</span><span id="rFlank"></span></div>'+
     '<div class="rr"><span>attack arc</span><span id="rArc"></span></div>'+
     '<div class="rr"><span>other</span><span id="rOther"></span></div>'+
+    '<div class="rw" id="rOtherWhy"></div>'+
     '<div style="height:1px;background:#2c3d3f"></div>'+
     '<div class="rr"><span>ARMOUR DAMAGE</span><span id="rArm" style="color:var(--steel)"></span></div>'+
     '<div class="rr"><span>HITPOINT DAMAGE</span><span id="rHp" style="color:#c15d55"></span></div>'+
@@ -16649,13 +16892,37 @@ function readout(t,e){
   $('rFlank').style.color=bd.flank?'#c9c6bb':'#5f7472';
   $('rOther').textContent=(bd.other>=0?'+':'')+bd.other;
   $('rOther').style.color=bd.other<0?'#c15d55':'#8ca35a';
+  /* ═══ #146 - WHAT IS IN THE THREE SUMS ═══════════════════════════════════
+     The dodge list is built by dodgeOf itself (pass it an array and it fills
+     it), so this caption cannot drift from the number beside it however many
+     contributors that function grows. The `other` list comes back off the
+     breakdown for the same reason. Nothing here re-states a rule.
+     ⚠ A WORKING IS SCORED AGAINST 35% OF THE DODGE, and the row prints the
+     scaled figure, so the parts under it would not add up without saying so.
+     That is the one line here that is not a contributor. */
+  const dw=[];dodgeOf(t,dw);
+  if(a.arcane&&dw.length)dw.push('and a working is not sidestepped ×0.35');
+  /* ⚠ EVERY LINE PAYS RENT, AND A ONE-ITEM CAPTION PAYS NONE. `their footwork
+     +16` under a row that already reads −16 restates the number and teaches
+     nothing; it only becomes information the moment something is added to it
+     or taken off it. So the caption appears from the second contributor on. */
+  if(dw.length<2)dw.length=0;
+  $('rDodgeWhy').textContent=dw.join(' · ');
+  $('rOtherWhy').textContent=bd.oth.join(' · ');
+  /* magic is aimed with the wits, so the SKILL row is not the weapon skill
+     the rest of the card is written against and has to say whose number it is */
+  $('rSkillWhy').textContent=a.arcane?'their wits, not their hand'
+    :(a.aim?'this skill aims '+(a.aim>0?'+':'')+a.aim:'');
   $('rArm').textContent=p.arm[0]+'–'+p.arm[1];
   $('rHp').textContent=p.hp[0]+'–'+p.hp[1];
   /* #134 - the ladder's word, matching the plaque and the enemy card. See the
      note on the MORALE row in the inspect panel. */
   $('rMor').textContent=LADDER[ladderAt(t)].ic+' '+LADDER[ladderAt(t)].n.toUpperCase();
   $('rMor').style.color=LADDER[ladderAt(t)].col;
-  $('rNote').textContent=bd.parts.join(' · ')||(a.note||'');
+  /* #146 - the three captions above carry every situational clause now, so
+     this line is back to its original job: the ACT'S own sentence, printed
+     when there is nothing situational to say about this particular swing. */
+  $('rNote').textContent=(dw.length||bd.oth.length)?'':(a.note||'');
   placeRead($('bRead'),e);
 }
 $('bEnd').onclick=()=>{if(!B.busy&&cur()&&cur().side==='you'&&!cur().ally)nextTurn();};
