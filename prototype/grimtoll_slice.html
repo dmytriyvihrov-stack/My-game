@@ -2939,6 +2939,25 @@ const $=i=>document.getElementById(i);
    Nothing is needed to HIDE the card on the way out: `.screen` is
    display:none, so it goes with the map and comes back with it. */
 const DETOUR={inv:1,help:1};
+/* ═══ #130 - WHICH SCREENS CARRY THE MENU BUTTON ══════════════════════════
+   (User, 2026-08-13: "on all screens made a consistent button menu in one
+   place so person can reach it, and make it work on esc.")
+
+   It used to be the map alone, and the reason written down was that a battle
+   is regenerated rather than restored, so walking out of one would silently
+   discard it. #131 removed that reason: the unresolved card is saved now, so
+   leaving a fight costs the fight's progress and nothing else, and the confirm
+   on the button says exactly that.
+
+   The flow screens stay out on purpose. spoils, promo, epilogue and prologue
+   are mid-transaction; help, notes and poll each already own a Back that
+   restores where they came from; and `menu` is where the button goes. Two
+   doors onto one decision is how they drift apart.
+
+   ⚠ The button never MOVES: left 100px, bottom 10px on every one of these.
+   "One place" is the whole request, so a screen that cannot host that
+   coordinate does not get the button rather than getting it somewhere else. */
+const MENU_ON={world:1,battle:1,inv:1,camp:1,sim:1};
 const show=i=>{
   if(i!=='world'&&!DETOUR[i]){const d=$('wDlg');if(d)d.classList.remove('on');}
   hideTip();
@@ -2973,10 +2992,9 @@ const show=i=>{
     if(inLog&&box&&hb.parentNode!==box){box.appendChild(hb);hb.classList.add('inlog');}
     else if(!inLog&&home&&hb.parentNode!==home){home.appendChild(hb);hb.classList.remove('inlog');}
   }
-  /* the way back to the menu, offered only where leaving is a coherent moment:
-     standing on the map. Not mid-battle — a battle is regenerated, never
-     restored, so walking out of one would silently discard it. */
-  const mb=$('menuBtn');if(mb)mb.classList.toggle('on',i==='world'&&!SIM.on);
+  /* #130 - the way back to the menu, on every screen that has a coherent out.
+     See MENU_ON above for which and why. */
+  const mb=$('menuBtn');if(mb)mb.classList.toggle('on',!!MENU_ON[i]);
   /* the REAL screen id, not a pre-collapsed battle/world. Which cue a screen
      gets is setMusicMode's question and nobody else's; this line answering
      half of it early is what made a menu cue impossible to add. */
@@ -16872,8 +16890,51 @@ $('bLegend').onclick=()=>{
    always the weapon in their hands. SPACE ends the turn, ESC cancels a
    selection — the two things a player reaches for after picking wrong. */
 document.addEventListener('keydown',e=>{
-  if(!$('battle').classList.contains('on'))return;
   if(e.target&&/^(INPUT|TEXTAREA)$/.test(e.target.tagName))return;
+  /* ═══ #130 - ESC IS LAYERED, AND THE FIRST MATCH WINS ═══════════════════
+     (User: "make it work on esc.") Esc used to reach exactly one screen,
+     because this whole handler returned early unless the battle was up. The
+     guards below it (busy, tutLock, somebody else's turn) then swallowed it
+     again, so the one place it worked was also the place it most often did
+     nothing. It closes the topmost thing now, whatever that is.
+
+     ⚠ Clearing a battle selection stays the FIRST battle meaning, ahead of
+     the menu, because that is what the key already did for anyone who has
+     played this build. A second press, with nothing selected, opens the menu. */
+  if(e.key==='Escape'){
+    e.preventDefault();
+    /* 1. a confirm is up. Take its LAST door: `ask` is written throughout this
+       file with the safe answer last ("No. Go back.", "Stay in it."), and Esc
+       must never be able to commit the dangerous one. Until now nothing on the
+       keyboard could dismiss this modal at all. */
+    if(ASK.classList.contains('on')){
+      const doors=ASK.querySelectorAll('#askOpts button');
+      if(doors.length)doors[doors.length-1].click();
+      return;
+    }
+    /* 2. mid-fight with something picked: put it down. */
+    if($('battle').classList.contains('on')&&B&&!B.busy&&!B.tutLock&&B.won===null&&
+       (B.sel||B.reach||B.hurl)){
+      B.sel=null;B.reach=null;
+      B.hurl=null;B.hurlFrom=null;B.hurlRock=null;B.hurlRocks=null;render();
+      return;
+    }
+    const on=[].slice.call(document.querySelectorAll('.screen.on')).map(s=>s.id)[0];
+    /* 3. a screen that carries the menu button: go through the BUTTON, never
+       round it, so the battle confirm and the practice-field restore are not
+       written a second time here and left to drift. */
+    if(MENU_ON[on]){
+      const mb=$('menuBtn');
+      if(mb&&mb.classList.contains('on'))mb.click();
+      return;
+    }
+    /* 4. a screen that owns a Back: press the one it already has. */
+    const back={help:'hBack',notes:'nBack',poll:'qBack'}[on];
+    if(back){const b=$(back);if(b)b.click();}
+    return;
+  }
+  /* the action hotkeys are battle-only, and keep every guard they had */
+  if(!$('battle').classList.contains('on'))return;
   if(!B||B.busy||B.tutLock||B.won!==null)return;
   const u=cur();
   if(!u||u.side!=='you'||u.ally||u.pet||u.state==='routed')return;
@@ -16888,8 +16949,8 @@ document.addEventListener('keydown',e=>{
     return;
   }
   if(e.key===' '||e.key==='Enter'){e.preventDefault();nextTurn();return;}
-  if(e.key==='Escape'){B.sel=null;B.reach=null;
-    B.hurl=null;B.hurlFrom=null;B.hurlRock=null;B.hurlRocks=null;render();}
+  /* Escape is handled at the top now, ahead of every guard on this handler.
+     See #130. */
 });
 
 /* ============================================================
@@ -24284,7 +24345,7 @@ function openEvent(k){
   if(k==='village'){openVillage();return;}
   const e=EVENTS[k];
   G.pending=k;
-  /* ═══ #131 — THE CARD ON SCREEN SURVIVES A RELOAD ═══════════════════════
+  /* ═══ #131 - THE CARD ON SCREEN SURVIVES A RELOAD ═══════════════════════
      `G.pending` is deliberately NOT saved (loadRun forces it null), because a
      half-open dialog is not a coherent state to restore. `openEv` is the
      saveable half of the same fact: WHICH card was unresolved, so the resume
@@ -25910,7 +25971,37 @@ function drawNotes(log,who){
   $('nBack').onclick=()=>{const b=NOTES_BACK||'menu';NOTES_BACK=null;
     show(b);if(b==='world')worldTick();};
 }
+/* ═══ #130 - THE ONE WAY OUT, AND WHAT IT COSTS ON EACH SCREEN ════════════
+   Three exits behind one button, because "the menu" means something slightly
+   different depending on what you are standing in.
+     a practice fight  give `G` back first, then go. Nothing is riding on it.
+     a real fight      ASK. This is the one exit that throws work away, and the
+                       wording names the cost exactly: #131 makes the node
+                       re-offer its card, so the fight starts again from the
+                       top rather than being skipped.
+     anywhere else     save and go, unless a card is open or the token is
+                       walking, which is the guard this button already had. */
 $('menuBtn').onclick=()=>{
+  const inFight=$('battle').classList.contains('on');
+  if(SIM.on){simRestore();openMenu();return;}
+  if(inFight){
+    ask('LEAVE THE FIGHT?',
+      'The road is saved where it stands, and the company is where it was before this started.\n\n'+
+      'This fight begins again from the beginning. Everything that has happened on the field, '+
+      'the wounds and the ground you have taken, is undone.',
+      [{t:'Leave it.',danger:true,c:'the fight will be waiting',
+        go:()=>{
+          /* the teardown withdraw() uses. `B=null` is what makes every pending
+             later() callback drop itself: they compare against the captured B
+             and silently give up when it is not the current one. */
+          if(B&&B.autoTimer){clearInterval(B.autoTimer);B.autoTimer=null;}
+          if(B)B.auto=false;
+          B=null;
+          saveRun();openMenu();
+        }},
+       {t:'Stay in it.',c:'you are still standing'}]);
+    return;
+  }
   if(G.pending||G.moving){say2('Finish what you are standing in first.');return;}
   saveRun();openMenu();
 };
@@ -26092,6 +26183,21 @@ function simFight(){startBattle(SIM.fight);}
 /* the only exit from a practice fight. Puts `G` back exactly as it was and
    reports what happened, using the same order-of-battle the real after-fight
    screen uses — which is the whole reason to come here. */
+/* ═══ #130 - GIVING `G` BACK IS ITS OWN JOB NOW ═══════════════════════════
+   It used to live inside simResult, which was the only way out of a practice
+   fight. The menu button is a second way out, and a practice fight abandoned
+   without this leaves the borrowed roster sitting in `G`. `saveRun` bails on
+   SIM.on so it can never be written over the real save, but the in-memory
+   company would be the practice one until something reloaded it. */
+function simRestore(){
+  if(SIM.snap){
+    Object.keys(G).forEach(k=>{delete G[k];});
+    Object.keys(SIM.snap).forEach(k=>{G[k]=SIM.snap[k];});
+    PARTYCAP=SIM.cap;
+    SIM.snap=null;SIM.cap=null;
+  }
+  SIM.on=false;B=null;
+}
 function simResult(how){
   /* #122 - the same pieces the real after-fight screen uses: the crew grid
      and the enemy roll. Built HERE, while B is alive and G.party is still
@@ -26109,13 +26215,7 @@ function simResult(how){
   const f=SIM_FIGHTS.find(x=>x.k===SIM.fight)||{n:'the field'};
   /* restore BEFORE drawing anything, so nothing on the card can read a
      borrowed roster and write it somewhere */
-  if(SIM.snap){
-    Object.keys(G).forEach(k=>{delete G[k];});
-    Object.keys(SIM.snap).forEach(k=>{G[k]=SIM.snap[k];});
-    PARTYCAP=SIM.cap;
-    SIM.snap=null;SIM.cap=null;
-  }
-  SIM.on=false;B=null;
+  simRestore();
   const head={won:'THE FIELD IS YOURS',lost:'THEY PUT ALL OF YOU DOWN',
     mercy:'THEY ASK FOR MERCY',fled:'YOU WALK OFF IT'}[how]||'IT IS OVER';
   const line={
@@ -26140,7 +26240,7 @@ function simResult(how){
   $('simPick').onclick=openSim;
 }
 
-/* ═══ #124 — "A NEW COMPANY" HAS TO ACTUALLY START ONE ════════════════════
+/* ═══ #124 - "A NEW COMPANY" HAS TO ACTUALLY START ONE ════════════════════
    (User, 2026-08-13: "when in menu, I press start new game. I do actually
    start new game... just start new run physically.")
 
@@ -26175,7 +26275,7 @@ function openMenu(){
     c:'day '+r.day+' · '+r.party.length+' in the company · '+
       ((NODES[r.at]||{}).n||'somewhere east')+' · '+r.run.crowns+' crowns',
     go:()=>{if(loadRun()){show('world');worldTick();placeToken();drawNodes();
-        /* ═══ #131 — AN UNRESOLVED CARD COMES BACK, AND SO DOES ITS FIGHT ═══
+        /* ═══ #131 - AN UNRESOLVED CARD COMES BACK, AND SO DOES ITS FIGHT ═══
            `openEv` outranks `queuedEv`. The armour ambush's pushed-aside event
            is what happens AFTER the thing in front of you is dealt with, so
            re-opening the card leaves that queue alone to fire in its turn. */
