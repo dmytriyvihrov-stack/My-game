@@ -182,6 +182,16 @@ with the intent kept exactly.*
 7. **A free door only where the others cost.** 8. **A battle cost line carries the exact tactical
 receipt.** 9. **Salvage is the resource word.**
 
+**And a tenth, measured rather than felt** *(2026-08-13, #143, the user: "reduce them 30-70% each
+- easier to read, eseier to make choices")*: **10. A card is as long as its weight allows, and the
+outcome does not narrate its own numbers.** The road runs at **LIGHT 45-90 words · MEDIUM 90-140 ·
+HEAVY 140-175**, body and all outcomes counted together, measured in the running build. What a
+choice paid is a **row of chips**, the same ones the aftermath uses, built off the payment rather
+than off the label, so the prose never spends a sentence on a figure the receipt is already
+holding. ⚠ **A percentage is not a goal**: four cards were cut under 30% because their remaining
+lines were load-bearing, and cutting to a quota costs the joke or the fact. Full procedure, with
+the counters and what must never be cut: [`.claude/rules/event-cards.md`](../.claude/rules/event-cards.md).
+
 ### Working with this user
 
 - **They cut scope, and they are usually right.** Given a six-part system they will ask for the one
@@ -398,6 +408,10 @@ missing ids. It cannot cover the half that matters, so read the event once and a
 - **Was the thing in front of the company MADE BY PEOPLE, and does the card say so?** *(User's
   standing rule: "it is important for emotional inclusion and for the plot." The two are different
   kinds of dread.)*
+- **How long is it, in words, measured?** LIGHT 45-90 · MEDIUM 90-140 · HEAVY 140-175, body and
+  outcomes together. A card over its band is claiming to be heavier than the Dead Company.
+- **Does the prose repeat a number the chip row is already holding?** If so, the prose loses it.
+  *(Both from [`.claude/rules/event-cards.md`](../.claude/rules/event-cards.md).)*
 - **Could this be removed with nothing lost?** If yes, remove it or rewrite it.
 
 **That last question does the work.** A road that is mostly filler makes the events that *do* return
@@ -423,6 +437,7 @@ feel like filler too.
 | [`10_ART_ASSET_BIBLE_AND_PROMPTS.md`](10_ART_ASSET_BIBLE_AND_PROMPTS.md) | the painted-art manifest and one prompt per picture |
 | [`08_MUTATIONS.md`](08_MUTATIONS.md) · [`09_SETTLEMENTS_AND_LEGACY.md`](09_SETTLEMENTS_AND_LEGACY.md) | two designed systems, partly built |
 | `content/` | authoring source. **`events_book.html` runs the other way**: every authored word generated OUT of the running build for the user to edit |
+| [`../.claude/rules/`](../.claude/rules/) | **standing procedures for jobs that repeat.** Read the one that matches before touching that surface, or it gets re-derived: **`event-cards.md`** (how long a card's prose may be, and where the receipt lives) · **`world-map-sights.md`** (the icon on a map node) · **`static-event-art.md`** (stage-3 event art mapping) |
 | `docs/archive/` | the long-form history. **Three files are live references** and are linked from here where they are wanted: `BACKLOG_ENTRY_SPECS.md`, `PLAN_REASONING.md`, `README_WHERE_IT_STOOD.md`. **Everything else in it is a dated snapshot nobody has to read**, kept because git is easier to trust when the file is also on disk |
 | **the running build** | **what is actually true. It wins over every document.** |
 
