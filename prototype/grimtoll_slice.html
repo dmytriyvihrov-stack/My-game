@@ -16234,6 +16234,10 @@ function saveRun(){
            two. `armourPlan`/`armourSac` are deliberately NOT saved — a battle
            is regenerated, never restored, so the plan cannot outlive it. */
         armourDone:G.armourDone,queuedEv:G.queuedEv,
+        /* #131 - the unresolved card, so a reload mid-battle re-offers the
+           fight instead of walking past it. Distinct from `queuedEv`, which
+           is what happens AFTER this one is dealt with. */
+        openEv:G.openEv,
         /* the cache: which long arm it was planted on and which way it was
            asked for. The plate is saved with the node; this is the price. */
         cache:G.cache,
@@ -16500,6 +16504,7 @@ function toBeaten(){
     G.pending=null;G.visited[G.at]=true;
     if(NODES[G.at])NODES[G.at].ev=null;
     G.queuedEv=null;
+    G.openEv=null;      /* #131 - the card is answered; do not re-offer it */
     show('world');worldTick();saveRun();
   };
 }
@@ -16532,6 +16537,7 @@ function toRetreat(){
        place it caught you at goes with it. Same rule this screen already
        applies to the node itself: the company does not turn around. */
     G.queuedEv=null;
+    G.openEv=null;      /* #131 - you went round it; it is not waiting for you */
     show('world');worldTick();
     say2('You went round it. Whatever was worth having back there stays back there — the company '+
       'does not turn around, and there is still road in front of you.');
@@ -17331,6 +17337,9 @@ const AFTER={
 function afterPromotion(){
   show('world');worldTick();
   G.pending=null;
+  /* #131 - the fight WAS the card's answer. Clear it BEFORE the save below, or
+     the next resume re-opens the event whose battle has just been won. */
+  G.openEv=null;
   drawNodes();
   saveRun();          /* the fight is resolved and the map is live again */
   /* A ROAD AMBUSH DOES NOT CONSUME THE PLACE IT CAUGHT YOU AT. The Thing in
@@ -23923,6 +23932,17 @@ function openEvent(k){
   if(k==='village'){openVillage();return;}
   const e=EVENTS[k];
   G.pending=k;
+  /* ═══ #131 — THE CARD ON SCREEN SURVIVES A RELOAD ═══════════════════════
+     `G.pending` is deliberately NOT saved (loadRun forces it null), because a
+     half-open dialog is not a coherent state to restore. `openEv` is the
+     saveable half of the same fact: WHICH card was unresolved, so the resume
+     can open a fresh one. It is cleared the moment the card is done with -
+     see the wGo/wKit handlers, toBeaten, the withdraw screen and
+     afterPromotion. Without it, arriving set `visited[k]` BEFORE the event
+     fired, `drawNodes`' re-entry click is gated on `!visited[k]`, and a
+     player who reloaded mid-battle came back standing on a dead node with
+     the fight, its spoils and its scars silently skipped. */
+  G.openEv=k;
   mark('event: '+(e.title||k));   /* so a ★/▼ lands on THIS card, not on "world" */
   const dlg=$('wDlg');
   const node=NODES[G.at]||{x:640,y:300};
@@ -24374,11 +24394,11 @@ function pickChoice(k,i){
     $('wChoices').innerHTML='<button class="choice" id="wKit"><b>⛨ Open the inventory</b>'+
       '<i>'+got.length+' new piece'+(got.length>1?'s':'')+
       ' — none of it works in the cart</i></button>';
-    $('wKit').onclick=()=>{$('wDlg').classList.remove('on');saveRun();openInv();};
+    $('wKit').onclick=()=>{$('wDlg').classList.remove('on');G.openEv=null;saveRun();openInv();};
   }else{
     $('wChoices').innerHTML='<button class="choice" id="wGo"><b>Back to the road</b>'+
       '<i>the company can move again</i></button>';
-    $('wGo').onclick=()=>{$('wDlg').classList.remove('on');worldTick();saveRun();};
+    $('wGo').onclick=()=>{$('wDlg').classList.remove('on');G.openEv=null;worldTick();saveRun();};
   }
   worldTick();
 }
@@ -24545,7 +24565,11 @@ function openCampScreen(bankIt){
       LEGACY.built.push(k);saveLegacy();sfx('promote');
       openCampScreen(false);};
     fit.appendChild(b);});
-  $('again').onclick=()=>location.reload();
+  /* #124 - "Take the road again" means a run, not a title screen. Armed ONLY
+     when nothing is out there: this screen is also reachable from the menu
+     mid-run, and there the reload must land back on the menu so Continue is
+     still offered rather than a live company being thrown away unasked. */
+  $('again').onclick=()=>{if(!hasSavedRun())BOOT_NEW.arm();location.reload();};
 }
 function toEpilogue(txt){
   JOURNAL.endRun('reached the end, day '+G.day);
@@ -25764,18 +25788,54 @@ function simResult(how){
   $('simPick').onclick=openSim;
 }
 
+/* ═══ #124 — "A NEW COMPANY" HAS TO ACTUALLY START ONE ════════════════════
+   (User, 2026-08-13: "when in menu, I press start new game. I do actually
+   start new game... just start new run physically.")
+
+   The reload is load-bearing and it STAYS. `const G` and `G.party=makeParty()`
+   are module-level, so a fresh page is the only thing that rebuilds them;
+   resetting G in place would be this file's fifth second-source-of-truth. What
+   was missing is that the player's INTENT did not survive the reload - the
+   page came back to this same menu and the button had to be pressed twice.
+
+   ⚠ TAKE IT BEFORE YOU ACT ON IT, never after. A throw between the read and
+   the prologue would boot every future launch straight into a new run with no
+   way back to the menu. `take()` deletes first and returns second. */
+const BOOT_NEW={
+  k:'gt_boot_new',        /* gt_ prefixed, so the wipe-all enumeration gets it */
+  arm(){try{localStorage.setItem(this.k,'1');}catch(e){}},
+  take(){
+    let v=null;
+    try{v=localStorage.getItem(this.k);localStorage.removeItem(this.k);}catch(e){return false;}
+    return v==='1';
+  }
+};
+
 /* ---------- the menu ---------- */
 function openMenu(){
   SIM.on=false;
+  /* #124 - the reload above landed here. Honour it and go straight to the
+     first card of a new run, rather than showing the menu a second time. */
+  if(BOOT_NEW.take()){openPrologue();return;}
   const r=simLive();
   const opts=[];
   if(r)opts.push({t:'Continue the road',
     c:'day '+r.day+' · '+r.party.length+' in the company · '+
       ((NODES[r.at]||{}).n||'somewhere east')+' · '+r.run.crowns+' crowns',
     go:()=>{if(loadRun()){show('world');worldTick();placeToken();drawNodes();
-        say2('The road is where you left it.');
-        if(G.queuedEv){const ev=G.queuedEv;G.queuedEv=null;
-          setTimeout(()=>{if(!G.over&&!G.pending&&!G.moving)openEvent(ev);},400);}
+        /* ═══ #131 — AN UNRESOLVED CARD COMES BACK, AND SO DOES ITS FIGHT ═══
+           `openEv` outranks `queuedEv`. The armour ambush's pushed-aside event
+           is what happens AFTER the thing in front of you is dealt with, so
+           re-opening the card leaves that queue alone to fire in its turn. */
+        const back=G.openEv||null;
+        if(back){
+          say2('The road is where you left it, and so is whatever was standing in it.');
+          setTimeout(()=>{if(!G.over&&!G.pending&&!G.moving)openEvent(back);},400);
+        }else{
+          say2('The road is where you left it.');
+          if(G.queuedEv){const ev=G.queuedEv;G.queuedEv=null;
+            setTimeout(()=>{if(!G.over&&!G.pending&&!G.moving)openEvent(ev);},400);}
+        }
       }else{clearRun();openMenu();}}});
   opts.push({t:r?'A new company':'Take the road',
     c:r?'the one out there is not coming back':'four of you, a wagon, and a tavern full of people '+
@@ -25786,7 +25846,8 @@ function openMenu(){
       ask('START AGAIN?','There is a company on the road right now — '+r.party.length+' of them, '+
         'day '+r.day+'. Starting a new one leaves them where they are, for good.',
         [{t:'Start again anyway.',danger:true,c:'they are not coming back',
-          go:()=>{clearRun();location.reload();}},
+          /* #124 - arm the flag so the reload comes back INTO the new run */
+          go:()=>{clearRun();BOOT_NEW.arm();location.reload();}},
          {t:'No. Go back.',c:'they are still out there',go:openMenu}]);
     }});
   opts.push({t:'The practice field',
