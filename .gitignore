@@ -49,3 +49,11 @@ _archive_docs_*.tar.gz
 __pycache__/
 Thumbs.db
 desktop.ini
+
+# Google Drive shortcut stubs. The repo lives in a Drive folder, so the user's
+# own documents sit beside the source - and `deploy.ps1` runs `git add -A`,
+# which swept one of them into a deploy commit before this line existed. They
+# are pointers, not files: there is nothing in them to version.
+*.gdoc
+*.gsheet
+*.gslides
