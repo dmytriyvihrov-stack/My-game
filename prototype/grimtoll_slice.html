@@ -3894,22 +3894,52 @@ const D={
    swing does, what the armour stops, how far the legs go. Everything else
    is folded away under THE ARITHMETIC for anybody who wants to see it.
    ═══════════════════════════════════════════════════════════════════════ */
+/* ═══ #132 - THE FAMILIAR NAMES, AND NINE BANDS INSTEAD OF SEVEN ══════════
+   (User, 2026-08-13: "rename the strength agility intellect morale things, so
+   it is easy for people to navigate and more readable" and "adding maybe two
+   other levels between them... from very weak to very very strong. And then in
+   the future some artifacts can modify it.")
+
+   BUILD/HANDS/WITS/NERVE were house words for four things every player of this
+   genre already has a word for, so they cost a beat of translation on the one
+   screen that is meant to be read at a glance.
+
+   ⚑ THE RENAME ALSO FIXES SOMETHING THAT WAS ALREADY WRONG. The roster sheet
+   printed "NERVE" TWICE, thirty lines apart, off two different scales: this
+   stat's bands, and the battle ladder's rungs. They are now the two things
+   they actually are. MORALE IS THE CAPACITY. NERVE IS WHAT IS LEFT OF IT.
+
+   On nine: every existing threshold keeps its exact meaning. One band is added
+   at the top (17+) and the old catch-all bottom bucket (0-4) is split at 3, so
+   NOBODY in a current save changes band except a body sitting under 5, and the
+   new room is headroom for the artifacts remark. Live stats run about 4 to 14
+   at the start (Skree agi 14, Bruht str 13, the Captain 9/8/9/11), so 17 is
+   deliberately somewhere nobody starts.
+
+   ⚠ `tell()` reads this with .find(v>=threshold), so the rows MUST stay sorted
+   descending. Out of order, a stat silently reads the wrong word. */
 const TELLS={
-  str:{lbl:'BUILD',  col:'var(--str)',
-    s:[[15,'Enormously strong'],[13,'Very strong'],[11,'Strong'],[9,'Strong enough'],
-       [7,'Not strong'],[5,'Weak'],[0,'Feeble']]},
-  agi:{lbl:'HANDS',  col:'var(--agi)',
+  str:{lbl:'STRENGTH',  col:'var(--str)',
+    s:[[17,'Monstrously strong'],[15,'Enormously strong'],[13,'Very strong'],[11,'Strong'],
+       [9,'Strong enough'],[7,'Not strong'],[5,'Weak'],[3,'Feeble'],
+       [0,'No use lifting anything']]},
+  agi:{lbl:'AGILITY',   col:'var(--agi)',
     /* deliberately not "slow" anywhere on this axis — that word belongs to
        STEP, and a player reading "Slow" next to "STEP 2 hex" will think it is
        the same fact stated twice */
-    s:[[15,'Very quick'],[13,'Quick'],[11,'Handy'],[9,'Steady enough'],
-       [7,'Heavy-handed'],[5,'Clumsy'],[0,'Hopeless with their hands']]},
-  int:{lbl:'WITS',   col:'var(--int)',
-    s:[[15,'Sharp'],[13,'Clever'],[11,'Quick to see it'],[9,'Sensible'],
-       [7,'Plain'],[5,'Slow-witted'],[0,'Simple']]},
-  mor:{lbl:'NERVE',  col:'var(--mor)',
-    s:[[15,'Fearless'],[13,'Brave'],[11,'Steady'],[9,'Fairly brave'],
-       [7,'Nervous'],[5,'Easily frightened'],[0,'A coward, and knows it']]}
+    s:[[17,'Uncannily quick'],[15,'Very quick'],[13,'Quick'],[11,'Handy'],
+       [9,'Steady enough'],[7,'Heavy-handed'],[5,'Clumsy'],[3,'Hopeless with their hands'],
+       [0,'All thumbs, every time']]},
+  int:{lbl:'INTELLECT', col:'var(--int)',
+    s:[[17,'Brilliant'],[15,'Sharp'],[13,'Clever'],[11,'Quick to see it'],
+       [9,'Sensible'],[7,'Plain'],[5,'Slow-witted'],[3,'Simple'],
+       [0,'Not all there']]},
+  /* MORALE, not NERVE. The battle ladder owns the word NERVE, and both of them
+     used to print on this same sheet. See the block above. */
+  mor:{lbl:'MORALE',    col:'var(--mor)',
+    s:[[17,'Afraid of nothing'],[15,'Fearless'],[13,'Brave'],[11,'Steady'],
+       [9,'Fairly brave'],[7,'Nervous'],[5,'Easily frightened'],[3,'A coward, and knows it'],
+       [0,'Runs before it starts']]}
 };
 const tell=(k,v)=>(TELLS[k].s.find(r=>v>=r[0])||['','—'])[1];
 /* the description one band better than the one they have — so a promotion can
@@ -4834,7 +4864,7 @@ const CLASSHELP={
       'is a real decision: a quiver, or a dirk for when something reaches her anyway.'},
   warmage:{d:'A mediocre swordsman who occasionally does something appalling. Two schools, one '+
     'working a turn, and a short sword for the rest of it — low magic written as a class.',
-    x:'Casting costs his own nerve, and a working is aimed with the WITS, so a stupid one misses.'},
+    x:'Casting costs his own nerve, and a working is aimed with the INTELLECT, so a stupid one misses.'},
   mage:{d:'Three schools and a second working each turn at half strength, and almost nothing '+
     'else. Bad with a blade, bad at dodging, thin. The line exists to keep him alive.',
     x:'Deliberately worse in melee than the battle-mage — the best offence in the company should '+
@@ -6154,7 +6184,7 @@ function losState(a,d,from){
   r.k='OBSTRUCTED';r.who=s;return B._losCache[ck]=r;
 }
 /* one place decides whether an act cares about the lane at all. A WORKING IS
-   NOT AN ARROW — it is aimed with the wits and goes where it is sent, so the
+   NOT AN ARROW — it is aimed with the INTELLECT and goes where it is sent, so the
    caster is deliberately exempt. That is also the only thing that keeps the
    battle-mage distinct from the archer once screening exists. */
 const needsLane=act=>!!(act&&act.range&&!act.arcane&&act.dmg);
@@ -6857,7 +6887,7 @@ function foes(){
        (User: "add one more ogre to the final fight — an ogre mage, so because
        of low intellect he almost always should miss.")
 
-       Now that magic is aimed with the WITS (see hitBreakdown), an INT of 3
+       Now that magic is aimed with the INTELLECT (see hitBreakdown), an INT of 3
        makes him land roughly one working in three — and when he does land one
        it is enormous, because nothing about the spell itself is weak. He is
        the best joke in the act and a real threat about a third of the time,
@@ -8012,7 +8042,7 @@ function build(plan,T){
       monster:t.monster||(ANIMAL.indexOf(t.kind)>=0?t.kind:null),
       used:{},dead:false,fled:false,safeMove:false,
       /* `int` is the one stat a template may override, because magic is aimed
-         with the wits now (see hitBreakdown) and a stupid caster has to be
+         with the INTELLECT now (see hitBreakdown) and a stupid caster has to be
          genuinely unreliable rather than merely flavoured that way */
       spearwall:false,moved:false,rallyBuff:0,
       st:{str:6,agi:6,int:(t.int===undefined?7:t.int),mor:6}};
@@ -9343,7 +9373,7 @@ function dodgeOf(u){
 }
 function hitBreakdown(a,d,act){
   /* ═══ MAGIC CAN MISS TOO (user) ═══════════════════════════════════════
-     A working is aimed with the WITS, not the hands: a caster's chance to
+     A working is aimed with the INTELLECT, not the hands: a caster's chance to
      land one runs off INT rather than their weapon skill, and the target's
      dodge counts for much less (you do not sidestep a blight-wind, you just
      fail to be where it lands). That makes a stupid caster genuinely
@@ -19327,8 +19357,11 @@ function gearDelta(g,cur){
   const n=(o,k)=>(o&&o[k])||0;
   const avg=o=>(o&&o.dmg)?(o.dmg[0]+o.dmg[1])/2:0;
   const out=[];
-  [['armour','STOPS'],['reach','REACH'],['range','RANGE'],['agi','HANDS'],
-   ['mor','NERVE'],['str','BUILD']].forEach(r=>{
+  /* #132 - the same four words the sheet uses. A gear comparison that named
+     the stats differently from the sheet beside it was two vocabularies for
+     one thing, which is the whole complaint this entry answers. */
+  [['armour','STOPS'],['reach','REACH'],['range','RANGE'],['agi','AGILITY'],
+   ['mor','MORALE'],['str','STRENGTH']].forEach(r=>{
     const d=Math.round(n(g,r[0])-n(cur,r[0]));
     if(d)out.push([r[1],d]);
   });
@@ -19799,18 +19832,21 @@ function drawInv(){
    is the sentence a player can actually decide with. Keyed UPPERCASE; the
    sheet's data-tell is lowercase, so the one reader upper-cases on the way in. */
 const STATHELP={
-  STR:{t:'BUILD',c:'var(--str)',
+  STR:{t:'STRENGTH',c:'var(--str)',
     x:'Carries the weight and puts it behind the swing — hitpoints and melee damage. '+
       'Nothing for bows or workings.'},
-  AGI:{t:'HANDS',c:'var(--agi)',
+  AGI:{t:'AGILITY',c:'var(--agi)',
     x:'How well they land a blow and how hard they are to land one on. Movement belongs '+
       'to the RACE, not to this.'},
-  INT:{t:'WITS',c:'var(--int)',
+  INT:{t:'INTELLECT',c:'var(--int)',
     x:'Finds the opening, and aims a working — a stupid caster misses a great deal. '+
       'Off the field it is how well the company reads a situation.'},
-  MOR:{t:'NERVE',c:'var(--mor)',
-    x:'The only axis that adds damage to EVERYTHING — sword, bow and spell alike — and '+
-      'it is how long they stay in the fight before the white flag goes up.'}
+  /* #132 - MORALE is the capacity this body has. NERVE, on the battle plaque
+     and on the ladder, is how much of it is left right now. Both used to be
+     called NERVE and both used to print on this sheet. */
+  MOR:{t:'MORALE',c:'var(--mor)',
+    x:'How much nerve they have to spend before the white flag goes up, and the only axis '+
+      'that adds damage to EVERYTHING — sword, bow and spell alike.'}
 };
 /* CLASS AND RACE EXPLAIN THEMSELVES (user). Call on any container that names
    one with data-cls / data-race — the sheet, the muster field, anywhere. */
@@ -24826,8 +24862,15 @@ function toDefeat(){
     '<p style="color:#8a7449;font-style:italic">Battle ran '+G.battleRounds+' rounds. What was '+
     'hauled this run is lost with the men who hauled it. The wagon is still out there somewhere, '+
     'wherever they left it — it does not know they are not coming back.</p>'+
-    '<button class="popt" id="toCamp"><b>The Wagon</b><i>what survives a dead company</i></button>';
+    /* #125 - the questionnaire is offered HERE, at the end of the run, where
+       the player has just finished having the opinion. See toEpilogue. */
+    '<div class="popts" style="grid-template-columns:1fr 1fr">'+
+      '<button class="popt" id="toCamp"><b>The Wagon</b>'+
+      '<i>what survives a dead company</i></button>'+
+      '<button class="popt sendit" id="toPoll"><b>Say how it went</b>'+
+      '<i>seven questions, none of them required</i></button></div>';
   $('toCamp').onclick=()=>openCampScreen(false);
+  $('toPoll').onclick=openPoll;
 }
 
 /* ============================================================
@@ -25021,9 +25064,28 @@ function toEpilogue(txt){
       t2('Upkeep',dailyUpkeep()+'/day')+t2('Salvage',G.camp.salvage)+
       t2('Gems',G.camp.gems)+t2('Morale',(G.morale>0?'+':'')+G.morale)+
       t2('Ashmoor',G.contact?'yes':'no')+t2('Battle',G.battleRounds+' rounds')+'</div>'+
-    '<button class="popt" id="toCamp"><b>Walk back to the wagon</b>'+
-    '<i>bank the haul · forge what outlives this company</i></button>';
+    /* ═══ #125 - THE QUESTIONNAIRE RIDES THE LAST PAGE ════════════════════
+       (User, 2026-08-13: "after a successful and unsuccessful run, offer to
+       send this feedback and questionnaire there, rather than an independent
+       button, and then many people don't use it.")
+
+       It had two doors, a menu row and a chip on the notes screen, and NOTHING
+       at the end of a run mentioned it: finishing a run changed the sub-caption
+       on a menu row and nothing else. This is the moment the player has just
+       finished having the opinion.
+
+       The wagon keeps the left seat and is not hijacked, because it is the
+       progression. The second seat carries `sendit`, which is the emphasis
+       this game already uses for exactly this on the notes screen, rather than
+       a new one. `openPoll` records the screen it was called from, so Back
+       lands back on this card with no new state. */
+    '<div class="popts" style="grid-template-columns:1fr 1fr">'+
+      '<button class="popt" id="toCamp"><b>Walk back to the wagon</b>'+
+      '<i>bank the haul · forge what outlives this company</i></button>'+
+      '<button class="popt sendit" id="toPoll"><b>Say how it went</b>'+
+      '<i>seven questions, none of them required</i></button></div>';
   $('toCamp').onclick=()=>{LEGACY.priorDied=false;saveLegacy();openCampScreen(true);};
+  $('toPoll').onclick=openPoll;
 }
 /* hoisted as a function declaration, not a const — the post-battle
    consequences screen is defined earlier in the file and calls it */
@@ -25718,7 +25780,11 @@ function drawPoll(){
     '<div class="popts" style="grid-template-columns:1fr 1.5fr">'+
       '<button class="popt" id="qBack"><b>Back</b><i>it is saved either way</i></button>'+
       '<button class="popt sendit big" id="qDone"><b>Done - send it</b>'+
-      '<i>the answers and the journal, in one box, with the button that mails them</i></button></div>';
+      /* #125 - was "with the button that mails them". That button has not
+         existed since 8f.105, when the mailto route was cut: the published
+         page's CSP refuses every outbound request, so the clipboard is the
+         whole send. The caption says what the next screen actually does. */
+      '<i>the answers and the journal, in one box, ready to copy</i></button></div>';
   /* SAVES AS YOU TYPE, so closing the tab mid-sentence costs nothing. `input`
      rather than `change`, because `change` does not fire until focus leaves and
      the last box a person fills is the one they never leave. */
