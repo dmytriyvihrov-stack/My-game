@@ -416,7 +416,7 @@ feel like filler too.
 | [`CHANGELOG.md`](CHANGELOG.md) | **The record.** The build log with the reasoning, and shipped entries in full. **History, never instructions.** **640 KB: open one dated row, never the file** |
 | [`WHAT_TO_TEST.md`](WHAT_TO_TEST.md) | **The test bench, and it is the USER'S file.** How to reach each new thing in three steps, what should happen, what would be a bug. A session **writes** to it and never takes instructions from it. **63 KB: open one section** |
 | [`DEPLOY.md`](DEPLOY.md) | one command, and why the hosted page is generated rather than copied |
-| [`PARALLEL_SESSIONS.md`](PARALLEL_SESSIONS.md) | **two sessions, one working tree.** How to claim a number, who owns the prototype, and why *"do not commit"* was the wrong rule |
+| [`PARALLEL_SESSIONS.md`](PARALLEL_SESSIONS.md) | **two sessions, two desks.** `tools\branch.ps1 new <name>` gives a session its own branch and its own checkout, so nobody waits on the prototype; `tools\branch.ps1 done <name>` merges it back. **Numbers are still claimed**, because git cannot merge a counter. Read it before running two sessions |
 | [`DRAMATURGE.md`](DRAMATURGE.md) | the manual for `tools/dramaturge.html`. ⛔ **It live-reads the prototype: there must never be a second copy of the event data** |
 | [`01_GAME_CONCEPT.md`](01_GAME_CONCEPT.md) | the accepted design. If the code and this disagree, one of them is a bug: decide which |
 | [`02_ART_DIRECTION.md`](02_ART_DIRECTION.md) · [`03_WORLD_LORE.md`](03_WORLD_LORE.md) | painted direction · **the lore book, and it is canon.** When an event and the book disagree, one of them is a bug |

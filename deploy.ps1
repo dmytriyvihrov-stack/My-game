@@ -37,6 +37,30 @@ function Die($t) { Write-Host ""; Write-Host "STOPPED: $t" -ForegroundColor Red;
 
 if (-not (Test-Path (Join-Path $root '.git'))) { Die "this is not a git repo. Run: git init -b main" }
 
+# ---- 0a. the right desk, the right branch ----------------------------------
+# Since branch-per-session (#139) there can be several checkouts of this repo on
+# this machine. Step 4 runs `git add -A` and step 5 runs `git push origin HEAD`,
+# so a deploy from a branch desk would push work\<name> to the live link with
+# half a feature in it. In a worktree `.git` is a FILE, not a folder, so the
+# check above passes there and is not enough on its own.
+Push-Location $root
+try {
+  $common = (& git rev-parse --git-common-dir 2>$null)
+  $branch = (& git rev-parse --abbrev-ref HEAD 2>$null)
+} finally { Pop-Location }
+
+if ($common) {
+  $common = $common.Trim()
+  if (-not [System.IO.Path]::IsPathRooted($common)) { $common = Join-Path $root $common }
+  $mainRoot = Split-Path (Resolve-Path -LiteralPath $common).Path -Parent
+  if ((Resolve-Path -LiteralPath $root).Path -ne (Resolve-Path -LiteralPath $mainRoot).Path) {
+    Die "this is a branch desk, and the live link is published from the MAIN desk only.`n         Merge first, then deploy from:  $mainRoot`n         (tools\branch.ps1 done <name>)"
+  }
+}
+if ($branch -and $branch.Trim() -ne 'main') {
+  Die "on branch '$($branch.Trim())'. deploy pushes HEAD, so this would publish a work branch.`n         Switch to main and merge the branch in:  tools\branch.ps1 done <name>"
+}
+
 # ---- 0. the other session --------------------------------------------------
 # Step 4 below runs `git add -A`, which sweeps the ENTIRE working tree, and step
 # 5 pushes it to the live link. Two Claude sessions share one working tree here,

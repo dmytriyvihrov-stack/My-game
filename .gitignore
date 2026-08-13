@@ -37,6 +37,10 @@ _archive_docs_*.tar.gz
 # .claude/settings.json ARE tracked: the last one carries the collision hook.
 .claude/settings.local.json
 
+# a branch desk's one-line note about what it is for, written by
+# tools/branch.ps1 new -t. Per-desk scratch, never repo content.
+.desk
+
 # who currently holds which number and which file, written by tools/claim.ps1.
 # Deliberately NOT committed: it is live state about the two sessions running on
 # this machine right now, and both of them read it off the same disk.

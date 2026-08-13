@@ -158,8 +158,8 @@ where the collision lives.
 
 > ### ⚠ A lock is on a PATH. A lock on a sentence protects nothing.
 >
-> Found live on 2026-08-13: a session ran `lock "#137 + #138: the seven-item pack and the opening
-> chain"`, passing its title where the path goes. The lock file was written, `status` listed it, and
+> Found live on 2026-08-13: a session ran `lock "the seven-item pack and the opening chain"`,
+> passing its title where the path goes. The lock file was written, `status` listed it, and
 > the session believed it owned the prototype. **It did not.** The hook matches on the file's leaf
 > name and no edit was ever going to match that string. `lock` now refuses a target that is not a
 > file in the repo. The title goes in `-t`.

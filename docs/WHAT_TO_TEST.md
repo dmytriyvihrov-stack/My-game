@@ -23,6 +23,49 @@
 
 ---
 
+## 🪑 TWO SESSIONS, TWO DESKS  *(#139 · 2026-08-13 · build log 8f.167)*
+
+**This one is not in the game, it is in how we work.** You asked for parallel work on the file in
+several branches instead of the lock. Nothing about the game changed.
+
+### How to reach it, in three steps
+
+1. In the **main** folder: `powershell -NoProfile -ExecutionPolicy Bypass -File tools\branch.ps1 new battle-panel -t "what it is"`
+2. It prints a folder, something like `C:\Users\USER\grimtoll-desks\battle-panel`. **Open a Claude
+   session with that folder as its working directory.** That session has its own copy of everything.
+3. When it is done, back in the **main** folder:
+   `powershell -NoProfile -ExecutionPolicy Bypass -File tools\branch.ps1 done battle-panel`
+
+### What is supposed to happen
+
+- **Two sessions can edit `prototype/grimtoll_slice.html` at the same second.** No lock, no waiting,
+  no "another session owns this file".
+- **Numbers still cannot collide.** `claim.ps1 number` from a desk sees every number every other desk
+  is holding. This is the part most worth trying: run `claim.ps1 status` in two desks and compare.
+- **`branch.ps1 list`** shows every desk, how many commits it is ahead, and whether it has
+  uncommitted work.
+- **`done` merges and then removes the desk and its branch.** If the two desks changed the same
+  lines, it stops and says which files, and nothing is lost either way.
+- **Deploy still happens only from the main folder on `main`.** From a desk it refuses.
+
+### What would be a bug, and is worth telling me about
+
+- Two desks being handed **the same `#NN` or `8f.NNN`**. That is the one failure this change could
+  cause and it is the thing I would most want to hear about immediately.
+- `done` reporting a conflict in **`index.html`** or **`art/embed/art_data.js`**. Those are generated
+  and are supposed to never conflict.
+- A merge quietly **reverting** something you know landed. Check `git log --oneline -5` on main.
+- `branch.ps1 done` saying the desk is closed while `git branch --list` still shows `work/<name>`.
+  That exact bug existed for one hour today and is fixed, so it would mean the fix regressed.
+
+> ⚠ **One thing I did NOT do, and it is the honest limit of this.** The painted art is still a 4.4 MB
+> base64 block **inside** the prototype. Two desks that each rebuild the art produce a conflict in
+> that block that nobody can resolve by hand. Everything is pre-wired to move it out to
+> `art/embed/art_data.js`, but that edit needs the prototype free, and it was held all day. **Until
+> then: do not run `art\inject.ps1` on two desks at once.** Normal code edits are unaffected.
+
+---
+
 ## 🏹 EVERY BOW AND SLING REACHES 5  *(#135 · 2026-08-13 · build log 8f.163)*
 
 You said unify them, so they are unified. Four enemies went from 4 tiles to 5: the **snare slinger**,

@@ -13,3 +13,25 @@
 # The built page is generated. A diff of it is 10MB of base64 and tells nobody
 # anything; read prototype/grimtoll_slice.html instead.
 index.html -diff linguist-generated
+
+# ---------------------------------------------------------------------------
+# BRANCH-PER-SESSION (#139). Two desks merge back into main, so every file has
+# to have an answer for "what happens when both sides changed it".
+#
+# NOTHING GENERATED IS EVER MERGED. IT IS REBUILT AFTER THE MERGE.
+#
+# `ours` keeps main's copy and never stops on a conflict. That leaves the file
+# stale on purpose: merge.ps1 ends by naming what to rebuild, because the only
+# honest resolution for a generated file was always "generate it again".
+# ⛔ The driver has to be declared once per clone or these lines do nothing:
+#     git config merge.ours.driver true
+#   `tools\branch.ps1 setup` does it, and merge.ps1 checks before it merges.
+index.html            merge=ours
+art/embed/art_data.js merge=ours
+
+# Append-only logs. Two desks each add a row at the top and conflict EVERY
+# time; `union` keeps both sides instead. The order can come out interleaved,
+# which is a two-second tidy rather than a blocked merge.
+docs/CHANGELOG.md     merge=union
+docs/WHAT_TO_TEST.md  merge=union
+docs/SHIPPED.md       merge=union

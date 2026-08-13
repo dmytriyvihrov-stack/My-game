@@ -43,9 +43,50 @@ param(
 $ErrorActionPreference = 'Stop'
 
 $Root      = Split-Path $PSScriptRoot -Parent
-$Store     = Join-Path $Root '.grimtoll'
+
+# ---------------------------------------------------------------------------
+# THE STORE IS SHARED BY EVERY WORKTREE ON THIS MACHINE. (#139)
+#
+# Since branch-per-session, a session may be running in a git worktree: its own
+# directory, its own branch, ONE shared .git. If the store followed $Root, each
+# worktree would count numbers from its own empty store and hand out #136 three
+# times, which is the exact collision this file exists to stop.
+#
+# `git rev-parse --git-common-dir` points at the ONE .git no matter which
+# worktree asks. Its parent is the main worktree, and that is where .grimtoll
+# lives. Everything else in this file reads $Store, so this is the only place
+# that has to know.
+# ---------------------------------------------------------------------------
+function Get-StoreRoot {
+  try {
+    Push-Location $Root -ErrorAction Stop
+    try   { $common = & git rev-parse --git-common-dir 2>$null }
+    finally { Pop-Location }
+    if ($LASTEXITCODE -eq 0 -and $common) {
+      $common = $common.Trim()
+      if (-not [System.IO.Path]::IsPathRooted($common)) { $common = Join-Path $Root $common }
+      $common = (Resolve-Path -LiteralPath $common -ErrorAction Stop).Path
+      return (Split-Path $common -Parent)
+    }
+  } catch { }
+  return $Root          # not a git repo, or git is missing: behave as before
+}
+
+$StoreRoot = Get-StoreRoot
+$Store     = Join-Path $StoreRoot '.grimtoll'
 $ClaimDir  = Join-Path $Store 'claims'
 $LockDir   = Join-Path $Store 'locks'
+
+# Am I the main worktree, or a branch desk hanging off it? The lock only means
+# anything in the main worktree: two worktrees cannot overwrite each other's
+# files, so gating them would only reintroduce the queue branches removed.
+function In-MainWorktree {
+  try {
+    $a = (Resolve-Path -LiteralPath $Root      -ErrorAction Stop).Path.TrimEnd('\', '/')
+    $b = (Resolve-Path -LiteralPath $StoreRoot -ErrorAction Stop).Path.TrimEnd('\', '/')
+    return ($a -eq $b)
+  } catch { return $true }
+}
 $TtlHours  = 4          # a lock older than this is treated as abandoned
 $MaxEntry  = 200        # ceiling so a stray "#404" in prose cannot move the floor
 $MaxBuild  = 400
@@ -123,6 +164,9 @@ function Get-UsedNumbers {
   $entry = @{}
   $build = @{}
 
+  $ScanRoots = @($Root)
+  if (-not (In-MainWorktree)) { $ScanRoots += $StoreRoot }
+
   $prose = New-Object System.Collections.ArrayList   # entry numbers + build numbers
   $code  = New-Object System.Collections.ArrayList   # build numbers only
   foreach ($spec in @(
@@ -131,10 +175,15 @@ function Get-UsedNumbers {
       @{ p = 'prototype';      f = '*.html'; prose = $false },
       @{ p = 'tools';          f = '*.html'; prose = $false },
       @{ p = '.claude\skills'; f = '*.html'; prose = $false })) {
-    $dir = Join-Path $Root $spec.p
-    if (-not (Test-Path $dir)) { continue }
-    foreach ($f in (Get-ChildItem $dir -Recurse -Filter $spec.f -File -ErrorAction SilentlyContinue)) {
-      if ($spec.prose) { [void] $prose.Add($f) } else { [void] $code.Add($f) }
+    # Both roots: a worktree's checkout is behind main by whatever main has
+    # committed since it was branched, and shots\ is gitignored so it exists in
+    # the main worktree only. Reading one of them would lower the floor. (#139)
+    foreach ($r in $ScanRoots) {
+      $dir = Join-Path $r $spec.p
+      if (-not (Test-Path $dir)) { continue }
+      foreach ($f in (Get-ChildItem $dir -Recurse -Filter $spec.f -File -ErrorAction SilentlyContinue)) {
+        if ($spec.prose) { [void] $prose.Add($f) } else { [void] $code.Add($f) }
+      }
     }
   }
 
@@ -167,8 +216,9 @@ function Get-UsedNumbers {
   }
 
   # shots\NN_name.html - written before any document is, so it decides the floor
-  $shots = Join-Path $Root 'shots'
-  if (Test-Path $shots) {
+  foreach ($r in $ScanRoots) {
+    $shots = Join-Path $r 'shots'
+    if (-not (Test-Path $shots)) { continue }
     foreach ($f in (Get-ChildItem $shots -ErrorAction SilentlyContinue)) {
       $m = [regex]::Match($f.Name, '^(\d{1,3})[_.]')
       if ($m.Success) {
@@ -225,6 +275,27 @@ function Verb-Lock {
   Ensure-Store
   $target = $Arg
   if (-not $target) { $target = 'prototype\grimtoll_slice.html' }
+
+  # A LOCK ON A SENTENCE PROTECTS NOTHING, AND IT LOOKS EXACTLY LIKE A LOCK.
+  # Found live on 2026-08-13: a session ran `lock "the seven-item pack and the
+  # opening chain"` - passing its TITLE where the path goes. The
+  # lock file was written, `status` listed it, and the session believed it owned
+  # the prototype. It did not: the hook matches on the file's leaf name, and no
+  # edit anywhere was ever going to match that string. Use -t for the title.
+  if (-not (Test-Path (Join-Path $Root $target)) -and -not (Test-Path $target)) {
+    Write-Host ""
+    Write-Host "THAT IS NOT A FILE IN THIS REPO: $target" -ForegroundColor Red
+    Write-Host ""
+    Write-Host "  A lock is on a PATH. A lock on a sentence is written, listed by" -ForegroundColor Yellow
+    Write-Host "  'status', and protects nothing at all." -ForegroundColor Yellow
+    Write-Host ""
+    Write-Host "  What you probably meant:" -ForegroundColor DarkGray
+    Write-Host ("    claim.ps1 lock -t `"{0}`"" -f $target) -ForegroundColor DarkGray
+    Write-Host "  which takes the prototype and records that as what you are doing." -ForegroundColor DarkGray
+    Write-Host ""
+    exit 1
+  }
+
   $path = Join-Path $LockDir ((Slugify $target) + '.lock')
   $me   = Get-Me
 
@@ -328,6 +399,9 @@ function Verb-Status {
 function Verb-Gate {
   $target = $Arg
   if (-not $target) { $target = 'prototype\grimtoll_slice.html' }
+  # A branch desk edits its OWN checkout. Nothing it rebuilds can reach another
+  # session's file, so there is nothing to gate. (#139)
+  if (-not (In-MainWorktree)) { exit 0 }
   if (-not (Test-Path $LockDir)) { exit 0 }
   $path = Join-Path $LockDir ((Slugify $target) + '.lock')
   if (-not (Test-Path $path)) { exit 0 }
@@ -428,6 +502,12 @@ function Verb-Hook {
 
   $me = $inp.session_id
   if ($me) { $me = $me.Substring(0, [Math]::Min(8, $me.Length)) }
+
+  # In a branch desk this hook is off. That is the whole point of #139: the
+  # lock was a queue, and a worktree is isolation, so the queue is not needed.
+  # In the MAIN worktree it still fires, because two sessions sharing one
+  # directory still overwrite each other.
+  if (-not (In-MainWorktree)) { exit 0 }
 
   if (-not (Test-Path $LockDir)) { exit 0 }
   foreach ($f in (Get-ChildItem $LockDir -Filter *.lock -File -ErrorAction SilentlyContinue)) {
