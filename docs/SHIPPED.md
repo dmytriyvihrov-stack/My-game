@@ -9,8 +9,12 @@
 > **When an entry ships, four writes:** full text and a build-log row → `CHANGELOG.md` · a one-line
 > row here · strike it from the backlog · a section → [`WHAT_TO_TEST.md`](WHAT_TO_TEST.md).
 >
-> *Rows were cut down to one line each on **2026-08-10**. The long versions are in the changelog and
-> in [`archive/2026-08-10_SHIPPED_before_cleanup.md`](archive/2026-08-10_SHIPPED_before_cleanup.md).*
+> *Rows were cut down to one line each on **2026-08-10**. The long versions are in the changelog,
+> and the pre-cut file itself is one command away: `git show 5bb2bf2:docs/archive/2026-08-10_SHIPPED_before_cleanup.md`.*
+>
+> ⚠ *The **eye-check links** in rows before #133 point at `shots/` captures that were deleted on
+> 2026-08-14 to get 179 MB back. `shots/` was always scratch and was never in git, so those files
+> are gone rather than moved. Every row still says what was measured; only the picture is missing.*
 
 ---
 

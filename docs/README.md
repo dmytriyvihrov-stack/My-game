@@ -119,9 +119,11 @@ twelve beats no road can skip.**
 movement · terrain as a register with eight grounds · obstacle height and the game's first cover ·
 three camera stops · a board clock at x1.75 · scars, two mutation chains, personalities · race
 skills · provisions, wages and per-person grievance · chained camp incidents · typed bonds · a
-mid-run save · a content linter · a practice field · `? RULES` · the Captain's balloon with eleven
-teaching lessons · ★▲▼ playtest reactions with an exportable journal · a run questionnaire ·
-a phone layout.
+mid-run save · a content linter · a practice field · `? RULES` · the Captain's teaching balloon
+*(four of its lessons deleted by #137, once the intro brawl began teaching the same rules ten
+minutes earlier)* · ★▲▼ playtest reactions with an exportable journal · a run questionnaire ·
+a phone layout · an intro brawl that teaches by being played · a company sheet on one screen ·
+32 painted sights standing on the map nodes · an aftermath card on the Battle Brothers shape.
 
 **It survived a five-run QA playthrough on 2026-08-02 with no soft locks and no uncaught errors.**
 27 findings, all bug-class ones closed:
@@ -131,6 +133,15 @@ a phone layout.
 >
 > **That is the whole current focus and it is a subtraction job.** The slice is not too small, it is
 > too much at once. See [`00_PLAN_AND_BACKLOG.md`](00_PLAN_AND_BACKLOG.md), which opens with it.
+
+**Where that pass has got to, on 2026-08-14.** Sixty-one entries since, #87 to #151, and the shape
+of them is one sentence: **four of the five screens were rebuilt, and everything else was taken
+away.** The battle screen took nine passes and the road screen ten; the company sheet went from
+1241px of scroll to 678px with no scroll; the aftermath became one screen for half the fights.
+Sixteen doors left the road events, then every card's prose was cut by a third (5,474 words to
+3,652), with the outcome numbers moving out of the prose into the aftermath's own chips. The four
+cards between the opening brawl and the map became one, and the opening now contains no decision at
+all. **What the focus still owes is step 1: nobody has yet measured the opening.**
 
 *The long narrative of everything that shipped and what each thing taught is in
 [`archive/README_WHERE_IT_STOOD.md`](archive/README_WHERE_IT_STOOD.md). Per-entry rows with open
@@ -155,14 +166,16 @@ remainders are in [`SHIPPED.md`](SHIPPED.md).*
 > powershell -NoProfile -ExecutionPolicy Bypass -File tools\claim.ps1 number
 > ```
 >
-> **Working in two or three sessions at once is normal here and it is not the danger.** There is one
-> working tree and one branch, so git isolates nothing between them, and *"do not commit"* protects
-> nothing while removing the restore point. Three things actually collide: **the number** (five
-> collisions, because it lived in a sentence that is written last), **the prototype** (`inject.ps1`
-> rewrites it whole), and **`deploy.ps1`**, which runs `git add -A` and **pushes**, so a deploy ships
-> the other session's half-finished file to the live link. All three are guarded now.
-> **If you are going to change the prototype, take it first:** `claim.ps1 lock -Title "..."`.
-> Full rules in [`PARALLEL_SESSIONS.md`](PARALLEL_SESSIONS.md).
+> **Working in two or three sessions at once is normal here and it is not the danger.** ⚑ **Since
+> #139 each session takes its own desk** - `tools\branch.ps1 new <name>` gives it a branch and its
+> own checkout under `%USERPROFILE%\grimtoll-desks\`, `branch.ps1 done <name>` merges it back, and
+> nobody queues on the prototype. **The one thing a worktree cannot isolate is the number**, because
+> git cannot merge a counter: the claim store is deliberately pointed at `--git-common-dir` so every
+> desk draws from one. That was five collisions before the tool existed, because the number lived in
+> a sentence that was written last. **`deploy.ps1` is the other shared thing** - it runs `git add -A`
+> and **pushes**, so it now refuses to run anywhere but main.
+> **On the main desk, if you are going to change the prototype, take it first:**
+> `claim.ps1 lock -Title "..."`. Full rules in [`PARALLEL_SESSIONS.md`](PARALLEL_SESSIONS.md).
 
 > ## ⛔ THE GATE: rules, then a picture, then code, then the test note
 >
@@ -436,10 +449,10 @@ feel like filler too.
 |---|---|
 | **`README.md`** *(this)* | **Orientation.** What the game is, the pillar, the traps. Start here |
 | [`00_PLAN_AND_BACKLOG.md`](00_PLAN_AND_BACKLOG.md) | **The work.** The current focus, then one line per entry. **Everything in it is actionable** |
-| [`archive/BACKLOG_ENTRY_SPECS.md`](archive/BACKLOG_ENTRY_SPECS.md) | the full text of every unbuilt entry, for when a session picks one up. **152 KB: open the one entry, never the file** |
+| [`archive/BACKLOG_ENTRY_SPECS.md`](archive/BACKLOG_ENTRY_SPECS.md) | the full text of every unbuilt entry, for when a session picks one up. **199 KB: open the one entry, never the file** |
 | [`SHIPPED.md`](SHIPPED.md) | **The registry.** One line per shipped entry, **every open remainder named**, which numbers are spent |
-| [`CHANGELOG.md`](CHANGELOG.md) | **The record.** The build log with the reasoning, and shipped entries in full. **History, never instructions.** **640 KB: open one dated row, never the file** |
-| [`WHAT_TO_TEST.md`](WHAT_TO_TEST.md) | **The test bench, and it is the USER'S file.** How to reach each new thing in three steps, what should happen, what would be a bug. A session **writes** to it and never takes instructions from it. **63 KB: open one section** |
+| [`CHANGELOG.md`](CHANGELOG.md) | **The record.** The build log with the reasoning, and shipped entries in full. **History, never instructions.** **877 KB: open one dated row, never the file** |
+| [`WHAT_TO_TEST.md`](WHAT_TO_TEST.md) | **The test bench, and it is the USER'S file.** How to reach each new thing in three steps, what should happen, what would be a bug. A session **writes** to it and never takes instructions from it. **93 KB: open one section**, and it keeps 2026-08-12 onward |
 | [`DEPLOY.md`](DEPLOY.md) | one command, and why the hosted page is generated rather than copied |
 | [`PARALLEL_SESSIONS.md`](PARALLEL_SESSIONS.md) | **two sessions, two desks.** `tools\branch.ps1 new <name>` gives a session its own branch and its own checkout, so nobody waits on the prototype; `tools\branch.ps1 done <name>` merges it back. **Numbers are still claimed**, because git cannot merge a counter. Read it before running two sessions |
 | [`DRAMATURGE.md`](DRAMATURGE.md) | the manual for `tools/dramaturge.html`. ⛔ **It live-reads the prototype: there must never be a second copy of the event data** |
@@ -449,20 +462,27 @@ feel like filler too.
 | [`08_MUTATIONS.md`](08_MUTATIONS.md) · [`09_SETTLEMENTS_AND_LEGACY.md`](09_SETTLEMENTS_AND_LEGACY.md) | two designed systems, partly built |
 | `content/` | authoring source. **`events_book.html` runs the other way**: every authored word generated OUT of the running build for the user to edit |
 | [`../.claude/rules/`](../.claude/rules/) | **standing procedures for jobs that repeat.** Read the one that matches before touching that surface, or it gets re-derived: **`event-cards.md`** (how long a card's prose may be, and where the receipt lives) · **`world-map-sights.md`** (the icon on a map node) · **`static-event-art.md`** (stage-3 event art mapping) |
-| `docs/archive/` | the long-form history. **Three files are live references** and are linked from here where they are wanted: `BACKLOG_ENTRY_SPECS.md`, `PLAN_REASONING.md`, `README_WHERE_IT_STOOD.md`. **Everything else in it is a dated snapshot nobody has to read**, kept because git is easier to trust when the file is also on disk |
+| `docs/archive/` | **three files, all of them live references**, and all three are linked from this table where they are wanted: `BACKLOG_ENTRY_SPECS.md`, `PLAN_REASONING.md`, `README_WHERE_IT_STOOD.md`. The six dated snapshots that used to sit beside them were deleted on 2026-08-14: see the note below |
 | **the running build** | **what is actually true. It wins over every document.** |
 
 ### ⛔ Open the big files by section, never whole
 
-`CHANGELOG.md` (640 KB), `archive/BACKLOG_ENTRY_SPECS.md` (152 KB), `WHAT_TO_TEST.md` (63 KB) and
-the four dated snapshots in `archive/` (60 to 227 KB each) are **records, not reading**. Grep for the
-entry number or the dated heading and read that range. A session that reads any of them end to end
-spends a fifth of its context on history before it has opened the game.
+`CHANGELOG.md` (877 KB), `archive/BACKLOG_ENTRY_SPECS.md` (199 KB) and `WHAT_TO_TEST.md` (93 KB) are
+**records, not reading**. Grep for the entry number or the dated heading and read that range. A
+session that reads any of them end to end spends a fifth of its context on history before it has
+opened the game.
 
-**Nothing in `archive/` is ever an obligation.** The four `2026-08-10_*_before_cleanup.md`
-snapshots are superseded by the files they are snapshots of, `WHAT_TO_TEST_OLDER.md` is superseded
-by `WHAT_TO_TEST.md`, and `MEMORY_SESSION_LOG_2026-07-28_to_08-02.md` is the session log that used
-to be loaded into every session as a memory file. They are there to be searched, not read.
+⚠ **Those three figures were 640, 152 and 63 until 2026-08-14, and every one of them had been wrong
+for weeks.** A size written into prose is a counter that lives in a sentence, which is the same
+shape as the entry number that cost five collisions. **Re-measure rather than trust the sentence:**
+`ls -la docs/ docs/archive/`.
+
+> **⚑ The 2026-08-14 cut, and the rule it leaves behind.** `archive/` held six dated snapshots
+> nobody had to read, and the test bench had grown to 3,064 lines. All six snapshots are deleted and
+> the bench keeps 2026-08-12 onward. ⛔ **Nothing was copied into a new file, because git is the
+> archive that costs nothing**: `git show 5bb2bf2:docs/archive/<name>` returns any of them whole.
+> **A superseded document does not need a shelf, it needs a commit hash.** What is left in
+> `archive/` is the three files that are live references, and they are linked from this table.
 
 ---
 

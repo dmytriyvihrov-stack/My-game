@@ -88,8 +88,13 @@ will approve layouts the game flags.
 
 The eye check is a page under `shots/`, because the preview pane composites nothing. Draw the new
 sights at their real 96px on the map's own ground (`#100c06`), with a few already-live sights beside
-them as calibration. `shots/121_new_sights.html` is the current example, and
-`art/src/world-map-sites/build_event_sites.py` writes a focused contact sheet for the same purpose.
+them as calibration. `art/src/world-map-sites/build_event_sites.py` writes a focused contact sheet
+for the same purpose.
+
+⚠ **`shots/121_new_sights.html`, which this rule used to name as the example, was deleted on
+2026-08-14** with the rest of the pre-#133 captures, to get 179 MB back. `shots/` is gitignored
+scratch, so it is gone rather than archived. **The surviving example of the shape is
+`shots/143_event_chips.html`**: the build's own CSS, live captures, nothing composited by hand.
 
 ## Numbers that are load-bearing, with the reason attached
 

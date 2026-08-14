@@ -2,7 +2,7 @@
 
 > **This file is the WORK.** What we are doing now, what waits, and one line per entry.
 > The full spec of any entry lives in [`archive/BACKLOG_ENTRY_SPECS.md`](archive/BACKLOG_ENTRY_SPECS.md).
-> ⛔ **Open the one entry's section there, never the file: it is 152 KB.**
+> ⛔ **Open the one entry's section there, never the file: it is 199 KB.**
 >
 > Orientation is [`README.md`](README.md) · the record is [`CHANGELOG.md`](CHANGELOG.md) ·
 > what shipped is [`SHIPPED.md`](SHIPPED.md) · your test bench is [`WHAT_TO_TEST.md`](WHAT_TO_TEST.md).
@@ -54,111 +54,62 @@
 survived a full QA playthrough with no soft locks. It does not need more. It needs the first
 fifteen minutes to stop being a wall, and that is a subtraction job.
 
-> **⚑ #87 shipped against complaint A on 2026-08-10, and the reason it is allowed under the rule
-> above is worth stating.** Every skill in the game now has its own animation, from **eight
-> primitives keyed on what an act does**. It adds **no card, no option, no hint layer and no word of
-> text** - it makes a verb legible at the moment it happens, so the board explains itself instead of
-> a note explaining the board. **That is subtraction of reading, not addition of system.** ⚠ The
-> honest caveat: it is one more thing moving on a screen the report already called crowded, and the
-> per-round motion budget is a real question for the measurement in step 1. See
-> [`SHIPPED.md`](SHIPPED.md) and [`WHAT_TO_TEST.md`](WHAT_TO_TEST.md).
+## What the pass has shipped, and what it taught
 
-> **⚑ #123 SHIPPED against complaint B on 2026-08-12 (8f.150), and it is the pass's cleanest
-> subtraction so far: nine road events lost eleven doors.** The user's ChatGPT conversation on
-> decision fatigue became standing rules in `01_GAME_CONCEPT.md` §5 ("The choice economy": a card
-> is LIGHT / MEDIUM / HEAVY and the road mixes them; uniform decision density, not event count,
-> is what numbs a player), and then the rules were applied: the sling-line is "fight or go
-> around", the Drowned Chapel is a one-button salvage pickup, the Fen-Mother lost her duplicate
-> battle door, and six more cards each lost the door that was not a decision. 31% of the
-> multi-choice road events, inside his asked 30-40%. **Round two landed the same day (8f.151, his
-> "additional 20%"): five more events at 4→3 (camp · saltwives · ratcart · shrine · bogbody),
-> running total 14 of 29 (48%) and sixteen doors gone or merged.** 👤 One call awaits him (the
-> chapel's mutation-gated door stayed, see [`SHIPPED.md`](SHIPPED.md) #123), and the measurement
-> §5 now names - *the event at which a player stops reading options* - belongs to the next
-> playtest.
+*One line per entry, newest first. **[`SHIPPED.md`](SHIPPED.md) is the registry** and it names every
+open remainder; the reasoning is in [`CHANGELOG.md`](CHANGELOG.md) under the build-log number. This
+section used to carry each entry in full, which made the work file a second changelog. Cut back on
+2026-08-14.*
 
-> **⚑ #143 SHIPPED against complaint A on 2026-08-13 (8f.171), and it is the pass's biggest cut
-> by word count: every road card's prose reduced, 5,474 words to 3,652 across all 34 events,**
-> by the user's direct brief ("reduce them 30-70% each... easier to read, eseier to make
-> choices"). The outcome numbers left the prose entirely and became the aftermath's own loot
-> chips (#137's `.abfx`, now on events, camps and vignettes: one receipt language game-wide),
-> and the coin card is his sketch verbatim: one door, the loot on the card, one click. Nothing
-> was added; prose was cut and a receipt the aftermath already owned was reused. Full record:
-> [`SHIPPED.md`](SHIPPED.md) #143 and [`CHANGELOG.md`](CHANGELOG.md) 8f.171.
+| | the subtraction | log |
+|---|---|---|
+| **#151** *(08-14)* | eight of his notes: a fourth door on the toll-man that takes the whole robbery, the menu's two playtest rows merged, *"it sits well with them"* out of 16 cards, cost lines in the game's own resource glyphs, one loot receipt per fight, and **the fork sign spans a range instead of counting** | 8f.179 |
+| **#150** *(08-13)* | eleven notes: the opening loses a title, a sub-label and a whole screen; the receipt chips learn which glyph means what; *"it sits badly with them"* out of 24 cards; **the road bar grows the three signs it never had** | 8f.178 |
+| **#145-#149** *(08-13)* | the brawl's second wave splits · the aiming pass, every summed row carrying its working · two finished grounds reach the campaign · #36's blocked lane joins the one gate · AUTO leaves `setInterval` | 8f.173-177 |
+| **#143** *(08-13)* | **the road's prose cut by a third**: 5,474 words to 3,652 across 34 cards, and the outcome numbers leave the prose for the aftermath's own chips | 8f.171 |
+| **#141 · #142** *(08-13)* | the coin is a one-door pickup that wears its loot on the card · the race box was saying everything twice | 8f.169-170 |
+| **#124-#135** *(08-13)* | the overnight batch: one menu button and Esc everywhere, START NEW GAME starts one, six morale rungs instead of five, archers that advance and give ground, the spear line screening them, stat names people already have, every bow reaching 5 | 8f.152-163 |
+| **#133 · #136 · #140** *(08-13)* | 🎒 **the company sheet, three rounds**: 1241px and 564 words down to 678px and 242, no scroll, stats first and the kit on the body | 8f.161-168 |
+| **#137 · #138** *(08-13)* | the seven-item pack, and **four cards between the brawl and the map become one**, which leaves no decision in the opening at all | 8f.165-166 |
+| **#123** *(08-12)* | **nine road events lose eleven doors**, then five more go 4 to 3: 48% of the multi-choice road, and the choice economy becomes concept §5 | 8f.150-151 |
+| **#122** *(08-12)* | 📜 **the aftermath on the Battle Brothers shape**, so half the fights are one screen now | 8f.149 |
+| **#108-#111 · #118-#120** *(08-12)* | 🚪 the front door: an intro brawl that teaches by being played, then fight first and contract after | 8f.135-147 |
+| **#103-#107 · #112-#117 · #121** *(08-11/12)* | 🗺 **the road screen, ten rounds**, and 32 painted sights standing on the nodes | 8f.130-148 |
+| **#88 · #91 · #94-#105** *(08-10/11)* | ⚔ **the battle screen, nine passes** | 8f.117-132 |
+| **#90 · #93 · #99** *(08-11)* | the board is **drawn** per battle from a terrain-owned pool: four arrangements where there had only ever been one | 8f.118-127 |
+| **#92 · #139 · #144** *(08-11/13)* | the desk itself: collision guards, a branch and a worktree per session, and a spent number that gives itself back | 8f.119-172 |
+| **#87** *(08-10)* | every skill gets its own animation from eight primitives keyed on what an act does: **subtraction of reading, not addition of system** | 8f.116 |
 
-> **⚑ #145 · #146 · #147 · #148 · #149 SHIPPED 2026-08-13** *(8f.173-8f.177, one autonomous batch
-> while the user was away: "For first intro battle… For chances to hit and dodge show what is
-> others… increse chances to hit… Then play full game - check how is it working and fix bugs…
-> check which exshsting backgrounds you can add to current battles… Check becklog… After this
-> butch deploy everething on the prod")*.
->
-> **#145** the brawl's second wave splits (the barman and a *Very nimble* knife-man at +2, the crew
-> unmoved at +3) · **#146** the aiming pass: `HIT_EASE {you:10, foe:5}` where `mskill` is SET, and
-> every summed row on the aiming card carries a caption naming its contributors · **#147** two
-> finished palettes reach the campaign at last (the Broken Men into the `forest` its card has
-> always described, the Snare into the `swamp` its second door names) · **#148** #36's blocked lane
-> joins `mayAim`, the one gate, and the harness stops writing to the player's journal · **#149**
-> AUTO leaves `setInterval` for a chained `setTimeout`.
->
-> **⛔ Three findings outlive the rows, and all three are about MEASUREMENT.**
->
-> 1. **A MINIMUM OVER n IS NOT A MEASUREMENT, IT IS THE UNLUCKIEST SAMPLE**, and it gets worse
->    every time you look. Two nerfs were drafted against "the Captain's worst brawl finish falls
->    from 29% to 10%" over two batches of sixteen; at n=50 a side the two builds were **identical**
->    (45%/45%, worst 13%/12%). **Measure a tail as the FRACTION of runs under a threshold.** This
->    file's own *"n=6 cannot tell 0% from 20%"* applies to worst cases twice over.
-> 2. **BUILD THE LITERAL ASK FIRST WHEN IT IS CHEAP, THEN MEASURE IT, THEN REFUSE IT IF IT DOES
->    NOTHING.** "Lower a big body's dodge" was built exactly as asked and moved almost nothing,
->    because every big body already sits on the zero floor. The measurement is what earned the
->    right to ship the better version (a named bonus to hit) instead of arguing about it.
-> 3. **A NAMED OPEN REMAINDER CAN BE CASHED BY THE NEXT ROUND OF ITS OWN SURFACE.** #133's
->    "the sheet still scrolls 65px" was closed by #136/#140 and nobody noticed; it re-measured at
->    zero overflow. **Re-measure a remainder before scheduling work against it.**
->
-> ⚑ **And the two bugs were both found by PLAYING, not by reading**, which is README §5's whole
-> argument arriving twice in one session: AUTO could not be driven in the preview pane at all, and
-> the eight-fight regression could never have caught it, because the regression drives `aiTurn`
-> directly and never presses the button.
+### What it taught, and this is the part that decides the work still left
 
-> **⚑ #150 SHIPPED the same day (8f.178): eleven of the user's own notes across the opening, the
-> event cards and the road bar.** The opening lost a title, a button sub-label and a whole screen
-> (the contract card absorbed its own outcome and the company naming); the receipt chips learned
-> which glyph means what (a face for mood, ♥ for healing only); the stock clause *"it sits badly
-> with them"* went from 24 cards; the fork card became one line a road; and the road bar grew the
-> three signs it had never had - **where the contract ends** (BB's trophy on the Snare), **what
-> the company's health actually is** (an average, not its worst body), and **what is waiting
-> behind each of its two doors** (unspent levels, better kit). ⚑ **Every one of those signals
-> already existed INSIDE the room it was about; what shipped is them being visible from where the
-> player decides whether to open it.** Full record: [`SHIPPED.md`](SHIPPED.md) #150 and
-> [`CHANGELOG.md`](CHANGELOG.md) 8f.178.
-
-> **⚑ #151 SHIPPED 2026-08-14 (8f.179): eight more of his notes, and the entry's first act was to
-> refuse the premise of one of them.** *"From the hanging man event you deleted the option to take
-> all and boots"* - nothing had been deleted; every commit in the repo carries the toll-man's same
-> three doors. What was missing was the door he was **describing**, both halves of the robbery at
-> once, so he was asked and it was built as a fourth. The rest: the menu's two playtest rows merge
-> and the notes go behind DEV.MODE · *"it sits well with them"* follows its twin out of 16 cards ·
-> **the fork sign always spans two numbers now**, because a node typed `battle` is not a fight that
-> must happen (the Broken Men's first door is "No.") · cost lines count in the game's own resource
-> glyphs · Blood on the Road stops printing two loot receipts for one fight · the Broken Men name
-> their four men and two dogs · and the ★ on the company chip finally opens the tab it promises.
->
-> ⛔ **AND ITS AUDIT ANSWERS THE QUESTION HE ASKED WITH IT** - *"Check all last 20-30 tasks - are
-> they done? Haven't we lost something into merging?"* **Nothing is lost.** All three work branches
-> are level with main, the stash is empty, and the dangling commits are pre-amend copies with
-> byte-identical trees. Thirty entries were asserted **against the running build** rather than the
-> docs. ⚠ **The only gap was documentary and it was three rows**: #117, #137 and #138 shipped into
-> the build and the changelog and never got their line in [`SHIPPED.md`](SHIPPED.md), so the four
-> writes were three. Added, with their code verified live first.
->
-> ⚑ **Two findings outlive the batch.** **A REPORT'S PREMISE IS A CLAIM, AND A CLAIM ABOUT WHAT WAS
-> DELETED IS ONE `git log -S` AWAY FROM BEING CHECKED.** Building "restore it" literally would have
-> produced nothing, because it was already there; asking cost one question and produced the door he
-> actually wanted. *(This is the third time a report has arrived describing a build that does not
-> exist - see #114 point 1 and #136's already-shipped point.)* And **A SIGN IS NOT A READOUT**: the
-> fork's fight count was arithmetically honest and still lying, because it counted nodes rather than
-> fights that must happen. **When a number is right and reads wrong, ask what question the player
-> thought it was answering.**
+- ⛔ **Measure the box before you argue about the font** *(#88)*. All three of his battle-panel
+  complaints had one cause: a 133px column leaves a card 116px of inner width and the longest skill
+  name in the game wants 128. The type could not be raised because there was nowhere to put it.
+- ⛔ **Budget three passes on a surface, not one: the second is finish, the third is corrections**
+  *(#94, #95)*. The battle screen took nine. **And by the eighth pass, a complaint that sounds like
+  taste is usually a constant that is wrong** *(#105)*: three of round nine's eight points were
+  faults that had been shipping for weeks.
+- ⛔ **By the third ask on a surface, look for the readout printing the wrong unit** *(#102)*, not for
+  another box to move. SPEED counted in duration, so pressing toward the bigger number made the
+  board slower.
+- ⛔ **A rule that was complete when it was written breaks the day the screen grows a second kind of
+  object** *(#113, #117, #121)*. When that happens, grep every placement rule that enumerates the old
+  ones, and add the new candidates as a second pass rather than another rung in the first.
+- ⛔ **A minimum over n is not a measurement, it is the unluckiest sample** *(#145)*, and it gets
+  worse every time you look. Two nerfs were drafted against a worst case that n=50 said did not
+  exist. **Measure a tail as the fraction of runs under a threshold.**
+- ⛔ **Build the literal ask first when it is cheap, then measure it, then refuse it if it does
+  nothing** *(#146)*. The measurement is what earns the right to ship the better version instead of
+  arguing about it.
+- ⛔ **Re-measure a remainder before scheduling work against it** *(#147-#149)*. #133's *"the sheet
+  still scrolls 65px"* had already been closed by #136 and nobody noticed.
+- ⛔ **A report's premise is a claim, and a claim about what was deleted is one `git log -S` away
+  from being checked** *(#151, and #114 and #136 before it)*. Three reports now have described a
+  build that does not exist.
+- ⚑ **The signal usually exists already, inside the room it is about** *(#150)*. What ships is it
+  being visible from where the player decides whether to open that room.
+- ⚑ **A sign is not a readout** *(#151)*. A forecast carries its uncertainty on its face, a receipt
+  stays exact. It is rule 11 in [`README.md`](README.md) §4 now.
 
 ## The work, in order
 
@@ -166,7 +117,7 @@ fifteen minutes to stop being a wall, and that is a subtraction job.
 |---|---|---|
 | **1** | **Measure the opening before touching it.** Words shown, cards opened, clicks made, and systems introduced, from launch to the first decision that costs something. | there is a number, and it is written down here |
 | **2** | **[#86 - the first fifteen minutes](#86--the-first-fifteen-minutes)** | the numbers from step 1 are cut hard, and the teaching survives the cut |
-| **3** | **The screen pass**, five surfaces, one at a time, before-and-after shots | 🎒 company *(✅ **DONE as #133, 2026-08-13, 8f.161: designed AND built in one night.** The user's five-screenshot voice brief (Urtuk's one screen, Qud's slots-on-the-body, BB's compactness, Wildermyth's before/after) went to a clickable template first by his order - *"start from building design template, as usual, rather than updating main file"* - and then, on his second order the same night, into the prototype. ⚑ **It opened the way #88 taught, with a measurement, and the measurement is the entry**: a level-4 body with two scars, a change and banked points was **1241px of sheet in a 678px window, 564 words**, with the SKILLS block alone spending 230 words re-typing what the battle's hover already says and the four stats sitting ~520px down, UNDER the prose. **The complaint was not that the sheet was ugly, it was that the sheet's ORDER argued the history mattered most and the numbers least.** Shipped at **678px, no scroll, 242 words**: identity in three lines, then the stats band, then the body with its four gear slots hung beside the part they belong to and wired to it, then the skills as the battle's own cards, then the history in the room the gear gave back, with the stash and the whole perk tree behind tabs and a ★ badge carrying a banked point across the wall. ⏸ **The bags he floated are PARKED**: no throwable and no mid-fight swap rule exist, so a bag slot today is furniture, and it returns WITH its rule or not at all. ⚠ Open and small: the fold rule (`#iBody{height:232px}`) is unapplied, so a body carrying every kind of mark at once still scrolls 65px. ⛔ **Its lesson belongs to the parallel-session rule, not to the screen: an expired lock is not a free desk.** `claim.ps1 status` says a lock is 8.2h old; it does not say whether anybody is coming back to it, and the other session took the file back mid-build and committed this work itself. **A second reader of the same fact went unfixed for months and surfaced in the same minute**: the pre-commit `verify` read a six-digit CSS colour as a claim on another session's entry number, a trap `Get-UsedNumbers` had been hardened against and `Verb-Verify` never was. Both the sheet and the tool fix are in [`SHIPPED.md`](SHIPPED.md) #133. **ROUND TWO IS #136, the same day** (8f.164, eleven points): the middle band shrank, **the kit went ONTO the body** (armour classified off its value, the weapon off what it does, so new gear arrives wearing the right silhouette with no list to update), the three pools stack in the battle plaque's own column **after measuring that the row was never tall but 704px wide for three fifteen-character readouts**, the tile became a portrait, one popover now serves the whole sheet, ACTIONS reached the sheet through `apPips`, the stash tab took the road bar's drawn sack, the story became an accordion whose head carries the kill heads, and a waiting perk point says so four times **including a ★ on the roster rail, the only signal visible without opening that person**. ⚑ **And one of his eleven had already shipped**: the classical stat names landed hours earlier in another session's #134, so the note was written against a build one commit old. **Third time a report has arrived carrying an already-fixed point (see #114 point 1), and the check is one grep**)* · 🗺 road *(rounds one AND two are DONE as **#103 + #104**, 8f.130/131, both 2026-08-11: the top bar on the Battle Brothers shape off the friends' "unclear what he is seeing", then the user's nine-point design pass the same day - the Captain's painted head on the party chip, drawn sack/heart/paw, the battle ladder's faces on the mood chip, ◉ everywhere, a framed contract, a turning sun-and-moon disc, the walk x3 slower, and the dead second row deleted with the map re-mapped 638 -> 678 through one vy(). and **#106 is round three, the same day**, which is the budget rule landing on the nose: eight points, seven of them corrections, and **the one real bug arrived described as a spare asset** - *"a cutted picture that doesnt work"* was the company token itself, unplaced, because `enterWorld` never called `placeToken` while the menu's Continue did. ⛔ **Test the path the PLAYER takes first, not the path the harness takes.** Its other finding: **a state that fires on a COUNT of people rather than on a QUANTITY will always lie at one end** (two scratches across four bodies painted the heart fully empty) - **and #107 hit the same shape a fourth time**, replacing the rations offer's *anybody is hurt* with the company's average blood. **#107 also cashed #104's own open remainder**: the sun/moon wheel became a real time of day by being driven off the WALK (the one thing here that reliably takes time) rather than a CSS loop, and ⛔ **nothing mechanical is allowed to read it** until somebody rules how long a day is)* · 📜 aftermath *(✅ **DONE as #122, 2026-08-12, 8f.149** - the user's Battle Brothers brief, three rounds and a clickable mockup in one day, then built and verified on the player's own path. Screen one is the whole report (crew grid off the rail's painted faces, ☠ ⚔ 🩸 with `taken` new in `strike()`, state on the FRAME: blood, gold arrow, both stacking, an ash DEAD state banked for #34), loot GIVEN never chosen, the enemy roll behind an accordion, no resource totals; screen two is the prisoners only, so half the fights are one screen, which is this pass's kind of arithmetic. The promotion pick moved to the sheet (perk points as before, the new `statPoints` spent on the WHO THIS IS tells). See [`SHIPPED.md`](SHIPPED.md) #122)* · 🚪 front door · practice field. *(⚔ is DONE nine times over (#88, #91, #94, #95, #96, #98, #100, #102, #105 - and ⛔ **the count is the finding: nine passes on one surface, eight of them inside seventy-two hours, and the user was right every time**. ⚑ **#105 is the one that changes what the count MEANS.** Rounds three to eight were furniture; round nine's list read like taste - *delete this line*, *make the walker bigger*, *give the picked soldier a border* - and **three of its eight points were faults that had been shipping for weeks**: a ten-pixel disagreement between the hex grid and the canvas painted under it (which was both the black line AND every puddle in the game sitting off its own tile), a walking body drawn at 40-61% of a standing one because #bFx sits outside the zoomed layer, and #100 point 11's clipped ring reappearing on the top edge because only the right edge was ever fixed. ⛔ **SO THE RULE THE OTHER FOUR SURFACES INHERIT IS: BY THE EIGHTH PASS, A COMPLAINT THAT SOUNDS LIKE TASTE IS PROBABLY A CONSTANT THAT IS WRONG.** Measure the thing before agreeing with it or arguing with it): the board passed 8f.65, the unit panel as **#88**, the **whole battle frame as #91** (8f.121, 2026-08-11 - the user's own seventeen-point relayout, mocked, picked and built in a day, board 57.8% → 85.5%, words 262 → ~160), and its **rounds three, four and five as #94, #95 and #96**, all on the same day, **#98 the queue**, **#100 the furniture** and **#102 the furniture again, plus two readouts that were lying**. ⚑ **#102's finding is the one that generalises to the other four surfaces: ten of its twelve points were layout, and the two that were not were the same bug twice - a control that changed something and could not say what it had changed.** SPEED's label counted in the engine's units (a duration multiplier), so pressing toward the bigger number made the board slower; nerve was a coloured chip, so it could name the rung and never say how close the next one was. **When a surface is asked for a third time, look for the readout that is printing the wrong unit rather than for another box to move.** ⚑ **#100's finding is the one to budget for: three of its fourteen points were a single box measured wrong** - the rail was shrink-to-fit at exactly one head wide, so the ring on the acting head had been clipped since the day the rail turned, and the report blamed the battle log, which was innocent. **Ask what the BOX is doing before believing which object is at fault.** ⚑ **Two findings to carry into the other four surfaces.** From #94: **nothing was asked to move back** - nine of its twelve points were finish on a frame twenty-four hours old, and the three that were real work were all one complaint, *the board was answering questions with a hover or with nothing*. From #95: **two of its ten points were corrections to #94 shipped hours earlier, and both were the same mistake** - a change that looked like an answer and answered nothing (a sectioned bar whose section was not a fixed quantity; a number put in a better place and left in the old one too). ⛔ **So budget THREE passes on a surface, not one, and expect the second to be finish and the third to be corrections.** See `WHAT_TO_TEST.md`.)* ⚑ **The target for the rest is a number: 61 declarations below 10px** live outside the battle screen (2 at 7px · 5 at 7.5px · 9 at 8px · 16 at 8.5px · 13 at 9px · 16 at 9.5px). ⚠ And take #88's lesson with you: **measure the box before you argue about the font**. **⚑ ROUND FIVE IS #112, 2026-08-12** (8f.139): the day plaque came up out of the map into the bar's 664px of measured empty middle, the walking company grew 10% and the Captain 10% again so that *"leader first"* is finally visible, and ⛔ **the fourth point is #105's rule for the SIXTH time, on a different surface: the complaint that read as taste was a class written and never styled.** The mood chip and the heart have opened cards since #106, both carry `class="bcchip click"`, and `.click` only ever had a rule under `.cchip` - so the two chips in that row that DO something rendered with `cursor:help` and no hover, beside two chips that do the same thing and have had the pointer since #103. **A row of chips disagreeing with itself about what a click means.** ⚑ **So the rule now has a shape worth carrying to the last two surfaces: when a report says a control does not feel clickable, grep for the class on it before touching the design.** **⛔ AND #113 PUT THE ART ON IT, 2026-08-12** (8f.140, the user's order: *"Chat gpt create icons to show on global map. Can you please put them on global map near related events"*): twenty-three painted cut-outs onto the nodes, and **the whole engineering content was one number** - the chip had to grow 33px -> 40px to hold a picture, and the brief asked for 48. ⛔ **THE ROAD SCREEN'S OWN LESSON, ARRIVING AS A CEILING RATHER THAN AS A BUG: this map is px-load-bearing and it has three pixels of slack in it.** The tightest vertical pair is f2/snare at 80px, the node was 69 tall against a 72 rule, so 40 lands at 76/79 and moves nothing while 42 breaks a pair and 48 breaks two. ⛑ **And the constant that had already drifted was in the OTHER file** - `NODE_PLATE_H`/`NAME_H`/`NAME_DY` are hand-copied into `tools/dramaturge.html`, **the tool this map is edited in**, so for the length of this change the editor would have approved a layout the game flags. **When a surface has a linter, grep for the second copy of its constants before trusting it.** **⚑ AND ROUND SIX IS #114, 2026-08-12** (8f.141, six user points off a screenshot): the sights left their chips and stand at their authored 48px with a silhouette ring carrying the old border's state colours, the company packs five to a rank up to three ranks with the Captain and the named cast in the front one (13 bodies = 5+4+4), and the UNPAID chip lost its day-counter: every unpaid day fines the shared mood 10 points, so the mood ladder IS the counter. ⛔ **#113's "40px measured ceiling" fell the same day it was written, and HOW it fell is the lesson: the ceiling belonged to the CHIP, not to the art.** Delete the box and the same map takes 48 with two coordinate nudges. **When a size rule blocks an ask, name the piece of furniture the rule is actually protecting before repeating the number.** ⚠ And point 1 of the six ("use icons for events that you know") was already shipped in 8f.140 when it arrived - the screenshot was a stale tab. **On a day when three sessions ship into one file, ask WHICH build a screenshot is of before reading it as a bug list.** **⚑ ROUND SEVEN IS #115, THE SAME HOUR** (8f.142, the user correcting #114: *"first on the right - it is front in the direction of movement"* · *"Increase size of icon on global map on 250%"*): the sights are **120px landmarks off the 128px masters** and had to leave the layout column to get there (`position:absolute` on the node point; an in-flow 120 drops the south row's plates off the bottom of the view), which **unwound all of #114's constant churn** - the chip-era numbers are true again because the art no longer participates in layout. One new coordinate: oasis 12px east, off the Hill Steading's painting. And the Captain leads from the RIGHT of the front rank, because the sprites face right. ⚑ **"First" is a direction, not an array index, when the column has a facing.** ⚠ Open, and it is the user's eye: whether 120px art crowds the painted terrain, and whether a revealed slot's painting lapping a fixed neighbour's reads wrong (the fix is that slot's coordinate, never the size). **⚑ AND ROUND EIGHT IS #116, STILL THE SAME DAY** (8f.143): ⛔ **the "background" the user asked to make transparent was NOT a background - the hazy masters carry an alpha-1..39 wash across their whole canvas, invisible at 48px, and the silhouette ring's drop-shadows lit it into a type-coloured slab at 96+.** The pedlar was clean because he is chroma-keyed, which is why the user pointed at him ("i want all of them like that"); the build pass now scrubs alpha under 40 before embedding. ⚑ **When an artifact appears only after a scale-up, suspect data the old size was hiding - and diff the good icon's pipeline against the rest before touching the renderer.** Also from the round: sights 120 -> 96px, the name a foot caption on the painting's bottom edge, and **the reveal rule lost its picture half by user order** ("he should be visible permanently"): a dealt slot shows its painting from minute one, the TITLE still hides behind `n.real` until arrival. If a pre-arrival painting ever reads as a spoiler in play, the lever is per-event (pull the key from MAP_SIGHT), never the gate. **⚑ ROUND NINE IS #117** (8f.144, three more points the same day): ⛔ **the price label landing on the paintings was not a placement bug but a RULE THAT HAD GONE OUT OF DATE - `labelSpot` had scored against name plates only since the day it was written, which was the whole truth until a node became a 96px painting.** ⚑ **A rule that was complete when written, against a screen that grew a second kind of object: when a surface gets a new class of thing, grep every placement rule that enumerates the old ones.** Also the caption dropped to the art's exact bottom edge so the full painting shows, and the description line came off the map label (a fork label was a 132x32 slab, every label is 49x17 now) while staying in the fork card, **because it was being printed in the one place with nothing to compare it against**. ⚠ Two documented traps bit within ten minutes and both were caught by LOADING THE PAGE, not by reading: a helper named `dv` collided with an existing top-level const (whole-script SyntaxError), and the new geometry calls `sightFor` from boot IIFEs that run before `MAP_SIGHT` exists (TDZ, aborts everything). **Verified by drawing the map from all 24 stands and measuring in the DOM: 0 label-on-painting, 0 label-on-name, 0 label-on-label.** **⚑ AND ROUND TEN IS #121, THE SAME DAY** (8f.148, the user: *"more events icons - add them to a global map"*): GPT's last nine icons went in **without a line of pipeline change**, which is what #113's fourth pass was built for - 32 sights embedded, 31 mapped, and #113's own remainder (circle, shipwreck and sinkhole having no art) is closed. ⛔ **The finding is #117 one turn deeper, and it is worth carrying to any surface with a search in it: `labelSpot` has two axes and on a VERTICAL road they are the same axis.** `t` walks along the road, `off` lifts vertically, so on dead → bonfir all 63 candidates sat on a line sixteen pixels wide, straight down the column of paintings it was dodging; the search had no escape to find and the linter reported a collision nobody could place. The comment above it ("the cheap axis is up and down") was **true for a horizontal road and false for this one** - a plate hangs below its glyph, so east-west the empty map is above and north-south it is to the SIDE. ⚑ **And the care is in HOW the sideways family was added: as a second PASS, not another rung in the first.** Inline it re-placed nine labels that were already clean; run after the shipped search it moves exactly the two that were broken. **When a search starts failing, add the new candidates AFTER the old ones and count how many placements move - a fix that moves things which were not broken is a second change wearing the first one's clothes.** The whole procedure is a standing rule now (`.claude/rules/world-map-sights.md`) so the next pack does not re-derive the 128-not-48 rule, the alpha-40 scrub, the TDZ trap or the three counters that must read zero. |
+| **3** | **The screen pass**, five surfaces, one at a time, before-and-after shots | ✅ 🎒 **company** *(#133 · #136 · #140)* · ✅ 🗺 **road** *(ten rounds, #103-#107 · #112-#117 · #121)* · ✅ 📜 **aftermath** *(#122)* · ✅ ⚔ **battle** *(nine passes, #88 · #91 · #94-#105)* · ⏳ 🚪 **front door** - rebuilt by #108, #111, #118-#120, #138 and #150, and what it still owes is step 1's measurement · ⏳ **the practice field**, untouched. ⚑ **The target for what is left is a number: 61 declarations below 10px** outside the battle screen (2 at 7px · 5 at 7.5px · 9 at 8px · 16 at 8.5px · 13 at 9px · 16 at 9.5px). Each round's rules are in the focus section above; the rows are in [`SHIPPED.md`](SHIPPED.md) |
 | **4** | **[#39 - Meet the Rabble](archive/BACKLOG_ENTRY_SPECS.md)** | the crew is introduced without a fourth modal. **It must replace or enrich the arrival cards, never add to them** |
 | **5** | **Re-measure**, and hand it to the ten friends | step 1's numbers, run again |
 
@@ -357,7 +308,7 @@ name them, not because they stopped mattering.*
 | # | what it is | why it waits |
 |---|---|---|
 | **134** | 🃏 **The joke at the man with paid swords** - the opening's cut third reply. *(Parked 2026-08-13 by the user: "make a joke option put from the opning to our ideas/things for future set.")* **"Agree with him. Cheerfully."** answered *"You scum"* with *"Scum, my lord, and cheap with it. You will not find better value in this county, and you have clearly been looking."* Then `Math.random()<0.5`: it lands and he pays **120** instead of 80, tells his swords this one can read, and leaves without shutting the door; or it does not, and the nearer sword puts a cudgel in your ribs for **50** and 16% of the Captain's hitpoints. | ⛔ **Why it was the right one of the three to cut**, and the note to argue with when it comes back: it put a **coin flip on the player's first real decision**. The other two are the pillar in one card (pride costs money, money costs pride) and a fifty-fifty beside them is not a third door, it is a lottery ticket nobody can reason about. **What it needs to return is a reason the player can read** - a stat gate, a trait, a personality, anything that makes the joke a judgement instead of a dice roll. ⚑ **Nothing was torn out:** `PRO_ART.joke_hit` still maps to EV00C (the rule file requires that mapping preserved and the painting is good), and the `verdict` banner machinery is intact. Full prose in [`CHANGELOG.md`](CHANGELOG.md) 8f.162, so this is a paste, not a rewrite |
-| **49** | Make the AI explain itself | **deferred by the user.** Gate artifacts are DONE and keep (`shots/49_ai_explains.html`), so it returns as a *build* session, not a design one |
+| **49** | Make the AI explain itself | **deferred by the user.** The gate was paid: the rules are written and the picture was drawn, so it returns as a *build* session, not a design one. ⚠ **The picture itself is gone** - `shots/49_ai_explains.html` was deleted in the 2026-08-14 shots cleanup, and `shots/` was never in git. The written half survives in full at [`archive/BACKLOG_ENTRY_SPECS.md`](archive/BACKLOG_ENTRY_SPECS.md) §49, so redrawing it is an hour, not a session |
 | **26** | The Smaller One | seven cards of content. Needs #24 first. **First candidate to graduate back** |
 | **28** | The Act 1 stinger | demo-ending content, and the enemy still needs a real name |
 | **29** | Zone of Control, the better version | cut once for making movement unaffordable. Needs #13 to measure a return |

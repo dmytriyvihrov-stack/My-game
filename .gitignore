@@ -27,7 +27,10 @@ audio/out/
 # rejected takes and synthesis previews kept for comparison, 76MB
 audio_review/
 
-# scratch: the running game POSTs its own board here to be looked at, 80MB
+# scratch: the running game POSTs its own board here to be looked at. It had
+# grown to 181MB, so on 2026-08-14 every capture before #133 was deleted and it
+# is 1.6MB again. Nothing here is in git, so a deleted shot is gone: the eye
+# check is paid at the time, and the rows in SHIPPED.md keep what was measured.
 shots/
 
 # tarball of the docs as they stood before the 2026-07-31 cleanup
