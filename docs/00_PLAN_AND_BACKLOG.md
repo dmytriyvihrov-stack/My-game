@@ -63,6 +63,7 @@ section used to carry each entry in full, which made the work file a second chan
 
 | | the subtraction | log |
 |---|---|---|
+| **#155** *(08-14)* | the opening pass: **THE GRAUSEN ROAD card and the tour's THE DAY step both deleted**, the prologue card stops stretching to its own ceiling, ⚔️ lands on the first fight door in the game, the naming screen trades ♥ MENDING for ⛊ HEADS, Blood on the Road halves and grows portraits, *"the company stands taller for it"* out of 11 places - and **the archer's cursor stops being a sword** | 8f.183 |
 | **#154** *(08-14)* | **every road door wears its intent**: eight glyphs measured down from ten, plus a race mark derived from `needRace`; and the Fen-Mother drops to two doors, the quiet one paying in days | 8f.182 |
 | **#151** *(08-14)* | eight of his notes: a fourth door on the toll-man that takes the whole robbery, the menu's two playtest rows merged, *"it sits well with them"* out of 16 cards, cost lines in the game's own resource glyphs, one loot receipt per fight, and **the fork sign spans a range instead of counting** | 8f.179 |
 | **#150** *(08-13)* | eleven notes: the opening loses a title, a sub-label and a whole screen; the receipt chips learn which glyph means what; *"it sits badly with them"* out of 24 cards; **the road bar grows the three signs it never had** | 8f.178 |

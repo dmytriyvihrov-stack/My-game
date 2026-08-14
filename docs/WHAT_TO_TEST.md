@@ -25,6 +25,108 @@
 
 ---
 
+## 🚪 THE OPENING PASS - TWO SCREENS GONE, AND THE ARCHER'S HAND FIXED  *(#155 · 2026-08-14 · build log 8f.183)*
+
+Nine of your notes from the playthrough. **Start a NEW company for this one** - most of it is in the
+first four minutes.
+
+### 1 · The archer hovers an ARROW now, not a sword
+
+**Reach it in three steps:** any battle → an archer's turn → hover an enemy inside bow range.
+
+**What should happen.** The mouse cursor is a **fletched arrow**. A spear or a cutter hovering the
+same body still gets **crossed blades**. This was a real bug, not a preference: since the board
+started letting you click an enemy directly, the cursor rule under that click only knew about
+swords, so an archer was promised a blade and loosed an arrow.
+
+**What would be a bug.** A sword over a body an archer is about to shoot. A boot (the walk cursor)
+over a body either of them can reach. An arrow over a body a *melee* fighter is hovering.
+
+### 2 · THE GRAUSEN ROAD card is gone
+
+**Reach it in three steps:** menu → **A new company** → win the brawl → take the purse.
+
+**What should happen.** You land on the map and the **tour starts immediately** - the contract
+spotlight first. No card in the middle of the screen before it.
+
+**Nothing it said was lost, and this is the part to check.** The job is on the contract plate top
+left (Skelbrook, the head in the chair, ◉80 paid, the road east). The money is the crown chip. The
+line about not being able to be good to everyone is what the road's own priced doors have been
+saying since the choice-weight pass. **If you find you have lost the thread of what you are doing,
+that is the thing to report** - it means the plate is not carrying it.
+
+### 3 · THE DAY tour step is gone
+
+The spotlight on the DAY 1 MIDDAY plaque is deleted. The tour is now **four steps**: the contract,
+the resources, the company, the road. The plaque still sits there and still counts.
+
+### 4 · The opening card no longer stretches
+
+**Reach it:** menu → **A new company**.
+
+**What should happen.** The card is **centred on the screen** with an even band of dark above and
+below it, and it ends just under the button. Before, it was pinned to the top and grew to its
+maximum height whatever the prose measured, so there was a large dead area under **Draw your
+sword.** inside the card's own border.
+
+**What would be a bug.** A scrollbar on the right of the card. Text clipped at the bottom. The card
+sitting off-centre.
+
+### 5 · ⚔️ on **Draw your sword.**
+
+Same glyphs as the road doors. It was the only battle door in the game without one - the pass that
+added them walked the road and camp decks, and the prologue is neither. Hover it and it says
+**FIGHT · starts a battle**.
+
+### 6 · The naming screen counts HEADS, not hearts
+
+**Reach it in three steps:** new company → win the brawl → read the strip at the top of the contract
+card.
+
+**What should happen.** It reads **◉ +88 CROWNS** and **⛊ 4 HEADS**, then the three faces of the
+people who stood up for you. The **♥ MENDING** chip is gone.
+
+⚠ **Two notes on this one, because your instruction moved.** You first said the road bar and then
+corrected it to this screen, so **the road bar is untouched** - it still wears 😐 AT EASE and the
+health percentage. And there was **no morale readout on this screen to delete**; it had already gone
+in an earlier round. The heart is what came off in its place, by your pick.
+
+⚠ **⛊ counts BODIES.** The road bar's ⛊ 8/13 is a different number on purpose - that one is wagon
+room, where a human takes 2 seats and an ogre 3. Four humans are **4 HEADS** here and **8/13** there,
+and both are right.
+
+### 7 · BLOOD ON THE ROAD is half as long, and the joiners have faces
+
+**Reach it in three steps:** new company → the road east → **Blood on the Road**, then help either
+side or stand back.
+
+**What should happen.** Every branch of the card is roughly half what it was, and whoever joins you
+appears as a **painted head with one line beside it**: name, race and job, then a short trait line.
+The long trait paragraph still exists - it is on the character sheet, one click away.
+
+**What would be a bug.** A blank or grey box where a face should be. A trait line that runs to three
+lines. The card losing a fact you cared about: the ratkin picking up their spears, the ogres winning
+it *easily* if you stood back, or the thing alive in the ditch that watched you wait. All three are
+supposed to have survived.
+
+### 8 · "the company stands taller for it" is deleted
+
+**11 places**, across the road cards, the camp fire and the vignettes. Same treatment as the two
+phrases before it. Every one of those doors still has its **mood chip**, which is where the change
+belongs.
+
+**What would be a bug.** A choice line that starts or ends with a floating **·** dot. A choice with
+no sub-line at all where you expect a price (the price should still be there - only the phrase went).
+
+### 9 · Two lines of wording
+
+- The man in the corner says **"You lot,"** instead of "You scum,". Everything else about the line
+  is as you quoted it back.
+- The ogre spotlight in the tutorial brawl now opens with **"The room is his, and so is the
+  furniture you are breaking."** before the race facts.
+
+---
+
 ## ⚔️ THE DOORS WEAR THEIR INTENT  *(#154 · 2026-08-14 · build log 8f.182)*
 
 **Reach it in three steps:** menu → **Continue the road** → walk onto any event node. Every choice
