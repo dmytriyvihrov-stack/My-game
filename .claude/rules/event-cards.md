@@ -38,6 +38,12 @@ count rather than as an intention.
 34 cards, still none outside the bands.** A card that GAINS words is not automatically a
 regression; a card that leaves its band is.)*
 
+*(#151, 2026-08-14, re-measured after the toll-man gained a fourth door: **3,703 words, still 34
+cards, still none outside the bands.** The toll went 120 to **158**, which moves it from MEDIUM to
+HEAVY - and that is the correct direction, because a fourth door is a heavier decision. ⚑ **The
+band a card belongs in is decided by its WEIGHT, so a card that gains a door is allowed to gain
+the words that door costs.** It is only a regression when the words arrive without the weight.)*
+
 Measure in the running build, never by reading:
 
 ```js
@@ -65,8 +71,21 @@ card exists.**
 5. **A stock clause that stands in for the receipt.** #150 deleted *"it sits badly with them"* from
    **24 cards** at the user's order: it appeared on every door with a morale cost, said nothing the
    chip did not, and by the twentieth card it had stopped being read at all. ⚑ **A phrase you can
-   grep 24 times is furniture, whatever it says.** (Its positive twin, *"it sits well with them"*,
-   is still on six cards and is the same shape; it survives only because he pointed at one of them.)
+   grep 24 times is furniture, whatever it says.**
+
+   **#151 then deleted its positive twin, *"it sits well with them"*, from 16 more** ("delete it
+   too, so it is cleaner"). ⚠ **This file said the twin was on SIX cards and it was on SIXTEEN**,
+   because the count had been taken over `EVENTS{}` alone and the phrase was also in the CAMPS
+   incidents. ⛔ **A count of a stock phrase must be taken over every table that speaks the receipt
+   language, which since #143 is all three.** The grep that is actually right:
+
+   ```js
+   (JSON.stringify(EVENTS)+JSON.stringify(CAMPS)+JSON.stringify(VIGNETTES)).split('the phrase').length-1
+   ```
+
+   ⚑ **And the deletion was four lines rather than a hunt, because #150 had already made
+   `choiceNote()` JOIN its parts.** The rule below about concatenated labels is what turned the
+   second half of this job into nothing.
 
 ⚠ **A label built by concatenation cannot survive its parts going empty.** Deleting that phrase
 emptied twelve `c:` strings, and every fragment of a choice's sub-line used to carry its own leading

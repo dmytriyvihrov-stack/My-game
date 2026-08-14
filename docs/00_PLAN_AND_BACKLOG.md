@@ -132,6 +132,34 @@ fifteen minutes to stop being a wall, and that is a subtraction job.
 > player decides whether to open it.** Full record: [`SHIPPED.md`](SHIPPED.md) #150 and
 > [`CHANGELOG.md`](CHANGELOG.md) 8f.178.
 
+> **⚑ #151 SHIPPED 2026-08-14 (8f.179): eight more of his notes, and the entry's first act was to
+> refuse the premise of one of them.** *"From the hanging man event you deleted the option to take
+> all and boots"* - nothing had been deleted; every commit in the repo carries the toll-man's same
+> three doors. What was missing was the door he was **describing**, both halves of the robbery at
+> once, so he was asked and it was built as a fourth. The rest: the menu's two playtest rows merge
+> and the notes go behind DEV.MODE · *"it sits well with them"* follows its twin out of 16 cards ·
+> **the fork sign always spans two numbers now**, because a node typed `battle` is not a fight that
+> must happen (the Broken Men's first door is "No.") · cost lines count in the game's own resource
+> glyphs · Blood on the Road stops printing two loot receipts for one fight · the Broken Men name
+> their four men and two dogs · and the ★ on the company chip finally opens the tab it promises.
+>
+> ⛔ **AND ITS AUDIT ANSWERS THE QUESTION HE ASKED WITH IT** - *"Check all last 20-30 tasks - are
+> they done? Haven't we lost something into merging?"* **Nothing is lost.** All three work branches
+> are level with main, the stash is empty, and the dangling commits are pre-amend copies with
+> byte-identical trees. Thirty entries were asserted **against the running build** rather than the
+> docs. ⚠ **The only gap was documentary and it was three rows**: #117, #137 and #138 shipped into
+> the build and the changelog and never got their line in [`SHIPPED.md`](SHIPPED.md), so the four
+> writes were three. Added, with their code verified live first.
+>
+> ⚑ **Two findings outlive the batch.** **A REPORT'S PREMISE IS A CLAIM, AND A CLAIM ABOUT WHAT WAS
+> DELETED IS ONE `git log -S` AWAY FROM BEING CHECKED.** Building "restore it" literally would have
+> produced nothing, because it was already there; asking cost one question and produced the door he
+> actually wanted. *(This is the third time a report has arrived describing a build that does not
+> exist - see #114 point 1 and #136's already-shipped point.)* And **A SIGN IS NOT A READOUT**: the
+> fork's fight count was arithmetically honest and still lying, because it counted nodes rather than
+> fights that must happen. **When a number is right and reads wrong, ask what question the player
+> thought it was answering.**
+
 ## The work, in order
 
 | | | done when |

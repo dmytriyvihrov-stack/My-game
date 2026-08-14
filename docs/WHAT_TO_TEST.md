@@ -23,6 +23,87 @@
 
 ---
 
+## 🧭 YOUR EIGHT NOTES FROM THE CITY  *(#151 · 2026-08-14 · build log 8f.179)*
+
+**Reach it in three steps:** menu → **Continue the road** (or A new company) → the first fork.
+Six of the eight are on the road; two are on the menu and the top bar and are visible at once.
+
+**⛔ READ POINT 1 FIRST, BECAUSE IT DID NOT HAPPEN THE WAY THE NOTE ASSUMED.**
+
+1. **THE HANGED TOLL-MAN now has FOUR doors, and the fourth is new.** Your note said the
+   take-all-and-boots option had been deleted. **It had not** - "Take the purse. And the boots."
+   is in every commit of this repo back to the first one, and the generated events book agrees.
+   What was missing is the door you were *describing*: not the purse **or** the bridge but both.
+   So the new one is **"Take all of it. Purse, boots, beams."**, in red.
+
+   **What should happen:** it pays **◉+38, ▤+5, ◐−1 day, 😐−6 morale**, the boots find a wearer on
+   their own, and the fourth beam comes down on somebody. The label says only *"nothing is left
+   standing here"* - this card is the reference event and its prices are stated as intent, never
+   as a receipt, so the chips at the bottom of the outcome are where the numbers live.
+   **A bug would be:** a number on the button, or the injury being warned about before you pick.
+
+   **The judgement I want back from you:** this is a four-door HEAVY card early on the road, and
+   #123 spent a whole pass cutting the road down to three. If it reads as one door too many, say
+   so and the bridge-only door is the one to fold into it.
+
+2. **The menu has ONE playtest row.** As a player you see **Send the run** and nothing else; press
+   it and the questions lead to the notes, exactly as before. **Turn on ⚙ DEV.MODE (top right) and
+   a second row appears immediately** - ⚙ Playtest notes - with **Read somebody else's** and Clear
+   my journal inside it. Turn it off and the row goes, under your hand, without reopening the menu.
+   *(Your bracketed question - separate tool or not - you answered: keep it in dev mode.)*
+   **A bug would be:** having to leave the menu and come back for the row to appear or disappear.
+
+3. **"It sits well with them" is gone from every card.** It was on **16**, not the 6 the last note
+   said - that count had been taken over the road events only and missed the camp cards.
+   **A bug would be:** a button whose sub-line starts or ends with a floating " · ".
+
+4. **Every crossroad now says `~1-2 fights` or `~0-1 fights`, never a flat number.** The first fork
+   reads **4 days · ~1-2 fights · TROUBLE** and **6 days · ~0-1 fights · PEACEFUL**, which are the
+   two numbers in your own note. **The reason it was wrong is worth a sentence:** the old sign
+   counted nodes typed *battle*, and the Broken Men are one - but their first door is "No." and the
+   other two are four days of food or forty crowns, so the sign was promising a fight on a road you
+   could pay your way across. It is a rumour now and it always spans two numbers.
+   **A bug would be:** any fork row showing a single figure.
+
+5. **Costs on choice buttons count in the game's own glyphs.** "−30 crowns · +2 provisions" is now
+   **−◉30 · +❦2**, the same four marks the top bar and every loot chip use. It fires on the number,
+   so prose keeps its words: *"Pay the toll. It is four crowns"* is untouched.
+   ⚠ **I included salvage ▤ and gems ◈ although you named only currency and provisions** - a line
+   reading "−◉30 · +6 salvage" is worse than either version. Say the word and either goes back.
+   ⚠ It covers the road cards, the camp cards, the yes/no dialogs and the village rows. **It does
+   NOT cover the battle screen or the muster**, which still say "crowns" in words. Tell me if you
+   want the vocabulary total.
+
+6. **Blood on the Road has ONE loot receipt, not two.** Take **"Wait. Then finish the winners."**
+   The first card (the narrative one) no longer carries a chip row; the aftermath card after it
+   shows **one** TAKEN OFF THE FIELD block carrying both what the ditch paid and what the field
+   did. If the field row also pays coin the two are **added**, so you will see one ◉ chip and not
+   two. **A bug would be:** two chip rows on two screens, or the purse moving by more than the
+   chips say.
+
+7. **THE BROKEN MEN's "No." door reads `BATTLE · 4 men and 2 dogs against`.** The dogs are the half
+   of that fight people do not expect, and the door had never mentioned them.
+
+8. **Clicking the company chip on the road bar (the one with the ★) opens the PERKS tab** on the
+   person holding the point, not the stash on whoever you looked at last. If the waiting point is a
+   **stat** point instead, it picks that person and leaves the tab alone - stat points are spent on
+   the WHO THIS IS tells on the left, which light up on their own. The sack chip beside it is
+   unchanged and still opens the stash.
+
+**And one thing you did not ask for, found while testing point 1:** the toll-man's boots pick their
+own wearer, and when there is no ratkin in the company they could pick **you** - whose roster name
+is the literal word "You", so the line read *"Of course it is You."* Fixed. It now says your
+nickname, and the sentence after it stopped guessing at the wearer's gender.
+
+**The audit you asked for is in [`SHIPPED.md`](SHIPPED.md) #151 and the changelog.** Short version:
+**nothing was lost in the merges** - all three work branches are level with main and the loose
+commits in the repo are pre-amend copies with identical contents. Thirty entries were checked by
+running the build, not by reading the docs. Three of them (#117, #137, #138) had shipped without
+ever getting their row in the registry; the rows are written now, and their code was verified live
+before the rows were.
+
+---
+
 ## 🧭 THE OPENING, THE EVENT CARDS AND THE ROAD BAR  *(#150 · 2026-08-13 · build log 8f.178)*
 
 **Reach it in three steps:** menu → **A new company** → play the brawl and read the card after it.

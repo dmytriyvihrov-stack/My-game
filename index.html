@@ -4118,7 +4118,16 @@ document.addEventListener('DOMContentLoaded',()=>{
   const tb=$('testBtn'),wb=$('winBtn');
   if(tb){
     tb.onclick=e=>{e.stopPropagation();TEST.on=!TEST.on;
-      localStorage.setItem('gt_test',TEST.on?'1':'0');syncTest();};
+      localStorage.setItem('gt_test',TEST.on?'1':'0');syncTest();
+      /* #151 - the menu grew a dev-only row, so the switch has to rebuild the
+         front door under the hand that pressed it, or the row appears next
+         time you open the menu and the switch reads as broken.
+         ⛔ IT CANNOT GO IN `syncTest`, WHICH IS WHERE IT BELONGS BY SHAPE:
+         `show()` calls syncTest, `openMenu` calls show, so a redraw from in
+         there is an unbounded recursion. This is the one place TEST.on
+         actually changes, which makes it the right place anyway. */
+      const mn=$('menu');
+      if(mn&&mn.classList.contains('on')&&typeof openMenu==='function')openMenu();};
     wb.onclick=e=>{e.stopPropagation();winNow();};
     const lb=$('lintBtn');
     if(lb)lb.onclick=e=>{e.stopPropagation();
@@ -5314,6 +5323,44 @@ const CLASS_ICON={captain:'⚑',spear:'⌇',archer:'➹',mage:'✷',warmage:'⚔
 /* body-size glyphs: small / medium / huge */
 const RACE_ICON={human:'◆',ratkin:'▪',ogre:'⬢'};
 const RES_ICON={crowns:'◉',food:'❦',salvage:'▤',wood:'▤',iron:'▬',gems:'◈'};
+/* ═══ #151 - THE RESOURCE WORDS BECOME THE RESOURCE GLYPHS ═══════════════════
+   (User, 2026-08-14: *"Show in the choices curency and provision special
+   symbols, so it is better readble."*)
+
+   ⚑ THE GLYPHS ARE NOT NEW AND THAT IS THE WHOLE POINT. `RES_ICON` above is
+   what the top bar counts in, what the aftermath's haul chips wear, and what
+   #143's event receipt chips wear. The choice LABEL was the last surface in
+   the game still spelling the four resources out in words, so a player read
+   "−30 crowns" on the button and then saw ◉ on the chip that charged it.
+
+   ⛔ IT IS A RENDERER PASS, NOT A CONTENT PASS, and it has to be. The `c:`
+   strings are authored English, they are what `content/events_book.html`
+   exports for him to edit, and `LINT()` reads them for arithmetic receipts. A
+   sweep through 34 cards replacing words with glyphs would have put the symbol
+   into the authoring source and made the book unreadable. One function, called
+   at the places that build a cost line, off the strings as written.
+
+   ⚠ THE SIGN IS LEFT WHERE IT IS. "−30 crowns" becomes "−◉30", not "◉−30":
+   the minus belongs to the transaction and the glyph belongs to the resource,
+   and the aftermath chips already read that way round.
+
+   ⚠ AND ONLY A DIGIT-LED PHRASE IS TOUCHED. "he has no further use for
+   either", "cheaper than arrows" and every other sentence with a resource word
+   in it is prose, and prose keeps its words: the pattern needs a number in
+   front of the noun before it will fire.
+
+   ⛔ IT LIVES HERE, BESIDE THE TABLE IT READS, AND NOT BESIDE `choiceNote`
+   WHERE IT WAS FIRST WRITTEN. Four renderers call it and the earliest of them
+   (`ask`) is declared 3,000 lines above choiceNote; a `const` read from above
+   its own declaration is the temporal-dead-zone crash that aborts this whole
+   script, and this file has shipped it once already. */
+const RES_WORDS=[[/(\d+)\s+crowns?\b/g,'crowns'],[/(\d+)\s+provisions?\b/g,'food'],
+  [/(\d+)\s+salvage\b/g,'salvage'],[/(\d+)\s+gems?\b/g,'gems']];
+function resGlyphs(s){
+  if(!s)return s;
+  RES_WORDS.forEach(r=>{s=s.replace(r[0],(m,n)=>(RES_ICON[r[1]]||'◉')+n);});
+  return s;
+}
 
 /* ═══════════════════════════════════════════════════════════════════════
    THE ECONOMY, SIMPLIFIED — three currencies, not five.
@@ -17924,7 +17971,12 @@ function saveRun(){
       nodes:Object.keys(NODES).reduce((o,k)=>{
         const n=NODES[k];o[k]={ev:n.ev,n:n.n,t:n.t,real:n.real||null,mark:n.mark||null};
         return o;},{}),
-      flags:{clashDone:G.clashDone,clashSide:G.clashSide,packDone:G.packDone,
+      /* #151 - `clashHaul` rides here for one screen only: it is paid on the
+         Blood on the Road card and printed on the consequences card after it,
+         and a reload landing in that gap must not lose the receipt for coin
+         the chest has already been given. Cleared by whoever prints it. */
+      flags:{clashDone:G.clashDone,clashSide:G.clashSide,clashHaul:G.clashHaul,
+        packDone:G.packDone,
         contact:G.contact,cub:G.cub,underRoad:G.underRoad,aidLeft:G.aidLeft,
         campSeen:G.campSeen,campChose:G.campChose,campDay:G.campDay,campCast:G.campCast,
         recruits:G.recruits,hiredHere:G.hiredHere,lateHireRolled:G.lateHireRolled,
@@ -18598,12 +18650,32 @@ function clashAfter(){
      surface where breaking it is most tempting because the numbers are three
      lines apart. `already` gates it with the recruits: a node re-entered must
      not be able to pay this twice, which is the same bug the preset list
-     upstairs is guarded against. */
-  let vultureFx='';
+     upstairs is guarded against.
+
+     ═══ #151 - AND THE CHIPS DO NOT DRAW HERE ANY MORE ═══════════════════════
+     (User, 2026-08-14: *"After blood on the road - there 2 screens with loot -
+     strange."*)
+
+     ⛔ HE IS DESCRIBING A REAL SEAM AND IT IS #150's OWN. This card pays the
+     waiting door's haul and drew a chip row for it; one button later the
+     consequences screen deals a row off LOOT.clash and draws TAKEN OFF THE
+     FIELD. Two receipts, two screens, one fight - which is exactly the
+     six-screen queue #122 was built to collapse, growing a screen back.
+
+     ⚑ THE PAYMENT STAYS HERE, THE RECEIPT MOVES. It has to: the haul is the
+     consequence of the door taken, so it is paid where the door is known, and
+     #137's rule is that the chips are built off the object that was paid. So
+     the object travels (`G.clashHaul`) and consequences() prints it in the one
+     place this fight reports what it took. Nothing is paid twice and nothing
+     is paid later.
+
+     ⚠ IT GOES IN `G` BECAUSE A RELOAD CAN LAND BETWEEN THE TWO SCREENS, and a
+     receipt that evaporates is worse than one that came a screen late. It is
+     cleared by whoever prints it. */
   if(side==='none'&&!already){
     const paid={crowns:55,salvage:5,food:2};
     pay('crowns',paid.crowns);pay('food',paid.food);G.camp.salvage+=paid.salvage;
-    vultureFx=evFxChips(paid);
+    G.clashHaul=paid;
   }
   let joinLine='';
   if(!livedA){
@@ -18660,7 +18732,6 @@ function clashAfter(){
     'killed people you had no words for an hour ago, and the only thing anybody on this road agrees '+
     'on is that you are new here.'+
     (lostA?' '+lostA+' of them went down doing it beside you.':'')+'</p>'+
-    vultureFx+
     joinLine+
     '<div class="popts"><button class="popt" id="clGo"><b>Go on</b>'+
     '<i>this country is not what you were told it was</i></button></div>';
@@ -18979,7 +19050,19 @@ function consequences(scarred){
         (RES_ICON[r[0]]||'◉')+'</span><span><span class="fxn">'+
         (v>0?'+':'')+v+'</span><span class="fxl">'+r[1]+'</span></span></div>';
     }).join('')+'</div>';};
-  const chips=fxChips(haul.fx);
+  /* ═══ #151 - A FIGHT REPORTS WHAT IT TOOK ONCE ═══════════════════════════
+     Blood on the Road's waiting door pays its own haul on the card before this
+     one (see clashAfter), and used to draw its own chip row there. Both rows
+     are the same fight's takings, so they are summed into the one receipt this
+     screen already owns. Read and CLEARED: a haul that survived its own screen
+     would be added to the next fight's.
+     ⚠ Summed, not concatenated - a door that pays crowns and a table row that
+     pays crowns are one number, and two chips reading ◉55 and ◉30 is the
+     "second source of truth" shape rather than a receipt. */
+  const extra=G.clashHaul;G.clashHaul=null;
+  const gotFx=Object.assign({},haul.fx||{});
+  if(extra)Object.keys(extra).forEach(k=>{gotFx[k]=(gotFx[k]||0)+extra[k];});
+  const chips=fxChips(gotFx);
   const lootHtml=(haul.gear||haul.gear2)
     ?'<div class="abloot"><div class="abslot">ART<br>SLOT</div>'+
       '<div><div class="abwhat">'+haul.t+'</div><div class="abgot">'+haul.c+'</div></div></div>'+
@@ -19220,7 +19303,7 @@ const CAMPS=[
    body:(a,b)=>a+' and '+b+' have not spoken since the last crossing.\n\nNobody will say what it '+
      'was about. Everyone has taken a side, including the people who were not there.',
    choices:[
-     {t:'Make them share the watch. All night.',c:'it sits well with them · −1 day',fx:{morale:8,days:1},
+     {t:'Make them share the watch. All night.',c:'−1 day',fx:{morale:8,days:1},
       after:'By dawn they are not friends. They are conspirators against you, which works just as well.'},
      {t:'Buy a jug and let them shout it out.',c:'−25 crowns · they think better of you',fx:{crowns:-25,morale:12},
       need:{crowns:25},
@@ -19245,7 +19328,7 @@ const CAMPS=[
       after:'It is fine for almost everyone. It is very much not fine for the one it is not fine for.'},
      /* only exists if there IS an ogre — playtest #2 caught this offering
         itself to an all-human company and then crediting Bruht by name */
-     {t:'Feed it to the ogre. He has opinions but no standards.',c:'+2 provisions · it sits well with them',
+     {t:'Feed it to the ogre. He has opinions but no standards.',c:'+2 provisions',
       needRace:'ogre',fx:{food:2,morale:6},
       after:'{OGRE} eats the entire barrel, announces that this changes nothing about their principles, and sleeps for eleven hours.'}]},
   {id:'fiddler',t:'THE FIDDLER',seed:29,
@@ -19256,7 +19339,7 @@ const CAMPS=[
      {t:'Feed him and let him play.',c:'−2 provisions · the company stands taller for it · he leaves something behind',
       need:{food:2},fx:{food:-2,morale:14},gear:'fiddle',
       after:'He is gone before the fire is out. On the log where he sat: a rosined string, coiled.'},
-     {t:'Pay him properly and send him on.',c:'−30 crowns · it sits well with them',fx:{crowns:-30,morale:8},
+     {t:'Pay him properly and send him on.',c:'−30 crowns',fx:{crowns:-30,morale:8},
       need:{crowns:30},
       after:'He takes the coin and looks slightly insulted. It is the most honest thing anybody '+
         'has done all week.'},
@@ -19366,7 +19449,7 @@ const CAMPS=[
      {t:'Let it run late. The road will keep.',c:'−1 day · the company stands taller for it',fx:{days:1,morale:16},
       after:'Everyone is slow in the morning and nobody minds. You will spend this later, and be '+
         'glad you had it.'},
-     {t:'Early start. Take the good mood with you.',c:'it sits well with them',fx:{morale:8},
+     {t:'Early start. Take the good mood with you.',c:'',fx:{morale:8},
       after:'You break camp with the fire still warm. Good time made, and the mood holds most of '+
         'the day.'}]},
 
@@ -19397,7 +19480,7 @@ const CAMPS=[
       fx:{morale:-2},
       after:'You name it in front of everybody, which is the only place naming it works. They deny '+
         'it, badly.\n\nThe debts stop. So does most of the talking, for two days.'},
-     {t:'Buy the debts off the others instead.',c:'−25 crowns · it sits well with them',
+     {t:'Buy the debts off the others instead.',c:'−25 crowns',
       fx:{crowns:-25,morale:8},need:{crowns:25},
       after:'You settle with the creditors and leave the debtor holding nothing but the scheme. '+
         'It is the cheapest thing you have done all week and the only one anybody admires.'}]},
@@ -19413,7 +19496,7 @@ const CAMPS=[
       after:'It stands. The knife stays where it is.\n\nEverything anybody owns is now on loan '+
         'from whoever picks it up next, and every person at that fire has just done the same '+
         'arithmetic you did.'},
-     {t:'A knife is not a debt. Give it back.',c:'it sits well with them · and the rule is worth less',
+     {t:'A knife is not a debt. Give it back.',c:'and the rule is worth less',
       fx:{morale:6},
       after:'The knife goes back. So does the rule — quietly, without ever being withdrawn, '+
         'which is how most rules die.\n\nNext time you make one, they will wait to see which '+
@@ -19453,7 +19536,7 @@ const CAMPS=[
       after:'Three layers of sacking and a knot somebody\'s grandmother taught them.\n\nIt is '+
         'still on top of the sacks in the morning. Everyone has now decided not to discuss this.'},
      {t:'Give it to whoever will take it at the next stop, for nothing.',
-      c:'it sits well with them · somebody else\'s problem',fx:{morale:6},dropGear:'ratking',
+      c:'somebody else\'s problem',fx:{morale:6},dropGear:'ratking',
       after:'A pedlar takes it for free and is delighted, which is the single most frightening '+
         'thing that has happened on this road.'}]},
   /* you fed the fiddler → he was not the only one listening */
@@ -19548,7 +19631,7 @@ const CAMPS=[
             'heard this, and still will not say the name.'),
    choices:[
      {t:'Tell them both. At the same time, so neither hears it second.',
-      c:'it sits well with them · the ruling was worth nothing and you say so',
+      c:'the ruling was worth nothing and you say so',
       fx:{morale:6},tag:{clear:'kinInsult',both:'claimsKin'},
       after:(a,b,both)=>(both
         ? 'They take it badly for about four seconds and then extremely well. By morning they '+
@@ -19643,7 +19726,7 @@ const CAMPS=[
      'is one body short of the width you counted on.';},
    choices:[
      {t:'Leave it. They will sort it out or they will not.',
-      c:'free · it sits well with them · and your line stays narrow',fx:{morale:6},
+      c:'free · and your line stays narrow',fx:{morale:6},
       after:(a,b)=>'You say nothing, which they both notice, and which '+fst(b)+' takes as '+
         'permission.\n\nIt is good for the company and it is good for the two of them, and the '+
         'next time the line has to stretch you will be counting one body twice. You knew that '+
@@ -19738,7 +19821,7 @@ const CAMPS=[
         'fire gets built back up and nobody marches, and by the middle of the day somebody has '+
         'told a story about '+fst(a)+' that you had never heard.'},
      {t:'Count out their share and put it back in the chest. Nobody touches it.',
-      c:'−30 crowns · it sits well with them',fx:{crowns:-30,morale:6},need:{crowns:30},
+      c:'−30 crowns',fx:{crowns:-30,morale:6},need:{crowns:30},
       after:(a)=>'Thirty crowns counted out in front of everybody and put back in the chest in '+
         'a bag of its own, with '+fst(a)+'\'s name on the bag in charcoal.\n\nNobody asks what '+
         'it is for. Everybody knows what it is for, and everybody also knows there is nowhere '+
@@ -21720,7 +21803,9 @@ function ask(title,body,opts){
   opts.forEach(o=>{
     const b=document.createElement('button');
     b.className='choice'+(o.danger?' danger':'');
-    b.innerHTML='<b>'+o.t+'</b>'+(o.c?'<i>'+o.c+'</i>':'');
+    /* #151 - a dialog's sub-line is a cost line like any other, so it counts
+       in the same glyphs the buttons on the road do */
+    b.innerHTML='<b>'+o.t+'</b>'+(o.c?'<i>'+resGlyphs(o.c)+'</i>':'');
     b.onclick=()=>{ASK.classList.remove('on');if(o.go)o.go();};
     box.appendChild(b);});
   ASK.classList.add('on');
@@ -23714,8 +23799,37 @@ function worldTick(){
     bindTip(el,el.dataset.tri,null);});
   /* the doors: both left-hand chips open the company screen, and #106 gave
      the mood and the heart the one act that changes each of them */
-  $('wCompany').querySelectorAll('[data-w="party"],[data-w="kit"]').forEach(el=>{
-    el.onclick=openInv;});
+  /* ═══ #151 - THE STAR IS A PROMISE AND THE CHIP HAS TO KEEP IT ═══════════
+     (User, 2026-08-14: *"When i click on the company icon on the global map -
+     lead me to skills (there is a star shows there is an upgrade)."*)
+
+     ⛔ THE BADGE AND THE DOOR DISAGREED. #150 put a ★ on this chip because
+     somebody has an unspent level; pressing it opened the sheet on whoever was
+     last selected, on THE STASH tab. So the one signal on the road bar that
+     says "there is something to do" led to a screen where the thing to do was
+     two clicks further in and possibly on somebody else's sheet entirely.
+
+     ⚑ NOTHING NEW IS BUILT. `levelsWaiting` already found the point, `iSel`
+     already picks the body and `ITAB` already picks the pane; the chip simply
+     sets both before opening, the way `iSpend` inside the sheet already does.
+     The kit chip is untouched - its ! means gear, and gear is the stash tab.
+
+     ⚠ A PERK POINT AND A STAT POINT ARE SPENT IN DIFFERENT ROOMS, so the chip
+     may not just slam the perks tab. A perk is bought in the tree; a stat is
+     bought on the WHO THIS IS tells, which are in the identity block on the
+     left and are always on screen. So a perk switches the tab and a stat only
+     picks the body - the tells light themselves (`.spend`). Perks are looked
+     for first, because the tab is the half that is hidden. */
+  const goParty=()=>{
+    const perk=G.party.filter(p=>(p.perkPoints||0)>0)[0];
+    const stat=G.party.filter(p=>(p.statPoints||0)>0)[0];
+    if(perk){iSel=perk.id;ITAB='perks';}
+    else if(stat)iSel=stat.id;
+    openInv();};
+  const pc=$('wCompany').querySelector('[data-w="party"]');
+  if(pc)pc.onclick=goParty;
+  const kc=$('wCompany').querySelector('[data-w="kit"]');
+  if(kc)kc.onclick=openInv;
   const mc=$('wCompany').querySelector('[data-w="mood"]');
   if(mc)mc.onclick=()=>{whisper('prov');openFeastCard();};
   const bl=$('wCompany').querySelector('[data-w="blood"]');
@@ -23952,7 +24066,7 @@ function actCard(title,body,btn,block,go){
   dlg.innerHTML='<h3>'+title+'</h3><div class="bd">'+body+'</div>'+
     '<div id="wChoices" style="display:flex;flex-direction:column;gap:5px">'+
     '<button class="choice" id="acDo"'+(block?' disabled style="opacity:.4"':'')+'><b>'+
-      btn.t+'</b><i>'+btn.c+(block?' · '+block:'')+'</i></button>'+
+      btn.t+'</b><i>'+resGlyphs(btn.c)+(block?' · '+block:'')+'</i></button>'+
     '<button class="choice" id="acNo"><b>Not now</b><i>it keeps</i></button></div>';
   dlg.classList.add('on');
   const n=NODES[G.at];placeDlg(n?n.x:undefined,n?n.y:undefined);
@@ -24110,6 +24224,38 @@ function forkCard(br){
      could still turn into one, capped at the floor plus one because a road
      that reads "1-4 fights" tells the player nothing they can act on.
 
+     ═══ #151 - AND IT IS A RANGE EVEN WHEN THE ARITHMETIC SAYS OTHERWISE ═════
+     (User, 2026-08-14: *"on the global map crossroad never write a clear '1
+     fith' or '0 fignts'. Write aprox 1-2 (for first beanch there is a brigands
+     to whom you an say no and has a fight). It should be some unsertunty -
+     keep it as a rule."*)
+
+     ⛔ HE IS RIGHT AND THE OLD CEILING WAS MEASURING THE WRONG THING. It asked
+     "does a dealt card on this road contain a battle door", which is true of
+     exactly one of the eighteen floating cards - so the ceiling almost never
+     rose and the sign printed a hard number nearly every time. But a hard
+     number is wrong on this map for a reason the count cannot see: **a node
+     typed `battle` is not a fight that must happen.** The Broken Men are the
+     example he names. `bm` is typed `battle` and always counted as one certain
+     fight, and the card's first door is "No." while its other two are four
+     days of food or forty crowns. The sling-line is the same shape since #123,
+     and so is the steading. A player who paid the brigands walked a road the
+     sign had promised a battle on.
+
+     ⚑ SO THE SIGN IS A RUMOUR, NOT A READOUT, AND IT ALWAYS SPANS TWO NUMBERS.
+     The floor stays what is standing on the road; the ceiling is at least one
+     more, because a slot can deal a fight and a named fight can be talked out
+     of, and the sign cannot know which way either goes. That is the honest
+     shape and it is also his: the brigand road reads 1-2, the water road reads
+     0-1, which are the two numbers in his own sentence and in #58's before it.
+
+     ⚠ AND THE COUNTED CEILING IS GONE WITH ITS WALK. It asked every unvisited
+     slot on the road whether its dealt card had a battle door, and the answer
+     decided nothing once the range is always exactly one wide - so it is a
+     graph walk per road per render for a number nobody reads. The reasoning it
+     carried is kept above, because it is the argument for why the ceiling can
+     never have been arithmetic in the first place.
+
      ⚠ `stops` LEFT THE ROW AND IT HAD A JOB. #58's own comment: NOTHING HEARD
      on the pass out of the Dead Company is true, and `nowhere to stop` was the
      only thing stopping that chip from mis-selling the most dangerous road on
@@ -24119,25 +24265,10 @@ function forkCard(br){
      and the row does not need a footnote to undo it. */
   const rows=br.roads.map((r,i)=>{
     const n=NODES[r.to];
-    /* how many of this road's slots could still turn into a fight */
-    const walk=(k,acc)=>{if(k===br.join)return[acc];let out=[];
-      edgesFrom(k).forEach(x=>{if(acc.indexOf(x[1])<0)out=out.concat(walk(x[1],acc.concat(x[1])));});
-      return out;};
-    const paths=walk(r.to,[r.to]),mid=(paths[0]||[]).filter(x=>x!==br.join);
-    /* ⛔ THE CEILING IS COUNTED, NOT ASSUMED. The first draft added +1 for every
-       unvisited event slot on the road, on the theory that a slot might turn
-       out to be a fight. Measured in the running build: ONE of the eighteen
-       floating cards has a battle door (`circle`). So a blanket +1 would have
-       warned about a fight on nine roads out of ten that do not have one,
-       which is the same lie as the stale counts this card's own comment
-       upstairs was written to kill. The slot's dealt card is asked instead.
-       ⚑ It is not a spoiler: the range widens, and it still never says WHICH
-       of the unnamed places it is. */
-    const maybe=mid.filter(x=>{const n2=NODES[x];
-      return n2&&!G.visited[x]&&n2.t!=='battle'&&n2.ev&&EVENTS[n2.ev]&&
-        EVENTS[n2.ev].choices.some(ch=>ch.battle);}).length;
-    const lo=r.fights,hi=lo+maybe;
-    const fightTxt=hi>lo?lo+'-'+hi+' fights':lo===1?'1 fight':lo+' fights';
+    /* #151 - the floor is what is standing on the road, the ceiling is always
+       one more, and the sign never prints a bare count. See the block above. */
+    const lo=r.fights,hi=lo+1;
+    const fightTxt='~'+lo+'-'+hi+' fights';
     /* ⚠ THE WORD IS THE CERTAIN FIGHTS AND NOTHING ELSE, which is the user's
        own model ("0-1 fight - peacfull"). The first draft folded `nowhere to
        stop` into it as well, on #58's warning that the chip could otherwise
@@ -24736,7 +24867,7 @@ function moraleTag(f){
    second-source-of-truth shape this project keeps deleting. */
 function choiceNote(o,skipMorale){
   const parts=[];
-  if(o.c)parts.push(o.c);
+  if(o.c)parts.push(resGlyphs(o.c));
   if(!skipMorale){const m=moraleTag(o.fx);if(m)parts.push(m);}
   if(o.hurt&&!o.hideHurt)parts.push('<span class="hurt">injury</span>');
   if(!canAfford(o.need))parts.push(needTag(o.need));
@@ -25027,7 +25158,32 @@ const EVENTS={
        fx:{salvage:5,days:1},hideHurt:true,
        hurt:{n:'Crushed foot',d:'−1 AGI. A beam went where a beam should not.',agi:-1},
        after:'The beams are worth the trouble. The fourth one comes down early, with no '+
-         'warning at all.'}]},
+         'warning at all.'},
+      /* ═══ #151 - THE GREEDY DOOR, RESTORED BY THE USER ════════════════════
+         ("From the hanging man event you deleted the option to take all and
+         boots - return it, it was the best.")
+
+         ⚠ IT WAS NOT DELETED - it had never been built. Every commit in the
+         repo carries the same three doors, so what he remembers wanting is
+         the one this card was missing: not the purse OR the bridge, but BOTH,
+         which is the only answer a company short of money actually wants to
+         give and the only one the other three let it dodge.
+
+         ⛔ AND IT IS WHY THE CARD NEEDED IT. The pillar's second clause is
+         that bad deeds must genuinely pay. Two half-robberies at 38 crowns
+         and 5 salvage are each small enough to feel like restraint; taking
+         the lot is the door with a price on it, and the price is the whole
+         afternoon, the beam, and six of the company's regard rather than two.
+
+         ⚠ THE LABEL STAYS VAGUE, like the other three, and for the reason the
+         comment above gives: this is the reference card, the payout is a
+         surprise, and the chips carry the receipt. */
+      {t:'Take all of it. Purse, boots, beams.',c:'nothing is left standing here',
+       danger:true,fx:{crowns:38,salvage:5,days:1,morale:-6},bootsOn:true,hideHurt:true,
+       hurt:{n:'Crushed foot',d:'−1 AGI. A beam went where a beam should not.',agi:-1},
+       after:'The purse first, then the boots, then the bridge, and it takes until dark.\n\n'+
+         'The fourth beam comes down early, with no warning at all. Nobody says the two '+
+         'things are connected. Everybody thinks it.'}]},
   pedlar:{title:'PEDLAR ON THE RIDGE',art:'gold',seed:52,
     body:'A one-mule pedlar with a folding table, three miles from anywhere. Salt, arrowheads, '+
       'warding-bells.\n\nHe has counted your column and his own odds, and is being extremely '+
@@ -25149,7 +25305,7 @@ const EVENTS={
       'the small one behind it, which is trying to eat a rock.\n\n{MAGE} says the word for '+
       'it, quietly, twice, and then says you should all leave.',
     choices:[
-      {t:'Back away. Slowly. All of you.',c:'−1 day · it sits well with them',fx:{days:1,morale:6},
+      {t:'Back away. Slowly. All of you.',c:'−1 day',fx:{days:1,morale:6},
        after:'It watches you go and does not follow. The cub makes a sound like a gate; she '+
          'answers it. Nobody speaks until dusk.'},
       {t:'Take the shed tooth and go. Quietly.',c:'a great tooth +1 gem',
@@ -25510,7 +25666,7 @@ const EVENTS={
       'number, and the new number would send a company four days wrong.\n\nFour days wrong, '+
       'out here, is a way of killing strangers without being present. Murder, not mischief.',
     choices:[
-      {t:'Re-cut it properly. It costs the evening.',c:'−1 day · it sits well with them',fx:{days:1,morale:6},
+      {t:'Re-cut it properly. It costs the evening.',c:'−1 day',fx:{days:1,morale:6},
        after:'{ANY} does the cutting, badly but correctly. Whoever comes next will never '+
          'know, which is the entire point of it.'},
       {t:'Change it again. Worse. Then go.',c:'a chisel',fx:{morale:-4},gear:'offhand',
@@ -25544,7 +25700,7 @@ const EVENTS={
       'this goes.\n\nThe cargo is crossbows: each fires about eleven times, then comes apart. '+
       'The way-slip says a clan war, two valleys south. Both sides will be buying.',
     choices:[
-      {t:'Fix the wheel. It takes an ogre and an hour.',c:'−1 day · it sits well with them · a clan owes you',
+      {t:'Fix the wheel. It takes an ogre and an hour.',c:'−1 day · a clan owes you',
        fx:{days:1,morale:8},contact:true,rep:{ratkin:+18},
        after:'The strongest of you lifts the axle. The oldest of them writes something small '+
          'in a book.\n\nA clan now knows your banner as a thing that stopped to help.'},
@@ -25569,7 +25725,7 @@ const EVENTS={
          (#123): a door that only ever costs and buys nothing is not a
          decision, it is a trap with a label. Two answers now, take or
          respect, and the card reads in two seconds. */
-      {t:'Count the marks properly. Bury the bedroll.',c:'it sits well with them',fx:{morale:8},
+      {t:'Count the marks properly. Bury the bedroll.',c:'',fx:{morale:8},
        after:'Forty-one. {ANY} says it out loud so that it has been said, and then you go.'}]},
   ogrestone:{title:'THE SITTING STONE',art:'gold',seed:160,
     body:'An ogre is sitting on a rock beside the road. Two winters now, by his own '+
@@ -25699,7 +25855,7 @@ const EVENTS={
       /* the ship's-bell door was cut in the 2026-08-12 choice-weight pass
          (#123): a free trinket beside a search door is a smaller copy of the
          search door. The brass token keeps its real home on Wynn's card. */
-      {t:'Stand and look at it a while.',c:'it sits well with them',fx:{morale:8},
+      {t:'Stand and look at it a while.',c:'',fx:{morale:8},
        after:'You came over on the last one there will ever be. Everyone here knows it. Nobody says it.'}]},
   sinkhole:{title:'THE GROUND OPENS',art:'gold',seed:244,
     body:'The peat gives way without a sound and takes {ANY} with it.\n\nThen, from a long '+
@@ -25756,8 +25912,14 @@ const EVENTS={
       'has to be brave."\n\nThey are what a company like yours turns into after one bad '+
       'winter, and everybody on both sides of the road knows it.',
     choices:[
-      {t:'“No.”',c:'BATTLE · they are people, and they break like people',fx:{},battle:'brigand'},
-      {t:'Give them four days of food.',c:'−4 provisions · it sits well with them · one of them stays',
+      /* #151 - the count on the door, not only in the body (user: "In the
+         broken man 'no' fight - show ammount of them against"). Style rule 8:
+         a battle cost line carries the exact tactical receipt, and the two
+         dogs are the half of this fight that surprises people. Counted off
+         `brigands()` above, which fields bcap + 2 sworder + poacher + 2 dog. */
+      {t:'“No.”',c:'BATTLE · 4 men and 2 dogs against · they break like people',
+       fx:{},battle:'brigand'},
+      {t:'Give them four days of food.',c:'−4 provisions · one of them stays',
        need:{food:4},fx:{food:-4,morale:6},recruit:{name:'Pell',race:'human',cls:'spear'},
        after:'The captain gives you a nod that is almost a salute.\n\nWhen they move off, one '+
          'of them does not. A young one with a pike stands in the road looking at your '+
@@ -26045,7 +26207,8 @@ function drawVillage(note){
   $('wChoices').innerHTML=rows.map(r=>{
     const ok=canAfford(r.need)&&!r.dis;
     return '<button class="choice" data-i="'+r.id+'"'+((r.done||!ok)?' disabled style="opacity:.38"':'')+
-      '><b>'+r.t+'</b><i>'+r.c+(r.done?' · done':ok?'':' · '+(r.dis?r.disC:needTag(r.need)))+
+      '><b>'+r.t+'</b><i>'+resGlyphs(r.c)+
+      (r.done?' · done':ok?'':' · '+(r.dis?r.disC:needTag(r.need)))+
       '</i></button>';}).join('')+
     '<button class="choice" data-i="go"><b>Back to the road</b>'+
     '<i>'+roadOut(G.at)+'</i></button>';
@@ -26749,15 +26912,30 @@ function pickChoice(k,i){
         'were not already stretched this thin. (No room left.)';
     }
   }
-  /* the boots find a wearer on their own. Nobody voted for this. */
+  /* the boots find a wearer on their own. Nobody voted for this.
+     ═══ #151 - AND THE JOKE USED TO BREAK ON THE ONE MAN IT COULD NOT NAME ═══
+     `rat.name` on a company with no ratkin falls through to `pickOne(G.party)`,
+     which can draw the Captain, whose roster name is the literal word "You" -
+     so the line read *"It is Gutter-Born (human captain). Of course it is
+     You."* That is README section 6's standing trap ("any new template that
+     interpolates a name has to survive him"), and the fix is the one it names:
+     `capName`, never a call site. Found by taking this card's new fourth door,
+     which is the second site to set `bootsOn` and doubled the odds of hitting
+     it.
+     ⚠ `capName` wants a UNIT and this is a ROSTER entry. It reads `u.id` and
+     `u.name`, both of which a roster entry has, so it is safe as written and
+     returns the nickname the rest of the game calls him by.
+     ⚠ AND THE PRONOUN AFTER IT WAS WRONG TOO: the wearer can be anybody on
+     the roster, so "He walks better" is a coin flip. It is the boots that do
+     the talking now, which is truer to the joke anyway. */
   if(c.bootsOn){
     const rat=G.party.find(x=>x.race==='ratkin')||pickOne(G.party);
     const old=rat.eq.trinket;
     rat.eq.trinket='deadboots';
     if(old)G.stash.push(old);
-    hurtLine+='\n\nIt is '+who(rat)+'. Of course it is '+rat.name+'.\n'+
-      'THE TOLL-MAN’S BOOTS: +3 AGI, −6 MOR. He walks better, sleeps worse, and will not '+
-      'take them off. The INVENTORY can, if you have the stomach for that conversation.';
+    hurtLine+='\n\nIt is '+who(rat)+'. Of course it is '+capName(rat)+'.\n'+
+      'THE TOLL-MAN’S BOOTS: +3 AGI, −6 MOR. They walk better, sleep worse, and will not '+
+      'come off. The INVENTORY can, if you have the stomach for that conversation.';
   }
   if(c.battle){G.pending=null;G.ambush=!!c.ambush;
     if(c.clashSide)G.clashSide=c.clashSide;
@@ -28429,16 +28607,38 @@ function openMenu(){
      ⚠ The report is still reachable and is still its own thing (the second row
      below), because reading somebody else's pasted journal has nothing to do
      with filling in your own form. */
+  /* ═══ #151 - ONE ROW, AND THE SECOND ONE IS A DEVELOPER'S ════════════════
+     (User, 2026-08-14: *"In global menu merge 'send the run' and 'platest
+     notes'. Show platest notes only in dev mode - and add it option to read
+     other playtests (or should we put it our as independent tool not to
+     confuse?)"* - and on the question, his ruling: keep it in dev mode.)
+
+     ⛔ THE TWO ROWS WERE ONE ERRAND WEARING TWO NAMES. Send the run opens the
+     questions and its Done button opens the notes; the notes screen's own
+     first section is SEND IT BACK with the questions button in it. So the
+     player had two doors into one loop, and the second one was named after
+     the half they are not being asked for.
+
+     ⚑ NOTHING IS LOST BY THE MERGE, WHICH IS WHY IT IS A MERGE AND NOT A CUT.
+     Everything Playtest notes showed is still one press away, at the bottom of
+     the screen Send the run leads to. What changes is which of the two names
+     is on the front door.
+
+     ⚠ AND READING SOMEBODY ELSE'S WAS ALREADY BEHIND DEV.MODE - it is the
+     `nPaste` button inside the notes screen, gated on `TEST.on` since the
+     screen was built. Putting the whole notes row behind the same switch is
+     what makes that consistent rather than a control hiding inside a screen
+     anybody could open. */
   if(JOURNAL.log.length){
     const rx=JOURNAL.log.filter(r=>r.t==='react').length;
     const ended=JOURNAL.log.some(r=>r.t==='run-end');
     const answered=POLL.filter(q=>(JOURNAL.poll||{})[q.k]).length;
     opts.push({t:'Send the run',
       c:answered?answered+' of '+POLL.length+' questions answered · change them, or copy it all'
-        :ended?'seven questions, none of them required · then one box to copy'
+        :ended?'seven questions, then your notes, in one box to copy'
               :'seven questions about how it is going · you do not have to have finished',
       go:openPoll});
-    opts.push({t:'Playtest notes',
+    if(TEST.on)opts.push({t:'⚙ Playtest notes',
       c:rx+' reaction'+(rx===1?'':'s')+' · every decision in order, and a friend’s to read',
       go:openNotes});
   }

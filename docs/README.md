@@ -192,6 +192,17 @@ holding. ⚠ **A percentage is not a goal**: four cards were cut under 30% becau
 lines were load-bearing, and cutting to a quota costs the joke or the fact. Full procedure, with
 the counters and what must never be cut: [`.claude/rules/event-cards.md`](../.claude/rules/event-cards.md).
 
+**And an eleventh, set 2026-08-14 by #151** *(the user: "on the global map crossroad never write a
+clear '1 fith' or '0 fignts'. Write aprox 1-2 … It should be some unsertunty - keep it as a
+rule.")*: **11. A SIGN IS NOT A READOUT. Anything the road tells you about what is ahead is an
+estimate and must be written as a range, never as a count.** ⛔ **The reason is not flavour, it is
+that the count was arithmetically honest and still lying.** The fork's fight number counted map
+nodes typed `battle`; the Broken Men are one, and their first door is *"No."* while the other two
+are four days of food or forty crowns, so the sign promised a battle on a road the player could pay
+their way across. The sling-line and the steading are the same shape since #123. ⚑ **When a number
+is right and reads wrong, ask what question the player thought it was answering.** A receipt (what
+a thing just cost) stays exact; a forecast (what a road holds) carries its uncertainty on its face.
+
 ### Working with this user
 
 - **They cut scope, and they are usually right.** Given a six-part system they will ask for the one
