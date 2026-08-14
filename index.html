@@ -741,8 +741,30 @@ button:disabled{cursor:not-allowed}
    top:-2 and its line box is ~11px, so it really occupies -2 to 9; the bar's
    own box is 11px at top:-15, which is -15 to -4. Four glyphs at 10px with
    1px gaps is 43px against a 37px hex, and the 6px it spills each side lands
-   on the corners the hexagon clip has already cut away. */
-.stbar{position:absolute;left:-6px;right:-6px;top:-15px;height:11px;display:flex;
+   on the corners the hexagon clip has already cut away.
+
+   ═══ #157 · AND THE MEASUREMENT WENT OUT OF DATE THE DAY THE ART LANDED ═══
+   ⛔ THE -15 ABOVE WAS RIGHT AGAINST A 43px GENERATED SPRITE AND IS WRONG
+   AGAINST EVERY PAINTED ONE. A token is `30 - sprite height` above `.hin`'s
+   top: the old drawn bodies came out 43px, so a head topped out at -13 and a
+   badge at -15 cleared it by two. The painted sprites run 46 to 56px, which
+   puts a head at -16 to -26 - so for MONTHS every status badge in the game
+   has been drawn across the body's own FACE, and the taller the creature the
+   deeper into it. Nothing warned, because the constant was still doing
+   exactly what it was written to do.
+
+   ⚑ THE FIX IS TO ANCHOR THE FURNITURE TO THE BODY INSTEAD OF TO THE HEX.
+   `--head` is set per unit in render() off the sprite height it already has
+   in hand, and both this bar and `.ubars` hang off it, so a body that grows
+   takes its own furniture with it. The fallback is -13px, which is exactly
+   where the generated sprites put it, so anything that never sets the
+   variable lands where it always did.
+
+   ⚠ THIS IS THE README'S OWN TRAP - *a constant derived from another box's
+   size is a bug with a delay on it* - and it is the second surface it has
+   fired on. Do not write another literal offset here. */
+.stbar{position:absolute;left:-6px;right:-6px;top:calc(var(--head,-13px) - 21px);
+       height:11px;display:flex;
        justify-content:center;align-items:center;gap:1px;pointer-events:none}
 .stbar .stbadge{position:static;font-size:10px;line-height:1;font-family:var(--body);
        text-shadow:0 0 3px #000,0 0 3px #000,0 1px 2px #000;pointer-events:auto}
@@ -1175,8 +1197,36 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:11px;pa
 .usp{position:relative;margin-bottom:7px;image-rendering:pixelated;
   transform:scaleX(var(--flip,1))}
 .usp.routed{opacity:.55;transform:rotate(-8deg) scaleX(var(--flip,1))}
-.ubars{position:absolute;left:50%;transform:translateX(-50%);bottom:-6px;width:26px}
-.ubars div{height:3px;background:#2a1e1f;border:1px solid rgba(0,0,0,.6);position:relative}
+/* ═══ #157 · THE BARS COME UP OVER THE HEAD ══════════════════════════════
+   (User: "show health and armour above the heads of characters in battle,
+   and a bit thinner".)
+
+   ⛔ AND THE REASON IS NOT TASTE, IT IS THAT THE BAR WAS BEING COVERED AT
+   EXACTLY THE MOMENT IT MATTERED. `bottom:-6px` puts a bar six pixels BELOW
+   its own hex, and `.hrow{margin-top:-10px}` means that strip belongs to the
+   row IN FRONT, which is painted after it. Measured with elementsFromPoint
+   on a body with three on it: every probe point on its bar had another
+   body's `.usp` on top. So the health bar vanished under whoever was
+   standing in front - which is to say **it vanished whenever the body was
+   surrounded**, which is the one time you need to read it. The two notes
+   that arrived together were the same bug seen from two sides.
+
+   ⚑ ABOVE THE HEAD IS THE PLACE NOTHING CAN COVER, and the geometry says so
+   rather than the eye: a row is 32px of pitch and a body is 46-56px tall, so
+   the row in front starts 32px DOWN and can never reach up past a head. The
+   bar now draws over the torso of the body BEHIND instead, and wins, because
+   rows paint top-to-bottom. That is the same trade `.stbar` has always made.
+
+   ⚠ ANCHORED TO `--head`, NOT TO THE HEX. See the long note on `.stbar`:
+   the hex is 37px and the bodies stopped fitting it. 8px above the head puts
+   a 5px bar in the 3px of clear air over it.
+
+   "A bit thinner" is the health bar at 2px where it was 3, so the pair is 5px
+   where it was 6. The armour bar stays at 2: its fill is one pixel already,
+   and one pixel is the floor at which a bar is still a bar. */
+.ubars{position:absolute;left:50%;transform:translateX(-50%);
+  top:calc(var(--head,-13px) - 8px);width:26px}
+.ubars div{height:2px;background:#2a1e1f;border:1px solid rgba(0,0,0,.6);position:relative}
 .ubars div i{display:block;height:100%}
 /* #94 point 6, the board's half of it: the SAME rule at token scale, so the
    bar under a body and the bar on the plaque are obviously one reading. The
@@ -2904,9 +2954,14 @@ a.popt.sendit{display:block;text-decoration:none}
   0%,100%{box-shadow:0 0 0 4000px rgba(6,8,8,.66),0 0 8px rgba(217,189,126,.28)}
   50%{box-shadow:0 0 0 4000px rgba(6,8,8,.66),0 0 20px rgba(217,189,126,.60)}}
 @media (prefers-reduced-motion:reduce){#tutHole{animation:none}}
+/* ⚠ #157 - `white-space:pre-line` because the card is filled with
+   textContent, not innerHTML (see tutShow), so a step that wants four short
+   lines instead of a paragraph has no other way to get them. It collapses
+   runs of spaces exactly like normal text and only honours the newlines a
+   step actually writes, so every existing one-paragraph step is unchanged. */
 #tutCard{position:absolute;width:292px;background:var(--panel);
   border:1px solid var(--g3);padding:11px 13px;color:var(--t4);
-  font-family:var(--body);font-size:13.5px;line-height:1.45;
+  font-family:var(--body);font-size:13.5px;line-height:1.45;white-space:pre-line;
   box-shadow:0 6px 22px rgba(0,0,0,.55)}
 #tutCard b{color:var(--g4);font-family:var(--mono);font-size:10px;
   letter-spacing:.16em;display:block;margin:0 0 5px}
@@ -5333,12 +5388,27 @@ const SPELLS={
       'it makes the next person’s swing land properly.'}
 };
 const SPELLKEYS=Object.keys(SPELLS);
-/* How many schools a caster wakes up knowing depends on WHICH kind of caster
-   they are. The battle-mage learns two and can fight; the mage learns three
-   and cannot. */
+/* ═══ #157 · HOW MANY SCHOOLS A CASTER WAKES UP KNOWING ═══════════════════
+   (User: "the mage at the start has only two spells - one basic, and the
+   second random.")
+
+   ⚑ THE CASTER HE MEETS AT THE START IS MARROW, AND MARROW IS THE
+   BATTLE-MAGE. So "two spells, one basic and one random" is EMBER, which
+   every caster has and which costs nothing to learn, plus ONE rolled school.
+   That is what `warmage` now gets, and it is the whole of his sentence:
+   three unfamiliar cards on the company's first caster became one.
+
+   ⛔ THE `mage` CLASS KEEPS TWO, AND NOT OUT OF TIMIDITY. Its entire
+   signature is a SECOND casting each turn at half strength, and every school
+   carries a 2-3 turn cooldown - so a mage with one school would spend its
+   second casting on nothing, every turn, for the whole game. A class whose
+   signature cannot fire is worse than a class with one card too many. The
+   ladder still runs the right way: the battle-mage knows one thing and can
+   hold a line, the mage knows two and can do them twice. */
+const SCHOOLS={warmage:1,mage:2};
 function rollSpells(n){
   const p=SPELLKEYS.slice(),out=[];
-  n=n||2;
+  n=n||1;
   while(out.length<n&&p.length)out.push(p.splice(Math.random()*p.length|0,1)[0]);
   return out;
 }
@@ -5386,14 +5456,14 @@ const CLASSES={
   archer :{n:'ARCHER',    sig:'AIMED SHOT',
     perks:{2:['sureshot','quickfoot'],3:['butcher','eagle'],
            4:['deadeye','footwork'],5:['killzone','ironjaw']}},
-  /* The sword-carrying one. Two schools, one casting a turn, and stats that
+  /* The sword-carrying one. One school, one casting a turn, and stats that
      let him stand in a line — the low-magic setting expressed as a class. */
-  warmage:{n:'BATTLE-MAGE',sig:'A SWORD, AND TWO SCHOOLS',
+  warmage:{n:'BATTLE-MAGE',sig:'A SWORD, AND ONE SCHOOL',
     perks:{2:['windeater','ironjaw'],3:['conduit','bulwark'],
            4:['stoneskin','inspire'],5:['heavyhand','footwork']}},
-  /* The real one. Three schools, a second casting each turn at half strength,
+  /* The real one. Two schools, a second casting each turn at half strength,
      and almost nothing else — bad with a blade, thin, slow to dodge. */
-  mage   :{n:'MAGE',sig:'THREE SCHOOLS · A SECOND CASTING AT HALF',
+  mage   :{n:'MAGE',sig:'TWO SCHOOLS · A SECOND CASTING AT HALF',
     perks:{2:['windeater','fieldmedic'],3:['conduit','ironjaw'],
            4:['inspire','quickfoot'],5:['stoneskin','footwork']}},
   cutter :{n:'CUTTER',    sig:'BACKSTAB',
@@ -5842,8 +5912,16 @@ const G={ day:1, at:'hold', battleRounds:0, log:[], ambush:false, contact:false,
      chip reads it, and it rides the save in `flags` */
   owed:0,
   morale:0, visited:{}, path:['hold'],
-  /* you start poor. Three bits of junk, and the road provides the rest. */
-  stash:['pot','cudgel','broom'], party:null,
+  /* ═══ #157 · ONE BIT OF JUNK, NOT THREE ══════════════════════════════════
+     (User: "at the start of a run leave the cook-pot and straps only. Just
+     throw the others out. So it is cleaner.")
+     `pot` IS the cook-pot and straps - one entry, and the only one of the
+     three that is worth putting on somebody (12 armour against the cudgel and
+     the broom, which are a weapon and a joke). The first inventory the player
+     opens is now one row instead of three, which is the clarity pass's own
+     move on the one screen it had not reached. Nothing is lost from the run:
+     the road hands out more junk than anybody can carry by the second node. */
+  stash:['pot'], party:null,
   recruits:null, hiredHere:0, battleKind:'snare',
   /* humans are new here and nobody is pleased about it */
 };
@@ -5930,7 +6008,7 @@ function makeParty(){
     {id:'vesna',name:'Vesna',sur:'Kolb',race:'human',cls:'spear',kind:'human',
      st:{str:9,agi:9,int:7,mor:10},trait:'thrice',
      eq:{armour:'rags',main:'spear',off:null,trinket:null}},
-    /* Marrow is the BATTLE-mage: two schools, a short sword, and stats that
+    /* Marrow is the BATTLE-mage: one school, a short sword, and stats that
        let him stand in a line. The company's first caster should be the one
        that survives being stood next to, not the glass one. */
     {id:'marrow',name:'Marrow',sur:'',race:'human',cls:'warmage',kind:'mage',
@@ -7628,18 +7706,32 @@ function unitFrom(p){
      third in the row and the new verb is always the 3 key whoever carries it. */
   if(RACESKILL[p.race])acts.push(Object.assign({},RACESKILL[p.race]));
   if(sig)acts.push(sig);
-  /* ── the two kinds of caster ──────────────────────────────────────────
-     BATTLE-MAGE: two schools, one casting a turn, and a real sword. He is a
+  /* ── the two kinds of caster (#157 numbers) ───────────────────────────
+     BATTLE-MAGE: ONE school, one casting a turn, and a real sword. He is a
        mediocre swordsman who sometimes does something appalling — which is
        the low-magic setting written as a class.
-     MAGE: three schools and a SECOND casting each turn at half effect, and
+     MAGE: TWO schools and a SECOND casting each turn at half effect, and
        almost nothing else. Bad with a blade, bad at dodging, thin. A glass
        cannon that the line exists to keep alive.
      Both cast once at full strength per turn: `castCap` is enforced in
      canUse(), so "one spell a turn" is a rule rather than a suggestion. */
   if(isCaster(p.cls)){
-    const many=p.cls==='mage';
-    if(!p.spells||p.spells.length<(many?3:2))p.spells=rollSpells(many?3:2);
+    const many=p.cls==='mage', want=SCHOOLS[p.cls]||1;
+    /* ═══ #157 · EXACTLY `want`, TRIMMED AS WELL AS TOPPED UP ══════════════
+       ⚠ THIS USED TO BE A `<` TEST, WHICH IS A ONE-WAY VALVE: a caster rolled
+       under the old numbers would have kept all three schools for the rest of
+       the run and the change would have been invisible in the one save that
+       matters, the user's own. Trimming keeps the FIRST ones they already had
+       rather than re-rolling, so the school somebody has been playing with
+       does not change out from under them - it is the extras that go. */
+    p.spells=(p.spells||[]).slice(0,want);
+    /* topping up draws from what they do NOT already know, so a mage can
+       never be handed the same school twice */
+    while(p.spells.length<want){
+      const left=SPELLKEYS.filter(k=>p.spells.indexOf(k)<0);
+      if(!left.length)break;
+      p.spells.push(left[Math.random()*left.length|0]);
+    }
     acts.push({k:'blaze',n:'EMBER',cost:1,strain:5,range:4,dmg:[10,16],am:.30,ft:.80,arcane:true,
       note:'The cantrip every caster has. Cheap — 5 of their own nerve — and mostly ignores '+
         'armour. Does not count against your one working a turn, but it is once a turn all '+
@@ -8335,11 +8427,27 @@ const TUTSTEPS={
      on payday, and what a click on the map does.
      ⚠ The register rule from #120 - an unused entry is a second source of
      truth, and the next person to edit this tour would have believed it. */
+  /* ═══ #157 · THE CHEST SAYS WHAT EACH ONE IS FOR, AND STOPS ══════════════
+     (User: "in the tutorial about the chest say first: crowns for wages, food
+     and purchases · food for events and healing · salvage for fitting out the
+     wagon · gems for special events. And keep it short, do not expand it.")
+
+     ⚑ IT WAS EXPLAINING THE WRONG THING. The step pointed at four glyphs and
+     spent its whole card on the arithmetic of ONE of them, so a player who
+     had just been shown ❦ ▤ ◈ for the first time was told the wage bill grows
+     by seven a day. Four lines, one per glyph, in the same order the bar draws
+     them, and the payday clause survives as a single sentence because it is
+     the only thing here the surface does not already show - the PAYDAY chip
+     three inches away counts the days down by itself (#152).
+     ⚠ The glyphs are RES_ICON, so this card and the bar it is pointing at
+     cannot drift apart. */
   w_res:{h:'THE CHEST',
-    t:()=>'Crowns and provisions. The company is paid every '+num(PAY_EVERY)+' days: '+
-      'the bill grows by '+dailyUpkeep()+' crowns for each day of road, and on payday '+
-      'the chest opens. An empty chest on payday is how companies end, and everybody '+
-      'remembers it.',
+    t:()=>RES_ICON.crowns+' CROWNS - wages, provisions, and anything you buy.\n'+
+      RES_ICON.food+' PROVISIONS - what the road asks for, and mending the hurt faster.\n'+
+      RES_ICON.salvage+' SALVAGE - fitting out the wagon, and it outlives the run.\n'+
+      RES_ICON.gems+' GEMS - the few things nothing else buys.\n\n'+
+      'Wages fall due every '+num(PAY_EVERY)+' days. An empty chest on payday is how '+
+      'companies end, and everybody remembers it.',
     a:()=>$('wRes')},
   w_company:{h:'THE COMPANY',
     t:'Everyone you have: the heads, the day\'s wages, the mood. Click here '+
@@ -9339,8 +9447,39 @@ function petUnit(){
    7.  Battle
    ============================================================ */
 let B=null;
+/* ═══ #157 · THE RUN AS IT STOOD WHEN THE FIGHT STARTED ═══════════════════
+   (User: "after a lost battle - when you get wiped - offer to replay the
+   battle. So a person can carry on the run if they were enjoying it.")
+
+   ⚑ IT IS THE SAVE'S OWN BLOB, AND THAT IS THE WHOLE DESIGN. A snapshot is a
+   serialisation of the run, and this file already has one that is correct,
+   maintained, and tested every time anybody reloads. `runBlob()` is that
+   serialisation and `loadRun()` is the restore. Writing a second field list
+   here would be a second source of truth that goes stale the first time
+   somebody adds a flag to the save and not to this.
+
+   ⚠ IT IS HELD IN MEMORY AND NEVER PERSISTED. A replay is an offer made once,
+   about the fight you just lost, in the session you lost it in. Writing it to
+   disk would make a dead company resumable a week later, which is a different
+   feature and not one anybody asked for.
+   ⚠ SIM.on leaves it null, so the practice field keeps its own restart. */
+let FIGHTBACK=null;
 function startBattle(kind){
   G.battleKind=kind||'snare';
+  /* ⛔ AND IT MUST NOT WRITE THE SAVE FILE TO GET THE BLOB. The first version
+     called `saveRun()` here and read the file back, which was wrong in a way
+     worth leaving on the record: **`startBattle` runs inside the test harness
+     too**, `runFight` swaps `G.party` for an arena company, and `SIM.on` is
+     false in there - so a regression run wrote a scratch company straight over
+     the player's real save. `saveRun`'s own guard exists for exactly that
+     danger and could not see a caller three thousand lines away.
+     `runBlob()` touches no storage at all, and its guards are copied here
+     rather than assumed. */
+  if(SIM.on||!G||!G.party||G.over)FIGHTBACK=null;
+  else{
+    try{FIGHTBACK={kind:G.battleKind,blob:runBlob()};}
+    catch(e){FIGHTBACK=null;}
+  }
   mark(null);                     /* the card that started it is gone; this is a fight now */
   if(!SIM.on)JOURNAL.put('battle','fight: '+G.battleKind,{pick:'joined'});
   $('bLegend').classList.toggle('open',!!LEGACY.legendOpen);
@@ -9854,11 +9993,31 @@ const BLOCK_VEIL={
        'rgba(13,17,18,.40) 72%,rgba(8,11,12,.88) 100%)'};
 /* the fights with nothing behind you. The WITHDRAW button reads NO WAY OUT in
    these, struck through, instead of being a live-looking control that refuses
-   to work when you press it. */
-/* Only two. The act finale has bells behind you; the camp ambush has you
-   surrounded inside your own wall in the dark. Everywhere else you may leave —
-   and pay for it (FLEECOST). */
-const NOWITHDRAW=['snare','pack','tavern'];   /* #108 - your back is the corner */
+   to work when you press it. Everywhere else you may leave, and pay for it
+   (FLEECOST).
+   ═══ #157 · A REGISTER, AND EACH FIGHT SAYS ITS OWN WHY ═══════════════════
+   (User: "you must not be able to leave the battle with the man in armour,
+   with the caption: You feel there is no running from this one.")
+
+   ⚑ THE ARMOUR FIGHT IS THE FOURTH, AND ADDING IT IS ONE ROW BECAUSE THIS
+   STOPPED BEING A LIST. It was an array plus a ternary, which meant two
+   fights shared one sentence - and ⚠ THAT SENTENCE WAS WRONG FOR ONE OF
+   THEM: the tavern brawl was being told *"the bells are behind you as well"*
+   in a tap-room in Grausen Hold, forty miles and a whole act from the bells.
+   A ternary over a list is a register that has not admitted it yet, and the
+   `BEATEN` table below already had the right shape.
+
+   ⚑ AND IT CASHES QA-7. The open ruling was that fleeing the Thing in Armour
+   deleted the Dead Company beat, so THE LONG FIRE one node later spoke about
+   *"nine men in a ditch three miles back"* to a player who never met them.
+   The fled path is gone, so the beat can no longer be skipped, and the seam
+   closes without a special case anywhere downstream. */
+const NOWITHDRAW={
+  snare :'Nowhere to withdraw to. The bells are behind you as well. This one is life or death.',
+  pack  :'Surrounded, in the dark, inside your own wall. There is no direction to run in.',
+  tavern:'Your back is already in the corner. There is nowhere in this room to go.',
+  armour:'You feel there is no running from this one.'};
+const noFleeWhy=k=>NOWITHDRAW[k]||null;
 /* WHAT LEAVING COSTS, by what you are leaving. Walking out on a great beast is
    not the same act as walking out on four hungry deserters, and the price
    should say which one you just did. */
@@ -12285,6 +12444,53 @@ function checkEnd(){
   if(!B.noMercy&&beg.length&&foe.every(f=>f.state==='routed')&&B.round>=4){
     B.won='mercy';
     endLater(()=>SIM.on?simResult('mercy'):toSpoils(beg),800);return true;}
+  /* ═══ #157 · NOBODY SHOULD HAVE TO CHASE A BROKEN DOG INTO A CORNER ═════
+     (User: "when one dog is broken and running away, end the fight rather
+     than chasing it into the corner like BB - it is boring." Then, a minute
+     later: "you could ask - they are all running, do you want to end the
+     fight? so it is clearer.")
+
+     ⛔ THE MERCY BRANCH ABOVE ALREADY DOES THIS, AND IT CANNOT REACH HIS
+     CASE. `beg` is deliberately the broken PEOPLE and never the broken
+     bodies, because only people surrender - so a field of routed BEASTS has
+     an empty `beg`, no mercy screen, and nothing to end the fight but killing
+     every last one of them. The rule was right; it simply had no answer for
+     the half of the bestiary it correctly excluded.
+
+     ⚑ SO THIS IS THE SAME OUTCOME WITH NO PRISONERS, AND IT IS OFFERED
+     RATHER THAN TAKEN. Ending it for him would be the game making the last
+     decision of a fight; his own second message asked for the question, and
+     the question is also the honest one, because cutting them down is a real
+     choice with a real reason (a body that gets away is a body that comes
+     back, and the spoils are the same either way).
+
+     ⚠ ASKED AT THE TOP OF THE PLAYER'S OWN TURN, WHICH IS WHY IT NEEDS NO
+     CLOCK HOLD. `checkEnd` runs from several places a turn; gating on
+     `cur()` being one of yours means the card can only go up at the moment
+     nothing is moving anyway. #156's spotlight needed `B.tutHold` precisely
+     because it could fire at the END of somebody else's turn.
+     ⚠ AND `!B.auto`, BECAUSE AUTO NEVER MAKES AN IRREVERSIBLE DECISION
+     (README §6's invariant). AUTO plays the fight, not the run - so it
+     chases, the way it always has, and the offer waits for the reins. */
+  if(!B.routAsked&&!SIM.on&&!B.auto&&foe.length&&B.round>=3&&
+     foe.every(f=>f.state==='routed')){
+    const c=cur();
+    if(c&&c.side==='you'&&!c.ally&&!c.pet&&!B.busy){
+      B.routAsked=true;
+      ask('THEY ARE ALL RUNNING',
+        num(foe.length)+' still on the field, and not one of them is still fighting. '+
+        'They will keep going until somebody stops them.',
+        [{t:'Let them go. The field is ours.',
+          c:'the fight ends here · the haul is the same',
+          go:()=>{if(!B||B.won!==null)return;B.won=true;
+            say('The last of them goes over the rise without looking back.');
+            endLater(()=>toSpoils([]),700);}},
+         {t:'No. Run them down.',danger:true,
+          c:'a body that gets away is a body that comes back',
+          go:()=>{say('Nobody is asked twice.');}}]);
+      return false;
+    }
+  }
   return false;
 }
 function canUse(u,a){
@@ -13211,7 +13417,62 @@ function disposition(side){
    where — a pack-leader's presence is not a buff you carry, it is a fact
    about the hex you are in.
    ═══════════════════════════════════════════════════════════════════════ */
+/* ═══ #157 · SURROUNDED ═══════════════════════════════════════════════════
+   (User: "if they surrounded it (more than two) show a status over the head,
+   'surrounded', so it is immediately clear. And depending on the people
+   change its effect from the bonus.")
+
+   ⚑ NOT ONE RULE IS ADDED HERE. Two rules already scale with how many bodies
+   are on a target and NEITHER of them had a mark anywhere on the board:
+     · every attacker gets `+flankPow` for each body past the first
+       (hitBreakdown's `around`), and
+     · the situation charges the surrounded body `-(on-1)*5` nerve a turn.
+   This is #150's finding on a third surface: the signal existed, inside the
+   room it is about, and what was missing was seeing it from where you decide.
+
+   ⛔ THREE IS THE THRESHOLD AND IT IS NOT A TASTE CALL. Measured over 2,769
+   swings across all eight fights: the average chance to hit a body runs 60%
+   with one on it, 72% with two, 77% with three and 88% with four - and
+   17.7% of every swing in the act already lands on a body with three or more.
+   Three is also where the nerve rule saturates its own ceiling: -(3-1)*5 is
+   -10 and SIT_CAP is 10, so a FOURTH body cannot make the nerve any worse.
+   Two on you is a fight. Three is the arithmetic running out, which is
+   exactly where the user put the line.
+
+   ⛔ AND `noArc` NEVER SHOWS IT. The Thing in Armour takes no flanking bonus
+   at all by design - the whole fight is built to punish ringing it - so a
+   badge saying SURROUNDED would be the board recommending the one play that
+   loses. It stays bare, and the bare token IS the teaching. */
+const SURROUND_AT=3;
+const surroundOn=u=>{
+  if(!B||!B.units||!u||u.dead||u.downed||u.noArc)return 0;
+  const n=threatsAt(u.col,u.row,u.side);
+  return n>=SURROUND_AT?n:0;
+};
+/* ⚑ "DEPENDING ON THE PEOPLE" IS THE SECOND HALF OF HIS SENTENCE, AND IT IS
+   TRUE ALREADY: `flankPow` is 10 on a beast and up to 22 on a clever soldier,
+   so what a ring costs depends on who is standing in it. The note reads the
+   bodies that are ACTUALLY there rather than quoting an average.
+   ⚠ IT NAMES THE RULE, NOT THE OUTCOME. The nerve charge goes through
+   SIT_CAP and is summed with everything else the situation says, so printing
+   "its nerve drops 10" would be a receipt that does not match the till -
+   #137's rule. "Pays 5 for every one past the first" is what is actually
+   true and stays true whatever else is happening to them. */
+function surroundNote(u){
+  const es=engagers(u.col,u.row,u.side),n=es.length;
+  const v=es.map(x=>Math.round((n-1)*(x.flankPow||0))).sort((a,b)=>a-b);
+  const lo=v[0],hi=v[v.length-1],w=num(n);
+  return w.charAt(0).toUpperCase()+w.slice(1)+
+    ' of them on it, and none of them has to watch its own back. '+
+    'Each one swings at '+(lo===hi?'+'+lo:'+'+lo+' to +'+hi)+'.'+
+    (tr(u,'feral')?'':' Its nerve pays 5 a turn for every one past the first.');
+}
 const STATUS={
+  /* #157 - FIRST in the register on purpose: `.stbar` prints four badges and
+     slices the rest, and being surrounded outranks being poisoned. (Measured
+     occupancy is 0 statuses on 72.7% of targets and never more than 2, so the
+     cap does not bite today - this is so it still holds the day it does.) */
+  surrounded:{n:'Surrounded',g:'⊛',col:'#e2604f',count:surroundOn,d:surroundNote,bare:true},
   /* #108 - the brawl's one status. A flag for the fight's whole length, so
      it is the `u[k]===true` shape rather than a countdown. */
   drunk:{n:'Drunk',g:'🍺',col:'#c9903a',
@@ -13288,6 +13549,11 @@ function statusesOn(u){
        asking rather than by reading a field off the body (#67). */
     if(S.on?S.on(u):(S.count?n>0:(u[k]>0||u[k]===true)))
       out.push(Object.assign({k:k},S,{turns:S.count?n:(typeof u[k]==='number'?u[k]:0),
+        /* #157 - a status may write its own line from the body it is on, so
+           SURROUNDED can say what THESE bodies are getting rather than an
+           average. Resolved here, at the one door every reader comes through,
+           so nothing downstream has to know a `d` can be a function. */
+        d:typeof S.d==='function'?S.d(u):S.d,
         g:S.count&&n>1?S.g+n:S.g}));});
   aurasOn(u).forEach(a=>out.push(a));
   return out;
@@ -16538,10 +16804,13 @@ function render(){
       $('bEnd').disabled=false;
       /* the no-withdraw fights say so on the control - it is an icon now,
          so the words go in the title and the strike-through looks the part */
-      const noFlee=NOWITHDRAW.indexOf(G.battleKind)>=0;
-      $('bFlee').disabled=noFlee;
-      $('bFlee').classList.toggle('locked',noFlee);
-      $('bFlee').title=noFlee?'NO WAY OUT — this one is life or death; there is nowhere to withdraw to.'
+      /* #157 - the control carries THIS fight's reason, not a generic one.
+         The button is struck through and dead, so its title is the only place
+         the sentence can land, and the user asked for the sentence by name. */
+      const why=noFleeWhy(G.battleKind);
+      $('bFlee').disabled=!!why;
+      $('bFlee').classList.toggle('locked',!!why);
+      $('bFlee').title=why?'NO WAY OUT — '+why
         :'WITHDRAW — leave the field. No spoils, the company takes it badly, and the place is done with.';
     }else{$('bActions').innerHTML='';B.cards=null;
       $('bEnd').disabled=true;$('bFlee').disabled=true;}}
@@ -16952,6 +17221,16 @@ function render(){
         img.src=sp.src;img.width=sp.w;img.height=sp.h;img.alt=occ.name;
         /* see spriteFlip: faces the way it is actually turned */
         if(spriteFlip(occ))img.style.setProperty('--flip','-1');
+        /* ═══ #157 · WHERE THIS BODY'S HEAD ACTUALLY IS ═══════════════════
+           `.hin` is 37 tall and lays its child out flex-end with a 7px
+           margin under it, so a sprite's bottom is at 30 and its top is at
+           30 minus its own height. That is the whole arithmetic, and it is
+           the number every piece of furniture above the body hangs off:
+           `.ubars` and `.stbar` both read `--head`.
+           ⛔ IT IS SET HERE AND NOWHERE ELSE, because this is the one place
+           that has `sp` in its hand. A second copy of `30 - h` is the next
+           constant to go out of date. */
+        inn.style.setProperty('--head',(30-sp.h)+'px');
         /* ═══ ON THE TOKEN: ONE FACE AND ONE BAR ══════════════════════════
            (User: "on top of unit show mood — just one emoji related to the
            mood status — and health.") Two thin bars under a 37px hex was two
@@ -17065,7 +17344,13 @@ function render(){
           stl.forEach(st=>{
             const sb=document.createElement('span');sb.className='stbadge';
             sb.textContent=st.g;sb.style.color=st.col;
-            sb.title=st.n+(st.turns?' ('+st.turns+')':'')+' · '+st.d+
+            /* #157 - `bare` suppresses the bracketed count for a status whose
+               own sentence already names it. SURROUNDED was printing three:
+               the glyph carried "⊛3", the bracket carried "(3)" and the note
+               opened with "Three of them on it". A count in brackets also
+               reads as a number of TURNS on this row, because every other
+               status that shows one is a clock. */
+            sb.title=st.n+(st.turns&&!st.bare?' ('+st.turns+')':'')+' · '+st.d+
               (st.from?' [from '+st.from+']':'');
             bar.appendChild(sb);});
           inn.appendChild(bar);}
@@ -18327,7 +18612,26 @@ function saveRun(){
   if(SIM.on)return;
   if(!G||!G.party||G.over)return;
   try{
-    localStorage.setItem(SAVE_STAMP,JSON.stringify({
+    localStorage.setItem(SAVE_STAMP,runBlob());
+  }catch(e){
+    console.error('[GRIMTOLL] saveRun failed —',e);
+    if(typeof TEST!=='undefined'&&TEST.on)say2('[SAVE FAILED] '+e.message);
+  }
+}
+/* ═══ #157 · THE RUN, SERIALISED, AND THERE IS ONE OF THESE ══════════════
+   Pulled out of `saveRun` so the replay snapshot can hold the SAME blob
+   without going near localStorage. It was briefly written the other way -
+   `saveRun()` then read the file back - and that was a real bug with a
+   nasty shape: `startBattle` runs in the test harness too, `runFight`
+   swaps `G.party` for an arena company, and SIM.on is false there, so a
+   regression run wrote a scratch company over the player's save. Which is
+   the exact failure the guard four lines above this one exists to prevent,
+   arriving through a caller that guard could not see.
+   ⛔ ONE FIELD LIST. Anything added to the save is added here, and both
+   readers get it; a second copy is a second source of truth that goes
+   stale the first time somebody forgets one of them. */
+function runBlob(){
+  return JSON.stringify({
       stamp:SAVE_STAMP,day:G.day,at:G.at,run:G.run,camp:G.camp,morale:G.morale,
       party:G.party,stash:G.stash,visited:G.visited,path:G.path,
       partyCap:PARTYCAP,
@@ -18410,16 +18714,12 @@ function saveRun(){
          field — so it has to survive the road. Small blob: one record per
          rescue, a few per run. */
       bonds:G.bonds||[]
-    }));
-  }catch(e){
-    /* NEVER SWALLOW THIS SILENTLY. The first version referenced a constant
-       that had been renamed three sessions earlier; the catch hid it and the
-       save simply never wrote. A save that quietly does nothing is the worst
-       possible failure for this feature. */
-    console.error('[GRIMTOLL] saveRun failed —',e);
-    if(typeof TEST!=='undefined'&&TEST.on)say2('[SAVE FAILED] '+e.message);
-  }
+    });
 }
+/* ⚠ NEVER SWALLOW A FAILED SAVE SILENTLY - the catch in `saveRun` above says
+   so out loud, and the reason is that the first version of it referenced a
+   constant renamed three sessions earlier, the catch hid it, and the save
+   simply never wrote while "do you have a save?" cheerfully answered no. */
 const hasSavedRun=()=>{
   try{const r=JSON.parse(localStorage.getItem(SAVE_STAMP));
     return !!(r&&r.stamp===SAVE_STAMP&&r.party&&r.party.length);}catch(e){return false;}
@@ -18496,17 +18796,16 @@ function withdraw(){
      (User: "for many battles I can't withdraw — make it withdrawable, but
      with heavier penalties. Only a couple not withdrawable.")
 
-     Only two refuse now: the SNARE, which is the act finale with bells
-     behind you, and the CAMP AMBUSH, where you are surrounded inside your
-     own palisade in the dark and there is no direction to run in. Everything
-     else lets you go — and charges for it. The price scales with what you are
-     walking away from, so leaving the Fen-Mother is a decision and leaving a
-     deserter skirmish is an inconvenience. */
-  if(NOWITHDRAW.indexOf(G.battleKind)>=0){
-    say(G.battleKind==='pack'
-      ?'Surrounded, in the dark, inside your own wall. There is no direction to run in.'
-      :'Nowhere to withdraw to. The bells are behind you as well. This one is life or death.');
-    return;}
+     Four refuse now, each with its own sentence in NOWITHDRAW: the SNARE has
+     the bells behind you, the CAMP AMBUSH has you inside your own wall in the
+     dark, the BRAWL has your back in a corner, and #157 added the THING IN
+     ARMOUR, which has been walking behind you since the afternoon and does
+     not stop when you do. Everything else lets you go — and charges for it.
+     The price scales with what you are walking away from, so leaving the
+     Fen-Mother is a decision and leaving a deserter skirmish is an
+     inconvenience. */
+  const noWhy=noFleeWhy(G.battleKind);
+  if(noWhy){say(noWhy);return;}
   const cost=FLEECOST[G.battleKind]||FLEECOST.def;
   const standing=alive().filter(u=>u.side==='you'&&!u.ally).length;
   const carried=B.units.filter(u=>u.side==='you'&&u.downed&&!u.ally).length;
@@ -20522,8 +20821,8 @@ const WHISPER={
   cool:'The strong things wait a turn. That is what stops every turn being the same turn.',
   rung:'Their nerve just dropped a step. Nerve is not health — it decides whether they '+
     'keep standing there at all, and a body alone in a crowd loses it fastest.',
-  prov:'Provisions are not eaten on the road — wages cover that. They are for the wounded, '+
-    'for a proper meal, and for the moments the road asks.',
+  prov:'Provisions are not eaten on the road, and not by a wound mending. Wages cover the '+
+    'bread. These are for double rations, a proper meal, and the moments the road asks.',
   back:'That landed in his back. The red arc under a body is the side to stand on: +30 to '+
     'hit and a quarter more damage.',
   parting:'Walking out of somebody\'s reach lets them swing at you for free, for half a blow. '+
@@ -23972,8 +24271,22 @@ const heartSVG=st=>{
    ⚠ Company relics are excluded: they work from the baggage and have no
    wearer to be better than. */
 const levelsWaiting=()=>G.party.reduce((s,p)=>s+(p.perkPoints||0)+(p.statPoints||0),0);
-function kitWaiting(){
-  return G.stash.some(k=>{
+/* ═══ #157 · THE ! NAMES ITS PERSON ═══════════════════════════════════════
+   (User: "when there is an exclamation mark in the inventory, switch straight
+   to the character it came up on.")
+
+   ⚑ THE TEST ALREADY KNEW WHO IT WAS AND WAS THROWING THE ANSWER AWAY. This
+   was two nested `.some()` calls, which is a shape that computes exactly the
+   fact the badge is about - THIS item, on THAT person - and then reduces it to
+   a boolean before anybody can use it. Returning the pair costs nothing and
+   makes the click possible; `kitWaiting()` is the same boolean, one word later.
+
+   This is the same finding as the ★ chip beside it, which #150 wired for the
+   same reason, and the same finding as #156's enemy reach: the signal existed,
+   inside the room it is about. */
+function kitWanter(){
+  let hit=null;
+  G.stash.some(k=>{
     const g=GEAR[k];
     if(!g||g.company||!g.slot)return false;
     return G.party.some(p=>{
@@ -23981,12 +24294,16 @@ function kitWaiting(){
       if(g.slot==='armour'&&g.size&&g.size!=='any'&&
          RACEMOD[p.race]&&g.size!==RACEMOD[p.race].size)return false;
       const cur=GEAR[p.eq[g.slot]];
-      if(!cur)return true;                       /* nothing in that slot at all */
-      const d=gearDelta(g,cur);
-      return d.length&&d.some(x=>x[1]>0)&&!d.some(x=>x[1]<0);
+      /* nothing in that slot at all, or the wagon wins on an axis and loses
+         on none - see the note above about what "better" is allowed to mean */
+      const d=cur?gearDelta(g,cur):null;
+      if(cur&&!(d.length&&d.some(x=>x[1]>0)&&!d.some(x=>x[1]<0)))return false;
+      hit={p:p,k:k};return true;
     });
   });
+  return hit;
 }
+const kitWaiting=()=>!!kitWanter();
 function worldTick(){
   /* condition news travels as road-news; a RESOLUTION gets a proper card —
      it is one of the biggest things that can happen to a person and must
@@ -24334,13 +24651,13 @@ function worldTick(){
     prov:{t:'PROVISIONS - THE GOOD BARRELS',col:'var(--grain)',
       d:'Your wages already buy the company bread. This is <b>everything better than '+
         'bread</b>: salt meat, cheese, a jug.<br><br>'+
-        '<b>The wounded eat it</b> - every day anybody is mending costs one, and on an '+
-        'empty barrel the mending halves.<br>'+
-        '<b>Lay out a proper meal</b> - the mood lifts hard (once a day).<br>'+
+        '<b>Nothing eats them on its own</b> - not a day on the road, not a wound '+
+        'mending. Every one you lose, you spent.<br>'+
         '<b>Double rations</b> - wounds mend twice as fast for three days.<br>'+
+        '<b>Lay out a proper meal</b> - the mood lifts hard (once a day).<br>'+
         '<b>The road asks for it</b> - feeding a stranger, a wedding, a hungry ogre.',
-      x:'A count, not a door (#106). What you spend them ON is on the two '+
-        'chips that name it: the mood throws a party, the heart doubles the rations.'},
+      x:'#157 took the last automatic drain off them: the wounded used to eat one a '+
+        'day whether you liked it or not.'},
     salvage:{t:'SALVAGE',col:'var(--wood)',
       d:'Timber, iron and fittings pulled off the road. It builds things INTO THE WAGON '+
         'between runs - beds, chests, fires - and pays village craftsmen.',
@@ -24423,8 +24740,15 @@ function worldTick(){
     openInv();};
   const pc=$('wCompany').querySelector('[data-w="party"]');
   if(pc)pc.onclick=goParty;
+  /* #157 - and the kit chip does the same thing the star chip has done since
+     #150: it opens on the person the badge is about, with the stash in front
+     of them, instead of on whoever happened to be selected last. */
+  const goKit=()=>{
+    const w=kitWanter();
+    if(w){iSel=w.p.id;ITAB='stash';}
+    openInv();};
   const kc=$('wCompany').querySelector('[data-w="kit"]');
-  if(kc)kc.onclick=openInv;
+  if(kc)kc.onclick=goKit;
   const mc=$('wCompany').querySelector('[data-w="mood"]');
   if(mc)mc.onclick=()=>{whisper('prov');openFeastCard();};
   const bl=$('wCompany').querySelector('[data-w="blood"]');
@@ -24550,27 +24874,33 @@ function passDays(n){
         }
       }
     }
-    /* ═══ THE WOUNDED EAT (playtest #6: a 22-day route never touched the
-       provisions once — a resource nobody is ever forced to consider is not
-       a resource). Mending burns the good stock: any day somebody is
-       carrying a wound costs ONE provision, and on an empty barrel the
-       mending halves. This is the guaranteed sink — provisions now deplete
-       exactly when the company is worst off, which is when the "spend or
-       save" question is worth asking. Double rations still doubles the
-       pace on top. */
-    let mend=G.doubleRations>0?MEND_DOUBLE:MEND_BASE;
+    /* ═══ #157 · NOTHING EATS THE BARRELS BY ITSELF ANY MORE ═══════════════
+       (User, 2026-08-14: "is food spent per day or on healing the wounded
+       automatically right now? It should not be - only events, choices and
+       deliberate healing.")
+
+       ⛔ IT WAS, AND THIS IS WHAT IT WAS. Any day anybody carried a wound
+       took ONE provision, with no door and no card, and on an empty barrel
+       the mending halved and the mood dropped two. It was put here by
+       playtest #6 for a real reason - *"a 22-day route never touched the
+       provisions once, and a resource nobody is ever forced to consider is
+       not a resource"* - and it is exactly the shape the user has now
+       rejected twice: the same objection that took the food cost off TRAVEL
+       ("a number that drains on a timer is bookkeeping, not a decision").
+
+       ⚑ SO THE SINK IS NOT DELETED, IT IS TURNED THE RIGHT WAY ROUND. The
+       wounded mend at MEND_BASE for nothing, and DOUBLE RATIONS still costs
+       RATION_COST to mend twice as fast. Provisions stopped being a tax on
+       being hurt and became what they were meant to be: the thing you spend
+       to get somebody back on their feet before the next fight. Every other
+       drain in the game was already a choice (the feast, the rations, the
+       cards that ask for barrels), which is why this is the only edit.
+
+       ⚠ PLAYTEST #6'S FINDING IS THEREFORE LIVE AGAIN and it is the thing to
+       watch: if a whole run now ends with the barrels untouched, the answer
+       is a better REASON to spend them, never a tax reinstated here. */
+    const mend=G.doubleRations>0?MEND_DOUBLE:MEND_BASE;
     if(G.doubleRations>0)G.doubleRations--;
-    const wounded=G.party.some(p=>p.hpLoss>0);
-    if(wounded){
-      if(G.run.food>0)G.run.food--;
-      else{
-        mend=Math.max(2,Math.round(mend/2));
-        G.morale-=2;
-        if(!G.saidHungryMend){G.saidHungryMend=true;
-          say2('The barrels are empty and the hurt mend slowly on thin broth. '+
-            'Nobody complains out loud, which is worse.');}
-      }
-    }
     G.party.forEach(p=>{if(p.hpLoss)p.hpLoss=Math.max(0,p.hpLoss-mend);});
     /* a strange condition is a clock the player can hear ticking. Four days
        untreated and it decides what it was becoming: usually the mutation,
@@ -26746,28 +27076,33 @@ function openHire(){
   const dlg=$('wDlg'),node=NODES[G.at];
   /* positioned by placeDlg after the content is in */
   const room=PARTYCAP-partyUsed();
+  /* ═══ #157 · THE MUSTER LOSES ITS PARAGRAPHS ════════════════════════════
+     (User: "on the hiring page less text - a simpler screen. Both the story
+     itself and less info about the units.")
+
+     ⚑ THE SCENE-SETTING WENT AND THE ARITHMETIC STAYED, which is the split
+     this whole pass keeps making: 66 words of who these people are and why
+     they are still sitting here, on a screen whose actual question is *can I
+     afford one and do I have room*. Both openers are one sentence now. What
+     survives untouched is the purse, the room, and the surcharge - three
+     figures the decision cannot be made without.
+     ⚠ THE FEN IS AHEAD OF THIS SCREEN, NOT BEHIND IT. The old paragraph said
+     they had heard what is in the fen, which was written when the muster stood
+     AFTER the Black Fen and became a small lie the day the map was reordered.
+     Cutting it deletes the lie as well, but do not put it back on the way to
+     making this screen chatty again. */
   let html='<h3>'+(late?'THE LAST MUSTER':'THE MUSTER FIELD')+'</h3>'+
     '<div class="bd">'+(late
-    ?'Three of them at a crossroads a day short of the bells, and they know exactly what is '+
-     'ringing up there. They are asking the same money anyway, which tells you what the last '+
-     'few months have been like for them.\n\nThis is the last wall with anybody on it.\n\n'
-    /* ⚠ THE FEN IS AHEAD OF THIS SCREEN NOW, not behind it. This paragraph
-       used to read "they have all heard about the Fen-Mother already", which
-       was true while the muster stood after the Black Fen and became a small
-       lie the day it moved in front of it. A recruiter's opening line is
-       exactly the kind of prose that quietly outlives the map it was written
-       against. */
-    :'Three of them are sitting on the wall by the crossroads, and a quartermaster’s cart is '+
-    'drawn up in the mud beside them with its boards down. They have all heard what is in the '+
-    'fen you are walking into, which is why they are still sitting here and not somewhere '+
-    'south of it.\n\nThis is the last wall before the water.\n\n')+
+    ?'Three of them a day short of the bells, asking the same money as anybody else. '+
+     'This is the last wall with people on it.\n\n'
+    :'Three of them on the wall by the crossroads, and a quartermaster’s cart in the mud '+
+     'beside them with its boards down.\n\n')+
     'You have <b style="color:var(--g4)">'+G.run.crowns+' crowns</b> and '+
     '<b style="color:var(--g4)">'+room+' of party room</b> left.'+
-    (G.hiredHere?'\n\nThe rest have watched you pay the first one. <b style="color:#c15d55">'+
-      'Prices are up by half.</b>'+
+    (G.hiredHere?'\n\n<b style="color:#c15d55">They watched you pay the first one. Prices are '+
+      'up by half.</b>'+
       (G.recruits.some(r=>r.race==='ratkin')
-        ? ' <span style="color:#8ca35a">Except the ratkin, who has gone the other way and cut a '+
-          'fifth off rather than be the one still sitting on this wall at dusk.</span>':'')
+        ? ' <span style="color:#8ca35a">The ratkin went the other way and cut a fifth off.</span>':'')
       :'')+'</div>'+
     '<div id="hList" style="display:flex;flex-direction:column;gap:5px"></div>';
   dlg.innerHTML=html;dlg.classList.add('on');
@@ -26783,7 +27118,12 @@ function openHire(){
       const b=document.createElement('button');
       b.className='choice';
       if(!ok)b.disabled=true,b.style.opacity=.38;
-      b.innerHTML='<b>'+g.n+'</b><i>−'+s[1]+' crowns'+(g.d?' · '+g.d:'')+
+      /* #157 - the price and nothing else. (User: "under the shop choice do
+         not give a lot of small text under it.") The flavour line is a
+         sentence about a stew-pot; the number is the decision. It moves onto
+         the row's own title, where it costs nothing to keep. */
+      if(g.d)b.title=g.d;
+      b.innerHTML='<b>'+g.n+'</b><i>'+RES_ICON.crowns+s[1]+
         (ok?'':'<span class="hurt"> · cannot afford</span>')+'</i>';
       if(!b.disabled)b.onclick=()=>{
         pay('crowns',-s[1]);G.stash.push(s[0]);G.qm.done=true;QMOPEN=false;sfx('coin');
@@ -26816,8 +27156,16 @@ function openHire(){
       /* THE MOST IMPORTANT PLACE THE NUMBERS COME OFF. Hiring used to be four
          integers per candidate laid side by side, which is a spreadsheet
          comparison, not meeting somebody. Now you hire a description. */
+      /* #157 - THE PERSONALITY IS A NAME HERE, AND A SENTENCE ON HOVER.
+         (User: "less info about the units - the trait for instance need not be
+         spelled out, give it only on hover.") It used to print the name AND
+         its whole explanation on every row, which is three lines per stranger
+         and nine on the screen; the name is the thing you compare, the
+         sentence is the thing you look up. `title` and not a lore tip because
+         the personality is rolled per person, not per class. */
       '<br><span style="color:#a08a5e">'+tellLine(s)+'</span>'+
-      '<br>'+TRAITS[r.trait].n+' — '+traitShort(r)+
+      '<br><span title="'+esc(traitShort(r))+'" style="cursor:help;border-bottom:1px dotted #6b5330">'+
+      TRAITS[r.trait].n+'</span>'+
       (!fits?'<span class="hurt"> · no room left</span>':
         !afford?'<span class="hurt"> · cannot afford</span>':'')+'</i>';
     if(!b.disabled)b.onclick=()=>{
@@ -26836,9 +27184,12 @@ function openHire(){
     const cart=document.createElement('button');
     cart.className='choice';
     if(G.qm.done)cart.disabled=true,cart.style.opacity=.38;
-    cart.innerHTML='<b>The quartermaster’s cart. One piece — he will not sell you two.</b>'+
-      '<i>'+(G.qm.done?'done · the boards are packed away again'
-        :'three things on the boards · pick one · pay for one')+'</i>';
+    /* #157 - "SHOP 1 OF 3" is the user's own phrasing, and it is the whole
+       rule: three on the boards, you may have one. It replaces a sub-line
+       that said the same thing three ways. */
+    cart.innerHTML='<b>The quartermaster’s cart.</b>'+
+      '<i>'+(G.qm.done?'done · the boards are packed away'
+        :'THE SHOP · 1 of '+G.qm.stock.length)+'</i>';
     if(!cart.disabled)cart.onclick=()=>{QMOPEN=true;openHire();};
     list.appendChild(cart);
   }
@@ -27709,12 +28060,39 @@ function pickChoice(k,i){
   }
   worldTick();
 }
+/* ═══ #157 · TAKE THE FIGHT AGAIN ════════════════════════════════════════
+   The run is put back exactly as it stood when the fight began, and the fight
+   is fought again. Three things `toDefeat` did have to be undone in the same
+   breath, and every one of them is a real bug if it is missed:
+     · `G.over` gates saveRun, so a resumed run would silently stop saving;
+     · `clearRun()` deleted the file, so the blob has to be written back BEFORE
+       loadRun is asked to read it;
+     · `LEGACY.priorDied` is what tells the NEXT company somebody died before
+       them (#156 found it being read as "skip the brawl"), and a company that
+       is standing again did not die.
+   ⚠ THE JOURNAL KEEPS BOTH. `endRun` has already written the death, and the
+   replay writes its own row: what the player actually did is that they lost
+   and went again, and #57's analytics should see exactly that rather than a
+   tidied version of it. */
+function refight(){
+  if(!FIGHTBACK||!FIGHTBACK.blob)return;
+  const k=FIGHTBACK.kind;
+  try{localStorage.setItem(SAVE_STAMP,FIGHTBACK.blob);}catch(e){}
+  G.over=false;
+  if(!loadRun())return;
+  LEGACY.priorDied=false;saveLegacy();
+  JOURNAL.put('battle','refight: '+k,{pick:'again'});
+  B=null;
+  show('battle');
+  startBattle(k);
+}
 function toDefeat(){
   G.over=true;clearRun();   /* the company is gone — nothing to resume */
   JOURNAL.endRun('the company ended, day '+G.day);
   MUSWON=false;             /* no theme here - a previous run's win must not leak in */
   show('epilogue');
   LEGACY.priorDied=true;saveLegacy();
+  const again=!!(FIGHTBACK&&FIGHTBACK.blob);
   $('eCard').innerHTML='<h1>THE COMPANY ENDS HERE</h1>'+
     '<p>The bells are still ringing. Nobody is left standing to resent them.</p>'+
     '<p style="color:#8a7449;font-style:italic">Battle ran '+G.battleRounds+' rounds. What was '+
@@ -27722,11 +28100,18 @@ function toDefeat(){
     'wherever they left it — it does not know they are not coming back.</p>'+
     /* #125 - the questionnaire is offered HERE, at the end of the run, where
        the player has just finished having the opinion. See toEpilogue. */
-    '<div class="popts" style="grid-template-columns:1fr 1fr">'+
+    /* #157 - and the first door out is the fight itself, because a run that
+       ends on one bad field is a run the player was enjoying up to that
+       field. It is offered, never automatic: walking away from a dead company
+       is still the game, and the wagon is still where that lands. */
+    '<div class="popts" style="grid-template-columns:repeat('+(again?3:2)+',1fr)">'+
+      (again?'<button class="popt" id="toAgain"><b>Take it again</b>'+
+        '<i>the same field, the company as it stood</i></button>':'')+
       '<button class="popt" id="toCamp"><b>The Wagon</b>'+
       '<i>what survives a dead company</i></button>'+
       '<button class="popt sendit" id="toPoll"><b>Say how it went</b>'+
       '<i>seven questions, none of them required</i></button></div>';
+  if(again)$('toAgain').onclick=refight;
   $('toCamp').onclick=()=>openCampScreen(false);
   $('toPoll').onclick=openPoll;
 }

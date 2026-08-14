@@ -3021,3 +3021,67 @@ canvas to fit the taller card.
 `tavernAfter()`** and are campaign state, not presentation. They must keep happening at the same
 moment even though the screen they used to draw is gone, and `SIM.on` must still fork to
 `simResult('won')` before any of it - a practice-field brawl may never reach the campaign.
+---
+
+## 158 - The shot that always hits
+
+> ➹ **THE BATTLE BOARD** - a PERK, and it lands in the archer's tree
+> **SYSTEMS** `PERKS{}` · `CLASSES.archer.perks` · `hitBreakdown` · `strike` · `canUse` ·
+> both AI brains (a certainty changes what an archer is FOR)
+> **RELATED** #45 (reward the combination) · #78 (a good thing you carry takes something away) ·
+> #30 (the action-economy remainder) · #50 (the balance pass this must not be built before)
+> **STATE** ⛔ **SPECCED ONLY, AND DELIBERATELY UNBUILT.** The user's own framing, 2026-08-14:
+> *"add a skill (for the future, into the perk branch which is under development) - a Shot that
+> always hits."* It is written down here so the perk pass inherits a spec instead of a sentence.
+
+**The idea (user).** An archer act that cannot miss.
+
+**Why it is worth having, and it is not the damage.** Measured during #157: the average chance to
+hit in this game is **65.6%**, and **19.4% of every swing is under fifty**. What an archer actually
+lacks is not power, it is the ability to *promise* anything - so the fight where one enemy must
+drop this turn (the caster mid-gather, the captain about to rally, the body one hit from down) has
+no play in it that is a decision rather than a dice roll. A guaranteed shot is the archer's answer
+to a specific board, which is what a signature is supposed to be.
+
+⛔ **AND THAT IS EXACTLY WHY IT MUST NOT BE A BIG ONE.** A certainty that also hits hard is not a
+tactic, it is the best button on the bar every turn. The rule this project already has for it is
+`#78`: **the cost is paid on a different axis from the benefit.** Certainty is the benefit, so the
+price is damage, tempo or reach, never accuracy.
+
+### The rules, as they should be written
+
+| | |
+|---|---|
+| **Name** | THE ARROW THAT KNOWS (working title; the register wants a verb, not a noun) |
+| **Where** | `PERKS{}`, offered in `CLASSES.archer.perks` at tier 3 or 4. **A perk, not a base act** - the archer must not open the game holding a certainty |
+| **Cost** | 2 actions. It is the whole turn |
+| **Cooldown** | 3 |
+| **Damage** | **55-60% of the bow.** The shot is a placement, not a kill |
+| **What it ignores** | the roll, and only the roll |
+| **What it does NOT ignore** | ⛔ **the lane.** `needsLane` still applies: a wall, a body or a boulder in the way still refuses it. *"Always hits"* must mean *"the arrow does not miss"*, never *"the arrow goes through things"* - the second one deletes #82's cover and #36's lane in one perk |
+| **Range** | the bow's, with **no long-band bonus**: `SHOTBAND`'s far penalty is a roll penalty and a shot with no roll would silently gain the most at the range where aiming is hardest |
+
+### The three traps, named now so they are not rediscovered as ideas
+
+1. ⛔ **`hitBreakdown` IS THE INNER LOOP OF BOTH AI BRAINS** (README §6). A certainty must be a flag
+   on the act that `strike` reads, not a special case inside the breakdown, or every scorer in the
+   game pays for it on every candidate hex.
+2. ⛔ **THE PREVIEW HAS TO SAY 100% AND MEAN IT.** The aiming card prints `total`, clamped to 5-95.
+   A shot that cannot miss and reads *95%* is a readout printing the wrong unit, which is #102's
+   rule. The card needs a state (**CERTAIN**), not a number at the top of its scale.
+3. ⚠ **IT INTERACTS WITH DODGE-VS-MISS (#84).** `strike` decides between *dodged* and *missed* off
+   the same roll. With no roll there is neither, and the six lines that narrate a miss must not be
+   reachable. The defender's figure must also not play its evade.
+
+### What has to be true before it is built
+
+- **#50's balance pass, or at least #13's harness.** *"Always hits"* is the one kind of act whose
+  value cannot be guessed from the statblock: it is worth exactly as much as the current hit rate
+  is bad, which is a measured number and one this pass has already moved once (60.3% to 65.6%).
+- **A read of #45.** A guaranteed shot is the strongest possible enabler for a combination
+  (distract, then certainty), and #45 is the parked contract for what a combination may pay.
+
+⚑ **The cheap version to measure first.** Before building a perk, set an existing AIMED SHOT to
+`aim:999` in the practice field and run the eight fights through the harness. If the win rate does
+not move, the perk is a *feel* change and can be priced generously; if it moves hard, the damage
+figure above is the knob and it comes down before anything else does.

@@ -25,6 +25,183 @@
 
 ---
 
+## ⊛ THE PLAYTEST BATCH - THIRTEEN NOTES  *(#157 · 2026-08-14 · build log 8f.185)*
+
+**Your thirteen notes, and the first three turned out to be one bug.** The health bar, the status
+badges and "show me when somebody is surrounded" were the same fault seen from three sides: the
+furniture on a token is nailed to the HEX, and the painted bodies stopped fitting the hex.
+
+### 1 · ⊛ SURROUNDED, above the head
+
+**Reach it in three steps:** any fight → let three enemies get onto one of yours (the Ruined
+Steading or the dog pack does it by itself) → look at the top of that body.
+
+**What should happen.** A red **⊛3** appears in the badge row over the head, and the number is how
+many are on them. Hover it: *"Three of them on it, and none of them has to watch its own back.
+Each one swings at +20. Its nerve pays 5 a turn for every one past the first."* The **+20 is read
+off the actual bodies standing there**, so it changes with who is in the ring - a beast gives less
+than a clever soldier, and a mixed ring reads as a range.
+
+**It fires at three and not at two, and that is arithmetic rather than taste.** Measured over 2,769
+swings across all eight fights: the average chance to hit a body runs **60% with one on it, 72%
+with two, 77% with three, 88% with four**, and **17.7% of every swing in the act already lands on
+somebody with three or more**. Three is also where the nerve rule hits its own ceiling, so a fourth
+body cannot make their nerve any worse.
+
+**It works on THEIR people too**, which is the half worth using: a badge over an enemy means your
+line has them, and everyone swinging at them is getting that bonus.
+
+⛔ **Would be a bug:** the badge on the Thing in Armour. It takes no flanking bonus at all - ringing
+it is the play that fight exists to punish - so it must stay bare.
+
+### 2 · Health and armour above the head, and thinner
+
+**Reach it in three steps:** any fight → stand one of yours directly behind an enemy → look at the
+back one's bars.
+
+**What should happen.** Both bars sit **above** the head, not under the feet, and they are 5px
+where they were 6. **The point is that they can no longer be covered.** Before this, a body's bars
+were painted into the row in front of it, so whoever stood there hid them - which meant the bar
+disappeared exactly when somebody was surrounded.
+
+**Also fixed in the same number:** the status badges used to be drawn **across the face** of every
+painted body. They were positioned in #96 against a 43px sprite and the painted ones are 46-56px.
+
+⛔ **Would be a bug:** bars at different heights on the same body between turns, bars overlapping
+the head, or a badge back on a face. All three hang off one value now (`--head`), so if one is
+wrong they will all be wrong together.
+
+### 3 · The caster starts with two spells
+
+**Reach it in three steps:** new run → first fight → click Marrow.
+
+**What should happen.** **EMBER and one other**, where it used to be EMBER and two. Marrow is the
+BATTLE-mage, which is the caster you actually start with, so this is your note applied where you
+meet it.
+
+**The pure MAGE class keeps two schools**, and this is the one place I did not do the literal
+thing: its whole signature is a **second casting each turn**, and every school has a 2-3 turn
+cooldown, so a mage with one school would spend that second casting on nothing, every turn, all
+game. If you want it at one anyway, it is one number.
+
+**It does not make fights harder.** A/B'd through the harness, 32 fights a side: **7.0 rounds and
+25/32 won with two schools, 6.7 rounds and 27/32 with one.** No detectable difference - the
+battle-mage only ever casts once a turn, so the second school was variety, not power.
+
+### 4 · The ! on the sack opens on the person it means
+
+**Reach it in three steps:** pick up any armour or weapon → look for the **!** on the sack chip →
+click it.
+
+**What should happen.** The sheet opens **on the person the ! is about**, with the stash in front
+of them, instead of on whoever you looked at last.
+
+⛑ **The ★ you asked for in the same breath was already built** (#150). I checked it rather than
+rebuilding it: the star chip opens on the person holding the point, with the perks tab open.
+
+### 5 · The Thing in Armour cannot be left
+
+**Reach it in three steps:** take the road that meets it → start the fight → hover WITHDRAW.
+
+**What should happen.** The control is struck through and says **"NO WAY OUT - You feel there is no
+running from this one."** Your sentence, on the control.
+
+⛑ **This also closes QA-7**, one of the two rulings that were waiting on you: fleeing this fight
+used to delete the Dead Company beat, so THE LONG FIRE one node later talked about *"nine men in a
+ditch three miles back"* to somebody who never met them. No fled path, no seam.
+
+⛑ And it found a wrong line: the **tavern brawl** was being told *"the bells are behind you as
+well"*, in a tap-room, an act away from the bells.
+
+### 6 · Provisions are never spent behind your back
+
+**Reach it in three steps:** get somebody wounded → walk three or four days → watch the ❦ count.
+
+**What should happen.** **It does not move.** Before this, any day anybody was carrying a wound
+cost one provision automatically, and on an empty barrel the mending halved and the mood dropped.
+Now the wounded mend for free, and **double rations still costs 3 to mend twice as fast** - so
+provisions buy speed rather than paying a fine for being hurt.
+
+⚠ **One automatic drain is left and I kept it on purpose:** a fight that runs past round 11 eats
+one provision every second round. It is not a timer, it is the **fuse** that stops a fight running
+forever - it was put in after a Fen-Mother stalemate ran 835 rounds in the arena. Your rule would
+delete it too. **That one is your call, and I did not take it quietly.**
+
+⚠ **And the thing to watch.** That daily cost was the only guaranteed sink, put there after a
+playtest where *a 22-day route never touched the provisions once*. If a whole run now ends with
+full barrels, the fix is a better reason to spend them, not the tax back.
+
+### 7 · The chest tutorial says what each one is for
+
+**Reach it in three steps:** new run → get to the map → the first spotlight step.
+
+**What should happen.** Four lines, one per glyph, in the order the bar draws them: crowns,
+provisions, salvage, gems. Then one sentence about payday. It used to point at four glyphs and
+spend the whole card on the arithmetic of one of them.
+
+### 8 · The muster field, cut down
+
+**Reach it in three steps:** walk to the Muster Field → read the card → hover a stranger's
+personality.
+
+**What should happen.** **The intro is one sentence** (it was 100 words, it is 32). Each stranger
+shows their **personality as a name only** - hover the dotted underline for what it means. The
+quartermaster's cart reads **THE SHOP · 1 of 3**, and the three items show a price and nothing
+else, with the description on hover.
+
+👤 **One thing I left and you may want to cut next:** the four-sentence description of each
+stranger's stats. Measured live, all three candidates read *"Steady enough"* and *"Easily
+frightened"* - so twelve sentences are being spent on something that often does not tell them
+apart.
+
+### 9 · The run starts with one bit of junk
+
+**Reach it in three steps:** new run → open the company → the stash.
+
+**What should happen.** **The cook-pot and straps, and nothing else.** The cudgel and the broom are
+gone. (The cook-pot IS the "cook pot and straps" - one item, and the only one of the three worth
+putting on anybody.)
+
+### 10 · A lost fight can be taken again
+
+**Reach it in three steps:** lose a battle badly enough to wipe the company → read THE COMPANY ENDS
+HERE → press **Take it again**.
+
+**What should happen.** You are back at the start of that same fight, with the company, the day,
+the purse and the road **exactly as they stood when it began**. Driven end to end here: day 9 went
+back to 7, three crowns back to 91, and the fight stood up again with four on their feet.
+
+⚠ **The offer lives for the session only.** Close the tab and the dead company is dead - a replay
+is about the fight you just lost, not a save you can come back to next week.
+
+### 11 · Nobody chases a broken dog into a corner
+
+**Reach it in three steps:** the dog pack (or any fight) → break every enemy left so they are all
+running → **your next turn**.
+
+**What should happen.** A card: **THEY ARE ALL RUNNING**, and two doors - *Let them go. The field is
+ours.* (the fight ends, the haul is the same) or *No. Run them down.* Asked **once** per fight.
+
+**Why it did not already work.** The mercy screen has always ended a fight where everyone routs -
+but only where there are **people** among them, because only people surrender. A field of routed
+**beasts** had no ending but killing every last one. That was your dog.
+
+⚠ **AUTO is never offered it** - AUTO plays the fight, never the run - so on AUTO the chase still
+happens. Take the reins and the card appears.
+
+---
+
+**Verified here before it shipped:** LINT 0 · no em dash in the events · every road door still
+wearing its intent · **all eight fights through the regression three times, every one clean** ·
+the furniture measured across a live board from a 35px body to a 54px one · the rout card and the
+replay both driven end to end in a real campaign fight. **Your save was taken out of localStorage
+and written back afterwards, twice.**
+
+**Pictures:** `shots/157_before.html` and `shots/157_after.html`, the same board before and after,
+on the build's own CSS.
+
+---
+
 ## ⚔ THE PLAYTEST BATCH - TWELVE NOTES  *(#156 · 2026-08-14 · build log 8f.184)*
 
 Your twelve notes from the playthrough. Six of them are on the battlefield, four on the front door

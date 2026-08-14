@@ -1,0 +1,925 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Grimtoll - event format sketches</title>
+<!--
+  ══════════════════════════════════════════════════════════════════════════
+  EVENT FORMAT SKETCHES, 2026-08-14
+  ══════════════════════════════════════════════════════════════════════════
+  A SEPARATE prototype. Nothing here is wired into grimtoll_slice.html and
+  nothing here should be copied into it by hand: if a direction is picked, it
+  is BUILT in the slice against the real EVENTS{}, the real cast() and the
+  real evFxChips().
+
+  What is real here and what is not:
+    REAL - the CSS (lifted verbatim from the slice: :root, #wDlg, .choice,
+           .abfx/.fxc, .said), the art (extracted from ART{} into the
+           sidecar event_formats_art.js), the card text of `clash`, `toll`
+           and `coin`, the intent glyphs, the roster (names, races, classes,
+           traits).
+    NEW   - every VOICE line attributed to a crew member. Those are written
+           for this sketch to show what attribution does. They are not canon
+           and they have not been through the length bands.
+
+  Rules obeyed while writing: no em dash anywhere; the receipt lives on the
+  chips and never in the prose; a glyph is intent, never a receipt.
+-->
+<script src="event_formats_art.js"></script>
+<style>
+:root{
+  --g0:#1d1710; --g1:#3d2f1d; --g2:#6b5330; --g3:#a38652; --g4:#d9bd7e;
+  --g-ink:#100c06; --g-body:#c2b493;
+  --gold:#d9bd7e; --morale:#c9a227; --grain:#8ca35a; --wood:#a9713c; --gem:#5f8fa8;
+  --blood-lit:#a33b34;
+  --display:'Cinzel','Trajan Pro','Palatino Linotype','Book Antiqua',Georgia,serif;
+  --body:'Spectral',Georgia,'Iowan Old Style','Times New Roman',serif;
+  --mono:'JetBrains Mono',Consolas,'DejaVu Sans Mono','Courier New',monospace;
+  /* the three voice colours this sketch introduces, and nothing else is new */
+  --v-road:#8a7449;   /* the narrator */
+  --v-crew:#d9bd7e;   /* somebody in your company */
+  --v-them:#c08a5a;   /* somebody who is not */
+  --v-gut:#7d9490;    /* the trait voice, the expensive option */
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:#07090a;color:var(--g-body);font-family:var(--body)}
+body{padding:0 0 60px}
+
+/* ── the page's own furniture, deliberately plain so it never reads as the game ── */
+header{position:sticky;top:0;z-index:50;background:#0b0906;border-bottom:1px solid #2a2114;
+  padding:12px 22px 0}
+h1{font-family:var(--display);font-size:17px;color:#e0d3b4;margin:0 0 2px;letter-spacing:.04em}
+.sub{font-family:var(--mono);font-size:10.5px;color:#6b5330;letter-spacing:.06em;margin-bottom:10px}
+nav{display:flex;gap:0;flex-wrap:wrap}
+nav button{font-family:var(--mono);font-size:11px;letter-spacing:.1em;padding:8px 14px;
+  background:none;border:none;border-bottom:2px solid transparent;color:#7a6a4c;cursor:pointer}
+nav button:hover{color:var(--g3)}
+nav button.on{color:var(--g4);border-bottom-color:var(--g3)}
+main{padding:26px 22px}
+.panel{display:none}
+.panel.on{display:grid;grid-template-columns:minmax(620px,auto) 320px;gap:26px;align-items:start}
+.panel.wide.on{grid-template-columns:minmax(880px,auto) 320px}
+.panel.full.on{grid-template-columns:1fr}
+
+/* the note beside each sketch: what it is, where it fits, what it costs */
+.note{border:1px solid #2a2114;background:#0f0c07;padding:14px 15px;font-size:13px;line-height:1.5}
+.note h4{font-family:var(--mono);font-size:10px;letter-spacing:.14em;color:#8a7449;
+  margin:0 0 8px;font-weight:400}
+.note h4+p{margin-top:0}
+.note p{margin:0 0 11px}
+.note b{color:var(--g4);font-weight:400}
+.note .tag{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;padding:2px 6px;
+  border:1px solid #48602c;color:#8ca35a;margin-right:5px;white-space:nowrap;display:inline-block}
+.note .tag.cost{border-color:#6b4a24;color:#c07a2c}
+.note .tag.risk{border-color:#6b2a24;color:#c15d55}
+.stage{display:flex;flex-direction:column;gap:9px;align-items:flex-start}
+.stagelbl{font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;color:#4d3c22}
+
+/* ══ VERBATIM FROM THE SLICE ══════════════════════════════════════════════ */
+.wDlg{width:620px;background:rgba(24,18,10,.97);border:1px solid #5c4a2c;
+  box-shadow:0 12px 40px rgba(0,0,0,.7);padding:14px 16px;display:flex;
+  flex-direction:column;gap:9px}
+.wDlg h3{font-family:var(--display);font-size:18px;color:#e0d3b4;margin:0;font-weight:600;
+  letter-spacing:.03em;text-wrap:balance}
+.wDlg .art{width:100%;height:212px;display:block;object-fit:cover;
+  outline:1px solid #4d3c22;outline-offset:-1px}
+.wDlg .bd{font-size:14.5px;color:var(--g-body);line-height:1.4;text-wrap:pretty;white-space:pre-line}
+.said{font-size:14.5px;color:#e0d3b4;font-style:italic;border-left:3px solid var(--g2);
+  padding-left:11px;line-height:1.4}
+.choice{padding:7px 9px;background:#2a2114;border:1px solid #4d3c22;display:flex;
+  flex-direction:column;gap:1px;width:100%;text-align:left;font-family:inherit;cursor:pointer}
+.choice:hover{background:#372a18;border-color:var(--g3)}
+.choice.danger{border-color:#8c3a31;background:#2c1a15}
+.choice.danger b{color:#e08a7e}
+.choice.danger:hover{background:#3a1d18;border-color:var(--blood-lit)}
+.choice.racey{border-color:#5a7a6a}
+.choice b{font-size:15px;color:var(--g4);font-weight:400}
+.choice i{font-family:var(--mono);font-size:12.5px;color:#c2a877;font-style:normal;line-height:1.35}
+.cig{font-style:normal;font-size:18px;line-height:1;margin-right:6px}
+.choices{display:flex;flex-direction:column;gap:6px}
+.abfx{display:flex;gap:9px;flex-wrap:wrap;align-items:stretch}
+.fxc{display:flex;align-items:center;gap:8px;border:1px solid #3d2f1d;background:#171208;
+  padding:7px 12px 7px 10px}
+.fxi{font-size:20px;line-height:1}
+.fxn{font-family:var(--mono);font-size:20px;font-weight:700;line-height:1;letter-spacing:-.01em}
+.fxl{font-family:var(--mono);font-size:8.5px;letter-spacing:.14em;color:#8a7449;display:block;margin-top:3px}
+.fx-up .fxi,.fx-up .fxn{color:#8ca35a}
+.fx-down .fxi,.fx-down .fxn{color:#c15d55}
+.fx-crowns .fxi,.fx-crowns .fxn{color:var(--gold)}
+
+/* ══ A - THE SPEAKER ══════════════════════════════════════════════════════
+   Hades' shape: a bust at the edge, a name plate, ONE line at a time, the
+   player taps the pace. The art stops being a letterbox on top of the prose
+   and becomes the ground the speaker stands in front of. */
+.spk{width:620px;background:#100c06;border:1px solid #5c4a2c;box-shadow:0 12px 40px rgba(0,0,0,.7);
+  position:relative;cursor:pointer;user-select:none}
+.spk .scene{position:relative;height:268px;overflow:hidden}
+.spk .scene img.bg{width:100%;height:100%;object-fit:cover;display:block;filter:saturate(.9)}
+.spk .scene::after{content:"";position:absolute;inset:0;
+  background:linear-gradient(to bottom,rgba(16,12,6,.15) 30%,rgba(16,12,6,.86) 76%,#100c06 100%)}
+.spk h3{position:absolute;top:12px;left:16px;z-index:3;margin:0;font-family:var(--display);
+  font-size:15px;letter-spacing:.14em;color:#c2b493;font-weight:600;
+  text-shadow:0 2px 8px #000,0 0 22px #000}
+.spk .bust{position:absolute;left:14px;bottom:0;z-index:3;width:132px;height:158px;
+  object-fit:cover;object-position:top center;
+  -webkit-mask-image:linear-gradient(to bottom,#000 62%,transparent 99%);
+  mask-image:linear-gradient(to bottom,#000 62%,transparent 99%);
+  filter:drop-shadow(0 0 14px #000);opacity:0;transform:translateY(14px);
+  transition:opacity .22s ease,transform .22s ease}
+.spk .bust.on{opacity:1;transform:translateY(0)}
+.spk .line{position:absolute;left:0;right:0;bottom:0;z-index:4;padding:0 18px 16px 160px;
+  min-height:112px;display:flex;flex-direction:column;justify-content:flex-end;gap:5px}
+.spk .line.noface{padding-left:18px}
+.spk .who{font-family:var(--mono);font-size:10px;letter-spacing:.17em;color:var(--v-crew)}
+.spk .who .job{color:#7a6a4c;letter-spacing:.1em}
+.spk .who.road{color:var(--v-road)}
+.spk .txt{font-size:16px;line-height:1.36;color:#e6dcc4;text-wrap:pretty;
+  text-shadow:0 1px 6px #000}
+.spk .txt.said{border-left:3px solid var(--g2);padding-left:11px;font-style:italic;color:#f0e6cd}
+.spk .adv{position:absolute;right:14px;bottom:10px;z-index:5;font-family:var(--mono);font-size:9.5px;
+  letter-spacing:.14em;color:#6b5330;animation:pulse 1.5s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:.35}50%{opacity:1}}
+.spk .beats{position:absolute;right:14px;top:14px;z-index:5;display:flex;gap:4px}
+.spk .beats span{width:14px;height:2px;background:#3d2f1d}
+.spk .beats span.on{background:var(--g3)}
+.spk .doors{padding:12px 14px 14px;display:flex;flex-direction:column;gap:6px;
+  border-top:1px solid #2a2114;background:#181207}
+
+/* ══ B - THE COLUMN ═══════════════════════════════════════════════════════
+   Esoteric Ebb / Disco: the lines ACCUMULATE, every one of them owned by a
+   named voice, and the choice list at the foot shows the doors you cannot
+   open and why. */
+.col{width:620px;background:rgba(24,18,10,.97);border:1px solid #5c4a2c;
+  box-shadow:0 12px 40px rgba(0,0,0,.7);padding:0;display:flex;flex-direction:column}
+.col .head{display:flex;gap:12px;align-items:center;padding:12px 16px;border-bottom:1px solid #2a2114}
+.col .head img{width:74px;height:52px;object-fit:cover;outline:1px solid #4d3c22;outline-offset:-1px}
+.col .head h3{font-family:var(--display);font-size:16px;color:#e0d3b4;margin:0;letter-spacing:.03em}
+.col .head .where{font-family:var(--mono);font-size:9.5px;letter-spacing:.13em;color:#6b5330;margin-top:3px}
+.col .flow{padding:14px 16px 4px;display:flex;flex-direction:column;gap:13px;
+  max-height:322px;overflow-y:auto}
+.vline{display:flex;gap:11px;opacity:0;transform:translateY(6px);
+  transition:opacity .3s ease,transform .3s ease}
+.vline.on{opacity:1;transform:none}
+.vline .orb{width:34px;height:34px;flex:0 0 34px;border-radius:50%;object-fit:cover;
+  object-position:top center;border:1px solid #4d3c22;filter:saturate(.85)}
+.vline .orb.blank{border-style:dashed;border-color:#3d2f1d;display:flex;align-items:center;
+  justify-content:center;font-size:15px;color:#4d3c22}
+.vline .said2{flex:1 1 auto}
+.vline .nm{font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;margin-bottom:3px}
+.vline .nm .job{color:#6b5330;letter-spacing:.09em}
+.vline.road .nm{color:var(--v-road)}
+.vline.crew .nm{color:var(--v-crew)}
+.vline.them .nm{color:var(--v-them)}
+.vline.gut  .nm{color:var(--v-gut)}
+.vline .tx{font-size:14.5px;line-height:1.42;color:var(--g-body);text-wrap:pretty}
+.vline.crew .tx,.vline.them .tx{color:#e0d3b4;font-style:italic}
+.vline.gut .tx{color:#a8bab6;font-style:italic}
+.col .foot{padding:10px 16px 14px;display:flex;flex-direction:column;gap:6px;
+  border-top:1px solid #2a2114;background:#181207}
+.choice.locked{background:#14100a;border-color:#2a2114;cursor:not-allowed}
+.choice.locked b{color:#5c4a2c}
+.choice.locked i{color:#5c4a2c}
+.choice .why{font-family:var(--mono);font-size:11px;color:#7d6a52;font-style:normal}
+.numk{font-family:var(--mono);font-size:11px;color:#6b5330;margin-right:7px}
+
+/* ══ C - THE STANDOFF ═════════════════════════════════════════════════════
+   Banner Saga: two sides of the frame, a band of text under them, and the
+   doors laid out where the people are. */
+.sto{width:880px;background:#100c06;border:1px solid #5c4a2c;box-shadow:0 12px 40px rgba(0,0,0,.7)}
+.sto .field{position:relative;height:290px;overflow:hidden}
+.sto .field img.bg{width:100%;height:100%;object-fit:cover;filter:saturate(.72) brightness(.62)}
+.sto .field::after{content:"";position:absolute;inset:0;
+  background:radial-gradient(ellipse at 50% 96%,rgba(16,12,6,.9),rgba(16,12,6,.25) 58%),
+             linear-gradient(to bottom,rgba(16,12,6,.55),rgba(16,12,6,.1) 40%,rgba(16,12,6,.95))}
+.sto h3{position:absolute;top:12px;left:0;right:0;z-index:4;text-align:center;margin:0;
+  font-family:var(--display);font-size:15px;letter-spacing:.2em;color:#c2b493;font-weight:600;
+  text-shadow:0 2px 10px #000}
+.side{position:absolute;bottom:64px;z-index:3;display:flex;flex-direction:column;gap:7px}
+.side.l{left:26px;align-items:flex-start}
+.side.r{right:26px;align-items:flex-end}
+.side .row{display:flex;gap:-6px}
+.side .row img{width:56px;height:66px;object-fit:cover;object-position:top center;
+  border:1px solid #3d2f1d;filter:drop-shadow(0 6px 10px #000) saturate(.8);margin-right:-12px}
+.side.r .row img{transform:scaleX(-1)}
+.side .cap{font-family:var(--mono);font-size:10px;letter-spacing:.13em;color:#c2b493}
+.side .cap em{font-style:normal;color:#7a6a4c;letter-spacing:.08em}
+.side.l .cap{border-left:2px solid #6b4a24;padding-left:7px}
+.side.r .cap{border-right:2px solid #6b4a24;padding-right:7px;text-align:right}
+.ours{position:absolute;left:50%;transform:translateX(-50%);bottom:8px;z-index:4;
+  display:flex;flex-direction:column;align-items:center;gap:5px}
+.ours .row{display:flex;gap:3px}
+.ours .row img{width:38px;height:44px;object-fit:cover;object-position:top center;
+  border:1px solid #4d3c22;filter:drop-shadow(0 4px 8px #000)}
+.ours .cap{font-family:var(--mono);font-size:9px;letter-spacing:.16em;color:#6b5330}
+.sto .band{padding:13px 20px;border-top:1px solid #2a2114;background:#15100a;
+  font-size:14.5px;line-height:1.42;color:var(--g-body);text-wrap:pretty}
+.sto .band .said{margin-top:8px;font-size:14px}
+.sto .doors{display:grid;grid-template-columns:1fr 1fr;gap:7px;padding:12px 16px 14px;
+  background:#181207;border-top:1px solid #2a2114}
+.sto .doors .mid{grid-column:1 / -1}
+
+/* ══ D - THE STRIP ════════════════════════════════════════════════════════
+   The cut. A pickup has no decision to protect, so it does not get a screen
+   at all: it happens ON the road. */
+.roadmock{width:620px;height:300px;position:relative;overflow:hidden;
+  border:1px solid #2a2114;background:
+    radial-gradient(ellipse at 40% 30%,#1a2015,#100c06 70%)}
+.roadmock .topbar{position:absolute;top:0;left:0;right:0;height:34px;background:#12100a;
+  border-bottom:1px solid #2a2114;display:flex;align-items:center;gap:16px;padding:0 12px;
+  font-family:var(--mono);font-size:11px;color:#a89468}
+.roadmock .topbar b{color:var(--g4);font-weight:400}
+.roadmock .path{position:absolute;left:-4%;right:-4%;top:52%;height:16px;
+  background:linear-gradient(to bottom,#2a2114,#1a1509);transform:rotate(-3deg);opacity:.8}
+.roadmock .party{position:absolute;left:120px;top:calc(52% - 30px);display:flex;gap:2px}
+.roadmock .party img{width:26px;height:31px;object-fit:cover;object-position:top center;
+  border:1px solid #3d2f1d;filter:drop-shadow(0 3px 5px #000)}
+.strip{position:absolute;left:12px;right:12px;bottom:12px;z-index:5;display:flex;gap:12px;
+  align-items:center;background:rgba(24,18,10,.97);border:1px solid #5c4a2c;
+  box-shadow:0 8px 26px rgba(0,0,0,.75);padding:10px 12px;
+  animation:slidein .32s cubic-bezier(.2,.9,.3,1)}
+@keyframes slidein{from{transform:translateY(30px);opacity:0}to{transform:none;opacity:1}}
+.strip img.pic{width:84px;height:62px;object-fit:cover;outline:1px solid #4d3c22;outline-offset:-1px;flex:0 0 84px}
+.strip .txt{flex:1 1 auto;font-size:13.5px;line-height:1.36;color:var(--g-body)}
+.strip .txt em{font-style:normal;color:#e0d3b4}
+.strip .fxc{padding:5px 9px 5px 8px}
+.strip .fxi{font-size:16px}
+.strip .fxn{font-size:16px}
+.strip .go{font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--g4);
+  background:#2a2114;border:1px solid #4d3c22;padding:9px 13px;cursor:pointer;white-space:nowrap}
+.strip .go:hover{background:#372a18;border-color:var(--g3)}
+.replay{font-family:var(--mono);font-size:10px;letter-spacing:.1em;color:#6b5330;background:none;
+  border:1px solid #2a2114;padding:6px 11px;cursor:pointer}
+.replay:hover{color:var(--g3);border-color:#4d3c22}
+
+/* ══ E - THE TWO-HANDER ═══════════════════════════════════════════════════
+   The other Hades shape: one face on the left, one on the right, and the
+   frame belongs to whoever is talking. The non-speaker DIMS. That single
+   convention is what stops two portraits from reading as a group photo. */
+.two{width:660px;background:#100c06;border:1px solid #5c4a2c;box-shadow:0 12px 40px rgba(0,0,0,.7);
+  cursor:pointer;user-select:none}
+.two .scene{position:relative;height:300px;overflow:hidden}
+.two .scene img.bg{width:100%;height:100%;object-fit:cover;filter:saturate(.8) brightness(.7)}
+.two .scene::after{content:"";position:absolute;inset:0;
+  background:linear-gradient(to bottom,rgba(16,12,6,.55) 0%,rgba(16,12,6,.1) 34%,rgba(16,12,6,.9) 82%,#100c06 100%)}
+.two h3{position:absolute;top:11px;left:0;right:0;z-index:4;text-align:center;margin:0;
+  font-family:var(--display);font-size:14px;letter-spacing:.2em;color:#c2b493;font-weight:600;
+  text-shadow:0 2px 10px #000}
+.two .bust2{position:absolute;bottom:0;z-index:3;width:150px;height:186px;object-fit:cover;
+  object-position:top center;filter:drop-shadow(0 0 16px #000);
+  -webkit-mask-image:linear-gradient(to bottom,#000 66%,transparent 99%);
+  mask-image:linear-gradient(to bottom,#000 66%,transparent 99%);
+  transition:filter .25s ease,opacity .25s ease,transform .25s ease}
+.two .bust2.l{left:10px}
+.two .bust2.r{right:10px;transform:scaleX(-1)}
+/* ⚑ THE WHOLE DEVICE IS ON THIS ONE LINE. Whoever is not talking steps back. */
+.two .bust2.dim{filter:grayscale(.85) brightness(.32);opacity:.75}
+.two .bust2.l.dim{transform:translateX(-8px)}
+.two .bust2.r.dim{transform:scaleX(-1) translateX(-8px)}
+.two .band2{position:absolute;left:0;right:0;bottom:0;z-index:4;padding:0 22px 15px;
+  min-height:104px;display:flex;flex-direction:column;justify-content:flex-end;gap:5px}
+.two .band2.toL{padding-left:170px;padding-right:24px;text-align:left}
+.two .band2.toR{padding-right:170px;padding-left:24px;text-align:right}
+.two .band2.mid{padding-left:170px;padding-right:170px;text-align:center}
+.two .who2{font-family:var(--mono);font-size:10px;letter-spacing:.17em;color:var(--v-them)}
+.two .who2.you{color:var(--v-crew)}
+.two .who2.road{color:var(--v-road)}
+.two .who2 .job{color:#7a6a4c;letter-spacing:.09em}
+.two .tx2{font-size:16px;line-height:1.36;color:#e6dcc4;text-shadow:0 1px 6px #000;text-wrap:pretty}
+.two .tx2.q{font-style:italic;color:#f2e8cf}
+.two .adv2{position:absolute;right:14px;bottom:9px;z-index:5;font-family:var(--mono);font-size:9.5px;
+  letter-spacing:.14em;color:#6b5330;animation:pulse 1.5s ease-in-out infinite}
+.two .doors2{padding:12px 14px 14px;display:flex;flex-direction:column;gap:6px;
+  border-top:1px solid #2a2114;background:#181207}
+.flip{display:flex;gap:0;margin-bottom:2px}
+.flip button{font-family:var(--mono);font-size:9.5px;letter-spacing:.11em;padding:5px 10px;
+  background:#14100a;border:1px solid #2a2114;color:#6b5330;cursor:pointer}
+.flip button.on{color:var(--g4);border-color:#4d3c22;background:#241c10}
+
+/* ══ F - THE SIGIL LINE ═══════════════════════════════════════════════════
+   The card readable at two depths: a band of marks for the glance, prose
+   underneath for whoever wants it. */
+.sig{width:620px;background:rgba(24,18,10,.97);border:1px solid #5c4a2c;
+  box-shadow:0 12px 40px rgba(0,0,0,.7);padding:14px 16px;display:flex;
+  flex-direction:column;gap:11px}
+.sig h3{font-family:var(--display);font-size:18px;color:#e0d3b4;margin:0;font-weight:600;letter-spacing:.03em}
+.sig .art{width:100%;height:132px;object-fit:cover;outline:1px solid #4d3c22;outline-offset:-1px}
+.sigband{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}
+.sg{background:#181207;border:1px solid #3d2f1d;padding:9px 6px 7px;text-align:center;cursor:pointer;
+  transition:border-color .15s ease,background .15s ease}
+.sg:hover,.sg.on{border-color:var(--g3);background:#241c10}
+.sg .gl{font-size:26px;line-height:1;display:block;margin-bottom:6px;filter:saturate(.85)}
+.sg .lb{font-family:var(--mono);font-size:8.5px;letter-spacing:.13em;color:#8a7449;display:block;line-height:1.3}
+.sg.on .lb{color:var(--g4)}
+.sigsaid{border-left:3px solid var(--g2);padding:2px 0 2px 11px;font-size:14.5px;line-height:1.42;
+  color:#e0d3b4;min-height:40px;display:flex;align-items:center}
+.sigsaid.empty{color:#5c4a2c;font-family:var(--mono);font-size:11px;letter-spacing:.1em;font-style:normal}
+.sigrec{display:flex;gap:7px;align-items:center;font-family:var(--mono);font-size:9.5px;
+  letter-spacing:.1em;color:#5c4a2c;border-top:1px solid #2a2114;padding-top:9px}
+.sigrec .gl2{font-size:15px;filter:grayscale(.3)}
+.sigrec b{color:#7a6a4c;font-weight:400}
+
+/* ══ G - HIS OWN STORY ════════════════════════════════════════════════════ */
+.own{width:620px;background:rgba(24,18,10,.97);border:1px solid #5c4a2c;
+  box-shadow:0 12px 40px rgba(0,0,0,.7);display:flex;flex-direction:column}
+.own .top{display:flex;gap:0;border-bottom:1px solid #2a2114}
+.own .face{width:150px;height:186px;flex:0 0 150px;object-fit:cover;object-position:top center;
+  border-right:1px solid #2a2114;filter:saturate(.9)}
+.own .tell{padding:13px 16px;display:flex;flex-direction:column;gap:9px;flex:1 1 auto}
+.own h3{font-family:var(--display);font-size:17px;color:#e0d3b4;margin:0;font-weight:600;letter-spacing:.03em}
+.own .byline{font-family:var(--mono);font-size:9.5px;letter-spacing:.15em;color:var(--v-crew)}
+.own .byline .job{color:#6b5330;letter-spacing:.09em}
+.own .tellof{font-family:var(--mono);font-size:10.5px;color:var(--v-gut);font-style:italic;
+  border-left:2px solid #3d4d4a;padding-left:8px;line-height:1.35}
+.own .story{font-size:15px;line-height:1.48;color:#e0d3b4;text-wrap:pretty;white-space:pre-line;
+  padding:13px 16px 4px}
+.own .foot{padding:10px 16px 14px;display:flex;flex-direction:column;gap:7px}
+.own .split{font-family:var(--mono);font-size:9.5px;letter-spacing:.11em;color:#5c4a2c;
+  border-top:1px solid #2a2114;padding-top:9px}
+.own .split b{color:#7a6a4c;font-weight:400}
+
+/* ══ the matrix tab ═══════════════════════════════════════════════════════ */
+table{border-collapse:collapse;font-size:13px;width:100%;max-width:1080px}
+th,td{border:1px solid #2a2114;padding:8px 11px;text-align:left;vertical-align:top}
+th{font-family:var(--mono);font-size:9.5px;letter-spacing:.13em;color:#8a7449;font-weight:400;
+  background:#12100a}
+td b{color:var(--g4);font-weight:400}
+td.f{white-space:nowrap;font-family:var(--mono);font-size:11px;color:var(--g3)}
+h2{font-family:var(--display);font-size:15px;color:#e0d3b4;letter-spacing:.06em;
+  margin:26px 0 10px;font-weight:600}
+h2:first-child{margin-top:0}
+.matrix p{max-width:1080px;line-height:1.55;font-size:13.5px}
+</style>
+
+<header>
+  <h1>Event formats - seven sketches against the shipped card</h1>
+  <div class="sub">separate prototype · real CSS and art from grimtoll_slice.html · real card text from clash / toll / pedlar / coin · the voice lines are new and not canon</div>
+  <nav id="nav"></nav>
+</header>
+
+<main>
+  <!-- ═══ 0 · TODAY ═══════════════════════════════════════════════════ -->
+  <section class="panel" data-k="today">
+    <div class="stage">
+      <div class="stagelbl">SHIPPED, BUILD 8f.184 · 620px · THE BASELINE</div>
+      <div class="wDlg" id="todayCard"></div>
+    </div>
+    <div class="note">
+      <h4>WHAT IT IS</h4>
+      <p>The container every one of the <b>34 road cards</b> uses: title, letterbox painting, a block of narrator prose, the doors, then an outcome block with chips.</p>
+      <h4>WHY IT READS AS "TEXT"</h4>
+      <p>Nothing here is badly written and nothing is too long. The mean card is <b>107 words</b>, the ceiling is 175, and Battle Brothers runs several times that. The problem is that <b>all 34 cards have the same rhythm</b>, and there is no face anywhere: three paragraphs arrive at once, from nobody in particular, about people you cannot see.</p>
+      <h4>WHAT THE SEVEN SKETCHES CHANGE</h4>
+      <p>None of them adds words. A gives the words a <b>mouth</b>. B gives them a <b>stack</b>. C gives them a <b>geography</b>. D takes the screen away entirely. E gives them <b>somebody to argue with</b>.</p>
+      <p>The last two are not containers. F puts a <b>mark</b> where a fact used to be a sentence. G hands the whole card to <b>one person</b>, who may be wrong about it.</p>
+    </div>
+  </section>
+
+  <!-- ═══ A · THE SPEAKER ═════════════════════════════════════════════ -->
+  <section class="panel" data-k="speaker">
+    <div class="stage">
+      <div class="stagelbl">A · THE SPEAKER (Hades) · CLICK THE CARD TO ADVANCE</div>
+      <div class="spk" id="spkCard"></div>
+      <button class="replay" onclick="mountSpeaker()">↺ replay from the first beat</button>
+    </div>
+    <div class="note">
+      <h4>THE SHAPE STOLEN</h4>
+      <p>Hades: a bust at the edge of the frame, a name, <b>one line at a time</b>, and the player taps the pace. Hades is not short. It has hundreds of thousands of words. It reads fast because no line is ever waiting for you to finish another one.</p>
+      <h4>WHAT CHANGES HERE</h4>
+      <p>The two count sentences that used to be narrator furniture are now <b>spoken by the two people with family on each side</b>. Skree counts his cousins. Bruht counts his. Same information, and now it costs nothing to read because somebody wants to tell you.</p>
+      <p>The painting stops being a letterbox on top of prose and becomes the ground the speaker stands in.</p>
+      <h4>WHAT IT COSTS</h4>
+      <p><span class="tag">free</span> the <b>beats already exist</b>: every body is written with <code>\n\n</code> breaks, so the split is a <code>.split</code>, not a rewrite.</p>
+      <p><span class="tag">free</span> portraits, <code>cast()</code>, <code>{TELLER}</code> and <code>{OGRE}</code>/<code>{RATKIN}</code> all exist. 44 token uses in the build already.</p>
+      <p><span class="tag cost">writing</span> one or two voice lines per card, 34 cards.</p>
+      <p><span class="tag risk">clicks</span> three taps where there was one. Gate it to HEAVY cards, and let any click reveal the rest.</p>
+    </div>
+  </section>
+
+  <!-- ═══ B · THE COLUMN ══════════════════════════════════════════════ -->
+  <section class="panel" data-k="column">
+    <div class="stage">
+      <div class="stagelbl">B · THE COLUMN (Esoteric Ebb / Disco Elysium) · LINES ACCUMULATE</div>
+      <div class="col" id="colCard"></div>
+      <button class="replay" onclick="mountColumn()">↺ replay</button>
+    </div>
+    <div class="note">
+      <h4>THE SHAPE STOLEN</h4>
+      <p>Disco and its descendants: <b>every line is owned by a named voice</b>, the column keeps what was already said, and the choice list at the foot shows the doors you <b>cannot</b> open together with the reason.</p>
+      <h4>THE TWO DEVICES WORTH TAKING</h4>
+      <p><b>The narrator is a character.</b> Calling it THE ROAD costs one string and turns an omniscient block into one voice among several.</p>
+      <p><b>A locked door is shown, not hidden.</b> Today <code>need</code> and <code>needRace</code> filter doors out of existence, so a player never learns that a ratkin in the company would have opened something. Showing it locked turns a hidden gate into a reason to recruit differently.</p>
+      <h4>THE TRAIT VOICE</h4>
+      <p>The blue line is the Disco skill-check trick, and it is <b>cheaper than it looks</b>: every person already carries a <code>trait</code> (stubborn, twitchy, big, nofear, windtouched). A trait voice is a lookup on data that exists, not a new system. It is still the most expensive thing on this page, because it wants a line per trait per card.</p>
+      <h4>WHAT IT COSTS</h4>
+      <p><span class="tag cost">renderer</span> a new card body. Real work, but it is one renderer for all 34.</p>
+      <p><span class="tag risk">scroll</span> a stacking column can outgrow the box. The shipped card already solved this once: only the prose scrolls, the doors stay pinned.</p>
+    </div>
+  </section>
+
+  <!-- ═══ C · THE STANDOFF ════════════════════════════════════════════ -->
+  <section class="panel wide" data-k="standoff">
+    <div class="stage">
+      <div class="stagelbl">C · THE STANDOFF (Banner Saga) · 880px · THE DOORS SIT WHERE THE PEOPLE ARE</div>
+      <div class="sto" id="stoCard"></div>
+    </div>
+    <div class="note">
+      <h4>THE SHAPE STOLEN</h4>
+      <p>Banner Saga: a wide painted frame, <b>one party on each side facing the other</b>, a band of text beneath, and the choice list under that.</p>
+      <h4>THE ONE IDEA THAT MATTERS</h4>
+      <p><b>The doors are laid out where the people are.</b> Help the ratkin is on the left because the ratkin are on the left. Help the ogres is on the right. The cruel door is underneath both, which is exactly where you are standing while you wait for them to finish.</p>
+      <p>That is a choice you can make <b>before reading a word</b>, which is the same goal the intent glyphs had in #154, arriving through layout instead of through a symbol.</p>
+      <h4>AND IT SHOWS THE FIGHT</h4>
+      <p>Four spears against three clubs, drawn as four bodies against three. The receipt for a battle door is a force comparison, and right now that comparison is a sentence.</p>
+      <h4>WHAT IT COSTS</h4>
+      <p><span class="tag">free</span> race portraits exist (<code>RACEPORTRAIT</code>), and the enemy composition is already <b>counted</b>, not remembered: <code>clashFoes</code> is the source of truth.</p>
+      <p><span class="tag cost">width</span> 880px against the card's 620. It wants to be a full-screen scene, not a dialog.</p>
+      <p><span class="tag risk">narrow</span> only fits cards with <b>two visible sides</b>. That is clash, the wedding, the tax-man, the clan cart. Maybe six of 34.</p>
+    </div>
+  </section>
+
+  <!-- ═══ D · THE STRIP ═══════════════════════════════════════════════ -->
+  <section class="panel" data-k="strip">
+    <div class="stage">
+      <div class="stagelbl">D · THE STRIP · A PICKUP NEVER OPENS A SCREEN</div>
+      <div class="roadmock" id="stripCard"></div>
+      <button class="replay" onclick="mountStrip()">↺ replay the arrival</button>
+    </div>
+    <div class="note">
+      <h4>WHAT IT IS</h4>
+      <p>The only sketch here that is a <b>cut</b> rather than an addition, which makes it the only one that fits the clarity pass without asking for an exception.</p>
+      <p>A one-door pickup has no decision to protect. The rules already say it wears its loot on the card instead of hiding it. This goes one step further: <b>it does not get a card at all</b>. It happens on the road, the company keeps walking, and one button dismisses it.</p>
+      <h4>WHY IT MAKES THE OTHER THREE BETTER</h4>
+      <p><b>14 of 34 road cards are LIGHT.</b> If a third of the deck stops taking over the screen, the full card stops being the thing that always happens and becomes the thing that happens when it matters. Rhythm is made by contrast, and right now there is none.</p>
+      <h4>WHAT IT COSTS</h4>
+      <p><span class="tag">free</span> the gate exists: <code>visible.length===1 &amp;&amp; !visible[0].battle</code>, computed after the need filters.</p>
+      <p><span class="tag cost">small</span> a road-level strip and its dismiss.</p>
+      <p><span class="tag risk">loss</span> a light card loses its painting at full size. Some of those paintings are good.</p>
+    </div>
+  </section>
+
+  <!-- ═══ E · THE TWO-HANDER ══════════════════════════════════════════ -->
+  <section class="panel" data-k="two">
+    <div class="stage">
+      <div class="stagelbl">E · THE TWO-HANDER (Hades, the other shape) · CLICK TO ADVANCE</div>
+      <div class="two" id="twoCard"></div>
+      <button class="replay" onclick="mountTwo()">↺ replay</button>
+    </div>
+    <div class="note">
+      <h4>THE SHAPE STOLEN</h4>
+      <p>Hades again, but the conversation layout rather than the monologue one: <b>one face on the left, one on the right</b>, and the frame belongs to whoever is talking.</p>
+      <h4>THE WHOLE DEVICE IS ONE CSS LINE</h4>
+      <p><b>The non-speaker dims and steps back.</b> Without it two portraits read as a group photo and the player has to find the name plate to know who said the line. With it, you know before you read. It is <code>grayscale(.85) brightness(.32)</code> and an 8px nudge.</p>
+      <h4>WHAT IT IS FOR</h4>
+      <p>The cards where somebody <b>talks back</b>: the pedlar, the tax-man, the toll bridge, the clan cart. Not the ones where the company looks at a thing.</p>
+      <p>Note the last beat. The pedlar is friendly for two lines, and then the narrator says <b>three words</b> and they land as a threat. That rhythm is only available once the voices are separated.</p>
+      <h4>THE TOGGLE UNDER THE CARD</h4>
+      <p>Doors as <b>actions</b> is what ships today. Doors as <b>lines</b> is the expensive version: the choice becomes something the Captain says, which is the strongest form of this shape and the most writing.</p>
+      <p><span class="tag risk">94 doors</span> rewriting every label as speech is a large job, and speech is worse than an action label on any card where nobody is listening.</p>
+      <p><span class="tag cost">art</span> a talking card wants a face for the person talking. The pedlar here is wearing the generic human portrait, which is the game's own fallback.</p>
+    </div>
+  </section>
+
+  <!-- ═══ F · THE SIGIL LINE ══════════════════════════════════════════ -->
+  <section class="panel" data-k="sigil">
+    <div class="stage">
+      <div class="stagelbl">F · THE SIGIL LINE · CLICK A MARK TO OPEN IT</div>
+      <div class="sig" id="sigCard"></div>
+      <button class="replay" onclick="mountSigil()">↺ close them all</button>
+    </div>
+    <div class="note">
+      <h4>WHAT IT IS</h4>
+      <p>The card readable at <b>two depths</b>. A band of marks states the facts for the glance. The prose underneath is there for whoever wants it, and it no longer has to carry the information, so it can be mood instead of report.</p>
+      <p>The player picks the depth. That is the honest version of "make reading more interesting": some nights you read the card, some nights you read the marks.</p>
+      <h4>THE RULE THAT MAKES IT A LANGUAGE</h4>
+      <p><b>A mark used once is decoration. A mark used on six cards is a language.</b> The strip at the foot is the whole point: the same ⚑ on the toll, the cart and the wedding teaches the Snare Clan without a codex entry.</p>
+      <p>The build already has 11 marks that work this way, from <code>CHOICE_ICO</code> and <code>RACE_ICO</code>.</p>
+      <h4>WHERE THIS GOES WRONG</h4>
+      <p><span class="tag risk">receipt</span> ⛔ a mark that says <b>A PURSE</b> is one step from promising an amount. The rule holds: marks are <b>intent</b>, the chips are the receipt, and no number ever appears in both.</p>
+      <p><span class="tag risk">one meaning</span> ⛔ 💀 is already the lowest morale face. A symbol may not mean two things on one screen, so a real set has to be audited against the mood ladder and the resource icons before a single new one is drawn.</p>
+      <p><span class="tag cost">art</span> emoji will not carry a house language. A real set is drawn, and that is the largest art job on this page.</p>
+    </div>
+  </section>
+
+  <!-- ═══ G · HIS OWN STORY ═══════════════════════════════════════════ -->
+  <section class="panel" data-k="own">
+    <div class="stage">
+      <div class="stagelbl">G · HIS OWN STORY · SWITCH THE TELLER</div>
+      <div class="flip" id="ownFlip"></div>
+      <div class="own" id="ownCard"></div>
+    </div>
+    <div class="note">
+      <h4>WHAT IT IS</h4>
+      <p>Your line: <i>"tell it as the story of one of the characters, I found a coin".</i> The card is one person's account, in the first person, present tense.</p>
+      <h4>THE THING IT BUYS THAT NOTHING ELSE HERE DOES</h4>
+      <p><b>The teller can be wrong.</b> A narrator who says "four ratkin with spears" is stating a fact. A frightened ratkin who says "four spears, maybe five" is showing you who he is, and the count becomes characterisation.</p>
+      <p>So the split is clean and worth writing down: <b>the prose is his account, the door sub-lines stay the game's exact figures.</b> Style rule 8 is untouched, and the unreliable half is free.</p>
+      <h4>WHY IT IS CHEAPER THAN IT LOOKS</h4>
+      <p><span class="tag">free</span> this card <b>already picks a teller</b>. <code>openEvent</code> casts <code>{TELLER}</code> for <code>coin</code> and <code>star</code>, and the shipped line is literally "{TELLER} picks it up".</p>
+      <p>Switch the teller above and read the three. Same event, three companies, three different cards, and the difference is the person, not the writing.</p>
+      <h4>WHY IT IS NOT THE DEFAULT</h4>
+      <p><span class="tag risk">voice</span> first person <b>fights rule 1</b>, the BG3 narrator voice, which is the house style for all 34 cards. Used on four or five cards it is a change of rhythm. Used on all of them it is a different game.</p>
+      <p><span class="tag cost">per teller</span> a card written this way wants a version per possible teller, or it wants a teller it can rely on.</p>
+    </div>
+  </section>
+
+  <!-- ═══ THE MATRIX ══════════════════════════════════════════════════ -->
+  <section class="panel full matrix" data-k="which">
+    <h2>Which format for which card</h2>
+    <p>Nothing says one container has to serve all 34. The build already sorts cards three ways it could reuse: the <b>length band</b> (light 45-90, medium 90-140, heavy 140-175), whether a door starts a <b>battle</b>, and whether the card has <b>one live door or several</b>.</p>
+    <table>
+      <tr><th style="width:96px">FORMAT</th><th style="width:150px">FIRES WHEN</th><th>THE ROAD DECK</th><th style="width:230px">WHY THAT RULE</th></tr>
+      <tr><td class="f">D · STRIP</td><td class="f">one live door,<br>no battle</td>
+        <td><b>14 light cards</b>, roughly. coin · cache · snare · hollow · milestone</td>
+        <td>No decision to protect, so a screen buys nothing and costs a click</td></tr>
+      <tr><td class="f">A · SPEAKER</td><td class="f">the default,<br>2 or more doors</td>
+        <td><b>most of the deck</b>. toll · pedlar · taxman · shrine · oasis</td>
+        <td>Beats already exist in the prose. This is the cheapest change per card on the page</td></tr>
+      <tr><td class="f">C · STANDOFF</td><td class="f">two named sides<br>on screen</td>
+        <td><b>about 6</b>. clash · wedding · ratcart · deadco</td>
+        <td>The layout carries the decision. Wasted on a card with one side</td></tr>
+      <tr><td class="f">E · TWO-HANDER</td><td class="f">somebody talks<br>back</td>
+        <td><b>about 8</b>. pedlar · taxman · ratcart · saltwives · the muster</td>
+        <td>Two busts and a dim. Wasted where nobody is listening, which is most of the road</td></tr>
+      <tr><td class="f">B · COLUMN</td><td class="f">a conversation<br>with somebody</td>
+        <td><b>the camps</b>, and the long fire. The CAMPS deck is judgments, not actions</td>
+        <td>Accumulating lines is what a conversation is. A pickup is not a conversation</td></tr>
+      <tr><td class="f">G · HIS STORY</td><td class="f">one named person<br>is the subject</td>
+        <td><b>four or five, never more</b>. coin · star · the dream · the spring</td>
+        <td>First person fights the house voice. Rare, it is a change of key. Everywhere, it is a different game</td></tr>
+      <tr><td class="f">F · SIGILS</td><td class="f">a layer, not<br>a container</td>
+        <td><b>all of them, or none</b>. It sits on top of whichever container a card uses</td>
+        <td>A mark is only a language if it recurs. Half a set is worse than none</td></tr>
+    </table>
+
+    <h2>Two of these are not containers at all</h2>
+    <p><b>F is a layer</b> and <b>G is a voice.</b> Neither competes with A through E: the sigil band can sit on top of the speaker card, and the first-person story can be told inside the strip. That is why the table above gives them a row and not a slot. It also means they can be tried on <b>one card</b> without deciding anything.</p>
+
+    <h2>If only one of them gets built</h2>
+    <p><b>D and A, as one entry.</b> D is a cut and pays for itself immediately: a third of the deck stops stopping the game. A is the cheapest per-card gain in the set, because the beats and the cast system and the portraits are all already in the build, and it is the one that answers the actual complaint, which is that reading is not interesting rather than that reading is long.</p>
+    <p><b>E is A with a second bust</b>, so if A is built, E costs one more portrait slot and a dim class. Those two should be one entry, not two.</p>
+    <p>C is the one to build <b>second and narrow</b>: six cards, and it will look better in a screenshot than anything else here.</p>
+    <p>G is the cheapest <b>test</b> on the whole page. It is one card, rewritten three times, and it is already cast. If the coin told by Skree reads better than the coin told by nobody, that answers the question this page was opened to ask.</p>
+    <p>B is the biggest and the one I would hold. It wants a locked-door convention, a trait-voice table and a new scrolling body, and its natural home is the camps rather than the road.</p>
+    <p>F I would <b>not start from the art</b>. Audit the marks that already exist first, against the mood faces and the resource icons, because the set has to be collision-free before it is beautiful.</p>
+
+    <h2>What none of these fix</h2>
+    <p>The measurement I would take before any of it: <b>how many of the 34 cards change a single word if you swap the party?</b> Attribution only pays if the speaker is actually different from run to run. If the answer is small, the first job is the <code>{ANY}</code> and <code>{OGRE}</code> tokens, not the renderer.</p>
+  </section>
+</main>
+
+<script>
+/* ══════════════════════════════════════════════════════════════════════════
+   THE DEMO COMPANY. Real roster out of the slice: ids, races, classes and
+   traits are the shipped ones. The Captain's nickname is a player choice; the
+   docs use "Ilka" as the worked example, so this sketch does too.
+   ══════════════════════════════════════════════════════════════════════════ */
+const P = {
+  you   : {nm:'You "Ilka" Kolb', job:'human captain',  art:A.POR01, trait:'stubborn'},
+  vesna : {nm:'Vesna Kolb',      job:'human spear',    art:A.POR02, trait:'thrice'},
+  skree : {nm:'Skree',           job:'ratkin cutter',  art:A.POR03, trait:'twitchy'},
+  bruht : {nm:'Bruht',           job:'ogre brute',     art:A.POR04, trait:'big'},
+  marrow: {nm:'Marrow',          job:'human warmage',  art:A.POR05, trait:'windtouched'}
+};
+
+/* ── the shipped card text, verbatim ──────────────────────────────────── */
+const CLASH = {
+  title:'BLOOD ON THE ROAD', art:A.E12,
+  body:'A ratkin foraging party and an ogre steading-line have met over a dead deer. It is not worth what it is about to cost either of them.\n\n'+
+       'Four ratkin with spears and a sling, fast, loud, already committed. Three ogres with clubs, in no hurry at all.\n\n'+
+       'Neither side has seen you. That will not hold.',
+  choices:[
+    {ico:'⚔️🤝', t:'Wade in for the ratkin.', c:'3 spears beside you · 3 ogres against · 2 may join after'},
+    {ico:'⚔️🤝', t:'Wade in for the ogres.',  c:'2 clubs beside you · 5 ratkin against · 1 may join after'},
+    {ico:'⚔️☠️', t:'Wait. Then finish the winners.', c:'nobody beside you · 2 ogres against · both sides of the road are yours', danger:true}
+  ]
+};
+const TOLL = {
+  title:'THE HANGED TOLL-MAN', art:A.E13,
+  body:'He is still swinging when you reach the bridge. Good rope. Somebody went to trouble here, and trouble travels with a purse.\n\n'+
+       'A clan-mark is cut fresh into the rail: the road has an owner again.\n\n'+
+       'The boots are very good. Nobody has said anything about the boots.',
+  choices:[
+    {ico:'🙏',   t:'Cut him down. Bury what is left.', c:'it will cost you the afternoon'},
+    {ico:'🧺',   t:'Take the purse. And the boots.',   c:'he has no further use for either'},
+    {ico:'🧺',   t:'Take the bridge apart. All of it.',c:'good wood · tired men'},
+    {ico:'🧺☠️', t:'Take all of it. Purse, boots, beams.', c:'nothing is left standing here', danger:true}
+  ]
+};
+
+const doorHTML = c =>
+  '<button class="choice'+(c.danger?' danger':'')+(c.racey?' racey':'')+(c.locked?' locked':'')+'">'+
+    '<b>'+(c.n?'<span class="numk">'+c.n+'</span>':'')+'<span class="cig">'+c.ico+'</span>'+c.t+'</b>'+
+    '<i>'+(c.locked?'<span class="why">'+c.c+'</span>':c.c)+'</i>'+
+  '</button>';
+
+/* ══ 0 · TODAY ════════════════════════════════════════════════════════ */
+function mountToday(){
+  const e = TOLL;
+  document.getElementById('todayCard').innerHTML =
+    '<h3>'+e.title+'</h3>'+
+    '<img class="art" src="'+e.art+'">'+
+    '<div class="bd">'+e.body+'</div>'+
+    '<div class="choices">'+e.choices.map(doorHTML).join('')+'</div>';
+}
+
+/* ══ A · THE SPEAKER ══════════════════════════════════════════════════
+   NEW WRITING. The narrator keeps the frame and the two count sentences move
+   into the mouths of the two people who have kin on each side of the deer.
+   ══════════════════════════════════════════════════════════════════════ */
+const SPK_BEATS = [
+  {who:null,     tx:'A ratkin foraging party and an ogre steading-line have met over a dead deer.'},
+  {who:P.skree,  tx:'Four spears and a sling. That is a foraging line, not a war band, and they are already committed.', said:true},
+  {who:P.bruht,  tx:'Three clubs. Mine are in no hurry.', said:true},
+  {who:null,     tx:'It is not worth what it is about to cost either of them. Neither side has seen you. That will not hold.'}
+];
+let spkAt = 0;
+function mountSpeaker(){ spkAt = 0; drawSpeaker(); }
+function drawSpeaker(){
+  const b = SPK_BEATS[spkAt], last = spkAt === SPK_BEATS.length-1;
+  const el = document.getElementById('spkCard');
+  el.innerHTML =
+    '<div class="scene">'+
+      '<img class="bg" src="'+CLASH.art+'">'+
+      '<h3>'+CLASH.title+'</h3>'+
+      '<div class="beats">'+SPK_BEATS.map((_,i)=>'<span class="'+(i<=spkAt?'on':'')+'"></span>').join('')+'</div>'+
+      (b.who ? '<img class="bust on" src="'+b.who.art+'">' : '')+
+      '<div class="line'+(b.who?'':' noface')+'">'+
+        '<div class="who'+(b.who?'':' road')+'">'+
+          (b.who ? b.who.nm+' <span class="job">· '+b.who.job+'</span>' : 'THE ROAD')+
+        '</div>'+
+        '<div class="txt'+(b.said?' said':'')+'">'+b.tx+'</div>'+
+      '</div>'+
+      (last?'':'<div class="adv">CLICK ▸</div>')+
+    '</div>'+
+    (last ? '<div class="doors">'+CLASH.choices.map(doorHTML).join('')+'</div>' : '');
+  el.onclick = () => { if(spkAt < SPK_BEATS.length-1){ spkAt++; drawSpeaker(); } };
+}
+
+/* ══ B · THE COLUMN ═══════════════════════════════════════════════════
+   NEW WRITING, on the toll-man. The narrator becomes THE ROAD, two crew
+   members take a line each, and the fourth voice is the Captain's own trait.
+   ══════════════════════════════════════════════════════════════════════ */
+const COL_LINES = [
+  {k:'road', nm:'THE ROAD',  tx:'He is still swinging when you reach the bridge. Good rope.'},
+  {k:'crew', p:P.vesna,      tx:'Somebody went to trouble here. Trouble travels with a purse.'},
+  {k:'road', nm:'THE ROAD',  tx:'A clan-mark is cut fresh into the rail: the road has an owner again.'},
+  {k:'crew', p:P.skree,      tx:'Snare Clan. That is a week old at the most.'},
+  {k:'gut',  nm:'STUBBORN',  tx:'You could stand here all afternoon arguing with a dead man. You have done it before.'},
+  {k:'crew', p:P.marrow,     tx:'The boots are very good.'},
+  {k:'road', nm:'THE ROAD',  tx:'Nobody has said anything about the boots.'}
+];
+const COL_DOORS = [
+  {n:'1.', ico:'🙏',   t:'Cut him down. Bury what is left.',     c:'it will cost you the afternoon'},
+  {n:'2.', ico:'🧺',   t:'Take the purse. And the boots.',       c:'he has no further use for either'},
+  {n:'3.', ico:'🧺',   t:'Take the bridge apart. All of it.',    c:'good wood · tired men'},
+  {n:'4.', ico:'🧺☠️', t:'Take all of it. Purse, boots, beams.', c:'nothing is left standing here', danger:true},
+  {n:'5.', ico:'🐀',   t:'Read the clan-mark properly.',         c:'needs a ratkin in the company · Skree is here', racey:true},
+  {n:'6.', ico:'⚖️',   t:'Pay the toll and cross.',              c:'LOCKED · needs 40 crowns, you have 11', locked:true}
+];
+function mountColumn(){
+  const el = document.getElementById('colCard');
+  el.innerHTML =
+    '<div class="head">'+
+      '<img src="'+TOLL.art+'">'+
+      '<div><h3>'+TOLL.title+'</h3><div class="where">DAY 6 · THE OLD BRIDGE · ON THE WAY TO COLDHARROW</div></div>'+
+    '</div>'+
+    '<div class="flow" id="colFlow">'+COL_LINES.map(l=>
+      '<div class="vline '+l.k+'">'+
+        (l.p ? '<img class="orb" src="'+l.p.art+'">'
+             : '<div class="orb blank">'+(l.k==='gut'?'◈':'◆')+'</div>')+
+        '<div class="said2">'+
+          '<div class="nm">'+(l.p ? l.p.nm.toUpperCase()+' <span class="job">· '+l.p.job+'</span>' : l.nm)+'</div>'+
+          '<div class="tx">'+l.tx+'</div>'+
+        '</div>'+
+      '</div>').join('')+'</div>'+
+    '<div class="foot">'+COL_DOORS.map(doorHTML).join('')+'</div>';
+  /* the stagger is the whole point: the lines ARRIVE, they are not found */
+  const rows = el.querySelectorAll('.vline');
+  rows.forEach((r,i)=>setTimeout(()=>{
+    r.classList.add('on');
+    const f = document.getElementById('colFlow'); f.scrollTop = f.scrollHeight;
+  }, 90+i*260));
+  el.onclick = ()=>rows.forEach(r=>r.classList.add('on'));
+}
+
+/* ══ C · THE STANDOFF ═════════════════════════════════════════════════ */
+function mountStandoff(){
+  /* ⚠ PARENTHESES REQUIRED. `'<img src="'+x+'">'.repeat(2)` binds .repeat to
+     the closing literal, not to the whole string, and quietly draws one body
+     where two were asked for. The counts on this screen ARE the receipt. */
+  const im = (src,n) => ('<img src="'+src+'">').repeat(n||1);
+  const rat = im(A.POR03) + im(A.P7,3);   /* Skree at the front of his own line */
+  const ogr = im(A.P8,2) + im(A.POR04);   /* Bruht at the back of his */
+  const ours = [P.you,P.vesna,P.marrow,P.skree,P.bruht].map(p=>'<img src="'+p.art+'">').join('');
+  document.getElementById('stoCard').innerHTML =
+    '<div class="field">'+
+      '<img class="bg" src="'+CLASH.art+'">'+
+      '<h3>'+CLASH.title+'</h3>'+
+      '<div class="side l">'+
+        '<div class="row">'+rat+'</div>'+
+        '<div class="cap">FOUR RATKIN <em>· spears and a sling · already committed</em></div>'+
+      '</div>'+
+      '<div class="side r">'+
+        '<div class="row">'+ogr+'</div>'+
+        '<div class="cap">THREE OGRES <em>· clubs · in no hurry at all</em></div>'+
+      '</div>'+
+      '<div class="ours">'+
+        '<div class="cap">NEITHER SIDE HAS SEEN YOU</div>'+
+        '<div class="row">'+ours+'</div>'+
+      '</div>'+
+    '</div>'+
+    '<div class="band">'+
+      'They have met over a dead deer. It is not worth what it is about to cost either of them.'+
+      '<div class="said">Skree, without being asked: "That is my cousin’s line down there."</div>'+
+    '</div>'+
+    '<div class="doors">'+
+      doorHTML(CLASH.choices[0])+
+      doorHTML(CLASH.choices[1])+
+      '<div class="mid">'+doorHTML(CLASH.choices[2])+'</div>'+
+    '</div>';
+}
+
+/* ══ D · THE STRIP ════════════════════════════════════════════════════ */
+function mountStrip(){
+  const party = [P.you,P.vesna,P.marrow,P.skree,P.bruht].map(p=>'<img src="'+p.art+'">').join('');
+  document.getElementById('stripCard').innerHTML =
+    '<div class="topbar"><span>◐ DAY <b>6</b></span><span>◉ <b>11</b></span>'+
+      '<span>🌾 <b>24</b></span><span>🙂 <b>STEADY</b></span></div>'+
+    '<div class="path"></div>'+
+    '<div class="party">'+party+'</div>'+
+    '<div class="strip">'+
+      '<img class="pic" src="'+A.E13+'">'+
+      '<div class="txt">A coin in the mud of the wheel-rut, shining where nothing else on this road shines. '+
+        '<em>Skree picks it up. No head, no writing, heavier than it should be. Warm.</em></div>'+
+      '<div class="fxc fx-up"><span class="fxi">🙂</span><span><span class="fxn">+8</span>'+
+        '<span class="fxl">MORALE</span></span></div>'+
+      '<button class="go">CARRY ON</button>'+
+    '</div>';
+}
+
+/* ══ E · THE TWO-HANDER ═══════════════════════════════════════════════
+   The pedlar card, real text, broken into an exchange. NEW WRITING for the
+   two spoken beats: the shipped card says "he has counted your column and
+   his own odds, and is being extremely friendly about both", which is a
+   narrator reporting a conversation that never happens on screen.
+   ══════════════════════════════════════════════════════════════════════ */
+const PEDLAR = {
+  title:'PEDLAR ON THE RIDGE', art:A.EV03,
+  him:{nm:'THE PEDLAR', job:'one mule, no guard', art:A.P6},
+  beats:[
+    {s:'road', tx:'A one-mule pedlar with a folding table, three miles from anywhere. Salt, arrowheads, warding-bells.'},
+    {s:'him',  q:true, tx:'Warding-bells, captain. Two for the price of one, and you have the look of a company that walks at night.'},
+    {s:'you',  q:true, tx:'You are three miles from anywhere, and you are alone.'},
+    {s:'him',  q:true, tx:'I have counted your column. You have counted my mule. Let us both go on being friendly about it.'},
+    {s:'road', tx:'He is alone.'}
+  ],
+  /* the shipped labels, and the same three doors written as things the
+     Captain SAYS. Same glyphs, same sub-lines, same order. */
+  doors:{
+    act:[
+      {ico:'⚖️', t:'Buy the round shield.',        c:'−40 crowns · a shield'},
+      {ico:'⚖️', t:'Trade two gems for supplies.', c:'−2 gems · +10 provisions +6 salvage +40 crowns'},
+      {ico:'☠️', t:'Take the cart. He is one man.',c:'+150 crowns +8 provisions +5 salvage · nobody will look at you for a while', danger:true}
+    ],
+    say:[
+      {ico:'⚖️', t:'"The shield. Name it and I will not haggle."', c:'−40 crowns · a shield'},
+      {ico:'⚖️', t:'"Two gems. Fill the wagon."',                  c:'−2 gems · +10 provisions +6 salvage +40 crowns'},
+      {ico:'☠️', t:'"Nobody is going to miss you."',               c:'+150 crowns +8 provisions +5 salvage · nobody will look at you for a while', danger:true}
+    ]
+  }
+};
+let twoAt = 0, twoMode = 'act';
+function mountTwo(){ twoAt = 0; drawTwo(); }
+function drawTwo(){
+  const b = PEDLAR.beats[twoAt], last = twoAt === PEDLAR.beats.length-1;
+  const speaking = b.s;                       /* 'him' | 'you' | 'road' */
+  const dim = who => speaking===who ? '' : ' dim';
+  const nameFor = { him:PEDLAR.him.nm+' <span class="job">· '+PEDLAR.him.job+'</span>',
+                    you:P.you.nm.toUpperCase()+' <span class="job">· '+P.you.job+'</span>',
+                    road:'THE ROAD' }[speaking];
+  const el = document.getElementById('twoCard');
+  el.innerHTML =
+    '<div class="scene">'+
+      '<img class="bg" src="'+PEDLAR.art+'">'+
+      '<h3>'+PEDLAR.title+'</h3>'+
+      '<img class="bust2 l'+dim('him')+'" src="'+PEDLAR.him.art+'">'+
+      '<img class="bust2 r'+dim('you')+'" src="'+P.you.art+'">'+
+      '<div class="band2 '+(speaking==='him'?'toL':speaking==='you'?'toR':'mid')+'">'+
+        '<div class="who2 '+(speaking==='you'?'you':speaking==='road'?'road':'')+'">'+nameFor+'</div>'+
+        '<div class="tx2'+(b.q?' q':'')+'">'+(b.q?'"'+b.tx+'"':b.tx)+'</div>'+
+      '</div>'+
+      (last?'':'<div class="adv2">CLICK ▸</div>')+
+    '</div>'+
+    (last ?
+      '<div class="doors2">'+
+        '<div class="flip">'+
+          '<button class="'+(twoMode==='act'?'on':'')+'" data-m="act">DOORS AS ACTIONS · SHIPS TODAY</button>'+
+          '<button class="'+(twoMode==='say'?'on':'')+'" data-m="say">DOORS AS LINES · THE EXPENSIVE ONE</button>'+
+        '</div>'+
+        PEDLAR.doors[twoMode].map(doorHTML).join('')+
+      '</div>' : '');
+  el.onclick = e => {
+    const f = e.target.closest('.flip button');
+    if(f){ twoMode = f.dataset.m; drawTwo(); return; }
+    if(e.target.closest('.doors2')) return;      /* a door is not a page turn */
+    if(twoAt < PEDLAR.beats.length-1){ twoAt++; drawTwo(); }
+  };
+}
+
+/* ══ F · THE SIGIL LINE ═══════════════════════════════════════════════
+   Every sentence in the `said` column is the toll-man's SHIPPED prose. The
+   marks are new, and they are stand-ins: a real set is drawn, not picked
+   out of the emoji table.
+   ══════════════════════════════════════════════════════════════════════ */
+const SIGILS = [
+  {gl:'⚰️', lb:'HANGED',     said:'He is still swinging when you reach the bridge.'},
+  {gl:'🪢', lb:'GOOD ROPE',  said:'Somebody went to trouble here, and trouble travels with a purse.'},
+  {gl:'⚑',  lb:'CLAN-MARK<br>FRESH', said:'A clan-mark is cut fresh into the rail: the road has an owner again.'},
+  {gl:'👢', lb:'GOOD BOOTS', said:'The boots are very good. Nobody has said anything about the boots.'}
+];
+function mountSigil(){ drawSigil(-1); }
+function drawSigil(open){
+  const el = document.getElementById('sigCard');
+  el.innerHTML =
+    '<h3>'+TOLL.title+'</h3>'+
+    '<img class="art" src="'+TOLL.art+'">'+
+    '<div class="sigband">'+SIGILS.map((s,i)=>
+      '<div class="sg'+(i===open?' on':'')+'" data-i="'+i+'">'+
+        '<span class="gl">'+s.gl+'</span><span class="lb">'+s.lb+'</span></div>').join('')+'</div>'+
+    '<div class="sigsaid'+(open<0?' empty':'')+'">'+
+      (open<0 ? 'FOUR MARKS. READ THEM, OR OPEN ONE.' : SIGILS[open].said)+'</div>'+
+    '<div class="choices">'+TOLL.choices.map(doorHTML).join('')+'</div>'+
+    /* ⚑ THE PART THAT MAKES IT A LANGUAGE RATHER THAN A DECORATION */
+    '<div class="sigrec"><span class="gl2">⚑</span>'+
+      '<span>SEEN BEFORE ON <b>THE CLAN CART</b> · <b>THE WEDDING AT THE FORD</b> · '+
+      'and it will be on whatever the Snare Clan touches next</span></div>';
+  el.onclick = e => { const s = e.target.closest('.sg');
+    if(s) drawSigil(+s.dataset.i === open ? -1 : +s.dataset.i); };
+}
+
+/* ══ G · HIS OWN STORY ════════════════════════════════════════════════
+   NEW WRITING, three times over. The shipped card is "{TELLER} picks it up.
+   No head, no writing, heavier than it should be. Warm." - so the game
+   already decides WHO. These are the same beats from inside that person,
+   and each one carries their shipped trait.
+   ══════════════════════════════════════════════════════════════════════ */
+const TELLERS = {
+  skree:{p:P.skree, tell:'twitchy · he counts high, and he keeps things',
+    story:'I see it before anybody else does. In the wheel-rut, face up, shining where nothing on this road shines.\n\n'+
+          'No head. No writing. Heavier than a coin that size has any business being, and warm, and I do not say the warm part out loud.\n\n'+
+          'By the next mile the whole company is walking easier. Nobody asks why. I do not tell them.'},
+  bruht:{p:P.bruht, tell:'big · he notices what is within reach, and little else',
+    story:'Something bright in the mud. I pick it up because nobody else has the reach.\n\n'+
+          'No face on it. No words on it. It is warm, which is wrong, and it weighs more than it should.\n\n'+
+          'The company walks better after. I say nothing. They would only want to hold it.'},
+  vesna:{p:P.vesna, tell:'thrice · the third time is the one she watches for',
+    story:'A coin in the wheel-rut, face up, shining where nothing else on this road does.\n\n'+
+          'No head, no writing, and warm in a way the sun is not responsible for. I have picked up two things like this before now, and I would like the record to show that I put both of them down.\n\n'+
+          'By the next mile the whole company is walking easier. That is the part I do not like.'}
+};
+let ownWho = 'skree';
+function mountOwn(){
+  document.getElementById('ownFlip').innerHTML = Object.keys(TELLERS).map(k=>
+    '<button class="'+(k===ownWho?'on':'')+'" data-w="'+k+'">TOLD BY '+TELLERS[k].p.nm.toUpperCase()+'</button>').join('');
+  document.getElementById('ownFlip').onclick = e => {
+    const b = e.target.closest('button'); if(!b) return; ownWho = b.dataset.w; mountOwn(); };
+  const t = TELLERS[ownWho];
+  document.getElementById('ownCard').innerHTML =
+    '<div class="top">'+
+      '<img class="face" src="'+t.p.art+'">'+
+      '<div class="tell">'+
+        '<h3>THE COIN IN THE ROAD</h3>'+
+        '<div class="byline">TOLD BY '+t.p.nm.toUpperCase()+' <span class="job">· '+t.p.job+'</span></div>'+
+        '<div class="tellof">'+t.tell+'</div>'+
+      '</div>'+
+    '</div>'+
+    '<div class="story">'+t.story+'</div>'+
+    '<div class="foot">'+
+      doorHTML({ico:'👣', t:'Keep walking.', c:'the coin rides along'})+
+      '<div class="abfx"><div class="fxc fx-up"><span class="fxi">🙂</span>'+
+        '<span><span class="fxn">+8</span><span class="fxl">MORALE</span></span></div></div>'+
+      '<div class="split">⚑ THE PROSE IS <b>HIS ACCOUNT</b> AND MAY BE WRONG. '+
+        'THE SUB-LINE AND THE CHIP ARE <b>THE GAME\'S FIGURES</b> AND MAY NOT.</div>'+
+    '</div>';
+}
+
+/* ══ tabs ═════════════════════════════════════════════════════════════ */
+const TABS = [
+  ['today',   '0 · TODAY',         mountToday],
+  ['speaker', 'A · THE SPEAKER',   mountSpeaker],
+  ['column',  'B · THE COLUMN',    mountColumn],
+  ['standoff','C · THE STANDOFF',  mountStandoff],
+  ['strip',   'D · THE STRIP',     mountStrip],
+  ['two',     'E · THE TWO-HANDER',mountTwo],
+  ['sigil',   'F · THE SIGILS',    mountSigil],
+  ['own',     'G · HIS OWN STORY', mountOwn],
+  ['which',   'WHICH FOR WHAT',    null]
+];
+const nav = document.getElementById('nav');
+nav.innerHTML = TABS.map(t=>'<button data-k="'+t[0]+'">'+t[1]+'</button>').join('');
+function show(k){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('on', p.dataset.k===k));
+  nav.querySelectorAll('button').forEach(b=>b.classList.toggle('on', b.dataset.k===k));
+  const t = TABS.find(t=>t[0]===k); if(t && t[2]) t[2]();
+}
+nav.onclick = e => { const b = e.target.closest('button'); if(b) show(b.dataset.k); };
+show('today');
+</script>

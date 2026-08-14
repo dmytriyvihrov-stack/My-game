@@ -63,6 +63,7 @@ section used to carry each entry in full, which made the work file a second chan
 
 | | the subtraction | log |
 |---|---|---|
+| **#157** *(08-14)* | thirteen of his notes, and the first three were **one bug**: the token's furniture is nailed to the hex and the painted bodies stopped fitting it, so a health bar vanished under whoever stood in front and a status badge was drawn across the face. Both hang off the sprite now. ⊛ **SURROUNDED** on the head at three-or-more, adding no rule; the caster starts with **one school**; **nothing eats the provisions by itself** any more; the Thing in Armour cannot be left (**QA-7 cashed**); the muster's intro 100 words to 32; **a lost fight can be taken again**; and **nobody chases a broken dog into a corner** | 8f.185 |
 | **#156** *(08-14)* | twelve of his notes: **the step numbers and the terrain glyphs off the hexes**, the enemy's reach finally shown where your own preview was hiding it (with a blow picked too), the acting body wearing a hexagon instead of a smudge, **a tutorial spotlight stopping the fight it was explaining**, two actions on every body including six enemy captains, the front door down to labels and a loud pillar, the contract down to the head and the plate to 305x53, **a second company skipping the brawl**, and **the road grew the battlefield's own three-stop camera** | 8f.184 |
 | **#155** *(08-14)* | the opening pass: **THE GRAUSEN ROAD card and the tour's THE DAY step both deleted**, the prologue card stops stretching to its own ceiling, ⚔️ lands on the first fight door in the game, the naming screen trades ♥ MENDING for ⛊ HEADS, Blood on the Road halves and grows portraits, *"the company stands taller for it"* out of 11 places - and **the archer's cursor stops being a sword** | 8f.183 |
 | **#154** *(08-14)* | **every road door wears its intent**: eight glyphs measured down from ten, plus a race mark derived from `needRace`; and the Fen-Mother drops to two doors, the quiet one paying in days | 8f.182 |
@@ -286,6 +287,7 @@ name them, not because they stopped mattering.*
 | **50** | **The balance pass, at playtest grade only** | make the eight fights survivable, readable and fair. **Not the terminal pass.** Order matters: classes, then races, then fights | [spec](archive/BACKLOG_ENTRY_SPECS.md) |
 | **27** | Balance: the optional fight is harder than the finale | inside #50's parking lot, and one of the few balance readings already written down | [spec](archive/BACKLOG_ENTRY_SPECS.md) |
 | **12** | Painted faces, pack 03 | mostly the user's generator work. A face is legibility, so it is arguably clarity work, but it is not a subtraction | [spec](archive/BACKLOG_ENTRY_SPECS.md) |
+| **158** | ➹ **The shot that always hits** | ⛔ **specced only, and deliberately unbuilt** - the user's own framing, 2026-08-14: *"add a skill (for the future, into the perk branch which is under development)."* An archer PERK, 2 actions, cool 3, **55-60% of the bow**, and it ignores the roll and only the roll: ⛔ the lane still refuses it, or *"always hits"* deletes #82's cover and #36's lane in one perk. ⚑ Its reason is measured rather than felt - the average chance to hit is 65.6% and 19.4% of swings are under fifty, so what an archer lacks is not power but the ability to **promise** anything. **It waits on #50 or at least #13**, because its value is exactly as large as the current hit rate is bad, and this pass has already moved that number once | [spec](archive/BACKLOG_ENTRY_SPECS.md) |
 | **47** | The spear becomes a zone | **a rework, not an addition**, which argues for earlier. It touches enemy AI in **both brains**, which is not what you destabilise the week before strangers arrive. **The trigger that pulls it forward:** the class pass finds the spearwoman unsayable in one sentence | [spec](archive/BACKLOG_ENTRY_SPECS.md) |
 
 ---
@@ -400,10 +402,12 @@ changes between ten and thirty: **a friend asks you what a screen means, a stran
 *Both are one line, neither blocks anything. From the QA day, details in
 [`QA_PLAYTEST_2026-08-02.md`](QA_PLAYTEST_2026-08-02.md).*
 
-- **QA-7: fleeing the Thing in Armour deletes the Dead Company beat.** Deliberate in code, but THE
-  LONG FIRE one node later still says *"nine men in a ditch three miles back"* to a player who never
-  met them. Three ways out: fire the beat on the fled path anyway · gate the Long Fire's clause on
-  having seen it · accept the seam.
+- ~~**QA-7: fleeing the Thing in Armour deletes the Dead Company beat.**~~ ✅ **CASHED BY #157,
+  2026-08-14 (8f.185), and by a fourth way nobody had listed: the fight cannot be fled at all now**
+  (the user: *"you must not be able to leave the battle with the man in armour"*). No fled path, no
+  seam, and nothing downstream needed a special case. ⚑ **The lesson is worth keeping: a ruling can
+  be closed by a change made for another reason entirely**, so re-read the parking lot when a
+  system it names is touched.
 - **QA-27: the defeat epilogue opens with "The bells are still ringing"** wherever the company dies,
   including half a map from Grausen. Keep it placeless, or key one clause on where the run ended.
 
