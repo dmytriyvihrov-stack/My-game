@@ -160,6 +160,24 @@ fifteen minutes to stop being a wall, and that is a subtraction job.
 > fights that must happen. **When a number is right and reads wrong, ask what question the player
 > thought it was answering.**
 
+> **⚑ #152 SHIPPED 2026-08-14 (8f.180): wages fall due every FOURTH day now, not daily.** He asked
+> the design question first (*"how often do you think i need payments for crew? I am thinking once
+> in 4-5 days +-"*), the analysis answered **4** (daily was Battle Brothers' cadence without its
+> hundreds-of-days timescale; a ~22-day run wants the Wartales shape, a dated bill you can see
+> coming; 4 gives one payday per fork branch and a bill one good find can cover), and he ruled
+> *"ececute this new system of padayin 4 day"*. The bill **accrues silently** and the chest opens
+> **loudly** on the day - a gold flash on the chip and the purse, the coin sound, a road line,
+> never a card - and the new **PAYDAY chip** counts down to it, which is the "add this to global
+> map more clear" half. **Every crown price came off the roads in the same order** (map labels,
+> fork rows, travel buttons: days only now), which cashed #150's last open remainder, and is safe
+> because accrual keeps a longer road costing more. Two wages changed hands with it: **the Captain
+> draws 1** and **the ogre is paid 2**, ending the one-crown joke. The missed-payday grievance
+> (#5/#114: 10 mood a day, nerve on the field, the five-day walkout) is untouched except for when
+> it starts: the first short day is a payday now. **Under the pass's own rule this is a MERGE**:
+> ~22 silent daily charges became 5-6 dated events, and the only new pixel is the chip that
+> replaced UPKEEP. Full record: [`SHIPPED.md`](SHIPPED.md) #152 and [`CHANGELOG.md`](CHANGELOG.md)
+> 8f.180.
+
 ## The work, in order
 
 | | | done when |
