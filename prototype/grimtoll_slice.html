@@ -621,6 +621,31 @@ button:disabled{cursor:not-allowed}
                       50%{filter:drop-shadow(0 0 9px #f0e6c0)}}
 @media (prefers-reduced-motion:reduce){.usp.now{animation:none;
   filter:drop-shadow(0 0 6px #f0e6c0)}}
+/* ═══ #156 - AND THE GROUND UNDER THEM SAYS IT TOO ═══════════════════════
+   (User, after a playtest: "На поле боя чуть явнее подсветить - кто из моих
+   юнитов ходит".)
+
+   The acting body already breathed (above) and its hex already took a pale
+   inline background - but that background was written onto the BUTTON, which
+   is a rectangle behind a hexagon, so what it actually lit was the seams
+   between tiles. Against eight painted grounds it read as a smudge. This is
+   the same layer `.hex.spot` uses and for the same reason given there:
+   `.hedge` owns the hexagon clip-path and its `background` is written inline
+   by render(), so a pseudo-element is the one place here that is both
+   hexagon-shaped and free of that inline rule.
+
+   ⚠ THE COLOUR IS A VARIABLE, SET PER BODY. Ivory for one of yours, gold for
+   an ally or the pet, red for whoever is coming at you: the ring answers
+   "whose turn" in the same vocabulary the rest of the board uses for sides.
+   ⚠ AND IT BREATHES ON THE SAME 1.1s AS THE SPRITE, so the two marks read as
+   one mark rather than as two things happening at different speeds. */
+.hex.acting .hedge::before{content:'';position:absolute;left:0;top:0;right:0;bottom:0;
+  clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);
+  background:var(--act-fill,rgba(240,230,192,.20));
+  box-shadow:inset 0 0 0 3px var(--act-ring,rgba(240,230,192,.95));
+  animation:actring 1.1s ease-in-out infinite;pointer-events:none}
+@keyframes actring{0%,100%{opacity:.70}50%{opacity:1}}
+@media (prefers-reduced-motion:reduce){.hex.acting .hedge::before{animation:none;opacity:1}}
 /* the whisper layer — one sentence at the moment the rule first bites.
    Bottom-centre, out of the way of the field and the panel, dismissible. */
 .whisp{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);z-index:120;
@@ -958,12 +983,14 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:11px;pa
    squeeze past it.
    ⚑ #100 point 3 DID EXACTLY THAT, so the corner is the camera's again. */
 #bZoom{position:absolute;right:8px;top:8px;z-index:9;display:flex}
-#bZoom b{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;padding:5px 8px;
+/* #156 - the road grew the same control, so these five rules answer for both
+   bars. Only the two positions differ, and each declares its own. */
+#bZoom b,#wZoom b{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;padding:5px 8px;
   background:rgba(12,17,19,.92);border:1px solid #2c3d3f;border-right:none;
   color:#6b8280;font-weight:400;cursor:pointer;user-select:none}
-#bZoom b:last-child{border-right:1px solid #2c3d3f}
-#bZoom b:hover{color:#c9c6bb}
-#bZoom b.on{color:#d9bd7e;border-color:#8a6a34;background:#2a2114}
+#bZoom b:last-child,#wZoom b:last-child{border-right:1px solid #2c3d3f}
+#bZoom b:hover,#wZoom b:hover{color:#c9c6bb}
+#bZoom b.on,#wZoom b.on{color:#d9bd7e;border-color:#8a6a34;background:#2a2114}
 #bGrid{display:flex;flex-direction:column;position:relative}
 /* Field grew 13x8 → 15x10 → 15x13. The hexes shrink each time so the whole
    board still lands inside the same stage.
@@ -1059,8 +1086,9 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:11px;pa
 .blk{position:absolute;left:0;right:0;top:50%;transform:translateY(-58%);text-align:center;
   font-size:12px;line-height:1;color:#8e9ca0;pointer-events:none;
   text-shadow:0 0 3px #000,0 0 3px #000,0 1px 2px #000,0 -1px 2px #000}
-.hbadge{position:absolute;top:11px;left:0;right:0;text-align:center;font-family:var(--mono);
-        font-size:10px;font-weight:700}
+/* ⛔ #156 - `.hbadge` (the step count on a reachable hex) is deleted with the
+   number it drew. `.blk` above is now the liftable boulder's mark and nothing
+   else: the impassable glyph went in the same entry. */
 /* line-height:1 is load-bearing now that something sits under it: the default
    gave the 11px odds a 13px box, which put its foot 1px inside the damage
    line below. Both rows are pinned, so both declare their own height. */
@@ -1463,9 +1491,19 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:11px;pa
 /* #150: the description became four facts instead of a phrase, so the plate
    grew 60px and its middle line is allowed to wrap to two. It is still the
    top-left corner of a 1280px map, and it is still narrower than the day
-   plaque's clearance. */
-#wQuest{position:absolute;top:10px;left:10px;z-index:6;display:flex;align-items:center;gap:9px;
-        max-width:400px;cursor:help;overflow:hidden;
+   plaque's clearance.
+   ⚑ #156 TOOK THAT BACK, at the user's call, and this is what pins it: 400px
+   was wide enough that two of the four lines wrapped, so the box was five
+   rendered rows deep. With the letter and the destination line cut, both
+   remaining rows hold on ONE line at 340 - measured, not eyeballed: the job
+   is 43 mono characters at 10.5px and the purse 30 at 9px. ⛔ Do not put a
+   longer sentence in either row without re-measuring this number: the plate
+   has no other height limit and will simply grow down the map again. */
+/* #156 - 6 to 13: above the camera layer, which is what "floats over the map"
+   has meant since #104 and what it did not do. At 6 it sat under every travel
+   label that landed on it. */
+#wQuest{position:absolute;top:10px;left:10px;z-index:13;display:flex;align-items:center;gap:9px;
+        max-width:340px;cursor:help;overflow:hidden;
         padding:5px 13px 5px 8px;background:linear-gradient(180deg,#241b0e,#180f07);
         border:1px solid #6b5330;
         box-shadow:inset 0 0 0 1px rgba(16,12,6,.95),inset 0 0 16px rgba(0,0,0,.5),
@@ -1552,7 +1590,25 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:11px;pa
 .bcchip.crit::after{content:"";position:absolute;top:-3px;right:-3px;width:7px;height:7px;
   border-radius:50%;background:#c15d55;box-shadow:0 0 0 1px #1a1a14,0 0 7px rgba(193,93,85,.9)}
 #wMap{flex:1;position:relative;overflow:hidden}
+/* ═══ #156 · THE CAMERA LAYER ═══════════════════════════════════════════
+   ⚠ A `transform` MAKES A STACKING CONTEXT, so every z-index inside here is
+   now relative to this one number rather than to #wMap. 9 is chosen to keep
+   the shipped order: the map's own furniture ran 2 to 9 (a node 2, live 6,
+   here 7, a travel label and the company 9) and the chrome that must stay on
+   top of it runs 11 and up (the lock line, the signature, the card, the
+   news). ⚑ THE TWO PLATES THAT USED TO BE INTERLEAVED ARE NOW ABOVE IT, and
+   that is a fix rather than a side effect: the contract plate's own note has
+   said it *floats over the map* since #104, and it sat at 6, under every
+   travel label that happened to land on it.
+   ⚠ The transition is what makes a STOP CHANGE read as a camera move; a drag
+   turns it off, or the map trails the cursor by 180ms and reads as lag. */
+#wCam{position:absolute;inset:0;transform-origin:0 0;z-index:9;
+      transition:transform .18s ease-out;will-change:transform}
+#wCam.dragging{transition:none}
 #wCanvas{position:absolute;inset:0;width:100%;height:100%}
+/* the stops, top-right of the map. Same control and the same rules as the
+   battlefield's #bZoom, deliberately: one camera vocabulary, two screens. */
+#wZoom{position:absolute;right:10px;top:10px;z-index:14;display:flex}
 /* The travel label was a big box with a sentence in it, on every road out of
    the live node. User, after a playthrough: "smaller and we don't need text
    below" on a single road, and on a fork "explanations are good — but we need
@@ -1748,7 +1804,10 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:11px;pa
    corner (left 10, 86 and 10 again), and the screenshot showed all three at
    once. One row now: RULES ends near x85, MENU runs 100 to ~171, the legend
    starts at 196. It is pointer-events:none, so it costs no clicks. */
-.mlegend{position:absolute;left:196px;bottom:9px;font-family:var(--mono);font-size:9.5px;color:#8a7449;background:rgba(14,10,5,.85);border:1px solid #3d2f1d;padding:4px 9px;pointer-events:none;z-index:5}
+/* #156 - 5 to 13, and it stays a child of #wMap rather than of the camera:
+   it is anchored to the CONTAINER (left 196, bottom 9), so scaling it would
+   send it off the corner it was measured into. */
+.mlegend{position:absolute;left:196px;bottom:9px;font-family:var(--mono);font-size:9.5px;color:#8a7449;background:rgba(14,10,5,.85);border:1px solid #3d2f1d;padding:4px 9px;pointer-events:none;z-index:13}
 /* the dialog now sits ON the map, anchored to the place it happens */
 /* the map dialog's choices stick too — same reason as .popts above */
 #wDlg #wChoices{position:sticky;bottom:-14px;z-index:3;padding:8px 0 14px;margin-bottom:-14px;
@@ -2732,8 +2791,15 @@ body:has(#world.on) #audioBtn{top:8px;bottom:auto;font-size:11px;padding:3px 8px
 @media (prefers-reduced-motion:reduce){#menu,#menu::before,#menu::after{animation:none}}
 #mTitle{font-family:var(--display);font-size:74px;letter-spacing:.13em;color:#e0d3b4;
         font-weight:600;line-height:1;text-shadow:0 0 34px rgba(0,0,0,.9)}
-#mSub{font-family:var(--mono);font-size:11px;letter-spacing:.24em;color:#8a7449;
-      margin:9px 0 30px}
+/* ═══ #156 - THE PILLAR IS THE SECOND-LOUDEST THING ON THE SCREEN ════════
+   (User, after a playtest: "подписи другие 'ты не можеш быть хорошо ко всем'
+   сделать больше шрифтом".) It was 11px of tracked-out mono in the same dim
+   ochre as the row captions underneath it, so the one sentence that says what
+   this game IS was set at caption weight and read as a strapline nobody has
+   to finish. Display face, 21px, and the title's own shadow so it belongs to
+   the title rather than to the buttons. */
+#mSub{font-family:var(--display);font-size:21px;letter-spacing:.10em;color:#c2b493;
+      margin:12px 0 34px;text-shadow:0 0 26px rgba(0,0,0,.95),0 2px 6px rgba(0,0,0,.9)}
 /* #76 — the questionnaire. Deliberately plain: it is a form, not a scene, and
    the one thing it must not look like is another card the game is playing at
    you. It borrows .pcard and .helpsec from the rules screen so it inherits the
@@ -2770,7 +2836,21 @@ a.popt.sendit{display:block;text-decoration:none}
 /* a .popt standing alone outside a .popts grid still has to fill its column */
 .popt.nfull{width:100%;box-sizing:border-box;margin-top:8px}
 #mOpts{display:flex;flex-direction:column;gap:7px;width:470px}
-#mOpts .popt{padding:12px 14px}
+/* ═══ #156 - THE FRONT DOOR IS FIVE LABELS AND NOTHING ELSE ══════════════
+   (User, after a playtest: "С меню на главной странице удалить подписи под
+   пунктом мелким шрифтом".) Five rows of 9px mono under five 14px labels is
+   the shape this whole pass keeps deleting: a caption that describes a button
+   whose own words already describe it. `The practice field` does not need
+   "any fight in the act, any company, nothing riding on it" written under it
+   to be pressed. Bigger label, more air, no second line.
+   ⚑ ONE ROW KEEPS ITS FIGURES AND IT IS NOT A CAPTION. `Continue the road`
+   has to say WHICH road, or the only irreversible choice on this screen is
+   made blind, so day, company and place ride ON the label at label size. See
+   openMenu. */
+#mOpts .popt{padding:15px 16px;gap:0}
+#mOpts .popt b{font-size:16.5px;letter-spacing:.02em}
+#mOpts .popt b .mstate{font-family:var(--mono);font-size:11.5px;color:#8a7449;
+  letter-spacing:.04em;margin-left:9px;white-space:nowrap}
 #mFoot{font-family:var(--mono);font-size:9.5px;color:#5f4d2e;margin-top:26px;letter-spacing:.1em}
 /* the practice field and the standing reference share the pcard shell */
 #simCard,#helpCard{width:860px}
@@ -2931,13 +3011,23 @@ a.popt.sendit{display:block;text-decoration:none}
       <span class="dtx"></span></div>
   </div>
   <div id="wMap">
-    <canvas id="wCanvas" width="1280" height="638"></canvas>
+    <!-- ═══ #156 · THE CAMERA LAYER ══════════════════════════════════════
+         Everything drawn in DESIGN SPACE lives in here and moves together:
+         the painting, the company, and the nodes and travel labels drawNodes
+         appends. ⛔ EVERY PIECE OF CHROME STAYS OUTSIDE IT - the contract
+         plate, the zoom bar, the card, the lock line, the legend, the
+         signature, the news - because a caption that zooms is a caption that
+         leaves the screen. See WCAMS. -->
+    <div id="wCam">
+      <canvas id="wCanvas" width="1280" height="638"></canvas>
+      <!-- #106 point 5: the company on the road is the COMPANY - every body
+           in the party as its own battle sprite, shrunk. `wSpr` is filled by
+           worldTick; the face canvas it replaced is gone. -->
+      <div id="wToken"><div class="wSpr"></div>
+        <span class="tl">THE COMPANY</span></div>
+    </div>
     <div id="wQuest"></div>
-    <!-- #106 point 5: the company on the road is the COMPANY - every body
-         in the party as its own battle sprite, shrunk. `wSpr` is filled by
-         worldTick; the face canvas it replaced is gone. -->
-    <div id="wToken"><div class="wSpr"></div>
-      <span class="tl">THE COMPANY</span></div>
+    <div id="wZoom"></div>
     <div id="wDlg"></div>
     <div id="wLock">DECIDE FIRST — THE COMPANY WILL NOT MOVE UNTIL YOU DO</div>
     <!-- #118 - the company's chosen name, signed along the bottom of the
@@ -4215,6 +4305,11 @@ LEGACY.runs=LEGACY.runs||0;
 /* did the LAST company die? decides how this run's opening is told —
    no extradimensional magic, just the same physical wagon either way */
 LEGACY.priorDied=LEGACY.priorDied||false;
+/* #156 - has the tap-room brawl ever been played through on this machine? It
+   is the tutorial, so the second company walks in on the offer instead of the
+   fight. Set in tavernAfter, read in openPrologue, and never by the practice
+   field. */
+LEGACY.brawlDone=LEGACY.brawlDone||false;
 /* a NAME that knows you — the only thing so far that crosses runs without
    being an object. Set when a company frees Wynn Aldreth without a fee. */
 LEGACY.ashmoor=LEGACY.ashmoor||false;
@@ -5645,9 +5740,16 @@ function placeDlg(ax,ay,again){
   dlg.style.maxHeight=CAP+'px';
   const h=Math.min(dlg.offsetHeight||dlg.scrollHeight,CAP);
   /* #104: callers hand NODE coords, which are design space - vy() here so
-     every card door maps once. An undefined ay centres in VIEW space. */
-  const top=clamp((ay===undefined?MH/2:vy(ay))-h/2,PAD,Math.max(PAD,MH-h-PAD));
-  const left=clamp((ax===undefined?MW/2:ax)-DLGW/2,PAD,Math.max(PAD,MW-DLGW-PAD));
+     every card door maps once. An undefined ay centres in VIEW space.
+     ⚑ #156 - AND THE CAMERA IS PART OF THAT MAPPING NOW. The card is chrome
+     and does not scale, but it is ANCHORED to a place on the map, so where
+     that place is drawn is a question the camera answers. `wcamPt` is the one
+     door; without it a card would open beside where its node used to be at
+     ROAD and the whole point of anchoring it would be gone. Undefined coords
+     still mean "centre on the view" and never touch the camera. */
+  const p=(ax===undefined&&ay===undefined)?null:wcamPt(ax===undefined?0:ax,ay===undefined?0:ay);
+  const top=clamp((ay===undefined?MH/2:p.y)-h/2,PAD,Math.max(PAD,MH-h-PAD));
+  const left=clamp((ax===undefined?MW/2:p.x)-DLGW/2,PAD,Math.max(PAD,MW-DLGW-PAD));
   dlg.style.top=Math.round(top)+'px';
   dlg.style.left=Math.round(left)+'px';
   /* EVERY caller fills #wChoices AFTER revealing the card, so the first
@@ -7962,11 +8064,9 @@ function tavernWave2(){
   tavernPlace(o);
   say('And the barman comes over his own bar with a club, because it is his '+
     'furniture you are all breaking.');
-  /* #111 - the spare step, cashed at the Captain's next turn (beginTurn
-     resets actions, so granting it now would be overwritten).
-     #145 - it moved here with BACKSTAB. The step is only a gift if there is
-     something obvious to spend it on, and the thin man is that thing. */
-  B.tut.freeStep=true;
+  /* #111's spare step used to be armed here and #156 deleted it: everybody
+     gets two, including him. BACKSTAB still lands on this round, which is the
+     half of the beat that was doing the teaching. */
   tavTeach('ogre');tavTeach('backstab');
   render();
 }
@@ -8211,11 +8311,16 @@ const TUTSTEPS={
      dismissed. Every anchor is a REAL element of the road screen, so the
      tour can never describe furniture that moved. `t` may be a function:
      the wage line reads dailyUpkeep() at show time, never a stale copy. */
-  w_quest:{h:'THE CONTRACT',
-    t:'Where this road is supposed to end: Skelbrook, and the head out of '+
-      'its hall. The plaque holds the destination while you wander; the map '+
-      'holds everything between.',
-    a:()=>$('wQuest')},
+  /* ⛔ #156 - `w_quest` IS DELETED, NOT LEFT DARK. (User, 2026-08-14, with the
+     step on screen: "don't need this part in the tutorial on the global map:
+     The contract".) Second one of these to go after #155 took `w_day`, and for
+     the same reason: the plate it pointed at is three lines saying WHO, WHAT
+     and WHERE, and a spotlight explaining that a contract plate is a contract
+     plate was reading the plate out loud. The tour is two steps now, and both
+     of them teach something the surface does not say by itself: what happens
+     on payday, and what a click on the map does.
+     ⚠ The register rule from #120 - an unused entry is a second source of
+     truth, and the next person to edit this tour would have believed it. */
   w_res:{h:'THE CHEST',
     t:()=>'Crowns and provisions. The company is paid every '+num(PAY_EVERY)+' days: '+
       'the bill grows by '+dailyUpkeep()+' crowns for each day of road, and on payday '+
@@ -8247,7 +8352,7 @@ const WTUT={q:[]};
 function worldTut(){
   if(G.wTutDone)return;
   G.wTutDone=true;saveRun();
-  WTUT.q=['w_quest','w_res','w_company','w_road'];
+  WTUT.q=['w_res','w_company','w_road'];   /* #156 - `w_quest` deleted */
   tutShow(WTUT.q.shift());
 }
 function tutEl(){
@@ -8324,13 +8429,22 @@ function tutNext(){
          :(typeof WTUT!=='undefined'&&WTUT.q.length)?WTUT.q:null;
   if(q&&q.length){tutShow(q.shift());return;}
   const d=$('tutDim');if(d)d.classList.remove('on');
-  if(B)B.tutLock=false;
+  if(B){
+    B.tutLock=false;
+    /* #156 - the clock was stopped mid-handover; start the turn that was
+       waiting for the reader. `later` rather than a straight call so the dim
+       sheet is off the screen before anything moves under it, and because
+       every other beat of this fight is paced through the same door. */
+    if(B.tutHold){B.tutHold=false;later(()=>nextTurn(true),160);}
+  }
 }
 /* 8f.137 - the hard close, for the fight's own endings: whatever is up comes
    down and the lock opens, so a spotlight can never sit over the spoils card */
 function tutClose(){
   const d=$('tutDim');if(d)d.classList.remove('on');
-  if(B){B.tutLock=false;if(B.tut)B.tut.q.length=0;}
+  /* #156 - the hold is dropped and NOT resumed: this is the fight's own
+     ending, and the turn that was waiting has nowhere to go. */
+  if(B){B.tutLock=false;B.tutHold=false;if(B.tut)B.tut.q.length=0;}
 }
 function tutFlush(){
   if(window.TUT_SILENT)return;               /* the harness switches this on */
@@ -8358,7 +8472,14 @@ function tavTeach(k){
    floor and joke_miss fall back to the tavern) all ride along unchanged.
    His muscle is TWO PAID SWORDS now, not ten guards - the user's
    "парочка наемников" - and the floor beating is theirs. */
-function tavernContract(won){
+/* ═══ #156 - AND A THIRD WAY IN: NOBODY FOUGHT ═══════════════════════════
+   `skipped` is the returning player's path (see openPrologue). It is a third
+   OPENING and nothing else: the offer, the purse, the strip, the picker and
+   the one door are identical, because what changed is how the man came to be
+   at the table, not what he wants. Two sentences differ, and both of them had
+   to: the shipped pair describe him crossing wreckage, and his first line is
+   about a brawl that did not happen. Everything under them is untouched. */
+function tavernContract(won,skipped){
   /* #134 - `const cap` went with the joke: it existed only to size the cudgel
      in the ribs, and nothing else in this card ever asked who the Captain is. */
   /* ⚑ #150 - NINETEEN WORDS OUT OF THE OFFER, AND THE RECEIPT PAID FOR THEM.
@@ -8371,7 +8492,11 @@ function tavernContract(won){
      says +88 CROWNS. The purse still lands on the wood. It just stops being
      weighed twice. */
   proCard('THE MAN IN THE CORNER',
-    (won
+    (skipped
+      ?'The far table has been watching you since dark, over one ale made to last the evening. '+
+       'When the room thins the man in the coat crosses to yours, sits down uninvited, and puts '+
+       'a purse on the wood. The two swords he pays for stay by the door.\n\n'
+      :won
       ?'He crosses the wreckage without looking at any of it, sits down at your table '+
        'uninvited, and puts a purse on the wood. The two swords he pays for did not move '+
        'once.\n\n'
@@ -8381,10 +8506,19 @@ function tavernContract(won){
     /* #155 - "scum" is gone at the user's call ("we don't need 'scum' here").
        The address and the pleasant delivery are what the line is for; the
        insult was the one word doing none of that work. */
-    '“You lot,” he says, pleasantly, the way other men say GOOD EVENING. “I have watched '+
-    'better brawls, but none this cheap.\n\n'+
+    '“You lot,” he says, pleasantly, the way other men say GOOD EVENING. '+
+    (skipped?'“I asked the house who in here was cheap and still standing.'
+      :'“I have watched better brawls, but none this cheap.')+'\n\n'+
     '“There is a man of mine at Skelbrook, the far side of the valley. One village, one hall, '+
-    'and bandits in it since the thaw. He writes to me every week. Carry his letter. Bring me '+
+    /* ⛔ #156 - "Carry his letter." IS DELETED. (User: "So deliver letter or
+       kill - i prefere kill".) It was a second objective the player is never
+       given a way to discharge, sitting in front of the one the whole act is
+       built to end on. ⚑ THE WEEKLY LETTER STAYS IN HIS MOUTH, because it is
+       not the errand, it is the man: he has been reading them since the thaw
+       and doing nothing, and a company at forty crowns is the cheapest thing
+       that counts as doing something. Losing the errand keeps the arithmetic
+       and puts the two sentences side by side, which sharpens it. */
+    'and bandits in it since the thaw. He writes to me every week. Bring me '+
     'the head out of his chair. My own men stay where they are.”\n\n'+
     /* ⛔ #138 - ONE SENTENCE CUT FROM EACH BRANCH, AND THE STRIP IS WHY.
        They opened "Behind you, the woman with the spear has not left, and
@@ -8705,6 +8839,11 @@ function tavernAfter(){
   tutClose();
   if(SIM.on){simResult('won');return;}
   G.tavernDone=true;
+  /* #156 - the brawl has now been played once for good, on this machine. It is
+     LEGACY and not `G`, because the whole point is that it outlives the
+     company: see openPrologue. Set AFTER the SIM fork, so the practice field
+     and the menu's own tutorial row can never claim it. */
+  LEGACY.brawlDone=true;saveLegacy();
   const kills=B.units.filter(u=>u.side==='foe'&&u.dead).length;
   /* receipts carry, but a scar is not a thing fists and floorboards give */
   G.party.forEach(p=>{
@@ -9093,8 +9232,24 @@ function build(plan,T){
       noTrim:!!t.noTrim,
       speed:RACESTEP[rc]||Math.max(2,t.speed),
       flankPow:10,spellPow:1,dmgBonus:2,morBonus:0,
-      /* rabble 2, captains 3, great beasts get whatever they declare */
-      actions:t.actions||(t.captain?3:2),actionsMax:t.actions||(t.captain?3:2),
+      /* ═══ #156 - TWO A TURN, ON EVERY BODY THAT DOES NOT DECLARE ITS OWN ═══
+         (User, after a playtest: "Почему у капитана 3 очков действия - давать
+         везде только 2".)
+
+         It used to read `t.captain?3:2`, so six enemy bosses took three: the
+         ratkin chieftain, the broken captain, the Snare's elder, the Bitch,
+         the Sling-master and the Steading-elder. The roster has been on two
+         since playtest #1 - "three made every turn a puzzle and balance a
+         nightmare" - and a rule the player is taught in one sentence should
+         not have a second sentence hiding inside the enemy tables.
+
+         ⚠ THIS IS A REAL BALANCE CHANGE and it is meant to be: those six lose
+         a third of their turn. It is one expression if it has to come back.
+         ⚑ A DECLARED COUNT STILL WINS, which is why `t.actions` is still read
+         first: the Thing in Armour asks for 3 and the Fen-Mother for 5, and
+         both are hand-tuned set pieces whose whole shape is that number. What
+         went is the count borrowed off a FLAG. */
+      actions:t.actions||2,actionsMax:t.actions||2,
       big:!!t.big,bigkill:!!t.bigkill,desperateAt:!!t.desperateAt,
       /* backlog #18. `noArc` and `soak` are rules; `noFace`/`notally` are the
          two places the UI would otherwise NAME a thing that is meant to stay
@@ -11570,12 +11725,14 @@ function beginTurn(){
      unused field is a second source of truth, and the next reader of this
      block would believe it. */
   u.disBonus=0;
-  /* #111 - the brawl's spare step: granted AFTER the reset above, once */
-  if(B.tut&&B.tut.freeStep&&u.side==='you'&&u.leader){
-    u.actions+=1;B.tut.freeStep=false;
-    say('There is an opening in the room, and you have the legs for one more '+
-      'thing this turn.');
-  }
+  /* ⛔ #156 - #111's SPARE STEP IS DELETED. It handed the Captain a third
+     action once, in the brawl, the round the thin man arrives - and it was
+     the one place in the game a player could count three crystals on their
+     own plaque, which is exactly what they asked about. The lesson it was
+     buying (there is a body worth walking round the back of) is still taught:
+     TUTSTEPS.backstab spotlights it with an arrow on the man. What went is
+     the extra turn, not the teaching. `B.tut.freeStep` is gone with it rather
+     than left set, because an unread flag is a second source of truth. */
   /* ═══ #64 — RE-READ EVERYBODY'S NERVE, BECAUSE THE GROUND CAN MOVE IT ═══
      `u.state` is a cached read of `nerveFrac`, and until the flower existed
      the only thing that could change that read was `mor()`, which restates
@@ -11979,7 +12136,11 @@ function hungerTick(){
   endLater(()=>{if(SIM.on)simResult('fled');else toRetreat();},700);
   return true;
 }
-function nextTurn(){
+/* `resumed` is passed by exactly one caller, tutNext, and means "this turn
+   already had its tick, it was only held". Every other call site passes
+   nothing, including the `later(nextTurn,…)` chains, which invoke with no
+   arguments. See the hold below. */
+function nextTurn(resumed){
   if(checkEnd())return;
   /* the fight is already decided — do not start another turn on top of the
      pending hand-off to the spoils screen */
@@ -11988,7 +12149,32 @@ function nextTurn(){
      nowhere else. Deliberately after checkEnd, so the Captain never
      comments on a fight that is already over, and outside every scorer,
      because the scorers are the inner loop of both AI brains. */
-  capTick();
+  if(!resumed)capTick();
+  /* ═══ #156 - A SPOTLIGHT STOPS THE CLOCK ════════════════════════════════
+     (User, after a playtest: "Когда на битве в туториале подсказка -
+     останавливать все другие действия, пока человек не кликнет ... чтобы
+     противники не ходили, во время обьяснения".)
+
+     ⛔ AND THE LEAK IS ONE LINE ABOVE THIS ONE. `B.tutLock` already refused
+     every PLAYER input - selectAct, clickHex, the hotkeys, Esc - so the half
+     that was missing was never the player's. `capTick()` is what runs
+     `tavernTick()`, which is what calls `tavTeach()`, which flushes the step
+     to the screen; and capTick runs HERE, at the end of the turn that just
+     finished, while `cur()` is still the player. So the card went up and this
+     function carried straight on into `beginTurn`, handed the round to a
+     brigand, and the AI took its turn behind the reader's back.
+
+     ⚑ THE HOLD IS AFTER checkEnd, NEVER BEFORE IT. A decided fight must
+     still be able to resolve: tutClose() takes the sheet down at every one
+     of the fight's own endings, and it drops this flag without resuming.
+     Nothing is lost by returning here - B.idx has not moved, so the turn
+     that was waiting is still the next one when tutNext lets it go.
+
+     ⚠ AND THE RESUME MUST NOT TICK TWICE. capTick is a once-per-turn seam
+     that raises the Captain's lines and steps the brawl's script; running it
+     again on the way back in would be this file's "one trigger, two
+     consumers" shape one more time. `resumed` is why the parameter exists. */
+  if(B.tutLock){B.tutHold=true;return;}
   B.idx++;
   if(B.idx>=B.order.length){B.idx=0;B.round++;G.battleRounds=B.round;
     logRound(B.round);
@@ -16030,6 +16216,18 @@ function paintObjects(g,P,rnd){
     }
   });
 }
+/* ═══ #156 - THE THREE WASHES THAT ARE ABOUT *YOU*, NAMED ════════════════
+   Two of them say where this body can WALK (marsh is the wetter and dearer of
+   the pair, which is the same fact the move budget is already charging for)
+   and one says how far the SELECTED ACT reaches. They are lifted out of
+   render()'s hex loop for one reason: paintPeek() has to be able to tell
+   "this hex is bare" from "this hex is carrying a preview of my own turn",
+   and a colour compared against a literal written in two places is a colour
+   that drifts. ⛔ Change one here, never at the call site.
+   ⚠ These three and no others. Everything louder - a lit target, a lane, a
+   lift, a landing - is an OFFER, and an offer is never overpainted. */
+const REACH_WASH={wet:'rgba(70,130,130,.32)',dry:'rgba(110,180,160,.24)',
+                  act:'rgba(201,162,39,.15)'};
 function render(){
   const u=cur();
   /* ═══ #91 — MOVE IS THE STANDING DEFAULT ═══════════════════════════════
@@ -16460,21 +16658,11 @@ function render(){
      free to disagree, and a readout that contradicts itself is worse than
      no readout. Only while one of YOUR shooters has a bow act selected —
      the rest of the time it is noise. */
-  /* ═══ THE IMPASSABLE GLYPH IS AN ANSWER, SO IT WAITS TO BE ASKED ═══════
-     User's call, 2026-08-01, choosing between three mock-ups: "only while
-     choosing a move". The mark used to be on every blocked hex at all times,
-     which was right while a blocked hex was a flat plate with nothing on it
-     - and wrong the moment eight painted objects arrived underneath, because
-     a ▮ centred on a stacked timber wall is a beige box stamped over the
-     only thing that was telling you it was a wall.
-     Now it appears exactly when the board is being asked WHERE CAN SOMEBODY
-     WALK - a move selected, a hover showing somebody's reach, or the ogre's
-     throw looking for a landing — and it appears on every blocked hex at
-     once, beside the reach numbers it belongs with. The rest of the time
-     the object says it, which is the pillar: show a state, hide the number.
-     ⚠ THE HOVER TITLE IS NOT GATED. "Rock. Nobody gets over it." is on the
-     hex in every state; this only decides whether the mark is painted. */
-  const askingWhereToWalk=!!(B.peekReach||(B.sel&&(B.sel.move||B.sel.thrower)));
+  /* ⛔ #156 - `askingWhereToWalk` IS DELETED WITH THE GLYPH IT GATED. It was
+     the 2026-08-01 compromise ("only while choosing a move") on a mark that
+     has now gone entirely; an unread flag is a second source of truth and the
+     next reader would have believed it. See the deleted block down in the hex
+     loop for the whole argument. */
   /* ═══ #91 — THE OFFER ACT. With an attack selected it is that attack, as
      ever. With MOVE standing (the default now), it is the weapon in their
      hands - so the board shows move reach AND live targets AT ONCE, and a
@@ -16523,12 +16711,14 @@ function render(){
       const occ=tailHere?null:occRaw;   // the body segment draws itself below
       /* the painted ground shows through: only states tint the hex */
       let fill='rgba(0,0,0,0)';
-      let edge='rgba(120,140,138,.16)',badge='',odds=null,losHere=null;
+      let edge='rgba(120,140,138,.16)',odds=null,losHere=null;
       /* A HEX YOU CANNOT ENTER SHOULD LOOK LIKE ONE (user: "when you can't get
          on the tile, put it in the middle and more clear"). The painted stones
-         alone were ambiguous at this hex size, so blocked ground now gets a
-         dark fill, a hard border and a centred glyph — ▲ for rock and palisade,
-         ♨ for the fire. */
+         alone were ambiguous at this hex size, so blocked ground gets a dark
+         fill and a hard border.
+         ⛔ #156 - AND THE CENTRED GLYPH IS GONE (user: "Убирать иконку
+         местности при ходе - достаточно основного пнг"). See the block that
+         used to draw it, below. */
       const blockedHere=BLOCKED[t];
       /* ⚠ THE HOVER TINT USED TO BE COMPUTED HERE and it is not any more —
          paintPeek() lays it on afterwards, over the finished board. It has to
@@ -16536,8 +16726,17 @@ function render(){
          below would already contain it, and the base this hex records would
          be the peek rather than the board underneath it. */
       const d=B.reach?B.reach.dist[K(c,r)]:undefined;
+      /* ═══ #156 - THE STEP COUNT IS OFF THE HEXES ══════════════════════════
+         (User, after a playtest: "Не показывать на гексах номера ходов".)
+         The wash says WHERE, which is the question a move asks; the digit in
+         each hex was answering "how many steps is that" on 59 tiles at once,
+         and the one number that decides anything - how far this body goes -
+         is already on the MOVE card and on the plaque, off the same
+         moveBudget() call. A readout repeated 59 times is furniture.
+         ⚠ THE WASH IS NAMED NOW (REACH_WASH) rather than written inline,
+         because paintPeek has to be able to recognise it. See there. */
       if(d!==undefined&&u&&u.side==='you'&&!occ){
-        fill=t==='marsh'?'rgba(70,130,130,.32)':'rgba(110,180,160,.24)';badge=String(d);}
+        fill=t==='marsh'?REACH_WASH.wet:REACH_WASH.dry;}
       /* ═══ #94 point 10 - THE FOOTPRINT, AND IT OUTRANKS THE MOVE REACH ═══
          It has to be written AFTER the block above and not before it, and
          that ordering is the whole of what makes the feature exist. `B.sel`
@@ -16554,7 +16753,7 @@ function render(){
          written after this and all still win. */
       if(rngA&&u&&u.side==='you'&&!blockedHere&&!occRaw&&
          !(c===u.col&&r===u.row)&&udist([c,r],u)<=rngR){
-        fill='rgba(201,162,39,.15)';badge='';}
+        fill=REACH_WASH.act;}
       /* a hint of red, not a wall of it — seven enemies used to paint half the board */
       if(u&&u.side==='you'&&threatsAt(c,r,'you')>0)edge='rgba(150,40,45,.34)';
       /* #46 — a body this act cannot move is NOT offered. The hex is left
@@ -16569,7 +16768,7 @@ function render(){
             rule and this is its second customer. */
          !reachBlocked(u,occ,offA)&&
          udist(u,occ)<=(offA.range||offA.reach||0)){
-        edge='#c9c6bb';fill='rgba(150,190,180,.26)';badge='';
+        edge='#c9c6bb';fill='rgba(150,190,180,.26)';
         if(offA.dmg)odds=hitBreakdown(u,occ,offA).total;
         /* #36 — the target wears its own lane. BLOCKED withdraws the offer
            entirely rather than showing a very bad number: there is no shot,
@@ -16587,11 +16786,11 @@ function render(){
         }}
       /* a buff spell lights up your own line instead */
       if(B.sel&&B.sel.buff&&occ&&occ.side==='you'&&udist(u,occ)<=B.sel.range){
-        edge='#8ca35a';fill='rgba(140,163,90,.30)';badge='';}
+        edge='#8ca35a';fill='rgba(140,163,90,.30)';}
       /* #46 THROW, step one: the bodies AND the lone boulders it could lift */
       if(B.sel&&B.sel.thrower&&!B.hurl&&!B.hurlRock&&occ&&
          B.hurlFrom&&B.hurlFrom.indexOf(occ)>=0){
-        edge='#d9bd7e';fill='rgba(217,189,126,.32)';badge='';}
+        edge='#d9bd7e';fill='rgba(217,189,126,.32)';}
       /* ⚠ A LIFTABLE BOULDER IS THE ONE BLOCKED HEX THAT IS A LEGAL TARGET,
          and it has to look like one. Impassable ground forces a dark hard
          border further down (that is the "you cannot walk here" rule, and it
@@ -16601,11 +16800,11 @@ function render(){
       let liftHere=false;
       if(B.sel&&B.sel.thrower&&!B.hurl&&!B.hurlRock&&
          B.hurlRocks&&B.hurlRocks.indexOf(K(c,r))>=0){
-        edge='#d9bd7e';fill='rgba(217,189,126,.32)';badge='';liftHere=true;}
+        edge='#d9bd7e';fill='rgba(217,189,126,.32)';liftHere=true;}
       /* step two: where it can come down — gold, because it is not a walk */
       if(B.sel&&B.sel.thrower&&(B.hurl||B.hurlRock)&&d!==undefined&&
          (!occ||B.hurlRock)){
-        fill='rgba(217,189,126,.22)';edge='rgba(217,189,126,.45)';badge='';}
+        fill='rgba(217,189,126,.22)';edge='rgba(217,189,126,.45)';}
       /* MOVING TO STAB: while a move is selected, mark reachable hexes that
          sit in some enemy's back arc. It turns "which way is it looking" from
          a thing you work out into a thing you can see. */
@@ -16648,28 +16847,34 @@ function render(){
          "base, or the peek tint if base is transparent" is exactly equivalent
          to the cascade and can be recomputed from the base alone. */
       B.hexEls.push({f:flr,k:K(c,r),base:fill,occ:!!occ,cur:fill});
-      /* the impassable glyph, centred — no ambiguity about where you can walk.
-         It is appended only while somebody is asking; see askingWhereToWalk. */
+      /* ═══ ⛔ #156 - THE IMPASSABLE GLYPH IS DELETED ═══════════════════════
+         (User, after a playtest: "Убирать иконку местности при ходе -
+         достаточно основного пнг".)
+
+         It was written in the #15 era, when a blocked hex was a flat plate
+         with nothing on it and the mark was the only thing saying so. Eight
+         painted objects arrived underneath it, and the argument has been
+         losing ground ever since: the 2026-08-01 round already cut it back
+         to "only while choosing a move", for the reason the user is now
+         giving in full - a ▮ centred on a stacked timber wall is a beige box
+         stamped over the one thing that was telling you it was a wall. The
+         object IS the readout, at every hex size this board uses.
+
+         ⚠ THE HOVER TITLE STAYS, and it is now the whole answer: "Rock.
+         Nobody gets over it." is on the hex in every state, as it always was.
+         The dark fill and the hard border stay too - they are the "you cannot
+         walk here" rule, and they are not a glyph.
+
+         ⚑ THE LIFTABLE BOULDER KEEPS ITS MARK, because it is not a label: it
+         is an OFFER, the one blocked hex an act can legally target, and an
+         offer always shows itself. Nothing else appends here now. */
+      const open=blockedHere&&t==='flower'&&flowerOpen(K(c,r));
       if(blockedHere){
-        const bl=document.createElement('span');bl.className='blk';
-        /* ═══ ONE GLYPH PER KIND OF GROUND YOU CANNOT ENTER ═══════════════
-           The shipped rule (#15 era): painted stones alone went ambiguous
-           once the hexes got small, so impassable ground says so with a
-           mark in the middle of it. Four kinds now, and they must not all
-           be ▲ — a tree, a wall and a flower are three different problems
-           and only one of them can be picked up and thrown at somebody. */
-        const GLYPH={fire:'♨',tree:'♣',huge:'♣',hugeA:'♣',wall:'▮',flower:'✿'};
-        const GCOL ={fire:'#e8a04a',tree:'#7f9a72',huge:'#7f9a72',hugeA:'#7f9a72',
-                     wall:'#a08a5c'};
-        bl.textContent=GLYPH[t]||'▲';
-        const open=t==='flower'&&flowerOpen(K(c,r));
-        /* the stone this ogre could pick up says so with its own colour */
-        if(liftHere)bl.style.color='#d9bd7e';
-        else if(t==='flower')bl.style.color=open?'#f7a8dc':'#6b4a72';
-        else if(GCOL[t])bl.style.color=GCOL[t];
-        /* liftHere is its own exception: a boulder an ogre could pick up is
-           being OFFERED, and an offer always shows its mark. */
-        if(askingWhereToWalk||liftHere)inn.appendChild(bl);
+        if(liftHere){
+          const bl=document.createElement('span');bl.className='blk';
+          bl.textContent='▲';bl.style.color='#d9bd7e';
+          inn.appendChild(bl);
+        }
         hx.title=
           t==='fire'?'The fire. Nobody stands in it.':
           t==='wall'?'The wall. Nobody gets through it, and nothing gets over it.':
@@ -16886,7 +17091,16 @@ function render(){
         if(losHere){const lw=document.createElement('div');lw.className='hlos';
           lw.style.color=SHOT[losHere.k].col;lw.textContent=SHOT[losHere.k].n;
           inn.appendChild(lw);}
-        if(occ===u)hx.style.background=occ.leader?'rgba(230,217,168,.9)':'rgba(201,198,187,.85)';
+        /* #156 - the acting body's own hex, as a hexagon rather than as a
+           rectangle bleeding out through the seams. See .hex.acting. */
+        if(occ===u){
+          hx.classList.add('acting');
+          const mineNow=occ.side==='you'&&!occ.ally&&!occ.pet;
+          hx.style.setProperty('--act-ring',mineNow?'rgba(240,230,192,.95)'
+            :occ.side==='you'?'rgba(217,189,126,.92)':'rgba(224,132,120,.92)');
+          hx.style.setProperty('--act-fill',mineNow?'rgba(240,230,192,.20)'
+            :occ.side==='you'?'rgba(217,189,126,.16)':'rgba(193,93,85,.20)');
+        }
         const rayTo=losHere?occ:null;
         /* the CARD waits (see armRead); the LOS ray does not. The ray is a
            thin line between two bodies that are already on the board, it
@@ -16923,10 +17137,9 @@ function render(){
         hx.onmouseenter=e=>armRead(ev=>readout(tailHere,ev),e);
         hx.onmouseleave=hideRead;
         hx.onclick=()=>clickHex(c,r);
-      }else if(badge){
-        const bd=document.createElement('div');bd.className='hbadge';
-        bd.style.color='#8fa5a2';bd.textContent=badge;inn.appendChild(bd);}
-      else if(t==='field'&&PROPS[K(c,r)]){
+      /* ⛔ #156 - the `.hbadge` branch that drew the step count stood here, and
+         it went with the number. `badge` is gone from the whole loop. */
+      }else if(t==='field'&&PROPS[K(c,r)]){
         const pr=document.createElement('div');pr.className='props';
         pr.textContent=PROPS[K(c,r)];inn.appendChild(pr);}
       hx.onclick=()=>clickHex(c,r);
@@ -16970,13 +17183,46 @@ function render(){
 
    ⚠ IF YOU ADD ANYTHING ELSE THE PEEK CHANGES, IT GOES HERE TOO, or it
    will only appear on the next real render and look intermittent. */
+/* ═══ #156 - AND IT NOW OUTRANKS YOUR OWN MOVE WASH ══════════════════════
+   (User, after a playtest: "Показывать доход противника - куда он может
+   дойти и соответственно, как ударить. срабатывает при наведении на
+   противника без выбранного действия (или с ходьбой). Если наведение с
+   ударом - то только куда противник может дойти и % удара".)
+
+   ⛔ THE FEATURE EXISTED AND WAS INVISIBLE EXACTLY WHERE IT MATTERED, which
+   is why the request reads as new. This function only ever wrote a hex whose
+   base fill was TRANSPARENT - and since #91 the standing selection is MOVE,
+   so every hex within your own stride was already carrying the teal walk
+   wash. The enemy's reach was therefore painted only on ground you cannot
+   get to yourself, and the overlap - which is the entire question, "can he
+   reach me where I am about to stand" - was the one part never shown.
+
+   ⚑ SO A HOVER CHANGES WHAT THE BOARD IS ABOUT. While the cursor is on
+   somebody the question is where THEY go, and their tint wins over both of
+   the washes describing YOUR turn - the walk preview and the selected act's
+   footprint; the moment it leaves, `h.base` puts the board back with no
+   re-render. That is the second half of the request read literally ("если
+   наведение с ударом - то ТОЛЬКО куда противник может дойти и % удара"): with
+   a blow picked, a hover leaves the enemy's reach and the number on the card,
+   and takes the rest away.
+   ⚠ Everything louder than a wash - a lit target, a lane, a lift, a landing -
+   still outranks the peek, because those are OFFERS and an offer is never
+   overpainted by a hover. So is any occupied hex (`h.occ`).
+
+   ⚠ NOT ON THE BODY WHOSE TURN IT IS. Hovering yourself would repaint your
+   own reach in a second colour and say nothing you were not already looking
+   at. Any other body on the board is fair game. */
 function paintPeek(){
   const list=B&&B.hexEls;if(!list)return;
   const R=B.peek?B.peekReach:null;
   const col=B.peek&&B.peek.side==='foe'?'rgba(120,50,66,.34)':'rgba(60,110,130,.30)';
+  const overWalk=!!(B.peek&&B.peek!==cur());
   for(let i=0;i<list.length;i++){
     const h=list[i];
-    const want=(h.base==='rgba(0,0,0,0)'&&R&&!h.occ&&R.dist[h.k]!==undefined)?col:h.base;
+    const bare=h.base==='rgba(0,0,0,0)'||
+      (overWalk&&(h.base===REACH_WASH.wet||h.base===REACH_WASH.dry||
+                  h.base===REACH_WASH.act));
+    const want=(bare&&R&&!h.occ&&R.dist[h.k]!==undefined)?col:h.base;
     if(h.cur!==want){h.cur=want;h.f.style.background=want;}
   }
 }
@@ -17279,6 +17525,15 @@ function hideRead(){
   peekOff();
 }
 function readout(t,e){
+  /* ⚑ #156 - WHERE HE CAN GET TO IS SHOWN WHATEVER CARD THIS IS. The reach
+     tint used to arrive through inspect() only, and the two early returns
+     below skip inspect entirely when the hover is an aiming question - so the
+     one moment the player is deciding whether to swing HERE or step first was
+     the one moment the board would not say how far the target moves. Taken at
+     the top, so both cards carry it and neither has to remember. peekOn is
+     cached against the render stamp, so a cursor sweeping the same body
+     computes the map once. */
+  peekOn(t);
   const u=cur();let a=B.sel;
   /* #91 - MOVE is the standing default, so the aiming question on an enemy
      is answered with the weapon the click would use. Same offerAtk gate the
@@ -17402,6 +17657,12 @@ $('bField').addEventListener('wheel',e=>{
   e.preventDefault();camStep(e.deltaY>0?-1:1);},{passive:false});
 addEventListener('resize',()=>camApply(true));
 camBar();panInit();
+/* ⚠ #156 - THE ROAD'S CAMERA IS *NOT* WIRED HERE, and that is on purpose:
+   WCAMS and wpanInit are declared roughly six thousand lines below this
+   point, and a boot-time reader of a `const` that has not been evaluated yet
+   is the TDZ crash that aborts the whole script - the trap the note above is
+   already about. Its own registration sits directly under its declarations.
+   See wpanInit. */
 
 /* ============================================================
    Two ways out of a fight you do not want to play by hand
@@ -22919,6 +23180,149 @@ function sightFor(n){
   const k=MAP_SIGHT[n.ev];
   return (k&&typeof MAP_ART!=='undefined'&&MAP_ART[k])?MAP_ART[k]:null;
 }
+/* ═══════════════════════════════════════════════════════════════════════
+   #156 · THE ROAD HAS A CAMERA
+   (User, after a playtest: "allow to zoom in and zoom out and a little bit
+   closer on the global map. And start a bit more zoomed in.")
+
+   ⚑ WRITTEN ON THE BATTLEFIELD'S OWN SHAPE, AND THAT IS THE DESIGN DECISION,
+   not laziness. This game already has a camera the player has learned - three
+   NAMED STOPS, the wheel steps between them, a drag looks somewhere else, and
+   the stop is a SETTING that outlives the run - so the road gets that one and
+   not a second control language with a slider in it. Free zoom would also
+   have to answer "what is 1.37 of a map", which is a question no reader has.
+
+   ⛔ 1.00 IS THE FLOOR AND IT IS NOT NEGOTIABLE. The painting is exactly the
+   size of its box; below 1 the player is shown the ground where the map stops.
+   "Zoom out" means back to ROAD, which is the whole thing at once.
+
+   ⚠ NOTHING IN THE MAP'S ARITHMETIC MOVES. #wMap is px-load-bearing at
+   1280x638 design / 1280x678 view and stays so: the camera scales the
+   FINISHED view, so vy(), clampNodes, labelSpot and both linters go on
+   measuring the same design box. `spacingViolations` and `labelViolations`
+   read NODES and never the DOM, so a transform cannot make either of them
+   lie - which is why this could be a camera at all rather than a re-layout.
+   ═══════════════════════════════════════════════════════════════════════ */
+const WCAMS=[{k:'road',n:'ROAD',z:1},{k:'near',n:'NEAR',z:1.22},{k:'close',n:'CLOSE',z:1.5}];
+/* "start a bit more zoomed in" is NEAR rather than ROAD. It is a first-launch
+   default and not a decision taken away: the whole map is one press away, and
+   the stop the player lands on is remembered from then on. */
+const WCAM={i:1,x:0,y:0,free:false};
+try{const j=WCAMS.findIndex(c=>c.k===localStorage.getItem('gt_wcam'));if(j>=0)WCAM.i=j;}catch(e){}
+const wcamZ=()=>WCAMS[WCAM.i].z;
+/* MEASURED, never assumed: #wMap is `flex:1` under a 42px bar, so its height
+   is whatever the bar leaves it. The fallbacks are for the boot call, before
+   the world screen has ever been shown. */
+function wcamBox(){const m=$('wMap');
+  return {w:(m&&m.offsetWidth)||MAPW,h:(m&&m.offsetHeight)||VIEWH};}
+const wcamPans=()=>{const B=wcamBox(),z=wcamZ();return B.w*z>B.w+1||B.h*z>B.h+1;};
+/* ⚑ THE ONE DOOR for anything that has to place CHROME beside something on
+   the map: a design point in, the pixel it is actually drawn at out. `placeDlg`
+   is its only caller today, and it is the reason an event card still opens
+   beside its own node at any stop. */
+function wcamPt(x,y){const z=wcamZ();return {x:x*z-WCAM.x,y:vy(y)*z-WCAM.y};}
+function wcamApply(){
+  const el=$('wCam');if(!el)return;
+  const B=wcamBox(),z=wcamZ();
+  /* clamped here and nowhere else, so no writer of WCAM.x/y can show the
+     player the edge of the painting */
+  WCAM.x=clamp(WCAM.x,0,Math.max(0,B.w*z-B.w));
+  WCAM.y=clamp(WCAM.y,0,Math.max(0,B.h*z-B.h));
+  el.style.transform='translate('+(-WCAM.x).toFixed(1)+'px,'+(-WCAM.y).toFixed(1)+'px) scale('+z+')';
+}
+function wcamFocus(x,y){
+  const B=wcamBox(),z=wcamZ();
+  WCAM.x=x*z-B.w/2;WCAM.y=vy(y)*z-B.h/2;
+  wcamApply();
+}
+/* ⚑ THE CAMERA FOLLOWS THE COMPANY, AND ONLY WHEN IT HAS TO. Exactly the
+   battlefield's CAM_EDGE rule and for the same reason: re-framing on every
+   step slides the map under the cursor of somebody who is reading a fork, so
+   it moves only when the thing being watched is genuinely near a rim. */
+const WCAM_EDGE=.30;
+function wcamKeep(x,y,snap){
+  if(WCAM.free&&!snap)return;
+  const B=wcamBox(),z=wcamZ();
+  if(!wcamPans()){WCAM.x=0;WCAM.y=0;wcamApply();return;}
+  const sx=x*z-WCAM.x,sy=vy(y)*z-WCAM.y;
+  const mx=B.w*WCAM_EDGE,my=B.h*WCAM_EDGE;
+  if(snap||sx<mx||sx>B.w-mx||sy<my||sy>B.h-my)wcamFocus(x,y);
+  else wcamApply();
+}
+function wcamSet(i){
+  const j=clamp(i,0,WCAMS.length-1);
+  if(j===WCAM.i)return;
+  WCAM.i=j;WCAM.free=false;
+  try{localStorage.setItem('gt_wcam',WCAMS[j].k);}catch(e){}
+  wcamBar();
+  /* a stop change re-frames on the company, the way `snap` does on the board:
+     the one thing you always want in view is where you are standing */
+  const n=NODES[G.at];
+  if(n)wcamKeep(n.x,n.y-26,true);else wcamApply();
+}
+function wcamStep(d){wcamSet(WCAM.i+d);}
+function wcamBar(){
+  const bar=$('wZoom');if(!bar)return;
+  bar.innerHTML='';
+  WCAMS.forEach((c,i)=>{
+    const b=document.createElement('b');
+    b.textContent=c.n;b.title='how close the road is drawn';
+    if(i===WCAM.i)b.className='on';
+    b.onclick=()=>wcamSet(i);
+    bar.appendChild(b);});
+}
+/* THE DRAG. Same shape as panInit and it borrows panScale(), because the
+   stage is scaled to the window and may be turned on its side, so a pointer
+   delta is not a map delta. ⚠ The rotated case is the same swap relPt is
+   written against: a screen point (x,y) is a layout point (y,-x).
+   ⛔ NO RIM PUSH HERE. On the board the cursor is over the field the whole
+   turn; on the road it is on its way to a node, and a map that started
+   sliding whenever the pointer passed near an edge would be sliding most of
+   the time. Drag, or press a stop. */
+let WPAN=null,WPANNED=false;
+function wpanInit(){
+  const M=$('wMap');if(!M||M.__wpan)return;M.__wpan=1;
+  /* passive:false because the page must not scroll under a player who is
+     looking at the map. The wheel STEPS, it does not zoom freely. */
+  M.addEventListener('wheel',e=>{
+    e.preventDefault();wcamStep(e.deltaY>0?-1:1);},{passive:false});
+  M.addEventListener('pointerdown',e=>{
+    if(e.button)return;                      /* left button and touch only */
+    if(e.target.closest&&e.target.closest('#wZoom,#wDlg'))return;
+    if(!wcamPans())return;
+    WPAN={x:e.clientX,y:e.clientY,cx:WCAM.x,cy:WCAM.y,s:panScale(M),
+          grab:e.pointerType==='touch'?12:5};
+    WPANNED=false;
+  });
+  addEventListener('pointermove',e=>{
+    if(!WPAN)return;
+    const dx=e.clientX-WPAN.x,dy=e.clientY-WPAN.y;
+    if(!WPANNED&&Math.hypot(dx,dy)<WPAN.grab)return;
+    if(!WPANNED){WPANNED=true;M.style.cursor='grabbing';
+      const el=$('wCam');if(el)el.classList.add('dragging');}
+    WCAM.free=true;
+    const lx=ROT?dy/WPAN.s:dx/WPAN.s, ly=ROT?-dx/WPAN.s:dy/WPAN.s;
+    WCAM.x=WPAN.cx-lx;WCAM.y=WPAN.cy-ly;
+    wcamApply();
+  });
+  addEventListener('pointerup',()=>{
+    if(!WPAN)return;
+    WPAN=null;M.style.cursor='';
+    const el=$('wCam');if(el)el.classList.remove('dragging');
+    /* the click is still to come. Let it arrive, then forget - or a drag that
+       ends over a node would walk the company there. */
+    if(WPANNED)setTimeout(()=>{WPANNED=false;},0);
+  });
+  M.addEventListener('click',e=>{
+    if(WPANNED){e.stopPropagation();e.preventDefault();}},true);
+  addEventListener('resize',wcamApply);
+}
+/* ⚠ REGISTERED HERE, DIRECTLY UNDER THE DECLARATIONS ABOVE, and not up beside
+   the battlefield's `camBar(); panInit();`. Everything this touches is a
+   `const` on the lines above it; reading one of them from six thousand lines
+   higher is the TDZ crash that takes the whole script down, which this file
+   has shipped once. */
+wcamBar();wpanInit();wcamApply();
 function drawMap(){
   const cv=$('wCanvas'),c=cv.getContext('2d'),W=cv.width,H=cv.height;
   let s=97;const rnd=()=>(s=(s*1103515245+12345)%2147483648)/2147483648;
@@ -23220,9 +23624,18 @@ function drawMap(){
 }
 function drawNodes(){
   const map=$('wMap');
+  /* ⚑ #156 - NODES AND TRAVEL LABELS GO IN THE CAMERA, THE LEGEND DOES NOT.
+     The first two are placed from a NODE's coordinates, which is design space,
+     so they belong to the layer the camera moves. `.mlegend` is anchored to
+     the CONTAINER (left 196, bottom 9) and would be scaled off its own corner.
+     The fallback is `map` so a stripped page still draws a map. */
+  const cam=$('wCam')||map;
   /* the buttons about to be destroyed may be the one under the cursor, and a
      removed element never fires mouseleave. See hideTip(). */
   hideTip();
+  /* ⚠ SWEPT OFF #wMap AND NOT OFF THE CAMERA, deliberately: querySelectorAll
+     finds them at any depth, so this keeps working whichever layer they were
+     appended to, including anything left over from before #156. */
   map.querySelectorAll('.node,.elab,.mlegend').forEach(n=>n.remove());
   const open=G.pending?[]:edgesFrom(G.at).map(e=>e[1]);
   /* what KIND of thing waits there, in one word the palette already taught */
@@ -23315,7 +23728,7 @@ function drawNodes(){
       TIP.style.display='block';moveTip(e);};
     b.onmousemove=moveTip;
     b.onmouseleave=()=>{TIP.style.display='none';};
-    map.appendChild(b);});
+    cam.appendChild(b);});      /* #156 - design space, so it rides the camera */
   /* the labels are placed IN SEQUENCE and each one sees the ones already
      down, so two roads out of the same node cannot stack their prices */
   const placed=[];
@@ -23342,14 +23755,18 @@ function drawNodes(){
        and crosroad decigion - which is good"). The bill the road is running
        up lives on the PAYDAY chip in the bar, one place, always current. */
     l.innerHTML=e[2]+'d';
-    map.appendChild(l);});
+    cam.appendChild(l);});      /* #156 - design space, so it rides the camera */
   $('wLock').classList.toggle('on',!!G.pending);
   const lg=document.createElement('div');lg.className='mlegend';
   lg.innerHTML='<b style="color:#c15d55">◆</b> battle · <b style="color:#d9bd7e">◆</b> trade · '+
     '<b style="color:#e28fb4">◆</b> strange · <b style="color:#7fa8c9">◆</b> camp · '+
     '<b style="color:#8ca35a">◆</b> muster · <span style="color:#d9bd7e">━</span> open road · '+
     '<span style="color:#8a7d63">━</span> walked · <span style="color:#4a3a22">┄</span> not from here';
-  map.appendChild(lg);
+  map.appendChild(lg);   /* #156 - CHROME: container-anchored, never scaled */
+  /* #156 - the bar is rebuilt with the map so a stop pressed on one screen is
+     still lit on the next, and the camera is re-asserted because a fresh set
+     of nodes is exactly when a stale transform would show. */
+  wcamBar();wcamApply();
 }
 const dailyUpkeep=()=>G.party.reduce((s,p)=>s+wageOf(p),0);
 /* #152 - the payday arithmetic every readout shares: how many days until the
@@ -23817,13 +24234,27 @@ function worldTick(){
      believing this valley has one people in it until BLOOD ON THE ROAD says
      otherwise, and a lord who has not been east in years is exactly who
      would call a clan that. Do not "correct" it. */
-  const goalN=NODES[QUEST_GOAL];
+  /* ═══ ⛔ #156 - ONE JOB, AND THE PLATE IS HALF THE HEIGHT ════════════════
+     (User, 2026-08-14: "So deliver letter or kill - i prefere kill and shorten
+     that block - so it itakes less space on global map".)
+
+     #150 grew this plate to four facts and 60px because the one line it had
+     was too thin to picture. It over-corrected: at 400px wide, two of those
+     four lines wrapped, so a corner of a 1280px map was carrying five rendered
+     rows of a job that has not changed since the tavern.
+
+     What went, and why each one is safe:
+     · THE LETTER, because it is not a task the player can ever discharge, and
+       carrying it was competing with the head for what this contract IS.
+     · "the road east ends at <node>", because the map is drawing that: the
+       goal node wears the same trophy this plate opens with, from minute one.
+     · "in his vassal's hall since the thaw", because it is the WHY, and the
+       hover still holds it whole. A plate is a standing reminder, not a brief.
+     ⚠ IT STILL SAYS "BANDITS" IN THE HOVER. See the note there. */
   $('wQuest').innerHTML=TROPHY_SVG+'<span class="qcol">'+
     '<span class="qlab">THE CONTRACT · SKELBROOK</span>'+
-    '<span class="qtx">Bandits in his vassal\'s hall since the thaw. Bring back the head '+
-      'of whoever is sitting in the chair.</span>'+
-    '<span class="qpay">carry the letter · ◉80 paid, the rest on delivery · the road east '+
-      'ends at '+((goalN&&goalN.n)||'the last node')+'</span></span>';
+    '<span class="qtx">Bring back the head out of the hall\'s chair.</span>'+
+    '<span class="qpay">◉80 paid, the rest on delivery</span></span>';
   /* every chip answers for itself: one table, rebound each tick because
      the elements it binds to were just rebuilt */
   const WTIPS={
@@ -23913,9 +24344,12 @@ function worldTick(){
         'the map moves until you arrive.':hereN?'<br><br>You stand at '+hereN.n+'.':''),
       x:'The sun holds still while you decide.'},
     quest:{t:'THE CONTRACT',col:'var(--g4)',
+      /* #156 - the errand went with the letter (see #wQuest). This hover is now
+         the ONE place the whole job is written out, because the tour step that
+         used to say it was deleted in the same entry. */
       d:'A man of the lord\'s holds Skelbrook, at the far end of the valley: one village, '+
-        'one hall, bandits in it since the thaw. Carry his letter east. Bring back the '+
-        'head out of the hall\'s chair. Keep the purse.',
+        'one hall, bandits in it since the thaw. He has been writing to the lord every week '+
+        'since. Bring back the head out of the hall\'s chair. Keep the purse.',
       x:'It pays on delivery, and not before.'}};
   /* ═══ #112 point 4 · A HOVER THAT SAYS WHETHER THE THING IS A DOOR ══════
      `x` is the aside: what is also true, in dim italic. Four of these chips
@@ -24186,13 +24620,26 @@ function passDays(n){
 /* ---------- the company walks, and things happen on the way ---------- */
 /* #104: the one door the walking company passes through, so the design ->
    view stretch happens here and bez()/walk() stay in design space */
-function tokenAt(x,y){const t=$('wToken');t.style.left=x+'px';t.style.top=vy(y)+'px';}
-function placeToken(){const n=NODES[G.at];if(n)tokenAt(n.x,n.y-26);}
+function tokenAt(x,y){const t=$('wToken');t.style.left=x+'px';t.style.top=vy(y)+'px';
+  /* #156 - and the camera keeps them in frame. This is the one door the
+     walking company passes through, so the follow costs one call site and a
+     new mover inherits it. `wcamKeep` is a no-op at ROAD and while the player
+     is holding the camera themselves. */
+  wcamKeep(x,y);}
+function placeToken(){const n=NODES[G.at];if(!n)return;
+  /* standing still somewhere is a SUBJECT CHANGE: whatever the player was
+     looking at, this is where they are, so the camera comes back. */
+  WCAM.free=false;tokenAt(n.x,n.y-26);wcamKeep(n.x,n.y-26,true);}
 function bez(a,b,t){
   const cx=(a.x+b.x)/2,cy=(a.y+b.y)/2-((b.y-a.y)*.14),m=1-t;
   return {x:m*m*a.x+2*m*t*cx+t*t*b.x, y:m*m*a.y+2*m*t*cy+t*t*b.y};
 }
 function walk(a,b,from,to,ms,done){
+  /* #156 - the company setting off IS the subject changing, so a camera the
+     player took by dragging is handed back here. Same rule the battlefield's
+     CAM.free follows, and for the same reason: a camera you have to give back
+     is a camera you forget you took, and the next thing happens off screen. */
+  WCAM.free=false;
   const tok=$('wToken');tok.classList.add('walking');
   const t0=performance.now();
   const step=now=>{
@@ -27681,8 +28128,44 @@ function proArtSwap(artKey){
    stays HEAVY under .claude/rules/event-cards.md and it is not a road card,
    so no band binds it; the number is recorded so the next trim starts from a
    measurement. */
+/* ═══ #156 - THE SECOND COMPANY DOES NOT FIGHT THE BRAWL AGAIN ════════════
+   (User, after a playtest: "После туториала, если ты раз проиграл - второй раз
+   начинать с экрана создания компании уже после драки в баре. ЕЕ не
+   повторять".)
+
+   The tap-room brawl is a TUTORIAL: eleven spotlight steps, three scripted
+   waves, and a script that cannot be lost. Played once it is the best twelve
+   minutes in the build; played a third time on the way back to the road it is
+   a toll. So once it has been through to the end, a new company starts at the
+   card it ends on - the offer, the crew, the name - and the road is two clicks
+   from the front door instead of a fight away.
+
+   ⚑ THE CONDITION IS "IT HAS BEEN PLAYED", NOT "YOU DIED". `LEGACY.priorDied`
+   was the obvious flag and it is the wrong one: somebody who WON their first
+   run and pressed A new company would still be sat back down in the tap-room,
+   which is the thing being complained about. The honest test is whether this
+   player has ever finished it.
+
+   ⚑ AND IT IS STILL ONE CLICK AWAY, ALWAYS. `The tutorial fight` is a row on
+   the front door (#119), it launches through the practice field, and it is
+   `SIM.on` - so it teaches, costs nothing, and can never set this flag.
+
+   ⚠ THE COMPANY IS NOT BUILT BY THE BRAWL, WHICH IS WHY THIS IS SAFE. All four
+   of them - the Captain, Vesna, Marrow, Ilka - come out of makeParty() at boot
+   and the fight only stands them up on the board. Nothing is lost by not
+   fighting it except the hitpoints it would have cost, and the two things it
+   PAYS are paid here by hand off the same two constants, so a returning player
+   starts neither richer nor poorer than one who fought. */
+function tavernSkip(){
+  G.tavernDone=true;
+  const L=(LOOT.tavern&&LOOT.tavern[0])||{fx:{}};
+  pay('crowns',(L.fx&&L.fx.crowns)||0);
+  G.morale+=4;
+  tavernContract(true,true);
+}
 function openPrologue(){
   JOURNAL.startRun('a new company');
+  if(LEGACY.brawlDone){tavernSkip();return;}
   /* #150 - no title, and no sub-label on the door. Both by the user's own
      call; proCard drops the elements rather than drawing them empty. */
   proCard('',
@@ -27953,8 +28436,13 @@ function enterWorld(){
    the rules were there. */
 const HELP=[
   {t:'HOW A TURN WORKS',
-   b:'Everyone gets <span class="k">two actions</span> a turn — the Captain and great beasts get '+
-     'more. Moving is one. Swinging is one. The strong things cost two, and once used they '+
+   /* #156 - it used to read "the Captain and great beasts get more", which was
+      true of enemy captains only and read as a promise about yours. Both
+      halves are fixed now: the flag no longer buys an action, and the rule is
+      one sentence with one exception you can see on the plaque. */
+   b:'Everyone gets <span class="k">two actions</span> a turn, you included. The crystals on the '+
+     'plaque are the count, and a great beast may carry more. '+
+     'Moving is one. Swinging is one. The strong things cost two, and once used they '+
      '<span class="k">wait a round</span> before you can use them again, so a turn is a sequence '+
      'rather than the same good idea twice.\n\n'+
      'Turn order runs on initiative and is shown along the top. <span class="k">1–9</span> fire '+
@@ -28817,6 +29305,13 @@ function openMenu(){
   if(r)opts.push({t:'Continue the road',
     c:'day '+r.day+' · '+r.party.length+' in the company · '+
       ((NODES[r.at]||{}).n||'somewhere east')+' · '+r.run.crowns+' crowns',
+    /* #156 - the one thing on this screen that is a READOUT rather than a
+       description, so it survives the caption cut and rides on the label.
+       Three facts, not four: the crowns are on the road's own bar the second
+       this button is pressed, and the name of the place is what tells you
+       which company you are about to walk back into. */
+    state:'day '+r.day+' · '+r.party.length+' of you · '+
+      ((NODES[r.at]||{}).n||'somewhere east'),
     go:()=>{if(loadRun()){show('world');worldTick();placeToken();drawNodes();
         /* ═══ #131 - AN UNRESOLVED CARD COMES BACK, AND SO DOES ITS FIGHT ═══
            `openEv` outranks `queuedEv`. The armour ambush's pushed-aside event
@@ -28909,8 +29404,14 @@ function openMenu(){
   if(LEGACY&&(LEGACY.runs||LEGACY.bank&&(LEGACY.bank.salvage||LEGACY.bank.gems)))
     opts.push({t:'The wagon',
       c:'what the companies before this one left in it',go:()=>openCampScreen(false)});
+  /* #156 - `o.c` is no longer drawn. It is deliberately still WRITTEN on every
+     row above rather than stripped out of them: the strings are the rows' own
+     documentation, several of them are quoted in the entries that added the
+     rows, and the day this screen wants a hover they are already here. Only
+     `o.state` reaches the screen, and only one row has one. */
   $('mOpts').innerHTML=opts.map((o,i)=>'<button class="popt'+(o.danger?' danger':'')+
-    '" data-i="'+i+'"><b>'+o.t+'</b><i>'+o.c+'</i></button>').join('');
+    '" data-i="'+i+'" title="'+esc(o.c||'')+'"><b>'+o.t+
+    (o.state?'<span class="mstate">'+o.state+'</span>':'')+'</b></button>').join('');
   $('mOpts').querySelectorAll('.popt').forEach(b=>b.onclick=()=>opts[+b.dataset.i].go());
   $('mFoot').textContent=LEGACY&&LEGACY.runs
     ? LEGACY.runs+' compan'+(LEGACY.runs===1?'y has':'ies have')+' been out on this road'

@@ -25,6 +25,201 @@
 
 ---
 
+## ⚔ THE PLAYTEST BATCH - TWELVE NOTES  *(#156 · 2026-08-14 · build log 8f.184)*
+
+Your twelve notes from the playthrough. Six of them are on the battlefield, four on the front door
+and the map, two on the opening. **Two of these change what you already know**, so read 6 and 8
+before you judge them.
+
+Eye check, if you want the before/after in one page:
+[`shots/156_playtest_batch.html`](../shots/156_playtest_batch.html).
+
+### 1 · No numbers on the hexes
+
+**Reach it in three steps:** any battle → your turn → look at the teal hexes.
+
+**What should happen.** The wash says where you can walk and **nothing is written on any of them**.
+How far you actually go is on the **MOVE card** (`4 HEXES`) and on the plaque, and both read the
+same figure the hexes are drawn from, so they cannot disagree.
+
+**Would be a bug:** a digit anywhere on the ground; the MOVE card's hex count disagreeing with how
+far you can actually click.
+
+### 2 · Hover an enemy and see where HE can get to
+
+**Reach it in three steps:** any battle → your turn → rest the cursor on an enemy.
+
+**What should happen.** Every hex **he** could reach on his next turn goes **dark red**, including
+the ones your own teal preview was covering. That overlap is the point: it is the answer to *can he
+reach me where I am about to stand*. Take the cursor off and the board is back instantly.
+
+Now **pick a weapon card first** and hover him again. His reach still shows, **on top of** the gold
+footprint the weapon just drew, and his hex keeps the **% to hit and the damage**. That is the
+second half of your note: with a blow picked, the board shows where he goes and what the swing
+costs, and takes the rest away.
+
+**This one was half-built and invisible.** The tint has existed for a while, but it only ever
+painted hexes that had nothing on them - and since MOVE is always selected, everything near you
+already had your own preview on it. So it was drawn only where it did not matter.
+
+**Would be a bug:** hovering **yourself** repainting your own reach in a second colour (it should
+not); a lit target, a shot lane or the ogre's landing spot being overpainted by a hover; the red
+staying behind after the cursor leaves.
+
+### 3 · The front door
+
+**Reach it in three steps:** ☰ MENU (any screen) → look.
+
+**What should happen.** Every row is **one label, larger**, with **no small grey caption under it**.
+`YOU CANNOT AFFORD TO BE GOOD TO EVERYONE` is now large display type under the title instead of
+11px of spaced-out mono.
+
+**One row still carries figures and it is deliberate:** `Continue the road` says `day 5 · 6 of you ·
+Coldharrow` on its own line, at label size, because starting a new company leaves that one for good
+and you should not have to press it blind. The old captions all survive as **hovers**.
+
+**Would be a bug:** a second line of small type anywhere in the menu; the rows or the footer running
+off the bottom of the screen.
+
+### 4 · Whose turn it is, on the ground
+
+**Reach it in three steps:** any battle → look at the board, not the panel.
+
+**What should happen.** The acting body's **hex** wears a bright hexagon ring that breathes: **ivory
+for one of yours**, gold for an ally or the pet, **red for whoever is coming at you**. The sprite
+still glows as before.
+
+It used to paint a pale rectangle **behind** the hexagon, so what actually lit up was the seams
+between tiles. Against the painted grounds that read as a smudge.
+
+**Would be a bug:** two rings at once; the ring surviving on a body whose turn has ended.
+
+### 5 · A tutorial hint stops the fight
+
+**Reach it in three steps:** MENU → **The tutorial fight** → play until a gold spotlight card
+appears.
+
+**What should happen.** **Nothing else moves.** No enemy takes a turn, no round advances, until you
+click. Then the fight picks up exactly where it was.
+
+**This was a real bug and worth knowing why:** the spotlight is often raised at the *end* of your
+turn, and the code that raised it carried straight on into the next body's turn. You were reading
+while a brigand walked.
+
+**Would be a bug:** anything moving under the dim sheet; the fight not resuming after the last card
+is dismissed; a card sitting over the after-battle screen.
+
+### 6 · Two actions, everybody, including you ⚠ THIS CHANGES THE FIGHT
+
+**Reach it in three steps:** any battle → look at the ◆ crystals on the plaque, yours and theirs.
+
+**What should happen.** **Two, always.** The two exceptions are the two set-piece monsters that
+declare their own count and always did: the Thing in Armour (3) and the Fen-Mother (5).
+
+**Two things went to make this true.** Your Captain used to be handed a **third action once** in the
+tap-room brawl, which is the three crystals you saw. And **six enemy bosses took three** - the
+ratkin chieftain, the broken captain, the Snare's elder, the Bitch, the Sling-master and the
+Steading-elder.
+
+⚠ **This makes the act easier and I measured it rather than guessing.** Sixteen AI-vs-AI runs of
+each of the five captain fights: **53 wins out of 80 before, 59 out of 80 after**. Almost all of the
+shift is the **Ruined Steading**, which went from 2 wins in 16 to 6. If that fight now feels soft,
+say so - it is one line to put the third action back, or to re-tune that fight on its own.
+
+### 7 · No terrain glyph while you are moving
+
+**Reach it in three steps:** any battle → select MOVE → look at a rock, a tree or the fire.
+
+**What should happen.** You see the **painted object** and nothing stamped on it. Hovering it still
+tells you what it is (*"A tree. Nobody gets through it, and nobody shoots through it."*), and the
+hex is still dark with a hard border, which is what says you cannot walk there.
+
+**The one mark left is the ogre's:** a boulder he could pick up and throw still wears a gold ▲,
+because that is an offer rather than a label.
+
+**Would be a bug:** the ▲ ♣ ▮ ✿ ♨ coming back on any hex you are not being offered.
+
+### 8 · A second company does not fight the brawl again ⚠ READ THIS ONE
+
+**Reach it in three steps:** finish or lose a run → MENU → **A new company**.
+
+**What should happen.** You land **straight on THE MAN IN THE CORNER**: the offer, the three who
+joined, the name picker, one door to the map. **No tap-room brawl.** The card's first paragraph is
+written for this: he crosses to your table because he has been watching you, not because he is
+stepping over wreckage.
+
+**The condition is "you have played it through once", not "you died".** You asked for it after a
+loss, but somebody who *wins* and starts again would have been sat back down in the tap-room too,
+which is the same complaint.
+
+**It is still one click away whenever you want it:** `The tutorial fight` on the front door.
+
+⚠ **You start with the same money and mood as if you had fought** (the brawl's 8 crowns and +4 are
+paid for you) but **nobody arrives hurt**, where fighting usually costs the Captain something. That
+is a shade kinder than playing it. Say if you would rather it cost you.
+
+### 10 · The road zooms, and starts closer
+
+**Reach it in three steps:** get to the map → look at the top-right corner → press a stop, or roll
+the wheel over the map.
+
+**What should happen.** Three stops, `ROAD · NEAR · CLOSE`, exactly like the battlefield's camera.
+**You start on NEAR**, one step in from the whole map. `ROAD` is the whole thing at once and it is
+the furthest out you can go, on purpose: the painting is exactly the size of its box, so anything
+wider would show you the ground where the map stops.
+
+**The wheel steps between them.** Zoomed in, **drag the map** to look somewhere else. The stop you
+leave it on is remembered next time you launch, like the battle camera and the sound toggle.
+
+**The camera follows the company** and only when it has to: it re-frames when you are getting near
+an edge, not on every step, or the map would slide under your cursor while you were reading a fork.
+If you have dragged away to look at something, it stays where you put it **until the company sets
+off**, and then it comes back on its own.
+
+**What does NOT move:** the contract plate, the zoom bar, the legend, the event card, the company
+name along the bottom, the road news. Those are captions, and a caption that zooms is a caption
+that walks off the screen. ⚑ **An event card still opens beside its own node at every stop** — that
+one took a bit of work and is the thing most likely to be subtly wrong, so it is worth a look.
+
+**Would be a bug:** the painting's edge showing at any stop or after any drag; a drag that ends on
+a node walking the company there; the card opening in the wrong corner; the contract plate or the
+legend scaling with the map.
+
+### 9 · THE CONTRACT is out of the map tutorial
+
+**Reach it in three steps:** start a new company → take the door to the map → count the spotlight
+steps.
+
+**What should happen.** **Two steps: THE CHEST, then THE COMPANY, then THE ROAD.** The one that
+pointed at the contract plate and explained that it was a contract plate is gone.
+
+### 10 · The contract is a head, and the plate is half the size
+
+**Reach it in three steps:** on the map → look at the top-left corner.
+
+**What should happen.** Three short lines, none of them wrapping:
+
+```
+THE CONTRACT · SKELBROOK
+Bring back the head out of the hall's chair.
+◉80 paid, the rest on delivery
+```
+
+**The letter is gone as a job** - it was a second objective you could never actually discharge - and
+so is the line about where the road ends, because the map already draws that: the goal node wears
+the same trophy the plate opens with.
+
+**The weekly letter is still in the man's mouth** in the tavern, and deliberately: he has been
+reading them since the thaw and doing nothing, and a company at forty crowns is the cheapest thing
+that counts as doing something. Hover the plate for the whole job in full.
+
+**Measured: 400x77 down to 305x53.**
+
+**Would be a bug:** either line wrapping to two; the plate growing back down the map when a longer
+sentence is put in it.
+
+---
+
 ## 🚪 THE OPENING PASS - TWO SCREENS GONE, AND THE ARCHER'S HAND FIXED  *(#155 · 2026-08-14 · build log 8f.183)*
 
 Nine of your notes from the playthrough. **Start a NEW company for this one** - most of it is in the

@@ -117,7 +117,7 @@ twelve beats no road can skip.**
 **Built:** hex combat on 15x13 with facing arcs, engagement and parting swings · two AI brains
 (`aiTurn`, `autoStep`) · a five-rung nerve ladder · cooldowns · one-hand/two-hand equipment · forced
 movement · terrain as a register with eight grounds · obstacle height and the game's first cover ·
-three camera stops · a board clock at x1.75 · scars, two mutation chains, personalities · race
+three camera stops on the board and three more on the road · a board clock at x1.75 · scars, two mutation chains, personalities · race
 skills · provisions, wages and per-person grievance · chained camp incidents · typed bonds · a
 mid-run save · a content linter · a practice field · `? RULES` · the Captain's teaching balloon
 *(four of its lessons deleted by #137, once the intro brawl began teaching the same rules ten

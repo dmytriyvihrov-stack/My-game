@@ -319,9 +319,14 @@ and a date**:
   Skelbrook is not. **A company at forty crowns is the cheapest thing that counts as doing
   something.** He never says this; the prologue narrates it once and leaves the arithmetic to the
   player.
-- **What is actually bought:** carry the letter east, **bring back the head out of that chair**,
-  keep the purse. **A head, and not a village.** That is why the act can honestly end on the road
-  with Skelbrook still taken, and the Snare victory card says so out loud.
+- **What is actually bought:** **bring back the head out of that chair**, keep the purse. **A head,
+  and not a village.** That is why the act can honestly end on the road with Skelbrook still taken,
+  and the Snare victory card says so out loud.
+  ⚑ **#156 CUT "carry the letter east" AS A JOB** *(user: "So deliver letter or kill - i prefere
+  kill")*. It was a second objective the player is never given a way to discharge, standing in
+  front of the one the whole act ends on. **The letter above stays exactly as it is**, because it
+  is not the errand, it is the man: he has been reading them since the thaw and doing nothing, and
+  the prologue still says so in his own mouth. What went is the task, not the fact.
 - ⚠ **HE SAYS "BANDITS".** They are the Snare Clan. A lord who has not been east in years calling
   a clan "bandits" is the exact shape of the prologue's set-up: the player is meant to believe
   this is a country with one people in it until **Blood on the Road**. Nothing in the tap-room
