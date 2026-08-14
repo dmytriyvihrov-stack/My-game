@@ -63,6 +63,7 @@ section used to carry each entry in full, which made the work file a second chan
 
 | | the subtraction | log |
 |---|---|---|
+| **#154** *(08-14)* | **every road door wears its intent**: eight glyphs measured down from ten, plus a race mark derived from `needRace`; and the Fen-Mother drops to two doors, the quiet one paying in days | 8f.182 |
 | **#151** *(08-14)* | eight of his notes: a fourth door on the toll-man that takes the whole robbery, the menu's two playtest rows merged, *"it sits well with them"* out of 16 cards, cost lines in the game's own resource glyphs, one loot receipt per fight, and **the fork sign spans a range instead of counting** | 8f.179 |
 | **#150** *(08-13)* | eleven notes: the opening loses a title, a sub-label and a whole screen; the receipt chips learn which glyph means what; *"it sits badly with them"* out of 24 cards; **the road bar grows the three signs it never had** | 8f.178 |
 | **#145-#149** *(08-13)* | the brawl's second wave splits · the aiming pass, every summed row carrying its working · two finished grounds reach the campaign · #36's blocked lane joins the one gate · AUTO leaves `setInterval` | 8f.173-177 |

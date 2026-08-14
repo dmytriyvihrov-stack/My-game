@@ -25,6 +25,53 @@
 
 ---
 
+## ⚔️ THE DOORS WEAR THEIR INTENT  *(#154 · 2026-08-14 · build log 8f.182)*
+
+**Reach it in three steps:** menu → **Continue the road** → walk onto any event node. Every choice
+button on the road now opens with **one or two emoji** saying what that door *does*.
+
+**The eight, and they were counted rather than guessed.** I read every door in the game before
+proposing the set. Your four were right; the build needed four more to cover what the road actually
+offers:
+
+| ⚔️ FIGHT | 🤝 HELP | ☠️ EVIL | 👣 LEAVE | ⚖️ TRADE | 🧺 TAKE | ⛺ REST | 🙏 HONOR |
+|---|---|---|---|---|---|---|---|
+| starts a battle | somebody is helped | kill, rob, or worse | walk away | buy, sell, pay | take what lies there | stay a while | bury, pray, respect |
+
+**Plus a race mark when a door is race-gated: 🐀 ratkin · 👹 ogre · 🧑 human.**
+
+**What should happen**
+- **The verb comes first, the moral colour second.** BLOOD ON THE ROAD reads exactly as you wrote
+  it: ⚔️🤝, ⚔️🤝, ⚔️☠️.
+- **Hover any glyph and it names itself** ("EVIL · kill, rob, or worse"). That was your ask, and it
+  is a plain tooltip, so give it about a second.
+- **Never three glyphs.** A race-gated door shows one intent plus its race: THE SITTING STONE's
+  ratkin door is 🤝🐀, the wedding's ogre door is ⛺👹.
+- **THE FEN-MOTHER now has two doors, not three.** The back-away door is gone; the quiet door costs
+  **2 days** and pays the tooth, and the fight is the other answer. **The kill door has no ☠️** on
+  it, by your ruling: hunting a beast for its hide is a hunt, not villainy.
+- **The camp fire's rulings have NO glyph, and that is deliberate.** THE DEBT, THE AUNT, THE NINE
+  SECONDS are judgments rather than actions, and a mark on every door of a card is furniture. Bare
+  should read as *this is you deciding, not doing*.
+
+**What would be a bug**
+- Three or more glyphs on one button, or a glyph on a door that does something else entirely.
+- 💀 appearing anywhere on a choice. That face belongs to the morale chips and must never mean two
+  things; ☠️ is the villainy mark.
+- A door that starts a fight without ⚔️, or a race-gated door with no race mark.
+- A glyph that looks like a *price* rather than an *intent*. What a door costs stays on the chips
+  and the small line underneath; the emoji never says how much.
+
+⚠ **One honest limitation on 🧺.** You asked for an open sack and Unicode has not got one: 💰 is a
+sack tied shut, so this is the open basket that loot goes into. If it reads wrong to you in play it
+is a one-line swap.
+
+**Two things I also fixed while in there:** the em-dash rule had been broken for months in two camp
+cards (THE SECOND DEBT's sequel about the knife, and THE TUNE COMES BACK) because the standing
+check only ever read the road's table and not the fire's. Both are gone.
+
+---
+
 ## 🧭 YOUR EIGHT NOTES FROM THE CITY  *(#151 · 2026-08-14 · build log 8f.179)*
 
 **Reach it in three steps:** menu → **Continue the road** (or A new company) → the first fork.

@@ -131,6 +131,46 @@ label is a promise, the chip is a fact, and only one of them is allowed to be wr
   stays PROSE. It is a consequence with a story, not a resource.
 - **`moraleLine()` and `fxLine()` are gone.** Do not write a third one.
 
+## The intent glyph: what a door DOES, before it is read
+
+Since #154 every action door carries **one or two glyphs at the head of its label**, from
+`CHOICE_ICO` and `RACE_ICO` and nowhere else. They exist so a card can be sorted by eye before it
+is read, which is the clarity pass's own goal applied to the one surface that had four paragraphs
+and no shape.
+
+| | glyph | it means |
+|---|---|---|
+| `fight` | ⚔️ | starts a battle |
+| `help` | 🤝 | somebody is helped |
+| `evil` | ☠️ | kill, rob, or worse |
+| `leave` | 👣 | walk away |
+| `trade` | ⚖️ | buy, sell, or pay |
+| `take` | 🧺 | take what lies there |
+| `rest` | ⛺ | stay a while |
+| `honor` | 🙏 | bury, pray, respect |
+
+**The verb comes first and the moral colour second**: ⚔️🤝 is fighting for somebody, ⚔️☠️ is
+fighting as the predator. **The cap is two**, and `LINT` 6c holds it.
+
+⛔ **THE GLYPH IS INTENT AND NEVER A RECEIPT.** What a door costs is on the chips and the sub-line.
+A glyph that starts meaning "this one pays well" is a second receipt, which is the rule at the top
+of this file arriving on a third surface.
+
+⛔ **☠️ AND NOT 💀, EVER.** The morale chips wear 💀 as the lowest face out of `MOODSTATES`. One
+glyph may not mean two things on one screen (#102's wrong-unit rule).
+
+⚑ **THE RACE MARK IS DERIVED FROM `needRace`, NEVER AUTHORED** (🐀 ratkin · 👹 ogre · 🧑 human).
+This is #137's rule on its fourth surface: red was hand-flagged per door and five doors never got
+it. `needRace` already IS the fact. A race-gated door therefore authors only ONE intent, because
+the race mark takes the second slot. **There is no human-gated door in the build and that is
+correct** - the company is human by default, so the gate would open on everybody and a mark that
+fires everywhere is furniture. 🧑 waits for the door that earns it.
+
+⚑ **A DOOR MAY BE BARE, AND THE FIRE'S RULINGS ARE.** The CAMPS deck is mostly judgments rather
+than actions - the debt, the aunt, the nine seconds - and a glyph forced onto a ruling would
+dilute the eight that mean something. **Bare reads as "this is you deciding, not doing".** 94 of 94
+road doors carry one; 31 of 53 camp doors do.
+
 ## Where a receipt may appear before the choice
 
 **A multi-door card shows nothing before the pick.** That is the pillar's own corollary: prices
@@ -156,6 +196,8 @@ Run these in the running build and expect what is named:
 ```js
 LINT()                                   // 0 findings. It reads the tables for morale-in-label and the rest
 /—/.test(JSON.stringify(EVENTS))         // false. No em dash, anywhere, ever
+/* #154: every road door wears an intent, and no door wears three glyphs */
+Object.values(EVENTS).flatMap(e=>e.choices).filter(c=>!c.ico||!c.ico.length).length   // 0
 ```
 
 Then drive the card itself and read the DOM, because **the preview pane composites no frames and a
