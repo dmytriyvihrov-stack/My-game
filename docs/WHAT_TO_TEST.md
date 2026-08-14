@@ -69,6 +69,44 @@ is a one-line swap.
 **Two things I also fixed while in there:** the em-dash rule had been broken for months in two camp
 cards (THE SECOND DEBT's sequel about the knife, and THE TUNE COMES BACK) because the standing
 check only ever read the road's table and not the fire's. Both are gone.
+## ◉ PAYDAY EVERY FOURTH DAY  *(#152 · 2026-08-14 · build log 8f.180)*
+
+**Reach it in three steps:** A new company → take the contract → walk the first two roads east.
+Day 4 is the first payday, and it lands right around the first fork.
+
+**What it is now.** Wages are not taken daily any more. The bill quietly runs up as you walk
+(ratkin 1, human 2, ogre 2 a day - and **you draw 1**, whatever the books say a human costs), and
+**every fourth day the chest opens and pays the whole thing at once**. Your starting four cost
+7 a day, so the first payday takes about 21.
+
+**What to look at:**
+
+1. **The PAYDAY chip** (top bar, left side, where UPKEEP used to be). Paid up, it reads
+   `PAYDAY ◉21 IN 3D`: that is the bill *as it will be on the due day*, counting down. It sits
+   bone-coloured while the chest covers it, goes amber when the chest only covers what has
+   already run up, red when it cannot even do that. Hover it: the arithmetic, and who costs what.
+2. **The payment being loud.** On the payday, the chip and the crowns purse **flash gold**, the
+   coin sound plays, and the road line says "Payday. The chest opens...". No card, no screen,
+   nothing to click away. If you *miss* the flash because you were reading something else, that
+   is a real finding - say so.
+3. **The roads lost their crown prices.** The label on a road is now just `1d`; the fork rows
+   are `4 days · ~1-2 fights · TROUBLE` with no ◉ anywhere; the fork footer names where the
+   roads meet. The money question moved to the chip. Does a fork still read as a fair trade
+   without a price on it?
+4. **Miss a payday on purpose.** Spend down to nothing before day 8 (the muster is good at
+   this). The payday line turns hard ("Payday, and the chest cannot cover it..."), the chip goes
+   `◉N OVERDUE` red, the red UNPAID chip appears beside it, and the mood drops 10 **every day it
+   stands**. Earn coin and the chest settles itself at day's end without you doing anything.
+5. **The ogre costs 2 now and the Captain 1.** Check the muster hover and his race card: the
+   one-crown joke is gone, the new line explains the parity.
+
+**What would be a bug:** the chip's number disagreeing with what the payday actually takes off
+the purse · a payday flash on a day the chest did NOT fully pay · wages charged daily anywhere ·
+a crown price still printed on any road label, fork row or travel button · the OVERDUE amount not
+shrinking when coin comes in · morale draining between paydays while nothing is owed.
+
+**The balance question this opens (yours):** is 4 days the right beat, or does it want 5? And
+with the ogre at 3 seats AND 2/day, is he ever still the right hire?
 
 ---
 

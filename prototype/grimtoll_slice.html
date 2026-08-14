@@ -1422,6 +1422,14 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:11px;pa
 .cchip i{font-style:normal;font-size:10px}
 .cchip.click{cursor:pointer}
 .cchip.click:hover{background:#2a2114;border-color:var(--g3)}
+/* #152 - the payday flash: one rebuild wide, gold going out. Worn by the
+   PAYDAY chip and the crowns segment the tick after the chest opens. */
+.payflash{animation:payflash 1.8s ease-out}
+/* only the 0% frame on purpose: the implicit end frame is each element's own
+   computed style, so the chip and the strip segment each settle back to
+   their own colours */
+@keyframes payflash{
+  0%{background:#4a3a16;border-color:#d9bd7e;box-shadow:0 0 16px #d9bd7e55}}
 /* ═══ #150 · SOMETHING IS WAITING BEHIND THIS DOOR ═══════════════════════
    Same shape and same two colours as the `.tbadge` these chips' own screens
    already wear (#136): green ! for kit, gold ★ for an unspent level. The
@@ -5443,14 +5451,15 @@ const RACEHELP={
     form:{n:'THE SWARM',w:'ratkin, on one enemy',k:'swarmHit',u:'to its chance to hit',
           note:'The weakest thing you can hire, and what makes everybody else hurt.'}},
   ogre:{t:'OGRE',
-    /* ⚠ THE WAGE JOKE SURVIVES THE CUT ON PURPOSE. It is the one sentence in
-       the old block that was not a second copy of a number: it explains why
-       the biggest body on the field is the cheapest line in the ledger, which
-       otherwise reads as a bug. A line that makes a number legible is not the
+    /* ⚠ THE WAGE SENTENCE SURVIVED THE CUT because it made a strange number
+       legible. #152 changed the number (user: "ogr a day 2 instead of 1" -
+       the one-crown joke is dead), so the sentence now explains parity
+       instead of the discount. A line that makes a number legible is not the
        same thing as a line that repeats one. */
     d:'Huge, slow, and profoundly uninterested. They live where nobody else wants to and farm '+
-      'it badly. Mostly they want to be left alone. Paid one crown a day, like the smallest '+
-      'ratkin, because nobody has told him otherwise and he has never thought to ask.',
+      'it badly. Mostly they want to be left alone. Paid two crowns a day, a human\'s wage: '+
+      'somebody finally told him what the others get, and he thinks slowly but he does not '+
+      'forget.',
     form:{n:'THE WEIGHT',w:'ogres, near each other',k:'weightMor',u:'nerve a turn to everything nearby',
           note:'Slow enough that they arrive together anyway. Keep them that way.'}}
 };
@@ -5627,16 +5636,28 @@ function replaceDlg(){placeDlg(DLGAX,DLGAY);}
    2.  Campaign
    ============================================================ */
 const COST={ratkin:1,human:2,ogre:3};          // PARTY ROOM only: how much of the wagon they take
-/* ⚠ ROOM AND WAGE ARE NO LONGER THE SAME NUMBER (user, 2026-08-02). They were
-   one map because they happened to agree; the OGRE is the case that pulls them
-   apart. He takes 3 of the party room (he is enormous, and that price stands)
-   but he is paid ONE crown a day, same as a ratkin, because he is slow-witted
-   and does not know what he is worth. That is the joke and it is also the
-   balance lever: the ogre is now expensive in BODIES and cheap in COIN, so he
-   is the pick for a short purse and the wrong pick for a big company.
+/* ⚠ ROOM AND WAGE ARE NOT THE SAME NUMBER (user, 2026-08-02; re-tuned #152,
+   2026-08-14: "cost of main hero costs 1 in day instead of 2. And ogr a day 2
+   instead of 1"). Room is the wagon: the ogre takes 3 seats because he is
+   enormous, and that price stands. The wage is the ledger, and #152 ended the
+   old joke where he asked for one crown: he is paid TWO a day now, a human's
+   wage, because somebody finally told him what the humans get. So the ogre is
+   expensive in BODIES and in COIN both, and what he buys is the wall.
    Anything asking "how much room" reads COST; anything asking "what does
-   payday cost" reads WAGE, and dailyUpkeep() is the only place that sums it. */
-const WAGE={ratkin:1,human:2,ogre:1};          // crowns-per-day per head
+   payday cost" reads wageOf(), and dailyUpkeep() is the only place that sums
+   it. */
+const WAGE={ratkin:1,human:2,ogre:2};          // crowns-per-day per head
+/* ═══ #152 · PAYDAY EVERY FOURTH DAY ═════════════════════════════════════
+   (User, 2026-08-14: "i need payments for crew... once in 4-5 days +-. So it
+   ads some pressure, but also you don't need to calculate every day", then
+   the order: "ececute this new system of padayin 4 day".)
+   Wages ACCRUE a day at a time into G.owed and the chest only opens on the
+   payday. passDays() is the one place that reads this number. */
+const PAY_EVERY=4;
+/* the Captain draws ONE crown whatever his race (#152, "cost of main hero
+   costs 1 in day"): the chest is already his problem, the single coin is
+   bookkeeping. Everybody else is paid what their race is paid. */
+const wageOf=p=>p.leader?1:WAGE[p.race];
 /* not const: a wheelwright at a village can widen the wagon bed mid-run,
    and the extra seat has to count immediately — the Muster Field is next.
    13 base: four humans is 8, which leaves five spare — enough for an ogre
@@ -5663,14 +5684,18 @@ const G={ day:1, at:'hold', battleRounds:0, log:[], ambush:false, contact:false,
   capSaid:{},
   /* NO starting purse of its own. Everything you have comes from the wagon
      (90 crowns, see the boot block) plus whatever the nobleman pays you in
-     the tap-room — so the act opens at 120, 150 or 180 against roughly eight
-     a day of wages. That is deliberately not enough to buy the road: it is
-     sized so the muster can be shopped at exactly once, and food and robbery
-     stay live questions after it. */
+     the tap-room — so the act opens at 120, 150 or 180 against roughly seven
+     a day of wages (#152: the Captain draws one), billed in fourth-day
+     paydays of about thirty. That is deliberately not enough to buy the
+     road: it is sized so the muster can be shopped at exactly once, and food
+     and robbery stay live questions after it. */
   /* provisions start LOW and are not eaten daily — they are the good barrels,
      spent on purpose (meals, double rations, hungry events), and every source
      of more is a real find */
   run:{crowns:0,food:8}, camp:materialPool({salvage:0,gems:0}),
+  /* #152 - wages run up here between paydays; passDays owns it, the PAYDAY
+     chip reads it, and it rides the save in `flags` */
+  owed:0,
   morale:0, visited:{}, path:['hold'],
   /* you start poor. Three bits of junk, and the road provides the rest. */
   stash:['pot','cudgel','broom'], party:null,
@@ -8162,9 +8187,10 @@ const TUTSTEPS={
       'holds everything between.',
     a:()=>$('wQuest')},
   w_res:{h:'THE CHEST',
-    t:()=>'Crowns and provisions. Both drain: every day on the road costs '+
-      dailyUpkeep()+' crowns in wages, and the company eats every night. An '+
-      'empty chest on payday is how companies end, and everybody remembers it.',
+    t:()=>'Crowns and provisions. The company is paid every '+num(PAY_EVERY)+' days: '+
+      'the bill grows by '+dailyUpkeep()+' crowns for each day of road, and on payday '+
+      'the chest opens. An empty chest on payday is how companies end, and everybody '+
+      'remembers it.',
     a:()=>$('wRes')},
   w_company:{h:'THE COMPANY',
     t:'Everyone you have: the heads, the day\'s wages, the mood. Click here '+
@@ -17992,6 +18018,9 @@ function saveRun(){
         campSeen:G.campSeen,campChose:G.campChose,campDay:G.campDay,campCast:G.campCast,
         recruits:G.recruits,hiredHere:G.hiredHere,lateHireRolled:G.lateHireRolled,
         vill:G.vill,qm:G.qm,dismissed:G.dismissed,doubleRations:G.doubleRations,
+        /* #152 - the wages run up since the last payday. `||0` on the read
+           side is passDays' own guard, so an older save arrives square. */
+        owed:G.owed,
         /* #107: where the sky stands. It is presentation, but it is the kind
            of presentation a reload must not reset to noon on a company that
            went to sleep at dusk. `||0` on the read side, so an older save
@@ -23221,10 +23250,13 @@ function drawNodes(){
     const s=labelSpot(a,b,false,placed);
     placed.push({x:s[0],y:s[1],w:s[2],h:s[3]});      /* collisions in design space */
     l.style.left=s[0]+'px';l.style.top=vy(s[1])+'px'; /* #104: design -> view */
-    /* days and the wage bill. Provisions stopped being a travel tax.
-       #104 point 6: ◉ is the crown sign everywhere a crown amount shows,
-       so the label says ◉8, not the bare-letter 8c. */
-    l.innerHTML=e[2]+'d · <span style="color:var(--g4)">◉</span>'+(e[2]*dailyUpkeep());
+    /* #152 - DAYS AND NOTHING ELSE. The label carried the leg's wage bill
+       (◉8 beside the 1d) from #103 to #152, and it died with daily wages:
+       wages accrue and fall due every fourth day now, so a leg has no crown
+       price of its own to print (user: "we can delete crowns from each road
+       and crosroad decigion - which is good"). The bill the road is running
+       up lives on the PAYDAY chip in the bar, one place, always current. */
+    l.innerHTML=e[2]+'d';
     map.appendChild(l);});
   $('wLock').classList.toggle('on',!!G.pending);
   const lg=document.createElement('div');lg.className='mlegend';
@@ -23234,7 +23266,13 @@ function drawNodes(){
     '<span style="color:#8a7d63">━</span> walked · <span style="color:#4a3a22">┄</span> not from here';
   map.appendChild(lg);
 }
-const dailyUpkeep=()=>G.party.reduce((s,p)=>s+WAGE[p.race],0);
+const dailyUpkeep=()=>G.party.reduce((s,p)=>s+wageOf(p),0);
+/* #152 - the payday arithmetic every readout shares: how many days until the
+   chest opens, and what it will be asked for when it does. payIn is never 0
+   standing still: the tick that lands ON a payday settles inside passDays,
+   so by the time anything renders, the next one is 1..PAY_EVERY days out. */
+const payIn=()=>(PAY_EVERY-G.day%PAY_EVERY)%PAY_EVERY||PAY_EVERY;
+const payBill=()=>(G.owed||0)+dailyUpkeep()*payIn();
 /* ═══ THE PURSE HAS ONE DOOR, AND IT HAS A FLOOR ═════════════════════════
    (User, 2026-07-31: "fix a bit economy, especially for the longer routes —
    at least don't go below 0.")
@@ -23277,16 +23315,12 @@ function payFx(f){if(!f)return;if(f.crowns)pay('crowns',f.crowns);if(f.food)pay(
 
    IT IS NEVER A GATE. Debt is a legitimate way for a run to go — this is
    informed consent, not a locked door, and no road is ever disabled by it. */
-const fundedDays=()=>{const u=dailyUpkeep();
-  return u>0?Math.floor(Math.max(0,G.run.crowns)/u):99;};
-/* #103: the horizon stopped being its own FUNDED chip and rides the upkeep
-   chip as digits now ("14 days of pay" / "2 days left"), because the user
-   asked for the number and for the red to sit beside the bill it measures.
-   fundedWord() went with the chip. */
-/* two days or fewer is red, five or fewer is the colour of a thing you have
-   started watching, and above that it is the same bone as everything else —
-   which is how you stop noticing it, and that is correct */
-const fundedCol=d=>d<=2?'#c15d55':d<=5?'#c9a227':'var(--g4)';
+/* #152 - fundedDays() and fundedCol() are GONE with the daily wage. "How
+   many days of pay does the chest hold" was the right horizon for a chest
+   that drained daily; against a fourth-day bill the question is "does the
+   chest cover the coming payday", and payBill()/the PAYDAY chip answer it.
+   The #20 ruling above survives in the chip's colour: informed consent,
+   never a gate. */
 const partyUsed=()=>G.party.reduce((s,p)=>s+COST[p.race],0);
 /* ROAD NEWS — one line of narration over the map, no button, fades on its
    own. (say() is the battle voice; this is the road's.) Five call sites had
@@ -23543,8 +23577,19 @@ function worldTick(){
      homework, and this screen is where new players decide whether the
      game respects them. Chips are rebuilt every tick, so the handlers
      and hovers bind here too, not once at boot. */
-  const u=dailyUpkeep(),fd=fundedDays(),ms=moodState(G.morale);
+  const u=dailyUpkeep(),ms=moodState(G.morale);
   const owedDays=Math.max.apply(null,[0].concat(G.party.map(p=>p.unpaid||0)));
+  /* ═══ #152 · THE PAYDAY CHIP ═══════════════════════════════════════════
+     (User: "Add this to global map more clear.") The UPKEEP chip said what a
+     day costs and left the player to do the calendar; this one does the
+     calendar. Paid up, it names the next bill and its date (PAYDAY ◉36 IN
+     2D); behind, it names the standing debt (OVERDUE, red). The alarm rule
+     is #106's: bone while the chest covers the coming bill, amber when it
+     covers only what has already accrued, red when it cannot even do that -
+     so colour means trouble, never furniture. */
+  const owedNow=G.owed||0,pIn=payIn(),pBill=payBill();
+  const payShort=G.run.crowns<owedNow?2:G.run.crowns<pBill?1:0;
+  const payC=payShort===2?'#c15d55':payShort===1?'#c9a227':'#e0d3b4';
   /* the company's blood as a named state; the raw sums stay on hover */
   const hurt=G.party.filter(p=>p.hpLoss>0);
   let hpMaxAll=0,hpLossAll=0;
@@ -23595,14 +23640,6 @@ function worldTick(){
       d:(crit?'<b style="color:#c15d55">Somebody is close enough to falling that the next '+
           'fight could take them.</b><br>':'')+
         hurt.map(p=>who(p)+' is '+p.hpLoss+' hitpoints short').join('. ')+'.'};
-  /* ═══ #106 point 1 · THE HORIZON IS SILENT UNTIL IT IS A PROBLEM ═══════
-     ("delete days - show it only when 3 or less left and highlight with
-     red then.") A number that is on screen every day is furniture and gets
-     read as furniture; a number that appears ONLY when the chest is three
-     days from empty is an alarm. The full arithmetic stays on the hover,
-     which is where a curious player looks and a busy one does not. */
-  const fdRed=fd<=3;
-  const fdTxt=fd<=0?'nothing left':fd===1?'1 day left':fd+' days left';
   const petKey=hasPet();
   /* company relics work from the baggage; nobody wears them, so they sit
      with the company chips rather than on any one character's sheet */
@@ -23616,9 +23653,13 @@ function worldTick(){
       (lvUp?'<span class="cbadge star">★'+(lvUp>1?lvUp:'')+'</span>':'')+'</span>'+
     '<span class="cchip click'+(kitUp?' waiting':'')+'" data-w="kit">'+SACK_SVG+
       (kitUp?'<span class="cbadge">!</span>':'')+'</span>'+
-    '<span class="cchip" data-w="keep"><span class="nm">UPKEEP</span>'+
-      '<b><span style="color:var(--g4)">◉</span>'+u+'</b><span class="nm">/DAY</span>'+
-      (u>0&&fdRed?'<i style="color:#c15d55">· '+fdTxt+'</i>':'')+'</span>'+
+    '<span class="cchip'+(G.paidFlash?' payflash':'')+'" data-w="keep">'+
+      '<span class="nm">PAYDAY</span>'+
+      (owedDays>=1
+        ?'<b style="color:#c15d55"><span style="color:var(--g4)">◉</span>'+owedNow+'</b>'+
+         '<span class="nm" style="color:#c15d55">OVERDUE</span>'
+        :'<b style="color:'+payC+'"><span style="color:var(--g4)">◉</span>'+pBill+'</b>'+
+         '<span class="nm">IN '+pIn+'D</span>')+'</span>'+
     /* #114 point 6: the chip lost its day-counter ("don't need amount of
        unpaid days sign"). UNPAID is the fact, the mood ladder two chips
        over is the price, and the hover carries the arithmetic. */
@@ -23645,10 +23686,13 @@ function worldTick(){
   /* the counted resources, Battle Brothers' strip mirrored to the right.
      One SALVAGE segment on purpose: wood and iron alias the same pool,
      and showing both was the same number twice with different names on it */
-  const seg=(key,ic,v,col,extra)=>'<span class="rseg" data-w="'+key+'"'+(extra||'')+
+  const seg=(key,ic,v,col,cls)=>'<span class="rseg'+(cls||'')+'" data-w="'+key+'"'+
     '><span class="ri" style="color:'+col+'">'+ic+'</span><b>'+v+'</b></span>';
   $('wRes').innerHTML=
-    seg('crowns',RES_ICON.crowns,G.run.crowns,'var(--g4)')+
+    /* #152 - the purse flashes with the PAYDAY chip the tick after a payday
+       is met, the same one-shot flag; both are rebuilt every tick, so the
+       class rides one rebuild and the flag is dropped below. */
+    seg('crowns',RES_ICON.crowns,G.run.crowns,'var(--g4)',G.paidFlash?' payflash':'')+
     /* #106 point 6: the barrels are a READOUT, not a door. Both things you
        could do with them moved onto the chips that name their effect (the
        mood chip and the heart), and a chip that opens a card the player has
@@ -23658,6 +23702,9 @@ function worldTick(){
     seg('prov',RES_ICON.food,G.run.food,'var(--grain)')+
     seg('salvage',RES_ICON.salvage,G.camp.salvage,'var(--wood)')+
     seg('gems',RES_ICON.gems,G.camp.gems,'var(--gem)');
+  /* the flash is one rebuild wide: the animation plays out on the nodes just
+     written, and the next tick builds them plain */
+  if(G.paidFlash)G.paidFlash=false;
   /* floating over the map (#104): the day plaque centre with the sun-and-
      moon disc under it, the framed contract top left. The disc turns only
      while the company is on the road; standing still, it holds daylight. */
@@ -23710,12 +23757,16 @@ function worldTick(){
           'is wearing</b>, or goes in a slot that is empty.<br><br>':'')+
         'The wagon\'s stash, and what everybody is wearing out of it.',
       act:'CLICK: the same screen, straight to work.'},
-    keep:{t:'THE COMPANY\'S KEEP',col:fundedCol(fd),
-      d:'What all of you cost per day, in crowns - wages and provisions in one number. '+
-        'Ratkin 1, human 2, ogre 1 (he takes three seats and asks for one coin).<br><br>'+
-        'The chest holds '+G.run.crowns+' against '+u+' a day: <b style="color:'+fundedCol(fd)+
-        '">'+(u>0?fdTxt:'no wage bill')+'</b>. That sum does not know what the road is '+
-        'about to charge you.',
+    keep:{t:'PAYDAY',col:payShort?payC:'var(--g4)',
+      d:'Wages are paid every '+num(PAY_EVERY)+' days, not daily. The bill grows with '+
+        'every day of road - ratkin 1, human 2, ogre 2, and the Captain draws one - and '+
+        'on the day, the chest opens.<br><br>'+
+        (owedDays>=1
+          ?'<b style="color:#c15d55">◉'+owedNow+' stands unpaid.</b> Every day it stands '+
+           'drags the mood down hard.'
+          :'Run up so far: ◉'+owedNow+'. Due in '+num(pIn)+' day'+(pIn>1?'s':'')+
+           ': about <b style="color:'+payC+'">◉'+pBill+'</b>, against '+G.run.crowns+
+           ' in the chest. That bill does not know what the road is about to charge you.'),
       x:'It never stops you taking a road. Owing them is a way a run can go.'},
     owed:{t:'UNPAID',col:'#c15d55',
       d:(owedDays>=5?'Somebody is going to walk.':owedDays>=3?'They have started asking '+
@@ -23749,7 +23800,7 @@ function worldTick(){
     crowns:{t:'CROWNS',col:'var(--g4)',
       d:'The purse of THIS run - wages, tolls, hires, bribes. It does not survive the '+
         'company. Spend it like somebody who knows that.',
-      x:'Wages fall due every day, walking or sitting.'},
+      x:'Wages fall due every fourth day, walking or sitting.'},
     prov:{t:'PROVISIONS - THE GOOD BARRELS',col:'var(--grain)',
       d:'Your wages already buy the company bread. This is <b>everything better than '+
         'bread</b>: salt meat, cheese, a jug.<br><br>'+
@@ -23772,8 +23823,8 @@ function worldTick(){
       d:(petKey&&PETS[petKey]?PETS[petKey].d:'A companion follows the company.'),
       x:'Assigned to the Captain. Check the company screen to change or remove it.'},
     day:{t:'DAY '+G.day,col:'var(--g4)',
-      d:'How long the company has been on this contract. Wages fall due every one of '+
-        'them, walking or sitting.'+(destN?'<br><br>Walking to '+destN.n+'. Nothing on '+
+      d:'How long the company has been on this contract. Every fourth one is a payday, '+
+        'walking or sitting.'+(destN?'<br><br>Walking to '+destN.n+'. Nothing on '+
         'the map moves until you arrive.':hereN?'<br><br>You stand at '+hereN.n+'.':''),
       x:'The sun holds still while you decide.'},
     quest:{t:'THE CONTRACT',col:'var(--g4)',
@@ -23877,58 +23928,92 @@ function takeRations(){
   G.doubleRations=RATION_DAYS;
   sfx('promote');
 }
-/* wages are small and DAILY — they leave the chest a coin at a time */
+/* ═══ #152 · WAGES ACCRUE DAILY, THE CHEST OPENS EVERY FOURTH DAY ════════
+   (User, 2026-08-14: "once in 4-5 days +-. So it ads some pressure, but also
+   you don't need to calculate every day", then "ececute this new system of
+   padayin 4 day".)
+
+   Daily charging was Battle Brothers' cadence without its timescale: erosion
+   needs hundreds of days to be felt, and this run is about twenty-two. So
+   the wage is a BILL now, not a drip. Every day of road adds dailyUpkeep()
+   to `G.owed`, silently; on days divisible by PAY_EVERY the chest settles
+   the whole figure, loudly (the chip flashes, say2 marks it). A longer road
+   still accrues a bigger bill, which is why deleting the crown figures from
+   the road labels and fork rows (same order) loses no truth.
+
+   A SHORT CHEST ON PAYDAY IS A STATE, NOT A MOMENT. The unpaid remainder
+   stays in G.owed and bills again on top of the next cycle; while anybody
+   is owed, every day costs 10 mood (#114's fine, unchanged) and ticks every
+   `p.unpaid` - which still counts DAYS, never paydays, because the nerve
+   maths (#5: 4 nerve a day on the field) and the five-day walkout were
+   tuned in days. And the chest catches up BY ITSELF the day it can, because
+   the UNPAID hover has promised exactly that since #114. */
 function passDays(n){
   for(let i=0;i<n;i++){
     G.day++;
-    /* ═══ UNPAID WAGES ARE A GRIEVANCE, AND A HEAVY TICK OF MOOD ══════════
-       (backlog #5, re-ruled in #114.) Missing payday used to cost a flat −4
-       company mood and nothing else, so the wage bill was an inconvenience.
-       #5 made it per-person and compounding, reaching the battlefield:
-       `p.unpaid` counts the days they have gone without, and `unitFrom`
-       takes 4 nerve per day off the ones who are owed. Personalities
-       disagree about it — the light-fingered barely mind, the ambitious
-       mind most, because not getting paid is the opposite of getting on.
-       #114 then put the weight back on the COMPANY ledger too, at the
-       user's ruling: the day-counter came off the UNPAID chip, and in
-       exchange every unpaid day fines the shared mood 10 points, so the
-       mood ladder itself is the visible price of an empty chest. */
-    const bill=dailyUpkeep();
-    if(G.run.crowns>=bill){
-      pay('crowns',-bill);
-      G.party.forEach(p=>{if(p.unpaid)p.unpaid=0;});
-    }else{
-      /* #114 point 6 (user: "if it is unpaid - each day destroys morale,
-         like 10 moral points fine"). The fine was 4 and read as an
-         inconvenience; at 10 a day on a ±40 mood scale, three unpaid days
-         walk the company from AT EASE to the edge of ON THE BRINK, which
-         is what an empty pay-chest is supposed to feel like. The chip up
-         top says only UNPAID now - the mood ladder IS the counter. */
-      pay('crowns',-G.run.crowns);G.morale-=10;  /* the chest is scraped, never overdrawn */
-      G.party.forEach(p=>{p.unpaid=(p.unpaid||0)+1;});
-      const owed=G.party.filter(p=>(p.unpaid||0)>0);
-      const worst=owed.length?Math.max.apply(null,owed.map(p=>p.unpaid)):0;
-      if(worst===1)say2('There is nothing in the chest at the end of the day. Nobody says '+
-        'anything about it, which is how you know they counted.');
-      else if(worst===3)say2('Three days unpaid. '+who(pickOne(owed))+' has started asking '+
-        'what exactly the arrangement is, in a tone that is not quite a question.');
-      /* And eventually somebody stops asking and simply goes. Deliberately
-         RARE — one departure is a story, three is a spreadsheet emptying
-         itself. Never the Captain, never below three bodies (a company that
-         cannot fight cannot earn the money to pay anybody), and at least
-         three days between one leaving and the next. */
-      if(worst>=5&&G.party.length>3&&(G.day-(G.lastWalkout||-99))>=3){
-        /* #73 - and never the one who called this company his clan. That is
-           the second half of the bargain at the long fire, and it is stated
-           in money because money is what the first half cost. */
-        const goers=owed.filter(p=>!p.leader&&!p.clan&&(p.unpaid||0)>=5);
-        if(goers.length&&Math.random()<0.22){
-          const g=pickOne(goers);
-          G.lastWalkout=G.day;
-          say2(who(g)+' is not at the fire in the morning, and neither is their kit. '+
-            'Five days is five days. Nobody goes looking, and nobody says the obvious thing '+
-            'about whose fault it is.');
-          dismiss(g);G.morale-=6;
+    G.owed=(G.owed||0)+dailyUpkeep();
+    const payday=G.day%PAY_EVERY===0;
+    const behind=G.party.some(p=>(p.unpaid||0)>0);
+    if(payday||behind){
+      /* pay() returns the signed amount actually moved, so adding it to the
+         bill IS the settlement: a full chest zeroes it, a scraped chest
+         leaves the remainder standing. The chest is never overdrawn. */
+      G.owed+=pay('crowns',-G.owed);
+      if(G.owed<=0){
+        G.owed=0;
+        G.party.forEach(p=>{if(p.unpaid)p.unpaid=0;});
+        if(payday){
+          /* the loud local thing (user: "Make payment laude... some local
+             thing that highlight that it was paid"): the chip and the purse
+             flash on the next bar rebuild, the road line says it, the coin
+             sound carries it. Never a screen, never a card. */
+          G.paidFlash=true;sfx('coin');
+          say2(pickOne(['Payday. The chest opens and every hand at the fire is paid.',
+            'Payday. Counted out in front of everybody, and the count is right.']));
+        }else if(behind){
+          say2('The back wages are squared. Nobody says thank you.');
+        }
+      }else{
+        /* ═══ UNPAID WAGES ARE A GRIEVANCE, AND A HEAVY TICK OF MOOD ══════
+           (backlog #5, re-ruled in #114, re-timed in #152.) `p.unpaid`
+           counts the days they have gone without, and `unitFrom` takes 4
+           nerve per day off the ones who are owed. Personalities disagree
+           about it - the light-fingered barely mind, the ambitious mind
+           most, because not getting paid is the opposite of getting on.
+           #114 point 6 (user: "if it is unpaid - each day destroys morale,
+           like 10 moral points fine"): at 10 a day on a ±40 mood scale,
+           three unpaid days walk the company from AT EASE to the edge of
+           ON THE BRINK, which is what an empty pay-chest is supposed to
+           feel like. The chip up top says only UNPAID - the mood ladder IS
+           the counter. What #152 changed is only WHEN this starts: the
+           first short day is a payday now, so the grievance opens with the
+           shock instead of leaking in from day one. */
+        G.morale-=10;
+        G.party.forEach(p=>{p.unpaid=(p.unpaid||0)+1;});
+        const due=G.party.filter(p=>(p.unpaid||0)>0);
+        const worst=due.length?Math.max.apply(null,due.map(p=>p.unpaid)):0;
+        if(worst===1)say2('Payday, and the chest cannot cover it. Nobody says anything, '+
+          'which is how you know they counted.');
+        else if(worst===3)say2('Three days unpaid. '+who(pickOne(due))+' has started asking '+
+          'what exactly the arrangement is, in a tone that is not quite a question.');
+        /* And eventually somebody stops asking and simply goes. Deliberately
+           RARE — one departure is a story, three is a spreadsheet emptying
+           itself. Never the Captain, never below three bodies (a company that
+           cannot fight cannot earn the money to pay anybody), and at least
+           three days between one leaving and the next. */
+        if(worst>=5&&G.party.length>3&&(G.day-(G.lastWalkout||-99))>=3){
+          /* #73 - and never the one who called this company his clan. That is
+             the second half of the bargain at the long fire, and it is stated
+             in money because money is what the first half cost. */
+          const goers=due.filter(p=>!p.leader&&!p.clan&&(p.unpaid||0)>=5);
+          if(goers.length&&Math.random()<0.22){
+            const g=pickOne(goers);
+            G.lastWalkout=G.day;
+            say2(who(g)+' is not at the fire in the morning, and neither is their kit. '+
+              'Five days is five days. Nobody goes looking, and nobody says the obvious thing '+
+              'about whose fault it is.');
+            dismiss(g);G.morale-=6;
+          }
         }
       }
     }
@@ -24202,7 +24287,7 @@ function confirmTravel(k){
    MIS-SELL the most dangerous road on the map, which is the pillar's own
    trap (the cheap option must never look like the free one). */
 function forkCard(br){
-  const dlg=$('wDlg'),here=NODES[G.at],up=dailyUpkeep();
+  const dlg=$('wDlg'),here=NODES[G.at];
   /* #150 - PEACEFUL, the user's own word, replacing NOTHING HEARD. The old
      one was hearsay ("nobody has told us anything about this road") and it had
      to be undone by the `nowhere to stop` clause under it; this one is a state
@@ -24290,18 +24375,22 @@ function forkCard(br){
        stay in the row's hover, where they are a fact about the road rather
        than a colour on its danger. */
     const d=Math.min(2,lo);
-    const bill=r.days*up;
-    const after=up>0?Math.floor(Math.max(0,G.run.crowns-bill)/up):99;
+    /* #152 - THE PRICE COLUMN IS GONE, AND IT IS THE PAYDAY'S DOING. The row
+       carried ~◉bill (days x upkeep, in fundedCol) from #150 to #152; with
+       wages accruing into a fourth-day payday a branch has no crown figure of
+       its own any more, and the user ordered the deletion by name ("we can
+       delete crowns from each road and crosroad decigion - which is good").
+       The trade the column guarded is NOT lost: a six-day road still accrues
+       two more days of wages than a four-day one, and the PAYDAY chip on the
+       bar is where that arrives. The row is days, fights, danger. */
     return '<button class="choice fork'+(d>1?' danger':'')+'" id="tR'+i+'" '+
       'title="'+n.n+' first · '+(r.stops?num(r.stops)+' place'+(r.stops>1?'s':'')+' to stop'
         :'nowhere to stop along it')+'">'+
       '<span class="rd"><span class="nm2">'+r.days+' days · '+fightTxt+'</span>'+
-      '<span class="pr" style="color:'+fundedCol(after)+'">~◉'+bill+'</span>'+
       '<span class="dang d-'+d+'">'+WORD[d]+'</span></span></button>';
   }).join('');
   dlg.innerHTML='<h3>'+count+' ROADS FROM HERE</h3>'+
-    '<div class="forkfoot">to '+NODES[br.join].n+' · the company costs '+up+
-      ' crowns a day, walking or sitting</div>'+
+    '<div class="forkfoot">every road here meets at '+NODES[br.join].n+'</div>'+
     '<div id="wChoices" style="display:flex;flex-direction:column;gap:5px">'+rows+
     '<button class="choice fork" id="tStay"><b>Not yet</b></button></div>';
   dlg.classList.add('on');
@@ -24323,33 +24412,24 @@ function forkCard(br){
    rebuild (#6) must not be able to take the screen out with it */
 function legCard(k,e){
   const n=NODES[k],dlg=$('wDlg');
-  const bill=e[2]*dailyUpkeep();
-  /* what the purse looks like on the far side of this leg */
-  const up=dailyUpkeep();
-  const after=up>0?Math.floor(Math.max(0,G.run.crowns-bill)/up):99;
   /* A ROAD'S CHARACTER IS A COMPARISON (user, 2026-07-31: "this thing shows
      only on crossroads — otherwise it doesn't make sense if the player can
      only move forward"). The `forkHere` gate that used to stand here is gone
      because the gate is now the WHOLE CARD (#58): this function is only ever
      reached from a fork, so `e[4]` always has something to be weighed
      against. drawNodes' own road label still gates itself the same way. */
+  /* #152 - the wage arithmetic left this card with the daily wage itself:
+     the leg's crown bill and the #20 "after it" horizon both priced a road
+     the chest no longer pays per day. Days are the price; the PAYDAY chip
+     carries the money. */
   /* positioned by placeDlg after the content is in */
   dlg.innerHTML='<h3>'+n.n.toUpperCase()+'</h3>'+
-    '<div class="bd">'+e[2]+' day'+(e[2]>1?'s':'')+' on the road, and the company costs '+
-    dailyUpkeep()+' crowns a day walking or sitting — call it '+bill+' for the leg, wages '+
-    'and keep in one number.'+
+    '<div class="bd">'+e[2]+' day'+(e[2]>1?'s':'')+' on the road.'+
     (e[4]?'\n\nThis road: '+e[4]+'.':'')+
-    /* THE HORIZON, not just the price (backlog #20). Last line, in the colour
-       the world-bar chip is already wearing, and the button below it never
-       disables — you can always take the road. */
-    '<div style="margin-top:9px;color:'+fundedCol(after)+'">After it: '+
-      (after<=0?'nothing left to pay them with.'
-       :after>=10?'the purse still holds.'
-       :'about '+after+' day'+(after>1?'s':'')+' of wages left in the purse.')+'</div>'+
     '</div>'+
     /* #150 - same family as the fork rows, same rule: no sub-label */
     '<button class="choice fork" id="tGo"><b>TRAVEL · '+e[2]+' DAY'+(e[2]>1?'S':'')+
-    ' · ~◉'+bill+'</b></button>'+
+    '</b></button>'+
     '<button class="choice fork" id="tStay"><b>Not yet</b></button>';
   dlg.classList.add('on');
   placeDlg(n.x,n.y);

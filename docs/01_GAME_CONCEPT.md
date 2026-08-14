@@ -153,17 +153,37 @@ important, nothing is.** The rules:
 
 The old 100-point Muster budget was replaced: it was a number with no fiction behind it. **Charisma is the Captain's stat, and it is the only cap on how many people will follow you.** Each recruit costs Charisma by race:
 
-| Race | Charisma | Daily wage |
+| Race | Charisma | Wage a day |
 |------|----------|-------------|
 | Ratkin | 1 | 1 |
 | Human | 2 | 2 |
-| Ogre | 3 | 3 |
+| Ogre | 3 | 2 |
+
+*(#152, 2026-08-14, two re-tunes by the user's order: the **Captain draws 1 a day whatever his
+race** ("cost of main hero costs 1 in day / instead of 2") - the chest is his problem, the coin is
+bookkeeping - and the **ogre is paid 2, a human's wage** ("And ogr a day 2 instead of 1"), which
+ends the old one-crown joke: somebody finally told him what the humans get. This table had also
+drifted: it said 3 while the build said 1.)*
 
 **Target squad size: 4–8.** At Charisma 12 that is six mixed companions — or eight if you lean ratkin, or four if you collect ogres. Charisma grows slowly through the campaign, so "I can finally afford the ogre" stays a real moment.
 
 ### Wages — the soft pressure that pushes you toward bad decisions
 
-The same 1/2/3 figures are **wage points, billed daily in crowns** — a coin at a time, deducted per day travelled, so the chest empties by erosion rather than by payday shock.
+The wage figures are **run up daily and paid every FOURTH day** - the PAYDAY. *(Re-ruled by #152,
+2026-08-14, reversing the "erosion rather than payday shock" line that stood here. The user: "i
+need payments for crew... once in 4-5 days +-. So it ads some pressure, but also you don't need
+to calculate every day." The comparison that decided it: daily wages are Battle Brothers' and
+Bannerlord's cadence, and both run campaigns hundreds of days long, where erosion has time to be
+felt; a ~22-day run needs the Wartales shape, a dated bill the player can see coming.)*
+
+How it lands on screen: the bill accrues silently, days × crowns/day, into one owed figure. The
+**PAYDAY chip** on the road bar counts down to the due day and names the coming bill; on the day,
+the chest opens **loudly** - the chip and the purse flash gold, the coin sound plays, the road
+line says it - but never as a screen or a card ("Make payment laude... some local thing that
+highlight that it was paid"). And because the money now lands at the payday, **the road cards and
+labels stopped printing crown prices entirely** ("if we do so, we can delete crowns from each
+road and crosroad decigion - which is good"): a road costs DAYS, a longer road runs up a bigger
+bill, and the fork stays honest without a single ◉ on it.
 
 Wages are deliberately **not punishing enough to lose a run on their own.** Their job is narrative pressure. When payday lands and the chest is short, the company doesn't mutiny — they take it quietly, morale drops, and *the options start looking different*. The pedlar alone on the ridge who was a trade opportunity last week is now one man with a cart. **Wages exist so that robbery becomes tempting**, and so that the player, not the game, is the one who decides what the company is.
 
@@ -387,7 +407,9 @@ Printing "A WEDDING ON THE ROAD" over an unvisited node turned exploration into 
 ### Wages are the pressure the pillar runs on
 
 An empty pay-chest used to cost a flat −4 company mood. Now it is **a grievance held by named
-people**: every unpaid day accrues on each of them, costs them **nerve on the battlefield** — so the
+people**, and since #152 it opens on a **payday**: wages fall due every fourth day, and the first
+short day is the fourth, not the first. From there it runs as before: every unpaid day accrues on
+each of them, costs them **nerve on the battlefield** — so the
 empty chest reaches the fight — and after five days somebody is simply **not at the fire in the
 morning**. They go into the same returner arc as anyone dismissed; the road may bring them back.
 
@@ -772,8 +794,9 @@ how it happened?** If they remember the bonus but not the person, it failed.
 ### Provisions — a store, not a tax
 
 Food used to drain every travel leg, which made it bookkeeping: a number that falls on a timer is
-not a decision. Now **the road's price is money** — wages and keep in one number, days ×
-crowns/day — and **PROVISIONS are the good barrels**: not eaten daily, spent on purpose. Click
+not a decision. Now **the road's price is days, and the days become money at the payday** — wages
+accrue per day and fall due every fourth (#152) — and **PROVISIONS are the good barrels**: not
+eaten daily, spent on purpose. Click
 the chip: **lay out a proper meal** (−4, −3 with the Cook-Fire, the mood lifts, once a day), or
 **double rations for the hurt** (−3, wounds mend twice as fast for three days). Events still ask
 for them at the road's hungry moments. They start low (6) and every source of more is a real
@@ -1118,7 +1141,7 @@ This is the Slay-the-Spire-shaped layer, but the currency is not just gold.
 |---|---|
 | Resource | Band | Role |
 |---|---|---|
-| **Crowns** | THIS RUN | Trade, healing, hiring, bribes — **and the road itself**: wages and keep in one number, days × crowns/day. Runs out fast. |
+| **Crowns** | THIS RUN | Trade, healing, hiring, bribes — **and the road itself**: wages accrue by the day and fall due every fourth day, at the PAYDAY (#152). Runs out fast. |
 | **Provisions** | THIS RUN | The good barrels — *not* spent per day. A proper meal for the mood, double rations for the wounded, and the road's hungry moments. Empty barrels reach the battlefield (≤2 = −6 morale to the line, 0 = −14). See §"Provisions — a store, not a tax". |
 | **Salvage** | BETWEEN RUNS | Whatever a company can prise off a battlefield and fit in a cart. Rebuilding the wagon and forging. |
 | **Gems** | BOTH | Rare. High-tier forging and long-term unlocks — but sellable for good coin when the run is going badly, which is the point. |
