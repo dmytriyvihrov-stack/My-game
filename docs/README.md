@@ -456,6 +456,7 @@ feel like filler too.
 | [`DEPLOY.md`](DEPLOY.md) | one command, and why the hosted page is generated rather than copied |
 | [`PARALLEL_SESSIONS.md`](PARALLEL_SESSIONS.md) | **two sessions, two desks.** `tools\branch.ps1 new <name>` gives a session its own branch and its own checkout, so nobody waits on the prototype; `tools\branch.ps1 done <name>` merges it back. **Numbers are still claimed**, because git cannot merge a counter. Read it before running two sessions |
 | [`DRAMATURGE.md`](DRAMATURGE.md) | the manual for `tools/dramaturge.html`. ⛔ **It live-reads the prototype: there must never be a second copy of the event data** |
+| [`PLAYTESTERS.md`](PLAYTESTERS.md) | **three simulated testers, Dima · Sanya · Andrey** (#162). `tools\playtest\run.ps1 -Who all` puts a build through them in a clean room (own `claude -p`, empty folder, only tool is the game) and writes one report per tester into `docs\playtests\`. ⛔ **They are a script, not `.claude/agents`, because a subagent inherits this repo's rules and memory** |
 | [`01_GAME_CONCEPT.md`](01_GAME_CONCEPT.md) | the accepted design. If the code and this disagree, one of them is a bug: decide which |
 | [`02_ART_DIRECTION.md`](02_ART_DIRECTION.md) · [`03_WORLD_LORE.md`](03_WORLD_LORE.md) | painted direction · **the lore book, and it is canon.** When an event and the book disagree, one of them is a bug |
 | [`10_ART_ASSET_BIBLE_AND_PROMPTS.md`](10_ART_ASSET_BIBLE_AND_PROMPTS.md) | the painted-art manifest and one prompt per picture |
