@@ -25,6 +25,143 @@
 
 ---
 
+## 🩸 THE FIGHT HAS WEIGHT - EIGHT SMALLER FIXES  *(#165 · #169 · #170 · #171 · 2026-08-16 · build logs 8f.193 · 8f.197 · 8f.198 · 8f.199)*
+
+**Your list of eight, in one session.** Everything below is on the battle screen except item 4,
+which is the tap-room brawl. Fastest way in: **⚙ TEST → AUTO → any fight** for 1-3 and 5-8, and a
+**fresh run** for 4.
+
+⚑ **Two of these were already built and reading as missing**, which is worth knowing before you
+judge them: the attacker's lunge and the defender's recoil have been in the game since #87, and the
+default red edge has always been the parting-swing zone. What changed is that they are now loud
+enough to be seen. If they still read as absent, that is a real finding and not a repeat.
+
+### 1 · A BLOW LANDS AND THE BODY SAYS SO  *(1.1, 1.2)*
+
+**Reach it in three steps:** any fight → walk up to somebody → swing.
+
+**What should happen.** On a **hit**: the attacker leans into it, and the target is **knocked back
+along the line of the blow and then rattles back to true** - two beats, not one. On a **dodge**:
+the target leans clear, 8px, with a rotation and a slight fade. On a **plain miss**: the target
+gives a small 3.5px flinch and nothing else. **All three are meant to look different from each
+other**; that is the whole point of the change, and the dodge/whiff pair is a rule from #84 that
+this entry kept rather than deleted.
+
+**What would be a bug.** A body that snaps back to true mid-rattle (that is the class being
+stripped early) · a dodge and a whiff that look the same · an archer *lunging* across the board on
+a missed shot · nothing at all on the target of a missed **shot** (it should flinch too).
+
+### 2 · BLOOD, AND IT STAYS ON THE FLOOR  *(1.3)*
+
+**Reach it in three steps:** any fight → land three or four blows on the same body → look at the
+ground where it was standing.
+
+**What should happen.** A landed blow throws **3 to 7 drops** that fly out along the swing and
+**fall** (they are not sparks; they have gravity). The hex keeps a **dark stain at the feet**, it
+**darkens as more blood is spilt there** (four blows is the ceiling), and it **stays for the rest
+of the fight** - so by the last round the board shows where the line actually held. The man who
+bled walks out of it and the stain stays where it was.
+
+⚠ **Armour that turns a blow leaves nothing.** White ring, brighter sparks, no drops and no stain.
+That is deliberate: the floor only records wounds that reached flesh.
+
+**What would be a bug.** A stain that vanishes on the next redraw · a stain that **moves with the
+body** · blood under somebody whose armour held · a stain painted *over* the token instead of under
+its feet · stains still on the board in the next fight.
+
+### 3 · WILL-KICK  *(2)*
+
+**Reach it in three steps:** start a run → look at Marrow's cards → the cantrip.
+
+**What should happen.** The spell called **EMBER** is now **WILL-KICK**. Nothing about it changed:
+cost 1, 5 nerve, range 2 in the bare hand and 4 with the working stave, 10-16 damage that mostly
+ignores armour, once a turn, and it still does not count against your one working a turn. The ✸
+mark is unchanged. **The word "EMBER" should appear nowhere in the game.**
+
+### 4 · A CAPTAIN IS A STAR AND NOTHING ELSE  *(3)*
+
+**Reach it in three steps:** any fight → look at your Captain → look at the enemy chieftain.
+
+**What should happen.** The **star that used to float above the head is gone**. The star is now in
+the **corner badge**, where the class glyph used to be - so a captain wears **one** mark instead of
+two. Yours is **larger and pale gold with a glow**; an enemy captain is **smaller and dimmer gold**.
+Everybody else keeps their class glyph (⚔ sword · ➹ bow · ⌇ spear · ✷ caster · ⬢ great beast).
+
+⚠ **A broken captain now shows BOTH** the white flag above the head and the star in the corner.
+That is new and intended: they used to share one anchor, so a routed captain stopped being
+identifiable at exactly the moment you most wanted to know who was running.
+
+### 5 · THE TUTORIAL BRAWL KEEPS FIGHTING  *(4)*
+
+**Reach it in three steps:** wipe the save → start a new run → play the tap-room brawl to the point
+where Harl breaks and runs for the door.
+
+**What should happen.** **Nothing interrupts.** The card headed **"THEY ARE ALL RUNNING"**, which
+offers to end the fight, **must not appear during the brawl**. Harl runs, goes out of the door, and
+**the barman and the knife come in, then the crew** - the script carries on to its own ending.
+
+**What would be a bug.** The card appearing at all · the fight ending when Harl leaves the room ·
+the waves not arriving. ⚠ **Outside the tutorial the card is unchanged** and still fires when a
+field of beasts is all running, which is worth checking once so you know it was scoped and not
+deleted.
+
+### 6 · STACKS COUNT IN FRONT  *(5)*
+
+**Reach it in three steps:** any fight with ratkin → let two of them poison the same body → look at
+the badge over its head.
+
+**What should happen.** **`2☣`**, not `☣2`. One stack is still a bare `☣` with no number. The
+badge's hover still says how many.
+
+### 7 · A STATUS SAYS WHAT IT DOES AND STOPS  *(6)*
+
+**Reach it in three steps:** any fight → hover any status badge over any head.
+
+**What should happen.** Every one of them now **opens on a number or a rule**. *Poisoned* is
+"+15% damage taken per cut, two rounds. Nothing caps it." *Crippled* is "Half movement, −10 dodge."
+The scene-setting ("An arrow through the leg", "Deep in his cups", "A ring cut round the left eye")
+is gone. **230 words to 143 across the eleven written notes, and not one number, gate or condition
+was cut.** If a status now fails to tell you something you need, that is the finding.
+
+### 8 · THE THREAT OVERLAY, AND WHAT A HOVER IS FOR  *(7)*
+
+**Reach it in three steps:** any fight → look at the board with nothing hovered → then rest the
+cursor on one enemy.
+
+**What should happen.** **By default** the only enemy marking on the board is the **red edge on
+hexes a parting swing would cost you** - the opportunity-attack zone, and nothing else. It is a
+little stronger than it was.
+
+**On hovering one enemy**, that body's whole envelope appears in two shades: the **darker red is
+where he can get to**, and the **lighter band around it is the extra ring his arm adds** - where he
+can reach you from somewhere he could walk to. The lighter band is drawn **through your own
+people's hexes too**, which is the useful half: it answers "can he reach the man I am about to
+stand next to".
+
+⚠ **A bow does not paint the board, and that is on purpose.** The strike band is built from melee
+**reach** only. An archer with a stride of 4 and a range of 5 threatens nearly every hex, so
+painting that says nothing at all; the game's own AI scores danger the same way. The bow's range
+stays on its card and on the lane.
+
+**What would be a bug.** The bands not clearing when the cursor leaves · the bands going stale
+after somebody moves · the light band missing from occupied hexes · a hovered *friendly* not
+showing the same thing in teal.
+
+### 9 · IT IS EASIER TO WALK AROUND SOMEBODY  *(8)*
+
+**Reach it in three steps:** any fight → get your line right up against an enemy → try to click the
+hexes **all around** him.
+
+**What should happen.** The enemy's click pad is now **exactly his own hexagon** rather than a
+rectangle a few pixels larger on every side, so the six hexes around him give you their whole
+ground back. **Clicking a neighbour to walk there should no longer catch the enemy instead.**
+
+⚠ **He should still be easy to hit.** That was the 2026-08-02 request that put the pad there and it
+has not been reverted - measured, the enemy's own sprite is still 18 of 18 sample points his. If a
+crowded target has become hard to click, that is a regression worth reporting straight away.
+
+---
+
 ## ⚔ THE BATTLE SCREEN, CLEARED OFF  *(#163 · 2026-08-16 · build log 8f.191)*
 
 **Your six, and three of them were one thing.** The token was carrying about 26px of furniture

@@ -598,8 +598,10 @@ button:disabled{cursor:not-allowed}
 .act .pop .pd{font-family:var(--body);font-size:11px;color:#b9c6c3;line-height:1.4;font-style:normal}
 /* #91 rule 3: the card that would fire lights while its trigger is hovered */
 .act.hoverfire{border-color:#8fb0aa;box-shadow:0 0 0 1px #8fb0aa,0 0 10px rgba(143,176,170,.35)}
-/* the Captain, unmistakable — the crest above the token, one size larger */
-.crest.big{font-size:15px;top:-5px;filter:drop-shadow(0 0 4px #000) drop-shadow(0 0 7px #d9bd7e)}
+/* ⛔ #169 - `.crest` IS DELETED, AND THE STAR MOVED INTO `.wbadge`. See the
+   long note there. The Captain was wearing TWO marks on a 37px hex: a ★
+   centred above the head and a ⚔ in the badge corner saying he holds a sword,
+   which everybody on the board is also saying. */
 /* ═══ WHICH WAY THEY ARE LOOKING ══════════════════════════════════════
    This used to be a 5px dot, which is not enough signal for a mechanic worth
    +30 to hit. Now: a WEDGE pointing where they face (their eyes), and a dark
@@ -849,6 +851,29 @@ button:disabled{cursor:not-allowed}
    above the 25% line, and the badge was losing half of itself to it */
 .wbadge{position:absolute;top:13px;right:2px;font-size:12px;line-height:1;
         font-family:var(--body);text-shadow:0 0 3px #000,0 0 3px #000,0 1px 2px #000}
+/* ═══ #169 · THE STAR IS THE CLASS NOW ══════════════════════════════════
+   (User, 2026-08-16: "You can delete star from capitan on the middle and
+   replace the class by that star. So it is clearer who is the cap and it
+   isnt too much of extra information.")
+
+   ⚑ THE SECOND MARK WAS PAYING FOR NOTHING. A captain carried `.crest` (★,
+   centred above the head) AND `.wbadge` (⚔, the corner glyph naming what he
+   fights with). The badge's whole job is to separate the bodies on the board
+   from each other, and ⚔ is what it says about EVERY sword in the game, so on
+   the one body the player most needs to pick out of a crowd it said the least
+   thing available. The star says both: who he is, and that he is not an
+   archer or a caster.
+
+   ⚠ THE ROUTED FLAG WENT FROM `else if` TO `if` IN THE SAME EDIT. 🏳 and ★
+   used to share the crest's anchor, so the two were mutually exclusive and a
+   broken captain silently stopped being identifiable. They are different
+   anchors now (`.wflag` above the head, `.wbadge` in the corner) so a captain
+   who is running shows both, which is the true and more useful reading.
+
+   ⚑ AND YOUR OWN CAPTAIN KEEPS THE GLOW `.crest.big` GAVE HIM. `leader` is
+   your Captain and nobody else; an enemy captain gets the same star in the
+   dimmer gold, exactly the two colours the crest already used. */
+.wbadge.lead{font-size:14px;filter:drop-shadow(0 0 3px #000) drop-shadow(0 0 6px #d9bd7e)}
 /* what it costs. It is the line that answers "can I afford this", so it is
    read type now and not a watermark. #91: it is the popover's receipt line. */
 /* ── THE BATTLE LOG (#91 point 11): a floating box, collapsed to the last
@@ -1153,7 +1178,42 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:11px;pa
    (`odds!==null` in render). So it can never steal a click from a hex you
    could have walked to, and two of them can only overlap when two enemies
    are adjacent AND both are in range. */
-.aimpad{position:absolute;left:-3px;right:-3px;top:-2px;bottom:-4px;z-index:20}
+/* ═══ #171 · AND THEN IT WAS TOO BIG ════════════════════════════════════
+   (User, 2026-08-16: "make enemy hover / hitbock smaller - so it is easier and
+   better to move to hexes all around them.")
+
+   ⚑ BOTH REQUESTS ARE RIGHT AND THEY ARE ABOUT DIFFERENT PIXELS. 2026-08-02
+   asked for the enemy's OWN hex back, because the row in front was eating the
+   bottom quarter of it and there was very little left to click. This pad did
+   that, and then took `-3 -3 -2 -4` MORE on top - which is not the enemy's
+   hex, it is the six hexes around him. Those are the hexes you walk to, and
+   at 37x42 a 3px bite off each side of a neighbour is a real share of it.
+
+   ⛔ SO THE PAD BECOMES THE HEXAGON, WHICH IS THE SHAPE IT SHOULD ALWAYS HAVE
+   BEEN. `inset:0` alone was most of the fix, and measured it was not all of
+   it: a RECTANGLE on a hexagonal board still pokes its four corners into the
+   four diagonal neighbours, because that is where their hexagons are. The
+   clip-path is `.hedge`'s own polygon, so the pad is now exactly the ground
+   this body is standing on and provably not one pixel of anybody else's.
+
+   ⚑ AND IT COSTS THE FIRST REQUEST NOTHING, which is the only reason it is
+   allowed. Measured in the running build with `elementFromPoint` over a grid
+   inside each hexagon (2026-08-16): the pad took **28 sample points** off the
+   six neighbours at `-3 -3 -2 -4`, **10** at `inset:0`, and **4** clipped. The
+   sprite's own legs stayed owned by their own hex in all three: **18 of 18**.
+   A true hexagon was also tested against three fatter-bottomed polygons and
+   none of them beat it on either count, so the tightest shape is also the best
+   one and there is no trade to argue about.
+
+   ⚠ THE PAD IS STILL WHAT MAKES THE CLICK WORK, so this is a trim and not a
+   deletion. Delete it and the 2026-08-02 report comes straight back: rows
+   overlap by 10px (`.hrow{margin-top:-10px}`), a bottom-anchored token stands
+   with its legs in that band, and the band belongs to the hex in front.
+   ⚠ IF `.hedge`'s POLYGON EVER CHANGES, THIS ONE CHANGES WITH IT. They are
+   the same shape for a reason and a pad that has drifted off the ground it is
+   meant to cover would fail silently, in clicks, which nothing tests. */
+.aimpad{position:absolute;inset:0;z-index:20;
+  clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%)}
 /* GROUND YOU CANNOT ENTER. Dark, hard-edged, and a glyph dead centre — the
    painted stones alone were ambiguous once the hexes got small. */
 .hex.blocked{cursor:not-allowed}
@@ -1355,8 +1415,10 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:11px;pa
   opacity:.66;filter:grayscale(.35) drop-shadow(0 1px 2px #000);pointer-events:none}
 /* the ones that matter still speak up */
 .umood.loud{font-size:11px;opacity:.95;filter:drop-shadow(0 1px 2px #000)}
-.wflag,.crest{position:absolute;top:-2px;left:50%;transform:translateX(-50%);font-size:12px;
-              line-height:1;filter:drop-shadow(0 0 2px #000)}
+/* #169 - `.crest` shared this anchor and is deleted; the white flag keeps it,
+   and now has the space above the head entirely to itself. */
+.wflag{position:absolute;top:-2px;left:50%;transform:translateX(-50%);font-size:12px;
+       line-height:1;filter:drop-shadow(0 0 2px #000)}
 #bFx{position:absolute;inset:0;pointer-events:none;z-index:7;overflow:hidden}
 .fx{position:absolute;font-family:var(--display);font-size:16px;font-weight:700;
     text-shadow:0 1px 3px #000,0 0 6px #000;
@@ -1378,16 +1440,58 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:11px;pa
    length of the animation and snap again when it ended. */
 .usp.lunge{animation:lunge calc(.34s * var(--pace)) cubic-bezier(.3,-0.4,.5,1.5)}
 @keyframes lunge{0%{transform:translate(0,0) scaleX(var(--flip,1))}
-  38%{transform:translate(calc(var(--dx)*11px),calc(var(--dy)*9px)) scale(1.06) scaleX(var(--flip,1))}
+  38%{transform:translate(calc(var(--dx)*13px),calc(var(--dy)*10px)) scale(1.07) scaleX(var(--flip,1))}
   100%{transform:translate(0,0) scaleX(var(--flip,1))}}
-.usp.recoil{animation:recoil calc(.30s * var(--pace)) ease-out}
-@keyframes recoil{0%{transform:translate(0,0) scaleX(var(--flip,1))}
-  30%{transform:translate(calc(var(--dx)*7px),calc(var(--dy)*6px)) rotate(var(--rz)) scaleX(var(--flip,1))}
+/* ═══ #165 · THE BLOW LANDS, AND THE BODY SAYS SO TWICE ═══════════════════
+   (User, 2026-08-16: "When there is a hit add character picture small movment
+   in the direction of hit" and "The reciver of heat shakes if recive it, move
+   a little bit a side if missed".)
+
+   ⛔ THE FIRST HALF WAS ALREADY BUILT AND READ AS MISSING, which is #156's
+   shape for the third time. `animClash` has lunged the attacker and recoiled
+   the defender along the blow since #87. What it did was 7px over 300ms on a
+   21x29 sprite, under a damage number, a hitflash and four sparks all firing
+   in the same third of a second - so the one part of it that was a BODY
+   MOVING was the quietest thing in the burst.
+
+   ⚑ SO THE RECOIL GAINS THE SECOND BEAT RATHER THAN GAINING AMPLITUDE. A
+   bigger single shove would have been the same information said louder; what
+   the user is describing is two events, "knocked" and then "shaken", and a
+   body that travels and then rattles back to true reads as having been HURT
+   rather than as having been nudged. 7px to 9px is a nudge upward; the four
+   keyframes after it are the actual answer.
+   ⚠ ONE ANIMATION AND NOT recoil+shudder STACKED. They both write `transform`
+   on the same element, so the second would silently win outright: whichever
+   class landed last would be the only one that played. That is not
+   hypothetical - it is exactly how `.stbar`'s z-index failed in #163. */
+.usp.recoil{animation:recoil calc(.44s * var(--pace)) cubic-bezier(.2,.8,.35,1)}
+@keyframes recoil{
+  0%{transform:translate(0,0) scaleX(var(--flip,1))}
+  20%{transform:translate(calc(var(--dx)*9px),calc(var(--dy)*8px)) rotate(var(--rz)) scaleX(var(--flip,1))}
+  42%{transform:translate(calc(var(--dx)*4px + 1.7px),calc(var(--dy)*3px)) rotate(var(--rz)) scaleX(var(--flip,1))}
+  59%{transform:translate(calc(var(--dx)*2px - 1.9px),calc(var(--dy)*2px)) scaleX(var(--flip,1))}
+  74%{transform:translate(calc(var(--dx)*1px + 1.3px),0) scaleX(var(--flip,1))}
+  87%{transform:translate(-.8px,0) scaleX(var(--flip,1))}
   100%{transform:translate(0,0) scaleX(var(--flip,1))}}
 /* the one that got away with it */
 .usp.evade{animation:evade calc(.32s * var(--pace)) ease-out}
 @keyframes evade{0%{transform:translate(0,0) scaleX(var(--flip,1))}
   40%{transform:translate(calc(var(--dx)*-8px),calc(var(--dy)*-6px)) rotate(-6deg) scaleX(var(--flip,1));opacity:.75}
+  100%{transform:translate(0,0) scaleX(var(--flip,1))}}
+/* ── #165 · AND THE ONE THAT WAS SIMPLY MISSED ───────────────────────────
+   ⛔ THIS DOES NOT DELETE #84's RULE, IT GIVES IT A SECOND VOICE. #84 shipped
+   the finding that a DODGE and a WHIFF are two different failures and must not
+   look alike, and it was right; what it did about it was give the dodge an
+   `evade` and the whiff NOTHING, so half of that distinction was drawn as an
+   absence. An absence is not read as a fact, it is read as the game not
+   noticing - which is what the request is reporting.
+   ⚑ SO BOTH MOVE, AND THE SIZES ARE THE MESSAGE. A dodge is 8px, a rotation
+   and a fade: the body did that on purpose. A whiff is 3.5px and a 2.5deg
+   lean with no fade: the body flinched at a blade that was never going to
+   land. Told apart at a glance, and neither is silent. */
+.usp.sway{animation:sway calc(.30s * var(--pace)) ease-out}
+@keyframes sway{0%{transform:translate(0,0) scaleX(var(--flip,1))}
+  45%{transform:translate(calc(var(--dx)*-3.5px),calc(var(--dy)*-2.5px)) rotate(-2.5deg) scaleX(var(--flip,1))}
   100%{transform:translate(0,0) scaleX(var(--flip,1))}}
 /* the collision itself: a hard bloom where the two of them met */
 .hitflash{position:absolute;width:30px;height:30px;margin:-15px 0 0 -15px;pointer-events:none;
@@ -1403,6 +1507,52 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:11px;pa
   animation:spark calc(.42s * var(--pace)) ease-out forwards}
 @keyframes spark{0%{opacity:1;transform:translate(0,0) scale(1)}
   100%{opacity:0;transform:translate(var(--sx),var(--sy)) scale(.3)}}
+/* ═══ #165 · BLOOD, AND THEN BLOOD ON THE FLOOR ══════════════════════════
+   (User, 2026-08-16: "If hit sucsesfull - spill some blud as small animation
+   around and drop a bit on the floor.")
+
+   TWO THINGS, AND ONLY THE FIRST IS AN EFFECT. The spatter is a burst like
+   the sparks beside it. The floor is a RECORD: it outlives the blow, it
+   accumulates, and by the last round the board shows where the fighting
+   actually happened. The user asked for both halves in one sentence and they
+   are built as two, because they have different lifetimes.
+
+   ⛔ THE SPARKS ARE NOT REUSED FOR THIS AND THE DIFFERENCE IS GRAVITY. A
+   spark travels along the blow and dies where it stops; a drop is thrown out
+   and then FALLS, which is the only reason it reads as liquid rather than as
+   more of the same burst. `--gdy` always carries a downward bias, whatever
+   direction the swing came from. */
+.gdrop{position:absolute;width:3px;height:3px;margin:-1.5px 0 0 -1.5px;border-radius:50%;
+  pointer-events:none;background:#a81f18;box-shadow:0 0 2px rgba(120,16,12,.7);
+  animation:gdrop calc(.54s * var(--pace)) cubic-bezier(.22,.5,.6,1) forwards}
+@keyframes gdrop{0%{opacity:1;transform:translate(0,0) scale(1)}
+  72%{opacity:.9}
+  100%{opacity:0;transform:translate(var(--gdx),var(--gdy)) scale(.5)}}
+/* ── the floor ──────────────────────────────────────────────────────────
+   ⚠ IT IS DRAWN BY render() FROM `B.gore`, NOT LEFT LYING IN THE DOM. render()
+   destroys all 273 hexes and rebuilds them, so anything appended to a hex and
+   not written down is gone on the next redraw. The map on `B` is the fact and
+   this is only how it looks - the same shape `B.hexEls` and the peek use.
+   ⚠ AND IT SITS AT THE FEET. `bottom:1px` with the blobs low inside it puts
+   the stain under the sprite's legs rather than in the middle of the hexagon,
+   which is where a body standing there would actually have bled.
+   ⚠ NO `mix-blend-mode`. The grounds run from near-black marsh to pale sand
+   and multiply would make it invisible on the dark half of them. Flat dark red
+   at a controlled alpha reads on every one.
+   ⚠ THE FIRST CUT OF THIS WAS INVISIBLE AND THE DOM SAID IT WAS FINE. Every
+   counter passed - the div was there, the opacity computed, the gradient
+   resolved - and on the captured frame at 1:1 you could not see it without
+   zooming to 3x. A 13px band of .43 dark red sits on ground that is already
+   dark green, and the tokens standing on it are 29px tall. Numbers cannot
+   answer "is it visible"; only the picture can, which is why this file's rules
+   keep insisting on the capture. Widened, raised off the floor, and started
+   at .57 rather than .43 for a single wound. */
+.gore{position:absolute;left:1px;right:1px;bottom:1px;height:16px;pointer-events:none;
+  opacity:var(--go,.6);
+  background:
+    radial-gradient(ellipse 50% 34% at var(--g1,50%) 74%,rgba(124,16,13,.97) 0%,rgba(124,16,13,0) 74%),
+    radial-gradient(ellipse 30% 20% at var(--g2,32%) 90%,rgba(146,24,18,.9) 0%,rgba(146,24,18,0) 76%),
+    radial-gradient(ellipse 22% 15% at var(--g3,70%) 58%,rgba(104,12,10,.85) 0%,rgba(104,12,10,0) 78%)}
 /* A SHOT IS A THING THAT TRAVELS. An arrow that simply appears as a number
    over the target never taught anybody that the archer needed line of fire. */
 .shot{position:absolute;pointer-events:none;width:11px;height:2px;margin:-1px 0 0 -5px;
@@ -1515,9 +1665,14 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:11px;pa
 @keyframes ghost{0%{opacity:.6;transform:scale(1)}
   100%{opacity:0;transform:scale(.82) translateY(-7px)}}
 @media (prefers-reduced-motion:reduce){.fx{animation:none;opacity:1}
-  .usp.lunge,.usp.recoil,.usp.evade,.usp.shudder{animation:none}
-  .hitflash,.spark,.shot,
+  .usp.lunge,.usp.recoil,.usp.evade,.usp.sway,.usp.shudder{animation:none}
+  .hitflash,.spark,.shot,.gdrop,
   .gust,.swarc,.aring,.tether,.mote,.plate,.ghost{display:none}}
+/* ⚑ #165 - `.gore` IS DELIBERATELY NOT IN THE LINE ABOVE. Everything listed
+   there is MOTION, and the reduced-motion request is about motion. The floor
+   stain does not move, does not animate and does not flash; it is a static
+   mark saying somebody bled here, and hiding it would take information away
+   from the people who asked for less movement, not less information. */
 /* ═══ #100 point 13 · THE TOP ROW IS A ROW YOU FIGHT ON ═══════════════════
    (User: "when character on the toppest tile, it is still good visible
    (right now it is a bit shadowed)".)
@@ -5565,7 +5720,7 @@ const SPELLKEYS=Object.keys(SPELLS);
    second random.")
 
    ⚑ THE CASTER HE MEETS AT THE START IS MARROW, AND MARROW IS THE
-   BATTLE-MAGE. So "two spells, one basic and one random" is EMBER, which
+   BATTLE-MAGE. So "two spells, one basic and one random" is WILL-KICK, which
    every caster has and which costs nothing to learn, plus ONE rolled school.
    That is what `warmage` now gets, and it is the whole of his sentence:
    three unfamiliar cards on the company's first caster became one.
@@ -7986,12 +8141,35 @@ function unitFrom(p){
       if(!left.length)break;
       p.spells.push(left[Math.random()*left.length|0]);
     }
-    /* #161 - EMBER is 2 in the bare hand and 4 with the stave, which is what it
+    /* ═══ #169 · WILL-KICK, AND IT WAS CALLED EMBER ═══════════════════════
+       (User, 2026-08-16: "Replace name of skill 'ember' to something more
+       brutal 'Will kick' for example.")
+
+       ⚑ THE MECHANIC WAS ALREADY THE NEW NAME AND THE OLD ONE WAS HIDING IT.
+       `am:.30` is the armour multiplier, so this thing barely touches a
+       harness and lands almost all of itself on the body inside - which the
+       note has always said in words ("mostly ignores armour"). A dying coal
+       does not do that. A kick of somebody's raw will does, and it explains
+       the 5 nerve it costs the caster at the same time: they pay for it out
+       of themselves.
+
+       ⛔ THE KEY MOVED TOO, AND THAT IS THE POINT. `k:'blaze'` was read in
+       six places that gate the cantrip against the one-working-a-turn rule,
+       and a key named for fire under a name that is not fire is exactly the
+       one-fact-two-names trap this file keeps paying for. Grep is the check:
+       no `blaze` survives anywhere, including ICO.
+
+       ⚑ ✸ STAYS AND IS REFRAMED. It is an eight-pointed burst, not a flame,
+       and it reads as a concussion perfectly well. It is also the only ✸ in
+       ICO (WITHER holds ✷, the mage class icon holds ✷), so re-glyphing would
+       spend a collision-free mark for nothing.
+
+       #161 - it is 2 in the bare hand and 4 with the stave, which is what it
        has always been. Its note never carried a range figure and must not gain
        one: the card prints `range N` off the act. */
-    acts.push({k:'blaze',n:'EMBER',cost:1,strain:5,range:2+u.spellRange,
+    acts.push({k:'willkick',n:'WILL-KICK',cost:1,strain:5,range:2+u.spellRange,
       dmg:[10,16],am:.30,ft:.80,arcane:true,
-      note:'The cantrip every caster has. Cheap — 5 of their own nerve — and mostly ignores '+
+      note:'The cantrip every caster has. Cheap, 5 of their own nerve, and mostly ignores '+
         'armour. Does not count against your one working a turn, but it is once a turn all '+
         'the same.'});
     p.spells.forEach(k=>{if(SPELLS[k])acts.push(castAct(SPELLS[k],u.spellRange));});
@@ -11666,6 +11844,23 @@ function strike(a,d,act,mult){
                   :a.name+' swings wide.'));
     fx(d,dodged?'DODGE':'MISS',dodged?'#8ca35a':'#7d9490');
     if(!ranged)animClash(a,d,'miss',dodged,!!act.sweep);
+    /* #165 - a shot that goes past still moves the body it went past. animClash
+       is the wrong door for it: it would lunge the archer at a target across
+       the board and put the flash halfway down the flight. So the one thing it
+       would have done is done here, with the same two sizes and the same
+       meaning as in reach - `evade` for a body that got itself out of the way,
+       `sway` for one that flinched at a shot that was never on target. */
+    else{
+      const sd=uspOf(d),pa=hexPt(a),pdm=hexPt(d);
+      if(sd&&pa&&pdm){
+        const ddx=pdm.x-pa.x,ddy=pdm.y-pa.y,l=Math.hypot(ddx,ddy)||1;
+        sd.style.setProperty('--dx',(ddx/l).toFixed(3));
+        sd.style.setProperty('--dy',(ddy/l).toFixed(3));
+        const cm=dodged?'evade':'sway';
+        sd.classList.remove('evade','sway');void sd.offsetWidth;sd.classList.add(cm);
+        setTimeout(()=>sd&&sd.classList.remove('evade','sway'),paced(360));
+      }
+    }
     /* keyed on the VERDICT now, not on whose side the target was - both names
        still reach the same sample, so the day a real dodge sound lands in the
        pack there is nothing to rewire here. */
@@ -11752,14 +11947,26 @@ function strike(a,d,act,mult){
       fl.style.left=pd.x+'px';fl.style.top=pd.y+'px';
       $('bFx').appendChild(fl);setTimeout(()=>fl.remove(),paced(320));
       const sd=uspOf(d);
-      if(sd){const pa=hexPt(a);
-        if(pa){const ddx=pd.x-pa.x,ddy=pd.y-pa.y,l=Math.hypot(ddx,ddy)||1;
-          sd.style.setProperty('--dx',(ddx/l).toFixed(3));
-          sd.style.setProperty('--dy',(ddy/l).toFixed(3));
-          sd.style.setProperty('--rz','3deg');
-          sd.classList.remove('recoil');void sd.offsetWidth;sd.classList.add('recoil');
-          setTimeout(()=>sd&&sd.classList.remove('recoil'),paced(340));}}}
-  }else animClash(a,d,flavour,false,!!act.sweep);
+      const pa=hexPt(a);
+      if(sd&&pa){const ddx=pd.x-pa.x,ddy=pd.y-pa.y,l=Math.hypot(ddx,ddy)||1;
+        sd.style.setProperty('--dx',(ddx/l).toFixed(3));
+        sd.style.setProperty('--dy',(ddy/l).toFixed(3));
+        sd.style.setProperty('--rz','3deg');
+        sd.classList.remove('recoil');void sd.offsetWidth;sd.classList.add('recoil');
+        /* #165 - 340 to 460 here too: same animation, same new length. */
+        setTimeout(()=>sd&&sd.classList.remove('recoil'),paced(460));}
+      /* #165 - an arrow bleeds the same as a blade. The direction is the
+         SHOT's line where there is one, so the drops carry on the way the
+         arrow was going; a shot with no measurable line (the archer standing
+         on the target's own hex, which the drag can produce) throws them
+         straight down rather than dividing by zero. */
+      if(flavour!=='arm'){
+        let bdx=0,bdy=1;
+        if(pa){const l=Math.hypot(pd.x-pa.x,pd.y-pa.y);
+          if(l>0.5){bdx=(pd.x-pa.x)/l;bdy=(pd.y-pa.y)/l;}}
+        bloodFx(d,pd.x,pd.y,bdx,bdy,hpD);
+      }}
+  }else animClash(a,d,flavour,false,!!act.sweep,hpD);
   sfxStrike(a,d,armD,hpD);
   if(armD>3)fx(d,'−'+Math.round(armD)+' arm','#96a1a5',true);
   /* #60's ARMOUR BEFORE BLOOD lesson fired here, on the first blow where the
@@ -12114,7 +12321,51 @@ const uspOf=u=>{
 /* attacker leans into it, defender is knocked along the same line.
    #84 - `evaded` only means anything on a miss: it says the defender is the
    reason it missed, and so the only one whose body moves. */
-function animClash(a,d,kind,evaded,noLunge){
+/* ═══ #165 · ONE DOOR FOR THE BLOOD ══════════════════════════════════════
+   Called from BOTH places a blow lands: animClash, for anything in reach, and
+   the ranged branch in strike(), for anything that flies. ⛔ ONE FUNCTION AND
+   NOT TWO. That branch already hand-rolls its own hitflash and its own recoil
+   rather than calling animClash, so it is already the place in this file most
+   likely to drift from its twin; a second copy of the blood would have been
+   the third thing there to keep in step, and #137's rule says the copy is the
+   bug rather than the risk.
+
+   ⚠ ARMOUR DOES NOT BLEED, and that is the `kind==='arm'` gate at the call
+   sites. A turned blow has its own white ring and its own brighter sparks
+   already; a stain under a man whose harness held would be the floor claiming
+   a wound he did not take, which is a readout printing the wrong unit. */
+function bloodFx(d,cx,cy,dx,dy,hpD){
+  const fx=$('bFx');if(!fx)return;
+  const n=hpD>=18?7:hpD>=9?5:3;
+  for(let i=0;i<n;i++){
+    const dr=document.createElement('div');dr.className='gdrop';
+    dr.style.left=cx+'px';dr.style.top=cy+'px';
+    const ang=Math.atan2(dy,dx)+(Math.random()-0.5)*2.4;
+    const dist=7+Math.random()*13;
+    dr.style.setProperty('--gdx',(Math.cos(ang)*dist).toFixed(1)+'px');
+    /* ⚑ THE FALL IS WHAT MAKES IT LIQUID. Whatever sideways throw the swing
+       gave it, every drop ends lower than it started: 6-16px at this hex size
+       is about a boot's height. Take this bias out and they are sparks. */
+    dr.style.setProperty('--gdy',(Math.sin(ang)*dist*.5+6+Math.random()*10).toFixed(1)+'px');
+    fx.appendChild(dr);setTimeout(()=>dr.remove(),paced(560));
+  }
+  markGore(d,hpD);
+}
+/* the floor's own memory. ⚠ KEYED BY HEX AND NOT BY BODY: the blood stays
+   where it fell, and the man who was bleeding walks out of it. */
+function markGore(d,hpD){
+  if(!B||!d||d.col===undefined)return;
+  B.gore=B.gore||{};
+  const k=K(d.col,d.row),g=B.gore[k];
+  if(g){g.n=Math.min(4,g.n+(hpD>=12?2:1));return;}
+  B.gore[k]={n:hpD>=12?2:1,
+    /* ⚠ THE THREE BLOB POSITIONS ARE ROLLED ONCE AND STORED, for exactly the
+       reason `rot` is (see its note): render() runs many times a round, and a
+       stain that reshuffled itself on every redraw would be the one thing on
+       this board that twitches while nothing is happening. */
+    a:(14+Math.random()*72)|0,b:(10+Math.random()*40)|0,c:(52+Math.random()*40)|0};
+}
+function animClash(a,d,kind,evaded,noLunge,hpD){
   const pa=hexPt(a),pd=hexPt(d);
   if(!pa||!pd)return;
   let dx=pd.x-pa.x, dy=pd.y-pa.y;
@@ -12135,13 +12386,19 @@ function animClash(a,d,kind,evaded,noLunge){
   /* #84 - a swing that went wide is the ATTACKER'S event and the defender
      stands there through it. Only a dodge moves the body it was aimed at, so
      the two failures are now told apart on the board and not only in the log. */
-  const cls=kind!=='miss'?'recoil':evaded?'evade':null;
+  /* #165 - `sway` replaces the `null` that used to be here. See the .usp.sway
+     note in the CSS: #84's two-failures rule is kept and both of them are now
+     drawn, instead of one of them being drawn as nothing happening. */
+  const cls=kind!=='miss'?'recoil':evaded?'evade':'sway';
   if(sd&&cls){
     sd.style.setProperty('--dx',dx.toFixed(3));
     sd.style.setProperty('--dy',dy.toFixed(3));
     sd.style.setProperty('--rz',(dx>0?4:-4)+'deg');
-    sd.classList.remove('recoil','evade');void sd.offsetWidth;sd.classList.add(cls);
-    setTimeout(()=>sd&&sd.classList.remove('recoil','evade'),paced(340));
+    sd.classList.remove('recoil','evade','sway');void sd.offsetWidth;sd.classList.add(cls);
+    /* ⚠ 460 AND NOT 340: the recoil grew a second beat in #165 and runs .44s.
+       Stripping the class while the animation is still playing snaps the body
+       back to true mid-rattle, which looks like a dropped frame. */
+    setTimeout(()=>sd&&sd.classList.remove('recoil','evade','sway'),paced(460));
   }
   /* the collision point: where the lunge actually reaches, not the hex centre */
   const cx=pa.x+dx*len*0.55, cy=pa.y+dy*len*0.55;
@@ -12161,6 +12418,9 @@ function animClash(a,d,kind,evaded,noLunge){
       sp.style.setProperty('--sy',(Math.sin(ang)*dist).toFixed(1)+'px');
       $('bFx').appendChild(sp);setTimeout(()=>sp.remove(),paced(440));
     }
+    /* #165 - and if it found flesh, it bleeds. See bloodFx: `arm` is the
+       harness turning it, and a turned blow leaves nothing on the floor. */
+    if(kind!=='arm')bloodFx(d,cx,cy,dx,dy,hpD||0);
   }
 }
 /* ═══ #36 — DRAW THE LANE ═══════════════════════════════════════════════
@@ -12630,9 +12890,9 @@ function beginTurn(){
      fresh schools, rolled now, in front of the player. Nobody — including
      the caster — finds out what it can do until the turn has already begun. */
   if(tr(u,'magpie')&&u.caster){
-    /* EMBER stays — everybody who can cast at all can cast that, and stripping
-       it would leave them with nothing on a bad roll */
-    u.acts=u.acts.filter(a=>!a.arcane||a.k==='blaze');
+    /* WILL-KICK stays: everybody who can cast at all can cast that, and
+       stripping it would leave them with nothing on a bad roll */
+    u.acts=u.acts.filter(a=>!a.arcane||a.k==='willkick');
     const bag=SPELLKEYS.slice(),got=[];
     while(got.length<2&&bag.length)got.push(bag.splice(Math.random()*bag.length|0,1)[0]);
     /* #161 - through castAct, so the stave in their hand still counts. A
@@ -13016,7 +13276,34 @@ function checkEnd(){
      ⚠ AND `!B.auto`, BECAUSE AUTO NEVER MAKES AN IRREVERSIBLE DECISION
      (README §6's invariant). AUTO plays the fight, not the run - so it
      chases, the way it always has, and the offer waits for the reins. */
-  if(!B.routAsked&&!SIM.on&&!B.auto&&foe.length&&B.round>=3&&
+  /* ═══ ⛔ #170 · AND IT MAY NOT ASK DURING THE BRAWL ══════════════════════
+     (User, 2026-08-16: "On the first tutorial fight when enemy is running -
+     keep fight and don`t offer to end it. So you can continue and more enemies
+     joins and tutorial continues.")
+
+     ⚑ THE SECOND HALF OF HIS SENTENCE WAS ALREADY BUILT AND THIS CARD WAS
+     STANDING IN FRONT OF IT. Harl routs, runs for the door, and `tavernTick`
+     fires `tavernWave1()` the moment he is through it - the barman, the knife,
+     then the crew. But Harl is the ONLY foe on the field while he runs, so
+     `foe.every(routed)` is trivially true of a field of one, and from round 3
+     the game offered to end the tutorial two waves early. Taking that door
+     skipped the brawl's whole second half, and it was the door with the
+     reassuring label on it.
+
+     ⛔ `!B.tut` AND NOT `!B.noMercy`, THOUGH BOTH ARE TRUE HERE. They are
+     different facts that happen to coincide in this one fight: `noMercy` says
+     THESE MEN DO NOT BEG (they scramble out of a door instead), which is about
+     the bodies, and it is already spent one branch up. What this gate needs to
+     say is THIS FIGHT HAS A SCRIPT AND THE SCRIPT IS NOT FINISHED, which is
+     about the fight. Borrowing `noMercy` for it would be one flag answering
+     two questions, which is the trap this file has paid for four times
+     (`BLOCKED{}`, `walkable`, `.hin`'s z-index, `priorDied`).
+
+     ⚠ NOTHING ELSE ENDS EARLY IN ITS PLACE. `checkEnd`'s `!foe.length` branch
+     is already taught to spawn the waves rather than win (#108, forty lines
+     up), so the fight cannot finish through the empty-field door either. The
+     brawl now ends where it always ended: when the room is settled. */
+  if(!B.routAsked&&!SIM.on&&!B.auto&&!B.tut&&foe.length&&B.round>=3&&
      foe.every(f=>f.state==='routed')){
     const c=cur();
     if(c&&c.side==='you'&&!c.ally&&!c.pet&&!B.busy){
@@ -13054,22 +13341,23 @@ function canUse(u,a){
   if(a.k==='dis'&&!engaged(u))return false;
   /* transfixed: you can swing, you can cast, you cannot make your feet work */
   if((a.move||a.k==='dis')&&u.rooted>0)return false;
-  /* ONE real spell a turn (the mage gets a second, at half). EMBER is a
-     cantrip and never counts — otherwise a caster too shaken for a school
-     would have nothing at all to do. */
-  if(a.arcane&&a.k!=='blaze'&&u.castCap!==undefined&&
+  /* ONE real spell a turn (the mage gets a second, at half). WILL-KICK is a
+     cantrip and never counts, or a caster too shaken for a school would have
+     nothing at all to do. */
+  if(a.arcane&&a.k!=='willkick'&&u.castCap!==undefined&&
      (u.castsThisTurn||0)>=u.castCap)return false;
   /* #67 · one working at a time. Not a second cost: a caster holding
      something heavy has both hands full, and stacking two of them would
      hand back exactly the burst the delay is there to take away. */
   if(gathers(a)&&u.gather)return false;
   if(u.actions<a.cost)return false;
-  /* EMBER, uniquely, once a turn (user, 2026-07-31: "for mage EMBER possible
-     only once per turn"). It sits outside `castCap` on purpose — a caster too
-     shaken for a real school still has the cantrip — but that made it the one
-     action in the game with no reuse limit at all: two actions, two casts, at
-     5 nerve apiece. Everything else keeps the general twice-a-turn ceiling. */
-  if((u.used[a.k]||0)>=(a.k==='blaze'?1:2))return false;
+  /* WILL-KICK, uniquely, once a turn (user, 2026-07-31, of the act when it was
+     still called EMBER: "for mage EMBER possible only once per turn"). It sits
+     outside `castCap` on purpose, because a caster too shaken for a real school
+     still has the cantrip, but that made it the one action in the game with no
+     reuse limit at all: two actions, two casts, at 5 nerve apiece. Everything
+     else keeps the general twice-a-turn ceiling. */
+  if((u.used[a.k]||0)>=(a.k==='willkick'?1:2))return false;
   /* the heavy-action lock on BREAKING is gone with the softened penalties —
      a shaken body swinging its two-action weapon badly is a better fight than
      a shaken body with the button greyed out */
@@ -13103,7 +13391,7 @@ function spend(u,a){
   const again=(u.used[a.k]||0)>=1;
   u.actions-=a.cost;u.used[a.k]=(u.used[a.k]||0)+1;
   if(again&&u.side==='you'&&!u.ally&&!u.pet)learn('learn_twice');
-  if(a.arcane&&a.k!=='blaze')u.castsThisTurn=(u.castsThisTurn||0)+1;
+  if(a.arcane&&a.k!=='willkick')u.castsThisTurn=(u.castsThisTurn||0)+1;
   /* the generic cooldown — see the note in beginTurn */
   if(a.cool){u.cd=u.cd||{};u.cd[a.k]=a.cool;
     if(u.side==='you'&&!u.ally)whisper('cool');}
@@ -13137,7 +13425,7 @@ const castMul=u=>((u.castsThisTurn||0)>(u.castHalfAfter===undefined?99:u.castHal
      · the target gets a turn to walk out of range — it lands on the PERSON,
        and if they are further away than the spell's reach when it comes due
        it goes where they were standing
-     · the caster still has a turn: EMBER, IRON-OATH and UNPICK are untouched
+     · the caster still has a turn: WILL-KICK, IRON-OATH and UNPICK are untouched
        on purpose, so the fast things stay small and the big things are slow
 
    ⚠ DERIVED, NOT DECLARED. `gathers` is the one test, and the enemy
@@ -13146,7 +13434,7 @@ const castMul=u=>((u.castsThisTurn||0)>(u.castHalfAfter===undefined?99:u.castHal
    `arcane` and a `dmg` pair is slow the day it is written, which is the
    half of this that cannot be forgotten.
    ═══════════════════════════════════════════════════════════════════════ */
-const gathers=a=>!!(a&&a.arcane&&a.dmg&&a.k!=='blaze');
+const gathers=a=>!!(a&&a.arcane&&a.dmg&&a.k!=='willkick');
 /* a body worth crossing the field for: it can end somebody at range */
 const isPrize=t=>!!(t&&t.acts&&t.acts.some(gathers));
 /* is a working already on its way to this one? drawn on the target's hex */
@@ -13386,7 +13674,7 @@ function selectAct(i){
 function autoEnd(u){if(u.actions<=0)later(nextTurn,140);}
 /* one glyph per kind of thing you can do */
 const ICON={move:'⇢',dis:'⇤',main:'⚔',fists:'✊',sword:'⚔',spear:'⌇',club:'⬤',knife:'†',
-  bow:'➹',aimed:'◎',wither:'✷',blaze:'✸',blight:'❋',oath:'⛨',unpick:'❈',
+  bow:'➹',aimed:'◎',wither:'✷',willkick:'✸',blight:'❋',oath:'⛨',unpick:'❈',
   back:'⚡',sweep:'↻',wall:'⛨',command:'⚑',rallyline:'⛨',roar:'≋',jab:'⌇',chop:'⚔',
   sling:'➹',warp:'✷',maul:'⬤',anvil:'⬤',lash:'↻',gorge:'⚡',trample:'↻',
   bite:'✦',claw:'✦',spit:'✷',
@@ -14002,15 +14290,49 @@ const surroundOn=u=>{
    "its nerve drops 10" would be a receipt that does not match the till -
    #137's rule. "Pays 5 for every one past the first" is what is actually
    true and stays true whatever else is happening to them. */
+/* ⚠ #169 TOOK THE OPENING CLAUSE OUT AND LEFT BOTH FIGURES. It used to open
+   "Three of them on it, and none of them has to watch its own back", which is
+   the glyph's own count (⊛, and since #169 the badge in front of it) said in
+   words plus a sentence of scene. What is left is the two things a player acts
+   on, and they are still computed from the bodies actually standing there. */
 function surroundNote(u){
   const es=engagers(u.col,u.row,u.side),n=es.length;
   const v=es.map(x=>Math.round((n-1)*(x.flankPow||0))).sort((a,b)=>a-b);
-  const lo=v[0],hi=v[v.length-1],w=num(n);
-  return w.charAt(0).toUpperCase()+w.slice(1)+
-    ' of them on it, and none of them has to watch its own back. '+
-    'Each one swings at '+(lo===hi?'+'+lo:'+'+lo+' to +'+hi)+'.'+
+  const lo=v[0],hi=v[v.length-1];
+  return 'Each one swings at '+(lo===hi?'+'+lo:'+'+lo+' to +'+hi)+'.'+
     (tr(u,'feral')?'':' Its nerve pays 5 a turn for every one past the first.');
 }
+/* ═══ #169 · A STATUS NOTE IS ITS EFFECT AND NOTHING ELSE ════════════════
+   (User, 2026-08-16: "In the description of statuses tell only about their
+   effect. Don`t need extra words - they take too much space.")
+
+   ⛔ THE NOTE IS A TOOLTIP ON A 12px BADGE, WHICH IS NOT WHERE PROSE GOES.
+   Every `d:` here opened by describing the FICTION and then got round to the
+   rule: "An arrow through the leg" after the movement figure, "Deep in his
+   cups" before the two numbers, "A ring cut round the left eye" before the
+   morale. That is the event card's job and the card has 175 words to do it
+   in; this line is read mid-turn, with a decision waiting, and every word in
+   front of the number is a word between the player and the answer.
+
+   ⛔ SO: THE FIRST THING IN THE STRING IS A NUMBER OR A RULE. Measured in the
+   running build, 2026-08-16: **230 words to 143 across the 11 written notes,
+   and all 11 of them now open on a figure or a rule** (they were 4 of 11).
+   Not one number, gate or condition was dropped to get there: every cut word
+   was scene-setting that the glyph, the name or the fiction already carried.
+   ⚠ ELEVEN, NOT TWELVE. `surrounded` is the twelfth status and its `d` is a
+   FUNCTION, so a count taken over the literal walks straight past it. That is
+   the same trap #151 fell into counting a stock phrase over `EVENTS{}` alone.
+
+   ⚠ WHAT NEVER COMES OUT, and it is the same list the event cards keep:
+     · every number, and every condition on a number ("either side", "two
+       rounds", "half the time")
+     · what LIFTS it, where that is a thing the player can do ("it lifts the
+       moment they step away", "until her front is clear")
+     · the one line that is a RULE rather than a figure: TRANSFIXED's "It can
+       still swing" is the whole of why the status is not a stun, and DRUNK's
+       soft nerve is a third effect, not colour.
+   ⚑ AND `surroundNote` IS A NOTE TOO. It is a function, so a diet run over
+   the literal alone would have walked straight past it. See the note there. */
 const STATUS={
   /* #157 - FIRST in the register on purpose: `.stbar` prints four badges and
      slices the rest, and being surrounded outranks being poisoned. (Measured
@@ -14020,12 +14342,11 @@ const STATUS={
   /* #108 - the brawl's one status. A flag for the fight's whole length, so
      it is the `u[k]===true` shape rather than a countdown. */
   drunk:{n:'Drunk',g:'🍺',col:'#c9903a',
-    d:'Deep in his cups. −12 to hit, −8 dodge, and his nerve was soft before '+
-      'the first swing landed.'},
+    d:'−12 to hit, −8 dodge, and his nerve started soft.'},
   /* #102 point 12 - the same mark CRIPPLING SHOT wears on its card. One
      fact, one glyph: the badge on the head and the card that put it there
      have to be recognisably the same thing. */
-  crippled:{n:'Crippled',   g:'⇸',col:'#c9a227',d:'Half movement, −10 dodge. An arrow through the leg.'},
+  crippled:{n:'Crippled',   g:'⇸',col:'#c9a227',d:'Half movement, −10 dodge.'},
   rooted:  {n:'Transfixed', g:'👁',col:'#e0b84a',d:'Cannot move or disengage. It can still swing.'},
   /* #72 - TWO ENTRIES, ONE STATE, AND ONLY EVER ONE OF THEM SHOWING. The
      wall is now a fact about the ground rather than a flag she carries
@@ -14033,11 +14354,10 @@ const STATUS={
      nothing" - a green pip on a wall somebody is standing inside would be
      the game lying about the only rule that matters here. */
   spearwall:{n:'Spear wall',g:'⛨',col:'#8fd0a8',on:wallLive,
-    d:'Reach 2. Anything stepping into it takes 75% of her spear, and half the time is '+
-      'shoved a hex back out again.'},
+    d:'Reach 2. Anything stepping in takes 75% of her spear, and half the time is shoved '+
+      'a hex back out.'},
   wallbroke:{n:'Wall broken',g:'⛨',col:'#c15d55',on:u=>!!u.spearwall&&!wallLive(u),
-    d:'She braced, and somebody got inside the spear. It does nothing at all until her '+
-      'front is clear again.'},
+    d:'Does nothing until her front is clear again.'},
   /* ═══ #74 · the two ends of the ring, and the same reasoning as #67's pair
      one entry down: this is a fact about somebody ELSE that is true of you,
      so it is computed at every look rather than copied onto the body. It is
@@ -14053,20 +14373,16 @@ const STATUS={
      defined first was gone. **Grep this register for the key before adding
      one**, because neither the linter nor the console can see it. */
   ringed:{n:'Marked',g:'◍',col:'#b0776b',on:u=>u.mark==='circle',
-    d:'A ring cut round the left eye. Anybody standing right next to them is 10 morale worse '+
-      'for it, on either side. It does nothing to them.'},
+    d:'−10 morale to anybody standing next to them, either side. Nothing to them.'},
   nearring:{n:'Next to that face',g:'◌',col:'#c15d55',on:circleNear,
-    d:'10 morale down while they are standing next to the ring. It lifts the moment they '+
-      'step away.'},
+    d:'−10 morale while next to the ring. It lifts the moment they step away.'},
   desperate:{n:'Desperate', g:'✷',col:'#d9723f',
-    d:'It has stopped defending itself. Bleeding out on its own turn, hitting half again as '+
-      'hard, and two actions short. It is not going to run and it is not going to last.'},
+    d:'Bleeds on its own turn, hits half again as hard, two actions short. It will not run.'},
   /* #46 — the only status that STACKS, so it is the only one that declares a
      `count`. A stacking debuff nobody can see is a spreadsheet; the glyph
      carries the live number so the board says it without being asked. */
   venom:{n:'Poisoned',  g:'☣',col:'#7fae4e',count:venomOn,
-    d:'Everything that hits them does 15% more per cut, for two rounds. It stacks, and '+
-      'nothing caps it.'},
+    d:'+15% damage taken per cut, two rounds. Nothing caps it.'},
   /* ═══ #67 · the two ends of one working ═══════════════════════════════
      Neither is a number and neither is a clock, so both declare `on` rather
      than leaning on the `u[k]>0` test the timed statuses use. The caster's
@@ -14075,11 +14391,11 @@ const STATUS={
      aura is — a copy carried on the target would be a second source of
      truth for the same working. */
   gathering:{n:'Gathering', g:'✷',col:'#e28fb4',on:u=>!!u.gather,
-    d:'Holding a working that is not finished. It lands at the start of their next turn '+
-      'unless they are put down, broken, or the target walks out of its reach first.'},
+    d:'Lands at the start of their next turn, unless they are put down, broken, or the '+
+      'target walks out of reach.'},
   marked:{n:'A working is coming',g:'◎',col:'#e28fb4',on:gatheredAt,
-    d:'A caster has this one named. It arrives at the start of that caster\'s next turn. '+
-      'Get out of its reach, or get to the caster.'}
+    d:'Arrives at the start of that caster\'s next turn. Get out of reach, or get to '+
+      'the caster.'}
 };
 /* what is currently true of this body, as a list the UI can just print */
 function statusesOn(u){
@@ -14098,7 +14414,20 @@ function statusesOn(u){
            average. Resolved here, at the one door every reader comes through,
            so nothing downstream has to know a `d` can be a function. */
         d:typeof S.d==='function'?S.d(u):S.d,
-        g:S.count&&n>1?S.g+n:S.g}));});
+        /* ═══ #169 · THE COUNT GOES IN FRONT OF THE GLYPH ══════════════════
+           (User, 2026-08-16: "If effect stucked (like posion) - show it before
+           poison, not after. So it is clearer that it stucked.")
+
+           ⚑ IT WAS BEING READ AS PART OF THE GLYPH RATHER THAN AS A MULTIPLE.
+           "☣2" trails the number off the end of a mark, where every other
+           number on this board that follows a glyph is a QUANTITY OF THAT
+           THING (the plaque's chips, the counts capsule) - so it read as a
+           second poison rather than as two of the first. "2☣" is how a tally
+           is written everywhere else in the game and in the language: the
+           count comes first and the thing it counts follows it.
+           ⚠ ONLY EVER SHOWN FOR n>1, which is unchanged. A "1" in front of a
+           mark would be furniture on the common case. */
+        g:S.count&&n>1?n+S.g:S.g}));});
   aurasOn(u).forEach(a=>out.push(a));
   return out;
 }
@@ -17101,9 +17430,15 @@ function render(){
      it. paintPeek() deliberately does NOT bump it: repainting a tint is
      not a state change. */
   B.stamp=(B.stamp||0)+1;
-  /* if a unit is being inspected, show where it could get to */
+  /* if a unit is being inspected, show where it could get to - and, since
+     #171, how far its arm goes from there. ⚠ BOTH ARE REFRESHED HERE OR THE
+     SECOND BAND GOES STALE THE MOMENT ANYTHING MOVES: this is the other of the
+     two sites that rebuild the peek (peekOn is the first), and a map rebuilt
+     in one and not the other is the bug #171's own overlay would have shipped.
+     peekThreat reads B.peekReach, so the order of these two lines matters. */
   if(B.peek&&(!B.peekReach||B.peekStamp!==B.stamp)){
-    B.peekStamp=B.stamp;B.peekReach=reachMap(B.peek,B.peek.speed);}
+    B.peekStamp=B.stamp;B.peekReach=reachMap(B.peek,B.peek.speed);
+    B.peekHit=peekThreat(B.peek);}
   if(u){
     /* "mine" means ON THE ROSTER, not merely on my side of the board — an
        allied NPC has no class, level or nickname to read out and asking for
@@ -17605,8 +17940,26 @@ function render(){
       if(rngA&&u&&u.side==='you'&&!blockedHere&&!occRaw&&
          !(c===u.col&&r===u.row)&&udist([c,r],u)<=rngR){
         fill=REACH_WASH.act;}
-      /* a hint of red, not a wall of it — seven enemies used to paint half the board */
-      if(u&&u.side==='you'&&threatsAt(c,r,'you')>0)edge='rgba(150,40,45,.34)';
+      /* ═══ #171 · THE DEFAULT IS THE PARTING SWING, AND ONLY THAT ══════════
+         (User: "For default highligh only the area of opportunity attack.")
+
+         ⚑ THE RULE WAS ALREADY RIGHT AND WENT UNREAD. `threatsAt(c,r,'you')`
+         counts enemies standing next to that hex, which IS the parting-swing
+         zone: leaving one of these costs a free swing, and leaving any other
+         hex costs nothing. Nothing else on the default board says anything
+         about enemy danger, so "only the area of opportunity attack" is what
+         this line has always drawn. What was wrong was how quietly.
+
+         ⚠ IT STAYS AN EDGE AND NEVER BECOMES A FILL, which is the whole
+         reason it can be turned up at all. Fills on this board are OFFERS and
+         previews of YOUR turn (see REACH_WASH); a zone that is neither would
+         be competing with the move wash on every hex it touches, and that is
+         exactly the "seven enemies used to paint half the board" failure the
+         original hint was retreating from. .34 to .44 is a border reading as
+         a border, on ground that is otherwise untouched.
+         ⚠ AND IT IS STILL ONLY DRAWN ON YOUR OWN TURN (`u.side==='you'`): it
+         is a price on a decision, so it appears when there is one to make. */
+      if(u&&u.side==='you'&&threatsAt(c,r,'you')>0)edge='rgba(150,40,45,.44)';
       /* #46 — a body this act cannot move is NOT offered. The hex is left
          alone entirely rather than drawn live-and-then-refused, because a
          control that looks live and does nothing is worse than one that is
@@ -17698,6 +18051,27 @@ function render(){
          "base, or the peek tint if base is transparent" is exactly equivalent
          to the cascade and can be recomputed from the base alone. */
       B.hexEls.push({f:flr,k:K(c,r),base:fill,occ:!!occ,cur:fill});
+      /* ═══ #165 · WHAT BLED HERE, AND IT IS STILL HERE ═══════════════════
+         Drawn from `B.gore`, which is the fact; this is only how it looks.
+         ⚠ APPENDED HERE, IMMEDIATELY AFTER `.hfill` AND BEFORE THE SPRITE,
+         and the order is the whole of what puts it UNDER the body: `.hin>*`
+         ties every child at z-index 1 (see the long #163 note on `.hin`), so
+         DOM order is what separates them and nothing else does.
+         ⚠ AND IT IS NOT GATED ON `occ`. The stain belongs to the ground, so
+         it stays visible after the man who bled on it has moved away, which
+         is the entire reason it is keyed by hex. */
+      const go=B.gore&&B.gore[K(c,r)];
+      if(go){
+        const gd=document.createElement('div');gd.className='gore';
+        /* four blows is the ceiling markGore holds, so this runs .57 to .90:
+           dark enough to read at 1:1 on the darkest ground in the game, never
+           so dark that a heavily fought hex becomes a hole in the board. */
+        gd.style.setProperty('--go',(0.46+go.n*0.11).toFixed(2));
+        gd.style.setProperty('--g1',go.a+'%');
+        gd.style.setProperty('--g2',go.b+'%');
+        gd.style.setProperty('--g3',go.c+'%');
+        inn.appendChild(gd);
+      }
       /* ═══ ⛔ #156 - THE IMPASSABLE GLYPH IS DELETED ═══════════════════════
          (User, after a playtest: "Убирать иконку местности при ходе -
          достаточно основного пнг".)
@@ -17868,12 +18242,31 @@ function render(){
         const wb=document.createElement('span');wb.className='wbadge';
         const atk=occ.acts.find(a=>a.arcane&&a.dmg)||occ.acts.find(a=>a.range&&a.dmg)||
                   occ.acts.find(a=>a.reach);
-        wb.textContent=occ.monster?((MONSTERS[occ.monster]||{}).ico||MONSTER_ICON)
+        /* ═══ #169 · A CAPTAIN IS A STAR AND NOTHING ELSE ══════════════════
+           The badge answers "which of these bodies is which" and it is checked
+           BEFORE the weapon cascade for the same reason the monster test is:
+           being the one giving the orders outranks being one more body with a
+           sword. See the .wbadge.lead note in the CSS for the whole argument
+           and for what happened to `.crest`.
+           ⚠ AFTER `monster`, THOUGH. Nothing in the bestiary carries
+           `captain`, so the order between them cannot bite today; it is this
+           way round so that the day something does, it keeps its painted
+           bestiary face rather than becoming a star. */
+        const boss=!occ.monster&&(occ.leader||occ.captain);
+        wb.textContent=boss?'★'
+          :occ.monster?((MONSTERS[occ.monster]||{}).ico||MONSTER_ICON)
           :occ.caster?'✷':atk&&atk.range?'➹':atk&&atk.reach>=2?'⌇':
           occ.big?'⬢':atk?'⚔':'✦';
-        wb.style.color=occ.monster?'#e0a89c':occ.caster?'#e28fb4':atk&&atk.range?'#8fd0a8':
+        wb.style.color=boss?(occ.side==='you'?'#f0e6c0':'#d9bd7e')
+          :occ.monster?'#e0a89c':occ.caster?'#e28fb4':atk&&atk.range?'#8fd0a8':
           occ.side==='you'?'#e6dfc8':'#e0a89c';
+        /* your own Captain, and only him, keeps the lift the old `.crest.big`
+           gave him: on a board of seven bodies he is the one you are steering */
+        if(boss&&occ.leader)wb.classList.add('lead');
         inn.appendChild(wb);
+        /* #169 - a plain `if` now, not the head of an `if/else if` pair. The
+           star lives in the corner and the flag above the head, so a broken
+           captain wears both instead of trading one for the other. */
         if(occ.state==='routed'){const f=document.createElement('span');
           f.className='wflag';f.textContent='🏳';inn.appendChild(f);}
         /* ═══ #98 point 6 - A LEADER IS A STAR, NOT A FLAG ════════════════
@@ -17881,13 +18274,16 @@ function render(){
            morale.") He is right and it was a straight collision: 🏳 above a
            head means BROKEN AND RUNNING, and ⚑ above a head meant leader -
            two flags on the same anchor, one of them the worst news in the
-           game. The `else` below even proves it: a routed captain silently
-           swapped one flag for the other on the same pixel. ★ shares nothing
-           with the morale vocabulary. */
-        else if(occ.leader||occ.captain){const cr=document.createElement('span');
-          cr.className='crest'+(occ.leader?' big':'');
-          cr.style.color=occ.side==='you'?'#f0e6c0':'#d9bd7e';
-          cr.textContent='★';inn.appendChild(cr);}
+           game. ★ shares nothing with the morale vocabulary.
+
+           ⚑ #169 KEPT THE STAR AND MOVED IT. The mark is unchanged and the
+           whole of #98's reasoning still holds; what went is the ANCHOR. It
+           is drawn in the `.wbadge` corner above, in place of the class glyph,
+           because that badge was the other thing a captain was wearing. Note
+           that #98's own closing observation - "a routed captain silently
+           swapped one flag for the other on the same pixel" - was a defect
+           this entry could only fix by separating the anchors, which is
+           exactly what it did. */
         /* WHERE THEY ARE LOOKING, and where their back is. The wedge points
            along the facing; the red arc marks the back arc you want to be in.
            Enemies get the arc drawn brightly because that is the one the
@@ -18079,31 +18475,106 @@ function render(){
    ⚠ NOT ON THE BODY WHOSE TURN IT IS. Hovering yourself would repaint your
    own reach in a second colour and say nothing you were not already looking
    at. Any other body on the board is fair game. */
+/* ═══ #171 · AND THE OTHER HALF OF THE QUESTION: WHERE CAN HE HIT ═════════
+   (User, 2026-08-16: "Lets change how we highlight enemy movment and possible
+   damage. For default highligh only the area of opportunity attack. And then
+   when i hove on enemy - highlihgt where this specific enemy can move and
+   hit.")
+
+   ⛔ THE PEEK ANSWERED "WHERE CAN HE STAND" AND STOPPED THERE, which is the
+   cheaper half. A player looking at an enemy is not asking where his feet go;
+   they are asking WHETHER THE HEX I AM ABOUT TO STEP ON IS ONE HE CAN SWING
+   AT, and the answer is one ring further out than anything the board drew.
+   #156 read the same sentence ("куда он может дойти и соответственно, как
+   ударить") and delivered the first clause; this is the second.
+
+   ⛔ MELEE REACH ONLY, AND THAT IS DELIBERATE. `a.reach` and never `a.range`.
+   An archer at range 5 with a stride of 4 threatens essentially the whole
+   board, so a wash saying so is a wash saying nothing - it is the "seven
+   enemies used to paint half the board" failure with one enemy doing it. The
+   game already has a precedent that settled this exact question the same way:
+   `exposureAt`, the metric BOTH AI brains score hexes with, is written
+   `moveBudget(x)+reach` off `x.acts.filter(a=>a.reach)`. The danger worth
+   painting is "he can close and swing", for the brains and for the player.
+   ⚠ So a bow is not lying about its range here, it is simply not the question
+   this overlay asks. The bow's own reach is on its card and on the lane.
+
+   ⚑ THE BAND IS "THREATENED BUT NOT STANDABLE". Every hex he can END on is
+   already the darker wash, and it is obviously also a hex he can hit from, so
+   painting the two the same colour would collapse the distinction the request
+   is asking for. The lighter band is exactly the ring his arm adds to his
+   legs. */
+function peekThreat(t){
+  if(!B||!B.peekReach||!t)return null;
+  /* the longest arm it has, floored at 1: everything on this board can swing
+     at something standing next to it, whether or not it declares a `reach` */
+  let rc=1;
+  (t.acts||[]).forEach(a=>{if(a.reach&&a.reach>rc)rc=a.reach;});
+  /* seeded from every hex it may finish on AND from where it is standing now,
+     because a body that does not move still has its arm. `hexesOf` rather than
+     one hex, so a great beast threatens from her tail as well as her head. */
+  const seen={},front=[];
+  Object.keys(B.peekReach.dist).forEach(k=>{seen[k]=0;front.push(k);});
+  hexesOf(t).forEach(p=>{const k=K(p[0],p[1]);
+    if(seen[k]===undefined){seen[k]=0;front.push(k);}});
+  /* ring expansion rather than a distance test per board hex: the seed is
+     ~40 hexes and the board is 273, so this is the cheap direction. */
+  let edge=front;
+  for(let d=0;d<rc;d++){
+    const nx=[];
+    edge.forEach(k=>{const p=k.split(',').map(Number);
+      nbrs(p[0],p[1]).forEach(q=>{
+        const kk=K(q[0],q[1]);
+        /* nbrs runs off the board at the rim; B.terr is the bounds test the
+           rest of this file uses. BLOCKED ground stays IN: a spear reaches
+           over a boulder even where a foot cannot land on it. */
+        if(B.terr[kk]===undefined||seen[kk]!==undefined)return;
+        seen[kk]=d+1;nx.push(kk);});});
+    edge=nx;
+  }
+  /* only what the legs could not already claim */
+  const out={};
+  Object.keys(seen).forEach(k=>{if(seen[k]>0)out[k]=1;});
+  return out;
+}
 function paintPeek(){
   const list=B&&B.hexEls;if(!list)return;
   const R=B.peek?B.peekReach:null;
-  const col=B.peek&&B.peek.side==='foe'?'rgba(120,50,66,.34)':'rgba(60,110,130,.30)';
+  const T=B.peek?B.peekHit:null;
+  const foe=!!(B.peek&&B.peek.side==='foe');
+  /* #171 - the pair. The darker is where the body goes, the lighter is where
+     the arm goes, and they are the same hue so they read as one creature's
+     envelope rather than as two unrelated overlays. */
+  const col =foe?'rgba(120,50,66,.34)':'rgba(60,110,130,.30)';
+  const colH=foe?'rgba(120,50,66,.17)':'rgba(60,110,130,.14)';
   const overWalk=!!(B.peek&&B.peek!==cur());
   for(let i=0;i<list.length;i++){
     const h=list[i];
     const bare=h.base==='rgba(0,0,0,0)'||
       (overWalk&&(h.base===REACH_WASH.wet||h.base===REACH_WASH.dry||
                   h.base===REACH_WASH.act));
-    const want=(bare&&R&&!h.occ&&R.dist[h.k]!==undefined)?col:h.base;
+    let want=h.base;
+    if(bare&&R&&!h.occ&&R.dist[h.k]!==undefined)want=col;
+    /* ⚠ NO `!h.occ` ON THIS ONE, and that is the useful half: the hex it most
+       matters that he can reach is the one your own man is standing in. The
+       tint is on `.hfill`, behind the token, so it shows as a ring around the
+       sprite rather than over it. */
+    else if(bare&&T&&T[h.k])want=colH;
     if(h.cur!==want){h.cur=want;h.f.style.background=want;}
   }
 }
-/* The reach map is cached against the render stamp, so sweeping the cursor
-   back and forth over the same body computes it once. */
+/* Both maps are cached against the render stamp, so sweeping the cursor
+   back and forth over the same body computes them once. */
 function peekOn(t){
   if(!B)return;
   if(B.peek!==t||B.peekStamp!==B.stamp){
-    B.peek=t;B.peekStamp=B.stamp;B.peekReach=reachMap(t,t.speed);}
+    B.peek=t;B.peekStamp=B.stamp;B.peekReach=reachMap(t,t.speed);
+    B.peekHit=peekThreat(t);}
   paintPeek();
 }
 function peekOff(){
   if(!B||!B.peek)return;
-  B.peek=null;B.peekReach=null;B.peekStamp=null;
+  B.peek=null;B.peekReach=null;B.peekHit=null;B.peekStamp=null;
   paintPeek();
 }
 /* ═══ #96 point 1 - THE HEAD IN THE RAIL POINTS AT THE BODY ON THE BOARD ═══
