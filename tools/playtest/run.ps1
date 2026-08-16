@@ -34,6 +34,7 @@ param(
   [ValidateSet('dima', 'sanya', 'andrey', 'all')] [string]$Who = 'all',
   [string]$Url = 'http://localhost:8777/',
   [string]$Model = 'opus',
+  [ValidateSet('', 'low', 'medium', 'high', 'xhigh', 'max')] [string]$Effort = 'high',
   [int]$Budget = 150,
   [double]$MaxUsd = 20,
   [string]$Label = '',
@@ -135,6 +136,7 @@ function Start-Tester([string]$who) {
     '--tools', '""', '--strict-mcp-config', '--mcp-config', ('"' + $cfg + '"'),
     '--permission-mode', 'bypassPermissions', '--no-session-persistence',
     '--output-format', 'stream-json', '--verbose', '--max-turns', "$maxTurns", '--max-budget-usd', "$MaxUsd")
+  if ($Effort) { $args += @('--effort', $Effort) }
 
   Write-Host ("[" + $who + "] browser on :" + $port + ", vision " + $visionOf[$who] + ", folder " + $dir)
   if ($DryRun) {

@@ -18,6 +18,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File tools\playtest\run.ps1 -Who 
 | `-Url` | `http://localhost:8777/` | the build. The default is the working prototype; `run.ps1` starts `tools\serve.ps1` if nothing answers. For the deployed page: `-Url https://dmytriyvihrov-stack.github.io/My-game/` |
 | `-Budget` | `150` | hand-actions per tester (clicks, keys, waits). Looks, screenshots and notes are free |
 | `-Model` | `opus` | `fable`, `opus`, `sonnet`. Keep it the SAME for all three: the difference between the testers must come from the persona, not the model |
+| `-Effort` | `high` | reasoning effort passed to the CLI: `low` `medium` `high` `xhigh` `max`, or empty for the CLI default |
 | `-MaxUsd` | `20` | dollar cap per tester, passed to the CLI |
 | `-Parallel` | off | three browsers and three testers at once, instead of one after another |
 | `-Label` | git short hash | the build's name in the report file names |
