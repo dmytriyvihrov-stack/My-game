@@ -21,6 +21,17 @@ built.** Until 2026-08-13 they took turns on the one file that matters. Now they
 >
 > `branch.ps1 list` shows every desk and how far ahead it is. `branch.ps1 where` says which one you
 > are standing in.
+>
+> ## ...and the one to run when the sessions stop
+>
+> ```
+> powershell -NoProfile -ExecutionPolicy Bypass -File tools\branch.ps1 land
+> ```
+>
+> **What is finished and has not landed on main**, across every desk *and* the main desk's own
+> uncommitted tree, with the claims that would refuse the commit. Reports only; `-Go` does it.
+> **See [§4b](#4b-branchps1-land---what-is-finished-and-has-not-landed).** It exists because on
+> 2026-08-16 five finished entries were sitting in four different places and nothing said so.
 
 ---
 
@@ -112,6 +123,52 @@ progress.
 
 If it conflicts, the merge is left half-done and waiting: fix the files, `git add`, `git commit`. Or
 `merge.ps1 -Abort` and main is exactly where it was.
+
+### 4b. `branch.ps1 land` - what is finished and has not landed
+
+> **This is the one to run when several sessions have stopped.** Report first, act only on `-Go`.
+>
+> ```powershell
+> powershell -NoProfile -ExecutionPolicy Bypass -File tools\branch.ps1 land
+> powershell -NoProfile -ExecutionPolicy Bypass -File tools\branch.ps1 land -Go
+> ```
+
+**Why it exists.** The desk system is good at ISOLATING and was bad at LANDING, and on **2026-08-16**
+every failure was a landing failure: five entries finished across four sessions and **none of them
+was on main.** #159 sat committed on a desk nobody merged. #161, #163 and #164 sat *uncommitted in
+the main desk* because the sessions that built them closed without committing. #160 could not merge
+because of them. Nothing was broken, nothing said anything, and `branch.ps1 list` reported it as
+*"3 ahead"* in grey.
+
+**What it surveys**, in the order the day actually went wrong:
+
+| | |
+|---|---|
+| the **main desk's own tree** | uncommitted files, and which entry numbers look finished there. A **new registry row** in `SHIPPED.md`/`CHANGELOG.md` is the signal, because the four writes put one there and `git log` does not have it yet |
+| **claims in the way** | numbers held by a session that has closed, whose work is in that tree |
+| **desks with work waiting** | commits not on main, and anything still uncommitted in the desk |
+
+⛔ **THE CIRCULAR ONE IS WHY THIS NEEDED CODE AND NOT A HABIT.** A session that finishes, leaves its
+work uncommitted and closes leaves its **number claimed**. `claim.ps1 release` is hard-scoped to the
+calling session, and #144's auto-sweep only drops a claim whose number is in **committed** main. So
+the claim refuses the commit, and the commit is the only thing that would clear the claim. There is
+no flag for it and no way out from inside `claim.ps1`.
+
+⚠ **`land` will not sweep claims off the working tree in general, and that limit is deliberate.**
+#144's reasoning still holds: a working tree is something the guarded session can write to, so a
+hand-written number in a doc would drop the real holder's claim and wave through the very commit the
+backstop exists to refuse. What makes it safe here is that **the human is the gate** - `land` prints
+the numbers and the files they came from and frees nothing until somebody types `-Go`. Freed claims
+are copied to `.grimtoll\freed\<timestamp>\` first.
+
+⚠ **It refuses `-Go` when the registry diff is unreadable.** If more than eight rows read as new, a
+whole file has had its line endings rewritten and every row in it looks added; acting on that would
+free a hundred claims. It says so and stops. *(Found by rehearsing it, not by reasoning: the first
+cut matched 109 numbers on a two-row change.)*
+
+**It stops before shipping, on purpose.** The generated files kept main's copy through every merge,
+so `index.html` does not match the source that was just merged. Verify `LINT()` and `regress()` on
+the **merged** prototype, then `deploy.ps1`.
 
 ---
 

@@ -6,6 +6,8 @@
 #
 #   new <name> [-t "what it is"]  branch work/<name> and a desk to work in
 #   list                          every desk, its branch, how far ahead it is
+#   land                          WHAT IS FINISHED AND HAS NOT LANDED. Reports only
+#   land -Go                      ...and then actually lands all of it
 #   done <name>                   merge it back, then take the desk away
 #   drop <name>                   throw the desk away WITHOUT merging
 #   setup                         register the merge drivers. Idempotent
@@ -40,7 +42,7 @@
 [CmdletBinding()]
 param(
   [Parameter(Position = 0)]
-  [ValidateSet('new', 'list', 'done', 'drop', 'setup', 'where')]
+  [ValidateSet('new', 'list', 'land', 'done', 'drop', 'setup', 'where')]
   [string] $Verb = 'list',
 
   [Parameter(Position = 1)]
@@ -48,7 +50,11 @@ param(
 
   [Alias('t')] [string] $Title = '',
   [string] $Path = '',
-  [switch] $Force
+  [switch] $Force,
+  # `land` reports by default and only acts with -Go. A command that commits
+  # somebody else's working tree and merges four branches may not have "do it"
+  # as its default: the report IS the confirmation step.
+  [switch] $Go
 )
 
 $ErrorActionPreference = 'Stop'
@@ -207,6 +213,23 @@ function Verb-List {
     if ($note) { Dim "                         $note" }
   }
   if (-not $any) { Dim "no desks open. Make one: branch.ps1 new <name>" }
+
+  # ⛔ AND THE MAIN DESK'S OWN TREE, WHICH THIS LISTING USED TO SAY NOTHING
+  # ABOUT. On 2026-08-16 three finished entries sat uncommitted in main for
+  # hours while `list` showed only the desks. A listing of where work COULD be
+  # that omits the place most of it actually is was the quiet half of that day.
+  $mainDirty = @()
+  Push-Location $main
+  try { $mainDirty = @(& git status --porcelain) } finally { Pop-Location }
+  if ($mainDirty.Count) {
+    Write-Host ""
+    Hm "main desk has $($mainDirty.Count) uncommitted file(s) of its own."
+    Dim "                         somebody is mid-edit, or somebody finished and did not commit."
+  }
+  if ($any -or $mainDirty.Count) {
+    Write-Host ""
+    Dim "what has not landed, and how to land it:  branch.ps1 land"
+  }
   Write-Host ""
 }
 
@@ -259,9 +282,263 @@ function Verb-Where {
   Write-Host ""
 }
 
+# ---------------------------------------------------------------------------
+# land - WHAT IS FINISHED AND HAS NOT LANDED ON MAIN, AND THEN LANDING IT.
+#
+# WHY THIS EXISTS. The desk system is good at ISOLATING and was bad at
+# LANDING, and every failure on 2026-08-16 was a landing failure rather than
+# an isolation one. Five entries were finished across four sessions and none
+# of them was on main: #159 sat committed on a desk nobody merged, #161, #163
+# and #164 sat UNCOMMITTED in the main desk because the sessions that built
+# them closed without committing, and #160 could not merge because of them.
+# Nothing was broken. Nothing said anything either, and `list` reported it as
+# "3 ahead" in grey.
+#
+# THE CIRCULAR ONE IS WORTH NAMING, because it is why this needs code rather
+# than a habit. A session that finishes, leaves its work uncommitted and
+# closes, leaves its NUMBER claimed. `claim.ps1 release` is hard-scoped to the
+# calling session, and #144's auto-sweep only drops a claim whose number is in
+# COMMITTED main. So the claim blocks the commit, and the commit is the only
+# thing that would clear the claim. There is no flag for it and no way out
+# from inside claim.ps1.
+#
+# ⛔ WHY IT WILL NOT READ THE WORKING TREE TO SWEEP CLAIMS GENERALLY. #144's
+# note says the sweep reads committed main and never the working tree, because
+# a working tree is something the guarded session can write to - so a
+# hand-written "#161" in a doc would drop the real holder's claim and wave
+# through the very commit the backstop exists to refuse. That reasoning is
+# still right. What makes it safe HERE is that the human is the gate: `land`
+# prints the numbers and the files they came from, and frees nothing until
+# somebody types -Go. Freed claims are copied to .grimtoll\freed\ first.
+# ---------------------------------------------------------------------------
+function Land-Numbers {
+  # Which entries look finished in the working tree: a NEW registry row is the
+  # signal, because the four writes put one there and `git log` does not have
+  # it yet. Untracked docs are scanned too - #164's whole deliverable was one
+  # new file whose first line names it.
+  # ⛔ ONLY THE TWO REGISTRY-ROW SHAPES, AND THE REHEARSAL IS WHY. A third,
+  # looser pattern (`#NN -` anywhere in an added line) was tried first and
+  # matched 109 numbers on a two-row change, because a changelog row CITES
+  # every entry it builds on. A row's own leading cell is the only place a
+  # number means "this entry is finished here"; anywhere else it is a mention.
+  $found = @{}
+  $d = (Gitx diff -- docs/SHIPPED.md docs/CHANGELOG.md) -join "`n"
+  foreach ($m in [regex]::Matches($d, '(?m)^\+\|\s*\*\*(\d{1,3})\*\*\s*\|')) { $found[[int]$m.Groups[1].Value] = $true }
+  foreach ($m in [regex]::Matches($d, '(?m)^\+\|\s*8f\.(\d{1,3})\s*\|'))     { $found['8f.' + $m.Groups[1].Value] = $true }
+  foreach ($line in (Gitx status --porcelain)) {
+    if ($line -match '^\?\?\s+(.+\.md)$') {
+      $f = Join-Path $Root ($Matches[1].Trim('"'))
+      if (Test-Path $f) {
+        $head = (Get-Content $f -TotalCount 3 -ErrorAction SilentlyContinue) -join ' '
+        if ($head -match '#(\d{1,3})\b') { $found[[int]$Matches[1]] = $true }
+      }
+    }
+  }
+  return $found
+}
+
+function Land-Blockers([hashtable] $nums) {
+  # Claims that stand between this working tree and a commit of it. ONLY
+  # numbers the survey actually found: anything else is a live seat.
+  $store = Join-Path (Get-MainRoot) '.grimtoll\claims'
+  $out = @()
+  if (-not (Test-Path $store)) { return $out }
+  foreach ($f in (Get-ChildItem $store -Filter *.claim -File -ErrorAction SilentlyContinue)) {
+    $rec = $null
+    try { $rec = (Get-Content $f.FullName -Raw | ConvertFrom-Json) } catch { continue }
+    if (-not $rec) { continue }
+    $n = [int] $rec.number
+    $key = $n
+    if ($rec.kind -eq 'build') { $key = '8f.' + $n }
+    if ($nums.ContainsKey($key)) { $out += [pscustomobject]@{ file = $f; rec = $rec; label = $key } }
+  }
+  return $out
+}
+
+function Verb-Land {
+  $main = Get-MainRoot
+  if ((Resolve-Path -LiteralPath $Root).Path -ne (Resolve-Path -LiteralPath $main).Path) {
+    Die "land runs on the MAIN desk. You are in a worktree. cd to $main"
+  }
+
+  Write-Host ""
+  Write-Host "  WHAT HAS NOT LANDED ON MAIN" -ForegroundColor Cyan
+  Write-Host ""
+
+  # ---- 1. the main desk's own working tree ---------------------------------
+  $st = @(Gitx status --porcelain)
+  $nums = Land-Numbers
+  $numList = ($nums.Keys | Sort-Object { "$_" }) -join ', '
+  $haveTree = ($st.Count -gt 0)
+
+  if ($haveTree) {
+    Hm "MAIN DESK, uncommitted: $($st.Count) file(s)"
+    foreach ($l in ($st | Select-Object -First 12)) { Dim "    $l" }
+    if ($st.Count -gt 12) { Dim "    ... and $($st.Count - 12) more" }
+    # ⚠ A PLAUSIBLE COUNT IS PART OF THE READING. Five finished entries is a
+    # busy day; a hundred is a file whose line endings were rewritten, so
+    # every row in it reads as added and the survey is meaningless. Refuse to
+    # act on that rather than print a screenful and free a hundred claims.
+    if ($nums.Count -gt 8) {
+      Hm "  $($nums.Count) registry rows read as NEW, which is not a day's work."
+      Hm "  A whole file has probably been rewritten (line endings). Check with:"
+      Dim "      git diff --stat docs/SHIPPED.md docs/CHANGELOG.md"
+      $script:LandUnsure = $true
+    }
+    elseif ($numList) { Say "  looks like finished work for: $numList" }
+    else { Hm "  no registry row added, so this may be somebody mid-edit. Look before -Go." }
+    Write-Host ""
+  } else {
+    Ok "MAIN DESK: clean"
+    Write-Host ""
+  }
+
+  # ---- 2. claims that would refuse that commit -----------------------------
+  # ⚠ `@( )` AROUND THE CALL, AND IT IS NOT DECORATION. PowerShell unrolls a
+  # one-element array on return, so with exactly ONE blocking claim this came
+  # back as a bare PSCustomObject and `.Count` read empty - the whole section
+  # silently did not print, on the single most common case. Third trap in this
+  # file that lied rather than failed; see the notes on Gitx and on -Debug.
+  $blockers = @()
+  if ($haveTree -and $nums.Count) { $blockers = @(Land-Blockers $nums) }
+  if ($blockers.Count) {
+    Hm "CLAIMS IN THE WAY: $($blockers.Count)"
+    foreach ($b in $blockers) {
+      $t = $b.rec.title; if (-not $t) { $t = '(no title)' }
+      Dim "    $($b.label)  held by $($b.rec.by)  $t"
+    }
+    Say "  their work is in the tree above, so these are spent, not live."
+    Write-Host ""
+  }
+
+  # ---- 3. desks sitting on finished commits --------------------------------
+  $raw = Gitx worktree list --porcelain
+  $cur = @{}; $rows = @()
+  foreach ($line in $raw) {
+    if ($line -match '^worktree (.+)$')   { if ($cur.Count) { $rows += $cur }; $cur = @{ path = $Matches[1] } }
+    elseif ($line -match '^branch (.+)$') { $cur.branch = ($Matches[1] -replace '^refs/heads/', '') }
+  }
+  if ($cur.Count) { $rows += $cur }
+
+  $waiting = @()
+  foreach ($r in $rows) {
+    $p = $r.path -replace '/', '\'
+    if ((Resolve-Path -LiteralPath $p -ErrorAction SilentlyContinue).Path -eq (Resolve-Path -LiteralPath $main).Path) { continue }
+    $b = $r.branch
+    $counts = Gitx rev-list --left-right --count "main...$b"
+    $ahead = 0
+    if ($counts -match '(\d+)\s+(\d+)') { $ahead = [int] $Matches[2] }
+    $dirty = 0
+    if (Test-Path $p) { Push-Location $p; try { $dirty = @(& git status --porcelain).Count } finally { Pop-Location } }
+    if ($ahead -gt 0 -or $dirty -gt 0) {
+      $waiting += [pscustomobject]@{ branch = $b; path = $p; ahead = $ahead; dirty = $dirty }
+    }
+  }
+  if ($waiting.Count) {
+    Hm "DESKS WITH WORK WAITING: $($waiting.Count)"
+    foreach ($w in $waiting) {
+      $note = "$($w.ahead) commit(s) not on main"
+      if ($w.dirty) { $note += ", $($w.dirty) UNCOMMITTED" }
+      Dim "    $($w.branch)  $note"
+      foreach ($s in @(Gitx log --oneline "main..$($w.branch)" | Select-Object -First 4)) { Dim "        $s" }
+    }
+    Write-Host ""
+  } else {
+    Ok "DESKS: nothing waiting"
+    Write-Host ""
+  }
+
+  if (-not $haveTree -and -not $waiting.Count) {
+    Ok "Everything is on main. Nothing to land."
+    Write-Host ""
+    return
+  }
+
+  # ---- 4. do it, or say what -Go would do ----------------------------------
+  if (-not $Go) {
+    Write-Host "  -Go would, in this order:" -ForegroundColor Cyan
+    $n = 0
+    if ($blockers.Count) { $n++; Say "  $n. free $($blockers.Count) spent claim(s), backed up to .grimtoll\freed\" }
+    if ($haveTree)       { $n++; Say "  $n. commit the main desk's tree ($numList)" }
+    foreach ($w in $waiting) { $n++; Say "  $n. merge $($w.branch)" }
+    $n++; Say "  $n. stop, so you can run LINT() and regress() on the MERGED file"
+    Write-Host ""
+    Dim "  nothing has been changed. Run again with -Go when that list is right."
+    Write-Host ""
+    return
+  }
+
+  if ($script:LandUnsure) {
+    Die "refusing -Go while the registry diff is unreadable. See the note above."
+  }
+
+  # -- free the spent claims, recoverably
+  if ($blockers.Count) {
+    $stamp = Get-Date -Format 'yyyyMMdd-HHmmss'
+    $bak = Join-Path (Get-MainRoot) ".grimtoll\freed\$stamp"
+    New-Item -ItemType Directory -Force -Path $bak | Out-Null
+    foreach ($b in $blockers) {
+      Copy-Item $b.file.FullName -Destination $bak -Force
+      Remove-Item $b.file.FullName -Force
+      Ok "freed $($b.label) (was $($b.rec.by))"
+    }
+    Dim "  backups in .grimtoll\freed\$stamp"
+  }
+
+  # -- commit the main desk's tree
+  if ($haveTree) {
+    $msg = "land: finished work committed off the main desk"
+    if ($numList) { $msg = "land: $numList - finished work committed off the main desk (branch.ps1 land)" }
+    # ⚠ NO PIPE AND ONE -m, WHICH IS deploy.ps1's PATTERN AND NOT A STYLE CHOICE.
+    # `git add -A | Out-Null` hung for two minutes here. The pre-commit hook is a
+    # SHELL script that starts powershell, that grandchild inherits the stdout
+    # handle, and PowerShell's pipeline waits for the PIPE to close rather than
+    # for git to exit - so the commit had already succeeded while the script sat
+    # there. Anything that pipes a git call whose hook spawns a process can do
+    # this. deploy.ps1 has always called it plainly; copy that, do not improve it.
+    Gitx add -A
+    Gitx commit -q -m $msg
+    if ($LASTEXITCODE -ne 0) { Die "the commit was refused. Read it, fix it, run land -Go again." }
+    Ok "committed the main desk's tree"
+  }
+
+  # -- merge each desk, oldest first
+  foreach ($w in ($waiting | Sort-Object ahead)) {
+    if ($w.dirty -gt 0) {
+      Hm "SKIPPED $($w.branch): it has $($w.dirty) uncommitted file(s). Commit them in that desk first."
+      continue
+    }
+    Say "merging $($w.branch) ..."
+    Gitx merge --no-edit $w.branch          # unpiped, same reason as the commit above
+    if ($LASTEXITCODE -ne 0) {
+      Write-Host ""
+      Hm "CONFLICT merging $($w.branch). The merge is half-done and waiting for you."
+      foreach ($f in @(Gitx diff --name-only --diff-filter=U)) { Dim "    $f" }
+      Write-Host ""
+      Say "Resolve, then:  git add <files> ; git commit"
+      Say "Then run land -Go again for whatever is left."
+      Say "Or back out:    powershell -NoProfile -File tools\merge.ps1 -Abort"
+      Write-Host ""
+      exit 1
+    }
+    Ok "merged $($w.branch)"
+  }
+
+  Write-Host ""
+  Write-Host "  LANDED. NOW VERIFY THE MERGED FILE, BEFORE YOU SHIP IT." -ForegroundColor Cyan
+  Say "  the generated files kept main's copy on purpose, so index.html does"
+  Say "  not match the source that was just merged."
+  Write-Host ""
+  Say "  1. serve it and run LINT() and regress() on the MERGED prototype"
+  Say "  2. powershell -NoProfile -File deploy.ps1 -m ""...what shipped..."""
+  Say "  3. branch.ps1 done <name> for each desk, to take the folders away"
+  Write-Host ""
+}
+
 switch ($Verb) {
   'new'   { Verb-New }
   'list'  { Verb-List }
+  'land'  { Verb-Land }
   'done'  { Verb-Done }
   'drop'  { Verb-Drop }
   'setup' { Verb-Setup }
