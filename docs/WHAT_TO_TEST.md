@@ -25,7 +25,41 @@
 
 ---
 
-## ⚔ THE BATTLE SCREEN, CLEARED OFF  *(#163 · 2026-08-16 · build log 8f.191)*
+## ✎ THE TEXT EDITOR IN DEV.MODE  *(#172 · 2026-08-16 · build log 8f.200)*
+
+**Your ask, verbatim:** *"add a tool in dev mod, so if i togled it on i can eddit text on any
+screen. I have options: 1) Delete 2) Change + save 3) Add note to AI (to update in future)... so i
+can do fast update in the file on my laptop... and then you check it, add your updates where needed
+and then push."*
+
+**Reach it in three steps:** ⚙ DEV.MODE on → the stack has a fifth button, **✎ TEXT** → click it.
+
+**What should happen.** The button goes dashed and reads **✎ TEXT ON**, a ledger card opens under
+it, and from that moment **every click anywhere lands on the text instead of the game**: the thing
+under your cursor wears a dashed gold ring, and clicking opens an editor card with the original
+text, a rewrite box, **💾 SAVE CHANGE · 🗑 DELETE**, a note box, and **🗒 NOTE TO AI**. The game
+does not act - a door you click on does not open, a fight does not start. The dev chrome still
+works (that is how you switch it off), and so do the buttons of any confirm dialog.
+
+**The one idea to hold while judging it:** **what you see change on screen is only a preview; the
+RECORD is the deliverable.** Nearly every word is painted from the string tables, so the next
+redraw of a screen takes your preview back. That is correct. The ledger (the ☰ button counts it,
+and it survives reloads AND ⌫ WIPE HISTORY) is what you hand to me: **⇩ EXPORT** shows the JSON,
+**⇩ DOWNLOAD .JSON** drops it in your Downloads on the laptop build, **⧉ COPY** is for claude.ai
+where the sandbox blocks downloads. Put the file anywhere in the repo (or just paste the JSON in
+chat) and tell me to apply it - I find each `orig` in the source, land it under the card rules,
+and push.
+
+**Small print that is deliberate:** Escape steps back (editor → ledger → off). Each ledger row has
+a ✕ to drop just that one. A note can ride along with a change in the same save. The mode never
+survives a reload; the ledger always does.
+
+**What would be a bug.** A click that reaches the game while armed. Text that cannot be picked
+anywhere. The ring on one element and the editor opening on another. An exported `orig` that is
+not exactly what the screen showed. The ledger shrinking on reload or after WIPE HISTORY. A
+confirm dialog you cannot answer while armed.
+
+---
 
 **Your six, and three of them were one thing.** The token was carrying about 26px of furniture
 above its head on a board whose rows are 32px apart, so in a crowd you were mostly looking at other

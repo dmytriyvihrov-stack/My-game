@@ -2761,6 +2761,47 @@ body:has(#world.on) #audioBtn{top:8px;bottom:auto;font-size:11px;padding:3px 8px
   border:1px solid #6b3330;padding:4px 10px}
 #wipeBtn.on{display:block}
 #wipeBtn:hover{background:#3d1a16;color:#e8a49c}
+/* ═══ #172 (8f.200) · ✎ TEXT - the dev-mode text editor ═══════════════════
+   Fifth rung of the tester stack, 30px pitch like the rest. Dev chrome:
+   plain, mono, dashed when armed - never mistakable for the game.
+   ⚠ Written before #164's scale vars land on main; when they do, these
+   literals should come onto the fs, p and e steps like the four buttons
+   above. (The first draft of this very comment named two var families with
+   a star after a slash, which is a comment terminator: it silently ate the
+   rule below and the button fell into static flow. The #cssTail note says
+   not to name the sequence; it is right.) */
+#teditBtn{position:absolute;right:10px;top:224px;z-index:22;display:none;
+  font-family:var(--mono);font-size:11px;color:#b09a6e;background:rgba(28,22,12,.92);
+  border:1px solid #6b5330;padding:4px 10px}
+#teditBtn.on{display:block}
+#teditBtn:hover{background:#3a2b16;color:var(--g4)}
+#teditBtn.live{color:#e8c15c;border-color:#8a6a34;border-style:dashed;background:rgba(40,30,10,.95)}
+/* the target ring while the mode is armed. OUTLINE, not border: an outline
+   changes no layout, so hovering a button cannot shove its row around. */
+.teHov{outline:1px dashed #e8c15c;outline-offset:1px;cursor:crosshair}
+/* the editor card. z 60 clears every screen's own chrome (the battle plaque
+   tops out at 40); the ASK overlay still wins above it, which is correct -
+   CLEAR confirms through ask() and must land on top of this. */
+#tePanel{position:absolute;right:10px;top:254px;z-index:60;width:370px;max-height:430px;
+  display:none;flex-direction:column;gap:6px;overflow:auto;
+  background:rgba(16,12,6,.97);border:1px dashed #8a6a34;padding:10px 12px;
+  font-family:var(--mono);font-size:11px;color:#b09a6e}
+#tePanel.on{display:flex}
+#tePanel h3{margin:0;font-size:11px;letter-spacing:.12em;color:#e8c15c;font-weight:600}
+#tePanel .teOrig{color:#8fa5a2;white-space:pre-wrap;max-height:76px;overflow:auto;
+  border-left:2px solid #6b5330;padding-left:6px}
+#tePanel .teHint{color:#6b8280;font-style:italic}
+#tePanel textarea{width:100%;box-sizing:border-box;background:#0d1112;color:#d8cfae;
+  border:1px solid #3d2f1d;font-family:var(--mono);font-size:11px;padding:4px 6px;resize:vertical}
+#tePanel .teRow{display:flex;gap:6px;flex-wrap:wrap}
+#tePanel button{font-family:var(--mono);font-size:11px;background:#1f2d2e;border:1px solid #35494c;
+  color:#9fb3ae;padding:3px 8px;cursor:pointer}
+#tePanel button:hover{color:#e6ffe0;border-color:#3d5250}
+#tePanel button.warn{color:#c15d55;border-color:#6b3330;background:rgba(32,14,12,.92)}
+#tePanel button.warn:hover{background:#3d1a16;color:#e8a49c}
+#tePanel .teItem{border-top:1px solid #241c10;padding-top:4px;color:#8fa5a2;line-height:1.35}
+#tePanel .teItem b{color:#d8cfae;font-weight:500}
+#tePanel .teItem .teRm{float:right;padding:0 5px;margin-left:6px}
 /* #150: 24px -> 17px of top and bottom padding and a 9px gap instead of 12.
    ⛔ THE 684px CEILING IS NOT RAISED, and must not be: it is what stops a
    prologue card from scrolling its own prose out from under the sticky
@@ -3413,6 +3454,11 @@ a.popt.sendit{display:block;text-decoration:none}
 <button id="winBtn" title="end this fight as a win">✓ WIN NOW</button>
 <button id="lintBtn" title="read every content table and report">☰ LINT</button>
 <button id="wipeBtn" title="forget this player completely and start from the front door">⌫ WIPE HISTORY</button>
+<!-- #172 · ✎ TEXT. Armed, it catches every click before the game does: any
+     text on any screen can be deleted, rewritten, or given a note to Claude.
+     The record is the deliverable; see the TEDIT block in the script. -->
+<button id="teditBtn" title="click any text on any screen: delete it, change it, or leave a note for Claude to land in the source">✎ TEXT</button>
+<div id="tePanel"></div>
 </div>
 
 <script>
@@ -4354,6 +4400,14 @@ function syncTest(){
   w.classList.toggle('on',TEST.on&&$('battle').classList.contains('on'));
   if(l)l.classList.toggle('on',TEST.on);
   if(wp)wp.classList.toggle('on',TEST.on);
+  /* #172 - ✎ TEXT rides the stack like LINT and WIPE, and switching DEV.MODE
+     off DISARMS it, same authority-hands-back rule as AUTO below: an armed
+     interceptor with no visible switch would eat every click on the page.
+     teOff is a hoisted function declaration, so this runs safely even though
+     the TEDIT block sits below; it checks its own state. */
+  const td=$('teditBtn');
+  if(td)td.classList.toggle('on',TEST.on);
+  if(!TEST.on&&typeof teOff==='function')teOff();
   /* ═══ AUTO IS A TESTER TOOL (user, 2026-08-02) ═══════════════════════════
      "make auto battle workble only it test mode... I want to see how people
      would play without this shortcut." It is not a balance change and not a
@@ -4400,7 +4454,10 @@ function syncTest(){
    ⚠ ask(), never confirm() - native dialogs are blocked in the published
    artifact. */
 function wipeHistory(){
-  const keep={gt_test:1};
+  /* gt_tedit_v1 survives the wipe for the same reason gt_test does: it is
+     the developer's working material (#172's edit ledger), not the player's
+     history. Wiping a player must not throw away half-finished copy edits. */
+  const keep={gt_test:1,gt_tedit_v1:1};
   let keys=[];
   try{for(let i=0;i<localStorage.length;i++){
     const k=localStorage.key(i);
@@ -4418,6 +4475,251 @@ function wipeHistory(){
         location.reload();}},
      {t:'No. Leave it alone.',c:'nothing is touched'}]);
 }
+/* ═══ #172 (8f.200) · ✎ TEXT - EVERY WORD ON EVERY SCREEN IS EDITABLE, AND
+   THE EDIT IS A MESSAGE, NOT A PATCH ═══════════════════════════════════════
+   (User, 2026-08-16: "add a tool in dev mod, so if i togled it on i can eddit
+   text on any screen. I have options: 1) Delete 2) Change + save 3) Add note
+   to AI (to update in future). The ideas - so i can do fast update in the
+   file on my laptop (it could work only for offline version) and then you
+   check it, add your updates where needed and then push. Make it simple and
+   easy to work from the same interface in deb mode".)
+
+   ⚑ THE LEDGER IS THE DELIVERABLE AND THE LIVE CHANGE IS ONLY A PREVIEW.
+   Nearly every word on screen is painted out of the string tables by a
+   renderer that repaints on the next tick, so a DOM patch cannot survive and
+   does not try to. What is SAVED is the exact original text, the screen, the
+   DOM breadcrumb and what should happen to it - enough for a Claude session
+   to grep THIS file for the string and land the edit under the style rules
+   (length bands, receipt language, the nine voice rules). ⇩ EXPORT hands the
+   whole ledger over as JSON; the textarea copy of it exists because the
+   published artifact's sandbox eats programmatic downloads (the same reason
+   ask() exists), so on claude.ai the JSON is copied, on the laptop's own
+   file:// build the download lands in Downloads.
+
+   ⚠ CAPTURE PHASE, AND THE GAME NEVER SEES THE CLICK. Every game handler is
+   an onclick property on its element, so ONE capture listener on document
+   runs first and stopPropagation starves them all; mousedown is swallowed
+   too, or the map pan and the hex board would still act under the pick. The
+   dev chrome is exempted by id so the mode can be switched off from inside
+   itself.
+
+   ⚠ THE UNIT OF AN EDIT IS THE TEXT NODE UNDER THE CURSOR, not the element:
+   a road door is one <button> holding a label, a price line and a glyph, and
+   an edit to the label must not carry the receipt with it (the receipt is
+   the chips' text and half of it is numbers the tables interpolate anyway).
+   caretRangeFromPoint finds the node; the element is the fallback. */
+const TEDIT={on:false,edits:[],cur:null,hov:null};
+try{TEDIT.edits=JSON.parse(localStorage.getItem('gt_tedit_v1')||'[]')||[];}catch(e){TEDIT.edits=[];}
+function teStore(){try{localStorage.setItem('gt_tedit_v1',JSON.stringify(TEDIT.edits));}catch(e){}}
+/* the chrome the mode may never eat: the tool itself, the tester stack, the
+   global buttons - and #askWrap, because CLEAR confirms through ask() and a
+   dialog whose buttons are intercepted is a dialog that cannot be answered.
+   (The price: ask() prose is not editable in place. Leave a note instead.) */
+const TE_EXEMPT='#tePanel,#teditBtn,#testBtn,#winBtn,#lintBtn,#wipeBtn,#audioBtn,#helpBtn,#menuBtn,#askWrap';
+const teClip=(s,n)=>{s=String(s||'');return s.length>n?s.slice(0,n-1)+'…':s;};
+function teScreen(){const s=document.querySelector('.screen.on');return s?s.id:'?';}
+function teOff(){if(TEDIT.on)teArm(false);}
+function teArm(v){
+  TEDIT.on=v;
+  const b=$('teditBtn');if(b)b.classList.toggle('live',v);
+  teBadge();
+  const p=$('tePanel');
+  if(v){teList();}          /* open on the ledger, so EXPORT needs no pick */
+  else{TEDIT.cur=null;teHovClr();if(p)p.classList.remove('on');}
+}
+function teBadge(){
+  const b=$('teditBtn');if(!b)return;
+  const n=TEDIT.edits.length;
+  b.textContent=(TEDIT.on?'✎ TEXT ON':'✎ TEXT')+(n?' · '+n:'');
+}
+function teHovClr(){if(TEDIT.hov){TEDIT.hov.classList.remove('teHov');TEDIT.hov=null;}}
+/* what was clicked. Text node when the point sits in one; element otherwise. */
+function tePick(e){
+  let node=null;
+  try{const r=document.caretRangeFromPoint(e.clientX,e.clientY);
+    if(r&&r.startContainer&&r.startContainer.nodeType===3&&r.startContainer.data.trim())
+      node=r.startContainer;}catch(err){}
+  let el=node?node.parentElement:e.target;
+  if(!el||el===document.body||el===document.documentElement||el.id==='stage')return null;
+  const orig=(node?node.data:el.textContent||'').trim();
+  if(!orig)return null;
+  return {node:node,el:el,orig:orig};
+}
+/* a cheap breadcrumb, anchored on the first id up the tree. Not a selector
+   to re-apply by - the renderers rebuild these nodes - a hint for the human
+   and the session reading the ledger. */
+function teWhere(el){
+  const bits=[];let n=el,hops=0;
+  while(n&&n!==document.body&&hops<6){
+    let b=n.tagName.toLowerCase();
+    if(n.id)b='#'+n.id;
+    else if(n.classList&&n.classList.length)b+='.'+n.classList[0];
+    bits.unshift(b);
+    if(n.id)break;
+    n=n.parentElement;hops++;
+  }
+  return bits.join(' > ');
+}
+function teAdd(op,to,note){
+  const c=TEDIT.cur;if(!c)return;
+  TEDIT.edits.push({when:new Date().toISOString(),screen:c.screen,op:op,
+    orig:c.orig,to:to||'',note:note||'',where:c.where,ctx:c.ctx});
+  teStore();teBadge();
+}
+/* ── the editor card ──────────────────────────────────────────────────── */
+function teFoot(){
+  const n=TEDIT.edits.length;
+  return '<div class="teRow" style="margin-top:2px">'+
+    '<button id="teListB">☰ '+n+' STORED</button>'+
+    '<button id="teExpB">⇩ EXPORT</button>'+
+    (n?'<button id="teClrB" class="warn">⌫ CLEAR</button>':'')+'</div>';
+}
+function teWireFoot(){
+  const l=$('teListB'),x=$('teExpB'),c=$('teClrB');
+  if(l)l.onclick=teList;
+  if(x)x.onclick=teExport;
+  if(c)c.onclick=()=>ask('THROW AWAY '+TEDIT.edits.length+' RECORDED EDITS?',
+    'The ledger is wiped here and in storage. The source file is untouched - '+
+    'anything already exported or landed stays landed.',
+    [{t:'Clear the ledger.',c:'this cannot be undone',danger:true,
+      go:()=>{TEDIT.edits=[];teStore();teBadge();teList();}},
+     {t:'Keep it.',c:'nothing is touched'}]);
+}
+function teOpen(pick){
+  TEDIT.cur={orig:pick.orig,node:pick.node,el:pick.el,
+    where:teWhere(pick.el),screen:teScreen(),
+    ctx:teClip((pick.el.parentElement?pick.el.parentElement.textContent:'').replace(/\s+/g,' ').trim(),140)};
+  const p=$('tePanel');if(!p)return;
+  p.innerHTML='<h3>✎ THIS TEXT · '+esc(TEDIT.cur.screen)+'</h3>'+
+    '<div class="teOrig">'+esc(pick.orig)+'</div>'+
+    '<textarea id="teTxt" rows="3"></textarea>'+
+    '<div class="teRow">'+
+      '<button id="teSaveB" title="record the rewrite. The screen shows it now as a preview; Claude lands it in the file">💾 SAVE CHANGE</button>'+
+      '<button id="teDelB" class="warn" title="record a delete. The text hides now as a preview">🗑 DELETE</button>'+
+    '</div>'+
+    '<textarea id="teNote" rows="2" placeholder="note to Claude about this text - what should change and why"></textarea>'+
+    '<div class="teRow">'+
+      '<button id="teNoteB" title="change nothing now; pin this note to this text for a future session">🗒 NOTE TO AI</button>'+
+      '<button id="teCancB">✖ CANCEL</button>'+
+    '</div>'+teFoot();
+  $('teTxt').value=pick.orig;
+  $('teSaveB').onclick=()=>{
+    const v=$('teTxt').value,nt=$('teNote').value.trim();
+    if(v.trim()===TEDIT.cur.orig&&!nt){teList();return;}   /* nothing changed */
+    teAdd('change',v,nt);
+    /* the preview. Node-tight when a node was picked; textContent otherwise.
+       The next repaint of this screen takes it back, and that is fine. */
+    try{if(TEDIT.cur.node)TEDIT.cur.node.data=v;else TEDIT.cur.el.textContent=v;}catch(e){}
+    teList();};
+  $('teDelB').onclick=()=>{
+    teAdd('delete','',$('teNote').value.trim());
+    try{if(TEDIT.cur.node)TEDIT.cur.node.data='';else TEDIT.cur.el.style.display='none';}catch(e){}
+    teList();};
+  $('teNoteB').onclick=()=>{
+    const nt=$('teNote').value.trim();
+    if(!nt){$('teNote').focus();return;}
+    teAdd('note','',nt);teList();};
+  $('teCancB').onclick=teList;
+  teWireFoot();
+  p.classList.add('on');
+}
+/* ── the ledger ───────────────────────────────────────────────────────── */
+function teList(){
+  TEDIT.cur=null;
+  const p=$('tePanel');if(!p)return;
+  const rows=TEDIT.edits.slice().reverse().map((d,i)=>{
+    const idx=TEDIT.edits.length-1-i;
+    const g=d.op==='delete'?'🗑':d.op==='change'?'💾':'🗒';
+    return '<div class="teItem"><button class="teRm" data-i="'+idx+'" title="drop this one">✕</button>'+
+      g+' <b>'+esc(d.screen)+'</b> · '+esc(teClip(d.orig,64))+
+      (d.to?'<br>→ '+esc(teClip(d.to,64)):'')+
+      (d.note?'<br>🗒 '+esc(teClip(d.note,90)):'')+'</div>';
+  }).join('');
+  p.innerHTML='<h3>✎ TEXT EDIT · armed</h3>'+
+    '<div class="teHint">Click any text on any screen to edit it. The change '+
+    'on screen is a preview; the record below is what Claude lands in the '+
+    'source and pushes.</div>'+
+    (rows||'<div class="teItem">nothing recorded yet</div>')+teFoot();
+  Array.prototype.forEach.call(p.querySelectorAll('.teRm'),b=>{
+    b.onclick=()=>{TEDIT.edits.splice(+b.dataset.i,1);teStore();teBadge();teList();};});
+  teWireFoot();
+  p.classList.add('on');
+}
+/* ── export ───────────────────────────────────────────────────────────── */
+function teJson(){
+  return JSON.stringify({v:1,tool:'✎ TEXT (#172, 8f.200)',
+    exported:new Date().toISOString(),
+    howToApply:'Each edit: find `orig` in prototype/grimtoll_slice.html (exact match first, '+
+      'then fuzzy - numbers may be interpolated), apply op change/delete/note under the '+
+      'event-card and voice rules, run LINT(), then push.',
+    edits:TEDIT.edits},null,1);
+}
+function teExport(){
+  TEDIT.cur=null;
+  const p=$('tePanel');if(!p)return;
+  const j=teJson();
+  p.innerHTML='<h3>⇩ EXPORT · '+TEDIT.edits.length+' EDITS</h3>'+
+    '<div class="teHint">On the laptop build, DOWNLOAD drops a .json in your '+
+    'Downloads - put it anywhere in the repo (or leave it and say where) and '+
+    'tell Claude to apply it. On claude.ai the sandbox blocks downloads: use '+
+    'COPY and paste it into the chat instead.</div>'+
+    '<textarea id="teOut" rows="9" readonly></textarea>'+
+    '<div class="teRow">'+
+      '<button id="teDlB">⇩ DOWNLOAD .JSON</button>'+
+      '<button id="teCpB">⧉ COPY</button>'+
+      '<button id="teBkB">← BACK</button>'+
+    '</div>';
+  $('teOut').value=j;
+  $('teDlB').onclick=()=>{
+    try{
+      const blob=new Blob([j],{type:'application/json'});
+      const a=document.createElement('a');
+      a.href=URL.createObjectURL(blob);
+      a.download='grimtoll_text_edits_'+new Date().toISOString().slice(0,10)+'.json';
+      document.body.appendChild(a);a.click();a.remove();
+      setTimeout(()=>{try{URL.revokeObjectURL(a.href);}catch(e){}},4000);
+    }catch(e){}
+  };
+  $('teCpB').onclick=()=>{
+    const t=$('teOut');t.focus();t.select();
+    let ok=false;
+    try{ok=document.execCommand('copy');}catch(e){}
+    if(!ok&&navigator.clipboard)navigator.clipboard.writeText(j).catch(()=>{});
+    $('teCpB').textContent='⧉ COPIED';
+    setTimeout(()=>{const b=$('teCpB');if(b)b.textContent='⧉ COPY';},1200);
+  };
+  $('teBkB').onclick=teList;
+  p.classList.add('on');
+}
+/* ── the interceptor. ONE pair of capture listeners, always attached, first
+   line is the off-switch: cheaper and safer than adding and removing
+   listeners with the mode, and it cannot leak a live handler. ──────────── */
+document.addEventListener('mousedown',e=>{
+  if(!TEDIT.on)return;
+  if(e.target.closest(TE_EXEMPT))return;
+  e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();
+},true);
+document.addEventListener('click',e=>{
+  if(!TEDIT.on)return;
+  if(e.target.closest(TE_EXEMPT))return;
+  e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();
+  const pick=tePick(e);
+  if(pick)teOpen(pick);
+},true);
+document.addEventListener('mouseover',e=>{
+  if(!TEDIT.on)return;
+  teHovClr();
+  if(e.target.closest(TE_EXEMPT))return;
+  const t=e.target;
+  if(t&&t!==document.body&&t.id!=='stage'&&t.textContent&&t.textContent.trim()){
+    TEDIT.hov=t;t.classList.add('teHov');}
+},true);
+document.addEventListener('keydown',e=>{
+  if(!TEDIT.on||e.key!=='Escape')return;
+  const p=$('tePanel');
+  if(TEDIT.cur){teList();}                 /* editor open -> back to ledger */
+  else if(p&&p.classList.contains('on')){teArm(false);}   /* ledger -> off */
+});
 document.addEventListener('DOMContentLoaded',()=>{
   const tb=$('testBtn'),wb=$('winBtn');
   if(tb){
@@ -4446,6 +4748,11 @@ document.addEventListener('DOMContentLoaded',()=>{
         [{t:'Close',c:'the console has the full table'}]);};
     const wp=$('wipeBtn');
     if(wp)wp.onclick=e=>{e.stopPropagation();wipeHistory();};
+    /* #172 - ✎ TEXT arms and disarms itself; its own button is exempt from
+       its own interceptor, or it could never be switched off. */
+    const td=$('teditBtn');
+    if(td)td.onclick=e=>{e.stopPropagation();teArm(!TEDIT.on);};
+    teBadge();
     syncTest();
   }
   const b=$('audioBtn');
