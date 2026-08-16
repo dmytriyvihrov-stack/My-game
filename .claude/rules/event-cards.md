@@ -171,6 +171,21 @@ than actions - the debt, the aunt, the nine seconds - and a glyph forced onto a 
 dilute the eight that mean something. **Bare reads as "this is you deciding, not doing".** 94 of 94
 road doors carry one; 31 of 53 camp doors do.
 
+⛔ **AND ONLY ONE RACE DOOR IS EVER OFFERED. THE RATKIN'S WINS.** (#159, the user: *"if party has
+both ratking and ogr - show only ratkin option"*.) A company holding both races used to open every
+race-gated door at once, which put **the wedding and the Sitting Stone at five doors** - one over
+style rule 4, on the two cards written to have *a* special guest rather than two.
+
+`raceDoorPick()` is the one builder, called by the road renderer and the fire renderer both, and
+the priority is `RACE_DOOR_ORDER = ['ratkin','ogre','human']`. **It is a priority and not a ban**:
+every race door still exists and still fires; the rule only decides which is offered when more than
+one could be. Ratkin first because this is a ratkin island and these cards are about the clans.
+
+⚠ **It runs AFTER the `needRace` gate** (a door whose race is absent is not a contender) **and
+BEFORE the appended walk-away**, which is not race-gated and has to survive it. ⚠ **The visible
+maximum is 4 again on every card in the deck** - which is the check to re-run after authoring a
+second race door anywhere: drive the card with a company holding both.
+
 ## Where a receipt may appear before the choice
 
 **A multi-door card shows nothing before the pick.** That is the pillar's own corollary: prices
@@ -189,6 +204,39 @@ is correct and it is worth knowing before reading a screenshot as a bug.
 empty box with a button on it is the defect #138 deleted from the opening; do not reintroduce it
 here.
 
+## The `?`: a door that refuses to write a receipt
+
+Since #159 a choice may carry **`mystery:true`**, and its whole sub-line becomes a single **`?`**
+with a hover reading *"Nobody here knows what this pays. You find out by doing it."*
+
+It is **authored, never derived**, and it is the user's call which doors get one: *"на некоторых
+выборах ставить '?' - в основном я буду говорить. На определенных выборах по лутанию"* (2026-08-16).
+Do not add one because a door feels mysterious.
+
+⛔ **IT HIDES A PAYOUT AND NEVER A PRICE.** The pillar is that prices stay on the buttons as intent
+and the score is what is hidden; a `?` is the card admitting it has no honest intent to state,
+because the company cannot see into the cart either. So the things that are not receipts all stay:
+
+- a `need:` the chest cannot meet still prints beside the question mark, because a door the player
+  cannot afford has to say so **before** it is pressed;
+- `danger:true` and the battle door's red are untouched - a warning is not a receipt;
+- the intent glyphs stay, and on a `?` door they are the only thing left to sort it by, which is
+  #154 turning out to have been the load-bearing half.
+
+⛔ **AND IT MAY NOT CHARGE ANYTHING AT THE PICK.** No `c:` line, and no `days`, `morale`, negative
+`crowns` or negative `food` in its `fx`. **`LINT` 6d holds both halves.** Whatever the door costs,
+it costs on the far side of the answer.
+
+⚑ **THAT PUSHED THE RECEIPT SOMEWHERE NEW, AND THE PLACE ALREADY EXISTED.** The wedding's massacre
+door pays nothing at the pick and starts a fight, so its bill lands on the aftermath: `AFTER` rows
+may now carry **`mor`** (and `remember`), which `consequences()` applies and prints as a MORALE chip
+in the aftermath's own row. It is `BEATEN`'s `mor` field, on the winning screen instead of the
+losing one, and today exactly one row uses it. ⚠ It is not a licence for loot rows: **an automatic
+haul still may never charge morale or days** (the `lootIsChoice` rule).
+
+⚑ **THE `?` IS ONLY WORTH ANYTHING WHILE IT IS RARE.** Three or four across the whole road and it
+reads as "this one is a gamble"; on every second door it is a font. Today there is exactly one.
+
 ## Before the card ships
 
 Run these in the running build and expect what is named:
@@ -198,7 +246,15 @@ LINT()                                   // 0 findings. It reads the tables for 
 /—/.test(JSON.stringify(EVENTS))         // false. No em dash, anywhere, ever
 /* #154: every road door wears an intent, and no door wears three glyphs */
 Object.values(EVENTS).flatMap(e=>e.choices).filter(c=>!c.ico||!c.ico.length).length   // 0
+/* #159: and a ? door is still rare. If this ever reads above 4, argue about it first */
+Object.values(EVENTS).flatMap(e=>e.choices).filter(c=>c.mystery).length               // 1
 ```
+
+⚑ **AND IF THE CARD STARTS A FIGHT, THE ARENA IS PART OF THE GATE.** #159's massacre door shipped
+its first cut at the engine's standard two actions a body and the starting four lost **6 of 8** to
+a card whose entire brief was *"механически бой легкий. Просто масака"*. One field (`actions:1`)
+took it to **20/20**. A door's prose can be right while the fight behind it says the opposite, and
+only `ARENA.match()` can tell you which one the player will meet.
 
 Then drive the card itself and read the DOM, because **the preview pane composites no frames and a
 screenshot proves nothing**: the chip row against the top bar's actual change, the strip against

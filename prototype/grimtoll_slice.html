@@ -2077,6 +2077,15 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:11px;pa
    the extra 2px is paid out of the line's own leading, not out of the box. */
 .choice i{font-family:var(--mono);font-size:12.5px;color:#c2a877;font-style:normal;line-height:1.35}
 .choice .hurt{color:#c15d55}
+/* ═══ #159 - THE DOOR THAT WILL NOT SAY WHAT IT PAYS ══════════════════════
+   (User, 2026-08-16: *"на некоторых выборах ставить '?' ... На определенных
+   выборах по лутанию"*.) The sub-line IS the receipt, so a `?` standing in it
+   is the card declining to write one: what this door pays is found out by
+   doing it. Set over the 12.5px line and dotted, because it is the only
+   sub-line in the game that asks rather than states, and the nearest thing to
+   an answer is on the hover. */
+.choice .cmys{font-size:15px;color:#b59a6b;letter-spacing:.02em;
+              border-bottom:1px dotted #6b5a36;cursor:help}
 /* ═══ #154 - THE DOOR WEARS ITS INTENT ════════════════════════════════════
    One or two glyphs at the head of the label, from CHOICE_ICO and nowhere
    else: the verb first, the moral colour second. They are INTENT, never a
@@ -8178,6 +8187,92 @@ function circleFoes(){
     [12,7,'sling',34],[13,6,'sling',33]];
   return build(plan,T);
 }
+/* ═══ #159 - A WEDDING ON THE ROAD, ONCE YOU HAVE DECIDED TO DO IT ═════════
+   (User, 2026-08-16: *"ретлинги все безоружные ... И тебе нужно вырезать 10
+   пьяных ретлингов. И выйдет - что механически бой легкий. Просто масака"*,
+   and then: *"обязательно один из врагов ретлингов Жених и невеста - чтобы
+   добавить драмы"*.)
+
+   ⛔ IT IS NOT A CHALLENGE AND IT MUST NOT BE TUNED INTO ONE. Ten guests in
+   festival clothes, and the hardest thing on the field is holding the spit
+   off the fire. NOBODY HERE IS CARRYING A WEAPON, because nobody brings one
+   to a wedding - the two "armed" bodies have a jug and a roasting spit, and
+   that is the whole armoury. What this costs is on the far side of the fight:
+   see AFTER.wedding and the morale it charges.
+
+   THE THREE THINGS THAT MAKE IT A MASSACRE AND NOT A BATTLE:
+     · `ambush` on the road door, so round one is theirs and nothing in it
+       moves. "Has not heard you yet", printed over ten people at a wedding.
+     · `drunk` on every one of them - #108's own flag, -12 to hit and -8
+       dodge, and ten 🍺 badges is the picture the card was always about.
+     · `noRout` on every one of them, meaning the exact opposite of what it
+       meant at the Circle. They do not hold because they are brave. They hold
+       because they are drunk, because the carts are behind them, and because
+       two of them will not leave each other.
+
+   THE COUPLE ARE THE DRAMA AND THEY ARE ALSO THE ARITHMETIC. The groom is
+   the only body on the field that can hurt you and the only one wearing a
+   captain's crest, so the fight has a shape: the guests are in the way, and
+   he is behind them, and she is behind him. She is the weakest thing in the
+   game and she does not leave. Neither of them is a puzzle; they are there so
+   that the player has to look at what the door said.
+
+   ⚠ `noRout` COSTS THE MERCY CARD, AND THAT IS THE PRICE OF THE LITERAL ASK.
+   A fight only ever asks for mercy through enemies who BROKE and lived
+   (toSpoils reads `broken`), so a field where nothing breaks has nobody left
+   to spare. Correct for this one - you are not being asked whether to finish
+   it, you answered that on the road - and it is the ONE line to flip the day
+   "cut down ten" should become "cut down whoever did not run".
+   ═══════════════════════════════════════════════════════════════════════ */
+/* ⛔ ONE ACTION EACH, AND IT IS THE ONLY THING BETWEEN THIS FIGHT AND ITS
+   OPPOSITE. #156 put every body in the game on two a turn, which is right for
+   a line of soldiers and wrong for this: ten bodies at two actions is TWENTY
+   swings a round against a starting company's eight, and the arena said so
+   before anybody could argue about it - the four you begin the run with lost
+   6 of 8 at two actions, against a card whose whole brief is "механически бой
+   легкий. Просто масака". `t.actions` is #156's own sanctioned door for a body
+   whose shape IS the number (the Thing in Armour asks for three), and a drunk
+   guest getting one thing done before somebody reaches them is not a balance
+   knob, it is what being drunk at a wedding looks like.
+   ⚑ THE GROOM KEEPS HIS TWO. He is the exception the rule is worth having:
+   one body on the field is moving at fighting speed, and it is the one the
+   card is about. */
+const WED_T={
+  guest:{kind:'ratkin',name:'Wedding guest',hp:30,armour:4,mor:34,skill:38,dodge:12,speed:4,
+    actions:1,noRout:true,acts:[{k:'fists',n:'FISTS',cost:1,reach:1,dmg:[4,8],am:.25,ft:.40,
+      note:'What anybody has, when nobody brought anything.'}]},
+  jug:{kind:'ratkin',name:'Guest, with a jug',hp:32,armour:4,mor:36,skill:41,dodge:11,speed:4,
+    actions:1,noRout:true,acts:[{k:'club',n:'JUG, SWUNG',cost:1,reach:1,dmg:[6,11],am:.35,ft:.35,
+      note:'It was full. It does not stay full.'}]},
+  /* the one body with reach, and it is a kitchen implement. Somebody has to
+     be able to answer a spear line or the fight is a queue. */
+  aunt:{kind:'ratkin',name:'The aunt with the roasting spit',hp:34,armour:6,mor:42,
+    skill:45,dodge:12,speed:4,
+    actions:1,noRout:true,acts:[{k:'jab',n:'ROASTING SPIT',cost:1,reach:2,dmg:[7,12],am:.45,ft:.30,
+      note:'Four feet of iron, and she has been holding it since the morning.'}]},
+  groom:{kind:'ratkin',name:'The groom',hp:44,armour:8,mor:70,skill:52,dodge:14,speed:4,
+    captain:true,noRout:true,
+    acts:[{k:'fists',n:'BARE HANDS',cost:1,reach:1,dmg:[7,12],am:.30,ft:.42,
+      note:'He was married an hour ago and there is nothing behind his face at all.'}]},
+  bride:{kind:'ratkin',name:'The bride',hp:26,armour:2,mor:60,skill:36,dodge:18,speed:4,
+    actions:1,noRout:true,acts:[{k:'fists',n:'NAILS',cost:1,reach:1,dmg:[2,5],am:.10,ft:.50,
+      note:'It is not a weapon and she is not a soldier and she is still coming.'}]}
+};
+function weddingFoes(){
+  /* the crowd is BETWEEN you and the two who matter: guests across the road,
+     the groom behind them, the bride behind him. Initiative 22-31 against the
+     roster's 35-45, so the company acts first even without the free round -
+     you started this, and the board should say so before the ambush flag does. */
+  const CY=ROWS>>1;
+  const plan=[[8,CY-2,'guest',30],[8,CY+2,'guest',29],[9,CY,'jug',28],
+    [9,CY-3,'guest',27],[9,CY+3,'jug',26],[10,CY-1,'guest',25],
+    [10,CY+1,'aunt',24],[10,CY+4,'guest',23],
+    [11,CY,'groom',31],[11,CY+1,'bride',22]];
+  const f=build(plan,WED_T);
+  /* every one of them, and it is the whole difficulty tuning this fight has */
+  f.forEach(u=>{u.drunk=true;});
+  return f;
+}
 /* ═══════════════════════════════════════════════════════════════════════
    BLOOD ON THE ROAD — the first real battle, and the world's first lie
    being corrected.
@@ -9777,6 +9872,7 @@ function startBattle(kind){
            :G.battleKind==='steading'?steading()
            :G.battleKind==='armour'?armourFoe()
            :G.battleKind==='circle'?circleFoes()
+           :G.battleKind==='wedding'?weddingFoes()
            :G.battleKind==='tavern'?tavernFoes()
            :G.battleKind==='slingline'?slingline():foes();
   /* the side you took stands with you */
@@ -10250,6 +10346,14 @@ const FLEECOST={
   brigand:{mor:14,crowns:0,days:0,
     why:'They are deserters. They will not follow far.',
     line:'They do not chase. Men who ran from an army once do not sprint after anybody.'},
+  /* #159 - the dearest withdrawal on the road, and the arithmetic is the
+     point: it is more than the whole deed pays in mood terms per body left
+     standing, because stopping halfway does not give anybody back. Nobody
+     follows you. There is nobody in a state to. */
+  wedding:{mor:22,crowns:0,days:0,
+    why:'You started this one. Stopping does not give it back.',
+    line:'Nobody comes after you. What is left of the wedding stands in the road behind you '+
+      'and watches you go, and does not shout, and that is the part that carries.'},
   clash:{mor:12,crowns:0,days:0,
     why:'Neither side came here for you.',
     line:'You back out of somebody else\'s argument and it closes behind you like water.'},
@@ -15101,6 +15205,16 @@ const FIELDS={
      decisions here were nearly taken on eight runs and two of them would
      have been wrong. */
   circle   :{t:'fen',   marsh:.94, rock:.99, pool:['broken']},
+  /* ═══ #159 - THE WEDDING, AND THE POOL IS ONE BECAUSE THE GROUND IS THE
+     POINT ═══════════════════════════════════════════════════════════════════
+     `plains` is the terrain defined as the place with nothing in it, and this
+     fight is ten people standing in the open with carts behind them. Cover
+     would be a gift to whichever side needs it, and neither side is supposed
+     to need anything: the company is not in danger and the wedding has nowhere
+     to be. ⛔ Do not give this board an arrangement to fight over. The seed
+     still rolls the grass and the litter, which is all the variety a massacre
+     is entitled to. */
+  wedding  :{t:'plains',pool:['open']},
   /* #108 - the intro brawl. Pinned like the Fen-Mother and for the same
      reason: this board IS the tutorial, and the corner pocket by the hearth
      is load-bearing. The layout is hand-built so the seed only moves the
@@ -18610,6 +18724,17 @@ window.LINT=function(){
          slot, so a race-gated door may author only one intent. */
       if(((c.ico||[]).length+(c.needRace?1:0))>2)
         hit('ico',where,'more than two glyphs on one door');
+      /* 6d (#159) - the `?` may hide what a door PAYS and never what it
+         CHARGES. A mystery door with a c: line is two receipts arguing; a
+         mystery door that takes a day or a purse at the pick is a price the
+         player was not shown, which is the one thing the sub-line exists to
+         prevent. See choiceNote. */
+      if(c.mystery){
+        if(c.c)hit('fx',where,'mystery door also carries a c: line');
+        const mf=c.fx||{};
+        if(mf.days||mf.morale||(mf.crowns||0)<0||(mf.food||0)<0)
+          hit('fx',where,'mystery door charges something at the pick');
+      }
     });
   });
   /* 6b again, for the fire - the CAMPS deck speaks the same glyph language */
@@ -18719,7 +18844,8 @@ window.LINT=function(){
   /* 9 — every fight the map can reach needs an aftermath. `armour` is not on
      a node — it fires from travel()'s arrive — but it is still a fight the
      run can reach, which is the thing this check is actually about. */
-  ['clash','brigand','pack','slingline','steading','snare','mother','armour','circle','tavern'].forEach(k=>{
+  ['clash','brigand','pack','slingline','steading','snare','mother','armour','circle','tavern',
+   'wedding'].forEach(k=>{
     if(!AFTER[k]&&k!=='snare')hit('structure','AFTER','no aftermath for "'+k+'"');});
   /* ═══ 9c - AND EVERY FIGHT NEEDS ITS OWN ARMY (#74) ═════════════════════
      `startBattle` picks the foe list from a hardcoded `kind==='x'?xFoes():`
@@ -18735,7 +18861,8 @@ window.LINT=function(){
      truth this check exists to prevent. */
   (function(){
     const src=String(startBattle);
-    ['clash','brigand','pack','slingline','steading','mother','armour','circle','tavern'].forEach(k=>{
+    ['clash','brigand','pack','slingline','steading','mother','armour','circle','tavern',
+     'wedding'].forEach(k=>{
       if(src.indexOf("==='"+k+"'")<0)
         hit('structure','startBattle','fight "'+k+'" has no foe builder in the dispatch — it '+
           'will silently fight the Snare\'s army');});
@@ -18743,7 +18870,7 @@ window.LINT=function(){
   /* 9b — and every fight needs somewhere for its spoils to come from. A
      missing LOOT table silently serves the Snare's, which hands out a ratkin
      chieftain's harness after a fight that had no chieftain in it. */
-  ['clash','brigand','pack','slingline','steading','mother','armour','tavern'].forEach(k=>{
+  ['clash','brigand','pack','slingline','steading','mother','armour','tavern','wedding'].forEach(k=>{
     if(!LOOT[k])hit('structure','LOOT','no spoils table for "'+k+'"');
     /* 9c — and at least one row of it has to be a HAUL rather than a
        decision (#55). The automatic haul falls back to the whole table if
@@ -18761,7 +18888,8 @@ window.LINT=function(){
      The picker's list is checked too: a ground offered on the practice
      field that no longer exists in the register would generate a fen and
      say "swamp" on the button. */
-  ['clash','brigand','pack','slingline','steading','snare','mother','armour','tavern'].forEach(k=>{
+  ['clash','brigand','pack','slingline','steading','snare','mother','armour','tavern',
+   'wedding'].forEach(k=>{
     const f=FIELDS[k];
     if(!f){hit('structure','FIELDS','no terrain named for fight "'+k+'"');return;}
     if(!TERRAIN[f.t])hit('structure','FIELDS','"'+k+'" names terrain "'+f.t+
@@ -19464,6 +19592,22 @@ const LOOT={
     {t:'The pot, the bread, and ten purses.',c:'+55 crowns +5 provisions',
      fx:{crowns:55,food:5}},
     {t:'Their kit. None of it matches and all of it works.',c:'+7 salvage',fx:{salvage:7}}],
+  /* ═══ #159 - WHAT A WEDDING IS CARRYING, WHICH IS THE ANSWER TO THE `?` ═══
+     The road door refuses to say what this pays, so this table IS the reveal
+     and every row of it has to be worth having read. A clan-wedding travels
+     with the gifts, the drink, the food for the night and the silver off ten
+     wrists - good money, roughly the Steading's, and nowhere near the best
+     haul in the act, because the point of the door is never that it is
+     efficient. ⛔ NO ROW HERE CARRIES `morale` OR `days`: the deed's price is
+     charged once, by AFTER.wedding, and a drawn haul may not tax on top of it
+     (the rule above). */
+  wedding:[
+    {t:'The gift-table, and every purse on the road.',c:'+80 crowns',fx:{crowns:80}},
+    {t:'The barrels, and the roast that was for tonight.',c:'+7 provisions +25 crowns',
+     fx:{food:7,crowns:25}},
+    {t:'Clan-silver, off ten wrists and out of the gift-chest.',c:'+1 gem +55 crowns',
+     fx:{gems:1,crowns:55}},
+    {t:'Break the carts down. Good timber, good iron, good rope.',c:'+9 salvage',fx:{salvage:9}}],
   brigand:[
     {t:'Take the captain’s sword and his mail.',c:'a sword and a hauberk',gear2:['sword','mail']},
     {t:'Their purses. Lighter than they should be.',c:'+45 crowns',fx:{crowns:45}},
@@ -20047,6 +20191,15 @@ function consequences(scarred){
      question. */
   const mercy=MERCYASK;MERCYASK=null;
   const a=AFTER[G.battleKind]||AFTER.def;
+  /* ═══ #159 - A FIGHT MAY CHARGE THE COMPANY FOR WHAT IT JUST DID ══════════
+     The same shape BEATEN has carried since #108 (`G.morale-=spec.mor`), on
+     the winning screen instead of the losing one, and today exactly one row
+     uses it. It is paid HERE, above the chips, so the mood face on the chip is
+     the one the company is wearing when it reads the card - #150's rule about
+     which mood a receipt shows. The memory is written to everybody because
+     everybody was standing there. */
+  if(a.mor)G.morale+=a.mor;
+  if(a.remember)G.party.forEach(p=>remember(p,a.remember));
   const crew=crewCards(scarred,hero);   /* also while B is alive */
   /* ═══ ONE REPORT, THEN ONLY THE DECISION THAT EXISTS (#122) ═════════════
      The two beats survive but changed jobs. Screen one is the WHOLE report
@@ -20074,13 +20227,19 @@ function consequences(scarred){
      with the numbers pulled out in front of it. */
   const fxChips=f=>{
     const rows=[['crowns','CROWNS'],['food','PROVISIONS'],['salvage','SALVAGE'],
-                ['gems','GEMS'],['iron','IRON'],['wood','TIMBER']]
+                ['gems','GEMS'],['iron','IRON'],['wood','TIMBER'],
+                /* #159 - MORALE, and it can only ever arrive from `AFTER.mor`.
+                   A drawn haul may not charge morale (see the rule above LOOT),
+                   so this row is never a loot row's doing. Same glyph law as
+                   the road's chips: the company's own face out of MOODSTATES,
+                   showing the mood it has landed in, and never a heart. */
+                ['morale','MORALE']]
       .filter(r=>f&&f[r[0]]);
     if(!rows.length)return '';
     return '<div class="abfx">'+rows.map(r=>{
-      const v=f[r[0]];
-      return '<div class="fxc fx-'+r[0]+'"><span class="fxi">'+
-        (RES_ICON[r[0]]||'◉')+'</span><span><span class="fxn">'+
+      const v=f[r[0]],mor=r[0]==='morale';
+      return '<div class="fxc '+(mor?(v>0?'fx-up':'fx-down'):'fx-'+r[0])+'"><span class="fxi">'+
+        (mor?moodState(G.morale).ic:(RES_ICON[r[0]]||'◉'))+'</span><span><span class="fxn">'+
         (v>0?'+':'')+v+'</span><span class="fxl">'+r[1]+'</span></span></div>';
     }).join('')+'</div>';};
   /* ═══ #151 - A FIGHT REPORTS WHAT IT TOOK ONCE ═══════════════════════════
@@ -20095,6 +20254,7 @@ function consequences(scarred){
   const extra=G.clashHaul;G.clashHaul=null;
   const gotFx=Object.assign({},haul.fx||{});
   if(extra)Object.keys(extra).forEach(k=>{gotFx[k]=(gotFx[k]||0)+extra[k];});
+  if(a.mor)gotFx.morale=a.mor;                     /* #159 - what it cost, beside what it paid */
   const chips=fxChips(gotFx);
   const lootHtml=(haul.gear||haul.gear2)
     ?'<div class="abloot"><div class="abslot">ART<br>SLOT</div>'+
@@ -20217,6 +20377,26 @@ const AFTER={
       'The pot is still on the fire. The bread is still good. Somebody in your company will '+
       'eat it and somebody else will watch them do it, and neither of them will say a word '+
       'about the rings.'},
+  /* ═══ #159 - THE ONLY AFTERMATH IN THE GAME THAT CHARGES FOR WINNING ══════
+     `mor` and `remember` are read by consequences() and exist for this row.
+     ⛔ THE RECEIPT FOR THIS DEED HAD NOWHERE ELSE TO GO. The road door says
+     `?` and pays nothing at the pick (that is the whole of #159's rule), and
+     an automatic haul may never charge morale (the rule above LOOT). So the
+     fight itself carries it, on the winning screen, in the aftermath's own
+     chips - which is where a fight has always reported what it took.
+     ⚠ -30 IS MOST OF A MOOD BAND, and it is meant to be: the same card pays
+     +16 for standing still and having one drink, so the two doors are about
+     fifty points apart and the player can feel which one they took for a week
+     of road afterwards. The prose does not tell anybody how to feel about it
+     and must not start: it says where the bodies are and what was not taken. */
+  wedding:{t:'THE ROAD IS CLEAR',
+    mor:-30,
+    remember:'Was on the road the day the company cut down a wedding.',
+    b:'It takes less time than the toast would have.\n\n'+
+      'The groom is face down at the edge of the road with his hands still open. She is three '+
+      'feet past him, in the good clothes, and whoever did that is going to be asked about it '+
+      'at the fire tonight.\n\nThe carts have not moved. The pot is still on the fire and what '+
+      'is in it is still good. Nobody of yours is hurt worth writing down.'},
   brigand:{t:'THE ROAD IS YOURS',
     b:'What is left of the broken men is in the ditch or over the hill. A season ago they '+
       'had a banner and wages, same as you. The road east is open.'},
@@ -21025,8 +21205,9 @@ function openCamp(spot,next,atPlace){
   placeDlg(spot.x,spot.y);             /* the incident happens ON the road */
   const ca=artFor(pickOne(['E4','E8','E9','E7']));
   if(ca)drawArt($('wArt'),ca);else paint($('wArt'),'gold',c.seed);
-  /* same race gate as events — "feed it to the ogre" needs an ogre at the fire */
-  const visible=c.choices.filter(o=>!o.needRace||G.party.some(p=>p.race===o.needRace));
+  /* same race gate as events — "feed it to the ogre" needs an ogre at the fire,
+     and #159's one-race-door rule rides on the same builder both use */
+  const visible=raceDoorPick(c.choices.filter(o=>!o.needRace||G.party.some(p=>p.race===o.needRace)));
   /* the same guarantee openEvent makes: a card may never have nothing live on
      it. `campChose` records `indexOf(o)`, so this one records -1 and no sequel
      keys off it, which is correct: refusing because you are broke is not a
@@ -26364,6 +26545,33 @@ const RACE_ICO={
   ogre:{g:'👹',n:'OGRE',d:'only with an ogre in the company'},
   human:{g:'🧑',n:'HUMAN',d:'only with a human in the company'}
 };
+/* ═══ #159 - ONE RACE DOOR AT A TIME, AND THE RATKIN'S IS THE ONE ══════════
+   (User, 2026-08-16: *"if party has both ratking and ogr - show only ratkin
+   option"*.)
+
+   A company holding both races opened EVERY race-gated door on a card at
+   once, which is how the wedding reached five doors and the Sitting Stone
+   reaches five as well - one over the style rule's four, on the two cards
+   written to have a special guest rather than two.
+
+   ⛔ IT IS A PRIORITY, NOT A BAN. Every race door still exists and still
+   fires; the rule only decides which one is OFFERED when more than one
+   could be. The ratkin comes first because this is a ratkin island - the
+   clans wrote this road, and the ratkin door is the one these cards are
+   about. A card that ever needs the other order should say so on itself
+   rather than by reordering this list.
+   ⚑ ONE FUNCTION FOR BOTH RENDERERS, which is the law choiceNote and
+   choiceIco are already under. The road and the fire keep two copies of the
+   race GATE, and a rule bolted onto one of them is the drift this project
+   keeps deleting.
+   ⚠ It runs AFTER the gate (so a door whose race is absent never counts as
+   a contender) and BEFORE the appended walk-away, which is not race-gated
+   and must survive whatever this does. */
+const RACE_DOOR_ORDER=['ratkin','ogre','human'];
+const raceDoorPick=list=>{
+  const live=RACE_DOOR_ORDER.filter(r=>list.some(c=>c.needRace===r));
+  return live.length<2?list:list.filter(c=>!c.needRace||c.needRace===live[0]);
+};
 /* the ONE builder, same law as choiceNote: both renderers call it, nothing
    concatenates glyphs at a call site. The title is the hover tag.
    ⚠ THE CAP IS TWO and the race mark takes the second slot, so a race-gated
@@ -26373,8 +26581,26 @@ const choiceIco=o=>{
   if(o.needRace&&RACE_ICO[o.needRace])parts.push(RACE_ICO[o.needRace]);
   return parts.map(t=>'<span class="cig" title="'+t.n+' · '+t.d+'">'+t.g+'</span>').join('');
 };
+/* ═══ #159 - `mystery`, AND WHAT THE ? IS ALLOWED TO HIDE ═══════════════════
+   (User, 2026-08-16: *"Как концепция - на некоторых выборах ставить '?' - в
+   основном я буду говорить. На определенных выборах по лутанию"*.)
+
+   ⛔ IT HIDES A PAYOUT AND NEVER A PRICE. The pillar's own line is that prices
+   stay on the buttons as intent and the score is what is hidden; a `?` is the
+   card admitting there is no honest intent to state, because the company does
+   not know what is in the cart either. So the receipt goes - and the GATE does
+   not: a `need:` the chest cannot meet still prints beside the question mark,
+   because a door the player cannot afford has to say so before it is pressed.
+   LINT 6d holds the rest of the line: a mystery door may not carry a `c:`, and
+   may not charge days, morale, coin or food at the pick. Whatever it costs, it
+   costs on the far side of the answer. */
+const MYSTERY_TIP='Nobody here knows what this pays. You find out by doing it.';
 function choiceNote(o,skipMorale){
   const parts=[];
+  if(o.mystery){
+    const q='<span class="cmys" title="'+MYSTERY_TIP+'">?</span>';
+    return canAfford(o.need)?q:q+' · '+needTag(o.need);
+  }
   if(o.c)parts.push(resGlyphs(o.c));
   if(!skipMorale){const m=moraleTag(o.fx);if(m)parts.push(m);}
   if(o.hurt&&!o.hideHurt)parts.push('<span class="hurt">injury</span>');
@@ -27345,6 +27571,29 @@ const EVENTS={
          a shop bolted onto a mood card. The card is about whether you give
          the wedding your time, and a price list on it made the warm thing
          read as a transaction. */
+      /* ═══ #159 - THE FIFTH DOOR, AND IT IS THE WORST THING ON THE ROAD ═════
+         (User, 2026-08-16: *"Выризать всех и собрать лут ... там внизу где
+         подпись - ?"* and *"ретлинги все безоружные ... вырезать 10 пьяных
+         ретлингов ... механически бой легкий. Просто масака"*.)
+
+         ⚑ THE CARD WAS THE ONLY WARM ONE ON THE ROAD AND THAT IS WHY IT TAKES
+         THIS. Three doors that all buy mood and one that walks past is a card
+         with nothing at stake; the wedding is the softest target in the act
+         (unarmed, drunk, delighted to see you) and a game whose pillar is
+         *the road offers you decency you cannot afford* has to let the player
+         find out what they are. Nothing here is a trap: the fight is easy on
+         purpose, and the price is what the company thinks of you afterwards.
+
+         ⛔ NO `c:` LINE AND NO `fx`. What a wedding is carrying is not
+         something the company can see from the road, so the sub-line is the
+         `?` (see choiceNote) and the whole receipt - the haul AND the morale -
+         lands on the aftermath screen where a fight's receipts belong.
+         ⚠ The card can now show FIVE doors to a company holding both a ratkin
+         and an ogre, which is one over the style rule's four. Flagged rather
+         than fixed: the two race doors are the user's own beats and #123 has
+         already ruled on this card once. */
+      {t:'Cut them all down. Take what they brought.',ico:['fight','evil'],
+       mystery:true,battle:'wedding',ambush:true,after:''},
       {t:'Push politely through.',ico:['leave'],c:'barely worth a word',fx:{morale:-1},
        after:'They let you by without complaint. You hear them for an hour.'}]},
   aqueduct:{title:'THE RATKIN WATERWORKS',art:'gold',seed:216,
@@ -27993,11 +28242,11 @@ function openEvent(k){
      cynical option only ever appears when it is genuinely tempting. */
   const someoneHurt=()=>G.party.some(p=>p.cond||p.hpLoss>0);
   const someoneOwed=()=>G.party.some(p=>(p.unpaid||0)>0);
-  const visible=e.choices.filter(c=>(!c.needRace||G.party.some(p=>p.race===c.needRace))&&
+  const visible=raceDoorPick(e.choices.filter(c=>(!c.needRace||G.party.some(p=>p.race===c.needRace))&&
     (!c.needMut||G.party.some(p=>p.mut===c.needMut))&&
     (!c.needHurt||someoneHurt())&&
     (!c.needUnpaid||someoneOwed())&&
-    (!c.needMin||G.party.length>=c.needMin));
+    (!c.needMin||G.party.length>=c.needMin)));
   /* ═══ THE CARD MUST ALWAYS HAVE A LIVE ANSWER ═══════════════════════════
      The loot picker already knows this rule - "the leave-it option is
      APPENDED here and not authored per fight, because it is the one option
@@ -29934,7 +30183,12 @@ const SIM_FIGHTS=[
      a player finds out what "you will not win" actually looks like without
      spending a run on the answer. `SIM.on` means the beating never fires and
      the mark can never reach a real Captain's face. */
-  {k:'circle',   n:'The Circle',        d:'Ten of them and not one of them breaks. You are not meant to win it.'}
+  {k:'circle',   n:'The Circle',        d:'Ten of them and not one of them breaks. You are not meant to win it.'},
+  /* #159 - the other ten, and the opposite fight. It is on the list for the
+     same reason the Circle is: a player should be able to find out what this
+     one actually is without spending a run's morale on the answer. */
+  {k:'wedding',  n:'A Wedding on the Road',
+   d:'Ten drunk guests, not one weapon, and the two who will not leave each other.'}
 ];
 /* ═══ #61 — THE THIRD COLUMN ═════════════════════════════════════════════
    The practice field is where a terrain gets played before it gets to the
