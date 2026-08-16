@@ -20854,8 +20854,9 @@ function openCamp(spot,next,atPlace){
   placeDlg(spot.x,spot.y);             /* the incident happens ON the road */
   const ca=artFor(pickOne(['E4','E8','E9','E7']));
   if(ca)drawArt($('wArt'),ca);else paint($('wArt'),'gold',c.seed);
-  /* same race gate as events — "feed it to the ogre" needs an ogre at the fire */
-  const visible=c.choices.filter(o=>!o.needRace||G.party.some(p=>p.race===o.needRace));
+  /* same race gate as events — "feed it to the ogre" needs an ogre at the fire,
+     and #159's one-race-door rule rides on the same builder both use */
+  const visible=raceDoorPick(c.choices.filter(o=>!o.needRace||G.party.some(p=>p.race===o.needRace)));
   /* the same guarantee openEvent makes: a card may never have nothing live on
      it. `campChose` records `indexOf(o)`, so this one records -1 and no sequel
      keys off it, which is correct: refusing because you are broke is not a
@@ -26052,6 +26053,33 @@ const RACE_ICO={
   ogre:{g:'👹',n:'OGRE',d:'only with an ogre in the company'},
   human:{g:'🧑',n:'HUMAN',d:'only with a human in the company'}
 };
+/* ═══ #159 - ONE RACE DOOR AT A TIME, AND THE RATKIN'S IS THE ONE ══════════
+   (User, 2026-08-16: *"if party has both ratking and ogr - show only ratkin
+   option"*.)
+
+   A company holding both races opened EVERY race-gated door on a card at
+   once, which is how the wedding reached five doors and the Sitting Stone
+   reaches five as well - one over the style rule's four, on the two cards
+   written to have a special guest rather than two.
+
+   ⛔ IT IS A PRIORITY, NOT A BAN. Every race door still exists and still
+   fires; the rule only decides which one is OFFERED when more than one
+   could be. The ratkin comes first because this is a ratkin island - the
+   clans wrote this road, and the ratkin door is the one these cards are
+   about. A card that ever needs the other order should say so on itself
+   rather than by reordering this list.
+   ⚑ ONE FUNCTION FOR BOTH RENDERERS, which is the law choiceNote and
+   choiceIco are already under. The road and the fire keep two copies of the
+   race GATE, and a rule bolted onto one of them is the drift this project
+   keeps deleting.
+   ⚠ It runs AFTER the gate (so a door whose race is absent never counts as
+   a contender) and BEFORE the appended walk-away, which is not race-gated
+   and must survive whatever this does. */
+const RACE_DOOR_ORDER=['ratkin','ogre','human'];
+const raceDoorPick=list=>{
+  const live=RACE_DOOR_ORDER.filter(r=>list.some(c=>c.needRace===r));
+  return live.length<2?list:list.filter(c=>!c.needRace||c.needRace===live[0]);
+};
 /* the ONE builder, same law as choiceNote: both renderers call it, nothing
    concatenates glyphs at a call site. The title is the hover tag.
    ⚠ THE CAP IS TWO and the race mark takes the second slot, so a race-gated
@@ -27722,11 +27750,11 @@ function openEvent(k){
      cynical option only ever appears when it is genuinely tempting. */
   const someoneHurt=()=>G.party.some(p=>p.cond||p.hpLoss>0);
   const someoneOwed=()=>G.party.some(p=>(p.unpaid||0)>0);
-  const visible=e.choices.filter(c=>(!c.needRace||G.party.some(p=>p.race===c.needRace))&&
+  const visible=raceDoorPick(e.choices.filter(c=>(!c.needRace||G.party.some(p=>p.race===c.needRace))&&
     (!c.needMut||G.party.some(p=>p.mut===c.needMut))&&
     (!c.needHurt||someoneHurt())&&
     (!c.needUnpaid||someoneOwed())&&
-    (!c.needMin||G.party.length>=c.needMin));
+    (!c.needMin||G.party.length>=c.needMin)));
   /* ═══ THE CARD MUST ALWAYS HAVE A LIVE ANSWER ═══════════════════════════
      The loot picker already knows this rule - "the leave-it option is
      APPENDED here and not authored per fight, because it is the one option

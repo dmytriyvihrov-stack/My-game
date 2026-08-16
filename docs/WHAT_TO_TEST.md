@@ -91,6 +91,24 @@ gets you nothing.
 ⛔ **Would be a bug:** the morale chip wearing a heart instead of a face, the haul charging morale
 on top of the -30, or the fight asking for mercy - nobody at this one is left standing to ask.
 
+### 4 · One race door at a time, and the ratkin's wins
+
+**Reach it in three steps:** have both a ratkin and an ogre in the company → open the wedding →
+count the doors.
+
+**What should happen.** **Four, never five.** The ratkin toast is there and the ogre dance is not.
+With only an ogre, the dance is there as it always was; with neither, neither. **It is a priority
+and not a deletion** - every race door still exists and still fires, the rule only decides which one
+is offered when both could be.
+
+⚠ **It applies to the whole deck, so it changes one other card**: on THE SITTING STONE, a company
+holding both now sees *"Your ratkin asks him what he is actually waiting for"* and not *"Let your
+own ogre do the talking"*. That card had the same five-door problem and nobody had noticed. **If you
+want the ogre to win on that one specific card, say so** - the order lives in one list.
+
+⛔ **Would be a bug:** five doors anywhere, or a race door vanishing for a company that has only
+that race.
+
 ---
 
 ## ⊛ THE PLAYTEST BATCH - THIRTEEN NOTES  *(#157 · 2026-08-14 · build log 8f.185)*

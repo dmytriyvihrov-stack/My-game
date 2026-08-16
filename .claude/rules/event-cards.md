@@ -171,6 +171,21 @@ than actions - the debt, the aunt, the nine seconds - and a glyph forced onto a 
 dilute the eight that mean something. **Bare reads as "this is you deciding, not doing".** 94 of 94
 road doors carry one; 31 of 53 camp doors do.
 
+⛔ **AND ONLY ONE RACE DOOR IS EVER OFFERED. THE RATKIN'S WINS.** (#159, the user: *"if party has
+both ratking and ogr - show only ratkin option"*.) A company holding both races used to open every
+race-gated door at once, which put **the wedding and the Sitting Stone at five doors** - one over
+style rule 4, on the two cards written to have *a* special guest rather than two.
+
+`raceDoorPick()` is the one builder, called by the road renderer and the fire renderer both, and
+the priority is `RACE_DOOR_ORDER = ['ratkin','ogre','human']`. **It is a priority and not a ban**:
+every race door still exists and still fires; the rule only decides which is offered when more than
+one could be. Ratkin first because this is a ratkin island and these cards are about the clans.
+
+⚠ **It runs AFTER the `needRace` gate** (a door whose race is absent is not a contender) **and
+BEFORE the appended walk-away**, which is not race-gated and has to survive it. ⚠ **The visible
+maximum is 4 again on every card in the deck** - which is the check to re-run after authoring a
+second race door anywhere: drive the card with a company holding both.
+
 ## Where a receipt may appear before the choice
 
 **A multi-door card shows nothing before the pick.** That is the pillar's own corollary: prices
