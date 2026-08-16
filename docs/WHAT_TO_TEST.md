@@ -25,6 +25,74 @@
 
 ---
 
+## ☠️ THE WEDDING, AND THE FIRST `?` ON THE ROAD  *(#159 · 2026-08-16 · build log 8f.187)*
+
+**Your three asks, built: a fifth door on the wedding that says nothing about what it pays, the
+massacre behind it, and the `?` as a standing convention for any door you point at later.**
+
+### 1 · The door, and the question mark
+
+**Reach it in three steps:** walk the road until **A WEDDING ON THE ROAD** is dealt (it is a
+floating card, so it lands on a different node every run) → read the doors → look at the fourth.
+
+**What should happen.** ⚔️☠️ **"Cut them all down. Take what they brought."** The sub-line under it
+is a single **?** instead of a price. Hover it: *"Nobody here knows what this pays. You find out by
+doing it."* The door is red, because a battle door on a card that has another way out always is.
+
+**The rule behind the `?`, since you said you would call the doors that get one.** It hides what a
+door **pays** and never what it **charges**: a door you cannot afford still says so, `danger` still
+paints it red, and a `?` door is forbidden from taking a day, a coin or a mood point at the moment
+you press it. Whatever it costs, it costs on the far side. `LINT` refuses to let a future card
+break either half. **Today there is exactly one in the game**, and it is worth keeping rare - three
+or four across the road reads as "this one is a gamble", one on every second door is just a font.
+
+⛔ **Would be a bug:** a `?` with a number beside it, or a `?` on a door that took something from
+you before the fight started.
+
+### 2 · The fight: ten drunk ratkin and not one weapon
+
+**Reach it in three steps:** take that door → the board → look at the heads.
+
+**What should happen.** **Ten of them.** Five guests with fists, two with a jug, the aunt with the
+roasting spit, and behind all of them **the groom** and **the bride**. Every single head wears
+🍺 **DRUNK** (-12 to hit, -8 dodge). **Round one, nothing on their side moves** - the log says
+*"has not heard you yet"* over each of them, because you started it. Nobody breaks and nobody runs:
+you cut down all ten, which is what the door said.
+
+**The groom is the only one who fights.** He carries the crest, he is the only body on the field
+still taking two actions a turn, and he is standing in front of her. The bride does 2 to 5 damage
+with her nails and does not leave. The aunt's spit is the only thing on the field with reach.
+
+**It is meant to be easy and it was measured.** Mirror-AI, both sides played by the machine: the
+**four you start the run with win 20 out of 20** (8.5 rounds, 0.7 of yours carried off), a prepared
+six wins 10 of 10 in 5.3 rounds with nobody down. A human plays this better than the AI does.
+
+⛔ **Would be a bug:** anybody at this wedding drawing a real weapon, anybody fleeing, or your
+company actually being in danger. ⚠ **It is on the practice field too** (*A Wedding on the Road*),
+where the free first round does not happen - that flag rides on the road door, not on the fight.
+
+### 3 · What it costs, and where the bill arrives
+
+**Reach it in three steps:** win the fight → read the aftermath card → look at the chips.
+
+**What should happen.** The haul, drawn from four (the gift-table at +80 crowns, the barrels and
+the roast, the clan-silver, or the carts broken down), **and beside it a MORALE chip reading -30**
+with the company's own face on it. That is new: **this is the first fight in the game that charges
+you for winning it.** The card is called **THE ROAD IS CLEAR**, it says where the two of them are
+lying, and it does not tell you how to feel about it.
+
+**Everybody on the roster also keeps a line about it** - *"Was on the road the day the company cut
+down a wedding"* - on their sheet for the rest of the run.
+
+**The arithmetic to feel:** the drink door on the same card pays **+16 morale**, so the two answers
+are about fifty points apart, which is a mood band and a half. Walking out mid-fight costs 22 and
+gets you nothing.
+
+⛔ **Would be a bug:** the morale chip wearing a heart instead of a face, the haul charging morale
+on top of the -30, or the fight asking for mercy - nobody at this one is left standing to ask.
+
+---
+
 ## ⊛ THE PLAYTEST BATCH - THIRTEEN NOTES  *(#157 · 2026-08-14 · build log 8f.185)*
 
 **Your thirteen notes, and the first three turned out to be one bug.** The health bar, the status
