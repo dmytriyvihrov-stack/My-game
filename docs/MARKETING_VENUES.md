@@ -278,6 +278,220 @@ The Steam page, not the finished game, is what is standing between you and most 
 
 ---
 
+## THE FIRST SEND: getting the build in front of real strangers
+
+*Added 2026-08-16.* Everything below is Gate 0 and needs nothing you do not already have. The
+build link is **https://dmytriyvihrov-stack.github.io/My-game/** and the fact that it opens in a
+tab with no download is your single biggest advantage in every venue here. Lead with it.
+
+### The one-week plan
+
+| When | Where | Effort |
+|---|---|---|
+| Today | Join the Turn-Based Games Discord, read `#rules`, find the showcase channel, post nothing | 10 min |
+| Today | Record one 10-15 second clip of a fight. This is the only asset you need | 30 min |
+| Mon-Fri | Comment on 5-10 threads in r/roguelikedev and r/gamedev. No links. This is account history | 15 min/day |
+| Wed | Turn-Based Games Discord showcase post | 15 min |
+| **Sat Aug 22** | **Sharing Saturday on r/roguelikedev** | 15 min |
+| Following week | r/DestroyMyGame with whatever the first round exposed | 20 min |
+
+Discord first, Reddit second, on purpose: the Discord audience is genre players who will actually
+click a browser link, and a weak first post there costs nothing.
+
+### Venue by venue, what actually happens
+
+**Turn-Based Games Discord** (https://discord.gg/zfmrtb2FkQ)
+Join, read the rules channel, find the self-promo or showcase channel (name varies, do not post in
+general). They run a weekly showcase and a monthly free demo club. Your browser build is a perfect
+demo-club candidate because there is nothing to install. Say hello in the dev channel before you
+post a link.
+
+**r/roguelikedev Sharing Saturday** (https://reddit.com/r/roguelikedev)
+A numbered weekly thread posted every Saturday. You reply **as a comment inside the thread**, never
+as a new post. Format is loose: project name in bold, what you did this week, a link, and often a
+gif. Nobody is selling anything, so a link is expected rather than tolerated. Reply to two or three
+other people's comments in the same thread; that is the whole social contract there.
+
+**r/DestroyMyGame** (https://reddit.com/r/DestroyMyGame)
+A new post, video or playable link. The culture is blunt by design. Works best with a **narrow
+ask** rather than "thoughts?". Save this for after the first round, when you know which specific
+thing you want torn apart.
+
+**r/playmygame** (https://reddit.com/r/playmygame)
+New post with the link. Reciprocal culture: play and comment on two other games the same day.
+
+### Copy-paste templates
+
+Pick one hook line and use the SAME one everywhere, so you find out whether the hook works:
+
+- *"Battle Brothers in a browser tab: a company of strangers, one contract, no download."*
+- *"A hex tactical roguelike about a crew who did not choose each other. Plays in the tab."*
+- *"Turn-based company management where the road costs you more than the fights."*
+
+---
+
+**A. Sharing Saturday (comment in the weekly thread)**
+
+```
+**Grimtoll** - hex tactical roguelike, a company of strangers bound by one contract.
+Plays in the browser, no download: https://dmytriyvihrov-stack.github.io/My-game/
+
+This week I have been cutting rather than adding. The opening was throwing four
+systems at the player in the first three minutes, so two screens are gone, the
+road events lost a third of their word count, and every choice now carries an
+intent glyph so you can sort the doors by eye before reading them.
+
+What I am trying to find out: how far a first-time player gets before the game
+stops explaining itself. If anyone has 15 minutes, the thing I most want to know
+is where you stopped and why.
+
+[gif]
+```
+
+**B. Turn-Based Games Discord showcase**
+
+```
+Grimtoll - turn-based tactics + company management, in the vein of Battle Brothers.
+Hexes, permanent scars instead of deaths, wages every fourth day, and a road where
+the choices cost more than the fights do.
+
+Runs in the browser, nothing to install, a run is about 15 minutes:
+https://dmytriyvihrov-stack.github.io/My-game/
+
+Solo dev, early build, art is placeholder in places. Not looking for polish notes
+yet. What I want to know is whether the systems read at all on a first run.
+
+Five questions if you have the patience: <form link>
+```
+
+**C. r/DestroyMyGame (new post, after round one)**
+
+Title: `Destroy my opening: 15 min browser build, tactical roguelike. Where did you stop?`
+
+```
+Grimtoll, hex tactical roguelike, solo dev. Browser, no download, ~15 min a run:
+https://dmytriyvihrov-stack.github.io/My-game/
+
+The specific thing I want destroyed: the first five minutes. Previous feedback
+said too many systems arrive at once and nothing is clear. I have cut two screens
+and trimmed the text since, and I cannot tell any more whether it worked, because
+I have played it four hundred times.
+
+Do not spare the art, but the art is not the question. The question is whether
+you knew what the game wanted from you.
+```
+
+**D. A direct ask to one person (DM, or a friend of a friend)**
+
+The highest-value version, and the one people skip. Ten of these beat any post.
+
+```
+Hey - I have been building a tactical roguelike and I am at the point where I
+need someone who is not me to look at it. Browser link, no download, about 15
+minutes: https://dmytriyvihrov-stack.github.io/My-game/
+
+No prep needed and I do not want you to be nice about it. If you get bored or
+confused, stop right there and tell me the moment you stopped. That is the single
+most useful thing you can give me.
+```
+
+### The five questions, and why these five
+
+Put them in a Google Form and link it at the end of every post, **and put a button to it on the
+run-end screen inside the game**. A link inside the build converts several times better than a link
+in a Reddit post, because the person is already finished and still has the game in their head.
+
+1. **Where did you stop, and why?** (open text)
+2. **Which of these did you understand?** UNDERSTOOD / PARTLY / NO for each: the hex fight, action
+   points, morale, wages, the road choices, the camp, gear and stash, scars.
+3. **Where were you confused, and what were you looking at?** (open text)
+4. **1 to 5: if this were your own evening, would you have kept playing?**
+5. **Three things you would fix first.**
+
+⚑ These are deliberately the same headings the simulated testers report under, in
+`tools\playtest\personas\_common.md`. That means **a real tester's answers drop straight into the
+same table as Dima, Sanya and Andrey**, and you can see where the rig was right and where it was
+flattering you. Do not change the wording of the five without changing the personas too.
+
+### What to attach, and what to leave out
+
+- **One clip, 10 to 15 seconds, one fight.** Posts with motion get several times the engagement of
+  text. This is the only asset worth making before Gate B.
+- **Say the run length.** "15 minutes" is why someone clicks. An unbounded time cost is why they do
+  not.
+- **Say what is placeholder.** It buys you the specific feedback you want instead of ten people
+  telling you the art is unfinished.
+- **Do not ask "is it fun".** Nobody can answer it and the answers are worthless.
+- **Do not ask for general feedback.** One question per post. The narrower the ask, the more useful
+  and the more numerous the replies.
+- **Do not defend anything in the replies.** Say thank you, ask one clarifying question, move on.
+  Arguing with feedback in public is the fastest way to stop receiving it.
+
+### Three more venues, for FAST feedback from developers
+
+*Added 2026-08-16, when the build reached roughly an hour of playable content.* The Sharing
+Saturday / Discord-showcase route above is weekly-cadence. These three answer within hours.
+
+**1. r/gamedev Discord** - https://discord.com/invite/reddit-gamedev
+33,700 members `[verified]`, the official server behind the subreddit. Engine channels, social
+channels, and dedicated promote-your-stuff channels. Turnaround is hours, sometimes minutes, and
+the audience is developers who will articulate *why* something did not read. Post in the promo or
+feedback channel, never in general.
+
+**2. Game Dev Network Discord** - gamedevnetwork.io
+~38,000 developers `[verified]`, built around learning, collaboration and sharing work in progress.
+Broader and less genre-aware than the Turn-Based Games server, which makes it a better test of
+whether the opening explains itself to someone with no Battle Brothers context.
+
+**3. Hacker News, "Show HN"** - https://news.ycombinator.com/showhn.html
+The non-obvious one, and possibly the best fit you have. Show HN exists for things people can try
+immediately, and a tactical game that opens in a tab with no install, no account and no download is
+exactly the shape that performs there. Feedback arrives within hours and is unusually blunt.
+
+- Title must literally start `Show HN:` and describe the thing plainly. No marketing language, no
+  superlatives. Example: `Show HN: A hex tactical roguelike that runs in a browser tab`
+- Post Tuesday to Thursday, roughly 8-10am US Eastern.
+- Add one comment of your own immediately, explaining what it is, that you are a solo dev, and what
+  feedback you want.
+- ⚠ **Effectively one shot.** A Show HN either catches the front page in the first hour or it does
+  not, and reposting the same project reads badly. Save it until the opening is something you are
+  willing to have judged.
+- ⚠ The audience is software developers, not genre players. Expect UX, performance and
+  first-impression notes rather than balance notes. For the clarity pass that is a feature: these
+  are smart people with **zero** genre knowledge, which is the exact reader the opening is failing.
+
+**The fastest loop of all, which is not a venue: reciprocal exchange.** Offer to play someone's
+build for an hour and write real notes, in exchange for the same. Works in the r/gamedev Discord,
+Game Dev Network, r/playmygame and in the comments of any Sharing Saturday. One hour of a
+developer's careful attention beats twenty drive-by comments, and it is the only realistic way to
+get someone to commit an hour to your build.
+
+### ⚠ An hour of content changes the ask
+
+**Do not ask for the hour.** A cold reader will not give it, and an hour-sized ask reads as
+presumptuous, which suppresses the response rate for the whole post. Instead:
+
+- Ask for **15 to 20 minutes with an explicit stopping point**: *"play until the second road choice
+  and stop, that is about 15 minutes"*. People who are hooked keep going on their own, and the fact
+  that they did is itself your best datum.
+- Reserve the full-hour ask for reciprocal exchanges and for people who already came back.
+- State both numbers in the post: *"a run is about 15 minutes, there is roughly an hour in total"*.
+  The first number gets the click, the second says the project is real.
+- **The drop-off point is now your most valuable measurement.** With ten minutes of content
+  everyone finishes and you learn nothing. With an hour, *where* someone stops is the finding, which
+  is why question 1 of the five is question 1.
+
+⚑ An hour of playable content also means your **Gate C demo slice already exists** in draft. What
+is missing is a deliberate ending rather than a running-out, and a Steam page to put it behind.
+
+### How many testers you need
+
+Three is a lead, ten is a signal. Aim for ten real humans before you change anything structural.
+A thing all ten hit is a fact; a thing one hit is a hypothesis. This is the same n rule the
+simulated rig already states, and it does not get weaker because the testers are real.
+
+---
+
 ## Four rules that decide whether any of this works
 
 1. **Feedback venues are repeatable, audience venues are not.** Sharing Saturday accepts the same

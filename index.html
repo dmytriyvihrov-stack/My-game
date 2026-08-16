@@ -763,8 +763,55 @@ button:disabled{cursor:not-allowed}
    ⚠ THIS IS THE README'S OWN TRAP - *a constant derived from another box's
    size is a bug with a delay on it* - and it is the second surface it has
    fired on. Do not write another literal offset here. */
-.stbar{position:absolute;left:-6px;right:-6px;top:calc(var(--head,-13px) - 21px);
-       height:11px;display:flex;
+/* ═══ #163 · AND THEN THE STATUSES CAME DOWN OFF THE HEAD ════════════════
+   (User: "4) statuses below the unit", alongside "hitpoints closer to the
+   unit head" and "all units in the hexes 10% smaller - so it is easier
+   navigate throught hexes, when it is crowded".)
+
+   ⚑ THE THREE NOTES ARE ONE NOTE, AND IT IS ABOUT VERTICAL FOOTPRINT. Above
+   a head there used to be, reading down: a status row 21px up, then the two
+   bars 8px up, then the body. Measured on the shipped build that is a column
+   of furniture ~26px tall standing on a row whose pitch is 32, so a token in
+   a crowd was mostly other tokens' luggage. This pass takes ~20px of it back:
+   the sprite is a tenth smaller (`TOKEN`), the bars close to 6px off the head,
+   and this row leaves the top of the token altogether.
+
+   ⚠ AND IT IS A REAL TRADE, NOT A FREE WIN, because it is #157's own argument
+   run backwards. Below the feet is exactly the strip the row IN FRONT paints
+   over: rows are 32px of pitch, painted top-to-bottom, so a front-row body
+   whose sprite starts at this hex's y≈14 covers everything under it. The half
+   hex of horizontal offset leaves a narrow clear channel down the middle and
+   nothing wider.
+   ⛔ SO THE BARS AND THE BADGES ARE NOT INTERCHANGEABLE AND MUST NOT BE
+   SWAPPED BACK. Health is read WHILE surrounded, which is the one moment the
+   cover happens, and that is why #157 moved it up and why it stays up. A
+   status is read when you are choosing what to do about one body, and losing
+   a poison glyph behind a neighbour costs a look rather than a decision.
+   The one that cannot be covered keeps the place nothing can cover.
+
+   ⚑ ANCHORED TO THE FEET, AND THE FEET ARE `.usp`'s OWN MARGIN. 7px is that
+   margin (the sprite's bottom sits 7px above `.hin`'s), 11px is this row's
+   height, so the row's TOP lands exactly on the feet line whatever the body
+   is. Same rule as `--head` at the other end: hang the furniture off the
+   body, never off the hex. Do not flatten this to `bottom:-4px`.
+
+   ⛔ AND `z-index:2` IS WHAT MAKES THE WHOLE THING LEGAL. Below the feet is
+   the strip the row in front paints over, and this pass MEASURED that damage
+   rather than guessing at it: in a 3x3 jam of ten bodies, 20 of 40 badges
+   came out more than half buried, and a SINGLE centred badge - the common
+   case - was buried 58% of the time. The half-hex row offset does not leave
+   a clear channel down the middle: a front sprite is 33 to 48px wide on a
+   37px hex and covers the middle of the hex behind it too. There is no
+   legible position anywhere below a head, which is #157's finding arrived at
+   from the other side.
+   ⚑ So the badges leave the body layer altogether: at 2 they clear every
+   sprite on the board whatever row it stands in, while the bars stay at 1
+   because nothing ever reaches above a head anyway. This is the one piece of
+   token furniture that floats over the world, and it earns it by being
+   furniture rather than a body. See the `.hin` note for why a 2 here does
+   anything at all - until this pass it did nothing whatsoever. */
+.stbar{position:absolute;left:-6px;right:-6px;top:auto;bottom:calc(7px - 11px);
+       height:11px;display:flex;z-index:2;
        justify-content:center;align-items:center;gap:1px;pointer-events:none}
 .stbar .stbadge{position:static;font-size:10px;line-height:1;font-family:var(--body);
        text-shadow:0 0 3px #000,0 0 3px #000,0 1px 2px #000;pointer-events:auto}
@@ -1036,8 +1083,33 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:11px;pa
    it, so the ground stays a hexagon and the person does not. Rows are painted
    top-to-bottom and overlap, so a tall token is correctly overlapped by
    whoever is standing in front of it. */
-.hin{width:33px;height:37px;z-index:1;
+/* ═══ #163 · THE LIFT LIVES ON THE CHILDREN, NOT ON `.hin` ═══════════════
+   `z-index:1` used to sit on `.hin` itself, and that one declaration did two
+   different jobs: it put every body above every hexagon of ground (which is
+   what it was written for), and it wrapped the whole token in a STACKING
+   CONTEXT, which nothing asked for. The second job is the expensive one -
+   inside a stacking context no child can ever out-paint a body in another
+   hex, however high its z-index, because the trapped subtree is composited
+   as a single unit at level 1.
+
+   ⛔ THAT IS THE README'S OWN SHAPE: ONE DECLARATION ANSWERING TWO
+   QUESTIONS, and it went the way `BLOCKED{}` and `walkable` went - it was
+   complete until the day the answers differed, which is the day #163 asked
+   for a status badge that survives a crowd.
+
+   ⚑ MOVING THE 1 ONTO THE CHILDREN KEEPS ANSWER ONE AND DELETES THE TRAP.
+   Every child still beats `.hedge` (the ground, which is z:auto), so bodies
+   sit on top of hexes exactly as before; two sprites still tie at 1 and are
+   still separated by DOM order, so the row in front still overlaps the row
+   behind and the depth of the board is untouched. What is new is that a
+   child MAY now be given a 2 and mean it. `.stbar` is the only one that is.
+   ⚠ MEASURED, because this is a layering change and layering fails silently:
+   .hin z auto with no transform/opacity/filter (so no context), usp/umood/
+   wbadge/crest/hodds/ubars/fbadge/hfill all computed 1, hedge auto, stbar 2,
+   and 15 sprite pairs still overlapping in a 3x3 jam - the same depth. */
+.hin{width:33px;height:37px;
      display:flex;align-items:flex-end;justify-content:center;position:relative}
+.hin>*{z-index:1}
 .hfill{position:absolute;left:0;top:0;right:0;bottom:0;
        clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%)}
 /* ═══ THE TARGET'S CLICK PAD (user, 2026-08-02) ══════════════════════════
@@ -1224,8 +1296,14 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:11px;pa
    "A bit thinner" is the health bar at 2px where it was 3, so the pair is 5px
    where it was 6. The armour bar stays at 2: its fill is one pixel already,
    and one pixel is the floor at which a bar is still a bar. */
+/* #163 - "hitpoints closer to the unit head". 8px was 3px of clear air over
+   a 5px strip; 6px is 1px, which is as close as the pair gets without the
+   armour bar's own border touching the tallest pixel of the head. The
+   remaining 2px is the whole reason a bar over a head still reads as being
+   ABOVE somebody rather than drawn on them. See the .stbar note for why the
+   two rows moved in opposite directions. */
 .ubars{position:absolute;left:50%;transform:translateX(-50%);
-  top:calc(var(--head,-13px) - 8px);width:26px}
+  top:calc(var(--head,-13px) - 6px);width:26px}
 .ubars div{height:2px;background:#2a1e1f;border:1px solid rgba(0,0,0,.6);position:relative}
 .ubars div i{display:block;height:100%}
 /* #94 point 6, the board's half of it: the SAME rule at token scale, so the
@@ -1450,10 +1528,28 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:11px;pa
       background:linear-gradient(rgba(15,22,24,0) 0%,rgba(15,22,24,0) 76%,
                  rgba(15,22,24,.55) 100%)}
 /* the Winds of Magic strip lived here. Cut — see "THE COST OF CASTING". */
-#bRead{position:absolute;width:262px;background:rgba(12,17,19,.96);border:1px solid #3d5250;
+/* ═══ #163 · NARROWER, AND THE WIDTH IS DECLARED ONCE ════════════════════
+   (User: "b) made the box less wide", and again on the inspect card: "6)
+   Less wide enemy stats picture".) 262 to 222. The card lost the two widest
+   rows it had (`your skill` and `their dodge` and their captions), so the
+   width it was carrying was width for text that is no longer written.
+
+   ⚑ IT IS A CUSTOM PROPERTY BECAUSE placeRead NEEDS THE SAME NUMBER. The
+   card is positioned BEFORE it is shown, so `offsetWidth` is 0 at the moment
+   the left edge is chosen, and #163 puts the card on the left of the target
+   half the time - which is the first time in this file's life that placing it
+   required knowing how wide it is. A literal in the script beside a literal
+   in the stylesheet is two sources of truth for one box, and the day they
+   part the card walks off the side of the board. See readW(). */
+:root{--readW:222px}
+#bRead{position:absolute;width:var(--readW);background:rgba(12,17,19,.96);border:1px solid #3d5250;
        border-top:3px solid var(--blood);padding:9px 11px;display:none;flex-direction:column;gap:4px;
        pointer-events:none;z-index:8}
 #bRead.on{display:flex}
+/* a value that would wrap makes a 222px card two rows taller than it reads
+   as; at this width the arc row is the long one and it is now the only row
+   on the card that carries two clauses */
+#bRead .rr span{white-space:nowrap}
 /* the card the player reads before EVERY swing, and it was 9.5px. 11px, and
    the card widened by 22px to hold it without wrapping. */
 #bRead .rr{display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;color:#b9c6c3}
@@ -1562,6 +1658,22 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:11px;pa
 #wQuest .qlab{font-family:var(--display);font-size:10.5px;color:var(--g4);letter-spacing:.09em}
 #wQuest .qtx{font-family:var(--mono);font-size:10.5px;color:#c2b493;line-height:1.35}
 #wQuest .qpay{font-family:var(--mono);font-size:9px;color:#8a7449;letter-spacing:.04em}
+/* #161 - the second objective, under a hairline in the SAME column. It is a
+   favour the run does itself, so it is quieter than the contract above it and
+   it goes green rather than gaining a tick glyph: the plate already carries
+   one drawn mark and a second would compete with the trophy. */
+#wQuest .qsec{display:flex;flex-direction:column;gap:1px;margin-top:5px;padding-top:5px;
+              border-top:1px solid #4a3a22}
+#wQuest .qsec .qlab{color:#8a7449}
+#wQuest .qsec.don .qlab{color:#8ca35a}
+#wQuest .qsec.don .qtx{color:#8a7d63}
+/* the same three rows on the card that hands it out. `.bd` is the road
+   dialog's body, so this only ever renders inside one. */
+#wDlg .qgoal{display:flex;flex-direction:column;gap:2px;margin-top:12px;padding-top:9px;
+             border-top:1px solid #4a3a22}
+#wDlg .qgoal .ql{font-family:var(--display);font-size:11px;color:var(--g4);letter-spacing:.09em}
+#wDlg .qgoal .qt{font-family:var(--mono);font-size:11.5px;color:#c2b493}
+#wDlg .qgoal .qp{font-family:var(--mono);font-size:10px;color:#8ca35a;letter-spacing:.04em}
 /* ⚠ #107 point 2 SENT IT BACK TO THE MIDDLE, and that is not a mistake being
    corrected, it is the user seeing his own #106 request built and changing
    his mind about it: "days and time of the day in the midle". The wheel and
@@ -3116,21 +3228,16 @@ a.popt.sendit{display:block;text-decoration:none}
     <div id="bGround"><canvas id="bTerrain" width="600" height="440"></canvas>
       <div id="bGrid"></div></div>
     <div id="bFx"></div><div id="bVig"></div><div id="bZoom"></div>
-    <div id="bRead">
-      <div id="rName" style="font-family:var(--display);font-size:13.5px;color:var(--t4)"></div>
-      <div style="display:flex;align-items:baseline;gap:8px">
-        <span class="big" id="rHit">—</span>
-        <span style="font-family:var(--mono);font-size:10.5px;color:#8fa5a2">CHANCE TO HIT</span></div>
-      <div class="rr"><span>your skill</span><span id="rSkill"></span></div>
-      <div class="rr"><span>their dodge</span><span id="rDodge" style="color:#8ca35a"></span></div>
-      <div class="rr"><span>flanking</span><span id="rFlank"></span></div>
-      <div class="rr"><span>other</span><span id="rOther"></span></div>
-      <div style="height:1px;background:#2c3d3f"></div>
-      <div class="rr"><span>ARMOUR DAMAGE</span><span id="rArm" style="color:var(--steel)"></span></div>
-      <div class="rr"><span>HITPOINT DAMAGE</span><span id="rHp" style="color:#c15d55"></span></div>
-      <div class="rr"><span>MORALE</span><span id="rMor"></span></div>
-      <div id="rNote" style="font-size:12px;font-style:italic;color:var(--t3);line-height:1.28"></div>
-    </div>
+    <!-- ═══ #163 · THE CARD IS EMPTY IN THE MARKUP, AND THAT IS THE FIX ═══
+         Both readout() and inspect() set innerHTML unconditionally before
+         they read a single id back, so nothing here was ever seen. It was a
+         second copy of the card's shape all the same, and it had rotted
+         exactly the way an unread copy does: it still said `flanking` and
+         `MORALE`, two labels the live card renamed in #146 and #134. A
+         skeleton nobody paints is a source of truth nobody corrects.
+         ⛔ Do not put the rows back "for reference". The reference is
+         readout(). -->
+    <div id="bRead"></div>
   </div>
   <!-- the counts capsule: standing bodies each side, the round, whose turn -->
   <div id="bCap"><span id="bYouN">⛊ —</span><span id="bRound">↻ I</span><span id="bFoeN">☠ —</span></div>
@@ -5028,6 +5135,31 @@ const GEAR={
   spear  :{n:'Boar spear',      slot:'main',dmg:[15,22],am:.85,ft:.28,reach:2,hands:2},
   club   :{n:'Warclub',         slot:'main',dmg:[23,36],am:1.30,ft:.20,reach:1,hands:2},
   knife  :{n:'Gut-knife',       slot:'main',dmg:[11,16],am:.40,ft:.45,reach:1},
+  /* ═══ #161 · THE WORKING STAVE - A CASTER'S REACH IS NOW GEAR ════════════
+     (User, 2026-08-16: "the mage has an artifact in hand, a magic stick. And
+     a jab with it is clearly weaker than with a sword. It gives +2 range for
+     magic.")
+
+     Spell range was baked into the school, so where a caster stood was decided
+     by his spell list and by nothing the player owned. Every school in SPELLS
+     is 2 hexes shorter now and this is the one thing in the game that buys the
+     distance back, which turns a caster's main hand into a real question:
+     reach, or something you can defend yourself with when the reach fails.
+
+     ⚑ THE JAB IS THE WORST WEAPON ON THE RACK AND THAT IS THE POINT. Weaker
+     than the gut-knife it replaces, less than half the arming sword it is
+     compared against. It is not a weapon, it is a stick a working comes out of
+     the end of, and the comparison IS the decision.
+
+     ⚑ `spellRange` IS READ OFF ALL THREE SLOTS in unitFrom, never off this one.
+     A trinket or an off-hand piece that ever carries it then works the day it
+     is written. This file has already shipped the other version of that: #141
+     found `dodge` wired on the off hand and silently ignored on a trinket. */
+  rod    :{n:'Working stave',   slot:'main',dmg:[6,10],am:.20,ft:.35,reach:1,spellRange:2,
+           d:'A stripped ash pole, chalked its whole length and burnt black at the tip. '+
+             'Hitting a man with it works about as well as you would expect. That is not '+
+             'what it is for. A working thrown off the end of it goes two hexes further '+
+             'than one thrown off your hand.'},
   /* the bow deliberately does NOT take both slots. Physically it wants two
      hands to loose, but the interesting decision the second slot exists for is
      the ARCHER'S: more arrows, or a blade for when something is already inside
@@ -5362,30 +5494,45 @@ const traitShort=p=>{
 /* ---------- the four kinds of magic ----------
    Each one does exactly one job, and the description says which.
 
-   RANGE IS PART OF THE SPELL, not a constant. They used to sit at 3–4 with no
-   reason, so distance never entered a casting decision. Now the crowd-killer
-   reaches furthest and the blessing barely reaches at all — which decides
-   where the caster has to stand, and therefore how exposed they are. */
+   RANGE IS PART OF THE SPELL, not a constant. They used to sit at 3-4 with no
+   reason, so distance never entered a casting decision. The crowd-killer
+   reaches furthest and the blessing barely reaches at all, which decides where
+   the caster has to stand and therefore how exposed they are.
+
+   ═══ #161 · AND THE NUMBERS BELOW ARE THE BARE HAND ═══════════════════════
+   (User, 2026-08-16: "it gives +2 range for magic (then ember and the other
+   spells need to be made much closer by default, but not closer than 1)".)
+
+   Every school lost 2 hexes and the WORKING STAVE in GEAR hands them back, so
+   a caster's reach is now a thing the player equips rather than a constant the
+   spell list decided for them. Four of the five come out at exactly their old
+   figure with the stave in hand; IRON-OATH is 3 instead of 2 because 1 is the
+   floor the user set and it had only 2 to give.
+
+   ⛔ NO RANGE FIGURE IN A NOTE, EVER AGAIN. Both card renderers already print
+   `range N` off `a.range`, so a number written into this prose is a second
+   readout that goes wrong the moment somebody picks up a stave. The RADIUS in
+   IRON-OATH's note stays: that is a hard 2 in the code and nothing moves it. */
 const SPELLS={
-  blight:{k:'blight',n:'BLIGHT-WIND',cost:2,strain:14,range:5,aoe:true,cool:3,
+  blight:{k:'blight',n:'BLIGHT-WIND',cost:2,strain:14,range:3,aoe:true,cool:3,
     dmg:[12,19],am:0,ft:1,arcane:true,
-    note:'CROWD DAMAGE · RANGE 5 · SLOW. Hits your target AND everything standing next to it, '+
+    note:'CROWD DAMAGE · SLOW. Hits your target AND everything standing next to it, '+
       'straight through armour. The longest reach you have. Throw it into a press of '+
       'bodies from somewhere safe. You name the target now and it comes down at the start '+
       'of your next turn, on whoever is standing there then.'},
-  wither:{k:'wither',n:'WITHER',cost:2,strain:16,range:3,cool:2,
+  wither:{k:'wither',n:'WITHER',cost:2,strain:16,range:1,cool:2,
     dmg:[24,36],am:0,ft:1,arcane:true,
-    note:'SINGLE TARGET · RANGE 3 · SLOW. Heavy damage that ignores armour completely. '+
+    note:'SINGLE TARGET · SLOW. Heavy damage that ignores armour completely. '+
       'You take hold of them now and it kills them at the start of your next turn. '+
       'They get a turn to walk out of your reach, and anything that reaches you first '+
       'takes it away from you.'},
-  oath:{k:'oath',n:'IRON-OATH',cost:2,strain:12,range:2,buff:true,arcane:true,cool:3,
-    note:'BUFF YOUR OWN · RANGE 2. Click one of YOUR people: they and every ally within '+
-      '2 hexes gain +18 armour and +12 morale. Short reach — you have to stand with '+
-      'the line to give it.'},
-  unpick:{k:'unpick',n:'UNPICK',cost:1,strain:9,range:4,hex:true,arcane:true,cool:2,
-    note:'DEBUFF · RANGE 4. Strips 25 armour and 14 morale off one enemy. No damage — '+
-      'it makes the next person’s swing land properly.'}
+  oath:{k:'oath',n:'IRON-OATH',cost:2,strain:12,range:1,buff:true,arcane:true,cool:3,
+    note:'BUFF YOUR OWN. Click one of YOUR people: they and every ally within '+
+      '2 hexes gain +18 armour and +12 morale. The shortest throw you have. You '+
+      'stand with the line to give it.'},
+  unpick:{k:'unpick',n:'UNPICK',cost:1,strain:9,range:2,hex:true,arcane:true,cool:2,
+    note:'DEBUFF. Strips 25 armour and 14 morale off one enemy. No damage. '+
+      'It makes the next person’s swing land properly.'}
 };
 const SPELLKEYS=Object.keys(SPELLS);
 /* ═══ #157 · HOW MANY SCHOOLS A CASTER WAKES UP KNOWING ═══════════════════
@@ -5412,6 +5559,19 @@ function rollSpells(n){
   while(out.length<n&&p.length)out.push(p.splice(Math.random()*p.length|0,1)[0]);
   return out;
 }
+/* ═══ #161 · ONE DOOR FROM A SCHOOL TO A CARD ON A BODY ═══════════════════
+   A school in SPELLS is the BARE-HAND figure; what a caster can actually
+   reach is that plus whatever they are holding. There are two places that
+   turn a school into an act (unitFrom at build, capTick when the magpie
+   forgets everything), and before this they were two copies of
+   `Object.assign({},SPELLS[k])` that would have drifted the moment one of
+   them learned about the stave. `u.spellRange` is the fact; this is the only
+   thing allowed to spend it. */
+const castAct=(sp,bonus)=>{
+  const a=Object.assign({},sp);
+  if(a.range)a.range+=(bonus||0);
+  return a;
+};
 
 /* 4 perks per class — two at level 2, two at level 3 — all stated in numbers */
 const PERKS={
@@ -5456,9 +5616,12 @@ const CLASSES={
   archer :{n:'ARCHER',    sig:'AIMED SHOT',
     perks:{2:['sureshot','quickfoot'],3:['butcher','eagle'],
            4:['deadeye','footwork'],5:['killzone','ironjaw']}},
-  /* The sword-carrying one. One school, one casting a turn, and stats that
-     let him stand in a line — the low-magic setting expressed as a class. */
-  warmage:{n:'BATTLE-MAGE',sig:'A SWORD, AND ONE SCHOOL',
+  /* The one who can hold a line. One school, one casting a turn, and stats
+     that let him stand in it: the low-magic setting expressed as a class.
+     #161: the sig names both hands he is allowed, because Marrow now starts
+     on the stave and a sig that says SWORD while he holds a stick is a readout
+     printing the wrong thing. */
+  warmage:{n:'BATTLE-MAGE',sig:'A BLADE OR A STAVE, AND ONE SCHOOL',
     perks:{2:['windeater','ironjaw'],3:['conduit','bulwark'],
            4:['stoneskin','inspire'],5:['heavyhand','footwork']}},
   /* The real one. Two schools, a second casting each turn at half strength,
@@ -5686,10 +5849,16 @@ const CLASSHELP={
     'partly to keep the scrum off her.',
     x:'CRIPPLING SHOT does not kill the thing running at you — it takes its legs. Her off hand '+
       'is a real decision: a quiver, or a dirk for when something reaches her anyway.'},
-  warmage:{d:'A mediocre swordsman who occasionally does something appalling. Two schools, one '+
-    'working a turn, and a short sword for the rest of it — low magic written as a class.',
-    x:'Casting costs his own nerve, and a working is aimed with the INTELLECT, so a stupid one misses.'},
-  mage:{d:'Three schools and a second working each turn at half strength, and almost nothing '+
+  /* ⚠ #161 - "Two schools" and "Three schools" below were both wrong, and had
+     been since #157 cut the ladder to warmage 1 / mage 2. SCHOOLS{} is the
+     fact; this is a hover that was printing a number the game had stopped
+     keeping, which is #102's own rule caught on a fourth surface. */
+  warmage:{d:'A mediocre swordsman who occasionally does something appalling. One school, one '+
+    'working a turn, and a free hand for a blade - low magic written as a class.',
+    x:'Casting costs his own nerve, and a working is aimed with the INTELLECT, so a stupid one '+
+      'misses. What he HOLDS decides how far a working carries: a working stave adds 2 hexes '+
+      'to every school, a sword adds none and is a great deal better in the scrum.'},
+  mage:{d:'Two schools and a second working each turn at half strength, and almost nothing '+
     'else. Bad with a blade, bad at dodging, thin. The line exists to keep him alive.',
     x:'Deliberately worse in melee than the battle-mage — the best offence in the company should '+
       'not also be adequate with a sword.'},
@@ -5921,7 +6090,10 @@ const G={ day:1, at:'hold', battleRounds:0, log:[], ambush:false, contact:false,
      opens is now one row instead of three, which is the clarity pass's own
      move on the one screen it had not reached. Nothing is lost from the run:
      the road hands out more junk than anybody can carry by the second node. */
-  stash:['pot'], party:null,
+  /* #161 - and Marrow's short sword, which he is no longer holding. See
+     makeParty: the stave is a decision, so the thing it was chosen over has
+     to be somewhere the player can reach. */
+  stash:['pot','shortsw'], party:null,
   recruits:null, hiredHere:0, battleKind:'snare',
   /* humans are new here and nobody is pleased about it */
 };
@@ -5957,6 +6129,13 @@ const MOODSTATES=[
    d:'They would follow you into the sea, and it shows on the field.'}
 ];
 const moodState=v=>MOODSTATES.find(s=>v<s.max)||MOODSTATES[MOODSTATES.length-1];
+/* ═══ #161 · WHICH RUNG IS "NORMAL", AND IT IS DERIVED ════════════════════
+   The band that contains zero. Not an index, not a name: both of those are
+   constants that rot the day somebody adds a rung, and this file has shipped
+   that failure more than once. Everything about the road's morale drift is
+   measured from here. */
+const moodRung=v=>MOODSTATES.indexOf(moodState(v));
+const MOOD_NORM=moodRung(0);
 
 /* Skree and Bruht are not starting party members any more — they are the
    two sides of the first road event (see EVENTS.clash). Kept here as the
@@ -6008,12 +6187,19 @@ function makeParty(){
     {id:'vesna',name:'Vesna',sur:'Kolb',race:'human',cls:'spear',kind:'human',
      st:{str:9,agi:9,int:7,mor:10},trait:'thrice',
      eq:{armour:'rags',main:'spear',off:null,trinket:null}},
-    /* Marrow is the BATTLE-mage: one school, a short sword, and stats that
-       let him stand in a line. The company's first caster should be the one
-       that survives being stood next to, not the glass one. */
+    /* Marrow is the BATTLE-mage: one school, and stats that let him stand in a
+       line. The company's first caster should be the one that survives being
+       stood next to, not the glass one.
+       ═══ #161 · AND HE IS HOLDING THE STAVE, NOT THE SWORD ══════════════════
+       (User, 2026-08-16: "the mage has an artifact in hand".) He is the only
+       caster the player has for most of act 1, so if he is not carrying it the
+       whole change is a thing nobody ever sees. ⚑ THE SHORT SWORD IS IN THE
+       CART, NOT DELETED - it is the other half of the decision the stave
+       exists to pose, and putting it back on him is one click on the company
+       sheet. His class still says he may carry it (see CLASSES.warmage). */
     {id:'marrow',name:'Marrow',sur:'',race:'human',cls:'warmage',kind:'mage',
      st:{str:8,agi:8,int:12,mor:9},trait:'windtouched',
-     eq:{armour:'rags',main:'shortsw',off:'focus',trinket:null}},
+     eq:{armour:'rags',main:'rod',off:'focus',trinket:null}},
     /* the fourth: a human archer carrying AMBITION, so the personality that
        reads differently on every race is in the party from the first minute
        — and the human version is the quiet one, which is the joke */
@@ -6127,7 +6313,13 @@ const CLS_BY_RACE={human:['spear','archer','warmage','cutter','spear','archer','
   ogre:['brute','spear']};
 const KIND_BY_CLS={spear:'human',archer:'archer',mage:'mage',warmage:'mage',
   cutter:'human',brute:'ogre'};
-const START_GEAR={spear:['rags','spear'],archer:['rags','bow'],mage:['rags','knife'],warmage:['jack','shortsw'],
+/* #161 - the MAGE comes with the stave, because a caster whose reach is gear
+   has to be handed the gear. The BATTLE-MAGE keeps the short sword: he is the
+   caster who can hold a line, and a recruit off the muster wall arrives as
+   what his trade is. Marrow is the exception and he is a deliberate one, so
+   the comparison the stave exists for is standing in the company from the
+   first minute rather than waiting on a shop (see makeParty). */
+const START_GEAR={spear:['rags','spear'],archer:['rags','bow'],mage:['rags','rod'],warmage:['jack','shortsw'],
   cutter:['scrap','knife'],brute:[null,'club']};
 function rollRecruit(taken){
   const race=pickOne(['human','human','human','ratkin','ratkin','ogre']);
@@ -6488,7 +6680,19 @@ const SPR={};
    ground. 1.13 keeps a human token at roughly the hex's own height — filling
    it, overflowing slightly at the head, which is what makes a token read as a
    person standing on a tile rather than an icon inside a box. */
-const TOKEN=1.13;
+/* ═══ #163 · A TENTH OFF EVERY BODY ON THE BOARD ═════════════════════════
+   (User: "All units in the hexes 10% smaller - so it is easier navigate
+   throught hexes, when it is crowded".) Written as the arithmetic rather
+   than as 1.02, because the number that matters is the one it came off and
+   the next pass should be able to read the history out of the line.
+
+   ⚑ THIS IS THE ONE PLACE, and it reaches the board and nothing else. Every
+   other caller of sprite() refits the bitmap it gets back - the order rail
+   on min(48/w,48/h), the sheet's icon on 58/h, the road token on TOKEN_H/h -
+   so a change here cannot leak into a screen it was not asked about. The
+   corpses and the Fen-Mother's tail hex DO ride it, and that is correct:
+   they are bodies standing on the same hexes. */
+const TOKEN=1.13*0.90;
 /* ═══ #66 — HOW FAR A TOKEN CAN BE ZOOMED BEFORE IT SOFTENS ═════════════
    The canvas is rendered at OVER×TOKEN and displayed at 1×TOKEN, so this
    number IS the camera's resolution ceiling and nothing else. It was 2, which
@@ -7637,6 +7841,16 @@ function unitFrom(p){
   u.morale0=u.morale;      /* the magnet. See morBase(). */
   restate(u);
   const R=p.perks.indexOf('eagle')>=0?2:0;
+  /* ═══ #161 · HOW FAR THIS BODY CAN THROW A WORKING ════════════════════════
+     Read off ALL THREE SLOTS, so the day a trinket or an off-hand piece
+     carries `spellRange` it works without a second edit. Today exactly one
+     thing in GEAR has the field (the working stave) and it is a main weapon.
+     ⚑ IT IS STORED ON THE UNIT, not applied and forgotten: the magpie
+     personality re-rolls a caster's whole school list mid-fight (see capTick)
+     and has to hand the same hexes to the new cards. A bonus that lives only
+     in this function is a bonus that evaporates on the magpie's first round. */
+  u.spellRange=((main&&main.spellRange)||0)+((off&&off.spellRange)||0)+
+    ((trk&&trk.spellRange)||0);
   const acts=[{k:'move',n:'MOVE',cost:1,move:true,
     note:'Ground is cheap. Walking out of a fight lets them swing at you.'}];
   if(main){
@@ -7732,11 +7946,15 @@ function unitFrom(p){
       if(!left.length)break;
       p.spells.push(left[Math.random()*left.length|0]);
     }
-    acts.push({k:'blaze',n:'EMBER',cost:1,strain:5,range:4,dmg:[10,16],am:.30,ft:.80,arcane:true,
+    /* #161 - EMBER is 2 in the bare hand and 4 with the stave, which is what it
+       has always been. Its note never carried a range figure and must not gain
+       one: the card prints `range N` off the act. */
+    acts.push({k:'blaze',n:'EMBER',cost:1,strain:5,range:2+u.spellRange,
+      dmg:[10,16],am:.30,ft:.80,arcane:true,
       note:'The cantrip every caster has. Cheap — 5 of their own nerve — and mostly ignores '+
         'armour. Does not count against your one working a turn, but it is once a turn all '+
         'the same.'});
-    p.spells.forEach(k=>{if(SPELLS[k])acts.push(Object.assign({},SPELLS[k]));});
+    p.spells.forEach(k=>{if(SPELLS[k])acts.push(castAct(SPELLS[k],u.spellRange));});
     u.castCap=many?2:1;          /* the mage gets a second one, at half */
     u.castHalfAfter=many?1:99;   /* ...and it is half strength */
     /* THE MAGE IS BAD WITH A BLADE, and now the numbers say so. Three schools
@@ -10821,12 +11039,21 @@ const softDodge=v=>v<=DODGE_SOFT?v:DODGE_SOFT+(v-DODGE_SOFT)*DODGE_RATE;
    ⚑ ONE DEFINITION EITHER WAY. The alternative was a second function that
    re-states the same fifteen rules for the tooltip, and a tooltip that
    drifts from the number it is explaining is worse than no tooltip. */
-function dodgeOf(u,W){
+/* ⚑ #163 - `noNerve` runs the SAME arithmetic with the nerve rung's own
+   contribution taken out, and it exists for exactly one caller: the aiming
+   card's "their nerve" row, which is the difference between the two answers.
+   ⛔ IT IS A DIFFERENCE AND NOT A LOOKUP OF `STATES[u.state].dodge`, because
+   every contributor here is pre-cap and `softDodge` is applied to the sum -
+   so on a body already stacked past DODGE_SOFT the rung is worth less than
+   its own number, and printing the raw figure would be a receipt that does
+   not match the till. Differencing two capped outputs is right at any point
+   on the curve. */
+function dodgeOf(u,W,noNerve){
   /* ⚠ U+2212, not a hyphen-minus. Every other signed number on this card is
      written with the real minus sign, and a caption mixing the two reads as
      a different kind of value rather than as the same arithmetic. */
   const w=W?(n,v)=>{if(v)W.push(n+' '+(v>0?'+'+Math.round(v):'−'+Math.abs(Math.round(v))));}:null;
-  let d=u.dodgeBase+STATES[u.state].dodge+(u.rallyBuff||0);
+  let d=u.dodgeBase+(noNerve?0:STATES[u.state].dodge)+(u.rallyBuff||0);
   if(w){w('their footwork',u.dodgeBase);
     w('nerve, '+STATES[u.state].n.toLowerCase(),STATES[u.state].dodge);
     w('rallied',u.rallyBuff||0);}
@@ -10971,7 +11198,31 @@ function hitBreakdown(a,d,act){
     po('your own nerve, '+STATES[a.state].n.toLowerCase()+' '+STATES[a.state].hit);}
   /* the top rung of the ladder is the one that pays — see ROCKING */
   if(rocking(a)){other+=5;po('nerve up +5');}
+  /* ═══ #163 · THE TWO NERVE ROWS, BUILT BESIDE THE PAYMENT ════════════════
+     (User: 'instead of "other" add two things: your nerve / enemy nerve'.)
+
+     ⚑ THEY ARE REPORTING FIELDS AND THEY CHANGE NO ARITHMETIC. `nerveA` is
+     already inside `other` and `nerveD` is already inside `dodge`, so `total`
+     is untouched and both AI brains score exactly what they scored before.
+     What the card gains is that the two things a player can actually DO
+     something about - steady your own line, break theirs - stop being buried
+     in a lump labelled "other".
+
+     ⛔ COMPUTED HERE AND NOT IN THE CARD, which is #137's rule on its fifth
+     surface: the label is a promise and the number is a fact, and only one of
+     them is allowed to be wrong. A card reading `STATES[...]` for itself
+     would be a second till.
+
+     ⚠ THE DEFENDER'S CALL IS GATED ON THE RUNG BEING NON-ZERO. dodgeOf walks
+     alive() twice (dutiful, inLine) and hitBreakdown is the innermost loop of
+     both brains - the README's 23-second clash was one careless call in this
+     function. Most bodies in most fights are steady, so the second pass
+     almost never runs, and when it does it is arithmetic and no pathfinding. */
+  const nerveA=STATES[a.state].hit+(rocking(a)?5:0);
+  const dnr=STATES[d.state].dodge;
+  const nerveD=dnr?(act.arcane?Math.round(dodgeOf(d,null,true)*0.35):dodgeOf(d,null,true))-dodge:0;
   return {skill:Math.round(skill),dodge:dodge,flank:Math.round(fl),other:Math.round(other),
+    nerveA:Math.round(nerveA),nerveD:Math.round(nerveD),
     arc:arc,total:clamp(Math.round(skill-dodge+fl+other),5,95),parts:parts,oth:oth};
 }
 /* An ogre with ambition rages after counting its own misses. Nobody else does
@@ -12094,7 +12345,10 @@ function beginTurn(){
     u.acts=u.acts.filter(a=>!a.arcane||a.k==='blaze');
     const bag=SPELLKEYS.slice(),got=[];
     while(got.length<2&&bag.length)got.push(bag.splice(Math.random()*bag.length|0,1)[0]);
-    got.forEach(k=>u.acts.push(Object.assign({},SPELLS[k])));
+    /* #161 - through castAct, so the stave in their hand still counts. A
+       magpie who woke up two hexes shorter every round would have been the
+       stave silently switching itself off once a turn. */
+    got.forEach(k=>u.acts.push(castAct(SPELLS[k],u.spellRange)));
     say(u.name+' has forgotten every spell they knew and turned up with '+
       got.map(k=>SPELLS[k].n).join(' and ')+' instead.');
   }
@@ -17745,27 +17999,85 @@ function inspect(t,e){
     /* words, not the four integers — see the TELLS block */
     (own&&t.st?'<div class="rr" style="display:block;color:#a08a5e;font-style:italic;'+
       'font-family:var(--body);font-size:10.5px;line-height:1.35">'+tellLine(t.st)+'</div>':'')+
-    '<div style="height:1px;background:#2c3d3f"></div>'+
-    '<div style="font-family:var(--mono);font-size:8.5px;color:#6b8280;letter-spacing:.1em">'+
-      (own?'WHAT THEY CAN DO':'WHAT IT CAN DO TO YOU')+'</div>'+
-    (t.passive?'<div class="rr"><span style="color:#8ca35a">Nothing. It does not fight.</span></div>'
-      :mv.map(a=>'<div class="rr"><span>'+iconFor(a)+' '+a.n+'</span><span style="color:#a8b5b3">'+
-      (a.dmg?a.dmg[0]+'–'+a.dmg[1]:'—')+(a.range?' · rng '+a.range:a.reach?' · rch '+a.reach:'')+
-      '</span></div>').join(''))+
-    '<div style="font-size:11.5px;font-style:italic;color:var(--t3);line-height:1.3">'+
-      /* enemy personalities are visible now, because they change how that
-         body moves and the player is entitled to read the tell */
-      (t.trait?(own?'':'<b style="color:#c9a227">'+TRAITS[t.trait].n+'</b> — ')+traitShort(t)
-        :'Its blue overlay is where it can reach next turn.')+'</div>';
-  placeRead(rd,e);
+    /* ═══ #163 · A HEADING OVER NOTHING IS STILL A HEADING ═══════════════
+       (User: "6) Less wide enemy stats picture - if there is no trait or
+       empty stuff - don`t show it at all".) The act list can legitimately
+       come back empty - a body whose only acts are `move` and a self-buff -
+       and the divider plus the 8.5px caption were drawn regardless, so the
+       card ended on two rules and a promise with nothing under it. That is
+       the same defect #138 deleted from the opening screen: a box with a
+       label on it and no content. */
+    (t.passive||mv.length?
+      '<div style="height:1px;background:#2c3d3f"></div>'+
+      '<div style="font-family:var(--mono);font-size:8.5px;color:#6b8280;letter-spacing:.1em">'+
+        (own?'WHAT THEY CAN DO':'WHAT IT CAN DO TO YOU')+'</div>'+
+      (t.passive?'<div class="rr"><span style="color:#8ca35a">Nothing. It does not fight.</span></div>'
+        :mv.map(a=>'<div class="rr"><span>'+iconFor(a)+' '+a.n+'</span><span style="color:#a8b5b3">'+
+        (a.dmg?a.dmg[0]+'–'+a.dmg[1]:'—')+(a.range?' · rng '+a.range:a.reach?' · rch '+a.reach:'')+
+        '</span></div>').join('')):'')+
+    /* ⚑ AND THE FALLBACK SENTENCE GOES WITH IT. "Its blue overlay is where it
+       can reach next turn" was a caption for the reach tint (#156) parked in
+       the slot reserved for the trait, so it appeared on every body in the
+       game that has no personality and taught the same thing on the twentieth
+       hover as on the first. #150's rule, on the inspect card: a line you can
+       grep on two thirds of the roster is furniture, whatever it says. The
+       tint teaches itself by being painted where the cursor is.
+       ⚠ The TRAIT half is untouched - enemy personalities stay visible,
+       because they change how that body moves. */
+    (t.trait?'<div style="font-size:11.5px;font-style:italic;color:var(--t3);line-height:1.3">'+
+      (own?'':'<b style="color:#c9a227">'+TRAITS[t.trait].n+'</b> — ')+traitShort(t)+'</div>':'');
+  /* #163 - away from whoever is looking, exactly as the aiming card does. The
+     inspect card was never the one complained about, but it opens under the
+     same cursor on the same board and a rule that applies to one of two cards
+     on one surface is a rule the next reader has to discover twice. */
+  placeRead(rd,e,awayFrom(cur(),t));
 }
-function placeRead(rd,e){
+/* ═══ #163 · THE CARD OPENS ON THE FAR SIDE OF WHAT IT DESCRIBES ═════════
+   (User: "when i hover enemy unit with hit - it shows % of hit on the ride
+   (it hides my initial unit). Show it opposite side from my atacking unit -
+   so it never closes it. Also - show it that way that it isn`t collide with
+   this enemy image".)
+
+   ⚑ IT WAS `p.x+56` AND THAT IS ALWAYS THE RIGHT-HAND SIDE. A fixed side is
+   correct exactly half the time and the half it is wrong on is not random: a
+   card about a swing is opened while the swinger is standing next to the
+   target, so a card that always goes right lands on the attacker every time
+   the attacker is to the right. The player then cannot see the body whose
+   arc, nerve and position the card is telling them to change.
+
+   ⚑ THE SIDE IS CHOSEN IN GAME SPACE, NOT IN SCREEN SPACE - `away` is a
+   column comparison from readout/inspect, never a pixel one. The stage takes
+   rotate(90deg) in portrait (README: measured drift 1103px), so a rule
+   written off rects is right on a desktop and a right angle out on a phone.
+   Columns run left to right in the DOM at every rotation.
+
+   ⚠ AND IT FALLS BACK RATHER THAN CLAMPING. Clamping the far side against a
+   board edge would slide the card back over the very body it was moved off,
+   silently, which is worse than the bug being fixed: at the edge there is no
+   room on that side AT ALL. So the near side is tried whole, and only if
+   neither fits is the card clamped - by then the board is narrower than two
+   cards and something has to overlap. */
+function placeRead(rd,e,away){
   const f=$('bField'),p=relPt(e.currentTarget,f);   /* #83 - relPt, not the raw rects */
+  const w=readW();
+  /* clear of the HEX is not clear of the BODY: sprites overflow their hexes
+     by design (see the .hfill note) and the widest in the file is the
+     Fen-Mother at ~70px on a 37px hex. 26 past the hex edge clears her. */
+  const GAP=26;
+  const right=p.x+p.w+GAP, left=p.x-w-GAP;
   /* never let it escape the battlefield and cover the character panel */
-  rd.style.left=clamp(p.x+56,8,Math.max(8,f.offsetWidth-250))+'px';
+  const lo=8,hi=Math.max(8,f.offsetWidth-w-8);
+  let x=(away==='left')?left:right;
+  if(x<lo||x>hi){const alt=(away==='left')?right:left;if(alt>=lo&&alt<=hi)x=alt;}
+  rd.style.left=clamp(x,lo,hi)+'px';
   rd.style.top=clamp(p.y-90,8,Math.max(8,f.offsetHeight-300))+'px';
   rd.classList.add('on');
 }
+/* which side of the hovered body the card belongs on, so it opens away from
+   whoever is doing the looking. Equal columns keep the old right-hand side:
+   directly above or below, either side is as good, and changing the default
+   there would make the card flicker sides as a body walks up a file. */
+const awayFrom=(u,t)=>(u&&t&&u.col>t.col)?'left':'right';
 /* ═══ THE READOUT WAITS TO BE ASKED (user, 2026-08-02) ═════════════════════
    "Показывать статы твои и противника когда ховер какое-то время (например
    2-3 секунды), иначе он зависает и мешает ходить."
@@ -17796,7 +18108,21 @@ function placeRead(rd,e){
    moving along a line of bodies opens the next one at once - you have already
    said you are reading. It re-arms as soon as you leave the board for longer
    than that, so the first card of a look always costs the full wait. */
-const READ_DWELL=1200, READ_GRACE=450;
+/* ═══ #163 · AND A SECOND LONGER, WHICH IS BACK INSIDE THE ORIGINAL ASK ═══
+   (User: "q) Make it pop up one second later - so if player get quick hower
+   it is isn`t so less overload".) 1200 to 2200, which lands inside the "2-3
+   seconds" the 2026-08-02 request asked for and this constant argued its way
+   out of. The argument above is still the right one and it is why this is
+   2200 and not 3000 - but it was made against a card with eleven rows on it,
+   and the card the player now waits for has six. Waiting longer for less is
+   the trade, and the GRACE below is what keeps it cheap: the second body you
+   rest on still opens at once. */
+const READ_DWELL=2200, READ_GRACE=450;
+/* the card's own width, declared once in the stylesheet - see the note on
+   #bRead. The literal is a crash guard for a missing property, never the
+   width: change the number in the CSS. */
+const readW=()=>parseFloat(getComputedStyle(document.documentElement)
+  .getPropertyValue('--readW'))||222;
 let readTimer=null, readShutAt=0;
 /* ⚠ `e.currentTarget` IS NULL BY THE TIME A TIMER FIRES - it is only valid
    while the event is being dispatched, and placeRead() measures it. So the
@@ -17846,29 +18172,68 @@ function readout(t,e){
   const rng=a.range||a.reach||0;
   if(udist(u,t)>rng||!a.dmg){inspect(t,e);return;}
   const bd=hitBreakdown(u,t,a),p=dmgPreview(u,t,a);
+  /* ═══ #163 · WHAT THE AIMING CARD IS FOR, RESTATED ══════════════════════
+     (User, with four blocks struck through on a screenshot: "a) Delete pieces
+     that i crossed · c) instead of "other" wadd too things: your nerve /
+     enemy nerve · d) if modifier doesnt work - don`t write it at all · f)
+     Don`t write there that enemy nerve · m) Move damage on top as same as
+     final chance to hit".)
+
+     ⚑ THE CARD STOPS BEING A DECOMPOSITION AND BECOMES A LIST OF THINGS THE
+     PLAYER CAN CHANGE. `your skill` and `their dodge` are the two largest
+     terms in the number and they are also the two nobody can do anything
+     about this turn - they are these bodies being who they are - and they
+     cost four rows to say it, two figures and two captions. What is left is
+     the headline, what the blow takes off, and the four situational terms:
+     arc, ring, your nerve, theirs. Every one of those is a different place to
+     stand or a different body to break first.
+     ⛔ SO THE ROWS NO LONGER SUM TO THE TOTAL, AND THAT IS THE DESIGN. It is
+     not an omission to be repaired by putting `other` back. `parts`/`oth` are
+     still built in hitBreakdown for whoever wants the full working next.
+
+     ⚑ AND THE ORDER IS THE DECISION ORDER: what are the odds, what does it
+     take off, and only then why. `m)` is the user reading his own card - the
+     damage sat under a divider BELOW four modifiers, so the one figure he was
+     comparing across three enemies was the furthest thing from the top.
+
+     ⚠ `f)` READS AS A CONTRADICTION OF `c)` AND IS NOT ONE. The struck-out
+     NERVE row at the foot printed the TARGET'S rung as a state ("🙂 HAPPY"),
+     which is now the right-hand half of the `their nerve` row and said once
+     instead of twice. #102's wrong-unit rule, on a row rather than a glyph. */
+  /* d) - a modifier that is not modifying anything is not written. The old
+     card printed "surrounded —" on every one-on-one swing in the game: a row
+     spent four times a turn to say nothing. */
+  const rrIf=(k,v,txt,col)=>!v?'':'<div class="rr"><span>'+k+
+    '</span><span style="color:'+col+'">'+txt+'</span></div>';
+  /* ⚠ U+2212 for the minus, like every other signed number on this card. */
+  const sgn=v=>(v>0?'+':'−')+Math.abs(v);
+  /* the good/bad colours are FROM THE SWINGER'S SIDE, so both nerve rows read
+     the same way round: green is "this helps the blow land", whether it is
+     your steadiness or their panic. */
+  const gb=v=>v>0?'#8ca35a':'#c15d55';
+  /* the rung's own face, off the one ladder the plaque, the token and the
+     aftermath chips already wear (#134/#150) - so a nerve row is read as the
+     same fact the board is showing over that body's head, not a fifth
+     vocabulary for it. */
+  const face=x=>LADDER[ladderAt(x)].ic;
   /* inspect() overwrites this panel, so rebuild the attack readout each time */
   $('bRead').innerHTML=
     '<div id="rName" style="font-family:var(--display);font-size:13.5px;color:var(--t4)"></div>'+
     '<div style="display:flex;align-items:baseline;gap:8px">'+
       '<span class="big" id="rHit">—</span>'+
       '<span style="font-family:var(--mono);font-size:10.5px;color:#8fa5a2">CHANCE TO HIT</span></div>'+
-    '<div class="rr"><span>your skill</span><span id="rSkill"></span></div>'+
-    '<div class="rw" id="rSkillWhy"></div>'+
-    '<div class="rr"><span>their dodge</span><span id="rDodge" style="color:#8ca35a"></span></div>'+
-    /* #146 - every row that is a SUM now carries its own working. See .rw. */
-    '<div class="rw" id="rDodgeWhy"></div>'+
-    '<div class="rr"><span>surrounded</span><span id="rFlank"></span></div>'+
-    '<div class="rr"><span>attack arc</span><span id="rArc"></span></div>'+
-    '<div class="rr"><span>other</span><span id="rOther"></span></div>'+
-    '<div class="rw" id="rOtherWhy"></div>'+
-    '<div style="height:1px;background:#2c3d3f"></div>'+
+    /* m) - the blow itself, directly under the chance that it lands */
     '<div class="rr"><span>ARMOUR DAMAGE</span><span id="rArm" style="color:var(--steel)"></span></div>'+
     '<div class="rr"><span>HITPOINT DAMAGE</span><span id="rHp" style="color:#c15d55"></span></div>'+
-    /* #134 - NERVE, not MORALE. #132 gave the STAT the word MORALE (how much
-       nerve this body has); this row is how much is left right now, which is
-       the ladder, which is NERVE. Two rows called MORALE meaning different
-       things is the collision #132 just took off the roster sheet. */
-    '<div class="rr"><span>NERVE</span><span id="rMor"></span></div>'+
+    '<div style="height:1px;background:#2c3d3f"></div>'+
+    /* the arc row is NOT under d) and stays whatever it reads. It is the one
+       row on the card that is a STATE rather than a bonus - "FRONT" with no
+       number is the card saying go round, which is the most actionable
+       sentence in the tactical layer. */
+    '<div class="rr"><span>attack arc</span><span id="rArc"></span></div>'+
+    rrIf('surrounded',bd.flank,'+'+bd.flank,'#c9c6bb')+
+    rrIf('your nerve',bd.nerveA,face(u)+' '+sgn(bd.nerveA),gb(bd.nerveA))+
+    rrIf('their nerve',bd.nerveD,face(t)+' '+sgn(bd.nerveD),gb(bd.nerveD))+
     /* the strip of what is already on it — a caster holding a working is the
        reason to swing at THIS one, and the aiming card is where that has to
        be said */
@@ -17885,49 +18250,15 @@ function readout(t,e){
   $('rName').textContent=t.name+(t.captain?' — captain':'');
   $('rHit').textContent=bd.total+'%';
   $('rHit').style.color=bd.total>=70?'#8ca35a':bd.total>=45?'#c9a227':'#c15d55';
-  $('rSkill').textContent='+'+bd.skill;
-  /* a dodge of nothing prints "—" and goes grey, exactly the way the flanking
-     row below already handles its own zero. "−0" reads as a typo, and with
-     Something in armour now sitting at 0 this row would have shown it on
-     every preview of a thirteen-round fight. */
-  $('rDodge').textContent=bd.dodge?'−'+bd.dodge:'—';
-  $('rDodge').style.color=bd.dodge?'#8ca35a':'#5f7472';
-  $('rFlank').textContent=bd.flank?'+'+bd.flank:'—';
-  $('rFlank').style.color=bd.flank?'#c9c6bb':'#5f7472';
-  $('rOther').textContent=(bd.other>=0?'+':'')+bd.other;
-  $('rOther').style.color=bd.other<0?'#c15d55':'#8ca35a';
-  /* ═══ #146 - WHAT IS IN THE THREE SUMS ═══════════════════════════════════
-     The dodge list is built by dodgeOf itself (pass it an array and it fills
-     it), so this caption cannot drift from the number beside it however many
-     contributors that function grows. The `other` list comes back off the
-     breakdown for the same reason. Nothing here re-states a rule.
-     ⚠ A WORKING IS SCORED AGAINST 35% OF THE DODGE, and the row prints the
-     scaled figure, so the parts under it would not add up without saying so.
-     That is the one line here that is not a contributor. */
-  const dw=[];dodgeOf(t,dw);
-  if(a.arcane&&dw.length)dw.push('and a working is not sidestepped ×0.35');
-  /* ⚠ EVERY LINE PAYS RENT, AND A ONE-ITEM CAPTION PAYS NONE. `their footwork
-     +16` under a row that already reads −16 restates the number and teaches
-     nothing; it only becomes information the moment something is added to it
-     or taken off it. So the caption appears from the second contributor on. */
-  if(dw.length<2)dw.length=0;
-  $('rDodgeWhy').textContent=dw.join(' · ');
-  $('rOtherWhy').textContent=bd.oth.join(' · ');
-  /* magic is aimed with the wits, so the SKILL row is not the weapon skill
-     the rest of the card is written against and has to say whose number it is */
-  $('rSkillWhy').textContent=a.arcane?'their wits, not their hand'
-    :(a.aim?'this skill aims '+(a.aim>0?'+':'')+a.aim:'');
   $('rArm').textContent=p.arm[0]+'–'+p.arm[1];
   $('rHp').textContent=p.hp[0]+'–'+p.hp[1];
-  /* #134 - the ladder's word, matching the plaque and the enemy card. See the
-     note on the MORALE row in the inspect panel. */
-  $('rMor').textContent=LADDER[ladderAt(t)].ic+' '+LADDER[ladderAt(t)].n.toUpperCase();
-  $('rMor').style.color=LADDER[ladderAt(t)].col;
-  /* #146 - the three captions above carry every situational clause now, so
-     this line is back to its original job: the ACT'S own sentence, printed
-     when there is nothing situational to say about this particular swing. */
-  $('rNote').textContent=(dw.length||bd.oth.length)?'':(a.note||'');
-  placeRead($('bRead'),e);
+  /* #163 - the captions went with the rows they explained, so this line is
+     back to the job it had before #146: the ACT'S own sentence. The one
+     clause worth rescuing out of the deleted skill caption is the arcane
+     one, because it says the card is not describing the weapon hand at all. */
+  $('rNote').textContent=(a.arcane?'Aimed with their wits, not their hand. ':'')+
+    (a.note||'');
+  placeRead($('bRead'),e,awayFrom(u,t));
 }
 $('bEnd').onclick=()=>{if(!B.busy&&cur()&&cur().side==='you'&&!cur().ally)nextTurn();};
 /* #91 point 12 - the button only exists while render says the offer is real */
@@ -18699,6 +19030,11 @@ function runBlob(){
            spotlight tour has run. Older saves arrive without either and
            simply have no signature and no re-tour. */
         coName:G.coName,wTutDone:G.wTutDone,
+        /* #161 - the second objective: whether it has been issued, what it
+           asks for, and whether it has paid. An older save arrives without it
+           and is handed the card on its next road, which is correct: a company
+           that has not been told is a company that has not been told. */
+        goal:G.goal,
         epiLine:G.epiLine,battleKind:G.battleKind},
       /* a run stops being resumable once it is over */
       log:G.log.slice(-40),
@@ -24304,7 +24640,95 @@ function kitWanter(){
   return hit;
 }
 const kitWaiting=()=>!!kitWanter();
+/* ═══════════════════════════════════════════════════════════════════════════
+   #161 · THE SECOND OBJECTIVE: BE MORE OF YOU
+   (User, 2026-08-16: "on the road to the first event the first quest pops up.
+   There are few of you and you are not very experienced in these lands. If you
+   expand your group, travelling will get much more comfortable. Second
+   objective: increase the party size. Morale +10".)
+
+   THE CONTRACT is the run's objective and it is a place at the far end of the
+   valley. This is the first thing the game asks of the company that is about
+   the COMPANY, and it is deliberately the smallest shape that can hold it: one
+   fact in the run band, one row on the plate that is already there, one
+   payment. No quest log, no chain, no second source of truth about what the
+   run is for. The clarity pass is subtraction; this is one row.
+
+   ⚑ THE TARGET IS COUNTED ON THE DAY, NEVER WRITTEN DOWN. `need` is the roster
+   the card opens on plus two, so it survives makeParty changing size, an ogre
+   eating three seats, and the clash allies arriving before the muster. A rule
+   anchored to a literal 6 is the same defect as a rule anchored to run
+   PROGRESS, and this map has already broken silently on that one.
+
+   ⚑ TWO, AND NOT ONE. Taking a side at Blood on the Road hands you a body for
+   free, so a target of one would be paid by the very next card and would have
+   asked the player for nothing. Two means the muster wall, or the muster wall
+   after the road has already been kind once.
+   ═══════════════════════════════════════════════════════════════════════════ */
+const GOAL_PAY=10;
+function goalOpen(){
+  if(!G.goal)G.goal={k:'grow',need:G.party.length+2,done:false};
+}
+/* ⛔ ONE DOOR, AND IT IS DELIBERATELY NOT ONE OF THE SIX. Six places in this
+   file push onto G.party - the muster wall, the returner at the fire, the
+   walker out of the sinkhole, two event recruits and the preset join - and
+   hanging the check on all six is the shape that ships with five of them
+   wired. `worldTick` is what every one of them comes back through on its way
+   to the map, so the rule sits at the head of it, ahead of the drawing, and a
+   seventh recruiter inherits it without being told.
+   ⚠ GUARDED ON SIM. The arena empties and refills G.party to stage a fight and
+   a practice board must never pay the campaign: invariant 8, and the leak has
+   happened here before through a content function nobody thought of as
+   persistence. */
+function goalTick(){
+  const g=G.goal;
+  if(!g||g.done||SIM.on||G.party.length<g.need)return;
+  g.done=true;
+  G.morale+=GOAL_PAY;
+  sfx('promote');
+  say2('There are '+G.party.length+' of you at the fire tonight, and the watch splits into '+
+    'shifts that let a body sleep through one. Nobody says the road got easier. Everybody '+
+    'walks like it did.');
+}
+/* the plate's second row. Nothing until the card has been dealt, green once it
+   is paid, and it counts UP so the player can see the target coming. */
+function goalRow(){
+  const g=G.goal;if(!g)return '';
+  return '<span class="qsec'+(g.done?' don':'')+'">'+
+    '<span class="qlab">SECOND OBJECTIVE'+(g.done?' · DONE':'')+'</span>'+
+    '<span class="qtx">'+(g.done
+      ? 'You are '+G.party.length+' on this road.'
+      : 'Be '+g.need+' on this road. You are '+G.party.length+'.')+'</span></span>';
+}
+/* ⚠ THE CARD IS A NOTICE, NOT A DECISION, so it is built on the vignette's
+   shape (one button, closes to the road) rather than on ask(). It is the only
+   thing that speaks on the first leg - see the clashDone gate in rollCampAt -
+   and it is LIGHT by the length rule: 62 words of body, measured. */
+function openGoalCard(spot,next){
+  const g=G.goal,n=G.party.length;
+  G.pending='camp';mark('road: the second objective');
+  const dlg=$('wDlg');
+  /* ⚠ A PLAIN HYPHEN, and the neighbouring vignette headers are wrong rather
+     than this one: `vLead+' — '+v.t` predates the no-em-dash rule and lives in
+     the un-purged half of the file. New text is dash-free, always. */
+  dlg.innerHTML='<h3>ON THE ROAD - HOW FEW YOU ARE</h3>'+
+    '<div class="bd">There are '+n+' of you, on a road none of you has walked, in a country '+
+      'that was not expecting you.\n\nThe wagon has room. The watch has three shifts and '+n+
+      ' people to stand them, which is why nobody has slept properly since the tap-room.\n\n'+
+      'More at the fire, and the road stops being a thing you are getting away with.'+
+      '<div class="qgoal"><span class="ql">SECOND OBJECTIVE</span>'+
+      '<span class="qt">Be '+g.need+' on this road.</span>'+
+      '<span class="qp">morale +'+GOAL_PAY+' when it is done</span></div></div>'+
+    '<button class="choice" id="wV"><b>Then there should be more of you.</b>'+
+    '<i>it goes up beside the contract</i></button>';
+  dlg.classList.add('on');
+  placeDlg(spot.x,spot.y);
+  $('wV').onclick=()=>{G.pending=null;dlg.classList.remove('on');worldTick();saveRun();next();};
+}
 function worldTick(){
+  /* #161 - a RULES step, at the head and ahead of every draw below. See the
+     one-door note on goalTick: this is where the six recruiters meet. */
+  goalTick();
   /* condition news travels as road-news; a RESOLUTION gets a proper card —
      it is one of the biggest things that can happen to a person and must
      not be a toast. Deferred while any other dialog holds the map. */
@@ -24582,10 +25006,15 @@ function worldTick(){
      · "in his vassal's hall since the thaw", because it is the WHY, and the
        hover still holds it whole. A plate is a standing reminder, not a brief.
      ⚠ IT STILL SAYS "BANDITS" IN THE HOVER. See the note there. */
+  /* #161 - the second objective rides in the SAME column under a hairline, not
+     in a plate of its own. Two plates on one corner is two things to read
+     where the run has one job and one favour; and the contract stays first,
+     because it is the one that ends the act. */
   $('wQuest').innerHTML=TROPHY_SVG+'<span class="qcol">'+
     '<span class="qlab">THE CONTRACT · SKELBROOK</span>'+
     '<span class="qtx">Bring back the head out of the hall\'s chair.</span>'+
-    '<span class="qpay">◉80 paid, the rest on delivery</span></span>';
+    '<span class="qpay">◉80 paid, the rest on delivery</span>'+
+    goalRow()+'</span>';
   /* every chip answers for itself: one table, rebound each tick because
      the elements it binds to were just rebuilt */
   const WTIPS={
@@ -24680,7 +25109,17 @@ function worldTick(){
          used to say it was deleted in the same entry. */
       d:'A man of the lord\'s holds Skelbrook, at the far end of the valley: one village, '+
         'one hall, bandits in it since the thaw. He has been writing to the lord every week '+
-        'since. Bring back the head out of the hall\'s chair. Keep the purse.',
+        'since. Bring back the head out of the hall\'s chair. Keep the purse.'+
+        /* #161 - the plate grew a row, so the hover grows the paragraph that
+           explains it. A row on a cursor:help plate with nothing behind it is
+           the defect this whole surface was built to stop. */
+        (G.goal?'<br><br><b style="color:'+(G.goal.done?'#8ca35a':'var(--g4)')+
+          '">SECOND OBJECTIVE'+(G.goal.done?' · DONE':'')+'</b><br>'+
+          (G.goal.done
+            ? 'You went and found people. The company has been in better heart since.'
+            : 'Nobody set this one. Be '+G.goal.need+' on this road and the whole company '+
+              'walks easier for it - the watch splits properly and the wagon stops being '+
+              'four people\'s work. <b>Morale +'+GOAL_PAY+'</b> the day you get there.'):''),
       x:'It pays on delivery, and not before.'}};
   /* ═══ #112 point 4 · A HOVER THAT SAYS WHETHER THE THING IS A DOOR ══════
      `x` is the aside: what is also true, in dim italic. Four of these chips
@@ -24808,6 +25247,28 @@ function takeRations(){
 function passDays(n){
   for(let i=0;i<n;i++){
     G.day++;
+    /* ═══ #161 · THE COMPANY'S MOOD SETTLES ON THE ROAD ═══════════════════
+       (User, 2026-08-16: "on the global map if morale is more or less than
+       the norm - it tends toward the norm. If it is 1 parameter above or
+       below, it tends toward the norm by 1. If more - then by 2.")
+
+       ⚑ THE NORM IS A BAND, NOT A POINT, so mood does not creep to zero: it
+       walks back to the edge of AT EASE and stops there. That is what keeps
+       this from being a slow eraser - a company that has been kept happy
+       stays a rung up on nothing but neglect, and only a SPENT mood decays.
+       The step is measured in the ladder's own rungs, so a face two out comes
+       home twice as fast as a face one out, which is the whole rule.
+
+       ⚑ IT CANNOT OVERSHOOT, and not by a clamp: the norm band is 30 wide
+       and the biggest step is 2, so there is no arithmetic that walks past
+       it. Widen a band or lengthen the stride and re-check that sentence.
+
+       ⚠ FIRST IN THE DAY, ON PURPOSE. Everything below is TODAY's news - the
+       payday, the 10-point fine for an empty chest - and news the player is
+       about to read must not be quietly shaved in the same tick it lands.
+       What settles here is yesterday's. */
+    const rung=moodRung(G.morale);
+    if(rung!==MOOD_NORM)G.morale+=(rung<MOOD_NORM?1:-1)*(Math.abs(rung-MOOD_NORM)>1?2:1);
     G.owed=(G.owed||0)+dailyUpkeep();
     const payday=G.day%PAY_EVERY===0;
     const behind=G.party.some(p=>(p.unpaid||0)>0);
@@ -25639,6 +26100,22 @@ function travel(k){
    to guarantee one of them. Rate and node were one decision. */
 const ROAD_EVENT=0.28;
 function rollCampAt(a,b,t,next,later,had){
+  /* ═══ #161 · THE SECOND OBJECTIVE, ON THE FIRST ROAD OF THE RUN ══════════
+     (User: "on the road to the first event the first quest pops up".) The
+     first event is The Wheel-Rut and the road to it is the stretch the gate
+     below keeps deliberately silent, which is exactly why this is the right
+     place: it is the one card that is not ambient texture, so it does not
+     compete with Blood on the Road and it does not cost the road a slot.
+     ⚠ IT SITS ABOVE THE clashDone GATE, not below it, or it would never fire
+     until the first fight was already over.
+     ⚠ AND THE LATCH IS SET, so a multi-day first leg does not put a vignette
+     on top of it. Same shape and same reason as the roll below. */
+  if(!G.goal){
+    goalOpen();
+    if(had)had.fired=true;
+    openGoalCard(bez(a,b,t),next);
+    return;
+  }
   /* the first leg belongs to Blood on the Road. A fiddler wandering in ahead
      of the reveal blunts it — the ambient world stays quiet until the
      scripted one has said its piece */

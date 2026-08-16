@@ -25,6 +25,181 @@
 
 ---
 
+## ⚔ THE BATTLE SCREEN, CLEARED OFF  *(#163 · 2026-08-16 · build log 8f.191)*
+
+**Your six, and three of them were one thing.** The token was carrying about 26px of furniture
+above its head on a board whose rows are 32px apart, so in a crowd you were mostly looking at other
+people's luggage. Everything below is on the battle screen; the fastest way in is **⚙ TEST → AUTO
+→ any fight**, or the intro brawl.
+
+### 1 · THE BODIES ARE SMALLER AND THE BARS SIT ON THE HEAD
+
+**Reach it in three steps:** start a run → play to any fight → look at a crowded rank.
+
+**What should happen.** Every body on the board is **10% smaller** than it was, and the health and
+armour bars sit **1px above the head** instead of 3. Nothing else in the game changes size: the
+order rail at the top, the face on the company sheet and the party token on the road all refit
+themselves and should look exactly as they did.
+
+**What would be a bug.** A body that has grown or shrunk *anywhere but the battle board*. A bar
+touching or overlapping the head. A bar that is hard to find on a body standing behind two others -
+that one is the thing this is protecting and it should still be perfect.
+
+### 2 · THE STATUSES MOVED TO THE FEET
+
+**Reach it in three steps:** any fight → get somebody poisoned, drunk or surrounded → look under
+their boots.
+
+**What should happen.** The 🍺 ⇸ ⊛ marks are now in a row **under the body**, on the feet line, and
+they are drawn **over** whoever is standing in front. They should never be hidden, however jammed
+the board is.
+
+> ⚠ **This one is a deliberate trade and it is the thing to judge.** I measured the naive version
+> first: with the badges tucked behind the rank in front, **20 of 40 went more than half hidden in a
+> jam, and a single badge 58% of the time** - so there is no legible spot below a head at all. They
+> are lifted above every body to fix it, which means **a back-rank body's badges can sit across a
+> front-rank body's chest.** If that reads as busy, say so: the alternative is putting them back
+> above the head, which costs the footprint you asked to get rid of.
+
+**What would be a bug.** A badge disappearing behind a body. A badge sitting over another body's
+*face*. Bodies suddenly painting in the wrong order - the rank in front must still overlap the rank
+behind, exactly as before.
+
+### 3 · THE HIT CARD OPENS AWAY FROM YOUR OWN UNIT
+
+**Reach it in three steps:** any fight → stand next to an enemy → rest the cursor on that enemy.
+
+**What should happen.** The card opens on the **far side of the enemy from your attacker**. Stand to
+their right and it opens left; stand to their left and it opens right. It never covers the unit you
+are swinging with, and it keeps a clear gap from the enemy's own picture. At the edge of the board
+it takes whichever side actually fits rather than sliding back over the body.
+
+**What would be a bug.** The card landing on top of your own unit. The card touching the enemy
+sprite. The card flickering between sides while you hold still.
+
+### 4 · THE HIT CARD ITSELF, HALF THE ROWS
+
+**Reach it in three steps:** as above → wait for it → read it.
+
+**What should happen.** It waits **2.2 seconds** now instead of 1.2 (but the *second* body you rest
+on still opens instantly - that grace is deliberate). It is narrower, and it reads:
+
+```
+Harl the carter
+95%  CHANCE TO HIT
+ARMOUR DAMAGE            14–19
+HITPOINT DAMAGE           9–13
+──────────────
+attack arc     BACK +30 · ×1.25 dmg
+surrounded                 +38
+your nerve                😐 −5
+their nerve               😕 +4
+⊛3 Surrounded (3) · 🍺 Drunk
+```
+
+**Damage is now directly under the chance.** `your skill`, `their dodge`, `other`, their two caption
+lines and the old NERVE row at the foot are **gone**. A modifier worth nothing is not printed at
+all, so a plain one-on-one swing shows no `surrounded` row and no nerve rows.
+
+> ⛔ **The rows deliberately do not add up to the percentage any more**, and that is the design
+> rather than something missing. What is left is only what you can *change*: where you stand, how
+> many of you are on it, and whose nerve is going.
+
+**What would be a bug.** A face that disagrees with its number - 🙂 should never appear on a nerve
+row at all (it is the no-penalty rung, so the row hides), and 😐 is always −5, 😕 −9, 😟 −12, 😄 +5.
+A row wrapping onto two lines. A row appearing with `+0` or a bare dash in it.
+
+### 5 · THE ENEMY STAT CARD
+
+**Reach it in three steps:** any fight → hover an enemy you are *not* in reach of → read it.
+
+**What should happen.** Same narrower box. On a body with **no personality** there is now **no
+italic line at all** - the old *"Its blue overlay is where it can reach next turn"* is gone, because
+it was showing on most of the roster and teaching nothing after the first time. A body that HAS a
+personality still names it and explains it. The `WHAT IT CAN DO TO YOU` heading only appears when
+there is something under it.
+
+**What would be a bug.** A heading with nothing beneath it. A trait line that has lost its
+explanation.
+
+---
+
+## ⊛ THE THREE-ITEM BATCH - THE STAVE, THE MOOD, THE SECOND OBJECTIVE  *(#161 · 2026-08-16 · build log 8f.189)*
+
+**Your three, and the first one is the biggest.** A caster's reach used to be decided by his spell
+list and by nothing you owned. Now every school is two hexes shorter and there is a stick that
+hands them back, so what the caster is HOLDING is the decision.
+
+### 1 · ✷ THE WORKING STAVE, and what a sword costs a caster
+
+**Reach it in three steps:** start a run → 🎒 the company sheet → Marrow.
+
+**What should happen.** He is holding a **Working stave** and not the short sword. Read his act
+cards:
+
+| holding | the jab | EMBER | BLIGHT-WIND (or whichever school he rolled) |
+|---|---|---|---|
+| **Working stave** | 6-10 | range 4 | range 5 |
+| **Short sword** | 13-19 | range 2 | range 3 |
+
+**The short sword is in the wagon**, so swap it onto him and watch every arcane card lose two
+hexes, then swap it back. That is the whole point of the change: reach, or something you can
+defend yourself with when the reach runs out. Bare-handed a caster is at **EMBER 2 · UNPICK 2 ·
+BLIGHT-WIND 3 · WITHER 1 · IRON-OATH 1**, which is the floor you set.
+
+**What would be a bug.** A range figure printed inside the note paragraph as well as on the
+`RANGE N` receipt line (they would disagree the moment you swapped hands, so all of them were
+deleted from the prose). A recruited **mage** off the muster wall who is not carrying a stave. A
+caster with the **Magpie-minded** personality whose re-rolled spells come back two hexes short at
+the top of a round.
+
+**Worth your judgement, and I could not settle it for you.** IRON-OATH is the one figure that went
+UP: it was range 2 and it is 3 with the stave, because 1 is the floor and it had only 2 to give.
+And the battle-mage's whole identity was *"a sword and one school"*, so Marrow starting on the
+stave is a deliberate call rather than an obvious one - if you want him back on steel by default,
+it is one line.
+
+### 2 · 😐 THE MOOD COMES HOME BY ITSELF
+
+**Reach it in three steps:** get the mood off AT EASE (a feast, or a bad card) → walk a long road →
+watch the mood chip.
+
+**What should happen.** Every DAY of road pulls the company one step toward **AT EASE**, and the
+step is measured in faces, not points: **one face out pays 1 a day, two or more pays 2.** So 😄
+HIGH SPIRITS at 45 comes down 43, 41, 39, then 38, 37, 36 once it is only one face out. 💀 ON THE
+BRINK climbs the same way.
+
+**⚑ It stops at the EDGE of AT EASE and never walks to zero.** A mood you paid for is not erased:
+it settles to the top of neutral (14) or the bottom of it (-15) and stays there. Standing still in
+AT EASE, nothing happens at all.
+
+**What would be a bug.** The mood crawling to exactly 0. A day that both fines you 10 for unpaid
+wages and hands 2 back in the same tick (the settle runs FIRST in the day, so what you read on the
+payday card is what you paid). Anything moving while the company is not on the road.
+
+### 3 · 🏆 THE SECOND OBJECTIVE
+
+**Reach it in three steps:** start a new run → take the only road east out of Grausen Hold → the
+card comes up on the way to The Wheel-Rut.
+
+**What should happen.** One card, one button: **HOW FEW YOU ARE**. It asks for **two more bodies
+than you started with** (six, from four) and promises **morale +10**. It then lives as a second row
+under the contract on the plate top-left, counting up - *"Be 6 on this road. You are 4."* - and the
+plate's hover explains it. The moment the sixth body joins, by any door (the muster wall, an ally
+at Blood on the Road, somebody walking back in at a fire), the row goes green and reads **DONE**,
+the road says a line about the watch splitting into shifts, and the mood jumps 10.
+
+**What would be a bug.** It paying twice, or paying on the practice field. The card firing on any
+road but the first. It never arriving on a save you had already started - that one is deliberate:
+an older save gets the card on its next road, because a company that has not been told has not
+been told.
+
+**Worth your judgement.** Two more bodies is the ask, and +10 is the pay. If it feels like a
+freebie the target goes up; if it feels like homework the number comes down. It is also the only
+objective of its kind in the run - whether there should be a second one is your call.
+
+---
+
 ## ⊛ THE PLAYTEST BATCH - THIRTEEN NOTES  *(#157 · 2026-08-14 · build log 8f.185)*
 
 **Your thirteen notes, and the first three turned out to be one bug.** The health bar, the status
