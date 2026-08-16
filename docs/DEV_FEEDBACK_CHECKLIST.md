@@ -191,13 +191,13 @@ and are marked as such rather than guessed.
 | A3 | survives 184x69 | **n/a yet** | same |
 | A4 | blurb proofread | **not audited** | no store blurb exists yet. `docs/MARKETING_VENUES.md` sets the gates for writing one |
 | A5 | not the AI palette | **PASS** | the palette is `#100c06` ground with browns and desaturated greens. Not purple/blue/gold. The art is a hand-directed stage pipeline with a written brief, not prompt output dropped in |
-| B1 | the distance test | ⛔ **FAIL** | **77 font-size declarations at 9px or smaller**, down to **7px**, in `.mono` with wide letter-spacing: slot labels, the field caption, the role line under a name, the round counter, the memory chips. This is the game's whole label layer, and it is the exact thing the test is for |
+| B1 | the distance test | ✅ **FIXED, #164** | was: **77 declarations at 9px or smaller**, down to 7px, across the whole label layer. Now a **10px floor** (`--fs1`), measured in the running build: elements rendering under 10px went **58 to 0** on the battle screen and **43 to 0** on the skirmish setup |
 | B2 | numbers get contrast + outline | **not audited** | needs a screen. Worth checking 3-vs-5 in the mono face specifically, since damage figures and hex counts both use it |
 | B3 | colour coding earns its place | **PASS** | this is `.claude/rules/event-cards.md` already: *"one glyph may not mean two things on one screen"*, ☠️ vs 💀 fixed in #150, and the receipt/intent split holds the line |
-| C1 | one set of outlines | ⛔ **FAIL** | **42 distinct `border: Npx solid ...` declarations**, and the colours are raw hex, not tokens: `#3d2f1d` (25 uses), `#4d3c22` (14), `#6b5330` (9), `#35494c` (4), `#33474a` (4), `#3d5250`, `#2c3d3f`. Two of those pairs differ by two hex digits and read as the same colour |
-| C2 | few font sizes | ⛔ **FAIL** | **29 distinct font sizes**, in half-pixel steps: 7, 7.5, 7.6, 8, 8.5, 9, 9.5, 10, 10.5, 11, 11.5, 12, 12.5, 13, 13.5, 14, 14.5, 15, 16, 16.5, 17, 18, 19, 20, 21, 22, 24, 25, 74. A `7.6px` exists. **Font FAMILIES pass**: exactly three, `--mono`, `--display`, `--body`, and they are tokens |
-| C3 | consistent padding | ⛔ **FAIL** | **72 distinct padding values**. The most-used is `3px 9px` at five sites; nothing is used enough to be a system. The channel's suggested resting value is 24; the build's median is about 4 |
-| C4 | panel sizes defensible | **PARTIAL** | the good side is real and documented: #133 cut the company sheet from 1241px to 678px with a stated reason per block, and #113 proved the map sight ceiling with arithmetic. The bad side is that this reasoning lives in per-entry docs, not in a shared scale |
+| C1 | one set of outlines | ✅ **FIXED, #164** | was 7 near-identical hexes hand-written at 88 sites, two pairs indistinguishable on screen. Now **5 named edge tokens** (`--e1`..`--e5`). ⚠ The 47 `border-color` accents were deliberately NOT collapsed: those carry meaning, and flattening them would be #102's wrong-unit bug arriving through a tidy-up |
+| C2 | few font sizes | ✅ **FIXED, #164** | was **29 sizes** in half-pixel steps including a `7.6px`. Now **9 tokens**, `--fs1`..`--fs8` plus `--fsTitle`, and **zero literal `font-size` px left in the file**. Font families already passed: three, all tokens |
+| C3 | consistent padding | ✅ **FIXED, #164** | was **72 distinct values**, none used often enough to be a system. Now **7 steps**, `--p1`..`--p7`, with exactly **one literal left in the whole file** (`#wBar`'s 64px plaque gutter, which is geometry and says so) |
+| C4 | panel sizes defensible | **PARTIAL, better** | the good side was already real: #133 cut the company sheet from 1241px to 678px with a reason per block, #113 proved the map sight ceiling with arithmetic. #164 put the *inside furniture* of every panel on a shared scale, so the reasoning is no longer only in per-entry docs. Panel OUTER sizes are still argued one at a time |
 | C5 | information architecture | **PASS** | this is the strongest area. #133 put stats first because *"the order was the bug"*, #102 is the wrong-unit rule, #143 split prose from receipt so a number never appears twice. This is IA discipline by the channel's own definition |
 | D1 | whose turn, one glance | **PASS** | the counts capsule carries standing bodies per side, the round, and whose turn; the active ring IS whose turn it is and the plaque under it is who they are |
 | D2 | eased movement ~200ms | **PASS** | 7 hand-tuned `cubic-bezier` curves, 24 `ease-in/out` uses, and #81 put every duration through one `paced()` multiplier |
@@ -206,7 +206,10 @@ and are marked as such rather than guessed.
 | D5 | who is attacking whom | **PASS, recently** | #156 fixed the enemy-reach hover that was drawn everywhere except the overlap; #157 moved the bars to the head so they survive being surrounded; #163 is claimed for another pass |
 | E1-E4 | the trailer | **n/a yet** | no trailer exists |
 
-**Score on what is judgeable today: 8 pass, 2 partial, 4 fail, 6 not yet applicable.**
+**Score at the first run, 2026-08-16 morning: 8 pass, 2 partial, 4 fail, 6 not yet applicable.**
+**Score after #164 the same day: 12 pass, 2 partial, 0 fail, 6 not yet applicable.** The four fails
+were one finding and they were fixed in one pass; see `.claude/rules/ui-scales.md` for the standing
+rule and §4 there for the five boxes the 10px floor broke on the way.
 
 ---
 
@@ -228,20 +231,36 @@ cannot see at all.
 added. A size scale, a spacing scale and one edge palette are a **merge**: 29 sizes become maybe
 6, 72 paddings become maybe 5, 42 borders become maybe 4. Nothing new arrives on screen.
 
-### The order, if this becomes work
+### The order, and what happened to it
 
-1. **The label floor.** Pick the smallest size the game is allowed to use, and raise the 77
-   declarations under it. This is the cheapest item and it is the one a stranger feels.
-2. **The edge palette.** Seven near-identical browns and greens become two browns and two greens as
-   tokens. Grep-and-replace, no layout risk.
-3. **The size scale.** Header / Label / Body at S/M/L, and the half-pixel steps go.
-4. **The spacing scale.** Last, because it moves boxes and every move needs a look.
-5. **D3, the projectile**, which is already an open item from #81 and now has an outside voice
+The plan was five steps. Steps 1 to 4 were done the same day as **#164 / build 8f.192**, in that
+order, and the reason the order held is that each one made the next cheaper.
+
+1. ✅ **The label floor.** 10px, at the user's word (*"Minimum font i feel, nice to be 10"*). 153
+   declarations raised.
+2. ✅ **The edge palette.** Seven near-identical browns and greens became `--e1`..`--e5`. Exactly as
+   predicted: a grep-and-replace with no layout risk, and it was the only step that broke nothing.
+3. ✅ **The size scale.** 29 sizes to 9 tokens. The half-pixel steps and the `7.6px` are gone.
+4. ✅ **The spacing scale.** 72 paddings to 7 steps. It moved boxes, as predicted, and it is where
+   the two sticky-footer couplings turned up.
+5. ⏳ **D3, the projectile.** Not done. Still the open item from #81, still with an outside voice
    asking for the same thing.
+
+⚑ **The prediction that was wrong.** Step 4 was called the riskiest because it moves boxes. It was
+not: **step 1 was**, and by a distance. All five broken boxes came from the floor, none from the
+spacing. A padding shifts a box by two pixels; a font size changes what fits inside one, and a
+`text-overflow:clip` then eats the end of a word without telling anybody.
 
 ### What this run could not answer
 
-B2 and the live read of B1 need a running screen and were not done, because the browser was closed
-before the pass. A1 to A5 and E1 to E4 need artifacts that do not exist yet, and the channel is
-where they should be shown when they do. `docs/MARKETING_VENUES.md` Gate A is the same gate this
-channel implies: a stranger finishes fifteen minutes without asking anything.
+**Now answered, in the running build:** the live read of B1. Sub-10px elements went 58 to 0 on the
+battle screen, 43 to 0 on the skirmish setup, 0 on the menu, the map, the prologue and all three
+tabs of the company sheet. Clipping overflow held at its pre-existing 2 (`#bField`, `#bLog`), proved
+against a second tab serving `git show HEAD:`. `LINT()` 0 findings; the map's three counters 0.
+
+**Still open:** B2, the 3-vs-5 contrast read, which needs an eye rather than a counter and the
+preview pane composites no frames. The road event card and the camp were not reached, because the
+travel animation between map nodes never completes in that pane. A1 to A5 and E1 to E4 need
+artifacts that do not exist yet, and this channel is where they should be shown when they do.
+`docs/MARKETING_VENUES.md` Gate A is the same gate this channel implies: a stranger finishes fifteen
+minutes without asking anything.

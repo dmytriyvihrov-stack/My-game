@@ -25,6 +25,54 @@
 
 ---
 
+## 🔤 NOTHING SMALLER THAN 10px, AND THREE SCALES BEHIND IT  *(#164 · 2026-08-16 · build log 8f.192)*
+
+**Where it came from.** You brought the Turn-Based Games Discord `#dev-feedback` channel and asked
+for the standard notes as a checklist. Four different developers there got told the same three
+things in one week: standardise your outlines, standardise your fonts, standardise your padding.
+Grimtoll failed all three by measurement: **29 font sizes** (including a `7.6px`), **7 near-identical
+border hexes** at 88 sites, **72 paddings**, and **77 declarations at 9px or smaller, down to 7px**.
+Your call on the floor: *"Minimum font i feel, nice to be 10"*.
+
+**How to reach it in three steps.** There is no new screen. Open **any** screen and read the small
+print: the role line under a name on an action card, the slot labels on the company sheet, the
+odds and damage on a hex, the round counter in the battle log. **Every one of them is 10px now**,
+and the whole checklist plus the standing rule is in
+[`.claude/rules/ui-scales.md`](../.claude/rules/ui-scales.md).
+
+**What should happen.**
+
+- Nothing on any screen is smaller than 10px. Step back from the monitor: the channel's own test.
+- Panels edges are five colours, not seven. Nothing should look *different*, because two of the old
+  pairs were indistinguishable anyway.
+- **Five boxes were grown to pay for the bigger text** and these are the ones to actually look at:
+  - the **action card** in battle, 72x86 to **80x90**. The role line under a skill name (GUARDS
+    ALLIES, and the like) was being cut off mid-word at 10px and now fits. Nine cards still sit
+    inside the band with room.
+  - the **damage figure on a hex** dropped 3px so it stops printing through the odds above it.
+  - the **count badges** on a company chip and on a sheet tab, 14px disc to **16px**.
+  - the **reaction row's label column**, 78px to **86px**.
+  - the **speaker name** in a road call-out bubble: tighter tracking, wider clamp.
+
+**What would be a bug.**
+
+- Any text that reads cut off, ellipsised where it did not use to be, or wrapped onto a line that
+  overlaps something. That is a box that needed growing and did not get it.
+- A number on a hex touching another number on the same hex.
+- ⚠ **And the one place this may have cost you something.** #111 took the hex odds and damage
+  *"a fifth smaller at your word"*, because at the CLOSE camera stop the pair was shouting over the
+  bodies they describe. The floor puts them back up. **If they shout again at the close stop, say
+  so**: the fix is dimmer or narrower, never smaller.
+
+**What was measured, so you know what is already proved.** In the running build, against a second
+tab serving the previous commit: elements rendering under 10px went **58 to 0** in battle, **43 to 0**
+on the skirmish setup, and 0 on the menu, the map, the prologue and all three company-sheet tabs.
+Clipping overflow held at its pre-existing 2. `LINT()` 0 findings, and the map's three counters 0.
+**Not proved:** the road event card and the camp, because the walk animation between map nodes never
+finishes in the preview pane. Those two screens are worth your eye first.
+
+---
+
 ## ⚔ THE BATTLE SCREEN, CLEARED OFF  *(#163 · 2026-08-16 · build log 8f.191)*
 
 **Your six, and three of them were one thing.** The token was carrying about 26px of furniture

@@ -462,7 +462,7 @@ feel like filler too.
 | [`10_ART_ASSET_BIBLE_AND_PROMPTS.md`](10_ART_ASSET_BIBLE_AND_PROMPTS.md) | the painted-art manifest and one prompt per picture |
 | [`08_MUTATIONS.md`](08_MUTATIONS.md) · [`09_SETTLEMENTS_AND_LEGACY.md`](09_SETTLEMENTS_AND_LEGACY.md) | two designed systems, partly built |
 | `content/` | authoring source. **`events_book.html` runs the other way**: every authored word generated OUT of the running build for the user to edit |
-| [`../.claude/rules/`](../.claude/rules/) | **standing procedures for jobs that repeat.** Read the one that matches before touching that surface, or it gets re-derived: **`event-cards.md`** (how long a card's prose may be, and where the receipt lives) · **`world-map-sights.md`** (the icon on a map node) · **`static-event-art.md`** (stage-3 event art mapping) |
+| [`../.claude/rules/`](../.claude/rules/) | **standing procedures for jobs that repeat.** Read the one that matches before touching that surface, or it gets re-derived: **`ui-scales.md`** (type, edge and spacing: the three closed vocabularies every screen shares, and the 10px floor) · **`event-cards.md`** (how long a card's prose may be, and where the receipt lives) · **`world-map-sights.md`** (the icon on a map node) · **`static-event-art.md`** (stage-3 event art mapping) |
 | `docs/archive/` | **three files, all of them live references**, and all three are linked from this table where they are wanted: `BACKLOG_ENTRY_SPECS.md`, `PLAN_REASONING.md`, `README_WHERE_IT_STOOD.md`. The six dated snapshots that used to sit beside them were deleted on 2026-08-14: see the note below |
 | **the running build** | **what is actually true. It wins over every document.** |
 
