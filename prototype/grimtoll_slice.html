@@ -5275,7 +5275,23 @@ const GEAR={
      ⚠ It costs nothing at all, which every other strange trinket here does
      not, and nothing in the slice ever explains it. That is the hook. */
   oddcoin:{n:'An Unusual Coin',   slot:'trinket',g:'⊚',hit:+7,dodge:+7,hush:true,
-           d:'It feels good to keep in the hand. Nobody can say why.'}
+           d:'It feels good to keep in the hand. Nobody can say why.'},
+  /* ═══ #160 · WHAT A CLEAN ROAD IS WORTH, AND IT ARRIVES ON THE LAST DAY ════
+     The only trinket in the game with no clause and no cost, and that is the
+     point of it: it is what the company bought by turning down eleven paying
+     doors, handed over two nodes from the end by somebody who will not give a
+     name.
+
+     ⚠ IT DOES NOT BREAK THE PILLAR AND THE ARITHMETIC IS WHY. "Good deeds must
+     not secretly pay better" is about the RUNNING TOTAL, and the running total
+     of a clean road is eleven refused hauls - several hundred crowns, a mail
+     shirt, a gem and two carts. One trinket on one body on the last leg does
+     not close that gap and is not meant to. What it does is stop the clean
+     road paying literally nothing, which is the other way the pillar fails. */
+  roll   :{n:'The Roll of Names', slot:'trinket',g:'❧',mor:+4,hp:+8,hit:+4,
+           d:'A strip of linen folded eight times, written down the inside in eight different '+
+             'hands. Some of the names are people you remember. Most of them are not, which '+
+             'means the road has been talking about you for longer than you knew.'}
 };
 /* MAIN/SECOND WEAPON → MAIN HAND / OFF HAND (user). The old names described
    what you put there; the new ones describe what is holding it, which is what
@@ -6104,6 +6120,21 @@ const G={ day:1, at:'hold', battleRounds:0, log:[], ambush:false, contact:false,
      to be somewhere the player can reach. */
   stash:['pot','shortsw'], party:null,
   recruits:null, hiredHere:0, battleKind:'snare',
+  /* ═══ #160 · THE LEDGER OF WHAT THIS COMPANY HAS DONE ═════════════════════
+     One row per evil door taken, in the order they were taken, each holding
+     the event key and the short phrase somebody else would use for it.
+
+     ⛔ IT IS DERIVED, NEVER HAND-KEPT. `markSin` reads the door's own
+     `ico:['evil']` - the glyph #154 already put on all eleven of them - so a
+     twelfth evil door written next month joins the ledger untaught. This is
+     #137's rule on its fifth surface, and the reason is the one that keeps
+     being paid for: a second hand-kept list of "which doors are the bad ones"
+     would be wrong the first time somebody forgets it.
+     ⚠ The PHRASE is authored, because it is genuinely new information: the
+     card title says where and the label says what you chose, and neither of
+     them is a sentence a serjeant could read off a note. LINT 6d holds the
+     pair together. */
+  sins:[],
   /* humans are new here and nobody is pleased about it */
 };
 /* whatever was forged in previous runs starts in the stash */
@@ -9430,6 +9461,144 @@ function steading(){
   return build(plan,T);
 }
 /* ═══════════════════════════════════════════════════════════════════════
+   #160 - THE HOLD'S MEN. The only uniform in the act.
+
+   (User, 2026-08-16: a road stop by "enforcers" who have heard what the
+   company has been doing, and a fight that is "several captains + units that
+   do not look like bandits. Maybe some dogs. Hard, but winnable.")
+
+   ⚑ WHY THEY EXIST IN THE WORLD AND ARE NOT AN IMPORT. 03_WORLD_LORE §5 says
+   human holdings "cannot bring force at scale" and that Grausen Hold is the
+   strongest thing left; §9 says the lord will not send his own men EAST,
+   because "his own men are worth keeping and Skelbrook is not". Neither of
+   those says he does not police his OWN valley, and the whole act is fought
+   inside it. Riding the Grausen roads to find out who has been robbing
+   carters on them is precisely the errand a lord's men are for, and it is the
+   errand that makes hiring a company of strangers a separate decision.
+
+   ⚑ THE PICTURE IS THE THREE CRESTS. `human_foe_captain` is the painted
+   sprite for `captain:true`, so THREE of them standing in one line is what
+   makes the board read "these are not bandits" before a word is spoken. The
+   bills are `v==='bill'` and fall through to `human_foe_cutter`; the
+   crossbows take `human_foe_poacher` off `bow`. Nothing new is painted, which
+   is the whole of the user's "from what you have".
+
+   ⚠ AND THE NUMBERS ARE THE OTHER HALF OF "NOT BANDITS". The deserters break
+   at 50 nerve and wear 34 armour; these wear the best plate in the act on
+   human bodies and stand at 74 to 92, so the fight is a LINE that has to be
+   broken rather than a rabble that has to be scattered. That difference is
+   what the fiction is claiming, so the table has to pay for it.
+   ═══════════════════════════════════════════════════════════════════════ */
+const HOLD_T={
+  /* the one who does the talking on the road, and the reason the rest hold.
+     ONE aura in the fight, on purpose: two would be unreadable, and the
+     Sling-master and the Steading-elder both make the same argument. */
+  serj:{kind:'human',name:'Hold serjeant',hp:62,armour:84,mor:92,skill:62,dodge:14,speed:4,
+    captain:true,
+    aura:{r:3,kind:'human',dodge:4,n:'THE LINE',g:'⚑',col:'#c9a227',
+      d:'+4 dodge to every one of the Hold\'s men within 3 hexes. The shields stay up.'},
+    acts:[{k:'sword',n:'ARMING SWORD',cost:1,reach:1,dmg:[17,26],am:.95,ft:.30}]},
+  /* the other two crests. No aura, better reach, and they come forward. */
+  corp:{kind:'human',name:'Hold corporal',hp:54,armour:72,mor:84,skill:60,dodge:15,speed:4,
+    captain:true,
+    acts:[{k:'axe',n:'POLE-AXE',cost:1,reach:1,dmg:[18,27],am:1.15,ft:.26}]},
+  bill:{kind:'human',name:'Hold billman',hp:44,armour:58,mor:74,skill:56,dodge:14,speed:4,
+    acts:[{k:'jab',n:'BILL',cost:1,reach:2,dmg:[12,19],am:.75,ft:.28},
+          {k:'wall',n:'BRACE',cost:2,self:true,
+           note:'Anything stepping into reach this round gets the point of it.'}]},
+  /* ⚠ THE HARDEST MISSILE IN THE ACT AFTER AN OGRE THROWING A ROCK, and that
+     is the design rather than an oversight: a windlass bow is the one weapon
+     a poor island keeps buying, and `am:1.00` against the poacher's .50 is
+     what makes standing in armour stop being an answer. */
+  cross:{kind:'archer',name:'Hold crossbow',hp:34,armour:30,mor:70,skill:62,dodge:16,speed:4,
+    bow:true,acts:[{k:'bolt',n:'WINDLASS BOW',cost:1,range:5,dmg:[14,21],am:1.00,ft:.45}]},
+  /* off the leash-ring. Same lurcher the deserters run, better fed. */
+  hound:{kind:'dog',name:'Hold hound',hp:30,armour:10,mor:62,skill:60,dodge:25,speed:5,
+    acts:[{k:'snap',n:'SNAP-AND-AWAY',cost:1,reach:1,dmg:[10,16],am:.40,ft:.55,bounce:2,
+      note:'Bites and is gone: two hexes back, no parting swing, one action.'}]}
+};
+/* the patrol on the road: three crests, a short line, one bow and a hound */
+function holdFoes(){
+  const CY=ROWS>>1;
+  const plan=[[11,CY,'serj',44],[10,CY-2,'corp',41],[10,CY+2,'corp',40],
+    [11,CY-2,'bill',37],[11,CY+2,'bill',36],[12,CY,'cross',34],[10,CY-4,'hound',48]];
+  if(G.party.length>=6)plan.push([12,CY+3,'cross',33],[10,CY+4,'hound',47]);
+  if(G.party.length>=8)plan.push([12,CY-3,'bill',35]);
+  return build(plan,HOLD_T);
+}
+/* ═══ AND THE SAME COAT, IN NUMBERS, AT THE BELLS ═════════════════════════
+   The host that follows you east if you throw in with the clan. It is sized
+   against YOU PLUS THE CLAN rather than against you, because that is who is
+   standing on the board - see snareClan(). */
+/* ⚠ THE PLAN COLUMNS ARE 9 TO 12 AND NOT 10 TO 13, AND THAT IS ARITHMETIC.
+   `build()` pushes every foe FOE_SHIFT (2) toward the far edge and then clamps
+   at `COLS-2`, which is 13 - so a plan written at 10-13 arrives as 12-13-13-13
+   and a sixteen-body host lands as an eleven-deep single file against the east
+   wall. Planned two columns west, the same bodies arrive in three real ranks
+   with the bows behind the bills, which is what a host looks like and is also
+   the only reason the crossbows are not standing in the front line.
+   ⚠ EVERY POST-SHIFT (col,row) IS UNIQUE. build() does not de-duplicate the
+   foe side (only the roster gets startBattle's nudge loop), so two bodies on
+   one hex would simply overlap. Checked after the clamp, not before it. */
+function holdHost(){
+  const plan=[[10,6,'serj',46],
+    [9,4,'corp',42],[9,8,'corp',41],[10,2,'corp',40],
+    [10,5,'bill',38],[10,7,'bill',37],[9,10,'bill',36],[11,4,'bill',35],
+    [11,6,'cross',33],[12,1,'cross',32],
+    [9,1,'hound',49],[9,11,'hound',48],[10,9,'hound',47]];
+  /* ⛔ THE DIAL ON THIS FIGHT IS THE BILL COUNT, AND IT IS NOT THE HEADCOUNT.
+     Measured against `prepared` (a seasoned six) plus the eight-body clan,
+     counting only the ROSTER's losses, n=15 a row:
+
+       17 coats · 5 bills · 4 bows   12/15 won ·  9.6rd · 2.9 of 6 down
+       17 coats · 5 bills · 3 bows   13/15 won · 10.4rd · 2.9 of 6 down
+     → 17 coats · 6 bills · 3 bows    8/15 won · 10.7rd · 3.7 of 6 down
+       18 coats · 6 bills · 4 bows    4/12 won · 10.7rd · 4.7 of 6 down
+
+     ⚑ ONE BILL IS WORTH TWENTY-SEVEN POINTS OF WIN RATE AND A CROSSBOW IS
+     WORTH NOTHING MEASURABLE. A bill is a reach-2 body behind 58 armour: six
+     of them is a wall two parties cannot open before the bows work, five of
+     them leaks. This is #93's own finding from the other end - what decides a
+     fight is the shape the bodies make, not how many there are - and it is
+     why the first three passes here read as noise: they moved the count, the
+     columns and the bows together and none of the deltas could be attributed.
+     ⛔ SO: change ONE of these at a time, and re-measure at n≥15. The chosen
+     row sits at 53% against the honest finale's 45% (`snare`, same instrument,
+     n=20), which is the intended ranking - joining the clan brings eight more
+     bodies and must not therefore be the EASY way to end the act. */
+  if(G.party.length>=6)plan.push([10,10,'corp',39],[11,8,'bill',34],[12,11,'cross',31],
+    [11,2,'bill',30]);
+  return build(plan,HOLD_T);
+}
+/* ═══ THE CLAN, ON YOUR SIDE OF THE BOARD, ONE SHORT ══════════════════════
+   (User: "the number of bandits from the normal final battle minus one, but
+   they are allies".)
+
+   ⛔ IT CALLS `foes()` AND DOES NOT COPY IT. The Snare's line already scales
+   with the company (7 bodies, 9 at six, 10 at eight) and already rolls its
+   own kit; a second hand-written clan table would be the same roster twice
+   and would drift the first time the finale is tuned. So the fight builds the
+   real one, drops a body, and turns it round.
+
+   ⚠ THE IDS HAVE TO BE RENAMED. `build()` hands out `foe0..foeN` and the
+   enforcers are built from the same counter, so two bodies on opposite sides
+   would answer to one id - which is a whole class of silent bug (`at()`,
+   `B.units.find`, every ally test). They are `clan0..clanN` here.
+   ⚠ AND THEY GO THROUGH `besideYou`, never `side='you'` by hand: #146's rule
+   is that the ease knob is corrected at the moment the side is flipped. */
+function snareClan(){
+  const CY=ROWS>>1;
+  const clan=foes();
+  clan.pop();                       /* somebody stayed with the cage */
+  const SLOT=[[5,CY-2],[5,CY],[5,CY+2],[4,CY-1],[4,CY+1],[6,CY-3],[6,CY+3],
+              [4,CY-3],[4,CY+3],[6,CY]];
+  return clan.map((u,i)=>{
+    u.id='clan'+i;besideYou(u);u.facing=0;
+    const p=SLOT[i%SLOT.length];u.col=p[0];u.row=p[1];
+    if(u.tail)u.tail=[u.col+1,u.row];
+    return u;});
+}
+/* ═══════════════════════════════════════════════════════════════════════
    THE THING IN ARMOUR — the fight you are supposed to run from.
    (Backlog #18, the user's flagged build-first.)
 
@@ -9874,9 +10043,15 @@ function startBattle(kind){
            :G.battleKind==='circle'?circleFoes()
            :G.battleKind==='wedding'?weddingFoes()
            :G.battleKind==='tavern'?tavernFoes()
+           :G.battleKind==='hold'?holdFoes()
+           :G.battleKind==='snarejoin'?holdHost()
            :G.battleKind==='slingline'?slingline():foes();
   /* the side you took stands with you */
   if(G.battleKind==='clash')clashAllies().forEach(a=>you.push(a));
+  /* #160 - and so does the clan, if you asked them for a place at their fire
+     and they believed you. Same rule as the clash: on your side, not on your
+     roster, and afterBattle() must never go looking for them in G.party. */
+  if(G.battleKind==='snarejoin')snareClan().forEach(a=>you.push(a));
   /* THE TURNCOAT — somebody you dismissed before they owed you anything can
      turn up in the deserter line (RimWorld: the world keeps your leavers).
      Only the brigand fight: humans down on their luck is exactly who the
@@ -10330,7 +10505,11 @@ const NOWITHDRAW={
   snare :'Nowhere to withdraw to. The bells are behind you as well. This one is life or death.',
   pack  :'Surrounded, in the dark, inside your own wall. There is no direction to run in.',
   tavern:'Your back is already in the corner. There is nowhere in this room to go.',
-  armour:'You feel there is no running from this one.'};
+  armour:'You feel there is no running from this one.',
+  /* #160 - you have just drawn on the Hold in front of the clan. There is no
+     side left on this island that would take you in halfway through it. */
+  snarejoin:'You have told both sides which one you are. Nobody out there is going to let '+
+    'you leave and think about it.'};
 const noFleeWhy=k=>NOWITHDRAW[k]||null;
 /* WHAT LEAVING COSTS, by what you are leaving. Walking out on a great beast is
    not the same act as walking out on four hungry deserters, and the price
@@ -10379,6 +10558,13 @@ const FLEECOST={
     why:'It is faster than any of you. You will be running with it behind you.',
     line:'It comes after you for a long way, at exactly the pace you are managing, and then '+
       'at some point it is not there any more. Nobody saw it stop.'},
+  /* #160 - they are mounted, they are paid, and they have a ledger with your
+     company written in it. Walking away from the Hold is the one withdrawal
+     that does not end the conversation. */
+  hold:{mor:20,crowns:0,days:1,
+    why:'They are mounted and they keep a ledger. Leaving is not the same as being finished with.',
+    line:'They do not chase you far, which is worse than chasing you. The serjeant sits his '+
+      'horse in the road and watches the column out of sight, and writes something down.'},
   def:{mor:16,crowns:0,days:0,
     why:'It costs you the field and the company\'s good opinion.',
     line:'Nobody says anything on the walk back. Nobody has to.'}
@@ -15219,8 +15405,22 @@ const FIELDS={
      reason: this board IS the tutorial, and the corner pocket by the hearth
      is load-bearing. The layout is hand-built so the seed only moves the
      floor stains. */
-  tavern   :{t:'tavern',seed:83, marsh:.999, rock:.999}
+  tavern   :{t:'tavern',seed:83, marsh:.999, rock:.999},
+  /* ═══ #160 - THE ONE GROUND THAT WAS BUILT AND NEVER SHOWN ════════════════
+     `plains` has existed in TERRAIN since #61 and NO CAMPAIGN FIGHT HAS EVER
+     USED IT: it was reachable only from the practice field, exactly the way
+     the forest was until #147 gave it to the Broken Men. It is defined as
+     "open, dry, and there is nothing to get behind", which is what a road
+     patrol stopping a column on an open road IS. Its own pool of three comes
+     with it, so there is somewhere to be and nowhere to hide. */
+  hold     :{t:'plains'}
 };
+/* ⛔ #160 - THE JOIN FIGHT IS THE SAME PLACE, SO IT IS THE SAME ROW. Copying
+   the Snare's five thresholds by hand would be the ground of one fight written
+   down twice, and #147's whole note on that row is a measurement that would
+   then apply to only half of it. Derived, once, beside the table it comes
+   from. */
+FIELDS.snarejoin=Object.assign({},FIELDS.snare);
 /* Merge: the TERRAIN kind, then the place's own overrides on top.
    ⚠ THE PRACTICE FIELD MAY REPLACE THE KIND, AND ONLY THERE. `SIM.ground`
    is read behind `SIM.on`, so it can never reach a run — invariant 8, and
@@ -18735,6 +18935,20 @@ window.LINT=function(){
         if(mf.days||mf.morale||(mf.crowns||0)<0||(mf.food||0)<0)
           hit('fx',where,'mystery door charges something at the pick');
       }
+      /* 6e (#160) - the ledger is written off the ☠ and reads out an authored
+         phrase. A door carrying the glyph with no `sin` still counts toward
+         the tally and degrades to a vague sentence in the serjeant's mouth,
+         which is invisible in play and exactly the kind of silence this file
+         keeps paying for. The pair is checked, never trusted.
+         ⚠ It was 6d when it was written and #159 took that letter on the same
+         day in another desk. Both checks are real and independent; the number
+         is the only thing that collided. */
+      if((c.ico||[]).indexOf('evil')>=0&&!c.sin)
+        hit('sin',where,'evil door with no `sin` phrase. The Hold\'s men will accuse this '+
+          'company of "something nobody will put a name to"');
+      if(c.sin&&(c.ico||[]).indexOf('evil')<0)
+        hit('sin',where,'`sin` phrase on a door that is not marked evil. markSin reads the '+
+          'glyph, so this one will never be recorded');
     });
   });
   /* 6b again, for the fire - the CAMPS deck speaks the same glyph language */
@@ -18743,7 +18957,12 @@ window.LINT=function(){
     (c.ico||[]).forEach(g=>{
       if(!CHOICE_ICO[g])hit('ico',where,'ico "'+g+'" is not in CHOICE_ICO');});
     if(((c.ico||[]).length+(c.needRace?1:0))>2)
-      hit('ico',where,'more than two glyphs on one door');}));
+      hit('ico',where,'more than two glyphs on one door');
+    /* 6d again, for the fire. There is no evil door at a camp today and the
+       handler calls markSin anyway, so the day one is written it is on the
+       ledger and this is what makes it say something. */
+    if((c.ico||[]).indexOf('evil')>=0&&!c.sin)
+      hit('sin',where,'evil door with no `sin` phrase');}));
   /* 7 — nicknames must not cross cultures */
   Object.keys(NICKS_BY_RACE).forEach(r=>{
     Object.keys(NICKS_BY_RACE).forEach(r2=>{
@@ -18782,6 +19001,35 @@ window.LINT=function(){
     if(NODES[at].t==='battle')
       hit('map','armourDue','anchored to "'+at+'", which is a battle node — the ambush would '+
         'stack a second fight onto one arrival');
+  })();
+  /* ═══ 8c (#160) — THE TWO ROAD STOPS ARE ANCHORED TO A DISTANCE, SO CHECK
+     THE DISTANCE. Same failure as 8b and the same three ways to fail, all of
+     them silent: a band with no node in it never fires, a band on a road only
+     some companies walk is missable, and a band on or in front of a fight
+     stacks two battles onto one arrival — which is the user's own "not before
+     a battle". Enumerating every road is cheap here and is the only honest
+     answer to "must definitely be shown". */
+  (function(){
+    let d;try{d=stepsToGoal();}catch(e){hit('map','road stops','stepsToGoal threw: '+e.message);return;}
+    const roads=allRoads('hold',QUEST_GOAL);
+    if(!roads.length){hit('map','road stops','no road runs from hold to '+QUEST_GOAL);return;}
+    [['holdmen',HOLD_STEPS],['courier',COURIER_STEPS]].forEach(pair=>{
+      const ev=pair[0],n=pair[1];
+      const band=Object.keys(NODES).filter(k=>d[k]===n);
+      if(!band.length){
+        hit('map',ev,'no node is '+n+' roads from '+QUEST_GOAL+', so the stop can never fire');
+        return;}
+      band.forEach(k=>{
+        if(NODES[k].t==='battle')
+          hit('map',ev,'band node "'+k+'" is a battle node — the stop would stack two fights '+
+            'onto one arrival');
+        if(edgesFrom(k).some(e=>NODES[e[1]]&&NODES[e[1]].t==='battle'))
+          hit('map',ev,'band node "'+k+'" leads straight into a battle node');});
+      roads.forEach(r=>{
+        const on=r.filter(k=>d[k]===n).length;
+        if(on!==1)hit('map',ev,'the road through '+r.slice(-4).join('→')+' passes '+on+
+          ' nodes at '+n+' out, so the stop is '+(on?'doubled':'missable'));});
+    });
   })();
   /* ═══ 8b — THE GRAPH ITSELF (backlog #6) ═══════════════════════════════
      The map is hand-placed data, and hand-placed data rots. These are the
@@ -19146,6 +19394,12 @@ function runBlob(){
            two. `armourPlan`/`armourSac` are deliberately NOT saved — a battle
            is regenerated, never restored, so the plan cannot outlive it. */
         armourDone:G.armourDone,queuedEv:G.queuedEv,
+        /* #160 - the sin ledger, and the two once-per-run road stops that read
+           it. `sins` decides which card fires, how the serjeant opens his
+           mouth, and what the Snare Clan makes of you three days later, so
+           losing it on a reload would silently rewrite the last hour. */
+        sins:G.sins,holdDone:G.holdDone,courierDone:G.courierDone,
+        holdFought:G.holdFought,
         /* #131 - the unresolved card, so a reload mid-battle re-offers the
            fight instead of walking past it. Distinct from `queuedEv`, which
            is what happens AFTER this one is dealt with. */
@@ -19210,6 +19464,13 @@ function loadRun(){
     if(s.real)NODES[k].real=s.real;else delete NODES[k].real;
     if(s.mark)NODES[k].mark=true;else delete NODES[k].mark;});
   Object.keys(r.flags||{}).forEach(k=>{G[k]=r.flags[k];});
+  /* #160 - `||[]` and not a migration, the same way `bonds` and `capSaid`
+     above do it: a save written before the ledger existed arrives with a clean
+     one, which is the honest reading of a run nobody was keeping score on.
+     ⚠ It has to be AFTER the flag copy, because the copy writes `undefined`
+     over the initial `[]` for exactly those saves, and every reader of it
+     calls `.length`. */
+  G.sins=G.sins||[];
   /* a battle is never restored — you arrive back on the map in front of it */
   G.pending=null;G.moving=false;G.dest=null;B=null;
   /* the journal RESUMES the run rather than opening a new one — a player who
@@ -19644,6 +19905,29 @@ const LOOT={
     {t:'Go through the ruts where it went.',
      c:'a smell you cannot place, and one thing that did not go with the rest',
      gear:'coldthing'}],
+  /* ═══ #160 - THE BEST KIT IN THE ACT, OFF THE ONLY PEOPLE WHO HAD ANY ═════
+     A haul and nothing else, per the #55 line drawn through these tables: the
+     decision was made on the road card, and it was made the expensive way.
+     ⚠ IT PAYS WELL AND THAT IS THE PILLAR, NOT A LEAK. Killing the lord's own
+     men is the single most profitable thing on this road and it is also the
+     thing that brings a host down on you at the bells. "Bad deeds actually
+     pay" is the second rule in README §2; the bill for this one arrives three
+     nodes later and is the biggest in the game. */
+  hold:[
+    {t:'The serjeant\'s harness. Nobody on this island makes plate like it any more.',
+     c:'a hauberk and a round shield',gear2:['mail','shield']},
+    {t:'Their purses, and the pay-chest on the pack-horse.',c:'+110 crowns',fx:{crowns:110}},
+    {t:'The windlass bow, and every bolt on the road.',c:'a bow and a full quiver',
+     gear2:['bow','quiver']},
+    {t:'Strip the coats and the crests off them. Burn the crests.',c:'+9 salvage',fx:{salvage:9}}],
+  /* the clan takes the field and you are standing on it with them */
+  snarejoin:[
+    {t:'The Hold left more iron in this mud than the whole valley owns.',c:'+16 salvage',
+     fx:{salvage:16}},
+    {t:'Their pay-chest. It was meant for a season of wages.',c:'+140 crowns',fx:{crowns:140}},
+    {t:'The serjeant\'s plate, off the serjeant.',c:'a hauberk',gear:'mail'},
+    {t:'What the clan pushes across to you afterwards, without a word.',c:'+1 gem +6 provisions',
+     fx:{gems:1,food:6}}],
   steading:[
     {t:'Their harness. It is enormous and it is very good.',c:'ogre scale',gear:'ogrescale'},
     {t:'The elder’s club, and the stone maul if you can lift it.',c:'a warclub and a maul',
@@ -19953,8 +20237,34 @@ function cageThenConsequences(){
     openEvent('wynn');
     return;                       /* pickChoice('wynn') resumes at afterBattle */
   }
+  /* ═══ #160 - THE JOIN FIGHT ENDS THE ACT, AND THERE IS NO CAGE SCENE ══════
+     THE CAGE IS DELIBERATELY NOT OPENED. Wynn Aldreth is the clan's property
+     and you have just fought a battle to keep the clan standing; walking over
+     and cutting the withies afterwards would be the game letting the player
+     have the door and the reward for not taking it. AFTER.snarejoin says she
+     watched, and stops there.
+
+     ⚠ IT IS SET HERE AND NOT ON THE DOOR, and that is the whole care in these
+     three lines: `toSpoils` is only ever reached on a win or a mercy, so an
+     epilogue written at the door would be a run that ends in triumph after
+     the company was wiped out. A loss still goes to `toDefeat` through
+     checkEnd, which is correct and untouched.
+     ⚠ `!G.epiLine` because `finish()` reads and clears it; if a reload lands
+     between the field and the consequences card the flag rides the save. */
+  if(G.battleKind==='snarejoin'&&!G.epiLine)G.epiLine=SNAREJOIN_END;
   afterBattle();
 }
+/* the last page for the road that threw in with the clan. Kept beside the
+   hand-off that reads it rather than inline, because it is prose and the
+   function above is arithmetic. */
+const SNAREJOIN_END=
+  'They feed you that night. Nobody sits close, and nobody asks you to leave, and those '+
+  'are two different things that the company works out separately.\n\n'+
+  'You came east on a contract for one head. You are going back west without it, past nine '+
+  'coats lying in a road three days behind you, into a valley where the only people who '+
+  'kept written records are dead and somebody in Grausen is going to notice that.\n\n'+
+  'The bells are still up. They ring all night, and this time they are ringing for you as '+
+  'much as for anybody.';
 /* ═══ THE THREE ANSWERS TO A BEGGING ENEMY ═══════════════════════════════
    Lifted out of the screen that used to own them so that the aftermath can
    draw them as one of its sections. A content table, not a function: the
@@ -20441,6 +20751,23 @@ const AFTER={
       'and it is gone by the time you have thought of a word for it.\n\nNobody says anything '+
       'for a while. Then somebody says the obvious thing, which is that there is nothing to '+
       'bury, and everybody agrees rather too quickly.'},
+  /* #160 - the road patrol. It does not gloat and it does not moralise: it
+     states the one fact the player now has to carry, which is that these were
+     the only people in the valley who wrote things down. */
+  hold:{t:'NINE COATS IN THE ROAD',
+    b:'They are in one heap because they died in one line, which is the difference between '+
+      'them and everything else you have fought.\n\nSomebody goes through the serjeant\'s '+
+      'coat and comes back with a folded paper. It is a list of roads, and a list of things '+
+      'done on them, and about a third of the way down it there is a company nobody has '+
+      'named.\n\nGrausen Hold is nine men lighter and does not know it yet.'},
+  snarejoin:{t:'BOTH SIDES OF YOU ARE STILL STANDING',
+    b:'The Hold does not break and does not run, so it takes until there is nobody left of it, '+
+      'and it takes a long time.\n\nAfterwards the clan works down the line pulling bolts out '+
+      'of its own dead, and nobody says anything to you, and nobody tells you to go '+
+      'either.\n\nThe cage is still at the far end of the camp with the woman folded up inside '+
+      'it. She watched the whole thing. She has worked out what you are and she is not going '+
+      'to be asked about it.\n\nThe head under that standard is the head the man in the coat '+
+      'asked for, and it is still on its owner, and it is going to stay there.'},
   packev:{t:'THE FIRE IS STILL BURNING',
     b:'What is left of them goes back out through the gaps it came in by. The wall held, mostly, '+
       'and the fire never went out.\n\nNobody sleeps again before dawn. Somebody feeds the fire '+
@@ -21231,6 +21558,11 @@ function openCamp(spot,next,atPlace){
          upstream would silently shift every id */
       (G.campChose=G.campChose||{})[c.id]=c.choices.indexOf(o);
       JOURNAL.put('choice','camp: '+c.t,{pick:o.t});
+      /* #160 - the fire has no evil door today, and this is here so that the
+         day somebody writes one it is on the ledger without being told. The
+         alternative is the hand-kept list this whole mechanism exists to
+         avoid, and it would be wrong exactly once. */
+      markSin(o);
       /* the two people the scene was about remember being in it */
       const pa=G.party.find(m=>cast1.a.indexOf(proseName(m))===0),
             pb=G.party.find(m=>cast1.b.indexOf(proseName(m))===0);
@@ -23691,6 +24023,71 @@ const EDGES=[
   ['shrine','hire2',1,1,'there are people on the road, going the other way'],
   ['hire2','snare',1,1,'the bells are ahead']];
 const edgesFrom=k=>EDGES.filter(e=>e[0]===k);
+/* ═══ #160 · HOW MANY ROADS ARE LEFT, COUNTED BACKWARDS FROM THE END ═══════
+   (User, 2026-08-16: the parcel arrives "two cells before the final battle",
+   and the road stop is "in the second half of the run, but not before a
+   battle", and both "must definitely be shown".)
+
+   ⛔ ANCHORED TO A COMPUTED SHAPE, NEVER TO A NODE ID, and the reason is
+   written out in full at `armourWhere`: a rule phrased against a node's
+   PROGRESS through the run breaks silently the day somebody reorders the map,
+   and #71 proved it by moving the Muster Field and nearly firing the Thing in
+   Armour on top of the Fen-Mother. "Two roads from the end" is a fact about
+   the SHAPE of the map, so it is asked of the map.
+
+   A plain relaxation over EDGES rather than a queue, because the graph is
+   thirty edges and this runs once. Read backwards: an edge a→b makes `a` one
+   further out than `b`. On the map as it stands: snare 0 · hire2 1 · shrine 2
+   · e1 and p1 both 3 · steadn and oasis 4. So band 2 is the Door-Shrine on
+   every road, and band 3 is whichever quiet slot the last fork was taken
+   through - one of them, always, whatever the player chose.
+
+   ⚠ MEMOISED, and that is safe only because THE GROUND OPENS is the one thing
+   that ever pushes an edge and it pushes a road BACKWARD, to the Black Fen,
+   which cannot shorten anybody's road to the Snare. If a second runtime edge
+   is ever added, clear this.
+   ⚠ LINT 8c checks the shape rather than trusting this comment: that every
+   road passes exactly one node in each band, and that neither band is a fight
+   or leads straight into one. */
+let STEPS_OUT;
+function stepsToGoal(){
+  if(STEPS_OUT)return STEPS_OUT;
+  const d={};d[QUEST_GOAL]=0;
+  for(let pass=0,moved=true;moved&&pass<60;pass++){
+    moved=false;
+    EDGES.forEach(e=>{
+      if(d[e[1]]===undefined)return;
+      const v=d[e[1]]+1;
+      if(d[e[0]]===undefined||v<d[e[0]]){d[e[0]]=v;moved=true;}});
+  }
+  return (STEPS_OUT=d);
+}
+/* every road the company could still be walking, hold to the bells. Small
+   graph, forward-only edges, and the `seen` guard covers the one runtime edge
+   that could make a cycle. Only LINT calls it. */
+function allRoads(from,to){
+  const out=[];
+  (function walk(k,seen){
+    if(k===to){out.push(seen.concat(k));return;}
+    if(seen.length>40)return;
+    edgesFrom(k).forEach(e=>{if(seen.indexOf(e[1])<0)walk(e[1],seen.concat(k));});
+  })(from||'hold',[]);
+  return out;
+}
+/* ═══ WHERE EACH OF THE TWO ROAD STOPS CATCHES YOU ════════════════════════
+   ⛔ THEY ARE MUTUALLY EXCLUSIVE BY THE LEDGER AND NOT BY A FLAG. One fires
+   on a company with something on its account, the other on a company with
+   nothing, so a run can only ever see one of them and no third field has to
+   be kept in step. That is the same reason the Snare's three answers are read
+   off `sins.length` alone.
+   ⚠ `t!=='battle'` is belt and braces on top of LINT 8c: the user's own gate
+   is "not before a battle", and a stop that landed on a fight node would
+   stack two fights onto one arrival the way `armourDue` is checked against. */
+const HOLD_STEPS=3, COURIER_STEPS=2;
+const holdDue=k=>!G.holdDone&&(G.sins||[]).length>=1&&
+  stepsToGoal()[k]===HOLD_STEPS&&!!NODES[k]&&NODES[k].t!=='battle';
+const courierDue=k=>!G.courierDone&&!(G.sins||[]).length&&
+  stepsToGoal()[k]===COURIER_STEPS&&!!NODES[k]&&NODES[k].t!=='battle';
 /* ⚠ NEVER HAND-WRITE WHAT IS DOWN THE ROAD. Coldharrow's exit button read
    "the muster field is one day east" and was true on the day it was typed;
    #71 then moved the Muster Field WEST of the Black Fen and BEFORE the
@@ -26192,6 +26589,24 @@ function travel(k){
       openEvent('armour');
       return;
     }
+    /* ═══ #160 - THE TWO THINGS ON THIS ROAD THAT ARE NOT PLACES ═════════
+       Same shape as the ambush above and for the same three reasons: they
+       fire on ARRIVAL (firing mid-walk strands the token, which is why the
+       dog ambush was moved), they take precedence over whatever the place
+       itself had to say, and that event is still standing there when this is
+       dealt with. Which of the two fires is decided by the ledger and by
+       nothing else - see holdDue/courierDue.
+       ⚠ The ORDER is arithmetic rather than preference: the Hold's band is
+       three roads out and the courier's is two, so they cannot both be true
+       on one arrival even before the ledger is asked. */
+    if(holdDue(k)||courierDue(k)){
+      const which=holdDue(k)?'holdmen':'courier';
+      if(which==='holdmen')G.holdDone=true;else G.courierDone=true;
+      G.queuedEv=(firstTime&&NODES[k].ev)||null;
+      saveRun();
+      openEvent(which);
+      return;
+    }
     /* a place only happens to you once - see `firstTime` above */
     if(firstTime&&NODES[k].ev)openEvent(NODES[k].ev);
   };
@@ -26572,6 +26987,42 @@ const raceDoorPick=list=>{
   const live=RACE_DOOR_ORDER.filter(r=>list.some(c=>c.needRace===r));
   return live.length<2?list:list.filter(c=>!c.needRace||c.needRace===live[0]);
 };
+/* ═══ #160 · THE LEDGER IS WRITTEN OFF THE GLYPH ═══════════════════════════
+   ⛔ ONE DOOR, FOR ALL THREE TABLES. `pickChoice` and the CAMPS handler both
+   call it, so an evil door written at the fire next month joins the ledger
+   the same way a road one does. It reads `ico` because #154 already put the
+   ☠ on every one of the eleven, which makes "which doors are the bad ones" a
+   fact the code can see instead of a list somebody has to remember.
+
+   ⚠ THE PHRASE IS AUTHORED AND THE FALLBACK IS DELIBERATE. A door that
+   forgets `sin` still counts toward the tally and still reads as a sentence,
+   because a serjeant reciting `undefined` is a worse failure than a vague
+   accusation. LINT 6e is what stops it shipping vague.
+   ⛔ AND A DOOR THAT ONLY ASKS A QUESTION MUST NOT BE MARKED EVIL. The Snare's
+   third door is the case: it opens a card whose own prose reads
+   `G.sins.length`, so marking the ASK would have added a sin before the
+   ANSWER counted them and shown a clean company the guilty branch of its own
+   reply. A ledger the question writes into cannot be read by the answer. */
+function markSin(c){
+  if(!c||(c.ico||[]).indexOf('evil')<0)return;
+  G.sins=G.sins||[];
+  G.sins.push({s:c.sin||'something done on this road that nobody will put a name to'});
+}
+/* the first N of them, in the order they were done. The user's own framing:
+   the serjeant reads out the first and the second, not the worst two. */
+const sinsSaid=n=>(G.sins||[]).slice(0,n).map(x=>x.s);
+/* ⚠ ONE ENTRY, AND IT MAY NOT THROW WHEN THERE IS NOTHING THERE. Caught by
+   LINT on the first run: `evBody` reads every card's body to scan it for
+   tokens, so a body that indexes into the ledger and capitalises the result
+   dies on a clean company and takes the whole linter with it. The cards that
+   quote the ledger are only REACHABLE with the entries they quote, which made
+   the crash invisible in play and total in the one tool built to find it.
+   ⛔ A body that cannot be read out of context is a body nothing can check. */
+const sinAt=(i,cap)=>{
+  const s=(G.sins||[])[i];
+  const t=s?s.s:'whatever it is they have heard about you';
+  return cap?t.charAt(0).toUpperCase()+t.slice(1):t;
+};
 /* the ONE builder, same law as choiceNote: both renderers call it, nothing
    concatenates glyphs at a call site. The title is the hover tag.
    ⚠ THE CAP IS TWO and the race mark takes the second slot, so a race-gated
@@ -26862,6 +27313,7 @@ const EVENTS={
        c:'2 clubs beside you · 5 ratkin against · 1 may join after',
        battle:'clash',clashSide:'ogre'},
       {t:'Wait. Then finish the winners.',ico:['fight','evil'],
+       sin:'the survivors finished off on the west road',
        c:'nobody beside you · 2 ogres against · both sides of the road are yours',danger:true,
        battle:'clash',clashSide:'none'}]},
   /* REFERENCE EVENT — the shape everything else should aim at.
@@ -26913,6 +27365,7 @@ const EVENTS={
          comment above gives: this is the reference card, the payout is a
          surprise, and the chips carry the receipt. */
       {t:'Take all of it. Purse, boots, beams.',ico:['take','evil'],c:'nothing is left standing here',
+       sin:'the toll-post on the west road, taken down to the beams',
        danger:true,fx:{crowns:38,salvage:5,days:1,morale:-6},bootsOn:true,hideHurt:true,
        hurt:{n:'Crushed foot',d:'−1 AGI. A beam went where a beam should not.',agi:-1},
        after:'The purse first, then the boots, then the bridge, and it takes until dark.\n\n'+
@@ -26932,7 +27385,9 @@ const EVENTS={
       {t:'Trade two gems for supplies.',ico:['trade'],c:'−2 gems · +10 provisions +6 salvage +40 crowns',
        fx:{gems:-2,food:10,salvage:6,crowns:40},need:{gems:2},
        after:'He turns them over twice, names a number, and does not haggle.'},
-      {t:'Take the cart. He is one man.',ico:['evil'],c:'+150 crowns +8 provisions +5 salvage · nobody will look at you for a while',
+      {t:'Take the cart. He is one man.',ico:['evil'],
+       sin:'the pedlar on the ridge, and his cart',
+       c:'+150 crowns +8 provisions +5 salvage · nobody will look at you for a while',
        danger:true,fx:{crowns:150,food:8,salvage:5,morale:-13},gear:'mail',
        hurt:{n:'Pedlar’s knife',d:'−1 STR. He had a knife, and he was quicker than he looked.',str:-1},
        after:'It takes no time at all. That is the part nobody sleeps well about.\n\nHe had '+
@@ -27144,6 +27599,7 @@ const EVENTS={
        after:'The company drinks standing up, in armour. Back on the road inside the hour, '+
          'wet sleeves, a slightly better opinion of the world.'},
       {t:'Strip it. The votive coin in the basin, the kerb-stones, the orchard wall.',ico:['take','evil'],
+       sin:'the warm spring stripped down to its kerb-stones',
        c:'+40 crowns +4 salvage · they will remember this',fx:{crowns:40,salvage:4,morale:-7},
        after:'The coins come out of the basin in handfuls. The dressed stone comes up with '+
          'two bars and a lot of swearing.\n\nThe water is still warm when you leave. It is '+
@@ -27356,6 +27812,7 @@ const EVENTS={
          trade"). The fingerbone keeps its home on the Dead Company's bury
          door. The card is: give it time, give it words, or take it apart. */
       {t:'Take the door. It is good timber and we need it.',ico:['take','evil'],
+       sin:'the door off the shrine at the mountain’s foot',
        c:'+9 salvage · they watched you do it',danger:true,
        fx:{salvage:9,morale:-13},
        after:'It comes apart more easily than it has any business doing.\n\nThe woman watches '+
@@ -27416,7 +27873,9 @@ const EVENTS={
       {t:'Re-cut it properly. It costs the evening.',ico:['honor'],c:'−1 day',fx:{days:1,morale:6},
        after:'{ANY} does the cutting, badly but correctly. Whoever comes next will never '+
          'know, which is the entire point of it.'},
-      {t:'Change it again. Worse. Then go.',ico:['evil'],c:'a chisel',fx:{morale:-4},gear:'offhand',
+      {t:'Change it again. Worse. Then go.',ico:['evil'],
+       sin:'a mile-stone cut wrong on purpose, twice',
+       c:'a chisel',fx:{morale:-4},gear:'offhand',
        after:'Somebody left the chisel behind. You take that too. Nobody says anything for a mile.'},
       {t:'Leave it. Not your road, not your milestone.',ico:['leave'],c:'no cost',fx:{},
        after:'It is still there behind you, saying the wrong thing.'}]},
@@ -27435,7 +27894,9 @@ const EVENTS={
        fx:{crowns:-45,food:6,morale:4},need:{crowns:45},scout:true,
        after:'The salt is very good. One of them tells you which ford is out, and that was '+
          'worth more than the salt.'},
-      {t:'Take the salt and the pot.',ico:['evil'],c:'+4 provisions · word travels, and it travels ahead of you',
+      {t:'Take the salt and the pot.',ico:['evil'],
+       sin:'the salt-wives on the causeway, and their pot',
+       c:'+4 provisions · word travels, and it travels ahead of you',
        fx:{food:4,morale:-11},rep:{human:-25},
        after:'They do not fight and they do not beg. They watch, and count, and one of them '+
          'starts walking inland before you are out of sight.\n\nThe island is small.'},
@@ -27454,7 +27915,9 @@ const EVENTS={
       /* the buy-fifty-crossbows door was cut in the 2026-08-12 choice-weight
          pass round two (8f.151): a shop line on a moral card, the same shape
          the wedding's trade door was. The card is help, rob, or walk past. */
-      {t:'Take the cart.',ico:['evil'],c:'+120 crowns +8 salvage · the clans will hear, and so will your own',
+      {t:'Take the cart.',ico:['evil'],
+       sin:'a clan cart taken on an open road, in daylight',
+       c:'+120 crowns +8 salvage · the clans will hear, and so will your own',
        fx:{crowns:120,salvage:8,morale:-12},rep:{ratkin:-30},
        after:'Four ratkin walk away without hurrying. They do not look back and they do not '+
          'need to.\n\nA clan now knows your banner as something else entirely.'},
@@ -27515,7 +27978,9 @@ const EVENTS={
       /* the explain-kindly door was cut in the 2026-08-12 choice-weight pass
          (#123): it resolved exactly like walking past, with a mood fee on
          top - a duplicate of the free door wearing a price tag. */
-      {t:'Rob the tax collector.',ico:['evil'],c:'+25 crowns · they will remember this',fx:{crowns:25,morale:-7},
+      {t:'Rob the tax collector.',ico:['evil'],
+       sin:'the collector robbed on his own round',
+       c:'+25 crowns · they will remember this',fx:{crowns:25,morale:-7},
        after:'Even {ANY} thinks this is beneath you, and says so, which is a first.'},
       /* the free door - see the note on PEDLAR ON THE RIDGE. `fx:{}`.
          ⚠ "Explain, kindly, about the kingdom" is NOT the free option and
@@ -27530,6 +27995,7 @@ const EVENTS={
       'them.',
     choices:[
       {t:'Dig it properly. There is iron down there.',ico:['take','evil'],
+       sin:'a clan grave dug out for the iron in it',
        c:'−1 day · +7 salvage +1 gem · it is a clan grave',
        fx:{days:1,salvage:7,gems:1,morale:-5},rep:{ratkin:-20},
        after:'Seven bodies and a great deal of good metal. {ANY} works with everyone else and '+
@@ -27592,7 +28058,12 @@ const EVENTS={
          and an ogre, which is one over the style rule's four. Flagged rather
          than fixed: the two race doors are the user's own beats and #123 has
          already ruled on this card once. */
+      /* #160, merged in from another desk the same day: this door was written
+         in #159 and the ledger in #160, so it shipped marked evil with nothing
+         for the serjeant to read out. LINT 6e caught it on the merged build,
+         which is the whole reason that check exists. */
       {t:'Cut them all down. Take what they brought.',ico:['fight','evil'],
+       sin:'the wedding on the road east, and what was left of it',
        mystery:true,battle:'wedding',ambush:true,after:''},
       {t:'Push politely through.',ico:['leave'],c:'barely worth a word',fx:{morale:-1},
        after:'They let you by without complaint. You hear them for an hour.'}]},
@@ -27605,7 +28076,9 @@ const EVENTS={
          (#123): a third answer that neither cost nor revealed anything. The
          card is the pair it was always about - break the thing, or learn
          from it. */
-      {t:'Strip the lead jointing.',ico:['take','evil'],c:'+6 salvage · a village downstream, and they know it',
+      {t:'Strip the lead jointing.',ico:['take','evil'],
+       sin:'the lead off the ratkin waterworks, and the village downstream',
+       c:'+6 salvage · a village downstream, and they know it',
        fx:{salvage:6,morale:-6},rep:{ratkin:-15,human:-10},
        after:'The leak becomes a flood before you are half a mile off. There is a village down '+
          'there. There was a village down there.'},
@@ -27698,6 +28171,112 @@ const EVENTS={
        fx:{crowns:-40,morale:-5},need:{crowns:40},
        after:'They take it and go. Nobody feels good about it.\n\n{ANY} does the maths aloud: '+
          'cheaper than arrows. Nobody thanks them.'}]},
+  /* ═══ #160 · THE HOLD'S MEN ════════════════════════════════════════════════
+     Three roads from the bells, on whichever quiet arm of the last fork the
+     company took. It never fires on a clean run: `holdDue` reads the ledger,
+     and a company with nothing on its account gets `courier` two roads later
+     instead.
+
+     ⚠ THE BODY IS A FUNCTION BECAUSE THE ACCUSATION IS. It quotes the FIRST
+     one or the first TWO deeds in the order they were done (the user's own
+     framing), out of `sinsSaid`, so the card names the actual road rather
+     than gesturing at "your reputation". A run that robbed the tax collector
+     and nobody else hears about the tax collector.
+     ⚠ Measured in the running build at 168 words on the worst branch, which
+     is inside the HEAVY band (140-175) and is the right band: this is the
+     road coming back for the player, and it is a card they will retell. */
+  holdmen:{title:'THE HOLD’S MEN',art:'gold',seed:277,
+    body:()=>{
+      const s=sinsSaid(2);
+      const open='Riders across the road in one coat, with the same mark on all of them. '+
+        'Grausen Hold’s. The first uniform this company has seen since the '+
+        'Landing.\n\nNobody draws. The serjeant walks his horse down the column looking at '+
+        'faces, and takes his time.\n\n';
+      if(s.length<2)
+        return open+'"Word came west," he says. "About '+(s[0]||'this road')+'. Was that '+
+          'this company?"\n\nHe is not accusing you. He is watching how long you take to '+
+          'answer.';
+      return open+'Then he stops in front of you.\n\n"'+sinAt(0,true)+'. And '+sinAt(1)+
+        '. That is this company and we both know it."\n\n'+
+        'The hounds come off the leash-ring. Nobody has drawn. Everybody has decided to.';
+    },
+    choices:[
+      {t:'“Never heard of it.” Hold his eye.',ico:['leave'],
+       c:'your own people are standing right there',fx:{morale:-5},needSins:1,maxSins:1,
+       after:'You say it flatly and do not blink. He knows it is a lie, and what proving it '+
+         'would cost him out here.\n\nHe lets you past. Your own people heard you say it.'},
+      {t:'Forty crowns into his hand, and call it a toll.',ico:['trade'],
+       c:'−40 crowns · he writes nothing down',fx:{crowns:-40},need:{crowns:40},
+       needSins:1,maxSins:1,
+       after:'He counts it without looking. It goes into a saddlebag and not the ledger, and '+
+         'whatever he writes tonight, it is not this.'},
+      {t:'A hundred crowns, and he never rode out this far.',ico:['trade'],
+       c:'−100 crowns · most of the chest',fx:{crowns:-100},need:{crowns:100},needSins:2,
+       after:'He takes his time counting it, and at the end he does not say you are innocent. '+
+         'He says the road east is open. That is all it buys.'},
+      {t:'Ride them down. Nobody writes anything down after that.',ico:['fight','evil'],
+       c:'battle · three crests, a bill line and the hounds',battle:'hold',
+       sin:'the Hold’s own men, cut down on the lord’s own road'}]},
+  /* ═══ #160 · AND WHAT THE OTHER ROAD SENDS ═════════════════════════════════
+     Two roads from the bells, on a clean ledger only. One live door, so it is
+     a pickup and wears its loot on the card (#143) - which is right here for
+     a second reason: there is no decision in a parcel. */
+  courier:{title:'A RIDER CATCHES UP',art:'teal',seed:281,
+    body:'Somebody has been running after the column and is not built for it. A boy, out of '+
+      'breath, with a bundle in oiled cloth under one arm.\n\nNo name on the outside. He has '+
+      'not got one to give you either.\n\n"They said to say thank you. For the road."\n\nThen '+
+      'he goes back the way he came, faster than he arrived.',
+    choices:[
+      {t:'Open it.',ico:['take'],c:'somebody on this road could afford to be grateful',
+       fx:{},gear:'roll',
+       after:'Eight folds of linen, written down the inside in eight different hands. You can '+
+         'put a face to about a third of the names.'}]},
+  /* ═══ #160 · THE ASK, REFUSED ══════════════════════════════════════════════
+     One card, two bodies, and the difference between them is the whole point
+     of the ledger: nothing on your account and they laugh; one thing on it
+     and they do not, and it still is not enough. Both end where the card was
+     always going to end. */
+  refused:{title:'THEY HEAR YOU OUT',art:'teal',seed:283,
+    body:()=>{
+      const s=sinsSaid(1);
+      const open='You put it plainly: a place at their fire, and the road east '+
+        'forgotten.\n\n';
+      if(!s.length)
+        return open+'The big one under the standard looks at you for a moment and then '+
+          'laughs, and it goes down the line, and the bells keep ringing through all of '+
+          'it.\n\nThen he reaches behind him for the maul.';
+      return open+'The big one under the standard does not laugh. "We heard," he says. '+
+        '"About '+s[0]+'."\n\nHe looks at your company for a while, and there is something '+
+        'in his face that is almost warm, and it does not move an inch.\n\n"Once is a bad '+
+        'night. It is not a life."\n\nThen he reaches behind him for the maul.';
+    },
+    choices:[
+      {t:'Then it is the road.',ico:['fight'],c:'battle · they are ready and so are you',
+       fx:{},battle:true}]},
+  /* ═══ #160 · THE ASK, TAKEN ════════════════════════════════════════════════
+     (User: "they invite you into the camp", then "the next screen" is the
+     arrow in the back.) Both beats live on ONE card, in two halves, because
+     that is what makes the second half land: the player reads the welcome,
+     believes it, and has it taken off them in the next paragraph. A separate
+     screen for the welcome would put a button between the two and turn the
+     best beat in the card into a page turn. */
+  joined:{title:'OUR CALIBRE OF FILTH',art:'gold',seed:287,
+    body:()=>{
+      return '"'+sinAt(0,true)+'," the big one says. "And '+
+        sinAt(1)+'. And whatever else there is that has not walked this far yet."\n\nHe looks at '+
+        'your company the way a man looks at a tool he was not expecting to be '+
+        'offered.\n\n"You are our calibre of filth. Come in. Eat something."\n\nSomebody '+
+        'lifts the bell-line aside for you, and it takes a moment to understand that you '+
+        'have been let through.\n\nThen a bolt goes into the back of the one holding it, and '+
+        'he sits down in the mud.\n\nThe rest come out of the reeds in a handful. The big '+
+        'one is already roaring: DOGS. YOU BROUGHT THEM HERE.\n\nYou draw and turn the way '+
+        'he is facing, which settles it without anybody having to agree to '+
+        'anything.\n\nNobody out there is going to offer you terms. You have not earned any.';
+    },
+    choices:[
+      {t:'Stand with them.',ico:['fight','evil'],
+       c:'battle · the clan beside you · a great many coats',battle:'snarejoin',
+       sin:'the last of it, at the bells, with the clan'}]},
   snare:{title:'THE RATKIN SNARE',art:'teal',seed:5,
     body:'They have strung the road with bells. Even other clans spit at this use of '+
       'them.\n\nAt the far end, a hauling-cage built for a boar, with a woman folded up '+
@@ -27706,7 +28285,20 @@ const EVENTS={
     choices:[
       {t:'Straight down the road. Let the bells ring.',ico:['fight'],c:'battle · they are ready',fx:{},battle:true},
       {t:'Through the marsh. Slower, but quiet.',ico:['fight'],c:'battle · −1 day · you strike first',
-       fx:{days:1},battle:true,ambush:true}]},
+       fx:{days:1},battle:true,ambush:true},
+      /* ═══ #160 · THE THIRD DOOR ════════════════════════════════════════════
+         ⛔ IT IS NOT MARKED EVIL AND THAT IS LOAD-BEARING, NOT AN OVERSIGHT.
+         `markSin` fires on the door that is clicked, and the card this door
+         opens reads `G.sins.length` to decide what the clan says back. Put a
+         ☠ here and a company with a clean ledger would arrive at `refused`
+         holding one sin and be told "we heard about you" about nothing it had
+         done. The villainy is on the door in `joined` where the deed actually
+         happens, which is also where it is true.
+         ⚔ alone, because every door on this card is a fight and the only
+         thing this one leaves open is whose side of the board you are on. */
+      {t:'Walk in with empty hands and ask for a place at their fire.',ico:['fight'],
+       c:'they will hear you out · what happens next is what they make of you',
+       joinAsk:true}]},
   /* the post-battle dialog, now a map event where it happened */
   wynn:{title:'THE WOMAN IN THE CAGE',art:'teal',seed:17,
     body:'The cage was built for hauling boar. It has been carrying a woman for three '+
@@ -28242,10 +28834,24 @@ function openEvent(k){
      cynical option only ever appears when it is genuinely tempting. */
   const someoneHurt=()=>G.party.some(p=>p.cond||p.hpLoss>0);
   const someoneOwed=()=>G.party.some(p=>(p.unpaid||0)>0);
+  /* `needSins`/`maxSins` (#160) - a door that only exists for a company with a
+     certain amount on its account. The Hold's serjeant asks a question of
+     somebody with one thing against them and states a fact to somebody with
+     two, and those are different doors rather than one door with a ternary in
+     its label: the price is different, the tone is different, and a label
+     that changed its own meaning would be the second-source-of-truth shape
+     this file keeps deleting. Both bands are inclusive.
+     ⚠ INSIDE `raceDoorPick`, not outside it (#159, merged the same day). That
+     rule picks ONE race door when several are live and its own note says it
+     runs AFTER the gate and BEFORE the appended walk-away, so the sin bands
+     have to be part of the gate it is handed. */
+  const sinN=()=>(G.sins||[]).length;
   const visible=raceDoorPick(e.choices.filter(c=>(!c.needRace||G.party.some(p=>p.race===c.needRace))&&
     (!c.needMut||G.party.some(p=>p.mut===c.needMut))&&
     (!c.needHurt||someoneHurt())&&
     (!c.needUnpaid||someoneOwed())&&
+    (c.needSins==null||sinN()>=c.needSins)&&
+    (c.maxSins==null||sinN()<=c.maxSins)&&
     (!c.needMin||G.party.length>=c.needMin)));
   /* ═══ THE CARD MUST ALWAYS HAVE A LIVE ANSWER ═══════════════════════════
      The loot picker already knows this rule - "the leave-it option is
@@ -28355,6 +28961,9 @@ function pickChoice(k,i){
      `t`, and reading the wrong one silently labelled every event row with
      its raw id */
   JOURNAL.put('choice','event: '+(e.title||k),{pick:c.t});
+  /* #160 - and the road keeps its own note of it. Before anything is paid,
+     because the ledger is about what was DONE and not about what it earned. */
+  markSin(c);
   /* ═══ #143 - WHAT THIS CHOICE PAYS IS COLLECTED AS IT IS PAID ═══════════
      `paid` feeds the outcome's chip row. ⛔ #137's rule on a third surface:
      the chips are built beside each pay() call, never read back off the
@@ -28727,6 +29336,21 @@ function pickChoice(k,i){
     hurtLine+='\n\nIt is '+who(rat)+'. Of course it is '+capName(rat)+'.\n'+
       'THE TOLL-MAN’S BOOTS: +3 AGI, −6 MOR. They walk better, sleep worse, and will not '+
       'come off. The INVENTORY can, if you have the stomach for that conversation.';
+  }
+  /* ═══ #160 - THE ASK AT THE SNARE, AND ITS THREE ANSWERS ══════════════════
+     (User: "add the option 'ask to join them'".) The answer is a whole card
+     rather than three paragraphs hidden in one `after`, because what the clan
+     says back is the payoff of the entire road and the two versions of it do
+     not resolve the same way: two of them end in the fight that was always
+     there, and one of them changes whose side of the board you are on.
+
+     ⚠ IT REPLACES THE CARD IN PLACE. `openEvent` rewrites #wDlg and sets its
+     own `pending`/`openEv`, so closing first would be one frame of empty map
+     between the question and the answer. */
+  if(c.joinAsk){
+    G.pending=null;
+    openEvent((G.sins||[]).length>=2?'joined':'refused');
+    return;
   }
   if(c.battle){G.pending=null;G.ambush=!!c.ambush;
     if(c.clashSide)G.clashSide=c.clashSide;

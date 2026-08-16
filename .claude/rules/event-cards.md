@@ -53,6 +53,32 @@ Measure in the running build, never by reading:
     e.choices.reduce((n,c)=>n+w(c.after),0);})(EVENTS.oasis)
 ```
 
+⚠ **THAT COUNTER PREDATES BRANCH-GATED DOORS AND OVER-COUNTS THEM** *(#160,
+2026-08-16)*. It sums **every** `after` on the card, which was the same thing as
+"what the player reads" for as long as every door was shown to everybody. It is
+not any more: `needSins`/`maxSins` (and `needRace`/`needHurt`/`needUnpaid`/
+`needMin` before them) mean one company sees three doors and another sees two.
+THE HOLD'S MEN measures **183** by the counter above and the player reads **137
+on the one-sin branch and 125 on the two-sin branch**, because three of its four
+outcomes are unreachable on any single run.
+
+⛔ **So a card with gated doors is measured against what its OWN ledger shows.**
+The same filter `openEvent` uses, and nothing else:
+
+```js
+/* one card, as one company will actually read it */
+(e=>{const w=s=>String(s||'').trim().split(/\s+/).length,n=(G.sins||[]).length;
+  return w(typeof e.body==='function'?e.body():e.body)+
+    e.choices.filter(c=>(c.needSins==null||n>=c.needSins)&&(c.maxSins==null||n<=c.maxSins))
+      .reduce((s,c)=>s+w(c.after),0);})(EVENTS.holdmen)
+```
+
+⚑ **And the general rule under it: a card with a function body must be measured
+on every branch it can take, not on whichever one the current run happens to
+produce.** `body()` returns ONE string, so a fresh page measures the clean-ledger
+branch and says nothing about the other two. Stub the state, measure each, and
+record the worst.
+
 ⚠ **A percentage cut is not a goal in itself.** Four cards finished the diet under the asked 30%
 (hollow 11% · wedding 13% · cache 15% · pedlar 18%) because their remaining lines were
 load-bearing: the pedlar's barrel-lid with a strap, the boots nobody has said anything about, the

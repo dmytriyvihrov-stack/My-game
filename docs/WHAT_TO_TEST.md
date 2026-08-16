@@ -280,6 +280,73 @@ want the ogre to win on that one specific card, say so** - the order lives in on
 
 ⛔ **Would be a bug:** five doors anywhere, or a race door vanishing for a company that has only
 that race.
+## ⚑ THE HOLD'S MEN, THE PARCEL, AND THE DOOR INTO THE BANDIT CAMP  *(#160 · 2026-08-16 · build log 8f.188)*
+
+**What it is.** The road now keeps a note of the cruel things you do, and two different people catch
+up with you near the end of the act depending on what is on it. Then the last camp has a third door.
+
+**The one thing to know before you play it:** the game counts **evil doors** - the ones wearing ☠ -
+and nothing else. Lying, robbing nobody, and paying bribes do not count. There are eleven of them
+on the road plus two new ones.
+
+### 1. The stop on the road - THE HOLD'S MEN
+
+**How to reach it in three steps.** ① Take at least one ☠ door anywhere on the road (the pedlar's
+cart, the tax collector, the salt-wives, the clan cart, the milestone, the war grave, the
+waterworks, the toll-post, the shrine door, the warm spring, or finishing the winners at Blood on
+the Road). ② Play on to the last fork, past the Warm Spring. ③ Arrive at the quiet slot node between
+the fork and the Door-Shrine - **whichever arm you took**. They are standing in the road.
+
+**What should happen.** Riders in one coat, Grausen Hold's mark, three of them crested.
+
+- **With exactly one deed on you** he ASKS: *"Word came west. About &lt;the thing you did&gt;. Was that
+  this company?"* Three doors: **lie** (costs mood), **pay 40 crowns**, or **fight**.
+- **With two or more** he does not ask, he RECITES the first two by name and the hounds come off the
+  ring. Two doors: **pay 100 crowns**, or **fight**.
+
+**What would be a bug.** The card naming a deed you did not do, or naming *"something nobody will
+put a name to"*. It firing on a node with a fight on it, or on the node right before one. It firing
+twice. It firing at all on a company that has done nothing. The bribe being the only door when you
+cannot afford it (it should grey out and leave the fight live).
+
+### 2. The parcel - A RIDER CATCHES UP
+
+**How to reach it in three steps.** ① Play a run taking **no** ☠ doors at all. ② Get to the
+Door-Shrine, two roads from the Snare. ③ A boy catches up with the column before the shrine card.
+
+**What should happen.** A parcel with no sender, and *"they said to say thank you. For the road."*
+Inside is **The Roll of Names** - the only trinket in the game with no downside (+4 nerve, +8 hp,
++4 to hit). It should show on the card itself before you click, the way the coin does.
+
+**What would be a bug.** Getting it after doing something cruel. Not getting it on a clean run. The
+shrine's own card never turning up afterwards.
+
+### 3. The third door at the Snare - ASK TO JOIN THEM
+
+**How to reach it in three steps.** ① Get to the Snare. ② Read the card - there is a third door now.
+③ Take it. **What happens depends entirely on the ledger:**
+
+| what you have done | what they say |
+|---|---|
+| nothing | they laugh at you, and reach for the maul |
+| one thing | *"We heard."* Something almost warm in his face, and it does not move. *"Once is a bad night. It is not a life."* |
+| two or more | *"You are our calibre of filth. Come in. Eat something."* - and then an arrow goes into the back of the man holding the bell-line |
+
+**If they take you in**, the last fight changes completely: **the clan fights beside you** (their
+whole line minus one body) against a Hold host of seventeen. It is meant to be sweaty. It is
+measured at roughly a coin-flip, with about three of six carried off and the clan close to wiped.
+
+⚠ **The cage is NOT opened on that path, deliberately.** Wynn Aldreth stays in it, you do not get the
+brass token or the Ashmoor contact, and the act ends with the contract unfulfilled. **That is the
+price of the door and I want to know whether it reads as a price or as a missing feature.**
+
+**What would be a bug.** The clan fighting you as well as the Hold. Two bodies on one hex. Winning
+and landing back on the map instead of on END OF SLICE. Any answer that does not match the table.
+
+**What I would like your call on.** Whether joining them should be **harder** than the honest
+finale rather than about the same. Right now bringing eight friends makes it slightly easier, and
+what pays for that is losing Wynn - I think that is the right trade, but it is a taste call and it
+is yours.
 
 ---
 
