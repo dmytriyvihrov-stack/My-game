@@ -216,35 +216,6 @@ main{padding:26px 22px}
   background:#181207;border-top:1px solid #2a2114}
 .sto .doors .mid{grid-column:1 / -1}
 
-/* ══ D - THE STRIP ════════════════════════════════════════════════════════
-   The cut. A pickup has no decision to protect, so it does not get a screen
-   at all: it happens ON the road. */
-.roadmock{width:620px;height:300px;position:relative;overflow:hidden;
-  border:1px solid #2a2114;background:
-    radial-gradient(ellipse at 40% 30%,#1a2015,#100c06 70%)}
-.roadmock .topbar{position:absolute;top:0;left:0;right:0;height:34px;background:#12100a;
-  border-bottom:1px solid #2a2114;display:flex;align-items:center;gap:16px;padding:0 12px;
-  font-family:var(--mono);font-size:11px;color:#a89468}
-.roadmock .topbar b{color:var(--g4);font-weight:400}
-.roadmock .path{position:absolute;left:-4%;right:-4%;top:52%;height:16px;
-  background:linear-gradient(to bottom,#2a2114,#1a1509);transform:rotate(-3deg);opacity:.8}
-.roadmock .party{position:absolute;left:120px;top:calc(52% - 30px);display:flex;gap:2px}
-.roadmock .party img{width:26px;height:31px;object-fit:cover;object-position:top center;
-  border:1px solid #3d2f1d;filter:drop-shadow(0 3px 5px #000)}
-.strip{position:absolute;left:12px;right:12px;bottom:12px;z-index:5;display:flex;gap:12px;
-  align-items:center;background:rgba(24,18,10,.97);border:1px solid #5c4a2c;
-  box-shadow:0 8px 26px rgba(0,0,0,.75);padding:10px 12px;
-  animation:slidein .32s cubic-bezier(.2,.9,.3,1)}
-@keyframes slidein{from{transform:translateY(30px);opacity:0}to{transform:none;opacity:1}}
-.strip img.pic{width:84px;height:62px;object-fit:cover;outline:1px solid #4d3c22;outline-offset:-1px;flex:0 0 84px}
-.strip .txt{flex:1 1 auto;font-size:13.5px;line-height:1.36;color:var(--g-body)}
-.strip .txt em{font-style:normal;color:#e0d3b4}
-.strip .fxc{padding:5px 9px 5px 8px}
-.strip .fxi{font-size:16px}
-.strip .fxn{font-size:16px}
-.strip .go{font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--g4);
-  background:#2a2114;border:1px solid #4d3c22;padding:9px 13px;cursor:pointer;white-space:nowrap}
-.strip .go:hover{background:#372a18;border-color:var(--g3)}
 .replay{font-family:var(--mono);font-size:10px;letter-spacing:.1em;color:#6b5330;background:none;
   border:1px solid #2a2114;padding:6px 11px;cursor:pointer}
 .replay:hover{color:var(--g3);border-color:#4d3c22}
@@ -293,28 +264,118 @@ main{padding:26px 22px}
   background:#14100a;border:1px solid #2a2114;color:#6b5330;cursor:pointer}
 .flip button.on{color:var(--g4);border-color:#4d3c22;background:#241c10}
 
-/* ══ F - THE SIGIL LINE ═══════════════════════════════════════════════════
-   The card readable at two depths: a band of marks for the glance, prose
-   underneath for whoever wants it. */
-.sig{width:620px;background:rgba(24,18,10,.97);border:1px solid #5c4a2c;
-  box-shadow:0 12px 40px rgba(0,0,0,.7);padding:14px 16px;display:flex;
-  flex-direction:column;gap:11px}
-.sig h3{font-family:var(--display);font-size:18px;color:#e0d3b4;margin:0;font-weight:600;letter-spacing:.03em}
-.sig .art{width:100%;height:132px;object-fit:cover;outline:1px solid #4d3c22;outline-offset:-1px}
-.sigband{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}
-.sg{background:#181207;border:1px solid #3d2f1d;padding:9px 6px 7px;text-align:center;cursor:pointer;
-  transition:border-color .15s ease,background .15s ease}
-.sg:hover,.sg.on{border-color:var(--g3);background:#241c10}
-.sg .gl{font-size:26px;line-height:1;display:block;margin-bottom:6px;filter:saturate(.85)}
-.sg .lb{font-family:var(--mono);font-size:8.5px;letter-spacing:.13em;color:#8a7449;display:block;line-height:1.3}
-.sg.on .lb{color:var(--g4)}
-.sigsaid{border-left:3px solid var(--g2);padding:2px 0 2px 11px;font-size:14.5px;line-height:1.42;
-  color:#e0d3b4;min-height:40px;display:flex;align-items:center}
-.sigsaid.empty{color:#5c4a2c;font-family:var(--mono);font-size:11px;letter-spacing:.1em;font-style:normal}
-.sigrec{display:flex;gap:7px;align-items:center;font-family:var(--mono);font-size:9.5px;
-  letter-spacing:.1em;color:#5c4a2c;border-top:1px solid #2a2114;padding-top:9px}
-.sigrec .gl2{font-size:15px;filter:grayscale(.3)}
-.sigrec b{color:#7a6a4c;font-weight:400}
+/* ══ I - THE PLATE ════════════════════════════════════════════════════════
+   Hades' ACTUAL dialogue box, which is the one shape A and E got wrong. The
+   speaker is not a cut-out standing in the frame, it is a small framed
+   MEDALLION on a plate, and the painting behind it is never covered.
+
+   ⛔ AND THIS IS A PRODUCTION FACT, NOT A TASTE. The build's portraits are
+   square JPEG heads WITH BACKGROUNDS (POR01..POR09, P6..P8). They cannot be
+   cut out, so masking one into a bust leaves the rough edge that made A and
+   E look pasted. A ring turns that same file into furniture: the frame is
+   doing the job the alpha channel cannot. */
+.plate{width:660px;background:#100c06;border:1px solid #5c4a2c;
+  box-shadow:0 12px 40px rgba(0,0,0,.7);cursor:pointer;user-select:none}
+.plate .scene3{position:relative;height:250px;overflow:hidden}
+.plate .scene3 img.bg{width:100%;height:100%;object-fit:cover;filter:saturate(.9)}
+/* the painting keeps its own frame and is darkened ONLY at the very bottom,
+   where the plate is about to sit on it */
+.plate .scene3::after{content:"";position:absolute;inset:0;
+  background:linear-gradient(to bottom,rgba(16,12,6,.3) 0,transparent 22%,transparent 74%,rgba(16,12,6,.75) 100%)}
+.plate h3{position:absolute;top:11px;left:0;right:0;z-index:3;text-align:center;margin:0;
+  font-family:var(--display);font-size:14px;letter-spacing:.2em;color:#d8cba8;font-weight:600;
+  text-shadow:0 2px 10px #000,0 0 20px #000}
+.plate .beats3{position:absolute;bottom:10px;left:0;right:0;z-index:3;display:flex;gap:5px;justify-content:center}
+.plate .beats3 span{width:16px;height:2px;background:rgba(61,47,29,.9)}
+.plate .beats3 span.on{background:var(--g3)}
+
+.plate .box{position:relative;background:linear-gradient(to bottom,#1f1810,#161009);
+  border-top:1px solid #4d3c22;padding:16px 20px 17px 100px;min-height:112px;
+  display:flex;flex-direction:column;justify-content:center;gap:6px}
+/* corner brackets. Ornament out of two borders, no art, and it is what makes
+   a flat panel read as a FRAME rather than as a div. */
+.plate .box::before,.plate .box::after{content:"";position:absolute;width:11px;height:11px;
+  border:1px solid var(--g2);opacity:.55}
+.plate .box::before{top:7px;right:7px;border-left:none;border-bottom:none}
+.plate .box::after{bottom:7px;right:7px;border-left:none;border-top:none}
+
+/* ⚑ THE MEDALLION. It overlaps the painting's bottom edge on purpose: that
+   overlap is what makes it read as a badge pinned to the plate rather than
+   as an avatar sitting in a list. */
+.plate .med3{position:absolute;left:18px;top:-26px;width:66px;height:66px;border-radius:50%;
+  background:#100c06;
+  box-shadow:0 0 0 1px #6b5330, 0 0 0 4px #100c06, 0 0 0 5px #3d2f1d,
+             0 7px 20px rgba(0,0,0,.85);
+  transition:box-shadow .25s ease}
+.plate .med3 img{width:100%;height:100%;border-radius:50%;object-fit:cover;
+  object-position:top center;filter:saturate(.9) contrast(1.04)}
+/* the ring is seated with an inner shadow so the head does not float in it */
+.plate .med3::after{content:"";position:absolute;inset:0;border-radius:50%;
+  box-shadow:inset 0 0 12px rgba(0,0,0,.75), inset 0 2px 5px rgba(0,0,0,.5)}
+/* whoever is talking gets a warmer ring. One property, and it replaces the
+   whole dim-the-other-bust device from E. */
+.plate .med3.them{box-shadow:0 0 0 1px #a06a3a, 0 0 0 4px #100c06, 0 0 0 5px #4d3320,
+                             0 7px 20px rgba(0,0,0,.85)}
+.plate .med3.road{width:52px;height:52px;top:-19px;left:25px;
+  box-shadow:0 0 0 1px #3d2f1d, 0 0 0 4px #100c06, 0 0 0 5px #2a2114, 0 7px 20px rgba(0,0,0,.85)}
+.plate .med3.road .rune{display:flex;align-items:center;justify-content:center;width:100%;height:100%;
+  font-size:21px;color:#6b5330}
+.plate .nm3{font-family:var(--mono);font-size:10px;letter-spacing:.18em;color:var(--v-crew)}
+.plate .nm3.them{color:var(--v-them)}
+.plate .nm3.road{color:var(--v-road)}
+.plate .nm3 .job{color:#6b5330;letter-spacing:.09em}
+.plate .tx3{font-size:15.5px;line-height:1.42;color:#e6dcc4;text-wrap:pretty}
+.plate .tx3.q{font-style:italic;color:#f2e8cf}
+.plate .adv3{position:absolute;right:16px;bottom:9px;font-family:var(--mono);font-size:9.5px;
+  letter-spacing:.14em;color:#6b5330;animation:pulse 1.5s ease-in-out infinite}
+.plate .doors3{padding:12px 14px 14px;display:flex;flex-direction:column;gap:6px;
+  border-top:1px solid #2a2114;background:#181207}
+
+/* ══ H - THE OFFER ════════════════════════════════════════════════════════
+   The third Hades shape, and the only one on this page that is not a text
+   screen at all: the boon pick. The DOORS are the screen, laid side by side
+   as cards, and the prose shrinks to one line above them.
+   ⚠ Hades always offers three. Style rule 4 allows four, so the toggle
+   drives both: four is the stress case and it is where the layout decides
+   whether it is honest. */
+.off{background:#100c06;border:1px solid #5c4a2c;box-shadow:0 12px 40px rgba(0,0,0,.7);
+  position:relative;overflow:hidden}
+.off .bgart{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+  filter:saturate(.55) brightness(.34) blur(1px)}
+.off .veil{position:absolute;inset:0;background:
+  radial-gradient(ellipse at 50% 0%,rgba(16,12,6,.55),rgba(16,12,6,.93) 72%)}
+.off .inner{position:relative;z-index:2;padding:18px 18px 20px}
+.off h3{font-family:var(--display);font-size:17px;color:#e0d3b4;margin:0 0 7px;font-weight:600;
+  letter-spacing:.16em;text-align:center;text-shadow:0 2px 10px #000}
+.off .setup{font-size:14.5px;line-height:1.4;color:var(--g-body);text-align:center;
+  max-width:640px;margin:0 auto 16px;text-wrap:pretty;text-shadow:0 1px 6px #000}
+.offrow{display:grid;gap:10px}
+/* ⛔ ONE COLUMN PER DOOR. A card that shrinks below ~190 stops being a card
+   and becomes a button with a picture on it, which is the shape this whole
+   panel exists to get away from. */
+.offc{background:linear-gradient(to bottom,#241c10,#181207);border:1px solid #4d3c22;
+  padding:14px 12px 12px;display:flex;flex-direction:column;align-items:center;gap:9px;
+  cursor:pointer;text-align:center;position:relative;
+  transition:transform .16s ease,border-color .16s ease,box-shadow .16s ease}
+.offc:hover{transform:translateY(-5px);border-color:var(--g3);
+  box-shadow:0 10px 26px rgba(0,0,0,.6),0 0 0 1px rgba(163,134,82,.3)}
+.offc .med{width:56px;height:56px;flex:0 0 56px;display:flex;align-items:center;
+  justify-content:center;font-size:27px;line-height:1;
+  background:radial-gradient(circle at 50% 34%,#2f2413,#14100a);
+  border:1px solid #4d3c22;border-radius:50%;box-shadow:inset 0 0 14px rgba(0,0,0,.7)}
+.offc .lab{font-family:var(--display);font-size:14.5px;line-height:1.28;color:var(--g4);
+  font-weight:600;letter-spacing:.02em;text-wrap:balance;min-height:37px;
+  display:flex;align-items:center}
+.offc .rec{font-family:var(--mono);font-size:11px;line-height:1.42;color:#c2a877;
+  border-top:1px solid #3d2f1d;padding-top:9px;width:100%;margin-top:auto}
+.offc.danger{border-color:#8c3a31;background:linear-gradient(to bottom,#2c1a15,#1a0f0c)}
+.offc.danger .lab{color:#e08a7e}
+.offc.danger .med{border-color:#8c3a31;background:radial-gradient(circle at 50% 34%,#3a1d18,#150b09)}
+.offc.danger:hover{border-color:var(--blood-lit);
+  box-shadow:0 10px 26px rgba(0,0,0,.6),0 0 0 1px rgba(163,59,52,.35)}
+/* the one mark this shape adds, and it is a STATE and not a number */
+.offc .flag{position:absolute;top:-1px;left:-1px;right:-1px;font-family:var(--mono);
+  font-size:8.5px;letter-spacing:.16em;padding:3px 0;background:#8c3a31;color:#f0d8d2}
 
 /* ══ G - HIS OWN STORY ════════════════════════════════════════════════════ */
 .own{width:620px;background:rgba(24,18,10,.97);border:1px solid #5c4a2c;
@@ -349,8 +410,8 @@ h2:first-child{margin-top:0}
 </style>
 
 <header>
-  <h1>Event formats - seven sketches against the shipped card</h1>
-  <div class="sub">separate prototype · real CSS and art from grimtoll_slice.html · real card text from clash / toll / pedlar / coin · the voice lines are new and not canon</div>
+  <h1>Event formats - six sketches against the shipped card</h1>
+  <div class="sub">separate prototype · real CSS and art from grimtoll_slice.html · real card text from clash / toll / pedlar / coin · the voice lines are new and not canon · the strip and the sigils were cut on 2026-08-14</div>
   <nav id="nav"></nav>
 </header>
 
@@ -366,9 +427,9 @@ h2:first-child{margin-top:0}
       <p>The container every one of the <b>34 road cards</b> uses: title, letterbox painting, a block of narrator prose, the doors, then an outcome block with chips.</p>
       <h4>WHY IT READS AS "TEXT"</h4>
       <p>Nothing here is badly written and nothing is too long. The mean card is <b>107 words</b>, the ceiling is 175, and Battle Brothers runs several times that. The problem is that <b>all 34 cards have the same rhythm</b>, and there is no face anywhere: three paragraphs arrive at once, from nobody in particular, about people you cannot see.</p>
-      <h4>WHAT THE SEVEN SKETCHES CHANGE</h4>
-      <p>None of them adds words. A gives the words a <b>mouth</b>. B gives them a <b>stack</b>. C gives them a <b>geography</b>. D takes the screen away entirely. E gives them <b>somebody to argue with</b>.</p>
-      <p>The last two are not containers. F puts a <b>mark</b> where a fact used to be a sentence. G hands the whole card to <b>one person</b>, who may be wrong about it.</p>
+      <h4>WHAT THE SKETCHES CHANGE</h4>
+      <p>None of them adds words. A gives the words a <b>mouth</b>. E gives them <b>somebody to argue with</b>. C gives them a <b>geography</b>. H throws the paragraph away and makes the <b>choice</b> the screen. B gives them a <b>stack</b>.</p>
+      <p>G is not a container at all. It hands the whole card to <b>one person</b>, who may be wrong about it.</p>
     </div>
   </section>
 
@@ -435,26 +496,6 @@ h2:first-child{margin-top:0}
     </div>
   </section>
 
-  <!-- ═══ D · THE STRIP ═══════════════════════════════════════════════ -->
-  <section class="panel" data-k="strip">
-    <div class="stage">
-      <div class="stagelbl">D · THE STRIP · A PICKUP NEVER OPENS A SCREEN</div>
-      <div class="roadmock" id="stripCard"></div>
-      <button class="replay" onclick="mountStrip()">↺ replay the arrival</button>
-    </div>
-    <div class="note">
-      <h4>WHAT IT IS</h4>
-      <p>The only sketch here that is a <b>cut</b> rather than an addition, which makes it the only one that fits the clarity pass without asking for an exception.</p>
-      <p>A one-door pickup has no decision to protect. The rules already say it wears its loot on the card instead of hiding it. This goes one step further: <b>it does not get a card at all</b>. It happens on the road, the company keeps walking, and one button dismisses it.</p>
-      <h4>WHY IT MAKES THE OTHER THREE BETTER</h4>
-      <p><b>14 of 34 road cards are LIGHT.</b> If a third of the deck stops taking over the screen, the full card stops being the thing that always happens and becomes the thing that happens when it matters. Rhythm is made by contrast, and right now there is none.</p>
-      <h4>WHAT IT COSTS</h4>
-      <p><span class="tag">free</span> the gate exists: <code>visible.length===1 &amp;&amp; !visible[0].battle</code>, computed after the need filters.</p>
-      <p><span class="tag cost">small</span> a road-level strip and its dismiss.</p>
-      <p><span class="tag risk">loss</span> a light card loses its painting at full size. Some of those paintings are good.</p>
-    </div>
-  </section>
-
   <!-- ═══ E · THE TWO-HANDER ══════════════════════════════════════════ -->
   <section class="panel" data-k="two">
     <div class="stage">
@@ -477,24 +518,48 @@ h2:first-child{margin-top:0}
     </div>
   </section>
 
-  <!-- ═══ F · THE SIGIL LINE ══════════════════════════════════════════ -->
-  <section class="panel" data-k="sigil">
+  <!-- ═══ I · THE PLATE ═══════════════════════════════════════════════ -->
+  <section class="panel" data-k="plate">
     <div class="stage">
-      <div class="stagelbl">F · THE SIGIL LINE · CLICK A MARK TO OPEN IT</div>
-      <div class="sig" id="sigCard"></div>
-      <button class="replay" onclick="mountSigil()">↺ close them all</button>
+      <div class="stagelbl">I · THE PLATE (Hades, the actual dialogue box) · SAME BEATS AS E, COMPARE THEM</div>
+      <div class="plate" id="plateCard"></div>
+      <button class="replay" onclick="mountPlate()">↺ replay</button>
     </div>
     <div class="note">
-      <h4>WHAT IT IS</h4>
-      <p>The card readable at <b>two depths</b>. A band of marks states the facts for the glance. The prose underneath is there for whoever wants it, and it no longer has to carry the information, so it can be mood instead of report.</p>
-      <p>The player picks the depth. That is the honest version of "make reading more interesting": some nights you read the card, some nights you read the marks.</p>
-      <h4>THE RULE THAT MAKES IT A LANGUAGE</h4>
-      <p><b>A mark used once is decoration. A mark used on six cards is a language.</b> The strip at the foot is the whole point: the same ⚑ on the toll, the cart and the wedding teaches the Snare Clan without a codex entry.</p>
-      <p>The build already has 11 marks that work this way, from <code>CHOICE_ICO</code> and <code>RACE_ICO</code>.</p>
-      <h4>WHERE THIS GOES WRONG</h4>
-      <p><span class="tag risk">receipt</span> ⛔ a mark that says <b>A PURSE</b> is one step from promising an amount. The rule holds: marks are <b>intent</b>, the chips are the receipt, and no number ever appears in both.</p>
-      <p><span class="tag risk">one meaning</span> ⛔ 💀 is already the lowest morale face. A symbol may not mean two things on one screen, so a real set has to be audited against the mood ladder and the resource icons before a single new one is drawn.</p>
-      <p><span class="tag cost">art</span> emoji will not carry a house language. A real set is drawn, and that is the largest art job on this page.</p>
+      <h4>THIS IS THE ONE YOU MEANT</h4>
+      <p>Hades does not paste a cut-out over the art. It puts a <b>small framed medallion on a plate</b>, and the painting behind stays whole.</p>
+      <p>It runs the <b>same four beats as E</b>, same words, same pedlar. The only thing that changed is how the speaker is drawn. Flip between the two tabs.</p>
+      <h4>WHY A AND E LOOKED PASTED, AND IT IS NOT TASTE</h4>
+      <p>⛔ The build's portraits are <b>square JPEG heads with backgrounds</b>. There is no alpha channel to cut, so masking one into a bust always leaves that soft rectangular edge. It was never going to look right.</p>
+      <p><b>A ring turns the same file into furniture.</b> The frame does the job the alpha channel cannot, and it needs no new art at all: one <code>border-radius</code>, three stacked rings in a <code>box-shadow</code>, and an inset shadow to seat the head in it.</p>
+      <h4>THE DEVICE IT REPLACES</h4>
+      <p>E dimmed the silent bust to say who was talking. Here the <b>ring warms</b> instead: gold for the company, bronze for whoever is not, dull iron with a rune when it is the narrator. One property, no second portrait needed, and it works when there are five speakers rather than two.</p>
+      <h4>WHAT IT COSTS</h4>
+      <p><span class="tag">free</span> no art, no cut-outs, no new files. Every portrait in the build already fits this frame.</p>
+      <p><span class="tag">free</span> <b>the painting is never covered</b>, which is the other half of the complaint: the event art is the most expensive thing on the card and A and E were both standing on it.</p>
+      <p><span class="tag cost">ornament</span> the corner brackets are two CSS pseudo-elements. A real frame would be drawn, and that is the only art this shape ever wants.</p>
+    </div>
+  </section>
+
+  <!-- ═══ H · THE OFFER ═══════════════════════════════════════════════ -->
+  <section class="panel wide" data-k="offer">
+    <div class="stage">
+      <div class="stagelbl">H · THE OFFER (Hades, the boon pick) · THE DOORS ARE THE SCREEN</div>
+      <div class="flip" id="offFlip"></div>
+      <div class="off" id="offCard"></div>
+    </div>
+    <div class="note">
+      <h4>THE SHAPE STOLEN</h4>
+      <p>The third Hades screen, and the one that is <b>not a text screen at all</b>. When Hades offers you a boon it does not narrate: it lays two or three cards side by side, each with a medallion, a name, one line of effect, and lets the choosing be the whole interaction.</p>
+      <h4>WHY IT BELONGS HERE MORE THAN IT LOOKS</h4>
+      <p>Every part of it <b>already exists on a Grimtoll door</b>. The medallion is the intent glyph from #154. The effect line is the <code>c:</code> sub-line. The rarity colour is <code>danger:true</code>. Nothing new is invented, the pieces are just given room.</p>
+      <p>And it answers the complaint directly: the prose drops to <b>one line</b>, and what the player spends their attention on is the decision instead of the paragraph.</p>
+      <h4>THE TOGGLE, AND WHY IT IS THE REAL TEST</h4>
+      <p>Hades always offers three. Style rule 4 permits four. <b>Switch to the toll-man above</b> and watch the cards get narrow: that is the stress case, and it is where this layout has to prove it is honest rather than pretty.</p>
+      <h4>WHAT IT COSTS AND WHAT IT LOSES</h4>
+      <p><span class="tag">free</span> glyphs, sub-lines and the danger flag are all shipped fields.</p>
+      <p><span class="tag cost">width</span> it wants a wide stage, not a 620px dialog.</p>
+      <p><span class="tag risk">the prose</span> ⛔ this is the one shape on the page that <b>cuts writing rather than reframing it</b>. A 140-word heavy card does not fit here and must not be squeezed in. It is a container for the cards that were always a choice between three things, and using it everywhere would delete the road's voice to make a menu.</p>
     </div>
   </section>
 
@@ -525,40 +590,41 @@ h2:first-child{margin-top:0}
     <h2>Which format for which card</h2>
     <p>Nothing says one container has to serve all 34. The build already sorts cards three ways it could reuse: the <b>length band</b> (light 45-90, medium 90-140, heavy 140-175), whether a door starts a <b>battle</b>, and whether the card has <b>one live door or several</b>.</p>
     <table>
-      <tr><th style="width:96px">FORMAT</th><th style="width:150px">FIRES WHEN</th><th>THE ROAD DECK</th><th style="width:230px">WHY THAT RULE</th></tr>
-      <tr><td class="f">D · STRIP</td><td class="f">one live door,<br>no battle</td>
-        <td><b>14 light cards</b>, roughly. coin · cache · snare · hollow · milestone</td>
-        <td>No decision to protect, so a screen buys nothing and costs a click</td></tr>
-      <tr><td class="f">A · SPEAKER</td><td class="f">the default,<br>2 or more doors</td>
-        <td><b>most of the deck</b>. toll · pedlar · taxman · shrine · oasis</td>
-        <td>Beats already exist in the prose. This is the cheapest change per card on the page</td></tr>
+      <tr><th style="width:104px">FORMAT</th><th style="width:150px">FIRES WHEN</th><th>THE ROAD DECK</th><th style="width:240px">WHY THAT RULE</th></tr>
+      <tr><td class="f">I · THE PLATE<br><span style="color:#5c4a2c">(A and E are its<br>bust variant)</span></td>
+        <td class="f">the default</td>
+        <td><b>most of the deck</b>. toll · pedlar · taxman · shrine · oasis · saltwives</td>
+        <td>Beats already exist in the prose, the frame fits the portraits the build actually has, and the painting stays whole</td></tr>
+      <tr><td class="f">H · THE OFFER</td><td class="f">the card was<br>always a choice<br>between things</td>
+        <td><b>maybe 5</b>. pedlar's table · the muster · a shrine's three prayers</td>
+        <td>Every part of it is a shipped door field. But it cuts prose rather than reframing it, so it cannot be the default</td></tr>
       <tr><td class="f">C · STANDOFF</td><td class="f">two named sides<br>on screen</td>
         <td><b>about 6</b>. clash · wedding · ratcart · deadco</td>
         <td>The layout carries the decision. Wasted on a card with one side</td></tr>
-      <tr><td class="f">E · TWO-HANDER</td><td class="f">somebody talks<br>back</td>
-        <td><b>about 8</b>. pedlar · taxman · ratcart · saltwives · the muster</td>
-        <td>Two busts and a dim. Wasted where nobody is listening, which is most of the road</td></tr>
+      <tr><td class="f">G · HIS STORY</td><td class="f">a voice, not<br>a container</td>
+        <td><b>four or five, never more</b>. coin · star · the dream · the spring</td>
+        <td>First person fights the house voice. Rare, it is a change of key. Everywhere, it is a different game</td></tr>
       <tr><td class="f">B · COLUMN</td><td class="f">a conversation<br>with somebody</td>
         <td><b>the camps</b>, and the long fire. The CAMPS deck is judgments, not actions</td>
         <td>Accumulating lines is what a conversation is. A pickup is not a conversation</td></tr>
-      <tr><td class="f">G · HIS STORY</td><td class="f">one named person<br>is the subject</td>
-        <td><b>four or five, never more</b>. coin · star · the dream · the spring</td>
-        <td>First person fights the house voice. Rare, it is a change of key. Everywhere, it is a different game</td></tr>
-      <tr><td class="f">F · SIGILS</td><td class="f">a layer, not<br>a container</td>
-        <td><b>all of them, or none</b>. It sits on top of whichever container a card uses</td>
-        <td>A mark is only a language if it recurs. Half a set is worse than none</td></tr>
     </table>
 
-    <h2>Two of these are not containers at all</h2>
-    <p><b>F is a layer</b> and <b>G is a voice.</b> Neither competes with A through E: the sigil band can sit on top of the speaker card, and the first-person story can be told inside the strip. That is why the table above gives them a row and not a slot. It also means they can be tried on <b>one card</b> without deciding anything.</p>
+    <h2>A, E and I are one format wearing three treatments</h2>
+    <p>This is the thing that came out of building them side by side. <b>A is E with one bust, and I is the same beats with the bust replaced by a framed medallion.</b> Same renderer, same beat walk, same door footer. The real decision was never which of the three: it is whether the road uses <b>a beat-walked card with a named speaker</b>, and then how that speaker is drawn.</p>
+    <p>So if A felt uncertain, that instinct was reading a production problem rather than a layout one. <b>The portraits in this build are square JPEG heads with backgrounds.</b> There is no alpha to cut, so any bust treatment leaves the pasted edge that A and E both have. I solves it by not cutting anything, and the frame turns out to be what the missing alpha channel was for.</p>
 
-    <h2>If only one of them gets built</h2>
-    <p><b>D and A, as one entry.</b> D is a cut and pays for itself immediately: a third of the deck stops stopping the game. A is the cheapest per-card gain in the set, because the beats and the cast system and the portraits are all already in the build, and it is the one that answers the actual complaint, which is that reading is not interesting rather than that reading is long.</p>
-    <p><b>E is A with a second bust</b>, so if A is built, E costs one more portrait slot and a dim class. Those two should be one entry, not two.</p>
-    <p>C is the one to build <b>second and narrow</b>: six cards, and it will look better in a screenshot than anything else here.</p>
-    <p>G is the cheapest <b>test</b> on the whole page. It is one card, rewritten three times, and it is already cast. If the coin told by Skree reads better than the coin told by nobody, that answers the question this page was opened to ask.</p>
-    <p>B is the biggest and the one I would hold. It wants a locked-door convention, a trait-voice table and a new scrolling body, and its natural home is the camps rather than the road.</p>
-    <p>F I would <b>not start from the art</b>. Audit the marks that already exist first, against the mood faces and the resource icons, because the set has to be collision-free before it is beautiful.</p>
+    <h2>The recommendation, in order</h2>
+    <p><b>1. Build I.</b> One container for the road, medallion treatment, painting never covered. The beats are already marked with <code>\n\n</code>, <code>cast()</code> already picks who speaks, and the portraits finally fit their container. It is the only shape here that improves <b>every</b> card rather than a category of them.</p>
+    <p><b>2. C, narrow, six cards.</b> It is the best-looking screen on this page and it is a special case, not a system. Build it after I so it inherits the same door footer.</p>
+    <p><b>3. H on a handful.</b> Cheap once I exists, because it reuses the same door fields. Never let it spread: it is the one shape that deletes prose instead of reframing it.</p>
+    <p><b>4. G as a writing experiment</b>, on one card, before any of the above. See the box below.</p>
+    <p><b>5. B held.</b> Its home is the camps, and the camps are not the complaint.</p>
+    <p>A and E stay on the page as <b>the rejected treatment</b> rather than as options. They are worth keeping open beside I for one reason: they show what the same four beats look like when the speaker is standing on the painting instead of framed beside it.</p>
+
+    <h2>The test to run before any of it</h2>
+    <p>Every format on this page is a bet on one idea: <b>that attributed lines read better than narrated ones</b>. The container is the expensive half of that bet and the writing is the load-bearing half, so the writing should be tested first, and it needs no code at all.</p>
+    <p><b>Take three cards. Rewrite each so one or two lines belong to somebody in the company. Read the six versions in a text file.</b> If the attributed versions are not obviously better as plain text, no amount of busts and dimming will rescue them, and the answer is somewhere else entirely.</p>
+    <p>G is that test with the smallest possible surface: one card, three tellers, already cast by the game. It is on this page precisely because it can be judged without building anything.</p>
 
     <h2>What none of these fix</h2>
     <p>The measurement I would take before any of it: <b>how many of the 34 cards change a single word if you swap the party?</b> Attribution only pays if the speaker is actually different from run to run. If the answer is small, the first job is the <code>{ANY}</code> and <code>{OGRE}</code> tokens, not the renderer.</p>
@@ -737,21 +803,75 @@ function mountStandoff(){
     '</div>';
 }
 
-/* ══ D · THE STRIP ════════════════════════════════════════════════════ */
-function mountStrip(){
-  const party = [P.you,P.vesna,P.marrow,P.skree,P.bruht].map(p=>'<img src="'+p.art+'">').join('');
-  document.getElementById('stripCard').innerHTML =
-    '<div class="topbar"><span>◐ DAY <b>6</b></span><span>◉ <b>11</b></span>'+
-      '<span>🌾 <b>24</b></span><span>🙂 <b>STEADY</b></span></div>'+
-    '<div class="path"></div>'+
-    '<div class="party">'+party+'</div>'+
-    '<div class="strip">'+
-      '<img class="pic" src="'+A.E13+'">'+
-      '<div class="txt">A coin in the mud of the wheel-rut, shining where nothing else on this road shines. '+
-        '<em>Skree picks it up. No head, no writing, heavier than it should be. Warm.</em></div>'+
-      '<div class="fxc fx-up"><span class="fxi">🙂</span><span><span class="fxn">+8</span>'+
-        '<span class="fxl">MORALE</span></span></div>'+
-      '<button class="go">CARRY ON</button>'+
+/* ══ I · THE PLATE ════════════════════════════════════════════════════
+   The SAME four beats as E, word for word, so the two tabs are a real
+   comparison and not two different scenes wearing two different treatments.
+   ══════════════════════════════════════════════════════════════════════ */
+let plateAt = 0;
+function mountPlate(){ plateAt = 0; drawPlate(); }
+function drawPlate(){
+  const b = PEDLAR.beats[plateAt], last = plateAt === PEDLAR.beats.length-1;
+  const kind = b.s === 'him' ? 'them' : b.s === 'road' ? 'road' : 'you';
+  const face = b.s === 'him' ? PEDLAR.him.art : b.s === 'you' ? P.you.art : null;
+  const name = b.s === 'him' ? PEDLAR.him.nm+' <span class="job">· '+PEDLAR.him.job+'</span>'
+             : b.s === 'you' ? P.you.nm.toUpperCase()+' <span class="job">· '+P.you.job+'</span>'
+             : 'THE ROAD';
+  const el = document.getElementById('plateCard');
+  el.innerHTML =
+    '<div class="scene3">'+
+      '<img class="bg" src="'+PEDLAR.art+'">'+
+      '<h3>'+PEDLAR.title+'</h3>'+
+      '<div class="beats3">'+PEDLAR.beats.map((_,i)=>'<span class="'+(i<=plateAt?'on':'')+'"></span>').join('')+'</div>'+
+    '</div>'+
+    '<div class="box">'+
+      '<div class="med3 '+kind+'">'+
+        (face ? '<img src="'+face+'">' : '<div class="rune">◆</div>')+
+      '</div>'+
+      '<div class="nm3 '+kind+'">'+name+'</div>'+
+      '<div class="tx3'+(b.q?' q':'')+'">'+(b.q?'"'+b.tx+'"':b.tx)+'</div>'+
+      (last?'':'<div class="adv3">CLICK ▸</div>')+
+    '</div>'+
+    (last ? '<div class="doors3">'+PEDLAR.doors.act.map(doorHTML).join('')+'</div>' : '');
+  el.onclick = e => {
+    if(e.target.closest('.doors3')) return;
+    if(plateAt < PEDLAR.beats.length-1){ plateAt++; drawPlate(); }
+  };
+}
+
+/* ══ H · THE OFFER ════════════════════════════════════════════════════
+   Two real cards, so the layout is judged on the count it will actually
+   meet. The setup line is the shipped body, cut to its first and last
+   sentence: this shape has room for one line and no more.
+   ══════════════════════════════════════════════════════════════════════ */
+const OFFERS = {
+  clash:{title:'BLOOD ON THE ROAD', art:A.E12, n:'3 DOORS · CLASH',
+    setup:'A ratkin foraging party and an ogre steading-line have met over a dead deer. Neither side has seen you. That will not hold.',
+    doors:CLASH.choices},
+  toll:{title:'THE HANGED TOLL-MAN', art:A.E13, n:'4 DOORS · THE TOLL-MAN · THE STRESS CASE',
+    setup:'He is still swinging when you reach the bridge, and a clan-mark is cut fresh into the rail. The boots are very good.',
+    doors:TOLL.choices}
+};
+let offWhich = 'clash';
+function mountOffer(){
+  document.getElementById('offFlip').innerHTML = Object.keys(OFFERS).map(k=>
+    '<button class="'+(k===offWhich?'on':'')+'" data-o="'+k+'">'+OFFERS[k].n+'</button>').join('');
+  document.getElementById('offFlip').onclick = e => {
+    const b = e.target.closest('button'); if(!b) return; offWhich = b.dataset.o; mountOffer(); };
+  const o = OFFERS[offWhich];
+  document.getElementById('offCard').innerHTML =
+    '<img class="bgart" src="'+o.art+'"><div class="veil"></div>'+
+    '<div class="inner">'+
+      '<h3>'+o.title+'</h3>'+
+      '<div class="setup">'+o.setup+'</div>'+
+      '<div class="offrow" style="grid-template-columns:repeat('+o.doors.length+',1fr)">'+
+        o.doors.map(c=>
+          '<div class="offc'+(c.danger?' danger':'')+'">'+
+            (c.danger?'<div class="flag">NOBODY WILL THANK YOU</div>':'')+
+            '<div class="med">'+c.ico+'</div>'+
+            '<div class="lab">'+c.t+'</div>'+
+            '<div class="rec">'+c.c+'</div>'+
+          '</div>').join('')+
+      '</div>'+
     '</div>';
 }
 
@@ -824,37 +944,6 @@ function drawTwo(){
   };
 }
 
-/* ══ F · THE SIGIL LINE ═══════════════════════════════════════════════
-   Every sentence in the `said` column is the toll-man's SHIPPED prose. The
-   marks are new, and they are stand-ins: a real set is drawn, not picked
-   out of the emoji table.
-   ══════════════════════════════════════════════════════════════════════ */
-const SIGILS = [
-  {gl:'⚰️', lb:'HANGED',     said:'He is still swinging when you reach the bridge.'},
-  {gl:'🪢', lb:'GOOD ROPE',  said:'Somebody went to trouble here, and trouble travels with a purse.'},
-  {gl:'⚑',  lb:'CLAN-MARK<br>FRESH', said:'A clan-mark is cut fresh into the rail: the road has an owner again.'},
-  {gl:'👢', lb:'GOOD BOOTS', said:'The boots are very good. Nobody has said anything about the boots.'}
-];
-function mountSigil(){ drawSigil(-1); }
-function drawSigil(open){
-  const el = document.getElementById('sigCard');
-  el.innerHTML =
-    '<h3>'+TOLL.title+'</h3>'+
-    '<img class="art" src="'+TOLL.art+'">'+
-    '<div class="sigband">'+SIGILS.map((s,i)=>
-      '<div class="sg'+(i===open?' on':'')+'" data-i="'+i+'">'+
-        '<span class="gl">'+s.gl+'</span><span class="lb">'+s.lb+'</span></div>').join('')+'</div>'+
-    '<div class="sigsaid'+(open<0?' empty':'')+'">'+
-      (open<0 ? 'FOUR MARKS. READ THEM, OR OPEN ONE.' : SIGILS[open].said)+'</div>'+
-    '<div class="choices">'+TOLL.choices.map(doorHTML).join('')+'</div>'+
-    /* ⚑ THE PART THAT MAKES IT A LANGUAGE RATHER THAN A DECORATION */
-    '<div class="sigrec"><span class="gl2">⚑</span>'+
-      '<span>SEEN BEFORE ON <b>THE CLAN CART</b> · <b>THE WEDDING AT THE FORD</b> · '+
-      'and it will be on whatever the Snare Clan touches next</span></div>';
-  el.onclick = e => { const s = e.target.closest('.sg');
-    if(s) drawSigil(+s.dataset.i === open ? -1 : +s.dataset.i); };
-}
-
 /* ══ G · HIS OWN STORY ════════════════════════════════════════════════
    NEW WRITING, three times over. The shipped card is "{TELLER} picks it up.
    No head, no writing, heavier than it should be. Warm." - so the game
@@ -905,12 +994,12 @@ function mountOwn(){
 const TABS = [
   ['today',   '0 · TODAY',         mountToday],
   ['speaker', 'A · THE SPEAKER',   mountSpeaker],
-  ['column',  'B · THE COLUMN',    mountColumn],
-  ['standoff','C · THE STANDOFF',  mountStandoff],
-  ['strip',   'D · THE STRIP',     mountStrip],
   ['two',     'E · THE TWO-HANDER',mountTwo],
-  ['sigil',   'F · THE SIGILS',    mountSigil],
+  ['plate',   'I · THE PLATE',     mountPlate],
+  ['offer',   'H · THE OFFER',     mountOffer],
+  ['standoff','C · THE STANDOFF',  mountStandoff],
   ['own',     'G · HIS OWN STORY', mountOwn],
+  ['column',  'B · THE COLUMN',    mountColumn],
   ['which',   'WHICH FOR WHAT',    null]
 ];
 const nav = document.getElementById('nav');
