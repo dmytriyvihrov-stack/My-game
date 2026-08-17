@@ -25,6 +25,184 @@
 
 ---
 
+## ⚖ THE SUB-LINE IS A RECEIPT, AND EIGHT MORE OF YOUR NOTES  *(#176-#184 · 2026-08-17 · build log 8f.204)*
+
+**Where it came from.** Your eleven-item batch the same day, against four screenshots with the
+offending lines boxed in red. Everything below is one of those eleven.
+
+### 1. A door's sub-line says what it costs, and nothing else  *(#176, #176's other half is item 7)*
+
+**Three steps.** Play to any road card with more than one door. THE COLLECTOR is the one in your
+screenshot.
+
+**What should happen.** Every sub-line is now **the price, then the mood, then the gate**, and
+nothing else: `−◉4 · morale +10` · `+◉25 · morale −7` · `no cost`. *they think better of you*,
+*they will remember this*, *quietly approved of* and sixty more clauses like them are gone from
+every card, every camp ruling and the shop's walk-away.
+
+**⚑ The part worth knowing, because it changes what you can trust.** Deleting those clauses
+literally would have deleted four PRICES: THE HANGED TOLL-MAN charges a day and pays 38 crowns on
+its four doors, and its four labels read *"it will cost you the afternoon"*, *"he has no further
+use for either"*, *"good wood · tired men"* and *"nothing is left standing here"*. On that card the
+prose **was** the receipt. So the cost is no longer typed by hand at all: it is read off the same
+`fx` object the game charges. **The first thing that did was catch a lie** - THE RATKIN WATERWORKS'
+second door said `+1 salvage` and the game has always paid **2**.
+
+**What would be a bug.** A door whose sub-line shows a number the top bar does not then move by.
+A door that now shows nothing where it used to say a price. A gate (*needs a ratkin*, *cannot
+afford*) that stopped printing. A piece of gear that vanished from a door's line (*a shield*, *a
+two-hand maul*, *an off-hand dirk* all still print).
+
+### 2. The second objective is one recruit, and it closes itself  *(#177)*
+
+**Three steps.** Start a run. The card fires on the first road, before Blood on the Road.
+
+**What should happen.** It reads *"Recruit at least someone else to your party."* The plate row
+counts *"You are 4 of 5."* The moment anybody joins - the muster wall, the clash, a fire - you get
+**morale +10**, a line at the bottom of the screen, and **the row disappears from the plate**.
+
+**⚠ One trade you should know about.** Taking a side at Blood on the Road hands you a body for
+free, so this will often be paid by the very next card. That is deliberate now: it is the first
+thing the game asks and its job is to be finished. If you would rather it asked for something,
+say so and it goes back to two.
+
+**What would be a bug.** The row still there after it is paid. The row saying · DONE. No +10.
+
+### 3. The road interrupts less, and less often about a boot  *(#178)*
+
+**Three steps.** Walk three or four long legs and count what stops the wagon.
+
+**What should happen.** About **a third fewer** interruptions, and the drop lands on the small
+stuff rather than the rulings: a vignette is down 42% on a first stop and 37% on a later one, while
+the camp rulings are within noise of where they were. FOUND and LOST were **7 of the 12** ungated
+vignettes and are now 4 of 9. The horseshoe, the wheel of cheese and the lost knife are gone; the
+purse with a milk tooth in it, the cart-spring, the theatrical limp and the bread in the bog stay.
+
+**What would be a bug.** A whole road with nothing on it at all. The debt / kin / fiddler chains
+never coming up (they were protected on purpose - the split moved as well as the rate).
+
+### 4. A thing for sale shows the thing  *(#179)*
+
+**Three steps.** Reach the muster field, open the quartermaster's cart. Then Coldharrow's armourer.
+
+**What should happen.** Each row is a **card**: a 60px picture box on the left, the name, the
+price, and **what it actually does** in the open - `+9 dodge`, `Hits for 15-22, and reaches 2
+hexes`, `Stops 96 damage. HEAVY: 75% of every blow stops in it and 25% reaches the body, and it
+costs 10 dodge.` The box holds the item's glyph today and is sized so a **painting** drops into it
+later without anything around it moving.
+
+**⚠ This reverses half of #157 on purpose.** That note said *"under the shop choice do not give a
+lot of small text"* and the fix took the numbers off with the atmosphere, so a buckler and a round
+shield were the same word and the same money on screen. The atmosphere is still last and still one
+clause; the arithmetic is first.
+
+**What would be a bug.** Three rows showing the same glyph when the items are different KINDS. A
+description running under the box instead of beside it. A price that disagrees with the chest.
+
+### 5. "Back to the road" says nothing underneath it  *(#176)*
+
+**Three steps.** Win a fight, lose a fight, withdraw from one, finish any road card.
+
+**What should happen.** The button is just **Back to the road**. Five captions went (*the company
+can move again*, *you are still on it, which is the whole of the good news*, and three more).
+
+**The two that survive, and why.** The greyed one on the mercy screen keeps *"there is still
+something to settle"*, because a dead button owes the click an answer - and it loses the line the
+moment the question is answered. Coldharrow's keeps *"2 roads out of here, 1 day or 3 days to the
+next stop"*, which is a fact about leaving and not a mood.
+
+### 6. The aftermath stops at the fact  *(#180)*
+
+**Three steps.** Beat the Thing in Armour. Then the tavern brawl, then any ordinary fight.
+
+**What should happen.** IT COMES APART is **two paragraphs, 58 words** where it was four and 128.
+It keeps the plates sitting in the shape of a person, the smell, and nothing to bury; what went is
+the sentence explaining how to feel about them. The band is now written down: **14-60 words for an
+ordinary fight, up to 90 for the three that carry an act** (the brawl, and the two endings).
+Measured before: 15 cards, 867 words. After: 702.
+
+**What would be a bug.** A card that lost the one detail it is remembered by. NINE COATS IN THE
+ROAD is now **COATS IN THE ROAD** on purpose - it was counting bodies and item 10 changed the count.
+
+### 7. Real numbers on the fork, and a picture of each road  *(#181)*
+
+**Three steps.** Walk to any crossroads. There are three on the map.
+
+**What should happen.** Each road is a **Hades-style boon card**: the node's own painting at 64px,
+its name, one line of `N days · ~lo-hi fights`, and the danger word. The footnote under the title
+is gone - the join moved **into** the title, so it now reads **TWO ROADS TO THE DOOR-SHRINE**.
+
+**⛔ And the numbers changed, because the old ones were wrong.** The sign counted map nodes typed
+`battle` and printed floor-to-floor+1. Measured across all three forks: **not one road on this map
+holds a fight the company cannot refuse.** The Broken Men open with *"No."*, the Stone Field can be
+walked around, the Hill Steading has three doors before the fourth. Three roads were reading
+*"~1-2 fights"* and three *"~0-1"*, and the honest answer on all six was **0 forced**. It asks the
+cards now: every door a fight means no way through, some doors a fight means one you can take or
+refuse. It also sees the Fen-Mother, who is typed `weird` and was invisible to the old count.
+
+**⚑ It moves with the run.** On a run that dealt the wedding onto a road, that road went from
+*"~0-1 fights, PEACEFUL"* to *"~0-2 fights, TROUBLE"* - which is your own *"sometimes some events
+have battle of your choice"* arriving as arithmetic. Your rule 11 is intact: still always a span,
+never a bare count.
+
+**What would be a bug.** Two roads out of one fork reading identically. A road with a painting on
+the map showing an empty frame here. BLOOD appearing on a fork (nothing on today's map can earn it).
+
+### 8. Nobody starts a fight already routed  *(#182)*
+
+**Three steps.** Run the provisions to **zero**, let the mood fall, then take a fight.
+
+**⛔ What was happening.** Driven against the last shipped build in a second tab: an empty larder
+with the mood at the bottom started **4 of 4 of your line on the BROKEN rung** - white flag,
+running for the edge, before a single action. With the Circle in the company it reached .004 of a
+nerve bar. The clamp that was supposed to stop this ran in `unitFrom`; the hunger penalty runs
+*after* it and floors at an absolute 10 against a nerve ceiling of 81-93.
+
+**What should happen now.** The same company opens at **BREAKING** - one rung up, one bad turn from
+going, which is the *"possible almost broken"* half of your note. A fed company and a merely
+miserable one are **byte-identical to before**: the floor only ever fires under the last rung.
+
+**What would be a bug.** Anybody on 💀 Broken on round one. A fight where a hungry company feels
+*better* than a fed one.
+
+### 9. The first Hold patrol comes one crest short  *(#183)*
+
+**Three steps.** Get the enforcers' road stop and take the fight.
+
+**What should happen.** Two crests instead of three (the serjeant and one corporal), which takes
+the pole-axes from two to one and leaves the bill line, the bow and the hound alone. The door's own
+receipt says *"two crests"* now, and the aftermath stopped counting bodies.
+
+**⚠ It is a bigger move than it sounds and the numbers are here so you can call it.**
+`ARENA.match('prepared','hold',15)`, a seasoned six, one variable at a time:
+
+| the line | wins | of yours down |
+|---|---|---|
+| serj + 2 corp + 2 bill *(shipped)* | 9/15 | 3.9 |
+| **serj + 1 corp + 2 bill** *(this)* | **14/15** | **2.6** |
+| serj + 1 corp + 3 bill | 11/15 | 2.9 |
+| serj + 2 corp + 1 bill | 12/15 | 3.0 |
+
+**If it now reads as a walkover, say so** - the third row is one line in `holdFoes` and it sits at
+73%. ⚠ And it does nothing for a small company: the starting four lose 1/15 before and after,
+because that fight was never theirs to win.
+
+### 10. The survey is three questions and the report is yours  *(#184)*
+
+**Three steps.** Menu → the playtest notes. Then "Answer the questions".
+
+**What should happen.** **Three** questions (where you stopped, what you liked, what you disliked)
+instead of seven, plus your name and the difficulty picker. The report is titled **YOUR RUN** and
+shows six facts: days, time at the keyboard, how it ended, and what you loved / liked / disliked.
+One button. **The raw JSON blob and EVERY DECISION IN ORDER are gone from your view** - they still
+travel in the copy, and they still show under ⚙ TEST or when you paste a friend's journal in.
+
+**What would be a bug.** The copy button copying less than it used to (it should still carry the
+letter *and* the whole journal). Anything you typed into the four retired questions being lost -
+it is still exported, just not quoted.
+
+---
+
 ## ✦ EXPERIENCE - THE LEVEL IS EARNED, HALF BY THE COMPANY AND HALF BY THE HAND  *(#174 · 2026-08-17 · build log 8f.202)*
 
 **Where it came from.** Your brief the same day: *"give some expiriences, rather then 1 lvl per
