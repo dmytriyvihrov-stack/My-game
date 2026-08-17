@@ -25,6 +25,115 @@
 
 ---
 
+## 🩸 THE FIGHT SLOWS DOWN, AND THE HEXES STICK TOGETHER  *(#173 · 2026-08-17 · build log 8f.201)*
+
+**Where it came from.** Your ten-item batch on 2026-08-17. Nine were about the fight reading badly;
+the tenth arrived mid-session (*"somehow hexes get broken and scattered across the field"*) and
+turned out to be a real grid bug that has been in the build since before #105.
+
+**How to reach it in three steps.** Front door → **The practice field** → start any fight. Every
+item below is on that one screen except where it says otherwise.
+
+### 1 · The blow is twice as slow, and the number hangs
+
+A hit and a skill now run at **base × PACE × 2.5**. At the shipped speed a lunge is ~1.5s and a
+recoil ~1.9s, where they were 0.6 and 0.8. The damage number climbs fast and then **holds still for
+two thirds of its life** instead of drifting the whole way up.
+
+- **Should happen:** you can watch a single blow and see who hit whom without replaying it.
+- **A bug:** the fight feels like it is *waiting* rather than *swinging*. The knob is `--hitp` in
+  `:root` and it is one number - tell me and I move it. The caption has its own (`--fxp`).
+- ⚠ The **turn hand-over and AUTO are untouched** on purpose. If the whole game feels slower rather
+  than the blows, that is a bug and not the setting.
+
+### 2 · The attacker's model actually moves now (this is the third attempt)
+
+You have reported this twice before and both fixes were aimed at the wrong thing. **It was never
+too small - it was being deleted.** The board redraws one statement after the blow starts, and the
+animation was going onto an element that no longer existed. It survives the redraw now.
+
+- **Should happen:** on **your own** turn, your body leans into the target and comes back; the
+  target is knocked along the same line and rattles to a stop.
+- **A bug:** any body that snaps, jumps, or plays the first frame twice.
+
+### 3 · More blood, and pools that run into the next hex
+
+Six to thirteen drops a hit (was three to seven), bigger, with a fat gobbet every fourth one. The
+floor stain is wider than its own hex so two stained tiles read as **one puddle**, and a hex that
+takes three blows **runs off into a neighbour** - downhill, one hex per blow, never a flood.
+
+- **Should happen:** after a long scrum the board shows you where the fighting was.
+- **A bug:** the pool spreading faster than the fighting, or a tile going so dark it looks like a
+  hole in the ground.
+
+### 4 · Big models no longer own the ground behind them
+
+This was your *"прям большая проблема"*. Creature sprites overhang their own tile, and the sprite
+was **eating the clicks and hovers** on the hexes behind and beside it - which are exactly the
+hexes you walk to get round to somebody's back.
+
+- **Should happen:** every hex around an ogre or a great beast takes your cursor, gives you the
+  boots, and walks you there. The body itself is still clicked and still hovered, on its own tile.
+- **A bug:** any hex you cannot reach with the mouse, or an enemy that has become hard to click.
+- *Measured: the sprite was stealing 49 of 1305 probe points board-wide and 12 of 54 around the
+  ogre. Both are zero now.*
+
+### 5 · The zone of control is the front three hexes ⚠ THIS IS A RULE CHANGE
+
+You said control does not work from behind, and you were describing something the game did not do
+yet - so the **rule** moved, not just the picture. A body now holds the **three hexes it faces**.
+Its flanks and its back are free: step round to a shoulder and you can walk away for nothing.
+
+- **Should happen:** the red-edged hexes are only in front of each enemy. Walking off one costs
+  half a blow; walking off the other three costs nothing. **DISENGAGE only appears when somebody is
+  actually facing you.**
+- **A bug:** a free swing from a hex that was not red, or a red hex behind somebody.
+- ⚠ **Being surrounded is unchanged** - a body at your back still counts against you for the
+  flanking bonus and for nerve. It just cannot stop you leaving. That is deliberate.
+- *Balance: 100 arena fights each way, 66 wins against the old build's 67. It does not make the
+  game easier or harder; it makes going round somebody worth doing.*
+
+### 6 · The enemy's reach shows the instant you point at them
+
+The stat card still waits its 2.2 seconds. The **reach and threat wash does not** - it is on the
+board on the first frame of the hover, like the shot lane already was.
+
+- **A bug:** the big stat panel appearing instantly (it should still wait), or the wash lagging.
+
+### 7 · A skill that cannot reach says so in the cursor
+
+Pick a blow, then move over ground it cannot touch: the hand goes **dim with a red ⊘ over it**. The
+sword, the arrow and the working each keep their own picture, so you can still tell which skill is
+being refused.
+
+- **A bug:** the pointer jumping when you cross the boundary (the hotspot is deliberately identical
+  on both), or the ⊘ appearing on ground that IS in range.
+- ⚠ It is about **distance only**. A hex in range with no line of fire still says OBSTRUCTED /
+  BLOCKED on the hex, which is a different refusal.
+
+### 8 · The arrow flies slower
+
+420ms → up to 760ms. It now lands **while** the target is still reeling instead of after it, which
+is a note #81 left open and could not fix until the recoil got longer.
+
+### 9 · The surround badge lost its number
+
+The ⊛ under a surrounded body is bare. The count is in the hover: *"Surrounded ×4 · Each one swings
+at +51 to +66…"*. **×4 and not (4)** on purpose - every other number on that row is a countdown.
+
+### 10 · The hexes interlock ⚠ LOOK AT THIS ONE FIRST
+
+Odd rows were indented **27px where the geometry wants 19**, so the points never landed in the
+valleys and the board was two grids laid over each other. #105 found this exact number in 2026, wrote
+down that 19 was correct, and then taught the ground-painter to match the mistake instead.
+
+- **Should happen:** a clean honeycomb, everywhere, at all three camera stops.
+- **A bug:** any seam, or terrain that has come unstuck from its tile.
+- *The board is 8px narrower now (588, was 596). If anything ever looks cut off at the right edge of
+  the field, that is where to look.*
+
+---
+
 ## 🔤 NOTHING SMALLER THAN 10px, AND THREE SCALES BEHIND IT  *(#164 · 2026-08-16 · build log 8f.192)*
 
 **Where it came from.** You brought the Turn-Based Games Discord `#dev-feedback` channel and asked
