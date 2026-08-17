@@ -3085,3 +3085,240 @@ price is damage, tempo or reach, never accuracy.
 `aim:999` in the practice field and run the eight fights through the harness. If the win rate does
 not move, the perk is a *feel* change and can be priced generously; if it moves hard, the damage
 figure above is the knob and it comes down before anything else does.
+
+---
+## 174 - Experience: the level is earned, half by the company and half by the hand
+
+> ✦ **THE WHOLE RUN** - the aftermath, the company sheet, the muster wall, the road's event chips
+> **SYSTEMS** `consequences()` (the one place a level happens today) · `afterBattle()` (the per-body
+> ledger it will read) · `crewCards()` and the hidden `.abx` slot · `drawInv()` (`#iChips`, the
+> roster row `.rmem`, the perks tab) · `rollRecruit()` / `openHire()` (the level-0 stranger) ·
+> `perkPool` / `PERKTIERS` (the tree re-keyed) · `RACEMOD` (the INT lean the modifier reads) ·
+> `EVFX_ROWS` + `evFxChips` (the ✦ chip on a door) · `runBlob` / `loadRun` (one new field)
+> **RELATED** the research it stands on: [`XP_BENCHMARK_2026-08-17.md`](../XP_BENCHMARK_2026-08-17.md) ·
+> #122 (the pick left the aftermath flow; this entry keeps that) · #133/#136 (the sheet it lands on)
+> · #157 (the muster lost its paragraphs; the level-0 row must not bring them back) · #143/#154
+> (chip receipts, built beside `pay()`) · #50/#13 (the harness that measures the curve)
+> **STATE** ✅ **BUILT 2026-08-17 (#174 · 8f.202), the same day it was specced**, on the user's
+> "sounds good - do it". The gate picture is `shots/174_xp_ring.html`, the built one
+> `shots/174_after.html`; the record is `CHANGELOG.md` 8f.202 and `WHAT_TO_TEST.md`. It is a
+> user-ordered addition, like #108 and #123, and it reverses one paragraph of the concept's canon
+> (§8 *"Promotions, not XP bars"*), rewritten to match. ⚠ **Written against ONE act.** Every level
+> past ~4 is a promise about acts 2-4 and rising enemy tiers, and this entry does not build those.
+> ⚑ **What the build changed against the rules below**: `XP_PER_HP` is **1.5**, not 2 (rule 9's
+> harness put 2 at 4.7 after the eight, 1.4 at 3.8, and 1.5 lands ~4.0 / ~4.6); the crest bonus is
+> `XP_LEAD` 40 on `captain:true` (there is no `boss` flag; the Fen-Mother's hitpoints already pay);
+> the roster ring is 42px INSIDE the bust's own box round a 35px round portrait, because 50px
+> outside it wrapped a trait clause (65 → 91 a row) - measured against HEAD in a second tab; the
+> stranger is `cls:'none'` with a `CLASSES.none` row rather than `null`, so every `CLASSES[p.cls].n`
+> in the file keeps working; the tavern brawl pays through `tavernAfter` into a screen with no
+> crew card. Rule 3's open call stands: **the archer finishes ~a level ahead of the spearwoman**
+> over the act on damage + kills, exactly the shape the peers described.
+
+### The brief, verbatim (2026-08-17, errors his)
+
+> *"I want to explore idea of lvls. I think in my gane it would work better to give some
+> expiriences, rather then 1 lvl per battle. I want my team to be able to grew strnger and give
+> this stronfernes in 1st act already. I want 3-4 acts similar size. And characters to be able to
+> get to 8-9 th lvls with battles, and extra events - items. I think around 9-10 lvls. Exp probably
+> could be handled in smaller numbers, first lvl 100. I think, it could be also nice have 0 lvl,
+> where character doesnt even have a class. So it gives option to a playr to oick himself. I think
+> +-50% of expirience shared between party. And other for individual actions (damage deat and
+> kills get). Also you will need it to add to charcter screen."*
+
+**And his rulings on the six calls the research put to him, same day, verbatim:**
+
+> *"1) founders in a tavern already lvl 1*
+> *2) When you hire someone, 1 our of 3 has lvl 0 and a bit cheaper price. So you can choose his
+> class later*
+> *3) random promotions goe*
+> *4) On the battlfield none - it shows only after and then in the inventory*
+> *5) Not that sharp climb to hire lvl, I expect not that sharp power raise for characters*
+> *6) I think also intelect have a modifier to xp. Also i am thinking a bit different amount
+> needed for a rat (0.8) and human (1) and ogr (1.2)*
+> *7) bar progression could be shown circle as in total war"*
+
+Reading of 5: the curve to the high levels is gentle, and a level is a small step of power. That
+is the shape the neighbours with a run this length use (Wildermyth's `10×n`), and it is what today's
+promotion already pays (+1 stat, or one perk), so the per-level payment does not change.
+
+### What it replaces, and the one thing that survives
+
+Today `consequences()` does `pickOne(G.party).level++` after every won fight, alternating a perk
+point and a stat point (perk first), and the concept doc calls the randomness the point. **The
+random promotion goes** (ruling 3). What survives untouched: **the alternation, the perk/stat banks
+(`perkPoints`/`statPoints`/`nextIsPerk`), the ★ debt on the road bar and the roster, spending on the
+sheet, and *"a reward never evaporates"*** (`perksLeft` turning an empty-tree perk into a stat).
+The level is still a level; only *who* gets it and *when* is new.
+
+### The rules
+
+**1. Every body carries `p.xp`, cumulative, and a level is a threshold on it.**
+
+```js
+/* cumulative XP to REACH each level, for a human. Level 0 is a stranger with no trade. */
+const XP_TABLE=[0,100,250,450,700,1000,1350,1750,2200,2700,3300];
+/*  deltas:    100 150 200 250 300  350  400  450  500  600  - Wildermyth's triangle, +50 a step,
+    and the last step is the trophy: 10 costs 600 and pays a stat.                                */
+const XP_RACE={ratkin:.8,human:1,ogre:1.2};                                        /* ruling 6 */
+const xpNeed=(p,L)=>Math.round(XP_TABLE[Math.min(L,10)]*(XP_RACE[p.race]||1));
+const XP_CAP=10;
+```
+
+`p.level` stays stored (it is read in forty places) and is *raised* by `xp`, never derived on the
+fly: after any grant, `while(p.level<XP_CAP&&p.xp>=xpNeed(p,p.level+1))levelUp(p)`. `levelUp` is
+today's promotion body lifted out of `consequences()`: `level++`, then the perk/stat alternation
+exactly as written, so one function pays a level whether the XP came from a fight or a door.
+
+- **Founders start at level 1 with `xp=xpNeed(p,1)`** (ruling 1): a full ring's worth behind them,
+  an empty ring ahead. The tavern brawl teaches SPEAR WALL through Vesna's trade as before.
+- **The cap stops accrual.** At 10 the body earns nothing and leaves the shared split (rule 3). No
+  dead tail, no veteran levels: Into the Breach's stop, not Battle Brothers'.
+- **Migration:** a save without `xp` gets `xp=xpNeed(p,p.level)` in `loadRun` (a level-3 body from
+  an old save reads 450 with an empty ring). No stamp bump: `party` is serialised verbatim.
+
+**2. Intellect is the learning rate, gently** (ruling 6):
+
+```js
+/* multiplies XP EARNED. int 9 is the human middle. 5 -> .88, 12 -> 1.09, 14 -> 1.15 */
+D.learn = u => Math.min(1.25, Math.max(.8, 1 + (u.st.int - 9) * .03));
+```
+
+⚠ **The race multiplier and the INT lean overlap on purpose and must stay gentle for that reason.**
+`RACEMOD` already leans human `int +2`, ogre `int −1`, ratkin `0`. With both in force a ratkin learns
+about 1.25× a human's speed and an ogre about 0.8×, and that spread is what ruling 6 asks for. Push
+either dial and the ogre pays three times for one thing (seat 3, wage 2, and the slow ring).
+
+**3. A fight is worth what stood on the field, and it is paid half to the line and half to the hand.**
+
+```js
+/* fight value: what the enemy brought. Read off the bodies, never a hand table per fight. */
+const XP_PER_HP=2, XP_BOSS=60;
+const fightXP=()=>B.units.filter(u=>u.side==='foe'&&!u.pet)
+  .reduce((s,u)=>s+Math.round(u.hpMax*XP_PER_HP)+(u.boss?XP_BOSS:0),0);
+```
+
+- The **line half** (50%) is split evenly among every roster body that stood in the fight and is
+  below cap: deployed, downed or not, fled or not. **Standing in it is the contribution** (Wildermyth's
+  below-cap filter is the one `if`).
+- The **hand half** (50%) is split by contribution `c = dealt + 15 × kills`, off the unit's own
+  ledger (`u.dealt`, `u.kills`, the same three numbers the crew card already prints). A kill is a
+  flat bonus in hitpoint units, never a percentage of the enemy: the peers' kill-stealing threads all
+  start with a percentage. If the sum of `c` is 0 (a fight talked out, an all-flee) the hand half
+  joins the line half.
+- Each body's take is then `× D.learn(u)`, rounded, and added to `p.xp` in `afterBattle()` beside
+  `p.fights++`, which is where every other per-body ledger line is written.
+- ⛔ **On the field, nothing** (ruling 4). No float, no ✦ over a kill, no counter on the token. The
+  number exists after the fight and on the sheet, and nowhere else. This is XCOM's reason for hiding
+  the number applied by order, and it is also the pillar (*show a state, hide the number*).
+
+⚠ **Two things in the brief are deliberately NOT in the hand half, and the reasons are written down
+so they are not rediscovered as ideas:** damage TAKEN and the class verb (a COMMAND, a wall held, a
+body carried). The peers say a damage-and-kills half starves the body that holds the line (see the
+benchmark §3), and the brief said damage and kills. 👤 **His call, when the harness shows what a
+spearwoman's ring does over eight fights.** The formula has one line to change.
+
+**4. The receipt is the aftermath's crew card, and the slot is already cut.** `crewCards()` prints
+`☠ kills · ⚔ dealt · 🩸 taken · ✦ 0` with `.abx{display:none}` and the comment *"HIDDEN until XP
+exists"*. Flip it, print `✦ +N` (the body's own take, after `D.learn`), and the level line and the
+gold `.abcrew.up` frame that already exist do the rest. A body may take two levels off one fight
+early (100 then 150); the line reads the level it reached. **The pick stays on the sheet** (#122):
+the aftermath is a receipt.
+
+**5. The ring** (ruling 7). One glyph, two sizes, Total War's:
+
+- **On the sheet**, the `LEVEL <b>N</b>` chip in `#iChips` becomes a **26px ring** with the level
+  number inside: track `--e1`, arc `--gold`, arc length `(xp − need(L)) / (need(L+1) − need(L))`.
+  Hover: *"340 of 450 · 110 to level 4"*. At cap the ring is full and the hover says *"as far as
+  they go"*.
+- **In the roster**, a **44px ring around the 40px bust** on every `.rmem`, same arc, no number
+  (the row's `L4` text stays where it is). The ★ debt badge is untouched and still the thing that
+  says *spend it*.
+- Both are inline SVG (`circle` + `stroke-dasharray`), on the CSS scale (`--fs1` for the number,
+  `--e1`/`--gold`, no new px). ⛔ **The ring is progress and never a receipt**: it never prints
+  what the last fight paid, the crew card does.
+- ⛔ **A level-up must not depend on the ring being seen.** The ★ on the road bar and the roster is
+  the pending signal (the peers' one UI complaint is a badge too subtle to notice); the ring is
+  the answer to *how far*.
+
+**6. The stranger with no trade** (ruling 2). Of the three on any muster wall, **one is level 0**:
+
+```js
+/* in rollRecruit: cls:null, level:0, xp:0, price × .75, kit ['rags','cudgel'] (START_GEAR's own
+   fallback), kind by race (human -> 'human'), trait rolled by race only - traitFits already drops
+   every class-gated trait when cls is null. */
+```
+
+- The muster row: *NAME "nick" - no trade yet, human · 41 crowns · 2 room · 2/day*, and one line
+  under it: *picks up a trade at the first level*. Cheaper **because** he comes without a tool and
+  without a trade; the discount is the kit he does not bring (#157: no paragraph about him).
+- On the sheet: the class chip reads **NO TRADE YET**; the roster row `L0`; no signature act (`unitFrom`
+  builds acts off the weapon and skips `sig` when `cls` is null); no perk tree; the ★ fires the moment
+  `level>=1&&!cls` (`levelsWaiting` counts a trade owed as a level owed).
+- **The pick is on the sheet, on the perks tab, and it is the level-1 payment.** The tab offers the
+  trades of `CLS_BY_RACE[race]` (deduped) as cards: the tool glyph, the name, the `sig` line, the
+  lore tip. Picking sets `cls`, hands `START_GEAR[cls]` into the stash (*he takes up the trade's
+  tool*; the player equips it), sets `kind` by `KIND_BY_CLS`, and the alternation starts at level 2
+  as for anybody. Nothing about it is random: XCOM 2 built a whole facility to turn its random roll
+  into a choice, and this game has no facility to spend on that.
+- ⛔ **The first level must arrive inside his first or second fight.** XP_TABLE[1]=100 against a
+  fight value of ~250 at the choke split six ways plus his hand share does that for a human (~50-60
+  a fight); it is one of the numbers rule 9 measures.
+
+**7. The road pays XP too, but only the line half.** A door may carry `xp:N` in its `fx`; it is
+paid to every roster body (each `× D.learn`), and it prints as a **✦ LEARNED** row in `EVFX_ROWS`,
+built beside `pay()` like every chip since #143 (⛔ never off the `c:` string). ⏸ The camp's *Train*
+verb (concept §9, unbuilt) and a gear `xpMul` (Battle Brothers' potions) are the hooks for *"extra
+events - items"* and are **not built by this entry**: the field and the multiplier exist, no card
+uses them until one is written.
+
+**8. What a level pays, over the whole ladder.** Unchanged per level (ruling 5), re-keyed over ten:
+
+| level | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 |
+|---|---|---|---|---|---|---|---|---|---|---|
+| pays | the trade (a level-0 body) | perk | stat | perk | stat | perk | stat | perk | stat | stat |
+| tree tier | | 1 | | 2 | | 3 | | 4 | | (empty → stat) |
+
+The four tiers of two move from `2/3/4/5` to **`2/4/6/8`** (`PERKTIERS` and the keys in `CLASSES`),
+**zero new perks**, and level 10's perk turn meets an empty tree and becomes a stat through the
+fallback that already exists. Four perks and five stat points over a campaign against today's
+lucky body at level 8: this is *"not that sharp"* in numbers.
+
+**9. Pace, and it is measured before it ships.** Targets, per act, for a founder who stands in every
+fight: **act 1 → level 4** (700; ~600 to earn over ~8 fights, ~75 a fight) · act 2 → 6 · act 3 → 8
+· act 4 → 9, with the finisher who took the kills touching 10. Three acts: 4 / 7 / 9. `XP_PER_HP`
+is the one dial and it is set by the harness, never by reading:
+
+```js
+/* the gate. Eight authored fights in order, a founder company, both brains, n >= 20 runs.
+   Print each founder's level at the Snare; the reading is the FRACTION of runs where a founder
+   ends under 3 or over 5, never the worst run (⛔ a minimum over n is not a measurement). Then:
+   hire the level-0 stranger at the Muster and count the fights to his first level (target 1-2). */
+```
+
+⚠ **A fight talked out of pays nothing**, which is correct (Pillars pays *only* for objectives, this
+game pays for the objective in coin and food on the door). ⚠ **The tavern brawl pays**: it is a won
+fight and its value is small.
+
+### The three traps, named now
+
+1. ⛔ **`pickOne(G.party)` was unfiltered and this must not inherit that shape.** A body that stood
+   in the fight is one on `B.units` at fight start (`side==='you'&&!u.pet`), not one on `G.party`.
+   A recruit hired after the fight and a body dismissed before it get nothing.
+2. ⛔ **`render()` destroys anything written onto a sprite** (#173) and the field is off limits by
+   ruling anyway. Nothing about XP touches the board.
+3. ⚠ **`levelsWaiting`, the ★ and `goParty` are the pending signal and they read banks, not
+   levels.** A trade owed is a new kind of debt; it goes into `levelsWaiting` and `goParty` opens
+   the perks tab on that body, or the level-0 stranger sits at level 1 with no class and nobody is
+   told.
+
+### What has to be true before it is built
+
+- The picture is approved: `shots/174_xp_ring.html` (the sheet ring, the roster ring, the crew card's
+  ✦, the muster's level-0 row, the trade pick).
+- 👤 the hand-half ingredients (rule 3's open call) are ruled, or the brief's damage-and-kills is
+  confirmed as the first cut to measure.
+- The concept doc's §8 reads this way (done in the same commit as this spec).
+- Then: `claim.ps1 lock`, `XP_TABLE`/`xpNeed`/`levelUp`/`fightXP` beside `consequences()`, the crew
+  card slot flipped, the ring, the level-0 stranger, the tab pick, `EVFX_ROWS`, `loadRun` migration,
+  the tiers re-keyed, `LINT()` 0, the rule-9 harness reading written into `WHAT_TO_TEST.md`.

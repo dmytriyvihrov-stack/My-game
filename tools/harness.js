@@ -90,6 +90,10 @@ window.runFight=function(kind,opts){
          guard:g>=3000?'HIT GUARD':'ok',
          down:B?B.units.filter(x=>x.side==='you'&&(x.dead||x.downed)).length:0,
          tally,notes,errs};
+    /* #174 - a hook that runs while B is still alive, for anything read off
+       the finished field (payFightXP was the first caller: the XP curve is
+       measured by summing what each fight pays a founder). */
+    if(opts.after&&B){try{res.after=opts.after(B,res);}catch(e){errs.push('after: '+e.message);}}
   }catch(e){res={kind,fatal:e.message,stack:(e.stack||'').split('\n')[1]};}
   finally{render=_r;fx=_f;say=_s;sfx=_x;paintTerrain=_p;strike=_strike;
     if(_jp)JOURNAL.put=_jp;

@@ -2482,6 +2482,18 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:var(--f
 .rmem:hover{background:#221a10}
 .rmem.on{background:#2a2114;border-left:3px solid var(--g4)}
 .rmem canvas{border:1px solid var(--e1);flex:none}
+/* ═══ #174 - THE RING ROUND THE BUST ══════════════════════════════════════
+   (User: "bar progression could be shown circle as in total war".) The bust
+   goes round (a ring round a square is a ring with four corners poking
+   through it) and the ring is drawn INSIDE the 42px box the bordered 40px
+   canvas already took, so the row's text keeps every pixel of width it had.
+   ⚠ MEASURED, NOT GUESSED: a 50px box outside the bust took 8px off the text
+   column and wrapped Ilka's trait clause, 65px → 91px a row. At 42 the ring's
+   band runs 17.0-20.1px from the centre and the 35px bust ends at 17.5, so
+   the ring hugs the portrait by half a pixel and the row is 65 again. */
+.rbust{position:relative;display:inline-block;width:42px;height:42px;flex:none}
+.rbust .xpring{position:absolute;left:0;top:0;pointer-events:none}
+.rbust canvas{position:absolute;left:3.5px;top:3.5px;width:35px;height:35px;border-radius:50%;border:none}
 .rmem .rn{font-family:var(--display);font-size:var(--fs3);color:var(--g4);line-height:1.15}
 .rmem .rc{font-family:var(--mono);font-size:var(--fs1);color:#8a7449;letter-spacing:.06em}
 .rmem .race{font-family:var(--mono);font-size:var(--fs1);letter-spacing:.1em;font-weight:600}
@@ -2552,6 +2564,9 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:var(--f
 .ichip{font-family:var(--mono);font-size:var(--fs1);letter-spacing:.1em;color:var(--g3);
   border:1px solid var(--e1);background:#1c150c;padding:var(--p1) var(--p3);cursor:help;white-space:nowrap}
 .ichip b{color:var(--g4);font-weight:400}
+/* #174 - the level chip is the ring itself: no box round a circle */
+.ichip.xplv{padding:0;border:none;background:transparent;display:inline-flex;align-items:center}
+.ichip.xplv .xpring{display:block}
 .ichip.race.human {border-left:2px solid #d8d5cc}
 .ichip.race.ratkin{border-left:2px solid #c98a4b}
 .ichip.race.ogre  {border-left:2px solid #7fa8c9}
@@ -3221,10 +3236,12 @@ body:has(#world.on) #audioBtn{top:8px;bottom:auto;font-size:var(--fs2);padding:v
 .abnums{font-family:var(--mono);font-size:var(--fs2);margin-top:5px;display:flex;gap:10px;
   color:#a89468;position:relative;z-index:1}
 .abk{color:var(--bone)}.abd{color:#8ca35a}.abt{color:#c15d55}
-/* the XP slot exists on every card and is HIDDEN until XP exists (user:
-   "i will add it in the futrue - for current stuff you can just hide it").
-   Flip to inline and the layout is already right. */
-.abx{color:var(--g3);display:none}
+/* the XP slot sat on every card HIDDEN from #122 to 8f.201 (user: "i will
+   add it in the futrue - for current stuff you can just hide it"). #174 is
+   the future: it prints ✦ +N, the body's own take off this fight, and the
+   layout was already right. Gold because it is the one number on the row
+   that is a receipt for the person rather than a report on the fight. */
+.abx{color:var(--gold)}
 .abline{font-size:var(--fs1);font-style:italic;margin-top:3px;position:relative;z-index:1}
 .abscarline{color:#a33b34}
 .abuplne{color:#8ca35a}
@@ -5195,7 +5212,12 @@ const D={
   flank:u=>8+u.st.int,
   spell:u=>1+u.st.int*0.05,
   moral:u=>60+u.st.mor*3,
-  bonus:u=>u.st.mor*0.012
+  bonus:u=>u.st.mor*0.012,
+  /* #174 - the learning rate: multiplies XP EARNED. int 9 is the human
+     middle; 5 → .88, 12 → 1.09, 14 → 1.15, clamped .8-1.25. Gentle on
+     purpose: RACEMOD already leans int by race and XP_RACE multiplies the
+     need, so a third hard dial would tax the ogre three times for one thing. */
+  learn:u=>Math.min(1.25,Math.max(.8,1+(((u.st&&u.st.int)||9)-9)*.03))
 };
 /* ═══ #146 - THE TWO EASE KNOBS, AND WHY THEY ARE NOT ONE ═════════════════
    (User, 2026-08-13: "increse chances to hit for all units for 10% and for
@@ -6286,38 +6308,54 @@ const PERKS={
 /* Four tiers, two choices each — eight perks a class. It used to stop at
    level 3 with four, which meant a veteran hit the ceiling in about two
    promotions and every perk point after that was granted and then silently
-   thrown away. */
+   thrown away.
+   ═══ #174 - THE TIERS SIT AT 2 / 4 / 6 / 8 NOW, NOT 2 / 3 / 4 / 5 ═══════════
+   The ladder is ten levels and a level alternates perk, stat, perk (perk
+   first, at 2), so the perk levels ARE the even ones. Zero new perks: the
+   same eight a class, spaced over the whole run instead of over the first
+   four promotions. Level 10's perk turn meets an empty tier and becomes a
+   stat through perksLeft's fallback, which is "a reward never evaporates"
+   doing the job it was written for. */
 const CLASSES={
   captain:{n:'CAPTAIN',   sig:'COMMAND + RALLY THE LINE',
-    perks:{2:['ironjaw','duelist'],3:['standfast','warleader'],
-           4:['inspire','bulwark'],5:['heavyhand','stoneskin']}},
+    perks:{2:['ironjaw','duelist'],4:['standfast','warleader'],
+           6:['inspire','bulwark'],8:['heavyhand','stoneskin']}},
   spear  :{n:'SPEARWOMAN',sig:'SPEAR WALL',
-    perks:{2:['bulwark','killzone'],3:['opportune','bracewall'],
-           4:['stoneskin','ironjaw'],5:['heavyhand','footwork']}},
+    perks:{2:['bulwark','killzone'],4:['opportune','bracewall'],
+           6:['stoneskin','ironjaw'],8:['heavyhand','footwork']}},
   archer :{n:'ARCHER',    sig:'AIMED SHOT',
-    perks:{2:['sureshot','quickfoot'],3:['butcher','eagle'],
-           4:['deadeye','footwork'],5:['killzone','ironjaw']}},
+    perks:{2:['sureshot','quickfoot'],4:['butcher','eagle'],
+           6:['deadeye','footwork'],8:['killzone','ironjaw']}},
   /* The one who can hold a line. One school, one casting a turn, and stats
      that let him stand in it: the low-magic setting expressed as a class.
      #161: the sig names both hands he is allowed, because Marrow now starts
      on the stave and a sig that says SWORD while he holds a stick is a readout
      printing the wrong thing. */
   warmage:{n:'BATTLE-MAGE',sig:'A BLADE OR A STAVE, AND ONE SCHOOL',
-    perks:{2:['windeater','ironjaw'],3:['conduit','bulwark'],
-           4:['stoneskin','inspire'],5:['heavyhand','footwork']}},
+    perks:{2:['windeater','ironjaw'],4:['conduit','bulwark'],
+           6:['stoneskin','inspire'],8:['heavyhand','footwork']}},
   /* The real one. Two schools, a second casting each turn at half strength,
      and almost nothing else — bad with a blade, thin, slow to dodge. */
   mage   :{n:'MAGE',sig:'TWO SCHOOLS · A SECOND CASTING AT HALF',
-    perks:{2:['windeater','fieldmedic'],3:['conduit','ironjaw'],
-           4:['inspire','quickfoot'],5:['stoneskin','footwork']}},
+    perks:{2:['windeater','fieldmedic'],4:['conduit','ironjaw'],
+           6:['inspire','quickfoot'],8:['stoneskin','footwork']}},
   cutter :{n:'CUTTER',    sig:'BACKSTAB',
-    perks:{2:['butcher','quickfoot'],3:['opportune','shadowstep'],
-           4:['deadeye','footwork'],5:['heavyhand','killzone']}},
+    perks:{2:['butcher','quickfoot'],4:['opportune','shadowstep'],
+           6:['deadeye','footwork'],8:['heavyhand','killzone']}},
   brute  :{n:'BRUTE',     sig:'SWEEP + ROAR',
-    perks:{2:['brawn','ironjaw'],3:['standfast','thickhide'],
-           4:['heavyhand','stoneskin'],5:['inspire','bulwark']}}
+    perks:{2:['brawn','ironjaw'],4:['standfast','thickhide'],
+           6:['heavyhand','stoneskin'],8:['inspire','bulwark']}},
+  /* ═══ #174 - THE STRANGER WITHOUT A TRADE ═════════════════════════════════
+     (User: "When you hire someone, 1 our of 3 has lvl 0 and a bit cheaper
+     price. So you can choose his class later.") A trade is a key in this
+     table, so "no trade yet" is a KEY too, and every `CLASSES[p.cls].n` in
+     the file keeps working without a null check it would forget somewhere.
+     No signature, no perks; he swings what he holds (a weapon defines the
+     attack - concept §8), and picks a real trade on the sheet at his first
+     level. `tradeOwed()` is the one test for that state. */
+  none   :{n:'NO TRADE YET',sig:'',perks:{}}
 };
-const PERKTIERS=5;
+const PERKTIERS=8;
 /* two classes cast; everything else in the game that asked "is this a mage?"
    asked `cls==='mage'` and would silently exclude the new one */
 const isCaster=cls=>cls==='mage'||cls==='warmage';
@@ -6368,10 +6406,156 @@ const perkPool=p=>{let a=[];for(let l=2;l<=Math.min(PERKTIERS,p.level);l++)
 /* is there anything at all left for this person to buy? */
 const perksLeft=p=>perkPool(p).filter(k=>p.perks.indexOf(k)<0).length;
 
+/* ═══ #174 - EXPERIENCE: THE LEVEL IS EARNED, HALF BY THE COMPANY AND HALF
+   BY THE HAND (8f.202, 2026-08-17) ══════════════════════════════════════════
+   (User: "give some expiriences, rather then 1 lvl per battle ... first lvl
+   100 ... 0 lvl, where character doesnt even have a class ... +-50% of
+   expirience shared between party. And other for individual actions".)
+   Until this build a won fight did `pickOne(G.party).level++`, once, and the
+   concept doc called the randomness the point. It is gone by his ruling
+   ("random promotions goe"). What survives is everything downstream of the
+   level: the perk/stat alternation, the banks, the ★ debt, the sheet.
+
+   `p.xp` is CUMULATIVE and a level is a threshold on it. `p.level` stays
+   stored (forty readers) and is RAISED by xp in grantXP, never derived.
+   The table is a gentle triangle (+50 a step) because his word for the
+   power curve was "not that sharp": Wildermyth's 10×n shape at Battle
+   Brothers' first-step size, and 10 is the trophy that pays a stat.
+   Race multiplies what is NEEDED (his numbers), intellect multiplies what
+   is EARNED (D.learn) - both gentle on purpose, because RACEMOD already
+   leans the ogre −1 int and the human +2, and the two overlap.
+   The research: docs/XP_BENCHMARK_2026-08-17.md. The rules: BACKLOG_ENTRY_
+   SPECS §174. */
+const XP_TABLE=[0,100,250,450,700,1000,1350,1750,2200,2700,3300];
+const XP_RACE={ratkin:.8,human:1,ogre:1.2};
+const XP_CAP=10;
+const xpNeed=(p,L)=>Math.round(XP_TABLE[Math.max(0,Math.min(L,XP_CAP))]*(XP_RACE[p.race]||1));
+/* what a fight is worth: 1.5 XP per enemy hitpoint that stood on the field,
+   +40 for a body wearing the enemy crest (captain:true). Read off the bodies,
+   never a hand table per fight - a bigger fight pays more by construction.
+   ⚠ XP_PER_HP IS THE DIAL AND IT WAS SET BY THE HARNESS, NOT BY READING
+   (2026-08-17, n=20 runs × the eight authored fights, tools/harness.js with
+   the `after` hook): the spec's first guess of 2 put a six-body company's
+   founders at 4.7 after the eight and one of them over level 5 in a quarter
+   of runs; 1.4 put them at 3.8 with nobody under 3 or over 5. 1.5 lands the
+   act-1 target (level 4 ± 1 at the Snare) for both the six-body company and
+   the bare four (~4.0 and ~4.6). XP_KILL is a flat kill bonus in hitpoint
+   units: the peers' kill-stealing threads all start with a PERCENTAGE. */
+const XP_PER_HP=1.5, XP_LEAD=40, XP_KILL=15;
+/* the trade the stranger has not picked yet - see CLASSES.none */
+const tradeOwed=p=>p.cls==='none'&&(p.level||0)>=1;
+/* one level, paid the way consequences() always paid it: perk, then stat,
+   then perk. Lifted out so a level bought on the road pays like one bought
+   in a fight. A level-0 stranger's FIRST level pays the trade instead (the
+   pick is on the sheet, and it is what the ★ says he owes). */
+function levelUp(p){
+  p.level=(p.level||0)+1;
+  if(p.level===1&&p.cls==='none')return;
+  let isPerk=p.nextIsPerk;
+  if(isPerk&&!perksLeft(p))isPerk=false;
+  p.nextIsPerk=!p.nextIsPerk;
+  if(isPerk)p.perkPoints=(p.perkPoints||0)+1;
+  else p.statPoints=(p.statPoints||0)+1;
+}
+/* how far along the current level, 0..1. Full at the cap. Clamped, because
+   an event recruit whose race was overwritten after the roll can sit a few
+   points under his own threshold and must not draw a negative arc. */
+const xpFrac=p=>{
+  const L=p.level||0;if(L>=XP_CAP)return 1;
+  const a=xpNeed(p,L),b=xpNeed(p,L+1);
+  return Math.max(0,Math.min(1,((p.xp||0)-a)/Math.max(1,b-a)));
+};
+const xpHover=p=>{
+  const L=p.level||0;if(L>=XP_CAP)return 'level '+L+' · as far as they go';
+  const a=xpNeed(p,L),b=xpNeed(p,L+1),x=(p.xp||0)-a;
+  return x+' of '+(b-a)+' · '+Math.max(0,b-(p.xp||0))+' to level '+(L+1);
+};
+/* THE RING (user: "bar progression could be shown circle as in total war").
+   One SVG, two sizes: 26 with the level inside it on the sheet's chip row,
+   42 round the roster bust with no number (the row's L{level} is the number).
+   r=15.9 makes the circumference 99.9, so the dasharray is a percentage. The
+   colours are the edge scale and the gold; the number is --fs1 at 26px
+   (15 units of a 36-unit box), which is the floor and not under it. `sw` is
+   the stroke in viewBox units: 3.2 on the chip, 2.6 round the bust. */
+const xpRing=(p,size,withNumber,sw)=>{
+  const f=xpFrac(p),L=p.level||0;sw=sw||3.2;
+  return '<svg class="xpring" width="'+size+'" height="'+size+'" viewBox="0 0 36 36" aria-hidden="true">'+
+    '<circle cx="18" cy="18" r="15.9" fill="none" stroke="var(--e1)" stroke-width="'+sw+'"/>'+
+    '<circle cx="18" cy="18" r="15.9" fill="none" stroke="var(--gold)" stroke-width="'+sw+'" '+
+      'stroke-dasharray="'+(f*99.9).toFixed(1)+' 100" transform="rotate(-90 18 18)"/>'+
+    (withNumber?'<text x="18" y="18.5" text-anchor="middle" dominant-baseline="central" '+
+      'fill="var(--g4)" font-family="var(--mono)" font-size="15" font-weight="700">'+L+'</text>':'')+
+    '</svg>';
+};
+/* the stranger takes up a trade: the class lands, the kind follows it (a
+   human archer draws as an archer, a ratkin stays a ratkin), and the trade's
+   tool goes INTO THE STASH for the player to hand over - the discount he was
+   hired at was the tool he did not bring. Casters roll their schools lazily
+   in unitFrom, so a mage picked here is a mage on the next field. */
+function takeTrade(p,cls){
+  if(!CLASSES[cls]||cls==='none')return;
+  p.cls=cls;
+  p.kind=p.race==='ratkin'?'ratkin':p.race==='ogre'?'ogre':(KIND_BY_CLS[cls]||'human');
+  (START_GEAR[cls]||[]).forEach(k=>{if(k&&GEAR[k])G.stash.push(k);});
+  remember(p,'Took up the '+CLASSES[cls].n.toLowerCase()+"'s trade at "+placeName()+'.');
+}
+/* the one door every grant passes through. Returns what was actually
+   written (0 at the cap), and raises the level while the xp clears the
+   next threshold - an early fight can pay two levels at once. */
+function grantXP(p,n){
+  if((p.level||0)>=XP_CAP)return 0;
+  n=Math.round(n);if(n<=0)return 0;
+  p.xp=(p.xp||0)+n;
+  while((p.level||0)<XP_CAP&&p.xp>=xpNeed(p,p.level+1))levelUp(p);
+  if(p.level>=XP_CAP)p.xp=xpNeed(p,XP_CAP);
+  return n;
+}
+/* the road's version: a door, a camp or a vignette pays `xp:N` to every body
+   on the roster, each × their learning rate. There is no hand half on the
+   road - nobody's damage did it - so it is the line half alone. The chip
+   prints the authored N (✦ LEARNED in EVFX_ROWS), the way the morale chip
+   prints the authored figure rather than a measured delta. */
+function payXPAll(n){
+  if(!n)return;
+  G.party.forEach(p=>grantXP(p,n*D.learn(p)));
+}
+/* the fight's worth, split half to the LINE (everyone who stood in it and is
+   below cap, evenly - Wildermyth's filter) and half to the HAND (damage dealt
+   + XP_KILL a kill, off the unit's own ledger). If nobody dealt anything the
+   hand half joins the line half. Each take × D.learn. Returns {id:{got,from,
+   to}} for the crew card, which is the ONLY place the number is shown after
+   a fight - nothing on the field, by his ruling.
+   ⛔ Bodies are the ones on B at fight start, never G.party: a recruit hired
+   after the fight and a body dismissed before it get nothing. */
+function payFightXP(){
+  const out={};
+  if(!B||!B.units)return out;
+  const worth=B.units.filter(u=>u.side==='foe'&&!u.pet)
+    .reduce((s,u)=>s+Math.round((u.hpMax||0)*XP_PER_HP)+(u.captain?XP_LEAD:0),0);
+  if(!worth)return out;
+  const stood=G.party.map(p=>({p:p,u:B.units.find(x=>x.id===p.id&&x.side==='you'&&!x.pet)}))
+    .filter(x=>x.u);
+  if(!stood.length)return out;
+  const line=stood.filter(x=>(x.p.level||0)<XP_CAP);
+  const c=x=>Math.max(0,x.u.dealt||0)+XP_KILL*(x.u.killsShown||0);
+  const sumC=line.reduce((s,x)=>s+c(x),0);
+  const half=worth/2;
+  line.forEach(x=>{
+    const share=(half/line.length)+(sumC>0?half*c(x)/sumC:half/line.length);
+    const from=x.p.level||0;
+    const got=grantXP(x.p,share*D.learn(x.p));
+    out[x.p.id]={got:got,from:from,to:x.p.level||0};
+  });
+  return out;
+}
+
 /* ---------- glyphs, so a screen can be read at a glance ---------- */
 /* a class is a trade, so each gets a TOOL. Monsters are not on this list on
    purpose — they get a face instead (see MONSTERS / monTag). */
-const CLASS_ICON={captain:'⚑',spear:'⌇',archer:'➹',mage:'✷',warmage:'⚔✷',cutter:'†',brute:'⬤'};
+const CLASS_ICON={captain:'⚑',spear:'⌇',archer:'➹',mage:'✷',warmage:'⚔✷',cutter:'†',brute:'⬤',
+  /* #174 - the stranger with no trade wears an empty ring: not the ✦ fallback,
+     which is experience now, and not the ? of a mystery door */
+  none:'○'};
 /* body-size glyphs: small / medium / huge */
 const RACE_ICON={human:'◆',ratkin:'▪',ogre:'⬢'};
 const RES_ICON={crowns:'◉',food:'❦',salvage:'▤',wood:'▤',iron:'▬',gems:'◈'};
@@ -6865,6 +7049,9 @@ function finishRecruit(p){
      character had a tier-2 tree sitting open in front of them and no point to
      spend on it, and you could not actually choose anything until level 3. */
   p.level=1;p.perks=[];p.perkPoints=0;p.nextIsPerk=true;p.injuries=[];p.mem=[];
+  /* #174 - a founder is level 1 already (user: "founders in a tavern already
+     lvl 1"): a full ring's worth behind them, an empty ring ahead */
+  p.xp=xpNeed(p,1);
   p.nick=rollNick(p.race);
   if(p.leader)p.pet=null;
   const m=RACEMOD[p.race];
@@ -7019,8 +7206,16 @@ const START_GEAR={spear:['rags','spear'],archer:['rags','bow'],mage:['rags','rod
   cutter:['scrap','knife'],brute:[null,'club']};
 function rollRecruit(taken){
   const race=pickOne(['human','human','human','ratkin','ratkin','ogre']);
-  const cls=pickOne(CLS_BY_RACE[race]);
-  const kind=race==='ratkin'?'ratkin':race==='ogre'?'ogre':KIND_BY_CLS[cls];
+  /* ═══ #174 - ONE OF THE THREE ON A WALL HAS NO TRADE ═════════════════════
+     (User: "1 our of 3 has lvl 0 and a bit cheaper price. So you can choose
+     his class later.") Exactly one, at a random place on the wall: the odds
+     are 1/3, then 1/2, then forced, and never a second. Only the muster loop
+     passes `taken`; the event recruits and the harness call this bare and
+     overwrite the class anyway, so they can never be handed a stranger. */
+  const stranger=Array.isArray(taken)&&!taken.some(r=>r.cls==='none')&&
+    (taken.length>=2||Math.random()<1/(3-taken.length));
+  const cls=stranger?'none':pickOne(CLS_BY_RACE[race]);
+  const kind=race==='ratkin'?'ratkin':race==='ogre'?'ogre':(KIND_BY_CLS[cls]||'human');
   const pool=NAMEPOOL[race]||NAMEPOOL.human;
   /* not somebody the company already has, and not somebody else standing on
      the same wall. A second Vesna is the same failure as a second "the
@@ -7037,13 +7232,21 @@ function rollRecruit(taken){
   /* priced to sit inside the purse most of the time — CUT ÷2.5 (playtest #5:
      every candidate read "cannot afford" against a ~100-crown act, which
      makes the Muster Field a museum). ~55 human / ~38 ratkin / ~75 ogre. */
-  const price=Math.round((28+q*3.2)*({ratkin:.7,human:1,ogre:1.35}[race])/2.5);
-  return {id:'hire'+(Math.random()*1e6|0),name:nm,sur:sn,race:race,cls:cls,kind:kind,
+  /* #174 - the stranger without a trade is a quarter cheaper, and the reason
+     is on the row: he brings a cudgel and no trade, and the tool of whatever
+     he picks arrives with the pick. Rags and a cudgel are START_GEAR's own
+     fallback, which is what "no trade" was always going to wear. */
+  const price=Math.round((28+q*3.2)*({ratkin:.7,human:1,ogre:1.35}[race])/2.5*(stranger?.75:1));
+  const r={id:'hire'+(Math.random()*1e6|0),name:nm,sur:sn,race:race,cls:cls,kind:kind,
     st:st,trait:rollTrait(race,cls),price:price,
     eq:{armour:g[0],main:g[1],off:null,trinket:null},
     /* claim:false — a stranger you walk past must not take a nickname with them */
-    level:1,perks:[],perkPoints:0,nextIsPerk:true,injuries:[],mem:[],
+    level:stranger?0:1,perks:[],perkPoints:0,nextIsPerk:true,injuries:[],mem:[],
     nick:rollNick(race,(taken||[]).map(r=>r.nick),false)};
+  /* #174 - a hire at level 1 has that level's worth behind him; the stranger
+     starts at nothing and his first fight or two takes him to the pick */
+  r.xp=xpNeed(r,r.level);
+  return r;
 }
 
 /* a trinket's conditional clause fires only for the right race or class */
@@ -9997,6 +10200,11 @@ function tavernAfter(){
     const u=B.units.find(x=>x.id===p.id);
     if(u){p.hpLoss=clamp(Math.round(u.hpMax-Math.max(u.hp,1)),0,u.hpMax-1);
       p.fights=(p.fights||0)+1;}});
+  /* #174 - a won fight pays experience, and this is one. It is small (a
+     drunk, a barman, three friends) and it has no crew card to print the ✦
+     on since #138 cut this screen to a strip, so the ring on the sheet is
+     where it shows. Paid here, at the same moment as the fight counters. */
+  payFightXP();
   const L=(LOOT.tavern&&LOOT.tavern[0])||{t:'',c:'',fx:{}};
   pay('crowns',(L.fx&&L.fx.crowns)||0);
   G.morale+=4;
@@ -20073,7 +20281,8 @@ window.LINT=function(){
      invisible in play — see the check right under scanTokens. */
   const KNOWN_TOKENS=['ANY','ANY2','RATKIN','OGRE','HUMAN','MAGE','ARCHER','CAPTAIN',
     'TELLER','TELLER1'];
-  const FXKEYS=['crowns','food','salvage','gems','morale','days','wood','iron'];
+  const FXKEYS=['crowns','food','salvage','gems','morale','days','wood','iron',
+    'xp'];   /* #174 - a door may pay experience */
 
   /* 1 — tokens: unknown ones, and any literal brace that survives cast() */
   const scanTokens=(txt,where)=>{
@@ -20681,6 +20890,11 @@ function loadRun(){
   G.day=r.day;G.at=r.at;G.morale=r.morale;
   G.run=r.run;G.camp=materialPool(r.camp);
   G.party=r.party;G.stash=r.stash;G.visited=r.visited;G.path=r.path;
+  /* #174 - a save written before experience existed arrives with levels and
+     no `xp`: each body is given exactly the xp its level is worth, so a
+     level-3 body reads 450 with an empty ring. Cheap and honest, and it is
+     the one place this needs saying: `party` rides the save verbatim. */
+  G.party.forEach(p=>{if(p.xp==null)p.xp=xpNeed(p,p.level||1);});
   G.log=r.log||[];
   /* `||{}` and not a migration: a save written before #51 simply arrives
      without the field and starts the Captain's book fresh. */
@@ -21627,8 +21841,16 @@ function afterBattle(){
     if((u.kills||0)>=3)remember(p,'Killed '+u.kills+' at '+placeName()+'.');
   });
   if(!G.party.length){toDefeat();return;}
+  /* #174 - the fight pays its experience HERE, beside every other per-body
+     ledger line, while B is alive. The map rides to consequences() for the
+     crew card's ✦, and nowhere else. */
+  XPLAST=payFightXP();
   consequences(scarred);
 }
+/* the last fight's XP receipt, per body. Written by afterBattle, read once by
+   consequences → crewCards. Module state and not G: it must not survive into
+   the save (a reload on the aftermath re-runs nothing that pays). */
+let XPLAST={};
 /* ═══ #122 - THE AFTER-BATTLE REPORT, ON THE BATTLE BROTHERS SHAPE ════════
    (User, with the BB victory screenshot: "I love battle brotheres info. It
    gets you in one go - who did what.") The old two-column order of battle
@@ -21677,12 +21899,16 @@ function foeReport(){
    three numbers off the unit's own ledger, and the STATE on the frame -
    blood for carried off, the gold arrow for the level, ash for dead (which
    nothing sets today; #34 owns that chain, the CSS just waits for it).
-   The hidden ✦ slot is the future XP number, per the user's order. */
-function crewCards(scarred,hero){
+   The ✦ slot was hidden from #122 to 8f.201 ("i will add it in the futrue");
+   #174 is the future, and it prints what THIS body took off THIS fight -
+   the one place the number is shown after a fight, by his ruling. `xp` is
+   payFightXP's map: {id:{got,from,to}}. More than one body may level. */
+function crewCards(scarred,xp){
+  xp=xp||{};
   return '<div class="abgrid">'+G.party.map(p=>{
     const u=B&&B.units?B.units.find(x=>x.id===p.id):null;
     const sc=scarred.find(x=>x.p===p);
-    const up=p===hero;
+    const x=xp[p.id],up=!!(x&&x.to>x.from);
     const kills=(u&&u.killsShown)||0,dealt=Math.round((u&&u.dealt)||0),
           taken=Math.round((u&&u.taken)||0);
     const cls=p.cls&&CLASSES[p.cls]?CLASSES[p.cls].n:'';
@@ -21692,9 +21918,11 @@ function crewCards(scarred,hero){
       '<div><div class="abname">'+fullName(p)+'</div>'+
       '<div class="abkind">'+(cls?cls.toUpperCase()+' · ':'')+(p.race||'').toUpperCase()+'</div>'+
       '<div class="abnums"><b class="abk">☠ '+kills+'</b><b class="abd">⚔ '+dealt+
-        '</b><b class="abt">🩸 '+taken+'</b><b class="abx">✦ 0</b></div>'+
+        '</b><b class="abt">🩸 '+taken+'</b>'+
+        (x&&x.got?'<b class="abx" title="experience, this fight">✦ +'+x.got+'</b>':'')+'</div>'+
       (sc?'<div class="abline abscarline">carried off · '+sc.s.n.toLowerCase()+'</div>':'')+
-      (up?'<div class="abline abuplne">level '+p.level+' · spend it on the sheet</div>':'')+
+      (up?'<div class="abline abuplne">level '+p.level+' · '+
+        (tradeOwed(p)?'pick a trade on the sheet':'spend it on the sheet')+'</div>':'')+
       '</div></div>';}).join('')+'</div>';
 }
 function consequences(scarred){
@@ -21715,18 +21943,19 @@ function consequences(scarred){
   const hauls=table.filter(l=>!lootIsChoice(l));
   const haul=pickOne(hauls.length?hauls:table);
   takeLoot(haul);
-  const hero=pickOne(G.party);
-  hero.level++;
-  /* ═══ #122 - THE PICK LEFT THE FLOW. The level happens HERE (the gold
-     arrow on the card is the receipt); the CHOICE waits on the sheet. A
-     perk level banks a perk point exactly as "Decide later" always did; a
-     stat level banks `statPoints`, and the WHO THIS IS tells on the sheet
-     are the spend buttons while any wait (see drawInv). */
-  let isPerk=hero.nextIsPerk;
-  if(isPerk&&!perksLeft(hero))isPerk=false;
-  hero.nextIsPerk=!hero.nextIsPerk;
-  if(isPerk)hero.perkPoints=(hero.perkPoints||0)+1;
-  else hero.statPoints=(hero.statPoints||0)+1;
+  /* ═══ #174 - THE RANDOM PROMOTION IS GONE ═══════════════════════════════
+     This line used to read `const hero=pickOne(G.party); hero.level++;` and
+     then alternate a perk point and a stat point onto that one lucky body -
+     the whole level system, from the first slice to 8f.201. The level is
+     EARNED now: afterBattle() has already paid the fight through payFightXP
+     and raised whoever crossed a threshold (levelUp keeps the alternation
+     exactly as it was written here). #122's rule still holds: the gold frame
+     on the crew card is the receipt, the CHOICE waits on the sheet.
+     ⚑ The rejected half, kept: "randomising who gets promoted is the point,
+     you build the party you were given" - concept §8 until 2026-08-17. The
+     LINE half of the payout does that job now (everyone who stood in it
+     grows, whatever they did); the HAND half is the player's expression. */
+  const xpGot=XPLAST;XPLAST={};
   /* the begging enemy, if this fight ended with one. Read ONCE and cleared:
      a flag that survives its own screen would ask the next fight the same
      question. */
@@ -21741,7 +21970,7 @@ function consequences(scarred){
      everybody was standing there. */
   if(a.mor)G.morale+=a.mor;
   if(a.remember)G.party.forEach(p=>remember(p,a.remember));
-  const crew=crewCards(scarred,hero);   /* also while B is alive */
+  const crew=crewCards(scarred,xpGot);   /* also while B is alive */
   /* ═══ ONE REPORT, THEN ONLY THE DECISION THAT EXISTS (#122) ═════════════
      The two beats survive but changed jobs. Screen one is the WHOLE report
      - the crew grid, the haul, the accordion - and on a fight with no
@@ -23632,7 +23861,11 @@ function drawInv(){
     b.className='rmem'+(p.id===iSel?' on':'');
     const cv=document.createElement('canvas');cv.width=40;cv.height=40;
     bustFor(cv,p);
-    b.appendChild(cv);
+    /* #174 - the bust wears the ring: how far to the next level, no number
+       (the row's L{level} text is the number). Total War's ring, his ask. */
+    const wrap=document.createElement('span');wrap.className='rbust';
+    wrap.innerHTML=xpRing(p,42,false,2.6);wrap.appendChild(cv);
+    b.appendChild(wrap);
     const box=document.createElement('div');
     /* the roster is a list of PEOPLE: the nickname, the personality clause
        and what they are carrying from the last fight belong on the card,
@@ -23641,7 +23874,7 @@ function drawInv(){
        the only one of the four spend-signals that can be seen WITHOUT
        opening that person's sheet, which is the whole failure mode: a perk
        point is invisible until you happen to click the right body. */
-    const owed=(p.perkPoints||0)+(p.statPoints||0);
+    const owed=(p.perkPoints||0)+(p.statPoints||0)+(tradeOwed(p)?1:0);
     const wear=[];
     if(p.hpLoss)wear.push('<span style="color:#c15d55">mending '+p.hpLoss+'</span>');
     if(p.injuries&&p.injuries.length)
@@ -23693,8 +23926,16 @@ function drawInv(){
 
   const chips='<span class="ichip race '+p.race+'" data-race="'+p.race+'">'+rIcon(p.race)+
       ' <b>'+p.race.toUpperCase()+'</b></span>'+
-    '<span class="ichip" data-cls="'+p.cls+'">'+cIcon(p.cls)+' <b>'+CLASSES[p.cls].n+'</b></span>'+
-    '<span class="ichip">LEVEL <b>'+p.level+'</b></span>'+
+    /* #174 - no lore tip on a trade he has not got: the chip says NO TRADE
+       YET (CLASSES.none) in the muted colour and carries no data-cls */
+    (p.cls==='none'
+      ?'<span class="ichip" style="color:#a08a5e">'+cIcon('none')+' <b>'+CLASSES.none.n+'</b></span>'
+      :'<span class="ichip" data-cls="'+p.cls+'">'+cIcon(p.cls)+' <b>'+CLASSES[p.cls].n+'</b></span>')+
+    /* #174 - the LEVEL chip is a RING now (user: "bar progression could be
+       shown circle as in total war"): the level inside it, the arc is how far
+       to the next, the exact figures on hover. It is progress and never a
+       receipt: what the last fight paid is on the crew card, not here. */
+    '<span class="ichip xplv" title="'+xpHover(p)+'">'+xpRing(p,26,true)+'</span>'+
     (killHeads(p)?'<span class="ichip kills" title="what this one has put in the ground">'+
       killHeads(p)+'</span>':'');
 
@@ -23818,6 +24059,9 @@ function drawInv(){
        because that one is a call to action rather than a caption. */
     (statPts>0?'<div class="lbl" style="color:#8ca35a">'+statPts+' LEVEL'+
       (statPts>1?'S':'')+' TO SPEND. CLICK A TRAIT</div>':'')+
+    /* #174 - the stranger's first level is a trade, and it is picked on the
+       perks tab; this is the same call to action, pointing at the other room */
+    (tradeOwed(p)?'<div class="lbl" style="color:#8ca35a">A TRADE TO PICK. THE ★ PERKS TAB</div>':'')+
     /* #136 point 3 - the attributes take the width, the pools take the
        battle's narrow stack. Same two blocks, side by side. */
     '<div id="iStats">'+
@@ -24067,12 +24311,38 @@ function drawInv(){
      question "what does the next promotion buy" can actually be answered.
      ⚑ THE ROOM THIS TAB HAS IS THE ROOM THE REAL TREE WILL NEED. */
   const pk=$('iPerkBody');
+  /* ═══ #174 - THE STRANGER PICKS HIS TRADE HERE ═══════════════════════════
+     A level-0 hire has no tree to show, so this tab is his: before his first
+     level, one line saying what he is waiting for; at it, the trades of his
+     race as cards, and picking one is the level's payment (see levelUp).
+     The tool of the trade goes into the stash, not onto him - the player
+     equips it, the way every other thing on this sheet is put on. */
+  if(p.cls==='none'){
+    let tHTML;
+    if(tradeOwed(p)){
+      const trades=[...new Set(CLS_BY_RACE[p.race]||CLS_BY_RACE.human)];
+      tHTML='<div class="lbl" style="color:#8ca35a">A TRADE TO PICK · CLICK ONE · THE TOOL COMES WITH IT</div>'+
+        trades.map(k=>'<button class="pk buy" data-trade="'+k+'"><span class="tag">TRADE</span>'+
+          '<b>'+cIcon(k)+' '+CLASSES[k].n+'</b><i>'+CLASSES[k].sig+'</i></button>').join('')+
+        '<div class="pkfoot">A trade is picked once and kept. The perks come after it, at 2, 4, 6 and 8.</div>';
+    }else{
+      tHTML='<div class="lbl" style="color:#8a7449">NO TRADE YET</div>'+
+        '<div class="pknone">Hired without one. The first level is where a trade is picked, and it '+
+        'is a fight or two away.</div>';
+    }
+    pk.innerHTML=tHTML;
+    pk.querySelectorAll('.pk.buy').forEach(b=>b.onclick=()=>{
+      if(!tradeOwed(p))return;
+      takeTrade(p,b.dataset.trade);sfx('promote');drawInv();});
+  }else{
   let pkHTML=perkPts>0
     ? '<div class="lbl" style="color:#8ca35a">'+perkPts+' PERK POINT'+(perkPts>1?'S':'')+
       ' · CLICK A CARD TO TAKE IT</div>'
     : '<div class="lbl" style="color:#8a7449">'+p.perks.length+' TAKEN · a promotion buys the next</div>';
   let any=false;
-  [2,3,4,5].forEach(lv=>{
+  /* #174 - the tiers are whatever keys the class has (2/4/6/8 now), read
+     off the table rather than a literal list that would go stale with it */
+  Object.keys(CLASSES[p.cls].perks).map(Number).sort((a,b)=>a-b).forEach(lv=>{
     const list=CLASSES[p.cls].perks[lv]||[];
     if(!list.length)return;
     pkHTML+='<div class="pklv">LEVEL '+lv+'</div>';
@@ -24093,6 +24363,7 @@ function drawInv(){
   pk.querySelectorAll('.pk.buy').forEach(b=>b.onclick=()=>{
     if((p.perkPoints||0)<=0)return;
     p.perks.push(b.dataset.perk);p.perkPoints--;sfx('promote');drawInv();});
+  }
 
   /* ═══ THE HOVERS AND THE DOORS, ALL OF WHICH ONLY CHANGED ADDRESS ══════ */
   /* the four stats and the nerve rung explain themselves the same way: one
@@ -26416,7 +26687,8 @@ const heartSVG=st=>{
    wagon wins on at least one axis and loses on none.
    ⚠ Company relics are excluded: they work from the baggage and have no
    wearer to be better than. */
-const levelsWaiting=()=>G.party.reduce((s,p)=>s+(p.perkPoints||0)+(p.statPoints||0),0);
+/* #174 - a trade owed counts as a level owed: it IS one, the stranger's first */
+const levelsWaiting=()=>G.party.reduce((s,p)=>s+(p.perkPoints||0)+(p.statPoints||0)+(tradeOwed(p)?1:0),0);
 /* ═══ #157 · THE ! NAMES ITS PERSON ═══════════════════════════════════════
    (User: "when there is an exclamation mark in the inventory, switch straight
    to the character it came up on.")
@@ -26982,9 +27254,14 @@ function worldTick(){
      picks the body - the tells light themselves (`.spend`). Perks are looked
      for first, because the tab is the half that is hidden. */
   const goParty=()=>{
+    /* #174 - a trade owed is a third kind of debt and it lives on the perks
+       tab too; it is looked for first because the stranger cannot spend
+       anything else until it is paid */
+    const trade=G.party.filter(tradeOwed)[0];
     const perk=G.party.filter(p=>(p.perkPoints||0)>0)[0];
     const stat=G.party.filter(p=>(p.statPoints||0)>0)[0];
-    if(perk){iSel=perk.id;ITAB='perks';}
+    if(trade){iSel=trade.id;ITAB='perks';}
+    else if(perk){iSel=perk.id;ITAB='perks';}
     else if(stat)iSel=stat.id;
     openInv();};
   const pc=$('wCompany').querySelector('[data-w="party"]');
@@ -28023,6 +28300,7 @@ const VIGNETTES=[
 function applyFx(f){
   if(f.days)passDays(f.days);
   if(f.morale)G.morale+=f.morale;
+  if(f.xp)payXPAll(f.xp);              /* #174 - a camp or a vignette may pay it too */
   payFx(f);                            /* was the only site that clamped; now it is the door */
   /* `salvage` FIRST and by name — every reward now writes it directly. The
      three appliers only listed wood/iron/gems, so the moment the content was
@@ -28056,6 +28334,7 @@ function evPaidOf(f,mulCrowns){
   const mat=f.salvage!=null?f.salvage:(f.iron||0)+(f.wood||0);
   if(mat)p.salvage=mat;
   if(f.gems)p.gems=f.gems;
+  if(f.xp)p.xp=f.xp;                     /* #174 */
   return p;
 }
 /* ═══ #150 - THE HEART WAS ON THE WRONG ROW ═════════════════════════════════
@@ -28080,7 +28359,12 @@ function evPaidOf(f,mulCrowns){
    the mood the choice will LAND the company in, not the one it is leaving.
    Every other caller draws after payment and defaults to G.morale. */
 const EVFX_ROWS=[['crowns','CROWNS'],['food','PROVISIONS'],['salvage','SALVAGE'],
-  ['gems','GEMS'],['days','DAYS'],['heal','MENDED'],['morale','MORALE']];
+  ['gems','GEMS'],['days','DAYS'],['heal','MENDED'],['morale','MORALE'],
+  /* #174 - ✦ LEARNED: experience a door pays the whole company. The glyph is
+     the crew card's own ✦, and it means experience and nothing else on any
+     screen (CLASS_ICON.none is ○ so the no-trade chip never lands on cIcon's
+     ✦ fallback). */
+  ['xp','LEARNED']];
 function evFxChips(f,moodAt){
   const rows=EVFX_ROWS.filter(r=>f&&f[r[0]]);
   if(!rows.length)return '';
@@ -28088,8 +28372,8 @@ function evFxChips(f,moodAt){
   return '<div class="abfx" style="margin-top:10px">'+rows.map(r=>{
     const k=r[0];let v=f[k];
     if(k==='days')v=-v;                       /* a day spent is a minus */
-    const icon=k==='morale'?face:k==='heal'?'♥':k==='days'?'◐':(RES_ICON[k]||'◉');
-    const tone=k==='morale'?(v>0?'fx-up':'fx-down'):k==='heal'?'fx-up'
+    const icon=k==='morale'?face:k==='heal'?'♥':k==='days'?'◐':k==='xp'?'✦':(RES_ICON[k]||'◉');
+    const tone=k==='morale'?(v>0?'fx-up':'fx-down'):k==='heal'||k==='xp'?'fx-up'
       :k==='days'?'fx-days':'fx-'+k;
     return '<div class="fxc '+tone+'"><span class="fxi">'+icon+'</span><span>'+
       '<span class="fxn">'+(v>0?'+':'−')+Math.abs(v)+'</span>'+
@@ -29697,9 +29981,15 @@ function openHire(){
     if(!afford||!fits)b.disabled=true,b.style.opacity=.4;
     /* the strangers explain what they ARE, which is most of what you are
        buying — hovering the class or the race says so */
-    b.innerHTML='<b>'+r.name+' “'+r.nick+'” — <span data-cls="'+r.cls+'">'+cIcon(r.cls)+' '+
-      CLASSES[r.cls].n.toLowerCase()+'</span>, <span data-race="'+r.race+'">'+
-      rIcon(r.race)+' '+r.race+'</span></b>'+
+    /* #174 - the stranger with no trade says so in the trade's place, in the
+       muted colour, and carries no data-cls (there is no lore tip for a
+       thing he is not yet). The reason he is cheaper is one clause at the
+       end of his row, and #157's rule holds: no paragraph about him. */
+    const none=r.cls==='none';
+    b.innerHTML='<b>'+r.name+' “'+r.nick+'” — '+(none
+        ?'<span style="color:#a08a5e">'+cIcon('none')+' no trade yet</span>'
+        :'<span data-cls="'+r.cls+'">'+cIcon(r.cls)+' '+CLASSES[r.cls].n.toLowerCase()+'</span>')+
+      ', <span data-race="'+r.race+'">'+rIcon(r.race)+' '+r.race+'</span></b>'+
       '<i>'+price+' crowns'+
       (G.hiredHere&&r.race==='ratkin'?' <span style="color:#8ca35a">(undercutting)</span>':'')+
       ' · '+COST[r.race]+' room · '+WAGE[r.race]+'/day'+
@@ -29716,6 +30006,7 @@ function openHire(){
       '<br><span style="color:#a08a5e">'+tellLine(s)+'</span>'+
       '<br><span title="'+esc(traitShort(r))+'" style="cursor:help;border-bottom:1px dotted var(--e3)">'+
       TRAITS[r.trait].n+'</span>'+
+      (none?' · <span style="color:#8ca35a">picks up a trade at the first level</span>':'')+
       (!fits?'<span class="hurt"> · no room left</span>':
         !afford?'<span class="hurt"> · cannot afford</span>':'')+'</i>';
     if(!b.disabled)b.onclick=()=>{
@@ -30210,6 +30501,10 @@ function pickChoice(k,i){
   pay('food',f.food||0);addPaid('food',f.food||0);
   ['salvage','wood','iron','gems'].forEach(r=>{if(f[r]){G.camp[r]+=f[r];
     addPaid(r==='gems'?'gems':'salvage',f[r]);}});
+  /* #174 - a door may pay experience, to the whole company (the LINE half
+     only: nobody's hand did anything here), each × their learning rate. The
+     chip prints the authored figure, the way the morale chip does. */
+  if(f.xp){payXPAll(f.xp);addPaid('xp',f.xp);}
   if(c.gear)G.stash.push(c.gear);
   if(c.gear2)c.gear2.forEach(g=>G.stash.push(g));
   /* A STRANGE CONDITION lands on somebody, and the clock starts. One carrier
@@ -30521,6 +30816,9 @@ function pickChoice(k,i){
          against who they actually are, through the same gate as everybody. */
       nr.trait=rollTrait(nr.race,nr.cls);
       const g=START_GEAR[nr.cls];nr.eq={armour:g[0],main:g[1],off:null,trinket:null};
+      /* #174 - the same overwrite moved the race, and the xp a level is worth
+         is a race's number: an event recruit is level 1 with exactly that */
+      nr.level=1;nr.xp=xpNeed(nr,1);
       G.party.push(nr);
       hurtLine+='\n\n'+who(nr)+' joins the company'+(price?' for '+price+' crowns':'')+'. '+
         TRAITS[nr.trait].n+': '+traitDesc(nr);

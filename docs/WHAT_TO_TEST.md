@@ -25,6 +25,94 @@
 
 ---
 
+## ✦ EXPERIENCE - THE LEVEL IS EARNED, HALF BY THE COMPANY AND HALF BY THE HAND  *(#174 · 2026-08-17 · build log 8f.202)*
+
+**Where it came from.** Your brief the same day: *"give some expiriences, rather then 1 lvl per
+battle ... first lvl 100 ... 0 lvl, where character doesnt even have a class ... +-50% of
+expirience shared between party"*, then your seven rulings on the research
+([`XP_BENCHMARK_2026-08-17.md`](XP_BENCHMARK_2026-08-17.md)). **The random promotion after a fight is
+gone.** Every body carries experience, a won fight pays it, and a level is a threshold on it.
+
+**How to reach it in three steps.** New run → win the tavern brawl and Blood on the Road → open
+🎒 the company. Then hire at **The Muster Field** and look at the third face on the wall.
+
+**The picture:** `shots/174_after.html` (live captures of the aftermath, the sheet, the stranger).
+
+### 1 · After a fight, every crew card prints ✦ +N
+
+The fight is worth **1.5 × the enemy's hitpoints** (+40 for a body wearing the crest). **Half is
+split evenly over everyone who stood in it** (down or fled or not), **half by damage dealt + 15 a
+kill**, then × the body's own learning rate (intellect: 5 → ×.88, 9 → ×1, 14 → ×1.15). Cumulative;
+a human needs **100 · 250 · 450 · 700 · 1000 · 1350 · 1750 · 2200 · 2700 · 3300** to reach levels
+1-10, a ratkin ×.8 of that, an ogre ×1.2. Ten is the cap and it stops accruing.
+
+- **Should happen:** the ✦ on each card is that body's own take; the gold frame and *level N ·
+  spend it on the sheet* appear on **whoever crossed a threshold** - none, one, or several. The
+  Pack, measured: You +67, Vesna +100 (three kills), Marrow +66, Ilka +96 → level 2.
+- **A bug:** any ✦ number on the battlefield itself (you ruled *"on the battlefield none"*), a body
+  that stood in the fight with no ✦, or a ✦ on somebody hired after it.
+- ⚠ **The tavern brawl pays too**, but that screen is a strip since #138 and has no crew card: the
+  ring on the sheet is where you see it.
+
+### 2 · The level is a ring, on the sheet and round every roster bust
+
+Where the LEVEL chip was: a **26px ring with the level inside it**, the gold arc is how far to the
+next, hover reads *"110 of 300 · 190 to level 5"*. Every roster bust wears the same ring at 42px
+with no number (the row still says `L4`). At the cap the ring is full and the hover says *"as far as
+they go"*.
+
+- **Should happen:** the ring is progress and never a receipt - it never says what the last fight
+  paid, the crew card does. The ★ (unspent level) is untouched and still the thing that says
+  *spend it*.
+- **A bug:** a ring that reads over full or backwards; a roster row that got taller (measured
+  65/63/77/65 for the four, identical to before).
+
+### 3 · Perks sit at levels 2 · 4 · 6 · 8 now, not 2 · 3 · 4 · 5
+
+Same eight perks a class, spaced over the whole run. Level 2 perk, 3 stat, 4 perk ... 10 pays a
+stat (its perk turn meets an empty tier and becomes a stat, the rule that already existed).
+
+- **Should happen:** the ★ PERKS tab shows LEVEL 2 / 4 / 6 / 8 headings; a body at 3 has one perk
+  and one stat point spent.
+- **A bug:** a level whose point evaporates.
+
+### 4 · One of the three on every muster wall has no trade
+
+The row reads *NAME "nick" - ○ no trade yet, human · 41 crowns · 2 room · 2/day · picks up a trade
+at the first level*: **a quarter cheaper**, because he brings a cudgel and no trade. On the sheet his
+chip says **NO TRADE YET**, the roster says `L0`, he has no signature and no perk tree, and he
+fights with what he holds.
+
+- **Should happen:** his first level (100 XP; the Fen alone pays him ~100, two ordinary fights
+  ~93% of the time) puts a ★ on him and *A TRADE TO PICK. THE ★ PERKS TAB* on his sheet; the tab
+  offers **the trades of his race** as cards; picking one sets it for good and **puts the trade's
+  tool in the stash** for you to hand over. The road bar's ★ chip counts him and clicking it opens
+  his tab.
+- **A bug:** two strangers on one wall (measured exactly one on 30 walls); a stranger from an event
+  (Pell, the Sitting Stone ogre) - those always arrive with a trade; a level-1 stranger with no ★.
+
+### 5 · A door may pay experience
+
+`xp:N` in a door's fx pays every body on the roster (each × their learning rate) and prints a
+**✦ LEARNED** chip beside the others. **No card uses it yet** - the hook exists for *"extra events -
+items"*, the camp's *Train* verb and a gear multiplier are still unbuilt.
+
+### The measurement, so you can argue with the dial
+
+`XP_PER_HP` was set by the harness, n=20 runs × the eight authored fights, both brains: at the
+spec's first guess of 2 a six-body company's founders finished at **4.7** and one of them was over
+level 5 in a quarter of runs; at 1.4, **3.8** with nobody under 3 or over 5. **1.5 lands ~4.0 for the
+six-body company and ~4.6 for the bare four**, which is the act-1 target (level 4 ± 1 at the Snare).
+⚠ **The hand half favours the archer and the caster and starves the spearwoman**: over the eight,
+Ilka finishes about a level ahead of Vesna. That is the brief's *"damage dealt and kills"* doing
+exactly what the peers said it would, and it is your call whether the hand half should also count
+damage TAKEN and the class verb (one line in `payFightXP`).
+
+⚠ **Only act 1 exists.** Levels 5-10 are a promise about acts 2-4 and rising enemy tiers; nothing
+here builds them.
+
+---
+
 ## 🩸 THE FIGHT SLOWS DOWN, AND THE HEXES STICK TOGETHER  *(#173 · 2026-08-17 · build log 8f.201)*
 
 **Where it came from.** Your ten-item batch on 2026-08-17. Nine were about the fight reading badly;

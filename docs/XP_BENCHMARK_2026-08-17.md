@@ -372,6 +372,24 @@ beside `pay()` like every other chip (`.claude/rules/event-cards.md`).
 6. **Acts 2-4**: this curve is a promise about them. When does their content start, and does the
    enemy tier rise per act (the peers say it must)?
 
+**✅ RULED THE SAME DAY, 2026-08-17** (verbatim, spelling his): *"1) founders in a tavern already
+lvl 1 · 2) When you hire someone, 1 our of 3 has lvl 0 and a bit cheaper price. So you can choose
+his class later · 3) random promotions goe · 4) On the battlfield none - it shows only after and then
+in the inventory · 5) Not that sharp climb to hire lvl, I expect not that sharp power raise for
+characters · 6) I think also intelect have a modifier to xp. Also i am thinking a bit different
+amount needed for a rat (0.8) and human (1) and ogr (1.2) · 7) bar progression could be shown
+circle as in total war"*. **The rules are written as backlog #174** (`archive/BACKLOG_ENTRY_SPECS.md`
+§174) and the picture is `shots/174_xp_ring.html`; concept §8 is rewritten to match. Two of the six
+calls stay open there: what the hand half counts (damage + kills as briefed, or contribution with
+the class verb), and acts 2-4.
+
+**✅ AND BUILT THE SAME DAY (8f.202)** on his *"sounds good - do it"*. The dial came out of the
+harness, not this document: the worked example above said 2 XP a hitpoint and n=20 × eight fights
+said that puts a six-body company's founders at **4.7** by the Snare; **1.5** shipped (~4.0 / ~4.6
+for four). ⚑ **The peers' warning in §3 arrived on schedule**: on damage + kills the archer
+finishes about a level ahead of the spearwoman over the act. Record: `CHANGELOG.md` 8f.202,
+`WHAT_TO_TEST.md` #174, `shots/174_after.html`.
+
 **Gaps in the survey, so nobody re-treads them**: Wesnoth per-unit XP-to-advance beyond two
 examples; FTL thresholds beyond piloting/engines; DOS2 and Pathfinder tables; Symphony of War CP
 thresholds; the UI rows marked *(memory)* in §6. Fandom refused direct fetches; Battle Brothers and
