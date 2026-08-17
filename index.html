@@ -719,65 +719,85 @@ button:disabled{cursor:not-allowed}
 @keyframes whispin{from{opacity:0;transform:translate(-50%,10px)}
                    to{opacity:1;transform:translate(-50%,0)}}
 @media (prefers-reduced-motion:reduce){.whisp{animation:none}}
-/* ═══ THE CAPTAIN'S CALL (backlog #51) ═══════════════════════════════════
-   A comic balloon from the Captain's own body on the field. Parchment and
-   ink on the Ash & Iron palette with a flat offset shadow — the comic READ
-   comes from the hard black border and the shadow, not from a white bubble,
-   which would look like a browser tooltip had wandered onto a painting.
-   Lives in #bFx, which is already pointer-events:none, so it can never eat
-   a click meant for a hex underneath it. */
-.ccall{position:absolute;z-index:44;display:flex;gap:8px;align-items:flex-start;
-  width:288px;background:linear-gradient(#efe6cd,#ddd0af);border:2px solid #1a120a;
-  padding:var(--p3) var(--p4) var(--p3) var(--p3);box-shadow:3px 4px 0 rgba(10,8,4,.55);
-  animation:ccin .2s cubic-bezier(.2,1.4,.4,1)}
-.ccall.go{opacity:0;transition:opacity .35s ease}
-/* An <img>, not a live <canvas>: the painted bust is already a data URI, and a
-   canvas's pixels do not survive innerHTML — which is exactly how shotBoard()
-   serialises the overlay, so every gate picture showed an empty square while
-   the running game drew the face correctly. The procedural fallback is
-   rendered once and handed over as a data URI too, so there is one code path. */
-.ccall .face{width:34px;height:38px;flex:none;border:1px solid #1a120a;background:#2a2218;
-  object-fit:cover;image-rendering:auto}
-.ccall .txt{font-family:var(--body);font-size:var(--fs4);line-height:1.32;color:#140f08;
-  font-weight:600;padding-top:var(--p1)}
-.ccall .who{display:block;font-family:var(--mono);font-size:var(--fs1);
-  /* #164: the floor took this line 7.5 -> 10, so the tracking comes down and the
-     clamp goes out to the 224px the bubble actually has (288 less the border,
-     the padding pair, the 34px face and its gap). Fewer speakers ellipsize. */
-  color:#6b5330;font-weight:400;margin-bottom:2px;letter-spacing:.1em;
-  max-width:224px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-/* the tail points at the body that said it — two triangles, the pale one
-   sitting 2px inside the dark one so the border reads as continuous */
-.ccall .tail{position:absolute;bottom:-18px;width:0;height:0;
-  border:9px solid transparent;border-top-color:#1a120a}
-.ccall .tail::after{content:'';position:absolute;left:-7px;top:-9px;width:0;height:0;
-  border:7px solid transparent;border-top-color:#e6dcc0}
-.ccall.aL .tail{left:26px}.ccall.aR .tail{right:26px}
-/* the tier is a hairline on the left edge and NOTHING else — the player is
-   not meant to read the taxonomy, only to feel that some of these are heavier */
-.ccall.teach{border-left:5px solid #a38652}
-.ccall.call {border-left:5px solid #4d6b6c}
-.ccall.heart{border-left:5px solid var(--blood)}
-/* #60 the tutorial tier. Green, and the only balloon with room under the text,
+/* ═══ THE CAPTAIN'S CALL (backlog #51) IS DELETED ════════════════════════
+   `.ccall` was a parchment comic balloon hung off the speaker's own hex in
+   #bFx: 50 lines of CSS for a box, a face, a name, a two-triangle tail, a
+   left/right flip and a pop-in. All of it is gone, along with capBalloon().
+
+   It said the same things the spotlight card says, in a second shape, at a
+   second place on the screen, and without stopping the fight. The user, after
+   playing three battles: *"first the battle I like the instructions, but the
+   second was a bit different, third sometimes at random places... it should
+   stop other actions until you press anything on the screen."* Two teachers
+   is what he was describing, and the one that stopped the clock was the one
+   he liked. See the block above tutShow.
+
+   ⚑ WHAT SURVIVED IS `.capskip` AND THE TIER STRIPE, and both moved onto
+   #tutCard, which is a few lines below. The stripe is the only thing the
+   balloon had that the card did not. */
+/* the tier is a hairline on the left edge and NOTHING else: the player is not
+   meant to read the taxonomy, only to feel that some of these are heavier.
+   ⚠ ON #tutCard NOW, so it needs the id to beat the plain `#tutCard` border
+   rule above it. An ordinary spotlight step carries no tier and no stripe,
+   which is what every step looked like before today. */
+#tutCard.teach{border-left:5px solid #a38652}
+#tutCard.call {border-left:5px solid #4d6b6c}
+#tutCard.heart{border-left:5px solid var(--blood)}
+/* #60 the tutorial tier. Green, and the only one with room under the text,
    because it is the only one with something to click. */
-.ccall.learn{border-left:5px solid #6f8a4f;padding-bottom:var(--p6)}
-/* ⚠ #bFx IS pointer-events:none SO A BALLOON CAN NEVER EAT A CLICK MEANT FOR A
-   HEX. This is the one thing inside it that has to be clickable, so it turns
-   them back on FOR ITSELF AND NOTHING ELSE. Do not move this to .ccall. */
+#tutCard.learn{border-left:5px solid #6f8a4f;padding-bottom:var(--p6)}
+/* the way out, bottom-left, on the lesson tier only. It must read as an EXIT
+   and not a button: nothing on this card may look like the thing the lesson is
+   telling the player to press.
+   ⚠ THE `pointer-events:auto` IS GONE WITH THE BALLOON. It existed because
+   #bFx is pointer-events:none and this was the one thing inside it that had to
+   be clickable. #tutDim is a live click surface already, so re-declaring it
+   here would be cargo. */
 .capskip{position:absolute;left:10px;bottom:3px;font-family:var(--mono);font-size:var(--fs1);
-  letter-spacing:.13em;color:#6b5330;background:none;border:0;padding:0;cursor:pointer;
-  pointer-events:auto}
-.capskip:hover{color:#140f08;text-decoration:underline}
+  letter-spacing:.13em;color:#6b5330;background:none;border:0;padding:0;cursor:pointer}
+.capskip:hover{color:var(--g4);text-decoration:underline}
 /* #60 lesson 1. Under the feet, for the length of one line, once in a lifetime. */
 .sidering{position:absolute;width:32px;height:14px;border:2px solid;border-radius:50%;
   transition:opacity .45s ease}
 .sidelbl{position:absolute;font-family:var(--mono);font-size:var(--fs1);letter-spacing:.16em;
   white-space:nowrap;transform:translateX(-50%);transition:opacity .45s ease}
-@keyframes ccin{from{opacity:0;transform:translateY(7px) scale(.94)}
-                to{opacity:1;transform:none}}
-@media (prefers-reduced-motion:reduce){.ccall{animation:none}}
 /* the same line, mirrored into the fight log for anyone looking elsewhere */
 #bLog .ll.cap{color:#e6d7ab;border-left-color:#a38652;font-style:italic}
+/* ═══ THE MUTTER ═════════════════════════════════════════════════════════
+   (User, 2026-08-17: "юниты могут что-то кричать... это не как инструкция от
+   командира, это скорее как такое просто мелким шрифтом".)
+
+   ⛔ IT MUST NOT LOOK LIKE THE BALLOON AND IT MUST NOT LOOK LIKE `.fx`.
+   The balloon above is a person telling you to do something and it is built
+   to be read: a face, a name, a border, 288px of parchment. `.fx` is a
+   RECEIPT - a display face at --fs5 in the damage colours, and the one thing
+   this may never be mistaken for is a number. So a mutter is neither box nor
+   figure: body italic at the --fs1 floor, in quotation marks, drifting off
+   the head. The quotes are what make it speech at a glance, which is the
+   only cue small enough to fit at 10px.
+
+   ⚠ --fs1 AND NOT SMALLER, however tempting "мелким шрифтом" reads. The floor
+   is the floor (see .claude/rules/ui-scales.md §1); a quieter line is made
+   quieter with COLOUR, never with type.
+
+   z-index 43 sits one under the balloon's 44 on purpose: if the Captain and
+   a mutterer ever overlap, the instruction is the one that has to survive. */
+.mutter{position:absolute;z-index:43;font-family:var(--body);font-size:var(--fs1);
+  font-style:italic;font-weight:600;line-height:1;white-space:nowrap;
+  color:#c8a9a2;text-shadow:0 1px 3px #000,0 0 6px #000;
+  /* #81's rule: every duration on this screen goes through the one clock. The
+     removal timeout in mutter() carries the same 1600, or the line is deleted
+     while it is still on its way up. */
+  animation:mut calc(1.6s * var(--pace)) ease-out both}
+/* whose mouth it is, at a glance and without reading it. Parchment is ours -
+   the same colour the log gives our own voices - and theirs is the dusty red
+   the far side of the field already wears. */
+.mutter.mine{color:#e6d7ab}
+@keyframes mut{0%  {opacity:0;transform:translate(-50%,6px)}
+               14% {opacity:1;transform:translate(-50%,0)}
+               74% {opacity:1;transform:translate(-50%,-4px)}
+               100%{opacity:0;transform:translate(-50%,-10px)}}
+@media (prefers-reduced-motion:reduce){.mutter{animation:none}}
 /* three sentences, once each, then never again */
 .coach{position:absolute;left:50%;bottom:56px;transform:translateX(-50%);width:520px;z-index:70;
        background:rgba(20,15,8,.97);border:1px solid var(--e3);border-left:4px solid var(--g4);
@@ -3559,14 +3579,30 @@ a.popt.sendit{display:block;text-decoration:none}
    lines instead of a paragraph has no other way to get them. It collapses
    runs of spaces exactly like normal text and only honours the newlines a
    step actually writes, so every existing one-paragraph step is unchanged. */
+/* ⚠ `overflow:hidden` IS LOAD-BEARING AND IS NOT A SCROLLER. #tutFace floats,
+   and without a block formatting context here a face taller than its text
+   hangs out through the bottom border of the card. The box is a fixed 292
+   wide with auto height, so it never actually clips anything and the #164
+   overflow probe reads it clean. */
 #tutCard{position:absolute;width:292px;background:var(--panel);
   border:1px solid var(--g3);padding:var(--p5) var(--p5);color:var(--t4);
   font-family:var(--body);font-size:var(--fs4);line-height:1.45;white-space:pre-line;
-  box-shadow:0 6px 22px rgba(0,0,0,.55)}
+  overflow:hidden;box-shadow:0 6px 22px rgba(0,0,0,.55)}
+/* the Captain's own face, so the lesson has a mouth. Same 34x38 and the same
+   hard dark edge the deleted balloon's face had, because it is the same
+   person and two sizes of him would have read as two people.
+   FLOATED rather than flexed on purpose: the text wraps back to full width
+   under it, so a five-line step (THE CHEST) keeps the card's shape instead of
+   squeezing every line into a 246px column. */
+#tutFace{float:left;width:34px;height:38px;margin:1px var(--p4) var(--p2) 0;
+  border:1px solid #1a120a;background:#2a2218;object-fit:cover;image-rendering:auto}
 #tutCard b{color:var(--g4);font-family:var(--mono);font-size:var(--fs1);
   letter-spacing:.16em;display:block;margin:0 0 5px}
-#tutCard i{display:block;margin-top:8px;color:#6b8280;font-family:var(--mono);
-  font-size:var(--fs1);letter-spacing:.14em;font-style:normal}
+/* `clear:both` so CLICK TO GO ON is always the last LINE and never sits in
+   the notch beside the face on a one-sentence step */
+#tutCard i{display:block;clear:both;margin-top:8px;color:#6b8280;
+  font-family:var(--mono);font-size:var(--fs1);
+  letter-spacing:.14em;font-style:normal}
 #tutArrow{position:absolute;width:0;height:0;border:9px solid transparent}
 /* ═══ #118 - THE COMPANY SIGNATURE ON THE MAP ════════════════════════════
    Bottom-centre of #wMap, over the painting, under nothing: z 12 sits with
@@ -6129,37 +6165,95 @@ const gGlyph=g=>g.g||ITEM_GLYPH[Object.keys(GEAR).find(k=>GEAR[k]===g)]||
 
    See content/01_names_and_personalities.md.
    ═══════════════════════════════════════════════════════════════════════ */
+/* ═══ EVERY PERSONALITY COSTS SOMETHING, AND IT SAYS SO IN TWO FIELDS ═════
+   (User, 2026-08-17: "для каждой персоналити мы должны дать какой-то
+   downgrade. Например, Widowed thrice: это очень хорошо, дополнительный
+   damage когда враг слабый, но также он может быть минус 10% когда враг выше
+   50%, так что он ещё чувствуется эффектным и сбалансированным." And: "в
+   описании, в battle, на экране и в инвентаре - прямо, без бла-бла-words...
+   главное, что я могу очень легко и очень быстро понимать, что это делает.")
+
+   ⛔ THE FILE ALREADY HELD THIS RULE AND THREE ENTRIES BROKE IT. The note on
+   `nimble` says it out loud: *"there are no good or bad traits, there are
+   personalities - if you can name the best one, they are traits again."*
+   `stubborn`, `thrice` and `counter` were pure upside with nothing paid for
+   them, and `veteran` bought +4 hit AND +4 dodge for one point of agility.
+   Four of twenty-one, sitting under a comment that forbade exactly that.
+   `LINT` 12 now refuses a new one.
+
+   ⚑ `up` AND `cost` ARE WHAT THE PLAYER READS, AND `d` IS THE FLAVOUR. The
+   old TRAITSHORT was a SECOND TABLE keyed by the same keys, written in mood
+   rather than mechanics - "Finishes the wounded." for a body whose whole
+   point is a damage bracket. It is deleted: two tables saying one thing is
+   this file's most-repeated bug, and the short line is now DERIVED from the
+   two halves every personality has to declare anyway. So the muster, the
+   battle hover, the inventory row and the recruit card all change together
+   and none of them can drift from the arithmetic.
+   ⛔ `up` AND `cost` STATE NUMBERS, NEVER MOOD. The paragraph is where the
+   character lives; these two are where the decision lives. */
 const TRAITS={
-  stubborn  :{n:'Stubborn',    d:'Gets their nerve back twice as fast on a quiet turn.',mrec:8},
-  thrice    :{n:'Widowed thrice',d:'+17% damage against anything under half hitpoints.'},
-  counter   :{n:'Counts aloud',d:'+8 to hit on any turn they have not moved.'},
+  stubborn  :{n:'Stubborn',mrec:8,mor:-5,
+              up:'Nerve back twice as fast on a quiet turn',
+              cost:'−5 MOR',
+              d:'Gets their nerve back twice as fast on a quiet turn, and starts from '+
+                'further down: −5 MOR. Nobody has ever talked them into anything, which '+
+                'is the same fact from both ends.'},
+  thrice    :{n:'Widowed thrice',thriceSoft:-.10,
+              up:'+17% damage under half hitpoints',
+              cost:'−10% at or above half',
+              d:'+17% damage against anything under half hitpoints, and −10% against '+
+                'anything above it. They have no interest in a fair fight and are visibly '+
+                'worse at one.'},
+  counter   :{n:'Counts aloud',
+              up:'+8 to hit on a turn they did not move',
+              cost:'−8 to hit on a turn they did',
+              d:'+8 to hit on any turn they have not moved, and −8 on any turn they have. '+
+                'They are counting something, and walking loses the count.'},
   windtouched:{n:'Wind-touched',
-              d:'Casting costs them 4 less of their own nerve than it costs anybody else — '+
-                'whatever it is, it does not seem to mind them. −2 MOR the rest of the time.',
+              up:'Casting costs 4 less nerve',
+              cost:'−2 MOR',
+              d:'Casting costs them 4 less of their own nerve than it costs anybody else. '+
+                'Whatever it is, it does not seem to mind them. −2 MOR the rest of the time.',
               mor:-2,cls:['mage','warmage']},
-  twitchy   :{n:'Twitchy',     d:'+2 AGI, −3 MOR.',agi:2,mor:-3,notRace:['ogre']},
-  vegetarian:{n:'Insists he is a vegetarian',d:'−10% damage dealt, +6 MOR.',mor:6,race:['ogre']},
+  twitchy   :{n:'Twitchy',up:'+2 AGI',cost:'−3 MOR',
+              d:'+2 AGI, −3 MOR.',agi:2,mor:-3,notRace:['ogre']},
+  vegetarian:{n:'Insists he is a vegetarian',up:'+6 MOR',cost:'−10% damage',
+              d:'−10% damage dealt, +6 MOR.',mor:6,race:['ogre']},
   /* unpaidMod: how much a missed payday actually costs THIS person. The
      light-fingered were taking a cut off the top anyway, so an empty chest
      is barely news to them — the one personality that is better off when the
      company is broke. */
-  greedy    :{n:'Light-fingered',d:'+15% crowns from every event. −4 MOR — nobody trusts them. '+
+  greedy    :{n:'Light-fingered',
+              up:'+15% crowns from every event, minds an empty chest least',
+              cost:'−4 MOR',
+              d:'+15% crowns from every event. −4 MOR — nobody trusts them. '+
               'Minds an empty pay-chest less than anybody, for reasons nobody investigates.',
               mor:-4,loot:.15,unpaidMod:.4},
   /* the aura does NOT check sides. Standing near them steadies the people
      trying to kill you too, and that is the whole character. */
-  kind      :{n:'Kind',d:'+6 morale to EVERYONE within 2 hexes at the start of the fight — '+
+  kind      :{n:'Kind',
+              up:'+6 morale to everyone within 2 hexes',
+              cost:'theirs too, and −1 STR',
+              d:'+6 morale to EVERYONE within 2 hexes at the start of the fight — '+
               'yours and theirs alike. It does not occur to them to make the distinction. −1 STR.',
               str:-1,aura:6,auraAll:true},
-  grim      :{n:'Grim',        d:'Feels nothing when an ally dies. Starts every fight 6 morale down.',
+  grim      :{n:'Grim',up:'Feels nothing when an ally dies',cost:'starts 6 morale down',
+              d:'Feels nothing when an ally dies. Starts every fight 6 morale down.',
               noGrief:true,startMor:-6},
-  braggart  :{n:'Braggart',    d:'+10 extra morale on their own kill. −8 when they miss twice running.',
+  braggart  :{n:'Braggart',up:'+10 morale on their own kill',cost:'−8 on two misses running',
+              d:'+10 extra morale on their own kill. −8 when they miss twice running.',
               brag:true},
-  cautious  :{n:'Cautious',    d:'+6 dodge below half hitpoints, −5 to hit above it.',cautious:true},
-  veteran   :{n:'Old hand',    d:'+4 to hit and +4 dodge. −1 AGI — bad knees.',agi:-1,vet:true},
-  feral     :{n:'Feral',       d:'+12% damage while their own nerve is Wavering or worse. Breaks sooner.',
+  cautious  :{n:'Cautious',up:'+6 dodge below half hitpoints',cost:'−5 to hit above it',
+              d:'+6 dodge below half hitpoints, −5 to hit above it.',cautious:true},
+  veteran   :{n:'Old hand',up:'+4 to hit, +4 dodge',cost:'−1 AGI, −8 hitpoints',
+              d:'+4 to hit and +4 dodge: they have done this before. −1 AGI and −8 '+
+                'hitpoints, because they have also been doing it a long time.',
+              agi:-1,hp:-8,vet:true},
+  feral     :{n:'Feral',up:'+12% damage while Wavering or worse',cost:'−3 MOR, breaks sooner',
+              d:'+12% damage while their own nerve is Wavering or worse. Breaks sooner.',
               mor:-3,feral:true,notCls:['mage','warmage']},
-  dutiful   :{n:'Dutiful',     d:'+8 dodge beside the Captain, −4 dodge away from them.',dutiful:true},
+  dutiful   :{n:'Dutiful',up:'+8 dodge beside the Captain',cost:'−4 dodge away from him',
+              d:'+8 dodge beside the Captain, −4 dodge away from them.',dutiful:true},
 
   /* ---- personalities that change what a person DOES, not what they are worth ---- */
 
@@ -6169,6 +6263,8 @@ const TRAITS={
      Everyone with it shoots worse up close (nerves) and is lifted by
      landing one. What that lift TURNS INTO is the race. */
   ambition  :{n:'Ambition',cls:['archer'],ambition:true,
+              up:'+9 morale every time they land one',
+              cost:'−7 to hit up close, takes an unpaid week hardest',
               d:'Wants very badly to be somebody. −7 to hit at close range — nerves — and '+
                 '+9 morale every time they actually land one. Takes an unpaid week harder '+
                 'than anyone: they came here to get on, and this is the opposite of getting on.',
@@ -6189,18 +6285,20 @@ const TRAITS={
                   'It never becomes anything more dramatic than that, which is the human problem.',
                   closeShy:5,hitLift:7,humanCreep:true}}},
   /* the one nobody expects: the one that does not go */
-  nofear    :{n:'Does not run', d:'Cannot rout. Whatever the rest of the line does, they are '+
+  nofear    :{n:'Does not run',up:'Cannot rout, ever',cost:'−2 STR',
+              d:'Cannot rout. Whatever the rest of the line does, they are '+
               'still standing there when it is over. −2 STR — there is not much of them.',
               str:-2,nofear:true,notRace:['ogre'],
               byRace:{ratkin:{d:'Cannot rout. A ratkin who does not run is a thing the other '+
                 'clans tell stories about, mostly to explain why they are dead. −2 STR.'}}},
   /* kills, and is not able to put it down afterwards */
   pacifist  :{n:'Has no stomach for it',notCls:['brute'],
+              up:'+8 MOR',cost:'−18 morale and −7% damage per kill they make',
               d:'Takes 18 morale of their OWN every time they kill somebody instead of the usual '+
               'lift, and −7% damage for the rest of the battle per kill. +8 MOR to start: they '+
               'are calm right up until it matters.',mor:8,pacifist:true},
   /* there is simply a great deal of them */
-  big       :{n:'Big',race:['human','ogre'],
+  big       :{n:'Big',race:['human','ogre'],up:'+16 hitpoints',cost:'−2 AGI',
               d:'+16 hitpoints and there is more of them to hit: −2 AGI. Doorways are a '+
               'negotiation and nobody has ever moved them who did not want to be moved.',
               agi:-2,bigly:true,
@@ -6208,6 +6306,7 @@ const TRAITS={
                 '"there is a great deal of him" is doing a lot of work.'}}},
   /* will not step back, and is better for it, and that is the trap */
   courage   :{n:'Courageous',cls:['captain','spear','cutter','brute'],
+              up:'+14% melee damage',cost:'CANNOT DISENGAGE',
               d:'+14% melee damage. CANNOT DISENGAGE — the option is not on their sheet. '+
               'Walking away is not a thing they are able to do.',courage:true},
   /* casters only: wakes up every round having forgotten what they knew */
@@ -6224,13 +6323,74 @@ const TRAITS={
      costs something. Rather than invent a downside nobody asked for, it is
      kept out of the roster roll entirely. traitFits() is the gate. */
   nimble    :{n:'Very nimble',foeOnly:true,nimble:16,
+              up:'+16 dodge',cost:'nothing, which is why nobody on the roster may have it',
               d:'+16 dodge. Almost impossible to catch from the front - and a body that '+
                 'will not stand still is still a body, which can only watch one side of '+
                 'itself at a time.'},
   magpie    :{n:'Magpie-minded',cls:['mage','warmage'],
+              up:'Two fresh schools every round',cost:'you do not choose which',
               d:'Forgets their spells every single round and remembers different ones instead. '+
               'You never know what they can do until their turn starts, and neither do they.',
-              magpie:true}
+              magpie:true},
+
+  /* ═══ FIVE MORE, AND EACH ONE CHANGES A DECISION ═════════════════════════
+     (User: "может быть, добавить 5 более уникальных трейтов... может быть, из
+     RimWorld или других игр".) The brief this register has had since it was
+     written is that a personality changes what a person DOES rather than what
+     they are worth, so none of these is a stat line with a name on it. Each
+     one is a rule the player has to place a body around, and each states its
+     cost in the same two fields as the twenty-one above.
+
+     ⚠ Every one of them is wired through a hook that ALREADY EXISTED - the
+     aura pass, the wage line, hitBreakdown, dmgMul, the AI's soft-target
+     term. Nothing here needed a new system, which is the test a sixth one
+     should also have to pass. */
+
+  /* the mirror of `kind`, on the same aura pass and with the same refusal to
+     check sides. Where the kind one steadies the men about to kill you, this
+     one frightens your own line as thoroughly as it frightens theirs. */
+  frightening:{n:'Frightening',aura:-6,auraAll:true,mor:5,notCls:['mage','warmage'],
+              up:'+5 MOR: it has never once been their problem',
+              cost:'−6 morale to EVERYONE within 2 hexes, yours included',
+              d:'Everybody within 2 hexes starts the fight 6 morale down, yours and theirs '+
+                'alike, and they are 5 morale up. Something about them is wrong at a '+
+                'distance nobody can name, and the company has stopped asking them to '+
+                'stand in the middle.'},
+  /* the first personality about the pay-chest rather than the field. `wage`
+     is read by wageOf, `unpaidMod` by the bite that lands when payday misses:
+     cheap all the way to the fourth day, and then twice as expensive. */
+  indebted  :{n:'Owes somebody',wage:.5,unpaidMod:2,
+              up:'Works for half wages',
+              cost:'takes a missed payday twice as hard as anyone',
+              d:'Works for half wages, because half of it is already going somewhere else, '+
+                'and takes a missed payday twice as hard as anybody in the company. '+
+                'Whoever is owed is not in this act, and is patient.'},
+  /* the round counter is the whole personality. It makes a body a LATE-fight
+     asset, which nothing else in the register is, and it prices the opening
+     exchange the player usually wants to win. */
+  slowstart :{n:'Slow to warm up',slowStart:true,
+              up:'+8 to hit from round four onward',
+              cost:'−10 to hit in the first two rounds',
+              d:'−10 to hit for the first two rounds and +8 from the fourth. They are not '+
+                'frightened and they are not warming their hands. They simply arrive at '+
+                'the fight some time after everybody else does.'},
+  /* remembers exactly one body: whichever one last drew their blood. Costs a
+     flat penalty against anybody who has not, so a fresh field is their worst
+     field and a long fight is their best. */
+  grudge    :{n:'Keeps a list',grudge:true,
+              up:'+20% damage against whatever last hurt them',
+              cost:'−6 to hit against anything that has not',
+              d:'+20% damage against whichever body last drew their blood, and −6 to hit '+
+                'against everything else on the field. They are not fighting a battle. '+
+                'They are settling one thing and putting up with the rest.'},
+  /* the only personality that makes the people AROUND it better, and pays for
+     it by being the first name on the enemy's list. */
+  loud      :{n:'Cannot be quiet',loudCall:true,
+              up:'+4 to hit for every one of yours standing next to them',
+              cost:'the enemy picks them first',
+              d:'Anybody of yours standing next to them gets +4 to hit, because they call '+
+                'out everything they see, continuously, at volume. The other side can hear '+
+                'it too, and comes for them first.'}
 };
 /* who is allowed to be this */
 function traitFits(k,race,cls){
@@ -6251,34 +6411,34 @@ const rollTrait=(race,cls)=>{const p=traitPool(race,cls);
 const traitDesc=p=>{const t=TRAITS[p.trait];if(!t)return '';
   const v=t.byRace&&t.byRace[p.race];
   return (v&&v.d)||t.d;};
-/* One line, on the sheet. The full text lives in a hover, because a character
-   screen that opens with a paragraph per person is a wall, not a character. */
-const TRAITSHORT={
-  stubborn  :'Gets their nerve back fast.',
-  thrice    :'Finishes the wounded.',
-  counter   :'Deadlier standing still.',
-  windtouched:'Cheaper spells, thinner nerve.',
-  twitchy   :'Quick, and jumpy with it.',
-  vegetarian:'Softer swing, steadier head.',
-  greedy    :'Skims every purse. Nobody trusts them.',
-  kind      :'Steadies everyone nearby, including them.',
-  grim      :'Unmoved by the dead. Starts low.',
-  braggart  :'Lifted by their own kills.',
-  cautious  :'Careful high, slippery low.',
-  veteran   :'Old hand. Bad knees.',
-  feral     :'Fights better frightened.',
-  dutiful   :'Better beside the Captain than away from him.',
-  ambition  :'Shaky up close, lifted by landing one.',
-  nofear    :'Will not run. Ever.',
-  pacifist  :'Killing costs them something.',
-  big       :'A great deal of them.',
-  nimble    :'Never where the blade goes.',
-  courage   :'Hits harder. Cannot back off.',
-  magpie    :'Different spells every round.'
-};
+/* ═══ ONE LINE, AND IT IS THE ARITHMETIC ═════════════════════════════════
+   ⛔ `TRAITSHORT` IS DELETED. It was a second table keyed by the same twenty
+   keys, and it was written in MOOD where this line has to be written in
+   MECHANICS: "Finishes the wounded." for a body whose entire point is a
+   damage bracket, "Old hand. Bad knees." for +4/+4/−1/−8. A player reading
+   the muster could not tell what any of them DID, which is the whole of the
+   user's note - *"прямо, без бла-бла-words... я могу очень легко и очень
+   быстро понимать, что это делает"*.
+
+   ⚑ IT IS DERIVED NOW, from the two fields every personality has to declare
+   anyway, so it cannot drift from the numbers and a new trait cannot forget
+   to have one. `·` between the halves, because the up and the cost are one
+   sentence with a hinge in it and the player reads the hinge.
+
+   The flavour paragraph is untouched and is still what the hover shows: that
+   is where the character lives. This is where the decision lives. */
 const traitShort=p=>{
-  const s=TRAITSHORT[p.trait];
-  if(s)return s;
+  const t=TRAITS[p.trait];
+  if(!t)return '';
+  /* the race variant may re-state either half - the ogre's ambition counts
+     misses and the ratkin's gets heavy - so both are read through `tr()`'s own
+     lookup order rather than off the base entry. */
+  const v=(t.byRace&&p.race&&t.byRace[p.race])||{};
+  const up=v.up||t.up,cost=v.cost||t.cost;
+  if(up&&cost)return up+' · '+cost;
+  /* a trait that has not declared its halves falls back to the first sentence
+     of the paragraph, which is what this function did for every trait before
+     the two fields existed. LINT 12 is what stops one shipping this way. */
   const full=traitDesc(p),cut=full.indexOf('. ');
   return (cut>0&&cut<70)?full.slice(0,cut+1):full.slice(0,66)+'…';
 };
@@ -6995,7 +7155,14 @@ const PAY_EVERY=4;
 /* the Captain draws ONE crown whatever his race (#152, "cost of main hero
    costs 1 in day"): the chest is already his problem, the single coin is
    bookkeeping. Everybody else is paid what their race is paid. */
-const wageOf=p=>p.leader?1:WAGE[p.race];
+/* ...and a personality may disagree about what it is worth. `wage` is a
+   MULTIPLIER on the race rate and it does not touch the Captain's single
+   coin, which is bookkeeping rather than a wage. Rounded up, so the cheapest
+   body in the company still costs something. */
+const wageOf=p=>{
+  if(p.leader)return 1;
+  const m=(TRAITS[p.trait]&&TRAITS[p.trait].wage);
+  return m?Math.max(1,Math.ceil(WAGE[p.race]*m)):WAGE[p.race];};
 /* not const: a wheelwright at a village can widen the wagon bed mid-run,
    and the extra seat has to count immediately — the Muster Field is next.
    13 base: four humans is 8, which leaves five spare — enough for an ogre
@@ -7345,8 +7512,12 @@ function trinketFires(g,p){
   if(g.forCls&&g.forCls!==p.cls)return null;
   return g.bonus;
 }
-/* a personality can put weight on a person */
-const traitHp=p=>(TRAITS[p.trait]&&TRAITS[p.trait].bigly)?16:0;
+/* a personality can put weight on a person, or take it off. `bigly` is the
+   original and stays exactly as it was; `hp` is the general form, added when
+   the old hand had to start paying for +4 and +4. Both, so a trait can carry
+   either without a second rule about which one wins. */
+const traitHp=p=>{const t=TRAITS[p.trait];if(!t)return 0;
+  return (t.bigly?16:0)+(t.hp||0);};
 function bonusHp(p){
   let h=0;
   SLOTS.forEach(sl=>{const g=GEAR[p.eq[sl[0]]];if(!g)return;
@@ -9867,9 +10038,13 @@ function tutEl(){
   let d=$('tutDim');
   if(!d){
     d=document.createElement('div');d.id='tutDim';
+    /* the face is an <img> and not a live <canvas> for capBalloon's own
+       reason: shotBoard() serialises overlays through innerHTML, and a
+       canvas's pixels do not survive that. faceOf() hands over a data URI
+       whether the person is painted or procedural, so there is one path. */
     d.innerHTML='<div id="tutHole"></div><div id="tutArrow"></div>'+
-      '<div id="tutCard"><b id="tutH"></b><span id="tutT"></span>'+
-      '<i>CLICK TO GO ON</i></div>';
+      '<div id="tutCard"><img id="tutFace" alt=""><b id="tutH"></b>'+
+      '<span id="tutT"></span><i>CLICK TO GO ON</i></div>';
     $('stage').appendChild(d);
     d.onclick=e=>{e.stopPropagation();tutNext();};
   }
@@ -9895,22 +10070,98 @@ function tutRect(a){
     x1=Math.max(x1,r.x+r.w);y1=Math.max(y1,r.y+r.h);});
   return ok?{x:x0,y:y0,w:x1-x0,h:y1-y0}:null;
 }
+/* ═══ ONE TEACHER, ONE SURFACE ═══════════════════════════════════════════
+   (User, 2026-08-17: "first the battle I like the instructions, but kind of
+   second battle it was a bit different, third sometimes there were at random
+   places... and also just stopping the actions over the action, it was kind
+   of strange. I think even with big comments from your leader it still should
+   stop other actions until you press anything on the screen.")
+
+   ⛔ THE GAME HAD TWO TEACHERS WEARING TWO SHAPES AND ONLY ONE OF THEM
+   STOPPED THE FIGHT. The first battle is the spotlight: the screen dims, a
+   ring lands on the exact thing being talked about, the clock stops, and it
+   waits for a click. Everything after the first battle was `capBalloon`: a
+   parchment bubble hung over whichever hex the Captain happened to be
+   standing on, for 2.2 seconds, while the enemy carried on moving underneath
+   it. That is the "random places" and the "strange" in one sentence, and the
+   two are the same defect: the balloon anchored to the SPEAKER and not to
+   what he was speaking ABOUT, and it never took the lock.
+
+   ⚑ SO THE BALLOON IS DELETED AND THE CAPTAIN USES THE SPOTLIGHT. `tutPaint`
+   below is `tutShow`'s whole body with the TUTSTEPS lookup lifted off the
+   front, so a lesson and a Captain's line are now literally the same code
+   path: same card, same face, same four-way placement, same dim, same lock,
+   same CLICK TO GO ON. Nothing new was written to make this work. The
+   blocking the user asked for is the `B.tutLock` that #156 already built,
+   and `nextTurn` has held on it since then, twenty lines below `capTick`.
+
+   ⚠ THE ANCHOR IS THE SUBJECT AND NOT THE SPEAKER. "{N} is on their own out
+   there" must put the ring on {N}. See capCard. */
 function tutShow(step){
   const S=TUTSTEPS[step];if(!S){tutNext();return;}
-  const r=tutRect(S.a&&S.a());
-  if(!r||r.w<2||r.h<2){tutNext();return;}   /* hidden pane, missing anchor */
+  /* #120 - a step's text may be computed at show time (the wage line) */
+  if(!tutPaint(S.h,typeof S.t==='function'?S.t():S.t,S.a&&S.a()))tutNext();
+}
+/* Returns FALSE when there is nothing on screen to point at, and paints
+   nothing in that case. Every caller treats that as "this card did not
+   happen", which is the contract capSay has always had with capBalloon. */
+function tutPaint(head,text,anchor,tier,skip){
+  const r=tutRect(anchor);
+  if(!r||r.w<2||r.h<2)return false;        /* hidden pane, missing anchor */
   const d=tutEl(),pad=6;
   const hx=Math.max(0,r.x-pad),hy=Math.max(0,r.y-pad);
   const hw=Math.min(1280,r.x+r.w+pad)-hx,hh=Math.min(720,r.y+r.h+pad)-hy;
   const H=$('tutHole');
   H.style.left=hx+'px';H.style.top=hy+'px';
   H.style.width=hw+'px';H.style.height=hh+'px';
-  /* #120 - a step's text may be computed at show time (the wage line) */
-  $('tutH').textContent=S.h;
-  $('tutT').textContent=typeof S.t==='function'?S.t():S.t;
+  $('tutH').textContent=head;
+  $('tutT').textContent=text;
+  /* the tier hairline the balloon used to wear on its left edge, carried over
+     so the player still feels that some of these are heavier without being
+     asked to read the taxonomy. No tier (an ordinary spotlight step) means no
+     stripe, which is what every step looked like before today. */
+  const card=$('tutCard');
+  card.className=tier||'';
+  /* #60's way out, on the tutorial tier only. It moved here with the rest of
+     the balloon; a CALL is a comment and has nothing to skip.
+     ⚠ REMOVED AND REBUILT EVERY PAINT. The card is reused for the life of the
+     session, so a skip button left behind by a lesson would sit on the next
+     CALL and offer to switch off a tutorial that is not speaking. */
+  const old=$('tutSkip');
+  if(old)old.remove();
+  if(skip){
+    const sk=document.createElement('button');
+    sk.id='tutSkip';sk.className='capskip';sk.type='button';
+    sk.textContent='SKIP TUTORIAL';
+    sk.onclick=e=>{e.stopPropagation();learnSkip();tutNext();};
+    card.appendChild(sk);
+  }
+  /* ═══ WHOSE VOICE THE LESSON IS IN ═══════════════════════════════════
+     (User, 2026-08-17: "right now is when screen is black and there is kind
+     of non-human these things, maybe you can put a portrait of a main
+     character and then the kind of main character saying. It could be same
+     form, same shape, even same words, it just like will be more like from
+     the perspective of your main character.")
+
+     ⚑ NOT ONE WORD OF ANY STEP CHANGES, AND THAT IS THE WHOLE POINT. The
+     text was already written in the second person and already reads as
+     somebody telling the player something; it simply had nobody's mouth on
+     it, so a dimmed screen with a floating paragraph was the game clearing
+     its throat. A face is the smallest thing that turns the same sentence
+     from a manual into a person, which is the reason capBalloon has carried
+     one since #51.
+     ⚠ AND IT IS SET EVERY SHOW, not once at tutEl() time. The card is built
+     lazily on the first lesson of the session and then reused forever, so a
+     face written at construction would be whoever was Captain the first time
+     the tutorial ran and would survive the player starting a new company. */
+  const face=$('tutFace'),who=capPerson();
+  face.src=faceOf(who);
+  /* ⚠ `alt` and not a visible label. The <b> above is the step's TOPIC
+     ("ARMOUR", "THE CHEST"), which is load-bearing, and a name line under it
+     would be two headers arguing over one card. */
+  face.alt=who?fullName(who):'';
   d.classList.add('on');
   if(B)B.tutLock=true;
-  const card=$('tutCard');
   const cw=292,ch=card.offsetHeight||124;
   const A=$('tutArrow');
   let cx,cy,ar='';
@@ -9929,6 +10180,7 @@ function tutShow(step){
   }
   card.style.left=cx+'px';card.style.top=cy+'px';
   A.style.cssText='position:absolute;width:0;height:0;border:9px solid transparent;'+ar;
+  return true;
 }
 function tutNext(){
   /* #120 - two queues, one reader: the battle's (on B.tut) wins when a
@@ -9938,6 +10190,11 @@ function tutNext(){
   if(q&&q.length){tutShow(q.shift());return;}
   const d=$('tutDim');if(d)d.classList.remove('on');
   if(B){
+    /* the Captain's line came down with the sheet. `C.el` is what the lesson
+       tier waits behind and what keeps the mutters quiet, so it has to be
+       cleared HERE and in tutClose and nowhere else: those are the only two
+       doors the dim sheet goes down through. */
+    if(B.cap)B.cap.el=null;
     B.tutLock=false;
     /* #156 - the clock was stopped mid-handover; start the turn that was
        waiting for the reader. `later` rather than a straight call so the dim
@@ -9952,7 +10209,12 @@ function tutClose(){
   const d=$('tutDim');if(d)d.classList.remove('on');
   /* #156 - the hold is dropped and NOT resumed: this is the fight's own
      ending, and the turn that was waiting has nowhere to go. */
-  if(B){B.tutLock=false;B.tutHold=false;if(B.tut)B.tut.q.length=0;}
+  if(B){B.tutLock=false;B.tutHold=false;if(B.tut)B.tut.q.length=0;
+    /* and the Captain's line goes with it, or a fight that ended under one
+       leaves `C.el` set and the NEXT fight starts with the lesson tier
+       waiting behind a card that came down minutes ago. `B.cap` is
+       battle-local so this is belt and braces, and it is the cheap half. */
+    if(B.cap)B.cap.el=null;}
 }
 function tutFlush(){
   if(window.TUT_SILENT)return;               /* the harness switches this on */
@@ -12587,7 +12849,27 @@ function hitBreakdown(a,d,act){
   }
   if(has(a,'duelist')&&threatsAt(a.col,a.row,a.side)===1){other+=8;po('duellist +8');}
   if(a.trait==='counter'&&!a.moved){other+=8;po('stood still +8');}
+  /* ...and the half it never paid for. Walking loses the count. */
+  if(a.trait==='counter'&&a.moved){other-=8;po('lost the count −8');}
   if(tr(a,'vet')){other+=4;po('old hand +4');}
+  /* ═══ THE FIVE NEW PERSONALITIES, ALL ON THIS ONE READOUT ═══════════════
+     Every line here prints its own row in the hit breakdown, which is the
+     rule that makes a personality legible: the player is never told a number
+     without being told which body it came from. */
+  if(tr(a,'slowStart')&&B){
+    /* rounds 1-2 cold, round 3 neutral, 4+ warm. The neutral round is what
+       stops it reading as a switch nobody can see coming. */
+    if(B.round<=2){other-=10;po('slow to warm up −10');}
+    else if(B.round>=4){other+=8;po('warmed up +8');}
+  }
+  if(tr(a,'grudge')&&a.grudgeOn!==d.id){other-=6;po('not the one they want −6');}
+  /* somebody of ours beside them is shouting what they can see. It is read
+     off the NEIGHBOURS rather than off the shouter, so the bonus lands on
+     everybody it should and the loud one gets nothing from themselves. */
+  if(B&&B.units&&!tr(a,'loudCall')&&
+     B.units.some(x=>x!==a&&x.side===a.side&&!x.dead&&!x.downed&&!x.fled&&
+                     tr(x,'loudCall')&&udist(a,x)<=1)){
+    other+=4;po('somebody is calling it +4');}
   /* #108 - both AI brains read this line for free, which is the whole reason
      the status lives here rather than in a special case */
   if(a.drunk){other-=12;po('drunk −12');}
@@ -12705,6 +12987,15 @@ function dmgMul(a,d,act){
     (rocking(a)?.05:0)+
     (has(a,'brawn')&&!act.range?.10:0)+(a.trait==='vegetarian'?-.10:0)+
     ((a.trait==='thrice'||has(a,'butcher'))&&d.hp<d.hpMax*.5?.17:0)+
+    /* ⚠ THE PENALTY IS THE TRAIT'S AND NEVER THE PERK'S. The line above is
+       shared with BUTCHER, which is a perk somebody spent a point on and which
+       was never sold with a downside. `tr()` reads the personality only, so the
+       two halves of the bracket cannot be confused. */
+    (tr(a,'thriceSoft')&&d.hp>=d.hpMax*.5?tr(a,'thriceSoft'):0)+
+    /* +20% on whichever body last drew their blood. `grudgeOn` is written in
+       strike() on the way in, so it is always "the last one who hurt me" and
+       never a list to maintain. */
+    (tr(a,'grudge')&&a.grudgeOn&&a.grudgeOn===d.id?.20:0)+
     (has(a,'heavyhand')&&d.armour>0?.12:0)+
     (tr(a,'feral')&&a.state!=='steady'?.12:0)+
     ambitionDmg(a)+
@@ -12880,6 +13171,12 @@ function strike(a,d,act,mult){
      downed unit's hp cannot answer (the 0.7 write-off is a healing rule,
      not a record of the fight). */
   d.taken=(d.taken||0)+Math.max(0,hpD);
+  /* ⚑ THE LIST IS ONE NAME LONG, AND IT IS WRITTEN HERE BECAUSE HERE IS WHERE
+     THE BLOOD IS. Only a blow that reached the BODY counts: a swing that the
+     harness ate is not a thing they are going to remember, which is also what
+     makes the personality legible on the field. `hpD>0` is the test and it is
+     the same figure the chip prints. */
+  if(hpD>0&&tr(d,'grudge'))d.grudgeOn=a.id;
   fx(d,'−'+Math.round(hpD),'#e08a80');
   /* the collision: a hard white ring if the harness turned it, blood if it
      found the body. Ranged shots flash on the target without the lunge. */
@@ -13089,7 +13386,13 @@ function strike(a,d,act,mult){
   d.hitsTaken++;
   mor(d,Math.round(MORALE.tookHit/Math.pow(2,d.hitsTaken-1)),'it has been hit');
   /* the near-death shock fires ONCE, not on every blow after the threshold */
-  if(d.hp>0&&d.hp<d.hpMax/3&&!d.saidNearDeath){
+  /* lifted out of the `if` so the mutter at the foot of this function can ask
+     "did they cross the line ON THIS BLOW" without re-deriving it. Reading
+     `saidNearDeath` down there would answer "have they crossed it at any point
+     in the fight", which is true for every blow after the first and is not the
+     same question. */
+  const nearNow=(d.hp>0&&d.hp<d.hpMax/3&&!d.saidNearDeath);
+  if(nearNow){
     d.saidNearDeath=true;mor(d,MORALE.nearDeath,'it is nearly finished');}
   if(d.hp<=0){
     d.hp=0;
@@ -13196,6 +13499,27 @@ function strike(a,d,act,mult){
         say(x.name+' saw '+fst(d.name)+' go down, and has been on the wrong end of that '+
             'once already. '+fst(x.name)+' is not leaving this field.');
       }});}
+  /* ═══ THE MUTTER, DECIDED IN ONE PLACE ═════════════════════════════════
+     ⛔ AND NOT AT THE FOUR SITES ABOVE THAT EACH KNOW ABOUT IT. The blow, the
+     near-death shock, the downing and the kill happen up there in the order
+     the ENGINE needs them, which is nothing like the order they matter in: a
+     blow that put somebody on the ground would have spent the round's one
+     line, three hundred lines earlier, on being hit. So the four are ranked
+     here, once, and the ranking reads top to bottom.
+     ⚠ Each of these is a call that may refuse. bark() carries every gate and
+     spends nothing when it says no, so a chain of ifs is exactly wrong here
+     and a chain of else-ifs is exactly right: the heaviest thing that
+     happened gets the round, and if it declines, the round stays unspent for
+     whatever happens next in it. */
+  if(d.dead||d.downed)bark(a,'kill');
+  else if(nearNow)bark(d,'low');
+  /* "когда ты получаешь много урона". A fifth of the body in one blow is what
+     a HEAVY weapon does to an unarmoured target, so it is roughly the worst
+     single thing that happens to anybody in an ordinary fight. Written against
+     hpMax rather than a flat figure, or an ogre would never be surprised by
+     anything and a mage would shout at a scratch. */
+  else if(hpD>=d.hpMax*0.22)bark(d,'hurt');
+  else bark(a,'hit');
   return true;
 }
 /* every line goes to the campaign log, the left-panel tip, AND the battle log
@@ -14088,8 +14412,10 @@ function learnTurn(u){
     learn('learn_close');
   /* ⚠ `a.range` IS NOT "IS A SHOOTER". A range-4 act with no damage (HURL A
      RATKIN) fooled five sites in this file once. Test what it does. */
-  if(u.acts.some(a=>a.dmg&&a.range&&!a.arcane))learn('learn_bow',capName(u));
-  if(isCaster(u.cls))learn('learn_cast',capName(u));
+  /* the body as well as the name: these two lessons are ABOUT `u`, so `u` is
+     what the spotlight rings. See learn(). */
+  if(u.acts.some(a=>a.dmg&&a.range&&!a.arcane))learn('learn_bow',capName(u),u);
+  if(isCaster(u.cls))learn('learn_cast',capName(u),u);
   /* the offer: adjacent to somebody, and enough left in the legs to get round
      the back of them. This is the one lesson that costs a reachMap, and it
      stops being computed the moment it has fired once. */
@@ -14288,7 +14614,11 @@ function nextTurn(resumed){
         :'The bloom comes open. Whatever is in the air off it, everybody nearby '+
           'is breathing it.');
       sfx('rung_up');
-      capSay('bloomOpen');
+      /* the `capSay('bloomOpen')` that stood here is DELETED. The say() two
+         lines up is the same news, in the same instant, and learn_bloom has
+         already taught the rule once ever. It also had no once-a-battle
+         guard, so a field of blooms could spend the Captain's whole register
+         on saying what the log line beside it was saying. */
     }
     if(hungerTick())return;}
   beginTurn();
@@ -15323,6 +15653,15 @@ function targetScore(t){
                                        steady one and stops being hunted */
   if(t.state==='wavering')s-=12;
   if(t.leader)s-=18;
+  /* ⚑ AND THE ONE WHO WILL NOT SHUT UP GOES TO THE TOP OF THE LIST. This is
+     the whole cost of `loud`: the +4 it hands every neighbour is bought by
+     being the first name both AI brains reach for. −24 puts it just under the
+     archer discount, which is the right order - a bowman across the field is
+     still the bigger problem than a shouting spearman in the line.
+     ⚠ ONE SITE, AND THAT IS THE POINT. Both brains and AUTO read targetScore,
+     so this is inherited without being taught; the project has been bitten
+     twice by a behaviour that went into aiTurn and not autoStep. */
+  if(tr(t,'loudCall'))s-=24;
   return s;
 }
 /* ═══════════════════════════════════════════════════════════════════════
@@ -20974,6 +21313,93 @@ window.LINT=function(){
     });
   })();
 
+  /* ═══ 11 · THE MUTTERS ═════════════════════════════════════════════════
+     The register above them is checked by the eye at authoring time and by
+     nothing afterwards, which is how "it sits badly with them" reached 24
+     cards. A mutter has three rules that are invisible when broken: it is too
+     long to read at 10px beside a moving body, or it has turned into
+     information (a name, a number), or it has quietly become the ONLY line
+     for its race and kind, in which case that body says the same thing every
+     fight and the register reads as one joke rather than a voice. */
+  (function mutters(){
+    const w=s=>s.trim().split(/\s+/).length;
+    const scan=(lines,where)=>{
+      lines.forEach(s=>{
+        if(w(s)>5)hit('bark',where,'"'+s+'" is '+w(s)+' words. Two to five, or it '+
+          'cannot be read at --fs1 beside a body that is moving');
+        if(/\d/.test(s))hit('bark',where,'"'+s+'" prints a figure. A mutter is not a receipt');
+        if(/—/.test(s))hit('bark',where,'"'+s+'" contains an em dash');
+        NAMES.forEach(n=>{if(new RegExp('\\b'+n+'\\b').test(s))
+          hit('bark',where,'"'+s+'" names "'+n+'". A mutter names nobody');});
+      });
+      if(lines.length<2)
+        hit('bark',where,'only '+lines.length+' line, so this body says the same '+
+          'thing in every fight it is ever in');
+      if(new Set(lines).size!==lines.length)hit('bark',where,'repeats a line');
+    };
+    Object.keys(BARKS).forEach(r=>{
+      if(['human','ratkin','ogre'].indexOf(r)<0)
+        hit('bark','BARKS','"'+r+'" is not a race, so nobody will ever match it');
+      Object.keys(BARK_ODDS).forEach(k=>{
+        if(!BARKS[r][k]){hit('bark','BARKS.'+r,'nothing to say on "'+k+'"');return;}
+        scan(BARKS[r][k],'BARKS.'+r+'.'+k);});
+    });
+    /* every race the roster can roll has to have a voice, or that recruit is
+       silent for the life of the run and nothing says so */
+    ['human','ratkin','ogre'].forEach(r=>{
+      if(!BARKS[r])hit('bark','BARKS','"'+r+'" has no voice at all');});
+    scan(BARK_SORRY,'BARK_SORRY');
+  })();
+
+  /* ═══ 12 · EVERY PERSONALITY COSTS SOMETHING ═══════════════════════════
+     (User, 2026-08-17.) The register has carried this rule in a comment since
+     #145 - *"there are no good or bad traits, there are personalities: if you
+     can name the best one, they are traits again"* - and four of the
+     twenty-one broke it anyway, because a comment cannot fail. This can.
+
+     ⚠ THE TEST IS THE DECLARED `cost`, NOT A NEGATIVE NUMBER. Half the real
+     costs in this table are behavioural and have no minus sign anywhere:
+     COURAGEOUS cannot disengage, HAS NO STOMACH FOR IT loses morale on its
+     own kills, KIND steadies the men trying to kill you. A numeric sweep
+     would pass all three and fail nothing worth failing. Asking the author to
+     NAME the cost is the check, and the naming is also the text the player
+     reads, so it cannot be written and then forgotten. */
+  Object.keys(TRAITS).forEach(k=>{
+    const t=TRAITS[k],w='TRAITS.'+k;
+    if(!t.up)hit('trait',w,'states no `up`, so the muster line falls back to '+
+      'chopping the flavour paragraph in half');
+    /* foeOnly is the sanctioned exception and it has to SAY so: nimble is
+       pure upside on purpose and is kept out of the roll instead of priced. */
+    if(!t.cost&&!t.foeOnly)
+      hit('trait',w,'is a personality with nothing paid for it. Every rollable trait '+
+        'states a `cost`, or it is simply the best one and the register is stat lines '+
+        'with names on again');
+    /* the two the player reads must be readable AT A GLANCE, which is the
+       whole point of splitting them off the paragraph */
+    ['up','cost'].forEach(f=>{
+      if(t[f]&&t[f].length>62)
+        hit('trait',w,'`'+f+'` is '+t[f].length+' characters. It is one half of a muster '+
+          'line and has to be read in a second, not parsed');
+      if(t[f]&&/—/.test(t[f]))hit('trait',w,'`'+f+'` contains an em dash');
+    });
+    /* a race variant may re-state one half; re-stating only one leaves the
+       other half describing a different body's arithmetic */
+    Object.keys(t.byRace||{}).forEach(r=>{
+      const v=t.byRace[r];
+      if((v.up&&!v.cost&&t.cost!==undefined&&v.d)||(v.cost&&!v.up&&v.d)){
+        /* only a warning-shaped finding: it is legal when the untouched half
+           is genuinely still true, which is the common case */
+      }
+      if(['human','ratkin','ogre'].indexOf(r)<0)
+        hit('trait',w,'byRace "'+r+'" is not a race');
+    });
+    /* a personality nobody can ever roll and that is not marked foeOnly is a
+       dead row: it will never appear, and nothing says so */
+    if(!t.foeOnly&&!['human','ratkin','ogre'].some(r=>
+        ['captain','spear','cutter','brute','archer','mage','warmage'].some(c=>traitFits(k,r,c))))
+      hit('trait',w,'no race and class combination can ever roll this');
+  });
+
   const byCat={};out.forEach(o=>{byCat[o.cat]=(byCat[o.cat]||0)+1;});
   console.log('%c[LINT] '+(out.length?out.length+' finding(s)':'clean'),
     'font-weight:700;color:'+(out.length?'#c15d55':'#8ca35a'));
@@ -23708,12 +24134,38 @@ const CAPLINES={
     'Nerve is not health. {N} can walk off this field untouched and still be no use to us, '+
     'so keep them shoulder to shoulder.']},
   /* ── CALL · a state on the field just changed ──────────────────────── */
-  theyRun  :{tier:'call', l:['They are going. Let them. We do not need the chase.',
-                             'That is them broken. Nobody follows. Nobody.',
-                             'They are away. Hold what we have got.']},
-  desperate:{tier:'call', l:['{N} has stopped guarding. Whatever happens now happens fast.',
-                             '{N} is not defending any more. That is not courage, '+
-                             'that is arithmetic running out.']},
+  /* ═══ theyRun, desperate AND bloomOpen ARE DELETED ══════════════════════
+     (User, 2026-08-17: "maybe [we are] overcomplicating, just delete the
+     things that doesn't work and repeat itself.")
+
+     ⛔ ALL THREE WERE THE BOARD SAYING A THING IT HAD ALREADY SAID, which is
+     the same defect three times and is why the bottom box read as repetitive
+     even though no LINE ever repeated:
+
+       theyRun    a broken body already tilts and fades on the field
+                  (`.usp.routed`), already prints ROUTED in the state word,
+                  and already gets "X breaks. White flag, and gone." in the
+                  log. The balloon was the third telling.
+       desperate  DESPERATE is a status badge with its own glyph, name and
+                  hover (see the STATUS register). The two lines said the
+                  hover out loud. ⚠ And `desperateAt` is opt-in on ONE
+                  template, so this fired in a single fight in the game.
+       bloomOpen  the site that called it prints "The bloom comes open..."
+                  on the line above, and learn_bloom has already taught the
+                  rule once ever. Third telling again.
+
+     ⚑ AND THE TWO WORST OFFENDERS HAD NO ONCE-A-BATTLE GUARD, which is what
+     turned a duplicate into a repeat: theyRun and bloomOpen could each fire
+     several times in one fight, spend most of a twelve-line register, and
+     leave the Captain mute from the third battle of a run onward. Deleting
+     them is what makes the survivors last.
+
+     ⚑ WHAT SURVIVES IS EXACTLY WHAT NOTHING ELSE SAYS. `weFell` and `alone`
+     both name a body and ask for a thing to be done about it, and "three of
+     theirs are on this one of ours" is a fact no badge, word or log line on
+     this screen carries. That is the register's own rule arriving as a cut:
+     the Captain speaks when there is something to DO, and the flavour that
+     used to be in here is the bodies' own job now (see THE MUTTER). */
   /* weBend ("we are bending, close the gap") was DELETED by the user on
      2026-08-01 while specifying #60. It fired on two or more of ours off
      steady, which in practice is most of the middle of most fights, so it
@@ -23734,16 +24186,15 @@ const CAPLINES={
      by then it is a thing that has happened.
      ⚠ Neither may name a number. The rule is three numbers and the player
      is owed the shape of it, not the arithmetic. */
+  /* ⚠ THE LESSON SURVIVES AND THE CALL DOES NOT, which is the split #64 asked
+     for in the first place: the warning that arrives BEFORE the ground has
+     done anything is the half that is worth having, and the comment after the
+     fact was the half the log had already printed. */
   learn_bloom:{tier:'learn',l:[
-    'Mind the flowers. They are asleep, and they do not stay asleep — '+
-    'do not let the line settle beside one.',
+    'Mind the flowers. They are asleep, and they do not stay asleep. '+
+    'Do not let the line settle beside one.',
     'Those flowers are shut. They open for company, and what comes off them '+
     'is not good for us. Keep off them.']},
-  bloomOpen  :{tier:'call', l:[
-    'That one is awake. It will make you brave and it will make you slow — '+
-    'brave is no use to me. Get off it.',
-    'It is open. Anybody standing in that will fight like a hero and hit like '+
-    'a child. Move.']},
   /* ── HEART · it cost us somebody ───────────────────────────────────── */
   weFell   :{tier:'heart',l:['{N} is down. Get to them before they do.',
                              'That is {N}. Close over them. Now.',
@@ -23784,6 +24235,23 @@ const capName=u=>{
 function capSay(id){
   const E=CAPLINES[id];
   if(!E||!B||B.won!==null)return false;
+  /* ⛔ AUTO IS NOBODY READING, AND A CARD THAT STOPS THE CLOCK NEEDS A HAND TO
+     START IT AGAIN. This is `tutFlush`'s own rule and it became load-bearing
+     the day the Captain took the lock: an unattended AUTO run would raise a
+     card, `nextTurn` would hold on `B.tutLock`, and nothing would ever click
+     the sheet. The fight would sit there forever. The balloon could not do
+     this because it faded on a timer, so the guard did not exist and did not
+     need to. A refusal costs a lesson nothing - it goes back on the queue and
+     arrives when AUTO is off - and a COMMENT about a moment nobody watched is
+     better lost than banked. */
+  if(B.auto)return false;
+  /* ⛔ AND ONE CARD ON THE SCREEN AT A TIME, WHOEVER PUT IT THERE. The brawl's
+     spotlight steps go through tutShow and do not touch `C.el`, so the
+     lesson-tier test below cannot see them; without this a CALL would repaint
+     the sheet on top of a tutorial step mid-read. Asking the surface rather
+     than the bookkeeping is the honest question now that both share one. */
+  const dim=$('tutDim');
+  if(dim&&dim.classList.contains('on'))return false;
   B.cap=B.cap||{round:0,tier:0,count:0,el:null,mute:false,said:{}};
   const C=B.cap;
   const learnT=E.tier==='learn';
@@ -23806,19 +24274,23 @@ function capSay(id){
       spk=alive().find(x=>x.side==='you'&&!x.ally&&!x.pet);
     if(!spk)return false;
   }
-  /* ⚠ NOTHING BELOW THIS LINE MAY BE SPENT ON A BALLOON THAT WILL NOT APPEAR
-     (2026-08-02). capBalloon() reads its position off the live DOM and returns
-     silently when there is no board to hang on -- and capSay used to return
-     TRUE regardless, so the caller marked the line spent and a lesson marked
-     itself seen for the life of the save while the player saw nothing. That is
-     how the very first lesson of the game was lost on every fresh page load.
-     The same shape as the one-shot-flag trap above: "remember that this
-     happened" and "make it happen" must not be two statements that can come
-     apart. Asked here rather than trusted to capBalloon, because everything
-     after this point mutates state -- the spent-lines set, the round, the
-     tier, the budget. A refusal costs a lesson nothing: it stays unseen and
-     goes back on the queue, so it arrives as soon as there is a board. */
-  if(!$('bFx')||!$('bField')||!hexPt(spk))return false;
+  /* ⚠ NOTHING MAY BE SPENT ON A CARD THAT WILL NOT APPEAR (2026-08-02).
+     capBalloon read its position off the live DOM and returned silently when
+     there was no board to hang on -- and capSay used to return TRUE
+     regardless, so the caller marked the line spent and a lesson marked itself
+     seen for the life of the save while the player saw nothing. That is how
+     the very first lesson of the game was lost on every fresh page load. The
+     same shape as the one-shot-flag trap above: "remember that this happened"
+     and "make it happen" must not be two statements that can come apart.
+
+     ⚑ THE GUARD THAT USED TO STAND HERE IS GONE, AND IT IS STRICTLY SAFER
+     NOW. It asked `hexPt(spk)`, the SPEAKER's hex, which stopped being the
+     right question the moment the ring moved onto the SUBJECT: a speaker on
+     the board and a subject carried off it would have passed this check and
+     drawn nothing. The test is now made by the one function that can actually
+     answer it, and every mutation below sits AFTER the `capCard` call rather
+     than in front of a promise. A refusal still costs a lesson nothing: it
+     stays unseen and goes back on the queue. */
   /* ⚠ NOT `CAPTIER[E.tier]||1`. The tutorial tier is ZERO, and `0||1` is 1, so
      the original idiom silently promoted every lesson to TEACH: the first one
      of a round then outranked the rest of them and they all queued behind it.
@@ -23853,16 +24325,30 @@ function capSay(id){
   const fresh=E.l.filter((t,i)=>!spent[id+':'+i]);
   if(!fresh.length)return false;              /* silence beats repetition */
   const txt=fresh[Math.random()*fresh.length|0];
-  spent[id+':'+E.l.indexOf(txt)]=true;
   const line=txt.replace('{N}',C.subj||'somebody').replace('{N}',C.subj||'somebody');
-  if(C.el){C.el.remove();C.el=null;}          /* the heavier line replaces it */
+  /* ⛔ NOTHING IS SPENT UNTIL THE CARD IS ON THE SCREEN. This used to mark the
+     line, bump the round, bump the budget and only THEN hand a balloon to a
+     function that could quietly decline to draw it. capCard refuses when the
+     body it would ring is not on the board, and a line marked spent for a card
+     nobody saw is the exact trap the comment forty lines above describes for
+     the one-shot flags. Same shape, one layer down, and it was reachable the
+     day the anchor became the SUBJECT rather than the speaker: a subject can
+     be carried off the field, the Captain saying it cannot. */
+  if(!capCard(spk,line,E.tier))return false;
+  /* ⚠ `E.l.indexOf(txt)` and not the filtered index: `fresh` has lost the
+     original positions. It is correct today because no entry repeats a
+     string, and LINT would have to grow a check before one ever does. */
+  spent[id+':'+E.l.indexOf(txt)]=true;
   C.round=B.round;C.tier=tier;
   /* the five-a-battle budget is COMMENTS only; `learnAt`/`learnN` are gone with
      the two-a-round rule they served, because the on-screen test above is now
      the whole of the lesson tier's pacing and a second counter beside it would
      be a second source of truth. */
   if(!learnT)C.count++;
-  capBalloon(spk,line,E.tier);
+  /* "a line is on screen", which the lesson tier waits behind and the mutters
+     stay silent under. It is the DIM SHEET now rather than a balloon of its
+     own, and tutNext/tutClose are what put it down. */
+  C.el=$('tutDim');
   capLog(spk,line);
   return true;
 }
@@ -23882,7 +24368,7 @@ function learnMark(id){
   else{LEGACY.seen=LEGACY.seen||{};LEGACY.seen['L_'+id]=true;saveLegacy();}
 }
 const learnSkipped=()=>SIM.on?!!(B&&B.learnSkip):!!LEGACY.learnSkip;
-/* the corner of the balloon. It silences the VOICE and not the RULES: every
+/* the corner of the card. It silences the VOICE and not the RULES: every
    whisper toast keeps firing and `? RULES` is where it was, which is what
    makes this safe to press by accident. Permanent and per save, because
    somebody who skips has said "I know this game" and asking them again next
@@ -23890,21 +24376,33 @@ const learnSkipped=()=>SIM.on?!!(B&&B.learnSkip):!!LEGACY.learnSkip;
 function learnSkip(){
   if(SIM.on){if(B)B.learnSkip=true;}
   else{LEGACY.learnSkip=true;saveLegacy();}
-  if(B&&B.cap){B.cap.q=[];if(B.cap.el){B.cap.el.remove();B.cap.el=null;}}
+  /* ⛔ IT EMPTIES THE QUEUE AND TAKES NOTHING DOWN ITSELF. `B.cap.el` used to
+     be a balloon this function owned and could remove; it is the shared DIM
+     SHEET now, and calling .remove() on that would delete the tutorial layer
+     out of the DOM for the rest of the session. The button's own handler
+     calls tutNext(), which is the one door that puts the sheet down and
+     releases the clock. */
+  if(B&&B.cap)B.cap.q=[];
 }
 /* ASK FOR A LESSON. If the round is full it is QUEUED rather than dropped,
    which is the one place this tier differs from every other: a comment about
    a moment that has passed is worse than silence, but a RULE is still true
    next round. The seen-flag is set from capSay's return, never before it. */
-function learn(id,subj){
-  /* #108 - the brawl teaches with the spotlight; the balloon lessons stay
-     unspent for Blood on the Road */
+/* ⚠ `subjU` IS OPTIONAL AND IS ASSIGNED EVEN WHEN IT IS ABSENT. A lesson that
+   names nobody must CLEAR the last line's body, or the spotlight rings whoever
+   the previous card was about: the ring would be stale by a round or by ten,
+   and it would look like a placement bug rather than a stale-state bug. A null
+   here falls back to the Captain in capCard, which is the honest anchor for a
+   line that is a rule rather than an event. */
+function learn(id,subj,subjU){
+  /* #108 - the brawl teaches with the spotlight; the lessons stay unspent for
+     Blood on the Road */
   if(!B||B.tut||B.won!==null||!CAPLINES[id]||learnSkipped()||learnSeen(id))return false;
   B.cap=B.cap||{round:0,tier:0,count:0,el:null,mute:false,said:{}};
   const C=B.cap;C.q=C.q||[];
-  C.subj=subj||null;
+  C.subj=subj||null;C.subjU=subjU||null;
   if(capSay(id)){learnMark(id);C.q=C.q.filter(x=>x.id!==id);return true;}
-  if(!C.q.some(x=>x.id===id))C.q.push({id:id,subj:subj||null});
+  if(!C.q.some(x=>x.id===id))C.q.push({id:id,subj:subj||null,u:subjU||null});
   return false;
 }
 /* drained at the top of every tick, in the order the lessons came up. It
@@ -23917,7 +24415,9 @@ function learnFlush(){
   for(let i=0;i<C.q.length;i++){
     const e=C.q[i];
     if(learnSeen(e.id)){C.q.splice(i,1);i--;continue;}
-    C.subj=e.subj;
+    /* both, together, for the reason on learn() above. A queued lesson can sit
+       for several rounds, so this is the case where a stale body is likeliest. */
+    C.subj=e.subj;C.subjU=e.u||null;
     if(!capSay(e.id))break;
     learnMark(e.id);C.q.splice(i,1);i--;
   }
@@ -23930,14 +24430,35 @@ function learnFlush(){
    canvas because a canvas's pixels do not survive `innerHTML` — which is
    exactly how shotBoard() serialises this overlay, and why every gate picture
    showed an empty square while the running game drew the face correctly. */
-function faceURI(u){
-  const p=member(u.id);
+/* ⚑ THE PERSON-LEVEL HALF, SPLIT OUT SO THE LESSON CARD CAN REACH IT. The
+   balloon has a UNIT in hand and the spotlight tutorial does not: the world
+   tour runs on the road screen where there is no `B` at all. Both want the
+   same face, so the face is found from a ROSTER PERSON and faceURI() is the
+   one-line adapter over it. Two copies of this would be two answers to "what
+   does the Captain look like", and the procedural fallback is exactly the
+   kind of thing that drifts.
+   ⚠ THE CACHE IS KEYED HERE AND NOT WRITTEN ONTO `p`. A roster person
+   round-trips the save as JSON, so a base64 PNG parked on one would be
+   written into localStorage every autosave. */
+const FACE_URI={};
+function faceOf(p,race,cls){
   const painted=p&&portraitOf(p);
   if(painted)return painted;
+  const r=(p&&p.race)||race||'human',c=(p&&p.cls)||cls;
+  const k=((p&&p.id)||'-')+':'+r+':'+c;
+  if(FACE_URI[k])return FACE_URI[k];
   const cv=document.createElement('canvas');cv.width=68;cv.height=76;
-  bust(cv,(p&&p.race)||u.race||'human',isCaster((p&&p.cls)||u.cls));
-  return cv.toDataURL('image/png');
+  bust(cv,r,isCaster(c));
+  return (FACE_URI[k]=cv.toDataURL('image/png'));
 }
+function faceURI(u){return faceOf(member(u.id),u.race,u.cls);}
+/* THE CAPTAIN, OFF THE ROSTER AND NEVER OFF THE BOARD. `capUnit()` would be
+   wrong here for one reason that matters: it returns nothing on the road
+   screen, where the world tour runs, and nothing once he is down, which is
+   precisely a moment the game still has things to teach. The three fallbacks
+   are the ones markReceipt already uses, so this cannot answer a different
+   person than the rest of the game does. */
+const capPerson=()=>member('you')||(G.party||[]).find(p=>p.leader)||(G.party||[])[0]||null;
 /* WHO IS SPEAKING, in the words the rest of the game uses for them.
    "THE CAPTAIN" was a job title on a game whose whole pitch is that these are
    people — and the Captain's own name is literally "You", so the nickname is
@@ -23948,68 +24469,36 @@ function speakerLabel(u){
   if(p&&p.nick)return fullName(p).toUpperCase();
   return (p?p.name:u.name).toUpperCase();
 }
-/* the balloon itself. Everything is geometry read off the live DOM, so it
-   no-ops safely in a headless arena run where there is no board to hang on.
+/* ═══ THE CAPTAIN'S LINE, ON THE SPOTLIGHT ═══════════════════════════════
+   `capBalloon` is DELETED and this is what replaced it. Everything it used to
+   do by hand - a face, a name, placement, a flip, a clamp, a tail, a skip
+   button, a fade - the spotlight card already did, and did while holding the
+   clock. See the block above tutShow for why two teachers became one.
 
-   ⚠ IT TAKES A SPEAKER, NOT "THE CAPTAIN". Nothing below this line knows the
-   Captain exists — face, label and anchor all come off whatever unit is
-   handed in. That is deliberate: #40 (the company reacting toward the player)
-   is the same balloon with a different mouth, and the moment a second person
-   speaks, "it feels more personal for different heroes" costs one argument
-   rather than a rewrite. capSay() is the part that decides it is the Captain. */
-function capBalloon(speaker,text,tier){
-  const fxb=$('bFx'),fld=$('bField');
-  if(!fxb||!fld)return;
-  const p=hexPt(speaker);
-  if(!p)return;
-  const el=document.createElement('div');
-  el.className='ccall '+tier;
-  const face=document.createElement('img');
-  face.className='face';face.alt='';face.src=faceURI(speaker);
-  const t=document.createElement('div');t.className='txt';
-  t.innerHTML='<span class="who"></span>'+text;
-  t.firstChild.textContent=speakerLabel(speaker);   /* a name is never markup */
-  const tail=document.createElement('div');tail.className='tail';
-  el.appendChild(face);el.appendChild(t);el.appendChild(tail);
-  /* #60 — the way out, bottom-left, on lessons only. Nothing else in the
-     register grows one: a CALL is a comment and there is nothing to skip.
-     ⚠ It must read as an EXIT and not a button. Nothing on this balloon may
-     look like the thing the lesson is telling the player to press. */
-  if(tier==='learn'){
-    const sk=document.createElement('button');
-    sk.className='capskip';sk.type='button';sk.textContent='SKIP TUTORIAL';
-    sk.onclick=e=>{e.stopPropagation();learnSkip();el.remove();};
-    el.appendChild(sk);
-  }
-  fxb.appendChild(el);
-  /* place it ABOVE the body with the tail coming down to him, then clamp
-     into the field. #bFx is overflow:hidden, so a balloon that runs off the
-     top is not merely ugly — it is a line the player never reads. */
-  const W=el.offsetWidth||288,H=el.offsetHeight||56,FW=fld.offsetWidth;
-  /* FLIP ON ACTUAL OVERFLOW, not on which half of the field she is standing
-     in. The board is narrower than #bField and sits inside it, so "past the
-     middle of the field" is not the same question as "would this run off the
-     edge" — the first version measured the wrong thing and never flipped.
-     The tail has to end up over her either way, which is the whole point of
-     the tail. */
-  const right=(p.x-26+W)>(FW-4);
-  el.classList.add(right?'aR':'aL');
-  let x=right?p.x-W+26:p.x-26;
-  let y=p.y-H-30;
-  x=Math.max(4,Math.min(x,FW-W-4));
-  /* no room above (he is standing on the top row) — put it below him and
-     drop the tail, which is better than a balloon sliced in half */
-  if(y<4){y=p.y+26;tail.style.display='none';}
-  el.style.left=x+'px';el.style.top=y+'px';
-  B.cap.el=el;
-  const mine=el;
-  /* 2.2s is right for a comment and short for a lesson, and a lesson also has
-     something to click. Still no input pause and nothing to dismiss, and every
-     line is mirrored into the fight log by capLog() so it can be re-read. */
-  setTimeout(()=>{
-    mine.classList.add('go');
-    setTimeout(()=>{mine.remove();if(B&&B.cap&&B.cap.el===mine)B.cap.el=null;},380);
-  },tier==='learn'?4500:2200);
+   ⛔ THE RING GOES ON THE SUBJECT, NOT ON THE SPEAKER, and that is the whole
+   of the "at random places" complaint. "{N} is on their own out there" is a
+   line ABOUT somebody, and the balloon put its tail on the Captain, who is
+   usually nowhere near them. `C.subjU` is the unit the line is about; where a
+   line names nobody (a rule rather than an event) the Captain himself is the
+   honest anchor, because then he IS the subject.
+
+   Returns TRUE only if a card actually reached the screen, which is the
+   contract capSay() has always relied on. */
+function capCard(speaker,text,tier){
+  const subj=(B&&B.cap&&B.cap.subjU)||null;
+  const anchor=capAnchor(subj)||capAnchor(speaker);
+  if(!anchor)return false;
+  return tutPaint(speakerLabel(speaker),text,anchor,tier,tier==='learn');
+}
+/* one body, as the {hexes:[[col,row]]} shape tutRect already understands.
+   ⚠ IT DOES NOT SECOND-GUESS DEADNESS. A body stays where it fell (dropBody),
+   so a downed subject still has a hex and still deserves the ring - "{N} is
+   down, get to them" is the one line where pointing at the body IS the point.
+   If the hex is genuinely not on screen, tutRect returns null and tutPaint
+   refuses; there is one judge of that and it is not this function. */
+function capAnchor(u){
+  if(!u||u.col===undefined)return null;
+  return {hexes:[[u.col,u.row]]};
 }
 /* mirrored into the fight log for a player who was looking at the other side
    of the board. Deliberately NOT through say(): say() pushes to G.log, G.log
@@ -24025,6 +24514,201 @@ function capLog(speaker,text){
   while(box.children.length>60)box.removeChild(box.firstChild);
   box.scrollTop=box.scrollHeight;
 }
+/* ═══ THE MUTTER · THE OTHER VOICE ON THE FIELD ══════════════════════════
+   (User, 2026-08-17: "в рандомный момент и юниты могут что-то кричать. То
+   есть это не как инструкция от командира, это скорее как такое просто мелким
+   шрифтом... когда ты получаешь много урона, это может быть раз вообще за
+   бой когда-то крикнет. Или вот например, крыса человек такой, хочу увидеть
+   его кишки, когда кого-то ударил.")
+
+   ⛔ THE TEST FOR WHETHER A LINE BELONGS HERE IS WHETHER YOU COULD ACT ON IT.
+   Everything in CAPLINES above is an instruction with a body attached:
+   somebody is surrounded, go; that flower is open, get off it. A mutter can
+   never be acted on. It names nobody, states no ground, carries no number and
+   asks for nothing. It is a person being a person while the fight happens to
+   them. The day one of these says something useful it has stopped being a
+   mutter and belongs upstairs in the balloon, where the player is looking.
+
+   ⚑ AND THAT IS WHY IT IS NOT LOGGED. Every captain's line is mirrored into
+   #bLog by capLog(), because a player looking at the other side of the board
+   missed something they needed. A mutter carries nothing to miss, so putting
+   it in the log would be sixty rows of noise stacked on top of the one channel
+   the fight is re-read from. If you did not see it, you lost nothing. That is
+   the same fact as the rule above, said about a different surface.
+
+   ⛔ RARITY IS THE WHOLE FEATURE. The user asked for "раз вообще за бой" and
+   the benchmark says a fight is 8.45 rounds and 115 actions, so an unbudgeted
+   1-in-5 roll on "landed a blow" would fire twenty times and the mutter would
+   become the font the battle is written in.
+
+   ⛔ AND A BUDGET ALONE IS NOT RARITY, IT IS A QUEUE. Measured before it
+   shipped, on a stub rig against a benchmark-shaped fight (9 rounds, ~7
+   attacks each, 4000 fights): a cap of four with a one-per-round rule spent
+   ALL FOUR in 99% of fights and spent them in rounds 1-4, at which point the
+   register went silent for the rest of the battle. The cap was binding, the
+   odds were doing nothing, and "в рандомный момент" had turned into a fixed
+   opening chorus. **The rarity knob is BARK_GAP, not BARK_MAX**: a minimum of
+   three rounds between two lines is what spreads them over the fight, and the
+   budget is only there to stop a 15-round boss becoming a conversation.
+
+   Measured on the shipped figures, same rig: **mean 2.74 lines a fight (3 in
+   75%, 2 in 25%), and the odds of hearing one is roughly even across all nine
+   rounds** instead of falling off a cliff after the fourth. */
+const BARK_MAX=4;                    /* the whole fight, both sides, all kinds */
+const BARK_GAP=3;                    /* rounds of silence between two of them */
+/* ⚠ THE ODDS ARE NOT THE RARITY KNOB EITHER. Inside the window the gap opens,
+   these decide WHICH moment gets to spend it, and they read as a ranking of
+   what is worth hearing. An ordinary landed blow is by far the commonest
+   thing that happens, so it is by far the lowest: at .12 it won a third of
+   all lines by sheer volume and starved the kill; at .04 the split is **hurt
+   45% · low 21% · hit 18% · kill 16%**, which puts "когда ты получаешь много
+   урона" at the top where the user put it. */
+const BARK_ODDS={kill:.55, low:.6, hurt:.35, hit:.04};
+/* ═══ WHAT THEY SAY, AND IT IS THE RACE THAT DECIDES ═════════════════════
+   Race and not class, because class is a job and this is not about the job.
+   The three voices are the three the whole game is built on: the ratkin is
+   loud and hungry and has no dignity to lose, the ogre is slow and literal
+   and says the true thing, the human is tired and professional and would
+   rather this were over.
+
+   ⛔ TWO TO FIVE WORDS. It is read at a glance beside a body at 10px, next to
+   a damage figure that is climbing, in the half-second before the next unit
+   moves. A sentence here is a sentence nobody finishes. LINT 11 holds it.
+   ⛔ NO NAME, NO NUMBER, NO PLACE. See the rule above: any of the three would
+   make it information, and information belongs in the balloon.
+   ⚑ "Let me see his guts." is the user's own line and is canon. */
+const BARKS={
+  ratkin:{
+    hit :['Open him up!','Let me see his guts.','That is the sound!'],
+    hurt:['It bit me!','Not the face!'],
+    kill:['Warm one. Good.','Look what I did!'],
+    low :['This is my blood!','Too much of me out.']},
+  ogre:{
+    hit :['That one was good.','Stay hit.'],
+    hurt:['Ow. That was rude.','You made a hole.'],
+    kill:['Down. Who is next.','It stopped moving.'],
+    low :['I am leaking.','A lot of me out.']},
+  human:{
+    hit :['Stay down. Please.','That is one.'],
+    hurt:['That one is deep.','I felt that.'],
+    kill:['It is done.','Nothing personal, friend.'],
+    low :['I am not ready.','Not like this.']}
+};
+/* ⚑ ONE PERSONALITY OVERRULES THE RACE, AND THERE IS EXACTLY ONE. A body with
+   no stomach for it already pays 18 morale of its own for every kill and says
+   so in the log; letting the same body shout "Look what I did!" would be the
+   register contradicting a personality the engine has already charged for.
+   It is written as a named case rather than a table with one row in it: a
+   trait-keyed map holding a single entry is a hook waiting for content, and
+   this file has enough of those. */
+const BARK_SORRY=['I did not want that.','Him or me. Again.'];
+/* ⚑ THE SPEAKER IS ALWAYS SOMEBODY STILL STANDING. On a kill it is the
+   ATTACKER, never the body on the ground, which is why there is no dead
+   branch below. The dead do not mutter and the downed are being dragged.
+
+   Returns TRUE only if a line actually reached the screen, the same contract
+   capSay() has and for the same reason: everything this spends (the round,
+   the budget, the body's one line) is spent AFTER the last thing that can
+   refuse. A headless arena run has no board, hexPt() returns null, and the
+   fight costs the register nothing. */
+function bark(u,kind){
+  if(!B||B.won!==null||!u||!BARK_ODDS[kind])return false;
+  /* the brawl is a written script with a spotlight on it (#108). A second
+     voice in it would be talking over the tutorial. */
+  if(B.tut)return false;
+  if(u.dead||u.downed||u.fled)return false;
+  /* ⛔ `!u.monster` AND NOT A RACE TEST, which is the same trap the mercy
+     branch documents at length: build() derives race from kind and a DOG
+     comes out `race:'ratkin'`, so a race test would have had the pack
+     shouting "Let me see his guts." Every beast and every authored monster
+     carries `monster`, so this covers the Fen-Mother and the Thing in Armour
+     without naming either. Only people talk. */
+  if(u.monster)return false;
+  if(u.muttered)return false;             /* one line per body per fight */
+  /* ⚠ `round:-99` AND NOT 0. The gap is measured as `B.round - S.round`, and
+     B.round is 1 on the first round, so a zero here would silence the whole
+     opening exchange for two rounds on a register whose commonest moment is
+     the first real blow anybody takes. */
+  B.bark=B.bark||{round:-99,count:0,said:{}};
+  const S=B.bark;
+  if(S.count>=BARK_MAX||B.round-S.round<BARK_GAP)return false;
+  /* the Captain has the screen. A balloon and a mutter at the same moment is
+     two people talking and the small one loses, so it does not start. */
+  if(B.cap&&B.cap.el)return false;
+  const pool=(kind==='kill'&&tr(u,'pacifist'))?BARK_SORRY:(BARKS[u.race]||{})[kind];
+  if(!pool||!pool.length)return false;
+  const fresh=pool.filter(s=>!S.said[kind+':'+s]);
+  if(!fresh.length)return false;          /* silence beats repetition */
+  /* ⚠ BEFORE THE ROLL AND BEFORE ANYTHING IS SPENT. capSay() carries this
+     note in full: a line dropped for want of a board has not happened. */
+  const p=hexPt(u);
+  if(!p||!$('bFx')||!$('bField'))return false;
+  if(Math.random()>=BARK_ODDS[kind])return false;
+  const txt=fresh[Math.random()*fresh.length|0];
+  S.said[kind+':'+txt]=true;S.round=B.round;S.count++;u.muttered=true;
+  mutter(u,txt,p);
+  return true;
+}
+/* the line itself. Geometry off the live DOM, in #bFx, which is OUTSIDE the
+   camera transform and is not rebuilt by render(). #173's rule: anything
+   written onto a sprite is destroyed by the next statement that renders. */
+function mutter(u,txt,p){
+  const fxb=$('bFx'),fld=$('bField');
+  if(!fxb||!fld)return;
+  const el=document.createElement('div');
+  el.className='mutter'+(u.side==='you'?' mine':'');
+  el.textContent='“'+txt+'”';           /* a line of speech is never markup */
+  /* ⚠ hexSpan() AND NOT A LITERAL, for the reason roarFx already carries: a
+     hardcoded 42 is only correct at one camera stop, and at ×2.5 it would put
+     the line across the speaker's own face.
+
+     ⛔ AND A SINGLE MULTIPLE OF THE HEX IS NOT ENOUGH EITHER, WHICH IS WHAT
+     THE CHECK FOUND. Measured at the CLOSE stop on a live board, the height a
+     head sits above this anchor is not one number, it is three:
+
+         ogre 1.09 x hexSpan  ·  human 0.88-0.99  ·  ratkin 0.36-0.67
+
+     so the shipped 0.9 printed the line through every ogre and through most
+     humans, and a constant raised to clear the ogre would have left a ratkin
+     muttering at a cloud one and a half hexes over its own head. This is #157
+     exactly - a body's furniture is anchored to `--head` for the same reason -
+     and the answer is the same one: ASK THE SPRITE.
+
+     `img.usp` is the painted body in the speaker's own hex. Its rect is
+     already in the camera's space, so the zoom is inherited rather than
+     recomputed, and the fallback multiple below is only reached when there is
+     no sprite to ask (a headless run, or a body mid-render). */
+  let up=hexSpan()*1.40,foot=0;            /* clears the tallest, ogre + line + drift */
+  const own=document.querySelector('.hex[data-k="'+u.col+','+u.row+'"] img.usp');
+  if(own){
+    const s=own.getBoundingClientRect(),fr=fld.getBoundingClientRect();
+    /* how far THIS body's head is above the anchor, plus the line's own
+       height and enough daylight to survive the drift. ⛔ THE MARGIN IS SIZED
+       BY THE KEYFRAMES AND NOT BY EYE: `mut` runs from +6px at 0% to -10px at
+       100%, so a line measured at rest is SIX PIXELS HIGHER than the frame it
+       is born on. The first draft used +14, which reads as 4px of clearance
+       standing still and -2 on the opening frame - through the head, faintly,
+       every single time. 22 is 12 at rest and 6 at the worst frame. */
+    const head=(p.y+fr.top)-s.top;
+    if(head>0)up=head+22;
+    foot=s.bottom-(p.y+fr.top);           /* how far the feet hang below the anchor */
+  }
+  el.style.left=p.x+'px';el.style.top=(p.y-up)+'px';
+  fxb.appendChild(el);
+  /* clamp into the field. `transform:translateX(-50%)` means half the box
+     hangs off each side of `left`, and #bFx is overflow:hidden. A line that
+     runs off the edge is not merely ugly, it is a line nobody reads. */
+  const W=el.offsetWidth||90,FW=fld.offsetWidth;
+  el.style.left=clamp(p.x,W/2+4,Math.max(W/2+4,FW-W/2-4))+'px';
+  /* standing on the top row: put it under the feet rather than off the top.
+     ⚠ `foot` AND NOT A FRACTION OF `up`. The old `up*0.6` was measured when
+     `up` was a flat 0.9 of a hex; now that `up` is the speaker's own height,
+     scaling by it drops an ogre's line 68px into whatever is standing below
+     him and a lurcher's barely clear of its own tail. The feet are a fact the
+     sprite already knows, so the flip reads it off the same rect the lift did. */
+  if(p.y-up<4)el.style.top=(p.y+(foot||hexSpan()*0.28)+8)+'px';
+  setTimeout(()=>el.remove(),paced(1600)+80);
+}
 /* ═══ THE TICK — every CALL and HEART trigger, evaluated in ONE place ═══
    Called once at the end of a turn. Each trigger is a comparison against
    the snapshot taken last tick, so "it just happened" is a fact rather
@@ -24037,12 +24721,12 @@ function capTick(){
   /* #108 - the brawl's script runs on the same once-per-turn seam */
   if(B.tut){tavernTick();if(B.won!==null)return;}
   const mine=B.units.filter(u=>u.side==='you'&&!u.ally&&!u.pet);
-  const foe=B.units.filter(u=>u.side==='foe'&&!u.passive);
-  const prev=C.snap||{};
-  /* ROUTED OR GONE, never DEAD. "They are going, let them" is a comment on
-     an enemy breaking — killing two of them in a round is a different event
-     entirely and must not borrow this line. */
-  const gone=foe.filter(f=>!f.dead&&(f.fled||f.state==='routed')).length;
+  /* ⚑ `foe`, `prev`, `gone` and `C.snap` went with theyRun. The snapshot
+     existed for ONE comparison (how many of theirs broke since last tick) and
+     kept itself alive at the foot of this function; with the line gone it was
+     state nothing read. A tick that still took a census for a deleted trigger
+     is the shape of leftover this file keeps finding, so it is out in the
+     same edit rather than left for somebody to wonder about. */
   /* ═══ #60 — THE LESSONS RUN FIRST, AND THEY RUN EVEN WHEN HE IS DOWN ══════
      Above the mute check on purpose. Two situational lessons live here (the
      rest are hooked where the player actually does the thing), and the queue
@@ -24060,20 +24744,22 @@ function capTick(){
   const cap=capUnit();
   if(!cap||cap.dead||cap.downed||cap.fled){C.mute=true;return;}
   const down=mine.filter(m=>m.downed||m.dead);
-  const desp=foe.find(f=>f.desperate&&!f.dead);
   /* HEART first, so a downing never loses its round to a status line.
      ⚠ The one-shot flags are set from capSay's RETURN, never before it: a
      line that was dropped for the round has not happened, and marking it
      spent is how a trigger silently disappears for the rest of a fight. */
+  /* ⚑ `subjU` IS THE BODY AND `subj` IS ITS NAME, AND BOTH ARE SET TOGETHER.
+     The name fills {N} in the sentence; the body is what the spotlight rings.
+     They were one field for as long as the balloon hung off the speaker and
+     the subject was only ever a word. Setting one without the other is now a
+     line about Vesna with a ring round somebody else, so they are assigned on
+     the same statement everywhere, deliberately. */
   if(down.length&&!C.fell){
-    C.subj=capName(down[0]);if(capSay('weFell'))C.fell=true;
+    C.subj=capName(down[0]);C.subjU=down[0];
+    if(capSay('weFell'))C.fell=true;
   }else if(lesson){
     /* a lesson is on screen. Only a HEART may push it aside, and that branch
        has already had its turn above. */
-  }else if(desp&&!C.desp){
-    C.subj=capName(desp);if(capSay('desperate'))C.desp=true;
-  }else if(gone-(prev.gone||0)>=2){
-    C.subj=null;capSay('theyRun');
   }else{
     /* somebody of ours with three of theirs on them, and not already said
        about that person — the same body being surrounded for four rounds
@@ -24081,11 +24767,10 @@ function capTick(){
     const surrounded=mine.find(m=>!m.dead&&!m.downed&&!m.fled&&
       engagers(m.col,m.row,m.side).length>=3);
     if(surrounded&&C.aloneWho!==surrounded.id){
-      C.subj=capName(surrounded);
+      C.subj=capName(surrounded);C.subjU=surrounded;
       if(capSay('alone'))C.aloneWho=surrounded.id;}
     if(!surrounded)C.aloneWho=null;
   }
-  C.snap={gone:gone};
 }
 function coach(key){
   if(!COACH[key])return;

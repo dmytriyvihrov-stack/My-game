@@ -25,6 +25,87 @@
 
 ---
 
+## 🗣 THE BODIES MUTTER, THE CAPTAIN GETS A FACE, AND EVERY PERSONALITY COSTS SOMETHING  *(#185 · 2026-08-17 · build log 8f.205)*
+
+**Where it came from.** Your three voice notes in one paste: the units shouting something small,
+the tutorial coming from your own character instead of a black screen, and every personality
+needing a downside stated without blah-blah words.
+
+### 1. The mutter: a second voice on the field
+
+**Three steps.** ⚙ DEV.MODE → the practice field → any fight, any company → take the field. Then
+just watch a fight through.
+
+**What should happen.** Two or three times in a fight, somebody says something small in italic
+quotes above their own head. It is **never an instruction** - it names nobody, gives no number,
+asks for nothing. The voice is the **race**, not the class: a ratkin is loud and hungry
+(*"Let me see his guts."*, which is your line), an ogre is slow and literal (*"Ow. That was
+rude."*), a human is tired and professional (*"Nothing personal, friend."*).
+
+Roughly **2.74 lines a fight**, spread evenly across the rounds rather than bunched at the start -
+there are at least three rounds of silence between any two. One line per body per fight, and it
+never repeats a line it has already used. The four moments are ranked, so the heaviest thing that
+happened in a round is what gets said: a kill, then somebody dropping near death, then taking a
+fifth of their body in one blow, and an ordinary landed blow last and rarest.
+
+**What would be a bug.** A line printed **through somebody's face** (this was real and was fixed:
+the first cut cleared a ratkin and went straight through every ogre). More than about four in one
+fight, or all of them in the opening two rounds. A **dog or a monster** talking. A mutter appearing
+in the fight log on the left. Anything with a name, a number, or a place in it. Two of them at
+once, or one on top of a Captain's card.
+
+### 2. The Captain's lines use the tutorial card now, and they stop the fight
+
+**Three steps.** Play the tap-room brawl, then a second and a third battle. Watch what happens when
+the Captain has something to say.
+
+**What should happen.** **The parchment speech bubble is gone.** Every Captain's line now arrives on
+the same card the first battle's lessons use: the screen dims, a ring lands on **the thing being
+talked about**, and **the fight stops until you click**. Your own portrait is on the card, and the
+words are exactly the words they always were - nothing was rewritten, it just has a face on it now.
+
+This is the three things you named. The bubble hung off whichever hex the Captain was standing on,
+which is the *"random places"*; it ran for 2.2 seconds while the enemy kept moving underneath it,
+which is the *"strange"*; and it never stopped the clock, which is the *"it should stop other
+actions until you press anything"*. All three were one defect.
+
+A heavier line wears a thin coloured stripe down its left edge. You are not meant to read the
+taxonomy, only to feel that some are weightier. SKIP TUTORIAL appears only on actual lessons.
+
+**What would be a bug.** A speech bubble anywhere. A card with **no face**, or the **wrong person's**
+face after you start a new company. The fight carrying on underneath a card. A ring pointing at the
+Captain when the line is about somebody else. A SKIP TUTORIAL button on a line that is not a lesson.
+A card left on screen after a fight ends.
+
+### 3. Every personality states what it gives and what it costs
+
+**Three steps.** Open the company sheet (🎒), then the inventory, then hover a body mid-battle.
+
+**What should happen.** One line per person, in **mechanics and not mood**, with the upside and the
+downside split by a `·`:
+
+```
+veteran   | +4 to hit, +4 dodge · −1 AGI, −8 hitpoints
+courage   | +14% melee damage · CANNOT DISENGAGE
+grudge    | +20% damage against whatever last hurt them · −6 to hit against anything that has not
+```
+
+The old lines (*"Finishes the wounded."*, *"Old hand. Bad knees."*) are gone - they read nicely and
+told you nothing about what the person did. The **flavour paragraph is untouched** and is still what
+the hover shows; this is the decision, that is the character.
+
+**Four personalities had no downside at all** and now do. There are **five new ones**:
+**Frightening** (−6 morale to everyone within 2 hexes, *including yours*), **Owes somebody** (half
+wages, but takes a missed payday twice as hard), **Slow to warm up** (bad for two rounds, good from
+the fourth), **Keeps a list** (+20% against whoever last hurt them, worse against everybody else),
+and **Cannot be quiet** (+4 to hit for every ally beside them, and the enemy comes for them first).
+
+**What would be a bug.** A personality whose line is a sentence of mood rather than numbers. A line
+that says a number the fight does not then use - every one of them prints its own row in the hit
+breakdown, so you can check. A trait with no downside. The three screens disagreeing with each other.
+
+---
+
 ## ⚖ THE SUB-LINE IS A RECEIPT, AND EIGHT MORE OF YOUR NOTES  *(#176-#184 · 2026-08-17 · build log 8f.204)*
 
 **Where it came from.** Your eleven-item batch the same day, against four screenshots with the
