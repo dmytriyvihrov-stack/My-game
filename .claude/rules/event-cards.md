@@ -128,6 +128,61 @@ there, never as another `+' · '+` at a call site.
   Wynn's *"I had made my peace with being a small course."* Frame lines around them may go; the
   line itself is canon.
 
+## ⛔ The sub-line: the COST is derived, and `c:` is only what `fx` cannot say
+
+*(#176, 2026-08-17. The user: **"Delete highlighted with red. Cost 10 coinds and gives 5 mood
+bonus"** and **"delete typical 'they will remember' from options"**, with the clauses boxed in red
+on a screenshot of THE COLLECTOR.)*
+
+**A door's sub-line is built, in this order, and only from these four things:**
+
+| | where it comes from |
+|---|---|
+| the cost | **`fxNote(o.fx)`, derived.** Never typed. |
+| what the cost cannot say | `c:` - gear by name, a battle's shape, a rule of the door |
+| the mood | `moraleTag(o.fx)`, derived |
+| the gate | `needTag(o.need)`, derived |
+
+⛔ **`c:` MAY NOT CARRY A FIGURE `fx` ALREADY CARRIES.** That is two receipts for one payment, which
+is the rule at the top of this file on its fourth surface. `LINT` 6f holds it and the check is a
+line:
+
+```js
+[...Object.entries(EVENTS),...Object.entries(CAMPS)].flatMap(([k,e])=>(e.choices||[])
+  .filter(c=>c.c&&/(^|\s)[+−-]\d/.test(c.c)))                    // 0
+```
+
+⚑ **THIS WAS NOT A TIDY-UP, AND THE ORDER OF DISCOVERY IS THE LESSON.** The literal deletion the
+user asked for would have deleted four PRICES. **THE HANGED TOLL-MAN** charges a day and pays 38
+crowns across four doors, and its four labels read *"it will cost you the afternoon"*, *"he has no
+further use for either"*, *"good wood · tired men"* and *"nothing is left standing here"*. On that
+card the prose **was** the receipt, and nobody could have known by reading it. ⛔ **So when a
+deletion would take a fact with it, the answer is to move the fact to where it cannot be lost, not
+to keep the sentence.**
+
+⚑ **AND THE DERIVATION IMMEDIATELY CAUGHT A SHIPPED LIE.** THE RATKIN WATERWORKS' second door
+promised **`+1 salvage`** and `pickChoice` paid **2**. That is the sixth member of the family this
+file has caught five times, and it is the argument for the whole change in one row: **a promise is
+the half that is allowed to be wrong, so stop writing promises.**
+
+⚠ **`fxNote` PASSES `mulCrowns:true`.** `pickChoice` applies `lootMul()` to what you FIND, so a
+label printing the base figure would under-promise on a company carrying the Brass Token, which is
+the same lie from the other end.
+
+⚠ **AND A SWEEP OVER `c:'…'` MUST BE SCOPED TO CAMPS AND EVENTS.** The aftermath's LOOT rows wear
+the same `{t,c,fx}` shape and are NOT rendered by `choiceNote` - their chips come off
+`fxChips(haul.fx)` and their `c:` is the prose beside it - and the withdraw screen builds a `c:`
+by CONCATENATION. An unscoped pass deletes receipts nothing else prints and rewrites half an
+expression. It was run once, unscoped, and reverted off the diff.
+
+### What comes out of `c:`, on top of the numbers
+
+The mood echo, which is the third generation of a phrase this file has now deleted three times
+(*"it sits badly with them"* ×24 in #150, *"it sits well with them"* ×16 in #151, and in #176 the
+63 that had grown back: *they think better of you* ×6, *they will remember this* ×6, *quietly
+approved of* ×6, and 45 one-offs). ⚑ **The reason it kept growing back is that nothing stopped a
+new card authoring one.** Now the mood has exactly one renderer and the label has no room for it.
+
 ## The receipt: chips, and they are built off the payment
 
 Every outcome renders `evFxChips(paid)` plus `evGearStrip(got)`. The chips are the aftermath's own
