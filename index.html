@@ -69,6 +69,29 @@
      when the next unit acts, which is the exact confusion the knob exists to
      remove. If you add an animation to the board, write it as a calc(). */
   --pace:1.75;
+  /* ═══ #173 · AND THE BLOW GETS A SECOND HAND ON THE SAME CLOCK ═══════════
+     (User, 2026-08-17: "я хочу все анимации ударов и скилов на 100-200%
+     медленнее, чтобі их лучше было видно. Дольше оставлять надпись после
+     удара".)
+
+     ⛔ IT IS NOT `--pace`, AND THAT IS THE WHOLE POINT. `--pace` is the battle
+     CLOCK: the AUTO tick, the walk, the stagger between two plates of an oath
+     all read it, so turning it up to see a sword swing would also make the
+     turn take twice as long to hand over. The request is about the IMPACT
+     only, which is a family of fifteen durations that were already tuned
+     against each other - so they move together, through one multiplier, which
+     is #81's own rule applied to a subset of #81's own animations.
+     ⚑ SO THE PRODUCT IS THE DURATION: base × --pace × --hitp. Both knobs stay
+     meaningful and neither has to know about the other.
+     ⚠ 2.5 IS THE MIDDLE OF THE ASKED BAND (100-200% slower is ×2 to ×3). If
+     the fight starts to drag, this is one number and `HITP` in the script
+     reads it back off this line - do not write a second literal there. */
+  --hitp:2.5;
+  /* the floating word after a blow, on its own multiplier because it is not
+     a movement: the number has to be READ, and the reading is what the second
+     half of the request is asking for more of. See the `rise` keyframe, which
+     was reshaped to HOLD rather than merely stretched. */
+  --fxp:2;
 }
 *{box-sizing:border-box}
 /* #83 - overscroll-behavior stops a drag on the board from pulling the browser
@@ -1264,6 +1287,13 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:var(--f
      the Bloom's own magenta spark */
   --curShot:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='28' height='28'><path d='M6 6 L22 22' stroke='%23151b1c' stroke-width='4.6' stroke-linecap='round'/><path d='M6 6 L22 22' stroke='%235a4326' stroke-width='2.4' stroke-linecap='round'/><path d='M3 3 L12.5 5.8 L5.8 12.5 Z' fill='%23c9c6bb' stroke='%23151b1c' stroke-width='1'/><path d='M17 25 L25 17' stroke='%23a38652' stroke-width='2.2' stroke-linecap='round'/><path d='M14.6 22.6 L22.6 14.6' stroke='%23a38652' stroke-width='2.2' stroke-linecap='round'/></svg>") 3 3,pointer;
   --curCast:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='28' height='28'><path d='M14 2.6 L16.6 11.4 L25.4 14 L16.6 16.6 L14 25.4 L11.4 16.6 L2.6 14 L11.4 11.4 Z' fill='%23e28fb4' stroke='%238a2f6a' stroke-width='1.3'/><circle cx='14' cy='14' r='2.7' fill='%23f7c8e6'/></svg>") 14 14,pointer;
+  /* #173 - the same three hands, dimmed, with the refusal drawn over them.
+     The ⊘ is doubled (a dark stroke under a red one) for the same reason every
+     glyph on the board is: this rides over ground that runs from near-black
+     marsh to pale sand, and a single red line disappears on half of it. */
+  --curStrikeNo:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='28' height='28'><g opacity='.45'><path d='M3 3 L17 17' stroke='%23151b1c' stroke-width='5.4' stroke-linecap='round'/><path d='M3 3 L17 17' stroke='%23c9c6bb' stroke-width='3.2' stroke-linecap='round'/><path d='M13.4 20.6 L20.6 13.4' stroke='%23a38652' stroke-width='3.2' stroke-linecap='round'/></g><circle cx='17.5' cy='17.5' r='8.2' fill='none' stroke='%23151b1c' stroke-width='4.6'/><path d='M11.7 23.3 L23.3 11.7' stroke='%23151b1c' stroke-width='4.6' stroke-linecap='round'/><circle cx='17.5' cy='17.5' r='8.2' fill='none' stroke='%23c15d55' stroke-width='2.4'/><path d='M11.7 23.3 L23.3 11.7' stroke='%23c15d55' stroke-width='2.4' stroke-linecap='round'/></svg>") 3 3,pointer;
+  --curShotNo:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='28' height='28'><g opacity='.45'><path d='M6 6 L18 18' stroke='%23151b1c' stroke-width='4.6' stroke-linecap='round'/><path d='M6 6 L18 18' stroke='%235a4326' stroke-width='2.4' stroke-linecap='round'/><path d='M3 3 L12.5 5.8 L5.8 12.5 Z' fill='%23c9c6bb' stroke='%23151b1c' stroke-width='1'/></g><circle cx='17.5' cy='17.5' r='8.2' fill='none' stroke='%23151b1c' stroke-width='4.6'/><path d='M11.7 23.3 L23.3 11.7' stroke='%23151b1c' stroke-width='4.6' stroke-linecap='round'/><circle cx='17.5' cy='17.5' r='8.2' fill='none' stroke='%23c15d55' stroke-width='2.4'/><path d='M11.7 23.3 L23.3 11.7' stroke='%23c15d55' stroke-width='2.4' stroke-linecap='round'/></svg>") 3 3,pointer;
+  --curCastNo:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='30' height='30'><g opacity='.45'><path d='M12 2.6 L14.6 11.4 L23.4 14 L14.6 16.6 L12 25.4 L9.4 16.6 L .6 14 L9.4 11.4 Z' fill='%23e28fb4' stroke='%238a2f6a' stroke-width='1.3'/></g><circle cx='20' cy='20' r='8.2' fill='none' stroke='%23151b1c' stroke-width='4.6'/><path d='M14.2 25.8 L25.8 14.2' stroke='%23151b1c' stroke-width='4.6' stroke-linecap='round'/><circle cx='20' cy='20' r='8.2' fill='none' stroke='%23c15d55' stroke-width='2.4'/><path d='M14.2 25.8 L25.8 14.2' stroke='%23c15d55' stroke-width='2.4' stroke-linecap='round'/></svg>") 12 14,pointer;
 }
 #bGrid.cMove .hex:not(.blocked){cursor:var(--curWalk)}
 #bGrid.cMove .hex.hfoe:not(.blocked){cursor:var(--curStrike)}
@@ -1279,6 +1309,19 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:var(--f
 #bGrid.cStrike .hex:not(.blocked){cursor:var(--curStrike)}
 #bGrid.cShot .hex:not(.blocked){cursor:var(--curShot)}
 #bGrid.cCast .hex:not(.blocked){cursor:var(--curCast)}
+/* ═══ #173 · AND STRUCK THROUGH WHERE THE PICKED SKILL DOES NOT REACH ══════
+   ⚠ SAME HOTSPOT AS THE HAND THEY REPLACE (3 3, and 14 14 for the working).
+   The cursor swaps the instant the pointer crosses the range boundary, so a
+   hotspot that moved with it would make the pointer JUMP on that line - which
+   reads as the game glitching rather than as the game answering. The art is
+   the same art at half strength with the refusal drawn over it, for the same
+   reason: it still has to say WHICH skill is being refused.
+   ⛔ AFTER the three rules above, never before: these are the same specificity
+   and the later one wins, which is the whole mechanism. Read the `.stbar`
+   z-index note before moving either half. */
+#bGrid.cStrike .hex.hfar:not(.blocked){cursor:var(--curStrikeNo)}
+#bGrid.cShot .hex.hfar:not(.blocked){cursor:var(--curShotNo)}
+#bGrid.cCast .hex.hfar:not(.blocked){cursor:var(--curCastNo)}
 #wMap,#wMap .node,#wMap .elab{cursor:var(--curWalk)}
 /* The glyph used to sit on a flat plate, so 15px and a soft shadow were
    enough. It now sits on a PAINTED OBJECT, so it is smaller (it is a mark,
@@ -1378,6 +1421,43 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:var(--f
    `transform` outright, so a plain inline `scaleX(-1)` would be thrown away
    for the 0.3s a lunge runs and the beast would flap. Every keyframe carries
    the variable instead, so the flip survives the animation. */
+/* ═══ ⛔ #173 · A BODY IS SOMETHING YOU LOOK AT, NOT SOMETHING YOU CLICK ═════
+   (User, 2026-08-17: "Сейчас модельки существ (особенно больших) загораживают
+   возможность захода за спину и все такое. Вижу анимацию удара вместо ножек и
+   обхода. Это прям большая проблема".)
+
+   ⛔ THE SPRITE IS AN ELEMENT AND IT WAS EATING THE HEXES BEHIND IT. `.hin` is
+   33x37 and a body is 46-56px tall and up to 48 wide, so every token overhangs
+   its own tile - upward into the row behind it and sideways into its
+   neighbours. Rows are painted top-to-bottom and overlap by 10px
+   (`.hrow{margin-top:-10px}`), so the FRONT row's DOM comes last and wins the
+   hit test over everything it overlaps. The ogre's picture therefore owned a
+   share of the six hexes around him, and a click meant for the hex BEHIND his
+   shoulder was delivered to the ogre - which is the click that walks you round
+   to his back, and the reason the user gets an attack card where they expected
+   a step.
+
+   ⚑ SO THE PICTURE STOPS TAKING THE POINTER AND NOTHING ELSE CHANGES. The hex
+   is a <button> UNDER the sprite covering exactly its own ground, and `.aimpad`
+   (#171) is clipped to the same hexagon - so a body is still hovered and still
+   clicked, by its own tile, over precisely the area that tile owns. What is
+   given back is the overhang, which never belonged to it.
+
+   ⛔ AND THIS IS #171's OWN ARGUMENT ARRIVING AT THE OTHER HALF OF THE
+   PROBLEM. That entry measured the aimpad stealing 28 sample points from the
+   six neighbours and clipped it to a hexagon to get them back. It never looked
+   at the sprite standing on the pad, which was quietly taking more.
+
+   MEASURED, 2026-08-17, 145 on-screen hexes x 9 probe points, headless at
+   1280x800: `img.usp` took **49** points off hexes that were not its own, and
+   the ogre's own six-hex ring lost **12 of 54**. Both are 0 after this line.
+   ⚠ `.ubars` goes with it for the same reason and it is not a free rider: the
+   bars hang ABOVE the head, which is the row BEHIND - the exact hexes a player
+   walks through to get round somebody. They are a readout with no hover of
+   their own, so they lose nothing. `.stbar`'s badges deliberately keep
+   `pointer-events:auto` because their `title` IS their content; that is a
+   real trade and #163 already argued it. */
+.usp,.ubars{pointer-events:none}
 .usp{position:relative;margin-bottom:7px;image-rendering:pixelated;
   transform:scaleX(var(--flip,1))}
 .usp.routed{opacity:.55;transform:rotate(-8deg) scaleX(var(--flip,1))}
@@ -1462,10 +1542,24 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:var(--f
 #bFx{position:absolute;inset:0;pointer-events:none;z-index:7;overflow:hidden}
 .fx{position:absolute;font-family:var(--display);font-size:var(--fs5);font-weight:700;
     text-shadow:0 1px 3px #000,0 0 6px #000;
-    animation:rise calc(1s * var(--pace)) ease-out forwards;
+    animation:rise calc(1s * var(--pace) * var(--fxp)) ease-out forwards;
     transform:translateX(-50%);white-space:nowrap}
 .fx.small{font-size:var(--fs3);font-family:var(--mono);font-weight:500}
-@keyframes rise{0%{opacity:0;transform:translate(-50%,6px)}15%{opacity:1}70%{opacity:1}
+/* ═══ #173 · THE WORD HOLDS, IT DOES NOT MERELY TRAVEL SLOWER ═════════════
+   (User: "Дольше оставлять надпись после удара".)
+   ⛔ STRETCHING THE OLD KEYFRAME WOULD HAVE MADE IT WORSE, NOT BETTER. It rose
+   26px over its whole length at a constant rate, so doubling the duration
+   doubled how long the number spends DRIFTING - which is the state it is
+   hardest to read in, because the eye has to track it. What the request wants
+   is time spent STILL.
+   ⚑ SO THE CLIMB IS PACKED INTO THE FIRST FIFTH AND THE REST IS A HOVER. It
+   comes up 14px fast, hangs there for two thirds of its life, then fades out
+   over the last 12px. Same total travel, same fade, five times as long spent
+   parked where you can read it. */
+@keyframes rise{0%{opacity:0;transform:translate(-50%,6px)}
+  9%{opacity:1}
+  20%{opacity:1;transform:translate(-50%,-14px)}
+  76%{opacity:1;transform:translate(-50%,-16px)}
   100%{opacity:0;transform:translate(-50%,-26px)}}
 /* ═══ IMPACT — you should be able to see WHO HIT WHOM without reading ═══
    Before this, a blow was a floating number: nothing on the board moved, so
@@ -1478,7 +1572,7 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:var(--f
 /* ⚠ EVERY KEYFRAME BELOW ENDS IN scaleX(var(--flip,1)). See the note on .usp:
    a mirrored body would otherwise snap back to its unmirrored side for the
    length of the animation and snap again when it ended. */
-.usp.lunge{animation:lunge calc(.34s * var(--pace)) cubic-bezier(.3,-0.4,.5,1.5)}
+.usp.lunge{animation:lunge calc(.34s * var(--pace) * var(--hitp)) cubic-bezier(.3,-0.4,.5,1.5)}
 @keyframes lunge{0%{transform:translate(0,0) scaleX(var(--flip,1))}
   38%{transform:translate(calc(var(--dx)*13px),calc(var(--dy)*10px)) scale(1.07) scaleX(var(--flip,1))}
   100%{transform:translate(0,0) scaleX(var(--flip,1))}}
@@ -1504,7 +1598,7 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:var(--f
    on the same element, so the second would silently win outright: whichever
    class landed last would be the only one that played. That is not
    hypothetical - it is exactly how `.stbar`'s z-index failed in #163. */
-.usp.recoil{animation:recoil calc(.44s * var(--pace)) cubic-bezier(.2,.8,.35,1)}
+.usp.recoil{animation:recoil calc(.44s * var(--pace) * var(--hitp)) cubic-bezier(.2,.8,.35,1)}
 @keyframes recoil{
   0%{transform:translate(0,0) scaleX(var(--flip,1))}
   20%{transform:translate(calc(var(--dx)*9px),calc(var(--dy)*8px)) rotate(var(--rz)) scaleX(var(--flip,1))}
@@ -1514,7 +1608,7 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:var(--f
   87%{transform:translate(-.8px,0) scaleX(var(--flip,1))}
   100%{transform:translate(0,0) scaleX(var(--flip,1))}}
 /* the one that got away with it */
-.usp.evade{animation:evade calc(.32s * var(--pace)) ease-out}
+.usp.evade{animation:evade calc(.32s * var(--pace) * var(--hitp)) ease-out}
 @keyframes evade{0%{transform:translate(0,0) scaleX(var(--flip,1))}
   40%{transform:translate(calc(var(--dx)*-8px),calc(var(--dy)*-6px)) rotate(-6deg) scaleX(var(--flip,1));opacity:.75}
   100%{transform:translate(0,0) scaleX(var(--flip,1))}}
@@ -1529,13 +1623,13 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:var(--f
    and a fade: the body did that on purpose. A whiff is 3.5px and a 2.5deg
    lean with no fade: the body flinched at a blade that was never going to
    land. Told apart at a glance, and neither is silent. */
-.usp.sway{animation:sway calc(.30s * var(--pace)) ease-out}
+.usp.sway{animation:sway calc(.30s * var(--pace) * var(--hitp)) ease-out}
 @keyframes sway{0%{transform:translate(0,0) scaleX(var(--flip,1))}
   45%{transform:translate(calc(var(--dx)*-3.5px),calc(var(--dy)*-2.5px)) rotate(-2.5deg) scaleX(var(--flip,1))}
   100%{transform:translate(0,0) scaleX(var(--flip,1))}}
 /* the collision itself: a hard bloom where the two of them met */
 .hitflash{position:absolute;width:30px;height:30px;margin:-15px 0 0 -15px;pointer-events:none;
-  border-radius:50%;animation:hitflash calc(.30s * var(--pace)) ease-out forwards}
+  border-radius:50%;animation:hitflash calc(.30s * var(--pace) * var(--hitp)) ease-out forwards}
 @keyframes hitflash{0%{opacity:0;transform:scale(.35)}
   22%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(1.7)}}
 /* armour turns it: a hard bright ring instead of a soft bloom */
@@ -1544,7 +1638,7 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:var(--f
 .hitflash.miss{border:1px dashed #7d9490;background:none}
 /* SPARKS — a few of them, thrown along the blow */
 .spark{position:absolute;width:2.5px;height:2.5px;pointer-events:none;border-radius:50%;
-  animation:spark calc(.42s * var(--pace)) ease-out forwards}
+  animation:spark calc(.42s * var(--pace) * var(--hitp)) ease-out forwards}
 @keyframes spark{0%{opacity:1;transform:translate(0,0) scale(1)}
   100%{opacity:0;transform:translate(var(--sx),var(--sy)) scale(.3)}}
 /* ═══ #165 · BLOOD, AND THEN BLOOD ON THE FLOOR ══════════════════════════
@@ -1562,9 +1656,11 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:var(--f
    and then FALLS, which is the only reason it reads as liquid rather than as
    more of the same burst. `--gdy` always carries a downward bias, whatever
    direction the swing came from. */
-.gdrop{position:absolute;width:3px;height:3px;margin:-1.5px 0 0 -1.5px;border-radius:50%;
-  pointer-events:none;background:#a81f18;box-shadow:0 0 2px rgba(120,16,12,.7);
-  animation:gdrop calc(.54s * var(--pace)) cubic-bezier(.22,.5,.6,1) forwards}
+.gdrop{position:absolute;width:4px;height:4px;margin:-2px 0 0 -2px;border-radius:50%;
+  pointer-events:none;background:#b8231a;box-shadow:0 0 3px rgba(140,18,14,.8);
+  animation:gdrop calc(.54s * var(--pace) * var(--hitp)) cubic-bezier(.22,.5,.6,1) forwards}
+/* #173 - every fourth one is a gobbet rather than a droplet. See bloodFx. */
+.gdrop.fat{width:6px;height:6px;margin:-3px 0 0 -3px}
 @keyframes gdrop{0%{opacity:1;transform:translate(0,0) scale(1)}
   72%{opacity:.9}
   100%{opacity:0;transform:translate(var(--gdx),var(--gdy)) scale(.5)}}
@@ -1587,12 +1683,23 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:var(--f
    answer "is it visible"; only the picture can, which is why this file's rules
    keep insisting on the capture. Widened, raised off the floor, and started
    at .57 rather than .43 for a single wound. */
-.gore{position:absolute;left:1px;right:1px;bottom:1px;height:16px;pointer-events:none;
+/* ⚠ #173 - WIDER THAN ITS OWN HEX, ON PURPOSE, AND THAT IS WHAT MAKES A POOL
+   READ AS ONE THING. Two neighbouring stained hexes at `left:1px;right:1px`
+   are two separate marks with a seam down the middle; at -3 they overlap by
+   six pixels and the pair reads as one puddle that happens to cover two tiles.
+   The spill in markGore is the FACT; this overhang is what stops the picture
+   of it looking like tiling. It stays under every sprite (see the DOM-order
+   note in render) and it is pointer-events:none, so a wider box costs nothing.
+   ⚠ 16 -> 21 TALL for the same reason the first cut of this was widened at
+   all: at 1:1 on dark ground a thin band is not visible without zooming, and
+   that finding is #165's, arrived at from a captured frame rather than a
+   counter. */
+.gore{position:absolute;left:-3px;right:-3px;bottom:0;height:21px;pointer-events:none;
   opacity:var(--go,.6);
   background:
-    radial-gradient(ellipse 50% 34% at var(--g1,50%) 74%,rgba(124,16,13,.97) 0%,rgba(124,16,13,0) 74%),
-    radial-gradient(ellipse 30% 20% at var(--g2,32%) 90%,rgba(146,24,18,.9) 0%,rgba(146,24,18,0) 76%),
-    radial-gradient(ellipse 22% 15% at var(--g3,70%) 58%,rgba(104,12,10,.85) 0%,rgba(104,12,10,0) 78%)}
+    radial-gradient(ellipse 52% 36% at var(--g1,50%) 74%,rgba(124,16,13,.97) 0%,rgba(124,16,13,0) 74%),
+    radial-gradient(ellipse 34% 24% at var(--g2,32%) 90%,rgba(146,24,18,.92) 0%,rgba(146,24,18,0) 76%),
+    radial-gradient(ellipse 26% 18% at var(--g3,70%) 58%,rgba(104,12,10,.88) 0%,rgba(104,12,10,0) 78%)}
 /* A SHOT IS A THING THAT TRAVELS. An arrow that simply appears as a number
    over the target never taught anybody that the archer needed line of fire. */
 .shot{position:absolute;pointer-events:none;width:11px;height:2px;margin:-1px 0 0 -5px;
@@ -1633,7 +1740,7 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:var(--f
 .gust{position:absolute;width:22px;height:3px;margin:-1.5px 0 0 -11px;pointer-events:none;
   border-radius:2px;transform-origin:50% 50%;
   background:linear-gradient(90deg,rgba(217,189,126,0) 0%,#e8d7a8 78%,rgba(232,215,168,.2) 100%);
-  animation:gustfly calc(.42s * var(--pace)) cubic-bezier(.2,.6,.35,1) forwards}
+  animation:gustfly calc(.42s * var(--pace) * var(--hitp)) cubic-bezier(.2,.6,.35,1) forwards}
 @keyframes gustfly{
   0%{opacity:0;transform:rotate(var(--ang)) translate(0,var(--off,0px)) scaleX(.35)}
   22%{opacity:.95}
@@ -1644,7 +1751,7 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:var(--f
   margin:calc(var(--r,62px) / -2) 0 0 calc(var(--r,62px) / -2);
   border:3px solid transparent;
   border-top-color:var(--ac,#e6edef);border-right-color:var(--ac2,rgba(230,237,239,.4));
-  animation:swarc calc(.46s * var(--pace)) cubic-bezier(.25,.75,.3,1) forwards}
+  animation:swarc calc(.46s * var(--pace) * var(--hitp)) cubic-bezier(.25,.75,.3,1) forwards}
 @keyframes swarc{0%{opacity:0;transform:rotate(var(--a0,-30deg)) scale(.72)}
   18%{opacity:1}
   100%{opacity:0;transform:rotate(calc(var(--a0,-30deg) + var(--spin,330deg))) scale(1.14)}}
@@ -1655,14 +1762,14 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:var(--f
 .aring{position:absolute;border-radius:50%;pointer-events:none;
   width:var(--r);height:var(--r);margin:calc(var(--r) / -2) 0 0 calc(var(--r) / -2);
   border:2px solid var(--rc,#d9bd7e);
-  animation:aring calc(.66s * var(--pace)) cubic-bezier(.12,.7,.35,1) forwards}
+  animation:aring calc(.66s * var(--pace) * var(--hitp)) cubic-bezier(.12,.7,.35,1) forwards}
 @keyframes aring{0%{opacity:0;transform:scale(.16)}
   16%{opacity:.9}100%{opacity:0;transform:scale(1)}}
 /* ── P4 · TETHER — one body has hold of another ─────────────────────────── */
 .tether{position:absolute;height:2px;margin-top:-1px;pointer-events:none;
   transform-origin:0 50%;
   background:linear-gradient(90deg,var(--tc,#e05fa8) 0%,var(--tc,#e05fa8) 62%,rgba(0,0,0,0) 100%);
-  animation:tether calc(.58s * var(--pace)) ease-out forwards}
+  animation:tether calc(.58s * var(--pace) * var(--hitp)) ease-out forwards}
 @keyframes tether{0%{opacity:0;transform:rotate(var(--ang)) scaleX(0)}
   24%{opacity:1;transform:rotate(var(--ang)) scaleX(1.04)}
   34%{transform:rotate(var(--ang)) scaleX(1)}
@@ -1673,7 +1780,7 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:var(--f
 .mote{position:absolute;width:3.5px;height:3.5px;margin:-1.75px 0 0 -1.75px;
   border-radius:50%;pointer-events:none;
   background:var(--mc,#7fae4e);box-shadow:0 0 5px var(--mc,#7fae4e);
-  animation:mote calc(.62s * var(--pace)) ease-in forwards}
+  animation:mote calc(.62s * var(--pace) * var(--hitp)) ease-in forwards}
 @keyframes mote{0%{opacity:0;transform:translate(var(--mx,0px),-18px) scale(.5)}
   22%{opacity:1}
   66%{opacity:1;transform:translate(var(--mx,0px),0) scale(1)}
@@ -1681,7 +1788,7 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:var(--f
 /* ── P6 · PLATE — a guard closes over a body ────────────────────────────── */
 .plate{position:absolute;width:36px;height:36px;margin:-22px 0 0 -18px;pointer-events:none;
   border-radius:50%;border:2px solid var(--pc,#8fd0a8);
-  animation:plate calc(.50s * var(--pace)) cubic-bezier(.2,.85,.3,1) forwards}
+  animation:plate calc(.50s * var(--pace) * var(--hitp)) cubic-bezier(.2,.85,.3,1) forwards}
 @keyframes plate{0%{opacity:0;transform:scale(2.1)}
   42%{opacity:1;transform:scale(1)}72%{opacity:1;transform:scale(1)}
   100%{opacity:0;transform:scale(1)}}
@@ -1689,7 +1796,7 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:var(--f
    ⚠ Ends in scaleX(var(--flip,1)) like every other keyframe on .usp. See
    the note on .usp: a mirrored body would snap to its unmirrored side for
    the length of it and snap again when it ended. */
-.usp.shudder{animation:shudder calc(.44s * var(--pace)) linear}
+.usp.shudder{animation:shudder calc(.44s * var(--pace) * var(--hitp)) linear}
 @keyframes shudder{0%,100%{transform:translate(0,0) scaleX(var(--flip,1))}
   12%{transform:translate(1.7px,-1.1px) scaleX(var(--flip,1))}
   27%{transform:translate(-1.9px,.9px) scaleX(var(--flip,1))}
@@ -1701,7 +1808,7 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:var(--f
    renders with nothing in between, and a body that is simply somewhere else
    next frame reads as a rendering fault rather than as a rule. */
 .ghost{position:absolute;pointer-events:none;image-rendering:pixelated;
-  animation:ghost calc(.46s * var(--pace)) ease-out forwards}
+  animation:ghost calc(.46s * var(--pace) * var(--hitp)) ease-out forwards}
 @keyframes ghost{0%{opacity:.6;transform:scale(1)}
   100%{opacity:0;transform:scale(.82) translateY(-7px)}}
 @media (prefers-reduced-motion:reduce){.fx{animation:none;opacity:1}
@@ -3608,7 +3715,7 @@ a.popt.sendit{display:block;text-decoration:none}
       <div class="lgbody">
       <div class="lg"><span class="sw" style="background:#46615f"></span>2 actions a turn — move + strike, or strike twice</div>
       <div class="lg"><span class="sw" style="background:#2c4749"></span>water — 2 hexes to enter, −10% to hit, and one hex off your stride while you stand in it</div>
-      <div class="lg"><span class="sw" style="background:#7a1f22"></span>engaged - walk away and they swing for half a blow; DISENGAGE is one clean hex for one action</div>
+      <div class="lg"><span class="sw" style="background:#7a1f22"></span>held - somebody is facing this hex, so walking off it costs half a blow. Their back three hexes are free; DISENGAGE is one clean hex for one action</div>
       <div class="lg"><span class="sw" style="background:#c9a227"></span>morale broken — white flag, and they run</div>
       </div>
       </div><!-- /#bLegend -->
@@ -4528,6 +4635,23 @@ let PACE=(function(){
   return (v>0&&v<=4)?v:PACE_NORM;          /* the shipped default: speed ×1 */
 })();
 const paced=ms=>Math.round(ms*PACE);
+/* ═══ #173 · THE IMPACT'S OWN MULTIPLIER, AND IT IS READ OFF THE CSS ═══════
+   `--hitp` in `:root` is the ONE place the number is written; this reads it
+   back, exactly the way `readW()` reads the card's width off the stylesheet
+   rather than keeping a second copy. The literal is a crash guard for a
+   missing property and never the value.
+   ⛔ EVERY `setTimeout` THAT STRIPS AN IMPACT CLASS MUST USE `hitPaced` AND
+   NOT `paced`. They are the tail of a CSS duration that now carries --hitp,
+   and a cleanup that fires early snaps the body back to true mid-animation -
+   which is the same defect #165 named when it moved 340 to 460. If the two
+   ever come apart, the tell is a blow that jumps rather than settles. */
+const HITP=parseFloat(getComputedStyle(document.documentElement)
+  .getPropertyValue('--hitp'))||2.5;
+const hitPaced=ms=>Math.round(ms*PACE*HITP);
+/* and the floating word, which has its own knob for its own reason (--fxp) */
+const FXP=parseFloat(getComputedStyle(document.documentElement)
+  .getPropertyValue('--fxp'))||2.2;
+const fxPaced=ms=>Math.round(ms*PACE*FXP);
 /* ═══ #149 - AUTO RUNS ON A CHAINED setTimeout, AND THE REASON IS WRITTEN
    FIFTEEN THOUSAND LINES BELOW ALREADY ═══════════════════════════════════
    `panTick` carries this note verbatim: *"A CHAINED setTimeout AND NOT
@@ -8617,7 +8741,9 @@ function unitFrom(p){
     note:'One action, and it pays for itself at once: one extra hex of movement '+
       'right now, and every step you take for the rest of THIS turn is clean - no '+
       'parting swings, no zone of control. Disengage first, then move. Your legs '+
-      'need this turn and the next one before they will do it again.'});
+      'need this turn and the next one before they will do it again. '+
+      'Only offered while somebody is facing you: a body you are standing behind '+
+      'cannot stop you walking.'});
   /* a mutation grants a RULE, not a number - see MUTS. The gilled can vanish
      into any water they are standing in or beside, once a fight. */
   u.mut=p.mut||null;
@@ -11180,6 +11306,45 @@ const engagers=(c,r,side)=>{
 };
 const threatsAt=(c,r,side)=>engagers(c,r,side).length;
 const engaged=u=>threatsAt(u.col,u.row,u.side)>0;
+/* ═══ #173 · THE ZONE OF CONTROL IS THE FRONT, AND ONLY THE FRONT ══════════
+   (User, 2026-08-17: "Зону контроля показывать только инфронт (т.к. со спины
+   контрль не работает)".)
+
+   ⛔ THE REQUEST IS ABOUT THE PICTURE AND IT COULD NOT BE ANSWERED THERE. The
+   red edge was already drawing exactly what the rules charged - `threatsAt`,
+   which is adjacency and knows nothing about facing - so painting three hexes
+   while `partingShots` kept swinging from all six would have been a readout
+   printing something the till does not take, which is #102's rule and the one
+   defect this file is least willing to ship. So the RULE moves and the picture
+   follows it, which is the only order that leaves the board honest.
+
+   ⛔ AND IT IS A SECOND FUNCTION, NOT A CHANGE TO `engagers`. That is the whole
+   care in this entry. `engagers` answers "how many bodies have a hand on this
+   one", and it is read by the surrounded bonus in hitBreakdown, the morale
+   situation, the swarm and line counts, the spear wall and both AI brains -
+   none of which are about control, all of which are about being crowded. A
+   body at your back is still crowding you; it simply cannot stop you leaving.
+   Merging the two would be exactly the *one function answering two questions*
+   failure that `walkable`/`passable` and `BLOCKED{}` were split over.
+
+   THE FOUR PLACES THAT ASK ABOUT CONTROL, and they must all agree:
+     · `partingShots`   - the swing itself, which is the rule
+     · the red edge in render() - the picture of it
+     · the UNDO snapshot's `clean` test - it predicts partingShots and would
+       otherwise offer a take-back for a move that costs blood
+     · DISENGAGE's `canUse`/`hideAct` gate - the card exists while it is an
+       answer, and with nobody holding you, walking is already free
+   ⚑ FRONT + BOTH SHOULDERS = 3 of 6, off `arcFrom`, which is the one place
+   sector arithmetic lives (#87's five-copies lesson). A `noArc` body and
+   anything with no `facing` return ARC[0] from there, so the Thing in Armour
+   keeps all six hexes for free and correctly: it has no wrong side. */
+const holdsHex=(e,c,r)=>{
+  const n=arcFrom(c,r,e).n;
+  return n==='FRONT'||n==='SHOULDER';
+};
+const controllers=(c,r,side)=>engagers(c,r,side).filter(e=>holdsHex(e,c,r));
+const heldAt=(c,r,side)=>controllers(c,r,side).length;
+const held=u=>heldAt(u.col,u.row,u.side)>0;
 const has=(u,p)=>u.perks&&u.perks.indexOf(p)>=0;
 /* ═══ #72 - A BRACED SPEAR IS NOT THE SAME THING AS A WORKING ONE ════════
    (User: "but if somebody has already come right up to one hex, the zone of
@@ -12242,14 +12407,12 @@ function strike(a,d,act,mult){
        meaning as in reach - `evade` for a body that got itself out of the way,
        `sway` for one that flinched at a shot that was never on target. */
     else{
-      const sd=uspOf(d),pa=hexPt(a),pdm=hexPt(d);
-      if(sd&&pa&&pdm){
+      const pa=hexPt(a),pdm=hexPt(d);
+      if(pa&&pdm){
         const ddx=pdm.x-pa.x,ddy=pdm.y-pa.y,l=Math.hypot(ddx,ddy)||1;
-        sd.style.setProperty('--dx',(ddx/l).toFixed(3));
-        sd.style.setProperty('--dy',(ddy/l).toFixed(3));
-        const cm=dodged?'evade':'sway';
-        sd.classList.remove('evade','sway');void sd.offsetWidth;sd.classList.add(cm);
-        setTimeout(()=>sd&&sd.classList.remove('evade','sway'),paced(360));
+        /* #173 - through poseFx, so it survives the render() that follows */
+        poseFx(d,dodged?'evade':'sway',(ddx/l).toFixed(3),(ddy/l).toFixed(3),
+               undefined,hitPaced(360));
       }
     }
     /* keyed on the VERDICT now, not on whose side the target was - both names
@@ -12336,16 +12499,12 @@ function strike(a,d,act,mult){
     if(pd){const fl=document.createElement('div');
       fl.className='hitflash '+flavour;
       fl.style.left=pd.x+'px';fl.style.top=pd.y+'px';
-      $('bFx').appendChild(fl);setTimeout(()=>fl.remove(),paced(320));
-      const sd=uspOf(d);
+      $('bFx').appendChild(fl);setTimeout(()=>fl.remove(),hitPaced(320));
       const pa=hexPt(a);
-      if(sd&&pa){const ddx=pd.x-pa.x,ddy=pd.y-pa.y,l=Math.hypot(ddx,ddy)||1;
-        sd.style.setProperty('--dx',(ddx/l).toFixed(3));
-        sd.style.setProperty('--dy',(ddy/l).toFixed(3));
-        sd.style.setProperty('--rz','3deg');
-        sd.classList.remove('recoil');void sd.offsetWidth;sd.classList.add('recoil');
-        /* #165 - 340 to 460 here too: same animation, same new length. */
-        setTimeout(()=>sd&&sd.classList.remove('recoil'),paced(460));}
+      if(pa){const ddx=pd.x-pa.x,ddy=pd.y-pa.y,l=Math.hypot(ddx,ddy)||1;
+        /* #165 - 340 to 460 here too: same animation, same new length.
+           #173 - and through poseFx, so the render() that follows keeps it. */
+        poseFx(d,'recoil',(ddx/l).toFixed(3),(ddy/l).toFixed(3),'3deg',hitPaced(460));}
       /* #165 - an arrow bleeds the same as a blade. The direction is the
          SHOT's line where there is one, so the drops carry on the way the
          arrow was going; a shot with no measurable line (the archer standing
@@ -12387,7 +12546,7 @@ function strike(a,d,act,mult){
       const dpF=hexPt(d),dpA=hexPt(a);
       d.col=spots[0][0];d.row=spots[0][1];
       if(dpF&&dpA){const gx=dpA.x-dpF.x,gy=dpA.y-dpF.y,gl=Math.hypot(gx,gy)||1;
-        setTimeout(()=>gustFx(dpF.x,dpF.y-hexSpan()*0.3,gx/gl,gy/gl,1,'#e0a09a'),paced(160));}
+        setTimeout(()=>gustFx(dpF.x,dpF.y-hexSpan()*0.3,gx/gl,gy/gl,1,'#e0a09a'),hitPaced(160));}
       d.rooted=Math.max(d.rooted||0,1);
       faceToward(d,a.col,a.row);
       fx(d,'DRAGGED','#c15d55');sfx('rout');
@@ -12690,7 +12849,7 @@ function fx(u,txt,col,small){
   el.style.top=(p.y+(small?2:12))+'px';
   /* #81 - matches the `rise` keyframe, which is calc(1s × --pace). These two
      numbers have to move together or the figure is deleted mid-climb. */
-  $('bFx').appendChild(el);setTimeout(()=>el.remove(),paced(1000));
+  $('bFx').appendChild(el);setTimeout(()=>el.remove(),fxPaced(1000));
 }
 /* ═══════════════════════════════════════════════════════════════════════
    IMPACT ANIMATION. Everything here is geometry read off the live DOM, so it
@@ -12709,6 +12868,78 @@ const uspOf=u=>{
   const hx=$('bGrid')&&$('bGrid').querySelector('[data-k="'+K(u.col,u.row)+'"]');
   return hx?hx.querySelector('img.usp'):null;
 };
+/* ═══ #173 · WHY THE BODY NEVER MOVED, AND IT WAS NEVER THE ANIMATION ══════
+   (User, 2026-08-17: "Чтобы при анимации удара персонаж иконка персонажа
+   двигалась в сторону удара (щас это чего-то по прежнему не работает)".)
+
+   ⛔ IT IS THE THIRD REPORT OF THIS AND THE FIRST TWO FIXES WERE BOTH AIMED AT
+   THE WRONG HALF. #87 built the lunge, #165 read the same complaint as "too
+   small" and gave the recoil a second beat and 7px to 9px. Neither was ever
+   going to work, because the animation was being DELETED two statements after
+   it started:
+
+       else strike(u,tgt,a);            // animClash adds .lunge to the sprite
+       B.sel=null;B.reach=null;render(); // render does g.innerHTML=''
+
+   render() destroys all 195 hexes and builds new <img> elements. The class is
+   on a node that is no longer in the document by the time the first frame
+   would have painted, so the player has never once seen a melee lunge or a
+   recoil on their own turn. Everything in #bFx survived - the flash, the
+   sparks, the blood, the floating number - because #bFx is NOT rebuilt, which
+   is precisely why the burst looked complete and the one missing part read as
+   "too quiet" rather than as "absent".
+
+   ⚑ SO THE POSE MOVES ONTO `B`, WHICH IS THE PATTERN THIS FILE ALREADY USES
+   FOR EVERY OTHER FACT THAT HAS TO OUTLIVE A REBUILD: B.gore, B.peek, B.spot
+   and B.walk are all parked on the battle and re-applied at the foot of
+   render(). A class on a DOM node was the only piece of board state that was
+   not, and it was the only piece that kept going missing.
+
+   ⚠ AND IT RESUMES RATHER THAN RESTARTS. A negative `animation-delay` starts a
+   CSS animation part-way through, so a render landing 200ms into a 1.9s recoil
+   picks it up at 200ms instead of playing the first frame again. Without this
+   a body caught by three renders would stutter at the top of the keyframe
+   three times, which is a worse artefact than the one being fixed. */
+const POSES=['lunge','recoil','evade','sway','shudder'];
+let poseSeq=0;
+function applyPose(s,p){
+  if(!s||!p)return;
+  const gone=Date.now()-p.t0;
+  if(gone>=p.ms)return;
+  if(p.dx!==undefined)s.style.setProperty('--dx',p.dx);
+  if(p.dy!==undefined)s.style.setProperty('--dy',p.dy);
+  if(p.rz!==undefined)s.style.setProperty('--rz',p.rz);
+  /* the reflow poke is #87's own restart trick and it is only needed when the
+     class is ALREADY there. A sprite render() has just built has no animation
+     to restart, and forcing a layout per hex inside that loop is a real cost
+     on a 195-hex board - see the #94 hover note about what that cost buys. */
+  if(s.classList.contains(p.cls)){s.classList.remove(p.cls);void s.offsetWidth;}
+  s.style.animationDelay=(-gone)+'ms';
+  s.classList.add(p.cls);
+}
+function clearPose(s){
+  if(!s)return;
+  POSES.forEach(c=>s.classList.remove(c));
+  s.style.animationDelay='';
+}
+/* the one door. Everything that used to write a class onto `uspOf(x)` by hand
+   comes through here, so there is one place that knows a pose has to be
+   remembered and one place that takes it off again. */
+function poseFx(u,cls,dx,dy,rz,ms){
+  if(!B||!u)return;
+  const s=uspOf(u);
+  const p={cls:cls,dx:dx,dy:dy,rz:rz,t0:Date.now(),ms:ms,seq:++poseSeq};
+  B.anim=B.anim||{};
+  if(s)clearPose(s);
+  B.anim[u.id]=p;
+  applyPose(s,p);
+  setTimeout(()=>{
+    /* ⚠ compare the PARKED pose, not the unit: a second blow inside the first
+       one's tail has already replaced it, and this timer must not strip the
+       newer one. Same shape as B.peekStamp. */
+    if(B&&B.anim&&B.anim[u.id]===p){delete B.anim[u.id];clearPose(uspOf(u));}
+  },ms);
+}
 /* attacker leans into it, defender is knocked along the same line.
    #84 - `evaded` only means anything on a miss: it says the defender is the
    reason it missed, and so the only one whose body moves. */
@@ -12725,55 +12956,91 @@ const uspOf=u=>{
    sites. A turned blow has its own white ring and its own brighter sparks
    already; a stain under a man whose harness held would be the floor claiming
    a wound he did not take, which is a readout printing the wrong unit. */
+/* ═══ #173 · MORE OF IT, BOTH HALVES ══════════════════════════════════════
+   (User, 2026-08-17: "Больше крови - и при удари и на земле. В идеале хочу
+   лужици, котоыре если несколько хитов поддтекают на след клетки".)
+
+   ⚠ THE COUNT AND THE SIZE ARE TWO DIFFERENT KNOBS AND ONLY ONE OF THEM WAS
+   TURNED. 3/5/7 drops at 3px read as a puff at this hex size; 6/9/13 at 4px
+   with a longer throw reads as a wound. Both go up, because doubling only the
+   count on the old size gives a denser puff rather than more blood. */
 function bloodFx(d,cx,cy,dx,dy,hpD){
   const fx=$('bFx');if(!fx)return;
-  const n=hpD>=18?7:hpD>=9?5:3;
+  const n=hpD>=18?13:hpD>=9?9:6;
   for(let i=0;i<n;i++){
     const dr=document.createElement('div');dr.className='gdrop';
+    /* a few of them are the big ones off the blade. Not all: an even spray is
+       a texture, and a spray with two fat drops in it is a spatter. */
+    if(i%4===0)dr.classList.add('fat');
     dr.style.left=cx+'px';dr.style.top=cy+'px';
     const ang=Math.atan2(dy,dx)+(Math.random()-0.5)*2.4;
-    const dist=7+Math.random()*13;
+    const dist=9+Math.random()*19;
     dr.style.setProperty('--gdx',(Math.cos(ang)*dist).toFixed(1)+'px');
     /* ⚑ THE FALL IS WHAT MAKES IT LIQUID. Whatever sideways throw the swing
-       gave it, every drop ends lower than it started: 6-16px at this hex size
+       gave it, every drop ends lower than it started: 8-22px at this hex size
        is about a boot's height. Take this bias out and they are sparks. */
-    dr.style.setProperty('--gdy',(Math.sin(ang)*dist*.5+6+Math.random()*10).toFixed(1)+'px');
-    fx.appendChild(dr);setTimeout(()=>dr.remove(),paced(560));
+    dr.style.setProperty('--gdy',(Math.sin(ang)*dist*.5+8+Math.random()*14).toFixed(1)+'px');
+    fx.appendChild(dr);setTimeout(()=>dr.remove(),hitPaced(560));
   }
   markGore(d,hpD);
 }
 /* the floor's own memory. ⚠ KEYED BY HEX AND NOT BY BODY: the blood stays
    where it fell, and the man who was bleeding walks out of it. */
+/* ⚠ THE BLOB POSITIONS ARE ROLLED ONCE AND STORED, for exactly the reason
+   `rot` is (see its note): render() runs many times a round, and a stain that
+   reshuffled itself on every redraw would be the one thing on this board that
+   twitches while nothing is happening. */
+function addGore(k,add){
+  const g=B.gore[k];
+  if(g){g.n=Math.min(GORE_CAP,g.n+add);return g;}
+  return (B.gore[k]={n:Math.min(GORE_CAP,add),
+    a:(14+Math.random()*72)|0,b:(10+Math.random()*40)|0,c:(52+Math.random()*40)|0});
+}
+/* ═══ #173 · AND WHEN THE HEX HAS TAKEN ENOUGH, IT RUNS OUT OF IT ══════════
+   ⛔ THE SPILL IS A SEPARATE HEX AND NOT A BIGGER STAIN, which is the whole of
+   what the user asked for: a pool that "поддтекают на след клетки". Deepening
+   the same hex is what the old cap of 4 already did, and a fourth blow on one
+   tile was indistinguishable from a third. Ground that has taken three now
+   REACHES, and after a long scrum the board shows a shape rather than a set of
+   dots - which is the same argument the stain itself was built on.
+   ⚑ ONE HEX PER BLOW, NEVER RECURSIVE. A flood fill would paint the quarter of
+   the board a boss fight happens on inside two rounds. It creeps: each blow
+   past the third pushes exactly one hex further, so the pool grows at the
+   speed of the fighting rather than at the speed of the algorithm.
+   ⚠ AND IT RUNS DOWNHILL. Rows paint top-to-bottom and the camera looks down
+   the board, so a higher row number is nearer the viewer - blood picks one of
+   the two lower neighbours where it can, and only falls back to any neighbour
+   on the bottom rank. Blood that spread uphill would read as splashing. */
+const GORE_CAP=6, GORE_SPILL=3;
 function markGore(d,hpD){
   if(!B||!d||d.col===undefined)return;
   B.gore=B.gore||{};
-  const k=K(d.col,d.row),g=B.gore[k];
-  if(g){g.n=Math.min(4,g.n+(hpD>=12?2:1));return;}
-  B.gore[k]={n:hpD>=12?2:1,
-    /* ⚠ THE THREE BLOB POSITIONS ARE ROLLED ONCE AND STORED, for exactly the
-       reason `rot` is (see its note): render() runs many times a round, and a
-       stain that reshuffled itself on every redraw would be the one thing on
-       this board that twitches while nothing is happening. */
-    a:(14+Math.random()*72)|0,b:(10+Math.random()*40)|0,c:(52+Math.random()*40)|0};
+  const k=K(d.col,d.row);
+  const g=addGore(k,hpD>=12?2:1);
+  if(g.n<GORE_SPILL)return;
+  const here=nbrs(d.col,d.row).filter(p=>B.terr[K(p[0],p[1])]!==undefined&&
+    !BLOCKED[B.terr[K(p[0],p[1])]]);
+  const down=here.filter(p=>p[1]>d.row);
+  const pool=down.length?down:here;
+  if(!pool.length)return;
+  const t=pool[(Math.random()*pool.length)|0];
+  addGore(K(t[0],t[1]),1);
 }
 function animClash(a,d,kind,evaded,noLunge,hpD){
   const pa=hexPt(a),pd=hexPt(d);
   if(!pa||!pd)return;
   let dx=pd.x-pa.x, dy=pd.y-pa.y;
   const len=Math.hypot(dx,dy)||1;dx/=len;dy/=len;
-  const sa=uspOf(a),sd=uspOf(d);
   /* #87 - A SWEEP IS ONE SWING AND MUST BE ONE PICTURE. It resolves as one
      strike() per neighbour, so the attacker used to lunge once per body: a
      brute in a ring of four played four sword-swings in four directions
      inside a third of a second, and read as four attacks for two actions.
      The arc from verbFx() is the swing now; the defenders still recoil,
      because each of them really was hit. */
-  if(sa&&!noLunge){
-    sa.style.setProperty('--dx',dx.toFixed(3));
-    sa.style.setProperty('--dy',dy.toFixed(3));
-    sa.classList.remove('lunge');void sa.offsetWidth;sa.classList.add('lunge');
-    setTimeout(()=>sa&&sa.classList.remove('lunge'),paced(360));
-  }
+  /* ⛔ #173 - AND THIS IS THE LINE THE WHOLE FEATURE WAS LOST ON. It used to
+     write the class straight onto `uspOf(a)`, and the caller destroys that
+     element on the next statement. See the long note above poseFx. */
+  if(!noLunge)poseFx(a,'lunge',dx.toFixed(3),dy.toFixed(3),undefined,hitPaced(360));
   /* #84 - a swing that went wide is the ATTACKER'S event and the defender
      stands there through it. Only a dodge moves the body it was aimed at, so
      the two failures are now told apart on the board and not only in the log. */
@@ -12781,22 +13048,16 @@ function animClash(a,d,kind,evaded,noLunge,hpD){
      note in the CSS: #84's two-failures rule is kept and both of them are now
      drawn, instead of one of them being drawn as nothing happening. */
   const cls=kind!=='miss'?'recoil':evaded?'evade':'sway';
-  if(sd&&cls){
-    sd.style.setProperty('--dx',dx.toFixed(3));
-    sd.style.setProperty('--dy',dy.toFixed(3));
-    sd.style.setProperty('--rz',(dx>0?4:-4)+'deg');
-    sd.classList.remove('recoil','evade','sway');void sd.offsetWidth;sd.classList.add(cls);
-    /* ⚠ 460 AND NOT 340: the recoil grew a second beat in #165 and runs .44s.
-       Stripping the class while the animation is still playing snaps the body
-       back to true mid-rattle, which looks like a dropped frame. */
-    setTimeout(()=>sd&&sd.classList.remove('recoil','evade','sway'),paced(460));
-  }
+  /* ⚠ 460 AND NOT 340: the recoil grew a second beat in #165 and runs .44s.
+     Stripping the class while the animation is still playing snaps the body
+     back to true mid-rattle, which looks like a dropped frame. */
+  poseFx(d,cls,dx.toFixed(3),dy.toFixed(3),(dx>0?4:-4)+'deg',hitPaced(460));
   /* the collision point: where the lunge actually reaches, not the hex centre */
   const cx=pa.x+dx*len*0.55, cy=pa.y+dy*len*0.55;
   const fl=document.createElement('div');
   fl.className='hitflash '+(kind||'blood');
   fl.style.left=cx+'px';fl.style.top=cy+'px';
-  $('bFx').appendChild(fl);setTimeout(()=>fl.remove(),paced(320));
+  $('bFx').appendChild(fl);setTimeout(()=>fl.remove(),hitPaced(320));
   if(kind!=='miss'){
     const col=kind==='arm'?'#dfe6e8':'#d9564e';
     for(let i=0;i<(kind==='arm'?6:4);i++){
@@ -12807,7 +13068,7 @@ function animClash(a,d,kind,evaded,noLunge,hpD){
       const dist=9+Math.random()*15;
       sp.style.setProperty('--sx',(Math.cos(ang)*dist).toFixed(1)+'px');
       sp.style.setProperty('--sy',(Math.sin(ang)*dist).toFixed(1)+'px');
-      $('bFx').appendChild(sp);setTimeout(()=>sp.remove(),paced(440));
+      $('bFx').appendChild(sp);setTimeout(()=>sp.remove(),hitPaced(440));
     }
     /* #165 - and if it found flesh, it bleeds. See bloodFx: `arm` is the
        harness turning it, and a turned blow leaves nothing on the floor. */
@@ -12872,7 +13133,23 @@ function animShot(a,d,sort){
      INSIDE the reel it is supposed to have caused. The real fix is to hold
      the impact until the shot lands, which is a change to `strike()` and not
      to a multiplier - named as a remainder on #81 rather than smuggled in. */
-  const ms=Math.min(420,140+len*1.5);
+  /* ═══ #173 · SLOWER, AND #81's REMAINDER PAID ITSELF OFF ═════════════════
+     (User, 2026-08-17: "Чуть медленнее анимация летящей стрелы, чтобы ее тоже
+     было лучше видно".)
+
+     ⚑ THE HEADROOM #81 DID NOT HAVE IS WHAT MAKES THIS FREE. The whole reason
+     the flight was pinned at 420 was that the recoil it is supposed to cause
+     ended at 595ms and a slower arrow would have landed after its own effect.
+     The recoil is now .44s × --pace × --hitp, which is 1.9s at the shipped
+     settings - so a 760ms arrow lands roughly two fifths of the way into the
+     reel instead of after it, which is the right way round for the first time.
+     ⚠ IT STILL DOES NOT READ `--pace`, on #81's original argument: it is the
+     one duration whose job is to finish BEFORE something else, so it is set
+     against that thing rather than against the clock. If --hitp is ever taken
+     back below about 1.2, check this pair again - the ceiling here has to stay
+     under the recoil's length or the ordering inverts again.
+     ⚠ AND THE 60ms TAIL ON THE REMOVAL IS PART OF THE PAIR, not slack. */
+  const ms=Math.min(760,250+len*2.7);
   const el=document.createElement('div');
   el.className='shot'+(sort==='arcane'?' arcane':sort==='stone'?' stone':'');
   el.style.left=pa.x+'px';el.style.top=pa.y+'px';
@@ -12883,14 +13160,11 @@ function animShot(a,d,sort){
   el.style.transform='rotate('+deg.toFixed(1)+'deg)';
   el.style.setProperty('--rot',deg.toFixed(1)+'deg');
   $('bFx').appendChild(el);setTimeout(()=>el.remove(),ms+60);
-  const sa=uspOf(a);
-  if(sa){const ux=dx/len,uy=dy/len;
-    sa.style.setProperty('--dx',(-ux*0.5).toFixed(3));
-    sa.style.setProperty('--dy',(-uy*0.5).toFixed(3));
-    sa.classList.remove('lunge');void sa.offsetWidth;sa.classList.add('lunge');
-    /* paced even though the flight above is not: this is the `.lunge`
-       keyframe, and that one IS on the battle clock */
-    setTimeout(()=>sa&&sa.classList.remove('lunge'),paced(360));}
+  /* the archer's own half-step BACK off the string. Paced even though the
+     flight above is not: this is the `.lunge` keyframe, and that one IS on the
+     battle clock. #173 - and parked, like every other pose. */
+  const ux=dx/len,uy=dy/len;
+  poseFx(a,'lunge',(-ux*0.5).toFixed(3),(-uy*0.5).toFixed(3),undefined,hitPaced(360));
   return ms;
 }
 /* ═══════════════════════════════════════════════════════════════════════
@@ -12927,8 +13201,8 @@ function gustFx(x,y,dx,dy,hexes,col){
     g.style.setProperty('--gd',(hexes*span*0.82).toFixed(0)+'px');
     g.style.setProperty('--off',((i-1)*6)+'px');
     if(col)g.style.background='linear-gradient(90deg,rgba(0,0,0,0) 0%,'+col+' 78%,rgba(0,0,0,0) 100%)';
-    g.style.animationDelay=paced(i*60)+'ms';
-    setTimeout(()=>g.remove(),paced(620));}
+    g.style.animationDelay=hitPaced(i*60)+'ms';
+    setTimeout(()=>g.remove(),hitPaced(620));}
 }
 /* P2 — one crescent all the way round, instead of one lunge per neighbour */
 function arcFx(u,px,col,spin){
@@ -12938,7 +13212,7 @@ function arcFx(u,px,col,spin){
   a.style.setProperty('--a0',(-30+Math.random()*30).toFixed(0)+'deg');
   if(spin)a.style.setProperty('--spin',spin+'deg');
   if(col){a.style.setProperty('--ac',col);a.style.setProperty('--ac2',col+'66');}
-  setTimeout(()=>a.remove(),paced(640));
+  setTimeout(()=>a.remove(),hitPaced(640));
 }
 /* P3 — expands to the act's REAL radius in hexes. Two of them: one is a
    bubble, two is a shout. */
@@ -12949,8 +13223,8 @@ function ringFx(u,hexes,col,dy){
     const a=fxEl('aring',p.x,p.y+(dy||0));if(!a)break;
     a.style.setProperty('--r',(hexes*span*2*(i?0.72:1)).toFixed(0)+'px');
     a.style.setProperty('--rc',col);
-    a.style.animationDelay=paced(i*110)+'ms';
-    setTimeout(()=>a.remove(),paced(900));}
+    a.style.animationDelay=hitPaced(i*110)+'ms';
+    setTimeout(()=>a.remove(),hitPaced(900));}
 }
 /* P4 — snaps taut from one body to another and holds a beat */
 function tetherFx(a,d,col){
@@ -12961,7 +13235,7 @@ function tetherFx(a,d,col){
   t.style.width=len.toFixed(0)+'px';
   t.style.setProperty('--ang',(Math.atan2(dy,dx)*180/Math.PI).toFixed(1)+'deg');
   t.style.setProperty('--tc',col);
-  setTimeout(()=>t.remove(),paced(820));
+  setTimeout(()=>t.remove(),hitPaced(820));
 }
 /* P5 — a few drops that fall onto the body and settle */
 function moteFx(d,n,col){
@@ -12970,21 +13244,19 @@ function moteFx(d,n,col){
     const m=fxEl('mote',p.x,p.y-hexSpan()*0.15);if(!m)break;
     m.style.setProperty('--mx',((Math.random()-0.5)*17).toFixed(1)+'px');
     m.style.setProperty('--mc',col);
-    m.style.animationDelay=paced(i*70)+'ms';
-    setTimeout(()=>m.remove(),paced(900));}
+    m.style.animationDelay=hitPaced(i*70)+'ms';
+    setTimeout(()=>m.remove(),hitPaced(900));}
 }
 /* P6 — the opposite motion to the ring, and that is the whole point of it */
 function plateFx(d,col){
   const p=hexPt(d);if(!p)return;
   const e=fxEl('plate',p.x,p.y);if(!e)return;
   e.style.setProperty('--pc',col);
-  setTimeout(()=>e.remove(),paced(700));
+  setTimeout(()=>e.remove(),hitPaced(700));
 }
 /* P7 — it reached you where you stand. No displacement, ever. */
 function shudderFx(d){
-  const s=uspOf(d);if(!s)return;
-  s.classList.remove('shudder');void s.offsetWidth;s.classList.add('shudder');
-  setTimeout(()=>s&&s.classList.remove('shudder'),paced(470));
+  poseFx(d,'shudder',undefined,undefined,undefined,hitPaced(470));
 }
 /* P8 — a clone of the sprite left at the hex the body left. Called BEFORE
    the coordinates are written, because it needs the hex they are leaving. */
@@ -12996,7 +13268,7 @@ function ghostFx(u){
     'margin:'+(-Math.round(hexSpan()*0.62))+'px 0 0 '+(-Math.round(s.width/2||13))+'px;'+
     'transform-origin:50% 80%';
   const L=fxLayer();if(!L)return;
-  L.appendChild(g);setTimeout(()=>g.remove(),paced(640));
+  L.appendChild(g);setTimeout(()=>g.remove(),hitPaced(640));
 }
 /* ═══ THE FIRST DOOR — every act that is paid for comes through spend() ═══
    Actor-centred shapes only: they need nobody's target, so both AI brains,
@@ -13729,7 +14001,9 @@ function canUse(u,a){
      AI brains, AUTO, the hotkeys and the click already ask, so the refusal
      is inherited rather than copied - and #94's card filter can then be a
      pure question about what is usable, with nothing to keep in step. */
-  if(a.k==='dis'&&!engaged(u))return false;
+  /* #173 - held, not merely engaged: with nobody's front on you, walking is
+     already free and the card would be an answer to nothing. */
+  if(a.k==='dis'&&!held(u))return false;
   /* transfixed: you can swing, you can cast, you cannot make your feet work */
   if((a.move||a.k==='dis')&&u.rooted>0)return false;
   /* ONE real spell a turn (the mage gets a second, at half). WILL-KICK is a
@@ -13768,7 +14042,7 @@ function canUse(u,a){
    somebody takes hold of you, which is itself the lesson.
    ⛔ ONE MEMBER, AND KEEP IT THAT WAY. Every act hidden here is an act a
    player cannot discover by looking at the screen. */
-function hideAct(u,a){return a.k==='dis'&&!engaged(u);}
+function hideAct(u,a){return a.k==='dis'&&!held(u);}
 function spend(u,a){
   /* #91 - any paid act closes the undo window. spend() is the one door every
      paid act passes through (#87's lesson), so this is the ONE line that
@@ -13911,7 +14185,7 @@ function fearBurst(src,act){
      where they stand, staggered outward from her so it reads as travelling
      rather than as everybody being hit at once. */
   T.slice().sort((x,y)=>udist(src,x)-udist(src,y))
-    .forEach((t,i)=>setTimeout(()=>shudderFx(t),paced(110+i*55)));
+    .forEach((t,i)=>setTimeout(()=>shudderFx(t),hitPaced(110+i*55)));
   T.forEach(t=>{
     const pct=t.morale/(t.moraleMax||1);
     /* Steady people usually hold — but never certainly, because a boss whose
@@ -13958,7 +14232,12 @@ function fearBurst(src,act){
    is the one line. */
 function partingShots(u,skip){
   if(u.safeMove||has(u,'footwork'))return;
-  engagers(u.col,u.row,u.side).forEach(e=>{
+  /* ⛔ #173 - `controllers`, NOT `engagers`. The zone of control is the front
+     arc now; a body you walked round is still ON you (and still costs you the
+     surrounded penalty) but it cannot swing at you for leaving. This is the
+     line the red edge on the board is a picture of - change one, change both,
+     and see the list in the note on `controllers`. */
+  controllers(u.col,u.row,u.side).forEach(e=>{
     const atk=e.acts.find(a=>a.reach);
     if(!atk||u.dead||u.downed||e===skip||e.usedParting)return;
     e.usedParting=true;
@@ -14047,7 +14326,7 @@ function selectAct(i){
        only travels, against an order that travels and then guards. */
     alive().filter(x=>x.side===u.side&&hdist([x.col,x.row],[u.col,u.row])<=2)
       .forEach((x,i)=>{x.rallyBuff=10;fx(x,'+10 dodge','#8ca35a',true);
-        setTimeout(()=>plateFx(x,'#8ca35a'),paced(130+i*70));});
+        setTimeout(()=>plateFx(x,'#8ca35a'),hitPaced(130+i*70));});
     say('Shields up, feet planted. Nobody moves and nobody dies.');
     B.sel=null;render();autoEnd(u);return;}
   if(a.k==='roar'){spend(u,a);
@@ -14056,7 +14335,7 @@ function selectAct(i){
        told the player a hex had changed hands when none had. */
     alive().filter(x=>x.side!==u.side&&hdist([x.col,x.row],[u.col,u.row])<=2)
       .forEach((x,i)=>{mor(x,-28,'the ogre is very loud');
-        setTimeout(()=>shudderFx(x),paced(120+i*45));});
+        setTimeout(()=>shudderFx(x),hitPaced(120+i*45));});
     say(u.name+' roars. Somewhere a rat reconsiders its career.');
     B.sel=null;render();autoEnd(u);return;}
   B.sel=a;render();
@@ -14361,7 +14640,7 @@ function clickHex(c,r){
       mor(x,12,'');fx(x,'+18 armour','#96a1a5',true);
       /* #87 — a plate on every body it reached, staggered so the oath spreads
          through the line instead of arriving everywhere at once */
-      setTimeout(((y,i)=>()=>plateFx(y,'#8fd0a8'))(x,n),paced(n*90));
+      setTimeout(((y,i)=>()=>plateFx(y,'#8fd0a8'))(x,n),hitPaced(n*90));
       n++;});
     say(u.name+' speaks the iron-oath. '+n+' of yours stand a little harder.');
     B.sel=null;B.reach=null;render();autoEnd(u);
@@ -14421,7 +14700,7 @@ function clickHex(c,r){
       /* #87 — taken hold of, then closed on. The tether says who has them,
          the plate says they are not going anywhere. */
       tetherFx(u,tgt,'#e05fa8');
-      setTimeout(()=>plateFx(tgt,'#e05fa8'),paced(200));
+      setTimeout(()=>plateFx(tgt,'#e05fa8'),hitPaced(200));
       fx(tgt,'HELD','#e05fa8');sfx('grasp');
       say(u.name+'\'s hand takes hold of '+tgt.name+' from two hexes away and closes. '+
         'It is not going anywhere until it tears itself loose.');
@@ -14461,7 +14740,7 @@ function clickHex(c,r){
          Steel motes rather than green ones: the same primitive, and the
          colour is the only thing saying which of the two it was. */
       tetherFx(u,tgt,'#b6c4c6');
-      setTimeout(()=>moteFx(tgt,5,'#cdd6d8'),paced(220));
+      setTimeout(()=>moteFx(tgt,5,'#cdd6d8'),hitPaced(220));
       fx(tgt,'−'+Math.round(off)+' armour','#96a1a5');
       mor(tgt,-14,'its harness came apart');
       say(u.name+' unpicks '+tgt.name+'’s harness — '+Math.round(off)+' armour gone.');
@@ -14511,8 +14790,10 @@ function clickHex(c,r){
        the way out. The snapshot is everything the move branch writes.
        spend() clears B.undo on every OTHER paid act, so the offer dies the
        moment anything else is done; nextTurn clears it at the handover. */
+    /* ⚠ #173 - this MIRRORS partingShots and has to move with it, or UNDO is
+       offered on a step that drew blood. `controllers`, same as there. */
     const clean=u.safeMove||has(u,'footwork')||
-      !engagers(u.col,u.row,u.side).some(e=>!e.usedParting&&e.acts.some(x=>x.reach));
+      !controllers(u.col,u.row,u.side).some(e=>!e.usedParting&&e.acts.some(x=>x.reach));
     const snap={id:u.id,col:u.col,row:u.row,facing:u.facing,actions:u.actions,
       usedMove:u.used[a.k]||0,movesUsed:u.movesUsed||0,moved:!!u.moved};
     spend(u,a);u.moved=true;u.movesUsed=(u.movesUsed||0)+1;partingShots(u);
@@ -14729,7 +15010,25 @@ const STATUS={
      slices the rest, and being surrounded outranks being poisoned. (Measured
      occupancy is 0 statuses on 72.7% of targets and never more than 2, so the
      cap does not bite today - this is so it still holds the day it does.) */
-  surrounded:{n:'Surrounded',g:'⊛',col:'#e2604f',count:surroundOn,d:surroundNote,bare:true},
+  /* ═══ #173 · THE COUNT COMES OFF THE GLYPH AND GOES INTO THE NOTE ═════════
+     (User, 2026-08-17: "Когда статус окружения внизу иконки - не писать
+     кол-во - писать его токо в поясненнии".)
+
+     ⚑ `tally` REPLACES #157's `bare` AND DOES BOTH HALVES OF ONE JOB, which is
+     what makes it one flag rather than two. #157 hid the number in the TOOLTIP
+     because three copies of it were on screen at once; #169 then moved every
+     stack count in FRONT of its glyph, which put a fourth back on the badge
+     itself. `tally` says: this status's number is a MULTIPLE, not a clock, so
+     it stays off the mark and is written in the note as ×n.
+     ⛔ AND IT IS ×3 AND NEVER (3). Every other status that shows a number in
+     its note is a countdown, so a bracketed 3 on this row reads as three turns
+     left - a readout printing the wrong unit, which is #102's rule and the
+     exact confusion #157 was trying to stop when it hid the figure entirely.
+     ⚠ The badge is a 10px mark below the feet and the note is a hover; putting
+     the one number that IS worth reading where you have to hover for it is the
+     trade the user asked for, and the ring of bodies on the board says the
+     same thing without being asked. */
+  surrounded:{n:'Surrounded',g:'⊛',col:'#e2604f',count:surroundOn,d:surroundNote,tally:true},
   /* #108 - the brawl's one status. A flag for the fight's whole length, so
      it is the `u[k]===true` shape rather than a countdown. */
   drunk:{n:'Drunk',g:'🍺',col:'#c9903a',
@@ -14818,7 +15117,9 @@ function statusesOn(u){
            count comes first and the thing it counts follows it.
            ⚠ ONLY EVER SHOWN FOR n>1, which is unchanged. A "1" in front of a
            mark would be furniture on the common case. */
-        g:S.count&&n>1?n+S.g:S.g}));});
+        /* #173 - `tally` keeps the number OFF the mark: it is a multiple, and
+           the note writes it as x n. See the STATUS.surrounded entry. */
+        g:(S.count&&n>1&&!S.tally)?n+S.g:S.g}));});
   aurasOn(u).forEach(a=>out.push(a));
   return out;
 }
@@ -16925,17 +17226,38 @@ function terrainCheck(terr,units){
    somebody left behind.
    ═══════════════════════════════════════════════════════════════════════ */
 /* must track the .hex CSS above: 37px wide + 1px gap, rows overlap by 10 */
-/* ⚠ #105 point 2 - HEXOFF IS 27 AND NOT 19, and that is measured off the
-   live board rather than derived from the pitch. render() writes the odd
-   rows' indent as an inline `margin-left:27px`; a half-pitch 19 is what the
-   geometry SAYS it should be and is not what the DOM does, so the painter
-   was placing every odd row's ground eight pixels to the left of the tiles
-   it belongs to. Same class of drift as the ten pixels the canvas offset
-   above fixes: two numbers describing one board, kept in two places.
-   ⚠ The +19/+21 are the half-hex, and they stay in CANVAS coordinates -
+/* ═══ ⛔ #173 · HEXOFF IS 19, AND #105 FIXED THE WRONG END OF THIS ═════════
+   (User, 2026-08-17: "somehow hexes get broken and scattered across the field,
+   can you please fix them? So they stick together better".)
+
+   #105 point 2 found this exact discrepancy and wrote, correctly: *"a
+   half-pitch 19 is what the geometry SAYS it should be and is not what the DOM
+   does"*. It then made the PAINTER follow the DOM. That kept the ground under
+   the tiles, and it left the tiles themselves wrong - which is what the user
+   is now looking at.
+
+   ⚑ THE ARITHMETIC, BECAUSE THE EYE CANNOT ARGUE WITH IT. `.hex` is 37 wide
+   with `gap:1px`, so the column pitch is 38 and a hexagon's own half-width is
+   18.5. Two even-row hexes therefore centre on x=18.5 and x=56.5, and the
+   valley between them is at 37.5. An odd row nests when its first hex CENTRES
+   on that valley, so its left edge belongs at 37.5 − 18.5 = **19**. At 27 every
+   odd row sat eight pixels to the right of its own notch: the points did not
+   land in the valleys, so the rows read as two grids laid over each other
+   rather than as one lattice. Vertically it was always right (42 − 10 = 32,
+   and 0.75 × 42 = 31.5), which is why this looked like scatter rather than
+   like a shear - the board came apart in one axis only.
+
+   ⚠ THE BOARD IS 8px NARROWER NOW (widest row 19+15×38−1 = 588, was 596). The
+   canvas is 600 and camApply centres on the measured element, so both still
+   fit; if the column count ever grows, check this pair before the canvas.
+   ⚠ The +18.5/+21 are the half-hex, and they stay in CANVAS coordinates -
    #bTerrain is pinned at top:-10px, so canvas y21 IS board y11, which is
-   where row 0 actually centres. Move one and you must move the other. */
-const HEXW=38,HEXH=32,HEXOFF=27;
+   where row 0 actually centres. Move one and you must move the other.
+   ⛔ AND THE TWO NUMBERS ARE STILL TWO NUMBERS. HEXOFF here and the inline
+   `margin-left` render() writes are one board described in two places, which
+   is what let them disagree for two hundred entries. render() reads HEXOFF
+   now, so there is one. */
+const HEXW=38,HEXH=32,HEXOFF=19;
 const hexCentre=(c,r)=>({x:c*HEXW+(r&1?HEXOFF:0)+18.5, y:r*HEXH+21});
 
 /* ═══════════════════════════════════════════════════════════════════════
@@ -18196,7 +18518,8 @@ function render(){
        placeRead measures it through relPt, so the card lands beside the
        HEAD - the rail is only 56px wide, and it clamps itself inside the
        field from there. */
-    d.onmouseenter=e=>{spotOn(o);armRead(ev=>readout(o,ev),e);};
+    /* #173 - the tint at once, the card on the dwell. See peekNow. */
+    d.onmouseenter=e=>{spotOn(o);peekNow(o);armRead(ev=>readout(o,ev),e);};
     d.onmouseleave=()=>{spotOff();hideRead();};
     top.appendChild(d);shown++;}
   /* ⚠ THE CARD GOES DOWN BEFORE THE BOARD IT IS ABOUT IS DELETED. The line
@@ -18282,7 +18605,11 @@ function render(){
   clearLosRay();          /* a ray from the last board must not outlive it */
   for(let r=0;r<ROWS;r++){
     const row=document.createElement('div');
-    row.className='hrow';row.style.marginLeft=(r&1?27:0)+'px';
+    /* ⛔ #173 - HEXOFF, NEVER A LITERAL. This line and `hexCentre` describe the
+       same board, and for two hundred entries they described it differently:
+       27 here, 27 copied into the painter to match, and 19 in the geometry that
+       both of them were supposed to be drawing. Read the long note on HEXOFF. */
+    row.className='hrow';row.style.marginLeft=(r&1?HEXOFF:0)+'px';
     for(let c=0;c<COLS;c++){
       const t=B.terr[K(c,r)],occRaw=at(c,r),tailHere=isTail(c,r);
       const occ=tailHere?null:occRaw;   // the body segment draws itself below
@@ -18350,7 +18677,9 @@ function render(){
          a border, on ground that is otherwise untouched.
          ⚠ AND IT IS STILL ONLY DRAWN ON YOUR OWN TURN (`u.side==='you'`): it
          is a price on a decision, so it appears when there is one to make. */
-      if(u&&u.side==='you'&&threatsAt(c,r,'you')>0)edge='rgba(150,40,45,.44)';
+      /* #173 - `heldAt` and not `threatsAt`: the front arc only, which is what
+         partingShots now charges for. The two are one fact and one picture. */
+      if(u&&u.side==='you'&&heldAt(c,r,'you')>0)edge='rgba(150,40,45,.44)';
       /* #46 — a body this act cannot move is NOT offered. The hex is left
          alone entirely rather than drawn live-and-then-refused, because a
          control that looks live and does nothing is worse than one that is
@@ -18424,6 +18753,26 @@ function render(){
            #155 - and an ARROW where that click looses one instead */
         (occ&&occ.side==='foe'&&w0&&offerAtk(uCur,w0,occ)
           ?' hfoe'+(w0.range?' hshot':''):'')+
+        /* ═══ #173 · GROUND THE PICKED SKILL CANNOT REACH ═══════════════════
+           (User, 2026-08-17: "Если я выбираю скил, а противник вне зоны его -
+           то показывать этот скил перечеркнутым", and asked where: "not card -
+           but mouse hower. Change it - when you move out of reach of skill".)
+
+           ⛔ THE CURSOR WAS PROMISING A SWING ANYWHERE ON THE BOARD. With a
+           blow selected, `#bGrid.cStrike .hex` puts the crossed blades on all
+           195 hexes - so a reach-1 kick and a range-5 bow wore the same hand
+           over the same ground, and the only thing that said otherwise was the
+           amber footprint wash, which is easy to lose under a body. The hand
+           is the thing following the eye, so the hand is where the refusal
+           belongs.
+           ⚠ SAME `rngR` THE FOOTPRINT WASH IS DRAWN FROM (see rngA above), so
+           the struck cursor and the lit ground can never disagree about where
+           the skill ends - one number, two readouts.
+           ⚠ DISTANCE ONLY, DELIBERATELY. A hex in range with no line of fire
+           is a different refusal and it already has its own word on the hex
+           (OBSTRUCTED / BLOCKED, see #36); overloading the cursor with it
+           would make one mark mean two things, which is #102's rule. */
+        (rngA&&udist([c,r],u)>rngR?' hfar':'')+
         (wayHere?' inway'+(wayHere==='SCREENED'?' screen':''):'');
       hx.dataset.k=K(c,r);
       /* the hexagon lives on its own layer so the token can stand proud of it */
@@ -18454,10 +18803,14 @@ function render(){
       const go=B.gore&&B.gore[K(c,r)];
       if(go){
         const gd=document.createElement('div');gd.className='gore';
-        /* four blows is the ceiling markGore holds, so this runs .57 to .90:
-           dark enough to read at 1:1 on the darkest ground in the game, never
-           so dark that a heavily fought hex becomes a hole in the board. */
-        gd.style.setProperty('--go',(0.46+go.n*0.11).toFixed(2));
+        /* ⚠ #173 - GORE_CAP is 6 now, so the ramp had to be re-fitted or a
+           deep hex would have computed 1.12 and clipped: every tile past the
+           fourth blow would have looked identical, which is the readout going
+           flat exactly where the fighting was worst. .58 to .94 over six, and
+           the top is still short of 1 for the reason it always was - a hex
+           that goes fully opaque reads as a hole in the board rather than as
+           ground somebody bled on. */
+        gd.style.setProperty('--go',Math.min(0.94,0.52+go.n*0.07).toFixed(2));
         gd.style.setProperty('--g1',go.a+'%');
         gd.style.setProperty('--g2',go.b+'%');
         gd.style.setProperty('--g3',go.c+'%');
@@ -18554,6 +18907,12 @@ function render(){
         img.src=sp.src;img.width=sp.w;img.height=sp.h;img.alt=occ.name;
         /* see spriteFlip: faces the way it is actually turned */
         if(spriteFlip(occ))img.style.setProperty('--flip','-1');
+        /* ⚑ #173 - AND ANY BLOW STILL LANDING ON THIS BODY GOES BACK ON IT.
+           This is the line that makes the lunge and the recoil exist at all:
+           the caller renders one statement after starting them, so without
+           this the animation has been destroyed before its first frame since
+           #87. `applyPose` resumes rather than restarts - see its note. */
+        if(B.anim&&B.anim[occ.id])applyPose(img,B.anim[occ.id]);
         /* ═══ #157 · WHERE THIS BODY'S HEAD ACTUALLY IS ═══════════════════
            `.hin` is 37 tall and lays its child out flex-end with a 7px
            margin under it, so a sprite's bottom is at 30 and its top is at
@@ -18699,13 +19058,17 @@ function render(){
           stl.forEach(st=>{
             const sb=document.createElement('span');sb.className='stbadge';
             sb.textContent=st.g;sb.style.color=st.col;
-            /* #157 - `bare` suppresses the bracketed count for a status whose
-               own sentence already names it. SURROUNDED was printing three:
-               the glyph carried "⊛3", the bracket carried "(3)" and the note
-               opened with "Three of them on it". A count in brackets also
-               reads as a number of TURNS on this row, because every other
-               status that shows one is a clock. */
-            sb.title=st.n+(st.turns&&!st.bare?' ('+st.turns+')':'')+' · '+st.d+
+            /* #157 - SURROUNDED was printing its count THREE times: the glyph
+               carried "⊛3", the bracket carried "(3)" and the note opened with
+               "Three of them on it". #169 took the sentence out and moved the
+               stack count in front of the mark; #173 finished it - see `tally`
+               on STATUS.surrounded, which is what the two branches below are. */
+            /* #173 - a TALLY is written x n and a CLOCK is written (n). One
+               glyph shape for two units was the thing #157 hid the figure to
+               avoid; naming the unit is the better answer and puts the number
+               back where the user asked for it. */
+            sb.title=st.n+(st.tally?(st.turns>1?' ×'+st.turns:'')
+                          :(st.turns?' ('+st.turns+')':''))+' · '+st.d+
               (st.from?' [from '+st.from+']':'');
             bar.appendChild(sb);});
           inn.appendChild(bar);}
@@ -18764,7 +19127,7 @@ function render(){
            says so. `odds` being a number IS "this click swings", so the
            same fact lights the hex, the odds and the card. */
         const fireIdx=(odds!==null&&offA)?u.acts.indexOf(offA):-1;
-        hx.onmouseenter=e=>{armRead(ev=>readout(occ,ev),e);
+        hx.onmouseenter=e=>{peekNow(occ);armRead(ev=>readout(occ,ev),e);
           if(rayTo)drawLosRay(u,rayTo,laneAct||B.sel);
           if(fireIdx>=0){const fc=$('bActions').querySelector('.act[data-a="'+fireIdx+'"]');
             if(fc)fc.classList.add('hoverfire');}};
@@ -18788,7 +19151,7 @@ function render(){
         /* her back is behind her hindquarters, so the ring belongs here and
            not under her head. See backRing() */
         const bk=backRing(tailHere);if(bk)inn.appendChild(bk);
-        hx.onmouseenter=e=>armRead(ev=>readout(tailHere,ev),e);
+        hx.onmouseenter=e=>{peekNow(tailHere);armRead(ev=>readout(tailHere,ev),e);};
         hx.onmouseleave=hideRead;
         hx.onclick=()=>clickHex(c,r);
       /* ⛔ #156 - the `.hbadge` branch that drew the step count stood here, and
@@ -19325,15 +19688,35 @@ function hideRead(){
   closeReadCard();
   peekOff();
 }
+/* ═══ #173 · THE BOARD ANSWERS AT ONCE, THE CARD STILL WAITS ══════════════
+   (User, 2026-08-17: "Куда противник доходит и может бить показывать ховером
+   сразу. когда на него наводиш. Тогда как стат инфо именно с задержкой как
+   сейчас".)
+
+   ⛔ TWO READOUTS WERE SHARING ONE TIMER AND ONLY ONE OF THEM EVER WANTED IT.
+   #156 put `peekOn` at the top of `readout()` so both cards would carry the
+   reach tint - correct at the time, and it quietly made the tint inherit
+   READ_DWELL. The dwell is 2200ms, and #163 raised it there from 1200 for a
+   reason that is about the CARD: a 222px panel that flashes over the hexes you
+   are aiming at is in the way. The tint is not a panel. It is a wash on ground
+   the cursor is not over, it covers nothing, and waiting two and a fifth
+   seconds to learn how far somebody reaches is waiting for information you
+   asked for by pointing at them.
+   ⚑ SO IT MOVES TO THE `mouseenter` ITSELF, beside `drawLosRay` - which is the
+   OTHER thing on this screen that deliberately does not wait, for the same
+   stated reason ("the ray is the answer to 'can I even shoot that', which is a
+   question asked while the cursor is still moving"). Same argument, same
+   place, and the card's own wait is untouched.
+   ⚠ `peekOn` is cached against the render stamp, so a cursor sweeping a line
+   of bodies still computes each map once - which is what makes it affordable
+   on the first frame rather than after a dwell. */
+function peekNow(t){if(t&&B&&!B.busy)peekOn(t);}
 function readout(t,e){
-  /* ⚑ #156 - WHERE HE CAN GET TO IS SHOWN WHATEVER CARD THIS IS. The reach
-     tint used to arrive through inspect() only, and the two early returns
-     below skip inspect entirely when the hover is an aiming question - so the
-     one moment the player is deciding whether to swing HERE or step first was
-     the one moment the board would not say how far the target moves. Taken at
-     the top, so both cards carry it and neither has to remember. peekOn is
-     cached against the render stamp, so a cursor sweeping the same body
-     computes the map once. */
+  /* ⚑ #156 - WHERE HE CAN GET TO IS SHOWN WHATEVER CARD THIS IS, and #173
+     moved WHEN. The call stays here as well as on the mouseenter, and that is
+     not a duplicate: `armRead`'s GRACE path calls this synchronously without a
+     dwell, and a `readout()` reached any other way must still leave the tint
+     up. peekOn is idempotent against the stamp, so a second call is free. */
   peekOn(t);
   const u=cur();let a=B.sel;
   /* #91 - MOVE is the standing default, so the aiming question on an enemy
@@ -31060,9 +31443,12 @@ const HELP=[
      'Turn order runs on initiative and is shown along the top. <span class="k">1–9</span> fire '+
      'the actions in the order they are drawn — 1 is always MOVE, 2 is always the weapon. '+
      '<span class="k">SPACE</span> ends the turn. <span class="k">ESC</span> cancels.\n\n'+
-     'Standing inside an enemy\'s reach puts you in its '+
-     '<span class="k">zone of control</span>. Walking out of one lets it swing at you for free, '+
-     'for half of a normal blow. <span class="k">DISENGAGE</span> costs an action and IS the step: '+
+     'Standing where an enemy can <span class="k">see</span> you puts you in its '+
+     '<span class="k">zone of control</span>: the three hexes it faces, and not the three '+
+     'behind it. Walking out of one lets it swing at you for free, for half of a normal blow; '+
+     'step round to its shoulder and you can leave for nothing. '+
+     'The hexes that hold you are edged in red. '+
+     '<span class="k">DISENGAGE</span> costs an action and IS the step: '+
      'one hex, chosen by you, and nobody swings. Each enemy only gets one free swing a turn, so '+
      'walking through a line is expensive, not suicidal.'},
   {t:'HOW A HIT WORKS',
