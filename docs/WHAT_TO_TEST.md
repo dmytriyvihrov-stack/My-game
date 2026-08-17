@@ -25,6 +25,41 @@
 
 ---
 
+## ⏱ THE SHAKE COMES BACK A QUARTER, AND FOUR CAPTIONS GET FOUR LINES  *(#175 · 2026-08-17 · build log 8f.203)*
+
+**Where it came from.** Your two notes the morning after #173: the icon shaking after a strike is
+too long, take 25% off; and when a couple of effects land together (backstab and damage) they print
+on top of each other.
+
+**How to reach it.** Front door → **The practice field** → any fight → hit somebody in the back.
+
+### 1 · Everything about the impact is a quarter faster
+
+`--hitp` went 2.5 → **1.875**, which moves all fifteen impact durations at once. The recoil is
+**1.44s** (was 1.93) and the lunge **1.12s** (was 1.49). Both are still nearly double what they were
+before yesterday, so the blow is still watchable, just not lingering.
+
+- **A bug:** it going back to feeling like a flicker. One number, say the word.
+- ⚠ The **floating caption is unchanged** (`--fxp`, 3.5s). You asked about the *shaking*, so only
+  the bodies and the burst moved. If the number now feels like it outstays the blow, that is a
+  separate knob and worth telling me.
+
+### 2 · A backstab and its damage now read as a list
+
+Hit somebody in the back with armour still on and you get four things at once: **BACKSTAB!**, the
+hitpoint figure, the armour figure and a morale pip. They used to be drawn at exactly the same
+point. Now they stack down the hex in the order they happen, each one arriving about an eighth of a
+second after the last, so it reads as a sequence.
+
+- **Should happen:** four separate lines, headline on top, nothing touching.
+- **A bug:** any two lines overlapping, a line appearing at full brightness and then blinking out
+  before its turn (that was a real defect in the first cut), or the column running so far down the
+  board that it covers the body in front.
+- *Measured on a real backstab: 0 overlapping pairs, smallest gap 3.0px, whole sequence opens inside
+  0.37s.*
+
+---
+
 ## 🩸 THE FIGHT SLOWS DOWN, AND THE HEXES STICK TOGETHER  *(#173 · 2026-08-17 · build log 8f.201)*
 
 **Where it came from.** Your ten-item batch on 2026-08-17. Nine were about the fight reading badly;

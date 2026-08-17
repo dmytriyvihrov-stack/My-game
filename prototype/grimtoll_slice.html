@@ -85,8 +85,19 @@
      meaningful and neither has to know about the other.
      ⚠ 2.5 IS THE MIDDLE OF THE ASKED BAND (100-200% slower is ×2 to ×3). If
      the fight starts to drag, this is one number and `HITP` in the script
-     reads it back off this line - do not write a second literal there. */
-  --hitp:2.5;
+     reads it back off this line - do not write a second literal there.
+     ⚑ #175, ONE DAY LATER, AND THE KNOB PAID FOR ITSELF: *"the animation of
+     icons (shaking) after strike now too long, true - you can make them 25%
+     faster then now"*. 2.5 × 0.75 = **1.875**, which is one character of edit
+     and moves all fifteen durations together - the whole reason #173 refused
+     to tune them one at a time. The recoil goes 1.93s to 1.44s and the lunge
+     1.49s to 1.12s, both still well clear of the 0.6s they were before #173.
+     ⛔ AND THE ARROW IS THE ONE THING TO RE-CHECK IF THIS EVER DROPS FURTHER.
+     `animShot`'s flight is capped at 760ms and is deliberately NOT paced,
+     because its job is to land INSIDE the recoil it causes; at 1.875 the
+     recoil is 1.44s, so the margin is still comfortable. Below about 1.2 it
+     inverts and the arrow arrives after its own effect again. */
+  --hitp:1.875;
   /* the floating word after a blow, on its own multiplier because it is not
      a movement: the number has to be READ, and the reading is what the second
      half of the request is asking for more of. See the `rise` keyframe, which
@@ -1540,9 +1551,24 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:var(--f
 .wflag{position:absolute;top:-2px;left:50%;transform:translateX(-50%);font-size:var(--fs3);
        line-height:1;filter:drop-shadow(0 0 2px #000)}
 #bFx{position:absolute;inset:0;pointer-events:none;z-index:7;overflow:hidden}
+/* ⛔ #175 · `both`, NOT `forwards`, AND `line-height:1`. Two defects, one
+   cause: a staggered caption is an animation that has not started yet, and
+   nothing was describing what it looks like while it waits.
+     · `forwards` fills only the END of a run, so a caption sitting out its
+       `animation-delay` was drawn in its UNANIMATED state - full opacity, at
+       rest - and then snapped to invisible the instant its turn came. Three
+       lines therefore all appeared at once and two of them blinked. `both`
+       fills the 0% frame backwards as well, so a line that is waiting is
+       simply not there yet, which is what a stagger is for.
+     · the display face at 15px takes a ~20px box on default leading, so the
+       ladder in fx() was stepping 17 and the boxes were 20 - they overlapped
+       by 3 while every number said they were 17 apart. `line-height:1` makes
+       the box the type, the same load-bearing declaration `.hodds` and `.hdmg`
+       already carry with the same note on them. */
 .fx{position:absolute;font-family:var(--display);font-size:var(--fs5);font-weight:700;
+    line-height:1;
     text-shadow:0 1px 3px #000,0 0 6px #000;
-    animation:rise calc(1s * var(--pace) * var(--fxp)) ease-out forwards;
+    animation:rise calc(1s * var(--pace) * var(--fxp)) ease-out both;
     transform:translateX(-50%);white-space:nowrap}
 .fx.small{font-size:var(--fs3);font-family:var(--mono);font-weight:500}
 /* ═══ #173 · THE WORD HOLDS, IT DOES NOT MERELY TRAVEL SLOWER ═════════════
@@ -12825,17 +12851,80 @@ function logRound(n){
      above it is a LINE IN THE LOG, which is prose, and keeps its word. */
   const h=$('bLogRound');if(h)h.textContent='↻ '+roman(n);
 }
+/* ═══ #175 · TWO THINGS HAPPENED, SO THEY GET TWO LINES ════════════════════
+   (User, 2026-08-17: "When a couple effects together (like backstab and damage)
+   - they are one on top of each other. Make them nicer - more separate".)
+
+   ⛔ EVERY CAPTION WAS PINNED TO THE SAME TWO NUMBERS. `left = p.x+26` and
+   `top = p.y+12` are constants, so a hex that produced three lines in the same
+   tick printed all three through each other at the same point. One landed
+   blow can easily be three: `strike()` fires BACKSTAB! (or FLANKED), then the
+   hitpoint figure, then the armour figure - and #173's longer hold made the
+   pile-up worse rather than better, because they now sit on top of one another
+   for three and a half seconds instead of flashing past.
+
+   ⚑ THE FIX IS A QUEUE PER HEX, NOT A NUDGE PER CALL SITE. `fx()` has eleven
+   callers and none of them knows what the others are about to print; only the
+   hex knows how many lines are already climbing off it. So the slot is worked
+   out HERE, at the one door, which is this file's standing rule and the same
+   reason `choiceNote()` joins its parts and `poseFx()` owns the poses.
+
+   ⚠ THE ROW GOES DOWNWARD AND THE ORDER IS THE CALL ORDER. BACKSTAB! is
+   spoken before the number it earned, so it takes the top line and the figure
+   sits under it - which reads as a headline and its receipt rather than as two
+   numbers fighting.
+
+   ⛔ AND THE SLOT DECIDES THE LINE WHILE THE CLASS DECIDES ONLY THE SIZE. The
+   first cut kept `small ? 2 : 12` as the base and added the row on top of it,
+   which put a small caption on a 10px-shorter stalk and **broke the ladder the
+   moment the sizes mixed**: measured on a real backstab, BACKSTAB! and −9 sat
+   15px apart and −9 and "−14 arm" sat **5px** apart, which is worse than the
+   pile it replaced because it looks deliberate. One anchor for every line. The
+   small class still shrinks the type; it no longer also moves it.
+   ⚠ 18 AND NOT 15, AND THE NUMBER WAS FOUND THE HARD WAY. `--fs5` is 15px and
+   the display face took a **20px** box on default leading, so the first cut
+   stepped 17 and the boxes overlapped by 3 while every figure in the probe
+   said 17. Only `getBoundingClientRect()` caught it - the style values were
+   perfect and wrong, which is this file's oldest lesson wearing a new hat.
+   `.fx` declares `line-height:1` now, so the box IS the type (15 big, 12
+   small) and 18 leaves 3px of air under the tallest line.
+
+   ⚠ AND EACH ONE STARTS A BEAT LATER (`animation-delay`), so three lines
+   arrive as three events rather than as a block. ⛔ THE STAGGER READS `paced`
+   AND NOT `fxPaced`, and that is the difference between a sequence and a
+   queue: `--fxp` is how long a line is READ for, and multiplying the gap by it
+   too put the fourth caption 1.4s behind the blow on top of its own 3.5s life.
+   A beat between two events belongs on the battle clock like every other beat.
+   The removal timeout still carries the delay, or the last line is deleted
+   while it is still climbing. */
+const FX_ROW=18;
+function fxSlot(k){
+  if(!B)return 0;
+  B.fxq=B.fxq||{};
+  const now=Date.now();
+  /* expiry stamps, not a counter: a caption that has faded frees its line, so
+     the next blow on the same hex starts back at the top instead of walking
+     down the board for the whole fight. */
+  const live=(B.fxq[k]||[]).filter(t=>t>now);
+  live.push(now+fxPaced(1000));
+  B.fxq[k]=live;
+  return Math.min(live.length-1,3);         /* four lines is the whole hex */
+}
 function fx(u,txt,col,small){
   const hx=$('bGrid').querySelector('[data-k="'+K(u.col,u.row)+'"]');
   if(!hx)return;
   const p=relPt(hx,$('bField'));            /* #83 - relPt, not the raw rects */
   const el=document.createElement('div');
   el.className='fx'+(small?' small':'');el.textContent=txt;el.style.color=col;
+  const slot=fxSlot(K(u.col,u.row));
+  const wait=paced(slot*70);
   el.style.left=(p.x+26)+'px';
-  el.style.top=(p.y+(small?2:12))+'px';
-  /* #81 - matches the `rise` keyframe, which is calc(1s × --pace). These two
-     numbers have to move together or the figure is deleted mid-climb. */
-  $('bFx').appendChild(el);setTimeout(()=>el.remove(),fxPaced(1000));
+  el.style.top=(p.y+12+slot*FX_ROW)+'px';
+  if(slot)el.style.animationDelay=wait+'ms';
+  /* #81 - matches the `rise` keyframe, which is calc(1s × --pace × --fxp).
+     These two numbers have to move together or the figure is deleted
+     mid-climb. #175 - and the stagger is part of the sum for the same reason. */
+  $('bFx').appendChild(el);setTimeout(()=>el.remove(),fxPaced(1000)+wait);
 }
 /* ═══════════════════════════════════════════════════════════════════════
    IMPACT ANIMATION. Everything here is geometry read off the live DOM, so it
