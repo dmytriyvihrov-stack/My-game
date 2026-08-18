@@ -3254,7 +3254,22 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:var(--f
 #rxWrap.on{display:flex}
 #rxCard{width:380px;max-width:92vw;background:rgba(24,18,10,.99);border:1px solid var(--e3);
   box-shadow:0 18px 60px rgba(0,0,0,.8);padding:var(--p6);display:flex;flex-direction:column;
-  gap:var(--p4);text-align:center}
+  gap:var(--p4);text-align:center;position:relative}
+/* ═══ #191 · IT SITS LOWER THAN THE MIDDLE ══════════════════════════════════
+   (User, 2026-08-18: *"show it a bit lower in the screen"*.) It opens over the
+   screen it is asking about, and dead centre is exactly where that screen's own
+   content is - so the question was landing on the thing the player is being
+   asked to have an opinion of.
+   ⚑ `top` ON A RELATIVE BOX, NOT A MARGIN AND NOT PADDING ON THE BACKDROP. Both
+   of those are consumed by `align-items:center`, which re-centres whatever is
+   left and therefore moves the card by HALF of what you asked for; `top` is
+   applied after layout and moves it by exactly the number written here.
+   ⚠ AND IT IS OFF ON A TURNED PHONE. `fit()` rotates the whole stage 90deg when
+   the viewport is portrait and under 700 wide (see ROT), and this modal lives on
+   <body> rather than in the stage - so "down the viewport" would be "sideways
+   across the game" there. The query matches ROT's own width test, and a narrow
+   screen keeps the middle, where there is no room to give away in any case. */
+@media (min-width:700px){#rxCard{top:10vh}}
 #rxCard h3{font-family:var(--display);font-size:var(--fs6);color:var(--g4);letter-spacing:.04em;
   margin:0;font-weight:600}
 /* WHAT is being rated. #54's whole value was that a reaction names the card and
@@ -3280,17 +3295,22 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:var(--f
   padding:var(--p3);resize:vertical}
 #rxWhy textarea:focus{outline:none;border-color:#4d6b6c;background:#172223}
 #rxWhy textarea::placeholder{color:#5f7472;font-style:italic}
-#rxOpts{display:flex;gap:var(--p3)}
-#rxOpts button{flex:1;font-family:var(--mono);font-size:var(--fs2);letter-spacing:.08em;
-  background:rgba(16,12,6,.9);color:#8a7449;border:1px solid var(--e1);padding:var(--p3);
-  cursor:pointer}
-#rxOpts button:hover{color:var(--g4);border-color:#8a6a34}
-#rxSend{color:#8ca35a;border-color:#5a7a3a}
-#rxSend:hover{background:#2c4a3a;color:#c3d18a}
-/* NOT `disabled`. A disabled button eats the click and says nothing back, which
-   is the same experience as a broken one - consequences() carries the same note. */
-#rxSend.off{opacity:.34}
-#rxSend.off:hover{background:none;color:#8ca35a;border-color:#5a7a3a}
+/* ⛔ #191 - `#rxOpts`, `#rxSend` AND `#rxSkip` ARE GONE, MARKUP AND RULES.
+   (User: *"From there delete options 'send' and 'not now' they are not needed"*.)
+   He is right, and the reason is worth writing down: on a card whose entire
+   content is three buttons, a fourth button meaning "I have finished pressing
+   buttons" is a step that exists only because the thing was built as a form.
+   THE PICK IS THE SEND now - see RXPOP.pick - and the ways out are the two that
+   were always there, Esc and the backdrop.
+   ⚑ AND NOTHING CAN BE LOST BY LOSING THE BUTTON, which is the half that had to
+   be engineered rather than deleted. The face FILES the moment it is pressed and
+   the reason is written onto that same row as it is typed, so walking away
+   mid-sentence keeps every word already in the box. #188's dim `.off` Send went
+   with it: there is no longer a moment where the card is waiting for anything.
+   ⚠ #76's not-nagging rule is intact. Nothing is filed until a face is pressed,
+   and pressing a face is the player choosing to answer. */
+/* the reason box is the last thing on the card now, so it closes the padding */
+#rxWhy{margin-bottom:calc(var(--p2) * -1)}
 /* 20 — chrome, and chrome sits UNDER the cards. See the layer scale by #wDlg.
    Lifted to bottom:44 to leave the bottom-right corner to the reaction bar. */
 #audioBtn{position:absolute;right:10px;bottom:44px;z-index:20;font-family:var(--mono);
@@ -4706,6 +4726,37 @@ const mark=w=>{JOURNAL.card=w||null;
 JOURNAL.load();
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const pickOne=a=>a[Math.random()*a.length|0];
+/* ═══ #191 · WHAT AN ELEMENTAL WEAPON CAN BE CARRYING ═══════════════════════
+   (User: *"Елементал вепон - добавляет к твоему оружию рандомный елементальный
+   эффект (на каждую битву разный - пассивка, ты начинаешь с ним)"*.)
+
+   ⛔ EVERY ONE OF THE THREE IS AN EFFECT THE GAME ALREADY RESOLVES, and that is
+   the design rather than a shortcut. `cripple` is the archer's own signature,
+   `venom` is #46's stacking cut, and the burn is #186's ember arriving through
+   `ignite()` - so a fire-charged sword and a fire-charged tile put a body in the
+   SAME state, wearing the same 🔥 badge, put out by the same water. Three new
+   bespoke effects would have been three new things for the player to learn and
+   three more places for the board to disagree with itself.
+
+   ⚠ `fx` IS MERGED ONTO A COPY OF THE ACT, NEVER ONTO THE ACT. Weapon acts are
+   built from GEAR, and mutating one would hang the element on that weapon for
+   every body in the game that ever picks it up. See the map in unitFrom.
+
+   ⚠ AND `burn` IS THE ONE NEW FIELD IN THE FAMILY, three lines in strike().
+   `cripple` and `venom` were already read there; fire was only ever applied by
+   the ground, so it had no act-side door until now. */
+const ELEM={
+  fire :{n:'FIRE', g:'🔥',col:'#e07a28',fx:{burn:1},
+    d:'Every blow that lands sets them alight, and burning is burning: it keeps costing them '+
+      'until it goes out, and only water puts it out.'},
+  frost:{n:'FROST',g:'❄',col:'#7fb8d0',fx:{cripple:true},
+    d:'Every blow that lands takes half their movement and 10 dodge. Nothing you hit walks '+
+      'away from you at speed.'},
+  venom:{n:'VENOM',g:'☣',col:'#7fae4e',fx:{venom:2},
+    d:'Every blow that lands leaves something in the cut, and it stacks: everything that '+
+      'touches them afterwards lands harder.'}
+};
+
 
 /* ============================================================
    0.  Sound - ELEVEN APPROVED RECORDINGS, and they now travel two ways.
@@ -7010,7 +7061,37 @@ const PERKS={
   stoneskin :{n:'Stone Skin',   d:'+10 armour.'},
   heavyhand :{n:'Heavy Hand',   d:'+12% damage against anything still wearing armour.'},
   footwork  :{n:'Footwork',     d:'You never provoke a parting swing. Walking away is simply free.'},
-  inspire   :{n:'Steadying',    d:'+4 morale to every ally within 2 hexes at the start of your turn.'}
+  inspire   :{n:'Steadying',    d:'+4 morale to every ally within 2 hexes at the start of your turn.'},
+  /* ═══ #191 · THREE MORE, AND ALL THREE ARE BUILT OUT OF RULES THAT EXIST ═══
+     (User, 2026-08-18: *"Add perks (to a general tree so far - the one that is
+     in development)"*, and the three below in his own words.)
+
+     ⚑ NOT ONE OF THEM ADDS A SYSTEM. `waiter` reads the action counter the turn
+     already keeps; `groundwise` joins `wetproof`, which is the ONE door the file
+     already opened for "this body is not slowed by ground"; `elemental` stamps
+     `cripple` / `venom` / a `burn` onto the bearer's weapon and lets strike()'s
+     existing on-hit block do the work. That is #61's test for earning a word,
+     applied to a perk: a dial is not a system.
+     ⚠ AND ALL THREE ARE STATED IN NUMBERS, like every line above them. A perk
+     whose description is an adjective cannot be compared with the one beside it,
+     which is the whole reason this table reads the way it does. */
+  waiter    :{n:'Patient',      d:'End a turn with an action unspent and you start the next '+
+                                  'one with an extra action. One, never more.'},
+  /* ⚠ THE BLOOM IS DELIBERATELY NOT IN THIS. Its −2 stride is an AURA, not the
+     ground: it is a thing being done to you by something standing nearby, and it
+     is the strongest effect in the game. A perk that switched it off would be
+     buying an answer to one whole fight for one point. Terrain only. */
+  groundwise:{n:'Ground-Wise',  d:'No ground slows you: water, fire and mud all cost one hex '+
+                                  'to enter and take nothing off your stride. Anything the '+
+                                  'ground itself does to you takes half.'},
+  /* ⚠ ROLLED IN unitFrom, SO IT IS A NEW ELEMENT EVERY FIGHT AND THE PLAYER
+     NEVER CHOOSES IT. That is the user's own framing ("на каждую битву разный -
+     пассивка, ты начинаешь с ним") and it is what keeps it from being a fourth
+     weapon slot: you find out what you are carrying when the fight starts, and
+     you play the fight it gave you. See ELEM. */
+  elemental :{n:'Elemental Weapon',
+              d:'Your weapon comes to the field carrying FIRE, FROST or VENOM. Which one is '+
+                'rolled fresh for every battle, and every blow that lands delivers it.'}
 };
 /* Four tiers, two choices each — eight perks a class. It used to stop at
    level 3 with four, which meant a veteran hit the ceiling in about two
@@ -7024,15 +7105,26 @@ const PERKS={
    stat through perksLeft's fallback, which is "a reward never evaporates"
    doing the job it was written for. */
 const CLASSES={
+  /* ═══ #191 · A TIER MAY NOW OFFER THREE, AND ONLY WHERE ONE WAS ADDED ══════
+     The note above says "two choices each", and that was a description of the
+     shape rather than a law: `perkPool` concatenates a list and `drawInv` maps
+     over it, so neither cares. What matters is that NOTHING WAS TAKEN AWAY to
+     make room - a player who has been planning a build around `inspire` at 6
+     still finds it there. The new door is a third door, never a replacement.
+     ⚠ Each new perk is offered by the classes it says something about, not by
+     all seven: `waiter` to the three trades whose job is to hold and wait,
+     `groundwise` to the three that move for a living, `elemental` to the mage
+     alone (the user's own gate: *"6й уровень"*). A perk every class can buy at
+     every tier is a stat increase with a name. */
   captain:{n:'CAPTAIN',   sig:'COMMAND + RALLY THE LINE',
-    perks:{2:['ironjaw','duelist'],4:['standfast','warleader'],
+    perks:{2:['ironjaw','duelist'],4:['standfast','warleader','waiter'],
            6:['inspire','bulwark'],8:['heavyhand','stoneskin']}},
   spear  :{n:'SPEARWOMAN',sig:'SPEAR WALL',
     perks:{2:['bulwark','killzone'],4:['opportune','bracewall'],
-           6:['stoneskin','ironjaw'],8:['heavyhand','footwork']}},
+           6:['stoneskin','ironjaw','waiter'],8:['heavyhand','footwork','groundwise']}},
   archer :{n:'ARCHER',    sig:'AIMED SHOT',
     perks:{2:['sureshot','quickfoot'],4:['butcher','eagle'],
-           6:['deadeye','footwork'],8:['killzone','ironjaw']}},
+           6:['deadeye','footwork','waiter'],8:['killzone','ironjaw','groundwise']}},
   /* The one who can hold a line. One school, one casting a turn, and stats
      that let him stand in it: the low-magic setting expressed as a class.
      #161: the sig names both hands he is allowed, because Marrow now starts
@@ -7044,14 +7136,19 @@ const CLASSES={
   /* The real one. Two schools, a second casting each turn at half strength,
      and almost nothing else — bad with a blade, thin, slow to dodge. */
   mage   :{n:'MAGE',sig:'TWO SCHOOLS · A SECOND CASTING AT HALF',
+    /* ⚠ TIER 6 IS THE USER'S OWN GATE and it is the mage's alone. The BATTLE-MAGE
+       one entry up is the class that actually swings a blade for a living, so he
+       is the obvious second home for this - and he is not getting it here,
+       because the instruction was *"Для мага"* and widening it is a design call
+       rather than a build one. Worth putting to him; not worth assuming. */
     perks:{2:['windeater','fieldmedic'],4:['conduit','ironjaw'],
-           6:['inspire','quickfoot'],8:['stoneskin','footwork']}},
+           6:['inspire','quickfoot','elemental'],8:['stoneskin','footwork']}},
   cutter :{n:'CUTTER',    sig:'BACKSTAB',
-    perks:{2:['butcher','quickfoot'],4:['opportune','shadowstep'],
+    perks:{2:['butcher','quickfoot'],4:['opportune','shadowstep','groundwise'],
            6:['deadeye','footwork'],8:['heavyhand','killzone']}},
   brute  :{n:'BRUTE',     sig:'SWEEP + ROAR',
     perks:{2:['brawn','ironjaw'],4:['standfast','thickhide'],
-           6:['heavyhand','stoneskin'],8:['inspire','bulwark']}},
+           6:['heavyhand','stoneskin','waiter'],8:['inspire','bulwark']}},
   /* ═══ #174 - THE STRANGER WITHOUT A TRADE ═════════════════════════════════
      (User: "When you hire someone, 1 our of 3 has lvl 0 and a bit cheaper
      price. So you can choose his class later.") A trade is a key in this
@@ -9754,7 +9851,23 @@ function unitFrom(p){
   if(p.mut==='bloomhand')acts.push({k:'grasp',n:'ROOTING GRASP',cost:1,reach:2,grasp:true,cool:2,
     note:'No damage. Takes hold of one enemy within 2 hexes and roots it where it stands '+
       'until it spends an action tearing free. The hand does not ask first.'});
-  u.acts=acts;
+  /* ═══ #191 · THE ELEMENT IS ROLLED HERE, WHICH IS WHY IT IS PER BATTLE ══════
+     `unitFrom` runs once per body per fight and a battle is regenerated rather
+     than restored, so "a different one every battle" is a property of WHERE this
+     line is and needs no clock, no save field and nothing to reset.
+     ⛔ THE BEARER'S WEAPON, NOT THEIR WORKINGS. `arcane` is excluded because the
+     perk is called Elemental WEAPON and a mage's schools already carry their own
+     effects; `self` and `move` because neither lands on anybody. Everything left
+     is what is in their hands.
+     ⚠ Object.assign ONTO A COPY. `acts` holds objects built from GEAR, and
+     writing the element onto one would leave it on that weapon for every body
+     that ever equips it - the bug this file calls two sources of truth. */
+  const elk=p.perks.indexOf('elemental')>=0?pickOne(Object.keys(ELEM)):null;
+  u.elem=elk;
+  u.acts=elk?acts.map(a=>(a.dmg&&!a.arcane&&!a.self&&!a.move)
+    ?Object.assign({},a,ELEM[elk].fx,
+       {note:(a.note?a.note+' ':'')+ELEM[elk].g+' '+ELEM[elk].n+': '+ELEM[elk].d})
+    :a):acts;
   u.kills=0;
   return u;
 }
@@ -12309,12 +12422,20 @@ function udist(from,u){
    most expensive thing she could do to herself. Her stride is 3; on marsh it
    fell to 2 and marsh costs 2 to enter, which is how the boss of the act
    ended up able to move exactly ONE HEX for the rest of the fight. */
-const wetproof=u=>!!(u&&(u.mut==='gills'||u.fenborn));
+/* ⚑ #191 - AND `groundwise` JOINS THEM, WHICH IS WHY IT NEEDED NO NEW PLUMBING.
+   The note above says this is "the one place that question is answered", and it
+   is read by the entry cost below, by the standing penalty in moveBudget and by
+   the −10 out of the water in hitBreakdown. A perk that answers the same
+   question therefore belongs HERE and nowhere else - the alternative was three
+   separate perk checks that could drift apart, which is the shape this function
+   was written to prevent. */
+const wetproof=u=>!!(u&&(u.mut==='gills'||u.fenborn||has(u,'groundwise')));
 const mcost=(c,r,u)=>{
   const t=B.terr[K(c,r)];
   if(t==='deep')return wetproof(u)?1:3;
   if(t==='marsh')return wetproof(u)?1:2;
-  if(t==='ember')return 2;                 /* #186 - a body hesitates at it */
+  /* #186 - a body hesitates at it. #191 - unless bad ground is its speciality. */
+  if(t==='ember')return wetproof(u)?1:2;
   return 1;
 };
 /* ═══ #186 · EMBER - THE GROUND THAT IS ON FIRE ═════════════════════════════
@@ -12357,6 +12478,12 @@ const emberPen=p=>B.terr[K(p[0],p[1])]==='ember'?EMBER_AI:0;
    roster is DOWNED, everybody else DEAD). Returns true if the body fell. */
 function envHurt(u,n,why,defer){
   if(!u||u.dead||u.downed||u.fled||n<=0)return false;
+  /* ⚑ #191 - `groundwise` halves it HERE, at the one door every hurt that comes
+     from the ground rather than from a body passes through. The entry hit, the
+     burn tick and whatever hazard is written next all inherit it for free, which
+     is the whole reason this function exists as a door instead of as two lines
+     inside ignite(). Rounded UP, so half of a small number is never nothing. */
+  if(has(u,'groundwise'))n=Math.ceil(n/2);
   u.hp-=n;u.taken=(u.taken||0)+n;
   fx(u,'−'+n+(why?' '+why:''),'#e07a28',true);
   /* `defer`: the caller is inside strike(), whose own `hp<=0` block runs a
@@ -14203,6 +14330,13 @@ function strike(a,d,act,mult){
       }
     }
   }
+  /* #191 - a fire-charged weapon. `ignite` is #186's own door: it sets the
+     BURNING clock, deals the entry hit and says so, and water puts this out
+     exactly as it puts out the ground that would otherwise have caused it. The
+     `defer` argument is true for the same reason every other caller inside
+     strike() passes it - the hp<=0 block below credits the kill, and a body that
+     fell twice would be reported twice. */
+  if(act.burn&&!d.dead)ignite(d,' is set alight',true);
   if(act.cripple){
     d.crippled=2;fx(d,'CRIPPLED','#c9a227');
     /* #87 — two short gusts at the FEET, blowing down and out. It reads as
@@ -14997,7 +15131,12 @@ function beginTurn(){
     }
     render();later(nextTurn,180);return;
   }
-  u.actions=u.actionsMax;u.used={};u.safeMove=false;u.moved=false;u.movesUsed=0;u.rallyBuff=0;
+  /* #191 - and it is spent here, on the next turn, then cleared. `banked` is
+     zeroed rather than deleted for the reason burnTick's `missRun` is: an absent
+     field reads 0 and a stale one reads as a gift that keeps arriving. */
+  u.actions=u.actionsMax+(u.banked||0);
+  if(u.banked){u.banked=0;fx(u,'+1 ACTION','#8ca35a',true);}
+  u.used={};u.safeMove=false;u.moved=false;u.movesUsed=0;u.rallyBuff=0;
   /* #137 - DISENGAGE's hex is spent in the turn that bought it now, so this
      line only has to CLEAR it. `disNext` is deleted rather than left set: an
      unused field is a second source of truth, and the next reader of this
@@ -15464,6 +15603,19 @@ function nextTurn(resumed){
      again on the way back in would be this file's "one trigger, two
      consumers" shape one more time. `resumed` is why the parameter exists. */
   if(B.tutLock){B.tutHold=true;return;}
+  /* ═══ #191 · THE PATIENT HAND BANKS WHAT IT DID NOT SPEND ══════════════════
+     (User: *"Waiter - if you end turn with action points, get one more next
+     round"*.) Read HERE, on the hand-over, because it is the only moment the
+     outgoing body's leftover is still on the board: `beginTurn` opens by
+     overwriting `u.actions` and cannot know what was there before.
+     ⛔ ONE, AND IT DOES NOT COMPOUND. `banked` is set to 1 rather than to the
+     leftover, so a body that ends every turn with two spare never arrives with
+     four - the ceiling is actionsMax+1 forever. A perk that pays interest is an
+     engine for a turn nobody can answer.
+     ⚠ cur() IS STILL THE OUTGOING BODY at this line; B.idx has not moved. */
+  {const out=cur();
+   if(out&&!out.dead&&!out.fled&&!out.downed&&has(out,'waiter'))
+     out.banked=out.actions>0?1:0;}
   B.idx++;
   if(B.idx>=B.order.length){B.idx=0;B.round++;G.battleRounds=B.round;
     logRound(B.round);
@@ -16762,7 +16914,21 @@ const STATUS={
       'target walks out of reach.'},
   marked:{n:'A working is coming',g:'◎',col:'#e28fb4',on:gatheredAt,
     d:'Arrives at the start of that caster\'s next turn. Get out of reach, or get to '+
-      'the caster.'}
+      'the caster.'},
+  /* ═══ #191 · WHAT THIS ONE IS CARRYING TODAY ═══════════════════════════════
+     The perk is passive and rolled before the first turn, so without a badge the
+     player would have to read an act card to find out which fight they are in.
+     ⛔ ONE ENTRY AND A FUNCTION `d`, NOT THREE ENTRIES. `g`, `n` and `col` are
+     static in this register (only `d` is resolved through statusesOn), so three
+     elements would have meant three near-identical rows - and the register's own
+     warning two screens up is that a duplicated key here fails SILENTLY. One
+     mark that means "this weapon is charged", and the hover says with what.
+     ⛔ AND THE MARK IS ❖, NOT 🔥 OR ☣. Those two are already on this board
+     meaning something is happening TO a body; this is a property of the body
+     doing it, and one glyph may not mean two things (#102). The pink is the
+     caster vocabulary `gathering` and `marked` already speak. */
+  charged:{n:'Charged weapon',g:'❖',col:'#e28fb4',on:u=>!!u.elem,
+    d:u=>ELEM[u.elem].g+' '+ELEM[u.elem].n+' — '+ELEM[u.elem].d}
 };
 /* what is currently true of this body, as a list the UI can just print */
 function statusesOn(u){
@@ -34508,10 +34674,20 @@ function syncReact(){
    the player says so, and until then every face is still changeable. Keeping a
    window that re-reads a deliberate second submission as "you meant to take the
    first one back" would now be the bug rather than the fix. */
-function react(kind,w,why){
+/* #191 - `amend` is a row this call should REWRITE instead of pushing a new one,
+   and it exists because the popup lost its Send. A player who presses 👎 and then
+   changes their mind to 👍 has to leave ONE opinion behind, not two: with no
+   button left to defer the write to, the second press has to find the first.
+   Absent, this behaves exactly as it has since #53, which is what the reaction
+   bar and every other caller still want. */
+function react(kind,w,why,amend){
   w=w===undefined?JOURNAL.where():w;
-  const mine=rxHere(w);
-  JOURNAL.put('react',w,why?{k:kind,why:why}:{k:kind});
+  const mine=rxHere(w).filter(r=>r!==amend);
+  if(amend){
+    amend.k=kind;
+    if(why)amend.why=why;else delete amend.why;
+    JOURNAL.save();
+  }else JOURNAL.put('react',w,why?{k:kind,why:why}:{k:kind});
   const msg=RXWORD[kind]+' - '+w+
     (mine.length?' · '+ordinal(mine.length+1)+' time you have said so here':'');
   sfx(kind==='dis'?'back':'coin');
@@ -34519,6 +34695,9 @@ function react(kind,w,why){
   if(t){t.textContent=msg;t.classList.add('on');
     clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('on'),1900);}
   syncReact();
+  /* #191 - the row itself, so RXPOP can keep writing the reason onto it as the
+     player types. `put` returns it; an amend already had it. */
+  return amend||JOURNAL.log[JOURNAL.log.length-1];
 }
 /* ═══════════════════════════════════════════════════════════════
    #188 · RXPOP - THE QUESTION ARRIVES INSTEAD OF WAITING TO BE FOUND
@@ -34567,11 +34746,23 @@ function react(kind,w,why){
    thumbs beside it. It is used because there is no hand that reads "so-so" on
    its own (👌 means good), and 🙂😐 are the company's morale. 🫤 is the
    one-line alternative if the row wants a face instead. */
-const RX_FACES=[{k:'like', ic:'👍',t:'good'},
+/* ⚑ #191 - THE ORDER IS REVERSED: BAD, SO-SO, GOOD (user: *"On the feedback
+   window change places of good and bad"*). #188b's order was good-first, which
+   reads as a scale running downwards from the thing you would like to be told.
+   Left to right the row is now worst to best, which is the order every rating
+   row the player has ever met is written in, and the order the reason box grows
+   out of - it opens under the LEFT-hand face rather than under the right.
+   ⛔ THE KEYS ARE UNTOUCHED. `like`/`meh`/`dis` are what #53 and #188b filed and
+   what the report prints; swapping the pictures may never swap the words, which
+   is #102's wrong-unit rule arriving through a cosmetic change. */
+const RX_FACES=[{k:'dis',  ic:'👎',t:'bad'},
                 {k:'meh',  ic:'🤷',t:'so-so'},
-                {k:'dis',  ic:'👎',t:'bad'}];
+                {k:'like', ic:'👍',t:'good'}];
 const RXPOP={
   el:null, w:null, k:null, askedRun:null,
+  /* #191 - the journal row this ask has already filed, and the timer that closes
+     the card after a happy press. See pick(). */
+  row:null, _shut:null,
   /* built on first open, not at boot: it is a modal most sessions never see,
      and building it lazily keeps it out of every boot sweep that counts nodes */
   build(){
@@ -34586,22 +34777,21 @@ const RXPOP={
         .join('')+'</div>'+
       '<div id="rxWhy"><label for="rxWhyT">WHAT WENT WRONG?</label>'+
         '<textarea id="rxWhyT" rows="3" placeholder="one line is plenty"></textarea></div>'+
-      '<div id="rxOpts"><button id="rxSkip">NOT NOW</button>'+
-        '<button id="rxSend" class="off">SEND</button></div></div>';
+      '</div>';
     document.body.appendChild(d);
     /* the backdrop closes; the card does not. A click that lands on the card
        and closes the thing is the oldest modal bug there is. */
     d.onclick=e=>{if(e.target===d)RXPOP.close();};
-    d.querySelectorAll('.rxf').forEach(b=>b.onclick=()=>{
-      RXPOP.k=b.dataset.k;
-      d.querySelectorAll('.rxf').forEach(x=>x.classList.toggle('pick',x===b));
-      /* the second step, and ONLY off the unhappy face */
-      const why=$('rxWhy'),open=RXPOP.k==='dis';
-      why.classList.toggle('on',open);
-      if(open)$('rxWhyT').focus();
-      $('rxSend').classList.remove('off');});
-    $('rxSkip').onclick=()=>RXPOP.close();
-    $('rxSend').onclick=()=>RXPOP.send();
+    d.querySelectorAll('.rxf').forEach(b=>b.onclick=()=>RXPOP.pick(b.dataset.k,b));
+    /* #191 - the reason is written onto the row that is already filed, as it is
+       typed. `input` and not `change`, for the reason drawPoll gives about the
+       same thing: `change` does not fire until focus leaves, and the box a person
+       is typing into when they give up is the one they never leave. */
+    $('rxWhyT').oninput=()=>{
+      if(!RXPOP.row)return;
+      const v=($('rxWhyT').value||'').trim();
+      if(v)RXPOP.row.why=v;else delete RXPOP.row.why;
+      JOURNAL.save();};
     RXPOP.el=d;
     return d;
   },
@@ -34612,22 +34802,52 @@ const RXPOP={
     const d=RXPOP.build();
     RXPOP.w=w||JOURNAL.where();
     RXPOP.k=null;
+    /* #191 - a fresh ask files a fresh row. Carrying the last one over would let
+       a reaction filed at the fen be rewritten by one given on the road. */
+    RXPOP.row=null;
+    clearTimeout(RXPOP._shut);
     const n=rxHere(RXPOP.w).length;
     $('rxWhere').textContent=String(RXPOP.w).toUpperCase()+
       (n?'  ·  YOU HAVE SAID SOMETHING HERE ×'+n:'');
     $('rxWhy').classList.remove('on');
     $('rxWhyT').value='';
     d.querySelectorAll('.rxf').forEach(b=>b.classList.remove('pick'));
-    $('rxSend').classList.add('off');
     d.classList.add('on');
   },
-  close(){if(RXPOP.el)RXPOP.el.classList.remove('on');},
-  send(){
-    if(!RXPOP.k)return;                       /* nothing picked: the Send is dim */
+  /* ═══ #191 · PRESSING A FACE IS THE WHOLE SUBMISSION ═════════════════
+     The opinion is filed HERE, on the press, and never later. That is what makes
+     it safe to have no Send: there is no state in which the player has answered
+     and the answer has not been written down.
+
+     ⛔ 👎 KEEPS THE CARD OPEN AND THE OTHER TWO CLOSE IT. The unhappy face is the
+     only one with a second question behind it (#188's whole design), so it is the
+     only one that has anything left to stay open for. A short beat before the
+     other two close, because a modal that vanishes on mousedown never shows the
+     player that their press registered. */
+  pick(k,btn){
+    RXPOP.k=k;
+    RXPOP.el.querySelectorAll('.rxf').forEach(x=>x.classList.toggle('pick',x===btn));
+    const open=k==='dis';
+    /* ⛔ THE REASON BELONGS TO THE UNHAPPY FACE AND TO NOTHING ELSE. Typing a
+       complaint and then changing the verdict to 👍 used to leave the complaint
+       riding on a row the report prints as *liked* - and it did it INVISIBLY,
+       because the box holding those words is closed by the same press. A row
+       saying two opposite things is #102's wrong-unit rule wearing prose. So the
+       box is emptied with the verdict, and what the player can see and what the
+       journal is holding are the same thing again. */
+    if(!open)$('rxWhyT').value='';
     const why=($('rxWhyT').value||'').trim();
-    react(RXPOP.k,RXPOP.w,why||undefined);
-    RXPOP.close();
+    RXPOP.row=react(k,RXPOP.w,why||undefined,RXPOP.row);
+    $('rxWhy').classList.toggle('on',open);
+    clearTimeout(RXPOP._shut);
+    if(open)$('rxWhyT').focus();
+    else RXPOP._shut=setTimeout(RXPOP.close,280);
   },
+  /* ⚑ CLOSING FILES NOTHING AND UNDOES NOTHING, which is why Esc and the backdrop
+     can both reach it without knowing anything about the state above. Whatever
+     was pressed is already in the journal; whatever was typed is already on it. */
+  close(){clearTimeout(RXPOP._shut);
+    if(RXPOP.el)RXPOP.el.classList.remove('on');},
   /* ═══ HEARTHSTONE'S OWN MOMENT, AND IT IS ONCE ════════════════
      A fight is this game's match, so the aftermath is where the question goes.
      ONCE A RUN, keyed on the run id rather than on a boolean, so a second run
