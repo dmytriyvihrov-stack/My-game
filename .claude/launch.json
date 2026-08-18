@@ -1,8 +1,44 @@
 {
   "version": "0.0.1",
   "configurations": [
-    { "name": "grimtoll", "runtimeExecutable": "powershell",
-      "runtimeArgs": ["-NoProfile","-ExecutionPolicy","Bypass","-Command","$env:GT_PORT=$env:PORT; & tools/serve.ps1"],
-      "port": 8777, "autoPort": true }
+    {
+      "name": "grimtoll",
+      "runtimeExecutable": "powershell",
+      "runtimeArgs": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-Command",
+        "$env:GT_PORT=$env:PORT; & tools/serve.ps1"
+      ],
+      "port": 8777,
+      "autoPort": true
+    },
+    {
+      "name": "grimtoll-desk-feedback-popup",
+      "runtimeExecutable": "powershell",
+      "runtimeArgs": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-Command",
+        "$env:GT_PORT=$env:PORT; $env:GT_ROOT='C:/Users/USER/grimtoll-desks/feedback-popup'; & tools/serve.ps1"
+      ],
+      "port": 8791,
+      "autoPort": true
+    },
+    {
+      "name": "grimtoll-desk-world-map-terrain",
+      "runtimeExecutable": "powershell",
+      "runtimeArgs": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-Command",
+        "$env:GT_PORT=$env:PORT; $env:GT_ROOT='C:/Users/USER/grimtoll-desks/world-map-terrain'; & 'C:/Users/USER/grimtoll-desks/world-map-terrain/tools/serve.ps1'"
+      ],
+      "port": 8793,
+      "autoPort": true
+    }
   ]
 }

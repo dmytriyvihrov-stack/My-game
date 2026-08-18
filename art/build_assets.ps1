@@ -147,18 +147,22 @@ if (Test-Path $stage2PorDir) {
   }
 }
 
-# --- stage-3 static event and prologue art ---------------------------
+# --- stage-3/4 static event and prologue art -------------------------
 # These masters are painted AT the live canvas size: 586x212 for the dialog
 # window (DLGART_W x DLGART_H) and 460x190 for the prologue outcome card. They
 # are NOT sent through the stage-2 640x360 resize/JPEG path: that would crop
 # them a second time and enlarge them off their own grid. Embedded verbatim as
 # PNG, so drawArt() cover-fits at scale 1 and draws pixel for pixel.
 # `EV-29_warm-spring.png` -> key `EV29`, `EV-00B_no-joke.png` -> key `EV00B`.
-$stage3 = Join-Path $src 'stage-3'
-foreach ($sub in @('events', 'prologue')) {
-  $dir = Join-Path $stage3 $sub
-  if (-not (Test-Path $dir)) { continue }
-  Get-ChildItem $dir -Filter *.png | Sort-Object Name | ForEach-Object {
+$staticPacks = @(
+  (Join-Path $src 'stage-3'),
+  (Join-Path $src 'stage-4')
+)
+foreach ($pack in $staticPacks) {
+  foreach ($sub in @('events', 'prologue')) {
+    $dir = Join-Path $pack $sub
+    if (-not (Test-Path $dir)) { continue }
+    Get-ChildItem $dir -Filter *.png | Sort-Object Name | ForEach-Object {
     $img = [System.Drawing.Image]::FromFile($_.FullName)
     $w = $img.Width; $h = $img.Height
     $img.Dispose()
@@ -169,7 +173,8 @@ foreach ($sub in @('events', 'prologue')) {
       B64 = [Convert]::ToBase64String($bytes)
       KB  = [math]::Round($bytes.Length / 1KB, 1)
     }
-    "{0,-34} -> {1,6} KB  (stage 3 verbatim {2}x{3})" -f $_.Name, [math]::Round($bytes.Length/1KB,1), $w, $h
+      "{0,-34} -> {1,6} KB  (static verbatim {2}x{3})" -f $_.Name, [math]::Round($bytes.Length/1KB,1), $w, $h
+    }
   }
 }
 
@@ -282,7 +287,7 @@ $sb = New-Object System.Text.StringBuilder
 foreach ($e in $entries) {
   [void]$sb.AppendLine(("  {0}:'data:image/jpeg;base64,{1}'," -f $e.Key, $e.B64))
 }
-# stage-3 masters keep their PNG bytes, so they carry a PNG mime type
+# static stage-3/4 masters keep their PNG bytes, so they carry a PNG mime type
 foreach ($e in $pngEntries) {
   [void]$sb.AppendLine(("  {0}:'data:image/png;base64,{1}'," -f $e.Key, $e.B64))
 }
