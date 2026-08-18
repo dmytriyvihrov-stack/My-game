@@ -98,6 +98,12 @@ $mb    = [Math]::Round((Get-Item (Join-Path $root 'index.html')).Length / 1MB, 2
 if ($cues -lt 11) { Die "only $cues audio cues in the built page, expected 11 or more. It would be SILENT for everyone. Run with -Audio." }
 if ($art  -lt 100) { Die "only $art pictures in the built page. Something is wrong with the art block." }
 
+# The world map's ground is the ONE picture in the build with a working
+# fallback behind it, so its absence is the only one that is invisible: the map
+# simply draws the procedural terrain again and says nothing. Every other
+# missing image leaves a hole somebody reports. It is asserted by name.
+if ($built -notmatch 'data:image/webp;base64,') { Die "the world map's painted ground is not in the built page. The map would silently fall back to the procedural terrain and nobody would notice." }
+
 # ---- 4. commit -------------------------------------------------------------
 Step 4 "committing"
 # Say out loud what -A is about to sweep up. A deploy that quietly carries eight

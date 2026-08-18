@@ -25,6 +25,47 @@
 
 ---
 
+## 🗺 THE WORLD MAP HAS A PAINTED GROUND  *(#190 · 2026-08-18 · build log 8f.210)*
+
+The map you walk the company across is a painting now instead of a procedurally
+drawn one. **Only the ground changed.** The roads, the event sights, the name
+plates, the company token, the ROAD/NEAR/CLOSE stops and the drag are all the
+same code drawing the same things at the same coordinates.
+
+**How to reach it in three steps:** new game → through the tap-room → the map is
+the next screen.
+
+**What should happen**
+
+- The valley, the mountains down the east, the water in the south-west and the
+  pink Bloom in the north are one continuous painting rather than shapes.
+- **Every node still reads.** The sights and their name plates sit on a ground
+  that has been dimmed to the darkness the old one had, on purpose: the plates
+  were coloured for a dark map and the painting is 2.5x brighter than it.
+- `THE BLOOM`, `THE HUNCH` and `THE GRAUSEN VALLEY` are all still there and all
+  still readable. The valley one is the quietest of the three by design.
+- The road out of Grausen Hold and every other route lies exactly where it did.
+  Walking a leg should not shift the company off the line.
+- **Nothing should ever be a black frame.** If the picture is slow, you see the
+  old procedural map for an instant and then the painting.
+
+**What would be a bug**
+
+- A name plate or a sight you cannot read against the ground.
+- The company walking beside the road instead of on it, or a node that has moved.
+- The map going flat/procedural and staying that way (that is the fallback, and
+  on a working build you should never sit in it).
+- Any wobble when an event card opens and closes over the map.
+
+**⚠ The one thing I would ask you to judge:** the dim is a single number and it
+is currently `.45`, chosen by measurement rather than taste. If the map feels too
+dark, it is a one-word change; the two candidates either side are `.30` (prettier,
+plates start to wash out) and `.58` (matches the old map exactly, noticeably
+darker). The other two painted candidates are still in `art/world-map-backgrounds/`
+if you want to see them in the game instead.
+
+---
+
 ## 🔤 THE REAL TYPEFACES, AND NO WINDOW SCROLLS  *(#189 · 2026-08-18 · build log 8f.209)*
 
 **⚠ Read this first, because it changes what you were looking at.** The fonts you called
