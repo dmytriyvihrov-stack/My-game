@@ -36,17 +36,22 @@ want to move are named at the end.
 comes back, a card lands on it.
 
 **What should happen.** A small card: **HOW WAS THAT?**, under it the name of the thing you are
-rating in small caps - **FIGHT: BRIGAND**, not "the road (map)" - then three faces, 🙁 *no* ·
-😊 *good* · 🤩 *loved it*. Pick one and SEND lights. **Only 🙁 opens a second step**, a box headed
-*WHAT WENT WRONG?* Press SEND and it is filed against that fight, with whatever you typed.
+rating in small caps - **FIGHT: BRIGAND**, not "the road (map)" - then three doors,
+👍 *good* · 🤷 *so-so* · 👎 *bad*. Pick one and SEND lights. **Only 👎 opens a second step**, a box
+headed *WHAT WENT WRONG?* Press SEND and it is filed against that fight, with whatever you typed.
 **It asks once a run.** Win a second fight in the same run and it must stay silent.
 
 **The same card is what the FEEDBACK button opens**, bottom right, on any screen - there it names
 whatever you are looking at.
 
 **What would be a bug.** The card naming *the road (map)* after a fight. It asking twice in one run.
-The reason box opening off the happy faces. **Esc, the backdrop or NOT NOW filing anything** - all
-three must close it and record nothing. It appearing on top of a yes/no question.
+The reason box opening off 👍 or 🤷. **Esc, the backdrop or NOT NOW filing anything** - all three must
+close it and record nothing. It appearing on top of a yes/no question.
+
+⚠ **In the playtest notes, so-so is its own row and its own word.** The report counts
+**liked / so-so / disliked**, and a shrug prints as ▬ *so-so* - it is NOT folded into "liked",
+because a tally that calls a shrug a like is a tally that lies. A **loved** column still appears if
+your journal carries ★ rows from before this change; a fresh run shows three.
 
 ### 2. The three corner buttons are gone
 
@@ -98,9 +103,10 @@ appearing when it is on.
 
 - **How often the popup arrives.** Today: once a run, after a won fight. Easy to make it every
   fight, or once a session, or never automatic.
-- **The three faces.** 🙁 😊 🤩 were chosen to stay clear of the morale faces (💀 😟 😐 🙂 😄), which
-  the game already uses to mean something else. If you want the exact ones from your screenshot,
-  say so and I will find a set that still cannot be confused with morale.
+- **The three doors.** 👍 🤷 👎, your second pick. ⚠ 🤷 is the only one that is not a hand and it
+  is a busier picture than the two thumbs beside it - there is no hand that reads "so-so" on its
+  own (👌 means good), and 🙂 😐 belong to the company's morale. **🫤 is a one-line swap** if you
+  would rather the middle be a face.
 ## 🏆 THE AFTER-BATTLE SCREEN, ON THE HYBRID YOU APPROVED  *(#187 · 2026-08-18 · build log 8f.207)*
 
 **Where it came from.** `CLAUDE_AFTERMATH_IMPLEMENTATION.md`, written against the hybrid mockup:

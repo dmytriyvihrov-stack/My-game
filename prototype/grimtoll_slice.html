@@ -3075,6 +3075,8 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:var(--f
 /* the ×N on a screen reacted to more than once (#54) */
 .nrow b .rxn{color:#8a7449;letter-spacing:0}
 .nrow b.super{color:#e28fb4}.nrow b.like{color:#8ca35a}.nrow b.dis{color:#c15d55}
+/* #188b - so-so is deliberately the row with no opinion in its colour */
+.nrow b.meh{color:#c9b98a}
 .nrow b.dec{color:#7fa8c9}
 .nrow span{flex:1;color:#c9b98f;min-width:0;overflow-wrap:anywhere}
 .nrow span em{color:#a89a80;font-style:italic}
@@ -3130,6 +3132,7 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:var(--f
    in flow on purpose when it has something to say. */
 #reactCount:empty{display:none}
 #reactCount.super{color:#e28fb4}#reactCount.like{color:#8ca35a}
+#reactCount.meh{color:#c9b98a}
 #reactCount.dis{color:#c15d55}
 /* what you just reacted to, echoed for a second so the click is not silent
    and so the player can see the game recorded the RIGHT screen */
@@ -33785,7 +33788,11 @@ $('helpBtn').onclick=openHelp;
    changed, so every journal ever exported still reads, here and in the
    Dramaturge's analytics tab.
    ═══════════════════════════════════════════════════════════════════════ */
-const RXWORD={super:'★ loved',like:'▲ liked',dis:'▼ disliked'};
+/* the report's own word for each kind, and its FIRST TOKEN is the glyph the
+   notes screen draws (see `glyph` in runBlock). ▬ is the level mark between
+   ▲ and ▼, so the three the popup can file read as a ladder in the report the
+   way they do on the card. ★ stays for the journals that already carry it. */
+const RXWORD={super:'★ loved',like:'▲ liked',meh:'▬ so-so',dis:'▼ disliked'};
 const ordinal=n=>n+(n%100>=11&&n%100<=13?'th':({1:'st',2:'nd',3:'rd'}[n%10]||'th'));
 /* every reaction this exact screen carries THIS run, oldest first */
 function rxHere(w){
@@ -33851,9 +33858,33 @@ function react(kind,w,why){
    set. ⛔ And the KEYS are the same three the bar has filed since #53, so every
    journal ever exported still reads and the report needs no branch.
    ══════════════════════════════════════════════════════════════ */
-const RX_FACES=[{k:'dis',ic:'🙁',t:'no'},
-                {k:'like',ic:'😊',t:'good'},
-                {k:'super',ic:'🤩',t:'loved it'}];
+/* ═══ #188b · THUMBS, AND THE MIDDLE ONE GOT ITS OWN KEY ════════════
+   (User, 2026-08-18: *"try differen emojies - finger up , so-so , finger down
+   so far"*. His order, left to right, is the order below.)
+
+   ⛔ AND "SO-SO" COULD NOT BE FILED AS `like`, WHICH IS THE ONLY REAL DECISION
+   IN THIS SWAP. The three keys since #53 are `super`/`like`/`dis` and the report
+   prints them as loved/liked/disliked, so a shrug landing on `like` would put
+   the word "liked" on a person who said the opposite - #102's wrong-unit rule,
+   arriving through what looks like a change of picture. So `meh` is a fourth
+   kind, and `super` is RETIRED FROM THE POPUP rather than deleted: nothing files
+   it any more, and it stays in RXWORD, in the CSS and in the tally so that every
+   ★ already sitting in somebody's journal still renders. ⚠ The tally prints
+   LOVED only when the count is non-zero, so a new run shows three cells and an
+   old tester's still shows four.
+
+   ⚠ A FOURTH `k` IS A NEW VALUE IN THE EXPORTED BLOB. The row SHAPE is
+   unchanged, which is the contract #57's analytics tab reads under, but a reader
+   that switches on `k` will meet `meh` for the first time. `RXWORD[r.k]||r.k` in
+   the letter already degrades safely; nothing else in this file switches on it.
+
+   ⚠ 🤷 IS THE ONE GLYPH HERE THAT IS NOT A HAND, and it is heavier than the two
+   thumbs beside it. It is used because there is no hand that reads "so-so" on
+   its own (👌 means good), and 🙂😐 are the company's morale. 🫤 is the
+   one-line alternative if the row wants a face instead. */
+const RX_FACES=[{k:'like', ic:'👍',t:'good'},
+                {k:'meh',  ic:'🤷',t:'so-so'},
+                {k:'dis',  ic:'👎',t:'bad'}];
 const RXPOP={
   el:null, w:null, k:null, askedRun:null,
   /* built on first open, not at boot: it is a modal most sessions never see,
@@ -34208,8 +34239,13 @@ function drawNotes(log,who){
         '<div><b>'+fmtDur(secs)+'</b><i>at the keyboard</i></div>'+
         '<div><b>'+(end?esc(end.w):'—')+'</b><i>ended</i></div>'+
         (full?'<div><b>'+dec.length+'</b><i>decisions</i></div>':'')+
-        '<div><b class="super">'+cnt('super')+'</b><i>loved</i></div>'+
+        /* #188b - LOVED only when somebody has one. The popup stopped filing
+           ★ when the faces became thumbs, so on a new run this cell would be a
+           permanent 0 taking a seventh of the row; on an older tester's journal
+           it is still a real number and still shows. */
+        (cnt('super')?'<div><b class="super">'+cnt('super')+'</b><i>loved</i></div>':'')+
         '<div><b class="like">'+cnt('like')+'</b><i>liked</i></div>'+
+        '<div><b class="meh">'+cnt('meh')+'</b><i>so-so</i></div>'+
         '<div><b class="dis">'+cnt('dis')+'</b><i>disliked</i></div>'+
       '</div>'+
       (full&&rx.length?'<h3 class="nsub">WHAT THEY REACTED TO</h3>'+
