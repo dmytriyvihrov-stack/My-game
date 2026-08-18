@@ -258,20 +258,38 @@ brigand 14-round line especially"*, written after the morale rework. **This is t
 bring it back down. The parking lot's instruction not to retune the line-of-fire penalties still
 stands on its own terms: it waits on #46 (shipped) and **#47 (not shipped)**.
 
-**The remainder, and it is three measurements.** ⛔ **All three are measurements, not builds.** None
-of them adds a system, which is why this can sit in 🟡 NEXT without arguing with the clarity pass.
+**The remainder.** *(a to c filed 2026-08-11. **c was TAKEN on 2026-08-13 during #146** and its
+result is in the row in [`00_PLAN_AND_BACKLOG.md`](../00_PLAN_AND_BACKLOG.md), including the thing
+nobody had asked about: **before that pass the enemy was the better-aiming side by three points**.
+d and e were added 2026-08-18 by part four.)* **Four stay open: a, b, d, e.** ⛔ **All four are
+measurements, not builds.** None of them adds a system, which is why this can sit in 🟡 NEXT
+without arguing with the clarity pass.
 
 | | what is missing | why it is the gap | done when |
 |---|---|---|---|
 | **a** | **The mop-up tail.** No number above isolates *rounds after the outcome was decided* | Patterns 4 and 5 both point at the **end** of a fight, and it is where all three neighbours bleed players. Battle Brothers never closed this wound and it is its second-loudest complaint | `measure()` reports, per fight, the round at which the loser's outcome became inevitable and how many rounds ran after it. **Start with `brigand`** |
 | **b** | **A real stopwatch.** The minutes column is derived from `paced(240)`, not timed | ⚠ A timed AUTO run in the preview pane measures **the pane's throttle**, not the game: `setTimeout` is floored at ~1s there and `rAF` never fires, which is why `tools/harness.js` exists at all. The derivation is written out in the document so it can be argued with, but it is arithmetic | one human, a visible window, a stopwatch, three of the eight fights. Twenty minutes of work, worth more than any refinement of the formula |
-| **c** | **Hit rates were not measured at all** | ⚑ **The loudest single complaint in the loudest of the three games is that honest RNG reads as dishonest** (pattern 3), and Grimtoll's own hit numbers are absent from this document. #84's regression counted 51 dodges to 169 misses, which is the nearest existing data and was gathered for a different question | a distribution, not an average: the streak is what players judge, so what matters is how often a 70% shot misses three times running |
+| **c** ✅ | **Hit rates were not measured at all.** ✅ **TAKEN 2026-08-13 during #146** | ⚑ **The loudest single complaint in the loudest of the three games is that honest RNG reads as dishonest** (pattern 3), and Grimtoll's own hit numbers are absent from this document. #84's regression counted 51 dodges to 169 misses, which is the nearest existing data and was gathered for a different question | a distribution, not an average: the streak is what players judge, so what matters is how often a 70% shot misses three times running |
+| **d** | **The forced-answer test, per fight.** *"What was I forced to do here that I did not do in the previous fight?"* | ⚑ **Added by part four, and it is a ROUTER not a verdict** - the same shape as #88's ⛔ measure the box before you argue about the font. **Same answer across two fights = the problem is MECHANICAL** (the fights are not asking different questions). **Different answers but the fights still feel alike = the problem is PRESENTATION** (art, animation, sound, how legible an act is). It decides which argument you are allowed to have next | a written answer for all eight fights. ⛔ **It needs a human, not the harness** |
+| **e** | **Token legibility at the size actually drawn** | ⚠ Part four's research assumed most battle tokens were undrawn. **That is out of date and the check disproved it**: 50 painted tokens are embedded, 41 of them units, and `paintedSpriteKey` ends on `return k&&BATTLE_ART[k]?k:null` so nothing falls back to the procedural silhouette. **So the sharper question is the one nobody has asked: the art is distinct as a FILE, is it distinct as an OBJECT?** `TOKEN=1.13*0.90` draws a human at about **26x39 px** on a 37x42 hex, and #163 took 10% off every body for crowd navigation - **legibility and crowd-readability are already pulling against each other and the trade has never been measured** | the distance test from [`ui-scales.md`](../../.claude/rules/ui-scales.md) run on a token instead of on type: a foe spearman beside a foe swordsman beside a foe cutter, at 26x39, at the three camera stops |
 
 **⚠ The trap in reading 5.** The 2:1 enemy skill gap must **not** be read as *give enemies more
 skills*. Pattern 1 says the anti-repetition mechanic is **composition** variety, not per-unit skill
 count: three enemy types that each demand a different formation beat one enemy type with three more
 buttons. #47 (the spear becomes a zone) is already the right shape - a rework of what a lane means,
 not an addition.
+
+⚑ **PART FOUR ANSWERED THIS ONE, and its answer is the best thing in the document.** *"In Battle
+Brothers the unit of variety is not the race, it is the combination of weapon, equipment, formation
+and behaviour."* Ten humans there pose ten different problems because **the enemies run on almost
+the same weapon rules the player does**: a spear is not a damage number, it is spearwall; a shield
+can be split; a hook drags a man out; a hammer breaks armour. **That is what lets "one more man" be
+a new tactical object.** ⛔ **So Grimtoll does not need new races or ten new monsters. It needs the
+humans, ratkin and ogres it already has to force the player to change their answer, visibly, without
+reading the panel.** On paper the eight fights already do this by design (`pack` gathers you up,
+`slingline` makes you advance under fire, `steading` makes you kite, `mother` breaks your formation,
+`armour` punishes surrounding, `snare` mixes all of it). **The open question is whether the build
+sells the difference**, and item **d** above is the test that decides it.
 
 **⚠ The trap in reading 3.** Grimtoll's 1.61 actions per unit-turn is the lowest of the four, and
 Wildermyth's most-praised mechanic (**the swift action, a third thing for free**) is the cheapest

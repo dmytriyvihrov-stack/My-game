@@ -3389,24 +3389,126 @@ body:has(#world.on) #audioBtn{top:8px;bottom:auto;font-size:var(--fs2);padding:v
    off, gold arrow = promoted, ash = dead-when-#34-arrives), the loot given
    below it, the enemy accordion. Mocked and approved in
    shots/122_after_battle.html; the classes are prefixed ab* because .crew
-   and .face already mean other things elsewhere on this file. */
+   and .face already mean other things elsewhere on this file.
+
+   ═══ #187 - AND THE SAME SCREEN, RE-DRESSED ON THE APPROVED HYBRID ════════
+   (2026-08-18, against `aftermath-hybrid-v3.html`: the composition of the
+   first pass - emblem, rays, one meta line - carrying the material language
+   of the second - brass edges, layered dark, receipt tiles.)
+
+   ⛔ WHAT DID NOT CHANGE, AND IS THE REASON THIS WAS CHEAP: not one number,
+   not one payment, not one string of prose. #122's data model, #137's
+   chips-beside-the-pay rule, #159's mercy branch and #174's ✦ are untouched;
+   this is CSS plus the markup that hangs on it. If a future pass finds itself
+   editing `takeLoot`, `payFightXP` or an `AFTER` row to make the screen look
+   right, it has left the brief.
+
+   ⛔ THE THREE SCALES ARE CLOSED HERE TOO (.claude/rules/ui-scales.md). The
+   mockup is written in 8px and 9px type and in seven hand-mixed browns; every
+   one of those landed on --fs1 and on --e1..--e3. An inner hairline that the
+   scale has no colour for is drawn with `box-shadow: inset 0 0 0 1px`, which
+   is a SHADOW and not a border, so the edge vocabulary stays five wide. */
+/* the card IS the stage, so the rays are the card's own background rather
+   than an added layer. Three CSS gradients and no image: a network fetch
+   would break the single-file build, which is the one thing this file cannot
+   trade away. `background-attachment` stays at its default `scroll`, which on
+   an `overflow:auto` box pins the rays to the card's top edge instead of
+   letting them ride up with the prose. */
+/* ⚠ THE GAP CAME DOWN, AND IT IS THE PRICE OF THE HEADER. MEASURED: the
+   emblem is 46px, the prose rule 18, the taller crew cards 24 and the haul's
+   tray 18, so the hybrid costs about 130px of card that #122's version did not
+   spend. `.pcard`'s own 9px gap runs eleven times on this screen; at --p3 that
+   is 33px back, and dropping `.amSec`'s top margin is another 8. THE SNARE IS
+   WHY: it carries the longest aftermath prose in the game (#180) and without
+   this it lands exactly on the 684 ceiling and starts to scroll on a screen
+   that has not even opened its accordion yet. */
+#spoils .pcard{gap:var(--p3);border-color:var(--e2);background:
+  radial-gradient(circle at 50% 5%,rgba(217,189,126,.17),transparent 30%),
+  repeating-conic-gradient(from -8deg at 50% 9%,rgba(199,155,68,.075) 0 7deg,transparent 7deg 19deg),
+  linear-gradient(180deg,#191308 0,#171009 32%,var(--g0) 60%),var(--g0);
+  background-size:100% 300px,100% 330px,100% 100%,auto;background-repeat:no-repeat;
+  background-position:top center,top center,top center,center}
+/* the emblem over the company name, with the two hairlines running out of it.
+   ⚠ THE RING IS A BOX AND SO IT IS ON THE EDGE SCALE (--e3), not on the
+   accent gold: nothing about this circle is a readout. The mockup's brighter
+   #a98748 is paid back as glow, which costs no vocabulary. */
+.amEmb{width:46px;height:46px;margin:0 auto;position:relative;display:grid;place-items:center;
+  border:1px solid var(--e3);border-radius:50%;color:var(--g4);
+  background:radial-gradient(circle,#3a290e 0 49%,#171007 51% 100%);
+  box-shadow:0 0 0 4px rgba(205,163,77,.06),0 0 26px rgba(205,163,77,.2);
+  font-family:var(--display);font-size:var(--fs7);text-shadow:0 2px 4px #000}
+.amEmb:before,.amEmb:after{content:'';position:absolute;top:22px;width:120px;height:1px;
+  background:linear-gradient(90deg,transparent,#85652e)}
+.amEmb:before{right:52px}
+.amEmb:after{left:52px;transform:scaleX(-1)}
 .abco{font-family:var(--mono);font-size:var(--fs1);letter-spacing:.28em;color:var(--g3);
-  text-align:center}
+  text-align:center;margin-top:var(--p3);text-shadow:0 2px 8px #000}
+/* the outcome, and it keeps `.pcard h1`'s size. A class of its own because
+   the mercy screen's h1 is the plain one and must stay plain. */
+.amTitle{font-family:var(--display);font-size:var(--fs8);font-weight:600;letter-spacing:.06em;
+  color:#efe0b9;text-align:center;margin:var(--p1) 0 0;
+  text-shadow:0 3px 18px #000,0 0 32px rgba(217,189,126,.18)}
 .abtop{max-width:540px;margin:0 auto;text-align:center}
 .abtop p{font-size:var(--fs4)}
+/* the little rule under the prose: it separates the story from the ledger,
+   which is the one seam on this card that was doing it with blank space */
+.amTop:after{content:'';display:block;width:120px;height:9px;margin:var(--p4) auto 0;
+  background:linear-gradient(90deg,transparent,#80622e 40%,transparent 40% 60%,#80622e 60%,transparent),
+    radial-gradient(circle,#c4a45b 0 2px,transparent 3px);background-position:center}
+/* a section head with the hairlines, replacing the bare `.lbl` on this screen
+   only. `.lbl` is still what every other screen uses. */
+.amSec{display:flex;align-items:center;gap:var(--p5);font-family:var(--mono);font-size:var(--fs1);
+  letter-spacing:.2em;color:#a28950;text-transform:uppercase;
+  text-shadow:0 2px 5px #000}
+.amSec:before,.amSec:after{content:'';height:1px;flex:1;
+  background:linear-gradient(90deg,transparent,#604923)}
+.amSec:before{max-width:56px;background:linear-gradient(90deg,#604923,transparent)}
 .absub{font-family:var(--mono);font-size:var(--fs1);letter-spacing:.12em;color:#7a6238;
   text-align:center}
-.abgrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px}
-.abcrew{position:relative;border:1px solid var(--e3);
-  background:linear-gradient(170deg,#2a2010,#1a1309);
-  padding:var(--p4) var(--p4) var(--p4);display:flex;gap:9px;align-items:flex-start;overflow:hidden}
-.abface{width:44px;height:44px;flex:none;border:1px solid var(--e3);object-fit:cover;
-  object-position:top;background:#1a1309;position:relative;z-index:1}
-.abname{font-family:var(--display);font-size:var(--fs3);letter-spacing:.05em;color:var(--g4);
-  line-height:1.15;position:relative;z-index:1}
-.abkind{font-family:var(--mono);font-size:var(--fs1);letter-spacing:.1em;color:#8a7449;margin-top:1px}
-.abnums{font-family:var(--mono);font-size:var(--fs2);margin-top:5px;display:flex;gap:10px;
-  color:#a89468;position:relative;z-index:1}
+/* ⚑ #187 - `auto-fit`, NOT `repeat(4,...)`, AND THE PARTY IS THE REASON.
+   The brief asks for four across, and four is what 752px of card gives at
+   this minimum (752 - 3 gaps = 725, /4 = 181 ≥ 160; five would need 143 and
+   cannot). But the roster is not always four: a company of three would sit in
+   three quarters of a row with a hole beside it, and `auto-fit` fills the row
+   instead. The same rule is what folds the grid to 2 and then to 1 if the
+   card is ever narrower than the stage it lives on today.
+   ⚠ THE STAGE IS 1280x720 AND IS SCALED, NEVER REFLOWED (see `fit()`), so a
+   phone gets this same four-across grid shrunk, not a one-column version of
+   it. That is the build's answer to "responsive" and it predates this screen. */
+.abgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:var(--p4)}
+/* the card: layered dark, a brass edge, a hairline inset just in from it, and
+   real depth under it. `overflow:clip` crops the blood wash to the box and,
+   unlike `hidden`, makes no scroll container - see the ribbon note below for
+   why that distinction cost an afternoon. */
+.abcrew{position:relative;min-width:0;overflow:clip;
+  display:grid;grid-template-columns:40px minmax(0,1fr);gap:0 var(--p2);align-content:start;
+  border:1px solid var(--e2);padding:var(--p4);
+  background:linear-gradient(145deg,rgba(48,35,17,.96),rgba(16,15,11,.97) 72%),#17120b;
+  box-shadow:inset 0 0 0 1px rgba(151,116,58,.1),inset 0 1px rgba(255,239,187,.05),
+    0 8px 18px rgba(0,0,0,.25)}
+.abface{width:40px;height:46px;grid-column:1;grid-row:1;border:1px solid var(--e3);
+  object-fit:cover;object-position:top;background:#1a1309;position:relative;z-index:2;
+  box-shadow:inset 0 0 13px rgba(0,0,0,.6)}
+.abwho{grid-column:2;grid-row:1;min-width:0;position:relative;z-index:2}
+.abname{font-family:var(--display);font-size:var(--fs2);letter-spacing:.04em;color:#e1cd99;
+  line-height:1.14;overflow-wrap:anywhere}
+/* ⚠ TRACKING IS WHAT DECIDES WHETHER THE ROLE WRAPS, AND IT WAS MEASURED.
+   "BATTLE-MAGE · HUMAN" is 19 glyphs; the name column is 119px on a 4-across
+   grid; JetBrains Mono at the 10px floor is 6px an advance, so .04em of
+   tracking (+0.4px a glyph) puts the line at 122 and .02em puts it at 118.
+   That 4px is the whole difference between one line and two on every card in
+   the company, which is 13px of grid height. */
+.abkind{font-family:var(--mono);font-size:var(--fs1);letter-spacing:.02em;color:#91784a;
+  line-height:1.3;margin-top:var(--p1);overflow-wrap:anywhere}
+/* ⚑ THE NUMBERS SPAN THE WHOLE CARD, WHICH IS THE ONE PLACE THIS DIVERGES
+   FROM THE MOCKUP, AND IT IS ARITHMETIC RATHER THAN TASTE. The mockup's card
+   is 226px wide (990px shell); this one is 181px (800px card), and the four
+   chips want ~120px of the 111px the name column would have left them. Full
+   width gives them 163px and costs the card nothing in height, because the
+   portrait is taller than the name and role are. */
+.abnums{grid-column:1/-1;font-family:var(--mono);font-size:var(--fs1);
+  margin-top:var(--p2);display:flex;flex-wrap:wrap;gap:var(--p2) var(--p3);
+  color:#a89468;position:relative;z-index:2}
 .abk{color:var(--bone)}.abd{color:#8ca35a}.abt{color:#c15d55}
 /* the XP slot sat on every card HIDDEN from #122 to 8f.201 (user: "i will
    add it in the futrue - for current stuff you can just hide it"). #174 is
@@ -3414,25 +3516,76 @@ body:has(#world.on) #audioBtn{top:8px;bottom:auto;font-size:var(--fs2);padding:v
    layout was already right. Gold because it is the one number on the row
    that is a receipt for the person rather than a report on the fight. */
 .abx{color:var(--gold)}
-.abline{font-size:var(--fs1);font-style:italic;margin-top:3px;position:relative;z-index:1}
+.abline{grid-column:1/-1;font-size:var(--fs1);font-style:italic;line-height:1.25;
+  margin-top:var(--p2);padding-top:var(--p2);position:relative;z-index:2;
+  box-shadow:inset 0 1px rgba(119,77,41,.45)}
 .abscarline{color:#a33b34}
 .abuplne{color:#8ca35a}
-.abbadge{position:absolute;top:-1px;left:-1px;width:17px;height:17px;background:#3d2f1d;
-  border:1px solid var(--g4);color:var(--g4);font-size:var(--fs1);line-height:15px;
-  text-align:center;z-index:2}
-/* DOWN: the bloody frame, blood dripping off the top edge, a pool low. */
-.abcrew.scar{border-color:#a33b34;box-shadow:inset 0 0 20px rgba(122,31,34,.65)}
-.abcrew.scar:before{content:'';position:absolute;inset:0;pointer-events:none;
+/* DOWN: the bloody frame, blood dripping off the top edge, a pool low, and
+   the strip along the bottom saying what they were carried off with.
+   ⛔ #187 KEPT ALL OF IT AND ADDED THE STRIP. The instruction was explicit
+   that the injury may not thin out into one red hairline: this is the state
+   the whole card exists to make unmissable, and the mockup's own wounded card
+   is the old treatment plus the strip, not instead of it. */
+.abcrew.scar{border-color:var(--blood-lit);
+  background:linear-gradient(145deg,rgba(62,27,20,.97),rgba(17,12,10,.98) 74%),#17120b;
+  box-shadow:inset 0 0 26px rgba(112,25,24,.6),0 8px 18px rgba(0,0,0,.34)}
+.abcrew.scar:before{content:'';position:absolute;inset:0;pointer-events:none;z-index:1;
   background:
     radial-gradient(26px 60px at 12% -8%,rgba(163,59,52,.8),transparent 65%),
     radial-gradient(14px 42px at 30% -6%,rgba(122,31,34,.85),transparent 70%),
     radial-gradient(20px 52px at 55% -10%,rgba(163,59,52,.6),transparent 65%),
     radial-gradient(10px 34px at 76% -4%,rgba(122,31,34,.8),transparent 70%),
     radial-gradient(48px 30px at 6% 78%,rgba(122,31,34,.5),transparent 70%),
-    radial-gradient(70px 34px at 100% 105%,rgba(163,59,52,.45),transparent 70%)}
-.abcrew.scar .abface{border-color:#5d2a26}
-.abcrew.up{border-color:var(--g4)}
-.abcrew.up.scar{border-color:#a33b34}
+    radial-gradient(70px 34px at 100% 105%,rgba(163,59,52,.45),transparent 70%),
+    linear-gradient(113deg,transparent 0 71%,rgba(135,41,34,.42) 72%,transparent 73%)}
+.abcrew.scar .abface{border-color:#5d2a26;filter:saturate(.7) contrast(1.08);
+  box-shadow:inset 0 0 18px rgba(126,28,26,.7)}
+/* the strip runs to the card's own edges, which is why it cancels the card's
+   padding with a matching negative margin. ⚠ THE THREE NUMBERS ARE ONE TOKEN
+   (--p4), the same rule the sticky footers are written under: they cannot
+   drift apart if they are literally the same word. */
+.abcrew.scar .abscarline{margin:var(--p2) calc(var(--p4) * -1) calc(var(--p4) * -1);
+  padding:var(--p2) var(--p2);background:rgba(111,27,25,.45);color:#e19a84;
+  border-top:1px solid var(--blood-lit);box-shadow:none;
+  font-family:var(--mono);font-style:normal;letter-spacing:.04em;text-transform:uppercase;
+  text-align:center;overflow-wrap:anywhere}
+/* UP: the gold edge, and the ribbon across the corner. The LEVEL NUMBER lives
+   on the ribbon and nowhere else on the card - the line underneath keeps the
+   half that is an instruction ("spend it on the sheet"), which is the half
+   the player has to act on. One fact, one place. */
+.abcrew.up{border-color:var(--g4);
+  box-shadow:inset 0 0 24px rgba(199,156,69,.18),0 8px 20px rgba(0,0,0,.3)}
+.abcrew.up .abface{border-color:var(--g3)}
+.abcrew.up.scar{border-color:var(--blood-lit)}
+/* ═══ THE PROMOTION MARK: A CORNER PLATE, NOT A DIAGONAL RIBBON ═══════════
+   ⚠ THIS IS THE ONE PLACE #187 DEPARTS FROM THE APPROVED MOCKUP, AND IT WAS
+   BUILT BOTH WAYS BEFORE CHOOSING. The brief's own words are "компактная
+   ribbon/badge", so a badge is inside it; here is why the ribbon lost.
+
+   A corner ribbon only reads as one if the corner CROPS it, and cropping is
+   layout overflow: the mockup's geometry measured `.abcrew w23` on the
+   ui-scales §5 counter for every promoted body, on the one card in the game
+   whose job is to be checked for clipped text. ⚠ `overflow:clip` does not
+   help - Chrome reports the overflow region either way, measured rather than
+   assumed - and only LEFT and TOP overflow is free, which would have put the
+   ribbon across the portrait's face.
+
+   Sized to land flush on the two edges instead (right:-7px, top:31px for a
+   104x16 strip at 39°, which is that strip's turned bounding box pinned into
+   the corner) the numbers are honest and the thing stops looking like a
+   ribbon: with nothing cutting its ends it reads as a stick lying across the
+   name, and it covered the name to boot.
+
+   So the mark went back to where #122 always had it - the top-left corner,
+   over the portrait's own corner, where it has shipped since the first slice
+   - and grew from a bare ▲ to ▲ and the level. It is compact, it adds no
+   height, it covers no name, and it is legible at the 10px floor, which a
+   rotated 10px string is not. */
+.abbadge{position:absolute;top:0;left:0;z-index:4;padding:var(--p1) var(--p3);
+  background:linear-gradient(#ddbe70,#9e7836);color:#261807;
+  font-family:var(--mono);font-size:var(--fs1);letter-spacing:.06em;line-height:1.3;
+  white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,.6)}
 /* DEAD: designed now, worn later. ⛔ Nothing on the roster dies in battle
    today (#34 owns that chain); this state waits on `p.deadBattle`, which
    nothing sets. It ships so the day somebody does die, the card already
@@ -3448,8 +3601,9 @@ body:has(#world.on) #audioBtn{top:8px;bottom:auto;font-size:var(--fs2);padding:v
    haul is one plain receipt line (user, round three: "show it simplier, nt
    as artifact"). The dashed square is the slot his item art lands in the
    day it exists - no art ships with #122. */
-.abloot{display:flex;align-items:center;gap:12px;border:1px solid var(--e1);
-  background:#171208;padding:var(--p4) var(--p5)}
+.abloot{display:flex;align-items:center;gap:var(--p5);border:1px solid var(--e2);
+  background:linear-gradient(145deg,#2b1e0d,#17130c);padding:var(--p4) var(--p5);
+  box-shadow:inset 0 1px rgba(255,239,187,.05)}
 .abslot{width:40px;height:40px;flex:none;border:1px dashed var(--e3);display:flex;
   align-items:center;justify-content:center;font-family:var(--mono);font-size:var(--fs1);
   color:#7a6238;text-align:center;line-height:1.3}
@@ -3492,15 +3646,63 @@ body:has(#world.on) #audioBtn{top:8px;bottom:auto;font-size:var(--fs2);padding:v
 .fxsub{font-family:var(--mono);font-size:var(--fs1);color:#6b5330;padding:var(--p1) var(--p1) 0}
 .abres{font-family:var(--mono);font-size:var(--fs2);color:#8ca35a;padding:var(--p1) var(--p1) 0}
 .abres span{color:#a89468}
+/* ═══ #187 - THE HAUL, AS A TRAY OF RECEIPT TILES ═════════════════════════
+   One bordered tray holding the chips and the flavour line, so the answer to
+   "what did that fight pay" is one object on the screen rather than a row and
+   a caption that happen to be adjacent. ⛔ THE CHIPS THEMSELVES ARE STILL
+   `.fxc` OFF `haul.fx` - the tray is scenery, the receipt is #137's and is
+   built beside the payment. The road's own chips are untouched: everything
+   here is scoped under #spoils. */
+.amTray{display:flex;flex-wrap:wrap;gap:var(--p3);padding:var(--p4);border:1px solid var(--e2);
+  background:rgba(14,13,9,.9);box-shadow:inset 0 0 20px rgba(0,0,0,.36),0 8px 20px rgba(0,0,0,.24)}
+.amTray .abfx{flex:0 1 auto;gap:var(--p3)}
+.amTray .abloot{flex:1 1 260px}
+/* the flavour line, which is what the loot row's prose has always been. It
+   sits BESIDE the numbers and never inside them: a sentence about leather is
+   not a second receipt for the leather. */
+.amNote{flex:1 1 220px;display:flex;align-items:center;padding:var(--p4) var(--p5);
+  font-family:var(--body);font-size:var(--fs4);font-style:italic;color:#a99166;line-height:1.35;
+  border-left:1px solid var(--e1);background:linear-gradient(90deg,rgba(104,70,27,.08),transparent)}
+/* bigger, rounder, more like something handed over. The number goes to --fs8,
+   which is this build's largest body step and the user's "крупные" in the one
+   vocabulary the file allows. */
+#spoils .fxc{position:relative;gap:var(--p4);min-height:58px;padding:var(--p3) var(--p5);
+  border-color:var(--e2);background:linear-gradient(145deg,#2b1e0d,#17130c);
+  box-shadow:inset 0 1px rgba(255,239,187,.05)}
+#spoils .fxc:before,#spoils .fxc:after{content:'';position:absolute;top:4px;width:3px;height:3px;
+  border-radius:50%;background:#7b6134}
+#spoils .fxc:before{left:4px}#spoils .fxc:after{right:4px}
+#spoils .fxi{width:34px;height:34px;flex:none;display:grid;place-items:center;border-radius:50%;
+  border:1px solid var(--e3);background:radial-gradient(circle,#38260e 0 48%,#15110a 50%);
+  font-size:var(--fs5);box-shadow:0 0 12px rgba(203,156,62,.12)}
+#spoils .fxn{font-size:var(--fs8)}
 /* the enemy accordion: collapsed by default, the count is the headline */
-.abacc{border:1px solid var(--e1);background:#141007;padding:var(--p4) var(--p5);width:100%;
+.abacc{border:1px solid var(--e1);background:linear-gradient(#171a17,#10120f);
+  padding:var(--p4) var(--p5);width:100%;display:flex;align-items:center;gap:var(--p4);
   font-family:var(--mono);font-size:var(--fs1);letter-spacing:.12em;color:#8a7449;
-  cursor:pointer;user-select:none;text-align:left}
-.abacc:hover{border-color:var(--e3)}
-.abacc b{color:#a89468;font-weight:400}
-.abaccbody{border:1px solid var(--e1);border-top:none;background:#141007;
+  cursor:pointer;user-select:none;text-align:left;
+  box-shadow:inset 0 1px rgba(255,255,255,.025)}
+.abacc:hover{border-color:var(--e3);color:#c8b17d;background:linear-gradient(#20241f,#121511)}
+.abacc b{color:#a89468;font-weight:400;margin-left:auto;text-align:right}
+.abaccbody{border:1px solid var(--e1);border-top:none;background:rgba(10,12,10,.95);
   padding:var(--p2) var(--p5) var(--p4);display:none;margin-top:-12px}
 .abaccbody.on{display:block}
+/* ═══ #187 - THE ROAD BUTTON ══════════════════════════════════════════════
+   The same `.popts`/`.popt` mechanism every card in the game uses, with a
+   modifier for the heavier finish: a double edge, an inset keyline, real
+   weight underneath. ⛔ NO DECORATIVE FEET. The mockup grew two little
+   supports under this button; they were a misunderstanding rather than an
+   approved element, and they are not here.
+   ⚑ The 👣 in the label is `choiceIco({ico:['leave']})`, which is the ONE
+   glyph source (#154). It is not a literal on this screen, so the day LEAVE
+   changes glyph this button changes with the road. */
+.popt.abroad{position:relative;padding:var(--p5) var(--p6);border-color:var(--e3);
+  background:linear-gradient(180deg,#332716,#281d0f);
+  box-shadow:inset 0 0 0 2px #171008,0 5px 16px rgba(0,0,0,.33)}
+.popt.abroad:before{content:'';position:absolute;inset:3px;pointer-events:none;
+  box-shadow:inset 0 0 0 1px rgba(218,183,102,.2)}
+.popt.abroad:hover{background:linear-gradient(180deg,#3d2f1a,#2d2111);border-color:var(--g3)}
+.popt.abroad b{color:#ead19a;letter-spacing:.04em}
 /* the sheet's tells become the spend buttons when a stat level is banked */
 .tl.spend{outline:1px solid #8ca35a;cursor:pointer}
 .tl.spend:hover{background:#1e2416}
@@ -23044,18 +23246,26 @@ function crewCards(scarred,xp){
     const kills=(u&&u.killsShown)||0,dealt=Math.round((u&&u.dealt)||0),
           taken=Math.round((u&&u.taken)||0);
     const cls=p.cls&&CLASSES[p.cls]?CLASSES[p.cls].n:'';
+    /* ⚑ #187 - THE LEVEL NUMBER MOVED TO THE BADGE AND LEFT THE LINE.
+       It used to read "level 2 · spend it on the sheet" beside a bare ▲, which
+       is one fact printed twice the moment the badge learns to speak. The
+       badge carries WHAT HAPPENED, the line carries WHAT TO DO ABOUT IT, and
+       neither repeats the other. The `title` is what makes ▲ 2 readable to
+       somebody meeting it for the first time. */
     return '<div class="abcrew'+(sc?' scar':'')+(up?' up':'')+(p.deadBattle?' dead':'')+'">'+
-      (up?'<div class="abbadge">▲</div>':'')+
+      (up?'<div class="abbadge" title="promoted to level '+p.level+'">▲ '+p.level+'</div>':'')+
       '<img class="abface" src="'+faceURI(u||{id:p.id,race:p.race,cls:p.cls})+'" alt="">'+
-      '<div><div class="abname">'+fullName(p)+'</div>'+
-      '<div class="abkind">'+(cls?cls.toUpperCase()+' · ':'')+(p.race||'').toUpperCase()+'</div>'+
+      '<div class="abwho"><div class="abname">'+fullName(p)+'</div>'+
+      '<div class="abkind">'+(cls?cls.toUpperCase()+' · ':'')+(p.race||'').toUpperCase()+
+      '</div></div>'+
       '<div class="abnums"><b class="abk">☠ '+kills+'</b><b class="abd">⚔ '+dealt+
         '</b><b class="abt">🩸 '+taken+'</b>'+
         (x&&x.got?'<b class="abx" title="experience, this fight">✦ +'+x.got+'</b>':'')+'</div>'+
-      (sc?'<div class="abline abscarline">carried off · '+sc.s.n.toLowerCase()+'</div>':'')+
-      (up?'<div class="abline abuplne">level '+p.level+' · '+
+      (up?'<div class="abline abuplne">'+
         (tradeOwed(p)?'pick a trade on the sheet':'spend it on the sheet')+'</div>':'')+
-      '</div></div>';}).join('')+'</div>';
+      /* the blood strip goes LAST so it can run to the bottom edge of the card */
+      (sc?'<div class="abline abscarline">carried off · '+sc.s.n.toLowerCase()+'</div>':'')+
+      '</div>';}).join('')+'</div>';
 }
 function consequences(scarred){
   const foes=foeReport();            /* while B still exists */
@@ -23126,7 +23336,10 @@ function consequences(scarred){
     afterPromotion();
     if(typeof RXPOP!=='undefined')RXPOP.afterBattle(fought);
   };
-  const accHead=on=>(on?'▾':'▸')+' THE FIELD THEY LEFT · <b>'+foes.dead+' dead'+
+  /* #187 - two elements rather than one string, so the count can sit hard
+     against the right edge the way the approved card has it. Same text, same
+     caret, same dead/fled. */
+  const accHead=on=>'<span>'+(on?'▾':'▸')+' THE FIELD THEY LEFT</span><b>'+foes.dead+' dead'+
     (foes.fled?' · '+foes.fled+' fled':'')+'</b>';
   /* a GEAR haul is a strip with the reserved art square (his item art lands
      there the day it exists); a RESOURCE haul is a row of icon chips built
@@ -23165,48 +23378,82 @@ function consequences(scarred){
   if(extra)Object.keys(extra).forEach(k=>{gotFx[k]=(gotFx[k]||0)+extra[k];});
   if(a.mor)gotFx.morale=a.mor;                     /* #159 - what it cost, beside what it paid */
   const chips=fxChips(gotFx);
-  const lootHtml=(haul.gear||haul.gear2)
-    ?'<div class="abloot"><div class="abslot">ART<br>SLOT</div>'+
-      '<div><div class="abwhat">'+haul.t+'</div><div class="abgot">'+haul.c+'</div></div></div>'+
-      /* a row can carry BOTH a thing and a number (the snare's bells: timber
-         and twenty-five crowns), and the old single-branch line could only
-         ever show one of them */
-      (chips?'<div style="margin-top:9px">'+chips+'</div>':'')
-    /* the fallback is the old line, and it is not dead code: a row with no
-       `fx` and no gear at all would otherwise render nothing where a receipt
-       belongs. */
-    : chips?chips+'<div class="fxsub">'+haul.t+'</div>'
-          :'<div class="abres">'+haul.c+' <span>· '+haul.t+'</span></div>';
+  /* ═══ #187 - ONE TRAY, AND THE FLAVOUR SITS BESIDE THE NUMBERS ═══════════
+     The three cases did not change and neither did what any of them pays: a
+     GEAR row still gets the strip with the reserved art square, a RESOURCE
+     row still gets chips built off `haul.fx`, and a row with neither still
+     falls back to its own line rather than rendering an empty box. What
+     changed is that all three now sit in `.amTray` with the prose as a
+     sibling `.amNote` instead of a caption underneath, which is the approved
+     card's own arrangement and the reason the flavour stopped looking like
+     part of the payout. */
+  const note='<div class="amNote">'+haul.t+'</div>';
+  const lootHtml='<div class="amTray">'+(
+    (haul.gear||haul.gear2)
+      ?'<div class="abloot"><div class="abslot">ART<br>SLOT</div>'+
+        '<div><div class="abwhat">'+haul.t+'</div><div class="abgot">'+haul.c+'</div></div></div>'+
+        /* a row can carry BOTH a thing and a number (the snare's bells: timber
+           and twenty-five crowns), and the old single-branch line could only
+           ever show one of them */
+        chips
+      : chips?chips+note
+      /* the fallback is the old line, and it is not dead code: a row with no
+         `fx` and no gear at all would otherwise render nothing where a receipt
+         belongs. */
+            :'<div class="abres">'+haul.c+' <span>· '+haul.t+'</span></div>'
+  )+'</div>';
+  /* ═══ #187 - THE ONE META LINE ════════════════════════════════════════════
+     The approved card reads it as VICTORY · rounds · what it cost them · what
+     it cost you, in that order, and every figure on it was already on the
+     screen: `rounds` and `downN` are #122's own, `foes.dead` is the accordion's
+     headline. ⚠ VICTORY IS HONEST HERE AND ONLY HERE - consequences() is
+     reached from `toSpoils` and the two cards that route through it, which are
+     all won fights. A beating goes to `toBeaten` and never sees this line. */
+  const meta='VICTORY · '+rounds+' ROUND'+(rounds>1?'S':'')+
+    (foes.dead?' · '+foes.dead+' DOWN':'')+' · '+
+    (downN?downN+' OF '+mine.length+' CARRIED OFF':'NOBODY OF YOURS WENT DOWN');
   const drawOne=()=>{
     $('sCard').innerHTML=
       /* the company's own name over the outcome - user, round three:
          "Show name of your company". Old saves may not have one. */
+      '<div class="amEmb" aria-hidden="true">⚔</div>'+
       (G.coName?'<div class="abco">'+G.coName.toUpperCase()+'</div>':'')+
-      '<h1 style="text-align:center">'+a.t+'</h1>'+
-      '<div class="absub">'+rounds+' ROUND'+(rounds>1?'S':'')+' · '+
-        (downN?downN+' OF '+mine.length+' OF YOURS WENT DOWN'
-              :'NOBODY OF YOURS WENT DOWN')+'</div>'+
-      '<div class="abtop">'+
+      '<h1 class="amTitle">'+a.t+'</h1>'+
+      '<div class="absub">'+meta+'</div>'+
+      '<div class="abtop amTop">'+
         '<p>'+(G.battleKind==='mother'?(G.cubLine?G.cubLine+' ':''):'')+
           a.b.replace(/\n\n/g,'</p><p>')+'</p>'+
         (G.spareLine?'<p style="color:#8a7449;font-style:italic">'+cast(G.spareLine)+'</p>':'')+
       '</div>'+
-      '<div class="lbl" style="color:#8a7449">THE COMPANY</div>'+crew+
-      '<div class="lbl" style="color:#8a7449">TAKEN OFF THE FIELD</div>'+lootHtml+
-      '<button class="abacc" id="abAcc">'+accHead(false)+'</button>'+
+      '<div class="amSec">Those who stood</div>'+crew+
+      '<div class="amSec">Taken off the field</div>'+lootHtml+
+      /* #187 - the caret was the only thing saying whether this was open, and
+         a caret is a picture. `aria-expanded` says it in the one channel a
+         screen reader can hear; it costs a word and it is the shape the
+         approved mockup already had. */
+      '<button class="abacc" id="abAcc" aria-expanded="false" aria-controls="abAccBody">'+
+        accHead(false)+'</button>'+
       '<div class="abaccbody" id="abAccBody">'+foes.html+'</div>'+
       '<div class="popts" style="grid-template-columns:1fr">'+
         /* #176 - the caption survives ONLY on the mercy branch, where it is not
            a "Back to the road" button at all: it says there is another screen
-           and why. The plain road button carries nothing. */
-        '<button class="popt" id="cqNext"><b>'+
-        (mercy?'Go and see what they want':'Back to the road')+'</b>'+
+           and why. The plain road button carries nothing.
+           ⚑ #187 - AND THE ROAD BRANCH WEARS THE STANDARD 👣, THROUGH
+           `choiceIco`. It is `CHOICE_ICO.leave`, the same walk-away mark every
+           road door uses, and it is derived rather than typed for the reason
+           #154 gave: a glyph with two sources is a glyph that will disagree
+           with itself. ⛔ The mercy door does NOT get it - that button opens
+           another screen, it does not leave. */
+        '<button class="popt abroad" id="cqNext"><b>'+
+        (mercy?'Go and see what they want'
+              :choiceIco({ico:['leave']})+'Back to the road')+'</b>'+
         (mercy?'<i>some of them are still alive and they are asking</i>':'')+
         '</button></div>';
     const ac=$('abAcc');
     if(ac)ac.onclick=()=>{
       const body=$('abAccBody'),on=!body.classList.contains('on');
-      body.classList.toggle('on',on);ac.innerHTML=accHead(on);};
+      body.classList.toggle('on',on);ac.innerHTML=accHead(on);
+      ac.setAttribute('aria-expanded',String(on));};
     const nb=$('cqNext');
     if(nb)nb.onclick=()=>{if(mercy)drawTwo();else finish();};
   };
@@ -23230,7 +23477,12 @@ function consequences(scarred){
       /* NOT `disabled`. A disabled button eats the click and says nothing
          back, which is the same experience as a broken one. */
       '<div class="popts" style="grid-template-columns:1fr">'+
-        '<button class="popt" id="cqGo" style="opacity:.4"><b>Back to the road</b>'+
+        /* #187 - the same door as screen one's, so the same 👣 off the same
+           `CHOICE_ICO.leave`. The caption is the one #176 kept: it is the
+           reason the button is dim, and it is deleted the moment it stops
+           being true (below), not replaced by a cheerful one. */
+        '<button class="popt abroad" id="cqGo" style="opacity:.4"><b>'+
+        choiceIco({ico:['leave']})+'Back to the road</b>'+
         '<i id="cqGoSub">there is still something to settle</i></button></div>';
     let done=false;
     const mb=$('sMercy');

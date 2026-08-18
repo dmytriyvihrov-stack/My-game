@@ -355,6 +355,126 @@ also the fight with the most units to read.** That is a measurement the step-1 c
 
 ---
 
+# PART FOUR - the unit of variety is not the race, it is the weapon
+
+**Added 2026-08-18**, a week after parts one to three. A second research pass, run by the user with
+GPT, aimed at the one question
+part three left hanging: **reading 5 said the enemy skill gap was 2:1 and warned that the answer is
+not "give enemies more skills". This part says what the answer is instead.** The user's framing,
+translated from the Russian, with the argument kept whole and one fact corrected below.
+
+## The claim
+
+**In Battle Brothers the unit of variety is not the race. It is the combination of weapon,
+equipment, formation and behaviour.** Ten humans there can pose completely different problems:
+
+- ragged men with clubs surround you by numbers;
+- raiders with shields hold a line;
+- spearmen close off space;
+- two-handers demand an immediate focus;
+- shooters force you to advance;
+- daggermen, nets and polearms each change what a safe distance is.
+
+**And the enemies run on almost the same weapon rules the player does.** A spear is not a different
+damage number, it is spearwall. A shield can be split. A hook drags a man out. A hammer breaks
+armour. **That is what lets "one more man" be a new tactical object** rather than another body.
+
+Four layers sit under it:
+
+1. **Equipment reads visually.** You see a dangerous helmet, a two-handed hammer, good armour, and
+   you change your priority before reading anything.
+2. **Equipment is the reward.** Sometimes you want to stab a well-armoured enemy carefully so as not
+   to ruin his armour. **The method of killing is wired to the company's progression.**
+3. **Compositions are mixed procedurally.** One bandit fight is five ragged men and a shooter, the
+   next is a shield line, two polearm men and a leader. **Same faction name, different problem.**
+4. **The same blow carries different stakes.** Your levelled brother can die or take a permanent
+   injury, so a similar fight in a bad company state feels like a different fight.
+
+## What that says about Grimtoll
+
+**On paper the variety is already good, and the fights were designed with exactly this in mind:**
+
+| fight | what it forces |
+|---|---|
+| `pack` | gather up and catch dogs |
+| `slingline` | advance under fire |
+| `steading` | kite ogres |
+| `mother` | your formation gets broken |
+| `armour` | surrounding is punished |
+| `snare` | swarm, hook, shooters and ogres at once |
+
+**So the problem may not be a shortage of invented fights. It may be that the prototype does not
+sell their differences hard enough.**
+
+The benchmark already found one concrete cause in reading 5: **a player unit averages 4.6 acts and
+an enemy about 2, movement included.** Many enemies therefore collapse to a single sentence:
+**walked up, used its one attack, next.**
+
+**The corrected conclusion.** Grimtoll does not urgently need new races or ten new monsters. **It is
+worth more to make the humans, ratkin and ogres it already has force the player to change their
+answer, and to make that visible without reading the panel.**
+
+## ⛔ The test, and it is the most useful thing in this part
+
+For every fight, one question:
+
+> **"What was I forced to do here that I did not do in the previous fight?"**
+
+**And the answer routes the diagnosis, which is why it is worth more than an opinion:**
+
+- **Same answer across two fights → the problem is MECHANICAL.** The fights are not actually asking
+  different questions, whatever the design document says.
+- **Different answers, but the fights still feel the same → the problem is PRESENTATION**: art,
+  animation, sound, and how legible an action is.
+
+⚑ **This is a router, not a verdict.** It is the same shape as #88's ⛔ measure the box before you
+argue about the font: it tells you which argument you are allowed to have next.
+
+## ⚠ One fact in the research is out of date, and correcting it sharpens the conclusion
+
+The research says *most of the full battle tokens are not drawn yet*, and that a spearman, a cutter
+and a deserter *look and move too similarly on the field*. **That was true once. It is not true on
+this build**, and the check is `paintedSpriteKey()` against `BATTLE_ART`:
+
+**50 painted tokens are embedded, and every key the mapper can return has art behind it.** 41 of
+them are units:
+
+| | painted variants |
+|---|---|
+| human, yours | captain · archer · mage · spear · cutter (5) |
+| human, foe | captain · poacher · spear · sword · cutter (5) |
+| ratkin, yours | archer · mage · spear · veteran · cutter (5) |
+| ratkin, foe | fenling · spitter · fen_slinger · chieftain · spear · cleaver · hooker · sniffer · slinger (9) |
+| ogre, yours | mage · spear · maul · guardian · brute (5) |
+| ogre, foe | mage · pike · maul · thrower · elder · club (6) |
+| beasts | fenmother · fenmother_body · fen_cub · warden · dog_bitch · dog_runt · dog_lurcher (7) |
+
+`paintedSpriteKey` ends on `return k&&BATTLE_ART[k]?k:null`, so a missing key would fall back to the
+procedural silhouette. **Nothing falls back.** The `DIM{}` silhouette path in `sprite()` is dead code
+for every race in the game.
+
+⚑ **So the correction makes the research's own conclusion stronger, not weaker.** Run its test and
+the "tokens are not drawn" branch is already closed. What is left is a sharper and **measurable**
+question:
+
+⛔ **The art is distinct as a file. Is it distinct as an object, at the size it is actually drawn?**
+`TOKEN=1.13*0.90`, so a human draws at about **26x39 px** on a 37x42 hex. **A spearman and a
+swordsman can be two different paintings and one shape at 26 pixels wide.** And the project already
+owns the right instrument for exactly this question: the type floor in
+[`.claude/rules/ui-scales.md`](../.claude/rules/ui-scales.md) was set by the Discord channel's own
+distance test, *"how far away can you get and still read it"*. **The same test applies to a token,
+and it has never been run on one.** ⚠ Note also that #163 took 10% off every body on the board for
+hex navigation, which is the `*0.90` in that constant: **legibility and crowd-readability are
+already pulling against each other here and nobody has measured the trade.**
+
+## Related, parked
+
+**The mole people** are saved as a deferred concept in
+[`archive/MOLE_PEOPLE_PARKED_CONCEPT.md`](archive/MOLE_PEOPLE_PARKED_CONCEPT.md). ⛔ **They are not
+canon and are not in the build.** ⚠ That file is untracked in git as of this writing.
+
+---
+
 # What this does not cover
 
 Written down so the gaps are known rather than discovered later.
@@ -369,3 +489,10 @@ Written down so the gaps are known rather than discovered later.
   above isolates "rounds after the outcome was decided". That is probably the single most valuable
   thing to measure next, and `brigand` is where to measure it.
 - **Only the eight canonical fights.** Comp `prepared` only.
+- **No token-legibility measurement**, added by part four. The 41 painted unit tokens are confirmed
+  present and distinct as files; **nobody has checked whether they are distinct as objects at
+  26x39 px**. The distance test in [`.claude/rules/ui-scales.md`](../.claude/rules/ui-scales.md) is
+  the right instrument and has never been pointed at a token.
+- **Part four's own test has not been run.** *"What was I forced to do here that I did not do in the
+  previous fight?"* is written down and unanswered for all eight fights. It needs a human, not a
+  harness.

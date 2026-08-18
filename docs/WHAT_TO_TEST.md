@@ -101,6 +101,75 @@ appearing when it is on.
 - **The three faces.** 🙁 😊 🤩 were chosen to stay clear of the morale faces (💀 😟 😐 🙂 😄), which
   the game already uses to mean something else. If you want the exact ones from your screenshot,
   say so and I will find a set that still cannot be confused with morale.
+## 🏆 THE AFTER-BATTLE SCREEN, ON THE HYBRID YOU APPROVED  *(#187 · 2026-08-18 · build log 8f.207)*
+
+**Where it came from.** `CLAUDE_AFTERMATH_IMPLEMENTATION.md`, written against the hybrid mockup:
+*"Это не приглашение заново придумывать экран. Композиция уже утверждена."* So this is the
+approved composition put into the game, and **nothing underneath it moved** - not a payment, not a
+number, not a line of prose.
+
+**Three steps.** New game → win any fight → you are on it. (Fastest: ⚙ TEST → the practice field →
+any fight → win.)
+
+### What should happen, top to bottom
+
+- **An emblem** (⚔ in a ring, with a hairline running out either side), then your **company name**,
+  then the outcome title, then **one line of metadata**: `VICTORY · N ROUNDS · N DOWN · X OF Y
+  CARRIED OFF`. Behind all of it, **gold rays** spreading from behind the emblem, almost invisible
+  at the edges. They are CSS, not a picture, so they cost the build nothing.
+- **The prose** stays a narrow centred column and ends on a small gold rule.
+- **THOSE WHO STOOD** - **four cards in a row** (three if you are three: the row fills itself).
+  Portrait left, name and role right, the four numbers across the bottom: ☠ kills · ⚔ dealt ·
+  🩸 taken · ✦ experience. Dark layered card, thin brass edge, a hairline just inside it.
+- **Somebody carried off**: the card goes bloody - red frame, blood running off the top edge, a
+  pool low, a smear across it - and a **red strip along the very bottom** reading
+  `CARRIED OFF · <the injury>` in full. This is the old treatment kept on purpose, plus the strip.
+- **Somebody promoted**: gold frame, gold portrait edge, and a small **gold `▲ N` plate in the
+  top-left corner** carrying the new level, with *spend it on the sheet* (or *pick a trade on the
+  sheet*) underneath. **One body can be both** - blood and gold on the same card.
+- **A body with nothing to report shows no strip at all**, which is the point of the strip.
+- **TAKEN OFF THE FIELD** - the haul on one tray: big receipt tiles (round medallion, the number
+  large, the resource named under it) with the **flavour line beside them**, behind a hairline,
+  never mixed into the figures. A gear haul keeps its strip with the dashed ART SLOT square, and a
+  haul that is both (the clash's spear and salvage) shows both in the one tray.
+- **THE FIELD THEY LEFT** - still an accordion, still shut, still the same count and dead/fled.
+- One centred **`👣 Back to the road`**, with no small print under it.
+
+### What would be a bug
+
+- The 👣 missing, doubled, or drawn as anything other than the road's own walk-away mark. It is the
+  same glyph every LEAVE door on the road wears and it comes from the same place.
+- Any small print under `Back to the road`. There is none, by your own ruling in #176.
+- Two little decorative feet or supports under the button. Those were in the mockup and are
+  deliberately not here.
+- The words **"The company can move again"** anywhere. That line is gone and stays gone.
+- A name, a class or an injury running out of its card. A card getting a second empty strip.
+- The level number printed twice (on the plate AND in the line under it).
+- **The mercy fight**: `Go and see what they want` should NOT wear the 👣 - it opens another
+  screen, it does not leave. Screen two is unchanged: pick, the choice settles in place with a
+  tick, the others fade, the road button lights and its caption disappears.
+- The screen needing a scroll before you have opened the accordion. The longest one in the game is
+  THE SNARE HOLDS NOTHING NOW and it was measured to fit with room.
+
+### One thing you may want to overrule
+
+The mockup puts the promotion mark on a **diagonal ribbon cropped by the card's corner**. It is
+here as a **corner plate** instead, and the reason is mechanical rather than aesthetic: a ribbon
+only reads as a ribbon if the corner cuts it, that cut IS layout overflow, and it would have shown
+up on the clipped-text counter for every promoted body from now on. Sized to fit flush instead it
+stops looking like a ribbon and lies across the name. **If you want the diagonal back anyway, say
+so** - it is four lines of CSS and one accepted entry on the counter.
+
+### And one thing that is still missing, on purpose
+
+**The three fonts are still not in the build.** `--display`, `--body` and `--mono` name Cinzel,
+Spectral and JetBrains Mono, and none of the three is actually present, so the whole game (not
+just this screen) renders in Georgia and Consolas. This screen uses the three tokens exactly as
+your brief asks, so the day the real files are embedded it changes with everything else. Doing
+that needs the font binaries embedded as base64 and touches every screen, which your brief calls
+*"отдельно и глобально"* - so it is its own job, not this one.
+
+---
 
 ## 🔥 THE SIX-POINT BATCH: "ONE OF US", THE BURNING GROUND, A GEM FOR A LEVEL, THE SURE HAND  *(#186 · 2026-08-18 · build log 8f.206)*
 
