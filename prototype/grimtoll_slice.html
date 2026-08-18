@@ -3131,6 +3131,8 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:var(--f
 /* the ×N on a screen reacted to more than once (#54) */
 .nrow b .rxn{color:#8a7449;letter-spacing:0}
 .nrow b.super{color:#e28fb4}.nrow b.like{color:#8ca35a}.nrow b.dis{color:#c15d55}
+/* #188b - so-so is deliberately the row with no opinion in its colour */
+.nrow b.meh{color:#c9b98a}
 .nrow b.dec{color:#7fa8c9}
 .nrow span{flex:1;color:#c9b98f;min-width:0;overflow-wrap:anywhere}
 .nrow span em{color:#a89a80;font-style:italic}
@@ -3158,39 +3160,95 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:var(--f
    and it stays open for the session. ⚠ It keeps z-index 150 and the true
    corner either way: #53's rule was that it must stay REACHABLE, and a
    labelled chip is more reachable than three unexplained glyphs. */
-#reactBar{position:absolute;right:8px;bottom:6px;z-index:150;display:flex;gap:4px;
+/* ═══ #188 · THE FOLD IS GONE AND THE WORD IS THE WHOLE BAR ══════
+   (User, 2026-08-18: *"замість рандомних 3 смайліків знизу сторінки, які
+   ніхто не клікає, запускати вспливаш - як в HS"*.)
+   #98's fold answered "three lit buttons in the corner ask for an opinion
+   continuously" by hiding them behind the word. Two rounds later nobody was
+   pressing the word either, which is the finding: a corner glyph is not a
+   question, it is furniture, and furniture gets looked past. The three moved
+   into a modal that ASKS - see RXPOP - and the word became its handle.
+   ⚠ right:38, not right:8. The true corner belongs to ⚙ now (#188 point 7),
+   and this bar sits inboard of it: the cog measures 26px wide at --fs3 with
+   --p3 either side, so 38 leaves a 4px gap that does not close when DEV.MODE
+   comes on (the label is a fixed one glyph on purpose - see syncTest). */
+#reactBar{position:absolute;right:38px;bottom:6px;z-index:150;display:flex;gap:4px;
   align-items:center;font-family:var(--mono)}
 #reactTog{font-family:var(--mono);font-size:var(--fs1);letter-spacing:.14em;cursor:pointer;
   background:rgba(16,12,6,.92);color:#7a6642;border:1px solid var(--e1);padding:var(--p2) var(--p4);
   line-height:1}
 #reactTog:hover{color:var(--g4);border-color:#8a6a34}
-#reactBar.open #reactTog{color:#8a7449}
-/* shut, everything but the word is gone - and `display:none` rather than a
-   width transition, so a folded bar cannot swallow a click meant for the
-   board underneath it */
-#reactBar:not(.open) .rx,
-#reactBar:not(.open) #reactCount,
-#reactBar:not(.open) #reactWhat{display:none}
-#reactBar .rx{width:26px;height:26px;line-height:1;font-size:var(--fs4);cursor:pointer;
-  background:rgba(16,12,6,.92);color:#8a7449;border:1px solid var(--e1);padding:0;
-  transition:color .12s,border-color .12s,background .12s}
-#reactBar .rx:hover{color:#f0e6c0;border-color:#8a6a34;background:#2a2114}
-#reactBar .rx[data-k="super"].on{color:#e28fb4;border-color:#e28fb4}
-#reactBar .rx[data-k="like"].on{color:#8ca35a;border-color:#8ca35a}
-#reactBar .rx[data-k="dis"].on{color:#c15d55;border-color:#c15d55}
 /* the counter (#54). Empty and invisible until this screen carries something,
    so a screen you have never reacted to shows nothing at all. */
 #reactCount{font-family:var(--mono);font-size:var(--fs1);letter-spacing:.04em;
   color:#8a7449;min-width:14px;text-align:center}
+/* ⚠ #188 - the fold used to hide this; with the fold gone an empty counter
+   would hold its 14px open on every screen and push FEEDBACK off the corner it
+   is measured into. Same fault as #reactWhat above, different fix: this one is
+   in flow on purpose when it has something to say. */
+#reactCount:empty{display:none}
 #reactCount.super{color:#e28fb4}#reactCount.like{color:#8ca35a}
+#reactCount.meh{color:#c9b98a}
 #reactCount.dis{color:#c15d55}
 /* what you just reacted to, echoed for a second so the click is not silent
    and so the player can see the game recorded the RIGHT screen */
-#reactWhat{font-size:var(--fs1);color:#8a7449;background:rgba(16,12,6,.92);
+/* ⚠ #188 - ABSOLUTE, and that is not decoration. The fold used to `display:none`
+   this box, so its width only ever existed while the bar was open; with the fold
+   gone an in-flow echo would sit there at opacity 0 forever and shove FEEDBACK
+   inboard of the corner it is measured into. Anchored to the bar's own left
+   edge it costs the row nothing whether it is showing or not. */
+#reactWhat{position:absolute;right:100%;bottom:0;margin-right:6px;
+  font-size:var(--fs1);color:#8a7449;background:rgba(16,12,6,.92);
   border:1px solid var(--e1);padding:var(--p2) var(--p3);max-width:250px;white-space:nowrap;
   overflow:hidden;text-overflow:ellipsis;opacity:0;transition:opacity .2s;
   pointer-events:none}
 #reactWhat.on{opacity:1}
+/* ═══ #188 · THE FEEDBACK POPUP ═════════════════
+   200 on the layer ladder, the same rung as #askWrap: a modal question owns the
+   screen. The two can never be up together - the popup refuses to open while
+   ask() is on, and Esc takes ask() first. */
+#rxWrap{position:fixed;inset:0;z-index:200;display:none;align-items:center;
+  justify-content:center;background:rgba(6,4,2,.72)}
+#rxWrap.on{display:flex}
+#rxCard{width:380px;max-width:92vw;background:rgba(24,18,10,.99);border:1px solid var(--e3);
+  box-shadow:0 18px 60px rgba(0,0,0,.8);padding:var(--p6);display:flex;flex-direction:column;
+  gap:var(--p4);text-align:center}
+#rxCard h3{font-family:var(--display);font-size:var(--fs6);color:var(--g4);letter-spacing:.04em;
+  margin:0;font-weight:600}
+/* WHAT is being rated. #54's whole value was that a reaction names the card and
+   not "the game", and in a modal the player cannot see what is underneath it. */
+#rxWhere{font-family:var(--mono);font-size:var(--fs1);letter-spacing:.1em;color:#8a7449;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#rxFaces{display:flex;gap:var(--p4);justify-content:center}
+#rxCard .rxf{flex:1;display:flex;flex-direction:column;align-items:center;gap:var(--p2);
+  background:rgba(16,12,6,.9);border:1px solid var(--e1);padding:var(--p4) var(--p2);
+  cursor:pointer;transition:border-color .12s,background .12s}
+#rxCard .rxf span{font-size:var(--fs8);line-height:1}
+#rxCard .rxf i{font-family:var(--mono);font-size:var(--fs1);letter-spacing:.08em;
+  color:#8a7449;font-style:normal}
+#rxCard .rxf:hover{border-color:#8a6a34;background:#2a2114}
+#rxCard .rxf.pick{border-color:var(--g4);background:#2f2414}
+#rxCard .rxf.pick i{color:var(--g4)}
+/* the second step, and only the unhappy face opens it */
+#rxWhy{display:none;flex-direction:column;gap:var(--p2);text-align:left}
+#rxWhy.on{display:flex}
+#rxWhy label{font-family:var(--mono);font-size:var(--fs1);letter-spacing:.08em;color:#8a7449}
+#rxWhy textarea{width:100%;box-sizing:border-box;background:#141d1e;color:var(--t4);
+  border:1px solid var(--e4);font-family:var(--body);font-size:var(--fs3);
+  padding:var(--p3);resize:vertical}
+#rxWhy textarea:focus{outline:none;border-color:#4d6b6c;background:#172223}
+#rxWhy textarea::placeholder{color:#5f7472;font-style:italic}
+#rxOpts{display:flex;gap:var(--p3)}
+#rxOpts button{flex:1;font-family:var(--mono);font-size:var(--fs2);letter-spacing:.08em;
+  background:rgba(16,12,6,.9);color:#8a7449;border:1px solid var(--e1);padding:var(--p3);
+  cursor:pointer}
+#rxOpts button:hover{color:var(--g4);border-color:#8a6a34}
+#rxSend{color:#8ca35a;border-color:#5a7a3a}
+#rxSend:hover{background:#2c4a3a;color:#c3d18a}
+/* NOT `disabled`. A disabled button eats the click and says nothing back, which
+   is the same experience as a broken one - consequences() carries the same note. */
+#rxSend.off{opacity:.34}
+#rxSend.off:hover{background:none;color:#8ca35a;border-color:#5a7a3a}
 /* 20 — chrome, and chrome sits UNDER the cards. See the layer scale by #wDlg.
    Lifted to bottom:44 to leave the bottom-right corner to the reaction bar. */
 #audioBtn{position:absolute;right:10px;bottom:44px;z-index:20;font-family:var(--mono);
@@ -3213,14 +3271,31 @@ body:has(#world.on) #audioBtn{top:8px;bottom:auto;font-size:var(--fs2);padding:v
    stack, and a stack that only half moves is worse than one that did not.
    And DEV.MODE is the honest name: TEST read like a thing you press to
    test the game, rather than the switch that shows the developer's tools. */
-#testBtn{position:absolute;right:10px;top:44px;z-index:22;font-family:var(--mono);font-size:var(--fs2);
-  color:#6b5836;background:rgba(16,12,6,.8);border:1px dashed var(--e1);padding:var(--p1) var(--p4)}
+/* ═══ #188 point 7 · IT IS A COG IN THE CORNER NOW ═══════════
+   (User, 2026-08-18: *"Дев мод зробити просто шестірьонкою і перенести в
+   правий ніжній кут і зробити прозорішою (щоб не пригортало уваги)"*.)
+   #100 moved it down a row and named it DEV.MODE, and both were right for a
+   button in the top-right corner that a player was going to read. The complaint
+   now is the reading: a labelled dashed box at top-right is the second thing on
+   every screen after the day plaque, and it is for nobody but the developer.
+   ⚠ THE FOUR TOOLS IT REVEALS DID NOT MOVE. #100's note below says a stack that
+   half-moves is worse than one that did not, and it is about those four: they
+   are still the top-right column at 134/164/194/224, still measured to clear
+   ♪ SOUND at 74 and ⏱ SPEED at 102 on the battle screen. What moved is the
+   SWITCH, which is not a member of that stack - it is the thing that shows it.
+   ⚠ AND `.on` IS DELIBERATELY LOUD. Dimmed is for a switch nobody should notice;
+   a tester who has left the tools on and forgotten has to see that from across
+   the room, so ON goes back to full opacity and green. */
+#testBtn{position:absolute;right:8px;bottom:6px;z-index:22;font-family:var(--mono);
+  font-size:var(--fs3);line-height:1;
+  color:#6b5836;background:rgba(16,12,6,.55);border:1px dashed var(--e1);
+  padding:var(--p2) var(--p3);opacity:.3;transition:opacity .15s,color .15s}
 /* ⚠ #106 pushed this whole column down on the world screen to clear the day
    plaque, and #107 moved the plaque back to the centre, so the shift was
    deleted with it. A layout dodge outlives the thing it dodged unless it is
    removed in the same edit, and then it reads as a mysterious gap forever. */
-#testBtn:hover{color:var(--g4)}
-#testBtn.on{color:#8ca35a;border-color:#5a7a3a;border-style:solid}
+#testBtn:hover{color:var(--g4);opacity:1}
+#testBtn.on{color:#8ca35a;border-color:#5a7a3a;border-style:solid;opacity:1}
 /* ⚠ #102 points 2 and 3 · THE TESTER STACK DROPPED 60px TO LET THE TWO
    SETTINGS IN UNDER ⚙ DEV.MODE. ♪ SOUND takes 74 and ⏱ SPEED takes 102 on
    the battle screen, so this stack starts at 134. Developer chrome yields
@@ -3846,6 +3921,12 @@ a.popt.sendit{display:block;text-decoration:none}
 .popt.sendit.big b{font-size:var(--fs6);letter-spacing:.04em}
 /* a .popt standing alone outside a .popts grid still has to fill its column */
 .popt.nfull{width:100%;box-sizing:border-box;margin-top:8px}
+/* #188 point 3 - the address sits under the copy button, because a copy with
+   nowhere named to paste it is half an instruction. `user-select:all` so one
+   click takes the whole address rather than one word of it. */
+.sendto{font-family:var(--mono);font-size:var(--fs1);letter-spacing:.06em;color:#8a7449;
+  text-align:right;padding:var(--p3) var(--p1) 0}
+.sendto b{color:var(--g4);font-weight:500;user-select:all}
 #mOpts{display:flex;flex-direction:column;gap:7px;width:470px}
 /* ═══ #156 - THE FRONT DOOR IS FIVE LABELS AND NOTHING ELSE ══════════════
    (User, after a playtest: "С меню на главной странице удалить подписи под
@@ -4229,15 +4310,14 @@ a.popt.sendit{display:block;text-decoration:none}
      fill in, and one card that is both is the "screen that redraws itself into
      a summary of itself" that #69 was written to delete. -->
 <section class="screen" id="poll"><div class="pcard" id="pollCard"></div></section>
-<!-- the reaction bar: three buttons, bottom right, on every screen. What it
-     is reacting TO is whatever JOURNAL.where() resolves at the moment of
-     the click, which is the event card or the fight, not "the game". -->
+<!-- the reaction bar: ONE word, bottom right, on every screen. #188 took the
+     three glyphs off it and into RXPOP's modal; this is the handle that opens
+     it by hand. What a reaction attaches TO is whatever JOURNAL.where()
+     resolves at the moment the popup OPENS - the event card or the fight, not
+     "the game" - which is why the popup captures it rather than reading it
+     again at submit time. -->
 <div id="reactBar">
-  <!-- #98 point 5: the fold. Shut, this word is the whole bar. -->
   <button id="reactTog" title="say what you think of this screen">FEEDBACK</button>
-  <button class="rx" data-k="super" title="loved this — tell me why later">★</button>
-  <button class="rx" data-k="like"  title="liked this">▲</button>
-  <button class="rx" data-k="dis"   title="did not like this">▼</button>
   <!-- how many times you have said something about THIS exact screen this run.
        It is the visible proof that the bar re-reads itself on every screen —
        which it did not, before #54: opening an event card left the bar still
@@ -5212,9 +5292,18 @@ function syncTest(){
   const t=$('testBtn'),w=$('winBtn'),l=$('lintBtn'),wp=$('wipeBtn');
   if(!t)return;
   t.classList.toggle('on',TEST.on);
-  /* #100 point 3 - DEV.MODE. The switch shows the developer's tools; it is
-     not a thing the player presses to test the game. */
-  t.textContent=TEST.on?'⚙ DEV.MODE ON':'⚙ DEV.MODE';
+  /* #100 point 3 - the switch shows the developer's tools; it is not a thing
+     the player presses to test the game. #188 point 7 took the NAME off it: the
+     button is a dimmed cog in the bottom-right corner now and the word lives in
+     the tooltip, which is where a control nobody should notice keeps its name.
+     ⚠ AND THE LABEL IS ONE GLYPH IN BOTH STATES, WHICH IS GEOMETRY AND NOT
+     STYLE. This button is now the bottom-right corner and #reactBar is measured
+     to clear it at 38px; a wider ON label would grow leftwards into the FEEDBACK
+     chip the first time a tester switched the tools on. `.on` carries the state
+     instead - green, solid border, full opacity against a dashed 30% one, which
+     is the difference that reads from across the room anyway. */
+  t.textContent='⚙';
+  t.title=TEST.on?'developer tools - ON':'developer tools';
   w.classList.toggle('on',TEST.on&&$('battle').classList.contains('on'));
   if(l)l.classList.toggle('on',TEST.on);
   if(wp)wp.classList.toggle('on',TEST.on);
@@ -22639,6 +22728,11 @@ document.addEventListener('keydown',e=>{
       if(doors.length)doors[doors.length-1].click();
       return;
     }
+    /* 1b. #188 - the feedback popup is up. Close it, file nothing. It is
+       never allowed to be a thing you have to answer, and it is read off the
+       DOM rather than off RXPOP so this handler owes that const nothing. */
+    const rxw=$('rxWrap');
+    if(rxw&&rxw.classList.contains('on')){rxw.classList.remove('on');return;}
     /* 2. mid-fight with something picked: put it down. */
     if($('battle').classList.contains('on')&&B&&!B.busy&&!B.tutLock&&B.won===null&&
        (B.sel||B.reach||B.hurl)){
@@ -23488,9 +23582,16 @@ function consequences(scarred){
      you own. */
   const finish=()=>{
     G.spareLine=null;
-    /* the act finale ends here: the cage already had its say */
+    /* #188 - the fight's own name, taken BEFORE the navigation below. By the
+       time the popup opens the screen is the map, and `where()` would file the
+       reaction against the road rather than against the thing just fought. */
+    const fought='fight: '+((typeof G!=='undefined'&&G.battleKind)||'?');
+    /* the act finale ends here: the cage already had its say. No popup on this
+       branch: the epilogue asks for the whole questionnaire (#125), and a
+       three-face modal in front of that is two asks for one opinion. */
     if(G.epiLine){const e=G.epiLine;G.epiLine=null;toEpilogue(e);return;}
     afterPromotion();
+    if(typeof RXPOP!=='undefined')RXPOP.afterBattle(fought);
   };
   /* #187 - two elements rather than one string, so the count can sit hard
      against the right edge the way the approved card has it. Same text, same
@@ -34080,100 +34181,218 @@ function openHelp(){
     'only that the game does not stop to tell you, and you may not want it to.</p>'+
     HELP.map(s=>'<div class="helpsec"><h2>'+s.t+'</h2>'+
       s.b.split('\n\n').map(p=>'<p>'+p+'</p>').join('')+'</div>').join('')+
+    /* #188 - bare, like the other two Backs. Three identical sub-lines that
+       said the same nothing, and a control that reads one way on two screens
+       and another way on a third is the thing .claude/rules/ui-scales.md calls
+       "decided thirty separate times". */
     '<div class="popts" style="grid-template-columns:1fr"><button class="popt" id="hBack">'+
-    '<b>Back</b><i>to whatever you were doing</i></button></div>';
+    '<b>Back</b></button></div>';
   show('help');
   $('hBack').onclick=()=>{const b=HELP_BACK||'menu';HELP_BACK=null;
     show(b);if(b==='world')worldTick();};
 }
 $('helpBtn').onclick=openHelp;
 
-/* ═══════════════════════════════════════════════════════════════════════
-   THE REACTION BAR, AND THE REPORT IT FEEDS
+/* ════════════════════════════════════════════════════════════════════════
+   THE REACTION, AND THE REPORT IT FEEDS
 
-   Three buttons on every screen; one click each; nothing to fill in. The
-   value is entirely in WHAT it attaches the reaction to — JOURNAL.where()
-   resolves the event card's own id, or the fight's kind, so the report
-   reads "▼ event: UNDER THE BLOOM" and not "▼ world".
+   One question, three faces, and since #188 it ARRIVES rather than waiting in a
+   corner to be found. The value is entirely in WHAT it attaches the reaction to:
+   JOURNAL.where() resolves the event card's own id, or the fight's kind, so the
+   report reads "▼ event: UNDER THE BLOOM" and not "▼ world".
 
    ═══ EVERY PRESS IS A MOMENT, NOT A VERDICT (#54, user 2026-08-01: "that
    like and dislikes updates and saves automatically for every screen (it
-   isn't one time action)") ══════════════════════════════════════════════
+   isn't one time action)") ══════════════════════════════════
 
-   v1 filed ONE reaction per screen per run: a second press replaced the
-   first and the same press again took it back. That quietly assumed you
-   have one opinion about a screen, formed once — and you do not. The map is
-   seen forty times in a run and it is a different place on day 2 and day 19.
+   v1 filed ONE reaction per screen per run: a second press replaced the first
+   and the same press again took it back. That quietly assumed you have one
+   opinion about a screen, formed once, and you do not. The map is seen forty
+   times in a run and it is a different place on day 2 and day 19.
    **A screen somebody's opinion turned on is the single most valuable row in
    this whole feature**, and v1 could not represent it: it threw the earlier
    moment away.
 
-   So every press records, and the report shows the sequence. What survives
-   of v1 is the reason it existed — a mis-click has to be undoable — and it
-   survives as a GRACE WINDOW rather than as a rule about the whole run:
-   inside RX_GRACE seconds of your own last press on this same screen, the
-   same button takes it back and a different button corrects it. After that,
-   pressing the same thing again is "still true", and it is a second row.
+   So every press records, and the report shows the sequence.
 
-   The window is measured on the wall clock and NOT from the row's `ms`,
-   because `ms` is zero for every row filed before a run starts (the menu,
-   the practice field) — which would make every menu press look like a
-   correction of the last one.
+   ⛔ v1'S OTHER HALF WENT WITH THE CORNER BUTTONS IN #188. The 8-second GRACE
+   WINDOW - inside which a fresh press took itself back and a different one
+   corrected it - existed because a lit glyph in the corner of every screen is
+   easy to hit by accident. A modal you have to press SEND on cannot be hit by
+   accident at all, so the window would now only be able to misread a deliberate
+   second answer as a retraction of the first. Nothing about the ROW SHAPE
+   changed, so every journal ever exported still reads, here and in the
+   Dramaturge's analytics tab.
    ═══════════════════════════════════════════════════════════════════════ */
-const RXWORD={super:'★ loved',like:'▲ liked',dis:'▼ disliked'};
-const RX_GRACE=8000;              /* ms — long enough to notice, short enough to be one gesture */
+/* the report's own word for each kind, and its FIRST TOKEN is the glyph the
+   notes screen draws (see `glyph` in runBlock). ▬ is the level mark between
+   ▲ and ▼, so the three the popup can file read as a ladder in the report the
+   way they do on the card. ★ stays for the journals that already carry it. */
+const RXWORD={super:'★ loved',like:'▲ liked',meh:'▬ so-so',dis:'▼ disliked'};
 const ordinal=n=>n+(n%100>=11&&n%100<=13?'th':({1:'st',2:'nd',3:'rd'}[n%10]||'th'));
-let RX_LAST={w:null,t:-1e9,row:null};
 /* every reaction this exact screen carries THIS run, oldest first */
 function rxHere(w){
   w=w===undefined?JOURNAL.where():w;
   return JOURNAL.log.filter(r=>r.t==='react'&&r.w===w&&r.run===JOURNAL.runId);
 }
+/* the count chip on the bar, and since #188 that is ALL this does: the three
+   glyphs it used to light are in the popup, and the popup asks a fresh question
+   every time it opens rather than showing back a verdict already filed. */
 function syncReact(){
   const mine=rxHere();
   const cur=mine.length?mine[mine.length-1].k:null;
-  document.querySelectorAll('#reactBar .rx').forEach(b=>
-    b.classList.toggle('on',b.dataset.k===cur));
   const c=$('reactCount');
   if(c){c.textContent=mine.length?'×'+mine.length:'';
     c.className=cur||'';}
 }
-function react(kind){
-  const w=JOURNAL.where();
+/* ═══ #188 · `w` AND `why` ARE ARGUMENTS NOW ════════════════
+   Neither can be read off the page at the moment the row is filed. The popup
+   captures WHERE it opened, because a fight's name does not survive the
+   navigation to the map that happens between the last blow and the question;
+   and `why` is what the player typed into the popup, which nothing else knows.
+   Both default to the old behaviour.
+
+   ⛔ AND THE 8-SECOND GRACE WINDOW IS GONE WITH THE CORNER BUTTONS. #54 built
+   it because a lit glyph in the corner of every screen is easy to hit by
+   mistake and a mis-click had to be undoable. A modal with a face to pick, a
+   box to type in and a Send to press is its own undo: nothing is filed until
+   the player says so, and until then every face is still changeable. Keeping a
+   window that re-reads a deliberate second submission as "you meant to take the
+   first one back" would now be the bug rather than the fix. */
+function react(kind,w,why){
+  w=w===undefined?JOURNAL.where():w;
   const mine=rxHere(w);
-  const last=mine.length?mine[mine.length-1]:null;
-  /* a correction only ever edits the row YOU just made on THIS screen */
-  const fresh=last&&RX_LAST.row===last&&RX_LAST.w===w&&
-    (perfNow()-RX_LAST.t)<RX_GRACE;
-  let msg;
-  if(fresh&&last.k===kind){
-    JOURNAL.log.splice(JOURNAL.log.indexOf(last),1);JOURNAL.save();
-    RX_LAST={w:null,t:-1e9,row:null};
-    msg='taken back — '+w;
-  }else if(fresh){
-    last.k=kind;JOURNAL.save();
-    RX_LAST.t=perfNow();
-    msg=RXWORD[kind]+' — '+w;
-  }else{
-    const row=JOURNAL.put('react',w,{k:kind});
-    RX_LAST={w:w,t:perfNow(),row:row};
-    msg=RXWORD[kind]+' — '+w+
-      (mine.length?' · '+ordinal(mine.length+1)+' time you have said so here':'');
-  }
+  JOURNAL.put('react',w,why?{k:kind,why:why}:{k:kind});
+  const msg=RXWORD[kind]+' - '+w+
+    (mine.length?' · '+ordinal(mine.length+1)+' time you have said so here':'');
   sfx(kind==='dis'?'back':'coin');
   const t=$('reactWhat');
   if(t){t.textContent=msg;t.classList.add('on');
     clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('on'),1900);}
   syncReact();
 }
-document.querySelectorAll('#reactBar .rx').forEach(b=>{
-  b.onclick=e=>{e.stopPropagation();react(b.dataset.k);};});
-/* #98 point 5 - the fold. Deliberately NOT remembered across launches: it is
-   a settings-band write for a UI-band fact (see the state table in the
-   README), and a player who folds it once has said "not now", not "never".
-   It stays open for as long as the page is up, which is the session. */
+/* ═══════════════════════════════════════════════════════════════
+   #188 · RXPOP - THE QUESTION ARRIVES INSTEAD OF WAITING TO BE FOUND
+
+   (User, 2026-08-18, with a screenshot of a shop's own two-step form: three
+   faces, and a reason box that only opens when the left one is pressed.
+   *"запускати вспливаш - як в HS ... якщо людина клікає 'погано' то розгорнути
+   в причину - але сильно менше тексту. Це все зберігати у рані"*.)
+
+   TWO STEPS AND THE SECOND ONE IS CONDITIONAL, which is the whole design. A
+   happy player is one press and gone; an unhappy one is asked the single
+   question worth asking, in five words, once. Asking everybody for a reason is
+   how a form gets closed.
+
+   ⚠ IT MAY NEVER BE A THING YOU HAVE TO ANSWER. Esc closes it, the backdrop
+   closes it, `Not now` closes it, and none of the three file anything. That is
+   #76's not-nagging rule arriving on the one surface that can actually nag.
+
+   ⛔ THE FACES ARE NOT THE MOODSTATES LADDER. 💀😟😐🙂😄 is the COMPANY'S MORALE and
+   this modal opens over screens that are showing it; one glyph may not mean two
+   things (#102's wrong-unit rule). These three are deliberately outside that
+   set. ⛔ And the KEYS are the same three the bar has filed since #53, so every
+   journal ever exported still reads and the report needs no branch.
+   ══════════════════════════════════════════════════════════════ */
+/* ═══ #188b · THUMBS, AND THE MIDDLE ONE GOT ITS OWN KEY ════════════
+   (User, 2026-08-18: *"try differen emojies - finger up , so-so , finger down
+   so far"*. His order, left to right, is the order below.)
+
+   ⛔ AND "SO-SO" COULD NOT BE FILED AS `like`, WHICH IS THE ONLY REAL DECISION
+   IN THIS SWAP. The three keys since #53 are `super`/`like`/`dis` and the report
+   prints them as loved/liked/disliked, so a shrug landing on `like` would put
+   the word "liked" on a person who said the opposite - #102's wrong-unit rule,
+   arriving through what looks like a change of picture. So `meh` is a fourth
+   kind, and `super` is RETIRED FROM THE POPUP rather than deleted: nothing files
+   it any more, and it stays in RXWORD, in the CSS and in the tally so that every
+   ★ already sitting in somebody's journal still renders. ⚠ The tally prints
+   LOVED only when the count is non-zero, so a new run shows three cells and an
+   old tester's still shows four.
+
+   ⚠ A FOURTH `k` IS A NEW VALUE IN THE EXPORTED BLOB. The row SHAPE is
+   unchanged, which is the contract #57's analytics tab reads under, but a reader
+   that switches on `k` will meet `meh` for the first time. `RXWORD[r.k]||r.k` in
+   the letter already degrades safely; nothing else in this file switches on it.
+
+   ⚠ 🤷 IS THE ONE GLYPH HERE THAT IS NOT A HAND, and it is heavier than the two
+   thumbs beside it. It is used because there is no hand that reads "so-so" on
+   its own (👌 means good), and 🙂😐 are the company's morale. 🫤 is the
+   one-line alternative if the row wants a face instead. */
+const RX_FACES=[{k:'like', ic:'👍',t:'good'},
+                {k:'meh',  ic:'🤷',t:'so-so'},
+                {k:'dis',  ic:'👎',t:'bad'}];
+const RXPOP={
+  el:null, w:null, k:null, askedRun:null,
+  /* built on first open, not at boot: it is a modal most sessions never see,
+     and building it lazily keeps it out of every boot sweep that counts nodes */
+  build(){
+    if(RXPOP.el)return RXPOP.el;
+    const d=document.createElement('div');
+    d.id='rxWrap';
+    d.innerHTML='<div id="rxCard">'+
+      '<h3 id="rxQ">HOW WAS THAT?</h3>'+
+      '<div id="rxWhere"></div>'+
+      '<div id="rxFaces">'+RX_FACES.map(f=>
+        '<button class="rxf" data-k="'+f.k+'"><span>'+f.ic+'</span><i>'+f.t+'</i></button>')
+        .join('')+'</div>'+
+      '<div id="rxWhy"><label for="rxWhyT">WHAT WENT WRONG?</label>'+
+        '<textarea id="rxWhyT" rows="3" placeholder="one line is plenty"></textarea></div>'+
+      '<div id="rxOpts"><button id="rxSkip">NOT NOW</button>'+
+        '<button id="rxSend" class="off">SEND</button></div></div>';
+    document.body.appendChild(d);
+    /* the backdrop closes; the card does not. A click that lands on the card
+       and closes the thing is the oldest modal bug there is. */
+    d.onclick=e=>{if(e.target===d)RXPOP.close();};
+    d.querySelectorAll('.rxf').forEach(b=>b.onclick=()=>{
+      RXPOP.k=b.dataset.k;
+      d.querySelectorAll('.rxf').forEach(x=>x.classList.toggle('pick',x===b));
+      /* the second step, and ONLY off the unhappy face */
+      const why=$('rxWhy'),open=RXPOP.k==='dis';
+      why.classList.toggle('on',open);
+      if(open)$('rxWhyT').focus();
+      $('rxSend').classList.remove('off');});
+    $('rxSkip').onclick=()=>RXPOP.close();
+    $('rxSend').onclick=()=>RXPOP.send();
+    RXPOP.el=d;
+    return d;
+  },
+  open(w){
+    /* ask() owns the screen when it is up (both are z 200) and a question
+       stacked on a question is not a question anybody answers */
+    if(typeof ASK!=='undefined'&&ASK.classList.contains('on'))return;
+    const d=RXPOP.build();
+    RXPOP.w=w||JOURNAL.where();
+    RXPOP.k=null;
+    const n=rxHere(RXPOP.w).length;
+    $('rxWhere').textContent=String(RXPOP.w).toUpperCase()+
+      (n?'  ·  YOU HAVE SAID SOMETHING HERE ×'+n:'');
+    $('rxWhy').classList.remove('on');
+    $('rxWhyT').value='';
+    d.querySelectorAll('.rxf').forEach(b=>b.classList.remove('pick'));
+    $('rxSend').classList.add('off');
+    d.classList.add('on');
+  },
+  close(){if(RXPOP.el)RXPOP.el.classList.remove('on');},
+  send(){
+    if(!RXPOP.k)return;                       /* nothing picked: the Send is dim */
+    const why=($('rxWhyT').value||'').trim();
+    react(RXPOP.k,RXPOP.w,why||undefined);
+    RXPOP.close();
+  },
+  /* ═══ HEARTHSTONE'S OWN MOMENT, AND IT IS ONCE ════════════════
+     A fight is this game's match, so the aftermath is where the question goes.
+     ONCE A RUN, keyed on the run id rather than on a boolean, so a second run
+     in the same session gets its own one ask and a reload does not buy another.
+     ⚠ The delay lets afterPromotion() finish drawing the map, so the popup
+     opens over a settled screen and not over a transition. */
+  afterBattle(w){
+    if(RXPOP.askedRun===JOURNAL.runId)return;
+    RXPOP.askedRun=JOURNAL.runId;
+    setTimeout(()=>RXPOP.open(w),900);
+  }
+};
 (()=>{const t=$('reactTog');if(!t)return;
-  t.onclick=e=>{e.stopPropagation();$('reactBar').classList.toggle('open');};})();
+  t.onclick=e=>{e.stopPropagation();RXPOP.open();};})();
 
 /* ═══ #76 — THE QUESTIONNAIRE ══════════════════════════════════════════════
    (User, 2026-08-02: "Анкетку на форму обратной связи и быструю отправку.
@@ -34249,8 +34468,36 @@ const esc=s=>String(s==null?'':s).replace(/[<>&"]/g,c=>
       ⚑ IF THE SHARE STILL REFUSES, THE ADDRESS WAS INNOCENT AND THIS COMES
       BACK. The removed code is kept whole in the 8f.105 changelog row.
    ═══════════════════════════════════════════════════════════════════════ */
-/* ⛔ FEEDBACK_TO is gone (8f.105). The address is not in this file any more,
-   in code, in text or in a comment. See the block above for why. */
+/* ═══ #188 · THE ADDRESS IS BACK, AND SO IS THE MAIL BUTTON ═════════
+   (User, 2026-08-18: *"For a feedback add email where to send and automatically
+   'send email' ... So anyway make it more sendeble with my email or discord"*,
+   and the address confirmed in the same breath.)
+
+   ⛑ 8f.105 REMOVED BOTH ON A HUNCH THAT WAS NEVER CONFIRMED. The block above
+   says so in as many words: the share menu kept refusing new versions, the
+   address was the suspect, and the note ends *"IF THE SHARE STILL REFUSES, THE
+   ADDRESS WAS INNOCENT AND THIS COMES BACK."* It is back on the user's order.
+   ⚠ SO IF `deploy.ps1` OR THE ARTIFACT SHARE STARTS REFUSING AGAIN, THIS IS
+   THE FIRST THING TO PULL, and pulling it is one constant.
+
+   ⛔ AND THE SILENT SEND IS STILL IMPOSSIBLE, WHICH ANSWERS THE GITHUB QUESTION
+   (*"Will it work if I made auto collect of feeback in Github?"*). No: the
+   published page's CSP blocks `fetch`, XHR, `sendBeacon` and every other
+   outbound request, so nothing can POST to a GitHub API, a Google Form or
+   anything else - that is the wall the block above documents and it has not
+   moved. What a page CAN do is NAVIGATE, which is why `mailto:` works at all;
+   the same trick would open a pre-filled GitHub issue
+   (`github.com/<user>/<repo>/issues/new?title=&body=`), but it needs a PUBLIC
+   repo, a logged-in GitHub account per tester, and it carries the same URL
+   ceiling as the mail link - the journal blob does not fit in either. So the
+   clipboard stays the road that always works and the mail is the convenience
+   on top of it. */
+const SEND_TO={
+  mail:'dmytriyvihrov@gmail.com',
+  /* an invite link or a handle. Prints beside the address the moment it is set
+     and needs no other change; empty means the screen shows the mail alone. */
+  discord:''
+};
 /* ═══ #184 · SEVEN QUESTIONS BECAME THREE ══════════════════════════════════
    (User, 2026-08-17: *"Significantly simplify after game survey and reports
    with game. For now it is too complicated and unclear what to do. I don't
@@ -34312,12 +34559,13 @@ function drawPoll(){
       'Three questions, none of them required. A blank is a real answer. It saves as you '+
       'type.</p>'+
     '<div class="helpsec"><h2>WHO IS THIS</h2>'+
-      '<div class="qrow"><label for="q_name"><b>What should I call you?</b>'+
-      '<i>so I know whose run I am reading. A nickname is plenty.</i></label>'+
+      /* #188 - the two hints under these labels are gone at the user's word.
+         Both were explaining a box that explains itself, and the placeholder
+         under the name field already says a nickname is fine. */
+      '<div class="qrow"><label for="q_name"><b>What should I call you?</b></label>'+
       '<input id="q_name" class="qta" placeholder="anonymous is fine too" value="'+
       esc(JOURNAL.who||'')+'"></div>'+
-      '<div class="qrow"><label><b>How hard was it?</b>'+
-      '<i>the one thing I cannot read off the journal</i></label>'+
+      '<div class="qrow"><label><b>How hard was it?</b></label>'+
       '<div class="qpicks">'+picks+'</div></div></div>'+
     '<div class="helpsec"><h2>THE QUESTIONS</h2>'+rows+'</div>'+
     /* BACK ON THE LEFT, DONE ON THE RIGHT AND GREEN (user, 2026-08-03). The
@@ -34325,7 +34573,10 @@ function drawPoll(){
        and the only coloured control on the card is the one being asked for.
        `Back` keeps its width so it never reads as a dead end. */
     '<div class="popts" style="grid-template-columns:1fr 1.5fr">'+
-      '<button class="popt" id="qBack"><b>Back</b><i>it is saved either way</i></button>'+
+      /* #188 - the sub-line is gone off every Back in this flow. The card says
+         "It saves as you type" at the top; saying it again on the way out is the
+         second receipt this build keeps deleting. */
+      '<button class="popt" id="qBack"><b>Back</b></button>'+
       '<button class="popt sendit big" id="qDone"><b>Done - send it</b>'+
       /* #125 - was "with the button that mails them". That button has not
          existed since 8f.105, when the mailto route was cut: the published
@@ -34424,8 +34675,13 @@ function drawNotes(log,who){
         '<div><b>'+fmtDur(secs)+'</b><i>at the keyboard</i></div>'+
         '<div><b>'+(end?esc(end.w):'—')+'</b><i>ended</i></div>'+
         (full?'<div><b>'+dec.length+'</b><i>decisions</i></div>':'')+
-        '<div><b class="super">'+cnt('super')+'</b><i>loved</i></div>'+
+        /* #188b - LOVED only when somebody has one. The popup stopped filing
+           ★ when the faces became thumbs, so on a new run this cell would be a
+           permanent 0 taking a seventh of the row; on an older tester's journal
+           it is still a real number and still shows. */
+        (cnt('super')?'<div><b class="super">'+cnt('super')+'</b><i>loved</i></div>':'')+
         '<div><b class="like">'+cnt('like')+'</b><i>liked</i></div>'+
+        '<div><b class="meh">'+cnt('meh')+'</b><i>so-so</i></div>'+
         '<div><b class="dis">'+cnt('dis')+'</b><i>disliked</i></div>'+
       '</div>'+
       (full&&rx.length?'<h3 class="nsub">WHAT THEY REACTED TO</h3>'+
@@ -34458,7 +34714,13 @@ function drawNotes(log,who){
   const letter=()=>{
     const P=JOURNAL.poll||{};
     const last=ids.length?ids[0]:null;
-    const rows=last?runs[last]:[];
+    /* ⚠ #188 - `!=null`, NOT a truthiness test. `runId` is 0 until a run
+       starts, so a journal whose newest group is run 0 - somebody who reacted
+       on the menu or the practice field and never set off - answered `last?`
+       with false and got a letter with no tally and, since #188, none of the
+       reasons they had typed into the popup either. Every one of those rows was
+       still in the blob; it was the half a human reads that went blank. */
+    const rows=(last!=null)?runs[last]:[];
     const days=rows.reduce((m,r)=>Math.max(m,r.d||0),0);
     const secs=rows.reduce((m,r)=>Math.max(m,r.ms||0),0);
     const end=rows.filter(r=>r.t==='run-end')[0];
@@ -34470,14 +34732,50 @@ function drawNotes(log,who){
         ' decisions, '+rx.length+' reactions'+(end?', ended: '+end.w:', unfinished')+'\n':'')+
       (diff?'How hard it was: '+diff+'\n':'');
     const qa=POLL.filter(q=>P[q.k]).map((q,i)=>(i+1)+'. '+q.q+'\n'+P[q.k]).join('\n\n');
+    /* #188 - the reasons typed into the popup. They are the only prose in this
+       file the player wrote WITHOUT being taken to a form, which makes them the
+       likeliest sentences in the whole blob to exist, so they ride in the
+       letter a human reads rather than only in the JSON a parser reads. */
+    const said=rx.filter(r=>r.why).map(r=>
+      '- '+(RXWORD[r.k]||r.k)+', '+r.w+': "'+r.why+'"').join('\n');
     const tail='\n\n----------\nThe full journal, as the game wrote it:\n\n';
+    /* `lead` is the letter WITHOUT that header - it is what the mail link
+       carries, because a mailto is a URL and the journal does not fit in one.
+       `body` is unchanged and is what the clipboard gets. */
+    const lead=head+(qa?'\n'+qa:'\n(no questions answered)')+
+      (said?'\n\nWhat they said in the moment:\n'+said:'');
     return {subject:'Grimtoll run'+(JOURNAL.who?': '+JOURNAL.who:''),
-            body:head+(qa?'\n'+qa:'\n(no questions answered)')+tail};
+            body:lead+tail, lead:lead};
   };
   const L=own?letter():null;
-  /* ⛔ the `mailto:` href built here is gone with the button (8f.105). Nothing
-     measures a URL any more: the clipboard has no two-kilobyte ceiling, so the
-     letter and the journal travel together and neither is trimmed. */
+  /* ═══ #188 · THE MAIL LINK, AND WHY IT IS MEASURED AGAIN ══════════
+     8f.105 deleted this and wrote *"Nothing measures a URL any more"*. It does
+     again, and only on this road: the clipboard has no ceiling and gets the
+     letter AND the journal whole, but a `mailto:` is a URL and clients cut one
+     without saying so (Outlook stops near 2 KB). So the mail carries the LEAD -
+     the tester's own sentences - and asks for the journal as a paste, which is
+     already on their clipboard by the time the mail app opens.
+     ⚠ MEASURED ON THE ENCODED STRING. A space costs three characters once it is
+     a URL, so a raw `.length` is off by roughly half on English prose and by
+     far more on anything typed in Cyrillic.
+     ⚠ AND IT IS A REAL `<a>`, CLICKED BY A REAL PERSON. `location.href='mailto:'`
+     from script is top navigation and a sandboxed iframe refuses it; an anchor
+     the user clicks is the one form that still reaches a mail handler. That is
+     also why it keeps `target="_blank"`. */
+  const MAIL_ENC_MAX=1800;
+  const PASTE_NOTE='\n\n----------\nThe journal is on your clipboard already, put there '+
+    'by the same press that opened this. Paste it under this line and send.\n';
+  const TRIM_NOTE='\n\n[trimmed to fit the mail link - the whole letter is on your clipboard]';
+  const mailBody=(()=>{
+    if(!L)return '';
+    const room=MAIL_ENC_MAX-encodeURIComponent(PASTE_NOTE+TRIM_NOTE).length;
+    let t=L.lead;
+    if(encodeURIComponent(t).length<=room)return t+PASTE_NOTE;
+    while(t.length>120&&encodeURIComponent(t).length>room)t=t.slice(0,Math.floor(t.length*0.85));
+    return t.replace(/\s+\S*$/,'')+TRIM_NOTE+PASTE_NOTE;
+  })();
+  const mailHref=L?('mailto:'+SEND_TO.mail+'?subject='+encodeURIComponent(L.subject)+
+    '&body='+encodeURIComponent(mailBody)):'';
   /* ═══ THE SEND BLOCK IS THE TOP OF THIS SCREEN (user, 2026-08-03) ═══════
      "redo this screen with run. So it is more clear button to send."
      It used to sit UNDER every run block, which on a finished run is a long
@@ -34505,10 +34803,16 @@ function drawNotes(log,who){
     (full?'<button class="popt nfull" id="nCopy"><b>Copy the blob only</b>'+
       '<i>straight to the clipboard</i></button>':'')+
     (full?'':'</div>');
-  $('notesCard').innerHTML='<h1>'+(who?'NOTES FROM '+esc(who).toUpperCase():'YOUR RUN')+'</h1>'+
-    '<p style="color:#8a7449;font-style:italic;margin-top:-4px">'+
-      (who?'Somebody else’s journal, pasted in. Nothing here touches your own.'
-          :'What the game wrote down while you played. It only ever watched.')+'</p>'+
+  /* #188 point 5 - YOUR RUN and its caption are gone off your own journal at
+     the user's word. The screen opens on SEND IT BACK, which is the thing it is
+     for; a title saying "your run" over a screen you reached by pressing "see my
+     run" is the sentence about the sentence the card rules keep deleting.
+     ⚠ A FRIEND'S JOURNAL KEEPS BOTH, and that is not an inconsistency: whose it
+     is and that it does not touch yours are the two facts that screen cannot be
+     read without. */
+  $('notesCard').innerHTML=(who?'<h1>NOTES FROM '+esc(who).toUpperCase()+'</h1>'+
+    '<p style="color:#8a7449;font-style:italic;margin-top:-4px">Somebody else’s journal, '+
+    'pasted in. Nothing here touches your own.</p>':'')+
     (own?'<div class="helpsec"><h2>SEND IT BACK</h2>'+
       '<p>'+(answered
         ?'Your answers to the '+answered+' question'+(answered===1?'':'s')+' you filled in go '+
@@ -34516,13 +34820,15 @@ function drawNotes(log,who){
         :'<b>Nothing has been asked yet.</b> Three questions, none of them required. ')+
         '<button class="qpick" id="nPoll">'+(answered?'Change my answers':'Answer the questions')+
         '</button></p>'+
-      /* THE ONE BUTTON, and since 8f.105 it is a copy rather than a send. It
-         takes the readable letter AND the journal in one press, because the
-         two halves are useless apart: the letter is what a human reads, the
-         journal is what the analytics tab parses. */
-      '<button class="popt sendit big" id="nSend">'+
-        '<b>✎ COPY IT ALL, READY TO SEND</b><i>paste it straight back into wherever '+
-        'you were given this link</i></button>'+
+      /* #188 - THE BUTTON AT THE TOP IS THE MAIL AGAIN. The clipboard did not
+         go anywhere; it moved down beside Back (point 3), where a copy button
+         belongs once there is an address printed under it. This one is the
+         road that finishes the job in one press for anybody with a mail app. */
+      '<a class="popt sendit big" id="nMail" href="'+esc(mailHref)+'" '+
+        'target="_blank" rel="noopener">'+
+        '<b>✉ SEND IT AS AN EMAIL</b><i>opens your mail, already addressed and '+
+        'written. The same press puts the journal on your clipboard, so it is one '+
+        'paste from done</i></a>'+
       blobBox+'</div>'
      :'<div class="helpsec"><h2>THE BLOB</h2><p>What they sent, as it arrived.</p>'+
       blobBox+'</div>')+
@@ -34536,8 +34842,21 @@ function drawNotes(log,who){
         '<i>paste a journal they sent you into the box above</i></button>'+
         '<button class="popt danger" id="nWipe"><b>Clear my journal</b>'+
         '<i>start the notes over — it cannot be undone</i></button></div></div>':'')+
-    '<div class="popts"><button class="popt" id="nBack"><b>Back</b>'+
-      '<i>to whatever you were doing</i></button></div>';
+    /* ═══ #188 point 3 · THE COPY SITS BESIDE BACK, WITH THE ADDRESS UNDER IT
+       (User: *"Кнопку копиед ит можна поставить поруд з 'бек' - просто
+       рядом потрібний емейл/діскорд відправити"*.)
+       ⚠ THIS REVERSES HALF OF #125, ON PURPOSE AND ON A NEWER INSTRUCTION. That
+       round put the send at the TOP because it had been buried under every run
+       block. It still is at the top - the MAIL is - and the clipboard is the
+       second road, which is exactly where a second road belongs: at the exit,
+       next to the other way out, with the address it needs printed beneath it.
+       A copy button with nowhere named to paste it was always half a control. */
+    (own?'<div class="popts" style="grid-template-columns:1fr 1.5fr">'+
+        '<button class="popt" id="nBack"><b>Back</b></button>'+
+        '<button class="popt sendit" id="nSend"><b>⧉ COPY IT ALL</b></button></div>'+
+      '<div class="sendto">send it to <b>'+esc(SEND_TO.mail)+'</b>'+
+        (SEND_TO.discord?' · or discord <b>'+esc(SEND_TO.discord)+'</b>':'')+'</div>'
+       :'<div class="popts"><button class="popt" id="nBack"><b>Back</b></button></div>');
   const ta=$('nBlob');
   const pollBtn=$('nPoll');if(pollBtn)pollBtn.onclick=openPoll;
   /* ⚑ ONE PRESS CARRIES BOTH HALVES (8f.105, replacing the mail button). The
@@ -34548,12 +34867,16 @@ function drawNotes(log,who){
      so the payload goes into it, is copied, and the blob is put back before
      anything can repaint. A screen that silently rewrites what it is showing
      you is a bug, even for a tenth of a second. */
-  const sendBtn=$('nSend');
-  if(sendBtn)sendBtn.onclick=()=>{
-    const payload=(L?L.body:'')+ta.value;
-    const done=ok=>{sendBtn.innerHTML=ok
-      ?'<b>Copied. All of it.</b><i>paste it back to whoever gave you the link</i>'
-      :'<b>Could not reach the clipboard</b><i>the box below is selected, press Ctrl+C (or Cmd+C)</i>';};
+  /* ⚠ TWO WAYS TO COPY, AND THE OLD ONE IS THE FALLBACK, NOT THE PLAN. The
+     published build runs in a sandboxed iframe where `navigator.clipboard` may
+     be refused outright, and `execCommand` is deprecated but still the thing
+     that works there. Try the good one, fall back, and either way SAY whether
+     it worked - a copy button that silently does nothing is the worst control
+     in any program.
+     #188 - hoisted into one helper because there are TWO presses that copy now:
+     the button, and the mail link doing its half of the job on the way out. */
+  const copyAll=(payload,done)=>{
+    done=done||function(){};
     const viaBox=()=>{
       let ok=false;
       try{ta.value=payload;ta.focus();ta.select();ok=document.execCommand('copy');}catch(e){ok=false;}
@@ -34567,12 +34890,22 @@ function drawNotes(log,who){
       done(viaBox());
     }
   };
-  /* ⚠ TWO WAYS TO COPY, AND THE OLD ONE IS THE FALLBACK, NOT THE PLAN. The
-     published build runs in a sandboxed iframe where `navigator.clipboard` may
-     be refused outright, and `execCommand` is deprecated but still the thing
-     that works there. Try the good one, fall back, and either way SAY whether
-     it worked - a copy button that silently does nothing is the worst control
-     in any program. */
+  /* ⛑ ONE PRESS CARRIES BOTH HALVES. The letter is what a person reads and the
+     blob is what the analytics tab parses, so the clipboard gets them joined, in
+     that order. #188 dropped the success sub-line: the address is printed
+     directly under this button now and says where it goes. The FAILURE line
+     stays, because it is an instruction and not a caption. */
+  const sendBtn=$('nSend');
+  if(sendBtn)sendBtn.onclick=()=>copyAll((L?L.body:'')+ta.value,ok=>{
+    sendBtn.innerHTML=ok
+      ?'<b>Copied. All of it.</b>'
+      :'<b>Could not reach the clipboard</b><i>the box is selected, press Ctrl+C (or Cmd+C)</i>';});
+  /* #188 - the anchor navigates by itself: it is a real link and a real click,
+     which is the only shape a sandboxed iframe still lets reach a mail handler.
+     This does the OTHER half, so the paste the mail body asks for is loaded
+     before the mail window is even up. */
+  const mailBtn=$('nMail');
+  if(mailBtn)mailBtn.onclick=()=>{copyAll((L?L.body:'')+ta.value);};
   /* ⚠ #184 - NULL-GUARDED NOW. `nCopy` used to be one of the two controls that
      were always on the screen; it is drawn only under ⚙ TEST or on a friend's
      journal, and an unguarded handler would throw for every real player. */
