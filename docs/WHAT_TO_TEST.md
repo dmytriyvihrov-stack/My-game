@@ -25,6 +25,110 @@
 
 ---
 
+## 🔥 THE SIX-POINT BATCH: "ONE OF US", THE BURNING GROUND, A GEM FOR A LEVEL, THE SURE HAND  *(#186 · 2026-08-18 · build log 8f.206)*
+
+**Where it came from.** Your six numbered notes of 2026-08-18. Every one is built; the two that
+have dials you may want to move are named at the end.
+
+### 1. The objective's cheer
+
+**Three steps.** New game → through the brawl → the road's first card issues the SECOND OBJECTIVE
+→ recruit anybody (Blood on the Road's ally, or the muster).
+
+**What should happen.** One short gold strip at the foot of the map: *✦ SECOND OBJECTIVE DONE ·
+morale +10 · more of you at the fire.* Nine words and the receipt. It fades on its own; the row
+under the contract closes. On a phone it is one line, not a paragraph across the map.
+
+**What would be a bug.** The old 41-word paragraph. The strip staying gold on the NEXT road line
+(it goes back to italic). The morale not moving +10.
+
+### 2. "One of us": the road sends two when you are down to two
+
+**Three steps.** Take the ring at THE CIRCLE (or let your ratkin toast / your ogre dance at the
+wedding). Then, in a LATER fight, lose people until only two of your own stand while enemies
+still do. Fastest honest way: ⚙ TEST → a real run → any fight, fight badly. It is a coin (50%),
+rolled once a fight, so expect it about every second time you get that low.
+
+**What should happen.** Two bodies appear on free hexes beside a survivor, on your side, and each
+of them mutters *"One of us"* over its head. The log opens on the word **Luck** and says who they
+are: two ring-eyed strangers (the Circle) or two clan-cousins from the wedding (a spear and a
+sling). They fight for you for that fight, take no wages, take no spoils, and are not on the
+roster afterwards. **Each source fires ONCE per run.** If you have both, one of the two is picked.
+
+**What would be a bug.** The pair arriving in the FIRST round of a fight you walked into with two
+(somebody of yours has to have gone down or run first). The Circle's men arriving IN the Circle
+fight, or cousins at the wedding you are cutting down. Anybody arriving in the tap-room brawl or
+on the practice field. The pair standing on top of somebody. A second rescue from the same source
+later in the run. The fight NOT ending when your last two go down while the pair still stands (it
+should end - they are allies, not you).
+
+### 3. Ember: the burning ground
+
+**Three steps.** ⚙ DEV.MODE → practice field → ground **rocky** (or a run: the Steading-Line, the
+Sling-Line, the Thing in Armour; the Broken Men's wood at lower odds). About half the rocky boards
+carry it; re-take the field until you see black scorched patches with small flames. Walk somebody
+through one, or KICK an enemy into one.
+
+**What should happen.** A patch is two to four hexes, off both deployment ends. Hover one: *"Burning
+ground. Costs 2 to step into. Cross it or stand in it and you are alight: 6 now, 4 a turn after.
+Water puts it out."* Stepping into or across it: **BURNING** floats, 6 off the body (armour does
+not help), a 🔥 badge under the feet with a 2 on it, and 4 more at the start of each of that
+body's next two turns, then *OUT*. Standing in it at the top of your turn: 6 again and the clock
+resets. Ending a walk in the marsh while alight: *PUT OUT*, and the log says so. A KICK or a hook
+that lands somebody in it lights them the same way. Enemies walk **round** it when there is a way
+round and cross it when there is not; nobody chooses to END a move standing in it.
+
+**What would be a bug.** Fire on the wedding's plains, in the camp, the outpost, the tap-room, or
+under the Fen-Mother. A body starting the fight already in it. A patch touching another patch.
+Damage with no BURNING word and no badge. The AI parking a body in the fire turn after turn.
+Anybody dying twice (two DOWN lines) when kicked into it. The fire spreading (it must not).
+
+### 4. A gem for a level
+
+**Three steps.** 🎒 the company → click a person → the ledger column under the stats. If the wagon
+holds a gem, the button *"◈ Cut a gem for a level"* is live; with none it sits greyed and says so.
+
+**What should happen.** A confirm card; *Do it* takes one gem, the person goes up **one level**, and
+they get exactly what a fought level gives (a perk point or a stat point, or the trade if they are
+a level-0 stranger). The ring reads a fresh level. **The button is then gone for the whole run**,
+on every sheet. It comes back on the next run.
+
+**What would be a bug.** The button live with no gems. Two levels for one gem. The button still
+there after use, or usable on a second person. The ring drawing negative or empty on the new
+level. It surviving into a new game.
+
+### 5. The sure hand: two wide, the third lands
+
+**Three steps.** Any fight, your own body. Miss twice in a row with the same body (any weapon,
+bow or spell included).
+
+**What should happen.** On the second miss, *NEXT ONE LANDS* floats over that body. Hover any
+target: the aiming card reads **100%** with a **sure hand** row *(two wide · this one lands)*. The
+swing lands. After it lands the streak is over and the odds are ordinary again. AUTO will spend
+the sure swing too. **The enemy never gets this**: it is your side only.
+
+**What would be a bug.** A third miss in a row on your side. The card reading 100% while the
+swing misses (they are one function). An enemy body wearing 100%. The streak carrying across a
+landed blow.
+
+### 6. Two more mutters
+
+**Three steps.** Watch a ratkin of yours (or theirs) kill somebody; watch an ogre kill somebody.
+Rare by design (a kill wins the round's one line about half the time, and only after three rounds
+of silence).
+
+**What should happen.** *"You ugly and you know it."* over the ratkin, *"I'm loving it."* over the
+ogre. Both are your own words and are unchanged.
+
+**What would be a bug.** Either line through a face; either on a dog or a monster; either in the log.
+
+### The dials, and they are yours
+
+`REINF_ODDS` (.5) · `EMBER_HIT`/`BURN_TICK`/`BURN_TURNS` (6/4/2) · `blazeOdds` on `rocky` (.5) and
+`forest` (.35) · `SURE_AFTER` (2; 0 switches it off). Each is one constant with the rule beside it.
+
+---
+
 ## 🗣 THE BODIES MUTTER, THE CAPTAIN GETS A FACE, AND EVERY PERSONALITY COSTS SOMETHING  *(#185 · 2026-08-17 · build log 8f.205)*
 
 **Where it came from.** Your three voice notes in one paste: the units shouting something small,

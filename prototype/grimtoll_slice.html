@@ -2818,6 +2818,11 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:var(--f
   font-family:var(--body);font-style:italic;font-size:var(--fs3);color:#d8d5cc;
   text-align:center;pointer-events:none;opacity:0;z-index:40}
 #wNews.fade{animation:wnews 7s ease forwards}
+/* #186 - the one time the news is good news: the objective paying. An accent
+   edge (ui-scales.md §2: gold SELECTS, and it is not on the structural scale),
+   upright, in the plate's own gold. Short by construction - see goalTick. */
+#wNews.cheer{border-color:var(--gold);color:#e8d9a8;font-style:normal;
+  font-family:var(--mono);font-size:var(--fs2);letter-spacing:.06em}
 @keyframes wnews{0%{opacity:0}6%{opacity:1}80%{opacity:1}100%{opacity:0}}
 /* the album: what happened to this person, and the one fact they share with
    somebody else. No numbers, no bonuses — it is here to be read. */
@@ -9589,6 +9594,113 @@ function clashAllies(){
     u.col=Math.max(0,u.col-FOE_SHIFT);
     return u;});
 }
+/* ═══ #186 · "ONE OF US" - THE ROAD SENDS TWO WHEN YOU ARE DOWN TO TWO ═══════
+   (User, 2026-08-18: "Добавить подкрепление в бою. Если у тебя остались
+   только два человека, и бой еще идет. И при этом, у тебя были участие в
+   событиях: Тату на лице - ты получил. Тогда присоединятся к тебе 2 чувака с
+   татушками на лице тоже, и кричат 'One of us'. Если ты был на свадьбе
+   ретлингов и выбрал опцию с огром или с ретлингом. То тоже присоединяются
+   два ретлинга и кричат 'One of us'. Дать понять - что это 'случайность и
+   тебе повезло'. Кип ит шарп и лесс текст".)
+
+   THE RULE. When the company's OWN bodies standing (side you, not ally, not
+   pet) fall to two or fewer while a foe still stands, once per fight the road
+   rolls REINF_ODDS. On a pass, one of the sources the run has earned and not
+   yet spent sends two bodies to the nearest free hexes beside a survivor, on
+   the company's side, off the roster, and each of them mutters "One of us".
+     THE CIRCLE   the Captain wears the ring (`p.mark==='circle'`, #74)
+                  -> two ring-eyed strangers, a knife and a club
+     THE WEDDING  the ratkin toast or the ogre's dance was taken (`G.kin`,
+                  written by the two doors' `kin:'wedding'`)
+                  -> two clan-cousins, a spear and a sling, out of CLASH_T
+   ⚑ IT IS LUCK AND IT SAYS SO. Half the time, and the log line opens on the
+   word. A rescue that came every time would be a rule the player leans on;
+   one that comes half the time from a choice made days ago is the road
+   remembering, which is the six-link chain README §2 asks every returning
+   consequence to have.
+   ⚑ ONCE PER SOURCE PER RUN (`G.reinf`, in the save's flags). The same two
+   strangers arriving in every fight would be a garrison, not luck.
+   ⛔ NOT AT THEIR OWN FIRE. The Circle's men do not come to help you kill the
+   Circle, and the cousins do not come to a wedding you are cutting down. Not
+   in the brawl (`B.tut`), and not on the practice field (`SIM.on`): the arena
+   may not read the run.
+   ⚠ THEY ARE ALLIES IN THE CLASH'S SENSE: `besideYou()`, no roster row, no
+   spoils, and `checkEnd` still ends the fight when YOUR two go down even with
+   the pair standing. They keep the fight alive only by fighting in it. */
+const REINF_ODDS=.5;
+const REINF_T={
+  ringblade:{kind:'human',name:'A ring-eyed man',hp:42,armour:6,mor:60,skill:50,dodge:14,speed:4,
+    acts:[{k:'knife',n:'KNIFE',cost:1,reach:1,dmg:[7,12],am:.30,ft:.50}]},
+  ringclub :{kind:'human',name:'A ring-eyed woman',hp:46,armour:8,mor:60,skill:48,dodge:10,speed:4,
+    acts:[{k:'club',n:'CUDGEL',cost:1,reach:1,dmg:[8,13],am:.55,ft:.35}]}
+};
+/* which sources this company has earned and not yet spent, for THIS fight */
+function reinfSources(){
+  if(!G||!G.party||SIM.on||!B||B.tut)return [];
+  const spent=G.reinf||{},out=[];
+  const cap=G.party.find(p=>p.leader)||G.party.find(p=>p.id==='you');
+  if(cap&&cap.mark==='circle'&&!spent.circle&&G.battleKind!=='circle')out.push('circle');
+  if(G.kin==='wedding'&&!spent.wedding&&G.battleKind!=='wedding')out.push('wedding');
+  return out;
+}
+/* the nearest free walkable hexes to a survivor, nearest first, up to three
+   rings out. Written out rather than borrowing tavernPlace's fallback, which
+   stands the arrival on the anchor's own hex when the ring is full. */
+function freeNear(c,r,n){
+  const seen={},out=[];let ring=[[c,r]];seen[K(c,r)]=true;
+  for(let d=0;d<3&&out.length<n;d++){
+    const next=[];
+    ring.forEach(h=>nbrs(h[0],h[1]).forEach(p=>{
+      const k=K(p[0],p[1]);if(seen[k])return;seen[k]=true;next.push(p);
+      const t=B.terr[k];
+      if(t!==undefined&&!BLOCKED[t]&&t!=='ember'&&!at(p[0],p[1])&&out.length<n)out.push(p);
+    }));
+    ring=next;
+  }
+  return out;
+}
+function reinforce(){
+  if(!B||B.won!==null||B.reinfRolled)return false;
+  const you=alive().filter(u=>u.side==='you'&&!u.ally&&!u.pet);
+  const foe=alive().filter(u=>u.side==='foe'&&!u.passive);
+  if(!you.length||you.length>2||!foe.length)return false;
+  /* "остались только два" - LEFT with two, so somebody of yours has to have
+     gone down or run in this fight. A company that walked in as two is not
+     rescued at the first bell; it is rescued when it is losing. */
+  if(!B.units.some(u=>u.side==='you'&&!u.ally&&!u.pet&&(u.downed||u.dead||u.fled)))return false;
+  const src=reinfSources();
+  if(!src.length)return false;
+  /* the roll is spent for the FIGHT whichever way it lands: the same fight
+     asking twice would be a coin flipped until it comes up */
+  B.reinfRolled=true;
+  if(Math.random()>=REINF_ODDS)return false;
+  const which=src[(Math.random()*src.length)|0];
+  const anchor=you.find(u=>u.leader)||you[0];
+  const spots=freeNear(anchor.col,anchor.row,2);
+  if(spots.length<2)return false;
+  const pair=which==='circle'
+    ? build([[0,0,'ringblade',15],[0,0,'ringclub',14]],REINF_T)
+    : build([[0,0,'ratspear',15],[0,0,'ratsling',14]],CLASH_T);
+  pair.forEach((u,i)=>{
+    u.id='reinf'+i;besideYou(u);
+    u.col=spots[i][0];u.row=spots[i][1];
+    if(which==='wedding')u.name=i?'Clan-cousin, sling':'Clan-cousin, spear';
+    B.units.push(u);B.order.push(u);
+    const near=foe.slice().sort((a,b)=>udist(u,a)-udist(u,b))[0];
+    if(near)faceToward(u,near.col,near.row);
+  });
+  B.disp={you:disposition('you'),foe:disposition('foe')};
+  G.reinf=G.reinf||{};G.reinf[which]=true;
+  say(which==='circle'
+    ?'Luck. Two ring-eyed strangers were on this road, and they have seen your face.'
+    :'Luck. Two clan-cousins from the wedding were on this road, and they remember you.');
+  sfx('promote');
+  render();
+  /* the shout, off the freshly drawn sprites. Straight to mutter(), not
+     bark(): this is not the register's roll, it is the arrival's one line. */
+  pair.forEach(u=>{const p=hexPt(u);if(p)mutter(u,'One of us',p);});
+  return true;
+}
 /* ═══════════════════════════════════════════════════════════════════════
    #108 - THE THREE BELLS BRAWL. The intro fight, and the game's first
    scripted one: a 1v1 that grows in waves, teaching one system at a time.
@@ -11431,6 +11543,7 @@ function startBattle(kind){
   if(TF.deep)   floodDeep(terr,TF,rnd);
   if(TF.trees)  plantTrees(terr,TF,rnd);
   if(TF.flowers)sowFlowers(terr,TF,rnd);
+  if(TF.blaze)  lightEmbers(terr,TF,rnd);      /* #186 - the burning scrub */
   /* everyone looks at whoever they came to fight. In the camp that is
      reversed with the deployment — the pack is west of you, not east. */
   /* ⚠ THE DEPLOYMENT FOLLOWS THE GROUND, NOT THE FIGHT (#61). This read
@@ -11713,8 +11826,107 @@ const mcost=(c,r,u)=>{
   const t=B.terr[K(c,r)];
   if(t==='deep')return wetproof(u)?1:3;
   if(t==='marsh')return wetproof(u)?1:2;
+  if(t==='ember')return 2;                 /* #186 - a body hesitates at it */
   return 1;
 };
+/* ═══ #186 · EMBER - THE GROUND THAT IS ON FIRE ═════════════════════════════
+   (User, 2026-08-18: "хазард зон - огонь. Наносящий урон когда в нем и
+   'подпаливающий' проходящих персонажей".)
+
+   `ember` is a WALKABLE kind (it is not in BLOCKED; the camp's `fire` is the
+   pit nobody stands in, and the two stay apart for the same reason `tree`
+   and `rock` do: one word, one rule). It is a place with its own rule, which
+   is #61's test for earning a word:
+     · it costs 2 to enter (mcost above), so both brains route round it when a
+       way round exists and a body pays for the short cut;
+     · a body that ENTERS or CROSSES one - walked, shoved, hooked or dragged -
+       is BURNING: EMBER_HIT off the body at once, no armour, and the clock set
+       to BURN_TURNS;
+     · a burning body takes BURN_TICK at the start of each of its own turns
+       until the clock runs out. Standing IN the fire at the top of your turn
+       is the entry hit again and the clock reset, so a body that stays put
+       is a body that keeps paying;
+     · WATER PUTS IT OUT: ending a walk on marsh or deep water clears the
+       clock. A rule the player can use, and one line.
+   ⛔ IT DOES NOT SPREAD AND IT DOES NOT GO OUT. A fire that walked across the
+   board would be a second AI to write; this one is terrain, drawn once with
+   the field, and it stays where the seed put it.
+   ⚠ THE NUMBERS ARE ONE FIGHT'S TAX, NOT A WEAPON. Six and four against a
+   40-hp body is a mistake you can make once and walk away from; it is there
+   so the shove into the fire and the short cut through it are decisions. If
+   they move, they move here and nowhere else. */
+const EMBER_HIT=6, BURN_TICK=4, BURN_TURNS=2;
+const onEmber=u=>!!(B&&B.terr&&B.terr[K(u.col,u.row)]==='ember');
+/* what both brains charge a hex for being on fire, in the scorers' own
+   unit (six a hex of walking, so this is two hexes and a bit): enough that a
+   body never ENDS on it when any other hex reaches the target, not so much
+   that it will not cross it to get to somebody. `mcost` already prices the
+   crossing. One read of B.terr, so it may sit in the inner loop. */
+const EMBER_AI=14;
+const emberPen=p=>B.terr[K(p[0],p[1])]==='ember'?EMBER_AI:0;
+/* damage from the ground rather than from a body: no attacker, no arc, no
+   armour, and the fall goes through the same two doors strike() uses (your
+   roster is DOWNED, everybody else DEAD). Returns true if the body fell. */
+function envHurt(u,n,why,defer){
+  if(!u||u.dead||u.downed||u.fled||n<=0)return false;
+  u.hp-=n;u.taken=(u.taken||0)+n;
+  fx(u,'−'+n+(why?' '+why:''),'#e07a28',true);
+  /* `defer`: the caller is inside strike(), whose own `hp<=0` block runs a
+     few lines later and credits the kill to the shover. Falling twice would
+     drop the body twice and say so twice. */
+  if(u.hp>0||defer)return false;
+  u.hp=0;
+  if(u.side==='you'&&!u.ally){
+    u.downed=true;dropBody(u);
+    say(u.name+' is down - dragged out of the line, still breathing.');
+    fx(u,'DOWN','#c07a2c');sfx('rout');
+  }else{
+    u.dead=true;dropBody(u);
+    say(u.name+' goes down and stays down.');fx(u,'KILLED','#c15d55');sfx('death');
+  }
+  alive().forEach(x=>{
+    if(x.side!==u.side||tr(x,'noGrief'))return;
+    mor(x,Math.round(MORALE.allyDied*nearWeight(x,u)),'it watched one of its own drop');});
+  return true;
+}
+/* light a body: the entry hit, and the clock. `why` is what put it there
+   (walked, shoved), only for the log. */
+function ignite(u,why,defer){
+  if(!u||u.dead||u.downed||u.fled)return false;
+  const fresh=!(u.burning>0);
+  u.burning=BURN_TURNS;
+  if(fresh){fx(u,'BURNING','#e07a28');sfx('venom');
+    say(u.name+(why||' is in the fire')+', and is burning.');}
+  return envHurt(u,EMBER_HIT,'fire',defer);
+}
+/* the walk's own check: called by walkTo with the hexes crossed, destination
+   last. One ember anywhere on the route lights the body; water at the end of
+   it puts the body out. Forced movement calls ignite() at its own site. */
+function emberCross(u,path){
+  if(!B||!B.terr||!path||!path.length)return false;
+  const dest=B.terr[K(u.col,u.row)];
+  if(u.burning>0&&(dest==='marsh'||dest==='deep')&&!path.some(p=>B.terr[K(p[0],p[1])]==='ember')){
+    u.burning=0;fx(u,'PUT OUT','#5ec8b8',true);
+    say(u.name+' goes into the water and comes out no longer on fire.');
+    return false;
+  }
+  if(path.some(p=>B.terr[K(p[0],p[1])]==='ember'))return ignite(u,' walks through the fire');
+  return false;
+}
+/* the top of a body's own turn: in the fire, the entry hit again and the
+   clock reset; out of it and still alight, the tick and one off the clock.
+   Returns true if the body fell, so beginTurn can hand the turn on. */
+function burnTick(u){
+  if(!u||u.passive)return false;
+  if(onEmber(u)){u.burning=BURN_TURNS;return envHurt(u,EMBER_HIT,'fire');}
+  if(u.burning>0){
+    u.burning--;
+    const fell=envHurt(u,BURN_TICK,'burning');
+    if(!fell&&u.burning===0)fx(u,'OUT','#8a9a5c',true);
+    return fell;
+  }
+  return false;
+}
 /* GROUND NOBODY STANDS ON. `rock` is a boulder or a palisade; `fire` is the
    camp's fire-pit.
    ⚠ `tree`/`huge` and `wall` are DELIBERATELY NOT `rock` (#62, #65), and the
@@ -12443,6 +12655,9 @@ function walkTo(u,c,r,rm){
   }catch(e){path=[];}
   u.col=c;u.row=r;
   walkMark(u,from,path.length?path:[[c,r]]);
+  /* #186 - the ground crossed can be on fire. Same door every mover uses, so
+     the player's click, both brains, the pet and the kite all pay it. */
+  emberCross(u,path.length?path:[[c,r]]);
 }
 /* the picture. Called by render(), once, at the end, on the board it just
    drew - so every hex it measures exists and is at the current camera stop. */
@@ -12757,6 +12972,11 @@ function dodgeOf(u,W,noNerve){
   if(w&&raw>DODGE_SOFT)W.push('hard to stack past '+DODGE_SOFT+' −'+Math.round(raw-softDodge(raw)));
   return out;
 }
+/* #186 - misses in a row before the next swing is sure. 0 switches it off.
+   Declared ABOVE the function that reads it (README §6: a const read from
+   above its declaration is a TDZ crash). See the note at the foot of
+   hitBreakdown for the rule. */
+const SURE_AFTER=2;
 function hitBreakdown(a,d,act){
   /* ═══ MAGIC CAN MISS TOO (user) ═══════════════════════════════════════
      A working is aimed with the INTELLECT, not the hands: a caster's chance to
@@ -12903,9 +13123,24 @@ function hitBreakdown(a,d,act){
   const nerveA=STATES[a.state].hit+(rocking(a)?5:0);
   const dnr=STATES[d.state].dodge;
   const nerveD=dnr?(act.arcane?Math.round(dodgeOf(d,null,true)*0.35):dodgeOf(d,null,true))-dodge:0;
+  /* ═══ #186 - TWO WIDE IN A ROW, AND THE THIRD LANDS ═════════════════════
+     (User, 2026-08-18: "Если у тебя было два промаха подряд - то третий -
+     обязательно попадание (для того, чтобы не фрустрировать игрока)".)
+     `missRun` is the attacker's own streak, kept in strike(): a miss adds one,
+     a landed blow zeroes it. ⛔ THE PLAYER'S SIDE ONLY, because his reason is
+     the player's frustration and a guaranteed enemy blow is the same feeling
+     from the other chair. It is `side==='you'` and not `!ally`: a clash ally
+     is on the player's board and the player watches it miss.
+     ⚑ DECIDED HERE AND NOT IN strike(), which is #46's rule about where a
+     knob goes: this function is what the hover prints, what strike() rolls
+     against and what both AI brains score with, so the card reads 100%, the
+     roll cannot miss, and AUTO spends the sure swing on purpose - one place,
+     three readers, nothing to teach. */
+  const sure=SURE_AFTER&&a.side==='you'&&(a.missRun||0)>=SURE_AFTER;
+  if(sure)po('two wide, this one lands');
   return {skill:Math.round(skill),dodge:dodge,flank:Math.round(fl),other:Math.round(other),
-    nerveA:Math.round(nerveA),nerveD:Math.round(nerveD),
-    arc:arc,total:clamp(Math.round(skill-dodge+fl+other),5,95),parts:parts,oth:oth};
+    nerveA:Math.round(nerveA),nerveD:Math.round(nerveD),sure:sure,
+    arc:arc,total:sure?100:clamp(Math.round(skill-dodge+fl+other),5,95),parts:parts,oth:oth};
 }
 /* An ogre with ambition rages after counting its own misses. Nobody else does
    — this is the one place the same word produces a different creature. */
@@ -13089,6 +13324,13 @@ function strike(a,d,act,mult){
     /* an ogre with ambition is keeping count of these, and there is a number
        at which it stops trying to look good about it */
     a.misses=(a.misses||0)+1;
+    /* #186 - and the streak the sure hand reads. `misses` is the fight's total
+       and feeds the ogre's rage; this one is CONSECUTIVE and is zeroed by the
+       next blow that lands, twenty lines down. Two counters because they
+       answer two questions, which is the file's own rule about `walkable`. */
+    a.missRun=(a.missRun||0)+1;
+    if(a.side==='you'&&SURE_AFTER&&a.missRun===SURE_AFTER)
+      fx(a,'NEXT ONE LANDS','#d9bd7e',true);
     /* ═══ #145 - TWO SWINGS AT SOMETHING TOO QUICK, AND THE ROOM EXPLAINS ═══
        (User: "when you get 2 miss on him".) Counted on the DEFENDER, because
        the question is "have I failed to touch this one twice", not "has this
@@ -13107,6 +13349,9 @@ function strike(a,d,act,mult){
       fx(a,'ENOUGH','#c15d55');sfx('rout');
       say(a.name+' has missed '+rageAt+' times and has stopped caring how this looks.');}
     return false;}
+  /* #186 - it landed, so the streak the sure hand counts is over. Set to 0
+     rather than deleted: the readout tests `>=`, and an absent field reads 0. */
+  a.missRun=0;
   /* landing one is the whole point of the personality */
   const lift=tr(a,'hitLift');
   if(lift){
@@ -13223,6 +13468,7 @@ function strike(a,d,act,mult){
       d.rooted=Math.max(d.rooted||0,1);
       faceToward(d,a.col,a.row);
       fx(d,'DRAGGED','#c15d55');sfx('rout');
+      if(onEmber(d))ignite(d,' is dragged through the fire',true);   /* #186 */
       say(a.name+' takes '+d.name+' with her — hauled out of the line and dropped '+
         'against her flank.');
       /* held under long enough to breathe some of it — the ORIGIN of the
@@ -13293,6 +13539,10 @@ function strike(a,d,act,mult){
         (marsh?' Into the water — it will cost them to get out.':'')+
         (nearFire?' Into the fire\'s reach.':'')+
         (alone?' And away from anybody of theirs.':''));
+      /* #186 - shoved INTO the burning ground: it lights them. The kick into
+         the fire is the whole reason the ground can be stood on. Forced
+         movement does not go through walkTo, so it asks here. */
+      if(onEmber(d))ignite(d,' is shoved into the fire',true);
     }
     if(hitWall&&stepped<want){
       /* stopped by something solid: the rest of the shove goes into them */
@@ -14171,6 +14421,12 @@ function beginTurn(){
       render();if(checkEnd())return;nextTurn();return;
     }
   }
+  /* #186 - the fire, at the top of the body's own turn: in it, or still
+     alight from it. Same shape as DESPERATE above: if it drops them, the
+     turn is handed on through the ordinary path. */
+  if((u.burning>0||onEmber(u))&&burnTick(u)){
+    render();if(checkEnd())return;nextTurn();return;
+  }
   u.hitsTaken=0;                       /* the flinch resets — see strike() */
   u.usedParting=false;u.freeOn=null;   /* its parting swing is available again */
   u.castsThisTurn=0;                   /* one real spell a turn, again */
@@ -14655,6 +14911,11 @@ function checkEnd(){
   if(!you.length){B.won=false;
     endLater(()=>SIM.on?simResult('lost'):(BEATEN[G.battleKind]?toBeaten():toDefeat()),700);
     return true;}
+  /* #186 - down to two and the fight is still on: the road may send two. It
+     sits here, after the two endings, so it can never fire on a decided fight,
+     and before the mercy branch, so a rescue arrives while there is still
+     somebody to be rescued from. reinforce() rolls once a fight and returns. */
+  if(foe.length&&!B.reinfRolled&&you.filter(u=>!u.pet).length<=2)reinforce();
   /* ═══ ONLY PEOPLE BEG, AND IT IS READ OFF THE BODIES ═══════════════════
      The comment on this line has always said *beasts do not surrender and do
      not ask for anything, only people do*, and the code underneath it named
@@ -15110,7 +15371,10 @@ function selectAct(i){
   B.sel=a;render();
 }
 /* out of actions — go straight on, no dead air */
-function autoEnd(u){if(u.actions<=0)later(nextTurn,140);}
+/* #186 - and a body that fell on its own turn (a parting swing on the way,
+   the fire it walked through) hands the turn on: a downed unit with two
+   actions left is a turn nothing can spend. */
+function autoEnd(u){if(u.actions<=0||u.dead||u.downed||u.fled)later(nextTurn,140);}
 /* one glyph per kind of thing you can do */
 const ICON={move:'⇢',dis:'⇤',main:'⚔',fists:'✊',sword:'⚔',spear:'⌇',club:'⬤',knife:'†',
   bow:'➹',aimed:'◎',wither:'✷',willkick:'✸',blight:'❋',oath:'⛨',unpick:'❈',
@@ -15599,12 +15863,14 @@ function routStep(u,done){
     .map(f=>hdist(p,[f.col,f.row])).concat([99]));
   let hops=u.speed;
   const go=()=>{
-    if(hops--<=0||u.dead){render();done&&done();return;}
+    if(hops--<=0||u.dead||u.downed){render();done&&done();return;}
     const opts=nbrs(u.col,u.row).filter(p=>walkable(p[0],p[1]));
     if(!opts.length){render();done&&done();return;}
     opts.sort((a,b)=>away(b)-away(a));
     if(away(opts[0])<=away([u.col,u.row])){render();done&&done();return;}
     u.col=opts[0][0];u.row=opts[0][1];
+    /* #186 - a broken body runs where it runs, and some of it is on fire */
+    if(onEmber(u)&&ignite(u,' runs through the fire')){render();if(checkEnd())return;done&&done();return;}
     if(u.side==='foe'?u.col>=COLS-1:u.col<=0){
       u.fled=true;say(u.name+' is off the field. Gone.');render();
       if(checkEnd())return;done&&done();return;}
@@ -15815,6 +16081,11 @@ const STATUS={
      fact, one glyph: the badge on the head and the card that put it there
      have to be recognisably the same thing. */
   crippled:{n:'Crippled',   g:'⇸',col:'#c9a227',d:'Half movement, −10 dodge.'},
+  /* #186 - a clock, so the `u[k]>0` shape and the turns count. The figure in
+     the note is the same constant the tick charges. */
+  burning: {n:'Burning',    g:'🔥',col:'#e07a28',
+    d:'−'+BURN_TICK+' at the start of each of its turns. Water puts it out; the fire under it '+
+      'starts it again.'},
   rooted:  {n:'Transfixed', g:'👁',col:'#e0b84a',d:'Cannot move or disengage. It can still swing.'},
   /* #72 - TWO ENTRIES, ONE STATE, AND ONLY EVER ONE OF THEM SHOWING. The
      wall is now a fact about the ground rather than a flag she carries
@@ -16776,6 +17047,9 @@ function aiTurn(u){
            makes the camp's fire-pit a weapon you can herd the pack onto */
         const fireP=(u.side==='foe'&&!u.big&&
           nbrs(p[0],p[1]).some(q2=>B.terr[K(q2[0],q2[1])]==='fire'))?14:0;
+        /* #186 - and nothing ends its move standing IN the burning ground.
+           The same line exists in autoStep, three times (both brains). */
+        const emberP=emberPen(p);
         /* the human trick: a hex that completes a row of three is worth
            walking to — the line is the only formation anybody can learn */
         const lineB=(doc.lineSeek&&!at(p[0],p[1])&&inLineAt(p,u.side))?doc.lineSeek:0;
@@ -16809,14 +17083,14 @@ function aiTurn(u){
              needs to know about it. Priced at 6, the same as a hex of walking
              everywhere else in this scorer. */
           const lane=(shot&&!engaged(u)&&dd<=rng)?laneCost(u,t,p)*6:0;
-          const sc=distScore+i*6+rm.dist[k]+knot+chase[t.id]+exposed+fireP+lane
+          const sc=distScore+i*6+rm.dist[k]+knot+chase[t.id]+exposed+fireP+emberP+lane
             -arcBon-lineB-(piled[t.id]||0)*doc.pack*aip(u).pile;
           if(dd<=rng&&sc<bs){bs=sc;best=p;}});});
       if(!best){let bd=1e9;
         Object.keys(rm.dist).forEach(k=>{const p=k.split(',').map(Number);
           /* closing on the target, but not so far ahead that nobody is with me */
           const dd=hdist(p,[want[0].col,want[0].row])+
-            (anchor?hdist(p,anchor)*(cohere?0.7:0):0);
+            (anchor?hdist(p,anchor)*(cohere?0.7:0):0)+emberPen(p)/6;   /* #186 */
           if(dd<bd){bd=dd;best=p;}});
         /* ...and if that pick does not actually get us any closer, we are in a
            pocket and it will oscillate there forever. Walk the real path. See
@@ -16955,7 +17229,16 @@ const TERRAIN={
      does every arrangement - it stacks into a spine, scatters into cover,
      piles into an anvil and lies about as rubble - which is exactly the
      "more to draw from" the request asks for. */
-  rocky  :{paint:'dust',  marsh:.93, rock:.975, trees:2,
+  /* ═══ #186 - AND SOMETIMES THE SCRUB IS ON FIRE ═════════════════════════
+     (User, 2026-08-18: "На карту на некторых боях добавить хазард зон - огонь.
+     Наносящий урон когда в нем и 'подпаливающий' проходящих персонажей.
+     Иногда возникает на 'пустынной карте' и может где-то еще".)
+     `blaze` is the count of burning patches and `blazeOdds` how often a board
+     of this ground carries any - the "иногда". The dust ridge is his desert;
+     the forest below is the "where else", at lower odds, because a wood on
+     fire is a wood you notice. See lightEmbers() for the shape of a patch and
+     the EMBER block near mcost for what standing in one costs. */
+  rocky  :{paint:'dust',  marsh:.93, rock:.975, trees:2, blaze:2, blazeOdds:.5,
            pool:['broken','spine','anvil','flanks','strewn','open']},
   /* the ogres' own camp — a ring of stacked timber with two gaps in it */
   camp   :{paint:'teal',  marsh:.99, rock:.99,  layout:'camp'},
@@ -17000,6 +17283,7 @@ const TERRAIN={
      reads instantly. So the forest draws from four, and it is the one
      terrain where both materials are on the board at once. */
   forest :{paint:'forest',marsh:.94, rock:.99,  trees:26, huge:2,
+           blaze:1, blazeOdds:.35,           /* #186 - one patch, a third of the time */
            pool:['open','broken','anvil','spine']},
   /* #65. You are outside it. */
   outpost:{paint:'dust',  marsh:.975,rock:.99,  layout:'outpost',trees:3},
@@ -17263,6 +17547,7 @@ function fieldFor(kind,pin){
   if(!pick)Object.keys(place).forEach(k=>{if(k!=='t')out[k]=place[k];});
   out.trees=out.trees||0;out.huge=out.huge||0;
   out.deep=out.deep||0;out.flowers=out.flowers||0;
+  out.blaze=out.blaze||0;out.blazeOdds=out.blazeOdds||0;      /* #186 */
   /* THE ARRANGEMENT. A place with no pool at all is OPEN, never "whatever
      the base roll left there" - the old default was three random clumps and
      deleting it is what #90 was for. */
@@ -17393,6 +17678,45 @@ function sowFlowers(terr,T,rnd){
     if(terr[k]!=='field'&&terr[k]!=='marsh')continue;
     if(nbrs(c,r).some(p=>terr[K(p[0],p[1])]==='flower'))continue;
     terr[k]='flower';i++;
+  }
+}
+/* ═══ #186 - WHERE THE GROUND IS BURNING ══════════════════════════════════
+   One roll for whether this board carries any (the "иногда"), then `blaze`
+   patches of two to four hexes each, grown from a seed hex into its dry
+   neighbours. Field only: fire does not sit on water, and a patch that ran
+   into the marsh would put itself out. Off both deployment ends and never on
+   a reserved hex, the same two rules the flowers keep. Patches do not touch
+   each other, so two patches read as two fires and not as one wall of it.
+   ⚠ THE ODDS ROLL IS TAKEN EVEN WHEN IT FAILS, so a rocky board with no fire
+   still consumes exactly one number and the rest of its ground is the same
+   for a given seed whichever way the coin fell. Guarded upstream on
+   `TF.blaze`, so every ground without the dial consumes nothing (the
+   "no shipped fight may look different" rule at the call site). */
+function lightEmbers(terr,T,rnd){
+  if(rnd()>=T.blazeOdds)return;
+  const dry=(c,r)=>{
+    if(c<DEPLOY_EDGE||c>=COLS-DEPLOY_EDGE)return false;
+    if(reserved(c,r))return false;
+    return terr[K(c,r)]==='field';};
+  const nearEmber=(c,r)=>nbrs(c,r).some(p=>terr[K(p[0],p[1])]==='ember');
+  for(let i=0,tries=0;i<T.blaze&&tries<300;tries++){
+    const c=DEPLOY_EDGE+((rnd()*(COLS-DEPLOY_EDGE*2))|0),r=(rnd()*ROWS)|0;
+    if(!dry(c,r)||nearEmber(c,r))continue;
+    const size=2+((rnd()*3)|0);
+    const cells=[[c,r]];
+    /* grow: each step takes a dry neighbour of a cell already in the patch */
+    for(let g=0,gt=0;cells.length<size&&gt<12;gt++){
+      const from=cells[(rnd()*cells.length)|0];
+      const cand=nbrs(from[0],from[1]).filter(p=>dry(p[0],p[1])&&
+        !cells.some(x=>x[0]===p[0]&&x[1]===p[1])&&
+        /* not beside another patch, but its own cells are fine */
+        !nbrs(p[0],p[1]).some(q=>terr[K(q[0],q[1])]==='ember'));
+      if(!cand.length)break;
+      cells.push(cand[(rnd()*cand.length)|0]);
+    }
+    if(cells.length<2)continue;
+    cells.forEach(p=>{terr[K(p[0],p[1])]='ember';});
+    i++;
   }
 }
 /* read the placed flowers off the finished board, all asleep. Runs AFTER
@@ -18621,6 +18945,34 @@ function paintTerrain(){
       g.moveTo(p.x,p.y-10);g.quadraticCurveTo(p.x+4,p.y-3,p.x,p.y+2);
       g.quadraticCurveTo(p.x-4,p.y-3,p.x,p.y-10);g.fill();
       g.restore();
+    }else if(t==='ember'){
+      /* ═══ #186 - THE GROUND THAT IS BURNING. Not the fire-pit above (a
+         model you go round) but a scorched patch you can stand in: black
+         ground, low flames licking off it, and the same warm spill the pit
+         throws so the two read as one element. Painted flat, no sprite -
+         a body stands ON it, so nothing may rise above the hex. */
+      g.save();
+      const gl=g.createRadialGradient(p.x,p.y,2,p.x,p.y,38);
+      gl.addColorStop(0,'rgba(255,170,70,.46)');
+      gl.addColorStop(.5,'rgba(214,110,40,.18)');
+      gl.addColorStop(1,'rgba(214,110,40,0)');
+      g.fillStyle=gl;g.beginPath();g.arc(p.x,p.y,38,0,7);g.fill();
+      /* the scorch */
+      g.globalAlpha=.9;g.fillStyle='#120a05';g.beginPath();
+      g.ellipse(p.x,p.y+3,20+rnd()*3,12+rnd()*2,rnd()*.6,0,7);g.fill();
+      g.globalAlpha=1;g.fillStyle='#2a140a';g.beginPath();
+      g.ellipse(p.x-1,p.y+2,15,8,0,0,7);g.fill();
+      /* embers and low flame. Six tongues, 6-13 tall: measured on the shot,
+         five at 4-10 read as sparks in the grass rather than a fire */
+      for(let i=0;i<6;i++){
+        const fx0=p.x-13+rnd()*26,fy=p.y+4-rnd()*4,fh=6+rnd()*7;
+        g.fillStyle=i%2?'#e07a28':'#f6c344';g.globalAlpha=.9;
+        g.beginPath();g.moveTo(fx0,fy-fh);g.quadraticCurveTo(fx0+3.5,fy-fh*.4,fx0,fy+1);
+        g.quadraticCurveTo(fx0-3.5,fy-fh*.4,fx0,fy-fh);g.fill();
+      }
+      g.globalAlpha=1;g.fillStyle='#ffd27a';
+      for(let i=0;i<4;i++){g.fillRect(p.x-14+rnd()*28,p.y-2+rnd()*8,1.5,1.5);}
+      g.restore();
     }else if(t==='rock'){
       /* a broken outcrop: three stones and a shadow. In the camp the same
          terrain is a stacked palisade — see makeObstacles — and the timber
@@ -19639,6 +19991,9 @@ function render(){
          sentence rather than a glyph — exactly the way shallow marsh
          always has. The paint is the readout; this is the confirmation. */
       else if(t==='deep')hx.title='Deep water. Slow to get into, slower to be in.';
+      /* #186 - the burning ground: the rule, then the way out of it */
+      else if(t==='ember')hx.title='Burning ground. Costs 2 to step into. Cross it or stand in it '+
+        'and you are alight: '+EMBER_HIT+' now, '+BURN_TICK+' a turn after. Water puts it out.';
       else if(t==='door')hx.title='The door of the Three Bells. The one way in, and the one way out.';
       /* ═══ #64 — THE SIX HEXES AN OPEN BLOOM REACHES ════════════════════
          Lit, not labelled. The rule is a STATE and the board shows states;
@@ -20569,6 +20924,8 @@ function readout(t,e){
        number is the card saying go round, which is the most actionable
        sentence in the tactical layer. */
     '<div class="rr"><span>attack arc</span><span id="rArc"></span></div>'+
+    /* #186 - the sure hand: two wide in a row, so the 100% above says why */
+    rrIf('sure hand',bd.sure?1:0,'two wide · this one lands','#d9bd7e')+
     rrIf('surrounded',bd.flank,'+'+bd.flank,'#c9c6bb')+
     rrIf('your nerve',bd.nerveA,face(u)+' '+sgn(bd.nerveA),gb(bd.nerveA))+
     rrIf('their nerve',bd.nerveD,face(t)+' '+sgn(bd.nerveD),gb(bd.nerveD))+
@@ -20751,6 +21108,7 @@ function autoStep(){
         if(at(p[0],p[1]))return;
         const exp=exposureAt(p,u.side),step=B.reach.dist[k]*0.2;
         const knot=anchor?hdist(p,anchor):0;
+        const emberP=emberPen(p);               /* #186 - see aiTurn's twin */
         aim.forEach((t,i)=>{
           const dd=udist(p,t);
           if(dd>rng)return;
@@ -20769,7 +21127,7 @@ function autoStep(){
                enemy archer steps out to shoot is the divergence the player
                notices, and it is the one this file keeps being bitten by. */
             const lane=laneCost(u,t,p)*7;
-            const sc=band*7+i*4+exp*soft+knot*0.5+step+lane;
+            const sc=band*7+i*4+exp*soft+knot*0.5+step+lane+emberP;
             if(sc<bs){bs=sc;best=p;}
           }else{
             let arcB=0;
@@ -20779,7 +21137,7 @@ function autoStep(){
               const arc=arcFrom(p[0],p[1],t);
               arcB=arc.n==='BACK'?14:arc.n==='FLANK'?8:0;
             }
-            const sc=dd*6+i*5+exp*soft+knot-arcB+step;
+            const sc=dd*6+i*5+exp*soft+knot-arcB+step+emberP;
             if(sc<bs){bs=sc;best=p;}
           }});});
       /* nothing worth standing in yet — close the ground, but with the line
@@ -20790,7 +21148,7 @@ function autoStep(){
           const p=k.split(',').map(Number);
           if(at(p[0],p[1]))return;
           const d=hdist(p,[want[0].col,want[0].row])*4+exposureAt(p,u.side)*soft*0.6+
-            (anchor?hdist(p,anchor)*1.5:0);
+            (anchor?hdist(p,anchor)*1.5:0)+emberPen(p);      /* #186 */
           if(d<bd){bd=d;best=p;}});
         /* the same pocket fix as aiTurn's — both brains or neither */
         const now=hdist([u.col,u.row],[want[0].col,want[0].row]);
@@ -21311,7 +21669,9 @@ window.LINT=function(){
     const w=s=>s.trim().split(/\s+/).length;
     const scan=(lines,where)=>{
       lines.forEach(s=>{
-        if(w(s)>5)hit('bark',where,'"'+s+'" is '+w(s)+' words. Two to five, or it '+
+        /* #186 - six, not five: the user's own "You ugly and you know it." is
+           six words and 25 characters, no wider than the five-word lines. */
+        if(w(s)>6)hit('bark',where,'"'+s+'" is '+w(s)+' words. Two to six, or it '+
           'cannot be read at --fs1 beside a body that is moving');
         if(/\d/.test(s))hit('bark',where,'"'+s+'" prints a figure. A mutter is not a receipt');
         if(/—/.test(s))hit('bark',where,'"'+s+'" contains an em dash');
@@ -21529,6 +21889,11 @@ function runBlob(){
            and is handed the card on its next road, which is correct: a company
            that has not been told is a company that has not been told. */
         goal:G.goal,
+        /* #186 - three once-a-run facts: who took the gem level, which
+           reinforcement has already come (circle / wedding), and whether the
+           wedding's kin doors were taken at all. Older saves arrive without
+           them and are simply a company nobody has rescued yet. */
+        gemLevel:G.gemLevel,reinf:G.reinf,kin:G.kin,
         epiLine:G.epiLine,battleKind:G.battleKind},
       /* a run stops being resumable once it is over */
       log:G.log.slice(-40),
@@ -24562,17 +24927,24 @@ const BARK_ODDS={kill:.55, low:.6, hurt:.35, hit:.04};
    moves. A sentence here is a sentence nobody finishes. LINT 11 holds it.
    ⛔ NO NAME, NO NUMBER, NO PLACE. See the rule above: any of the three would
    make it information, and information belongs in the balloon.
-   ⚑ "Let me see his guts." is the user's own line and is canon. */
+   ⚑ "Let me see his guts." is the user's own line and is canon.
+   ⚑ #186 (2026-08-18) - two more of his, both on the KILL: the ratkin's
+   "You ugly and you know it." and the ogre's "I'm loving it." (his note says
+   *(eat)*, so the ogre means it about the body). ⚠ The ratkin line is SIX
+   words, one over the rule LINT 11 held, and it is kept verbatim because a
+   user's own line is canon (event-cards.md, "what never comes out"). At 25
+   characters it is exactly as wide as "Nothing personal, friend.", which is
+   what the rule was protecting; the ceiling moved to six with this note. */
 const BARKS={
   ratkin:{
     hit :['Open him up!','Let me see his guts.','That is the sound!'],
     hurt:['It bit me!','Not the face!'],
-    kill:['Warm one. Good.','Look what I did!'],
+    kill:['Warm one. Good.','Look what I did!','You ugly and you know it.'],
     low :['This is my blood!','Too much of me out.']},
   ogre:{
     hit :['That one was good.','Stay hit.'],
     hurt:['Ow. That was rude.','You made a hole.'],
-    kill:['Down. Who is next.','It stopped moving.'],
+    kill:['Down. Who is next.','It stopped moving.',"I'm loving it."],
     low :['I am leaking.','A lot of me out.']},
   human:{
     hit :['Stay down. Please.','That is one.'],
@@ -24932,6 +25304,21 @@ function drawInv(){
   if(p.injuries&&p.injuries.length&&G.aidLeft>0)
     led.push('<button class="iaid" id="iAid"><b>✚ Open the medicine chest</b>'+
       '<i>take one scar off '+p.name+' · you get ONE of these a run, and this is it</i></button>');
+  /* ═══ #186 - A GEM FOR A LEVEL, ONCE A RUN ══════════════════════════════
+     (User, 2026-08-18: "Добавить опцию за самоцвет можна в инвентаре карточке
+     персонажа поднять уровень на 1. Работает только раз за катку".)
+     Same shape as the chest above: one button on the sheet, one use a run,
+     and the run remembers who took it (`G.gemLevel`, in the save's flags).
+     ⚑ SHOWN WHILE UNSPENT EVEN WITH AN EMPTY GEM POUCH, greyed, because a
+     button that only appears once you happen to hold a gem is #156's built-
+     and-invisible shape. Hidden only once it is spent or the body is capped. */
+  if(!G.gemLevel&&(p.level||0)<XP_CAP){
+    const has=(G.camp.gems||0)>=1;
+    led.push('<button class="iaid" id="iGem"'+(has?'':' disabled style="opacity:.55;cursor:default"')+
+      '><b>'+RES_ICON.gems+' Cut a gem for a level</b>'+
+      '<i>'+p.name+' goes up one level · costs 1 gem'+(has?'':' (you have none)')+
+      ' · ONE of these a run</i></button>');
+  }
 
   /* ── the acts, as the battle draws them (#133). One card, one hover, and
      the hover is the battle's own receipt line plus the note's first
@@ -25433,6 +25820,28 @@ function drawInv(){
           p.name+' will not discuss any of it.');
         drawInv();}}))
         .concat([{t:'Close the chest. Not yet.',c:'you only get one of these'}]));
+  };
+  /* #186 - the gem. Paid through the one door the camp materials use, then
+     levelUp() so the level pays exactly what a fought level pays (perk or
+     stat, or the trade for a level-0 stranger). `xp` is floored to the new
+     level's threshold so the ring reads a fresh level and not a negative. */
+  const gemBtn=$('iGem');
+  if(gemBtn&&!gemBtn.disabled)gemBtn.onclick=()=>{
+    if(G.gemLevel||(G.camp.gems||0)<1||(p.level||0)>=XP_CAP)return;
+    ask('A GEM FOR A LEVEL',
+      'One gem, cut and traded on the quiet, and '+p.name+' comes out of it a level better. '+
+      'You get to do this once a run.',
+      [{t:'Do it. '+p.name+' goes up.',c:'costs 1 gem · level +1',go:()=>{
+          if(G.gemLevel||(G.camp.gems||0)<1)return;
+          G.camp.gems-=1;
+          levelUp(p);
+          p.xp=Math.max(p.xp||0,xpNeed(p,p.level));
+          G.gemLevel=p.id;
+          remember(p,'Went up a level on a cut gem, and did not ask where it came from.');
+          sfx('promote');
+          say2(p.name+' is a level better. The gem is gone.');
+          saveRun();drawInv();}},
+       {t:'Not yet. Keep the gem.',c:'you only get one of these'}]);
   };
   /* the personality in full, only when asked for */
   const tEl=$('iTrait');
@@ -27596,7 +28005,10 @@ const partyUsed=()=>G.party.reduce((s,p)=>s+COST[p.race],0);
    own. (say() is the battle voice; this is the road's.) Five call sites had
    been talking to a say2 that did not exist — a helper lost in a refactor,
    found the same way pathTo was: a silent ReferenceError in a callback. */
-function say2(t){
+/* #186 - `tone` is an optional class on the strip. Today there is one, `cheer`
+   (the objective paying out); it is cleared on every call so a plain line
+   after a cheer comes back in the strip's own italic. */
+function say2(t,tone){
   G.log.push(t);
   let el=$('wNews');
   if(!el){
@@ -27605,6 +28017,7 @@ function say2(t){
     map.appendChild(el);
   }
   el.textContent=t;el.classList.remove('fade');
+  el.classList.toggle('cheer',tone==='cheer');
   void el.offsetWidth;                 /* restart the css animation */
   el.classList.add('fade');
 }
@@ -27820,9 +28233,13 @@ function goalTick(){
   g.done=true;
   G.morale+=GOAL_PAY;
   sfx('promote');
-  say2('There are '+G.party.length+' of you at the fire tonight, and the watch splits into '+
-    'shifts that let a body sleep through one. Nobody says the road got easier. Everybody '+
-    'walks like it did.');
+  /* #186 (user, 2026-08-18: "when secondary objective achived i need short
+     messege of celebration and bonus. Smaller screen - don`t ovverride too
+     much text"). It was a 41-word paragraph in the road-news strip, which on
+     a phone lay across the middle of the map. Nine words and the receipt now,
+     and the strip wears `.cheer` for it: gold edge, upright, the one time the
+     news is good news. */
+  say2('✦ SECOND OBJECTIVE DONE · morale +'+GOAL_PAY+' · more of you at the fire.','cheer');
 }
 /* the plate's second row. Nothing until the card has been dealt, and NOTHING
    AGAIN once it is paid.
@@ -30706,15 +31123,17 @@ const EVENTS={
          'the wedding party. Nobody will ever stop talking about it.'},
       /* only shown with a ratkin already in the company — they are not a
          guest at this wedding, they are being greeted like family */
+      /* #186 - `kin:'wedding'` on both race doors: the clan remembers, and
+         two cousins may turn up when the company is down to two (reinforce) */
       {t:'Let your ratkin lead the toast.',ico:['rest'],c:'needs a ratkin',
-       needRace:'ratkin',fx:{morale:20},
+       needRace:'ratkin',fx:{morale:20},kin:'wedding',
        after:'{RATKIN} knows the real toast, the long one, with the clan-names in it. The '+
          'whole wedding goes quiet to hear it done properly.\n\nFor about four minutes your '+
          'company is the most important thing on this island.'},
       /* only shown with an ogre already in the company — the joke the
          wedding is telling is a warmer one when it is YOUR ogre */
       {t:'Let them have your ogre for a dance.',ico:['rest'],c:'needs an ogre',
-       needRace:'ogre',fx:{morale:16},
+       needRace:'ogre',fx:{morale:16},kin:'wedding',
        after:'It takes four of them to lift one of him. They manage it twice.\n\nBy the end, '+
          '{OGRE} has been adopted by two separate clan-lines. He does not seem to mind.'},
       /* the trade door was cut in the 2026-08-12 choice-weight pass (#123):
@@ -31957,6 +32376,10 @@ function pickChoice(k,i){
       sfx('rout');
     }
   }
+  /* #186 - a door that makes a clan remember you (the wedding's two race
+     doors). One string, saved in flags, read by reinforce(). Nothing is said
+     here on purpose: the card must not promise a rescue that is a coin. */
+  if(c.kin)G.kin=c.kin;
   if(c.blessAll){
     G.party.forEach(p=>{p.blessed=true;});
     hurtLine+='\n\nThe whole company carries it now: +6 to every maximum morale, for the rest '+
