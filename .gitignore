@@ -16,6 +16,14 @@
 art/src/
 art/out/
 
+# the woff2 cache, 479KB. Same rule as the paintings and for the same reason:
+# build_fonts.py + inject_fonts.ps1 turn these into the base64 @font-face block
+# in the prototype, and THAT is what ships and is committed. `--fetch` pulls
+# them again from scratch, so nothing here is unrecoverable. The SCRIPT is in
+# git precisely so the face list, the subsets and the licences are reviewable
+# without the binaries.
+art/fonts/src/
+
 # the approved 44.1k WAV pack, 79MB, and its encoded derivatives.
 # build_audio.ps1 turns these into audio/out/audio_data.js; build_site.ps1
 # pours that into index.html.
