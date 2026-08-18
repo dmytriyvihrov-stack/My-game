@@ -125,10 +125,13 @@ point to spend. (Fastest: ⚙ dev mode → level somebody up.)
   choice. Every blow that lands delivers it: fire sets them alight, frost takes
   half their movement and 10 dodge, venom stacks. A **❖ Charged weapon** badge
   sits over their head and the hover names which one you got today.
-  - ⚠ **A question for you:** I gave it to the MAGE only, because you wrote
-    *"для мага"*. But the **BATTLE-MAGE** is the class that actually swings a
-    blade for a living, and a pure mage is bad with weapons — so the perk may be
-    on the wrong caster. Say the word and it goes on both.
+  - ⛑ **Mage only, and that is the design.** I raised the battle-mage as the
+    obvious alternative and you settled it: *"it ads melee - so you mage could be
+    a glass canon. And use him for melee could be a decent trade off"*. The point
+    is that it is aimed at the class that is BAD at melee — it does not make him
+    good in a scrum, it makes stepping into one a real choice with a price. **So
+    the thing to feel when you test it** is whether walking your mage into reach
+    is ever tempting, and whether it hurts when it goes wrong.
 
 **What would be a bug:** Patient stacking past one extra action; the element
 changing mid-fight (it should not) or staying the same across two fights (it
