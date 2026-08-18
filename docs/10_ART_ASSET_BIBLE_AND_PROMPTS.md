@@ -1,4 +1,4 @@
-# Grimtoll — complete art asset bible and prompt pack
+# RabbleBound — complete art asset bible and prompt pack
 
 > Standalone production document. Audited against the live vertical slice in
 > `prototype/grimtoll_slice.html`, the game concept, world lore, mutation design, settlement and
@@ -6,7 +6,7 @@
 
 ## 1. What this document is for
 
-This is the single manifest for **painted visual assets** in Grimtoll. It includes:
+This is the single manifest for **painted visual assets** in RabbleBound. It includes:
 
 - every painting already in the repository;
 - every live event, camp incident, road vignette, major screen, character, enemy and environment;
@@ -88,7 +88,7 @@ texture, simplified secondary detail, strong value grouping and readable silhoue
 
 Human-made pictures are designed through lines, connected shapes and deliberate omissions. A common
 AI failure is to manufacture apparent finish from thousands of unrelated dots, scratches, fur marks,
-buckles and pebbles. That surface noise is not detail and it is not the Grimtoll style.
+buckles and pebbles. That surface noise is not detail and it is not the RabbleBound style.
 
 Abstraction is not a temporary defect. The asset gives the player a strong silhouette, an intention
 and a few specific clues; the player's imagination supplies the rest. If a more complete rendering
@@ -350,7 +350,7 @@ name one small story-bearing bright accent. Never ask for blanket oversaturation
 ## 5. Key art and major screen paintings
 
 These pictures establish screens rather than individual narrative events. Interface text, buttons,
-icons and the `GRIMTOLL` wordmark must be laid out separately and must never be generated inside the
+icons and the `RABBLEBOUND` wordmark must be laid out separately and must never be generated inside the
 painting.
 
 ### `KEY-01` Bloom main menu — **GENERATED — STAGE 1**
@@ -1773,7 +1773,7 @@ possibility carried forward, not permanent power. Fogbound Teal with distant res
 - **Clean delivery:** No text, labels, watermark, frame or UI baked into the art.
 
 Reject a prettier image if it violates continuity or tells the wrong event. Consistency does not
-mean monotony: Grimtoll needs ugly roads, vivid Bloom, bright salt air and occasional human fun to
+mean monotony: RabbleBound needs ugly roads, vivid Bloom, bright salt air and occasional human fun to
 make each other stronger.
 
 ## 18. Naming and integration convention

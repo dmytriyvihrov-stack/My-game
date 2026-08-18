@@ -1,4 +1,4 @@
-# The XP benchmark - how the neighbours hand out levels, and where a Grimtoll experience system would sit
+# The XP benchmark - how the neighbours hand out levels, and where a RabbleBound experience system would sit
 
 **Written 2026-08-17.** Third of the benchmarks, after
 [COMBAT_BENCHMARK_2026-08-11.md](COMBAT_BENCHMARK_2026-08-11.md) (the fight) and
@@ -166,7 +166,7 @@ The mainstream compromise in design threads
 **contribution share**: a body that did 30% of the work takes 30% of the individual pool, with heals,
 absorbed damage and control counted as work, and the killing blow a modest flat bonus rather than a
 share. Under ten characters individual XP is defensible; over ten, share evenly including the bench.
-**Grimtoll's 4-8 sits at the boundary, which is the argument for a hybrid.**
+**RabbleBound's 4-8 sits at the boundary, which is the argument for a hybrid.**
 
 ## 4. Level 0 and the deferred class
 
@@ -205,7 +205,7 @@ The brief asks for *"extra events - items"*. Precedents:
   which is the tell that the battle award was too flat.
 - **Wasteland 3**: skill checks pay only the body that made them - a clean model for *"the one who
   did the thing"* on an event door.
-- **Grimtoll's own concept doc** already names the camp verb: *"Train - convert time into XP or a
+- **RabbleBound's own concept doc** already names the camp verb: *"Train - convert time into XP or a
   skill pick"* (`01_GAME_CONCEPT.md:1157`), unbuilt.
 
 ## 6. Where the screen says it
@@ -314,7 +314,7 @@ tavern brawl and ~150 at the Fen. (A steeper 100 · 200 · ... · 900 lands leve
 build's weapon-defines-the-attack rule makes a classless body fieldable. Three things the peers
 insist on: the pick lands **on the first level and the first level is cheap** (one fight, two at
 most); the pick is **chosen** (XCOM 2 built a whole facility to turn its random roll into a choice);
-and the body needs **something to do at level 0** - in Grimtoll that is the weapon in hand and the
+and the body needs **something to do at level 0** - in RabbleBound that is the weapon in hand and the
 race, which is already most of what the sheet describes. ⚠ **The founding four are a problem for
 this**: the tavern brawl teaches SPEAR WALL through Vesna's class and the prologue is written
 around a Captain, a spearwoman, a warmage and an archer. The likely reading is that **level 0 is

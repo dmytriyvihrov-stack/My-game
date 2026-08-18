@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>GRIMTOLL — Dramaturge</title>
+<title>RABBLEBOUND — Dramaturge</title>
 <meta name="theme-color" content="#0c1113">
 <!-- same bell as the game, inline: this tool is opened as a loose file. -->
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='10' fill='%23090b0c'/%3E%3Cpath d='M27 18v-5a5 5 0 0 1 10 0v5' fill='none' stroke='%23d8d5cc' stroke-width='5' stroke-linecap='round'/%3E%3Cpath d='M19 28c0-7 5-11 13-11s13 4 13 11l2 14c.4 3 2 5 5 8H12c3-3 4.6-5 5-8l2-14Z' fill='%23d8d5cc'/%3E%3Cpath d='M27 51h10a5 5 0 0 1-10 0Z' fill='%23d8d5cc'/%3E%3Cpath d='m35 20-4 9 4 6-5 13' fill='none' stroke='%23d9218f' stroke-width='4' stroke-linecap='square' stroke-linejoin='miter'/%3E%3C/svg%3E">
 <!-- ═══════════════════════════════════════════════════════════════════════
-     GRIMTOLL DRAMATURGE — a standalone story-shape tool.
+     RABBLEBOUND DRAMATURGE — a standalone story-shape tool.
 
      It is NOT part of the game and the game does not know it exists. It
      carries a frozen snapshot of the game's content (events, camp cards,
@@ -274,7 +274,7 @@ textarea.out{width:100%;height:200px;font-size:10px;white-space:pre;resize:verti
 <div id="wrap">
 
   <div id="top">
-    <div class="brand">GRIMTOLL <small>DRAMATURGE</small></div>
+    <div class="brand">RABBLEBOUND <small>DRAMATURGE</small></div>
     <div id="tabs">
       <button data-tab="build" class="on">MAP + DRAMATURGE</button>
       <button data-tab="ana">ANALYTICS</button>
@@ -3512,7 +3512,7 @@ function draftList(){
 function draftBriefs(){
   const ds = draftList();
   if(!ds.length) return 'No drafts yet.';
-  let s = 'GRIMTOLL — ' + ds.length + ' EVENT(S) TO WRITE\n' + '='.repeat(64) + '\n\n';
+  let s = 'RABBLEBOUND — ' + ds.length + ' EVENT(S) TO WRITE\n' + '='.repeat(64) + '\n\n';
   s += 'HOUSE RULES (from docs/README.md and content/README.md):\n' +
     '  · Costs are stated as INTENT, never as a receipt — "it will cost you the\n' +
     '    afternoon", not "-1 day". The receipt is the fx block, not the prose.\n' +

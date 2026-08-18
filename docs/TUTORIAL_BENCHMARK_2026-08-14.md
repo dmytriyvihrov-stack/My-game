@@ -1,4 +1,4 @@
-# The tutorial benchmark - how five neighbours teach a fight and a world, and where Grimtoll's own layers sit
+# The tutorial benchmark - how five neighbours teach a fight and a world, and where RabbleBound's own layers sit
 
 **Written 2026-08-14.** Companion to [COMBAT_BENCHMARK_2026-08-11.md](COMBAT_BENCHMARK_2026-08-11.md),
 which measured the FIGHT. This one measures the TEACHING, which is the clarity pass's own subject.
@@ -39,7 +39,7 @@ It teaches basic combat, hiring, buying equipment, camping and repairing.
 
 **The teaching voice is a person.** The devs are explicit: instruction arrives through
 *"individual characters explaining things and giving their opinions"* rather than generic
-tutorials. This is the same device as Grimtoll's Captain balloon, arrived at independently.
+tutorials. This is the same device as RabbleBound's Captain balloon, arrived at independently.
 
 **What it covers today**: Hoggart's contract. Build a company of at least six, buy basic kit, win
 one manageable fight. In the community's own summary of the tutorial's scope: *"That's it."*
@@ -195,7 +195,7 @@ leaving costs less than an injury" without a sentence of tutorial. Terrain that 
 
 ---
 
-# PART THREE - Grimtoll measured
+# PART THREE - RabbleBound measured
 
 Counted in `prototype/grimtoll_slice.html` on 2026-08-14 (build 8f.183). Recount any figure in the
 running build with the line beside it.
@@ -224,7 +224,7 @@ Object.keys(CHOICE_ICO).length+Object.keys(RACE_ICO).length     // 11
 
 ## The same matrix row, for comparison
 
-| device | Grimtoll |
+| device | RabbleBound |
 |---|---|
 | scripted opening | **yes, and it is the run** - the tap-room brawl is the first fight, not a mode |
 | in-fiction teacher | **yes**, the Captain, with a written tier contract |
@@ -313,7 +313,7 @@ steps in four seconds has spent them for that company, and `? RULES` does not co
 screen's furniture.
 
 BB has no reference at all and is criticised for it. Wildermyth ships one and links a video out of
-it. **Grimtoll has the reference and the tour, and they do not know about each other.**
+it. **RabbleBound has the reference and the tour, and they do not know about each other.**
 
 **The move is a merge, not an addition.** The four `w_*` steps are already authored, already
 anchored to live elements, and their text is already computed at show time (`w_res` reads
@@ -346,7 +346,7 @@ against the alternative, which is the player learning ⚔️🤝 by taking it on
 ## ⚪ 5. There is no goal-giver, and I would not build one for a one-act slice
 
 Three of five ship one. BB's Ambitions exist precisely because *"some [players] crave being
-provided with more direction"*. Grimtoll's answer today is the contract plate: Skelbrook, the head
+provided with more direction"*. RabbleBound's answer today is the contract plate: Skelbrook, the head
 in the chair, ◉80 paid, the road east. For **one act with one destination that is honest**, and a
 goal system would be an addition in a pass whose rule forbids additions.
 
@@ -355,7 +355,7 @@ day act two exists and the map stops having one obvious direction.
 
 ## ⚪ 6. No difficulty setting, and the substitute is probably better
 
-Four of five use difficulty as an onboarding aid. Grimtoll has none. What it has instead is three
+Four of five use difficulty as an onboarding aid. RabbleBound has none. What it has instead is three
 doors of safe failure and a game rule (nobody dies in a fight) that makes the whole question
 smaller. ⚠ **The gap is real for one player only: the one who is losing the first fight and has
 nothing to turn down.** The practice field is where that player is sent, and nothing on the losing

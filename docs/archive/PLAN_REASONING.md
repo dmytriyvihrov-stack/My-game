@@ -1,4 +1,4 @@
-# Grimtoll - the long-form plan reasoning (reference)
+# RabbleBound - the long-form plan reasoning (reference)
 
 > **History and argument, not instructions.** Kept because the REASONS here are the expensive part:
 > why an entry waits, what was rejected and on what grounds, what the user actually said.
@@ -552,7 +552,7 @@ of them are now ruled**, and each ruling turned into a live entry rather than a 
 | **Grafts** | *"rare authored consequences of specific injuries **or events on the road**"* | **[#35](#35--grafts--rare-authored-consequences)** — authored, never a shop, and the road half is new |
 | **Forest** | *"it is a lot of scattered trees. Check as Battle Brothers do"* | **#56 — SHIPPED 2026-08-01** (8f.64) inside the terrain cluster. It turned out to be one dial on #62's tree, which is the version the ruling was actually asking for |
 
-**Five are still open** and still live in [`README.md`](README.md) §6 — the name (*Grimtoll* or
+**Five are still open** and still live in [`README.md`](README.md) §6 — the name (*RabbleBound* or
 *Rabblebound*), AUTO doctrine (one order or per person), numbers in the chronicle, the run contract,
 and generated voice. Nothing in the plan is blocked on any of them.
 

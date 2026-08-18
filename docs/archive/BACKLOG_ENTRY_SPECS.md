@@ -1,4 +1,4 @@
-# Grimtoll - the full entry specs (reference)
+# RabbleBound - the full entry specs (reference)
 
 > **This is the SPEC SHELF, not the work list.** The work list is
 > [`00_PLAN_AND_BACKLOG.md`](../00_PLAN_AND_BACKLOG.md), which holds one line per entry and the
@@ -235,7 +235,7 @@ And then, on filing it: *"Lets save this branch and this thing in backlog. I fee
 one."*
 
 **Why it earns a number.** It is #88's lesson applied one level up. ⛔ **Measure the box before you
-argue about the font** became ⛔ **measure the fight before you argue about the combat.** Grimtoll
+argue about the font** became ⛔ **measure the fight before you argue about the combat.** RabbleBound
 now has a row in a table beside its three nearest neighbours, so the next "is combat too long / too
 thin / too samey" argument starts from **8.45 rounds, 71.4 unit-turns, 115 actions, 1.61 actions per
 unit-turn, 4.6 skills per unit** instead of from somebody's feeling.
@@ -245,7 +245,7 @@ unit-turn, 4.6 skills per unit** instead of from somebody's feeling.
 1. **What players like and dislike about all three neighbours**, per game, and **eight patterns that
    repeat across all three.** The patterns are the transferable part. A complaint in one game is
    that game's problem; a complaint in all three is a property of the genre.
-2. **The comparison table**, measured for Grimtoll and community-sourced for the other three, plus
+2. **The comparison table**, measured for RabbleBound and community-sourced for the other three, plus
    the per-fight breakdown of all eight canonical fights over five runs each.
 3. **Six readings**, of which the two that matter are `brigand` (2.4x the opener at an even 6 v 6,
    which is the exact shape of Wartales' *"longer, not harder"*) and the **2:1 enemy skill gap**
@@ -269,7 +269,7 @@ without arguing with the clarity pass.
 |---|---|---|---|
 | **a** | **The mop-up tail.** No number above isolates *rounds after the outcome was decided* | Patterns 4 and 5 both point at the **end** of a fight, and it is where all three neighbours bleed players. Battle Brothers never closed this wound and it is its second-loudest complaint | `measure()` reports, per fight, the round at which the loser's outcome became inevitable and how many rounds ran after it. **Start with `brigand`** |
 | **b** | **A real stopwatch.** The minutes column is derived from `paced(240)`, not timed | ⚠ A timed AUTO run in the preview pane measures **the pane's throttle**, not the game: `setTimeout` is floored at ~1s there and `rAF` never fires, which is why `tools/harness.js` exists at all. The derivation is written out in the document so it can be argued with, but it is arithmetic | one human, a visible window, a stopwatch, three of the eight fights. Twenty minutes of work, worth more than any refinement of the formula |
-| **c** ✅ | **Hit rates were not measured at all.** ✅ **TAKEN 2026-08-13 during #146** | ⚑ **The loudest single complaint in the loudest of the three games is that honest RNG reads as dishonest** (pattern 3), and Grimtoll's own hit numbers are absent from this document. #84's regression counted 51 dodges to 169 misses, which is the nearest existing data and was gathered for a different question | a distribution, not an average: the streak is what players judge, so what matters is how often a 70% shot misses three times running |
+| **c** ✅ | **Hit rates were not measured at all.** ✅ **TAKEN 2026-08-13 during #146** | ⚑ **The loudest single complaint in the loudest of the three games is that honest RNG reads as dishonest** (pattern 3), and RabbleBound's own hit numbers are absent from this document. #84's regression counted 51 dodges to 169 misses, which is the nearest existing data and was gathered for a different question | a distribution, not an average: the streak is what players judge, so what matters is how often a 70% shot misses three times running |
 | **d** | **The forced-answer test, per fight.** *"What was I forced to do here that I did not do in the previous fight?"* | ⚑ **Added by part four, and it is a ROUTER not a verdict** - the same shape as #88's ⛔ measure the box before you argue about the font. **Same answer across two fights = the problem is MECHANICAL** (the fights are not asking different questions). **Different answers but the fights still feel alike = the problem is PRESENTATION** (art, animation, sound, how legible an act is). It decides which argument you are allowed to have next | a written answer for all eight fights. ⛔ **It needs a human, not the harness** |
 | **e** | **Token legibility at the size actually drawn** | ⚠ Part four's research assumed most battle tokens were undrawn. **That is out of date and the check disproved it**: 50 painted tokens are embedded, 41 of them units, and `paintedSpriteKey` ends on `return k&&BATTLE_ART[k]?k:null` so nothing falls back to the procedural silhouette. **So the sharper question is the one nobody has asked: the art is distinct as a FILE, is it distinct as an OBJECT?** `TOKEN=1.13*0.90` draws a human at about **26x39 px** on a 37x42 hex, and #163 took 10% off every body for crowd navigation - **legibility and crowd-readability are already pulling against each other and the trade has never been measured** | the distance test from [`ui-scales.md`](../../.claude/rules/ui-scales.md) run on a token instead of on type: a foe spearman beside a foe swordsman beside a foe cutter, at 26x39, at the three camera stops |
 
@@ -284,14 +284,14 @@ Brothers the unit of variety is not the race, it is the combination of weapon, e
 and behaviour."* Ten humans there pose ten different problems because **the enemies run on almost
 the same weapon rules the player does**: a spear is not a damage number, it is spearwall; a shield
 can be split; a hook drags a man out; a hammer breaks armour. **That is what lets "one more man" be
-a new tactical object.** ⛔ **So Grimtoll does not need new races or ten new monsters. It needs the
+a new tactical object.** ⛔ **So RabbleBound does not need new races or ten new monsters. It needs the
 humans, ratkin and ogres it already has to force the player to change their answer, visibly, without
 reading the panel.** On paper the eight fights already do this by design (`pack` gathers you up,
 `slingline` makes you advance under fire, `steading` makes you kite, `mother` breaks your formation,
 `armour` punishes surrounding, `snare` mixes all of it). **The open question is whether the build
 sells the difference**, and item **d** above is the test that decides it.
 
-**⚠ The trap in reading 3.** Grimtoll's 1.61 actions per unit-turn is the lowest of the four, and
+**⚠ The trap in reading 3.** RabbleBound's 1.61 actions per unit-turn is the lowest of the four, and
 Wildermyth's most-praised mechanic (**the swift action, a third thing for free**) is the cheapest
 known fix, costing only a cost change on acts that already exist. ⛔ **It is still an addition and
 the clarity pass forbids additions.** Written down here so it is not rediscovered as a new idea.
@@ -482,7 +482,7 @@ everyone treats as rabble.)*
 > just start with a contract. But rather forced together random crew."* Canon and prose now follow
 > [`03_WORLD_LORE.md`](03_WORLD_LORE.md) §7: the crew are strangers with one contract, the island
 > supplies the word "mercenary", and wages and contracts stay as built. **The title question
-> (Grimtoll vs Rabblebound) is still open** and still the user's.
+> (RabbleBound vs Rabblebound) is still open** and still the user's.
 
 ### The concept filter
 
@@ -2479,12 +2479,12 @@ them (the faces already exist for everybody: `faceURI()` / `bustFor()` paint the
 heads, painted portraits for the named cast, busts for hires). Per card, THREE numbers, not BB's
 four, and the missing one is the honest one:
 
-| BB column | Grimtoll | source |
+| BB column | RabbleBound | source |
 |---|---|---|
 | kills | ☠ kills | `u.killsShown` (the `notally` rule holds; men/beasts split stays on the sheet) |
 | damage dealt | ⚔ dealt | `u.dealt`, rounded (body damage only, the #94-era rule) |
 | damage received | 🩸 taken | ⚠ NOT TRACKED today. Add `d.taken` in `strike()` at the same line that feeds `a.dealt` (~9240), the one door both numbers already pass through. Downed bodies show their real accumulated number, not the 0.7 write-off |
-| experience | (none) | ⛔ **Grimtoll has no XP.** Levelling is one random hero per fight. No fake column; the gold arrow badge carries "who got better" |
+| experience | (none) | ⛔ **RabbleBound has no XP.** Levelling is one random hero per fight. No fake column; the gold arrow badge carries "who got better" |
 
 Card states, told by the frame exactly as in the reference: **red bloody frame** = carried off /
 scarred (the scar's name printed small on the card; a fenwater condition marks here too), **gold
@@ -2520,7 +2520,7 @@ one exists. The second screen appears ONLY when at least one decision exists; ot
 on screen 1 goes straight to the road (`afterPromotion()` path unchanged, `markGo`'s
 un-softlockable contract inherited).
 
-**INTERPRETATION CALL TWO: the prose.** BB's screen has no story text; Grimtoll's aftermath prose
+**INTERPRETATION CALL TWO: the prose.** BB's screen has no story text; RabbleBound's aftermath prose
 (`AFTER[kind]`, the spare line, the epilogue hooks) is canon voice and some of it is
 load-bearing (#108's coat man, the cage). The mockup keeps the title plus ONE compressed
 paragraph above the grid. If he wants the pure BB ledger, the paragraph goes and the epilogue

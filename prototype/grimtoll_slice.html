@@ -1,5 +1,5 @@
 ﻿<meta charset="utf-8">
-<title>Grimtoll — Vertical Slice</title>
+<title>RabbleBound — Vertical Slice</title>
 <!-- #83 - WITHOUT THIS LINE A PHONE SHRINKS THE GAME TWICE. A page with no
      viewport tag is laid out at 980px and then zoomed out to fit the screen,
      and `fit()` has already scaled the stage down inside that 980px. One line,
@@ -22,7 +22,7 @@
 <link rel="manifest" href="icons/site.webmanifest">
 <style>
 /* ============================================================
-   GRIMTOLL — vertical slice · build 5
+   RABBLEBOUND — vertical slice · build 5
    Bible: "Ash & Iron" · 3a Fogbound Teal · 3b Dust & Gold · 3c Bloom
    Build 5: after-battle spoils & mercy · dialogs live on the map ·
    daily wages · tighter race spreads · injuries from greed ·
@@ -4359,7 +4359,16 @@ a.popt.sendit{display:block;text-decoration:none}
 <section class="screen" id="camp"><div class="pcard" id="cCard"></div></section>
 <section class="screen" id="prologue"><div class="pcard" id="prCard"></div></section>
 <section class="screen" id="menu">
-  <div id="mTitle">GRIMTOLL</div>
+  <!-- ⚠ #191 - THE NAME IS THREE LETTERS LONGER THAN THE ONE THIS BOX WAS
+       MEASURED AROUND, AND IT WAS MEASURED RATHER THAN EYEBALLED. In real
+       Cinzel at --fsTitle 74 with .13em of tracking: the OLD name 482px, the
+       new one 687px, which is 43% wider. The stage is a fixed 1280 and the
+       menu is the full width of it, so 687 clears it by 593px and NOTHING HAD
+       TO GIVE - --fsTitle stays 74 and #mTitle is untouched.
+       ⛑ The margin is recorded because it is the thing that runs out. A name
+       longer than about 15 characters at this size would reach 1280, and at
+       that point the answer is a smaller --fsTitle, not a wrapped title. -->
+  <div id="mTitle">RABBLEBOUND</div>
   <div id="mSub">YOU CANNOT AFFORD TO BE GOOD TO EVERYONE</div>
   <div id="mOpts"></div>
   <div id="mFoot"></div>
@@ -4673,7 +4682,7 @@ const JOURNAL={
      older build still reads perfectly here, and this one still reads there. */
   save(){try{localStorage.setItem(JOURNAL.KEY,JSON.stringify(
       {v:3,log:JOURNAL.log,poll:JOURNAL.poll,who:JOURNAL.who}));}
-    catch(e){console.error('[GRIMTOLL] journal save failed —',e);}},
+    catch(e){console.error('[RABBLEBOUND] journal save failed —',e);}},
   /* every row: what kind, where, when in the run, and how far in real time.
      `d` is the campaign day, `ms` is wall-clock since the run started — the
      two together are what "length of the run" is made of. */
@@ -5809,7 +5818,7 @@ LEGACY.ashmoor=LEGACY.ashmoor||false;
    hard way (see saveRun), and this one carries everything that crosses runs. */
 function saveLegacy(){
   try{localStorage.setItem('gt_camp',JSON.stringify(LEGACY));}
-  catch(e){console.error('[GRIMTOLL] saveLegacy failed —',e);}
+  catch(e){console.error('[RABBLEBOUND] saveLegacy failed —',e);}
 }
 
 /* ============================================================
@@ -22017,7 +22026,7 @@ setInterval(()=>{
     unit:u?u.name:'(none)',side:u?u.side:'-',state:u?u.state:'-',
     seq:B.seq,busy:B.busy,stalledMs:now-WD_T,dropped:DROPPED,lastDrop:DROPLAST};
   STALLS.push(rec);
-  console.warn('[GRIMTOLL] battle stalled — B02 regression:',rec);
+  console.warn('[RABBLEBOUND] battle stalled — B02 regression:',rec);
   if(TEST.on)say('[STALL] '+rec.kind+' rd'+rec.round+' idx'+rec.idx+' '+rec.unit+
     ' busy='+rec.busy+' dropped='+rec.dropped);
   else say('The moment hangs, and then it passes.');
@@ -22654,7 +22663,7 @@ function saveRun(){
   try{
     localStorage.setItem(SAVE_STAMP,runBlob());
   }catch(e){
-    console.error('[GRIMTOLL] saveRun failed —',e);
+    console.error('[RABBLEBOUND] saveRun failed —',e);
     if(typeof TEST!=='undefined'&&TEST.on)say2('[SAVE FAILED] '+e.message);
   }
 }
@@ -27555,7 +27564,7 @@ const vy=y=>y*VIEWH/MAPH;
     const n=NODES[k],x=clamp(n.x,padX,MAPW-padX),y=clamp(n.y,padY,MAPH-padY);
     if(x!==n.x||y!==n.y){out.push(k+' '+n.x+','+n.y+'→'+x+','+y);n.x=x;n.y=y;}
   });
-  if(out.length)console.warn('[GRIMTOLL] nodes pulled inside the map:',out.join(' · '));
+  if(out.length)console.warn('[RABBLEBOUND] nodes pulled inside the map:',out.join(' · '));
 })();
 /* ═══ SPACING IS A RULE, NOT AN OPINION (backlog #6) ═════════════════════
    The old map needed emergency respacing twice because "does that look
@@ -27835,7 +27844,7 @@ function labelViolations(){
 }
 (function checkSpacing(){
   const v=spacingViolations();
-  if(v.length)console.warn('[GRIMTOLL] map spacing:',
+  if(v.length)console.warn('[RABBLEBOUND] map spacing:',
     v.map(o=>o.a+'↔'+o.b+' ('+o.why+')').join(' · '));
 })();
 /* ⚠ The road-label check CANNOT run here. `labelViolations` reads EDGES, and
@@ -28135,7 +28144,7 @@ function branchOf(from){
    zone crash that aborts the whole script. See the note beside checkSpacing. */
 (function checkRoadLabels(){
   const w=labelViolations();
-  if(w.length)console.warn('[GRIMTOLL] road labels:',
+  if(w.length)console.warn('[RABBLEBOUND] road labels:',
     w.map(o=>o.at+' '+o.what+' — '+o.why).join(' · '));
 })();
 
@@ -35196,7 +35205,7 @@ function drawNotes(log,who){
     const dec=rows.filter(r=>r.t==='choice'||r.t==='travel'||r.t==='battle').length;
     const rx=rows.filter(r=>r.t==='react');
     const diff=(POLL_HARD.filter(h=>h[0]===P.diff)[0]||[])[1];
-    const head='GRIMTOLL, playtest notes'+(JOURNAL.who?' from '+JOURNAL.who:'')+'\n'+
+    const head='RABBLEBOUND, playtest notes'+(JOURNAL.who?' from '+JOURNAL.who:'')+'\n'+
       (rows.length?days+' days on the road, '+fmtDur(secs)+' at the keyboard, '+dec+
         ' decisions, '+rx.length+' reactions'+(end?', ended: '+end.w:', unfinished')+'\n':'')+
       (diff?'How hard it was: '+diff+'\n':'');
@@ -35213,7 +35222,7 @@ function drawNotes(log,who){
        `body` is unchanged and is what the clipboard gets. */
     const lead=head+(qa?'\n'+qa:'\n(no questions answered)')+
       (said?'\n\nWhat they said in the moment:\n'+said:'');
-    return {subject:'Grimtoll run'+(JOURNAL.who?': '+JOURNAL.who:''),
+    return {subject:'RabbleBound run'+(JOURNAL.who?': '+JOURNAL.who:''),
             body:lead+tail, lead:lead};
   };
   const L=own?letter():null;

@@ -14,7 +14,7 @@ dark palette against a stone wall.
 ## Why it has to go
 
 **It is the one thing stopping the game from being shared with anybody.** A published page can be
-given a public link, and the platform checks the page before it grants one. Grimtoll's page was
+given a public link, and the platform checks the page before it grants one. RabbleBound's page was
 refused, over and over, with *"This version can't be shared publicly."*
 
 That was chased down on 2026-08-04 with twenty published test pages, each one share-tested by hand.

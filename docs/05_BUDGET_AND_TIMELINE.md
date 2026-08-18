@@ -18,7 +18,7 @@ from**, because it changes what you pay for.
 
 Personality in this genre is a **concept** win, not a **render-quality** win.
 
-The things that will make Grimtoll memorable are already written down in
+The things that will make RabbleBound memorable are already written down in
 `01_GAME_CONCEPT.md`, and none of them require expensive art:
 
 - A wardrobe with the doors off and arm-holes cut is legitimate ogre armour (96 armour, −3 AGI).

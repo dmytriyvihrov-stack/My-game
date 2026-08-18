@@ -46,7 +46,7 @@ wrong. Everything was decided thirty separate times.
 | `--fs6` | 17 | a head |
 | `--fs7` | 20 | a big head, the action glyph |
 | `--fs8` | 24 | the display line on a card |
-| `--fsTitle` | 74 | GRIMTOLL on the front door, and nothing else |
+| `--fsTitle` | 74 | RABBLEBOUND on the front door, and nothing else |
 
 ⛔ **`--fs1` IS 10px AND NOTHING ON THIS SCREEN IS SMALLER.** (User, 2026-08-16: *"Minimum font i
 feel, nice to be 10"*.) The build had **77 declarations at 9px or under, down to 7px**, and they

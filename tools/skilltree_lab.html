@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Grimtoll · Skill Tree Lab</title>
+<title>RabbleBound · Skill Tree Lab</title>
 <style>
   /* ------------------------------------------------------------------
      SKILL TREE LAB. A test bench, wired to nothing.
      Tab 1 collects the reference trees (BB, The Last Spell, Wildermyth,
-     Wartales, Banner Saga). Tab 2 is the Grimtoll draft: one character
+     Wartales, Banner Saga). Tab 2 is the RabbleBound draft: one character
      on top, the full tree with every choice below. Every draft skill
      carries a number so feedback can point at it.
      Levels run DOWNWARD: each grid row is a level, each column a lane.
@@ -102,7 +102,7 @@
 </head>
 <body>
 
-<h1>GRIMTOLL · SKILL TREE LAB</h1>
+<h1>RABBLEBOUND · SKILL TREE LAB</h1>
 <div class="sub">A test bench. Nothing here touches the game. When the shape is agreed it moves
 into the character sheet as a SKILLS tab. Give feedback by skill code: the code names the
 branch and never moves when skills are added (CAP1 is always the captain door, GEN4 always
@@ -110,7 +110,7 @@ the same general skill).</div>
 
 <div class="tabs">
   <button class="tabbtn" id="tb1" onclick="showTab(1)">1 · REFERENCE SHELF</button>
-  <button class="tabbtn" id="tb2" onclick="showTab(2)">2 · GRIMTOLL DRAFT</button>
+  <button class="tabbtn" id="tb2" onclick="showTab(2)">2 · RABBLEBOUND DRAFT</button>
 </div>
 
 <!-- ════════════════════════ TAB 1 · REFERENCE ════════════════════════ -->
@@ -176,7 +176,7 @@ the same general skill).</div>
   <div id="bstree"></div>
 </div>
 
-<!-- ════════════════════════ TAB 2 · GRIMTOLL DRAFT ════════════════════════ -->
+<!-- ════════════════════════ TAB 2 · RABBLEBOUND DRAFT ════════════════════════ -->
 <div id="tab2" style="display:none">
 
   <div class="note">
@@ -505,7 +505,7 @@ refBands('wtclasses',WT_CLASSES);
 refBands('wttree',WT);
 refBands('bstree',BS);
 
-/* ═════════════════ TAB 2 DATA · THE GRIMTOLL DRAFT ═════════════════
+/* ═════════════════ TAB 2 DATA · THE RABBLEBOUND DRAFT ═════════════════
    Numbers are assigned in array order and are STABLE: feedback points
    at them. src marks where a skill came from:
    'user'   = named or ruled by the user in the brief

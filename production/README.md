@@ -1,6 +1,6 @@
 # Production
 
-This folder contains the business and delivery side of Grimtoll rather than files loaded by the game.
+This folder contains the business and delivery side of RabbleBound rather than files loaded by the game.
 
 Keep here:
 

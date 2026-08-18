@@ -1,9 +1,9 @@
-# Grimtoll — Ukrainian Market Research
+# RabbleBound — Ukrainian Market Research
 
 Independent marketing workspace for the Ukrainian gaming audience.
 
 Research snapshot: **1 August 2026**  
-Working title: **Grimtoll**  
+Working title: **RabbleBound**  
 Current product language: **English**
 
 ## Decision in one sentence
@@ -25,7 +25,7 @@ Prepare the game technically for Ukrainian now, begin private relationship-build
 
 ## Important boundaries
 
-- “Ukrainian audience” does not mean “Ukrainian developer.” Do not describe Grimtoll as a Ukrainian game unless the team genuinely qualifies.
+- “Ukrainian audience” does not mean “Ukrainian developer.” Do not describe RabbleBound as a Ukrainian game unless the team genuinely qualifies.
 - Do not use Russian as a substitute for Ukrainian. Use English until Ukrainian copy or localization is ready.
 - Do not mass-post Discord invitations or keys. Ask administrators and creators first.
 - Do not recruit unpaid fan translators as the default localization plan.

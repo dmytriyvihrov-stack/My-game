@@ -1,4 +1,4 @@
-# Static file server for verifying the Grimtoll prototype.
+# Static file server for verifying the RabbleBound prototype.
 #
 # WHY THIS EXISTS: the preview pane will not truly reload a file:// page for this
 # project, and almost every real bug here was found by RUNNING the game rather

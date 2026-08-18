@@ -1,4 +1,4 @@
-# Grimtoll audio pack
+# RabbleBound audio pack
 
 Approved audio assets for the playable prototype. These files are intentionally
 external to `prototype/grimtoll_slice.html`.

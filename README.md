@@ -1,4 +1,4 @@
-# Grimtoll
+# RabbleBound
 
 A dark medieval, low-magic tactical roguelike. Slay the Spire style road, Battle
 Brothers style hex battles, a company of four strangers who did not choose each

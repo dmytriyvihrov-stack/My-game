@@ -1,4 +1,4 @@
-# The combat benchmark - what three neighbours are praised and hated for, and where Grimtoll's numbers sit
+# The combat benchmark - what three neighbours are praised and hated for, and where RabbleBound's numbers sit
 
 **Written 2026-08-11. Backlog entry [#89](00_PLAN_AND_BACKLOG.md).**
 
@@ -12,7 +12,7 @@
 > mint. [...] I feel, this is important one"*
 
 The second ask is the one that makes this a document and not a chat answer. **A list of opinions is
-an argument. A table of measurements is an instrument.** Grimtoll already has one measured
+an argument. A table of measurements is an instrument.** RabbleBound already has one measured
 instrument (`tools/harness.js`) and one shipped lesson that says to use it: #88's ⛔ **measure the
 box before you argue about the font**. This is that lesson applied to the shape of a fight instead
 of the size of a label.
@@ -155,7 +155,7 @@ complaint that appears in all three is a property of the genre.
 
 ## What was measured and what was estimated
 
-**Grimtoll numbers in bold are measured.** Five runs of each of the eight canonical fights through
+**RabbleBound numbers in bold are measured.** Five runs of each of the eight canonical fights through
 `tools/harness.js`, both brains at full disposition, render/fx/sfx/terrain stubbed. Method is in
 `measure()` below. **The player-minutes figure is the one derived number** and its arithmetic is
 shown so it can be argued with.
@@ -166,7 +166,7 @@ order of magnitude, not as decimals.
 
 ## The table
 
-| | Battle Brothers | Wildermyth | Wartales | **Grimtoll** |
+| | Battle Brothers | Wildermyth | Wartales | **RabbleBound** |
 |---|---|---|---|---|
 | Your units on field | up to 12 | 5 | 4-6 early, 12-16 late | **6** (8 in the opener) |
 | Enemy units | 5-25+ | 4-10 | 5-15 | **1-10**, measured avg 5.8 |
@@ -181,7 +181,7 @@ order of magnitude, not as decimals.
 | Enemy skills per unit | same pool as yours | 1-3 | 2-4 | **~2**, measured, including move |
 | Minutes per battle | 10-15 medium, up to 30 large | 5-10 | 5-10 early, 15-30 late | **1.7 machine**, ~5-10 estimated player |
 
-## Grimtoll, fight by fight
+## RabbleBound, fight by fight
 
 Five runs each, `window.FIGHTS`, comp `prepared`.
 
@@ -199,7 +199,7 @@ Five runs each, `window.FIGHTS`, comp `prepared`.
 
 ## How the minutes were derived
 
-⚠ **This is the one estimated Grimtoll column and it must not be quoted as measured.** A real
+⚠ **This is the one estimated RabbleBound column and it must not be quoted as measured.** A real
 wall-clock timing was attempted and abandoned: the preview pane runs hidden, `setTimeout` is floored
 at about a second there and `requestAnimationFrame` never fires, which is the exact reason
 `tools/harness.js` exists. **A timed AUTO run in a hidden pane measures the throttle, not the game.**
@@ -269,7 +269,7 @@ window.measure=function(kind,comp){
 };
 ```
 
-⚠ **Two caveats on every Grimtoll number above.** It is **AI against AI**, both brains at full
+⚠ **Two caveats on every RabbleBound number above.** It is **AI against AI**, both brains at full
 disposition, which is not a careful human. And `acts` counts **MOVE as an act**, because it is one:
 `{k:'move',n:'MOVE',cost:1,move:true}` sits in the same array as every skill. The "4.6 skills"
 figure has MOVE removed, the raw array length is 5.6.
@@ -281,14 +281,14 @@ figure has MOVE removed, the raw array length is 5.6.
 What the two halves say when read together. **None of these is a decision.** They are what the
 instrument shows, written down so the next combat argument starts from a number.
 
-### 1. Grimtoll has the shortest battle of the four, and that is a strength worth defending
+### 1. RabbleBound has the shortest battle of the four, and that is a strength worth defending
 
 8.45 rounds and 115 actions against Battle Brothers' roughly 15 rounds and 500 actions. **Battle
 Brothers' loudest structural complaint is length. Wartales' loudest complaint is literally "longer,
-not harder".** Grimtoll is not in that trap, and the way to stay out of it is to know the number
+not harder".** RabbleBound is not in that trap, and the way to stay out of it is to know the number
 before the next thing that grows it. **The number to watch is unit-turns, not rounds**, because a
 round means something different at each party size. Twelve units for fifteen rounds is 200-350
-individual decisions. Grimtoll runs 71.
+individual decisions. RabbleBound runs 71.
 
 ### 2. `brigand` is the outlier, and this measurement answers a question the docs left open
 
@@ -330,7 +330,7 @@ addition and the clarity pass forbids additions.** Parked here deliberately.
 
 4.6 active per unit, between Wartales' 3-6 and Battle Brothers' 4-8. Attack-to-utility is 2.5 to
 2.1, close to even. **This is healthy and needs nothing.** Wartales' complaint is that every unit is
-an attack button. Grimtoll's units are not.
+an attack button. RabbleBound's units are not.
 
 ### 5. The enemy skill gap is the most interesting number in the document
 
@@ -390,7 +390,7 @@ Four layers sit under it:
 4. **The same blow carries different stakes.** Your levelled brother can die or take a permanent
    injury, so a similar fight in a bad company state feels like a different fight.
 
-## What that says about Grimtoll
+## What that says about RabbleBound
 
 **On paper the variety is already good, and the fights were designed with exactly this in mind:**
 
@@ -410,7 +410,7 @@ The benchmark already found one concrete cause in reading 5: **a player unit ave
 an enemy about 2, movement included.** Many enemies therefore collapse to a single sentence:
 **walked up, used its one attack, next.**
 
-**The corrected conclusion.** Grimtoll does not urgently need new races or ten new monsters. **It is
+**The corrected conclusion.** RabbleBound does not urgently need new races or ten new monsters. **It is
 worth more to make the humans, ratkin and ogres it already has force the player to change their
 answer, and to make that visible without reading the panel.**
 
@@ -482,7 +482,7 @@ Written down so the gaps are known rather than discovered later.
 - **No real stopwatch.** See the derivation caveat above. This is the biggest hole.
 - **No human-played measurement.** Everything is AI against AI.
 - **No hit-rate or damage data.** Pattern 3 (honest RNG reads as dishonest) is the loudest complaint
-  in the loudest of the three games and **Grimtoll's own hit numbers were not measured here at all.**
+  in the loudest of the three games and **RabbleBound's own hit numbers were not measured here at all.**
   #84 shipped a dodge-versus-miss regression that counted 51 dodges to 169 misses, which is the
   nearest existing data and was not gathered for this question.
 - **No comparison of the mop-up.** Pattern 4 and 5 both point at the end of a fight, and no number

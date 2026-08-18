@@ -96,5 +96,5 @@ The reproducible source is `audio_review/generate_main_menu.py`. It renders a
 97.2-second, 44.1 kHz, 16-bit stereo WAV at approximately -21 dBFS RMS with a
 -2 dBFS peak ceiling. Its broad reference points are intimate felt piano,
 patient modular repetition, and acoustic/electronic overlap; its melody and
-harmony are original and written for Grimtoll's existing A-minor/D-Dorian
+harmony are original and written for RabbleBound's existing A-minor/D-Dorian
 musical palette.

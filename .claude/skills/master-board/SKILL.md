@@ -1,6 +1,6 @@
 ---
 name: master-board
-description: Build or update the Grimtoll master board, the visual plan-and-backlog page. Use when the user asks to see the plan, see progress, see the backlog "in a good view", show what is next, or when an entry ships or a gate-1 step changes state and the board has gone stale.
+description: Build or update the RabbleBound master board, the visual plan-and-backlog page. Use when the user asks to see the plan, see progress, see the backlog "in a good view", show what is next, or when an entry ships or a gate-1 step changes state and the board has gone stale.
 ---
 
 # The master board

@@ -867,7 +867,7 @@ down that 19 was correct, and then taught the ground-painter to match the mistak
 **Where it came from.** You brought the Turn-Based Games Discord `#dev-feedback` channel and asked
 for the standard notes as a checklist. Four different developers there got told the same three
 things in one week: standardise your outlines, standardise your fonts, standardise your padding.
-Grimtoll failed all three by measurement: **29 font sizes** (including a `7.6px`), **7 near-identical
+RabbleBound failed all three by measurement: **29 font sizes** (including a `7.6px`), **7 near-identical
 border hexes** at 88 sites, **72 paddings**, and **77 declarations at 9px or smaller, down to 7px**.
 Your call on the floor: *"Minimum font i feel, nice to be 10"*.
 
