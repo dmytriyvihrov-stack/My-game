@@ -278,6 +278,34 @@ if (Test-Path $siteDir) {
   }
 }
 
+# --- item icons: one painted picture per piece of kit (#192) ---------
+# ChatGPT-generated off art/ITEM_ICONS_GPT_TASK.md, delivered as 128x128
+# transparent PNG singles straight into art/src/items/ (a SOURCE folder, so
+# they are gitignored like every other master; the block below is what ships).
+# Embedded VERBATIM: no resize, no JPEG (a JPEG has no alpha and these sit on
+# a slot's own ground). `ITEM-06_fence-post-cudgel.png` -> key `ITEM06`, the
+# same prefix rule as MAP-EV. ITEM_ICON{} in the prototype is what turns a
+# GEAR key into one of these; a key with no picture falls back to its glyph.
+$itemEntries = @()
+$itemDir = Join-Path $src 'items'
+if (Test-Path $itemDir) {
+  # `ITEM-*` and not `*.png`: CONTACT_SHEET.png lives in this folder too and
+  # is the 40px proof, not an asset.
+  Get-ChildItem $itemDir -Filter 'ITEM-*.png' | Sort-Object Name | ForEach-Object {
+    $img = [System.Drawing.Image]::FromFile($_.FullName)
+    $w = $img.Width; $h = $img.Height; $img.Dispose()
+    if ($w -ne 128 -or $h -ne 128) { throw "$($_.Name) is ${w}x${h}, not 128x128 - the task asked for 128 singles" }
+    $bytes = [IO.File]::ReadAllBytes($_.FullName)
+    $key = (($_.BaseName -split '_')[0]) -replace '-', ''
+    $itemEntries += [pscustomobject]@{
+      Key = $key
+      B64 = [Convert]::ToBase64String($bytes)
+      KB  = [math]::Round($bytes.Length / 1KB, 1)
+    }
+    "{0,-40} -> {1,6} KB  (item icon 128x128, verbatim png)" -f $_.Name, [math]::Round($bytes.Length/1KB,1)
+  }
+}
+
 # --- the world map's painted terrain ---------------------------------
 # One 1280x638 painting per candidate ground, embedded VERBATIM as webp. It is
 # the map's terrain layer and nothing else: roads, nodes, plates and the token
@@ -345,8 +373,14 @@ foreach ($e in $worldBgEntries) {
   [void]$sb.AppendLine(("  {0}:'data:image/webp;base64,{1}'," -f $e.Key, $e.B64))
 }
 [void]$sb.AppendLine('};')
+# the item icons, keyed ITEM01..ITEM56 - ITEM_ICON{} in the prototype maps a GEAR key onto one
+[void]$sb.AppendLine('const ITEM_ART={')
+foreach ($e in $itemEntries) {
+  [void]$sb.AppendLine(("  {0}:'data:image/png;base64,{1}'," -f $e.Key, $e.B64))
+}
+[void]$sb.AppendLine('};')
 Set-Content -Path (Join-Path $out 'art_data.js') -Value $sb.ToString() -Encoding utf8
 
-$allEntries = @($entries) + @($pngEntries) + @($battleEntries) + @($siteEntries) + @($worldBgEntries)
+$allEntries = @($entries) + @($pngEntries) + @($battleEntries) + @($siteEntries) + @($worldBgEntries) + @($itemEntries)
 $total = ($allEntries | Measure-Object -Property KB -Sum).Sum
 "`nTOTAL EMBEDDED: $total KB across $($allEntries.Count) assets"

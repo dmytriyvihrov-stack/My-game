@@ -25,6 +25,56 @@
 
 ---
 
+## 🖼 EVERY PIECE OF KIT HAS ITS OWN PAINTING NOW  *(#192 part two · 2026-08-19 · build log 8f.215)*
+
+ChatGPT painted all 56 icons off the brief and they are wired in. **Nothing about
+what any item DOES changed** - this is the picture layer and only the picture
+layer, so if a number moved anywhere, that is a bug.
+
+**How to reach it in three steps:** open the game → **Continue the road** →
+**THE COMPANY**. The four gear slots and every row of THE STASH should be
+carrying a painting.
+
+**What should happen**
+
+- **On the sheet.** Each filled slot shows a **40px painting on its left**, with
+  the slot's label, the item's name and its short receipt stacked beside it. An
+  EMPTY slot is unchanged (dashed, no picture). The BAG still says *"throwables
+  and potions, later"* and has no picture, because it still cannot hold anything.
+- **In the stash.** Same shape: picture left, name and numbers right.
+- **On the hover tip.** The piece's picture heads the tip at 40px with the name
+  beside it, where the little glyph used to be.
+- **At the quartermaster's cart** (the Muster Field → *"The quartermaster's
+  cart"*): the reserved square that has been empty since it was built now holds
+  the piece at 56px.
+- **When the road hands you something** (the pedlar's shield, any battle haul):
+  the loot strip's square holds the picture instead of the words ART SLOT. **A
+  haul of two things shows two squares**, one each.
+
+**What would be a bug**
+
+- Any slot or row **taller than it was**, so the sheet scrolls or two slots
+  touch. This was the one real risk and it was measured: a filled slot is 63px
+  against a 67px gap, so it should clear by 4px and no more.
+- A picture that is **stretched or squashed** rather than square.
+- A **white or grey box** behind a painting (they are cut-outs and should sit on
+  the slot's own brown).
+- The wrong picture on a thing. **56 keys were mapped by hand**, so a broom on
+  the mail hauberk is possible and is worth reporting by name.
+- Any number changing anywhere on the sheet.
+
+**What is deliberately NOT here yet**
+
+- **Rarity has no colour on screen.** The three tiers (white / green / purple)
+  are decided and written down, but nothing carries a `rarity:` field yet, so
+  there is no frame to see. That is the next piece of #192, not a miss.
+- **The five new items** (pilum, shuriken, Time-Cube, Thunder-fish Kris,
+  Fingerprint Stone Shield) have their paintings embedded and **do not exist in
+  the game**. You cannot find them, and the BAG is still empty. Their pictures
+  are in the build so the day the rows land there is nothing to wire.
+
+---
+
 ## 🎲 SIX THINGS: THE GROUND SPEAKS, THE ODDS GO QUIET, AND THE GAME HAS A NAME  *(#191 · 2026-08-18 · build log 8f.211)*
 
 Six separate asks in one batch. They do not touch each other, so test them

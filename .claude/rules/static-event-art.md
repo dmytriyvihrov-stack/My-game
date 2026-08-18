@@ -62,6 +62,62 @@ full width would mean a 310px-tall picture, and the contract card already
 measures **663px against `.pcard`'s 684px ceiling**. That path is closed by
 arithmetic, not by taste.
 
+## ⛔ An item icon is a COLUMN, not a character on a line
+
+*(#192 part two, 2026-08-19, measured on the running sheet. 56 item paintings at
+`art/src/items/`, embedded as `ITEM_ART` and mapped by `ITEM_ICON{}` in the
+prototype - the one place a `GEAR` key meets a picture, the same shape as
+`MAP_SIGHT{}`. A key with no entry falls back to `gGlyph`, which is a shipping
+state and not a bug.)*
+
+**Every item icon is 128x128 with alpha, embedded verbatim.** No resize, no JPEG:
+a JPEG has no alpha and these are cut-outs that sit on a slot's own ground. The
+key is the filename prefix with hyphens removed (`ITEM-04_...` -> `ITEM04`), the
+same rule as `MAP-EV`.
+
+⛔ **AND THE FIRST WIRING OF IT WAS WRONG IN A WAY ONLY THE RUNNING BUILD SAID.**
+The obvious move is to drop the picture where the glyph was, inline in the name
+line. Two things happen and both are fatal:
+
+- **at 24px it is a smudge.** A 128px painting of a dark object, in 24 dark
+  pixels, on a dark slot, is not a picture of anything;
+- **at the 40px the brief asked for, the box breaks.** A filled slot measured
+  **72px against the sheet's 67px slot pitch**, i.e. it would have sat on top of
+  the slot below it.
+
+⚑ **THE ANSWER IS THAT THE PICTURE IS A COLUMN BESIDE THE TEXT, AND THEN IT IS
+FREE.** A slot's three lines (the label, the name, the receipt) already stack to
+about 44px, so a 40px square beside them fits in height the slot already had.
+Measured on the shipped sheet: filled slot **53 (glyph) -> 56 (24px inline) ->
+63 (40px column)** against a 67px pitch; the stash row went **56 -> 54**; the
+shop's `.gart` box was built at 60px and takes its 56px picture without moving
+anything. **`.slot` and `.item` are `flex-direction:row` with a `.sart` art
+column and a `.scol` text column**; a new surface that wants an item picture
+copies that pair rather than inventing a third arrangement.
+
+⚠ **Each caller writes its own size** into the `width`/`height` attributes
+(`itemImg(key,px)`), because each caller's box was reserved at a different size:
+40 on a slot line and a stash row, 38 inside the aftermath's 40px `.abslot`, 56
+inside the shop's 60px `.gart`, 40 on the hover tip. `.iart` only says how the
+picture SITS. A single global size would be wrong at four of the five sites.
+
+⛔ **THE PNG CARRIES NO RARITY AND NO RECEIPT.** Rarity is white/green/purple and
+it is a frame the GAME draws off a `rarity:` field; a frame baked into a painting
+is wrong the day the tier changes, and it would clash with the frame drawn around
+it. Same rule as the intent glyph in `.claude/rules/event-cards.md`: the picture
+says what a thing IS, never what it costs or how rare it is.
+
+⚑ **FIVE KEYS ARE MAPPED TO ITEMS THAT DO NOT EXIST** (`pilum`, `shuriken`,
+`timecube`, `kris`, `stoneshield`, specced in `art/ITEM_PACK_01_TEXT.md`). That
+is deliberate: `itemArt()` reads a key and does not care whether `GEAR` has the
+row, so the day the rows land there is nothing to wire here.
+
+⚠ **AND VERIFY A LANDED EDIT BY GREPPING FOR A STRING ONLY THE NEW CODE HAS.**
+One hunk of this change silently reverted to its previous version while the
+`</div>` that closed it survived, leaving unbalanced markup that rendered as a
+row of run-together text. The editor reported success. **On a shared working
+tree the tool's word is not the evidence; the file is.**
+
 ## Exact live mapping
 
 | Live scene | Art key | File |
