@@ -212,6 +212,25 @@ label is a promise, the chip is a fact, and only one of them is allowed to be wr
   stays PROSE. It is a consequence with a story, not a resource.
 - **`moraleLine()` and `fxLine()` are gone.** Do not write a third one.
 
+⛔ **AND THE CHIP FURNITURE IS SHARED, SO A RESTYLE OF IT IS SCOPED OR IT IS A BUG** *(#187,
+2026-08-18)*. `.abfx`, `.fxc`, `.fxi`, `.fxn` and `.fxl` are drawn by **three** callers now: the
+aftermath's own `fxChips` inside `consequences()`, the road's `evFxChips`, and `tavernReceipt()`
+on the contract card. #187 made the aftermath's tiles bigger and rounder (the number at `--fs8`, a
+medallion behind the glyph, rivets in the corners) and every one of those rules lives behind
+`#spoils`. **The check is not a reading, it is a measurement**: open a road card on the new build
+and on `git show HEAD:` in a second tab and compare the computed `padding`, `border-color`,
+`font-size` of `.fxi` and `.fxn`, and the `border-radius`. They were identical, which is what
+"scoped" has to mean.
+
+⚑ **A haul's PROSE sits beside its numbers, never under them.** Since #187 the aftermath's tray
+(`.amTray`) holds the chips and the flavour line as siblings behind a hairline. That is the same
+one-sentence rule at the top of this file arriving on the aftermath: the prose says what happened,
+the chips say what it paid, and a caption printed under a figure reads as a second receipt for it.
+⚠ The aftermath's `LOOT` rows are STILL exempt from #176's derivation - their `c:` strings can and
+do repeat a figure their `fx` carries ("a boar spear +3 salvage" next to a `+3 SALVAGE` chip) -
+and putting the two side by side has made that more visible than it was. **That is a content job
+on the `LOOT` tables, not a layout one**, and it is the next thing to do on this screen.
+
 ## The intent glyph: what a door DOES, before it is read
 
 Since #154 every action door carries **one or two glyphs at the head of its label**, from
