@@ -25,6 +25,58 @@
 
 ---
 
+## 🔤 THE REAL TYPEFACES, AND NO WINDOW SCROLLS  *(#189 · 2026-08-18 · build log 8f.209)*
+
+**⚠ Read this first, because it changes what you were looking at.** The fonts you called
+beautiful **were not Cinzel, Spectral and JetBrains Mono.** Those three names have been in the
+stylesheet since the first slice and none of them was ever actually in the build, so the game has
+always been drawing in **Palatino Linotype, Georgia and Consolas** - the fallbacks. I measured it
+rather than guessed (a canvas width probe; `document.fonts.check()` lies about this).
+
+So this entry does what you asked - the three real faces are embedded now - and the honest warning
+is that **the game will not look the same as the screenshot you liked.** Cinzel is an inscriptional
+Roman whose lowercase is drawn as small capitals, so every name, heading and button reads in a
+different voice from the Palatino it replaced. **If you prefer what you had, say so and it comes
+back out in one command** - nothing else in the build depends on it.
+
+### 1. The fonts
+
+**Three steps.** Open the game → look at any heading, then any body paragraph, then any label.
+
+**What should happen.** Headings and names in **Cinzel** (monumental, small-cap lowercase). Prose in
+**Spectral** (a sharper, narrower book serif than Georgia). Labels, chips and numbers in **JetBrains
+Mono**. Nothing is fetched from the network: pull your wifi out and it still renders.
+
+**What would be a bug.** A heading that is still Palatino while its neighbour is Cinzel. Text that
+flashes one face then jumps to another and re-wraps. A place-name on the world map painted in a
+different serif from the rest of the game (those are drawn on a canvas and used to hand-copy the
+font stack; they read it from the same variable now). Any accented or Cyrillic name rendering half
+in one face and half in another - **except** a Cyrillic company name in a HEADING, which correctly
+falls back, because Cinzel has no Cyrillic at all.
+
+### 2. No scrollbar on the whole window
+
+**Three steps.** Win a fight with a company of five or more → look at the right-hand edge of the
+after-battle card.
+
+**What should happen.** No scrollbar. Not a short one, not a full-height one. The company sits in
+**one row up to six**, and past six in **two rows at most**. If the whole thing genuinely cannot
+fit - a company of ten or thirteen after THE SNARE, which carries the longest aftermath text in the
+game - then the **story paragraph** gets its own small scroll and the window still does not, which
+is the exception you allowed.
+
+**What would be a bug.** A scrollbar on the card itself, anywhere, at any company size. The story
+box scrolling on a company of four (it should not need to). The story box collapsing to nothing.
+A crew card wrapping onto a third row.
+
+**What was actually wrong.** Two things wearing one scrollbar. The 8px one you photographed was a
+**phantom** - a padding mismatch fixed for the opening screen back in August and never applied to
+the other card screens; it has nothing to scroll to, and it is invisible on some browsers and a
+full-height bar on others, which is why it survived so long. The other is real arithmetic: a
+thirteen-body company needs more room than the longest aftermath leaves.
+
+---
+
 ## 🏆 THE AFTER-BATTLE SCREEN, ON THE HYBRID YOU APPROVED  *(#187 · 2026-08-18 · build log 8f.207)*
 
 **Where it came from.** `CLAUDE_AFTERMATH_IMPLEMENTATION.md`, written against the hybrid mockup:
