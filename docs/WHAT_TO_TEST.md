@@ -25,6 +25,83 @@
 
 ---
 
+## ✉ THE FEEDBACK POPUP, THE ADDRESS, AND A COG IN THE CORNER  *(#188 · 2026-08-18 · build log 8f.208)*
+
+**Where it came from.** Your seven notes of 2026-08-18. All seven are built. The two dials you may
+want to move are named at the end.
+
+### 1. The popup, and it arrives by itself
+
+**Three steps.** New game → win any fight → press **Back to the road**. About a second after the map
+comes back, a card lands on it.
+
+**What should happen.** A small card: **HOW WAS THAT?**, under it the name of the thing you are
+rating in small caps - **FIGHT: BRIGAND**, not "the road (map)" - then three faces, 🙁 *no* ·
+😊 *good* · 🤩 *loved it*. Pick one and SEND lights. **Only 🙁 opens a second step**, a box headed
+*WHAT WENT WRONG?* Press SEND and it is filed against that fight, with whatever you typed.
+**It asks once a run.** Win a second fight in the same run and it must stay silent.
+
+**The same card is what the FEEDBACK button opens**, bottom right, on any screen - there it names
+whatever you are looking at.
+
+**What would be a bug.** The card naming *the road (map)* after a fight. It asking twice in one run.
+The reason box opening off the happy faces. **Esc, the backdrop or NOT NOW filing anything** - all
+three must close it and record nothing. It appearing on top of a yes/no question.
+
+### 2. The three corner buttons are gone
+
+★ ▲ ▼ no longer exist as buttons and the FEEDBACK word no longer unfolds - it opens the card. The
+small ×N counter beside it still shows how many times you have said something about the screen you
+are on, and shows nothing when that is none.
+
+### 3. Sending it: the mail button and the address
+
+**Three steps.** ☰ MENU → the playtest notes → **✉ SEND IT AS AN EMAIL**.
+
+**What should happen.** Your mail app opens, addressed to **dmytriyvihrov@gmail.com**, already
+carrying your answers and anything you typed into the popup - and **the same press puts the whole
+thing, journal included, on your clipboard**, so the mail says *paste it under this line*. At the
+foot of the screen, beside **Back**, sits **⧉ COPY IT ALL** with the address printed under it.
+
+⚠ **The mail is deliberately the SHORT half.** A `mailto:` is a URL and mail clients cut a long one
+without saying so, so the letter is trimmed to fit and says it was trimmed. The clipboard is always
+the whole thing. **If the mail app does not open at all, tell me** - that is the one thing this
+build cannot prove from here.
+
+⛔ **Your GitHub question, answered: no, not automatically.** A published page is blocked from
+making any outbound request at all, so it cannot post to GitHub, a Google Form or anything else.
+A page CAN open a pre-filled GitHub *issue* by link, the same way it opens mail - but that needs a
+public repo and a logged-in GitHub account per tester, and the journal is too big for the link
+either way. **Say the word and I will add the issue link beside the mail one.** A Discord is one
+line whenever you give me the invite: the field is already there and empty.
+
+### 4. What was deleted
+
+Gone by name: *so I know whose run I am reading. A nickname is plenty* · *the one thing I cannot
+read off the journal* · the **YOUR RUN** title · *What the game wrote down while you played. It only
+ever watched.* · and the small line under **Back** on the notes, questionnaire **and rules** screens.
+
+⚠ **A journal a friend pasted in KEEPS its title and caption** (*NOTES FROM ...*). That is on
+purpose: whose it is and that it does not touch your own are the two things that screen cannot be
+read without.
+
+### 5. The cog
+
+**⚙ is now one dim glyph in the bottom-right corner**, at 30% opacity, with FEEDBACK just inboard of
+it. Hovering brings it up; switching it on turns it green and solid. The four tools it reveals
+(WIN NOW, LINT, WIPE, ✎ TEXT) **did not move** - they are still the top-right column.
+
+**What would be a bug.** The cog covering or touching FEEDBACK, in either state. The tools not
+appearing when it is on.
+
+### The dials, if you want them moved
+
+- **How often the popup arrives.** Today: once a run, after a won fight. Easy to make it every
+  fight, or once a session, or never automatic.
+- **The three faces.** 🙁 😊 🤩 were chosen to stay clear of the morale faces (💀 😟 😐 🙂 😄), which
+  the game already uses to mean something else. If you want the exact ones from your screenshot,
+  say so and I will find a set that still cannot be confused with morale.
+
 ## 🔥 THE SIX-POINT BATCH: "ONE OF US", THE BURNING GROUND, A GEM FOR A LEVEL, THE SURE HAND  *(#186 · 2026-08-18 · build log 8f.206)*
 
 **Where it came from.** Your six numbered notes of 2026-08-18. Every one is built; the two that
