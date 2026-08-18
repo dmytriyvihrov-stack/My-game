@@ -46,7 +46,7 @@ Write-Host "serving $root on http://localhost:$port/"
 # still usually play it, but Safari refuses and Chrome is slower to report a
 # duration, which the world crossfade reads. Name it properly.
 $mime = @{ '.html'='text/html; charset=utf-8'; '.js'='application/javascript'; '.css'='text/css';
-           '.png'='image/png'; '.jpg'='image/jpeg'; '.json'='application/json'; '.md'='text/plain; charset=utf-8';
+           '.png'='image/png'; '.webp'='image/webp'; '.jpg'='image/jpeg'; '.json'='application/json'; '.md'='text/plain; charset=utf-8';
            '.wav'='audio/wav'; '.mp3'='audio/mpeg'; '.ogg'='audio/ogg'; '.svg'='image/svg+xml' }
 
 $handler = {
