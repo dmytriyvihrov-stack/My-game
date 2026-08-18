@@ -27752,6 +27752,35 @@ function wpanInit(){
    higher is the TDZ crash that takes the whole script down, which this file
    has shipped once. */
 wcamBar();wpanInit();wcamApply();
+/* ═══ THE PAINTED TERRAIN ══════════════════════════════════════
+   The ground the company walks on is a picture now. Everything drawn on top
+   of it stays where it was: the roads, the node plates, the company token.
+   This replaces exactly ONE layer, the one drawMap() used to invent out of a
+   seeded RNG.
+
+   ⛔ THE PROCEDURAL TERRAIN STAYS AND IS NOT DEAD CODE. It is what the map
+   shows for the frame or two before the file arrives, and it is what the map
+   shows for ever if the file never does. A map that opens black is worse than
+   a map that opens drawn.
+
+   ⚠ AND THE onload HAS TO REDRAW BOTH LAYERS. The picture lands after the
+   first paint, so something must ask for that paint again; drawNodes() goes
+   with it because the plates are drawn against the canvas underneath them. */
+const WORLD_MAP_BG=new Image();
+WORLD_MAP_BG.onload=()=>{if($('wCanvas')){drawMap();drawNodes();}};
+WORLD_MAP_BG.src='../art/world-map-backgrounds/world-map-illustrated.webp';
+/* ⛔ AND THE PICTURE IS DIMMED, BECAUSE THE NODE LAYER WAS DRAWN FOR A DARK
+   GROUND. The name plate is one colour (201,185,143 on a 74% near-black wash)
+   and it was chosen against the procedural terrain. Measured over the SAME 23
+   plates on one run: the old ground sits at median luminance 48, the painted
+   one at 119, and a third of the painted map is over 140. That is why the
+   sights and the plates wash out, and it is a fact about the GROUND, so the
+   ground is what is corrected - not the plates, not the roads, not the sights.
+   ⚡ A flat wash is the whole fix, and the arithmetic says so: at .58 the
+   painted ground lands on min 32 / median 50 / max 67, against the old map's
+   32 / 48 / 78. A luminance curve was tried on paper first and bought nothing
+   a single alpha does not. */
+const WORLD_MAP_DIM=.45;
 function drawMap(){
   const cv=$('wCanvas'),c=cv.getContext('2d'),W=cv.width,H=cv.height;
   let s=97;const rnd=()=>(s=(s*1103515245+12345)%2147483648)/2147483648;
@@ -28005,6 +28034,46 @@ function drawMap(){
     c.fillStyle='#8a7449';
     [-20,-8,6,18].forEach(bx=>{c.fillRect(N.snare.x+bx,N.snare.y-9,3,4);});
   })();
+  /* ═══ AND HERE THE PICTURE COVERS THE INVENTED GROUND ═══════════════════
+     The order is load-bearing: fallback ground, THEN the painting, THEN the
+     roads. Everything above this line is a fallback and is meant to be
+     hidden; everything below it is a layer that has to survive. */
+  if(WORLD_MAP_BG.complete&&WORLD_MAP_BG.naturalWidth){
+    c.drawImage(WORLD_MAP_BG,0,0,W,H);
+    /* the dim goes UNDER the region names, so the names keep their own colour
+       and do not have to be re-picked every time the painting changes */
+    if(WORLD_MAP_DIM>0){c.save();c.globalAlpha=WORLD_MAP_DIM;
+      c.fillStyle='#0a0804';c.fillRect(0,0,W,H);c.restore();}
+    /* ⛔ THE THREE REGION NAMES WERE PAINTED INTO THE GROUND, so covering the
+       ground deleted them. They are redrawn here at their own coordinates and
+       in their own colours: the same three lines as above, moved rather than
+       re-decided. Any label added to the terrain needs a row here too. */
+    c.save();
+    /* ⛔ AND THEY GET A GROUND OF THEIR OWN INSTEAD OF A NEW COLOUR. On the
+       procedural terrain all three sat on near-black, and their three authored
+       colours were a deliberate ladder: the Bloom brightest, the Hunch mid, the
+       valley dimmest, because "a region is the ground under the labels, not
+       another landmark competing with them". A painted valley floor is the
+       BRIGHTEST part of the map, so the dimmest of the three landed at luminance
+       85 on a ground of 75 - a ratio of 1.1, which is not a faint label, it is no
+       label. ⚡ The fix is the one the name plates already use: a dark wash under
+       the type. The ladder survives untouched and so does every colour, so the
+       next painting does not re-open the argument. */
+    /* ⚠ THREE PASSES, NOT ONE. A canvas shadow is drawn per fill and one pass
+       of a 90% black at blur 6 only took the valley's ground from 75 to 68,
+       against a text at 85. Stacking the fill stacks the shadow, so the wash
+       under the type gets dark enough to separate it while the type itself is
+       still the authored colour and still the dimmest of the three. */
+    const region=(txt,col,px,x,y)=>{c.fillStyle=col;
+      c.font='600 '+px+'px Cinzel, Palatino Linotype, Georgia, serif';
+      c.shadowColor='rgba(0,0,0,.92)';c.shadowBlur=6;
+      c.fillText(txt,x,y);c.fillText(txt,x,y);c.fillText(txt,x,y);
+      c.shadowBlur=0;c.fillText(txt,x,y);};
+    region('T H E   H U N C H','#7d7460',12,1108,196);
+    region('T H E   G R A U S E N   V A L L E Y','#5f553e',11,332,404);
+    region('T H E   B L O O M','#e28fb4',13,646,44);
+    c.restore();
+  }
   EDGES.forEach(e=>{
     const a=NODES[e[0]],b=NODES[e[1]],live=e[0]===G.at&&!G.pending;
     const walked=!!(G.visited[e[0]]&&G.visited[e[1]]);
