@@ -174,6 +174,32 @@ against `git show HEAD:` in a second tab.
 to the same screen, diff the probes, delete the copy. A raw count says 29 overflows and means
 nothing; the diff against the baseline said 2 and 2, and the one real regression stood out at once.
 
+⛔ **AND THE COUNTER CANNOT TELL A CROPPED DECORATION FROM CLIPPED TEXT, SO DO NOT BUILD ONE**
+*(#187, 2026-08-18)*. The after-battle card was given the approved mockup's promotion ribbon: a
+gold band hung 30px past the card's right edge with `overflow:hidden` cutting it, which is how
+every corner ribbon on the web is built. It measures **`.abcrew w23` on every promoted body**,
+permanently, on the one card in the game whose job is to be checked for clipped names. Four things
+were measured before it was given up, and all four are worth knowing:
+
+- **`overflow:clip` does not dodge it.** It creates no scroll container, so `scrollWidth` ought to
+  be the box - Chrome reports the scrollable overflow region either way. Measured, not assumed.
+- **`clip-path:inset(0)` DOES dodge it** (the element's `overflow` stays `visible`, so the probe
+  skips it) **and eats the element's own outer box-shadow with it.** A card that needs depth
+  cannot pay that.
+- **Overflow to the LEFT and the TOP is free**, in an LTR box: neither is scrollable, so neither
+  reaches `scrollWidth`/`scrollHeight`. A top-left corner ribbon is therefore probe-clean - and on
+  this card it would have sat across the portrait's face.
+- **Sizing the band flush to the two edges is arithmetic and is not a ribbon.** A strip `W` long
+  and `t` thick turned by θ has a bounding box `W·cosθ + t·sinθ` by `W·sinθ + t·cosθ`; pin that
+  into the corner and the ends land ON the edges. Nothing crops it, so it reads as a stick lying
+  on the card.
+
+**So the decoration changed instead of the counter.** ⛔ **Never add a fifth entry to the
+known-and-pre-existing list above to make a new decoration fit.** That list is four items long
+because it is four genuine facts about the build's geometry; the day it grows to absorb whatever
+was drawn last week, the counter stops meaning anything and the next real clipping ships behind
+it.
+
 Then `LINT()` for 0 findings, and on the map the three counters from
 `.claude/rules/world-map-sights.md`: `spacingViolations().length`, `labelViolations().length`, and
 the `MAP_SIGHT` orphan check, all 0. Type sizes move name plates, so the map counters are part of
