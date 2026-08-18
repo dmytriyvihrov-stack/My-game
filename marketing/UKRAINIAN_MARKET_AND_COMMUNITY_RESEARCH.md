@@ -1,18 +1,18 @@
-# Ukrainian Gaming Communities and Influencers — Market-Entry Analysis for Grimtoll
+# Ukrainian Gaming Communities and Influencers — Market-Entry Analysis for RabbleBound
 
 **Snapshot date:** 1 August 2026  
-**Scope:** Ukrainian-language gaming communities, Discord servers, creators, media, tabletop groups, localization networks, and industry gateways relevant to Grimtoll.  
+**Scope:** Ukrainian-language gaming communities, Discord servers, creators, media, tabletop groups, localization networks, and industry gateways relevant to RabbleBound.  
 **Product context:** English-first dark medieval tactical roguelike: compact Battle Brothers-style combat, Slay the Spire-like run structure, Wartales-like party growth, and strange character-driven events.
 
 ## Executive conclusion
 
-Ukraine is a credible secondary market for Grimtoll, but it should be entered through **genre micro-communities and trusted gatekeepers**, not through a broad paid-awareness push.
+Ukraine is a credible secondary market for RabbleBound, but it should be entered through **genre micro-communities and trusted gatekeepers**, not through a broad paid-awareness push.
 
 The decisive evidence is not general market size. It is fit:
 
-- The community-made [Ukrainian localization for Battle Brothers](https://steamcommunity.com/sharedfiles/filedetails/?id=3399375683&l=ukrainian) had 3,181 unique visitors and 211 favorites at the research snapshot, was coordinated through Discord, and reported 88.32% translation progress in December 2025. Grimtoll's closest comparison already attracts organized Ukrainian-language demand.
+- The community-made [Ukrainian localization for Battle Brothers](https://steamcommunity.com/sharedfiles/filedetails/?id=3399375683&l=ukrainian) had 3,181 unique visitors and 211 favorites at the research snapshot, was coordinated through Discord, and reported 88.32% translation progress in December 2025. RabbleBound's closest comparison already attracts organized Ukrainian-language demand.
 - Ukrainian accounted for **0.69% of Steam interface language use** in the official [June 2026 Steam Hardware & Software Survey](https://store.steampowered.com/hwsurvey/us/?l=english). This is a small global share but a real addressable language cohort.
-- The Ukrainian Games Festival reported major Steam visibility in 2025. Its official recap records more than 350 participants and 2.4 million festival-page views; DOU reported 488 projects and more than 120 demos. Eligibility is limited to Ukrainian developers, so this is ecosystem evidence, not an assumed channel for Grimtoll. Sources: [Ukrainian Games](https://ukrainian.games/festival), [GameDev DOU](https://gamedev.dou.ua/news/ukrainian-games-festival-2025-results/).
+- The Ukrainian Games Festival reported major Steam visibility in 2025. Its official recap records more than 350 participants and 2.4 million festival-page views; DOU reported 488 projects and more than 120 demos. Eligibility is limited to Ukrainian developers, so this is ecosystem evidence, not an assumed channel for RabbleBound. Sources: [Ukrainian Games](https://ukrainian.games/festival), [GameDev DOU](https://gamedev.dou.ua/news/ukrainian-games-festival-2025-results/).
 - The [TwitchUA H1 2026 ranking](https://twitchua.com/rating) recorded 31.7 million hours watched across its tracked Ukrainian-language segment. Strategy-adjacent creators exist, but the largest channels are often Just Chatting or esports rather than tactical RPGs.
 
 The recommended decision is therefore:
@@ -21,7 +21,7 @@ The recommended decision is therefore:
 
 ## What “influence” means here
 
-Follower count is a poor proxy for Grimtoll's likely conversion. This report separates five kinds of influence:
+Follower count is a poor proxy for RabbleBound's likely conversion. This report separates five kinds of influence:
 
 | Influence type | What it changes | Best nodes |
 |---|---|---|
@@ -69,7 +69,7 @@ The [Battle Brothers Ukrainian localization](https://steamcommunity.com/sharedfi
 - terminology and interface space are part of localization, not merely translation;
 - a later Ukrainian release can earn goodwill if it is technically and linguistically serious.
 
-The appropriate inference is **not** that Grimtoll will inherit those players. It is that the audience-product match is plausible enough to justify localization-ready engineering and targeted testing.
+The appropriate inference is **not** that RabbleBound will inherit those players. It is that the audience-product match is plausible enough to justify localization-ready engineering and targeted testing.
 
 ## Community map
 
@@ -98,8 +98,8 @@ The appropriate inference is **not** that Grimtoll will inherit those players. I
 
 ### Conditional channels
 
-- **Ukrainian Games Festival:** very high ecosystem visibility, but only for eligible Ukrainian developers. Confirm eligibility directly; do not present Grimtoll as Ukrainian to gain access.
-- **r/UA_Gamers:** current moderation language allows limited promotion for Ukrainian games and original content, reportedly no more than one post per project per month. Grimtoll's status may not qualify, so ask moderators before posting. Evidence: [current moderation example](https://www.reddit.com/r/UA_Gamers/comments/1v90v7e/removed_by_moderator/).
+- **Ukrainian Games Festival:** very high ecosystem visibility, but only for eligible Ukrainian developers. Confirm eligibility directly; do not present RabbleBound as Ukrainian to gain access.
+- **r/UA_Gamers:** current moderation language allows limited promotion for Ukrainian games and original content, reportedly no more than one post per project per month. RabbleBound's status may not qualify, so ask moderators before posting. Evidence: [current moderation example](https://www.reddit.com/r/UA_Gamers/comments/1v90v7e/removed_by_moderator/).
 - **Large game-specific Discords such as Ukrainian WoW:** high member counts but weak genre overlap. They should not be in the initial plan.
 
 ## Creator shortlist
@@ -308,7 +308,7 @@ Do not buy a broad package simply because the channel is large. Ask for a media 
 
 ### Avoid
 
-- calling Grimtoll a Ukrainian game without a genuine basis;
+- calling RabbleBound a Ukrainian game without a genuine basis;
 - treating Russian as interchangeable with Ukrainian;
 - posting the same message across multiple Discords;
 - using Ukraine, the invasion, soldiers, fundraising, or charity as emotional marketing decoration;
@@ -346,7 +346,7 @@ Follower totals and views are context, not the objective.
 
 ## Bottom line
 
-Grimtoll has a better-than-average fit with a small but organized Ukrainian-language segment because the exact comparison set—Battle Brothers, Wartales, turn-based strategy, tabletop character stories—already appears in Ukrainian creator and community activity.
+RabbleBound has a better-than-average fit with a small but organized Ukrainian-language segment because the exact comparison set—Battle Brothers, Wartales, turn-based strategy, tabletop character stories—already appears in Ukrainian creator and community activity.
 
 The highest-value move is not an immediate translation or an influencer spend. It is to make localization technically cheap, validate the game with a handful of exact-fit Ukrainian gatekeepers, translate a small public campaign kit, and scale only after those players demonstrate real interest.
 

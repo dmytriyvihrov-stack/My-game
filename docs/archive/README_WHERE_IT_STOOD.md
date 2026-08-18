@@ -1,4 +1,4 @@
-# Grimtoll - "where it stands", the long version (reference)
+# RabbleBound - "where it stands", the long version (reference)
 
 > **The narrative history of what shipped, as it accumulated in `README.md` section 3.**
 > It had grown to 456 lines and duplicated [`CHANGELOG.md`](../CHANGELOG.md) and

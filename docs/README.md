@@ -1,4 +1,4 @@
-# Grimtoll - start here
+# RabbleBound - start here
 
 **Read this first in a new session.** What the game is, what settles arguments, how to work here
 without breaking it. **Then go to [`00_PLAN_AND_BACKLOG.md`](00_PLAN_AND_BACKLOG.md) for the work.**
@@ -7,7 +7,7 @@ without breaking it. **Then go to [`00_PLAN_AND_BACKLOG.md`](00_PLAN_AND_BACKLOG
 
 ## 1. What it is
 
-**Grimtoll** is a dark medieval, low-magic tactical roguelike. Battle Brothers' combat and stat
+**RabbleBound** is a dark medieval, low-magic tactical roguelike. Battle Brothers' combat and stat
 model, Slay the Spire's node overworld, RimWorld's *things happen to named people*, and Caves of
 Qud's deadpan strangeness.
 
@@ -491,8 +491,11 @@ shape as the entry number that cost five collisions. **Re-measure rather than tr
 
 *Nothing in the plan is blocked on these, but each changes what a later batch looks like.*
 
-1. **The name.** *Grimtoll* or *Rabblebound*? The second comes with a whole identity, and it says
-   nothing about tactics on its own, so a subtitle would have to carry that.
+1. ~~**The name.**~~ **Settled 2026-08-18 (#191): the game is RabbleBound.** The note here used to
+   weigh it against *Grimtoll* and warn that it *"says nothing about tactics on its own, so a
+   subtitle would have to carry that"* - **that warning is still live and is now the open item**:
+   the front door reads RABBLEBOUND over *YOU CANNOT AFFORD TO BE GOOD TO EVERYONE*, which says the
+   morality but not the genre. ⚠ The island is still **Grimtoll** and stays so; see the lore book.
 2. **AUTO doctrine.** One order for the whole company, or assignable per person? Per-person is more
    expressive and roughly triples the UI.
 3. **Numbers in the chronicle.** The interface rule says hide them. Does the expanded record get an

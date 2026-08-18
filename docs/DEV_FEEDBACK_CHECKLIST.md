@@ -1,4 +1,4 @@
-# #164: the designers' checklist, and Grimtoll run through it
+# #164: the designers' checklist, and RabbleBound run through it
 
 Where it comes from: **The Turn-Based Games Discord, `#dev-feedback`**, the channel described as
 *"A place for developers to ask for feedback"*. It is the right room for this game specifically:
@@ -176,7 +176,7 @@ not as a mood.
 
 ---
 
-## Grimtoll run through the checklist
+## RabbleBound run through the checklist
 
 ⚠ **How this audit was made, so its weight is known.** The build was measured in the source, not
 played this session: the browser was closed at your instruction before a live pass. So every

@@ -57,7 +57,7 @@
       P('');
     });
   };
-  P('GRIMTOLL - EVERY WORD ON THE ROAD');
+  P('RABBLEBOUND - EVERY WORD ON THE ROAD');
   P('Generated from the running build. Edit freely: this is the text, not the code.');
   P('Names in [square brackets] are filled in by the game with whoever is in the company.');
   P('');
@@ -70,7 +70,7 @@
   VIGNETTES.forEach(v=>{P('');P('---- '+v.t+' ----');P(txt(v.body,A,B));});
   const out=L.join('\n');
   return fetch('/__shot/events_text.txt',{method:'POST',body:out})
-    .then(()=>{console.log('[GRIMTOLL] events_text.txt written, '+out.length+' chars');
+    .then(()=>{console.log('[RABBLEBOUND] events_text.txt written, '+out.length+' chars');
       return out.length;})
-    .catch(e=>{console.error('[GRIMTOLL] could not write - is the dev server up?',e);});
+    .catch(e=>{console.error('[RABBLEBOUND] could not write - is the dev server up?',e);});
 })();

@@ -1,4 +1,4 @@
-# Grimtoll — Ukrainian Outreach Playbook
+# RabbleBound — Ukrainian Outreach Playbook
 
 **Use after reading:** `UKRAINIAN_MARKET_AND_COMMUNITY_RESEARCH.md`  
 **Principle:** earn trust through relevance and a good build; do not treat communities as free distribution lists.
@@ -119,7 +119,7 @@ Keep one shared folder or landing page containing:
 
 ### Recommended one-sentence pitch
 
-> Grimtoll is a dark medieval tactical roguelike where a small, damaged mercenary company fights compact hex battles, chooses its route, and carries every scar and compromise into the next job.
+> RabbleBound is a dark medieval tactical roguelike where a small, damaged mercenary company fights compact hex battles, chooses its route, and carries every scar and compromise into the next job.
 
 ### Comparison line
 
@@ -137,11 +137,11 @@ This sentence should be translated and reviewed by a native Ukrainian speaker be
 
 ## 4. Private creator message template
 
-**Subject:** Private tactics playtest — Grimtoll (Battle Brothers/Wartales-adjacent)
+**Subject:** Private tactics playtest — RabbleBound (Battle Brothers/Wartales-adjacent)
 
 > Hi [name],
 >
-> I am building Grimtoll, a dark medieval tactical roguelike about a small mercenary company. Your coverage of [specific game/video/stream] made me think you would notice the exact things I need tested: [formation and morale / combat clarity / run pacing].
+> I am building RabbleBound, a dark medieval tactical roguelike about a small mercenary company. Your coverage of [specific game/video/stream] made me think you would notice the exact things I need tested: [formation and morale / combat clarity / run pacing].
 >
 > I have a private English-language build with a self-contained 20–30 minute path. Would you be interested in [a private playtest / a paid structured feedback session]? There is no request for positive coverage and nothing needs to be published.
 >
@@ -157,7 +157,7 @@ Personalize the bracketed sentence with evidence that the creator was actually r
 
 > Hi [admin name],
 >
-> I am working on Grimtoll, an English-language dark medieval tactical roguelike inspired by Battle Brothers-style combat and route-based runs. I would like to invite a small number of opt-in Ukrainian strategy/RPG players to test a 20–30 minute build.
+> I am working on RabbleBound, an English-language dark medieval tactical roguelike inspired by Battle Brothers-style combat and route-based runs. I would like to invite a small number of opt-in Ukrainian strategy/RPG players to test a 20–30 minute build.
 >
 > May I post in your [channel], or would you prefer that I send the details to a moderator first? I will state clearly that the current build is in English, will not collect unnecessary personal data, and will not repost or DM members without permission.
 >
@@ -170,11 +170,11 @@ Translate and native-review this before sending it to a Ukrainian-only server. A
 
 ## 6. Media message template
 
-**Subject:** Grimtoll public demo — compact mercenary tactics and route-based runs
+**Subject:** RabbleBound public demo — compact mercenary tactics and route-based runs
 
 > Hi [editor],
 >
-> Grimtoll is a dark medieval tactical roguelike in which a small mercenary company fights compact hex battles and carries injuries, morale failures, and difficult decisions across a branching run.
+> RabbleBound is a dark medieval tactical roguelike in which a small mercenary company fights compact hex battles and carries injuries, morale failures, and difficult decisions across a branching run.
 >
 > I am writing because [specific PlayUA/GameKombo coverage or editorial section] suggests it may fit your audience. The public demo takes about [time], and the first complete battle appears within [time].
 >

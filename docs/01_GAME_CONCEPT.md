@@ -1,7 +1,13 @@
-# Game Concept — "Grimtoll" (working title)
+# Game Concept — "RabbleBound"
 
-> Working title options: **Grimtoll**, **The Crooked Company**, **Vagrant Banners**, **Mudcrown**.
-> "Grimtoll" used below until we pick one.
+> **The name is settled (2026-08-18, #191): the game is RabbleBound.** It was chosen out of
+> Grimtoll, The Crooked Company, Vagrant Banners and Mudcrown, and it is what every player-facing
+> surface says now.
+>
+> ⛔ **The ISLAND is still called Grimtoll**, and that is deliberate rather than an oversight.
+> [`03_WORLD_LORE.md`](03_WORLD_LORE.md) has it *"named twice in one word"* and the toll runs
+> through the content - THE HANGED TOLL-MAN, the tolls, *"everything here charges for passage"*.
+> A game called RabbleBound set on an island called Grimtoll is two names doing two jobs.
 
 ## 1. One-line pitch
 
@@ -76,10 +82,10 @@ half, which none of the reference games own:
 | Battle Brothers | contract → fight → loot → repair/recruit | an efficient, replaceable company |
 | Wartales | explore → gather → craft → upgrade | opening up the world; lots of maintenance play |
 | Urtuk | fight → mutate → build → harder fight | buildcraft: mutations as synergy pieces |
-| **Grimtoll** | **choose → fight → suffer → adapt** | **a company you had to remake out of what happened to it** |
+| **RabbleBound** | **choose → fight → suffer → adapt** | **a company you had to remake out of what happened to it** |
 
 The axis runs world management → company management → character buildcraft → **character
-consequences**. Grimtoll sits at the far end and must not drift left: adding Wartales-style
+consequences**. RabbleBound sits at the far end and must not drift left: adding Wartales-style
 systems (professions, crafting, cooking, more resources) makes it a small poor Wartales. The
 2026-08-10 playtest said the opposite is needed anyway.
 
@@ -286,7 +292,7 @@ explanation — but phrased as a change in the person (*"GETS STRONGER"*), and i
 it is moving them toward (`Strong enough → Strong`, or `Strong enough · closer to Strong`) so no
 option ever reads as "nothing happens".
 
-### How the references handle stats — and what Grimtoll takes from each
+### How the references handle stats — and what RabbleBound takes from each
 
 Four different answers to "does the player see the numbers", and where we land:
 
@@ -294,7 +300,7 @@ Four different answers to "does the player see the numbers", and where we land:
 here's a candidate, here are his exact stats and talents, decide if he's worth the money. The fun
 is spotting the good roll, firing the bad one, not wasting armour on a dud. People become memorable
 *despite* the table, by surviving improbable things — but they are first evaluated as investments.
-That fits a 40-hour campaign with a 12–20 roster. **For Grimtoll it's dangerous: with 4–8 people, a
+That fits a 40-hour campaign with a 12–20 roster. **For RabbleBound it's dangerous: with 4–8 people, a
 bad starting roll doesn't read as a personnel decision — it reads as a ruined character.** Qud's
 lesson for us is its strange items and systemic interactions, not its character sheet.
 
@@ -318,7 +324,7 @@ sorted into good and bad — that's where the stories come from.
 **4. Slay the Spire — no base stats at all.** No strength, no accuracy, no levels. Everything is
 cards, relics, current HP. The player optimises the set of available actions, not the person.
 Lesson: **if a parameter doesn't create an interesting decision of its own, it doesn't have to be
-shown — maybe doesn't have to exist as a separate system.** Grimtoll's kit, skills, personalities,
+shown — maybe doesn't have to exist as a separate system.** RabbleBound's kit, skills, personalities,
 races and positioning already make enough combinations; visible STR/AGI/INT/MOR was a fifth layer
 on top of four that already work.
 
@@ -357,7 +363,7 @@ sensible, and — later — somebody on the road who knew him.
    man died?*
 2. **No universal optimal route.** The failure mode of other games: play well enough and you save
    everyone, loot everything, keep max reputation, get the best ending — morality exists only in
-   the text. Grimtoll runs several **incompatible kinds of success** (keep your people · keep your
+   the text. RabbleBound runs several **incompatible kinds of success** (keep your people · keep your
    conscience · get rich · build the settlement · field a strong company · fulfil the contract ·
    bank the future), and one run cannot have them all. **Design rule: every act must make the
    player leave at least one important thing on the road** — wealth, a principle, an opportunity,
@@ -1639,5 +1645,5 @@ card's attention for a light card's decision. Procedure:
 
 ### ⏳ Still open
 
-1. **Final title** — deliberately deferred. Working title stays "Grimtoll" until the world's vocabulary settles; the right name usually falls out of the lore once Act 1 is written.
+1. **Final title** — ~~deferred~~ **decided 2026-08-18: RabbleBound** (#191). This entry predicted the name would fall out of the lore once the vocabulary settled, and roughly that is what happened: the company is a rabble, bound by one contract, and the word says what the game is about in a way the island's name never did. The island keeps *Grimtoll*.
 2. **Battle length band vs morale-break endings** — parked as its own balance topic, by the user's call.

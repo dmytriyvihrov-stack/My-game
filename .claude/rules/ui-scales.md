@@ -46,7 +46,7 @@ wrong. Everything was decided thirty separate times.
 | `--fs6` | 17 | a head |
 | `--fs7` | 20 | a big head, the action glyph |
 | `--fs8` | 24 | the display line on a card |
-| `--fsTitle` | 74 | GRIMTOLL on the front door, and nothing else |
+| `--fsTitle` | 74 | RABBLEBOUND on the front door, and nothing else |
 
 ⛔ **`--fs1` IS 10px AND NOTHING ON THIS SCREEN IS SMALLER.** (User, 2026-08-16: *"Minimum font i
 feel, nice to be 10"*.) The build had **77 declarations at 9px or under, down to 7px**, and they
@@ -168,6 +168,14 @@ In the running build, per screen:
 than its window), `#bField` and `#bLog` in the battle, and `#menu`/`#mTitle` on the front door. All
 four are in the committed build before this pass; they were confirmed by running the same probe
 against `git show HEAD:` in a second tab.
+
+⚠ **AND A FIFTH THAT IS CROPPING ON PURPOSE: `#bTrait`.** It is a `-webkit-line-clamp:2` box - the
+truncation is what the battle rail's 223px reservation is computed FROM, and the full text is on its
+hover - so it reports 1-2px of overflow on every body that HAS a trait, and 0 on a body with none.
+It is listed here because #191 measured it against an `e284b06` baseline and found both builds
+identical, i.e. two separate sessions have now spent time proving the same non-bug. **This entry is
+the exception the paragraph below forbids, and it earns it by being a DOCUMENTED intentional clamp
+with a measurement, not a decoration that was drawn last week.** See `8f.209` in the changelog.
 
 ⚑ **THAT SECOND TAB IS THE TECHNIQUE, AND IT IS THE ONLY HONEST WAY TO READ AN OVERFLOW COUNT.**
 `git show HEAD:prototype/grimtoll_slice.html > prototype/_head_baseline.html`, serve both, drive both

@@ -1,6 +1,6 @@
 {
-  "name": "Grimtoll",
-  "short_name": "Grimtoll",
+  "name": "RabbleBound",
+  "short_name": "RabbleBound",
   "description": "A dark medieval, low-magic tactical roguelike.",
   "start_url": "../grimtoll_slice.html",
   "display": "standalone",

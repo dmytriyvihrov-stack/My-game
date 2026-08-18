@@ -25,6 +25,159 @@
 
 ---
 
+## 🎲 SIX THINGS: THE GROUND SPEAKS, THE ODDS GO QUIET, AND THE GAME HAS A NAME  *(#191 · 2026-08-18 · build log 8f.211)*
+
+Six separate asks in one batch. They do not touch each other, so test them
+separately and judge them separately.
+
+### 1. The game is called RabbleBound
+
+**How to reach it:** open the game.
+
+**What should happen**
+
+- The browser tab says **RabbleBound — Vertical Slice** and the front door says
+  **RABBLEBOUND** in the big Cinzel.
+- ⚠ **The ISLAND is still called Grimtoll, and that is deliberate.** You chose
+  "game only" when I asked. The lore book still has it *"named twice in one
+  word"* and the toll runs through the content — the hanged toll-man, the tolls,
+  *"everything here charges for passage"*. If you want the island renamed too,
+  that is a separate job and it means rewriting the naming passage in
+  `03_WORLD_LORE.md`.
+- Every file path is still `grimtoll_*` on purpose (`prototype/grimtoll_slice.html`,
+  the desks folder, the lock store). **Your saves are also untouched** — the
+  storage keys are still `gt_*`, and renaming those would have wiped every run
+  you have going, including the one on the live link.
+
+**What would be a bug:** the title overflowing the front door. It is 43% wider
+than GRIMTOLL was (482px → 687px measured in real Cinzel) and it clears the
+1280 stage by 593px, so it should not — but that is the number that ran down.
+
+### 2. Hover a tile in a fight and it tells you what the ground does
+
+**How to reach it in three steps:** any battle → move the cursor over water,
+burning ground, a boulder, a bloom → the tooltip.
+
+**What should happen**
+
+- **Every kind with a rule now says its rule**, in the game's own tooltip rather
+  than the browser's slow grey one. Shallow water, deep water, burning ground,
+  a lone boulder (liftable, shootable over) versus a group of rocks, a tree, the
+  fire, the wall, the tavern furniture.
+- ⚑ **Two things that never said anything before now do**: shallow **marsh**,
+  which is three separate penalties and had no tooltip at all, and **the six
+  hexes around an open bloom**, which is the strongest effect in the game and
+  was only ever a tint.
+- **Plain field says nothing.** That is on purpose — a tooltip that fires on all
+  195 hexes is furniture.
+- **The answer is per body.** Point at deep water with an ogre selected and it
+  says something your size wades; with a gilled body it says it costs nothing.
+- **A hex somebody is STANDING on** cannot show the ground's own hover, because
+  the sprite is over it. Instead the card that opens for that body carries a
+  **GROUND** row saying the same thing. Check this on somebody standing in fire.
+
+**What would be a bug:** the tooltip failing to appear on an empty hex, or the
+old browser tooltip still turning up a second and a half later underneath it.
+
+### 3. The fight stopped telling you the odds
+
+**How to reach it in three steps:** any battle → select an attack → point at an
+enemy.
+
+**What should happen**
+
+- **No percentage anywhere in the fight.** The chip on the hex is gone, the
+  plaque's CHANCE TO HIT cell is gone, and the aiming card no longer opens with
+  a big number.
+- **NEXT ONE LANDS is gone** off the board. The rule still fires — two misses in
+  a row still makes the third land — it just stops announcing itself.
+- **The damage stayed, and moved up.** The hex now shows only the damage range,
+  in the slot the percentage used to hold.
+- **The attack arc still says FRONT / FLANK / BACK** — but without its `+15` and
+  its damage multiplier. The word is a place to stand; the figures were the
+  receipt coming back in through the one row left standing.
+- ⛔ **Nothing about the fight itself changed.** Same maths, same AI, same rolls.
+  This is a readout switch and it is one line — `SHOW_HIT_ODDS` — so if you hate
+  it, it is `true` and everything comes back.
+- **The company sheet still shows TO HIT.** You said *"из битвы"*, and between
+  fights that number is how a gear or perk choice gets judged.
+
+**What would be a bug:** a stray `%` anywhere on the battle screen, or the
+damage range sitting too low on the hex now that it is alone.
+
+### 4. Three new perks
+
+**How to reach it in three steps:** company sheet → PERKS tab → a body with a
+point to spend. (Fastest: ⚙ dev mode → level somebody up.)
+
+- **Patient** *(captain 4 · spearwoman 6 · archer 6 · brute 6)* — end a turn
+  with an action unspent and the next turn opens with an extra one. **One, and
+  it does not compound**: spare two actions and you still only get one back, and
+  three patient turns in a row still cap at three actions, never four. A green
+  **+1 ACTION** floats over them when it pays.
+- **Ground-Wise** *(spearwoman 8 · archer 8 · cutter 4)* — no ground slows you
+  (every terrain costs one hex to enter, no stride penalty for standing in
+  water) and **anything the ground itself does to you is halved** — fire is 6
+  and 4 instead of 12 and 8. ⚠ **The bloom is deliberately NOT included.** It is
+  an aura, not ground, and it is the strongest thing on the board.
+- **Elemental Weapon** *(mage, level 6 — your gate)* — the mage's weapon arrives
+  carrying **FIRE, FROST or VENOM**, rolled fresh **every battle**, passive, no
+  choice. Every blow that lands delivers it: fire sets them alight, frost takes
+  half their movement and 10 dodge, venom stacks. A **❖ Charged weapon** badge
+  sits over their head and the hover names which one you got today.
+  - ⚠ **A question for you:** I gave it to the MAGE only, because you wrote
+    *"для мага"*. But the **BATTLE-MAGE** is the class that actually swings a
+    blade for a living, and a pure mage is bad with weapons — so the perk may be
+    on the wrong caster. Say the word and it goes on both.
+
+**What would be a bug:** Patient stacking past one extra action; the element
+changing mid-fight (it should not) or staying the same across two fights (it
+should not); the element appearing on a spell instead of the weapon.
+
+### 5. Important news arrives in the middle of the screen
+
+**How to reach it in three steps:** walk the road → reach a payday (every 4th
+day) → or finish the second objective.
+
+**What should happen**
+
+- **The second objective completing** and **the chest opening on payday** now
+  pop **in the middle of the map**, bigger, instead of the small italic line at
+  the bottom.
+- **So does the bad half**: a payday the chest cannot cover, three days unpaid,
+  and somebody walking out over it. Those are red.
+- **Ordinary road narration still sits at the bottom** in italic, exactly as
+  before. Only the handful of lines that change the run got promoted.
+- It still fades by itself, there is nothing to click, and the road underneath
+  stays clickable the whole time.
+
+**What would be a bug:** an ordinary line stuck across the middle of the map, or
+a centred line that will not go away.
+
+### 6. The feedback popup
+
+**How to reach it in three steps:** finish a fight (it opens once a run), or
+press FEEDBACK bottom-right.
+
+**What should happen**
+
+- **👎 bad · 🤷 so-so · 👍 good**, in that order, worst on the left.
+- It sits **lower on the screen** than dead centre now, so it stops landing on
+  the thing it is asking you about.
+- **SEND and NOT NOW are gone.** Pressing a face IS sending it: 👍 and 🤷 file
+  and close on their own, 👎 files and opens the reason box.
+- **Nothing can be lost.** The reason is written onto the same record as you
+  type, so closing mid-sentence keeps what you wrote. Esc and clicking outside
+  both just close it.
+- **Changing your mind rewrites one record, it does not file two.** Press 👎,
+  type a complaint, then press 👍 — the complaint is dropped with it, because a
+  record saying "liked" with a complaint attached is a record saying two
+  opposite things.
+
+**What would be a bug:** two entries in the report from one ask, or a reason
+surviving onto a 👍.
+
+
 ## 🗺 THE WORLD MAP HAS A PAINTED GROUND  *(#190 · 2026-08-18 · build log 8f.210)*
 
 The map you walk the company across is a painting now instead of a procedurally
@@ -867,7 +1020,7 @@ down that 19 was correct, and then taught the ground-painter to match the mistak
 **Where it came from.** You brought the Turn-Based Games Discord `#dev-feedback` channel and asked
 for the standard notes as a checklist. Four different developers there got told the same three
 things in one week: standardise your outlines, standardise your fonts, standardise your padding.
-Grimtoll failed all three by measurement: **29 font sizes** (including a `7.6px`), **7 near-identical
+RabbleBound failed all three by measurement: **29 font sizes** (including a `7.6px`), **7 near-identical
 border hexes** at 88 sites, **72 paddings**, and **77 declarations at 9px or smaller, down to 7px**.
 Your call on the floor: *"Minimum font i feel, nice to be 10"*.
 

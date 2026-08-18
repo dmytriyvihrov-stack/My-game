@@ -1,4 +1,4 @@
-# Grimtoll: where to post, and what each venue requires
+# RabbleBound: where to post, and what each venue requires
 
 Gathered 2026-08-12. Deadlines move, so treat the dated ones as "verify before you act".
 Marked `[verified]` where a source page was read directly, `[check]` where it is inferred from a
@@ -98,7 +98,7 @@ Always open the sub's rules page before the first post in it.
 
 | Server | Link | Why it matters |
 |---|---|---|
-| **The Turn-Based Games Discord** | https://discord.gg/zfmrtb2FkQ | The single best-fit community for Grimtoll. Covers RPGs, grand strategy, roguelikes, deckbuilders, tactics, 4X. Runs **weekly game showcases** and a **monthly free demo club**, and it is the organising home of TBTFest (below). `[verified]` |
+| **The Turn-Based Games Discord** | https://discord.gg/zfmrtb2FkQ | The single best-fit community for RabbleBound. Covers RPGs, grand strategy, roguelikes, deckbuilders, tactics, 4X. Runs **weekly game showcases** and a **monthly free demo club**, and it is the organising home of TBTFest (below). `[verified]` |
 | Game Dev Network | gamedevnetwork.io / Discord | ~38,000 devs. Feedback and collaboration, not players. |
 | Indie Games Community | https://discord.me/indiegamescommunity | Devs, players and content creators in one place. |
 
@@ -146,7 +146,7 @@ Unlike Next Fest these come round again, and unreleased Coming Soon titles get a
 
 | Fest | Dates | Fit |
 |---|---|---|
-| **Party-Based RPG Fest** | **Sept 14-21, 2026**, registration open `[verified]` | Direct hit. Grimtoll is a party-based RPG by any reading. |
+| **Party-Based RPG Fest** | **Sept 14-21, 2026**, registration open `[verified]` | Direct hit. RabbleBound is a party-based RPG by any reading. |
 | Programming Fest | Sept 10-14, 2026 | No |
 | Autumn Sale | Oct 1-8, 2026 | Released games |
 | Auto-Battler RPG Fest | Nov 16-23, 2026 | No |
@@ -180,7 +180,7 @@ in this document:
 |---|---|---|---|---|
 | **Roguelike Celebration** | Oct 17-18, 2026, virtual | **Sep 10, 2026** `[verified]` | Free | Roguelikes and procedural generation. Talks, games, community. [Apply](https://docs.google.com/forms/d/e/1FAIpQLSfwY1ldweukyGwAwOhiMJ-bemtTtvkz5XJ6uaABi3Xcbq4eAg/viewform) · https://roguelike.club |
 | DevGAMM Awards + Steam Event | Nov 2026 | Sep 7, 2026 `[verified]` | Free | Judged by 150+ industry pros, streamed by IGN. [Apply](https://devgamm.fillout.com/games2026) |
-| Choose Wisely Festival | Dec 2026 | Aug 17, 2026 `[verified]` | Free | Choice-driven games. Grimtoll's road events fit. [Apply](https://forms.gle/anEyzBnF2uTXgqRL7) |
+| Choose Wisely Festival | Dec 2026 | Aug 17, 2026 `[verified]` | Free | Choice-driven games. RabbleBound's road events fit. [Apply](https://forms.gle/anEyzBnF2uTXgqRL7) |
 | GWB Game Awards (Tencent) | Nov 2026 | Aug 15, 2026 `[verified]` | Free | [Apply](https://gameinstitute.tencent.com/awards2026) |
 
 ### Closed this cycle, but these are the ones to watch for next round
@@ -333,7 +333,7 @@ Pick one hook line and use the SAME one everywhere, so you find out whether the 
 **A. Sharing Saturday (comment in the weekly thread)**
 
 ```
-**Grimtoll** - hex tactical roguelike, a company of strangers bound by one contract.
+**RabbleBound** - hex tactical roguelike, a company of strangers bound by one contract.
 Plays in the browser, no download: https://dmytriyvihrov-stack.github.io/My-game/
 
 This week I have been cutting rather than adding. The opening was throwing four
@@ -351,7 +351,7 @@ is where you stopped and why.
 **B. Turn-Based Games Discord showcase**
 
 ```
-Grimtoll - turn-based tactics + company management, in the vein of Battle Brothers.
+RabbleBound - turn-based tactics + company management, in the vein of Battle Brothers.
 Hexes, permanent scars instead of deaths, wages every fourth day, and a road where
 the choices cost more than the fights do.
 
@@ -369,7 +369,7 @@ Five questions if you have the patience: <form link>
 Title: `Destroy my opening: 15 min browser build, tactical roguelike. Where did you stop?`
 
 ```
-Grimtoll, hex tactical roguelike, solo dev. Browser, no download, ~15 min a run:
+RabbleBound, hex tactical roguelike, solo dev. Browser, no download, ~15 min a run:
 https://dmytriyvihrov-stack.github.io/My-game/
 
 The specific thing I want destroyed: the first five minutes. Previous feedback

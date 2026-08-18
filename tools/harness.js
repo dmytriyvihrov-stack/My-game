@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════════════════════
-   GRIMTOLL TEST HARNESS — loaded into the running page, never shipped.
+   RABBLEBOUND TEST HARNESS — loaded into the running page, never shipped.
 
      fetch('/tools/harness.js').then(r=>r.text()).then(eval)
 
@@ -191,7 +191,7 @@ window.shotStage=async function(name,caption,note,panels){
   const body=(panels||[]).map(p=>
     '<div class="shotpanel"><h2 class="shotsub">'+(p.cap||'')+'</h2>'+
     (p.note?'<p class="shotnote">'+p.note+'</p>':'')+(p.html||'')+'</div>').join('');
-  const html='<meta charset="utf-8"><title>Grimtoll · '+caption+'</title><style>'+style+
+  const html='<meta charset="utf-8"><title>RabbleBound · '+caption+'</title><style>'+style+
     '\nbody{margin:0;background:#0e1414;color:#d8d5cc;display:block}.shotwrap{padding:18px}'+
     '.shotcap{font-family:var(--display);font-size:21px;color:#d9bd7e;margin:0 0 6px}'+
     '.shotsub{font-family:var(--display);font-size:16px;color:#c9c6bb;margin:26px 0 4px;'+
@@ -238,7 +238,7 @@ window.shotUI=async function(name,caption,note,panels){
     /* left and board are inserted RAW so a panel can hold several of either —
        three action rows side by side, or a before and an after */
     '<div class="shotrow">'+(p.left||'')+(p.board||'')+'</div></div>').join('');
-  const html='<meta charset="utf-8"><title>Grimtoll · '+caption+'</title><style>'+style+
+  const html='<meta charset="utf-8"><title>RabbleBound · '+caption+'</title><style>'+style+
     '\nbody{margin:0;background:#0e1414;color:#d8d5cc}.shotwrap{padding:18px}'+
     '.shotcap{font-family:var(--display);font-size:21px;color:#d9bd7e;margin:0 0 6px}'+
     '.shotsub{font-family:var(--display);font-size:16px;color:#c9c6bb;margin:26px 0 4px;'+

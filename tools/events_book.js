@@ -163,7 +163,7 @@
               + CAMPS.reduce((a,e)=>a+(e.choices||[]).length,0);
 
     let out =
-     '<h1>GRIMTOLL &mdash; THE EVENT BOOK</h1>\n'+
+     '<h1>RABBLEBOUND &mdash; THE EVENT BOOK</h1>\n'+
      '<p><i>Every word the road says to the player, in one place. Generated from the running '+
      'game: '+Object.keys(EVENTS).length+' road and story events, '+CAMPS.length+' camp cards, '+
      VIGNETTES.length+' road vignettes, '+nCh+' choices between them.</i></p>\n'+
@@ -214,7 +214,7 @@
         (v.fx&&v.fx.morale?' <i>('+sgn(v.fx.morale)+' mood)</i>':'')+'</li>').join('\n')+
       '\n</ul>\n';
 
-    return '<html><head><meta charset="utf-8"><title>Grimtoll - The Event Book</title></head>\n'+
+    return '<html><head><meta charset="utf-8"><title>RabbleBound - The Event Book</title></head>\n'+
            '<body>\n'+out+'</body></html>';
   };
 

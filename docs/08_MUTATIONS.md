@@ -1,11 +1,11 @@
-# Grimtoll — Mutations & Strange Conditions
+# RabbleBound — Mutations & Strange Conditions
 
 *(Design bible. The slice ships ONE chain — Fen-Water in the Lungs → Gills of the Fen — and
 nothing else gets built until that one proves itself. Everything below is authored and waiting.)*
 
 ## The core idea
 
-Mutations fit Grimtoll extremely well — **but only as things that happen to particular people,
+Mutations fit RabbleBound extremely well — **but only as things that happen to particular people,
 never as another progression tree.** The ladder of what a person is:
 
 | Layer | What it answers |

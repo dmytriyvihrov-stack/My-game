@@ -1,4 +1,4 @@
-# Grimtoll — Settlements & Legacy (metaprogression redesign)
+# RabbleBound — Settlements & Legacy (metaprogression redesign)
 
 *(Design proposal, not yet built. Supersedes the "three passive wagon fittings" model in
 [01_GAME_CONCEPT.md](01_GAME_CONCEPT.md) §wagon once implemented. Written up from the user's
@@ -91,7 +91,7 @@ Do not split iron and ore — they are too close, and the player will ask which 
 and where smelting happens. Keep **materials** (building and equipment) and **gems** (rare, decisive).
 Two physical materials are acceptable *only* if they generate genuinely different projects — wood
 for wagon/kitchen/walls/bridges, iron for forge/armour/tools — and only if the wood-vs-iron choice
-comes up often enough to be real. Grimtoll merged wood and iron precisely because they bought the
+comes up often enough to be real. RabbleBound merged wood and iron precisely because they bought the
 same things.
 
 ## Structure, in order

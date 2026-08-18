@@ -1,7 +1,7 @@
-# Grimtoll: AI art, Steam disclosure, budget and production options
+# RabbleBound: AI art, Steam disclosure, budget and production options
 
 **Prepared:** 1 August 2026  
-**Purpose:** A practical decision memo for a 10–15 hour Grimtoll campaign with three starting characters and three to five acts.
+**Purpose:** A practical decision memo for a 10–15 hour RabbleBound campaign with three starting characters and three to five acts.
 
 **Revised for a lean first-indie production:** The original version priced a near-studio outsourcing model with too many unique illustrations. This version assumes the developer keeps creative direction and integration, reuses locations, keeps combat art modular, and commissions humans selectively.
 
@@ -222,7 +222,7 @@ If “No” has already been submitted, contact Steam Support before release and
 
 There is a real audience stigma, but no trustworthy universal conversion penalty for an individual game.
 
-One 2026 analysis of 9,879 Steam games released during January–October 2025 reported approximately 53% fewer first-month reviews for AI-disclosed titles after statistical controls. Reviews are only a sales proxy, and observational controls cannot fully separate the disclosure from lower budgets, weaker games, inexperienced developers or different marketing. Treat the result as a warning—not a forecast that Grimtoll will lose exactly half its sales.
+One 2026 analysis of 9,879 Steam games released during January–October 2025 reported approximately 53% fewer first-month reviews for AI-disclosed titles after statistical controls. Reviews are only a sales proxy, and observational controls cannot fully separate the disclosure from lower budgets, weaker games, inexperienced developers or different marketing. Treat the result as a warning—not a forecast that RabbleBound will lose exactly half its sales.
 
 - https://www.pcgamer.com/software/ai/data-analyst-finds-ai-stigma-on-steam-can-reduce-the-number-of-reviews-a-game-gets-by-around-53-percent-and-the-reviews-it-does-get-are-more-negative/
 
@@ -296,4 +296,4 @@ This reduced hybrid production can target roughly **€5k–€8k and 4–6 mont
 
 ## Final recommendation in one sentence
 
-For Grimtoll’s first release, plan around **€12,000 with an €18,000 ceiling**, build three acts rather than five, let the three origins converge early, use AI plus selective human production for volume, make the selling and emotional assets fully human, and disclose the AI assistance honestly.
+For RabbleBound’s first release, plan around **€12,000 with an €18,000 ceiling**, build three acts rather than five, let the three origins converge early, use AI plus selective human production for volume, make the selling and emotional assets fully human, and disclose the AI assistance honestly.

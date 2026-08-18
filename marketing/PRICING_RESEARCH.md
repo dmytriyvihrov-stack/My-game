@@ -1,4 +1,4 @@
-# Grimtoll — pricing research
+# RabbleBound — pricing research
 
 **Market snapshot:** 1 August 2026  
 **Product considered:** premium PC tactical roguelike / tactical RPG for Steam  
@@ -6,7 +6,7 @@
 
 ## Executive recommendation
 
-For the planned three-act, approximately 10-hour Grimtoll release, use **$14.99** as the working Steam base price.
+For the planned three-act, approximately 10-hour RabbleBound release, use **$14.99** as the working Steam base price.
 
 - Launch at **10% off**, or $13.49 in the US.
 - Use Steam's regional-pricing tools rather than manually applying one exchange rate worldwide.
@@ -26,7 +26,7 @@ A free Act 1 demo followed by a complete $14.99 release is likely a stronger pos
 
 ## Comparable games
 
-The closest commercial shelf is Battle Brothers / The Last Spell / Urtuk / Our Adventurer Guild / Mortal Glory 2 rather than pure deckbuilders. Grimtoll combines a node-based roguelike structure with a persistent small company, illustrated events and tactical hex combat.
+The closest commercial shelf is Battle Brothers / The Last Spell / Urtuk / Our Adventurer Guild / Mortal Glory 2 rather than pure deckbuilders. RabbleBound combines a node-based roguelike structure with a persistent small company, illustrated events and tactical hex combat.
 
 | Game | Base price (USD) | Steam purchaser reviews | Positive | Rough estimated copies |
 |---|---:|---:|---:|---:|
@@ -106,9 +106,9 @@ This suggests a practical split:
 
 Source: [GameDiscoverCo — Are Steam game prices dropping, and should you care?](https://newsletter.gamediscover.co/p/are-steam-game-prices-dropping-and)
 
-## Why $14.99 fits Grimtoll
+## Why $14.99 fits RabbleBound
 
-At the planned scope, Grimtoll offers more than a small systems-only roguelike:
+At the planned scope, RabbleBound offers more than a small systems-only roguelike:
 
 - a three-act campaign of approximately 10 hours;
 - repeatable runs and world memory;
