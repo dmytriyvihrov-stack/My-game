@@ -24941,11 +24941,31 @@ const CAMPS=[
       after:'{ANY} does the burying, and is thorough about it, and puts a stone on top, and stands there a while.'},
      {t:'Sell it at the next stop, whatever it is.',ico:['trade'],c:'',fx:{crowns:55,morale:-5},
       after:'It goes for more than it should, from a man who did not want to look at it either.'}]},
-  /* Rewritten: every ending used to be nearly free, and one of them was a
-     straight +6 for making a ruling. A quarrel between two people at a fire
-     everybody else is sitting at does not have a clean exit — whatever you
-     decide, the whole company hears you decide it, and takes something away
-     from that. The choice is which cost you would rather pay. */
+  /* ═══ #197 · THE QUARREL STOPS CHARGING FOR ITSELF ═══════════════════
+     (User, 2026-08-19, arrow drawn at the second door's sub-line: *"Here - no
+     morale penalties"*.)
+
+     WHAT THIS CARD USED TO ARGUE, kept because the reversal is the interesting
+     part: *"a quarrel between two people at a fire everybody else is sitting
+     at does not have a clean exit - whatever you decide, the whole company
+     hears you decide it. The choice is which cost you would rather pay."*
+     Three doors, three morale figures, +6 / -7 / -8.
+
+     ⛑ AND THE COMPLAINT IS THAT THE CARD WAS BILLING TWICE FOR ONE EVENING.
+     The second door already takes a body out of the fight (`hurt`) and a tenth
+     of everybody's hitpoints (`hurtAll`); the third door's whole `after` is
+     four sentences about what the ruling costs you in trust. Those ARE the
+     costs. The morale figures beside them were the same news a second time, in
+     the one currency the player can read off a chip - which is the rule at the
+     top of `.claude/rules/event-cards.md` arriving on a card rather than on a
+     label.
+
+     ⚠ SO THE THIRD DOOR IS FREE NOW AND THAT IS ALLOWED, not an oversight:
+     style rule 7 is *"a free door only where others cost"*, and the other two
+     cost 35 crowns and a bleeding. It says `no cost` in the house phrasing the
+     pedlar and the collector already use, because a blank sub-line beside two
+     full ones reads as a door that forgot to load.
+     ⚠ The +6 STAYS. He struck the penalties; buying the peace still buys it. */
   {id:'debt',t:'THE DEBT',seed:57,
    body:(a,b)=>a+' owes '+b+' money. It stopped being funny a week ago.\n\nNeither will say how '+
      'much. Both will say who is right.\n\nThe rest of the company has stopped pretending to be '+
@@ -24957,7 +24977,7 @@ const CAMPS=[
         'it. It also settles, in everybody\'s mind, that the chest opens for whoever is loudest, '+
         'and you will find out what that was worth some other evening.'},
      {t:'Let them settle it themselves.',ico:['leave'],c:'',
-      fx:{morale:-7},
+      fx:{},
       hurt:{n:'Split knuckles',d:'Not from a battle, which is what makes it worse.'},
       hurtAll:{frac:.10,line:'Nobody sleeps well. Everybody is a little slower off the ground in '+
         'the morning, including the people who only watched.'},
@@ -24965,7 +24985,7 @@ const CAMPS=[
         'Two of yours hit each other in front of everybody, and you stood there, and that is now '+
         'a thing this company knows about itself.'},
      {t:'Rule that debts do not exist in this company.',
-      c:'',fx:{morale:-8},
+      c:'no cost',fx:{},
       after:'Everyone agrees at once, which should have been the warning.\n\nYou have just told '+
         'every person at that fire that anything they are owed can be erased by you saying so at '+
         'the right moment. The one who was owed does not argue. Nobody argues. That is the part '+
@@ -25099,23 +25119,15 @@ const CAMPS=[
       c:'',fx:{crowns:-20,morale:2},need:{crowns:20},
       after:'You pay for a knife you already owned, on behalf of somebody who did not steal it '+
         'because stealing has been abolished. It works. Nobody enjoys it working.'}]},
-  /* they fought in front of everybody → the grudge comes back with a body */
-  {id:'debt4',t:'THE NINE SECONDS',seed:60,needs:{id:'debt',opt:1},
-   body:(a,b)=>'It has been quiet between '+a+' and '+b+' since the fight, and quiet in the way '+
-     'a held breath is quiet.\n\nTonight one of them has put their bedroll on the far side of '+
-     'the fire, and the other has noticed, and the company is watching a second time.',
-   choices:[
-     {t:'Put them on the same watch until it is over.',c:'',
-      fx:{days:1,morale:10},
-      after:'Six hours of enforced company and a cold dawn. They come back not friends, exactly, '+
-        'but with the specific ease of two people who have run out of things to not say.'},
-     {t:'Split them. Different watches, different ends of the column.',c:'',
-      fx:{morale:-2},
-      after:'Neatly managed, and the company notices that too: this is a place where a problem '+
-        'gets arranged around rather than finished.'},
-     {t:'Tell them what it cost you to watch it the first time.',c:'',fx:{morale:14},
-      after:'You say it plainly and only once and then you go to sleep.\n\nIn the morning the '+
-        'bedroll has moved back. Nobody mentions it, then or ever.'}]},
+  /* ⛔ #197 - THE NINE SECONDS IS DELETED (user, 2026-08-19: *"delete event
+     complitly: AND THEN - THE NINE SECONDS"*). It was the sequel to THE DEBT's
+     SECOND door and it is the only one of the three sequels to go: `debt2`
+     (opt 0) and `debt3` (opt 2) still chain, so the chain machinery is intact
+     and this is a content deletion rather than a rule change.
+     ⚠ `needs:{id:'debt',opt:1}` IS NOW UNCLAIMED, which is legal - campPool
+     only ever ASKS whether a sequel exists. Letting them fight it out simply
+     ends its own story now, which sits with the same card losing its morale
+     price above: it costs blood on the night and nothing comes back for it. */
   /* you kept the rat-king's knuckle → it does not want to be kept */
   {id:'found2',t:'THE THING THAT WAS KEPT',seed:48,needs:{id:'found',opt:0},
    body:(a)=>'The knuckle-bone has moved. Not far — from the bottom of the cart to the top of '+
@@ -31555,8 +31567,12 @@ const VIGNETTES=[
   {t:'THE BET',body:(a,b)=>a+' bets '+b+' the next milestone is under an hour off. It is '+
     'four hours off. The debt is one boot-cleaning and it is paid in full and in public.',
     fx:{morale:5}},
-  {t:'AN HOUR OF RAIN',body:()=>'Rain for an hour, the flat grey kind that gets into everything '+
-    'except the mood, somehow. The wagon smells of wet wool until morning.',fx:{}},
+  /* ⛔ #197 - AN HOUR OF RAIN IS DELETED (user, 2026-08-19: *"Delete event: ON
+     THE ROAD - AN HOUR OF RAIN"*). It was a `fx:{}` vignette whose whole beat
+     was that nothing happened, which is the one thing a vignette may not spend
+     a road slot on. The four other weatherless `fx:{}` vignettes (the mule,
+     the crow, and the two at the fire) all turn on somebody DOING something;
+     this one turned on wet wool. */
   {t:'SORE HEELS',body:(a)=>a+' walks the last mile backwards, on a theory about sore heels. '+
     'The theory is not explained. The heels are reportedly fine.',fx:{morale:3}},
   {t:'THE CROW',body:(a)=>'A crow follows the wagon from noon until dusk. '+a+' names it, '+
