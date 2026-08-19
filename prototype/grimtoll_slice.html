@@ -6541,50 +6541,50 @@ const WRONGSIZE={mult:.70,agi:-1,mor:-3};
 
 const GEAR={
   /* --- scrap you find on the road: this is what you actually start near --- */
-  rags   :{n:'Rags and rope',   slot:'armour',size:'any',   armour:6},
-  pot    :{n:'Cook-pot and straps',slot:'armour',size:'any',armour:12,
+  rags   :{rarity:'common',n:'Rags and rope',   slot:'armour',size:'any',   armour:6},
+  pot    :{rarity:'common',n:'Cook-pot and straps',slot:'armour',size:'any',armour:12,
            d:'A stew-pot, worn as a helmet, with a jerkin under it.'},
-  planks :{n:'Door-plank harness',slot:'armour',size:'human',armour:20,agi:-1,
+  planks :{rarity:'common',n:'Door-plank harness',slot:'armour',size:'human',armour:20,agi:-1,
            d:'Somebody’s front door, in three pieces, on a man.'},
-  scrap  :{n:'Scrap harness',   slot:'armour',size:'ratkin',armour:18},
-  hides  :{n:'Stitched hides',  slot:'armour',size:'ogre',  armour:26},
+  scrap  :{rarity:'common',n:'Scrap harness',   slot:'armour',size:'ratkin',armour:18},
+  hides  :{rarity:'common',n:'Stitched hides',  slot:'armour',size:'ogre',  armour:26},
   /* --- proper kit --- */
-  jack   :{n:'Padded jack',     slot:'armour',size:'human', armour:34},
-  mail   :{n:'Mail hauberk',    slot:'armour',size:'human', armour:66,agi:-1},
-  plate  :{n:'Foundry plate',   slot:'armour',size:'human', armour:96,agi:-2},
-  shroud :{n:'Rat-silk shroud', slot:'armour',size:'ratkin',armour:30,agi:+1},
-  lashed :{n:'Lashed plates',   slot:'armour',size:'ogre',  armour:74},
-  ogrescale:{n:'Ogre scale',    slot:'armour',size:'ogre',  armour:104,agi:-1},
+  jack   :{rarity:'common',n:'Padded jack',     slot:'armour',size:'human', armour:34},
+  mail   :{rarity:'rare',n:'Mail hauberk',    slot:'armour',size:'human', armour:66,agi:-1},
+  plate  :{rarity:'epic',n:'Foundry plate',   slot:'armour',size:'human', armour:96,agi:-2},
+  shroud :{rarity:'rare',n:'Rat-silk shroud', slot:'armour',size:'ratkin',armour:30,agi:+1},
+  lashed :{rarity:'rare',n:'Lashed plates',   slot:'armour',size:'ogre',  armour:74},
+  ogrescale:{rarity:'epic',n:'Ogre scale',    slot:'armour',size:'ogre',  armour:104,agi:-1},
 
   /* --- the ridiculous end of the rack. It all works. That is the joke. --- */
-  wardrobe:{n:'A wardrobe',     slot:'armour',size:'ogre',  armour:72,agi:-3,
+  wardrobe:{rarity:'rare',n:'A wardrobe',     slot:'armour',size:'ogre',  armour:72,agi:-3,
             d:'A closet. Doors removed, arm-holes cut. He has to be helped into it.'},
-  bucket :{n:'Bucket, worn',    slot:'armour',size:'any',   armour:9,
+  bucket :{rarity:'common',n:'Bucket, worn',    slot:'armour',size:'any',   armour:9,
            d:'Just the bucket. There is no rest of the armour.'},
-  broom  :{n:'A broom',         slot:'main',dmg:[7,13],am:.30,ft:.35,reach:2,hands:2,
+  broom  :{rarity:'common',n:'A broom',         slot:'main',dmg:[7,13],am:.30,ft:.35,reach:2,hands:2,
            d:'Reach two, and utterly humiliating for everyone involved.'},
-  panlid :{n:'Pan-lid',         slot:'off',dodge:+4,d:'It rings when hit. Constantly.'},
-  deadboots:{n:'The Toll-Man’s Boots',slot:'trinket',g:'⚯',agi:+3,mor:-6,
+  panlid :{rarity:'common',n:'Pan-lid',         slot:'off',dodge:+4,d:'It rings when hit. Constantly.'},
+  deadboots:{rarity:'rare',unique:true,n:'The Toll-Man’s Boots',slot:'trinket',g:'⚯',agi:+3,mor:-6,
            d:'Good boots. Warm, dry, barely worn, and they were on a hanged man this morning. '+
              'Whoever has them walks better and sleeps worse.'},
-  discoball:{n:'The Mirrored Sphere',slot:'trinket',g:'☼',agi:+2,mor:+3,
+  discoball:{rarity:'rare',unique:true,n:'The Mirrored Sphere',slot:'trinket',g:'☼',agi:+2,mor:+3,
            d:'A hanging ball of a thousand mirror-shards, found in a ruin nobody can explain. '+
              'It throws light in every direction and answers no questions.'},
   /* A gun, two generations early and on the wrong island. Nobody here has
      the word for it, nobody has the powder, and it is heavy at one end —
      so it is a club, and it is a very good club. The joke only works
      because the numbers are real. */
-  woodstick:{n:'The Wood-Stick With Two Holes',slot:'main',dmg:[17,25],am:1.15,ft:.20,reach:1,
+  woodstick:{rarity:'epic',unique:true,n:'The Wood-Stick With Two Holes',slot:'main',dmg:[17,25],am:1.15,ft:.20,reach:1,
            d:'Heavier at one end than a stick has any business being. Two holes bored in it, '+
              'one at each end, and the far one is black inside and smells of a fire that '+
              'happened somewhere else. Marrow has tried drinking out of it. It has been swung '+
              'at people eleven times and has worked eleven times.'},
   /* weapon dice down ~10% with the hitpoint shave — same pace, less swing */
-  cudgel :{n:'Fence-post cudgel',slot:'main',dmg:[11,17],am:.80,ft:.22,reach:1},
-  sword  :{n:'Arming sword',    slot:'main',dmg:[16,24],am:.90,ft:.30,reach:1},
-  spear  :{n:'Boar spear',      slot:'main',dmg:[15,22],am:.85,ft:.28,reach:2,hands:2},
-  club   :{n:'Warclub',         slot:'main',dmg:[23,36],am:1.30,ft:.20,reach:1,hands:2},
-  knife  :{n:'Gut-knife',       slot:'main',dmg:[11,16],am:.40,ft:.45,reach:1},
+  cudgel :{rarity:'common',n:'Fence-post cudgel',slot:'main',dmg:[11,17],am:.80,ft:.22,reach:1},
+  sword  :{rarity:'rare',n:'Arming sword',    slot:'main',dmg:[16,24],am:.90,ft:.30,reach:1},
+  spear  :{rarity:'common',n:'Boar spear',      slot:'main',dmg:[15,22],am:.85,ft:.28,reach:2,hands:2},
+  club   :{rarity:'rare',n:'Warclub',         slot:'main',dmg:[23,36],am:1.30,ft:.20,reach:1,hands:2},
+  knife  :{rarity:'common',n:'Gut-knife',       slot:'main',dmg:[11,16],am:.40,ft:.45,reach:1},
   /* ═══ #161 · THE WORKING STAVE - A CASTER'S REACH IS NOW GEAR ════════════
      (User, 2026-08-16: "the mage has an artifact in hand, a magic stick. And
      a jab with it is clearly weaker than with a sword. It gives +2 range for
@@ -6605,7 +6605,7 @@ const GEAR={
      A trinket or an off-hand piece that ever carries it then works the day it
      is written. This file has already shipped the other version of that: #141
      found `dodge` wired on the off hand and silently ignored on a trinket. */
-  rod    :{n:'Working stave',   slot:'main',dmg:[6,10],am:.20,ft:.35,reach:1,spellRange:2,
+  rod    :{rarity:'rare',n:'Working stave',   slot:'main',dmg:[6,10],am:.20,ft:.35,reach:1,spellRange:2,
            d:'A stripped ash pole, chalked its whole length and burnt black at the tip. '+
              'Hitting a man with it works about as well as you would expect. That is not '+
              'what it is for. A working thrown off the end of it goes two hexes further '+
@@ -6615,15 +6615,15 @@ const GEAR={
      the ARCHER'S: more arrows, or a blade for when something is already inside
      your range. Making the bow two-handed would have deleted that choice
      instead of creating it. The heavy melee weapons are where `hands:2` bites. */
-  bow    :{n:'Hunting bow',     slot:'main',dmg:[14,21],am:.55,ft:.42,range:5},
-  shortsw:{n:'Short sword',     slot:'main',dmg:[13,19],am:.70,ft:.30,reach:1},
-  maul   :{n:'Two-hand maul',   slot:'main',dmg:[27,41],am:1.45,ft:.18,reach:1,hands:2},
+  bow    :{rarity:'rare',n:'Hunting bow',     slot:'main',dmg:[14,21],am:.55,ft:.42,range:5},
+  shortsw:{rarity:'common',n:'Short sword',     slot:'main',dmg:[13,19],am:.70,ft:.30,reach:1},
+  maul   :{rarity:'epic',n:'Two-hand maul',   slot:'main',dmg:[27,41],am:1.45,ft:.18,reach:1,hands:2},
   /* THE HALBERD — the spearwoman's other answer. Same two hands and the same
      reach as the boar spear, a little less damage, and its signature SHOVES
      instead of bracing. See the `push`/`pull` block in strike(). */
-  halberd:{n:'Halberd',         slot:'main',dmg:[14,20],am:.95,ft:.26,reach:2,hands:2,
+  halberd:{rarity:'common',n:'Halberd',         slot:'main',dmg:[14,20],am:.95,ft:.26,reach:2,hands:2,
            d:'A spear that lost an argument with an axe. The hook on the back is the point of it.'},
-  weeper :{n:'The Weeping Hammer',slot:'main',dmg:[27,40],am:1.55,ft:.22,reach:1,mor:+2,hands:2,
+  weeper :{rarity:'epic',n:'The Weeping Hammer',slot:'main',dmg:[27,40],am:1.55,ft:.22,reach:1,mor:+2,hands:2,
            d:'Forged at the Old Camp. The head sweats in cold weather. Nobody asks why.'},
 
   /* ═══ THE SECOND HAND ═══════════════════════════════════════════════════
@@ -6632,63 +6632,63 @@ const GEAR={
      a real question: the bow is two-handed, so a quiver, a knife or a shield
      are all things they CANNOT have while holding it. Each off-hand piece
      therefore has to be worth changing weapons for. */
-  lid    :{n:'Barrel-lid shield',slot:'off',dodge:+5,d:'It is a barrel lid. It works.'},
-  shield :{n:'Round shield',    slot:'off',dodge:+9},
-  buckler:{n:'Buckler',         slot:'off',dodge:+4,hit:+4},
+  lid    :{rarity:'common',n:'Barrel-lid shield',slot:'off',dodge:+5,d:'It is a barrel lid. It works.'},
+  shield :{rarity:'rare',n:'Round shield',    slot:'off',dodge:+9},
+  buckler:{rarity:'common',n:'Buckler',         slot:'off',dodge:+4,hit:+4},
   /* the quiver is now the ARCHER'S DILEMMA: it needs a hand, and the bow uses
      both — so wearing it means fighting with a one-handed weapon and shorter
      range, or leaving the arrows behind */
-  quiver :{n:'Full quiver',     slot:'off',rangedDmg:+5,
+  quiver :{rarity:'common',n:'Full quiver',     slot:'off',rangedDmg:+5,
            d:'Twenty more, fletched properly. Needs a hand to hang from, which a bow does not spare.'},
   /* the emergency answer: a blade you can get to when something is already
      inside your reach and the bow is useless */
-  offhand:{n:'Off-hand dirk',   slot:'off',hit:+6,emergency:true,
+  offhand:{rarity:'common',n:'Off-hand dirk',   slot:'off',hit:+6,emergency:true,
            d:'Short, ugly, and drawn with the wrong hand. When something is already on top of '+
              'you it is the only thing you own that still works.'},
-  focus  :{n:'Chalk-and-cord rod',slot:'off',windsCut:4,d:'Something to hold onto while you do it. Spells cost 4 less of your own nerve.'},
+  focus  :{rarity:'common',n:'Chalk-and-cord rod',slot:'off',windsCut:4,d:'Something to hold onto while you do it. Spells cost 4 less of your own nerve.'},
 
   /* Trinkets carry a small flat bonus, some hitpoints, and often a clause
      that only fires for the right race or the right class. */
-  bone   :{n:'Saint’s Fingerbone',slot:'trinket',g:'✦',mor:+3,hp:+4,
+  bone   :{rarity:'common',n:'Saint’s Fingerbone',slot:'trinket',g:'✦',mor:+3,hp:+4,
            d:'Faintly warm. Always.'},
-  stem   :{n:'Bloom-Stem',        slot:'trinket',g:'❋',int:+2,mor:-1,
+  stem   :{rarity:'rare',n:'Bloom-Stem',        slot:'trinket',g:'❋',int:+2,mor:-1,
            forCls:'mage',bonus:{int:2},bonusD:'+2 INT more on a battle-mage',
            d:'Hums at a pitch you feel in your teeth.'},
-  apple  :{n:'Glass Apple',       slot:'trinket',g:'◆',int:+2,hp:+3,
+  apple  :{rarity:'common',n:'Glass Apple',       slot:'trinket',g:'◆',int:+2,hp:+3,
            d:'A fruit that died standing.'},
   /* company relics: no slot, no wearer — they work from the baggage */
-  brass  :{n:'Brass Token',       slot:'trinket',g:'◉',company:true,coCrowns:.10,
+  brass  :{rarity:'rare',unique:true,n:'Brass Token',       slot:'trinket',g:'◉',company:true,coCrowns:.10,
            d:'Ashmoor knows this mark. So do its gate-guards, and so do their prices.'},
-  banner :{n:'The Company Banner',slot:'trinket',g:'⚑',company:true,coMor:6,
+  banner :{rarity:'rare',unique:true,n:'The Company Banner',slot:'trinket',g:'⚑',company:true,coMor:6,
            d:'Stitched from three different dead companies. Everyone walks a little straighter.'},
-  drum   :{n:'Marching Drum',     slot:'trinket',g:'◍',company:true,coFood:1,
+  drum   :{rarity:'rare',n:'Marching Drum',     slot:'trinket',g:'◍',company:true,coFood:1,
            d:'Keeps the pace. The column arrives in better heart than it left — +2 mood every leg.'},
-  tooth  :{n:'Fen-Mother’s Tooth',slot:'trinket',g:'❥',str:+2,hp:+6,
+  tooth  :{rarity:'rare',unique:true,n:'Fen-Mother’s Tooth',slot:'trinket',g:'❥',str:+2,hp:+6,
            forRace:'ogre',bonus:{str:2,hp:8},bonusD:'+2 STR and +8 HP more on an ogre',
            d:'Longer than your hand. Still warm at the root.'},
-  charm  :{n:'Pedlar’s Charm',    slot:'trinket',g:'✧',agi:+2,
+  charm  :{rarity:'rare',n:'Pedlar’s Charm',    slot:'trinket',g:'✧',agi:+2,
            forRace:'human',bonus:{mor:2},bonusD:'+2 MOR more on a human',
            d:'He swore it was lucky. He would.'},
-  ratking:{n:'Rat-King’s Knuckle',slot:'trinket',g:'✜',agi:+1,hp:+4,
+  ratking:{rarity:'rare',unique:true,n:'Rat-King’s Knuckle',slot:'trinket',g:'✜',agi:+1,hp:+4,
            forRace:'ratkin',bonus:{agi:3,hp:6},bonusD:'+3 AGI and +6 HP more on a ratkin',
            d:'Small, yellow, and far too clean.'},
-  fiddle :{n:'Rosined String',    slot:'trinket',g:'♪',mor:+4,
+  fiddle :{rarity:'rare',n:'Rosined String',    slot:'trinket',g:'♪',mor:+4,
            d:'From a fiddler who ate your salt and left this behind.'},
-  quillpen:{n:'Foundry Ledger-Pin',slot:'trinket',g:'✎',int:+3,
+  quillpen:{rarity:'rare',unique:true,n:'Foundry Ledger-Pin',slot:'trinket',g:'✎',int:+3,
            forCls:'captain',bonus:{mor:3},bonusD:'+3 MOR more on the Captain',
            d:'A pin for holding accounts together. Wynn’s.'},
-  cubtooth:{n:'Cub’s Milk-Tooth', slot:'trinket',g:'☙',str:+1,agi:+1,mor:+1,hp:+4,
+  cubtooth:{rarity:'rare',unique:true,n:'Cub’s Milk-Tooth', slot:'trinket',g:'☙',str:+1,agi:+1,mor:+1,hp:+4,
            d:'Small enough to lose. Nobody has lost it.'},
   /* THE ONLY THING THAT DID NOT MELT. It is a hook for a later act and it is
      meant to stay a hook — nothing anywhere in the slice explains it, and
      nothing should. Two-sided like the boots: it pays, and somebody carries
      the cost of it every night. */
-  coldthing:{n:'The Cold Thing',   slot:'trinket',g:'✛',hit:+7,mor:-4,
+  coldthing:{rarity:'epic',unique:true,n:'The Cold Thing',   slot:'trinket',g:'✛',hit:+7,mor:-4,
            d:'A hand-length of black metal that was inside the armour and did not go with the '+
              'rest of it. It is cold, and it is exactly as cold in the sun as it is at night, '+
              'which is the part nobody likes. Whoever carries it hits what they are looking at, '+
              'and sleeps badly, and will not say what about.'},
-  glasses:{n:'The Ground-Glass Eyes',slot:'trinket',g:'◎',hit:+9,mor:-2,
+  glasses:{rarity:'epic',unique:true,n:'The Ground-Glass Eyes',slot:'trinket',g:'◎',hit:+9,mor:-2,
            forCls:'archer',bonus:{agi:2},bonusD:'+2 AGI more on an archer',
            d:'Two discs of ground glass in a bent wire frame. Whoever wears them can suddenly '+
              'count the rivets on a man at forty paces and cannot find their own feet. The '+
@@ -6715,7 +6715,7 @@ const GEAR={
 
      ⚠ It costs nothing at all, which every other strange trinket here does
      not, and nothing in the slice ever explains it. That is the hook. */
-  oddcoin:{n:'An Unusual Coin',   slot:'trinket',g:'⊚',hit:+7,dodge:+7,hush:true,
+  oddcoin:{rarity:'epic',unique:true,n:'An Unusual Coin',   slot:'trinket',g:'⊚',hit:+7,dodge:+7,hush:true,
            d:'It feels good to keep in the hand. Nobody can say why.'},
   /* ═══ #160 · WHAT A CLEAN ROAD IS WORTH, AND IT ARRIVES ON THE LAST DAY ════
      The only trinket in the game with no clause and no cost, and that is the
@@ -6729,7 +6729,28 @@ const GEAR={
      shirt, a gem and two carts. One trinket on one body on the last leg does
      not close that gap and is not meant to. What it does is stop the clean
      road paying literally nothing, which is the other way the pillar fails. */
-  roll   :{n:'The Roll of Names', slot:'trinket',g:'❧',mor:+4,hp:+8,hit:+4,
+  /* ═══ #197 · A TREASURE MAP ════════════════════════════════════════════
+     (User, 2026-08-19: *"Add item 'A tressure map' - that you get while
+     beeten tha bandits or after a battle when you have joined them"*.)
+
+     ⚑ IT IS A PLACE, NOT A STAT, AND THE MACHINERY FOR THAT ALREADY EXISTED.
+     `plantStash` has put a marked cache on the road since the fire card that
+     asks somebody what they did before; all this row needed was a second way
+     to reach it. `takeLoot` plants when the key lands, so the item IS the
+     place: you win the fight, a node ahead becomes The Cache, and what is
+     buried in it is drawn off the same rarity pools as everything else.
+
+     ⚠ `company:true`, SO IT NEVER TAKES A TRINKET SLOT OFF A BODY. It is not
+     a thing anybody wears; it is a thing the wagon has. It carries no `co*`
+     field, so it adds nothing to `relicSum` and buys no stat: what it bought
+     is already on the map by the time it reaches the stash.
+     ⚠ `unique:true` KEEPS IT OUT OF ITS OWN POOL. A treasure map dug out of
+     a treasure chest is a joke the second time and a loop the third. */
+  tmap   :{rarity:'rare',unique:true,n:'A Treasure Map',slot:'trinket',g:'✥',company:true,
+           d:'Charcoal on the back of a tally-sheet, in a hand that was in a hurry. Two roads, '+
+             'a bend in a river and a cross. Somebody buried what they could not carry and '+
+             'then did not come back for it.'},
+  roll   :{rarity:'epic',unique:true,n:'The Roll of Names', slot:'trinket',g:'❧',mor:+4,hp:+8,hit:+4,
            d:'A strip of linen folded eight times, written down the inside in eight different '+
              'hands. Some of the names are people you remember. Most of them are not, which '+
              'means the road has been talking about you for longer than you knew.'}
@@ -23790,7 +23811,12 @@ const LOOT={
     {t:'Take the captain’s sword and his mail.',c:'a sword and a hauberk',gear2:['sword','mail']},
     {t:'Their purses. Lighter than they should be.',c:'+45 crowns',fx:{crowns:45}},
     {t:'The poacher’s bow and every arrow on the field.',c:'a bow and a full quiver',gear2:['bow','quiver']},
-    {t:'Their kit, for scrap.',c:'+6 salvage',fx:{salvage:6}}],
+    {t:'Their kit, for scrap.',c:'+6 salvage',fx:{salvage:6}},
+    /* #197 - his row: *"a treasure map... while beeten tha bandits"*. Charcoal
+       on a tally-sheet in a dead man's pack, and it puts a cache on the road
+       ahead (see takeLoot). */
+    {t:'A folded sheet in the captain\'s pack, gone soft at the creases.',
+     c:'a treasure map · a place, marked on the road ahead',gear:'tmap'}],
   /* ⚠ NO DECISION ROW, ON PURPOSE (user, 2026-08-02: "To much choises" and
      "after dogs fight"). It had two - burn the lot and stand upwind, go
      through what they had been eating - and neither is a decision the pillar
@@ -23844,7 +23870,13 @@ const LOOT={
     {t:'Their pay-chest. It was meant for a season of wages.',c:'+140 crowns',fx:{crowns:140}},
     {t:'The serjeant\'s plate, off the serjeant.',c:'a hauberk',gear:'mail'},
     {t:'What the clan pushes across to you afterwards, without a word.',c:'+1 gem +6 provisions',
-     fx:{gems:1,food:6}}],
+     fx:{gems:1,food:6}},
+    /* #197 - the other half of his row: *"or after a battle when you have
+       joined them"*. This IS that fight - the Snare taken from inside the
+       clan's own line - and what they push across is a place rather than a
+       payment, which is the more clannish gift of the two. */
+    {t:'An old sheet out of their standard-bearer\'s belt, pushed across folded.',
+     c:'a treasure map · a place, marked on the road ahead',gear:'tmap'}],
   steading:[
     {t:'Their harness. It is enormous and it is very good.',c:'ogre scale',gear:'ogrescale'},
     {t:'The elder’s club, and the stone maul if you can lift it.',c:'a warclub and a maul',
@@ -23906,6 +23938,11 @@ function takeLoot(l){
   if(f.days)passDays(f.days);
   if(l.gear)G.stash.push(l.gear);
   if(l.gear2)l.gear2.forEach(k=>G.stash.push(k));
+  /* #197 - a treasure map is a place, so taking one marks the place. Silent
+     on purpose: `plantStash` is idempotent and returns where it went, but the
+     aftermath is not the screen that names a node - the map is, and it names
+     it as The Cache the moment this screen closes. */
+  if(lootPlants(l))plantStash('map');
 }
 /* what you do with the cub, once its mother is on the ground */
 function cubChoice(){
@@ -24491,9 +24528,19 @@ function consequences(scarred){
      the two fights that still asked one stopped asking (see the LOOT
      tables), and `lootIsChoice` stays as the guard that keeps any future
      decision row from being drawn as an automatic tax. */
-  const hauls=table.filter(l=>!lootIsChoice(l));
+  /* #197 - and a row that puts a place on the map is only dealt where there
+     is still somewhere to put one. The `hauls.length?hauls:table` fallback
+     below already covers a table filtered to nothing; neither of the two
+     tables carrying a map can reach that, since both have four other rows. */
+  const hauls=table.filter(l=>!lootIsChoice(l)&&(!lootPlants(l)||canPlant()));
   const haul=pickOne(hauls.length?hauls:table);
   takeLoot(haul);
+  /* #197 - and a piece on top of the haul, more often a good one. Rolled
+     AFTER takeLoot so a table row that hands over a treasure map has already
+     put its cache on the road: the two are independent and neither reads the
+     other's result. */
+  const found=rollFind('battle');
+  if(found)G.stash.push(found);
   /* ═══ #174 - THE RANDOM PROMOTION IS GONE ═══════════════════════════════
      This line used to read `const hero=pickOne(G.party); hero.level++;` and
      then alternate a perk point and a stat point onto that one lucky body -
@@ -24597,6 +24644,15 @@ function consequences(scarred){
      card's own arrangement and the reason the flavour stopped looking like
      part of the payout. */
   const note='<div class="amNote">'+haul.t+'</div>';
+  /* #197 - the extra piece gets its own strip inside the same tray, so the
+     haul's own row is untouched and the find reads as a second thing rather
+     than as part of what the table paid. The tier is a WORD in its colour;
+     the frame round the slot is the later pass. */
+  const foundHtml=found?'<div class="abloot">'+
+      (itemImg(found,38)?'<div class="abslot has">'+itemImg(found,38)+'</div>'
+                        :'<div class="abslot">ART<br>SLOT</div>')+
+      '<div><div class="abwhat">'+GEAR[found].n+'</div>'+
+      '<div class="abgot">'+rarityTag(found)+' · nobody was using it</div></div></div>':'';
   const lootHtml='<div class="amTray">'+(
     (haul.gear||haul.gear2)
       /* #192 - the reserved square finally holds the piece's own picture; a
@@ -24618,7 +24674,7 @@ function consequences(scarred){
          `fx` and no gear at all would otherwise render nothing where a receipt
          belongs. */
             :'<div class="abres">'+haul.c+' <span>· '+haul.t+'</span></div>'
-  )+'</div>';
+  )+foundHtml+'</div>';                                          /* #197 */
   /* ═══ #187 - THE ONE META LINE ════════════════════════════════════════════
      The approved card reads it as VICTORY · rounds · what it cost them · what
      it cost you, in that order, and every figure on it was already on the
@@ -28976,6 +29032,20 @@ function plantStash(mode){
    `G.day`: a day is spent through the travel path, which is also what ticks
    wages and hunger, and adding one here would be a free day for the company
    and a lost one for the chest. */
+/* ═══ #197 · CAN ANYTHING STILL BE BURIED? ════════════════════════════════
+   `plantStash` needs an unvisited STASH_ARMS node still ahead, and it also
+   refuses to move a cache that already exists. Both were only ever asked
+   AFTER the decision that needed the answer, which was fine while the only
+   caller was a fire card that had a fallback sentence ready. The treasure map
+   has no such sentence: a row that hands over a map to nowhere is a receipt
+   for nothing.
+   ⛔ SO THE ROW IS FILTERED OUT OF THE DEAL, not patched up afterwards. This
+   is `plantStash`'s own gate, asked one step earlier. `snarejoin` is the case
+   that proves it is needed: it is fought on the LAST node of the act, so
+   `reachAhead` is empty there and the map would be dead every single time. */
+const canPlant=()=>!(G.cache&&G.cache.at)&&
+  STASH_ARMS.some(k=>reachAhead().indexOf(k)>=0);
+const lootPlants=l=>(l.gear==='tmap')||(l.gear2||[]).indexOf('tmap')>=0;
 function stashFallback(){
   pay('crowns',40);
   return 'It is four miles back the way you came. Two of them go at first light and are back '+
@@ -34084,6 +34154,64 @@ function openEvent(k){
 const heldGear=()=>G.stash.concat(G.party.map(p=>p.eq.trinket)).filter(Boolean);
 const relicSum=key=>heldGear().reduce((s,k)=>
   s+((GEAR[k]&&GEAR[k].company&&GEAR[k][key])||0),0);
+/* ═══ #197 · RARITY, AND THE PIECE A FIGHT HANDS OVER ON TOP ══════════════
+   (User, 2026-08-19: *"on the map and after a battles give more often rare and
+   epic items"*. Asked and answered: tier the rack and raise the rate now, draw
+   the white/green/purple FRAME later - that is a UI pass and it needs its own
+   picture, per the standing rule on new systems.)
+
+   ⛔ THE FIRST PROBLEM WAS THAT "RARE" MEANT NOTHING IN THIS BUILD. There was
+   no `rarity:` field on any of the 51 rows - `.claude/rules/static-event-art.md`
+   has been promising one since #192 - so a request to hand out more of them had
+   nothing to count. The ladder is authored ON THE ROW, where `slot` and
+   `armour` and `dmg` already live, and it is POWER and strangeness: the rack
+   you start near is common, the piece you would change your kit for is rare,
+   the best four and the six that are barely explicable are epic.
+
+   ⛔ THE RATE IS RAISED BY ADDING A PIECE, NOT BY REWRITING THE TABLES. Every
+   LOOT row is authored flavour about the body it was cut off ("the chieftain's
+   harness, it is ogre-sized"); re-weighting inside them would have swapped
+   somebody's written line for a die roll and still only reached the one or two
+   gear rows each table has. So the haul is untouched and a SECOND piece is
+   rolled beside it. A fight is 30% (23 rare, 7 epic); a cache somebody drew
+   you a map to is 60% (42 rare, 18 epic), because a buried bag is the one
+   place on this road that is supposed to be worth digging up.
+
+   ⚠ `unique` IS THE HALF THAT MATTERS MORE THAN THE ODDS. Thirteen rows are a
+   NAMED thing out of one scene - the Fen-Mother's tooth, Wynn's ledger-pin,
+   the Cold Thing that was inside the armour - and a random find handing one of
+   those over would delete the scene it belongs to. They keep their tier (they
+   ARE epic) and they are never drawn.
+
+   ⚠ AND A FIND IS FILTERED BY WHO IS CARRYING IT. `size` is already on the
+   armour rows, so a company with no ogre cannot be handed ogre scale as its
+   reward. The authored tables have always been allowed to do that - the Snare
+   gives you lashed plates whoever you are - because a written row is about the
+   body it came off. A roll has no such excuse. */
+const RARITY={common:{n:'COMMON',c:'#c9c2b4'},rare:{n:'RARE',c:'#8ca35a'},
+              epic:{n:'EPIC',c:'#a07cc9'}};
+const rarityOf=k=>(GEAR[k]&&GEAR[k].rarity)||'common';
+const rarityTag=k=>{const r=RARITY[rarityOf(k)];
+  return '<span style="color:'+r.c+'">'+r.n+'</span>';};
+const FIND_ODDS={battle:{epic:.07,rare:.23},cache:{epic:.18,rare:.42}};
+function findPool(tier){
+  const races={};G.party.forEach(p=>{races[p.race]=1;});
+  return Object.keys(GEAR).filter(k=>{const g=GEAR[k];
+    return g.rarity===tier&&!g.unique&&(!g.size||g.size==='any'||races[g.size]);});
+}
+/* ⚠ IT STEPS DOWN A TIER RATHER THAN RETURNING NOTHING. A one-race company
+   late in a run can empty a pool, and "you found nothing" on a roll that
+   already said you found something is a worse answer than a smaller prize. */
+function rollFind(src){
+  const o=FIND_ODDS[src];if(!o)return null;
+  const r=Math.random();
+  const tier=r<o.epic?'epic':r<o.epic+o.rare?'rare':null;
+  if(!tier)return null;
+  const pool=findPool(tier);
+  if(pool.length)return pickOne(pool);
+  const down=findPool(tier==='epic'?'rare':'common');
+  return down.length?pickOne(down):null;
+}
 /* somebody in the company skims, and it shows up in the takings */
 const lootMul=()=>1+relicSum('coCrowns')+
   G.party.reduce((m,p)=>Math.max(m,(TRAITS[p.trait]&&TRAITS[p.trait].loot)||0),0);
@@ -34158,6 +34286,10 @@ function pickChoice(k,i){
      ("Cannot access 'hurtLine' before initialization") that killed the whole
      choice. Found in playtest feedback on THE GROUND OPENS. */
   let hurtLine='';
+  /* #197 - pieces the road digs up rather than hands over on a door. It joins
+     `got` below, so the strip, the inventory gate and the save all treat it
+     exactly like an authored `gear:` row. */
+  const dug=[];
   if(c.strandOne&&G.party.length>1){
     const lost=pickOne(G.party.filter(p=>!p.leader));
     if(lost){
@@ -34195,6 +34327,11 @@ function pickChoice(k,i){
     }else{
       hurtLine+='\n\nInto the chest, all of it, and nobody at the fire is any the wiser.';
     }
+    /* #197 - and whatever else was in the hole. A buried bag is the best odds
+       in the game (see FIND_ODDS) because it is the one place the player was
+       told about in advance and walked to on purpose. */
+    const inHole=rollFind('cache');
+    if(inHole){G.stash.push(inHole);dug.push(inHole);}
     G.cache=null;
   }
   /* the shrine: two days of lying still, or whatever praying does */
@@ -34540,7 +34677,7 @@ function pickChoice(k,i){
     toEpilogue(c.after+hurtLine);return;
   }
   G.pending=null;
-  const got=(c.gear?[c.gear]:[]).concat(c.gear2||[]);
+  const got=(c.gear?[c.gear]:[]).concat(c.gear2||[]).concat(dug);   /* #197 */
   /* #143 - the receipt is the aftermath's own chips, plus the piece itself
      when the road handed one over. #150 - the coin rides in the WAGON now, and
      this is the second of the two strips that had to be told: the other is in
