@@ -25,6 +25,70 @@
 
 ---
 
+## ✎ YOUR TEXT LEDGER OF 08-19, APPLIED  *(#198 · 2026-08-19 · build log 8f.220)*
+
+All 24 marks are in. **Four of them did not land exactly as written, and those are the four worth
+your eye** - each is listed below with what it says now and why. Everything else is your text with
+the typos out.
+
+**How to reach it in three steps:** start a new run (the contract card is the second screen) →
+walk the first road (the SECONDARY OBJECTIVE card is the first thing that speaks) → for the
+Hold's Men, take two ☠ doors on the way east and keep walking; the patrol is three roads from
+the bells.
+
+### The four that changed on the way in
+
+- **The purse is put down, not thrown.** You wrote *"He throws a bag of coint"*. The painting on
+  that same card shows him setting a closed purse on the table, and the art rule locks it (*he
+  never throws it*). So he **puts** it on the wood - in the place you moved it to, right before
+  *"It appears you are a company now."* ⚠ **Also: you edited one of three versions of that
+  opening.** The card has a different first paragraph depending on whether you won the brawl, lost
+  it, or skipped it, and all three had the purse in them. All three lost it, or the purse would
+  have landed twice.
+- **Two doors asked for a `?` and cannot have one.** *Wait. Then finish the winners* keeps
+  **"nobody beside you · 2 ogres against"**, because a `?` replaces the whole line and that
+  line is how you compare the three doors. *Go down after them* keeps its **−1 day**, because a
+  `?` is not allowed to hide a price. **Both lost the promise instead** - "both sides of the road
+  are yours" and "opens a way under the hill" are gone, so both payoffs are now discovered rather
+  than advertised. That is the same cut you made by hand on the deserters two marks later.
+  **If you want a real `?` somewhere, say which door and it goes in.**
+- **"Forget about your teammate" would be a lie.** The person who falls in the sinkhole has a
+  **50% chance per leg of walking back out** - the game already built that. The door reads
+  **"Leave them to find their own way out."** instead: blunt about the leaving, silent about the
+  return.
+- **The Hold's Men battle line is not bare "battle".** It was saying something false: it promised
+  "the hounds" when the patrol brings **one**, and never mentioned the crossbow. It also **grows
+  with your company** (six bodies at four of you, eight at six, nine at eight), so no fixed count
+  can be right. It reads **"BATTLE · the whole patrol, and it grows with your company"**.
+
+### And your note about the company name is built, not parked
+
+You wrote *"instead of 'company' - here you can add dynamic name of company that person have
+chosem"*. It is in. The serjeant now says **"That is The Crooked Orphans and we both know it."**
+with whatever you named the company, on **both** versions of his accusation. ⚠ The narrator still
+says "this company" in the card's first line and that is deliberate - the narrator has never known
+you by your banner, only the man in the coat's people have.
+
+### Three things swept that you did not mark
+
+- **SECONDARY OBJECTIVE** is on all four surfaces, not just the card: the map plate row, the "done"
+  cheer, and the contract hover.
+- **The word BATTLE** is spelled one way across all eleven doors that use it. Six shouted it, five
+  whispered it.
+- **One more "and everybody notices"** was deleted from a fire door - the last survivor of the 63
+  mood echoes cut in #176, which lived because that door is built in code rather than in the card
+  table.
+
+### What would be a bug
+
+- The contract card **scrolling** (it sits about one pixel under its ceiling; it should not move).
+  ⚠ It does overflow by 5px today, but it did that before this change too - that one is the
+  prologue art re-export's job, not this entry's.
+- **SECOND OBJECTIVE** appearing anywhere on screen.
+- The purse being mentioned **twice** on the contract card.
+- The serjeant saying **"this company"** where he should say your name, on either version.
+- Any card whose sub-line now says nothing at all where it used to name a price or a gate.
+
 ## 🐇 THE MIREHARES, AND THE RED LIGHTS ON THE WATER ROAD  *(#193 · 2026-08-19 · build log 8f.212)*
 
 Two animals that **cannot walk**. That is the whole encounter, and everything else follows from it.
