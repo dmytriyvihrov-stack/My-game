@@ -5,9 +5,22 @@
 #   ... -Audio                 re-encode the sound too (only after audio/ changed)
 #   ... -m "what changed"      your own commit message
 #   ... -NoPush                build and commit, do not push
+#   ... -Player                ALSO build play\index.html: the playtester build
+#                              with the developer tools unreachable (#202)
+#   ... -Branch                allow a deploy from a work/ branch: it pushes THAT
+#                              branch and leaves the live link alone (#202)
 #
 # The live page updates about a minute after the push. The link never changes.
 # Full explanation in docs\DEPLOY.md.
+#
+# THE PLAYER BUILD (#202, 2026-08-19). The playtester's page lives at play\ so
+# the user's own link keeps its dev tools and the buddy's has none: same file,
+# same sound, same art, minus the cog (see tools\build_site.ps1 -Player). It is
+# served at <live link>/play/ once the commit is on main, and guarded here by
+# reading the marker out of the built file, never by trusting the build ran.
+# NOTE: a -Branch deploy pushes a work branch. GitHub Pages serves main/(root)
+# only, so nothing a playtester can open changes until that branch is merged;
+# the script says so instead of printing a URL that is not live.
 #
 # THE ONE THING THIS SCRIPT EXISTS TO PREVENT: shipping a silent build. The
 # working file prototype\grimtoll_slice.html has an EMPTY audio table on
@@ -25,7 +38,9 @@
 param(
   [switch] $Audio,
   [Alias('m')] [string] $Message = '',
-  [switch] $NoPush
+  [switch] $NoPush,
+  [switch] $Player,
+  [switch] $Branch
 )
 
 $ErrorActionPreference = 'Stop'
@@ -57,9 +72,11 @@ if ($common) {
     Die "this is a branch desk, and the live link is published from the MAIN desk only.`n         Merge first, then deploy from:  $mainRoot`n         (tools\branch.ps1 done <name>)"
   }
 }
-if ($branch -and $branch.Trim() -ne 'main') {
-  Die "on branch '$($branch.Trim())'. deploy pushes HEAD, so this would publish a work branch.`n         Switch to main and merge the branch in:  tools\branch.ps1 done <name>"
+$onBranch = ($branch -and $branch.Trim() -ne 'main')
+if ($onBranch -and -not $Branch) {
+  Die "on branch '$($branch.Trim())'. deploy pushes HEAD, so this would publish a work branch.`n         Switch to main and merge the branch in:  tools\branch.ps1 done <name>`n         (or pass -Branch to push this branch on purpose; the live link stays as it is)"
 }
+if ($onBranch) { $branch = $branch.Trim(); Write-Host "branch deploy: '$branch' will be pushed, main and the live link are untouched" -ForegroundColor Yellow }
 
 # ---- 0. the other session --------------------------------------------------
 # Step 4 below runs `git add -A`, which sweeps the ENTIRE working tree, and step
@@ -85,24 +102,43 @@ if ($Audio -or -not (Test-Path $dataJs)) {
 Step 2 "building index.html from the prototype"
 & powershell -NoProfile -ExecutionPolicy Bypass -File (Join-Path $root 'tools\build_site.ps1')
 if ($LASTEXITCODE -ne 0) { Die "build_site.ps1 failed" }
+if ($Player) {
+  Step 2 "building play\index.html, the playtester build (no developer tools)"
+  & powershell -NoProfile -ExecutionPolicy Bypass -File (Join-Path $root 'tools\build_site.ps1') -Player -Out 'play\index.html'
+  if ($LASTEXITCODE -ne 0) { Die "build_site.ps1 -Player failed" }
+}
 
 # ---- 3. the guard ----------------------------------------------------------
 # Read the built file back and count what is actually in it. Asserting on the
 # thing that ships, not on the thing that was meant to ship, is the whole point.
-Step 3 "checking the built page"
-$built = Get-Content (Join-Path $root 'index.html') -Raw -Encoding utf8
-$cues  = ([regex]::Matches($built, 'data:audio/')).Count
-$art   = ([regex]::Matches($built, 'data:image/')).Count
-$mb    = [Math]::Round((Get-Item (Join-Path $root 'index.html')).Length / 1MB, 2)
-"      $cues audio cues | $art pictures | $mb MB"
-if ($cues -lt 11) { Die "only $cues audio cues in the built page, expected 11 or more. It would be SILENT for everyone. Run with -Audio." }
-if ($art  -lt 100) { Die "only $art pictures in the built page. Something is wrong with the art block." }
-
-# The world map's ground is the ONE picture in the build with a working
-# fallback behind it, so its absence is the only one that is invisible: the map
-# simply draws the procedural terrain again and says nothing. Every other
-# missing image leaves a hole somebody reports. It is asserted by name.
-if ($built -notmatch 'data:image/webp;base64,') { Die "the world map's painted ground is not in the built page. The map would silently fall back to the procedural terrain and nobody would notice." }
+# One function, run on every page this script ships, so the player build is
+# held to the same floor as the main one plus its own marker.
+function Check-Page($rel, $wantPlayer) {
+  $path  = Join-Path $root $rel
+  $built = Get-Content $path -Raw -Encoding utf8
+  $cues  = ([regex]::Matches($built, 'data:audio/')).Count
+  $art   = ([regex]::Matches($built, 'data:image/')).Count
+  $mb    = [Math]::Round((Get-Item $path).Length / 1MB, 2)
+  "      $rel : $cues audio cues | $art pictures | $mb MB"
+  if ($cues -lt 11) { Die "only $cues audio cues in $rel, expected 11 or more. It would be SILENT for everyone. Run with -Audio." }
+  if ($art  -lt 100) { Die "only $art pictures in $rel. Something is wrong with the art block." }
+  # The world map's ground is the ONE picture in the build with a working
+  # fallback behind it, so its absence is the only one that is invisible: the
+  # map simply draws the procedural terrain again and says nothing. Every other
+  # missing image leaves a hole somebody reports. It is asserted by name.
+  if ($built -notmatch 'data:image/webp;base64,') { Die "the world map's painted ground is not in $rel. The map would silently fall back to the procedural terrain and nobody would notice." }
+  # The two builds are told apart by what is IN the file, never by which
+  # command was run: the player page must carry the marker and no cog, the
+  # main page must carry the cog and no marker.
+  $isPlayer = $built.Contains('/*__PLAYER_BUILD__*/')
+  $hasCog   = $built.Contains('id="testBtn"')
+  if ($wantPlayer -and (-not $isPlayer -or $hasCog)) { Die "$rel was meant to be the player build and still has the developer tools in it (marker $isPlayer, cog $hasCog)." }
+  if (-not $wantPlayer -and ($isPlayer -or -not $hasCog)) { Die "$rel was meant to be the main build and the developer tools are missing from it (marker $isPlayer, cog $hasCog)." }
+  "      $rel : " + $(if ($isPlayer) { 'PLAYER build, no developer tools' } else { 'main build, developer tools behind the cog' })
+}
+Step 3 "checking the built page(s)"
+Check-Page 'index.html' $false
+if ($Player) { Check-Page 'play\index.html' $true }
 
 # ---- 4. commit -------------------------------------------------------------
 Step 4 "committing"
@@ -145,13 +181,23 @@ if (-not $remote) {
 if ($NoPush) { Step 5 "committed, not pushed (-NoPush)"; exit 0 }
 
 Step 5 "pushing"
-& git push -q origin HEAD
+& git push -q -u origin HEAD
 if ($LASTEXITCODE -ne 0) { Die "git push failed. If it is asking for a password, GitHub wants a personal access token, not your account password. See docs\DEPLOY.md." }
 
 # https://github.com/<user>/<repo>.git  ->  https://<user>.github.io/<repo>/
 if ($remote -match 'github\.com[:/]([^/]+)/([^/.]+)') {
   $url = "https://{0}.github.io/{1}/" -f $matches[1], $matches[2]
   Write-Host ""
-  Write-Host "LIVE IN ABOUT A MINUTE: $url" -ForegroundColor Green
-  Write-Host "(hard-refresh with Ctrl+F5 if you still see the old one)"
+  if ($onBranch) {
+    # Pages serves main/(root) only. Printing the live URL here would claim a
+    # page a playtester cannot open yet.
+    Write-Host "PUSHED BRANCH '$branch'. THE LIVE LINK IS UNCHANGED." -ForegroundColor Yellow
+    Write-Host "  to put it live: merge the branch into main, then run deploy.ps1 again from main."
+    Write-Host "  it will then be at:   $url"
+    if ($Player) { Write-Host "  and the playtester's page at:   ${url}play/" }
+  } else {
+    Write-Host "LIVE IN ABOUT A MINUTE: $url" -ForegroundColor Green
+    if ($Player) { Write-Host "PLAYTESTER BUILD (no developer tools): ${url}play/" -ForegroundColor Green }
+    Write-Host "(hard-refresh with Ctrl+F5 if you still see the old one)"
+  }
 }

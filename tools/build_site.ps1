@@ -2,6 +2,8 @@
 # at the repo root, plus the icon set beside it.
 #
 #   powershell -NoProfile -ExecutionPolicy Bypass -File tools\build_site.ps1
+#   ... -Player                 the PLAYTESTER build: developer tools unreachable
+#   ... -Out play\index.html    write somewhere other than the root index.html
 #
 # WHY THIS EXISTS: `prototype/grimtoll_slice.html` is the working file and its
 # AUDIO_EMBED table is deliberately EMPTY there, because at this desk the game
@@ -10,6 +12,20 @@
 # and was completely silent for every playtester. So the thing that gets hosted
 # is not the working file: it is the working file with the compressed pack
 # poured into it, built here, and never hand-edited.
+#
+# THE PLAYER BUILD (#202, 2026-08-19). The user: "prepare build and deploy in
+# safe folder/place for my buddy platester - actual build without dev.mode".
+# Dev mode is the dim cog in the corner (#testBtn) that flips TEST.on, and
+# TEST.on is the one gate in front of WIN NOW, LINT, WIPE HISTORY, the TEXT
+# editor, AUTO and the playtest-notes menu row. -Player therefore does exactly
+# two things to the page and asserts both landed: TEST is declared `on:false`
+# (it no longer reads `gt_test` out of localStorage) and the cog's <button> is
+# deleted from the markup, so there is no element to press and nothing to
+# unhide. Every handler behind it is already null-guarded (`if(tb){...}`,
+# `syncTest` returns on a missing button), which is why the deletion is safe
+# and is checked by loading the page, not by reading this comment. A marker
+# (/*__PLAYER_BUILD__*/) is left in the file so deploy.ps1 can tell the two
+# builds apart by reading what shipped.
 #
 # The prototype is READ, never written. Run audio\build_audio.ps1 first (it
 # writes audio\out\audio_data.js); this script only pours and copies.
@@ -20,11 +36,18 @@
 # comes back as mojibake at runtime. Every path derives from $PSScriptRoot.
 # Same trap already bit tools\serve.ps1 and audio\build_audio.ps1.
 # ---------------------------------------------------------------------------
+param(
+  [switch] $Player,
+  [string] $Out = ''
+)
 $ErrorActionPreference = 'Stop'
 $root  = Split-Path -Parent $PSScriptRoot
 $src   = Join-Path $root 'prototype\grimtoll_slice.html'
 $data  = Join-Path $root 'audio\out\audio_data.js'
-$out   = Join-Path $root 'index.html'
+if (-not $Out) { $Out = 'index.html' }
+$out   = if ([System.IO.Path]::IsPathRooted($Out)) { $Out } else { Join-Path $root $Out }
+$outDir = Split-Path -Parent $out
+if (-not (Test-Path -LiteralPath $outDir)) { New-Item -ItemType Directory -Force -Path $outDir | Out-Null }
 
 if (-not (Test-Path -LiteralPath $src))  { throw "prototype not found: $src" }
 
@@ -49,13 +72,33 @@ if (Test-Path -LiteralPath $data) {
   Write-Warning "Run: powershell -NoProfile -ExecutionPolicy Bypass -File audio\build_audio.ps1"
 }
 
+# ---- the player build: take the developer tools out of reach ---------------
+# Two exact-string replacements, each asserted to match exactly once. A regex
+# that silently matched zero times would ship the dev build under the player
+# build's name, which is the one failure this switch exists to prevent.
+if ($Player) {
+  $testDecl = "const TEST={on:localStorage.getItem('gt_test')==='1'};"
+  $testOff  = "const TEST={on:false};/*__PLAYER_BUILD__*/"
+  $n = ([regex]::Matches($html, [regex]::Escape($testDecl))).Count
+  if ($n -ne 1) { throw "player build: expected the TEST declaration exactly once in the prototype, found $n. Has it moved? Update build_site.ps1." }
+  $html = $html.Replace($testDecl, $testOff)
+
+  $cogBtn = '<button id="testBtn" title="developer tools">'
+  $m = [regex]::Match($html, [regex]::Escape($cogBtn) + '[^<]*</button>\r?\n?')
+  if (-not $m.Success) { throw "player build: the DEV.MODE button markup was not found. Has it changed? Update build_site.ps1." }
+  $html = $html.Remove($m.Index, $m.Length)
+  if ($html -match 'id="testBtn"') { throw "player build: a second #testBtn survived the cut" }
+  "player : TEST forced off, DEV.MODE button removed (/*__PLAYER_BUILD__*/ marker set)"
+}
+
 [System.IO.File]::WriteAllText($out, $html, (New-Object System.Text.UTF8Encoding($false)))
 
 # ---- icons -----------------------------------------------------------------
 # The inline data: URI favicon in <head> covers modern browsers on its own; this
-# set is what makes "add to home screen" work for a playtester on a phone.
+# set is what makes "add to home screen" work for a playtester on a phone. It is
+# copied BESIDE the output, because the page links icons/ relative to itself.
 $icoSrc = Join-Path $root 'prototype\icons'
-$icoDst = Join-Path $root 'icons'
+$icoDst = Join-Path $outDir 'icons'
 if (Test-Path -LiteralPath $icoSrc) {
   New-Item -ItemType Directory -Force -Path $icoDst | Out-Null
   Copy-Item (Join-Path $icoSrc '*') $icoDst -Force
@@ -66,7 +109,7 @@ if (Test-Path -LiteralPath $icoSrc) {
     $j = (Get-Content $mf -Raw -Encoding utf8) -replace '\.\./grimtoll_slice\.html', '../'
     [System.IO.File]::WriteAllText($mf, $j, (New-Object System.Text.UTF8Encoding($false)))
   }
-  "icons  : copied to icons\"
+  "icons  : copied to $icoDst"
 }
 
 # Pages runs Jekyll by default, which silently drops anything starting with an
@@ -74,4 +117,4 @@ if (Test-Path -LiteralPath $icoSrc) {
 $njk = Join-Path $root '.nojekyll'
 if (-not (Test-Path -LiteralPath $njk)) { New-Item -ItemType File -Path $njk | Out-Null }
 
-"site   : index.html is {0} MB" -f [Math]::Round((Get-Item $out).Length / 1MB, 2)
+"site   : $out is {0} MB" -f [Math]::Round((Get-Item $out).Length / 1MB, 2)

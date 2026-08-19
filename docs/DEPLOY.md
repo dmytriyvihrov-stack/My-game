@@ -46,10 +46,25 @@ powershell -NoProfile -ExecutionPolicy Bypass -File deploy.ps1
 | `-Audio` | **only after something in `audio/` changed.** Re-encodes the pack, about 30 seconds. Skipped otherwise, which is what makes the normal case fast. |
 | `-m "what changed"` | your own commit message instead of the dated default. |
 | `-NoPush` | build and commit, hold the push. |
+| `-Player` | **also build the playtester page**, `play/index.html`: the same game with the developer tools unreachable (no ⚙ cog, `TEST` forced off, so no WIN NOW / LINT / WIPE / TEXT / AUTO and no playtest-notes row). It is served at **`<the link>/play/`**. The guard reads both pages back and refuses either one wearing the other's state. *(#202, 2026-08-19.)* |
+| `-Branch` | allow a deploy from a `work/` branch. It pushes **that branch** and prints, in yellow, that the live link is unchanged: GitHub Pages serves `main` only, so nothing a playtester can open moves until the branch is merged. Without this flag a branch deploy refuses, as before. |
 
 **The link never changes.** Every push updates the same URL, so a link you sent last
 week is the build you pushed a minute ago. If a friend still sees the old one, it is
 their browser cache: Ctrl+F5.
+
+**Two pages, one link.** Since #202 the root `index.html` is yours (the cog in the corner
+opens the developer tools) and `play/index.html` is the one to hand a playtester:
+
+| | |
+|---|---|
+| **You** | **https://dmytriyvihrov-stack.github.io/My-game/** |
+| **A playtester** | **https://dmytriyvihrov-stack.github.io/My-game/play/** *(only after a `deploy.ps1 -Player` from `main`)* |
+
+Both are generated from the same prototype in the same run, so they cannot drift. The
+player page does not read the `gt_test` key, so a browser that once had your dev mode on
+gets none of it there. `tools\build_site.ps1 -Player -Out play\index.html` is the one
+transform, and it asserts both of its edits landed exactly once.
 
 ---
 

@@ -13,6 +13,8 @@
 # The built page is generated. A diff of it is 10MB of base64 and tells nobody
 # anything; read prototype/grimtoll_slice.html instead.
 index.html -diff linguist-generated
+# #202 - the playtester build (deploy.ps1 -Player), generated the same way.
+play/index.html -diff linguist-generated
 
 # ---------------------------------------------------------------------------
 # BRANCH-PER-SESSION (#139). Two desks merge back into main, so every file has
@@ -27,6 +29,7 @@ index.html -diff linguist-generated
 #     git config merge.ours.driver true
 #   `tools\branch.ps1 setup` does it, and merge.ps1 checks before it merges.
 index.html            merge=ours
+play/index.html       merge=ours
 art/embed/art_data.js merge=ours
 
 # Append-only logs. Two desks each add a row at the top and conflict EVERY

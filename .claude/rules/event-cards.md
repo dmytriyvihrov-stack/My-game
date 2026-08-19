@@ -154,6 +154,25 @@ line:
   .filter(c=>c.c&&/(^|\s)[+−-]\d/.test(c.c)))                    // 0
 ```
 
+⛔ **AND FOR TWO DAYS THAT SENTENCE WAS A LIE: "LINT 6f" WAS CITED HERE AND IN A CODE COMMENT AND
+NO SUCH CHECK EXISTED IN `LINT()`** *(#202, 2026-08-19)*. The one-liner above was the only thing
+that ever ran it, by hand. In the meantime the mercy screen shipped exactly this defect on two rows
+(*"+5 salvage +30 crowns · quietly approved of"*) plus the cub screen's three, which no sweep had
+reached because **`MERCY` and the cub's `opts` are neither `EVENTS` nor `CAMPS`** - the same blind
+spot #198 found for a door built at the renderer. 6f is real now, inside `scanLabel`, over EVENTS,
+CAMPS and `MERCY.opts`: a signed figure in `c:`, any of the five mood phrases the sweeps kept
+deleting, and *"needs a ratkin"* on a `needRace` door (a filtered door cannot also say it needs
+the race). **It was proved by seeding one bad row in each table and watching four findings fire.**
+⚑ **A check a document says exists is a claim about the build, and `LINT()` is where it is
+checked.** The cub picker's rows are local to `cubChoice()` and the linter cannot see them; the
+comment at that site says so, and the rows carry no figures today.
+
+⚑ **AND THE MERCY SCREEN RENDERS `choiceNote(o)` LIKE A ROAD DOOR**, so its sub-line is derived:
+*Let them go · morale +14* · *Strip them · +◉30 +▤5 · morale +4* · *No prisoners · +◉60 +▤9 +◈1 ·
+morale −14*. `takeMercy` pays found crowns through `lootMul()` for the same reason `fxNote` prints
+the multiplied figure. ⚠ The echo it replaced was also WRONG: the killing door paid −14 and wore
+the ±2 phrase.
+
 ⚑ **THIS WAS NOT A TIDY-UP, AND THE ORDER OF DISCOVERY IS THE LESSON.** The literal deletion the
 user asked for would have deleted four PRICES. **THE HANGED TOLL-MAN** charges a day and pays 38
 crowns across four doors, and its four labels read *"it will cost you the afternoon"*, *"he has no

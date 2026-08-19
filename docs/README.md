@@ -17,8 +17,8 @@ asking is not *can you win the fight* but **who are you willing to spend to win 
 
 | | |
 |---|---|
-| **The working file** | `prototype/grimtoll_slice.html`, one self-contained file, ~5.4 MB. **This is the one you change.** |
-| **The build people play** | `index.html` at the repo root, **generated and never hand-edited.** ⚠ Its audio table is empty in the working file **on purpose**, so copying instead of building ships a game that is silent for everybody but you. One command, `deploy.ps1`, does the whole thing and refuses to push a silent page. **See [`DEPLOY.md`](DEPLOY.md) before touching any of this.** |
+| **The working file** | `prototype/grimtoll_slice.html`, one self-contained file, ~14 MB since the paintings, the map ground and the three typefaces were embedded. **This is the one you change.** |
+| **The build people play** | `index.html` at the repo root, **generated and never hand-edited.** ⚠ Its audio table is empty in the working file **on purpose**, so copying instead of building ships a game that is silent for everybody but you. One command, `deploy.ps1`, does the whole thing and refuses to push a silent page. **Since #202 there are two generated pages**: `index.html` (yours, with the ⚙ developer tools behind the cog) and `play/index.html` (`deploy.ps1 -Player`: the playtester's, with no cog and `TEST` forced off). **See [`DEPLOY.md`](DEPLOY.md) before touching any of this.** |
 | **Production target** | Godot 4. HTML is for iteration speed; the scope lock happens after the systems stop moving |
 | **Art** | painted, not pixel. "Ash & Iron" palette. **Line before noise:** silhouette, gesture and connected shapes do the work before texture. See [`02_ART_DIRECTION.md`](02_ART_DIRECTION.md) |
 
@@ -142,6 +142,14 @@ Sixteen doors left the road events, then every card's prose was cut by a third (
 3,652), with the outcome numbers moving out of the prose into the aftermath's own chips. The four
 cards between the opening brawl and the map became one, and the opening now contains no decision at
 all. **What the focus still owes is step 1: nobody has yet measured the opening.**
+
+**And on 2026-08-19, fifty entries later (#152 to #202):** the three scales and the 10px floor, the
+real typefaces, the painted map ground, the sub-line derived off the payment, experience, the
+mutters, the after-battle screen on the approved mockup, the item paintings, the mirehares, the
+company sheet's fourth round, the em dash gone from everything a player reads, and the game's name.
+**#202 drove the whole act front door to epilogue with zero JS errors and every desk landed.** Step
+1 is still owed, and a playtester build with no developer tools now exists for the ten-friends
+gate (`deploy.ps1 -Player`, [`DEPLOY.md`](DEPLOY.md)).
 
 *The long narrative of everything that shipped and what each thing taught is in
 [`archive/README_WHERE_IT_STOOD.md`](archive/README_WHERE_IT_STOOD.md). Per-entry rows with open
@@ -449,10 +457,10 @@ feel like filler too.
 |---|---|
 | **`README.md`** *(this)* | **Orientation.** What the game is, the pillar, the traps. Start here |
 | [`00_PLAN_AND_BACKLOG.md`](00_PLAN_AND_BACKLOG.md) | **The work.** The current focus, then one line per entry. **Everything in it is actionable** |
-| [`archive/BACKLOG_ENTRY_SPECS.md`](archive/BACKLOG_ENTRY_SPECS.md) | the full text of every unbuilt entry, for when a session picks one up. **199 KB: open the one entry, never the file** |
-| [`SHIPPED.md`](SHIPPED.md) | **The registry.** One line per shipped entry, **every open remainder named**, which numbers are spent |
-| [`CHANGELOG.md`](CHANGELOG.md) | **The record.** The build log with the reasoning, and shipped entries in full. **History, never instructions.** **877 KB: open one dated row, never the file** |
-| [`WHAT_TO_TEST.md`](WHAT_TO_TEST.md) | **The test bench, and it is the USER'S file.** How to reach each new thing in three steps, what should happen, what would be a bug. A session **writes** to it and never takes instructions from it. **93 KB: open one section**, and it keeps 2026-08-12 onward |
+| [`archive/BACKLOG_ENTRY_SPECS.md`](archive/BACKLOG_ENTRY_SPECS.md) | the full text of every unbuilt entry, for when a session picks one up. **235 KB: open the one entry, never the file** |
+| [`SHIPPED.md`](SHIPPED.md) | **The registry.** One line per shipped entry, **every open remainder named**, which numbers are spent. 188 KB |
+| [`CHANGELOG.md`](CHANGELOG.md) | **The record.** The build log with the reasoning, and shipped entries in full. **History, never instructions.** **1.1 MB: open one dated row, never the file** |
+| [`WHAT_TO_TEST.md`](WHAT_TO_TEST.md) | **The test bench, and it is the USER'S file.** How to reach each new thing in three steps, what should happen, what would be a bug. A session **writes** to it and never takes instructions from it. **104 KB: open one section**, and since the 2026-08-19 cut it keeps 2026-08-17 onward |
 | [`DEPLOY.md`](DEPLOY.md) | one command, and why the hosted page is generated rather than copied |
 | [`PARALLEL_SESSIONS.md`](PARALLEL_SESSIONS.md) | **two sessions, two desks.** `tools\branch.ps1 new <name>` gives a session its own branch and its own checkout, so nobody waits on the prototype; `tools\branch.ps1 done <name>` merges it back. **Numbers are still claimed**, because git cannot merge a counter. Read it before running two sessions |
 | [`DRAMATURGE.md`](DRAMATURGE.md) | the manual for `tools/dramaturge.html`. ⛔ **It live-reads the prototype: there must never be a second copy of the event data** |
@@ -468,15 +476,15 @@ feel like filler too.
 
 ### ⛔ Open the big files by section, never whole
 
-`CHANGELOG.md` (877 KB), `archive/BACKLOG_ENTRY_SPECS.md` (199 KB) and `WHAT_TO_TEST.md` (93 KB) are
+`CHANGELOG.md` (1.1 MB), `archive/BACKLOG_ENTRY_SPECS.md` (235 KB) and `WHAT_TO_TEST.md` (104 KB) are
 **records, not reading**. Grep for the entry number or the dated heading and read that range. A
 session that reads any of them end to end spends a fifth of its context on history before it has
 opened the game.
 
-⚠ **Those three figures were 640, 152 and 63 until 2026-08-14, and every one of them had been wrong
-for weeks.** A size written into prose is a counter that lives in a sentence, which is the same
-shape as the entry number that cost five collisions. **Re-measure rather than trust the sentence:**
-`ls -la docs/ docs/archive/`.
+⚠ **Those three figures were 640, 152 and 63 until 2026-08-14, then 877, 199 and 93 until
+2026-08-19, and every one of them had been wrong for days by the time it was read.** A size written
+into prose is a counter that lives in a sentence, which is the same shape as the entry number that
+cost five collisions. **Re-measure rather than trust the sentence:** `ls -la docs/ docs/archive/`.
 
 > **⚑ The 2026-08-14 cut, and the rule it leaves behind.** `archive/` held six dated snapshots
 > nobody had to read, and the test bench had grown to 3,064 lines. All six snapshots are deleted and

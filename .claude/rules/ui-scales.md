@@ -147,6 +147,22 @@ one.** Every regression in this pass had that shape, and only the running build 
 | `.nrow b` | a `flex:none` label column at 78px does not stretch | 78 -> **86** |
 | `.ccall .who` | a 214px clamp measured at 7.5px with `.14em` tracking | tracking -> `.1em`, clamp -> **224** (the bubble's real width) |
 
+⛔ **AND THE SAME TABLE GREW THREE ROWS WHEN THE REAL TYPEFACES LANDED, NOT WHEN THE SIZE MOVED**
+*(#202, 2026-08-19)*. #189 embedded Cinzel, Spectral and JetBrains Mono under boxes that had been
+measured around Palatino, Georgia and Consolas, and #200 measured the sheet before the faces were
+in. **A font change breaks the box the same way a size change does, and it is found the same way:
+by the probe, on every screen.**
+
+| what broke | why | what it cost |
+|---|---|---|
+| `.act .role` and `.iact .role` cut mid-word | real JetBrains Mono is **6px a glyph at 10px** (canvas-measured; Consolas was 5.5). `GUARDS ALLIES` wanted 81 in a 74px battle box and 76 on the sheet; `OPENS ITS BACK` 84 | the card does not grow a second time: `ROLE{}` capped at **12** (72px), tracking 0 on both rules, **LINT 14** holds it |
+| `.itl .tv` (the four stat tells) | real Spectral at 12px is **16px of content** in a 14.4px `line-height:1.2` box with `overflow:hidden` for the ellipsis: descenders cut. The column is exactly full on the Captain, so the line box may not grow | `padding-bottom:var(--p1); margin-bottom:calc(var(--p1) * -1)`: the tail paints, the 2px goes back, rows still 16, `#iChar` still 678/678 |
+| `#bName .nick` (the battle plaque) | same: 10px Spectral italic, 13px of content in an 11.5px line | same pair |
+
+⚑ **The padding-plus-negative-margin pair is the right tool ONLY when the box is forbidden to grow.**
+Where there is slack, raise the line-height. Here there was none: #200 left `#iChar` at 678 into
+678 with `iFoot` already squeezed to 1px, and the plaque's row height is the rail's reservation.
+
 
 ⚑ **AND THE SAME RULE ON THE OTHER AXIS, WHICH IS WORSE BECAUSE THE BREAK MOVES** *(#200,
 2026-08-19)*. A raised font size breaks the box measured around the old one; **a narrowed COLUMN
