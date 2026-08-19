@@ -18653,9 +18653,13 @@ const FIELDS={
      ground: the Snare Clan set the trap. Takes the fen's whole pool of five,
      which is right for the fight the act has been walking toward. */
   /* ═══ #147 - THE PALETTE, AND DELIBERATELY NOT THE CHANNEL ═══════════════
-     The second door on THE RATKIN SNARE is *"Through the marsh. Slower, but
+     ⚠ #197 DELETED THE DOOR THIS PARAGRAPH STARTS FROM, AND THE ROW STAYS.
+     The second door on THE RATKIN SNARE WAS *"Through the marsh. Slower, but
      quiet"*, and the board it led to was the same 13%-water fen as every
-     other fight in the act. `swamp` is the other ground built and never
+     other fight in the act. The door is gone (see the card); the ground it
+     named is a fact about the place rather than about the door, the fight
+     fought on it is the same fight, and the measurement three paragraphs
+     down was taken against the board and not against the choice. `swamp` is the other ground built and never
      shown in a campaign (#63), and it is the one the finale's own card
      describes.
 
@@ -25665,13 +25669,13 @@ function openCamp(spot,next,atPlace){
      it. `campChose` records `indexOf(o)`, so this one records -1 and no sequel
      keys off it, which is correct: refusing because you are broke is not a
      ruling anybody at the fire will remember you for. */
-  if(visible.length&&!visible.some(o=>canAfford(o.need)))
+  if(visible.length&&!visible.some(doorOpen))                   /* #197 */
     visible.push({t:'Say nothing. There is nothing to say it with.',ico:['leave'],
       c:'no cost · and everybody notices',fx:{morale:-1},
       after:'You have nothing to settle it with and everybody at the fire works that out at '+
         'about the same moment. It goes quiet, and then it goes on.'});
   $('wChoices').innerHTML=visible.map((o,i)=>{
-    const ok=canAfford(o.need);
+    const ok=doorOpen(o);                                        /* #197 */
     return '<button class="choice'+(o.needRace?' racey':'')+'" data-i="'+i+'"'+
       (ok?'':' disabled style="opacity:.38"')+
       '><b>'+choiceIco(o)+o.t+'</b><i>'+choiceNote(o)+'</i></button>';}).join('');
@@ -29565,11 +29569,18 @@ function drawMap(){
       c.fillStyle='#ff2f4a';c.font=cssFont(600,12,'mono');
       c.fillText(o.d+'px',(A.x+Bn.x)/2-14,(A.y+Bn.y)/2-6);
     });
-    c.fillStyle=bad.length?'#ff2f4a':'#8ca35a';
-    c.font=cssFont(600,12,'mono');
-    c.fillText(bad.length?bad.length+' crowded pair(s): '+bad.map(o=>o.a+'↔'+o.b).join(', ')
-      :'spacing clean · '+MAP_MIN_GAP+'px glyphs · '+NODE_PLATE_W+'×'+NODE_PLATE_H+' plates',
-      14,H-14);
+    /* #197 - ONLY THE FAILURE PRINTS (user, arrows drawn at it: *"Strange
+       text, don't need it"*). The all-clear ran along the foot of the map on
+       every frame of every test-mode session, saying that nothing was wrong,
+       which is this file's own rule about a figure on screen every day being
+       read as furniture (#106). The red half is untouched and still fires the
+       moment two nodes are too close, which is the whole reason the overlay
+       was drawn last and in a colour nothing else uses. */
+    if(bad.length){
+      c.fillStyle='#ff2f4a';
+      c.font=cssFont(600,12,'mono');
+      c.fillText(bad.length+' crowded pair(s): '+bad.map(o=>o.a+'↔'+o.b).join(', '),14,H-14);
+    }
   }
 }
 function drawNodes(){
@@ -29672,9 +29683,27 @@ function drawNodes(){
       }else if(st==='live')body=TYPETAG[n.t]||'';
       else body='Too far to know more than the shape of it — '+
         (TYPETAG[n.t]||'something').toLowerCase()+'.';
-      TIP.innerHTML='<div style="font-family:var(--display);font-size:var(--fs5);color:var(--g4)">'+
-        n.n+'</div><div style="font-size:var(--fs1);font-family:var(--mono);color:#8a7449;'+
-        'margin:1px 0 5px">'+(TYPETAG[n.t]||'')+'</div>'+
+      /* ═══ #197 · THE HOVER PRINTED ITS TYPE TWICE ══════════════════════
+         (User, 2026-08-19, red box round the middle line of a three-deep
+         stack on THE LAST MUSTER: *"delete this additional explanation for
+         all events cards (small one in the middle)"*.)
+
+         ⛑ AND THE SCREENSHOT IS THE ONLY PLACE IT WAS VISIBLE, because the
+         two lines are built 40 lines apart. This subtitle printed
+         `TYPETAG[n.t]`, and the `body` branch four cases down ALSO falls back
+         to `TYPETAG[n.t]` for a live node with no event and no secret - so a
+         hire node's card read SWORDS FOR HIRE, then SWORDS FOR HIRE, under
+         its own name. The glyph's `title` attribute makes a third, in the
+         browser's own tooltip.
+
+         ⚠ SO THE SUBTITLE GOES AND THE BODY STAYS, not the other way round.
+         The body is the branch that already knows the difference between a
+         live node, a walked one, a marked cache and a far one; the subtitle
+         said the same word to all five. Nodes whose body has better to say
+         (a walked one, the cache, an unopened event) simply stop repeating a
+         category at somebody who is looking at the picture of it. */
+      TIP.innerHTML='<div style="font-family:var(--display);font-size:var(--fs5);color:var(--g4);'+
+        'margin-bottom:5px">'+n.n+'</div>'+
         /* #150 - the trophy answers for itself, the way every other chip on
            this screen does. It says WHERE the contract ends and not WHAT is
            waiting: the Snare's own rule is that the map never names that. */
@@ -32038,6 +32067,8 @@ function choiceNote(o,skipMorale){
   if(o.hurt&&!o.hideHurt)
     parts.push('<span class="hurt">'+(o.hurt.lasting?'permanent':'temporary')+' injury</span>');
   if(!canAfford(o.need))parts.push(needTag(o.need));
+  /* #197 - the muster wall's own phrasing, so one shortage has one name */
+  else if(!hasRoomFor(o))parts.push('<span class="hurt">no room left</span>');
   return parts.join(' · ');
 }
 /* moraleLine, the prose twin of the tag, retired in #143: the outcome's
@@ -33306,8 +33337,15 @@ const EVENTS={
       'one, holding no weapon. Humming.',
     choices:[
       {t:'Straight down the road. Let the bells ring.',ico:['fight'],c:'battle',fx:{},battle:true},
-      {t:'Through the marsh. Slower, but quiet.',ico:['fight'],c:'battle · you strike first',
-       fx:{days:1},battle:true,ambush:true},
+      /* ⛔ #197 - "Through the marsh. Slower, but quiet." IS DELETED (user,
+         2026-08-19: *"On the last event (fight) - delete option 'move
+         slovly'"*). It bought the first round for a day, which on the last
+         node of the act is a day nobody is short of, so it was the correct
+         answer nearly every time and the card's real question - go in, or
+         walk in unarmed and ask - was being asked underneath a free upgrade.
+         ⚠ `ambush:true` IS NOT DEAD WITH IT. The wedding's massacre door is
+         the other user and `B.ambushRound` is still read in the engine, so
+         the mechanic survives; only this door goes. */
       /* ═══ #160 · THE THIRD DOOR ════════════════════════════════════════════
          ⛔ IT IS NOT MARKED EVIL AND THAT IS LOAD-BEARING, NOT AN OVERSIGHT.
          `markSin` fires on the door that is clicked, and the card this door
@@ -33343,6 +33381,46 @@ function canAfford(need){
   if(!need)return true;
   return Object.keys(need).every(r=>((r in G.run)?G.run[r]:G.camp[r]||0)>=need[r]);
 }
+/* ═══ #197 · A DOOR THAT HANDS YOU A BODY SAYS "NO ROOM" FIRST ════════════
+   (User, 2026-08-19: *"with ogres event you don't have option ogre to join -
+   when your party is full"*.)
+
+   ⛔ THE DOOR WAS NEVER MISSING. It was live, it said *"an ogre may join"*,
+   and the room check ran INSIDE `pickChoice` - so a full company spent its
+   one choice on the Sitting Stone and was told afterwards that *"Hoom would
+   have joined, but nobody follows a captain with no room at the fire."* From
+   the outside that is indistinguishable from the option not existing, which
+   is exactly how it was reported.
+
+   ⚑ AND THE PROJECT ALREADY HAD THE RULE, TWICE. `.claude/rules/event-cards.md`:
+   *"a door the player cannot afford has to say so BEFORE it is pressed"*, and
+   the muster wall has printed `· no room left` on a greyed row since it was
+   built. Room is a price; it was the one price the road cards could not read.
+
+   ⛔ DERIVED, NEVER AUTHORED, which is #137's rule on its fifth surface. The
+   door already carries `recruit:{race}` or `recruitPreset`, so the seat count
+   IS the fact and nothing new is typed onto a card. That also fixes the four
+   preset doors (Skree, Nib, Gell, Bruht) nobody reported, because they have
+   the same defect for the same reason.
+
+   ⚠ `presetOf` EXISTS SO THE MAPPING IS IN ONE PLACE. It was a ternary inside
+   `pickChoice`, i.e. a table only the payer could read; a gate that resolved
+   presets its own way would be the second-source-of-truth shape again. */
+function presetOf(k){return k==='skree'?PRESET_SKREE:k==='nib'?PRESET_NIB
+  :k==='gell'?PRESET_HALF:PRESET_BRUHT;}
+function doorRace(c){
+  if(!c)return null;
+  if(c.recruit)return c.recruit.race;
+  if(c.recruitPreset){const p=presetOf(c.recruitPreset);return p&&p.race;}
+  return null;
+}
+const hasRoomFor=c=>{const r=doorRace(c);
+  return !r||partyUsed()+(COST[r]||0)<=PARTYCAP;};
+/* ⛔ THE ONE PREDICATE BOTH RENDERERS ASK, and the appended walk-away asks it
+   too. If the exit guard had gone on testing `canAfford` alone, a card whose
+   only live door was a full-party recruit would have had every button dead
+   and no way off the node - the exact soft lock that guard exists to stop. */
+const doorOpen=c=>canAfford(c.need)&&hasRoomFor(c);
 /* ⚠ A DEAD BUTTON SHOULD NAME THE THING YOU RAN OUT OF. The provisions panel
    and the muster already do it ("not enough in the barrels", "no room left"),
    but every event and camp card printed the same "cannot afford" whatever was
@@ -33927,7 +34005,7 @@ function openEvent(k){
      spend without appending the exit would have turned a lie into a soft lock.
      So: the exit is appended whenever nothing else is affordable, it costs
      nothing, and it is the same object shape every other choice is. */
-  if(visible.length&&!visible.some(c=>canAfford(c.need)))
+  if(visible.length&&!visible.some(doorOpen))                   /* #197 */
     visible.push({t:'Walk on. There is nothing here you can pay for.',ico:['leave'],
       c:'no cost · the road does not wait for a full purse',fx:{},
       after:'You have nothing to trade and nothing to give, and everybody here can see it. '+
@@ -33991,7 +34069,7 @@ function openEvent(k){
       (c0.coinKeep?evGearStrip(['oddcoin'],'into the wagon · somebody can wear it'):''));
   }
   $('wChoices').innerHTML=visible.map((c,i)=>{
-    const ok=canAfford(c.need);
+    const ok=doorOpen(c);                                        /* #197 */
     return '<button class="choice'+((c.danger||(c.battle&&anyWayOut))?' danger':'')+(c.needRace?' racey':'')+
       '" data-i="'+i+'"'+(ok?'':' disabled style="opacity:.38"')+'><b>'+choiceIco(c)+c.t+'</b><i>'+
       choiceNote(c,!!c0)+'</i></button>';}).join('');
@@ -34240,27 +34318,40 @@ function pickChoice(k,i){
       if(c.clanFeast){
         one.clan=true;
         remember(one,'Was fed at the long fire past the Dead Company, and called it his clan.');
-        hurtLine+='\n\nLate, when the fire has gone down, '+one.name+' tells you why there '+
-          'are still ratkin.\n\n'+
+        /* ═══ #197 · THE SECOND PART, CUT FROM 151 WORDS TO 99 ═════════════
+           (User, 2026-08-19: *"The long fire too long event second part -
+           make it shorter: THE LONG FIRE"*.)
+
+           ⛔ BOTH HALVES OF HIS OWN SPEECH SURVIVE, because they are canon:
+           `.claude/rules/event-cards.md` names this monologue as a user line
+           that frames may be cut from and that may not itself be rewritten.
+           What went is everything that was NOT his:
+             · the stage direction it opened on ("Late, when the fire has gone
+               down") and the one between the halves ("Then, quieter:");
+             · *"That thing in the armour did not break us. It broke nine men
+               in a ditch who were holding on to nothing"* - which is the
+               CARD BODY's own third sentence said back to the player four
+               paragraphs later, i.e. the one thing the length rule cuts first;
+             · the mechanical paragraph, down to the two rules it states.
+           ⚠ THE TWO RULES STAY IN FULL. They are the only place the game says
+           what `one.clan=true` bought (restate() and passDays() read it), and
+           a consequence nothing explains is not a shorter card, it is a
+           broken one. */
+        hurtLine+='\n\n'+one.name+' tells you why there are still ratkin.\n\n'+
           '"We are the smallest and the weakest and we make bad crossbows. You know why we '+
           'are not gone? Clan. We hold on to each other with both hands and we do not let '+
-          'go. We held on. That thing in the armour did not break us. It broke nine men in a '+
-          'ditch who were holding on to nothing."\n\n'+
-          'Then, quieter:\n\n'+
+          'go."\n\n'+
           '"Mine sent me to a slaughter over a milestone. I said no, so they took my name '+
           'off the wall.\n\nYou opened the barrels. So this is my clan now, and I will stand '+
           'in it until it is over."\n\n'+
-          'HIS CLAN, for the rest of his life. The first time his nerve goes in a battle it '+
-          'holds; after that '+one.name+' does not leave that field, whatever it costs him. '+
-          'And he will never walk out of this company over money.';
+          'HIS CLAN. His nerve holds the first time it goes, and he will never walk out '+
+          'over money.';
         sfx('promote');
       }else if(c.clanBuy){
         remember(one,'Worked out what the long fire was for.');
-        hurtLine+='\n\nHe tells the first half of it anyway, late: that ratkin are the '+
-          'smallest and the weakest and are still here because they hold on to each other '+
-          'with both hands, and that this company held on.\n\nThere is a second half. You '+
-          'can see him decide not to tell it. He looks at the barrels, and at you, and says '+
-          'goodnight.';
+        hurtLine+='\n\nHe tells the first half of it anyway: that ratkin are still here '+
+          'because they hold on to each other with both hands, and that this company held '+
+          'on.\n\nThere is a second half. You can see him decide not to tell it.';
       }else{
         remember(one,'Asked for the long fire past the Dead Company and was told no.');
       }
@@ -34367,9 +34458,7 @@ function pickChoice(k,i){
   /* a named, hand-built character joining — not a random roll, a specific
      person (Skree or Bruht) whose stats and trait are already written */
   if(c.recruitPreset){
-    const preset=c.recruitPreset==='skree'?PRESET_SKREE
-                :c.recruitPreset==='nib'?PRESET_NIB
-                :c.recruitPreset==='gell'?PRESET_HALF:PRESET_BRUHT;
+    const preset=presetOf(c.recruitPreset);   /* #197 - one mapping, see doorRace */
     if(partyUsed()+COST[preset.race]<=PARTYCAP){
       const nr=finishRecruit(JSON.parse(JSON.stringify(preset)));
       G.party.push(nr);
