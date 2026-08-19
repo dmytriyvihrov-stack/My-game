@@ -128,6 +128,56 @@ you by your banner, only the man in the coat's people have.
 - The purse being mentioned **twice** on the contract card.
 - The serjeant saying **"this company"** where he should say your name, on either version.
 - Any card whose sub-line now says nothing at all where it used to name a price or a gate.
+## 🧍 THE COMPANY SHEET, ROUND FOUR  *(#200 · 2026-08-19 · build log 8f.222)*
+
+Your nine notes, all on the one screen. **How to reach it in three steps:** load a run · click the
+head or the sack on the road bar · click a body in the left rail.
+
+**What should happen, one note at a time:**
+
+1. **The rail says WHO, not what they do.** Under the race and level line each body now reads
+   `Stubborn`, `Wind-touched`, `Does not run`. **Hover it and the full clause is still there**
+   (`Nerve back twice as fast on a quiet turn · −5 MOR`), and the sheet on the right prints it in
+   full the moment you click the row.
+2. **The pools lead the band.** ARMOUR / HITPOINTS / NERVE are on the LEFT now and STRENGTH,
+   AGILITY, INTELLECT, MORALE are on the right as **one column of four**. ⚡ Watch a low stat:
+   `No use lifting anything` and `Hopeless with their hands` used to end in an ellipsis and should
+   now print whole.
+3. **The gem is a chip beside the name.** `◈ CUT A GEM`, one line, up next to the portrait, with
+   `✚ MEND A SCAR` beside it when somebody has a scar and the chest is unopened. Both still open
+   the same dialog, and **the sentence each used to print is on the hover**.
+4. **The sheet is narrower and the right-hand pane is wider.** 450px to 530. The perk tab and the
+   stash have the room; the figure and its six slots have not moved.
+5. **A clean body has no ledger row.** Vesna at the start of a run should show the picture and
+   nothing under it, where it used to say *"Nothing has happened to this one yet."* ⚠ The body
+   PICTURE still says it on hover, which is deliberate: a hover that opens onto an empty box is
+   worse than the sentence.
+6. **The portraits are square and bigger** (35px round to 48px square), and the level ring became a
+   **gold frame that fills clockwise round the picture**. It should read as the same progress it
+   always was.
+7. **The block that broke on some bodies.** Open **Marrow** (battle-mage, five cards) and **your
+   Captain** (six cards): the ability cards should sit in ONE row, nothing should print through the
+   `WHAT THEY CAN DO` label, and there should be no little scrollbar in the middle of the sheet.
+8. **A worn item has ONE tooltip.** Hover the weapon on the body: one box, with the item's painting,
+   the numbers as bullets, the flavour ONCE, and `CLICK TO TAKE IT OFF` at the foot. It used to open
+   two boxes and one of them printed the description twice. ⚡ The **working stave now states its
+   +2 spell range as a bullet**; that fact used to exist only in the last sentence of its story,
+   which is why the sentence is gone.
+9. **The amulet's lecture is deleted.** A trinket still says PERSONAL AMULET or COMPANY RELIC; only
+   the relic keeps a sentence, because "it works with nobody wearing it" is the thing that tells
+   the two apart.
+
+**What would be a bug:** a slot box sitting ON the figure · an ability card row wrapping to two
+lines on anybody · the sheet growing a scrollbar · a stat word cut off · two tooltips on one hover ·
+the gem or the chest not opening its dialog · a tooltip that stays on screen after you click a
+roster row.
+
+⚠ **Known and NOT part of this entry:** the sheet takes about four seconds to draw with seven
+bodies on the roster. That is #192's 128px item paintings being decoded on every draw, it is the
+same on the build before this one, and it wants an entry of its own.
+
+---
+
 ## ✎ THE TEXT TOOL GROWS A HOVER MODE, AND CLASS AND RACE BECOME PICTURES  *(#196 · 2026-08-19 · build log 8f.218)*
 
 Three separate things. The first two are yours only, in dev mode; the third is on every screen.

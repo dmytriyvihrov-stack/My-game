@@ -147,6 +147,32 @@ one.** Every regression in this pass had that shape, and only the running build 
 | `.nrow b` | a `flex:none` label column at 78px does not stretch | 78 -> **86** |
 | `.ccall .who` | a 214px clamp measured at 7.5px with `.14em` tracking | tracking -> `.1em`, clamp -> **224** (the bubble's real width) |
 
+
+⚑ **AND THE SAME RULE ON THE OTHER AXIS, WHICH IS WORSE BECAUSE THE BREAK MOVES** *(#200,
+2026-08-19)*. A raised font size breaks the box measured around the old one; **a narrowed COLUMN
+breaks the ROW measured for the old one, and the damage does not stay where the change was.** The
+company sheet's right pane went 450 to 560 at the user's ask, which passed the doll's own
+arithmetic (two 150px slot columns and a 130px figure need a 436px box, and 470 was left). It then
+wrapped the Captain's six 78px ability cards onto a second row. That row costs 83px in a column
+that measures **exactly 678 into a 678px window**, so the flex column gave the height up where it
+was allowed to, and what came back wrong was `#iDollBox`: **196px tall, rendering at 166, the
+FIGURE clipped**. One horizontal number moved and the fault was vertical, three blocks down, on an
+element with a fixed height and `flex:none`.
+
+⛔ **SO A COLUMN WIDTH IS SET BY THE WIDEST FIXED-CELL ROW IT CARRIES, AND THAT ROW HAS TO BE
+FOUND BEFORE THE NUMBER IS PICKED.** Here: `6 × 78 + 5 × 5 = 493`, plus the column's 24px of padding
+and 2px of border is 519, and the stage's 1054 usable pixels minus 519 is **535**. 530 was taken.
+⚠ **The widest row is not the one on screen** - the sheet opens on whoever was last selected, and
+the six-card body is the Captain. Drive every member before believing a width.
+
+⚡ **AND THE NARROWING PAID FOR ITSELF ONCE THE CELLS WERE ASKED WHAT THEY WANTED.** The four stat
+tells were a two-column grid at 144px a cell; measured, the label column is 66px at its widest and
+the longest value wants 102, so they were **already clipping before anything moved** and 102px
+cells would have clipped all four. One column of four rows is the same height as the three pools
+beside it and gives each tell 259px. **The overflow probe against a `git show HEAD:` baseline
+reports one finding on HEAD that the new build does not have.** A layout change that removes a
+shipped clip is the shape to aim for; the way to know is the second tab.
+
 ⚑ **`.act` is the one worth reading twice**, because the file had already written the arithmetic
 down. #105 recorded *"a 9px name is 1.2px taller per line and there are two lines of it, so 86"* and
 *"Nine cards at 72+5 is 688px in a 1280 band"*. #164 ran the same two sums at 10px and got 80 and

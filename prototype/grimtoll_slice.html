@@ -2818,11 +2818,29 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:var(--f
    column and wrapped Ilka's trait clause, 65px → 91px a row. At 42 the ring's
    band runs 17.0-20.1px from the centre and the 35px bust ends at 17.5, so
    the ring hugs the portrait by half a pixel and the row is 65 again. */
-.rbust{position:relative;display:inline-block;width:42px;height:42px;flex:none}
+/* ⛑ #200 - SQUARE AGAIN, AND BIGGER. (User: "Make portraits square again -
+   i like bigger portraits".) #174's reasoning was sound and its conclusion was
+   the wrong way round: a ring round a square is a ring with four corners
+   poking through it, so #174 rounded the PICTURE. The picture is the thing
+   the player wanted, so the READOUT changes shape instead - `xpFrame` draws
+   the same arc on a rect's perimeter.
+   ⚠ MEASURED, BOTH DIRECTIONS. 35px circle -> 48px square is +37% across
+   and +88% of area, and it costs the text column 14px of the roster's 222:
+   the row's longest line is the name, and with the trait clause gone (point 1
+   of this same entry) that column has slack it did not have yesterday.
+   ⚠ AND THE BACKING STORE IS 2x THE BOX, the way `#iFace` is: `drawArt`
+   cover-fits into whatever `cv.width` says, so a 40px store stretched over a
+   48px box is the prologue card's own bug on a smaller canvas. */
+.rbust{position:relative;display:inline-block;width:56px;height:56px;flex:none}
 .rbust .xpring{position:absolute;left:0;top:0;pointer-events:none}
-.rbust canvas{position:absolute;left:3.5px;top:3.5px;width:35px;height:35px;border-radius:50%;border:none}
+.rbust canvas{position:absolute;left:4px;top:4px;width:48px;height:48px;border-radius:0;border:none}
 .rmem .rn{font-family:var(--display);font-size:var(--fs3);color:var(--g4);line-height:1.15}
 .rmem .rc{font-family:var(--mono);font-size:var(--fs1);color:#8a7449;letter-spacing:.06em}
+/* #200 - the personality is a NAME on this list. It keeps the italic the
+   clause had, so the row still reads name / race / who they are / what they
+   are carrying, and it wears `cursor:help` because the clause is on its
+   title and nothing else on the line says so. */
+.rmem .rt{font-style:italic;color:#a08a5e;cursor:help}
 .rmem .race{font-family:var(--mono);font-size:var(--fs1);letter-spacing:.1em;font-weight:600}
 /* Three colours that are actually three colours. They were bone / tan / olive,
    which at 7.5px on a brown panel is one colour with a rumour of variation.
@@ -2956,8 +2974,17 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:var(--f
    plaque has always stacked these three in a narrow column, so the sheet
    stacks them the same way and the attributes take the width that frees up.
    One idiom, two screens, and the row is the same height it was. */
+/* ⛑ #200 - AND THE FOUR WORDS STOP BEING CUT IN HALF. The narrower column
+   would have taken the two-up tells from a 144px cell to 102, and they were
+   ALREADY clipping there: measured on the shipped sheet, the label column is
+   66px at its widest (INTELLECT) and "Heavy-handed" alone wants 102, so every
+   long tell ended in an ellipsis. One column of four rows is the same height
+   as the three pools beside it (70px against 76) and gives each tell the
+   whole 254px, i.e. 180 for the word after the label. Nothing under
+   "Hopeless with their hands" clips now, and that one still has the ladder on
+   its hover, which is where the full word has always lived. */
 #iStatTop{display:flex;gap:18px;align-items:flex-start}
-.itells{flex:1;min-width:0;display:grid;grid-template-columns:1fr 1fr;gap:3px 14px;
+.itells{flex:1;min-width:0;display:grid;grid-template-columns:1fr;gap:3px 14px;
   align-content:start}
 .itl{display:flex;align-items:baseline;justify-content:space-between;gap:8px;
   border-bottom:1px dotted #332818;padding-bottom:var(--p1);cursor:help;min-width:0}
@@ -2968,7 +2995,10 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:var(--f
 .itl.spend{cursor:pointer;border-bottom-color:#8ca35a}
 .itl.spend .tv:after{content:' ▲';color:#8ca35a;font-size:var(--fs1)}
 .itl.spend:hover{background:#1e1810}
-.ibars{width:236px;flex:none;display:flex;flex-direction:column;gap:0}
+/* #200 - 236 -> 200. The three lines measure 84px of actual content, so this
+   number has only ever been how long a BAR should read, and 200 still reads
+   as a bar. The 36 it gives back goes to the tells beside it. */
+.ibars{width:200px;flex:none;display:flex;flex-direction:column;gap:0}
 .ibars .statLine{color:#8a7449}
 .ibars .statLine .pv{color:#d8d5cc}
 .ibars .bar{height:7px;border:1px solid rgba(0,0,0,.5);margin-bottom:3px}
@@ -3050,6 +3080,15 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:var(--f
    named here. Saturation means one thing on this sheet: teal is the strange,
    red is violence. */
 /* #140 point 4 - a wrapping row under the figure, not a column beside it */
+/* ⛔ #200 - AND IT HOLDS MARKS ONLY, WHICH IS WHY IT USED TO OVERFLOW.
+   (User, boxing the block in red: "For some characters it is a weird stuff".)
+   Measured on the shipped sheet with a battle-mage selected: scrollHeight 63
+   against clientHeight 33, i.e. this 56px-capped row was being asked to carry
+   a 40px full-width BUTTON as well as its chips, so it grew a scrollbar and
+   its contents printed through the label below. The two once-a-run buttons
+   are up beside the name now (`#iDo`) and the "nothing has happened yet" chip
+   is gone with them, so a clean body renders no row at all rather than a row
+   saying it is empty. */
 #iLedger{flex:1 1 auto;min-height:24px;max-height:56px;display:flex;flex-wrap:wrap;gap:5px;
   overflow:auto;align-content:flex-start}
 /* ⚑ #136 point 6 ("For skills and other description follow the showing of
@@ -3072,11 +3111,23 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:var(--f
   display:block;margin-top:1px}
 .wchip.none{border-color:#2a2114;background:#171208;color:#6b5836;font-style:italic;cursor:default}
 .wchip.none .ic{color:#5c4a2c}
-.iaid{border:1px solid #5a7a6a;background:#16211b;padding:var(--p2) var(--p4);text-align:left;
-  font-family:var(--body);font-size:var(--fs2);color:#9db8a6;line-height:1.3}
-.iaid:hover{background:#1c2a22}
-.iaid b{color:#c3d9c9;font-weight:600;display:block}
-.iaid i{font-family:var(--mono);font-size:var(--fs1);color:#6f8a78;font-style:normal}
+/* ⛑ #200 - THE TWO ONCE-A-RUN DOORS, AS CHIPS BESIDE THE NAME. (User:
+   "cut the jam - make much much smaller button - and maybe move up, near char
+   screen".) They were two-line buttons the width of the ledger, and both of
+   them are things you do to this ONE person, which is what the head of the
+   sheet is about. ⛑ THEY COST NOTHING WHERE THEY NOW SIT: the head is a
+   104px portrait tile beside a text column, and the tile is taller than the
+   name, the chips and the personality stacked, so this row lands in height
+   the head had already reserved. The sub-line each one used to print is on
+   the hover, through `tipOn`, like everything else on this sheet.
+   ⚠ `.iaid` IS GONE AND NOT MERELY RESTYLED - grep it before adding a
+   third door here. */
+#iDo{display:flex;gap:var(--p2);flex-wrap:wrap;margin-top:var(--p3)}
+.ido{font-family:var(--mono);font-size:var(--fs1);letter-spacing:.08em;color:#9db8a6;
+  border:1px solid #5a7a6a;background:#16211b;padding:var(--p1) var(--p3);cursor:help;
+  white-space:nowrap;line-height:1.5}
+.ido:hover{background:#1c2a22;border-color:#7fa899}
+.ido[disabled]{opacity:.55;cursor:default}
 /* road news — one narrated line over the map, fades by itself */
 #wNews{position:absolute;left:50%;bottom:26px;transform:translateX(-50%);max-width:640px;
   background:rgba(16,22,20,.92);border:1px solid var(--e2);padding:var(--p4) var(--p6);
@@ -3268,7 +3319,29 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:var(--f
    the figure (point 4) and the pools stopped spanning the band (#136 point 3).
    ⚠ Every number in the body zone below is measured against the column this
    leaves, so the two moves are one change. */
-#iStash{width:450px;background:#161009;border-left:2px solid var(--e1);flex:none;
+/* ⛑ #200, THE SECOND ROUND ON THIS SAME NUMBER: 450 -> 530. (User: "Much
+   less wide char screen - i want more space for perks (in the future) and
+   inventory".)
+
+   ⛔ AND THE CEILING IS NOT THE DOLL, IT IS THE ACT ROW. The doll's own
+   arithmetic says 592: the box is the character column minus 26 and it pins
+   two 150px slot columns 3px off each edge with a 130px figure centred
+   between them, so a box under 436 draws a slot ON the body. 560 was tried
+   against that and it passed - and then the CAPTAIN's six cards, at 78px and
+   a 5px gap, measured 493 into 470 and wrapped onto a second row. That row
+   costs 83px in a column that measures exactly 678 into a 678px window, so
+   `#iBody` gave the height up and the FIGURE was clipped: one number moved,
+   and the thing that broke was three blocks away and vertical.
+
+   ⚠ SO THE NUMBER IS SET BY THE WIDEST ROW OF ACTS IN THE GAME: 6 cards
+   need 493, plus the column's 24px of padding and the box's 2px of border is
+   519, and 1054 - 519 = 535. 530 takes it with 9px of daylight, leaves the
+   doll box 500 (31px each side of the figure), and still hands the perk wall
+   80px, which is +18% on top of #140's +50%. ⛑ Shrinking `.iact` to 72 would
+   have bought the other 30px and it was refused: `GUARDS ALLIES` already
+   overruns its 76px role line by 5px, and #164's whole table of regressions
+   is measured cards being asked to hold text that no longer fits. */
+#iStash{width:530px;background:#161009;border-left:2px solid var(--e1);flex:none;
         display:flex;flex-direction:column;min-height:0;padding:0;overflow:hidden}
 #iTabs{display:flex;flex:none;border-bottom:2px solid var(--e1)}
 .itab{flex:1;position:relative;font-family:var(--mono);font-size:var(--fs1);letter-spacing:.12em;
@@ -6895,11 +6968,14 @@ const GEAR={
      A trinket or an off-hand piece that ever carries it then works the day it
      is written. This file has already shipped the other version of that: #141
      found `dodge` wired on the off hand and silently ignored on a trinket. */
+  /* #200 - the fourth sentence ("a working thrown off the end of it goes two
+     hexes further") is `spellRange` said in prose, and both renderers derive
+     that field now. A fact printed beside its own chip is the second receipt
+     this build keeps deleting, so the sentence goes and the joke stays. */
   rod    :{rarity:'rare',n:'Working stave',   slot:'main',dmg:[6,10],am:.20,ft:.35,reach:1,spellRange:2,
            d:'A stripped ash pole, chalked its whole length and burnt black at the tip. '+
              'Hitting a man with it works about as well as you would expect. That is not '+
-             'what it is for. A working thrown off the end of it goes two hexes further '+
-             'than one thrown off your hand.'},
+             'what it is for.'},
   /* the bow deliberately does NOT take both slots. Physically it wants two
      hands to loose, but the interesting decision the second slot exists for is
      the ARCHER'S: more arrows, or a blade for when something is already inside
@@ -7793,6 +7869,30 @@ const xpRing=(p,size,withNumber,sw)=>{
       'stroke-dasharray="'+(f*99.9).toFixed(1)+' 100" transform="rotate(-90 18 18)"/>'+
     (withNumber?'<text x="18" y="18.5" text-anchor="middle" dominant-baseline="central" '+
       'fill="var(--g4)" font-family="var(--mono)" font-size="15" font-weight="700">'+L+'</text>':'')+
+    '</svg>';
+};
+/* ⛑ #200 · THE SAME PROGRESS, DRAWN ROUND A SQUARE ==========================
+   (User: "Make portraits square again - i like bigger portraits".) #174 turned
+   the bust round because a ring round a square is a ring with four corners
+   poking through it. That reasoning was right and its conclusion was the wrong
+   way round: the picture is the thing being asked for, so the READOUT takes
+   the picture's shape instead of the other way about.
+   ⛑ A <rect> HONOURS stroke-dasharray EXACTLY AS A <circle> DOES, so this is
+   the ring's own arithmetic on a perimeter of 4*(36-sw) rather than on a
+   circumference, and nothing else about the readout changes.
+   ⚠ An SVG rect's path starts at the top-left corner and runs clockwise, which
+   is the same direction the ring filled in. The dasharray's second figure is
+   the whole perimeter, so a full level closes the frame exactly.
+   ⚠ THE STROKE IS CENTRED ON THE RECT'S EDGE, so the rect is inset by sw/2 to
+   put its outer edge on the box: the picture inside must then be inset by the
+   full `sw` in display pixels or the frame sits on top of the face. At 56px
+   and sw 2.6 that is 4px, and the picture is 48. */
+const xpFrame=(p,size,sw)=>{
+  const f=xpFrac(p);sw=sw||3;const per=4*(36-sw),side=36-sw;
+  const r=(col,dash)=>'<rect x="'+(sw/2)+'" y="'+(sw/2)+'" width="'+side+'" height="'+side+
+    '" fill="none" stroke="'+col+'" stroke-width="'+sw+'"'+dash+'/>';
+  return '<svg class="xpring" width="'+size+'" height="'+size+'" viewBox="0 0 36 36" aria-hidden="true">'+
+    r('var(--e1)','')+r('var(--gold)',' stroke-dasharray="'+(f*per).toFixed(1)+' '+per.toFixed(1)+'"')+
     '</svg>';
 };
 /* the stranger takes up a trade: the class lands, the kind follows it (a
@@ -27349,12 +27449,16 @@ function drawInv(){
   G.party.forEach(p=>{
     const b=document.createElement('button');
     b.className='rmem'+(p.id===iSel?' on':'');
-    const cv=document.createElement('canvas');cv.width=40;cv.height=40;
+    /* #200 - 2x the 48px box it lands in, for the reason `#iFace` is 2x its
+       own: `drawArt` cover-fits into the BACKING STORE, so a 40px store
+       stretched across 48 display pixels is the prologue card's bug again. */
+    const cv=document.createElement('canvas');cv.width=96;cv.height=96;
     bustFor(cv,p);
-    /* #174 - the bust wears the ring: how far to the next level, no number
-       (the row's L{level} text is the number). Total War's ring, his ask. */
+    /* #174 - the bust wears its progress: how far to the next level, no number
+       (the row's L{level} text is the number). Total War's ring, his ask.
+       #200 - and it is a FRAME now, because the picture went back to square. */
     const wrap=document.createElement('span');wrap.className='rbust';
-    wrap.innerHTML=xpRing(p,42,false,2.6);wrap.appendChild(cv);
+    wrap.innerHTML=xpFrame(p,56,2.6);wrap.appendChild(cv);
     b.appendChild(wrap);
     const box=document.createElement('div');
     /* the roster is a list of PEOPLE: the nickname, the personality clause
@@ -27378,7 +27482,24 @@ function drawInv(){
          saying what 🐀 🏹 says without being read. The colour and the border
          still carry the race on the line itself. */
       '<div class="race '+p.race+'">'+rcMarks(p)+' L'+p.level+'</div>'+
-      '<div class="rc" style="font-style:italic;color:#a08a5e">'+traitShort(p)+'</div>'+
+      /* ⛔ #200 - THE NAME OF THE PERSONALITY, AND NOT WHAT IT DOES. (User,
+         marking this line: "Write here only trait - not full description".)
+         Same argument #196 made about "RATKIN · ARCHER" one line above it, and
+         the same answer: this is a LIST of four to six bodies read at a
+         glance, and 47 characters of "Nerve back twice as fast on a quiet turn
+         · −5 MOR" is the sheet's job, not the roster's. The clause is still
+         one hover away, and the sheet beside it prints it in full the moment
+         the row is clicked.
+         ⚠ A PLAIN `title` AND NOT `tipOn`, deliberately: clicking a row calls
+         `drawInv`, which destroys this element under the cursor, and a #gtTip
+         whose element is removed under the pointer never fires `mouseleave`
+         and hangs there forever. That is the 2026-08-02 map-node bug, and the
+         roster is exactly the shape that causes it.
+         ⚠ `esc` is declared ~8,800 lines below this one and that is safe HERE
+         because `drawInv` only ever runs from a click, i.e. long after the
+         script has finished. Nothing in this function may be called at boot. */
+      '<div class="rc rt" title="'+esc(traitShort(p))+'">'+
+        (TRAITS[p.trait]?TRAITS[p.trait].n:'')+'</div>'+
       (wear.length?'<div class="rc">'+wear.join(' · ')+'</div>':'');
     b.appendChild(box);
     b.onclick=()=>{iSel=p.id;drawInv();};
@@ -27472,12 +27593,24 @@ function drawInv(){
   (p.injuries||[]).forEach(i=>led.push(chip('','✕',i.n,'scar',i.d)));
   if(sizeMismatch(p))led.push(chip('','⚠','ILL-FITTING ARMOUR','armour x0.70 · -1 AGI · -3 MOR',
     sizeJoke(p)));
-  if(!led.length)led.push('<div class="wchip none"><span class="ic">·</span>'+
-    '<span>Nothing has happened to this one yet.</span></div>');
+  /* ⛔ #200 - AN EMPTY LEDGER RENDERS NOTHING AT ALL. (User: "if nothing
+     happen yet - hide that block".) It used to print a chip saying it was
+     empty, which is a row of furniture on the one body that has no news, and
+     the block below omits the whole element rather than drawing an empty one.
+     ⚠ The DOLL's own hover still says it, and that is correct: a hover that
+     opens onto an empty box is the defect #138 deleted from the opening. */
+  /* ⛑ #200 · THE TWO ONCE-A-RUN DOORS ARE NOT LEDGER ENTRIES ==============
+     (User: "cut the jam - make much much smaller button - and maybe move up,
+     near char screen".) Both of these were pushed into `led` and rendered as
+     full-width two-line buttons inside a row capped at 56px, which is the
+     whole of the "weird stuff" he boxed on the mage's sheet: measured on the
+     shipped build, `#iLedger` was 63px of content in a 33px box. They are
+     chips beside the name now, and their sub-line is on the hover. */
+  const doors=[];
   /* the one exception to "scars are forever", and you had to build it */
   if(p.injuries&&p.injuries.length&&G.aidLeft>0)
-    led.push('<button class="iaid" id="iAid"><b>✚ Open the medicine chest</b>'+
-      '<i>take one scar off '+p.name+' · you get ONE of these a run, and this is it</i></button>');
+    doors.push(['iAid','✚ MEND A SCAR',
+      'take one scar off '+p.name+' · you get ONE of these a run, and this is it',false]);
   /* ═══ #186 - A GEM FOR A LEVEL, ONCE A RUN ══════════════════════════════
      (User, 2026-08-18: "Добавить опцию за самоцвет можна в инвентаре карточке
      персонажа поднять уровень на 1. Работает только раз за катку".)
@@ -27488,11 +27621,12 @@ function drawInv(){
      and-invisible shape. Hidden only once it is spent or the body is capped. */
   if(!G.gemLevel&&(p.level||0)<XP_CAP){
     const has=(G.camp.gems||0)>=1;
-    led.push('<button class="iaid" id="iGem"'+(has?'':' disabled style="opacity:.55;cursor:default"')+
-      '><b>'+RES_ICON.gems+' Cut a gem for a level</b>'+
-      '<i>'+p.name+' goes up one level · costs 1 gem'+(has?'':' (you have none)')+
-      ' · ONE of these a run</i></button>');
+    doors.push(['iGem',RES_ICON.gems+' CUT A GEM',
+      p.name+' goes up one level · costs 1 gem'+(has?'':' (you have none)')+
+      ' · ONE of these a run',!has]);
   }
+  const doRow=doors.length?'<div id="iDo">'+doors.map(d=>
+    '<button class="ido" id="'+d[0]+'"'+(d[3]?' disabled':'')+'>'+d[1]+'</button>').join('')+'</div>':'';
 
   /* ── the acts, as the battle draws them (#133). One card, one hover, and
      the hover is the battle's own receipt line plus the note's first
@@ -27564,6 +27698,11 @@ function drawInv(){
          hint is gone. Everything on this sheet explains itself on hover, so a
          line saying so is a line the other twenty elements do not have.) */
       '<div id="iTrait"><b>'+TRAITS[p.trait].n+'</b> · '+traitShort(p)+'</div>'+
+      /* ⛑ #200 - and it is FREE HERE. The head is a 104px portrait tile beside
+         this column; the tile stands ~120px tall and the name, the chips and
+         the personality stack to ~76, so a 20px row of doors lands inside
+         height the head had already reserved. Measured before it was moved. */
+      doRow+
     '</div>'+
     /* #136 point 5 - the portrait, and the token under it */
     '<div id="iField"><canvas class="pface" id="iFace" width="188" height="148"></canvas>'+
@@ -27583,8 +27722,13 @@ function drawInv(){
     /* #136 point 3 - the attributes take the width, the pools take the
        battle's narrow stack. Same two blocks, side by side. */
     '<div id="iStats">'+
+      /* ⛑ #200 - THE POOLS LEAD NOW. (User, marking the ARMOUR row: "change
+         places with strang, intelect, etc".) Armour, hitpoints and nerve are
+         what this body is WORTH in a fight and they sat on the right; the four
+         attribute words are what it is LIKE, and reading them first made them
+         the headline and the pools the footnote. Swapped in the MARKUP and not
+         with `row-reverse`, so what the screen shows is the order the DOM has. */
       '<div id="iStatTop">'+
-        '<div class="itells">'+['str','agi','int','mor'].map(tellCell).join('')+'</div>'+
         '<div class="ibars">'+
           /* #140 point 2 - the band carries the absorb rule on hover */
           '<div class="statLine"><span>ARMOUR <b class="band" id="iBand" style="color:'+bd.col+
@@ -27600,6 +27744,7 @@ function drawInv(){
           '<div class="bar" style="background:#20272a"><i style="width:78%;background:'+nl.col+
             '"></i></div>'+
         '</div>'+
+        '<div class="itells">'+['str','agi','int','mor'].map(tellCell).join('')+'</div>'+
       '</div>'+
       /* what they DO with all that, in one mono line rather than a grid.
          ⚑ #136 point 7 ("You still need to show 'action' - for later builds
@@ -27629,7 +27774,7 @@ function drawInv(){
     '<div id="iBody">'+
       '<div id="iDollBox"><canvas id="iDoll" class="doll"></canvas>'+
       '<svg class="wire" id="iWire"></svg></div>'+
-      '<div id="iLedger">'+led.join('')+'</div>'+
+      (led.length?'<div id="iLedger">'+led.join('')+'</div>':'')+
     '</div>'+
 
     '<div class="lbl" style="color:#8a7449">WHAT THEY CAN DO</div>'+
@@ -27706,10 +27851,30 @@ function drawInv(){
       ? 'Nothing to carry yet. This is where throwables and potions will ride '+
         'when the road starts handing them out.'
       : 'Nothing here yet. Anything in the stash that fits this slot goes on with one click.';
+    /* ⛔ #200 · A SLOT HAS ONE MOUTH, AND IT USED TO HAVE TWO ================
+       (User, on a screenshot with both boxes open at once: "too much
+       explanation while hovering on artifact. Much less text. And it somehow
+       doubles text of hower - which isnt cool".)
+
+       A FILLED slot was drawing its own CSS `.pop` AND `bindTip`'s #gtTip, so
+       hovering the working stave opened two boxes describing the same stick.
+       ⛑ AND THE `.pop` DOUBLED INSIDE ITSELF ON TOP OF THAT: `popBody` printed
+       `g.d`, then called `gearLine`, whose last line is `<i>g.d</i>` - the
+       whole description, twice, in one box. That is the rule at the top of
+       `.claude/rules/event-cards.md` on a fourth surface: two receipts for one
+       payment, and here they were literally the same words.
+
+       So the filled slot keeps `tipFor` - the box with the item's own painting
+       in it, the same one the stash rows and the shop rack use, so a thing
+       reads identically wherever it is met - and the `.pop` is what the slots
+       WITHOUT a tip keep: empty, and the off hand blocked by a two-hander,
+       neither of which `tipFor` can speak for. The dead branch above is gone
+       rather than left to be found again. */
+    const useTip=!!g&&!twoH;
     const popBody=twoH
       ? (g?g.n+' is in the pack, doing nothing. Put the '+mainG.n.toLowerCase()+
          ' down to use it.':'Carry something one-handed and this opens up.')
-      : (g?(g.d||'')+(g.d?' ':'')+gearLine(g,p):emptyLine);
+      : emptyLine;
     /* ⚑ #192 - THE PICTURE IS A COLUMN, NOT A CHARACTER ON THE NAME LINE.
        Inline at 24px it was unreadable (a 128px painting of a dark object in
        24 dark pixels), and inline at 40px the slot measured 72 against a 67px
@@ -27731,13 +27896,13 @@ function drawInv(){
         ? (g?g.n+' is in the pack, doing nothing.':'Carry something one-handed and this opens up.')
         : g?shortGear(g):(slot==='bag'?'throwables and potions, later':''))+'</div>'+
       '</div>'+
-      '<span class="pop"><span class="pt">'+(g?g.n:label)+'</span>'+
-      (g?'<span class="pr">'+(shortGear(g)||label).toUpperCase()+'</span>':'')+
-      '<span class="pd">'+popBody+'</span>'+
-      (g&&!twoH?'<span class="pr" style="color:#8a7449">CLICK TO TAKE IT OFF</span>':'')+
-      '</span>';
+      (useTip?'':'<span class="pop"><span class="pt">'+(g?g.n:label)+'</span>'+
+        '<span class="pd">'+popBody+'</span></span>');
+    /* ⚠ THE CLICK STAYS ON EVERY FILLED SLOT, including a blocked one: taking
+       the shield out of a hand that cannot use it is exactly what you want to
+       do there. Only the HOVER is one or the other. */
     if(g){b.onclick=()=>{G.stash.push(p.eq[slot]);p.eq[slot]=null;drawInv();};
-      bindTip(b,p.eq[slot],p);}
+      if(useTip)bindTip(b,p.eq[slot],p,'CLICK TO TAKE IT OFF');}
     placeSlot(slot,b);});
   /* the pet slot - Captain only, and pets never come from the stash */
   if('pet' in p){
@@ -28008,6 +28173,12 @@ function drawInv(){
         go:()=>{dismiss(p);drawInv();}},
        {t:'No. They stay.',c:'nothing changes'}]);
   };
+  /* #200 - the sub-line each door used to print is its hover now, through the
+     one door onto #gtTip. ⚠ `doors` still holds it: the label was cut, the
+     sentence was not. */
+  doors.forEach(d=>tipOn($(d[0]),'<div style="font-family:var(--display);font-size:var(--fs5);'+
+    'color:#c3d9c9;margin-bottom:3px">'+d[1]+'</div>'+
+    '<div style="font-size:var(--fs3);color:#a8b5b3">'+d[2]+'</div>'));
   const aidBtn=$('iAid');
   if(aidBtn)aidBtn.onclick=()=>{
     ask('THE MEDICINE CHEST',
@@ -28274,6 +28445,13 @@ function gearLine(g,p){
     if(g.rangedDmg)small.push('+'+g.rangedDmg+' damage with a bow');
     if(g.hp)small.push((g.hp>0?'+':'')+g.hp+' hitpoints');
     if(g.windsCut)small.push('spells cost '+g.windsCut+' less nerve');
+    /* ⛔ #200 - AND THE ONE FIELD THAT ONLY EVER LIVED IN THE PROSE. The
+       working stave's whole reason to exist is `spellRange:2`, and neither
+       renderer read it: the fact was a sentence at the end of its flavour
+       paragraph and nowhere else, which is the shape #176 deleted from the
+       event cards. It is derived now, in both mouths, and the sentence that
+       carried it comes out of GEAR.rod in the same edit. */
+    if(g.spellRange)small.push('workings reach '+g.spellRange+' hexes further');
     ['str','agi','int','mor'].forEach(s=>{if(g[s])
       small.push('a little '+(g[s]>0?STATWORD[s]:STATWORD_DOWN[s])+
         ' ('+(g[s]>0?'+':'')+g[s]+')');});
@@ -28338,16 +28516,26 @@ TIP.style.cssText='position:fixed;z-index:99;max-width:290px;background:rgba(22,
   'color:var(--g-body);line-height:1.4;pointer-events:none;display:none;'+
   'box-shadow:0 8px 26px rgba(0,0,0,.7)';
 document.body.appendChild(TIP);
-function tipFor(key,p){
+/* ⚠ #200 - `foot` IS THE ONE THING THE SLOT'S OWN POPOVER SAID THAT THIS BOX
+   DID NOT, and it is a door rather than a description: "CLICK TO TAKE IT OFF".
+   It is a parameter and not a field on the item, because whether a thing can
+   be taken off depends on WHERE it is being read, and this box is read in
+   four places. */
+function tipFor(key,p,foot){
   const g=GEAR[key];if(!g)return '';
   /* the question everybody asks about a trinket: who does this help? */
+  /* ⛔ #200 - THE SCOPE IS A LABEL AND NOT A PARAGRAPH. (User, boxing the
+     amulet's two sentences in red: "Delete this stupid explanation - last
+     screen (it archaic)".) PERSONAL AMULET said "it only works if you wear
+     it", which is what a slot IS - the sheet has six of them with wires drawn
+     to the body part. The relic's half keeps ONE sentence, because "it works
+     with no wearer at all" is the only thing that tells the two apart, and it
+     is now the SAME sentence `gearLine` prints rather than a second wording
+     of it. */
   const scope=g.slot!=='trinket'?null
     :(g.company?{t:'COMPANY RELIC',c:'#d9bd7e',
-        d:'Works for the WHOLE COMPANY while it is anywhere in your baggage. It does not need '+
-          'to be worn and it does not take anyone’s amulet slot.'}
-      :{t:'PERSONAL AMULET',c:'#c2477f',
-        d:'Only helps the ONE PERSON wearing it, in their amulet slot. Equip it on somebody to '+
-          'get anything out of it at all.'});
+        d:'Works from the baggage. Nobody has to wear it.'}
+      :{t:'PERSONAL AMULET',c:'#c2477f',d:''});
   /* every line answers "and what does that mean for me" — the raw token is
      kept in brackets for anybody who wants it, never on its own */
   const rows=[];
@@ -28367,6 +28555,8 @@ function tipFor(key,p){
   ['str','agi','int','mor'].forEach(s=>{if(g[s])
     rows.push('A little '+(g[s]>0?'':'less ')+STATWORD[s]+' (<b>'+
       (g[s]>0?'+':'')+g[s]+' '+s.toUpperCase()+'</b>).');});
+  if(g.spellRange)rows.push('Workings thrown off it reach <b>'+g.spellRange+
+    '</b> hexes further.');
   if(g.size&&g.size!=='any')rows.push('Cut for a <b>'+g.size+'</b> body. On anybody else it '+
     'still works, at 70% and a sour mood.');
   }
@@ -28380,7 +28570,8 @@ function tipFor(key,p){
     'color:'+scope.c+';margin-bottom:4px">'+scope.t+'</div>';
   if(rows.length)html+='<div style="font-size:var(--fs3);color:#e0d3b4;margin-bottom:5px">'+
     rows.map(r=>'• '+r).join('<br>')+'</div>';
-  if(scope)html+='<div style="font-size:var(--fs3);color:#a8b5b3;margin-bottom:4px">'+scope.d+'</div>';
+  if(scope&&scope.d)html+='<div style="font-size:var(--fs3);color:#a8b5b3;margin-bottom:4px">'+
+    scope.d+'</div>';
   if(g.bonusD){
     const fires=p?trinketFires(g,p):null;
     html+='<div style="font-size:var(--fs3);color:'+(fires?'#8ca35a':'#8a7449')+
@@ -28388,10 +28579,12 @@ function tipFor(key,p){
       (fires?'<b>★ It works on this one.</b> ':'<b>Conditional.</b> Only ')+
       g.bonusD+(fires?'':' — this one does not qualify.')+'</div>';}
   if(g.d)html+='<div style="font-style:italic;color:#a38652">'+g.d+'</div>';
+  if(foot)html+='<div style="font-family:var(--mono);font-size:var(--fs1);letter-spacing:.12em;'+
+    'color:#8a7449;margin-top:5px">'+foot+'</div>';
   return html;
 }
-function bindTip(el,key,p){
-  el.onmouseenter=e=>{const h=tipFor(key,p);if(!h)return;
+function bindTip(el,key,p,foot){
+  el.onmouseenter=e=>{const h=tipFor(key,p,foot);if(!h)return;
     TIP.innerHTML=h;TIP.style.display='block';moveTip(e);};
   el.onmousemove=moveTip;
   el.onmouseleave=()=>{TIP.style.display='none';};
