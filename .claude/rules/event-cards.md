@@ -266,6 +266,26 @@ the race mark takes the second slot. **There is no human-gated door in the build
 correct** - the company is human by default, so the gate would open on everybody and a mark that
 fires everywhere is furniture. 🧑 waits for the door that earns it.
 
+⛔ **AND SINCE #196 THE THREE FACES ARE NOT AUTHORED HERE EITHER. `RACE_ICON` IS THE ONE TABLE, AND
+`RACE_ICO` READS IT.** *(2026-08-19.)* These doors held the only pictograms in the game while the
+company sheet, the battle rail and the muster wall printed ◆ ▪ ⬢ out of a `RACE_ICON` authored as
+small/medium/huge BODY MARKS. Same three races, two symbols, on two screens a player crosses in a
+minute, which is #102's wrong-unit rule with the glyphs themselves as the units. The class table's
+`RACE_ICON` is the source now and this table takes `g:` from it; `RACE_ICO` still owns the door's
+WORDS, which is its own job. ⚠ **The dependency runs DOWNWARDS on purpose** - `RACE_ICON` is
+declared ~24,000 lines above `RACE_ICO` - because a `const` read from above its own declaration is
+the temporal-dead-zone throw that aborts the whole script, and this file has shipped it once.
+
+⛑ **THE COMPANION RULE, ON THE OTHER SIDE OF THE SAME GLYPHS: THE WORD COMES OFF A LIST AND STAYS
+WHERE ONE BODY IS STUDIED.** `cMark`/`rMark`/`rcMarks` are the only builders and `.bmk` the only
+box. The roster, the battle rail, the tavern strip, the muster wall and the aftermath's recruits
+show marks alone; the promotion card, the trade being PICKED at a level, the lore box that IS the
+explanation, and the camp's news line keep their words. **A symbol earns its place by sorting
+twelve rows at a glance and earns nothing on the one row you are already reading.** The word is
+never actually gone: `data-cls`/`data-race` open the full lore box where `bindLoreTips` runs, and a
+plain `title=` carries it where it does not - ⚠ and `bindLoreTips` STRIPS that title as it wires,
+or one mark opens two tooltips.
+
 ⚑ **A DOOR MAY BE BARE, AND THE FIRE'S RULINGS ARE.** The CAMPS deck is mostly judgments rather
 than actions - the debt, the aunt, the nine seconds - and a glyph forced onto a ruling would
 dilute the eight that mean something. **Bare reads as "this is you deciding, not doing".** 94 of 94
