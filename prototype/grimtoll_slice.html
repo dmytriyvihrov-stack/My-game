@@ -7344,7 +7344,11 @@ const CLASSES={
      No signature, no perks; he swings what he holds (a weapon defines the
      attack - concept §8), and picks a real trade on the sheet at his first
      level. `tradeOwed()` is the one test for that state. */
-  none   :{n:'NO TRADE YET',sig:'',perks:{}}
+  /* #197 - the NAME is CLASS now (user: *"not 'trade' but class"*). The KEY
+     is still `none` and `tradeOwed` still tests it: this is a vocabulary fix
+     on what the player reads, and renaming an identifier in eight places
+     would have put churn in a shared file for no visible gain. */
+  none   :{n:'NO CLASS YET',sig:'',perks:{}}
 };
 const PERKTIERS=8;
 /* two classes cast; everything else in the game that asked "is this a mage?"
@@ -7490,7 +7494,7 @@ function takeTrade(p,cls){
   p.cls=cls;
   p.kind=p.race==='ratkin'?'ratkin':p.race==='ogre'?'ogre':(KIND_BY_CLS[cls]||'human');
   (START_GEAR[cls]||[]).forEach(k=>{if(k&&GEAR[k])G.stash.push(k);});
-  remember(p,'Took up the '+CLASSES[cls].n.toLowerCase()+"'s trade at "+placeName()+'.');
+  remember(p,'Took up the '+CLASSES[cls].n.toLowerCase()+' class at '+placeName()+'.');
 }
 /* the one door every grant passes through. Returns what was actually
    written (0 at the cap), and raises the level while the xp clears the
@@ -7850,17 +7854,29 @@ function placeDlg(ax,ay,again){
   const CAP=MH-PAD*2;
   dlg.style.maxHeight=CAP+'px';
   const h=Math.min(dlg.offsetHeight||dlg.scrollHeight,CAP);
-  /* #104: callers hand NODE coords, which are design space - vy() here so
-     every card door maps once. An undefined ay centres in VIEW space.
-     ⚑ #156 - AND THE CAMERA IS PART OF THAT MAPPING NOW. The card is chrome
-     and does not scale, but it is ANCHORED to a place on the map, so where
-     that place is drawn is a question the camera answers. `wcamPt` is the one
-     door; without it a card would open beside where its node used to be at
-     ROAD and the whole point of anchoring it would be gone. Undefined coords
-     still mean "centre on the view" and never touch the camera. */
-  const p=(ax===undefined&&ay===undefined)?null:wcamPt(ax===undefined?0:ax,ay===undefined?0:ay);
-  const top=clamp((ay===undefined?MH/2:p.y)-h/2,PAD,Math.max(PAD,MH-h-PAD));
-  const left=clamp((ax===undefined?MW/2:p.x)-DLGW/2,PAD,Math.max(PAD,MW-DLGW-PAD));
+  /* ═══ #197 · EVERY CARD OPENS IN THE MIDDLE ════════════════════════════
+     (User, 2026-08-19: *"A lot of pictures are shown in one of the sides of
+     the screen. Show everething in the middle."*)
+
+     WHAT IT USED TO DO, kept because the argument was good and it is the
+     thing being overruled: #104 mapped a card to its NODE, and #156 put the
+     camera in that mapping so a card opened beside the place it was about
+     rather than beside where that place used to be drawn. The intent was that
+     the card belongs to a spot on the map.
+
+     ⛑ AND THE MAP GREW A PAINTED GROUND AND 96px SIGHTS UNDER IT. On a node
+     near an edge the anchor pinned a 620px card against that edge and clamped
+     it there, so THE DEBT opened hard left and SOMETHING IN ARMOUR opened hard
+     right, and the painting inside each one - which since stage 4 is the first
+     thing on the card - landed wherever the node happened to be. An anchor
+     that is clamped for half the map is not an anchor, it is a coin toss.
+
+     ⚠ THE CALLERS ARE UNTOUCHED AND THAT IS DELIBERATE. Every one of them
+     still hands its node coords, `DLGAX`/`DLGAY` still record them and
+     `replaceDlg` still works; only the arithmetic below stops reading them.
+     If the anchor is ever wanted back, it is this block and nothing else. */
+  const top=clamp(MH/2-h/2,PAD,Math.max(PAD,MH-h-PAD));
+  const left=clamp(MW/2-DLGW/2,PAD,Math.max(PAD,MW-DLGW-PAD));
   dlg.style.top=Math.round(top)+'px';
   dlg.style.left=Math.round(left)+'px';
   /* EVERY caller fills #wChoices AFTER revealing the card, so the first
@@ -11015,7 +11031,7 @@ const TUTSTEPS={
       'heads join the ladder. When this room settles, they will still be '+
       'walking with you.',
     a:()=>$('bTop')},
-  shove:{h:'HER TRADE',
+  shove:{h:'HER CLASS',
     t:'A spear fights at reach, and SPEAR WALL braces it: anything stepping '+
       'into her front takes most of a spear on the way in. A class is a set '+
       'of tricks like this one.',
@@ -24400,7 +24416,7 @@ function crewCards(scarred,xp){
         '</b><b class="abt">🩸 '+taken+'</b>'+
         (x&&x.got?'<b class="abx" title="experience, this fight">✦ +'+x.got+'</b>':'')+'</div>'+
       (up?'<div class="abline abuplne">'+
-        (tradeOwed(p)?'pick a trade on the sheet':'spend it on the sheet')+'</div>':'')+
+        (tradeOwed(p)?'pick a class on the sheet':'spend it on the sheet')+'</div>':'')+
       /* the blood strip goes LAST so it can run to the bottom edge of the card */
       (sc?'<div class="abline abscarline">carried off · '+sc.s.n.toLowerCase()+'</div>':'')+
       '</div>';}).join('')+'</div>';
@@ -25730,8 +25746,7 @@ function openCamp(spot,next,atPlace){
          go through payFx raw (no lootMul), so evPaidOf(f) is exact. */
       dlg.querySelector('.bd').innerHTML=cast(afterTxt)+hurtLine+
         evFxChips(evPaidOf(f))+evGearStrip(o.gear?[o.gear]:[]);
-      $('wChoices').innerHTML='<button class="choice" id="wOn"><b>Carry on</b>'+
-        '<i>'+(atPlace?'let the fire burn down':'reach the place ahead')+'</i></button>';
+      $('wChoices').innerHTML='<button class="choice" id="wOn"><b>Carry on</b></button>';/* #197 */
       $('wOn').onclick=()=>{dlg.classList.remove('on');worldTick();saveRun();next();};
       worldTick();};});
   drawNodes();
@@ -26994,7 +27009,7 @@ function drawInv(){
       (statPts>1?'S':'')+' TO SPEND. CLICK A TRAIT</div>':'')+
     /* #174 - the stranger's first level is a trade, and it is picked on the
        perks tab; this is the same call to action, pointing at the other room */
-    (tradeOwed(p)?'<div class="lbl" style="color:#8ca35a">A TRADE TO PICK. THE ★ PERKS TAB</div>':'')+
+    (tradeOwed(p)?'<div class="lbl" style="color:#8ca35a">A CLASS TO PICK. THE ★ PERKS TAB</div>':'')+
     /* #136 point 3 - the attributes take the width, the pools take the
        battle's narrow stack. Same two blocks, side by side. */
     '<div id="iStats">'+
@@ -27273,13 +27288,13 @@ function drawInv(){
     let tHTML;
     if(tradeOwed(p)){
       const trades=[...new Set(CLS_BY_RACE[p.race]||CLS_BY_RACE.human)];
-      tHTML='<div class="lbl" style="color:#8ca35a">A TRADE TO PICK · CLICK ONE · THE TOOL COMES WITH IT</div>'+
-        trades.map(k=>'<button class="pk buy" data-trade="'+k+'"><span class="tag">TRADE</span>'+
+      tHTML='<div class="lbl" style="color:#8ca35a">A CLASS TO PICK · CLICK ONE · THE TOOL COMES WITH IT</div>'+
+        trades.map(k=>'<button class="pk buy" data-trade="'+k+'"><span class="tag">CLASS</span>'+
           '<b>'+cIcon(k)+' '+CLASSES[k].n+'</b><i>'+CLASSES[k].sig+'</i></button>').join('')+
-        '<div class="pkfoot">A trade is picked once and kept. The perks come after it, at 2, 4, 6 and 8.</div>';
+        '<div class="pkfoot">A class is picked once and kept. The perks come after it, at 2, 4, 6 and 8.</div>';
     }else{
-      tHTML='<div class="lbl" style="color:#8a7449">NO TRADE YET</div>'+
-        '<div class="pknone">Hired without one. The first level is where a trade is picked, and it '+
+      tHTML='<div class="lbl" style="color:#8a7449">NO CLASS YET</div>'+
+        '<div class="pknone">Hired without one. The first level is where a class is picked, and it '+
         'is a fight or two away.</div>';
     }
     pk.innerHTML=tHTML;
@@ -30050,8 +30065,7 @@ function openGoalCard(spot,next){
       '<div class="qgoal"><span class="ql">SECOND OBJECTIVE</span>'+
       '<span class="qt">Recruit at least someone else to your party.</span>'+
       '<span class="qp">morale +'+GOAL_PAY+' when it is done</span></div></div>'+
-    '<button class="choice" id="wV"><b>Then there should be more of you.</b>'+
-    '<i>it goes up beside the contract</i></button>';
+    '<button class="choice" id="wV"><b>Then there should be more of you.</b></button>';/* #197 */
   dlg.classList.add('on');
   placeDlg(spot.x,spot.y);
   $('wV').onclick=()=>{G.pending=null;dlg.classList.remove('on');worldTick();saveRun();next();};
@@ -32067,7 +32081,7 @@ function openReturner(spot,next,rec){
   const done=after=>{
     G.dismissed.splice(G.dismissed.indexOf(rec),1);
     dlg.querySelector('.bd').textContent=after;
-    ch.innerHTML='<button class="choice" id="wV"><b>Keep moving</b><i>the road is long</i></button>';
+    ch.innerHTML='<button class="choice" id="wV"><b>Keep moving</b></button>';   /* #197 */
     $('wV').onclick=()=>{G.pending=null;dlg.classList.remove('on');worldTick();saveRun();next();};
   };
   const mk=(html,fn,dis)=>{const b=document.createElement('button');b.className='choice';
@@ -32125,7 +32139,12 @@ function openVignette(spot,next,atPlace){
         vHead=(v.t==='ON THE ROAD'||v.t==='AT THE FIRE')?v.t:vLead+' — '+v.t;
   dlg.innerHTML='<h3>'+vHead+'</h3>'+
     '<div class="bd">'+body+evFxChips(evPaidOf(v.fx))+'</div>'+
-    '<button class="choice" id="wV"><b>Keep moving</b><i>it was not a decision</i></button>';
+    /* #197 - no sub-line on a door that is not a decision (user: *"When it is
+       a simple door don't need smaller text below"*). Four of these carried a
+       caption whose whole content was that there was nothing to decide, which
+       is a sentence about the absence of a sentence. The event outcome's
+       "Back to the road" has never had one and is the model. */
+    '<button class="choice" id="wV"><b>Keep moving</b></button>';
   dlg.classList.add('on');
   placeDlg(spot.x,spot.y);
   $('wV').onclick=()=>{G.pending=null;dlg.classList.remove('on');worldTick();saveRun();next();};
@@ -33477,8 +33496,27 @@ function openHire(){
        thing he is not yet). The reason he is cheaper is one clause at the
        end of his row, and #157's rule holds: no paragraph about him. */
     const none=r.cls==='none';
-    b.innerHTML='<b>'+r.name+' “'+r.nick+'” — '+(none
-        ?'<span style="color:#a08a5e">'+cIcon('none')+' no trade yet</span>'
+    /* ═══ #197 · THE FOUR ADJECTIVES GO ONTO THE NAME ══════════════════
+       (User, 2026-08-19, the stat line boxed in red on all three strangers:
+       *"Hide"*.)
+
+       ⚑ IT IS #157 ARRIVING AT THE LAST LINE ON THE ROW. That entry moved the
+       PERSONALITY to a hover on exactly this argument - *"the name is the
+       thing you compare, the sentence is the thing you look up"* - and left
+       the four stat adjectives printed in full underneath, which is the
+       longest line on the row and the one nobody can compare by eye anyway
+       ("Not strong. Clumsy. Plain. Nervous." against "Weak. Heavy-handed.
+       Quick to see it. Nervous.").
+
+       ⛔ HIDDEN, NOT DELETED, AND THE DIFFERENCE IS THE WHOLE DECISION. This
+       is the one screen where the numbers decide something; a row with no
+       stats at all would be a name, a class and a price, and hiring would be
+       blind. `tellLine` moves to the NAME's own hover, beside the trait's,
+       which is where #157 put the other half of the same sentence. */
+    b.innerHTML='<b><span title="'+esc(tellLine(s))+'" '+
+        'style="cursor:help;border-bottom:1px dotted var(--e3)">'+
+        r.name+' “'+r.nick+'”</span> — '+(none
+        ?'<span style="color:#a08a5e">'+cIcon('none')+' no class yet</span>'
         :'<span data-cls="'+r.cls+'">'+cIcon(r.cls)+' '+CLASSES[r.cls].n.toLowerCase()+'</span>')+
       ', <span data-race="'+r.race+'">'+rIcon(r.race)+' '+r.race+'</span></b>'+
       '<i>'+price+' crowns'+
@@ -33494,10 +33532,9 @@ function openHire(){
          and nine on the screen; the name is the thing you compare, the
          sentence is the thing you look up. `title` and not a lore tip because
          the personality is rolled per person, not per class. */
-      '<br><span style="color:#a08a5e">'+tellLine(s)+'</span>'+
       '<br><span title="'+esc(traitShort(r))+'" style="cursor:help;border-bottom:1px dotted var(--e3)">'+
       TRAITS[r.trait].n+'</span>'+
-      (none?' · <span style="color:#8ca35a">picks up a trade at the first level</span>':'')+
+      (none?' · <span style="color:#8ca35a">picks up a class at the first level</span>':'')+
       (!fits?'<span class="hurt"> · no room left</span>':
         !afford?'<span class="hurt"> · cannot afford</span>':'')+'</i>';
     if(!b.disabled)b.onclick=()=>{
@@ -33527,7 +33564,12 @@ function openHire(){
   }
   const done=document.createElement('button');
   done.className='choice';
-  done.innerHTML='<b>Take the road. They can wait for somebody else.</b>';
+  /* #197 - (user: *"show feet where icon is leaving option"*). The muster is
+     hand-built rather than rendered through openEvent, so #154's intent
+     glyphs never reached it; this door is a walk-away and CHOICE_ICO.leave is
+     the mark every walk-away on the road already wears. Read out of the table
+     and never typed, per #154's own rule. */
+  done.innerHTML='<b>'+CHOICE_ICO.leave+' Take the road. They can wait for somebody else.</b>';
   done.onclick=()=>{G.pending=null;G.hiredHere=0;QMOPEN=false;
     dlg.classList.remove('on');worldTick();saveRun();};
   list.appendChild(done);
