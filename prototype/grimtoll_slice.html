@@ -114,6 +114,23 @@
   /* spacing. ⚠ A padding over 24px is not spacing, it is GEOMETRY (a reserved
      gutter, a scroll footer paired with a negative margin) and keeps its px. */
   --p1:2px; --p2:4px; --p3:6px; --p4:9px; --p5:12px; --p6:16px; --p7:24px;
+  /* ═══ #197 · ONE HEIGHT FOR EVERY CHIP ON THE WORLD BAR ═══════════════════
+     (User, 2026-08-19, red box round the bar's left group: *"Make heights
+     same size, so it looks nicer"*.)
+
+     ⚑ IT IS GEOMETRY AND NOT ONE OF THE THREE SCALES, which is why it is a
+     token of its own rather than a `--p` step: `.claude/rules/ui-scales.md`
+     governs type, edge and spacing, and a shared BOX SIZE is none of them.
+     Same footing as `#wBar`'s own 64px right-hand reservation, and it carries
+     its arithmetic for the same reason.
+
+     30 IS NOT A TASTE. It is the tallest chip's natural height and the only
+     one that is load-bearing: the party chip holds a 24px painted bust plus
+     its own 1px border, plus 2px of `--p1` and 1px of chip border top and
+     bottom. Everything else was shorter only because a 10px word is shorter
+     than a portrait. The bar is 42, so 30 leaves 6px of air above and below.
+     ⚠ IF THE BUST EVER CHANGES SIZE, THIS NUMBER MOVES WITH IT. */
+  --barChip:30px;
   /* ═══ #81 - THE BATTLE CLOCK, ONE NUMBER ═══════════════════════════════
      Every duration on the battlefield is written as a base × this, so the
      whole board slows down TOGETHER and the relationship between a blow and
@@ -2015,6 +2032,11 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:var(--f
          --p scale on purpose and a scale step must not be substituted here. */
       padding:0 64px 0 var(--p5);gap:8px;flex:none;position:relative}
 #wBar .sep{flex:1}
+/* ⛔ #197 - SCOPED TO THE BAR, which is #187's rule about shared furniture:
+   `.cchip`, `.bcchip`, `.rseg` and `.tchip` are drawn only inside #wCompany
+   and #wRes today, and an unscoped height would follow the first one of them
+   that is ever reused on another screen. */
+#wBar .cchip,#wBar .bcchip,#wBar .rseg,#wBar .tchip{min-height:var(--barChip)}
 #wCompany{display:flex;align-items:center;gap:6px;min-width:0}
 #wRes{display:flex;align-items:center;flex:none}
 /* the counted resources: one strip, segments sharing borders */
