@@ -2058,7 +2058,7 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:var(--f
 /* ── #104: the second row is DELETED ("delete this big black empty space").
    The contract, the day plaque and the sun/moon disc float OVER the map,
    which is what Battle Brothers does with all three. They are children of
-   #wMap so drawNodes' sweep (.node,.elab,.mlegend) never touches them. ── */
+   #wMap so drawNodes' sweep (.node,.elab) never touches them. ── */
 /* #106 point 3: the contract is TWO LINES now - what it is on top, what it
    pays under - which took it from 451px of map to about 300, and the badge
    is BB's golden trophy, the mark that says MAIN QUEST rather than a bullet. */
@@ -2111,10 +2111,17 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:var(--f
    ⚑ #112 point 1 kept the middle and moved it UP: it is a child of #wBar
    now, so `left:50%` is half the BAR and `top:50%` centres it on the 42px
    row. 36px tall in a 42px bar is 3px of air each side, measured. */
+/* ⛔ #194 - NO `cursor:help`, BECAUSE THERE IS NO LONGER ANYTHING BEHIND IT.
+   (User, 2026-08-19: *"Delete hover from days (it doesnt need explanation)"*.)
+   The plaque reads DAY 3 DUSK over a place name, and a tooltip explaining that
+   a day is how long you have been on the road was a paragraph attached to the
+   one readout on this screen nobody has ever had to ask about. The help cursor
+   is half of that promise and it goes in the same edit: a chip that offers a
+   hover and then gives nothing is the defect this surface was built to stop. */
 #wPlaque{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:6;height:36px;
          display:flex;align-items:center;gap:9px;padding:0 var(--p5) 0 var(--p3);
          background:linear-gradient(180deg,#221a10,#14100a);
-         border:1px solid var(--e3);cursor:help;white-space:nowrap;
+         border:1px solid var(--e3);white-space:nowrap;
          box-shadow:inset 0 0 0 1px rgba(16,12,6,.95),0 3px 10px rgba(0,0,0,.55)}
 #wPlaque .d1{font-family:var(--display);font-size:var(--fs4);letter-spacing:.07em;color:#c2b493}
 #wPlaque .d1 b{font-size:var(--fs6);color:#e0d3b4}
@@ -2253,7 +2260,36 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:var(--f
 .node.live .nm{color:#f0e6c0;background:rgba(20,14,6,.9);box-shadow:0 0 0 1px #4d3c22}
 .node.live:hover .glyph{background:var(--blood);border-color:var(--blood-lit)}
 .node.here .glyph{border-color:var(--blood-lit);background:var(--blood)}
-.node.done{opacity:.45}.node.far{opacity:.38}
+/* ═══ #194 · A PLACE YOU HAVE BEEN STAYS ON THE MAP ══════════════════════
+   (User, 2026-08-19: *"На карте оставлять подсвеченными пройденные события"* -
+   leave the events you have walked through lit.)
+
+   `done` was .45 and `far` is .38, which is a SEVEN PERCENT difference between
+   "you fought here" and "you have never heard of this". Measured against the
+   painted terrain #190 put underneath, both of them are the same thing: gone.
+   The map was therefore forgetting the run as fast as the player made it, on
+   the one screen whose whole job is to show a journey.
+
+   ⛔ IT MAY NOT BECOME A SECOND KIND OF LIVE, AND THAT IS WHAT DECIDES THE
+   TREATMENT. Gold-and-beating is "you may walk here" and it is the only thing
+   on this map that is allowed to say so - a bright, still node reading as an
+   offer would cost a click to discover. So `done` gets the opacity and gives
+   up everything else: no glow, no `nodebeat`, a desaturated glyph, and the ✓
+   drawNodes already writes into the plate. Lit, and plainly spent.
+
+   ⚑ THE COLOUR IS NOT NEW, IT IS THE WALKED ROAD'S. `#8a7d63` is what
+   drawMap strokes a road you have already used, so a walked node and a walked
+   road now say the same thing in the same colour instead of two.
+
+   ⚠ IT SITS AFTER `.node.t-*` ON PURPOSE. Those set `border-color` at the same
+   specificity (0,2,1), so a `done` rule written up beside `.node.live` would
+   lose the cascade to whichever type the node happens to be, silently, on five
+   of seven types. This one is below them; see the block after the type list.
+   ⚠ AND `filter` ON `.glyph` DESATURATES ITS CHILDREN TOO - the painting and
+   the ✦/✓ marks with it. That is wanted here and it is the reason the goal
+   trophy is unaffected: `goal` is computed as `!G.visited[k]`, so a node can
+   never be `goal` and `done` at once. */
+.node.done{opacity:1}.node.far{opacity:.38}
 .node.locked{opacity:.28}
 /* B05: where the company is walking to, while it is walking. It reads as
    busy rather than as available — and nothing on the map is clickable. */
@@ -2277,7 +2313,10 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:var(--f
 .node.mark .nm{color:#cfe0a8;background:rgba(18,22,10,.92);box-shadow:0 0 0 1px #4f6033}
 .node.mark .nm::before{content:"\2726 ";color:#8ca35a}
 .node.mark.live{opacity:1}
-.node.mark.done{opacity:.45}
+/* #194 - a dug-up cache follows every other walked place: it is lit and it is
+   spent. The ✦ still goes, because "you know what is buried here" is a thing
+   that stops being news the moment you have the bag. */
+.node.mark.done{opacity:1}
 .node.mark.done .nm::before{content:""}
 /* ═══ #150 · WHERE THE CONTRACT ENDS ════════════════════════════════════
    (User, 2026-08-13: *"Higlht place for a quest on the map - so i see where
@@ -2378,6 +2417,45 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:var(--f
 .node.sighted.live:hover .glyph,.node.sighted.here .glyph{background:transparent}
 .node.sighted.live .glyph img{--ring:var(--g4)}
 .node.sighted.live:hover .glyph img,.node.sighted.here .glyph img{--ring:var(--blood-lit)}
+/* ═══ #194 · AND HERE IS WHAT A WALKED NODE ACTUALLY LOOKS LIKE ══════════
+   The opacity is up beside `.node.far`; this is the rest of it, and it lives
+   DOWN HERE because both halves of the map's colour language are above it and
+   both would otherwise win the cascade on equal specificity: `.node.t-*
+   .glyph` sets the chip border (0,2,1) and `.node.sighted .glyph img` sets the
+   cut-out's ring (0,2,2). A `done` rule written beside `.node.live` loses to
+   the first on five of seven types and to the second on every painted node,
+   which is exactly the kind of failure that ships looking like nothing at all.
+
+   ⚑ ONE FILTER COVERS BOTH KINDS OF NODE, which is why it is a filter and not
+   two colour lists. `filter` on `.glyph` reaches the whole subtree: the chip's
+   SVG type mark, the 96px painting, and the four stacked drop-shadows that
+   draw a cut-out's ring. So a walked place goes quiet in one declaration and
+   stays quiet the day somebody adds a third kind of glyph.
+   ⚠ `animation:none` IS LOAD-BEARING, not tidiness. `nodebeat` is bound to
+   `.node.live .glyph`, and a node made live again by a re-opened road drops
+   `done` with it - but THE GROUND OPENS can leave a walked node reachable, and
+   a still, lit, beating node would read as an offer twice over.
+
+   ⛔ THE FILTER IS `saturate` AND NOTHING ELSE, AND THAT WAS MEASURED RATHER
+   THAN CHOSEN. The first cut was `saturate(.42) brightness(.84)`, and two
+   captures of it against `saturate(.62) brightness(1.02)` were INDISTINGUISH-
+   ABLE at map scale, which is the point at which this file says stop looking
+   and measure. Drawing a done painting into a canvas through each filter and
+   averaging over its non-transparent pixels (Blood on the Road, 2020 px):
+
+       raw            luma 36.6   saturation .636
+       saturate(.42)  luma 30.3   saturation .313   <- brightness(.84) applied
+
+   So the SATURATION half is doing all the work - it halves the colour, which
+   is exactly the "spent" signal wanted - and the brightness half moves luma
+   6.3 points on a painting that is already at 36 out of 255. That is a 17%
+   dim bought for no visible gain, on the one state whose whole instruction
+   was *leave them lit*. It is deleted; a hair of brightness goes back to pay
+   for the perceptual darkening desaturation causes on its own. */
+.node.done .glyph{filter:saturate(.45) brightness(1.05);box-shadow:none;animation:none;
+  border-color:#8a7d63}
+.node.done.sighted .glyph img{--ring:#8a7d63}
+.node.done .nm{color:#b8aa8b;background:rgba(12,9,4,.86);box-shadow:0 0 0 1px #4a4030}
 /* our own confirm dialog — see ask(). The browser's is blocked in the
    published sandbox, which silently broke every yes/no in the game. */
 #askWrap{position:fixed;inset:0;z-index:200;display:none;align-items:center;justify-content:center;
@@ -2390,14 +2468,33 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:var(--f
 #askB{font-family:var(--body);font-size:var(--fs4);color:var(--g-body);line-height:1.5;
   white-space:pre-wrap}
 #askOpts{display:flex;flex-direction:column;gap:6px}
-/* #103 point 5: RULES, MENU and this legend were three boxes stacked on one
-   corner (left 10, 86 and 10 again), and the screenshot showed all three at
-   once. One row now: RULES ends near x85, MENU runs 100 to ~171, the legend
-   starts at 196. It is pointer-events:none, so it costs no clicks. */
-/* #156 - 5 to 13, and it stays a child of #wMap rather than of the camera:
-   it is anchored to the CONTAINER (left 196, bottom 9), so scaling it would
-   send it off the corner it was measured into. */
-.mlegend{position:absolute;left:196px;bottom:9px;font-family:var(--mono);font-size:var(--fs1);color:#8a7449;background:rgba(14,10,5,.85);border:1px solid var(--e1);padding:var(--p2) var(--p4);pointer-events:none;z-index:13}
+/* ═══ ⛔ #194 · THE MAP LEGEND IS DELETED, AND IT HAD STOPPED BEING TRUE ═══
+   (User, 2026-08-19: *"i feel we can delte this agenda, it doesnt work
+   properly now"*, with the strip boxed in red across the bottom of the map.)
+
+   `.mlegend` ran along the map's foot reading "◆ battle · ◆ trade · ◆ strange
+   · ◆ camp · ◆ muster · ━ open road · ━ walked · ┄ not from here". It was
+   right in #103, when a node WAS a 33px chip with a coloured diamond in it.
+   It is wrong now, in three separate ways, and every one of them arrived from
+   a different entry that had no reason to look here:
+
+   · #114/#115/#116 replaced the diamond with a 96px PAINTING on every node
+     that has one. The legend was keying a colour the player mostly cannot
+     see any more - measured on the shipped map, 18 of 25 nodes draw a
+     painting and only 7 still draw the chip the legend describes.
+   · it named five of the seven node types. `town` (#d8d5cc) and `event`
+     (#a08a5c) were never in it, so the two commonest things on the map were
+     the two the key did not cover.
+   · #190 painted the terrain under it. A 10px mono row at colour #8a7449 on
+     `rgba(14,10,5,.85)` was legible over the old procedural near-black; over
+     the painted valley floor it is a smear at the bottom of the screen.
+
+   ⚑ AND NOTHING REPLACES IT, WHICH IS THE POINT. The node's own hover already
+   answers "what is that?" in a sentence, the type tag rides the glyph, and
+   the painting says it fastest of the three. A key is what a map needs when
+   its marks are arbitrary; these stopped being arbitrary two rounds ago.
+   ⚠ If a legend is ever wanted back, it is a NEW decision measured against
+   the painted ground, not this rule uncommented. */
 /* the dialog now sits ON the map, anchored to the place it happens */
 /* the map dialog's choices stick too — same reason as .popts above */
 /* ⚑ #164: the footer's bottom padding, its negative margin and its sticky offset
@@ -22677,7 +22774,12 @@ window.LINT=function(){
       edgesFrom(k).forEach(e=>{if(path.indexOf(e[1])<0)walk(e[1],path.concat(k));});
     })('hold',[]);
     if(!routes.length)hit('map','graph','no route from the hold to the Snare');
-    ['camp1','mother','vill','hire'].forEach(must=>{
+    /* #194 - `wed` joins the spine list, and the reason it is listed rather
+       than trusted is the whole point of this check: the clan wedding was made
+       mandatory by taking it OUT of FLOATING, so nothing else in the file can
+       still deal it. If a future edge ever routes around this node, the card
+       stops happening entirely and silently. */
+    ['camp1','mother','vill','hire','wed'].forEach(must=>{
       const miss=routes.filter(r=>r.indexOf(must)<0).length;
       if(miss)hit('map',must,miss+' route(s) to the Snare skip it — it is meant to be spine');});
     /* every fork must offer a genuine choice of length, or it is not a fork */
@@ -27902,6 +28004,41 @@ const NODES={
      `armourDue`, which used to anchor off `G.visited['hire']` and would now
      fire the ambush on top of the Fen-Mother. */
   hire  :{x:782,y:200,n:'The Muster Field',    t:'hire', ev:'hire'},
+  /* ═══ #194 · THE CLAN WEDDING IS A PLACE NOW, NOT A CARD YOU MIGHT DRAW ══
+     (User, 2026-08-19: *"Ratking weedin I want as mandatory event on the main
+     paths (you can add it after dogs atack) on the global map"*.)
+
+     It was in `FLOATING` - one of sixteen cards competing for seven slots, so
+     a given run met it a little under half the time, and it is the card the
+     sin ledger, the kin reinforcement and AFTER.wedding's morale bill are all
+     written against. A run that never dealt it never met any of that.
+
+     ⛔ IT IS ONE STOP LATER THAN THE ASK, AND THE REASON IS ARITHMETIC. "After
+     the dogs" means between `camp1` (668,322) and `hire` (782,200), which are
+     167px apart; MAP_MIN_GAP is 90, so a node between them lands 83px from
+     each and fails before anything else is considered. The plate rule is
+     harsher still: a pair needs 110px across OR 79px down, and camp1→hire has
+     only 114 of x to spend, so ONE of the two hops can use it and the other
+     must find 79px of y in a 122px drop. The only shapes that survive put the
+     wedding on top of the road that runs from the muster down into the Fen,
+     or move The Muster Field 80px to buy the room. The user was shown the
+     three options with those numbers and chose this one: nothing else on the
+     map moves. See the working in the entry.
+
+     ⚑ AND THE BEAT SURVIVES THE MOVE INTACT. The corridor's own note is "the
+     dogs show you that you are too few; the muster answers it; the Fen spends
+     what you bought" - the wedding lands between the answer and the spending,
+     which is the one window in the act where the company is freshly at
+     strength and has not yet paid for it. That is the right place to be
+     offered a massacre. ⚠ It costs +1 day on a corridor every run walks.
+
+     ⚠ NAMED, LIKE EVERY OTHER FIXED NODE. `MAP_SIGHT.wedding` has been drawn
+     since #114 and a sight shows from minute one, so the picture announces a
+     wedding whether or not the plate does; a rumour line over it would be the
+     only hint on the map that its own painting contradicts. "The Clan Wedding"
+     is 16 characters, which wraps to the two lines NAME_H is measured for -
+     "A Wedding on the Road" is 21 and wraps to three. */
+  wed   :{x:806,y:310,n:'The Clan Wedding',    t:'event',ev:'wedding'},
   /* ── the spine, and the head of the water ─────────────────────────── */
   /* named for the ground, not for what is on it — see the note at `snare` */
   mother:{x:832,y:418,n:'The Black Fen',       t:'weird',ev:'mother'},
@@ -28360,7 +28497,11 @@ const EDGES=[
   /* ══ THE FIRST CORRIDOR. The dogs show you that you are too few, the
      muster answers it, the Fen spends it. Nobody skips any of this. ═══ */
   ['camp1','hire',1,2,'to the muster wall'],
-  ['hire','mother',1,2,'down into the fen'],
+  /* #194 - one leg became two: the muster, then the clan wedding standing in
+     the road, then the fen. The corridor is a day longer for it and that day
+     is the price of the beat, the same way #73 paid one for The Long Fire. */
+  ['hire','wed',1,2,'south, and something is loud on it'],
+  ['wed','mother',1,2,'down into the fen'],
   /* the act break: the beast is dead, and there is a village before the rest of it */
   ['mother','vill',1,2,'to warm beds'],
   /* ══ CROSSROAD B — the small fork the user liked: a fight, or not.
@@ -28614,8 +28755,15 @@ function branchOf(from){
    2026-08-01 when Bonepicker's became the fixed refit node between the
    Stone Field and the ambush: a fixed node and a floating copy of the same
    card is the same double-fire bug wearing a different hat. */
+/* ⛔ #194 - `wedding` IS NOT IN THIS LIST ANY MORE, and it must not come back.
+   It is a fixed node on the first corridor now (see `wed` in NODES), and a
+   card that is BOTH fixed and floating is dealt to a slot as well, so one run
+   in two would meet the clan wedding twice - the second time with `spent`
+   already set, which is a card the player reads as broken rather than as a
+   callback. This pool is the one place that decides, and the deck is fifteen
+   cards for seven slots, which is still comfortably more road than slots. */
 const FLOATING=['toll','pedlar','chapel','wain','bloom','milestone','saltwives',
-  'ratcart','hollow','ogrestone','taxman','bogbody','wedding','aqueduct','shipwreck','sinkhole',
+  'ratcart','hollow','ogrestone','taxman','bogbody','aqueduct','shipwreck','sinkhole',
   /* #74 - the heaviest card in the deck. It is in the floating pool rather
      than on a node because meeting them is a thing that happens to you, not
      a place you decided to walk to. */
@@ -29374,18 +29522,24 @@ function drawMap(){
 }
 function drawNodes(){
   const map=$('wMap');
-  /* ⚑ #156 - NODES AND TRAVEL LABELS GO IN THE CAMERA, THE LEGEND DOES NOT.
-     The first two are placed from a NODE's coordinates, which is design space,
-     so they belong to the layer the camera moves. `.mlegend` is anchored to
-     the CONTAINER (left 196, bottom 9) and would be scaled off its own corner.
-     The fallback is `map` so a stripped page still draws a map. */
+  /* ⚑ #156 - NODES AND TRAVEL LABELS GO IN THE CAMERA. They are placed from a
+     NODE's coordinates, which is design space, so they belong to the layer the
+     camera moves. The fallback is `map` so a stripped page still draws a map.
+     ⚠ #156's third case was the legend, which was anchored to the CONTAINER
+     and would have been scaled off its own corner. #194 deleted it - see the
+     `.mlegend` note in the stylesheet - so this function now builds exactly
+     two kinds of thing and both of them ride the camera. */
   const cam=$('wCam')||map;
   /* the buttons about to be destroyed may be the one under the cursor, and a
      removed element never fires mouseleave. See hideTip(). */
   hideTip();
   /* ⚠ SWEPT OFF #wMap AND NOT OFF THE CAMERA, deliberately: querySelectorAll
      finds them at any depth, so this keeps working whichever layer they were
-     appended to, including anything left over from before #156. */
+     appended to, including anything left over from before #156.
+     ⚠ `.mlegend` STAYS IN THIS SELECTOR though the builder is gone, and it is
+     not dead code: a page reloaded over a build that still had one, or a save
+     restored into a stale DOM, leaves the strip behind forever otherwise. It
+     costs one selector and it is the only thing that can ever remove it. */
   map.querySelectorAll('.node,.elab,.mlegend').forEach(n=>n.remove());
   const open=G.pending?[]:edgesFrom(G.at).map(e=>e[1]);
   /* what KIND of thing waits there, in one word the palette already taught */
@@ -29507,12 +29661,10 @@ function drawNodes(){
     l.innerHTML=e[2]+'d';
     cam.appendChild(l);});      /* #156 - design space, so it rides the camera */
   $('wLock').classList.toggle('on',!!G.pending);
-  const lg=document.createElement('div');lg.className='mlegend';
-  lg.innerHTML='<b style="color:#c15d55">◆</b> battle · <b style="color:#d9bd7e">◆</b> trade · '+
-    '<b style="color:#e28fb4">◆</b> strange · <b style="color:#7fa8c9">◆</b> camp · '+
-    '<b style="color:#8ca35a">◆</b> muster · <span style="color:#d9bd7e">━</span> open road · '+
-    '<span style="color:#8a7d63">━</span> walked · <span style="color:#4a3a22">┄</span> not from here';
-  map.appendChild(lg);   /* #156 - CHROME: container-anchored, never scaled */
+  /* #194 - the legend was built here and is deleted. See the `.mlegend` note
+     in the stylesheet for why: it keyed a coloured chip that 18 of 25 nodes
+     stopped drawing, it never covered `town` or `event`, and the painted
+     terrain took the last of its contrast. */
   /* #156 - the bar is rebuilt with the map so a stop pressed on one screen is
      still lit on the next, and the camera is re-asserted because a fresh set
      of nodes is exactly when a stale transform would show. */
@@ -30240,11 +30392,14 @@ function worldTick(){
     pet:{t:(PETS[petKey]?PETS[petKey].n:'A companion'),col:'#8ca35a',
       d:(petKey&&PETS[petKey]?PETS[petKey].d:'A companion follows the company.'),
       x:'Assigned to the Captain. Check the company screen to change or remove it.'},
-    day:{t:'DAY '+G.day,col:'var(--g4)',
-      d:'How long the company has been on this contract. Every fourth one is a payday, '+
-        'walking or sitting.'+(destN?'<br><br>Walking to '+destN.n+'. Nothing on '+
-        'the map moves until you arrive.':hereN?'<br><br>You stand at '+hereN.n+'.':''),
-      x:'The sun holds still while you decide.'},
+    /* ⛔ #194 - `day` IS GONE FROM THIS TABLE, not merely unbound. (User:
+       *"Delete hover from days (it doesnt need explanation)"*.) An entry left
+       here with no reader is the next session's ten minutes: it greps as a
+       live tooltip, it goes on quoting `hereN`/`destN`, and the first person
+       to notice nothing shows it "fixes" the binding. Everything it said is
+       already on the surface - the plaque prints DAY N and the place name,
+       the disc prints the hour, and the payday clause is the PAYDAY chip's
+       own hover, where the arithmetic actually lives. */
     quest:{t:'THE CONTRACT',col:'var(--g4)',
       /* #156 - the errand went with the letter (see #wQuest). This hover is now
          the ONE place the whole job is written out, because the tour step that
@@ -30286,7 +30441,11 @@ function worldTick(){
     el.onmousemove=moveTip;el.onmouseleave=()=>{TIP.style.display='none';};};
   document.querySelectorAll('#wBar [data-w]').forEach(el=>{
     const inf=WTIPS[el.dataset.w];if(inf)bindW(el,inf);});
-  bindW($('wPlaque'),WTIPS.day);bindW($('wDisc'),WTIPS.day);bindW($('wQuest'),WTIPS.quest);
+  /* #194 - the plaque and the disc no longer bind anything. They were the two
+     callers of WTIPS.day and both are the same readout, so both go: the disc
+     IS the day plaque's clock face and giving it a hover the plaque has lost
+     would leave half a tooltip on one screen. */
+  bindW($('wQuest'),WTIPS.quest);
   /* hovering a company relic says exactly what it does */
   $('wCompany').querySelectorAll('[data-tri]').forEach(el=>{
     bindTip(el,el.dataset.tri,null);});
