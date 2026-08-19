@@ -124,7 +124,7 @@ moving the project off Drive.
 | | |
 |---|---|
 | **Netlify Drop** | app.netlify.com/drop, drag `index.html` on, URL in ten seconds, no account |
-| **itch.io** | the right home for a real playtest: upload as an HTML game, put a password on it |
+| **itch.io** | **built and documented since #203.** `tools\build_itch.ps1` writes the upload zip (the player build, index.html at the zip's root, checked by reading the zip back) and [`ITCH_PAGE.md`](ITCH_PAGE.md) holds the page text, the cover, the screenshots and the four settings that matter. ⛔ **The embed must be 1280x720**: the stage scales as one piece, so a smaller frame shrinks the 10px type floor with it |
 
 ⛔ **Not the Claude artifact.** That route was abandoned at 8f.110 after a day of
 bisection: the share check reads the page whole, gives one sentence and no reason, and

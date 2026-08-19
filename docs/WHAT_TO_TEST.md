@@ -26,6 +26,78 @@
 
 ---
 
+## 🕹 THE ITCH BUILD, AND WHAT IT FOUND  *(#203 · 2026-08-19 · build log 8f.225)*
+
+*(Your ask: "подготовь билд на итч. И сделай описание проекта под итч (исходя из моих сообщений про
+игру)".)*
+
+**Everything for the itch page is in one folder:** `C:\Users\USER\grimtoll-itch\` holds
+`rabblebound-itch.zip` (13 MB, the upload), `cover_630x500.png`, and `screenshots\` with five
+1920x1080 pictures. The words to paste are [`ITCH_PAGE.md`](ITCH_PAGE.md), and it also lists the
+four settings that matter on the itch form.
+
+### 1. The build, if you want to check it before uploading
+
+**How to reach it in three steps:** unzip `rabblebound-itch.zip` anywhere · open `index.html` ·
+play. That is exactly what itch does with it.
+
+**What should happen:** the game opens with no ⚙ cog in the corner, no WIN NOW, no LINT, no TEXT
+tool, and no ⚙ Playtest notes row in the menu. Sound, art and the painted map are all in the one
+file, and nothing is downloaded.
+
+**What would be a bug:** a blank frame (that means index.html was not at the root of the zip, and
+the build script refuses to produce that), silence, or any developer button showing up.
+
+**To rebuild it yourself:**
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File tools\build_itch.ps1
+```
+
+### 2. ⛔ The thing this entry actually found: a browser that blocks storage killed the game
+
+itch does not serve your game from itch.io. It serves it from its own domain, inside a frame on
+the page, and a browser set to block third-party storage does not give that frame an empty save
+slot: **it makes asking for one an error**. Three lines near the top of the build asked for one
+before anything else ran, and the whole script stopped there.
+
+**What that looked like, measured, not guessed:** the title, YOU CANNOT AFFORD TO BE GOOD TO
+EVERYONE under it, and **no buttons at all**. Not a crash a player could report. A front door that
+looks like the game is simply badly made.
+
+**What should happen now:** the game opens and plays normally, and the line under the menu buttons
+reads *"this browser is blocking storage: the run will not survive the tab"* instead of *"vertical
+slice · act one"*. **You can see it for yourself:** in Chrome, open the site settings for the page
+(the icon left of the address bar), set Cookies and site data to blocked, and reload.
+
+**What would be a bug:** the front door with no buttons on any browser or any embed, or that
+warning line showing up in a browser where saving actually works.
+
+### 3. The embed size is not a taste, and it is the one number to get right on the form
+
+The whole game is one 1280x720 picture that scales as a unit, so the frame size on the itch page
+multiplies **every letter in the game**. Measured: a 960-wide embed renders at 0.75, which puts the
+10px floor we spent #164 establishing at 7.5px.
+
+**Set the viewport to 1280 x 720 and tick the fullscreen button.** If your page theme is too narrow
+for it, widen the theme rather than the frame.
+
+### 4. What I did NOT fix, and why
+
+Taking the screenshots turned up a real defect: on the after-battle screen, **with six or more crew,
+a long nickname breaks in the middle of the word** ("Ilka "Weatherhe / ad" Renn"). I measured it
+before touching it: the name column is 131px at four across and the longest nickname is 80px, so it
+only bites when the card count goes to six. The property that causes it (`overflow-wrap:anywhere`)
+is also what stops that card overflowing, and the alternative clips the name instead of wrapping
+it, so the honest fix is a small piece of layout work on that card with its arithmetic in hand.
+**It is written down in [`SHIPPED.md`](SHIPPED.md) under #203, and it is not in any of the five
+screenshots.**
+
+### 5. Two sentences for the page, if anybody asks
+
+The build saves in the browser and installs nothing, and a run is act one: eighteen to twenty-two
+days, eight routes, about an hour.
+
 ## 🔍 THE RUN-THROUGH OF 08-19, AND THE BUILD FOR YOUR BUDDY  *(#202 · 2026-08-19 · build log 8f.224)*
 
 *(Your ask: "run game, check how it works, what is in the backlog - what is actual. If you find
