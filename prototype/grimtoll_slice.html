@@ -2760,6 +2760,32 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:var(--f
 .rmem .race.human {border-left:2px solid #d8d5cc;padding-left:var(--p2)}
 .rmem .race.ratkin{border-left:2px solid #c98a4b;padding-left:var(--p2)}
 .rmem .race.ogre  {border-left:2px solid #7fa8c9;padding-left:var(--p2)}
+/* ═══ ⛔ #196 · A BODY'S MARK, WHEREVER A BODY IS LISTED ═══════════════════
+   Built only by `cMark`/`rMark`, so every surface that names a class or a race
+   without its word wears the same box. Three things it has to do and one it
+   must not:
+   · `--fs5` and not the `--fs1` of the lines it sits in. A pictogram is not
+     text: at 10px 🔱 and 🪓 are the same grey smudge, which is the exact fault
+     the old ⌇/† set had and the reason this entry exists. ⚠ It is a scale
+     step, not a literal (`.claude/rules/ui-scales.md` §1), and it is the one
+     thing here that can break a measured row - `.rmem` is 65px and the muster
+     card was 91 once. ⚑ SO IT WAS MEASURED AT THREE STEPS RATHER THAN PICKED:
+     the roster's race line lands at 15 / 17 / 19px for `--fs4` / `--fs5` /
+     `--fs6`, its row at 88 / 90 / 92, and NONE of the three clips anything on
+     any screen. Every one of them is smaller than what shipped, because the
+     old line WRAPPED: "◆ HUMAN · ⚑ CAPTAIN L1" measured 27px on two lines
+     against this one's 17. `--fs5` is taken because the whole ask was
+     legibility and 2px of a row that just gave back 10 is the cheapest thing
+     in this entry to spend.
+   · `line-height:1`, so a 13px glyph inside a 10px line at ratio 1.3+ takes
+     the height the line already had and no row moves.
+   · `cursor:help`, because the WORD is on the hover now and nothing else on
+     the line says so.
+   ⛔ AND NO COLOUR OF ITS OWN. The race colours (bone / rust / slate) still
+   run on the line and the border beside it; a pictogram ignores `color`
+   anyway, and giving the box one would put a second race readout next to the
+   first. */
+.bmk{font-size:var(--fs5);line-height:1;letter-spacing:0;cursor:help}
 /* ═══ #133 · THE COMPANY SHEET ON ONE SCREEN ══════════════════════════════
    (User, 2026-08-13, a voice brief over five reference screenshots: Urtuk,
    Battle Brothers, Caves of Qud, Wartales, Wildermyth. "too much information
@@ -3534,18 +3560,52 @@ body:has(#world.on) #audioBtn{top:8px;bottom:auto;font-size:var(--fs2);padding:v
 /* the editor card. z 60 clears every screen's own chrome (the battle plaque
    tops out at 40); the ASK overlay still wins above it, which is correct -
    CLEAR confirms through ask() and must land on top of this. */
-#tePanel{position:absolute;right:10px;top:254px;z-index:60;width:370px;max-height:430px;
+/* ═══ ⛔ #196 · THE BOX WAS 370px AND A HEAVY CARD IS 175 WORDS ════════════
+   (User, 2026-08-19: *"For dev tool for text redaction - more space to
+   redact"*.)
+
+   MEASURED FIRST, which is #88's rule. The panel was 370 wide with a THREE-ROW
+   textarea at `--fs2`, i.e. about 44 mono characters a line and 3 lines of
+   them = ~130 characters visible. `.claude/rules/event-cards.md` puts the
+   heaviest card in the game at 175 words, ~1,050 characters. The shrine's body
+   was being rewritten eight lines at a time through a slot the size of a
+   tweet, and every road card is authored against that file.
+
+   THE ARITHMETIC OF THE NEW BOX, so the next person who changes one number
+   knows what the other two were:
+     · width  460, right:10  -> the left edge lands at 810 of the 1280 stage,
+       so the panel still clears the map's whole left half and you can read the
+       line you are editing behind it. ~57 characters a line.
+     · height top 254 + max 456 = 710, ten clear of the 720 floor. 254 is not
+       a taste either: the dev stack is WIN 134 / LINT 164 / WIPE 194 / TEXT
+       224 at a 30px pitch, so 254 is the first row under its own button.
+     · `.wide` 860 doubles the line to ~112 characters for a card body, and it
+       grows LEFTWARDS from the same right edge - the top stays 254 so the
+       stack, and the ✎ TEXT button that disarms the mode, are never covered.
+   ⚠ THE TEXTAREA IS `--fs3`, ONE STEP OVER THE REST OF THE PANEL. Dev chrome
+   is `--fs2` and stays there; the one box you type prose into is not chrome.
+   Both are scale steps, per `.claude/rules/ui-scales.md` §1 - nothing here is
+   a literal. */
+#tePanel{position:absolute;right:10px;top:254px;z-index:60;width:460px;max-height:456px;
   display:none;flex-direction:column;gap:6px;overflow:auto;
   background:rgba(16,12,6,.97);border:1px dashed #8a6a34;padding:var(--p4) var(--p5);
   font-family:var(--mono);font-size:var(--fs2);color:#b09a6e}
 #tePanel.on{display:flex}
+#tePanel.wide{width:860px}
 #tePanel h3{margin:0;font-size:var(--fs2);letter-spacing:.12em;color:#e8c15c;font-weight:600}
-#tePanel .teOrig{color:#8fa5a2;white-space:pre-wrap;max-height:76px;overflow:auto;
+#tePanel .teOrig{color:#8fa5a2;white-space:pre-wrap;max-height:110px;overflow:auto;
   border-left:2px solid var(--e3);padding-left:var(--p3)}
 #tePanel .teHint{color:#6b8280;font-style:italic}
 #tePanel textarea{width:100%;box-sizing:border-box;background:#0d1112;color:#d8cfae;
-  border:1px solid var(--e1);font-family:var(--mono);font-size:var(--fs2);
-  padding:var(--p2) var(--p3);resize:vertical}
+  border:1px solid var(--e1);font-family:var(--mono);font-size:var(--fs3);
+  padding:var(--p2) var(--p3);resize:vertical;line-height:1.4}
+/* the head row: the title takes the slack, the two mode switches sit right */
+#tePanel .teHead{display:flex;align-items:center;gap:6px}
+#tePanel .teHead h3{flex:1;min-width:0}
+#tePanel .teHead button{padding:0 var(--p3)}
+/* a target chip: which STRING on this element is being edited. Lit = current */
+#tePanel .teTg{border-color:var(--e1);color:#8fa5a2;opacity:.75}
+#tePanel .teTg.on{border-color:#8a6a34;color:#e8c15c;opacity:1}
 #tePanel .teRow{display:flex;gap:6px;flex-wrap:wrap}
 #tePanel button{font-family:var(--mono);font-size:var(--fs2);background:#1f2d2e;
   border:1px solid var(--e5);color:#9fb3ae;padding:var(--p1) var(--p4);cursor:pointer}
@@ -5637,9 +5697,44 @@ function wipeHistory(){
    an edit to the label must not carry the receipt with it (the receipt is
    the chips' text and half of it is numbers the tables interpolate anyway).
    caretRangeFromPoint finds the node; the element is the fallback. */
-const TEDIT={on:false,edits:[],cur:null,hov:null};
+/* ═══ ⛔ #196 · AND A WHOLE LAYER OF PROSE THIS TOOL COULD NOT SEE ═════════
+   (User, 2026-08-19: *"Give also option to redact text on hover"*.)
+
+   ⚑ IT IS NOT A SECOND WAY TO DO THE SAME THING. It is the only way to reach
+   text that HAS no click. Counted in the shipped file: `#gtTip` is one shared
+   box driven by fifteen hover sources across three screens, and it is built
+   `pointer-events:none` and hidden on the anchor's `mouseleave` - so the
+   cursor can never arrive on it and `caretRangeFromPoint` can never be asked
+   about it. Beside it sit 33 `title=` attributes in the markup and more built
+   inside JS strings; a native tooltip is drawn by the OS and is not in the DOM
+   at all. Every word of that is player-facing prose - what a trinket does,
+   what a race is, why a door is shut - and ✎ TEXT has been blind to all of it
+   since #172.
+
+   So the mode has three parts and only the three together are worth anything:
+     · PICK ON HOVER - a dwell timer opens the editor under the cursor without
+       a click, because reaching for a tooltip is what kills it;
+     · the tip is SNAPSHOT at open, off the live `#gtTip`, while the cursor is
+       still on its anchor and the box is still up;
+     · the `title=` string of the nearest ancestor that owns one.
+   The editor then offers whichever of the three exist as TARGETS, and the
+   ledger records which one, so the session landing the edit knows whether to
+   grep the string tables or a `title=`.
+   ⚠ A HOVER-TIP EDIT HAS NO PREVIEW AND MUST NOT PRETEND TO. `tipOn` takes a
+   function and rebuilds the box on the next hover, so writing into `#gtTip`
+   would be undone before the eye got back to it. `title=` DOES preview,
+   because it is an attribute on an element that survives. */
+const TEDIT={on:false,edits:[],cur:null,hov:null,hoverPick:false,wide:false,dwell:0,at:null};
 try{TEDIT.edits=JSON.parse(localStorage.getItem('gt_tedit_v1')||'[]')||[];}catch(e){TEDIT.edits=[];}
+try{TEDIT.hoverPick=localStorage.getItem('gt_tedit_hover')==='1';}catch(e){}
+try{TEDIT.wide=localStorage.getItem('gt_tedit_wide')==='1';}catch(e){}
 function teStore(){try{localStorage.setItem('gt_tedit_v1',JSON.stringify(TEDIT.edits));}catch(e){}}
+function tePrefs(){try{localStorage.setItem('gt_tedit_hover',TEDIT.hoverPick?'1':'0');
+  localStorage.setItem('gt_tedit_wide',TEDIT.wide?'1':'0');}catch(e){}}
+/* the dwell. Long enough that crossing a screen does not open six editors,
+   short enough that you are not holding still and wondering. */
+const TE_DWELL=420;
+function teDwellOff(){if(TEDIT.dwell){clearTimeout(TEDIT.dwell);TEDIT.dwell=0;}}
 /* the chrome the mode may never eat: the tool itself, the tester stack, the
    global buttons - and #askWrap, because CLEAR confirms through ask() and a
    dialog whose buttons are intercepted is a dialog that cannot be answered.
@@ -5654,7 +5749,7 @@ function teArm(v){
   teBadge();
   const p=$('tePanel');
   if(v){teList();}          /* open on the ledger, so EXPORT needs no pick */
-  else{TEDIT.cur=null;teHovClr();if(p)p.classList.remove('on');}
+  else{TEDIT.cur=null;teDwellOff();teHovClr();if(p)p.classList.remove('on');}
 }
 function teBadge(){
   const b=$('teditBtn');if(!b)return;
@@ -5671,8 +5766,16 @@ function tePick(e){
   let el=node?node.parentElement:e.target;
   if(!el||el===document.body||el===document.documentElement||el.id==='stage')return null;
   const orig=(node?node.data:el.textContent||'').trim();
-  if(!orig)return null;
-  return {node:node,el:el,orig:orig};
+  /* #196 - the two strings with no click. `#gtTip` is read LIVE and that only
+     works from here: the cursor is still on the anchor at this instant, and
+     one step towards the box would hide it. */
+  const t=document.getElementById('gtTip');
+  const tip=(t&&t.style.display!=='none')?(t.textContent||'').replace(/\s+/g,' ').trim():'';
+  const th=(el.closest?el.closest('[title]'):null);
+  const title=th?(th.getAttribute('title')||'').trim():'';
+  /* an icon button with a tooltip and no text of its own is a legitimate pick */
+  if(!orig&&!tip&&!title)return null;
+  return {node:node,el:el,orig:orig,tip:tip,title:title,titleEl:th};
 }
 /* a cheap breadcrumb, anchored on the first id up the tree. Not a selector
    to re-apply by - the renderers rebuild these nodes - a hint for the human
@@ -5689,10 +5792,19 @@ function teWhere(el){
   }
   return bits.join(' > ');
 }
+/* #196 - which of the three strings on this element is being worked on. The
+   ledger carries it, because "find `orig` in the file" is a different job for
+   a body string than it is for a `title=`. */
+const TE_KINDS={text:{g:'✎',n:'TEXT',h:'the words on the line under the cursor'},
+  hovertip:{g:'🛈',n:'HOVER BOX',h:'what #gtTip was showing at the moment of the pick. '+
+    'No preview: tipOn rebuilds this box from a function on the next hover.'},
+  title:{g:'🛈',n:'TOOLTIP',h:'the title= attribute of the nearest element that owns one'}};
+function teCurText(){const c=TEDIT.cur;if(!c)return '';
+  return c.kind==='hovertip'?c.tip:c.kind==='title'?c.title:c.orig;}
 function teAdd(op,to,note){
   const c=TEDIT.cur;if(!c)return;
-  TEDIT.edits.push({when:new Date().toISOString(),screen:c.screen,op:op,
-    orig:c.orig,to:to||'',note:note||'',where:c.where,ctx:c.ctx});
+  TEDIT.edits.push({when:new Date().toISOString(),screen:c.screen,op:op,kind:c.kind,
+    orig:teCurText(),to:to||'',note:note||'',where:c.where,ctx:c.ctx});
   teStore();teBadge();
 }
 /* ── the editor card ──────────────────────────────────────────────────── */
@@ -5714,14 +5826,58 @@ function teWireFoot(){
       go:()=>{TEDIT.edits=[];teStore();teBadge();teList();}},
      {t:'Keep it.',c:'nothing is touched'}]);
 }
+/* #196 - the head belongs to the TOOL, not to one pick, so the ledger, the
+   editor and the export all carry it and the two switches never disappear
+   under you. HOVER is a chip because it is a state you are in; WIDE is a
+   glyph because it is a size. */
+function teHead(t){
+  return '<div class="teHead"><h3>'+t+'</h3>'+
+    '<button id="teHovB" class="teTg'+(TEDIT.hoverPick?' on':'')+'" title="'+
+      (TEDIT.hoverPick
+        ?'PICK ON HOVER. Rest the cursor and the editor opens - the only way to reach a tooltip, which dies the moment you reach for it. Click still picks too.'
+        :'PICK ON CLICK. Press the text you want. Switch to HOVER to reach a tooltip or a hover box.')+
+    '">⌁ '+(TEDIT.hoverPick?'HOVER':'CLICK')+'</button>'+
+    '<button id="teWideB" title="'+(TEDIT.wide?'back to the narrow panel':
+      'a wider box - about 112 characters a line, for a card body')+'">'+
+      (TEDIT.wide?'⇥⇤':'⇤⇥')+'</button></div>';
+}
+function teWireHead(){
+  const h=$('teHovB'),w=$('teWideB');
+  if(h)h.onclick=()=>{TEDIT.hoverPick=!TEDIT.hoverPick;tePrefs();teDwellOff();
+    if(TEDIT.cur)teDraw();else teList();};
+  if(w)w.onclick=()=>{TEDIT.wide=!TEDIT.wide;tePrefs();
+    if(TEDIT.cur)teDraw();else teList();};
+}
+/* the box grows with what is in it. 56 characters a line narrow, 112 wide -
+   measured off the panel's own interior, see the #tePanel note. 14 rows is
+   where the panel starts scrolling instead, which is fine and is not a cap on
+   the text. */
+const teRows=s=>Math.max(4,Math.min(14,
+  Math.ceil((String(s||'').length+1)/(TEDIT.wide?112:56))+1));
 function teOpen(pick){
   TEDIT.cur={orig:pick.orig,node:pick.node,el:pick.el,
+    tip:pick.tip||'',title:pick.title||'',titleEl:pick.titleEl||null,
+    /* the pick opens on whichever string it actually found, in this order */
+    kind:pick.orig?'text':(pick.tip?'hovertip':'title'),
     where:teWhere(pick.el),screen:teScreen(),
     ctx:teClip((pick.el.parentElement?pick.el.parentElement.textContent:'').replace(/\s+/g,' ').trim(),140)};
+  teDraw();
+}
+function teDraw(){
+  const c=TEDIT.cur;if(!c)return;
   const p=$('tePanel');if(!p)return;
-  p.innerHTML='<h3>✎ THIS TEXT · '+esc(TEDIT.cur.screen)+'</h3>'+
-    '<div class="teOrig">'+esc(pick.orig)+'</div>'+
-    '<textarea id="teTxt" rows="3"></textarea>'+
+  const have=[['text',c.orig],['hovertip',c.tip],['title',c.title]].filter(x=>x[1]);
+  const cur=teCurText(),K=TE_KINDS[c.kind]||TE_KINDS.text;
+  p.classList.toggle('wide',TEDIT.wide);
+  p.innerHTML=teHead('✎ THIS TEXT · '+esc(c.screen))+
+    /* the targets, only when this element carries more than one string */
+    (have.length>1?'<div class="teRow">'+have.map(x=>
+      '<button class="teTg'+(x[0]===c.kind?' on':'')+'" data-k="'+x[0]+'" title="'+
+      esc(TE_KINDS[x[0]].h)+'">'+TE_KINDS[x[0]].g+' '+TE_KINDS[x[0]].n+'</button>').join('')+
+      '</div>':'')+
+    (c.kind==='text'?'':'<div class="teHint">'+esc(K.h)+'</div>')+
+    '<div class="teOrig">'+esc(cur)+'</div>'+
+    '<textarea id="teTxt" rows="'+teRows(cur)+'"></textarea>'+
     '<div class="teRow">'+
       '<button id="teSaveB" title="record the rewrite. The screen shows it now as a preview; Claude lands it in the file">💾 SAVE CHANGE</button>'+
       '<button id="teDelB" class="warn" title="record a delete. The text hides now as a preview">🗑 DELETE</button>'+
@@ -5731,68 +5887,101 @@ function teOpen(pick){
       '<button id="teNoteB" title="change nothing now; pin this note to this text for a future session">🗒 NOTE TO AI</button>'+
       '<button id="teCancB">✖ CANCEL</button>'+
     '</div>'+teFoot();
-  $('teTxt').value=pick.orig;
+  $('teTxt').value=cur;
+  Array.prototype.forEach.call(p.querySelectorAll('.teTg[data-k]'),b=>{
+    b.onclick=()=>{TEDIT.cur.kind=b.dataset.k;teDraw();};});
   $('teSaveB').onclick=()=>{
     const v=$('teTxt').value,nt=$('teNote').value.trim();
-    if(v.trim()===TEDIT.cur.orig&&!nt){teList();return;}   /* nothing changed */
+    if(v.trim()===String(cur).trim()&&!nt){teList();return;}   /* nothing changed */
     teAdd('change',v,nt);
-    /* the preview. Node-tight when a node was picked; textContent otherwise.
-       The next repaint of this screen takes it back, and that is fine. */
-    try{if(TEDIT.cur.node)TEDIT.cur.node.data=v;else TEDIT.cur.el.textContent=v;}catch(e){}
+    tePreview('change',v);
     teList();};
   $('teDelB').onclick=()=>{
     teAdd('delete','',$('teNote').value.trim());
-    try{if(TEDIT.cur.node)TEDIT.cur.node.data='';else TEDIT.cur.el.style.display='none';}catch(e){}
+    tePreview('delete','');
     teList();};
   $('teNoteB').onclick=()=>{
     const nt=$('teNote').value.trim();
     if(!nt){$('teNote').focus();return;}
     teAdd('note','',nt);teList();};
   $('teCancB').onclick=teList;
-  teWireFoot();
+  teWireHead();teWireFoot();
   p.classList.add('on');
+}
+/* the preview, per target. Node-tight when a text node was picked; the
+   attribute when it is a title. The next repaint of the screen takes any of
+   it back, and that is fine - the LEDGER is the deliverable.
+   ⛔ A HOVER BOX HAS NO PREVIEW AND MUST NOT FAKE ONE: `tipOn` holds a
+   function and rebuilds `#gtTip` on the next enter, so anything written here
+   would be gone before the eye returned to it. */
+function tePreview(op,v){
+  const c=TEDIT.cur;if(!c)return;
+  try{
+    if(c.kind==='title'&&c.titleEl){
+      if(op==='delete')c.titleEl.removeAttribute('title');
+      else c.titleEl.setAttribute('title',v);
+    }else if(c.kind==='text'){
+      if(op==='delete'){if(c.node)c.node.data='';else c.el.style.display='none';}
+      else{if(c.node)c.node.data=v;else c.el.textContent=v;}
+    }
+  }catch(e){}
 }
 /* ── the ledger ───────────────────────────────────────────────────────── */
 function teList(){
   TEDIT.cur=null;
   const p=$('tePanel');if(!p)return;
+  p.classList.toggle('wide',TEDIT.wide);
   const rows=TEDIT.edits.slice().reverse().map((d,i)=>{
     const idx=TEDIT.edits.length-1-i;
     const g=d.op==='delete'?'🗑':d.op==='change'?'💾':'🗒';
+    /* #196 - a row says WHICH string it is, or a session grepping the ledger
+       looks for a body line and the edit was to a title= */
+    const k=(d.kind&&d.kind!=='text')?' <span title="'+esc(TE_KINDS[d.kind].h)+'">'+
+      TE_KINDS[d.kind].g+'</span>':'';
     return '<div class="teItem"><button class="teRm" data-i="'+idx+'" title="drop this one">✕</button>'+
-      g+' <b>'+esc(d.screen)+'</b> · '+esc(teClip(d.orig,64))+
+      g+k+' <b>'+esc(d.screen)+'</b> · '+esc(teClip(d.orig,64))+
       (d.to?'<br>→ '+esc(teClip(d.to,64)):'')+
       (d.note?'<br>🗒 '+esc(teClip(d.note,90)):'')+'</div>';
   }).join('');
-  p.innerHTML='<h3>✎ TEXT EDIT · armed</h3>'+
-    '<div class="teHint">Click any text on any screen to edit it. The change '+
-    'on screen is a preview; the record below is what Claude lands in the '+
-    'source and pushes.</div>'+
+  p.innerHTML=teHead('✎ TEXT EDIT · armed')+
+    '<div class="teHint">'+(TEDIT.hoverPick
+      ?'Rest the cursor on any text and the editor opens under it. This is the '+
+       'mode that reaches a TOOLTIP or a HOVER BOX: they die the instant you '+
+       'reach for them, so they are caught where they stand. Clicking still works.'
+      :'Click any text on any screen to edit it. Switch to ⌁ HOVER to reach a '+
+       'tooltip or a hover box, which cannot be clicked at all.')+
+    ' The change on screen is a preview; the record below is what Claude lands '+
+    'in the source and pushes.</div>'+
     (rows||'<div class="teItem">nothing recorded yet</div>')+teFoot();
   Array.prototype.forEach.call(p.querySelectorAll('.teRm'),b=>{
     b.onclick=()=>{TEDIT.edits.splice(+b.dataset.i,1);teStore();teBadge();teList();};});
-  teWireFoot();
+  teWireHead();teWireFoot();
   p.classList.add('on');
 }
 /* ── export ───────────────────────────────────────────────────────────── */
 function teJson(){
-  return JSON.stringify({v:1,tool:'✎ TEXT (#172, 8f.200)',
+  return JSON.stringify({v:2,tool:'✎ TEXT (#172, 8f.200 · hover and targets #196, 8f.218)',
     exported:new Date().toISOString(),
     howToApply:'Each edit: find `orig` in prototype/grimtoll_slice.html (exact match first, '+
       'then fuzzy - numbers may be interpolated), apply op change/delete/note under the '+
       'event-card and voice rules, run LINT(), then push.',
+    kinds:{text:'a string in the content tables, printed on the line',
+      hovertip:'what #gtTip was showing: the string comes from a tipOn/tipFor builder, '+
+        'not from the element - grep the builder, not the markup',
+      title:'a title= attribute. It may be in the markup or built inside a JS string'},
     edits:TEDIT.edits},null,1);
 }
 function teExport(){
   TEDIT.cur=null;
   const p=$('tePanel');if(!p)return;
   const j=teJson();
-  p.innerHTML='<h3>⇩ EXPORT · '+TEDIT.edits.length+' EDITS</h3>'+
+  p.classList.toggle('wide',TEDIT.wide);
+  p.innerHTML=teHead('⇩ EXPORT · '+TEDIT.edits.length+' EDITS')+
     '<div class="teHint">On the laptop build, DOWNLOAD drops a .json in your '+
     'Downloads - put it anywhere in the repo (or leave it and say where) and '+
     'tell Claude to apply it. On claude.ai the sandbox blocks downloads: use '+
     'COPY and paste it into the chat instead.</div>'+
-    '<textarea id="teOut" rows="9" readonly></textarea>'+
+    '<textarea id="teOut" rows="14" readonly></textarea>'+
     '<div class="teRow">'+
       '<button id="teDlB">⇩ DOWNLOAD .JSON</button>'+
       '<button id="teCpB">⧉ COPY</button>'+
@@ -5818,6 +6007,7 @@ function teExport(){
     setTimeout(()=>{const b=$('teCpB');if(b)b.textContent='⧉ COPY';},1200);
   };
   $('teBkB').onclick=teList;
+  teWireHead();
   p.classList.add('on');
 }
 /* ── the interceptor. ONE pair of capture listeners, always attached, first
@@ -5842,10 +6032,36 @@ document.addEventListener('mouseover',e=>{
   const t=e.target;
   if(t&&t!==document.body&&t.id!=='stage'&&t.textContent&&t.textContent.trim()){
     TEDIT.hov=t;t.classList.add('teHov');}
+  teDwellSched(e);
+},true);
+/* ═══ #196 · THE DWELL ═════════════════════════════════════════════════════
+   ⚠ IT RESTS ON MOVEMENT, NOT ON ARRIVAL, and that is the whole trick. A
+   timer started at `mouseover` fires 420ms after you ENTER an element, so
+   crossing a screen opens an editor over whatever you happened to be passing.
+   Restarting it on every move means the editor opens where you STOPPED, which
+   is also exactly when a hover box is up and settled.
+   ⚠ AND IT REFUSES TO FIRE WHILE ONE IS OPEN. Without that guard the panel
+   re-renders under your hand every 420ms and the textarea loses the caret. */
+function teDwellSched(e){
+  teDwellOff();
+  if(!TEDIT.on||!TEDIT.hoverPick||TEDIT.cur)return;
+  if(e.target&&e.target.closest&&e.target.closest(TE_EXEMPT))return;
+  const x=e.clientX,y=e.clientY,t=e.target;
+  TEDIT.dwell=setTimeout(()=>{
+    TEDIT.dwell=0;
+    if(!TEDIT.on||!TEDIT.hoverPick||TEDIT.cur)return;
+    const pick=tePick({clientX:x,clientY:y,target:t});
+    if(pick)teOpen(pick);
+  },TE_DWELL);
+}
+document.addEventListener('mousemove',e=>{
+  if(!TEDIT.on||!TEDIT.hoverPick)return;
+  teDwellSched(e);
 },true);
 document.addEventListener('keydown',e=>{
   if(!TEDIT.on||e.key!=='Escape')return;
   const p=$('tePanel');
+  teDwellOff();
   if(TEDIT.cur){teList();}                 /* editor open -> back to ledger */
   else if(p&&p.classList.contains('on')){teArm(false);}   /* ledger -> off */
 });
@@ -7545,12 +7761,47 @@ function payFightXP(){
 /* ---------- glyphs, so a screen can be read at a glance ---------- */
 /* a class is a trade, so each gets a TOOL. Monsters are not on this list on
    purpose — they get a face instead (see MONSTERS / monTag). */
-const CLASS_ICON={captain:'⚑',spear:'⌇',archer:'➹',mage:'✷',warmage:'⚔✷',cutter:'†',brute:'⬤',
+/* ═══ ⛔ #196 · THE MARKS BECAME PICTURES, AND THE WORDS CAME OFF THE LINE ══
+   (User, 2026-08-19: *"Class and race better to show in symbols, rather then
+   text. So it is more recognisble"*, and he picked this set out of three.)
+
+   ⚑ THE OLD SET WAS NOT WRONG, IT WAS UNREADABLE ALONE, and that is a
+   different fault. ⌇ ➹ ✷ † ⬤ are fine as a mark BESIDE a word - they sort a
+   list you are already reading. The ask is to delete the word, and the moment
+   the word goes, ⌇ has to mean "spearwoman" by itself. It does not. Nothing
+   about the old glyphs was ever tested without their caption.
+
+   ⛔ AND THE RACES HAD TWO VOCABULARIES, WHICH IS THE REAL FIND. `RACE_ICON`
+   here said ◆ ▪ ⬢ (authored as small/medium/huge body marks) while `RACE_ICO`
+   on the event doors has said 🐀 👹 🧑 since #154. The same fact, two symbols,
+   on two screens a player crosses in one minute - #102's wrong-unit rule with
+   the units being the glyphs themselves. So this table is now the ONE place
+   the three races have a face, and `RACE_ICO` reads it (it is declared 24,000
+   lines below, so the dependency runs downwards and cannot be a temporal dead
+   zone - the crash this file has already shipped once).
+
+   ⛔ CHECKED AGAINST EVERY OTHER FAMILY BEFORE IT WAS WRITTEN, which is the
+   rule at `.claude/rules/event-cards.md` and beside `GEAR_MARK`: 🔱 🏹 🔮 🗡 🪓
+   appear ZERO times in this file, so none of them collides with `CHOICE_ICO`
+   (⚔️🤝☠️👣⚖️🧺⛺🙏), `RES_ICON`, `GEAR_MARK`, `SLOT_ICON`, a monster's `ico`,
+   an act's `iconFor`, or the `MOODSTATES` faces (💀😟😐🙂😄 - and note ☠️ is
+   the evil door, never 💀, which is the lowest mood).
+   ⚠ ⚑ IS KEPT FOR THE CAPTAIN, on his own pick, and it is the one mark in
+   here that is already overloaded: the flee button, the Company Banner, the
+   LINE aura, the `command` act and the ⚑ CHIEFTAIN foe tag all wear it. That
+   is older than this entry and is not made worse by it - and it is arguably
+   coherent, because every one of those IS the line being held. If it is ever
+   untangled, the captain is the one to move, not the banner.
+   ⚠ AND THE BATTLE-MAGE IS TWO GLYPHS ON PURPOSE, exactly as ⚔✷ was: his own
+   signature is "A BLADE OR A STAVE, AND ONE SCHOOL", so 🗡🔮 is a composition
+   and not a third meaning for 🗡 - the same way ⚔️🤝 on a door is fighting FOR
+   somebody. The cap is two, here as there. */
+const CLASS_ICON={captain:'⚑',spear:'🔱',archer:'🏹',mage:'🔮',warmage:'🗡🔮',cutter:'🗡',brute:'🪓',
   /* #174 - the stranger with no trade wears an empty ring: not the ✦ fallback,
      which is experience now, and not the ? of a mystery door */
   none:'○'};
-/* body-size glyphs: small / medium / huge */
-const RACE_ICON={human:'◆',ratkin:'▪',ogre:'⬢'};
+/* the three faces of the island. ⚠ Read by `RACE_ICO` on the event doors too */
+const RACE_ICON={human:'🧑',ratkin:'🐀',ogre:'👹'};
 const RES_ICON={crowns:'◉',food:'❦',salvage:'▤',wood:'▤',iron:'▬',gems:'◈'};
 /* ═══ #151 - THE RESOURCE WORDS BECOME THE RESOURCE GLYPHS ═══════════════════
    (User, 2026-08-14: *"Show in the choices curency and provision special
@@ -7622,7 +7873,30 @@ function materialPool(o){
 materialPool(LEGACY.bank);
 const SLOT_ICON={armour:'⛨',main:'✊',off:'🤚',trinket:'✧',bag:'▣'};
 const cIcon=k=>CLASS_ICON[k]||'✦';
+/* ⚠ THE FALLBACK IS DELIBERATELY OFF THE FAMILY. It used to be ◆, which WAS
+   the human's mark, so anything with an unknown race silently printed as a
+   human. A shape among three faces reads as "not one of these three". */
 const rIcon=k=>RACE_ICON[k]||'◆';
+/* ═══ ⛔ #196 · THE PAIR IS TWO MARKS AND THE WORDS ARE ON THE HOVER ═══════
+   ONE builder, so a surface cannot invent a fourth way of writing the pair.
+   Both halves carry `data-cls`/`data-race`, which is what `bindLoreTips` wires
+   the full lore box onto - and a plain `title=` for the screens that lore box
+   never reaches (the tavern's roster strip, the aftermath's recruit rows).
+   ⚑ THAT DOUBLE IS ON PURPOSE AND IT IS NOT A DOUBLE ON SCREEN: bindLoreTips
+   strips the `title` off anything it wires, so exactly one box ever opens.
+   ⛔ AND THE WORD ONLY COMES OFF A LIST. Where ONE body is being studied - the
+   promotion card, the trade you are picking, the lore box that IS the
+   explanation, the camp's news line - the word stays. A symbol is worth having
+   because it sorts twelve rows at a glance; it is worth nothing on the one row
+   you are already reading. */
+/* the mark alone, for the surfaces where the WORD stays beside it and only
+   the size was wrong: a 10px line makes a pictogram a smudge whether or not
+   anything else changed. */
+const bmk=g=>'<span class="bmk">'+g+'</span>';
+const clsWord=k=>((CLASSES[k]||{}).n)||String(k||'').toUpperCase();
+const cMark=k=>'<span class="bmk" data-cls="'+k+'" title="'+clsWord(k)+'">'+cIcon(k)+'</span>';
+const rMark=r=>'<span class="bmk" data-race="'+r+'" title="'+String(r||'').toUpperCase()+'">'+rIcon(r)+'</span>';
+const rcMarks=o=>rMark(o.race)+' '+cMark(o.cls);
 /* ═══ HOVERING A CLASS OR A RACE SAYS WHAT IT IS (user) ══════════════════
    The sheet named both and explained neither, which is fine on your fourth
    run and useless on your first. Each is one sentence about what the thing is
@@ -11542,8 +11816,11 @@ function tavernReceipt(){
       (joined.length?'<div class="tvrsep"></div><div class="tvrwho">'+
         joined.map(p=>'<div class="tvrp"><div class="tvrf">'+
           '<canvas width="30" height="30" data-bust="'+p.id+'"></canvas>'+
+          /* #196 - this strip never named the race at all and spelled the
+             class out; two marks say more in less. ⚠ bindLoreTips does not
+             reach here, so the words ride the `title=` rMark/cMark write. */
           '</div><div class="tvrn"><b>'+(p.name||'')+'</b>'+
-          ((p.cls&&CLASSES[p.cls]?CLASSES[p.cls].n:'')||'').toUpperCase()+
+          rcMarks(p)+
           '</div></div>').join('')+'</div>':'')+
     '</div></div>';
 }
@@ -20656,11 +20933,12 @@ function render(){
         (u.captain?'c':'')+(u.caster?'s':'')+(u.big?'b':''));
     if($('bClass').dataset.k!==clsKey){
       $('bClass').dataset.k=clsKey;
+      /* #196 - the rail names whoever is standing on the hex and it is read
+         mid-turn, so it is the sharpest case for a mark over a word. The lore
+         box is already wired here through data-cls/data-race, which is what
+         gives the words back. */
       $('bClass').innerHTML=mine?
-        ('Lv '+u.level+' · <span data-cls="'+u.cls+'" style="cursor:help">'+
-          cIcon(u.cls)+' '+CLASSES[u.cls].n+'</span> · '+
-          '<span data-race="'+u.race+'" style="cursor:help">'+
-          rIcon(u.race)+' '+u.race+'</span>'):
+        ('Lv '+u.level+' · '+rcMarks(u)):
         u.pet?'♥ THE COMPANY’S. IT FOLLOWS THE CAPTAIN':
         u.ally?'⚔ FIGHTING ON YOUR SIDE, NOT YOURS TO COMMAND':
         u.monster?monTag(u.monster):
@@ -21961,14 +22239,17 @@ function inspect(t,e){
   rd.innerHTML='<div style="font-family:var(--display);font-size:var(--fs5);color:'+
       (own?'var(--t4)':'#e0b0a8')+'">'+(t.leader||t.captain?'★ ':'')+youName(t)+'</div>'+
     '<div style="font-family:var(--mono);font-size:var(--fs1);letter-spacing:.1em;color:#8a9a5c">'+
-      (own?cIcon(t.cls)+' '+CLASSES[t.cls].n+' · LEVEL '+t.level
+      /* ⚠ #196 - THE WORDS STAY HERE BECAUSE THIS IS THE HOVER. It is the box
+         the marks on the rail and the roster point AT; a mark inside its own
+         explanation explains nothing. */
+      (own?bmk(cIcon(t.cls))+' '+CLASSES[t.cls].n+' · LEVEL '+t.level
          :t.pet?'♥ THE COMPANY’S'
          :t.ally?'⚔ FIGHTING BESIDE YOU'
          :t.monster?monTag(t.monster)
          :t.captain?'⚑ CHIEFTAIN':t.caster?'✷ CASTER':t.big?'⬢ GREAT BEAST':'⚔ RABBLE')+
       /* the race is suppressed for the unnameable one — "◆ UNKNOWN" is still
          an answer, and this readout is not allowed to give one */
-      (t.noFace?'':' · '+rIcon(t.race)+' '+t.race.toUpperCase())+'</div>'+
+      (t.noFace?'':' · '+bmk(rIcon(t.race))+' '+t.race.toUpperCase())+'</div>'+
     '<div class="rr"><span>HITPOINTS</span><span style="color:#c15d55">'+
       Math.max(0,Math.ceil(t.hp))+' / '+t.hpMax+'</span></div>'+
     '<div class="rr"><span>ARMOUR</span><span style="color:var(--steel)">'+
@@ -24031,7 +24312,7 @@ function clashAfter(){
         '<div class="tvrp"><div class="tvrf">'+
         '<canvas width="30" height="30" data-bust="'+nr.id+'"></canvas></div>'+
         '<div class="tvrn"><b>'+proseName(nr)+'</b>'+
-        (nr.race+' '+CLASSES[nr.cls].n).toUpperCase()+' · '+traitShort(nr)+
+        rcMarks(nr)+' · '+traitShort(nr)+                 /* #196 */
         '</div></div>').join('')+'</div>'
       :'';
     joinLine+=(noRoom.length?'<p style="color:#8a7449;font-style:italic">No room for '+
@@ -26783,8 +27064,11 @@ function drawInv(){
     if(sizeMismatch(p))wear.push('<span style="color:#c07a2c">ill-fit</span>');
     box.innerHTML='<div class="rn">'+(owed?'<span class="star" title="'+owed+
         ' unspent">★</span> ':'')+p.name+' “'+p.nick+'”'+(p.sur?' '+p.sur:'')+'</div>'+
-      '<div class="race '+p.race+'">'+rIcon(p.race)+' '+p.race.toUpperCase()+' · '+
-        cIcon(p.cls)+' '+CLASSES[p.cls].n+' L'+p.level+'</div>'+
+      /* #196 - the roster IS the list this change is for: four to six bodies
+         read at a glance, and "RATKIN · ARCHER" was 13 of the row's characters
+         saying what 🐀 🏹 says without being read. The colour and the border
+         still carry the race on the line itself. */
+      '<div class="race '+p.race+'">'+rcMarks(p)+' L'+p.level+'</div>'+
       '<div class="rc" style="font-style:italic;color:#a08a5e">'+traitShort(p)+'</div>'+
       (wear.length?'<div class="rc">'+wear.join(' · ')+'</div>':'');
     b.appendChild(box);
@@ -26824,13 +27108,17 @@ function drawInv(){
     caster:isCaster(p.cls),bow:!!u.bow});
   const sf=Math.min(1.6,58/spr.h);
 
-  const chips='<span class="ichip race '+p.race+'" data-race="'+p.race+'">'+rIcon(p.race)+
+  /* ⚠ #196 - THE CHIPS KEEP THEIR WORDS. This is the header of the ONE body
+     the sheet is open on, not a list to sort: the roster beside it is the list
+     and that is where the words came off. Only the glyph grew, because at
+     `--fs1` a pictogram is a smudge. */
+  const chips='<span class="ichip race '+p.race+'" data-race="'+p.race+'">'+bmk(rIcon(p.race))+
       ' <b>'+p.race.toUpperCase()+'</b></span>'+
     /* #174 - no lore tip on a trade he has not got: the chip says NO TRADE
        YET (CLASSES.none) in the muted colour and carries no data-cls */
     (p.cls==='none'
-      ?'<span class="ichip" style="color:#a08a5e">'+cIcon('none')+' <b>'+CLASSES.none.n+'</b></span>'
-      :'<span class="ichip" data-cls="'+p.cls+'">'+cIcon(p.cls)+' <b>'+CLASSES[p.cls].n+'</b></span>')+
+      ?'<span class="ichip" style="color:#a08a5e">'+bmk(cIcon('none'))+' <b>'+CLASSES.none.n+'</b></span>'
+      :'<span class="ichip" data-cls="'+p.cls+'">'+bmk(cIcon(p.cls))+' <b>'+CLASSES[p.cls].n+'</b></span>')+
     /* #174 - the LEVEL chip is a RING now (user: "bar progression could be
        shown circle as in total war"): the level inside it, the arc is how far
        to the next, the exact figures on hover. It is progress and never a
@@ -27263,7 +27551,10 @@ function drawInv(){
       const trades=[...new Set(CLS_BY_RACE[p.race]||CLS_BY_RACE.human)];
       tHTML='<div class="lbl" style="color:#8ca35a">A TRADE TO PICK · CLICK ONE · THE TOOL COMES WITH IT</div>'+
         trades.map(k=>'<button class="pk buy" data-trade="'+k+'"><span class="tag">TRADE</span>'+
-          '<b>'+cIcon(k)+' '+CLASSES[k].n+'</b><i>'+CLASSES[k].sig+'</i></button>').join('')+
+          /* ⚠ #196 - THE TRADE YOU ARE PICKING KEEPS ITS NAME. This is the one
+             screen where the symbol is LEARNED, so the two have to be side by
+             side; and you are choosing, not scanning. */
+          '<b>'+bmk(cIcon(k))+' '+CLASSES[k].n+'</b><i>'+CLASSES[k].sig+'</i></button>').join('')+
         '<div class="pkfoot">A trade is picked once and kept. The perks come after it, at 2, 4, 6 and 8.</div>';
     }else{
       tHTML='<div class="lbl" style="color:#8a7449">NO TRADE YET</div>'+
@@ -27527,6 +27818,10 @@ function bindLoreTips(root,p,live){
   const SKIP={move:1,dis:1};
   root.querySelectorAll('[data-race]').forEach(el=>{
     const r=el.dataset.race,h=RACEHELP[r];if(!h)return;
+    /* #196 - `rMark` writes a bare `title=` so the word survives on the
+       screens this function never reaches. Where it DOES reach, the lore box
+       supersedes it and two tooltips over one glyph is a bug. */
+    el.removeAttribute('title');
     /* ═══ #142 - THE FACTS, READ OFF THE TABLES THAT OWN THEM ══════════════
        Everything below used to be a sentence in `RACEHELP[r].x`, hand-kept
        against five other tables, and one of the sentences had already gone
@@ -27576,6 +27871,7 @@ function bindLoreTips(root,p,live){
     el.onmousemove=moveTip;el.onmouseleave=()=>{TIP.style.display='none';};});
   root.querySelectorAll('[data-cls]').forEach(el=>{
     const k=el.dataset.cls,h=CLASSHELP[k],C=CLASSES[k];if(!h||!C)return;
+    el.removeAttribute('title');       /* #196 - see the note on data-race */
     let extra='';
     if(u&&p&&p.cls===k){
       /* the race verb is the RACE's tooltip, not the class's - listing it in
@@ -31855,9 +32151,15 @@ const CHOICE_ICO={
    would open on nearly every company and a mark that fires on every door is
    furniture. 🧑 is defined here so the day one is written it has a glyph. */
 const RACE_ICO={
-  ratkin:{g:'🐀',n:'RATKIN',d:'only with a ratkin in the company'},
-  ogre:{g:'👹',n:'OGRE',d:'only with an ogre in the company'},
-  human:{g:'🧑',n:'HUMAN',d:'only with a human in the company'}
+  /* ⚑ #196 - THE GLYPH IS NOT AUTHORED HERE ANY MORE. This table used to hold
+     the only pictograms in the game and `RACE_ICON` up at the class table held
+     a different set for the same three races. One of them had to become the
+     source; it is the one declared first, so this read runs downwards and can
+     never be a temporal-dead-zone throw. What THIS table still owns is the
+     door's WORDS - the name and the gate line - which are its own job. */
+  ratkin:{g:RACE_ICON.ratkin,n:'RATKIN',d:'only with a ratkin in the company'},
+  ogre:{g:RACE_ICON.ogre,n:'OGRE',d:'only with an ogre in the company'},
+  human:{g:RACE_ICON.human,n:'HUMAN',d:'only with a human in the company'}
 };
 /* ═══ #159 - ONE RACE DOOR AT A TIME, AND THE RATKIN'S IS THE ONE ══════════
    (User, 2026-08-16: *"if party has both ratking and ogr - show only ratkin
@@ -33555,10 +33857,14 @@ function openHire(){
        thing he is not yet). The reason he is cheaper is one clause at the
        end of his row, and #157's rule holds: no paragraph about him. */
     const none=r.cls==='none';
-    b.innerHTML='<b>'+r.name+' “'+r.nick+'” — '+(none
-        ?'<span style="color:#a08a5e">'+cIcon('none')+' no trade yet</span>'
-        :'<span data-cls="'+r.cls+'">'+cIcon(r.cls)+' '+CLASSES[r.cls].n.toLowerCase()+'</span>')+
-      ', <span data-race="'+r.race+'">'+rIcon(r.race)+' '+r.race+'</span></b>'+
+    /* #196 - the muster wall is four candidates side by side, which is the
+       scan this change is for. ⚠ "NO TRADE YET" KEEPS ITS WORDS: it is a
+       sentence about somebody, not a trade, and ○ alone would read as a trade
+       nobody recognised rather than as the absence of one. */
+    b.innerHTML='<b>'+r.name+' “'+r.nick+'” — '+rMark(r.race)+' '+(none
+        ?'<span style="color:#a08a5e" class="bmk">'+cIcon('none')+'</span>'+
+         ' <span style="color:#a08a5e">no trade yet</span>'
+        :cMark(r.cls))+'</b>'+
       '<i>'+price+' crowns'+
       (G.hiredHere&&r.race==='ratkin'?' <span style="color:#8ca35a">(undercutting)</span>':'')+
       ' · '+COST[r.race]+' room · '+WAGE[r.race]+'/day'+

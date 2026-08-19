@@ -88,6 +88,64 @@ you by your banner, only the man in the coat's people have.
 - The purse being mentioned **twice** on the contract card.
 - The serjeant saying **"this company"** where he should say your name, on either version.
 - Any card whose sub-line now says nothing at all where it used to name a price or a gate.
+## ✎ THE TEXT TOOL GROWS A HOVER MODE, AND CLASS AND RACE BECOME PICTURES  *(#196 · 2026-08-19 · build log 8f.218)*
+
+Three separate things. The first two are yours only, in dev mode; the third is on every screen.
+
+### 1. ✎ TEXT has room to write in now
+
+**Reach it in three:** ⚙ in the bottom-right corner → **✎ TEXT** on the right-hand stack → click
+any words on any screen.
+
+* The panel is **460 wide instead of 370**, and the box you type in **grows with what is in it**
+  instead of being three lines forever. A full-length card body arrives as fourteen lines, not as a
+  slot the size of a tweet.
+* **⇤⇥ in the panel's top-right doubles it to 860 wide**, about 112 characters a line, for
+  a card body. It remembers which one you left it on.
+* **A bug would be:** the panel running off the bottom of the screen, the wide panel covering the
+  ✎ TEXT button so you cannot switch the mode off, or the box not growing for a long piece.
+
+### 2. ⌁ HOVER: editing text that has no click
+
+**Reach it in three:** arm ✎ TEXT → press **⌁ CLICK** in the panel's head so it reads
+**⌁ HOVER** → rest the cursor on anything for about half a second.
+
+* **This is the point of it.** A tooltip and a hover box die the moment you reach for them, so they
+  could never be clicked and ✎ TEXT has been blind to all of that prose since it was built. Now
+  the editor opens **where you stopped**, with the box still up, and catches it.
+* When the thing under the cursor carries more than one string, the editor shows **targets** across
+  the top: **✎ TEXT** (the words on the line), **🛈 HOVER BOX** (the big explainer that
+  was showing), **🛈 TOOLTIP** (a small `title=` one). Press one to work on that string.
+  The saved record says which, so the edit lands in the right place in the source.
+* **A hover-box edit deliberately shows no preview** - the game rebuilds that box every time it
+  opens, so a preview would be gone before you looked. A tooltip edit DOES preview.
+* Clicking still picks, in either mode. Escape closes.
+* **A bug would be:** the editor opening while you are just crossing the screen, the panel
+  re-drawing under your hands while you type, or two tooltips appearing over one thing.
+
+### 3. Class and race are pictures now
+
+* On every screen where the company is **listed** - the roster down the left of the company sheet,
+  the battle rail, the tavern strip, the recruits on the muster wall, the survivors after a fight -
+  the words came off and the pair reads as two marks: 🧑 human · 🐀 ratkin
+  · 👹 ogre, and ⚑ captain · 🔱 spear · 🏹 archer
+  · 🔮 mage · 🗡🔮 battle-mage · 🗡 cutter ·
+  🪓 brute · ○ no trade yet.
+* **The word is one hover away, always.** Hovering either mark still opens the full lore box where
+  the sheet and the muster field already had one, and shows the plain word everywhere else.
+* **The word stayed** where you are studying ONE person rather than scanning a list: the promotion
+  card, the trade you are picking at a level, the lore box itself, and the camp's news line.
+* **The three races now use the same three marks as the event doors do**, which they did not before
+  (the sheet said ◆ ▪ ⬢ and the doors have said 🐀 👹 🧑
+  since the race-gated doors went in).
+* **A bug would be:** a mark with no hover, two tooltips on one mark, a row that got taller, a mark
+  cut off at the edge of its line, or a class you cannot tell from another at a glance.
+* **Worth your opinion:** the human mark is the loudest thing on a roster row and it is also the
+  least informative one, because most of the company is human. If it reads as too bright, say so -
+  the marks can be tinted into the gold palette in one line without changing which pictures they
+  are.
+
+---
 
 ## 🐇 THE MIREHARES, AND THE RED LIGHTS ON THE WATER ROAD  *(#193 · 2026-08-19 · build log 8f.212)*
 
