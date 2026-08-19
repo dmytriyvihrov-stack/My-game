@@ -156,5 +156,86 @@ M.probe=function(comp){
   return {won:r.won,rounds:r.rounds,down:r.down,took:r.after&&r.after.took,
     landings:r.s.land,charges:r.s.dash,guard:r.guard,errs:r.errs};
 };
-return 'mirehare bench ready: MB.axes() · MB.run() · MB.gap() · MB.probe()';
+
+/* ---- 4. THE COUNTER, WHICH IS NOT THE DEPLOYMENT (#195) -----------------
+   ⛔ MB.gap() ANSWERS A DIFFERENT QUESTION AND ON THIS BUILD IT ANSWERS IT
+   BACKWARDS: n=12 a side gives IGNORED 0.42 down / 158 taken against ANSWERED
+   0.83 down / 163 taken. `arrange()` fires ONCE at setup, and both counters
+   these animals are built around are PER-TURN facts:
+
+     the DOE  cannot land on a body ALREADY beside her, and she moves every
+              turn, so contact must be RE-MADE every turn.
+     the BUCK cannot charge a body at distance 1, nor down a blocked lane.
+
+   A starting formation cannot express "stay in contact", so MB.gap() measures
+   whether the company began in a tidy line - a different thing from whether the
+   player has understood the animal. #193 already half-knew this, having recorded
+   that closing to contact is a TEMPO answer and not a denial.
+
+   ⚑ SO THIS ONE VARIES ONLY WHERE WE STAND WHEN A MIREHARE ACTS, re-imposed on
+   every one of its turns, by wrapping the ONE function both creatures move
+   through. Nothing else differs. */
+function placeAll(mode){
+  const pair=alive().filter(u=>u.monster==='mirehare');
+  if(!pair.length)return;
+  const ours=alive().filter(u=>u.side==='you'&&!u.passive);
+  const taken={};
+  alive().forEach(u=>{taken[K(u.col,u.row)]=1;});
+  ours.forEach(u=>{
+    /* nearest of the pair to this body, so a spread company does not all
+       pile onto one animal */
+    const t=pair.slice().sort((a,b)=>udist(u,a)-udist(u,b))[0];
+    let want=[];
+    if(mode==='contact'){
+      /* touching it: the doe cannot land on us and the buck cannot charge us */
+      want=nbrs(t.col,t.row);
+    }else{
+      /* three out, and on one of the buck's lanes where there is a choice:
+         the naive read of "keep clear of the thing with the teeth" */
+      const lanes={};
+      pair.filter(p=>(p.acts||[]).some(a=>a.dash)).forEach(p=>{
+        chargeLanes([p.col,p.row],4,null).forEach(L=>
+          L.path.forEach(q=>{lanes[K(q[0],q[1])]=1;}));});
+      for(let r=0;r<ROWS;r++)for(let c=0;c<COLS;c++)
+        if(hdist([c,r],[t.col,t.row])===3)want.push([c,r]);
+      want.sort((a,b)=>(lanes[K(b[0],b[1])]?1:0)-(lanes[K(a[0],a[1])]?1:0));
+    }
+    const free=want.find(p=>!taken[K(p[0],p[1])]&&
+      p[0]>=0&&p[0]<COLS&&p[1]>=0&&p[1]<ROWS&&!BLOCKED[B.terr[K(p[0],p[1])]]);
+    if(!free)return;                       /* no room: leave it where it is */
+    delete taken[K(u.col,u.row)];
+    u.col=free[0];u.row=free[1];
+    taken[K(u.col,u.row)]=1;
+  });
+}
+function rulesRun(n,mode,comp){
+  const rows=[];
+  for(let i=0;i<n;i++){
+    /* ⚠ WRAPPED PER FIGHT AND RESTORED PER FIGHT. `mirehareMove` is a global
+       function declaration, so window.mirehareMove IS the binding aiTurn
+       resolves - the same door the harness stubs render() through. */
+    const _mm=window.mirehareMove;
+    window.mirehareMove=function(u,T){placeAll(mode);return _mm(u,T);};
+    try{ rows.push(fight(comp||'prepared')); }
+    finally{ window.mirehareMove=_mm; }
+  }
+  return agg(rows);
+}
+M.rules=function(n,comp){
+  n=n||16;
+  const co=rulesRun(n,'contact',comp), na=rulesRun(n,'naive',comp);
+  const out=[
+    fmt('CONTACT (the rule played)',co),
+    fmt('NAIVE (keep your distance)',na),
+    '',
+    'knowing the movement is worth '+(na.down-co.down).toFixed(2)+
+      ' fewer of yours down and '+Math.round(na.took-co.took)+
+      ' less hp+armour, over '+n+' fights a side',
+    'blows the pair landed: '+(co.land+co.dash).toFixed(1)+' on CONTACT vs '+
+      (na.land+na.dash).toFixed(1)+' on NAIVE'
+  ];
+  console.log(out.join('\n'));
+  return {contact:co,naive:na,rows:out};
+};
+return 'mirehare bench ready: MB.axes() · MB.run() · MB.gap() · MB.rules() · MB.probe()';
 })();
