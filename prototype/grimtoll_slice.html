@@ -1,5 +1,5 @@
 ﻿<meta charset="utf-8">
-<title>RabbleBound — Vertical Slice</title>
+<title>RabbleBound - Vertical Slice</title>
 <!-- #83 - WITHOUT THIS LINE A PHONE SHRINKS THE GAME TWICE. A page with no
      viewport tag is laid out at 980px and then zoomed out to fit the screen,
      and `fit()` has already scaled the stage down inside that 980px. One line,
@@ -4531,7 +4531,7 @@ a.popt.sendit{display:block;text-decoration:none}
     <div id="wQuest"></div>
     <div id="wZoom"></div>
     <div id="wDlg"></div>
-    <div id="wLock">DECIDE FIRST — THE COMPANY WILL NOT MOVE UNTIL YOU DO</div>
+    <div id="wLock">DECIDE FIRST - THE COMPANY WILL NOT MOVE UNTIL YOU DO</div>
     <!-- #118 - the company's chosen name, signed along the bottom of the
          map. Filled by worldTick from G.coName; empty text on an old save
          simply shows nothing. pointer-events:none: it is a signature, not
@@ -4548,7 +4548,7 @@ a.popt.sendit{display:block;text-decoration:none}
        at the Three Bells. drawInv fills it; an old save with no name falls
        back to the generic. -->
   <div id="iBar"><h2 id="iCoName">THE COMPANY</h2>
-    <span id="iNag" class="lbl" style="color:#c9a227;display:none">NEW KIT IN THE STASH — PUT IT ON SOMEBODY</span>
+    <span id="iNag" class="lbl" style="color:#c9a227;display:none">NEW KIT IN THE STASH - PUT IT ON SOMEBODY</span>
     <div class="sep"></div><button id="iBack">BACK TO THE ROAD</button></div>
   <div id="iMain"><div id="iRoster"></div><div id="iChar"></div><div id="iStash"></div></div>
 </section>
@@ -4575,14 +4575,14 @@ a.popt.sendit{display:block;text-decoration:none}
     <div id="bRead"></div>
   </div>
   <!-- the counts capsule: standing bodies each side, the round, whose turn -->
-  <div id="bCap"><span id="bYouN">⛊ —</span><span id="bRound">↻ I</span><span id="bFoeN">☠ —</span></div>
+  <div id="bCap"><span id="bYouN">⛊ –</span><span id="bRound">↻ I</span><span id="bFoeN">☠ –</span></div>
   <!-- the order rail: faces in turn order, no numbers, names on hover -->
   <div id="bTop"></div>
   <!-- #102 points 3 and 6 broke this row of three up. AUTO is the only thing
        left in it; ⏱ SPEED went up to the chrome stack (it is a setting, not a
        move) and ⚑ WITHDRAW went down beside END TURN (it is the other way a
        turn can end). Same ids, same handlers. -->
-  <div id="bIcons"><button id="bAuto" title="AUTO — the company fights itself">▶</button></div>
+  <div id="bIcons"><button id="bAuto" title="AUTO - the company fights itself">▶</button></div>
   <button id="bPace" title="How fast the battlefield plays. Nothing about the fight changes - only how long you get to watch it.">⏱ <b>×1</b></button>
   <button id="bFlee" title="Leave the field. No spoils, the company takes it badly, and the place is done with.">⚑</button>
   <!-- ═══ the plaque (#91 point 8): the whole left panel at plaque size.
@@ -4623,7 +4623,7 @@ a.popt.sendit{display:block;text-decoration:none}
         <!-- #102 point 1: nerve is the third measure, in the same idiom as
              the two above it. The chip it replaces is described in the CSS. -->
         <div id="bState" tabindex="0">
-          <div class="statLine"><span>NERVE</span><span class="pv word" id="bStateN">—</span></div>
+          <div class="statLine"><span>NERVE</span><span class="pv word" id="bStateN">–</span></div>
           <div class="bar nrv" style="background:#20272a"><i id="bNerve"></i></div>
         </div>
       </div>
@@ -4644,18 +4644,18 @@ a.popt.sendit{display:block;text-decoration:none}
            labelled with is better as a hover than as a caption, because it can
            say what the number MEANS rather than repeat what it is. The two
            marks are drawn rather than typed - see ICO_HIT / ICO_DODGE. -->
-      <div class="pcell mini" id="bHitCell"><span class="pic" id="bHitIc"></span><span class="pnum" id="bHitN">—</span></div>
-      <div class="pcell mini" id="bDodgeCell"><span class="pic" id="bDodgeIc"></span><span class="pnum" id="bDodgeN">—</span></div>
+      <div class="pcell mini" id="bHitCell"><span class="pic" id="bHitIc"></span><span class="pnum" id="bHitN">–</span></div>
+      <div class="pcell mini" id="bDodgeCell"><span class="pic" id="bDodgeIc"></span><span class="pnum" id="bDodgeN">–</span></div>
       <!-- #102 point 7 (user: "Simple question mark move to char info screen -
            buttom left"). COMBAT LOGIC was a chip on the battle log's header,
            which is the box for what HAS happened; the rules of the board belong
            beside the body they are applied to. -->
-      <div id="bLegend"><div class="lbl" title="COMBAT LOGIC — the rules the board plays by">?</div>
+      <div id="bLegend"><div class="lbl" title="COMBAT LOGIC - the rules the board plays by">?</div>
       <div class="lgbody">
-      <div class="lg"><span class="sw" style="background:#46615f"></span>2 actions a turn — move + strike, or strike twice</div>
-      <div class="lg"><span class="sw" style="background:#2c4749"></span>water — 2 hexes to enter, −10% to hit, and one hex off your stride while you stand in it</div>
+      <div class="lg"><span class="sw" style="background:#46615f"></span>2 actions a turn - move + strike, or strike twice</div>
+      <div class="lg"><span class="sw" style="background:#2c4749"></span>water - 2 hexes to enter, −10% to hit, and one hex off your stride while you stand in it</div>
       <div class="lg"><span class="sw" style="background:#7a1f22"></span>held - somebody is facing this hex, so walking off it costs half a blow. Their back three hexes are free; DISENGAGE is one clean hex for one action</div>
-      <div class="lg"><span class="sw" style="background:#c9a227"></span>morale broken — white flag, and they run</div>
+      <div class="lg"><span class="sw" style="background:#c9a227"></span>morale broken - white flag, and they run</div>
       </div>
       </div><!-- /#bLegend -->
     </div><!-- /#bStats -->
@@ -4725,7 +4725,7 @@ a.popt.sendit{display:block;text-decoration:none}
 </div>
 <button id="audioBtn" title="sound">♪ ON</button>
 <button id="helpBtn" title="how any of this works">? RULES</button>
-<button id="menuBtn" title="back to the menu — the road is saved where it stands">☰ MENU</button>
+<button id="menuBtn" title="back to the menu - the road is saved where it stands">☰ MENU</button>
 <!-- TESTER TOOLS (user's request). Off by default and remembered; when on, a
      WIN NOW button appears on the battle screen. It is deliberately plain and
      ugly so it can never be mistaken for part of the game. -->
@@ -5009,7 +5009,7 @@ const JOURNAL={
      older build still reads perfectly here, and this one still reads there. */
   save(){try{localStorage.setItem(JOURNAL.KEY,JSON.stringify(
       {v:3,log:JOURNAL.log,poll:JOURNAL.poll,who:JOURNAL.who}));}
-    catch(e){console.error('[RABBLEBOUND] journal save failed —',e);}},
+    catch(e){console.error('[RABBLEBOUND] journal save failed:',e);}},
   /* every row: what kind, where, when in the run, and how far in real time.
      `d` is the campaign day, `ms` is wall-clock since the run started — the
      two together are what "length of the run" is made of. */
@@ -6232,7 +6232,7 @@ document.addEventListener('DOMContentLoaded',()=>{
       const r=LINT();
       ask(r.findings?'THE LINTER FOUND '+r.findings:'THE CONTENT READS CLEAN',
         r.findings
-          ? r.items.slice(0,12).map(i=>'· ['+i.cat+'] '+i.where+' — '+i.what).join('\n')+
+          ? r.items.slice(0,12).map(i=>'· ['+i.cat+'] '+i.where+' - '+i.what).join('\n')+
             (r.findings>12?'\n\n…and '+(r.findings-12)+' more. Full table in the console.':'')
           : 'Every event, choice, gate, reward key, nickname pool, map node and aftermath '+
             'checked. No literal tokens, no impossible gates, no hardcoded names in floating '+
@@ -6301,7 +6301,7 @@ LEGACY.ashmoor=LEGACY.ashmoor||false;
    hard way (see saveRun), and this one carries everything that crosses runs. */
 function saveLegacy(){
   try{localStorage.setItem('gt_camp',JSON.stringify(LEGACY));}
-  catch(e){console.error('[RABBLEBOUND] saveLegacy failed —',e);}
+  catch(e){console.error('[RABBLEBOUND] saveLegacy failed:',e);}
 }
 
 /* ============================================================
@@ -6432,7 +6432,7 @@ const TELLS={
        [9,'Fairly brave'],[7,'Nervous'],[5,'Easily frightened'],[3,'A coward, and knows it'],
        [0,'Runs before it starts']]}
 };
-const tell=(k,v)=>(TELLS[k].s.find(r=>v>=r[0])||['','—'])[1];
+const tell=(k,v)=>(TELLS[k].s.find(r=>v>=r[0])||['','–'])[1];
 /* the description one band better than the one they have — so a promotion can
    always say what it is moving them TOWARD even when this single point is not
    enough to change the word. Without it three of the four promotion options
@@ -6878,15 +6878,15 @@ function whoCard(p){
     '<div class="wcrow">'+
     '<canvas class="wcface" id="wcFace" width="66" height="66"></canvas>'+
     '<div class="wccol">'+
-    '<div class="wc1"><b>'+p.name+' “'+p.nick+'”</b> — '+rIcon(p.race)+' '+p.race+', '+
+    '<div class="wc1"><b>'+p.name+' “'+p.nick+'”</b> - '+rIcon(p.race)+' '+p.race+', '+
       cIcon(p.cls)+' '+CLASSES[p.cls].n.toLowerCase()+'</div>'+
     '<div class="wc2">'+tellLine(s)+'</div>'+
-    '<div class="wc2" style="color:#a08a5e">'+TRAITS[p.trait].n+' — '+traitShort(p)+'</div>'+
+    '<div class="wc2" style="color:#a08a5e">'+TRAITS[p.trait].n+' - '+traitShort(p)+'</div>'+
     '<div class="wc3">'+(sw?sw.n+' '+sw.lo+'–'+sw.hi+' · ':'')+'armour '+armourValue(p)+
       ' · step '+(RACESTEP[p.race]||4)+'</div>'+
     '</div></div>'+
     (killHeads(p)?'<div class="kills" style="font-size:var(--fs3)">'+killHeads(p)+'</div>':'')+
-    (p.mut?'<div class="wc2" style="color:#35e0c8">'+MUTS[p.mut].n+' — '+
+    (p.mut?'<div class="wc2" style="color:#35e0c8">'+MUTS[p.mut].n+' - '+
       MUTS[p.mut].short+'</div>':'')+
     ((p.injuries&&p.injuries.length)?'<div class="wc2" style="color:#c15d55">'+
       p.injuries.map(i=>i.n).join(' · ')+'</div>':'')+
@@ -7028,7 +7028,7 @@ const GEAR={
   banner :{rarity:'rare',unique:true,n:'The Company Banner',slot:'trinket',g:'⚑',company:true,coMor:6,
            d:'Stitched from three different dead companies. Everyone walks a little straighter.'},
   drum   :{rarity:'rare',n:'Marching Drum',     slot:'trinket',g:'◍',company:true,coFood:1,
-           d:'Keeps the pace. The column arrives in better heart than it left — +2 mood every leg.'},
+           d:'Keeps the pace. The column arrives in better heart than it left: +2 mood every leg.'},
   tooth  :{rarity:'rare',unique:true,n:'Fen-Mother’s Tooth',slot:'trinket',g:'❥',str:+2,hp:+6,
            forRace:'ogre',bonus:{str:2,hp:8},bonusD:'+2 STR and +8 HP more on an ogre',
            d:'Longer than your hand. Still warm at the root.'},
@@ -7148,7 +7148,7 @@ const SLOTS=[['armour','ARMOUR'],['main','MAIN HAND'],['off','OFF HAND'],
 const PETS={
   cub:{n:'The Cub',kind:'cub',dodge:24,aura:5,
     d:'It never learned to be afraid of you, and that turned out to matter. It will not '+
-      'fight — it stays where the Captain can see it, and puts itself between him and '+
+      'fight. It stays where the Captain can see it, and puts itself between him and '+
       'anything that gets too close.'}
 };
 /* the Captain's pet, if he has one — the single source of truth is his own field */
@@ -7296,7 +7296,7 @@ const TRAITS={
   greedy    :{n:'Light-fingered',
               up:'+15% crowns from every event, minds an empty chest least',
               cost:'−4 MOR',
-              d:'+15% crowns from every event. −4 MOR — nobody trusts them. '+
+              d:'+15% crowns from every event. −4 MOR: nobody trusts them. '+
               'Minds an empty pay-chest less than anybody, for reasons nobody investigates.',
               mor:-4,loot:.15,unpaidMod:.4},
   /* the aura does NOT check sides. Standing near them steadies the people
@@ -7304,7 +7304,7 @@ const TRAITS={
   kind      :{n:'Kind',
               up:'+6 morale to everyone within 2 hexes',
               cost:'theirs too, and −1 STR',
-              d:'+6 morale to EVERYONE within 2 hexes at the start of the fight — '+
+              d:'+6 morale to EVERYONE within 2 hexes at the start of the fight, '+
               'yours and theirs alike. It does not occur to them to make the distinction. −1 STR.',
               str:-1,aura:6,auraAll:true},
   grim      :{n:'Grim',up:'Feels nothing when an ally dies',cost:'starts 6 morale down',
@@ -7335,7 +7335,7 @@ const TRAITS={
   ambition  :{n:'Ambition',cls:['archer'],ambition:true,
               up:'+9 morale every time they land one',
               cost:'−7 to hit up close, takes an unpaid week hardest',
-              d:'Wants very badly to be somebody. −7 to hit at close range — nerves — and '+
+              d:'Wants very badly to be somebody. −7 to hit at close range (nerves) and '+
                 '+9 morale every time they actually land one. Takes an unpaid week harder '+
                 'than anyone: they came here to get on, and this is the opposite of getting on.',
               /* the one who minds an empty chest most — see unpaidMod */
@@ -7347,7 +7347,7 @@ const TRAITS={
                   'turns into weight: +10% damage for the rest of the fight.',
                   hitLift:12,ratLoud:true},
                 ogre:{d:'Wants very badly to be somebody and is counting. −7 to hit up close, '+
-                  '+6 morale per hit — and it counts its own MISSES. On the third it stops trying '+
+                  '+6 morale per hit, and it counts its own MISSES. On the third it stops trying '+
                   'to look good: +22% damage and it will not disengage from anything again.',
                   hitLift:6,missRage:3},
                 human:{d:'Wants to be somebody, in the ordinary way that most people do. −5 to '+
@@ -7357,7 +7357,7 @@ const TRAITS={
   /* the one nobody expects: the one that does not go */
   nofear    :{n:'Does not run',up:'Cannot rout, ever',cost:'−2 STR',
               d:'Cannot rout. Whatever the rest of the line does, they are '+
-              'still standing there when it is over. −2 STR — there is not much of them.',
+              'still standing there when it is over. −2 STR: there is not much of them.',
               str:-2,nofear:true,notRace:['ogre'],
               byRace:{ratkin:{d:'Cannot rout. A ratkin who does not run is a thing the other '+
                 'clans tell stories about, mostly to explain why they are dead. −2 STR.'}}},
@@ -7377,7 +7377,7 @@ const TRAITS={
   /* will not step back, and is better for it, and that is the trap */
   courage   :{n:'Courageous',cls:['captain','spear','cutter','brute'],
               up:'+14% melee damage',cost:'CANNOT DISENGAGE',
-              d:'+14% melee damage. CANNOT DISENGAGE — the option is not on their sheet. '+
+              d:'+14% melee damage. CANNOT DISENGAGE: the option is not on their sheet. '+
               'Walking away is not a thing they are able to do.',courage:true},
   /* casters only: wakes up every round having forgotten what they knew */
   /* ═══ #145 - VERY NIMBLE, AND WHY NOBODY ON YOUR ROSTER CAN HAVE IT ══════
@@ -7599,7 +7599,7 @@ const castAct=(sp,bonus)=>{
 const PERKS={
   ironjaw  :{n:'Iron Jaw',      d:'+12 maximum morale.'},
   duelist  :{n:'Duellist',      d:'+8 to hit while exactly one enemy is adjacent to you.'},
-  standfast:{n:'Stand Fast',    d:'Morale can never fall below 15% — you cannot rout.'},
+  standfast:{n:'Stand Fast',    d:'Morale can never fall below 15%: you cannot rout.'},
   warleader:{n:'War-Leader',    d:'COMMAND also grants +6 dodge to everyone it reaches, for one round.'},
   bulwark  :{n:'Bulwark',       d:'+8 dodge on any turn you have not moved.'},
   killzone :{n:'Killing Zone',  d:'Your parting swings deal 100% damage instead of 50%.'},
@@ -7765,7 +7765,7 @@ const MONSTER_ICON='☠';
 const monTag=k=>MONSTERS[k]?(MONSTERS[k].ico||MONSTER_ICON)+' '+MONSTERS[k].tag
   :MONSTER_ICON+' BEAST';
 const MONSTERS={
-  wyrm:{ico:'🐲',tag:'GREAT BEAST — LINDWURM',
+  wyrm:{ico:'🐲',tag:'GREAT BEAST - LINDWURM',
     nature:'Two hexes of her. She does not out-damage you; she takes your line apart.'},
   cub :{ico:'🥚',tag:'WHELP',
     nature:'It will not fight. It only wants to be somewhere else.'},
@@ -8166,7 +8166,7 @@ const RACEHELP={
           note:'Slow enough that they arrive together anyway. Keep them that way.'}}
 };
 const CLASSHELP={
-  captain:{d:'You. On the field, in reach, and worth killing — which is the point: leadership '+
+  captain:{d:'You. On the field, in reach, and worth killing, which is the point: leadership '+
     'that costs nothing is not leadership.',
     x:'COMMAND steadies the line, HOLD THE LINE hardens it. If the Captain falls the whole '+
       'company takes the shock, and he is the only one who is never left behind.'},
@@ -8178,7 +8178,7 @@ const CLASSHELP={
       'instead: the weapon decides the job.'},
   archer:{d:'Useless in a scrum and decisive from four hexes, so the rest of the line exists '+
     'partly to keep the scrum off her.',
-    x:'CRIPPLING SHOT does not kill the thing running at you — it takes its legs. Her off hand '+
+    x:'CRIPPLING SHOT does not kill the thing running at you. It takes its legs. Her off hand '+
       'is a real decision: a quiver, or a dirk for when something reaches her anyway.'},
   /* ⚠ #161 - "Two schools" and "Three schools" below were both wrong, and had
      been since #157 cut the ladder to warmage 1 / mage 2. SCHOOLS{} is the
@@ -8191,11 +8191,11 @@ const CLASSHELP={
       'to every school, a sword adds none and is a great deal better in the scrum.'},
   mage:{d:'Two schools and a second working each turn at half strength, and almost nothing '+
     'else. Bad with a blade, bad at dodging, thin. The line exists to keep him alive.',
-    x:'Deliberately worse in melee than the battle-mage — the best offence in the company should '+
+    x:'Deliberately worse in melee than the battle-mage: the best offence in the company should '+
       'not also be adequate with a sword.'},
   cutter:{d:'Not a damage dealer. A SETUP piece: he makes the opening and the whole line takes '+
     'it, including him.',
-    x:'DISTRACT turns a target to face away from him — its back is then open to everybody, at '+
+    x:'DISTRACT turns a target to face away from him: its back is then open to everybody, at '+
       '+30 to hit and +25% damage. He also reads the ground: +1 hex on his first move.'},
   brute:{d:'The answer to being surrounded is one horizontal reply through all of it.',
     x:'SWEEP hits every adjacent enemy at 75%. ROAR takes 28 morale off everything within two '+
@@ -8700,7 +8700,7 @@ const CONDS={
   nail:{n:'Colour Beneath the Nail',
     short:'one fingernail has gone glossy and magenta. It was not like that yesterday.',
     d:'Bloom got in through a cut. It does nothing yet except tell them when more Bloom is '+
-      'near — and creep. The bone-setter can take the finger off while it is still only a '+
+      'near, and creep. The bone-setter can take the finger off while it is still only a '+
       'finger. Or you can see what a hand becomes.'}
 };
 const MUTS={
@@ -8716,7 +8716,7 @@ const MUTS={
   bloomhand:{n:'Blooming Hand',
     short:'reaches farther than its owner intends.',
     d:'The fingers have gone to pale flowering tendrils with a saturated centre. It can take '+
-      'hold of somebody two hexes away and root them where they stand — and it cannot hold '+
+      'hold of somebody two hexes away and root them where they stand, and it cannot hold '+
       'a weapon, so nothing two-handed fits them ever again. It reaches toward strange things '+
       'without being asked.'}
 };
@@ -10057,14 +10057,14 @@ const STATES={
 const LADDER=[
   {at:.90,n:'It rocks',    ic:'😄',col:'#7fae4e',bg:'rgba(127,174,78,.30)',
    d:'<b>+5 to hit and +5% damage.</b> Nothing here frightens them, and it shows. '+
-     'Hard to reach and easy to lose — you have to earn it in the fight.'},
+     'Hard to reach and easy to lose: you have to earn it in the fight.'},
   {at:.70,n:'Happy',       ic:'🙂',col:'#a3bd6c',bg:'rgba(163,189,108,.20)',
    d:'Steady. No penalties, full skill, full dodge. This is where most fights start.'},
   /* #129 - was .40 and 8/3. The first bad rung is a shallower step now, and it
      is a longer band, so a company that takes one bad turn does not fall two
      rungs on it. */
   {at:.52,n:'Ok',          ic:'😐',col:'#c9b98a',bg:'rgba(180,170,140,.20)',
-   d:'Wavering — 5 off their skill, 2 off their dodge. Watching the line.'},
+   d:'Wavering: 5 off their skill, 2 off their dodge. Watching the line.'},
   /* #129 - the new rung, and the whole reason this pass exists: the drop from
      "watching the line" to "one bad thing from breaking" used to be one step. */
   {at:.34,n:'Shaken',      ic:'😕',col:'#c2a86a',bg:'rgba(194,168,106,.22)',
@@ -10324,7 +10324,7 @@ function mor(u,amt,why){
   if(u.state!==was){
     if(u.state==='routed'){say(u.name+' breaks. White flag, and gone.');sfx('rout');}
     else if(was==='routed')say(u.name+' steadies. Back in the line.');
-    else if(amt<0)say(u.name+' is '+STATES[u.state].n.toLowerCase()+' — '+why+'.');}
+    else if(amt<0)say(u.name+' is '+STATES[u.state].n.toLowerCase()+': '+why+'.');}
 }
 /* the nerve this body walked on with. `morale0` is stamped when it is built, so
    it already carries the company's mood, the banner, its own nature and what it
@@ -10410,7 +10410,7 @@ const RACESKILL={
   ogre:{k:'throw',n:'PICK UP AND THROW',cost:1,thrower:true,range:4,rockRange:3,
     cool:2,maxSize:1,
     note:'Pick up anything on the next tile and throw it. One of yours (it keeps its own '+
-      'turn), one of theirs, or a lone boulder — a boulder goes 3 hexes, hits hard, can '+
+      'turn), one of theirs, or a lone boulder. A boulder goes 3 hexes, hits hard, can '+
       'miss, and comes back down on the ground where it lands. Nothing ogre-sized gets lifted.'},
   /* THE PUREST SYNERGY SKILL IN THE GAME and the one that defines the race:
      individually the weakest body on the field, and what they contribute is
@@ -10425,7 +10425,7 @@ const RACESKILL={
      balancing; only add a cap if testing shows +75% deleting bosses. */
   ratkin:{k:'venom',n:'POISON THE BLADE',cost:1,reach:1,cool:2,venom:2,
     dmg:[2,5],am:.10,ft:.50,
-    note:'Almost no damage. For two rounds everything that hits them takes 15% more — and it '+
+    note:'Almost no damage. For two rounds everything that hits them takes 15% more, and it '+
       'stacks, so two of you make it 30%. It is not poison that kills; it is poison that makes '+
       'the next blow matter.'}
 };
@@ -10545,7 +10545,7 @@ function unitFrom(p){
   if(main){
     const a={k:'main',n:main.n.toUpperCase(),cost:1,dmg:main.dmg,am:main.am,ft:main.ft,
       note:(main.range?'Range '+(main.range+R)+'. Badly hampered inside a scrum.':'Reach '+main.reach+'.')+
-        (main.hands===2?' Two hands — nothing else fits.':'')};
+        (main.hands===2?' Two hands: nothing else fits.':'')};
     if(main.range)a.range=main.range+R;else a.reach=main.reach;
     if(off&&off.rangedDmg&&main.range)a.dmg=[main.dmg[0]+off.rangedDmg,main.dmg[1]+off.rangedDmg];
     acts.push(a);
@@ -10566,7 +10566,7 @@ function unitFrom(p){
     spear:(main&&main.n==='Halberd')
       ? {k:'shove',n:'BRACE AND SHOVE',cost:1,reach:2,push:2,cool:2,
          dmg:[Math.round(main.dmg[0]*.5),Math.round(main.dmg[1]*.5)],am:.5,ft:.4,
-         note:'Half damage, and it puts them TWO HEXES back — into the marsh, into a fire, '+
+         note:'Half damage, and it puts them TWO HEXES back: into the marsh, into a fire, '+
            'out of their own line. Nobody gets a parting swing at somebody being shoved.'}
       /* #72 - ONE action, always. It was two, which meant bracing was the
          whole turn and the wall only ever went up when nothing else could be
@@ -10588,7 +10588,7 @@ function unitFrom(p){
       cripple:true,
       dmg:main?[Math.round(main.dmg[0]*.55),Math.round(main.dmg[1]*.55)]:[8,13],
       am:(main&&main.am)||.5,ft:(main&&main.ft)||.5,
-      note:'Half damage — and the target loses HALF ITS MOVEMENT and 10 dodge until it '+
+      note:'Half damage, and the target loses HALF ITS MOVEMENT and 10 dodge until it '+
         'next acts. Put it in the thing that is about to reach your line.'},
     mage:null,          /* casters get their rolled schools instead */
     warmage:null,
@@ -10598,7 +10598,7 @@ function unitFrom(p){
        DISTRACT is the cutter's actual job — he makes the opening, and then
        ANYBODY can take it, including him next action. One action, no damage. */
     cutter:{k:'distract',n:'DISTRACT',cost:1,reach:1,distract:true,cool:2,
-      note:'No damage. The target turns to face AWAY from you — its back is now '+
+      note:'No damage. The target turns to face AWAY from you: its back is now '+
         'yours, and your whole line can see it. Backstabs are +30 to hit and +25% damage.'},
     brute:{k:'sweep',n:'SWEEP',cost:2,reach:1,sweep:true,cool:2,
       dmg:main?[Math.round(main.dmg[0]*.75),Math.round(main.dmg[1]*.72)]:[20,29],am:1.10,ft:.18,
@@ -10728,7 +10728,7 @@ function unitFrom(p){
   u.mut=p.mut||null;
   if(p.mut==='gills')acts.push({k:'sink',n:'SINK BELOW',cost:1,sink:true,
     note:'Once a fight. Slip under the water and come up from any other marsh hex '+
-      'within 5 — no parting swings, because there is nothing left to swing at. '+
+      'within 5. No parting swings, because there is nothing left to swing at. '+
       'Needs marsh underfoot or beside you, at both ends.'});
   /* the hand takes hold of something two hexes away and roots it. No damage —
      it is a POSITIONAL weapon, which is what the mutation is for. */
@@ -10772,7 +10772,7 @@ function foes(){
        point of it is never the damage. */
     hooker:{kind:'ratkin',name:'Ratkin, hook-pole',hp:34,armour:26,mor:56,skill:55,dodge:18,speed:4,
       acts:[{k:'hook',n:'HOOK-POLE',cost:1,reach:2,pull:1,cool:2,dmg:[7,12],am:.45,ft:.35,
-             note:'Small damage, and it drags them a hex toward the pole — out of your line.'},
+             note:'Small damage, and it drags them a hex toward the pole, out of your line.'},
             {k:'jab',n:'JAB',cost:1,reach:2,dmg:[9,14],am:.55,ft:.30}]},
     slinger:{kind:'ratkin',name:'Ratkin slinger',hp:30,armour:22,mor:52,skill:59,dodge:20,speed:4,
       bow:true,acts:[{k:'sling',n:'SLING',cost:1,range:5,dmg:[11,17],am:.50,ft:.40}]},   /* #135 */
@@ -12705,7 +12705,7 @@ function beasts(){
            and left lying against her body where the tail-lash reaches. Your
            formation is the thing she attacks. */
         {k:'drag',n:'DRAG UNDER',cost:2,reach:2,dmg:[24,36],am:1.15,ft:.40,drag:true,cool:2,
-          note:'Heavy, and it takes them WITH her — hauled out of your line and dropped '+
+          note:'Heavy, and it takes them WITH her, hauled out of your line and dropped '+
             'against her flank, where the tail can reach and you cannot.'},
         /* THE FEN ANSWERS — she is not in the marsh, she IS the marsh. The
            ground around her turns to bog, so every round you spend near her
@@ -12719,7 +12719,7 @@ function beasts(){
            This is the boss mechanic the fight was missing: she does not out-
            damage you, she takes your line apart one person at a time. */
         {k:'fear',n:'THE SOUND SHE MAKES',cost:2,range:5,fear:true,cool:2,
-          note:'No damage. Everyone of yours within 5 hexes checks their nerve — whoever '+
+          note:'No damage. Everyone of yours within 5 hexes checks their nerve: whoever '+
             'fails breaks and runs. And the NEAREST one who stands it meets her eye and '+
             'cannot move until she looks away. Holding your ground is how you get picked.'}]},
     /* The cub does not fight. Ever. It keeps to the edge of the field and
@@ -13200,7 +13200,7 @@ function startBattle(kind){
       say(v.name+' went wide off the road to pull it after them, and it went. '+
         'They are not standing up again today.'+
         (w?' They also got its harness open down one side before it finished with '+
-          'them — it comes at the rest of you already spoiled.':''));
+          'them. It comes at the rest of you already spoiled.':''));
     }
     G.armourSac=null;
   }
@@ -13234,7 +13234,7 @@ function startBattle(kind){
     B.units.filter(x=>x.side==='you'&&!x.ally&&!x.pet).forEach(x=>{
       x.morale=Math.max(10,x.morale-14);});
     say('The barrels have been empty for days. Wages buy bread and bread is all '+
-      'anybody has had — the whole line starts this one hungry. (−14 morale each)');
+      'anybody has had. The whole line starts this one hungry. (−14 morale each)');
   }else if(G.run.food<=2){
     B.units.filter(x=>x.side==='you'&&!x.ally&&!x.pet).forEach(x=>{
       x.morale=Math.max(10,x.morale-6);});
@@ -13279,7 +13279,7 @@ function startBattle(kind){
   const hurt=you.filter(u=>u.hp<u.hpMax&&!u.downed);
   if(hurt.length)say('Still carrying the last fight: '+
     hurt.map(u=>u.name.split(' ')[0]+' '+Math.ceil(u.hp)+'/'+u.hpMax).join(', ')+
-    '. Nothing heals here — only days on the road do that.');
+    '. Nothing heals here: only days on the road do that.');
 }
 const alive=()=>B.units.filter(u=>!u.dead&&!u.fled&&!u.downed);
 /* ═══ #48 — LEAVE THE BODY WHERE IT FELL ═══════════════════════════════
@@ -13642,12 +13642,12 @@ const FLEECOST={
     line:'The stones follow you for three hundred paces. Two of yours will be picking '+
       'lead out of their backs tonight.'},
   steading:{mor:18,crowns:0,days:1,
-    why:'They will not chase — but you are going the long way round now.',
+    why:'They will not chase, but you are going the long way round now.',
     line:'The ogres watch you leave without moving, which is somehow worse, and the hill '+
       'is still theirs.'},
   mother:{mor:30,crowns:0,days:2,
     why:'You leave a great beast alive behind you, and the road knows it.',
-    line:'She does not follow. She does not need to — you have to come back this way, and '+
+    line:'She does not follow. She does not need to: you have to come back this way, and '+
       'everybody walking beside you has worked that out.'},
   packev:{mor:22,crowns:0,days:1,
     why:'They are faster than you. Leaving costs blood.',
@@ -15166,7 +15166,7 @@ function strike(a,d,act,mult){
       faceToward(d,a.col,a.row);
       fx(d,'DRAGGED','#c15d55');sfx('rout');
       if(onEmber(d))ignite(d,' is dragged through the fire',true);   /* #186 */
-      say(a.name+' takes '+d.name+' with her — hauled out of the line and dropped '+
+      say(a.name+' takes '+d.name+' with her, hauled out of the line and dropped '+
         'against her flank.');
       /* held under long enough to breathe some of it — the ORIGIN of the
          fen-water condition. A mutation must come from an event you can
@@ -15233,7 +15233,7 @@ function strike(a,d,act,mult){
       const alone=!alive().some(x=>x.side===d.side&&x!==d&&udist(d,x)<=2);
       say(a.name+(force>0?' shoves ':' hooks ')+d.name+' '+stepped+' hex'+(stepped>1?'es':'')+
         (force>0?' back':' forward')+'.'+
-        (marsh?' Into the water — it will cost them to get out.':'')+
+        (marsh?' Into the water: it will cost them to get out.':'')+
         (nearFire?' Into the fire\'s reach.':'')+
         (alone?' And away from anybody of theirs.':''));
       /* #186 - shoved INTO the burning ground: it lights them. The kick into
@@ -15304,7 +15304,7 @@ function strike(a,d,act,mult){
     moteFx(d,Math.min(8,4+n),'#7fae4e');
     sfx('venom');
     say(d.name+' is cut with something that was not clean'+
-      (n>1?' — and that is '+n+' of them now, and everything lands harder.'
+      (n>1?', and that is '+n+' of them now, and everything lands harder.'
           :'. Everything that lands on '+(d.side==='you'?'them':'it')+
            ' now lands harder.'));
     if(a.side==='you'&&!a.ally)whisper('venom');
@@ -15351,7 +15351,7 @@ function strike(a,d,act,mult){
     if(d.side==='you'&&!d.ally){
       /* the body stays where they fell, same as anyone else's — see dropBody */
       d.downed=true;dropBody(d);
-      say(d.name+' is down — dragged out of the line, still breathing.');
+      say(d.name+' is down, dragged out of the line, still breathing.');
       fx(d,'DOWN','#c07a2c');sfx('rout');
     }else{
       d.dead=true;dropBody(d);
@@ -16485,7 +16485,7 @@ function hungerTick(){
   if(G.run.food>0){
     G.run.food--;
     say('This has gone on long enough that the company has eaten out of the barrels to keep '+
-      'standing in it. One provision gone — '+G.run.food+' left.');
+      'standing in it. One provision gone, '+G.run.food+' left.');
     return false;
   }
   B.starved=(B.starved||0)+1;
@@ -16966,7 +16966,7 @@ function fearBurst(src,act){
   if(pinned){
     pinned.rooted=2;
     fx(pinned,'TRANSFIXED','#e0b84a');
-    say(pinned.name+' meets her eye and stops moving. Not frozen — held.');
+    say(pinned.name+' meets her eye and stops moving. Not frozen. Held.');
   }
   return broke;
 }
@@ -17017,7 +17017,7 @@ function selectAct(i){
     whisper('hurl');
     B.sel=a;B.hurl=null;B.hurlRock=null;B.hurlFrom=cargo;B.hurlRocks=rocks;render();
     say(u.name+' looks around for something to get a hand under'+
-      (rocks.length?' — a body, or that boulder.':'.')+' Click it.');
+      (rocks.length?': a body, or that boulder.':'.')+' Click it.');
     return;
   }
   /* SINK BELOW — the reach map is "every free marsh hex within 5", not a
@@ -17064,7 +17064,7 @@ function selectAct(i){
   if(a.k==='wall'){spend(u,a);u.spearwall=true;
     say(wallLive(u)
       ?'Spear wall up. Anything stepping into reach gets the point of it.'
-      :'Spear braced — but somebody is already inside it, so it is doing nothing '+
+      :'Spear braced, but somebody is already inside it, so it is doing nothing '+
        'until they are off her.');
     B.sel=null;render();autoEnd(u);return;}
   if(a.k==='command'){spend(u,a);mor(u,20,'');
@@ -17327,7 +17327,7 @@ function throwRock(u,act,from,c,r){
     say(u.name+' throws the boulder'+(victim?'':' onto open ground')+
       '. It stays where it stops, and the ground is a different shape now.');
   }else{
-    say(u.name+' throws the boulder. It comes apart on landing — there was nowhere '+
+    say(u.name+' throws the boulder. It comes apart on landing: there was nowhere '+
       'clean for it to sit.');
   }
   if(!victim)sfx('hurl');
@@ -17367,7 +17367,7 @@ function clickHex(c,r){
          AT somebody, so occupied hexes stay on the table here */
       B.reach={dist:throwSpots(u,a.rockRange||3,true),prev:{}};render();
       say('The boulder comes up out of the ground with a sound nobody enjoys. '+
-        'Click where it goes — at somebody, or just somewhere else.');
+        'Click where it goes: at somebody, or just somewhere else.');
     }else say('Click something on the next tile: one of yours, one of theirs, '+
       'or a boulder standing on its own.');
     return;
@@ -17411,7 +17411,7 @@ function clickHex(c,r){
       const L=losState(u,tgt);
       if(L.k==='BLOCKED'){
         say(L.at?'There is rock between you and it. Nothing goes through that.'
-                :'There is too much in the way — you would be shooting your own people.');
+                :'There is too much in the way: you would be shooting your own people.');
         return;}
     }
     /* #82 - the same contract one gate up: the offer is withdrawn, nothing is
@@ -17430,7 +17430,7 @@ function clickHex(c,r){
     if(a.maxSize&&!sizeOK(a,tgt)){
       say(tgt.big?'There is far too much of it. Nothing you can do with your feet or your '+
             'hands is going to move that.'
-        :'An ogre does not get moved. It is not that you are weak — it is that there '+
+        :'An ogre does not get moved. It is not that you are weak: it is that there '+
          'is a great deal of it and it is standing where it wants to.');
       whisper('size');
       return;}
@@ -17441,7 +17441,7 @@ function clickHex(c,r){
     /* the same rule from the other end: DISTRACT sells you a back arc, and
        this has none to sell */
     if(a.distract&&tgt.noArc){
-      say('You can make it look somewhere else. It does not help — there is no side of it '+
+      say('You can make it look somewhere else. It does not help: there is no side of it '+
         'that is the wrong side.');return;}
     if(!canUse(u,a))return;
     spend(u,a);
@@ -17475,7 +17475,7 @@ function clickHex(c,r){
       const openings=alive().filter(x=>x.side===u.side&&udist(x,tgt)<=1&&
         arcOn(x,tgt).n==='BACK').length;
       say(u.name+' gets '+tgt.name+' to look the wrong way. Its back is open'+
-        (openings>1?' — '+openings+' of yours can see it.':'.'));
+        (openings>1?': '+openings+' of yours can see it.':'.'));
       B.sel=null;B.reach=null;render();autoEnd(u);
       return;}
     if(a.strain){payStrain(u,a);sfx('cast');}
@@ -17498,7 +17498,7 @@ function clickHex(c,r){
       setTimeout(()=>moteFx(tgt,5,'#cdd6d8'),hitPaced(220));
       fx(tgt,'−'+Math.round(off)+' armour','#96a1a5');
       mor(tgt,-14,'its harness came apart');
-      say(u.name+' unpicks '+tgt.name+'’s harness — '+Math.round(off)+' armour gone.');
+      say(u.name+' unpicks '+tgt.name+'’s harness: '+Math.round(off)+' armour gone.');
       B.sel=null;B.reach=null;render();
       if(!checkEnd())autoEnd(u);
       return;}
@@ -17870,7 +17870,7 @@ const STATUS={
      doing it, and one glyph may not mean two things (#102). The pink is the
      caster vocabulary `gathering` and `marked` already speak. */
   charged:{n:'Charged weapon',g:'❖',col:'#e28fb4',on:u=>!!u.elem,
-    d:u=>ELEM[u.elem].g+' '+ELEM[u.elem].n+' — '+ELEM[u.elem].d}
+    d:u=>ELEM[u.elem].g+' '+ELEM[u.elem].n+' - '+ELEM[u.elem].d}
 };
 /* what is currently true of this body, as a list the UI can just print */
 function statusesOn(u){
@@ -18475,7 +18475,7 @@ function aiTurn(u){
             B.terr[K(c,r)]='marsh';n++;}}});
       terrMoved();                            /* #82 - see throwRock */
       paintTerrain();render();
-      say(u.name+' settles, and the ground gives up — '+n+' hexes of standing water '+
+      say(u.name+' settles, and the ground gives up: '+n+' hexes of standing water '+
         'where there was footing a moment ago.');
       sfx('rout');
       if(checkEnd()){B.busy=false;return;}later(step,420);return;
@@ -18744,7 +18744,7 @@ function aiTurn(u){
         /* #128 - a spear screen holds for a different reason than a bowman,
            and "it has the bows" in its mouth is the wrong sentence. */
         say(u.name+(iShoot
-          ? ' holds its ground. It has the bows — you can come to it.'
+          ? ' holds its ground. It has the bows: you can come to it.'
           : ' holds the line. It is not coming to you: it is standing in front of the ones '+
             'who are shooting.'));}
       B.busy=false;render();later(nextTurn,220);return;}
@@ -20215,7 +20215,7 @@ function terrainCheck(terr,units){
     flowers:Object.keys(terr).filter(k=>terr[k]==='flower').length,
     why:sealed?'a force is sealed off from the other'
        :choke<2?'a single mandatory corridor at column '+chokeAt+
-                ' — that is a queue, not a tactical map'
+                ': that is a queue, not a tactical map'
        :n>1?'more than one island (walkable but unreachable ground exists)'
        :'ok'};
 }
@@ -21462,8 +21462,8 @@ function render(){
       const why=noFleeWhy(G.battleKind);
       $('bFlee').disabled=!!why;
       $('bFlee').classList.toggle('locked',!!why);
-      $('bFlee').title=why?'NO WAY OUT — '+why
-        :'WITHDRAW — leave the field. No spoils, the company takes it badly, and the place is done with.';
+      $('bFlee').title=why?'NO WAY OUT - '+why
+        :'WITHDRAW - leave the field. No spoils, the company takes it badly, and the place is done with.';
     }else{$('bActions').innerHTML='';B.cards=null;
       $('bEnd').disabled=true;$('bFlee').disabled=true;}}
   /* #91 point 12 - the UNDO offer, shown exactly while it is real */
@@ -22105,7 +22105,7 @@ function render(){
           inn.appendChild(lb);}
         if(ringOf(occ,'ratkin')>=FORM.swarmNeed){
           const sb=document.createElement('span');sb.className='fbadge sw';
-          sb.textContent='≋';sb.title='Swarmed — −14 to hit';
+          sb.textContent='≋';sb.title='Swarmed: −14 to hit';
           inn.appendChild(sb);}
         if(odds!==null){
           /* #191 - the figure comes off the hex; the DAMAGE below it stays.
@@ -22602,7 +22602,7 @@ function inspect(t,e){
         (own?'WHAT THEY CAN DO':'WHAT IT CAN DO TO YOU')+'</div>'+
       (t.passive?'<div class="rr"><span style="color:#8ca35a">Nothing. It does not fight.</span></div>'
         :mv.map(a=>'<div class="rr"><span>'+iconFor(a)+' '+a.n+'</span><span style="color:#a8b5b3">'+
-        (a.dmg?a.dmg[0]+'–'+a.dmg[1]:'—')+(a.range?' · rng '+a.range:a.reach?' · rch '+a.reach:'')+
+        (a.dmg?a.dmg[0]+'–'+a.dmg[1]:'–')+(a.range?' · rng '+a.range:a.reach?' · rch '+a.reach:'')+
         '</span></div>').join('')):'')+
     /* ⚑ AND THE FALLBACK SENTENCE GOES WITH IT. "Its blue overlay is where it
        can reach next turn" was a caption for the reach tint (#156) parked in
@@ -22614,7 +22614,7 @@ function inspect(t,e){
        ⚠ The TRAIT half is untouched - enemy personalities stay visible,
        because they change how that body moves. */
     (t.trait?'<div style="font-size:var(--fs2);font-style:italic;color:var(--t3);line-height:1.3">'+
-      (own?'':'<b style="color:#c9a227">'+TRAITS[t.trait].n+'</b> — ')+traitShort(t)+'</div>':'');
+      (own?'':'<b style="color:#c9a227">'+TRAITS[t.trait].n+'</b> - ')+traitShort(t)+'</div>':'');
   /* #163 - away from whoever is looking, exactly as the aiming card does. The
      inspect card was never the one complained about, but it opens under the
      same cursor on the same board and a rule that applies to one of two cards
@@ -22833,7 +22833,7 @@ function readout(t,e){
        it inherit the top of the card - which is where #163's own `m)` wanted the
        damage in the first place. */
     (SHOW_HIT_ODDS?'<div style="display:flex;align-items:baseline;gap:8px">'+
-      '<span class="big" id="rHit">—</span>'+
+      '<span class="big" id="rHit">–</span>'+
       '<span style="font-family:var(--mono);font-size:var(--fs1);color:#8fa5a2">CHANCE TO HIT</span></div>'
      :'')+
     /* m) - the blow itself, directly under the chance that it lands */
@@ -22870,12 +22870,12 @@ function readout(t,e){
      is a place to stand and it is the one thing on this card the player is meant
      to act on; `+15 · ×1.25 dmg` beside a hidden total is the receipt coming
      back in through the one row that was allowed to stay. */
-  $('rArc').textContent=t.noArc?'NONE — it has no back'
+  $('rArc').textContent=t.noArc?'NONE - it has no back'
     :bd.arc.n+(SHOW_HIT_ODDS?(bd.arc.hit?' +'+bd.arc.hit:'')+
       (bd.arc.dmg>1?' · ×'+bd.arc.dmg.toFixed(2)+' dmg':''):'');
   $('rArc').style.color=t.noArc?'#c15d55'
     :bd.arc.n==='BACK'?'#e0b84a':bd.arc.n==='FLANK'?'#c9a227':'#5f7472';
-  $('rName').textContent=t.name+(t.captain?' — captain':'');
+  $('rName').textContent=t.name+(t.captain?' - captain':'');
   if(SHOW_HIT_ODDS){
     $('rHit').textContent=bd.total+'%';
     $('rHit').style.color=bd.total>=70?'#8ca35a':bd.total>=45?'#c9a227':'#c15d55';}
@@ -23125,7 +23125,7 @@ setInterval(()=>{
     unit:u?u.name:'(none)',side:u?u.side:'-',state:u?u.state:'-',
     seq:B.seq,busy:B.busy,stalledMs:now-WD_T,dropped:DROPPED,lastDrop:DROPLAST};
   STALLS.push(rec);
-  console.warn('[RABBLEBOUND] battle stalled — B02 regression:',rec);
+  console.warn('[RABBLEBOUND] battle stalled - B02 regression:',rec);
   if(TEST.on)say('[STALL] '+rec.kind+' rd'+rec.round+' idx'+rec.idx+' '+rec.unit+
     ' busy='+rec.busy+' dropped='+rec.dropped);
   else say('The moment hangs, and then it passes.');
@@ -23166,7 +23166,7 @@ window.LINT=function(){
       const k=t.slice(1,-1);
       if(KNOWN_TOKENS.indexOf(k)<0)hit('token',where,'unknown token '+t);
     });
-    if(/\{[a-z]/.test(txt))hit('token',where,'lower-case brace — cast() will not fill it');
+    if(/\{[a-z]/.test(txt))hit('token',where,'lower-case brace - cast() will not fill it');
   };
   /* 1b - {TELLER} needs somebody to have CAST it (#73). The token degrades to
      "the smallest of you" when G.fireTeller is unset, which reads as writing
@@ -23178,14 +23178,14 @@ window.LINT=function(){
   const scanTeller=(txt,where,k)=>{
     if(/\{TELLER\d*\}/.test(String(txt))&&!castsItself(k))
       hit('token',where,'{TELLER} but openEvent never sets G.fireTeller for "'+k+
-        '" — it will silently read as "the smallest of you"');
+        '" - it will silently read as "the smallest of you"');
   };
   /* 2 — a floating event must not name a specific character */
   const scanNames=(txt,where,floating)=>{
     if(!floating)return;
     NAMES.forEach(n=>{
       if(new RegExp('\\b'+n+'\\b').test(txt))
-        hit('hardcoded',where,'names "'+n+'" — they may never be recruited');
+        hit('hardcoded',where,'names "'+n+'" - they may never be recruited');
     });
   };
   /* 3 — arithmetic receipts in choice labels (the pillar) */
@@ -23315,7 +23315,7 @@ window.LINT=function(){
       'Armour has fallen back to "any ordinary node past the village"');return;}
     if(!NODES[at]){hit('map','armourDue','anchored to "'+at+'", which is not a node');return;}
     if(NODES[at].t==='battle')
-      hit('map','armourDue','anchored to "'+at+'", which is a battle node — the ambush would '+
+      hit('map','armourDue','anchored to "'+at+'", which is a battle node - the ambush would '+
         'stack a second fight onto one arrival');
   })();
   /* ═══ 8c (#160) — THE TWO ROAD STOPS ARE ANCHORED TO A DISTANCE, SO CHECK
@@ -23337,7 +23337,7 @@ window.LINT=function(){
         return;}
       band.forEach(k=>{
         if(NODES[k].t==='battle')
-          hit('map',ev,'band node "'+k+'" is a battle node — the stop would stack two fights '+
+          hit('map',ev,'band node "'+k+'" is a battle node - the stop would stack two fights '+
             'onto one arrival');
         if(edgesFrom(k).some(e=>NODES[e[1]]&&NODES[e[1]].t==='battle'))
           hit('map',ev,'band node "'+k+'" leads straight into a battle node');});
@@ -23383,7 +23383,7 @@ window.LINT=function(){
        stops happening entirely and silently. */
     ['camp1','mother','vill','hire','wed'].forEach(must=>{
       const miss=routes.filter(r=>r.indexOf(must)<0).length;
-      if(miss)hit('map',must,miss+' route(s) to the Snare skip it — it is meant to be spine');});
+      if(miss)hit('map',must,miss+' route(s) to the Snare skip it - it is meant to be spine');});
     /* every fork must offer a genuine choice of length, or it is not a fork */
     Object.keys(NODES).forEach(k=>{
       const out=edgesFrom(k);
@@ -23391,14 +23391,14 @@ window.LINT=function(){
       const days=out.map(e=>e[2]);
       if(Math.max.apply(null,days)===Math.min.apply(null,days)&&out.length>1&&
          k!=='hold')
-        hit('map',k,'fork where every road costs the same days — no trade to make');});
+        hit('map',k,'fork where every road costs the same days - no trade to make');});
     /* ...and every fork must REJOIN, because the fork card (#58) reads each
        road to the join and falls back to the old single-road card without
        one. Nothing on today's map is shaped that way; this is here so the
        map rebuild cannot quietly cost the comparison. */
     Object.keys(NODES).forEach(k=>{
       if(edgesFrom(k).length>1&&!branchOf(k))
-        hit('map',k,'fork whose roads never meet again — the fork card falls back to one road at a time');});
+        hit('map',k,'fork whose roads never meet again - the fork card falls back to one road at a time');});
     /* and the spacing rule, so a moved coordinate cannot ship crowded */
     spacingViolations().forEach(o=>hit('map',o.a+'↔'+o.b,o.why));
     /* ...and the ROAD LABELS, which nothing had ever checked and which were
@@ -23433,7 +23433,7 @@ window.LINT=function(){
     ['clash','brigand','pack','slingline','steading','mother','armour','circle','tavern',
      'wedding'].forEach(k=>{
       if(src.indexOf("==='"+k+"'")<0)
-        hit('structure','startBattle','fight "'+k+'" has no foe builder in the dispatch — it '+
+        hit('structure','startBattle','fight "'+k+'" has no foe builder in the dispatch - it '+
           'will silently fight the Snare\'s army');});
   })();
   /* 9b — and every fight needs somewhere for its spoils to come from. A
@@ -23446,7 +23446,7 @@ window.LINT=function(){
        the pool is empty, which would silently take a morale hit or a day off
        the player without asking — the one thing #55 exists to prevent. */
     else if(!LOOT[k].some(l=>!lootIsChoice(l)))
-      hit('structure','LOOT','"'+k+'" has no row that is spoils rather than a decision — '+
+      hit('structure','LOOT','"'+k+'" has no row that is spoils rather than a decision - '+
         'the automatic haul would make a moral choice for the player');});
   /* ═══ 9d — EVERY FIGHT NAMES A TERRAIN THAT EXISTS (#61) ═══════════════
      Exactly the shape of bug 9b is about, one layer down: `fieldFor` falls
@@ -23462,7 +23462,7 @@ window.LINT=function(){
     const f=FIELDS[k];
     if(!f){hit('structure','FIELDS','no terrain named for fight "'+k+'"');return;}
     if(!TERRAIN[f.t])hit('structure','FIELDS','"'+k+'" names terrain "'+f.t+
-      '", which is not in TERRAIN — it will silently be served the fen');
+      '", which is not in TERRAIN - it will silently be served the fen');
     if(!GROUND[(TERRAIN[f.t]||{}).paint])
       hit('structure','TERRAIN','terrain "'+f.t+'" paints with "'+
         (TERRAIN[f.t]||{}).paint+'", which is not in GROUND');
@@ -23552,24 +23552,24 @@ window.LINT=function(){
       if(c.castRace&&['human','ratkin','ogre'].indexOf(c.castRace)<0)
         hit('gate',w,'castRace "'+c.castRace+'" is not a race');
       if(c.castKeep&&!c.needs)
-        hit('gate',w,'castKeep with no needs — there is no earlier cast to keep');
+        hit('gate',w,'castKeep with no needs - there is no earlier cast to keep');
       /* #38 — a card gated on a tie nothing can ever write is a card that
          never fires, which is the exact failure castRace's check exists for */
       if(c.castTie&&!TIES[c.castTie])
         hit('gate',w,'castTie "'+c.castTie+'" is not a tie in TIES');
       if(c.castTie&&c.castRace)
-        hit('gate',w,'castTie and castRace on one card — the cast can only come from one of them');
+        hit('gate',w,'castTie and castRace on one card - the cast can only come from one of them');
       /* #85 — same rule, third gate. A castLost card draws `a` from outside
          the party entirely, so any other cast rule on it is silently ignored
          by openCamp and the author would never find out. */
       if(c.castLost&&(c.castRace||c.castTie||c.castKeep))
-        hit('gate',w,'castLost with another cast gate — the cast can only come from one place');
+        hit('gate',w,'castLost with another cast gate - the cast can only come from one place');
       if(c.needs){
         const par=byId[c.needs.id];
         if(!par)hit('gate',w,'needs missing incident "'+c.needs.id+'"');
         else if(!par.choices||c.needs.opt>=par.choices.length||c.needs.opt<0)
           hit('gate',w,'needs '+c.needs.id+' option '+c.needs.opt+
-            ', which has '+((par.choices||[]).length)+' — this card can never fire');
+            ', which has '+((par.choices||[]).length)+' - this card can never fire');
       }
       (c.choices||[]).forEach((o,i)=>{
         const where=w+'.choice['+i+']';
@@ -23589,7 +23589,7 @@ window.LINT=function(){
         if(o.endTie&&!TIES[o.endTie])
           hit('fx',where,'endTie "'+o.endTie+'" is not a tie in TIES');
         if(o.endTie&&o.endTie!==c.castTie)
-          hit('fx',where,'endTie "'+o.endTie+'" on a card not cast from that tie — '+
+          hit('fx',where,'endTie "'+o.endTie+'" on a card not cast from that tie - '+
             'there is no pair to end it between');
         if(typeof o.after!=='function')scanTokens(o.after||'',where+'.after');
       });
@@ -23767,7 +23767,7 @@ function saveRun(){
   try{
     localStorage.setItem(SAVE_STAMP,runBlob());
   }catch(e){
-    console.error('[RABBLEBOUND] saveRun failed —',e);
+    console.error('[RABBLEBOUND] saveRun failed:',e);
     if(typeof TEST!=='undefined'&&TEST.on)say2('[SAVE FAILED] '+e.message);
   }
 }
@@ -23950,7 +23950,7 @@ function toggleAuto(){
   $('bAuto').classList.toggle('live',B.auto);
   /* #91 - an icon button now; the words live in the title */
   $('bAuto').textContent=B.auto?'❚❚':'▶';
-  $('bAuto').title=B.auto?'AUTO ON — press to take the reins back':'AUTO — the company fights itself';
+  $('bAuto').title=B.auto?'AUTO ON - press to take the reins back':'AUTO - the company fights itself';
   if(B.auto){
     say('The company fights on its own. Press AUTO again to take the reins back.');
     /* #81 - paced with everything else. AUTO is a tester tool, and the tester
@@ -23992,7 +23992,7 @@ function withdraw(){
   const carried=B.units.filter(u=>u.side==='you'&&u.downed&&!u.ally).length;
   ask('SOUND THE WITHDRAWAL?',
     standing+' still standing walk away.'+
-    (carried?'\n'+carried+' are carried out — they will be scarred, not lost.':'')+
+    (carried?'\n'+carried+' are carried out: they will be scarred, not lost.':'')+
     '\n\n'+cost.why,
     [{t:'Sound it. We are leaving.',danger:true,
       c:'no spoils · −'+cost.mor+' mood'+
@@ -24116,7 +24116,7 @@ function toBeaten(){
   $('sCard').innerHTML='<h1>'+spec.t+'</h1>'+
     '<p>'+spec.b.replace(/\n\n/g,'</p><p>')+'</p>'+
     (scarred.length?'<p style="color:#c9a227">Carried out: '+
-      scarred.map(x=>who(x.p)+' — <b style="color:var(--g4)">'+x.s.n+'</b> '+x.s.d).join('<br>')+
+      scarred.map(x=>who(x.p)+' - <b style="color:var(--g4)">'+x.s.n+'</b> '+x.s.d).join('<br>')+
       '</p>':'')+
     (spec.b2?'<p>'+spec.b2.replace(/\n\n/g,'</p><p>')+'</p>':'')+
     (bill?'<p style="color:#8a7449;font-style:italic">'+bill+'</p>':'')+
@@ -24152,7 +24152,7 @@ function toRetreat(){
     '<p style="color:#a38652;font-style:italic">'+(G.fleeLine||
       'Nobody says anything on the walk back. Nobody has to.')+'</p>'+
     (scarred.length?'<p style="color:#c9a227">Carried out: '+
-      scarred.map(x=>who(x.p)+' — <b style="color:var(--g4)">'+x.s.n+'</b> '+x.s.d).join('<br>')+
+      scarred.map(x=>who(x.p)+' - <b style="color:var(--g4)">'+x.s.n+'</b> '+x.s.d).join('<br>')+
       '<br><span style="color:#8a7449;font-style:italic">You go back for people. It is slower, it '+
       'costs you the field, and it is the only rule this company has.</span></p>':'')+
     '<p style="color:#8a7449;font-style:italic">No spoils. Morale −20. The road is still there '+
@@ -24172,7 +24172,7 @@ function toRetreat(){
     G.queuedEv=null;
     G.openEv=null;      /* #131 - you went round it; it is not waiting for you */
     show('world');worldTick();
-    say2('You went round it. Whatever was worth having back there stays back there — the company '+
+    say2('You went round it. Whatever was worth having back there stays back there. The company '+
       'does not turn around, and there is still road in front of you.');
   };
 }
@@ -24487,7 +24487,7 @@ function cubChoice(){
   const mo=B.units.find(u=>u.monster==='wyrm');
   if(mo&&!mo.dead){
     $('sCard').innerHTML='<h1>SHE GOES BACK INTO THE WATER</h1>'+
-      '<p>She turns, without hurry, and the fen takes her — the bloom-light under her hide '+
+      '<p>She turns, without hurry, and the fen takes her, the bloom-light under her hide '+
       'showing through the peat for a long time after the rest of her is gone.</p>'+
       '<p>The cub goes after her. Neither of them looks back, and there is nothing on this '+
       'ground worth carrying away.</p>'+
@@ -24504,7 +24504,7 @@ function cubChoice(){
      fx:{morale:-6},gear:'cubtooth',cub:true,pet:'cub',ok:cubAlive,
      after:'It will not leave her. It takes two of you and a rope and most of an hour, and then it simply '+
        'walks beside the Captain as though this had always been the arrangement. Nobody has said '+
-       'the word pet. It does not fight — it just does not leave, and somehow that is worth something.'},
+       'the word pet. It does not fight: it just does not leave, and somehow that is worth something.'},
     {t:'Kill it too. Finish what you started.',c:'+2 gems · barely worth a word',danger:true,
      fx:{gems:2,morale:-12},ok:cubAlive,
      after:'It is quick. {ANY} goes and stands somewhere else for a while, and when they come back '+
@@ -25781,7 +25781,7 @@ const CAMPS=[
      price above: it costs blood on the night and nothing comes back for it. */
   /* you kept the rat-king's knuckle → it does not want to be kept */
   {id:'found2',t:'THE THING THAT WAS KEPT',seed:48,needs:{id:'found',opt:0},
-   body:(a)=>'The knuckle-bone has moved. Not far — from the bottom of the cart to the top of '+
+   body:(a)=>'The knuckle-bone has moved. Not far: from the bottom of the cart to the top of '+
      'the sacks, where anybody untying them would put a hand straight onto it.\n\n'+a+' did '+
      'not move it. '+a+' is extremely clear about that.',
    choices:[
@@ -25875,7 +25875,7 @@ const CAMPS=[
       tag:{both:'kinInsult'},
       after:()=>'It works. The name stops. So does most of the talking at that end of the fire, '+
         'for about a week.\n\nYou have been fair, exactly, and to the letter, and it has bought '+
-        'you nothing at all — which is a thing worth knowing about being fair.'}]},
+        'you nothing at all, which is a thing worth knowing about being fair.'}]},
 
   /* you ruled for the boat → the boat is real and it is nobody's */
   {id:'kin2',t:'THE BOAT',seed:45,needs:{id:'kin',opt:0},castKeep:true,
@@ -25927,7 +25927,7 @@ const CAMPS=[
       tag:{both:'claimsKin'},
       after:(a,b,both)=>(both
         ? 'Neither of them mentions it. Somebody else does, at the next fire, to people from '+
-          'another company — and by the time it comes back to you the sum has grown and so '+
+          'another company, and by the time it comes back to you the sum has grown and so '+
           'has the child.'
         : fst(b)+' does not mention it. Somebody else does, at the next fire, to people from '+
           'another company, and names them both, and one of those two is not here to hear it.')+
@@ -25938,7 +25938,7 @@ const CAMPS=[
      everyone except the reader */
   {id:'kin4',t:'THE AUNT, IN PERSON',seed:47,needs:{id:'kin',opt:2},castKeep:true,
    body:(a,b,both)=>'She is at the crossing, selling eels out of the boat, and she is exactly as '+
-     'described — by both of them, in every particular, including the teeth.\n\nShe is '+
+     'described, by both of them, in every particular, including the teeth.\n\nShe is '+
      'real. She is somebody’s aunt. She has looked at '+(both?a+' and '+b:b)+' for a while '+
      'now and has not recognised anybody, and has said so, twice, in front of the eels.',
    choices:[
@@ -25991,7 +25991,7 @@ const CAMPS=[
      {t:'Say it in front of everybody: the debt is paid. Drop it.',
       c:'',
       fx:{morale:-6},endTie:'carried',
-      after:(a,b)=>'You say it once, out loud, at the fire, with everybody sitting there — that '+
+      after:(a,b)=>'You say it once, out loud, at the fire, with everybody sitting there: that '+
         'the account is settled and nobody owes anybody a watch.\n\n'+fst(b)+' agrees that it is '+
         'settled. '+fst(a)+' agrees that it is settled. Both of them are correct and neither of '+
         'them looks at you.\n\nThe line will be its proper width in the morning. That was the '+
@@ -26292,7 +26292,7 @@ function openCamp(spot,next,atPlace){
   const dlg=$('wDlg');
   /* keep the whole card on screen — dialogs run ~420px tall */
   /* positioned by placeDlg after the content is in */
-  dlg.innerHTML='<h3>'+(c.needs?'AND THEN — ':atPlace?'AT THE FIRE — ':'ON THE ROAD — ')+c.t+'</h3>'+
+  dlg.innerHTML='<h3>'+(c.needs?'AND THEN - ':atPlace?'AT THE FIRE - ':'ON THE ROAD - ')+c.t+'</h3>'+
     artTag()+
     '<div class="bd">'+c.body(cast1.a,cast1.b,bothHere)+'</div>'+
     '<div id="wChoices" style="display:flex;flex-direction:column;gap:5px"></div>';
@@ -26453,7 +26453,7 @@ const WHISPER={
   hands:'That weapon needs both hands, so whatever is in the off hand is doing nothing. '+
     'One-handed weapons leave room for a shield, a quiver, or a knife.',
   cool:'The strong things wait a turn. That is what stops every turn being the same turn.',
-  rung:'Their nerve just dropped a step. Nerve is not health — it decides whether they '+
+  rung:'Their nerve just dropped a step. Nerve is not health: it decides whether they '+
     'keep standing there at all, and a body alone in a crowd loses it fastest.',
   prov:'Provisions are not eaten on the road, and not by a wound mending. Wages cover the '+
     'bread. These are for double rations, a proper meal, and the moments the road asks.',
@@ -26464,18 +26464,18 @@ const WHISPER={
   /* #46 - the throw stopped being about ratkin, so the lesson had to as well.
      One whisper for the whole verb: the surprise is not that an ogre can
      throw, it is the SET of things it turns out to be allowed to pick up. */
-  hurl:'An ogre picks up whatever is on the next tile and throws it — one of yours (it '+
+  hurl:'An ogre picks up whatever is on the next tile and throws it: one of yours (it '+
     'keeps its own turn), one of theirs, or a boulder standing on its own. The boulder '+
     'is the one nobody expects: it comes back down where it lands, so the ogre is the '+
     'only body on the field that can change what the map is.',
   /* fires on the ratkin's first cut, on whichever side lands it — the rule
      is worth learning from the receiving end too */
   venom:'That cut does almost nothing on its own. For two rounds everything that hits '+
-    'them does 15% more, it stacks, and nothing caps it — which is what a ratkin '+
+    'them does 15% more, it stacks, and nothing caps it, which is what a ratkin '+
     'is for: not the blow, the blow after it.',
   /* the size rule, the first time it refuses somebody */
   size:'An ogre does not get moved, and nothing but a great beast could lift one. The '+
-    'offer is simply not there — it costs you nothing to find out.',
+    'offer is simply not there. It costs you nothing to find out.',
   /* backlog #18. Fires the first time a sweep catches two or more of yours,
      whoever swung it — the lesson is general, and the Thing in Armour is
      simply where it costs the most. */
@@ -28233,20 +28233,20 @@ function drawInv(){
    sheet's data-tell is lowercase, so the one reader upper-cases on the way in. */
 const STATHELP={
   STR:{t:'STRENGTH',c:'var(--str)',
-    x:'Carries the weight and puts it behind the swing — hitpoints and melee damage. '+
+    x:'Carries the weight and puts it behind the swing: hitpoints and melee damage. '+
       'Nothing for bows or workings.'},
   AGI:{t:'AGILITY',c:'var(--agi)',
     x:'How well they land a blow and how hard they are to land one on. Movement belongs '+
       'to the RACE, not to this.'},
   INT:{t:'INTELLECT',c:'var(--int)',
-    x:'Finds the opening, and aims a working — a stupid caster misses a great deal. '+
+    x:'Finds the opening, and aims a working: a stupid caster misses a great deal. '+
       'Off the field it is how well the company reads a situation.'},
   /* #132 - MORALE is the capacity this body has. NERVE, on the battle plaque
      and on the ladder, is how much of it is left right now. Both used to be
      called NERVE and both used to print on this sheet. */
   MOR:{t:'MORALE',c:'var(--mor)',
     x:'How much nerve they have to spend before the white flag goes up, and the only axis '+
-      'that adds damage to EVERYTHING — sword, bow and spell alike.'}
+      'that adds damage to EVERYTHING: sword, bow and spell alike.'}
 };
 /* CLASS AND RACE EXPLAIN THEMSELVES (user). Call on any container that names
    one with data-cls / data-race — the sheet, the muster field, anywhere. */
@@ -28420,7 +28420,7 @@ function gearLine(g,p){
   const b=[];
   if(g.armour){
     const ill=p&&g.size&&g.size!=='any'&&g.size!==RACEMOD[p.race].size;
-    b.push('Stops '+(ill?Math.round(g.armour*WRONGSIZE.mult)+' (it does not fit — '+
+    b.push('Stops '+(ill?Math.round(g.armour*WRONGSIZE.mult)+' (it does not fit: '+
       g.armour+' on the right body)':g.armour)+' damage.');
     /* #79 - the band is the important half now, so it is said out loud rather
        than left to be inferred from a number. The wrong-size case is banded
@@ -28577,7 +28577,7 @@ function tipFor(key,p,foot){
     html+='<div style="font-size:var(--fs3);color:'+(fires?'#8ca35a':'#8a7449')+
       ';margin-bottom:4px;border-left:2px solid currentColor;padding-left:var(--p3)">'+
       (fires?'<b>★ It works on this one.</b> ':'<b>Conditional.</b> Only ')+
-      g.bonusD+(fires?'':' — this one does not qualify.')+'</div>';}
+      g.bonusD+(fires?'':': this one does not qualify.')+'</div>';}
   if(g.d)html+='<div style="font-style:italic;color:#a38652">'+g.d+'</div>';
   if(foot)html+='<div style="font-family:var(--mono);font-size:var(--fs1);letter-spacing:.12em;'+
     'color:#8a7449;margin-top:5px">'+foot+'</div>';
@@ -29144,11 +29144,11 @@ function spacingViolations(){
     const dx=Math.abs(a.x-b.x),dy=Math.abs(a.y-b.y);
     const d=Math.round(Math.hypot(dx,dy));
     const plates=hit(plateBox(a),plateBox(b));
-    if(d<MAP_MIN_GAP)out.push({a:ks[i],b:ks[j],d:d,why:'glyphs crowd — '+d+'px apart'});
+    if(d<MAP_MIN_GAP)out.push({a:ks[i],b:ks[j],d:d,why:'glyphs crowd - '+d+'px apart'});
     else if(plates)out.push({a:ks[i],b:ks[j],d:d,
-      why:'name plates overlap — '+plates});
+      why:'name plates overlap - '+plates});
     else if(dx<NODE_PLATE_W&&dy<NODE_PLATE_H)
-      out.push({a:ks[i],b:ks[j],d:d,why:'name plates overlap — '+dx+'px across, '+dy+'px down'});
+      out.push({a:ks[i],b:ks[j],d:d,why:'name plates overlap - '+dx+'px across, '+dy+'px down'});
   }
   return out.sort((p,q)=>p.d-q.d);
 }
@@ -29263,18 +29263,18 @@ function labelViolations(){
         const n=NODES[k];
         const why=boxHit(L,plateBox(n));
         if(why)out.push({at:at,what:'road '+L.e[0]+'→'+L.e[1]+' label',
-          why:'lands on the name plate of "'+n.n+'" — '+why});
+          why:'lands on the name plate of "'+n.n+'" - '+why});
         /* #117: and the paintings, which this linter could not see either.
            Reported separately because it is a lesser fault than covering a
            name - see the weights in labelSpot. */
         const A=artBox(n);
         const whyA=A&&boxHit(L,A);
         if(whyA)out.push({at:at,what:'road '+L.e[0]+'→'+L.e[1]+' label',
-          why:'lands on the painting of "'+n.n+'" — '+whyA});});
+          why:'lands on the painting of "'+n.n+'" - '+whyA});});
       boxes.forEach(M=>{if(M===L||M.e[1]<L.e[1])return;
         const why=boxHit(L,M);
         if(why)out.push({at:at,what:'road labels '+L.e[1]+' / '+M.e[1],
-          why:'the two prices overlap — '+why});});});});
+          why:'the two prices overlap - '+why});});});});
   return out;
 }
 (function checkSpacing(){
@@ -29584,7 +29584,7 @@ function branchOf(from){
 (function checkRoadLabels(){
   const w=labelViolations();
   if(w.length)console.warn('[RABBLEBOUND] road labels:',
-    w.map(o=>o.at+' '+o.what+' — '+o.why).join(' · '));
+    w.map(o=>o.at+' '+o.what+' - '+o.why).join(' · '));
 })();
 
 /* ═══════════════════════════════════════════════════════════════════════
@@ -30488,7 +30488,7 @@ function drawNodes(){
         body='<i style="color:#c9b98f">“'+cast(first).slice(0,140)+
           (first.length>140?'…':'')+'”</i>';
       }else if(st==='live')body=TYPETAG[n.t]||'';
-      else body='Too far to know more than the shape of it — '+
+      else body='Too far to know more than the shape of it - '+
         (TYPETAG[n.t]||'something').toLowerCase()+'.';
       /* ═══ #197 · THE HOVER PRINTED ITS TYPE TWICE ══════════════════════
          (User, 2026-08-19, red box round the middle line of a three-deep
@@ -31617,10 +31617,10 @@ function passDays(n){
               'is for now, it is not for holding one end of something.';}
           G.mutNews={p:p,t:'THE HAND OPENS',
             b:'It reaches the wrist in the night and does not stop there. By morning '+who(p)+
-            '\'s fingers have gone — not lost, replaced: pale tendrils with a magenta centre '+
+            '\'s fingers have gone. Not lost, replaced: pale tendrils with a magenta centre '+
             'that move on a current nobody else can feel.\n\nThey can still work. They flex it '+
             'and something four feet away leans toward them.'+dropped+'\n\n'+
-            MUTS.bloomhand.n+' — '+MUTS.bloomhand.short};
+            MUTS.bloomhand.n+' - '+MUTS.bloomhand.short};
         }else{
           const s={n:'Two fingers short',d:'−1 AGI. The bone-setter was faster than the Bloom, '+
             'barely, and took the hand\'s two smallest arguments with it.',agi:-1};
@@ -31638,14 +31638,14 @@ function passDays(n){
           b:who(p)+' stops coughing in the night, and in the morning there are thin folds '+
           'open along their neck, moving a little, like something reading the air.\n\n'+
           'They say it does not hurt. They say it the way people say things they are '+
-          'still deciding whether to believe.\n\n'+MUTS.gills.n+' — '+MUTS.gills.short};
+          'still deciding whether to believe.\n\n'+MUTS.gills.n+' - '+MUTS.gills.short};
       }else{
         const s={n:'Ruined lungs',d:'−1 MOR. The fen left, and took the deep breaths with it.',mor:-1};
         injure(p,s);
         G.mutNews={p:p,t:'THE COUGH BREAKS',
           b:'Whatever the fen wanted with '+who(p)+', it changes its mind on the fourth '+
           'night. The cough tears loose, the grey comes up, and what is left is only a '+
-          'chest that will never quite fill again.\n\nRuined lungs — an ordinary scar, '+
+          'chest that will never quite fill again.\n\nRuined lungs: an ordinary scar, '+
           'after all that. Nobody is sure whether to be relieved.'};
       }
     });
@@ -31775,10 +31775,10 @@ function openProvisions(){
   dlg.innerHTML='<h3>THE PROVISIONS</h3>'+
     '<div class="bd">'+G.run.food+' in the barrels. Wages buy bread; this is everything '+
     'better than bread, and it is for spending on purpose.'+
-    (G.run.food<=0?'\n\n<span style="color:#c15d55">Empty. The next fight starts hungry — '+
+    (G.run.food<=0?'\n\n<span style="color:#c15d55">Empty. The next fight starts hungry: '+
       'the whole line 14 morale down.</span>'
       :G.run.food<=2?'\n\n<span style="color:#c9a227">Nearly out. The next fight starts on '+
-      'short rations — the line 6 morale down.</span>':'')+'</div>'+
+      'short rations: the line 6 morale down.</span>':'')+'</div>'+
     '<div id="wChoices" style="display:flex;flex-direction:column;gap:5px">'+
     '<button class="choice" id="pvFeast"'+(feastBlock()?' disabled style="opacity:.4"':'')+
       '><b>Lay out a proper meal.</b><i>−'+fc+' provisions · the mood lifts'+
@@ -32246,7 +32246,7 @@ function travel(k){
         const s=pickOne(SCARS);injure(p,s);p.hpLoss=Math.round(D.hp({st:effStats(p)})*.4);
         G.party.push(p);sfx('promote');
         say2(who(p)+' walks out of the treeline three days later, filthy and thinner, and falls '+
-          'in at the back of the column as though nothing happened. '+s.n+' — '+s.d);
+          'in at the back of the column as though nothing happened. '+s.n+' - '+s.d);
       }
     }
     /* THE DOG AMBUSH — once a run, on ARRIVAL rather than mid-road. Firing it
@@ -32490,7 +32490,7 @@ const VIGNETTES=[
   {t:'AT THE FIRE',needMut:'gills',
    body:(a)=>{const g=G.party.find(p=>p.mut==='gills');
      return 'It rains in the night, and '+who(g)+'\'s gills open and move in their sleep. '+
-     a+' watches for a long time, and in the morning has moved their bedroll — closer, '+
+     a+' watches for a long time, and in the morning has moved their bedroll. Closer, '+
      'as it turns out. "Somebody should keep an eye," is all they will say about it.';},fx:{morale:3}},
   {t:'AT THE FIRE',needMut:'gills',
    body:()=>{const g=G.party.find(p=>p.mut==='gills');
@@ -32925,7 +32925,7 @@ function dismiss(p){
   G.dismissed.push({p:p,fights:p.fights||0,day:G.day});
   sfx('coin');
   say2(who(p)+' shoulders their bundle and does not look back. '+
-    ((p.fights||0)>=3?'Three fights or more side by side — that does not just stop.'
+    ((p.fights||0)>=3?'Three fights or more side by side: that does not just stop.'
       :'You barely knew them, and now you never will.'));
 }
 /* the returner — a dismissed veteran (3+ fights) walks back in at a fire */
@@ -32934,7 +32934,7 @@ function openReturner(spot,next,rec){
   G.pending='camp';mark('road: somebody wants back in');
   const dlg=$('wDlg');
   const room=partyUsed()+COST[p.race]<=PARTYCAP;
-  dlg.innerHTML='<h3>ON THE ROAD — SOMEBODY AT THE FIRE</h3>'+
+  dlg.innerHTML='<h3>ON THE ROAD - SOMEBODY AT THE FIRE</h3>'+
     '<div class="bd">'+who(p)+' is standing at the edge of the firelight with a bundle and a '+
     'week of road on them. Everyone here has fought beside them. Nobody pretends not to know '+
     'them.\n\n"Wherever I went," they say, "it was worse."</div>'+
@@ -32999,7 +32999,7 @@ function openVignette(spot,next,atPlace){
      a lead it is the more specific statement of the two, so it becomes the
      whole header and the prefix is dropped. */
   const vLead=atPlace?'AT THE FIRE':'ON THE ROAD',
-        vHead=(v.t==='ON THE ROAD'||v.t==='AT THE FIRE')?v.t:vLead+' — '+v.t;
+        vHead=(v.t==='ON THE ROAD'||v.t==='AT THE FIRE')?v.t:vLead+' - '+v.t;
   dlg.innerHTML='<h3>'+vHead+'</h3>'+
     '<div class="bd">'+body+evFxChips(evPaidOf(v.fx))+'</div>'+
     /* #197 - no sub-line on a door that is not a decision (user: *"When it is
@@ -34517,7 +34517,7 @@ function openHire(){
        swallow both. */
     b.innerHTML='<b><span title="'+esc(tellLine(s))+'" '+
         'style="cursor:help;border-bottom:1px dotted var(--e3)">'+
-        r.name+' “'+r.nick+'”</span> — '+rMark(r.race)+' '+(none
+        r.name+' “'+r.nick+'”</span> - '+rMark(r.race)+' '+(none
         ?'<span style="color:#a08a5e" class="bmk">'+cIcon('none')+'</span>'+
          ' <span style="color:#a08a5e">no class yet</span>'
         :cMark(r.cls))+'</b>'+
@@ -34711,7 +34711,7 @@ function villageDo(id){
           'company to walk in and look and leave.');return;}
         const s=v.stock[+b.dataset.i];
         pay('crowns',-s[1]);G.stash.push(s[0]);v.armed=true;G.mustKit=true;sfx('coin');
-        drawVillage(GEAR[s[0]].n+' — bought, paid for, and in the cart.\n\n'+
+        drawVillage(GEAR[s[0]].n+': bought, paid for, and in the cart.\n\n'+
           'He will not sell you a second thing. He says the roads are what they are and he has '+
           'other companies to disappoint. It is in the stash: open INVENTORY and put it on '+
           'somebody, because it is no use to anyone in a cart.');
@@ -34730,7 +34730,7 @@ function villageDo(id){
       /* the old last sentence pointed at "the muster field, one day east". The
          Muster Field is BEHIND the village and has been since #71; the only
          muster still ahead is The Last Muster, at the far end of the act. */
-      'of what was left over. PARTY SIZE '+(PARTYCAP-1)+' → '+PARTYCAP+' — one more name the '+
+      'of what was left over. PARTY SIZE '+(PARTYCAP-1)+' → '+PARTYCAP+': one more name the '+
       'company has room for, starting now, and on every run after this one. There is one more '+
       'muster on this road, and it is a long way down it.');
   }
@@ -35133,7 +35133,7 @@ function pickChoice(k,i){
     if(cands.length){
       const v=pickOne(cands);
       v.cond={k:c.cond,days:0};
-      G.condNews=who(v)+' has '+CONDS[c.cond].n.toLowerCase()+' — '+CONDS[c.cond].short+
+      G.condNews=who(v)+' has '+CONDS[c.cond].n.toLowerCase()+' - '+CONDS[c.cond].short+
         ' Coldharrow\'s bone-setter could deal with it, if you get there in time.';
     }
   }
@@ -35144,7 +35144,7 @@ function pickChoice(k,i){
   if(c.opensRoad&&!G.underRoad){
     G.underRoad=true;
     EDGES.push([G.at,'mother',1,1]);
-    say2('A way under the hill now runs from here to the Black Fen — one day\'s walk.');
+    say2('A way under the hill now runs from here to the Black Fen, one day\'s walk.');
   }
   /* declared BEFORE anything appends to it — the strandOne branch below used
      to write into it above its own `let`, which is a temporal-dead-zone crash
@@ -35418,7 +35418,7 @@ function pickChoice(k,i){
   }
   if(c.scout){
     const ahead=edgesFrom(G.at).map(e=>NODES[e[1]]).filter(n=>n&&n.ev)
-      .map(n=>n.n+' — '+(EVENTS[n.ev]?EVENTS[n.ev].title:'?'));
+      .map(n=>n.n+' - '+(EVENTS[n.ev]?EVENTS[n.ev].title:'?'));
     hurtLine+='\n\nWhat is on the roads out of here: '+
       (ahead.length?ahead.join('; '):'nothing they will name.');
   }
@@ -35464,7 +35464,7 @@ function pickChoice(k,i){
     if(partyUsed()+COST[preset.race]<=PARTYCAP){
       const nr=finishRecruit(JSON.parse(JSON.stringify(preset)));
       G.party.push(nr);
-      hurtLine+='\n\n'+who(nr)+' joins the company. '+TRAITS[nr.trait].n+' — '+traitDesc(nr);
+      hurtLine+='\n\n'+who(nr)+' joins the company. '+TRAITS[nr.trait].n+' - '+traitDesc(nr);
       sfx('promote');
     }else{
       hurtLine+='\n\nThere would have been room to bring '+preset.name+' along, if the company '+
@@ -35561,7 +35561,7 @@ function pickChoice(k,i){
     G.mustKit=true;
     $('wChoices').innerHTML='<button class="choice" id="wKit"><b>⛨ Open the inventory</b>'+
       '<i>'+got.length+' new piece'+(got.length>1?'s':'')+
-      ' — none of it works in the cart</i></button>';
+      ' - none of it works in the cart</i></button>';
     $('wKit').onclick=()=>{$('wDlg').classList.remove('on');G.openEv=null;saveRun();openInv();};
   }else{
     $('wChoices').innerHTML='<button class="choice" id="wGo"><b>Back to the road</b></button>';
@@ -35606,7 +35606,7 @@ function toDefeat(){
     '<p>The bells are still ringing. Nobody is left standing to resent them.</p>'+
     '<p style="color:#8a7449;font-style:italic">Battle ran '+G.battleRounds+' rounds. What was '+
     'hauled this run is lost with the men who hauled it. The wagon is still out there somewhere, '+
-    'wherever they left it — it does not know they are not coming back.</p>'+
+    'wherever they left it. It does not know they are not coming back.</p>'+
     /* #125 - the questionnaire is offered HERE, at the end of the run, where
        the player has just finished having the opinion. See toEpilogue. */
     /* #157 - and the first door out is the fight itself, because a run that
@@ -35665,7 +35665,7 @@ const FITTINGS={
   aid:{n:'The Medicine Chest',cost:{salvage:5,gems:2},g:'✚',
     d:'Boiled linen, a bone-hook and something in a stoppered jar. ONCE PER RUN you may take '+
       'one permanent scar off one character. There is no other way to undo a scar in this '+
-      'country and there is not supposed to be — this is the exception you built.'},
+      'country and there is not supposed to be: this is the exception you built.'},
   fire:{n:'The Cook-Fire',cost:{salvage:8},g:'♨',
     d:'A proper iron fire-box that travels lit. The company takes +3 morale every time it '+
       'stops, and a proper meal costs ONE LESS PROVISION to lay out. Hot food is not a small '+
@@ -35692,7 +35692,7 @@ function openCampScreen(bankIt){
   show('camp');
   const bank=LEGACY.bank;
   const roster=G.party.map(p=>
-    '<div style="color:#a38652">'+who(p)+' — L'+p.level+
+    '<div style="color:#a38652">'+who(p)+' - L'+p.level+
     (p.perks.length?' · '+p.perks.map(k=>PERKS[k].n).join(', '):'')+
     ((p.injuries&&p.injuries.length)?' · <span style="color:#c9a227">'+
       p.injuries.map(i=>i.n).join(', ')+'</span>':'')+
@@ -35700,26 +35700,26 @@ function openCampScreen(bankIt){
     '</div>').join('');
   let html='<h1>THE WAGON</h1>'+
     '<p>One cart, one mule that has outlived several owners, and a folding travel-forge bolted '+
-    'to the bed that lights on the second try. It does not stay anywhere — it waits at the last '+
+    'to the bed that lights on the second try. It does not stay anywhere: it waits at the last '+
     'safe place behind whatever company is currently pulling it, and it keeps what you carry '+
     'home whether or not you are the one who carries it back.</p>'+
     '<div class="tally">'+t2('Salvage',bank.salvage)+t2('Gems',bank.gems)+
       t2('Runs made',LEGACY.runs)+t2('Wagon bed',LEGACY.yard)+
       t2('Party size',PARTYBASE+LEGACY.yard)+'</div>'+
     '<div class="station"><h4>⚒ THE TRAVEL-FORGE</h4>'+
-    '<div class="lbl" style="color:#8a7449">for the NEXT RUN ONLY — it goes out with them and it '+
+    '<div class="lbl" style="color:#8a7449">for the NEXT RUN ONLY - it goes out with them and it '+
     'does not come back. Forge again every time.</div>'+
     (LEGACY.pending.length?'<div style="font-family:var(--mono);font-size:var(--fs1);color:#8ca35a;'+
       'line-height:1.7;margin-bottom:5px">PACKED FOR THE ROAD: '+
       LEGACY.pending.map(k=>GEAR[k]?GEAR[k].n:k).join(' · ')+'</div>':'')+
     '<div id="cForge" style="display:flex;flex-direction:column;gap:5px"></div></div>'+
-    '<div class="station"><h4>⚙ BOLTED INTO THE WAGON — '+
+    '<div class="station"><h4>⚙ BOLTED INTO THE WAGON - '+
       LEGACY.built.length+' of '+FIT_SLOTS+' fittings</h4>'+
     '<div class="lbl" style="color:#8a7449">this is the part that stays. None of it makes anybody '+
-    'hit harder — it takes away the four things that grind a company down.</div>'+
+    'hit harder: it takes away the four things that grind a company down.</div>'+
     '<div id="cFit" style="display:flex;flex-direction:column;gap:5px"></div></div>'+
     '<div class="station"><h4>⚑ THE BED</h4>'+
-    '<div class="lbl" style="color:#8a7449">widened at a village wheelwright, on the road — not here. '+
+    '<div class="lbl" style="color:#8a7449">widened at a village wheelwright, on the road - not here. '+
     'Whatever the last company paid for, this one inherits.</div>'+
     '<div style="font-family:var(--mono);font-size:var(--fs1);color:#a38652;line-height:1.7">'+
     (LEGACY.yard>=2?'As wide as a cart bed gets. +2 party size, permanent.'
@@ -35730,9 +35730,9 @@ function openCampScreen(bankIt){
     (LEGACY.ashmoor?'<div class="station"><h4>✦ WHAT IS KNOWN OF YOU</h4>'+
       '<div class="lbl" style="color:#8a7449">carried by people, not by the cart</div>'+
       '<div style="font-family:var(--mono);font-size:var(--fs1);color:#8ca35a;line-height:1.7">'+
-      'ASHMOOR — a company that flew this banner let Wynn Aldreth walk away without a fee, '+
+      'ASHMOOR - a company that flew this banner let Wynn Aldreth walk away without a fee, '+
       'and she talked. The gate knows the colours. Not welcome; known.</div></div>':'')+
-    '<div class="station"><h4>☰ THE ROSTER — who lived</h4>'+
+    '<div class="station"><h4>☰ THE ROSTER - who lived</h4>'+
     '<div style="font-family:var(--mono);font-size:var(--fs1);line-height:1.7">'+roster+'</div></div>'+
     '<button class="popt" id="again"><b>Take the road again</b>'+
     '<i>a new contract, and everything the forge made waiting in the stash</i></button>';
@@ -35746,8 +35746,8 @@ function openCampScreen(bankIt){
     b.disabled=!can;
     b.innerHTML='<b>'+GEAR[c.k].n+'</b><i>'+
       Object.keys(c.cost).map(r=>c.cost[r]+' '+r).join(' · ')+
-      (packed?' · <b style="color:#8ca35a">ALREADY PACKED — forge another</b>':'')+
-      (can?'':' — not enough banked')+'<br>'+c.d+'</i>';
+      (packed?' · <b style="color:#8ca35a">ALREADY PACKED - forge another</b>':'')+
+      (can?'':' - not enough banked')+'<br>'+c.d+'</i>';
     if(can)b.onclick=()=>{
       Object.keys(c.cost).forEach(r=>{bank[r]-=c.cost[r];});
       LEGACY.pending.push(c.k);saveLegacy();sfx('promote');
@@ -35763,10 +35763,10 @@ function openCampScreen(bankIt){
     b.className='craft'+(built?' made':'');
     b.disabled=!can;
     b.innerHTML='<b>'+F.g+' '+F.n+'</b><i>'+
-      (built?'<b style="color:#8ca35a">BOLTED IN — permanent</b>'
+      (built?'<b style="color:#8ca35a">BOLTED IN - permanent</b>'
         :Object.keys(F.cost).map(r=>F.cost[r]+' '+r).join(' · ')+
-         (full?' — no slots left; the wagon holds three':
-          can?'':' — not enough banked'))+
+         (full?' - no slots left; the wagon holds three':
+          can?'':' - not enough banked'))+
       '<br>'+F.d+'</i>';
     if(can)b.onclick=()=>{
       Object.keys(F.cost).forEach(r=>{bank[r]-=F.cost[r];});
@@ -35783,10 +35783,10 @@ function toEpilogue(txt){
   JOURNAL.endRun('reached the end, day '+G.day);
   MUSWON=true;              /* the theme, before show() asks - see setMusicMode */
   show('epilogue');
-  const route=G.path.map(k=>NODES[k].n).join(' → ')+' — '+(G.day-1)+' days on the road.';
+  const route=G.path.map(k=>NODES[k].n).join(' → ')+' - '+(G.day-1)+' days on the road.';
   const lv=G.party.map(p=>fullName(p)+' L'+p.level+
     (p.perks.length?' ('+p.perks.map(k=>PERKS[k].n).join(', ')+')':'')+
-    ((p.injuries&&p.injuries.length)?' — '+p.injuries.map(i=>i.n).join(', '):'')).join('<br>');
+    ((p.injuries&&p.injuries.length)?' - '+p.injuries.map(i=>i.n).join(', '):'')).join('<br>');
   /* ═══ ASHMOOR — the one promise the game made and never kept ═══════════
      Free Wynn Aldreth without a fee and the game says "at Ashmoor they will
      know your banner before you reach the gate". `G.contact` was set, the
@@ -35798,7 +35798,7 @@ function toEpilogue(txt){
   if(G.contact){LEGACY.ashmoor=true;saveLegacy();}
   const ash=G.contact
     ? '<p style="color:#8ca35a;font-style:italic">And east of all of it, at Ashmoor, somebody '+
-      'you let walk away has been talking. Your banner is known at that gate now — not '+
+      'you let walk away has been talking. Your banner is known at that gate now: not '+
       'famous, not welcome exactly, but <b>known</b>. Whoever takes this wagon out next '+
       'will find that door already half open.</p>'
     : '<p style="color:#6b5836;font-style:italic">Nobody east of here has any reason to know '+
@@ -36353,7 +36353,7 @@ const HELP=[
      '<span class="k">wait a round</span> before you can use them again, so a turn is a sequence '+
      'rather than the same good idea twice.\n\n'+
      'Turn order runs on initiative and is shown along the top. <span class="k">1–9</span> fire '+
-     'the actions in the order they are drawn — 1 is always MOVE, 2 is always the weapon. '+
+     'the actions in the order they are drawn: 1 is always MOVE, 2 is always the weapon. '+
      '<span class="k">SPACE</span> ends the turn. <span class="k">ESC</span> cancels.\n\n'+
      'Standing where an enemy can <span class="k">see</span> you puts you in its '+
      '<span class="k">zone of control</span>: the three hexes it faces, and not the three '+
@@ -36364,25 +36364,25 @@ const HELP=[
      'one hex, chosen by you, and nobody swings. Each enemy only gets one free swing a turn, so '+
      'walking through a line is expensive, not suicidal.'},
   {t:'HOW A HIT WORKS',
-   b:'<span class="k">Armour comes off before blood.</span> Every body has two pools — armour, '+
+   b:'<span class="k">Armour comes off before blood.</span> Every body has two pools: armour, '+
      'which is a shield you can strip, and hitpoints, which are the person. Heavy weapons take '+
      'armour apart; light fast ones slip past it. That is why a maul and a knife are not the same '+
      'weapon with different numbers.\n\n'+
      'Where you stand matters as much as what you swing. A body\'s '+
      '<span class="k">back arc is drawn under it in red</span>: standing there is +30 to hit and a '+
      'quarter more damage. Standing beside it is worth less, and standing in front of it is worth '+
-     'nothing. Some things have no back at all — the readout says so when you aim at one.\n\n'+
+     'nothing. Some things have no back at all: the readout says so when you aim at one.\n\n'+
      'Hover any enemy with an attack selected and the panel shows the whole arithmetic: your '+
      'skill, their dodge, how many of you are on them, the arc, and what the blow will actually do '+
      'to each pool.'},
   {t:'HOW NERVE WORKS',
    b:'Nerve is not health. It decides whether a body <span class="k">keeps standing there at '+
-     'all</span> — and it is the real reason fights end.\n\n'+
+     'all</span>, and it is the real reason fights end.\n\n'+
      'Six rungs, worst at the bottom: <span class="k">Broken · Breaking · Shaken · Ok · Happy · '+
      'It rocks</span>. Hover the ladder to see the whole scale and what each step costs. Most fights '+
      'start at <i>Happy</i>; the top rung is earned, and it pays.\n\n'+
      'What moves it: being hit, watching somebody drop, being surrounded, and '+
-     '<span class="k">standing on your own</span> — which is the worst of them, and the reason a '+
+     '<span class="k">standing on your own</span>, which is the worst of them, and the reason a '+
      'shove or a hook that drags somebody out of the line is an attack on their nerve rather than '+
      'their body. What restores it: a quiet turn, shoulder-to-shoulder, and the Captain nearby.\n\n'+
      '<span class="k">The rung they started on is a magnet.</span> Left alone, a shaken body '+
@@ -36393,13 +36393,13 @@ const HELP=[
   {t:'NOBODY DIES IN A FIGHT',
    b:'This is the rule most people do not expect, so it is worth saying plainly: '+
      '<span class="k">nobody on your roster is ever killed in a battle.</span> They go down, they '+
-     'are dragged out, and they come back carrying a <span class="k">scar</span> — permanent, '+
+     'are dragged out, and they come back carrying a <span class="k">scar</span>: permanent, '+
      'stacking, and removable exactly once a run at Coldharrow\'s medicine chest.\n\n'+
      'That is not mercy. It is what lets the fights be genuinely dangerous: a game that can delete '+
      'an hour of your work on one bad roll has to be timid everywhere else to compensate.\n\n'+
      'Allied NPCs and enemies do die. A run ends only when everybody of yours is down at once.'},
   {t:'WHAT THE ROAD COSTS',
-   b:'Every road costs <span class="k">days</span>, and days cost <span class="k">wages</span> — '+
+   b:'Every road costs <span class="k">days</span>, and days cost <span class="k">wages</span>: '+
      'one number on the travel card, wages and keep together. Where you go is most of the game.\n\n'+
      '<span class="k">Provisions</span> are not eaten by travelling. They are for the wounded, for '+
      'a proper meal before something hard, and for the moments the road asks. '+
@@ -36407,8 +36407,8 @@ const HELP=[
      '<span class="k">gems</span> outlive it.\n\n'+
      'If the chest is empty on payday, people notice, and they keep noticing. Grievance is held by '+
      'a <b>person</b>, it compounds, it reaches the battlefield, and eventually somebody walks.\n\n'+
-     'The road never tells you what a decision is worth before you make it. Prices are honest — a '+
-     'merchant names his price — but nothing scores you.'}
+     'The road never tells you what a decision is worth before you make it. Prices are honest: a '+
+     'merchant names his price, but nothing scores you.'}
 ];
 let HELP_BACK=null;
 function openHelp(){
@@ -36938,13 +36938,13 @@ function drawNotes(log,who){
       const turned=seq.some(r=>r.k!==last.k);
       return '<div class="nrow"><b class="'+last.k+'">'+glyph(last.k)+
         (seq.length>1?' <span class="rxn">×'+seq.length+'</span>':'')+'</b><span>'+esc(w)+
-        (turned?' <em>— they changed their mind</em>':'')+'</span><i>'+
+        (turned?' <em>- they changed their mind</em>':'')+'</span><i>'+
         (seq.length>1
           ?(seq.length>8?'… · ':'')+seq.slice(-8).map(r=>glyph(r.k)+' d'+r.d).join(' · ')
           :'day '+last.d)+'</i></div>';};
     const decRow=r=>'<div class="nrow"><b class="dec">'+
       ({choice:'chose',travel:'road',battle:'fight'}[r.t])+'</b><span>'+esc(r.w)+
-      (r.pick?' — <em>'+esc(r.pick)+'</em>':'')+'</span><i>day '+r.d+'</i></div>';
+      (r.pick?' - <em>'+esc(r.pick)+'</em>':'')+'</span><i>day '+r.d+'</i></div>';
     /* ═══ #184 · WHAT A PLAYER GETS, AND WHAT AN ENGINEER GETS ═══════════════
        (User, 2026-08-17: *"I don't think actual player need all that tech info.
        Only maybe basic stuff about his run."*)
@@ -36962,11 +36962,11 @@ function drawNotes(log,who){
        facts: how long they were on the road, how long they were at the keyboard,
        how it ended, and what they said about it while it happened. Every row
        still travels in the blob, whoever is looking. */
-    return '<div class="helpsec"><h2>RUN '+id+(end?'':' — unfinished')+'</h2>'+
+    return '<div class="helpsec"><h2>RUN '+id+(end?'':' - unfinished')+'</h2>'+
       '<div class="tally">'+
         '<div><b>'+days+'</b><i>days</i></div>'+
         '<div><b>'+fmtDur(secs)+'</b><i>at the keyboard</i></div>'+
-        '<div><b>'+(end?esc(end.w):'—')+'</b><i>ended</i></div>'+
+        '<div><b>'+(end?esc(end.w):'–')+'</b><i>ended</i></div>'+
         (full?'<div><b>'+dec.length+'</b><i>decisions</i></div>':'')+
         /* #188b - LOVED only when somebody has one. The popup stopped filing
            ★ when the faces became thumbs, so on a new run this cell would be a
@@ -37134,7 +37134,7 @@ function drawNotes(log,who){
         '<button class="popt" id="nPaste"><b>Read somebody else’s</b>'+
         '<i>paste a journal they sent you into the box above</i></button>'+
         '<button class="popt danger" id="nWipe"><b>Clear my journal</b>'+
-        '<i>start the notes over — it cannot be undone</i></button></div></div>':'')+
+        '<i>start the notes over - it cannot be undone</i></button></div></div>':'')+
     /* ═══ #188 point 3 · THE COPY SITS BESIDE BACK, WITH THE ADDRESS UNDER IT
        (User: *"Кнопку копиед ит можна поставить поруд з 'бек' - просто
        рядом потрібний емейл/діскорд відправити"*.)
@@ -37225,12 +37225,12 @@ function drawNotes(log,who){
     $('nCopy').innerHTML='<b>Read it</b><i>show me what they thought</i>';
     $('nCopy').onclick=()=>{
       let r;try{r=JSON.parse(ta.value);}catch(e){ta.value='That is not a journal. '+e.message;return;}
-      if(!r||!r.log){ta.value='That is not a journal — no log in it.';return;}
+      if(!r||!r.log){ta.value='That is not a journal: no log in it.';return;}
       drawNotes(r.log,'a friend');
     };};
   const wipeBtn=$('nWipe');
   if(wipeBtn)wipeBtn.onclick=()=>ask('CLEAR THE NOTES?',
-    'Every reaction and every recorded decision goes. The game itself is untouched — '+
+    'Every reaction and every recorded decision goes. The game itself is untouched: '+
     'your company, your road and your save are not part of this file.',
     [{t:'Clear it.',danger:true,c:'the notes start over',
       /* #76 — the answers go with the log. They are the same band and the
@@ -37374,7 +37374,7 @@ const simLive=()=>hasSavedRun()?(()=>{try{
 function simComps(){
   const live=simLive(),comps=SIM_COMPS.slice();
   if(live)comps.unshift({k:'live',n:'Your company, as it stands',
-    d:live.party.length+' of them, day '+live.day+'. A copy — whatever happens here does not '+
+    d:live.party.length+' of them, day '+live.day+'. A copy: whatever happens here does not '+
       'follow them home.',
     make:()=>JSON.parse(JSON.stringify(live.party))});
   return comps;
@@ -37397,7 +37397,7 @@ function openSim(){
       col('THE GROUND',SIM_GROUNDS,SIM.ground,'ground')+
     '</div>'+
     '<div class="popts"><button class="popt" id="simGo"><b>Take the field</b>'+
-      '<i>fight it for real — the same rules, none of the consequences</i></button>'+
+      '<i>fight it for real - the same rules, none of the consequences</i></button>'+
       '<button class="popt" id="simBack"><b>Back</b><i>to the menu</i></button></div>';
   $('simCard').querySelectorAll('.simpick').forEach(box=>{
     const attr=box.dataset.attr;
@@ -37432,7 +37432,7 @@ function simStart(){
      is part of what you came to try, so it is asked for here */
   if(SIM.fight==='armour'){
     ask('SOMETHING IN ARMOUR','It is coming up the road whatever you decide. All three answers '+
-      'end in the same fight — what changes is where your people are standing when it arrives.',
+      'end in the same fight: what changes is where your people are standing when it arrives.',
       [{t:'Run for the broken ground.',c:'strung out, in twos',
         go:()=>{G.armourPlan='run';G.armourSac=null;simFight();}},
        {t:'Form up on the road.',c:'shoulder to shoulder',
@@ -37498,7 +37498,7 @@ function simResult(how){
     mercy:'THEY ASK FOR MERCY',fled:'YOU WALK OFF IT'}[how]||'IT IS OVER';
   const line={
     won:'Everything on the other side is down, in '+rounds+' round'+(rounds>1?'s':'')+'.',
-    lost:'Every one of yours is on the ground. In a run that is where the company ends — here it '+
+    lost:'Every one of yours is on the ground. In a run that is where the company ends: here it '+
       'is a thing you now know about '+f.n+'.',
     mercy:'What is left of them has broken and is asking. In a run this is where you decide what '+
       'kind of company you are.',
@@ -37580,7 +37580,7 @@ function openMenu(){
     danger:!!r,
     go:()=>{
       if(!r){openPrologue();return;}
-      ask('START AGAIN?','There is a company on the road right now — '+r.party.length+' of them, '+
+      ask('START AGAIN?','There is a company on the road right now: '+r.party.length+' of them, '+
         'day '+r.day+'. Starting a new one leaves them where they are, for good.',
         [{t:'Start again anyway.',danger:true,c:'they are not coming back',
           /* #124 - arm the flag so the reload comes back INTO the new run */
