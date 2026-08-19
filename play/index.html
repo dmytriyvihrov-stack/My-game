@@ -4779,6 +4779,52 @@ a.popt.sendit{display:block;text-decoration:none}
 
 <script>
 'use strict';
+/* ═══ #203 · STORAGE MAY NOT BE THERE AT ALL, AND THE PAGE MUST STILL OPEN ══
+   (2026-08-19, preparing the itch.io build.)
+
+   ⛔ THIS IS THE FIRST STATEMENT IN THE SCRIPT BECAUSE IT HAS TO BE. An itch
+   game is served from a DIFFERENT ORIGIN inside an iframe on the itch page, and
+   a browser set to block third-party storage does not hand a blocked iframe an
+   empty localStorage - `window.localStorage` THROWS SecurityError on access.
+   Three top-level reads sat above the rest of the build (`AU.on` off `gt_mute`,
+   `AUDIOPREF` off `gt_audio`, `TEST.on` off `gt_test`), and the whole game is
+   ONE inline script, so the first throw aborted every line after it.
+
+   ⚑ MEASURED, NOT ASSUMED, AND THE PICTURE IS THE ARGUMENT: with the getter
+   throwing, the built page rendered RABBLEBOUND, the pillar under it, and NO
+   BUTTONS. Not an error the player can see, not a blank page somebody would
+   call broken: a title screen with nothing on it, which reads as "this game is
+   just badly made" and gets closed. `shots/203_itch_iframe.html` is the bench.
+
+   ⚑ ONE SHIM RATHER THAN FORTY CALL SITES. `localStorage` is an own accessor on
+   `window` and it is configurable, so it can be replaced wholesale; the ~40
+   places that read and write it are untouched and cannot forget. The run then
+   lives for the session and dies with the tab, which is worse than saving and
+   far better than a dead front door - and `STORE_OFF` is what lets the front
+   door SAY so instead of letting the player find out by closing it.
+   ⚠ The probe WRITES, because a browser can hand out a readable storage that
+   refuses to keep anything (private mode used to, and a full quota still does).
+   Reading alone would pass and the save would fail later, silently. */
+let STORE_OFF=false;
+(function(){
+  try{
+    const s=window.localStorage,k='__gt_probe';
+    s.setItem(k,'1');s.removeItem(k);
+    return;                                  /* storage works: change nothing */
+  }catch(e){}
+  STORE_OFF=true;
+  const mem=Object.create(null);
+  const shim={
+    getItem(k){k=String(k);return k in mem?mem[k]:null;},
+    setItem(k,v){mem[String(k)]=String(v);},
+    removeItem(k){delete mem[String(k)];},
+    clear(){Object.keys(mem).forEach(k=>{delete mem[k];});},
+    key(i){const ks=Object.keys(mem);return i>=0&&i<ks.length?ks[i]:null;},
+    get length(){return Object.keys(mem).length;}
+  };
+  try{Object.defineProperty(window,'localStorage',{configurable:true,value:shim});}
+  catch(e){/* nothing left to try: the guarded call sites still work */}
+})();
 /* ═══ #98 · DID THE STYLESHEET PARSE ALL THE WAY DOWN? ════════════════════
    See the #cssTail note at the foot of the style block. One stray comment
    terminator truncates the sheet and every rule below it vanishes without an
@@ -38016,7 +38062,15 @@ function openMenu(){
     '" data-i="'+i+'" title="'+esc(o.c||'')+'"><b>'+o.t+
     (o.state?'<span class="mstate">'+o.state+'</span>':'')+'</b></button>').join('');
   $('mOpts').querySelectorAll('.popt').forEach(b=>b.onclick=()=>opts[+b.dataset.i].go());
-  $('mFoot').textContent=LEGACY&&LEGACY.runs
+  /* #203 - and when the browser is blocking storage, the foot says so. This is
+     the one sentence the shim at the top of the script buys: the game runs, and
+     the player is told BEFORE they spend an hour that closing the tab ends the
+     run. It replaces the line rather than being added beside it, because a
+     front door with two captions is a front door with none, and the run count
+     it stands in for is meaningless in a session that cannot be counted. */
+  $('mFoot').textContent=STORE_OFF
+    ? 'this browser is blocking storage: the run will not survive the tab'
+    : LEGACY&&LEGACY.runs
     ? LEGACY.runs+' compan'+(LEGACY.runs===1?'y has':'ies have')+' been out on this road'
     : 'vertical slice · act one';
   /* THE FRONT DOOR IS A PAINTING (art/src/stage-1/key/KEY-01_main-menu-bloom.png).

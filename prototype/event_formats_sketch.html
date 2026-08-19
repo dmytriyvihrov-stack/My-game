@@ -264,6 +264,109 @@ main{padding:26px 22px}
   background:#14100a;border:1px solid #2a2114;color:#6b5330;cursor:pointer}
 .flip button.on{color:var(--g4);border-color:#4d3c22;background:#241c10}
 
+/* ══ J - THE STAGE ════════════════════════════════════════════════════════
+   The user's own shape, 2026-08-14: "слева портрет персонажа из тимы, с кем
+   связано или с кем говорит - на заднем фоне (контекст). Справа собеседник
+   или событие - на котором выбор. И сама подача события тогда будет
+   выпадающий из этого диалог."
+
+   Three layers, and each one is doing a different job:
+     BACK   the event painting, dimmed and pushed back. It is the WHERE.
+     LEFT   somebody out of your company. Context, so it stays in the gloom.
+     RIGHT  the subject of the choice, and it is the MAP SIGHT - literally
+            the same painting the player was looking at on the road one
+            second ago, which is why this composition costs no new art.
+     FRONT  the dialogue, dropping in over all three.
+
+   ⚑ AND THE TWO FLANKS ARE NOT DECORATION. Whoever is speaking LIGHTS. That
+   turns the whole frame into the speaker indicator and lets the plate itself
+   stay small. */
+.stg{width:940px;background:#100c06;border:1px solid #5c4a2c;
+  box-shadow:0 12px 40px rgba(0,0,0,.7);cursor:pointer;user-select:none}
+.stg .scene4{position:relative;height:392px;overflow:hidden}
+.stg .scene4 img.back{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+  filter:saturate(.5) brightness(.42) blur(1.5px);transform:scale(1.04)}
+.stg .scene4::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse at 50% 42%,rgba(16,12,6,.1),rgba(16,12,6,.72) 76%),
+             linear-gradient(to bottom,rgba(16,12,6,.7),transparent 26%,rgba(16,12,6,.55))}
+.stg h3{position:absolute;top:13px;left:0;right:0;z-index:6;text-align:center;margin:0;
+  font-family:var(--display);font-size:14px;letter-spacing:.22em;color:#d8cba8;font-weight:600;
+  text-shadow:0 2px 12px #000,0 0 26px #000}
+
+/* ── the two flanks ─────────────────────────────────────────────────── */
+.flank{position:absolute;bottom:96px;z-index:3;display:flex;flex-direction:column;
+  align-items:center;gap:8px;transition:filter .3s ease,opacity .3s ease,transform .3s ease}
+.flank.L{left:24px}
+.flank.R{right:24px}
+.flank .cap4{font-family:var(--mono);font-size:9.5px;letter-spacing:.15em;color:#7a6a4c;
+  text-align:center;line-height:1.4;text-shadow:0 1px 6px #000;transition:color .3s ease}
+.flank .cap4 em{font-style:normal;color:#5c4a2c;letter-spacing:.08em;display:block;font-size:8.5px}
+/* ⛔ THREE STATES, AND THEY MEAN THREE DIFFERENT THINGS. The first cut had
+   two, and on the chapel both flanks came up lit at once, because "lit" was
+   being asked to mean SPEAKING on one card and SUBJECT on the other. That is
+   one readout printing two units, which is #102's rule, and it was invisible
+   until the second scene was driven.
+     idle    - present, not involved
+     subject - what the card is about. Steady, and it does not move.
+     lit     - who is speaking right now. Warm, and it moves every beat. */
+.flank.idle{filter:saturate(.25) brightness(.46);opacity:.82}
+.flank.subject{filter:saturate(.72) brightness(.8);opacity:.96}
+.flank.subject .cap4{color:#a89468}
+.flank.lit{filter:saturate(1) brightness(1.02)}
+.flank.lit .cap4{color:var(--g4)}
+.flank.lit .cap4 em{color:#8a7449}
+
+/* LEFT: a square JPEG head with a background, so it is faded into the gloom
+   on every edge rather than cut out. Same finding as I - there is no alpha
+   to cut, so the treatment has to be one that never needs one. */
+.flank.L .por{width:172px;height:214px;object-fit:cover;object-position:top center;
+  -webkit-mask-image:radial-gradient(ellipse 62% 58% at 50% 40%,#000 52%,transparent 100%);
+  mask-image:radial-gradient(ellipse 62% 58% at 50% 40%,#000 52%,transparent 100%)}
+.flank.L.lit .por{filter:drop-shadow(0 0 22px rgba(217,189,126,.18))}
+
+/* RIGHT: the map sight. These ARE cut-outs with real alpha (MAP_ART is PNG,
+   #113), so they need no frame and no mask, only the ground shadow the map
+   already draws under them. */
+.flank.R .sight{width:216px;height:216px;object-fit:contain;
+  filter:drop-shadow(0 10px 16px rgba(0,0,0,.85))}
+.flank.R.lit .sight{filter:drop-shadow(0 10px 16px rgba(0,0,0,.85))
+  drop-shadow(0 0 20px rgba(217,189,126,.22))}
+
+/* ── the dialogue, dropping in over the middle ───────────────────────── */
+.stg .drop{position:absolute;left:50%;transform:translateX(-50%);bottom:16px;z-index:7;
+  width:560px;background:linear-gradient(to bottom,rgba(31,24,16,.97),rgba(20,15,9,.98));
+  border:1px solid #5c4a2c;box-shadow:0 12px 30px rgba(0,0,0,.8);
+  padding:13px 18px 14px 84px;min-height:92px;display:flex;flex-direction:column;
+  justify-content:center;gap:5px}
+@keyframes dropIn{from{opacity:0;transform:translateX(-50%) translateY(-16px)}
+                    to{opacity:1;transform:translateX(-50%) translateY(0)}}
+.stg .drop.anim{animation:dropIn .26s cubic-bezier(.2,.9,.3,1)}
+.stg .drop .med4{position:absolute;left:14px;top:50%;margin-top:-27px;width:54px;height:54px;
+  border-radius:50%;background:#100c06;
+  box-shadow:0 0 0 1px #6b5330,0 0 0 3px #100c06,0 0 0 4px #3d2f1d,0 6px 16px rgba(0,0,0,.85)}
+.stg .drop .med4 img{width:100%;height:100%;border-radius:50%;object-fit:cover;object-position:top center}
+.stg .drop .med4::after{content:"";position:absolute;inset:0;border-radius:50%;
+  box-shadow:inset 0 0 10px rgba(0,0,0,.75)}
+.stg .drop .med4.them{box-shadow:0 0 0 1px #a06a3a,0 0 0 3px #100c06,0 0 0 4px #4d3320,0 6px 16px rgba(0,0,0,.85)}
+.stg .drop .med4.road{box-shadow:0 0 0 1px #3d2f1d,0 0 0 3px #100c06,0 0 0 4px #2a2114,0 6px 16px rgba(0,0,0,.85)}
+.stg .drop .med4 .rune4{display:flex;align-items:center;justify-content:center;width:100%;height:100%;
+  font-size:18px;color:#6b5330}
+.stg .drop .nm4{font-family:var(--mono);font-size:9.5px;letter-spacing:.18em;color:var(--v-crew)}
+.stg .drop .nm4.them{color:var(--v-them)}
+.stg .drop .nm4.road{color:var(--v-road)}
+.stg .drop .nm4 .job{color:#6b5330;letter-spacing:.09em}
+.stg .drop .tx4{font-size:15px;line-height:1.4;color:#e6dcc4;text-wrap:pretty}
+.stg .drop .tx4.q{font-style:italic;color:#f2e8cf}
+.stg .beats4{position:absolute;bottom:6px;left:0;right:0;z-index:8;display:flex;gap:5px;justify-content:center}
+.stg .beats4 span{width:16px;height:2px;background:rgba(61,47,29,.9)}
+.stg .beats4 span.on{background:var(--g3)}
+.stg .adv4{position:absolute;right:16px;bottom:8px;font-family:var(--mono);font-size:9.5px;
+  letter-spacing:.14em;color:#6b5330;animation:pulse 1.5s ease-in-out infinite}
+.stg .doors4{padding:12px 16px 14px;display:flex;flex-direction:column;gap:6px;
+  border-top:1px solid #2a2114;background:#181207}
+.stg .doors4 .foot4{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;color:#5c4a2c;
+  padding-top:4px}
+
 /* ══ I - THE PLATE ════════════════════════════════════════════════════════
    Hades' ACTUAL dialogue box, which is the one shape A and E got wrong. The
    speaker is not a cut-out standing in the frame, it is a small framed
@@ -515,6 +618,33 @@ h2:first-child{margin-top:0}
       <p>Doors as <b>actions</b> is what ships today. Doors as <b>lines</b> is the expensive version: the choice becomes something the Captain says, which is the strongest form of this shape and the most writing.</p>
       <p><span class="tag risk">94 doors</span> rewriting every label as speech is a large job, and speech is worse than an action label on any card where nobody is listening.</p>
       <p><span class="tag cost">art</span> a talking card wants a face for the person talking. The pedlar here is wearing the generic human portrait, which is the game's own fallback.</p>
+    </div>
+  </section>
+
+  <!-- ═══ J · THE STAGE ═══════════════════════════════════════════════ -->
+  <section class="panel wide" data-k="stage">
+    <div class="stage">
+      <div class="stagelbl">J · THE STAGE · YOUR PERSON LEFT, THE SUBJECT RIGHT, THE DIALOGUE DROPS IN · CLICK TO ADVANCE</div>
+      <div class="flip" id="stgFlip"></div>
+      <div class="stg" id="stgCard"></div>
+      <button class="replay" onclick="mountStage()">↺ replay</button>
+    </div>
+    <div class="note">
+      <h4>YOUR SHAPE, BUILT</h4>
+      <p>Three layers. The painting is the <b>where</b>, pushed back. Left is somebody from the company, <b>context, so it stays in the gloom</b>. Right is what the choice is about. The dialogue drops in over all of it.</p>
+      <h4>THE RIGHT-HAND SLOT COSTS NO NEW ART</h4>
+      <p>⚑ It is the <b>map sight</b>. The exact painting the player was looking at on the road one second before the card opened, at 216px instead of 96px. The ogre on his stone, the drowned chapel, the collector.</p>
+      <p>There are <b>31 of them already embedded</b> in <code>MAP_ART</code>, they are PNG cut-outs with real alpha, so they need no frame and no mask. That is the difference between them and the portraits, and it is why the right side looks clean while the left had to be faded into the dark.</p>
+      <p>It also does something no other sketch here does: <b>it carries the map into the card.</b> The thing you decided to walk to is the thing now standing in front of you.</p>
+      <h4>THE FLANKS ARE THE SPEAKER INDICATOR</h4>
+      <p>They are not decoration. <b>Whoever is talking lights up</b>, and everything else drops back. That is what lets the plate stay small and lets the picture be most of the screen.</p><p>⛔ <b>Three states, not two, and that was a real bug caught by driving the second scene.</b> The first cut lit both flanks at once on the chapel, because one highlight was being asked to mean SPEAKING on one card and SUBJECT on the other. Now: <b>idle</b> is present and uninvolved, <b>subject</b> is what the card is about and never moves, <b>lit</b> is who is speaking and moves every beat.</p>
+      <p>Watch the sitting stone: the stone is lit while the ogre asks his three questions, then <b>Bruht lights on the left</b> when your own ogre offers to take over, which is the card's <code>needRace:'ogre'</code> door arriving in the fiction before it arrives as a button.</p>
+      <h4>IT ALSO HANDLES "OR AN EVENT"</h4>
+      <p>Switch to the chapel. Nobody talks back: the right slot holds a <b>place</b> and stays lit throughout as the subject. Same container, no special case.</p>
+      <h4>WHAT IT COSTS</h4>
+      <p><span class="tag">free</span> map sights, portraits, beats and <code>cast()</code> all exist.</p>
+      <p><span class="tag cost">width</span> 940px. This is a full-stage screen, not a 620px dialog, and that is the real decision in it.</p>
+      <p><span class="tag risk">no sight</span> ⛔ <b>five nodes have no map art on purpose</b> (<code>cache</code>, <code>armour</code>, and the abstract type marks). The right slot needs a documented fallback before this ships, or those cards open with a hole in them.</p>
     </div>
   </section>
 
@@ -803,6 +933,104 @@ function mountStandoff(){
     '</div>';
 }
 
+/* ══ J · THE STAGE ════════════════════════════════════════════════════
+   Two scenes, chosen to prove the two halves of the user's sentence:
+   "справа собеседник ИЛИ событие". The stone talks back. The chapel does
+   not, and the container does not care.
+
+   Card text is shipped verbatim. The two lines marked NEW are written for
+   this sketch: Bruht offering to take over, and Marrow on the dry altar.
+   ══════════════════════════════════════════════════════════════════════ */
+const STAGES = {
+  stone:{ n:'THE SITTING STONE · SOMEBODY TALKS BACK',
+    title:'THE SITTING STONE', back:A.EV19, sight:A.MAPEV19,
+    right:{nm:'THE OGRE', sub:'two winters on this rock'},
+    left:P.bruht,
+    beats:[
+      {s:'road', tx:'An ogre is sitting on a rock beside the road. Two winters now, by his own account.'},
+      {s:'them', q:true, tx:'Have you got bread? Is the war over?'},
+      {s:'them', q:true, tx:'...Which war do you mean?'},
+      /* NEW. Bruht is `big` and the card's own outcome is "eleven words in
+         twenty minutes", so his offer to help is four. */
+      {s:'left', q:true, tx:'I will talk to him. It will take a while.'}
+    ],
+    doors:[
+      {ico:'🤝',   t:'Give him bread. Sit a while.', c:'−2 provisions · needs 2 provisions'},
+      {ico:'🤝',   t:'Ask him to come with you.',    c:'an ogre may join'},
+      {ico:'🤝👹', t:'Let your own ogre do the talking.', c:'', racey:true}
+    ],
+    foot:'⚠ THE REAL BUILD WOULD OFFER THE RATKIN DOOR INSTEAD ON THIS COMPANY. Only one race door is ever shown and the ratkin wins (#159).'},
+  chapel:{ n:'THE DROWNED CHAPEL · NOBODY TALKS BACK',
+    title:'THE DROWNED CHAPEL', back:A.EV04, sight:A.MAPEV04,
+    right:{nm:'THE CHAPEL', sub:'drowned these twenty years'},
+    left:P.marrow,
+    beats:[
+      {s:'road', tx:'A landing chapel, drowned these twenty years. The pews still stand in their rows, in four inches of brown water.'},
+      /* NEW. Marrow is `windtouched`, and this is the one observation the
+         shipped card makes the player notice for themselves. */
+      {s:'left', q:true, tx:'Four inches of it everywhere, and the altar is dry. Water does not do that.'},
+      {s:'road', tx:'Something under the altar is still dry.'}
+    ],
+    doors:[
+      {ico:'🧺', t:'Wade in. Take what the water left.', c:'+6 salvage · a day'},
+      {ico:'🧺', t:'Send the gilled one down. The crypt has been under water for years.', c:'needs the gills of the fen', racey:true}
+    ],
+    foot:'⚑ THE RIGHT SLOT IS A PLACE HERE AND STAYS LIT THROUGHOUT. Same container, no special case.'}
+};
+let stgWhich = 'stone', stgAt = 0;
+function mountStage(){ stgAt = 0; drawStage(); }
+function drawStage(){
+  document.getElementById('stgFlip').innerHTML = Object.keys(STAGES).map(k=>
+    '<button class="'+(k===stgWhich?'on':'')+'" data-s="'+k+'">'+STAGES[k].n+'</button>').join('');
+  document.getElementById('stgFlip').onclick = e => {
+    const b = e.target.closest('button'); if(!b) return;
+    stgWhich = b.dataset.s; stgAt = 0; drawStage(); };
+
+  const S = STAGES[stgWhich], b = S.beats[stgAt], last = stgAt === S.beats.length-1;
+  /* ⚑ WHO IS LIT, AND IT IS ONLY EVER THE SPEAKER. The narrator lights
+     nobody, which is correct: it is the one voice that belongs to neither
+     side of the frame. The RIGHT flank is the subject on every card and
+     therefore never drops to idle, but it only reaches `lit` when it has a
+     mouth and is using it. The chapel never does. */
+  const stateL = b.s === 'left' ? 'lit' : 'idle';
+  const stateR = b.s === 'them' ? 'lit' : 'subject';
+  const kind = b.s === 'them' ? 'them' : b.s === 'left' ? 'you' : 'road';
+  const face = b.s === 'left' ? S.left.art : null;
+  const name = b.s === 'left' ? S.left.nm.toUpperCase()+' <span class="job">· '+S.left.job+'</span>'
+             : b.s === 'them' ? S.right.nm+' <span class="job">· '+S.right.sub+'</span>'
+             : 'THE ROAD';
+
+  document.getElementById('stgCard').innerHTML =
+    '<div class="scene4">'+
+      '<img class="back" src="'+S.back+'">'+
+      '<h3>'+S.title+'</h3>'+
+      '<div class="flank L '+stateL+'">'+
+        '<img class="por" src="'+S.left.art+'">'+
+        '<div class="cap4">'+S.left.nm.toUpperCase()+'<em>'+S.left.job+'</em></div>'+
+      '</div>'+
+      '<div class="flank R '+stateR+'">'+
+        '<img class="sight" src="'+S.sight+'">'+
+        '<div class="cap4">'+S.right.nm+'<em>'+S.right.sub+'</em></div>'+
+      '</div>'+
+      '<div class="drop anim">'+
+        '<div class="med4 '+kind+'">'+
+          (face ? '<img src="'+face+'">' : '<div class="rune4">'+(kind==='them'?'◈':'◆')+'</div>')+
+        '</div>'+
+        '<div class="nm4 '+kind+'">'+name+'</div>'+
+        '<div class="tx4'+(b.q?' q':'')+'">'+(b.q?'"'+b.tx+'"':b.tx)+'</div>'+
+      '</div>'+
+      '<div class="beats4">'+S.beats.map((_,i)=>'<span class="'+(i<=stgAt?'on':'')+'"></span>').join('')+'</div>'+
+      (last?'':'<div class="adv4">CLICK ▸</div>')+
+    '</div>'+
+    (last ? '<div class="doors4">'+S.doors.map(doorHTML).join('')+
+            '<div class="foot4">'+S.foot+'</div></div>' : '');
+
+  document.getElementById('stgCard').onclick = e => {
+    if(e.target.closest('.doors4')) return;
+    if(stgAt < S.beats.length-1){ stgAt++; drawStage(); }
+  };
+}
+
 /* ══ I · THE PLATE ════════════════════════════════════════════════════
    The SAME four beats as E, word for word, so the two tabs are a real
    comparison and not two different scenes wearing two different treatments.
@@ -995,6 +1223,7 @@ const TABS = [
   ['today',   '0 · TODAY',         mountToday],
   ['speaker', 'A · THE SPEAKER',   mountSpeaker],
   ['two',     'E · THE TWO-HANDER',mountTwo],
+  ['stage',   'J · THE STAGE',     mountStage],
   ['plate',   'I · THE PLATE',     mountPlate],
   ['offer',   'H · THE OFFER',     mountOffer],
   ['standoff','C · THE STANDOFF',  mountStandoff],

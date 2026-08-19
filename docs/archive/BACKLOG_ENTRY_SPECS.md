@@ -3499,3 +3499,247 @@ MB.probe()     one fight, itemised
 2. Whether *"strait and vertical"* really means the six hex lanes. There is no seventh straight line
    to give him on this grid, so the alternative is a different creature.
 3. The two levers above, if ignoring the logic should cost more than tempo.
+
+---
+
+## 204 - STRENGTH and AGILITY become LADDERS: a rung is a number, and the number says what it gives
+
+> 🎒 **THE COMPANY SHEET** (the four tells, their hover, the promotion click) · ⚔ **THE FIGHT**
+> (hitpoints, the swing, to-hit, dodge) · 🏛 the muster wall (`tellLine` on a recruit)
+> **SYSTEMS** `D{}` (hp/dmg/hit/dodge off a raw number) · `thews()` (the damage multiplier) ·
+> `TELLS{}` + `tell()`/`tellNext()`/`tellLadderHTML()` (the words) · `effStats()` (gear, trait,
+> injury and WRONGSIZE all add raw points) · `RACEMOD` (the race lean, raw points) · `rollRecruit()`
+> (6-10 + lean) · `finishRecruit()` · the seven authored bodies (`makeParty`, `PRESET_SKREE`,
+> `PRESET_ASH`, `PRESET_BRUHT`) · `build()` (every enemy is `str:6,agi:6`, and only `thews` reads
+> it) · `STATHELP` · the stat click in `drawInv` (`p.st[k]++`)
+> **RELATED** #132 (nine bands, "artifacts may move it later") · #146 (`HIT_EASE`, the dodge soft
+> cap) · #174 (a promotion is one stat point) · #197 (permanent injuries are `−1 STR`, and with a
+> ladder that is a whole rung) · #89 part four (the unit of variety is the WEAPON, which this does
+> not change) · `.claude/rules/event-cards.md` (a receipt is derived, never typed)
+> **STATE** 📐 **PROPOSED 2026-08-19, waiting for his ruling on the numbers.** Nothing in the
+> prototype has changed. The arithmetic here was produced by a script copying the file's own
+> formulas (`D`, `thews`, `swingOf`, `unitFrom`, `RACEMOD`, `TRAITS`), not by reading. ⛔ **Prototype
+> only** (his words), and ⛔ **STR and AGI only in this iteration**: *"Хочу вначале силу и ловкость -
+> как основа боевки... остальное выложим в след итерации на мораль и интелект."*
+
+### His words, 2026-08-19
+
+> *"Сейчас мы имеем уровни для каждой. Что я хочу - чтобы возле уровня показать, что он дает. Базовый
+> уровень - условно средний для человека и обозначен 1 (давай добавим цифры возле написания). Я хочу -
+> чтобы каждый уровень давал изменение к стату. Например - сила: 5 ... / 4 +15% здоровья / 3 +20% урона
+> мечем, 10% луком / 2 +10% здоровья / 1 - база. (показатели не перемножаются, а добавляются)"*
+>
+> *"Так-же, на здоровье влияет размер. Большой и маленький дают коефициенты. Тоже самое - базовые
+> [хп] чтобы привязаны к боди сайзу (ну или в данном случае к рассе). Тогда здоровье огра большое -
+> потому-что он большой и много силы. И реткина маленькое, потому что он маленький и мало силы. Вот это
+> уже перемножающиеся результаты. В первую очередь это будет применимо к нашим юнитам."*
+>
+> *"В идеале, чтобы после этой правки баланс юнитов сохранился похожий как сейчас - но их
+> характеристики и прозрачность и скейлабильность станут сильно более управляемыми."*
+>
+> *"Ловкость, пусть отвечает - за % удара и % уворота только."*
+
+### What the build does today, measured (so the proposal has something to be compared against)
+
+A stat is a raw integer, about **4 to 16** on the roster, and the sheet prints a WORD for it off
+nine bands two points wide (`TELLS`, #132: *Strong enough* is 9-10). What the number does:
+
+| | formula | per band (2 points) |
+|---|---|---|
+| hitpoints | `25 + 3.5 × STR` (+16 `big`; ×0.9 bow/caster) | **+7 hp** (~12% at the human middle) |
+| damage, melee | dice × `(1 + 0.055 × (STR − 8))` **+ round(0.3 × STR) flat** | **+11%** |
+| damage, bow | dice × `(1 + 0.055 × (AGI − 8))` + the same STR flat | **+11%, off AGILITY** |
+| to hit | `48 + 1.2 × AGI + 10` (`HIT_EASE.you`) | **+2.4** |
+| dodge | `6 + AGI` (+5 ratkin, −5 ogre, then the harness band and the soft cap at 12) | **+2** |
+
+⚑ **Three things that decide what "keep the balance similar" has to mean:**
+
+1. **The enemy never reads a stat.** `build()` gives every foe `str:6, agi:6` and takes hp, skill
+   and dodge off its template; the ONLY thing the stat does on that side is `thews` = −0.11, i.e.
+   every enemy's dice are ×0.89. So the ladder can be a ROSTER change and the enemy can simply be
+   told which rung it stands on.
+2. **Body size does nothing to hitpoints today.** The ogre is big because Bruht's `big` trait adds
+   16 and his STR is 13; a ratkin is small because its STR is 4. Size reaches the fight only as
+   `RACEDODGE` (±5) and `SIZEHIT` (+6/+12 to hit a big target), both of which stay.
+3. **The flat damage bonus is a second STR receipt**: Captain +3, Bruht +4, Skree +1. It is what
+   makes an 11-16 knife and a 16-24 sword feel further apart than their dice say.
+
+### The model
+
+**Two multiplying halves, and inside each half the rungs ADD.**
+
+```
+HITPOINTS  =  BASE_HP[body size]  ×  (1 + Σ hp% of every STR rung held)      (+ trait hp; ×0.9 bow/caster)
+DAMAGE     =  weapon dice + 2     ×  (1 + morale% + Σ dmg% of every STR rung held + perks…)
+TO HIT     =  68 + Σ hit of every AGI rung held      (+ dirk, + trinket, + HIT_EASE already inside the 68)
+DODGE      =  14 + Σ dodge of every AGI rung held    (+ race ±5, + harness band, soft cap as today)
+```
+
+- **The size is the multiplying half**: `BASE_HP = { small 42 · medium 56 · large 70 }`, i.e.
+  ×0.75 / ×1 / ×1.25, keyed off the race today (`RACEMOD[r].size`) and off the body the day a
+  human is `big`. This is the ogre's *"большой и много силы"* arriving as arithmetic: 70 × 1.10 at
+  STR 3, against a ratkin's 42 × 0.90 at STR 0.
+- **The rung is the adding half**, and it is the whole stat: `p.st.str` IS the level, 0-5, and a
+  promotion, a trinket, an injury moves it one rung. No more 4-17 under the hood.
+- **Rung 1 is the ordinary human**, and it is the weapon's own dice and 68 to hit. **Rung 0 exists
+  and is the one rung below it**: he wrote *"1 - база"* and in the same breath *"реткина маленькое…
+  мало силы"*, so there has to be a rung under base, and one is enough - the ratkin's smallness is
+  mostly the SIZE half now, not the strength half.
+- **The flat damage becomes one constant, +2, for every body on the field** - the enemy's
+  `dmgBonus:2` already is. Otherwise the flat is a second STR receipt and the ladder is not the
+  one place the stat speaks.
+
+### The STRENGTH ladder
+
+| rung | word (existing `TELLS` words, kept) | this rung gives | held in total |
+|---|---|---|---|
+| **0** | Weak | **−10% hitpoints · −10% melee damage** | −10% hp · −10% melee |
+| **1** | Strong enough | the ordinary human arm: the weapon's own dice | none |
+| **2** | Strong | **+10% hitpoints** | +10% hp |
+| **3** | Very strong | **+20% melee · +10% bow** | +10% hp · +20% melee · +10% bow |
+| **4** | Enormously strong | **+15% hitpoints** | +25% hp · +20% melee · +10% bow |
+| **5** | Monstrously strong | **+20% melee · +10% bow** | +25% hp · +40% melee · +20% bow |
+
+What that is on the three bodies and two weapons (morale left out; the arming sword 16-24 and the
+hunting bow 14-21, both +2):
+
+| rung | human hp | ratkin hp | ogre hp | sword | bow |
+|---|---|---|---|---|---|
+| 0 | 50 | 38 | 63 | 16-23 | 16-23 |
+| 1 | 56 | 42 | 70 | 18-26 | 16-23 |
+| 2 | 62 | 46 | 77 | 18-26 | 16-23 |
+| 3 | 62 | 46 | 77 | 22-31 | 18-25 |
+| 4 | 70 | 53 | 88 | 22-31 | 18-25 |
+| 5 | 70 | 53 | 88 | 25-36 | 19-28 |
+
+⚑ **The slope is today's slope.** Two rungs carry +20% melee where today two bands carry +22%; two
+rungs carry +10/+15% hp where today two bands carry ~+24% - so the ladder spends a little less on
+hitpoints and the same on the swing, which is the right direction for a game whose fights were
+trimmed twice for outstaying their welcome. ⚠ **Bow damage moves from AGILITY to STRENGTH**, at
+half the melee rate, because he put AGI on *"% удара и % уворота только"* and wrote the bow onto
+the STR rungs himself. The archer pays for it (below).
+
+### The AGILITY ladder
+
+| rung | word | this rung gives | held in total | to hit · dodge (human) |
+|---|---|---|---|---|
+| **0** | Clumsy | **−5 to hit · −5 dodge** | −5 · −5 | 63 · 9 |
+| **1** | Steady enough | the ordinary hand | none | 68 · 14 |
+| **2** | Handy | **+5 to hit** | +5 · 0 | 73 · 14 |
+| **3** | Quick | **+5 dodge** | +5 · +5 | 73 · 19 |
+| **4** | Very quick | **+5 to hit** | +10 · +5 | 78 · 19 |
+| **5** | Uncannily quick | **+5 dodge** | +10 · +10 | 78 · 24 |
+
+Ratkin +5 dodge and ogre −5 sit on top as today, so a rung-3 ratkin is 24 before the soft cap and a
+rung-0 ogre is 4. ⚑ **Hit first, then dodge, alternating** - the complaint behind #145/#146 was
+whiffing, so the first thing a promotion on this axis buys is landing the blow; and the pair per two
+rungs (+5/+5) is today's +4.8/+4 per two bands. *(The alternative - every rung +3 hit and +3 dodge -
+is flatter and less legible; named here so it is not re-invented.)*
+
+### The seven bodies, today against the proposal
+
+Levels authored by hand for the presets (not mapped by formula), so each body lands where it is.
+`swing` is `swingOf`'s lo-hi with morale in, as the sheet prints it. `dodge` is base + race, before
+the harness band and the cap.
+
+| body | STR/AGI today → rung | hitpoints | swing | to hit | dodge |
+|---|---|---|---|---|---|
+| Captain | 9/8 → **1/1** | 57 → **56** | 21-30 → **19-28** (−8%) | 68 → 68 | 14 → 14 |
+| Vesna | 9/9 → **1/1** | 57 → **56** | 21-29 → **19-27** (−8%) | 69 → 68 | 15 → 14 |
+| Marrow | 8/8 → **1/1** | 48 → **50** | 9-13 → 9-13 (stave; he casts) | 68 → 68 | 14 → 14 |
+| Ilka | 7/11 → **1/2** | 45 → **50** | 20-29 → **18-25** (−12%) | 71 → 73 | 17 → 14 |
+| Skree | 4/16 → **0/4** *(3 + twitchy)* | 39 → **38** | 10-14 → **12-17** (+21%) | 77 → 78 | 27 → 24 |
+| Ash | 4/13 → **0/3** | 39 → **38** | 11-15 → **13-18** (+19%) | 80 → 79 | 24 → 24 |
+| Bruht | 13/3 → **3/0** *(1 − big)* | 87 → **93** | 38-57 → **34-51** (−11%) | 62 → 63 | 4 → 4 |
+
+**Hitpoints, to-hit and dodge are within a point or two everywhere.** The swing is where the
+honest deltas are, and they come from exactly two sources:
+
+- **the flat +3/+4 becoming +2, and the loss of the 5.5% a STR of 9 used to carry**: the Captain and
+  Vesna at −8%, Bruht at −11% (he also gains 6 hitpoints);
+- **rung 0 being −10% where STR 4 was −22%**: the two ratkin knives at +20%. A knife is the
+  smallest dice in the game, so a flat +2 in place of +1 shows up here most;
+- **the bow losing its AGI scaling**: Ilka −12%, and +5 hitpoints.
+
+⚑ **One knob closes both race deltas at once, and it is the same sentence he wrote: the size also
+multiplies melee damage.** `small ×0.9 · medium ×1 · large ×1.1` on the melee dice gives Skree
+**11-15** (today 10-14) and Bruht **37-56** (today 38-57) with no other change; humans do not
+move. He asked for size on hitpoints, not on damage, so it is offered and not built into the table
+above - **recommended**, because it is the ogre's *"большой"* arriving on the arm as well as the
+body, and it is one more row in one table rather than a special case.
+
+The remaining −8% on the two human founders is the price of the flat going to +2. It is inside the
+band the harness can see (`ARENA.match()` over the eight fights, n=50 a side, as #145 taught);
+**the ruling is his**: accept it, or set the founders' flat to +3 and the enemy's to +2 (two
+constants instead of one).
+
+### The enemy in this iteration
+
+Nothing on its sheet changes: hp, skill, dodge stay authored. **Every foe stands on STR rung 0 and
+AGI rung 1**, so its dice are ×0.90 where today they are ×0.89, and `hitBreakdown` reads the same
+`mskill`/`dodgeBase` it reads now. ⚠ The day the enemy is moved onto the ladder properly
+(templates saying `str:3` instead of `hp:80`) is a separate entry - #89 part four's *"enemies run on
+the same weapon rules the player does"* is the argument for it, and this entry does not open it.
+
+### What shows, and where
+
+1. **The tell on the sheet prints the rung beside the word**: `STRENGTH   1 · Strong enough`, the
+   digit in the stat's colour at `--fs5`, the word at `--fs3` as now. *"давай добавим цифры возле
+   написания."* `tellLine` (the muster card) the same: `1 · Strong enough. 2 · Handy.`
+2. **The hover ladder gains a third column, the rung's own gift**: six rows, the held rung lit as
+   today, and beside each word the line from the table above (*+10% hitpoints*, *+5 to hit*). The
+   footer: *"Every rung keeps what the ones under it gave."* `STATHELP` text rewritten to match
+   (STR: *"hitpoints and the swing, a rung at a time"*; AGI: *"landing a blow, and not being landed
+   on. Nothing else."*).
+3. **The promotion click says what it buys before it is spent**: the tell's `spend` state shows
+   `→ 2 · Strong · +10% hitpoints` on hover; `tellNext` returns the rung and its gift.
+4. **The battle plaque and the aiming card are untouched** - they already print the derived
+   numbers, which is the rule: the rung is the cause and the card is the receipt, once each.
+
+⚑ **Picture before code**: the gate picture is the sheet's stat band with the digits on, and the
+hover open on STRENGTH, captured off the running build once the rungs render. Until then the
+mockup page `shots/204_ladders.html` (the artifact published with this spec) is the shape.
+
+### The migration, which is the real size of the work
+
+Everything that adds raw points to a stat has to be re-said in rungs, and **a rung is worth about
+two of today's points on STR and four on AGI**, so nothing can be carried over as-is:
+
+| today | today's worth | in rungs |
+|---|---|---|
+| `RACEMOD` str/agi (human 0/0, ratkin −1/+1, ogre +2/−1) | half a band to a band | **ratkin −1 STR +1 AGI · ogre +2 STR −1 AGI · human 0**, floored at 0, capped at 5 |
+| `rollRecruit` base 6-10 | Weak..Strong enough | **STR and AGI each roll 0/1/2 at 25/50/25**, then the race lean. A human wall is mostly 1s; an ogre 2-4 STR; a ratkin 1-3 AGI |
+| `twitchy` +2 AGI · `big` −2 AGI · `vet` −1 AGI · two traits at −1/−2 STR | ~1 band | **±1 rung** each (twitchy +1, big −1, vet −1, both STR traits −1) |
+| `tooth` +2 STR (+4 on an ogre) · `cubtooth` +1 to all four | | **tooth +1 STR (+2 on an ogre) · cubtooth: +1 STR +1 AGI** (INT/MOR untouched this iteration) |
+| armour `agi:−1/−2/−3/+1` (planks, mail, plate, wardrobe, shroud) and `WRONGSIZE.agi −1` | −1.2 hit, −1 dodge each | ⚠ **the harness band already charges dodge for weight** (`ARMOUR_BANDS`), so these are a second penalty today. Proposal: **drop them**, keep the band; `shroud` +1 AGI stays as the one light piece that is genuinely nimble; `WRONGSIZE` keeps `mult`/`mor` and loses `agi` |
+| injuries `str:−1` (five rows, #197) · `agi:−1` (one row) | 5% dmg, 3.5 hp | **−1 rung**, which is now a visible wound: *Weak* on the sheet and −10% hp/−10% melee. ⚑ This is what #197's *permanent injury* label was always promising |
+| the Captain's `p.st[k]++` on a banked stat point | +1 point | **+1 rung, capped at 5** - a promotion becomes a whole visible step, which is the transparency he asked for. ⚠ Seven promotions a run today (#174 ~level 4-5 at the Snare, stat every second level) means one or two rungs over an act, against a five-rung ladder: **the cap is reachable and that is fine** (#132: *"17 is deliberately somewhere nobody starts"* becomes *"5 is somewhere you finish"*) |
+| `tellNext`, `TELLS` thresholds, `tell()` | band lookup | the word is `TELLS[k].s[rung]`, six rows each; the three unused low words (*Feeble*, *No use lifting…*, *Heavy-handed*, *Hopeless*, *All thumbs*) retire |
+| `thews()` | `(s−8)×0.055` | `STR_RUNG` sum; `act.range` reads the bow column |
+| `D.hp/dmg/hit/dodge` | linear | `BASE_HP[size] × (1+Σ)`, constant 2, `68+Σ`, `14+Σ` |
+| a saved run (`gt_run`) | raw 4-17 | **one-shot map on load**: ≤6→0, 7-10→1, 11-12→2, 13-14→3, 15-16→4, 17+→5, applied to `p.st` once and stamped |
+| INT and MOR | raw numbers, unchanged | **untouched** - `D.flank/spell/moral/bonus/learn` and the caster's `arcSkill` keep reading the raw figure. The next iteration is theirs |
+
+### Verification, before it ships
+
+- `LINT()` 0 · the sheet overflow probe against a `git show HEAD:` tab (the digit widens the tell;
+  `.itl .tv` is exactly full on the Captain, #200/#202)
+- `ARENA.match()` over the eight authored fights, **n=50 a side**, before and after, read as win
+  rate and as the fraction of runs under the 30%-Captain-hitpoints threshold (#145's rule about
+  tails). The target is *"похожий"*, and the knobs if it is not: the flat (+2/+3), `BASE_HP`, the
+  size-on-melee row, rung sizes
+- every preset and every `rollRecruit` outcome lands on a rung in 0..5 (drive the muster wall 30
+  times; nothing prints `−1` or `6`)
+- the load map runs once on a saved run and never again
+
+### Open, for his ruling
+
+1. **Size on melee damage** (×0.9/×1/×1.1) - recommended above; his call, since he named hitpoints
+   only.
+2. **The founders' −8%**: accept, or flat +3 for the roster and +2 for the enemy.
+3. **The archer's −12%**: accept as the cost of the bow moving to STRENGTH, or give the bow its
+   +10% one rung earlier (rung 2 alongside the hitpoints).
+4. **Armour `agi` penalties dropped in favour of the harness band** - or kept as −1 rung on plate
+   alone.
+5. **Rung 0's word**: *Weak* (kept from today's table) against *Not strong*, which is today's word
+   for the human 7-8 that most random recruits roll.
