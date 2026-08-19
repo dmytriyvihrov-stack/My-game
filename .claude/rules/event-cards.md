@@ -141,7 +141,9 @@ on a screenshot of THE COLLECTOR.)*
 | the cost | **`fxNote(o.fx)`, derived.** Never typed. |
 | what the cost cannot say | `c:` - gear by name, a battle's shape, a rule of the door |
 | the mood | `moraleTag(o.fx)`, derived |
+| the blood | **`o.hurt.lasting` → `permanent injury` / `temporary injury`**, derived *(#197)* |
 | the gate | `needTag(o.need)`, derived |
+| the seat | **`recruit`/`recruitPreset` → `no room left`**, derived *(#197)* |
 
 ⛔ **`c:` MAY NOT CARRY A FIGURE `fx` ALREADY CARRIES.** That is two receipts for one payment, which
 is the rule at the top of this file on its fourth surface. `LINT` 6f holds it and the check is a
@@ -182,6 +184,53 @@ The mood echo, which is the third generation of a phrase this file has now delet
 63 that had grown back: *they think better of you* ×6, *they will remember this* ×6, *quietly
 approved of* ×6, and 45 one-offs). ⚑ **The reason it kept growing back is that nothing stopped a
 new card authoring one.** Now the mood has exactly one renderer and the label has no room for it.
+
+### ⛔ #197 · THE TWO THINGS A DOOR STILL WOULD NOT SAY
+
+*(2026-08-19. The user: **"Near all events write: permanent or temporary injury (based on
+injury)"** and **"with ogres event you don't have option ogre to join - when your party is
+full"**.)*
+
+⛔ **THE FIRST ASK COULD NOT BE ANSWERED, BECAUSE NOTHING IN THE BUILD WAS PERMANENT.** `pickChoice`
+had branched on `hurt.lasting` since it was written and **not one card in the game set it**, so all
+seven `hurt` rows were hitpoints. Five of them are AUTHORED as permanent and say so in their own
+`d` field - *"−1 STR"*, *"−1 AGI"*, *"−1 INT"* - and **the player never saw that text**, because
+the temporary branch prints `hurt.n` alone. A promise nobody can read is not a broken promise, it
+is a dead one, and no reading of the tables would have found it: only asking what the label would
+say did.
+
+⛑ **AND THE CAMPS PICKER HAD ITS OWN APPLIER THAT NEVER READ `lasting` AT ALL.** A camp card marked
+permanent would have shown PERMANENT INJURY on the button and charged hitpoints. That is the
+second-source-of-truth shape this file keeps deleting (`choiceNote` in #150, the receipt in #176),
+and it is why **`applyHurt` is now the ONE applier and both pickers call it**. ⚠ Their damage
+ranges had drifted apart, 18-40% of max hp against 15-35%; the events range wins because it serves
+six of the seven rows. ⚠ `injure` stores a **copy**, having pushed the card table's own object onto
+the roster for as long as it existed.
+
+⛔ **`hideHurt` STILL WINS OVER THE LABEL.** Two doors buy a surprise and the beam that comes down
+IS the surprise; a door that says *permanent injury* before it is opened has sold the card.
+
+⛔ **AND A DOOR THAT HANDS YOU A BODY SAYS "NO ROOM" BEFORE IT IS PRESSED.** The second ask was
+reported as an option that does not exist, and **the option existed the whole time**: it was live,
+it said *an ogre may join*, and the room check ran inside `pickChoice`, so a full company spent its
+one choice and was told afterwards. From the outside those two are the same thing. The rule was
+already written twice in this file (*"a door the player cannot afford has to say so BEFORE it is
+pressed"*) and on the muster wall, which has printed `· no room left` on a greyed row since it was
+built; room was simply the one price a road card could not read.
+
+⚑ **DERIVED, NEVER AUTHORED, WHICH IS #137's RULE ON ITS FIFTH SURFACE.** The door already carries
+`recruit:{race}` or `recruitPreset`, so the seat count IS the fact and nothing new is typed onto a
+card - and deriving it fixed the four preset doors (Skree, Nib, Gell, Bruht) that nobody had
+reported. ⚠ **`doorOpen` is the one predicate and the appended walk-away asks it too**, or a card
+whose only live door was a full-party recruit would have had every button dead and no way off the
+node: the exact soft lock that guard exists to stop.
+
+### ⚠ #197 · AND A DOOR WITH NO SUB-LINE EMITS NO SUB-LINE ELEMENT
+
+`choiceNote` returns `''` on a one-door pickup, whose receipt is on the card, and both renderers
+wrapped that empty string in `<i></i>` anyway. `.choice i` is `display:block`, so the empty box was
+a real line of button height. **Caught by measuring the button, not by reading the string** - which
+is the whole argument for driving a card rather than reading one.
 
 ## The receipt: chips, and they are built off the payment
 
@@ -305,6 +354,22 @@ one could be. Ratkin first because this is a ratkin island and these cards are a
 BEFORE the appended walk-away**, which is not race-gated and has to survive it. ⚠ **The visible
 maximum is 4 again on every card in the deck** - which is the check to re-run after authoring a
 second race door anywhere: drive the card with a company holding both.
+
+## ⛔ #197 · AND THE CARD ITSELF OPENS IN THE MIDDLE
+
+*(2026-08-19. The user: **"A lot of pictures are shown in one of the sides of the screen. Show
+everething in the middle."**)*
+
+#104 mapped a card to its NODE and #156 put the camera into that mapping, so a card opened beside
+the place it was about. The argument was good and it is overruled: **a 620px card on a 1280px stage
+is CLAMPED against an edge for half the map**, so THE DEBT opened hard left and SOMETHING IN ARMOUR
+hard right, and the painting inside each one - which since stage 4 is the first thing on the card -
+landed wherever the node happened to be. An anchor that is clamped half the time is a coin toss.
+
+`placeDlg` centres. ⚠ **Every caller still hands its node coords and `DLGAX`/`DLGAY` still record
+them**, so `replaceDlg` works and the anchor is one block away if it is ever wanted back. **The
+check is a measurement**: open the same card from two nodes at opposite ends of the map and the box
+must land in the same place, 0px off centre.
 
 ## Where a receipt may appear before the choice
 

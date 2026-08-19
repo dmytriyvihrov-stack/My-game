@@ -144,6 +144,92 @@ any words on any screen.
   least informative one, because most of the company is human. If it reads as too bright, say so -
   the marks can be tinted into the gold palette in one line without changing which pictures they
   are.
+## 📜 THE SEVENTEEN ASKS OF 2026-08-19  *(#197 · build log 8f.219)*
+
+All seventeen from that morning, in one build. Grouped by the screen you will be standing on
+rather than by the number you gave them, because that is the order you will meet them in.
+
+### On the road, on any card
+
+1. **Every card now opens in the MIDDLE of the screen.** It used to be pinned near the node it was
+   about, which on half the map meant it was clamped hard against an edge and the painting inside
+   it landed wherever the node happened to be. *Bug if:* a card ever opens off-centre, or the art
+   is cut on one side.
+2. **A door that risks an injury says which kind: `permanent injury` or `temporary injury`.**
+   This turned up something worth knowing: **nothing in the build was permanent.** Five injuries
+   were written as permanent stat losses (*"−1 STR"*, *"−1 AGI"*, *"−1 INT"*) and the game was
+   quietly charging hitpoints for all of them, and the text saying so was never on screen. They
+   are real now: **Bad gut, Crushed foot, Pedlar's knife, Torn back and Bloom-touched cost the
+   stat and stay on the sheet.** Split knuckles is the only temporary one left. *This makes the
+   road harder - say so if it is too much.* The line after the choice is shorter to match: it no
+   longer repeats what the label already said.
+3. **A door that is not a decision has no small text under it.** *"Keep moving"*, *"Carry on"* and
+   the objective card's button used to carry a caption whose whole content was that there was
+   nothing to decide.
+4. **THE DEBT charges no morale at all now** (the fire card about two of yours owing each other
+   money). Paying out of the chest still buys +6. Letting them fight still costs blood, and ruling
+   that debts do not exist is free and says so. **AND THEN - THE NINE SECONDS is gone**, so letting
+   them fight ends its own story.
+5. **Two cards are deleted:** *AN HOUR OF RAIN* and *AND THEN - THE NINE SECONDS*.
+6. **THE LONG FIRE's second part is a third shorter.** Both halves of the ratkin's own speech are
+   still there - that is your writing and it stays - but the stage directions, the sentence that
+   repeated the card's own opening, and most of the paragraph explaining what CLAN buys are gone.
+   *Bug if:* you cannot tell from it what being his clan actually does.
+7. **The last fight has lost *"Through the marsh. Slower, but quiet."*** Two doors now: go in, or
+   walk in with empty hands.
+8. **THE SITTING STONE tells you there is no room BEFORE you press.** *"Ask him to come with you"*
+   now reads `an ogre may join · no room left` and is greyed out on a full company. It was never
+   missing; it just did not find out until after you had spent your choice. **The same fix reached
+   the four other join doors** (Skree, Nib, Gell, Bruht) that nobody had reported.
+
+### After a battle, and in the wagon
+
+9. **Every one of the 51 pieces of kit now has a rarity: common, rare or epic.** 21 / 22 / 9.
+10. **A won fight hands over a SECOND piece, on top of its own haul, 30% of the time** - 23% rare,
+    7% epic. A cache pays **60%** (42 rare, 18 epic), because a buried bag you walked to on
+    purpose should be worth the walk. The tier is printed as a word in its colour on the found
+    row. *The white/green/purple frame round the slot is NOT in this build - that is a UI pass
+    with its own picture, as agreed.*
+    ⚠ **Fourteen pieces are marked `unique` and can never be found this way** - the Fen-Mother's
+    tooth, Wynn's ledger-pin, the Cold Thing, the Roll of Names and the rest. They only ever come
+    from the scene they belong to.
+    ⚠ **A find is filtered by size**: a company with no ogre will not be handed ogre scale.
+    ⚠ **Watch the balance here.** The Foundry plate and the Weeping Hammer are epic and findable,
+    so a lucky early fight can hand over end-of-act kit. If that feels wrong, the dial is one
+    line and it is the first thing to change.
+11. **A TREASURE MAP** drops off the brigands, and off the Snare when you take it from inside the
+    clan's line. **It puts a place on the map**: a node ahead becomes The Cache. It rides in the
+    wagon and takes nobody's trinket slot. *It is not offered where there is nowhere left to bury
+    anything*, which is why you will not see it on the very last node.
+
+### The muster wall
+
+12. **The four stat adjectives are off the row** (*"Not strong. Clumsy. Plain. Nervous."*). They
+    are on the NAME's hover instead, beside the personality's. *Bug if:* you feel you are hiring
+    blind - say so and they come back in some other form.
+13. **The walk-away door wears 👣** like every walk-away on the road.
+14. **The word is CLASS everywhere, not TRADE.** *no class yet*, *picks up a class at the first
+    level*, *A CLASS TO PICK*, *NO CLASS YET* on the sheet.
+
+### The map itself
+
+15. **You can see the bottom of the map again.** Four captions at the foot (The Snare, the
+    Door-Shrine, the Hill Steading, A Story Going Round) were hanging off the bottom edge. They
+    each ride up by exactly as much as they were losing - 14 to 37px - so they now sit on the
+    bottom of their own painting. *That is the trade: a bit of those four pictures is covered.*
+    *Bug if:* any name is still cut, or a caption lands on a neighbour.
+16. **Hovering a node no longer prints its type twice.** It used to read the name, then SWORDS FOR
+    HIRE, then SWORDS FOR HIRE again.
+17. **The green dev line along the foot of the map is gone** (*"spacing clean · 110px glyphs ·
+    110×79 plates"*). The red warning that fires when two nodes are actually too close is
+    untouched.
+18. **Every chip on the top bar is the same height** (30px). They were 30 / 22 / 26 / 20 / 20 on
+    the left and 26 on the right.
+
+**What was measured rather than eyeballed**, in case you want to argue with a number: the map
+overflow is 22px at the ROAD stop and 121px at NEAR (that one is the zoom, not the layout); the
+find odds were counted over 20,000 rolls per source and come out at exactly 70/23/7 and 40/42/18;
+`LINT()` is 0, the three map counters are 0/0/0, and the road-curve check is 0.
 
 ---
 

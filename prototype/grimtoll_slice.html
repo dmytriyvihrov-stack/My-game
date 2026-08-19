@@ -114,6 +114,23 @@
   /* spacing. ⚠ A padding over 24px is not spacing, it is GEOMETRY (a reserved
      gutter, a scroll footer paired with a negative margin) and keeps its px. */
   --p1:2px; --p2:4px; --p3:6px; --p4:9px; --p5:12px; --p6:16px; --p7:24px;
+  /* ═══ #197 · ONE HEIGHT FOR EVERY CHIP ON THE WORLD BAR ═══════════════════
+     (User, 2026-08-19, red box round the bar's left group: *"Make heights
+     same size, so it looks nicer"*.)
+
+     ⚑ IT IS GEOMETRY AND NOT ONE OF THE THREE SCALES, which is why it is a
+     token of its own rather than a `--p` step: `.claude/rules/ui-scales.md`
+     governs type, edge and spacing, and a shared BOX SIZE is none of them.
+     Same footing as `#wBar`'s own 64px right-hand reservation, and it carries
+     its arithmetic for the same reason.
+
+     30 IS NOT A TASTE. It is the tallest chip's natural height and the only
+     one that is load-bearing: the party chip holds a 24px painted bust plus
+     its own 1px border, plus 2px of `--p1` and 1px of chip border top and
+     bottom. Everything else was shorter only because a 10px word is shorter
+     than a portrait. The bar is 42, so 30 leaves 6px of air above and below.
+     ⚠ IF THE BUST EVER CHANGES SIZE, THIS NUMBER MOVES WITH IT. */
+  --barChip:30px;
   /* ═══ #81 - THE BATTLE CLOCK, ONE NUMBER ═══════════════════════════════
      Every duration on the battlefield is written as a base × this, so the
      whole board slows down TOGETHER and the relationship between a blow and
@@ -2015,6 +2032,11 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:var(--f
          --p scale on purpose and a scale step must not be substituted here. */
       padding:0 64px 0 var(--p5);gap:8px;flex:none;position:relative}
 #wBar .sep{flex:1}
+/* ⛔ #197 - SCOPED TO THE BAR, which is #187's rule about shared furniture:
+   `.cchip`, `.bcchip`, `.rseg` and `.tchip` are drawn only inside #wCompany
+   and #wRes today, and an unscoped height would follow the first one of them
+   that is ever reused on another screen. */
+#wBar .cchip,#wBar .bcchip,#wBar .rseg,#wBar .tchip{min-height:var(--barChip)}
 #wCompany{display:flex;align-items:center;gap:6px;min-width:0}
 #wRes{display:flex;align-items:center;flex:none}
 /* the counted resources: one strip, segments sharing borders */
@@ -2406,6 +2428,58 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:var(--f
    max-width keeps long names wrapping at the node's own width. */
 .node.sighted .nm{position:absolute;left:50%;top:50%;transform:translate(-50%,42px);
   z-index:1;width:max-content;max-width:104px}
+/* ═══ #197 · A CAPTION AT THE FOOT OF THE MAP HANGS THE OTHER WAY ══════════
+   (User, 2026-08-19, arrows at the bottom edge: *"cant see down part of the
+   map"*.)
+
+   ⛔ MEASURED, NOT READ, AND THE FIRST TWO READINGS WERE BOTH WRONG. The
+   probe has to pin the camera to ROAD and to identity first: at the default
+   NEAR stop (z 1.22) the map overflows by 121px and six nodes are cut, which
+   is a fact about the ZOOM and not about the layout. Pinned to ROAD the real
+   number is 22px and three captions. And `b.style.top` is CAMERA space while
+   `getBoundingClientRect` is SCREEN space, so mixing them reports a node's
+   own caption as sitting 81px below itself.
+
+   THE ARITHMETIC, all in view px against a 678 window:
+     · a sighted node's caption reaches +84 below its point (top +42, ~42 of
+       two-line plate); a plain node's reaches +38
+     · the lowest node point is 629, so 629 + 84 = 713 against 678
+     · for a caption to fit below, the point must be at or above 594, which
+       is design y 559. FOUR nodes sit lower than that.
+
+   ⛔ AND EVERY GLOBAL FIX IS ARITHMETICALLY CLOSED, which is why this is a
+   per-node rule and not a constant somewhere:
+     · the map cannot grow: stage 720 = top bar 42 + map 678, exactly;
+     · it cannot be scaled down: `--fs1` is a 10px FLOOR (ui-scales.md §1) and
+       the plate text is already on it;
+     · `vy()` cannot map into a shorter band: the terrain canvas is stretched
+       638→678 by the same ratio and the nodes track the PAINTING (#190). Any
+       change to vy drifts every node off the ground it was placed on, by up
+       to 79px at the foot;
+     · and the nodes themselves may not move, which is the lesson #194 paid
+       for: placement here is decided by roads, plates, spacing AND the
+       painting under it, and four authored positions are not free to slide.
+
+   ⚑ SO THE ONE THING WITH SLACK IS THE CAPTION, and it has 96px of painting
+   directly above it to rise into.
+
+   ⛔ AND THE FIRST CUT OF THIS ROSE TOO FAR. It hung the plate off the art's
+   TOP edge instead of its bottom - a clean 122 design px the other way - and
+   the map's own gate caught it at once: `spacingViolations` went 0 -> 2 and
+   `labelViolations` 0 -> 1 against a `git show HEAD:` baseline driven to the
+   same screen (f3 against the Snare, the Steading against p1, and the road
+   out of e1 pushed onto the Black Fen's plate). Four plates moved into a row
+   that nobody had touched, which is this rule file's oldest finding arriving
+   again.
+
+   ⚑ SO THE CAPTION RISES BY ITS OWN OVERFLOW AND NOT ONE PIXEL MORE. `--lift`
+   is 16px on one node and 39 on the worst, written per node by drawNodes off
+   the same arithmetic as the check below, and it costs the bottom of that
+   node's painting rather than the bottom of the map. A name nobody can read
+   is worse than a painting with its feet in a caption.
+   ⚠ THE COVERED STRIP IS THE PAINTING'S OWN, never a neighbour's: the plate is
+   104px wide against a 96px sight and it carries its dark ground already. */
+.node.sighted.lowcap .nm{transform:translate(-50%,calc(42px - var(--lift,0px)))}
 .node.sighted .glyph img{--ring:var(--tc,#a08a5c);
   filter:drop-shadow(2px 0 0 var(--ring)) drop-shadow(-2px 0 0 var(--ring))
          drop-shadow(0 2px 0 var(--ring)) drop-shadow(0 -2px 0 var(--ring))
@@ -6757,50 +6831,50 @@ const WRONGSIZE={mult:.70,agi:-1,mor:-3};
 
 const GEAR={
   /* --- scrap you find on the road: this is what you actually start near --- */
-  rags   :{n:'Rags and rope',   slot:'armour',size:'any',   armour:6},
-  pot    :{n:'Cook-pot and straps',slot:'armour',size:'any',armour:12,
+  rags   :{rarity:'common',n:'Rags and rope',   slot:'armour',size:'any',   armour:6},
+  pot    :{rarity:'common',n:'Cook-pot and straps',slot:'armour',size:'any',armour:12,
            d:'A stew-pot, worn as a helmet, with a jerkin under it.'},
-  planks :{n:'Door-plank harness',slot:'armour',size:'human',armour:20,agi:-1,
+  planks :{rarity:'common',n:'Door-plank harness',slot:'armour',size:'human',armour:20,agi:-1,
            d:'Somebody’s front door, in three pieces, on a man.'},
-  scrap  :{n:'Scrap harness',   slot:'armour',size:'ratkin',armour:18},
-  hides  :{n:'Stitched hides',  slot:'armour',size:'ogre',  armour:26},
+  scrap  :{rarity:'common',n:'Scrap harness',   slot:'armour',size:'ratkin',armour:18},
+  hides  :{rarity:'common',n:'Stitched hides',  slot:'armour',size:'ogre',  armour:26},
   /* --- proper kit --- */
-  jack   :{n:'Padded jack',     slot:'armour',size:'human', armour:34},
-  mail   :{n:'Mail hauberk',    slot:'armour',size:'human', armour:66,agi:-1},
-  plate  :{n:'Foundry plate',   slot:'armour',size:'human', armour:96,agi:-2},
-  shroud :{n:'Rat-silk shroud', slot:'armour',size:'ratkin',armour:30,agi:+1},
-  lashed :{n:'Lashed plates',   slot:'armour',size:'ogre',  armour:74},
-  ogrescale:{n:'Ogre scale',    slot:'armour',size:'ogre',  armour:104,agi:-1},
+  jack   :{rarity:'common',n:'Padded jack',     slot:'armour',size:'human', armour:34},
+  mail   :{rarity:'rare',n:'Mail hauberk',    slot:'armour',size:'human', armour:66,agi:-1},
+  plate  :{rarity:'epic',n:'Foundry plate',   slot:'armour',size:'human', armour:96,agi:-2},
+  shroud :{rarity:'rare',n:'Rat-silk shroud', slot:'armour',size:'ratkin',armour:30,agi:+1},
+  lashed :{rarity:'rare',n:'Lashed plates',   slot:'armour',size:'ogre',  armour:74},
+  ogrescale:{rarity:'epic',n:'Ogre scale',    slot:'armour',size:'ogre',  armour:104,agi:-1},
 
   /* --- the ridiculous end of the rack. It all works. That is the joke. --- */
-  wardrobe:{n:'A wardrobe',     slot:'armour',size:'ogre',  armour:72,agi:-3,
+  wardrobe:{rarity:'rare',n:'A wardrobe',     slot:'armour',size:'ogre',  armour:72,agi:-3,
             d:'A closet. Doors removed, arm-holes cut. He has to be helped into it.'},
-  bucket :{n:'Bucket, worn',    slot:'armour',size:'any',   armour:9,
+  bucket :{rarity:'common',n:'Bucket, worn',    slot:'armour',size:'any',   armour:9,
            d:'Just the bucket. There is no rest of the armour.'},
-  broom  :{n:'A broom',         slot:'main',dmg:[7,13],am:.30,ft:.35,reach:2,hands:2,
+  broom  :{rarity:'common',n:'A broom',         slot:'main',dmg:[7,13],am:.30,ft:.35,reach:2,hands:2,
            d:'Reach two, and utterly humiliating for everyone involved.'},
-  panlid :{n:'Pan-lid',         slot:'off',dodge:+4,d:'It rings when hit. Constantly.'},
-  deadboots:{n:'The Toll-Man’s Boots',slot:'trinket',g:'⚯',agi:+3,mor:-6,
+  panlid :{rarity:'common',n:'Pan-lid',         slot:'off',dodge:+4,d:'It rings when hit. Constantly.'},
+  deadboots:{rarity:'rare',unique:true,n:'The Toll-Man’s Boots',slot:'trinket',g:'⚯',agi:+3,mor:-6,
            d:'Good boots. Warm, dry, barely worn, and they were on a hanged man this morning. '+
              'Whoever has them walks better and sleeps worse.'},
-  discoball:{n:'The Mirrored Sphere',slot:'trinket',g:'☼',agi:+2,mor:+3,
+  discoball:{rarity:'rare',unique:true,n:'The Mirrored Sphere',slot:'trinket',g:'☼',agi:+2,mor:+3,
            d:'A hanging ball of a thousand mirror-shards, found in a ruin nobody can explain. '+
              'It throws light in every direction and answers no questions.'},
   /* A gun, two generations early and on the wrong island. Nobody here has
      the word for it, nobody has the powder, and it is heavy at one end —
      so it is a club, and it is a very good club. The joke only works
      because the numbers are real. */
-  woodstick:{n:'The Wood-Stick With Two Holes',slot:'main',dmg:[17,25],am:1.15,ft:.20,reach:1,
+  woodstick:{rarity:'epic',unique:true,n:'The Wood-Stick With Two Holes',slot:'main',dmg:[17,25],am:1.15,ft:.20,reach:1,
            d:'Heavier at one end than a stick has any business being. Two holes bored in it, '+
              'one at each end, and the far one is black inside and smells of a fire that '+
              'happened somewhere else. Marrow has tried drinking out of it. It has been swung '+
              'at people eleven times and has worked eleven times.'},
   /* weapon dice down ~10% with the hitpoint shave — same pace, less swing */
-  cudgel :{n:'Fence-post cudgel',slot:'main',dmg:[11,17],am:.80,ft:.22,reach:1},
-  sword  :{n:'Arming sword',    slot:'main',dmg:[16,24],am:.90,ft:.30,reach:1},
-  spear  :{n:'Boar spear',      slot:'main',dmg:[15,22],am:.85,ft:.28,reach:2,hands:2},
-  club   :{n:'Warclub',         slot:'main',dmg:[23,36],am:1.30,ft:.20,reach:1,hands:2},
-  knife  :{n:'Gut-knife',       slot:'main',dmg:[11,16],am:.40,ft:.45,reach:1},
+  cudgel :{rarity:'common',n:'Fence-post cudgel',slot:'main',dmg:[11,17],am:.80,ft:.22,reach:1},
+  sword  :{rarity:'rare',n:'Arming sword',    slot:'main',dmg:[16,24],am:.90,ft:.30,reach:1},
+  spear  :{rarity:'common',n:'Boar spear',      slot:'main',dmg:[15,22],am:.85,ft:.28,reach:2,hands:2},
+  club   :{rarity:'rare',n:'Warclub',         slot:'main',dmg:[23,36],am:1.30,ft:.20,reach:1,hands:2},
+  knife  :{rarity:'common',n:'Gut-knife',       slot:'main',dmg:[11,16],am:.40,ft:.45,reach:1},
   /* ═══ #161 · THE WORKING STAVE - A CASTER'S REACH IS NOW GEAR ════════════
      (User, 2026-08-16: "the mage has an artifact in hand, a magic stick. And
      a jab with it is clearly weaker than with a sword. It gives +2 range for
@@ -6821,7 +6895,7 @@ const GEAR={
      A trinket or an off-hand piece that ever carries it then works the day it
      is written. This file has already shipped the other version of that: #141
      found `dodge` wired on the off hand and silently ignored on a trinket. */
-  rod    :{n:'Working stave',   slot:'main',dmg:[6,10],am:.20,ft:.35,reach:1,spellRange:2,
+  rod    :{rarity:'rare',n:'Working stave',   slot:'main',dmg:[6,10],am:.20,ft:.35,reach:1,spellRange:2,
            d:'A stripped ash pole, chalked its whole length and burnt black at the tip. '+
              'Hitting a man with it works about as well as you would expect. That is not '+
              'what it is for. A working thrown off the end of it goes two hexes further '+
@@ -6831,15 +6905,15 @@ const GEAR={
      the ARCHER'S: more arrows, or a blade for when something is already inside
      your range. Making the bow two-handed would have deleted that choice
      instead of creating it. The heavy melee weapons are where `hands:2` bites. */
-  bow    :{n:'Hunting bow',     slot:'main',dmg:[14,21],am:.55,ft:.42,range:5},
-  shortsw:{n:'Short sword',     slot:'main',dmg:[13,19],am:.70,ft:.30,reach:1},
-  maul   :{n:'Two-hand maul',   slot:'main',dmg:[27,41],am:1.45,ft:.18,reach:1,hands:2},
+  bow    :{rarity:'rare',n:'Hunting bow',     slot:'main',dmg:[14,21],am:.55,ft:.42,range:5},
+  shortsw:{rarity:'common',n:'Short sword',     slot:'main',dmg:[13,19],am:.70,ft:.30,reach:1},
+  maul   :{rarity:'epic',n:'Two-hand maul',   slot:'main',dmg:[27,41],am:1.45,ft:.18,reach:1,hands:2},
   /* THE HALBERD — the spearwoman's other answer. Same two hands and the same
      reach as the boar spear, a little less damage, and its signature SHOVES
      instead of bracing. See the `push`/`pull` block in strike(). */
-  halberd:{n:'Halberd',         slot:'main',dmg:[14,20],am:.95,ft:.26,reach:2,hands:2,
+  halberd:{rarity:'common',n:'Halberd',         slot:'main',dmg:[14,20],am:.95,ft:.26,reach:2,hands:2,
            d:'A spear that lost an argument with an axe. The hook on the back is the point of it.'},
-  weeper :{n:'The Weeping Hammer',slot:'main',dmg:[27,40],am:1.55,ft:.22,reach:1,mor:+2,hands:2,
+  weeper :{rarity:'epic',n:'The Weeping Hammer',slot:'main',dmg:[27,40],am:1.55,ft:.22,reach:1,mor:+2,hands:2,
            d:'Forged at the Old Camp. The head sweats in cold weather. Nobody asks why.'},
 
   /* ═══ THE SECOND HAND ═══════════════════════════════════════════════════
@@ -6848,63 +6922,63 @@ const GEAR={
      a real question: the bow is two-handed, so a quiver, a knife or a shield
      are all things they CANNOT have while holding it. Each off-hand piece
      therefore has to be worth changing weapons for. */
-  lid    :{n:'Barrel-lid shield',slot:'off',dodge:+5,d:'It is a barrel lid. It works.'},
-  shield :{n:'Round shield',    slot:'off',dodge:+9},
-  buckler:{n:'Buckler',         slot:'off',dodge:+4,hit:+4},
+  lid    :{rarity:'common',n:'Barrel-lid shield',slot:'off',dodge:+5,d:'It is a barrel lid. It works.'},
+  shield :{rarity:'rare',n:'Round shield',    slot:'off',dodge:+9},
+  buckler:{rarity:'common',n:'Buckler',         slot:'off',dodge:+4,hit:+4},
   /* the quiver is now the ARCHER'S DILEMMA: it needs a hand, and the bow uses
      both — so wearing it means fighting with a one-handed weapon and shorter
      range, or leaving the arrows behind */
-  quiver :{n:'Full quiver',     slot:'off',rangedDmg:+5,
+  quiver :{rarity:'common',n:'Full quiver',     slot:'off',rangedDmg:+5,
            d:'Twenty more, fletched properly. Needs a hand to hang from, which a bow does not spare.'},
   /* the emergency answer: a blade you can get to when something is already
      inside your reach and the bow is useless */
-  offhand:{n:'Off-hand dirk',   slot:'off',hit:+6,emergency:true,
+  offhand:{rarity:'common',n:'Off-hand dirk',   slot:'off',hit:+6,emergency:true,
            d:'Short, ugly, and drawn with the wrong hand. When something is already on top of '+
              'you it is the only thing you own that still works.'},
-  focus  :{n:'Chalk-and-cord rod',slot:'off',windsCut:4,d:'Something to hold onto while you do it. Spells cost 4 less of your own nerve.'},
+  focus  :{rarity:'common',n:'Chalk-and-cord rod',slot:'off',windsCut:4,d:'Something to hold onto while you do it. Spells cost 4 less of your own nerve.'},
 
   /* Trinkets carry a small flat bonus, some hitpoints, and often a clause
      that only fires for the right race or the right class. */
-  bone   :{n:'Saint’s Fingerbone',slot:'trinket',g:'✦',mor:+3,hp:+4,
+  bone   :{rarity:'common',n:'Saint’s Fingerbone',slot:'trinket',g:'✦',mor:+3,hp:+4,
            d:'Faintly warm. Always.'},
-  stem   :{n:'Bloom-Stem',        slot:'trinket',g:'❋',int:+2,mor:-1,
+  stem   :{rarity:'rare',n:'Bloom-Stem',        slot:'trinket',g:'❋',int:+2,mor:-1,
            forCls:'mage',bonus:{int:2},bonusD:'+2 INT more on a battle-mage',
            d:'Hums at a pitch you feel in your teeth.'},
-  apple  :{n:'Glass Apple',       slot:'trinket',g:'◆',int:+2,hp:+3,
+  apple  :{rarity:'common',n:'Glass Apple',       slot:'trinket',g:'◆',int:+2,hp:+3,
            d:'A fruit that died standing.'},
   /* company relics: no slot, no wearer — they work from the baggage */
-  brass  :{n:'Brass Token',       slot:'trinket',g:'◉',company:true,coCrowns:.10,
+  brass  :{rarity:'rare',unique:true,n:'Brass Token',       slot:'trinket',g:'◉',company:true,coCrowns:.10,
            d:'Ashmoor knows this mark. So do its gate-guards, and so do their prices.'},
-  banner :{n:'The Company Banner',slot:'trinket',g:'⚑',company:true,coMor:6,
+  banner :{rarity:'rare',unique:true,n:'The Company Banner',slot:'trinket',g:'⚑',company:true,coMor:6,
            d:'Stitched from three different dead companies. Everyone walks a little straighter.'},
-  drum   :{n:'Marching Drum',     slot:'trinket',g:'◍',company:true,coFood:1,
+  drum   :{rarity:'rare',n:'Marching Drum',     slot:'trinket',g:'◍',company:true,coFood:1,
            d:'Keeps the pace. The column arrives in better heart than it left — +2 mood every leg.'},
-  tooth  :{n:'Fen-Mother’s Tooth',slot:'trinket',g:'❥',str:+2,hp:+6,
+  tooth  :{rarity:'rare',unique:true,n:'Fen-Mother’s Tooth',slot:'trinket',g:'❥',str:+2,hp:+6,
            forRace:'ogre',bonus:{str:2,hp:8},bonusD:'+2 STR and +8 HP more on an ogre',
            d:'Longer than your hand. Still warm at the root.'},
-  charm  :{n:'Pedlar’s Charm',    slot:'trinket',g:'✧',agi:+2,
+  charm  :{rarity:'rare',n:'Pedlar’s Charm',    slot:'trinket',g:'✧',agi:+2,
            forRace:'human',bonus:{mor:2},bonusD:'+2 MOR more on a human',
            d:'He swore it was lucky. He would.'},
-  ratking:{n:'Rat-King’s Knuckle',slot:'trinket',g:'✜',agi:+1,hp:+4,
+  ratking:{rarity:'rare',unique:true,n:'Rat-King’s Knuckle',slot:'trinket',g:'✜',agi:+1,hp:+4,
            forRace:'ratkin',bonus:{agi:3,hp:6},bonusD:'+3 AGI and +6 HP more on a ratkin',
            d:'Small, yellow, and far too clean.'},
-  fiddle :{n:'Rosined String',    slot:'trinket',g:'♪',mor:+4,
+  fiddle :{rarity:'rare',n:'Rosined String',    slot:'trinket',g:'♪',mor:+4,
            d:'From a fiddler who ate your salt and left this behind.'},
-  quillpen:{n:'Foundry Ledger-Pin',slot:'trinket',g:'✎',int:+3,
+  quillpen:{rarity:'rare',unique:true,n:'Foundry Ledger-Pin',slot:'trinket',g:'✎',int:+3,
            forCls:'captain',bonus:{mor:3},bonusD:'+3 MOR more on the Captain',
            d:'A pin for holding accounts together. Wynn’s.'},
-  cubtooth:{n:'Cub’s Milk-Tooth', slot:'trinket',g:'☙',str:+1,agi:+1,mor:+1,hp:+4,
+  cubtooth:{rarity:'rare',unique:true,n:'Cub’s Milk-Tooth', slot:'trinket',g:'☙',str:+1,agi:+1,mor:+1,hp:+4,
            d:'Small enough to lose. Nobody has lost it.'},
   /* THE ONLY THING THAT DID NOT MELT. It is a hook for a later act and it is
      meant to stay a hook — nothing anywhere in the slice explains it, and
      nothing should. Two-sided like the boots: it pays, and somebody carries
      the cost of it every night. */
-  coldthing:{n:'The Cold Thing',   slot:'trinket',g:'✛',hit:+7,mor:-4,
+  coldthing:{rarity:'epic',unique:true,n:'The Cold Thing',   slot:'trinket',g:'✛',hit:+7,mor:-4,
            d:'A hand-length of black metal that was inside the armour and did not go with the '+
              'rest of it. It is cold, and it is exactly as cold in the sun as it is at night, '+
              'which is the part nobody likes. Whoever carries it hits what they are looking at, '+
              'and sleeps badly, and will not say what about.'},
-  glasses:{n:'The Ground-Glass Eyes',slot:'trinket',g:'◎',hit:+9,mor:-2,
+  glasses:{rarity:'epic',unique:true,n:'The Ground-Glass Eyes',slot:'trinket',g:'◎',hit:+9,mor:-2,
            forCls:'archer',bonus:{agi:2},bonusD:'+2 AGI more on an archer',
            d:'Two discs of ground glass in a bent wire frame. Whoever wears them can suddenly '+
              'count the rivets on a man at forty paces and cannot find their own feet. The '+
@@ -6931,7 +7005,7 @@ const GEAR={
 
      ⚠ It costs nothing at all, which every other strange trinket here does
      not, and nothing in the slice ever explains it. That is the hook. */
-  oddcoin:{n:'An Unusual Coin',   slot:'trinket',g:'⊚',hit:+7,dodge:+7,hush:true,
+  oddcoin:{rarity:'epic',unique:true,n:'An Unusual Coin',   slot:'trinket',g:'⊚',hit:+7,dodge:+7,hush:true,
            d:'It feels good to keep in the hand. Nobody can say why.'},
   /* ═══ #160 · WHAT A CLEAN ROAD IS WORTH, AND IT ARRIVES ON THE LAST DAY ════
      The only trinket in the game with no clause and no cost, and that is the
@@ -6945,7 +7019,28 @@ const GEAR={
      shirt, a gem and two carts. One trinket on one body on the last leg does
      not close that gap and is not meant to. What it does is stop the clean
      road paying literally nothing, which is the other way the pillar fails. */
-  roll   :{n:'The Roll of Names', slot:'trinket',g:'❧',mor:+4,hp:+8,hit:+4,
+  /* ═══ #197 · A TREASURE MAP ════════════════════════════════════════════
+     (User, 2026-08-19: *"Add item 'A tressure map' - that you get while
+     beeten tha bandits or after a battle when you have joined them"*.)
+
+     ⚑ IT IS A PLACE, NOT A STAT, AND THE MACHINERY FOR THAT ALREADY EXISTED.
+     `plantStash` has put a marked cache on the road since the fire card that
+     asks somebody what they did before; all this row needed was a second way
+     to reach it. `takeLoot` plants when the key lands, so the item IS the
+     place: you win the fight, a node ahead becomes The Cache, and what is
+     buried in it is drawn off the same rarity pools as everything else.
+
+     ⚠ `company:true`, SO IT NEVER TAKES A TRINKET SLOT OFF A BODY. It is not
+     a thing anybody wears; it is a thing the wagon has. It carries no `co*`
+     field, so it adds nothing to `relicSum` and buys no stat: what it bought
+     is already on the map by the time it reaches the stash.
+     ⚠ `unique:true` KEEPS IT OUT OF ITS OWN POOL. A treasure map dug out of
+     a treasure chest is a joke the second time and a loop the third. */
+  tmap   :{rarity:'rare',unique:true,n:'A Treasure Map',slot:'trinket',g:'✥',company:true,
+           d:'Charcoal on the back of a tally-sheet, in a hand that was in a hurry. Two roads, '+
+             'a bend in a river and a cross. Somebody buried what they could not carry and '+
+             'then did not come back for it.'},
+  roll   :{rarity:'epic',unique:true,n:'The Roll of Names', slot:'trinket',g:'❧',mor:+4,hp:+8,hit:+4,
            d:'A strip of linen folded eight times, written down the inside in eight different '+
              'hands. Some of the names are people you remember. Most of them are not, which '+
              'means the road has been talking about you for longer than you knew.'}
@@ -7560,7 +7655,11 @@ const CLASSES={
      No signature, no perks; he swings what he holds (a weapon defines the
      attack - concept §8), and picks a real trade on the sheet at his first
      level. `tradeOwed()` is the one test for that state. */
-  none   :{n:'NO TRADE YET',sig:'',perks:{}}
+  /* #197 - the NAME is CLASS now (user: *"not 'trade' but class"*). The KEY
+     is still `none` and `tradeOwed` still tests it: this is a vocabulary fix
+     on what the player reads, and renaming an identifier in eight places
+     would have put churn in a shared file for no visible gain. */
+  none   :{n:'NO CLASS YET',sig:'',perks:{}}
 };
 const PERKTIERS=8;
 /* two classes cast; everything else in the game that asked "is this a mage?"
@@ -7706,7 +7805,7 @@ function takeTrade(p,cls){
   p.cls=cls;
   p.kind=p.race==='ratkin'?'ratkin':p.race==='ogre'?'ogre':(KIND_BY_CLS[cls]||'human');
   (START_GEAR[cls]||[]).forEach(k=>{if(k&&GEAR[k])G.stash.push(k);});
-  remember(p,'Took up the '+CLASSES[cls].n.toLowerCase()+"'s trade at "+placeName()+'.');
+  remember(p,'Took up the '+CLASSES[cls].n.toLowerCase()+' class at '+placeName()+'.');
 }
 /* the one door every grant passes through. Returns what was actually
    written (0 at the cap), and raises the level while the xp clears the
@@ -8124,17 +8223,29 @@ function placeDlg(ax,ay,again){
   const CAP=MH-PAD*2;
   dlg.style.maxHeight=CAP+'px';
   const h=Math.min(dlg.offsetHeight||dlg.scrollHeight,CAP);
-  /* #104: callers hand NODE coords, which are design space - vy() here so
-     every card door maps once. An undefined ay centres in VIEW space.
-     ⚑ #156 - AND THE CAMERA IS PART OF THAT MAPPING NOW. The card is chrome
-     and does not scale, but it is ANCHORED to a place on the map, so where
-     that place is drawn is a question the camera answers. `wcamPt` is the one
-     door; without it a card would open beside where its node used to be at
-     ROAD and the whole point of anchoring it would be gone. Undefined coords
-     still mean "centre on the view" and never touch the camera. */
-  const p=(ax===undefined&&ay===undefined)?null:wcamPt(ax===undefined?0:ax,ay===undefined?0:ay);
-  const top=clamp((ay===undefined?MH/2:p.y)-h/2,PAD,Math.max(PAD,MH-h-PAD));
-  const left=clamp((ax===undefined?MW/2:p.x)-DLGW/2,PAD,Math.max(PAD,MW-DLGW-PAD));
+  /* ═══ #197 · EVERY CARD OPENS IN THE MIDDLE ════════════════════════════
+     (User, 2026-08-19: *"A lot of pictures are shown in one of the sides of
+     the screen. Show everething in the middle."*)
+
+     WHAT IT USED TO DO, kept because the argument was good and it is the
+     thing being overruled: #104 mapped a card to its NODE, and #156 put the
+     camera in that mapping so a card opened beside the place it was about
+     rather than beside where that place used to be drawn. The intent was that
+     the card belongs to a spot on the map.
+
+     ⛑ AND THE MAP GREW A PAINTED GROUND AND 96px SIGHTS UNDER IT. On a node
+     near an edge the anchor pinned a 620px card against that edge and clamped
+     it there, so THE DEBT opened hard left and SOMETHING IN ARMOUR opened hard
+     right, and the painting inside each one - which since stage 4 is the first
+     thing on the card - landed wherever the node happened to be. An anchor
+     that is clamped for half the map is not an anchor, it is a coin toss.
+
+     ⚠ THE CALLERS ARE UNTOUCHED AND THAT IS DELIBERATE. Every one of them
+     still hands its node coords, `DLGAX`/`DLGAY` still record them and
+     `replaceDlg` still works; only the arithmetic below stops reading them.
+     If the anchor is ever wanted back, it is this block and nothing else. */
+  const top=clamp(MH/2-h/2,PAD,Math.max(PAD,MH-h-PAD));
+  const left=clamp(MW/2-DLGW/2,PAD,Math.max(PAD,MW-DLGW-PAD));
   dlg.style.top=Math.round(top)+'px';
   dlg.style.left=Math.round(left)+'px';
   /* EVERY caller fills #wChoices AFTER revealing the card, so the first
@@ -8616,6 +8727,49 @@ function sizeJoke(p){
   return 'It fits nowhere and pinches everywhere. Straps added by somebody who was guessing.';
 }
 function injure(p,inj){p.injuries=p.injuries||[];p.injuries.push(inj);}
+/* ═══ #197 · ONE INJURY, ONE APPLIER, AND THE DOOR SAYS WHICH KIND ════════
+   (User, 2026-08-19: *"Near all events write: permanent or temporary injury
+   (based on injury). And update consiquences on the next screen (and made
+   them shorter)"*.)
+
+   ⛔ THE FIRST THING THE ASK TURNED UP IS THAT NOTHING WAS PERMANENT. The
+   EVENTS picker branched on `hurt.lasting` and NOT ONE CARD IN THE BUILD SET
+   IT, so all seven `hurt` rows were hitpoints. Five of them are AUTHORED as
+   permanent and say so in their own `d`: *"−1 STR"*, *"−1 AGI"*, *"−1 INT"*.
+   That text was never on screen - the temporary branch prints only `hurt.n` -
+   so the promise was invisible rather than broken, which is why nobody
+   reading the cards could have found it. `derived, never authored` cannot fix
+   a field with one value, so the five were wired to what they already claimed
+   (his call, asked and answered) and the label now has two things to say.
+
+   ⛔ AND THE CAMPS PICKER HAD ITS OWN COPY THAT NEVER READ `lasting` AT ALL.
+   Two appliers, one of which could not express the thing the new label
+   promises: a camp card marked permanent would have shown PERMANENT INJURY on
+   the button and charged hitpoints. That is the second-source-of-truth shape
+   this file keeps deleting (`choiceNote` in #150, the receipt in #176), so
+   there is one function now and both pickers call it.
+
+   ⚠ THE TWO RANGES WERE DIFFERENT AND ARE NOW ONE. Events rolled 18-40% of
+   max hp and camps rolled 15-35%; nothing chose that, it is drift between two
+   copies. The events range wins because it serves 6 of the 7 rows. The one
+   camp hurt in the build (Split knuckles, at THE DEBT) therefore bites very
+   slightly harder than it did.
+
+   ⚠ IT PUSHES A COPY, NOT THE TABLE'S OWN OBJECT. `injure` used to store the
+   literal `c.hurt` off EVENTS, so a party member and the card's data were the
+   same object and anything writing to one would have edited the deck. */
+function applyHurt(h){
+  if(!h)return '';
+  const v=pickOne(G.party);
+  if(h.lasting){
+    injure(v,Object.assign({},h));
+    return '\n\n'+who(v)+' will carry this one: '+h.n+'. '+(h.d||'');
+  }
+  const u=unitFrom(v);
+  const dmg=h.hp||Math.round(u.hpMax*(0.18+Math.random()*0.22));
+  v.hpLoss=Math.min((v.hpLoss||0)+dmg,u.hpMax-1);
+  return '\n\n'+who(v)+' takes it: '+h.n+', '+dmg+' hitpoints.';
+}
 
 /* ============================================================
    3.  Art — painted assets, with procedural fallbacks
@@ -11246,7 +11400,7 @@ const TUTSTEPS={
       'heads join the ladder. When this room settles, they will still be '+
       'walking with you.',
     a:()=>$('bTop')},
-  shove:{h:'HER TRADE',
+  shove:{h:'HER CLASS',
     t:'A spear fights at reach, and SPEAR WALL braces it: anything stepping '+
       'into her front takes most of a spear on the way in. A class is a set '+
       'of tricks like this one.',
@@ -18904,9 +19058,13 @@ const FIELDS={
      ground: the Snare Clan set the trap. Takes the fen's whole pool of five,
      which is right for the fight the act has been walking toward. */
   /* ═══ #147 - THE PALETTE, AND DELIBERATELY NOT THE CHANNEL ═══════════════
-     The second door on THE RATKIN SNARE is *"Through the marsh. Slower, but
+     ⚠ #197 DELETED THE DOOR THIS PARAGRAPH STARTS FROM, AND THE ROW STAYS.
+     The second door on THE RATKIN SNARE WAS *"Through the marsh. Slower, but
      quiet"*, and the board it led to was the same 13%-water fen as every
-     other fight in the act. `swamp` is the other ground built and never
+     other fight in the act. The door is gone (see the card); the ground it
+     named is a fact about the place rather than about the door, the fight
+     fought on it is the same fight, and the measurement three paragraphs
+     down was taken against the board and not against the choice. `swamp` is the other ground built and never
      shown in a campaign (#63), and it is the one the finale's own card
      describes.
 
@@ -24041,7 +24199,12 @@ const LOOT={
     {t:'Take the captain’s sword and his mail.',c:'a sword and a hauberk',gear2:['sword','mail']},
     {t:'Their purses. Lighter than they should be.',c:'+45 crowns',fx:{crowns:45}},
     {t:'The poacher’s bow and every arrow on the field.',c:'a bow and a full quiver',gear2:['bow','quiver']},
-    {t:'Their kit, for scrap.',c:'+6 salvage',fx:{salvage:6}}],
+    {t:'Their kit, for scrap.',c:'+6 salvage',fx:{salvage:6}},
+    /* #197 - his row: *"a treasure map... while beeten tha bandits"*. Charcoal
+       on a tally-sheet in a dead man's pack, and it puts a cache on the road
+       ahead (see takeLoot). */
+    {t:'A folded sheet in the captain\'s pack, gone soft at the creases.',
+     c:'a treasure map · a place, marked on the road ahead',gear:'tmap'}],
   /* ⚠ NO DECISION ROW, ON PURPOSE (user, 2026-08-02: "To much choises" and
      "after dogs fight"). It had two - burn the lot and stand upwind, go
      through what they had been eating - and neither is a decision the pillar
@@ -24095,7 +24258,13 @@ const LOOT={
     {t:'Their pay-chest. It was meant for a season of wages.',c:'+140 crowns',fx:{crowns:140}},
     {t:'The serjeant\'s plate, off the serjeant.',c:'a hauberk',gear:'mail'},
     {t:'What the clan pushes across to you afterwards, without a word.',c:'+1 gem +6 provisions',
-     fx:{gems:1,food:6}}],
+     fx:{gems:1,food:6}},
+    /* #197 - the other half of his row: *"or after a battle when you have
+       joined them"*. This IS that fight - the Snare taken from inside the
+       clan's own line - and what they push across is a place rather than a
+       payment, which is the more clannish gift of the two. */
+    {t:'An old sheet out of their standard-bearer\'s belt, pushed across folded.',
+     c:'a treasure map · a place, marked on the road ahead',gear:'tmap'}],
   steading:[
     {t:'Their harness. It is enormous and it is very good.',c:'ogre scale',gear:'ogrescale'},
     {t:'The elder’s club, and the stone maul if you can lift it.',c:'a warclub and a maul',
@@ -24157,6 +24326,11 @@ function takeLoot(l){
   if(f.days)passDays(f.days);
   if(l.gear)G.stash.push(l.gear);
   if(l.gear2)l.gear2.forEach(k=>G.stash.push(k));
+  /* #197 - a treasure map is a place, so taking one marks the place. Silent
+     on purpose: `plantStash` is idempotent and returns where it went, but the
+     aftermath is not the screen that names a node - the map is, and it names
+     it as The Cache the moment this screen closes. */
+  if(lootPlants(l))plantStash('map');
 }
 /* what you do with the cub, once its mother is on the ground */
 function cubChoice(){
@@ -24671,7 +24845,7 @@ function crewCards(scarred,xp){
         '</b><b class="abt">🩸 '+taken+'</b>'+
         (x&&x.got?'<b class="abx" title="experience, this fight">✦ +'+x.got+'</b>':'')+'</div>'+
       (up?'<div class="abline abuplne">'+
-        (tradeOwed(p)?'pick a trade on the sheet':'spend it on the sheet')+'</div>':'')+
+        (tradeOwed(p)?'pick a class on the sheet':'spend it on the sheet')+'</div>':'')+
       /* the blood strip goes LAST so it can run to the bottom edge of the card */
       (sc?'<div class="abline abscarline">carried off · '+sc.s.n.toLowerCase()+'</div>':'')+
       '</div>';}).join('')+'</div>';
@@ -24742,9 +24916,19 @@ function consequences(scarred){
      the two fights that still asked one stopped asking (see the LOOT
      tables), and `lootIsChoice` stays as the guard that keeps any future
      decision row from being drawn as an automatic tax. */
-  const hauls=table.filter(l=>!lootIsChoice(l));
+  /* #197 - and a row that puts a place on the map is only dealt where there
+     is still somewhere to put one. The `hauls.length?hauls:table` fallback
+     below already covers a table filtered to nothing; neither of the two
+     tables carrying a map can reach that, since both have four other rows. */
+  const hauls=table.filter(l=>!lootIsChoice(l)&&(!lootPlants(l)||canPlant()));
   const haul=pickOne(hauls.length?hauls:table);
   takeLoot(haul);
+  /* #197 - and a piece on top of the haul, more often a good one. Rolled
+     AFTER takeLoot so a table row that hands over a treasure map has already
+     put its cache on the road: the two are independent and neither reads the
+     other's result. */
+  const found=rollFind('battle');
+  if(found)G.stash.push(found);
   /* ═══ #174 - THE RANDOM PROMOTION IS GONE ═══════════════════════════════
      This line used to read `const hero=pickOne(G.party); hero.level++;` and
      then alternate a perk point and a stat point onto that one lucky body -
@@ -24848,6 +25032,15 @@ function consequences(scarred){
      card's own arrangement and the reason the flavour stopped looking like
      part of the payout. */
   const note='<div class="amNote">'+haul.t+'</div>';
+  /* #197 - the extra piece gets its own strip inside the same tray, so the
+     haul's own row is untouched and the find reads as a second thing rather
+     than as part of what the table paid. The tier is a WORD in its colour;
+     the frame round the slot is the later pass. */
+  const foundHtml=found?'<div class="abloot">'+
+      (itemImg(found,38)?'<div class="abslot has">'+itemImg(found,38)+'</div>'
+                        :'<div class="abslot">ART<br>SLOT</div>')+
+      '<div><div class="abwhat">'+GEAR[found].n+'</div>'+
+      '<div class="abgot">'+rarityTag(found)+' · nobody was using it</div></div></div>':'';
   const lootHtml='<div class="amTray">'+(
     (haul.gear||haul.gear2)
       /* #192 - the reserved square finally holds the piece's own picture; a
@@ -24869,7 +25062,7 @@ function consequences(scarred){
          `fx` and no gear at all would otherwise render nothing where a receipt
          belongs. */
             :'<div class="abres">'+haul.c+' <span>· '+haul.t+'</span></div>'
-  )+'</div>';
+  )+foundHtml+'</div>';                                          /* #197 */
   /* ═══ #187 - THE ONE META LINE ════════════════════════════════════════════
      The approved card reads it as VICTORY · rounds · what it cost them · what
      it cost you, in that order, and every figure on it was already on the
@@ -25221,7 +25414,7 @@ const CAMPS=[
       need:{food:3},fx:{food:-3,morale:4},
       after:'Hungry and healthy. A vocal minority considers this cowardice and says so at length.'},
      {t:'Boil it long enough and it is fine.',c:'',
-      fx:{morale:-2},hurt:{n:'Bad gut',d:'−1 STR. Three days of it, and it has left a mark.',str:-1},
+      fx:{morale:-2},hurt:{n:'Bad gut',d:'−1 STR. It has left a mark.',str:-1,lasting:true},
       after:'It is fine for almost everyone. It is very much not fine for the one it is not fine for.'},
      /* only exists if there IS an ogre — playtest #2 caught this offering
         itself to an all-human company and then crediting Bruht by name */
@@ -25255,11 +25448,31 @@ const CAMPS=[
       after:'{ANY} does the burying, and is thorough about it, and puts a stone on top, and stands there a while.'},
      {t:'Sell it at the next stop, whatever it is.',ico:['trade'],c:'',fx:{crowns:55,morale:-5},
       after:'It goes for more than it should, from a man who did not want to look at it either.'}]},
-  /* Rewritten: every ending used to be nearly free, and one of them was a
-     straight +6 for making a ruling. A quarrel between two people at a fire
-     everybody else is sitting at does not have a clean exit — whatever you
-     decide, the whole company hears you decide it, and takes something away
-     from that. The choice is which cost you would rather pay. */
+  /* ═══ #197 · THE QUARREL STOPS CHARGING FOR ITSELF ═══════════════════
+     (User, 2026-08-19, arrow drawn at the second door's sub-line: *"Here - no
+     morale penalties"*.)
+
+     WHAT THIS CARD USED TO ARGUE, kept because the reversal is the interesting
+     part: *"a quarrel between two people at a fire everybody else is sitting
+     at does not have a clean exit - whatever you decide, the whole company
+     hears you decide it. The choice is which cost you would rather pay."*
+     Three doors, three morale figures, +6 / -7 / -8.
+
+     ⛑ AND THE COMPLAINT IS THAT THE CARD WAS BILLING TWICE FOR ONE EVENING.
+     The second door already takes a body out of the fight (`hurt`) and a tenth
+     of everybody's hitpoints (`hurtAll`); the third door's whole `after` is
+     four sentences about what the ruling costs you in trust. Those ARE the
+     costs. The morale figures beside them were the same news a second time, in
+     the one currency the player can read off a chip - which is the rule at the
+     top of `.claude/rules/event-cards.md` arriving on a card rather than on a
+     label.
+
+     ⚠ SO THE THIRD DOOR IS FREE NOW AND THAT IS ALLOWED, not an oversight:
+     style rule 7 is *"a free door only where others cost"*, and the other two
+     cost 35 crowns and a bleeding. It says `no cost` in the house phrasing the
+     pedlar and the collector already use, because a blank sub-line beside two
+     full ones reads as a door that forgot to load.
+     ⚠ The +6 STAYS. He struck the penalties; buying the peace still buys it. */
   {id:'debt',t:'THE DEBT',seed:57,
    body:(a,b)=>a+' owes '+b+' money. It stopped being funny a week ago.\n\nNeither will say how '+
      'much. Both will say who is right.\n\nThe rest of the company has stopped pretending to be '+
@@ -25271,7 +25484,7 @@ const CAMPS=[
         'it. It also settles, in everybody\'s mind, that the chest opens for whoever is loudest, '+
         'and you will find out what that was worth some other evening.'},
      {t:'Let them settle it themselves.',ico:['leave'],c:'',
-      fx:{morale:-7},
+      fx:{},
       hurt:{n:'Split knuckles',d:'Not from a battle, which is what makes it worse.'},
       hurtAll:{frac:.10,line:'Nobody sleeps well. Everybody is a little slower off the ground in '+
         'the morning, including the people who only watched.'},
@@ -25279,7 +25492,7 @@ const CAMPS=[
         'Two of yours hit each other in front of everybody, and you stood there, and that is now '+
         'a thing this company knows about itself.'},
      {t:'Rule that debts do not exist in this company.',
-      c:'',fx:{morale:-8},
+      c:'no cost',fx:{},
       after:'Everyone agrees at once, which should have been the warning.\n\nYou have just told '+
         'every person at that fire that anything they are owed can be erased by you saying so at '+
         'the right moment. The one who was owed does not argue. Nobody argues. That is the part '+
@@ -25413,23 +25626,15 @@ const CAMPS=[
       c:'',fx:{crowns:-20,morale:2},need:{crowns:20},
       after:'You pay for a knife you already owned, on behalf of somebody who did not steal it '+
         'because stealing has been abolished. It works. Nobody enjoys it working.'}]},
-  /* they fought in front of everybody → the grudge comes back with a body */
-  {id:'debt4',t:'THE NINE SECONDS',seed:60,needs:{id:'debt',opt:1},
-   body:(a,b)=>'It has been quiet between '+a+' and '+b+' since the fight, and quiet in the way '+
-     'a held breath is quiet.\n\nTonight one of them has put their bedroll on the far side of '+
-     'the fire, and the other has noticed, and the company is watching a second time.',
-   choices:[
-     {t:'Put them on the same watch until it is over.',c:'',
-      fx:{days:1,morale:10},
-      after:'Six hours of enforced company and a cold dawn. They come back not friends, exactly, '+
-        'but with the specific ease of two people who have run out of things to not say.'},
-     {t:'Split them. Different watches, different ends of the column.',c:'',
-      fx:{morale:-2},
-      after:'Neatly managed, and the company notices that too: this is a place where a problem '+
-        'gets arranged around rather than finished.'},
-     {t:'Tell them what it cost you to watch it the first time.',c:'',fx:{morale:14},
-      after:'You say it plainly and only once and then you go to sleep.\n\nIn the morning the '+
-        'bedroll has moved back. Nobody mentions it, then or ever.'}]},
+  /* ⛔ #197 - THE NINE SECONDS IS DELETED (user, 2026-08-19: *"delete event
+     complitly: AND THEN - THE NINE SECONDS"*). It was the sequel to THE DEBT's
+     SECOND door and it is the only one of the three sequels to go: `debt2`
+     (opt 0) and `debt3` (opt 2) still chain, so the chain machinery is intact
+     and this is a content deletion rather than a rule change.
+     ⚠ `needs:{id:'debt',opt:1}` IS NOW UNCLAIMED, which is legal - campPool
+     only ever ASKS whether a sequel exists. Letting them fight it out simply
+     ends its own story now, which sits with the same card losing its morale
+     price above: it costs blood on the night and nothing comes back for it. */
   /* you kept the rat-king's knuckle → it does not want to be kept */
   {id:'found2',t:'THE THING THAT WAS KEPT',seed:48,needs:{id:'found',opt:0},
    body:(a)=>'The knuckle-bone has moved. Not far — from the bottom of the cart to the top of '+
@@ -25908,7 +26113,7 @@ function openCamp(spot,next,atPlace){
      it. `campChose` records `indexOf(o)`, so this one records -1 and no sequel
      keys off it, which is correct: refusing because you are broke is not a
      ruling anybody at the fire will remember you for. */
-  if(visible.length&&!visible.some(o=>canAfford(o.need)))
+  if(visible.length&&!visible.some(doorOpen))                   /* #197 */
     visible.push({t:'Say nothing. There is nothing to say it with.',ico:['leave'],
       /* #198 - "and everybody notices" deleted: it is the 64th member of the
          family #176 cleared, and it survived that sweep only because this
@@ -25920,10 +26125,15 @@ function openCamp(spot,next,atPlace){
       after:'You have nothing to settle it with and everybody at the fire works that out at '+
         'about the same moment. It goes quiet, and then it goes on.'});
   $('wChoices').innerHTML=visible.map((o,i)=>{
-    const ok=canAfford(o.need);
+    const ok=doorOpen(o);                                        /* #197 */
+    /* ⚠ #197 - AND NO EMPTY `<i>` WHERE THERE IS NOTHING TO SAY. `choiceNote`
+       returns '' on a one-door pickup (its receipt is on the card), and both
+       renderers used to wrap that in an `<i></i>` regardless; `.choice i` is
+       display:block, so the empty box was a real, if small, line. */
+    const note=choiceNote(o);
     return '<button class="choice'+(o.needRace?' racey':'')+'" data-i="'+i+'"'+
       (ok?'':' disabled style="opacity:.38"')+
-      '><b>'+choiceIco(o)+o.t+'</b><i>'+choiceNote(o)+'</i></button>';}).join('');
+      '><b>'+choiceIco(o)+o.t+'</b>'+(note?'<i>'+note+'</i>':'')+'</button>';}).join('');
   $('wChoices').querySelectorAll('.choice').forEach(b2=>{
     if(b2.disabled)return;
     b2.onclick=()=>{
@@ -25963,11 +26173,7 @@ function openCamp(spot,next,atPlace){
           if(m.eq[sl]===o.dropGear)m.eq[sl]=null;}));
       }
       let hurtLine='';
-      if(o.hurt){
-        const v=pickOne(G.party),uu=unitFrom(v);
-        const dmg=o.hurt.hp||Math.round(uu.hpMax*(0.15+Math.random()*0.2));
-        v.hpLoss=Math.min((v.hpLoss||0)+dmg,uu.hpMax-1);
-        hurtLine='\n\n'+who(v)+' takes it: '+o.hurt.n+' — '+dmg+' hitpoints. It mends.';}
+      if(o.hurt)hurtLine+=applyHurt(o.hurt);   /* #197 - the one applier */
       /* some things at a fire are not done TO somebody — they are done to
          everybody sitting at it */
       if(o.hurtAll){
@@ -25999,8 +26205,7 @@ function openCamp(spot,next,atPlace){
          go through payFx raw (no lootMul), so evPaidOf(f) is exact. */
       dlg.querySelector('.bd').innerHTML=cast(afterTxt)+hurtLine+
         evFxChips(evPaidOf(f))+evGearStrip(o.gear?[o.gear]:[]);
-      $('wChoices').innerHTML='<button class="choice" id="wOn"><b>Carry on</b>'+
-        '<i>'+(atPlace?'let the fire burn down':'reach the place ahead')+'</i></button>';
+      $('wChoices').innerHTML='<button class="choice" id="wOn"><b>Carry on</b></button>';/* #197 */
       $('wOn').onclick=()=>{dlg.classList.remove('on');worldTick();saveRun();next();};
       worldTick();};});
   drawNodes();
@@ -27270,7 +27475,7 @@ function drawInv(){
       (statPts>1?'S':'')+' TO SPEND. CLICK A TRAIT</div>':'')+
     /* #174 - the stranger's first level is a trade, and it is picked on the
        perks tab; this is the same call to action, pointing at the other room */
-    (tradeOwed(p)?'<div class="lbl" style="color:#8ca35a">A TRADE TO PICK. THE ★ PERKS TAB</div>':'')+
+    (tradeOwed(p)?'<div class="lbl" style="color:#8ca35a">A CLASS TO PICK. THE ★ PERKS TAB</div>':'')+
     /* #136 point 3 - the attributes take the width, the pools take the
        battle's narrow stack. Same two blocks, side by side. */
     '<div id="iStats">'+
@@ -27549,16 +27754,19 @@ function drawInv(){
     let tHTML;
     if(tradeOwed(p)){
       const trades=[...new Set(CLS_BY_RACE[p.race]||CLS_BY_RACE.human)];
-      tHTML='<div class="lbl" style="color:#8ca35a">A TRADE TO PICK · CLICK ONE · THE TOOL COMES WITH IT</div>'+
-        trades.map(k=>'<button class="pk buy" data-trade="'+k+'"><span class="tag">TRADE</span>'+
-          /* ⚠ #196 - THE TRADE YOU ARE PICKING KEEPS ITS NAME. This is the one
+      tHTML='<div class="lbl" style="color:#8ca35a">A CLASS TO PICK · CLICK ONE · THE TOOL COMES WITH IT</div>'+
+        trades.map(k=>'<button class="pk buy" data-trade="'+k+'"><span class="tag">CLASS</span>'+
+          /* ⚠ #196 - THE CLASS YOU ARE PICKING KEEPS ITS NAME. This is the one
              screen where the symbol is LEARNED, so the two have to be side by
-             side; and you are choosing, not scanning. */
+             side; and you are choosing, not scanning.
+             ⚑ #197 - and the word is CLASS, not TRADE, on all nine surfaces
+             that meant a class. The `data-trade` attribute is the handler's
+             key and is deliberately NOT renamed with it. */
           '<b>'+bmk(cIcon(k))+' '+CLASSES[k].n+'</b><i>'+CLASSES[k].sig+'</i></button>').join('')+
-        '<div class="pkfoot">A trade is picked once and kept. The perks come after it, at 2, 4, 6 and 8.</div>';
+        '<div class="pkfoot">A class is picked once and kept. The perks come after it, at 2, 4, 6 and 8.</div>';
     }else{
-      tHTML='<div class="lbl" style="color:#8a7449">NO TRADE YET</div>'+
-        '<div class="pknone">Hired without one. The first level is where a trade is picked, and it '+
+      tHTML='<div class="lbl" style="color:#8a7449">NO CLASS YET</div>'+
+        '<div class="pknone">Hired without one. The first level is where a class is picked, and it '+
         'is a fight or two away.</div>';
     }
     pk.innerHTML=tHTML;
@@ -28716,7 +28924,25 @@ const hasSight=n=>{try{return !!sightFor(n);}catch(e){return false;}};
 /* THE TWO BOXES A ROAD LABEL MUST NOT LAND ON. Both are functions of the
    node rather than constants, because #116 gave the map two kinds of node
    and a single rectangle can no longer describe either one honestly. */
-const plateBox=n=>({x:n.x,y:n.y+(hasSight(n)?NAME_DY_SIGHT:NAME_DY),w:NAME_W,h:NAME_H});
+/* ═══ #197 · WHICH SIGHTED NODES WEAR THEIR CAPTION ABOVE ═════════════════
+   DERIVED FROM THE NODE'S OWN y AND NEVER AUTHORED, which is the rule this
+   map keeps having to relearn: a hand-flagged list is a list somebody forgets
+   the day a node moves. `LOWCAP_Y` is the design y whose caption's last row
+   lands exactly on the window's foot; anything lower flips.
+   ⚠ AND `plateBox` HAS TO KNOW, or `labelViolations()` goes on scoring road
+   labels against a plate that is 125 design px from where it is drawn - which
+   would read as "the map is clean" while a price sat on a name. Below-case
+   the plate's centre is +57 view under the point; flipped it is -72 (bottom
+   at -57, ~30 of plate above that). */
+const CAP_DROP_SIGHT=84;      /* measured: a two-line caption's last row, view px */
+const CAP_FOOT=2;             /* air left under it at the window's edge */
+/* how far THIS node's caption has to rise to stay inside the map, in view px.
+   0 for every node above the fold, which is 22 of the 26 on the shipped map. */
+const capLift=n=>!hasSight(n)?0:
+  Math.max(0,Math.round(vy(n.y)+CAP_DROP_SIGHT-(VIEWH-CAP_FOOT)));
+const plateBox=n=>({x:n.x,
+  y:n.y+(hasSight(n)?NAME_DY_SIGHT-Math.round(toDesign(capLift(n))):NAME_DY),
+  w:NAME_W,h:NAME_H});
 const artBox=n=>hasSight(n)?{x:n.x,y:n.y+ART_DY,w:ART_W,h:ART_H}:null;
 function labelViolations(){
   const out=[],boxHit=(p,q)=>{
@@ -29241,6 +29467,20 @@ function plantStash(mode){
    `G.day`: a day is spent through the travel path, which is also what ticks
    wages and hunger, and adding one here would be a free day for the company
    and a lost one for the chest. */
+/* ═══ #197 · CAN ANYTHING STILL BE BURIED? ════════════════════════════════
+   `plantStash` needs an unvisited STASH_ARMS node still ahead, and it also
+   refuses to move a cache that already exists. Both were only ever asked
+   AFTER the decision that needed the answer, which was fine while the only
+   caller was a fire card that had a fallback sentence ready. The treasure map
+   has no such sentence: a row that hands over a map to nowhere is a receipt
+   for nothing.
+   ⛔ SO THE ROW IS FILTERED OUT OF THE DEAL, not patched up afterwards. This
+   is `plantStash`'s own gate, asked one step earlier. `snarejoin` is the case
+   that proves it is needed: it is fought on the LAST node of the act, so
+   `reachAhead` is empty there and the map would be dead every single time. */
+const canPlant=()=>!(G.cache&&G.cache.at)&&
+  STASH_ARMS.some(k=>reachAhead().indexOf(k)>=0);
+const lootPlants=l=>(l.gear==='tmap')||(l.gear2||[]).indexOf('tmap')>=0;
 function stashFallback(){
   pay('crowns',40);
   return 'It is four miles back the way you came. Two of them go at first light and are back '+
@@ -29834,11 +30074,18 @@ function drawMap(){
       c.fillStyle='#ff2f4a';c.font=cssFont(600,12,'mono');
       c.fillText(o.d+'px',(A.x+Bn.x)/2-14,(A.y+Bn.y)/2-6);
     });
-    c.fillStyle=bad.length?'#ff2f4a':'#8ca35a';
-    c.font=cssFont(600,12,'mono');
-    c.fillText(bad.length?bad.length+' crowded pair(s): '+bad.map(o=>o.a+'↔'+o.b).join(', ')
-      :'spacing clean · '+MAP_MIN_GAP+'px glyphs · '+NODE_PLATE_W+'×'+NODE_PLATE_H+' plates',
-      14,H-14);
+    /* #197 - ONLY THE FAILURE PRINTS (user, arrows drawn at it: *"Strange
+       text, don't need it"*). The all-clear ran along the foot of the map on
+       every frame of every test-mode session, saying that nothing was wrong,
+       which is this file's own rule about a figure on screen every day being
+       read as furniture (#106). The red half is untouched and still fires the
+       moment two nodes are too close, which is the whole reason the overlay
+       was drawn last and in a colour nothing else uses. */
+    if(bad.length){
+      c.fillStyle='#ff2f4a';
+      c.font=cssFont(600,12,'mono');
+      c.fillText(bad.length+' crowded pair(s): '+bad.map(o=>o.a+'↔'+o.b).join(', '),14,H-14);
+    }
   }
 }
 function drawNodes(){
@@ -29898,8 +30145,13 @@ function drawNodes(){
        ticks itself off. */
     const goal=(k===QUEST_GOAL&&!G.visited[k]);
     b.className='node '+st+' t-'+n.t+(n.mark?' mark':'')+(goal?' goal':'')+
-      (sight?' sighted':'');
+      (sight?' sighted':'')+(sight&&capLift(n)?' lowcap':'');     /* #197 */
     b.style.left=n.x+'px';b.style.top=vy(n.y)+'px';   /* #104: design -> view */
+    /* #197 - and how far its caption has to climb to stay on the map. Written
+       here rather than baked into the class so the CSS holds the RULE and the
+       node holds its own number, which is the only way `plateBox` and the
+       stylesheet can be reading the same figure. */
+    if(sight)b.style.setProperty('--lift',capLift(n)+'px');
     /* the TYPETAG used to be a permanent third line under every live node, and
        on a crowded map it landed squarely on the neighbour's name. It is on
        the glyph now (and in the hover card), where it costs no vertical room. */
@@ -29941,9 +30193,27 @@ function drawNodes(){
       }else if(st==='live')body=TYPETAG[n.t]||'';
       else body='Too far to know more than the shape of it — '+
         (TYPETAG[n.t]||'something').toLowerCase()+'.';
-      TIP.innerHTML='<div style="font-family:var(--display);font-size:var(--fs5);color:var(--g4)">'+
-        n.n+'</div><div style="font-size:var(--fs1);font-family:var(--mono);color:#8a7449;'+
-        'margin:1px 0 5px">'+(TYPETAG[n.t]||'')+'</div>'+
+      /* ═══ #197 · THE HOVER PRINTED ITS TYPE TWICE ══════════════════════
+         (User, 2026-08-19, red box round the middle line of a three-deep
+         stack on THE LAST MUSTER: *"delete this additional explanation for
+         all events cards (small one in the middle)"*.)
+
+         ⛑ AND THE SCREENSHOT IS THE ONLY PLACE IT WAS VISIBLE, because the
+         two lines are built 40 lines apart. This subtitle printed
+         `TYPETAG[n.t]`, and the `body` branch four cases down ALSO falls back
+         to `TYPETAG[n.t]` for a live node with no event and no secret - so a
+         hire node's card read SWORDS FOR HIRE, then SWORDS FOR HIRE, under
+         its own name. The glyph's `title` attribute makes a third, in the
+         browser's own tooltip.
+
+         ⚠ SO THE SUBTITLE GOES AND THE BODY STAYS, not the other way round.
+         The body is the branch that already knows the difference between a
+         live node, a walked one, a marked cache and a far one; the subtitle
+         said the same word to all five. Nodes whose body has better to say
+         (a walked one, the cache, an unopened event) simply stop repeating a
+         category at somebody who is looking at the picture of it. */
+      TIP.innerHTML='<div style="font-family:var(--display);font-size:var(--fs5);color:var(--g4);'+
+        'margin-bottom:5px">'+n.n+'</div>'+
         /* #150 - the trophy answers for itself, the way every other chip on
            this screen does. It says WHERE the contract ends and not WHAT is
            waiting: the Snare's own rule is that the map never names that. */
@@ -30353,7 +30623,7 @@ function openGoalCard(spot,next){
       '<div class="qgoal">'+
       '<span class="qt">Recruit at least someone else to your party.</span>'+
       '<span class="qp">morale +'+GOAL_PAY+' when it is done</span></div></div>'+
-    '<button class="choice" id="wV"><b>Keep walking.</b><i></i></button>';
+    '<button class="choice" id="wV"><b>Keep walking.</b></button>';   /* #198 label, #197 no sub-line */
   dlg.classList.add('on');
   placeDlg(spot.x,spot.y);
   $('wV').onclick=()=>{G.pending=null;dlg.classList.remove('on');worldTick();saveRun();next();};
@@ -31908,8 +32178,12 @@ const VIGNETTES=[
   {t:'THE BET',body:(a,b)=>a+' bets '+b+' the next milestone is under an hour off. It is '+
     'four hours off. The debt is one boot-cleaning and it is paid in full and in public.',
     fx:{morale:5}},
-  {t:'AN HOUR OF RAIN',body:()=>'Rain for an hour, the flat grey kind that gets into everything '+
-    'except the mood, somehow. The wagon smells of wet wool until morning.',fx:{}},
+  /* ⛔ #197 - AN HOUR OF RAIN IS DELETED (user, 2026-08-19: *"Delete event: ON
+     THE ROAD - AN HOUR OF RAIN"*). It was a `fx:{}` vignette whose whole beat
+     was that nothing happened, which is the one thing a vignette may not spend
+     a road slot on. The four other weatherless `fx:{}` vignettes (the mule,
+     the crow, and the two at the fire) all turn on somebody DOING something;
+     this one turned on wet wool. */
   {t:'SORE HEELS',body:(a)=>a+' walks the last mile backwards, on a theory about sore heels. '+
     'The theory is not explained. The heels are reportedly fine.',fx:{morale:3}},
   {t:'THE CROW',body:(a)=>'A crow follows the wagon from noon until dusk. '+a+' names it, '+
@@ -32322,8 +32596,14 @@ function choiceNote(o,skipMorale){
   const cost=fxNote(o.fx);if(cost)parts.push(resGlyphs(cost));
   if(o.c)parts.push(resGlyphs(o.c));
   if(!skipMorale){const m=moraleTag(o.fx);if(m)parts.push(m);}
-  if(o.hurt&&!o.hideHurt)parts.push('<span class="hurt">injury</span>');
+  /* #197 - PERMANENT or TEMPORARY, read off the injury itself. `hideHurt`
+     still wins over both: two doors buy a surprise and the beam that comes
+     down is the surprise (see THE RUINED STEADING). */
+  if(o.hurt&&!o.hideHurt)
+    parts.push('<span class="hurt">'+(o.hurt.lasting?'permanent':'temporary')+' injury</span>');
   if(!canAfford(o.need))parts.push(needTag(o.need));
+  /* #197 - the muster wall's own phrasing, so one shortage has one name */
+  else if(!hasRoomFor(o))parts.push('<span class="hurt">no room left</span>');
   return parts.join(' · ');
 }
 /* moraleLine, the prose twin of the tag, retired in #143: the outcome's
@@ -32367,7 +32647,7 @@ function openReturner(spot,next,rec){
   const done=after=>{
     G.dismissed.splice(G.dismissed.indexOf(rec),1);
     dlg.querySelector('.bd').textContent=after;
-    ch.innerHTML='<button class="choice" id="wV"><b>Keep moving</b><i>the road is long</i></button>';
+    ch.innerHTML='<button class="choice" id="wV"><b>Keep moving</b></button>';   /* #197 */
     $('wV').onclick=()=>{G.pending=null;dlg.classList.remove('on');worldTick();saveRun();next();};
   };
   const mk=(html,fn,dis)=>{const b=document.createElement('button');b.className='choice';
@@ -32425,7 +32705,12 @@ function openVignette(spot,next,atPlace){
         vHead=(v.t==='ON THE ROAD'||v.t==='AT THE FIRE')?v.t:vLead+' — '+v.t;
   dlg.innerHTML='<h3>'+vHead+'</h3>'+
     '<div class="bd">'+body+evFxChips(evPaidOf(v.fx))+'</div>'+
-    '<button class="choice" id="wV"><b>Keep moving</b><i>it was not a decision</i></button>';
+    /* #197 - no sub-line on a door that is not a decision (user: *"When it is
+       a simple door don't need smaller text below"*). Four of these carried a
+       caption whose whole content was that there was nothing to decide, which
+       is a sentence about the absence of a sentence. The event outcome's
+       "Back to the road" has never had one and is the model. */
+    '<button class="choice" id="wV"><b>Keep moving</b></button>';
   dlg.classList.add('on');
   placeDlg(spot.x,spot.y);
   $('wV').onclick=()=>{G.pending=null;dlg.classList.remove('on');worldTick();saveRun();next();};
@@ -32637,7 +32922,8 @@ const EVENTS={
          'about it.'},
       {t:'Take the bridge apart. All of it.',ico:['take'],c:'',
        fx:{salvage:5,days:1},hideHurt:true,
-       hurt:{n:'Crushed foot',d:'−1 AGI. A beam went where a beam should not.',agi:-1},
+       hurt:{n:'Crushed foot',d:'−1 AGI. A beam went where a beam should not.',agi:-1,
+         lasting:true},
        after:'The beams are worth the trouble. The fourth one comes down early, with no '+
          'warning at all.'},
       /* ═══ #151 - THE GREEDY DOOR, RESTORED BY THE USER ════════════════════
@@ -32662,7 +32948,8 @@ const EVENTS={
       {t:'Take all of it. Purse, boots, beams.',ico:['take','evil'],c:'',
        sin:'the toll-post on the west road, taken down to the beams',
        danger:true,fx:{crowns:38,salvage:5,days:1,morale:-6},bootsOn:true,hideHurt:true,
-       hurt:{n:'Crushed foot',d:'−1 AGI. A beam went where a beam should not.',agi:-1},
+       hurt:{n:'Crushed foot',d:'−1 AGI. A beam went where a beam should not.',agi:-1,
+         lasting:true},
        after:'The purse first, then the boots, then the bridge, and it takes until dark.\n\n'+
          'The fourth beam comes down early, with no warning at all. Nobody says the two '+
          'things are connected. Everybody thinks it.'}]},
@@ -32684,7 +32971,7 @@ const EVENTS={
        sin:'the pedlar on the ridge, and his cart',
        c:'',
        danger:true,fx:{crowns:150,food:8,salvage:5,morale:-13},gear:'mail',
-       hurt:{n:'Pedlar’s knife',d:'−1 STR. He had a knife, and he was quicker than he looked.',str:-1},
+       hurt:{n:'Pedlar’s knife',d:'−1 STR. He was quicker than he looked.',str:-1,lasting:true},
        after:'It takes no time at all. That is the part nobody sleeps well about.\n\nHe had '+
          'a knife. {ANY} does not speak to you for two days.'},
       /* ═══ THE FREE DOOR (user, 2026-08-02) ══════════════════════════════
@@ -32754,7 +33041,7 @@ const EVENTS={
       {t:'The strongest of you lifts. Everyone else pretends to help.',ico:['take'],
        c:'',
        danger:true,fx:{gems:2,crowns:40,days:1},
-       hurt:{n:'Torn back',d:'−1 STR. He lifted it. It was heavier than the fen.',str:-1},
+       hurt:{n:'Torn back',d:'−1 STR. It was heavier than the fen.',str:-1,lasting:true},
        after:'Inside: coin, and two stones the wrong colour for this country.'},
       /* the wheels door and the maul door were MERGED in the 2026-08-12
          choice-weight pass (#123): both were "take the safe thing and go",
@@ -32783,7 +33070,7 @@ const EVENTS={
          'by evening.'},
       {t:'Camp at the edge and watch it all night.',ico:['rest'],c:'',
        danger:true,fx:{days:1,gems:1,morale:-4},
-       hurt:{n:'Bloom-touched',d:'−1 INT. Whatever was in the light, some of it is in him.',int:-1},
+       hurt:{n:'Bloom-touched',d:'−1 INT. Some of the light is in him now.',int:-1,lasting:true},
        after:'By morning the light has moved forty paces closer, and the man on watch has not blinked in some time.'}]},
   mother:{title:'THE FEN-MOTHER',art:'bloom',seed:88,
     body:'You took it for a fallen barn. Six legs. A head like a split anvil. Bloom-light '+
@@ -33667,8 +33954,17 @@ const EVENTS={
          Upper case wins on the majority and because it reads as the warning
          it is - the ⚔️ beside it is already shouting. */
       {t:'Straight down the road. Let the bells ring.',ico:['fight'],c:'BATTLE',fx:{},battle:true},
-      {t:'Through the marsh. Slower, but quiet.',ico:['fight'],c:'BATTLE · you strike first',
-       fx:{days:1},battle:true,ambush:true},
+      /* ⛔ #197 - "Through the marsh. Slower, but quiet." IS DELETED (user,
+         2026-08-19: *"On the last event (fight) - delete option 'move
+         slovly'"*). It bought the first round for a day, which on the last
+         node of the act is a day nobody is short of, so it was the correct
+         answer nearly every time and the card's real question - go in, or
+         walk in unarmed and ask - was being asked underneath a free upgrade.
+         ⚠ `ambush:true` IS NOT DEAD WITH IT. The wedding's massacre door is
+         the other user and `B.ambushRound` is still read in the engine, so
+         the mechanic survives; only this door goes.
+         ⚠ AND IT TOOK ONE OF #198's TWO BATTLE SPELLINGS WITH IT, which is
+         why that entry's count of eleven doors now reads ten. */
       /* ═══ #160 · THE THIRD DOOR ════════════════════════════════════════════
          ⛔ IT IS NOT MARKED EVIL AND THAT IS LOAD-BEARING, NOT AN OVERSIGHT.
          `markSin` fires on the door that is clicked, and the card this door
@@ -33704,6 +34000,46 @@ function canAfford(need){
   if(!need)return true;
   return Object.keys(need).every(r=>((r in G.run)?G.run[r]:G.camp[r]||0)>=need[r]);
 }
+/* ═══ #197 · A DOOR THAT HANDS YOU A BODY SAYS "NO ROOM" FIRST ════════════
+   (User, 2026-08-19: *"with ogres event you don't have option ogre to join -
+   when your party is full"*.)
+
+   ⛔ THE DOOR WAS NEVER MISSING. It was live, it said *"an ogre may join"*,
+   and the room check ran INSIDE `pickChoice` - so a full company spent its
+   one choice on the Sitting Stone and was told afterwards that *"Hoom would
+   have joined, but nobody follows a captain with no room at the fire."* From
+   the outside that is indistinguishable from the option not existing, which
+   is exactly how it was reported.
+
+   ⚑ AND THE PROJECT ALREADY HAD THE RULE, TWICE. `.claude/rules/event-cards.md`:
+   *"a door the player cannot afford has to say so BEFORE it is pressed"*, and
+   the muster wall has printed `· no room left` on a greyed row since it was
+   built. Room is a price; it was the one price the road cards could not read.
+
+   ⛔ DERIVED, NEVER AUTHORED, which is #137's rule on its fifth surface. The
+   door already carries `recruit:{race}` or `recruitPreset`, so the seat count
+   IS the fact and nothing new is typed onto a card. That also fixes the four
+   preset doors (Skree, Nib, Gell, Bruht) nobody reported, because they have
+   the same defect for the same reason.
+
+   ⚠ `presetOf` EXISTS SO THE MAPPING IS IN ONE PLACE. It was a ternary inside
+   `pickChoice`, i.e. a table only the payer could read; a gate that resolved
+   presets its own way would be the second-source-of-truth shape again. */
+function presetOf(k){return k==='skree'?PRESET_SKREE:k==='nib'?PRESET_NIB
+  :k==='gell'?PRESET_HALF:PRESET_BRUHT;}
+function doorRace(c){
+  if(!c)return null;
+  if(c.recruit)return c.recruit.race;
+  if(c.recruitPreset){const p=presetOf(c.recruitPreset);return p&&p.race;}
+  return null;
+}
+const hasRoomFor=c=>{const r=doorRace(c);
+  return !r||partyUsed()+(COST[r]||0)<=PARTYCAP;};
+/* ⛔ THE ONE PREDICATE BOTH RENDERERS ASK, and the appended walk-away asks it
+   too. If the exit guard had gone on testing `canAfford` alone, a card whose
+   only live door was a full-party recruit would have had every button dead
+   and no way off the node - the exact soft lock that guard exists to stop. */
+const doorOpen=c=>canAfford(c.need)&&hasRoomFor(c);
 /* ⚠ A DEAD BUTTON SHOULD NAME THE THING YOU RAN OUT OF. The provisions panel
    and the muster already do it ("not enough in the barrels", "no room left"),
    but every event and camp card printed the same "cannot afford" whatever was
@@ -33858,12 +34194,35 @@ function openHire(){
        end of his row, and #157's rule holds: no paragraph about him. */
     const none=r.cls==='none';
     /* #196 - the muster wall is four candidates side by side, which is the
-       scan this change is for. ⚠ "NO TRADE YET" KEEPS ITS WORDS: it is a
-       sentence about somebody, not a trade, and ○ alone would read as a trade
-       nobody recognised rather than as the absence of one. */
-    b.innerHTML='<b>'+r.name+' “'+r.nick+'” — '+rMark(r.race)+' '+(none
+       scan this change is for. ⚠ "NO CLASS YET" KEEPS ITS WORDS: it is a
+       sentence about somebody, not a class, and ○ alone would read as a class
+       nobody recognised rather than as the absence of one.
+
+       ═══ #197 · AND THE FOUR ADJECTIVES GO ONTO THE NAME ══════════════════
+       (User, 2026-08-19, the stat line boxed in red on all three strangers:
+       *"Hide"*.)
+
+       ⚑ IT IS #157 ARRIVING AT THE LAST LINE ON THE ROW. That entry moved the
+       PERSONALITY to a hover on exactly this argument - *"the name is the
+       thing you compare, the sentence is the thing you look up"* - and left
+       the four stat adjectives printed in full underneath, which is the
+       longest line on the row and the one nobody can compare by eye anyway
+       ("Not strong. Clumsy. Plain. Nervous." against "Weak. Heavy-handed.
+       Quick to see it. Nervous.").
+
+       ⛔ HIDDEN, NOT DELETED, AND THE DIFFERENCE IS THE WHOLE DECISION. This
+       is the one screen where the numbers decide something; a row with no
+       stats at all would be a name, a class and a price, and hiring would be
+       blind. `tellLine` goes onto the NAME's own hover, beside the trait's,
+       which is where #157 put the other half of the same sentence.
+       ⚠ IT SITS ON THE NAME AND NOT ON THE ROW, because #196 put two lore
+       tips on this row already and a third hover covering all of it would
+       swallow both. */
+    b.innerHTML='<b><span title="'+esc(tellLine(s))+'" '+
+        'style="cursor:help;border-bottom:1px dotted var(--e3)">'+
+        r.name+' “'+r.nick+'”</span> — '+rMark(r.race)+' '+(none
         ?'<span style="color:#a08a5e" class="bmk">'+cIcon('none')+'</span>'+
-         ' <span style="color:#a08a5e">no trade yet</span>'
+         ' <span style="color:#a08a5e">no class yet</span>'
         :cMark(r.cls))+'</b>'+
       '<i>'+price+' crowns'+
       (G.hiredHere&&r.race==='ratkin'?' <span style="color:#8ca35a">(undercutting)</span>':'')+
@@ -33878,10 +34237,9 @@ function openHire(){
          and nine on the screen; the name is the thing you compare, the
          sentence is the thing you look up. `title` and not a lore tip because
          the personality is rolled per person, not per class. */
-      '<br><span style="color:#a08a5e">'+tellLine(s)+'</span>'+
       '<br><span title="'+esc(traitShort(r))+'" style="cursor:help;border-bottom:1px dotted var(--e3)">'+
       TRAITS[r.trait].n+'</span>'+
-      (none?' · <span style="color:#8ca35a">picks up a trade at the first level</span>':'')+
+      (none?' · <span style="color:#8ca35a">picks up a class at the first level</span>':'')+
       (!fits?'<span class="hurt"> · no room left</span>':
         !afford?'<span class="hurt"> · cannot afford</span>':'')+'</i>';
     if(!b.disabled)b.onclick=()=>{
@@ -33911,7 +34269,18 @@ function openHire(){
   }
   const done=document.createElement('button');
   done.className='choice';
-  done.innerHTML='<b>Take the road. They can wait for somebody else.</b>';
+  /* #197 - (user: *"show feet where icon is leaving option"*). The muster is
+     hand-built rather than rendered through openEvent, so #154's intent
+     glyphs never reached it; this door is a walk-away and 👣 is the mark every
+     walk-away on the road already wears. Read out of the table and never
+     typed, per #154's own rule.
+     ⛔ AND IT IS `choiceIco({ico:['leave']})`, NOT `CHOICE_ICO.leave`. The
+     table's rows are RECORDS ({g,n,d}), so the raw entry stringifies to
+     [object Object] - which is what shipped for one commit, because this desk
+     changed the muster and never opened it. The two other hand-built
+     walk-aways in this file (the returner, Coldharrow's road out) already go
+     through the builder, and one of them carries a comment saying to. */
+  done.innerHTML='<b>'+choiceIco({ico:['leave']})+'Take the road. They can wait for somebody else.</b>';
   done.onclick=()=>{G.pending=null;G.hiredHere=0;QMOPEN=false;
     dlg.classList.remove('on');worldTick();saveRun();};
   list.appendChild(done);
@@ -34273,7 +34642,7 @@ function openEvent(k){
      spend without appending the exit would have turned a lie into a soft lock.
      So: the exit is appended whenever nothing else is affordable, it costs
      nothing, and it is the same object shape every other choice is. */
-  if(visible.length&&!visible.some(c=>canAfford(c.need)))
+  if(visible.length&&!visible.some(doorOpen))                   /* #197 */
     visible.push({t:'Walk on. There is nothing here you can pay for.',ico:['leave'],
       c:'no cost · the road does not wait for a full purse',fx:{},
       after:'You have nothing to trade and nothing to give, and everybody here can see it. '+
@@ -34337,10 +34706,11 @@ function openEvent(k){
       (c0.coinKeep?evGearStrip(['oddcoin'],'into the wagon'):''));
   }
   $('wChoices').innerHTML=visible.map((c,i)=>{
-    const ok=canAfford(c.need);
+    const ok=doorOpen(c);                                        /* #197 */
+    const note=choiceNote(c,!!c0);                               /* #197 - see below */
     return '<button class="choice'+((c.danger||(c.battle&&anyWayOut))?' danger':'')+(c.needRace?' racey':'')+
-      '" data-i="'+i+'"'+(ok?'':' disabled style="opacity:.38"')+'><b>'+choiceIco(c)+c.t+'</b><i>'+
-      choiceNote(c,!!c0)+'</i></button>';}).join('');
+      '" data-i="'+i+'"'+(ok?'':' disabled style="opacity:.38"')+'><b>'+choiceIco(c)+c.t+'</b>'+
+      (note?'<i>'+note+'</i>':'')+'</button>';}).join('');
   $('wChoices').querySelectorAll('.choice').forEach(b=>{
     /* THE CHOICE OBJECT, not its index: the appended walk-away is not in
        `e.choices` at all, so `indexOf` returned -1 and would have handed
@@ -34352,6 +34722,64 @@ function openEvent(k){
 const heldGear=()=>G.stash.concat(G.party.map(p=>p.eq.trinket)).filter(Boolean);
 const relicSum=key=>heldGear().reduce((s,k)=>
   s+((GEAR[k]&&GEAR[k].company&&GEAR[k][key])||0),0);
+/* ═══ #197 · RARITY, AND THE PIECE A FIGHT HANDS OVER ON TOP ══════════════
+   (User, 2026-08-19: *"on the map and after a battles give more often rare and
+   epic items"*. Asked and answered: tier the rack and raise the rate now, draw
+   the white/green/purple FRAME later - that is a UI pass and it needs its own
+   picture, per the standing rule on new systems.)
+
+   ⛔ THE FIRST PROBLEM WAS THAT "RARE" MEANT NOTHING IN THIS BUILD. There was
+   no `rarity:` field on any of the 51 rows - `.claude/rules/static-event-art.md`
+   has been promising one since #192 - so a request to hand out more of them had
+   nothing to count. The ladder is authored ON THE ROW, where `slot` and
+   `armour` and `dmg` already live, and it is POWER and strangeness: the rack
+   you start near is common, the piece you would change your kit for is rare,
+   the best four and the six that are barely explicable are epic.
+
+   ⛔ THE RATE IS RAISED BY ADDING A PIECE, NOT BY REWRITING THE TABLES. Every
+   LOOT row is authored flavour about the body it was cut off ("the chieftain's
+   harness, it is ogre-sized"); re-weighting inside them would have swapped
+   somebody's written line for a die roll and still only reached the one or two
+   gear rows each table has. So the haul is untouched and a SECOND piece is
+   rolled beside it. A fight is 30% (23 rare, 7 epic); a cache somebody drew
+   you a map to is 60% (42 rare, 18 epic), because a buried bag is the one
+   place on this road that is supposed to be worth digging up.
+
+   ⚠ `unique` IS THE HALF THAT MATTERS MORE THAN THE ODDS. Thirteen rows are a
+   NAMED thing out of one scene - the Fen-Mother's tooth, Wynn's ledger-pin,
+   the Cold Thing that was inside the armour - and a random find handing one of
+   those over would delete the scene it belongs to. They keep their tier (they
+   ARE epic) and they are never drawn.
+
+   ⚠ AND A FIND IS FILTERED BY WHO IS CARRYING IT. `size` is already on the
+   armour rows, so a company with no ogre cannot be handed ogre scale as its
+   reward. The authored tables have always been allowed to do that - the Snare
+   gives you lashed plates whoever you are - because a written row is about the
+   body it came off. A roll has no such excuse. */
+const RARITY={common:{n:'COMMON',c:'#c9c2b4'},rare:{n:'RARE',c:'#8ca35a'},
+              epic:{n:'EPIC',c:'#a07cc9'}};
+const rarityOf=k=>(GEAR[k]&&GEAR[k].rarity)||'common';
+const rarityTag=k=>{const r=RARITY[rarityOf(k)];
+  return '<span style="color:'+r.c+'">'+r.n+'</span>';};
+const FIND_ODDS={battle:{epic:.07,rare:.23},cache:{epic:.18,rare:.42}};
+function findPool(tier){
+  const races={};G.party.forEach(p=>{races[p.race]=1;});
+  return Object.keys(GEAR).filter(k=>{const g=GEAR[k];
+    return g.rarity===tier&&!g.unique&&(!g.size||g.size==='any'||races[g.size]);});
+}
+/* ⚠ IT STEPS DOWN A TIER RATHER THAN RETURNING NOTHING. A one-race company
+   late in a run can empty a pool, and "you found nothing" on a roll that
+   already said you found something is a worse answer than a smaller prize. */
+function rollFind(src){
+  const o=FIND_ODDS[src];if(!o)return null;
+  const r=Math.random();
+  const tier=r<o.epic?'epic':r<o.epic+o.rare?'rare':null;
+  if(!tier)return null;
+  const pool=findPool(tier);
+  if(pool.length)return pickOne(pool);
+  const down=findPool(tier==='epic'?'rare':'common');
+  return down.length?pickOne(down):null;
+}
 /* somebody in the company skims, and it shows up in the takings */
 const lootMul=()=>1+relicSum('coCrowns')+
   G.party.reduce((m,p)=>Math.max(m,(TRAITS[p.trait]&&TRAITS[p.trait].loot)||0),0);
@@ -34426,6 +34854,10 @@ function pickChoice(k,i){
      ("Cannot access 'hurtLine' before initialization") that killed the whole
      choice. Found in playtest feedback on THE GROUND OPENS. */
   let hurtLine='';
+  /* #197 - pieces the road digs up rather than hands over on a door. It joins
+     `got` below, so the strip, the inventory gate and the save all treat it
+     exactly like an authored `gear:` row. */
+  const dug=[];
   if(c.strandOne&&G.party.length>1){
     const lost=pickOne(G.party.filter(p=>!p.leader));
     if(lost){
@@ -34434,22 +34866,10 @@ function pickChoice(k,i){
       hurtLine+='\n\n'+who(lost)+' is left in the dark. They know the road east.';
     }
   }
-  if(c.hurt){
-    const victim=pickOne(G.party);
-    /* Road accidents HURT, they do not cripple. Only being put down in a
-       battle leaves a permanent scar — see afterBattle(). A `hurt` with
-       `lasting:true` is the rare exception. */
-    if(c.hurt.lasting){
-      injure(victim,c.hurt);
-      hurtLine='\n\n'+who(victim)+' takes it, and will carry it: '+c.hurt.n+' — '+c.hurt.d;
-    }else{
-      const u=unitFrom(victim);
-      const dmg=c.hurt.hp||Math.round(u.hpMax*(0.18+Math.random()*0.22));
-      victim.hpLoss=Math.min((victim.hpLoss||0)+dmg,u.hpMax-1);
-      hurtLine='\n\n'+who(victim)+' takes it: '+c.hurt.n+' — '+dmg+
-        ' hitpoints, and a week of walking it off. Nothing permanent.';
-    }
-  }
+  /* #197 - one applier (see applyHurt), and `+=` rather than `=`: the
+     strandOne branch above writes into hurtLine and an assignment here would
+     have silently eaten it on any card that ever carried both. */
+  if(c.hurt)hurtLine+=applyHurt(c.hurt);
   /* ═══ WHAT IS IN THE HOLE, AND WHO IT BELONGS TO ═══════════════════════
      Paid here rather than in an `fx` block because the numbers depend on a
      ruling made at a fire days ago. OPEN: half the coin, because the fire
@@ -34475,6 +34895,11 @@ function pickChoice(k,i){
     }else{
       hurtLine+='\n\nInto the chest, all of it, and nobody at the fire is any the wiser.';
     }
+    /* #197 - and whatever else was in the hole. A buried bag is the best odds
+       in the game (see FIND_ODDS) because it is the one place the player was
+       told about in advance and walked to on purpose. */
+    const inHole=rollFind('cache');
+    if(inHole){G.stash.push(inHole);dug.push(inHole);}
     G.cache=null;
   }
   /* the shrine: two days of lying still, or whatever praying does */
@@ -34598,27 +35023,40 @@ function pickChoice(k,i){
       if(c.clanFeast){
         one.clan=true;
         remember(one,'Was fed at the long fire past the Dead Company, and called it his clan.');
-        hurtLine+='\n\nLate, when the fire has gone down, '+one.name+' tells you why there '+
-          'are still ratkin.\n\n'+
+        /* ═══ #197 · THE SECOND PART, CUT FROM 151 WORDS TO 99 ═════════════
+           (User, 2026-08-19: *"The long fire too long event second part -
+           make it shorter: THE LONG FIRE"*.)
+
+           ⛔ BOTH HALVES OF HIS OWN SPEECH SURVIVE, because they are canon:
+           `.claude/rules/event-cards.md` names this monologue as a user line
+           that frames may be cut from and that may not itself be rewritten.
+           What went is everything that was NOT his:
+             · the stage direction it opened on ("Late, when the fire has gone
+               down") and the one between the halves ("Then, quieter:");
+             · *"That thing in the armour did not break us. It broke nine men
+               in a ditch who were holding on to nothing"* - which is the
+               CARD BODY's own third sentence said back to the player four
+               paragraphs later, i.e. the one thing the length rule cuts first;
+             · the mechanical paragraph, down to the two rules it states.
+           ⚠ THE TWO RULES STAY IN FULL. They are the only place the game says
+           what `one.clan=true` bought (restate() and passDays() read it), and
+           a consequence nothing explains is not a shorter card, it is a
+           broken one. */
+        hurtLine+='\n\n'+one.name+' tells you why there are still ratkin.\n\n'+
           '"We are the smallest and the weakest and we make bad crossbows. You know why we '+
           'are not gone? Clan. We hold on to each other with both hands and we do not let '+
-          'go. We held on. That thing in the armour did not break us. It broke nine men in a '+
-          'ditch who were holding on to nothing."\n\n'+
-          'Then, quieter:\n\n'+
+          'go."\n\n'+
           '"Mine sent me to a slaughter over a milestone. I said no, so they took my name '+
           'off the wall.\n\nYou opened the barrels. So this is my clan now, and I will stand '+
           'in it until it is over."\n\n'+
-          'HIS CLAN, for the rest of his life. The first time his nerve goes in a battle it '+
-          'holds; after that '+one.name+' does not leave that field, whatever it costs him. '+
-          'And he will never walk out of this company over money.';
+          'HIS CLAN. His nerve holds the first time it goes, and he will never walk out '+
+          'over money.';
         sfx('promote');
       }else if(c.clanBuy){
         remember(one,'Worked out what the long fire was for.');
-        hurtLine+='\n\nHe tells the first half of it anyway, late: that ratkin are the '+
-          'smallest and the weakest and are still here because they hold on to each other '+
-          'with both hands, and that this company held on.\n\nThere is a second half. You '+
-          'can see him decide not to tell it. He looks at the barrels, and at you, and says '+
-          'goodnight.';
+        hurtLine+='\n\nHe tells the first half of it anyway: that ratkin are still here '+
+          'because they hold on to each other with both hands, and that this company held '+
+          'on.\n\nThere is a second half. You can see him decide not to tell it.';
       }else{
         remember(one,'Asked for the long fire past the Dead Company and was told no.');
       }
@@ -34725,9 +35163,7 @@ function pickChoice(k,i){
   /* a named, hand-built character joining — not a random roll, a specific
      person (Skree or Bruht) whose stats and trait are already written */
   if(c.recruitPreset){
-    const preset=c.recruitPreset==='skree'?PRESET_SKREE
-                :c.recruitPreset==='nib'?PRESET_NIB
-                :c.recruitPreset==='gell'?PRESET_HALF:PRESET_BRUHT;
+    const preset=presetOf(c.recruitPreset);   /* #197 - one mapping, see doorRace */
     if(partyUsed()+COST[preset.race]<=PARTYCAP){
       const nr=finishRecruit(JSON.parse(JSON.stringify(preset)));
       G.party.push(nr);
@@ -34809,7 +35245,7 @@ function pickChoice(k,i){
     toEpilogue(c.after+hurtLine);return;
   }
   G.pending=null;
-  const got=(c.gear?[c.gear]:[]).concat(c.gear2||[]);
+  const got=(c.gear?[c.gear]:[]).concat(c.gear2||[]).concat(dug);   /* #197 */
   /* #143 - the receipt is the aftermath's own chips, plus the piece itself
      when the road handed one over. #150 - the coin rides in the WAGON now, and
      this is the second of the two strips that had to be told: the other is in
