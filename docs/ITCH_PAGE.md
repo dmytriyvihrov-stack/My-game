@@ -26,7 +26,7 @@
 | **Pricing** | No payments *(a "Download / play" that costs nothing; leave donations off until you want them)* |
 | **Uploads** | `rabblebound-itch.zip`, and tick **This file will be played in the browser** |
 | **Embed options** | **Manually set size: 1280 x 720**, tick **Fullscreen button**, tick **Mobile friendly** *(landscape)*. Leave "automatically start on page load" OFF: the first click is what lets a browser play sound. |
-| **Cover image** | `cover_630x500.png` |
+| **Cover image** | `cover_630x500.png` in the delivery folder, which is a copy of **`marketing\itch\rabblebound-itch-cover-630x500.png`** - the painted cover with RABBLEBOUND set across it, made against the engraved key art and already the right 630x500. *(A second file, `cover_keyart_630x500.png`, is a plain crop of the menu painting with no lettering, kept only as the fallback if the type on the first one ever reads badly at thumbnail size.)* |
 | **Screenshots** | the five in `screenshots\`, in that order |
 | **Genre** | Strategy |
 | **Tags** | tactical, turn-based, roguelike, hex, dark-fantasy, party-based, singleplayer, story-rich, low-magic, mercenary |
@@ -120,12 +120,17 @@ written for the road and the fight separately.
 
 ## 4. Where the pictures came from, so they can be remade
 
-`tools\build_itch.ps1` builds the zip. The five screenshots and the cover in
-`%USERPROFILE%\grimtoll-itch\` were taken from the **extracted zip**, not from the working file, in
-a real headless browser at 2x through `tools\playtest\eyes.py` (the preview pane composites no
-frames, so it cannot take a picture). The cover is a 630x500 crop of the front door's key art
-(`art/src/stage-1/key/KEY-01_main-menu-bloom.png`), tight on the company so it still reads at the
-315x250 itch draws it at.
+`tools\build_itch.ps1` builds the zip. The five screenshots in `%USERPROFILE%\grimtoll-itch\` were
+taken from the **extracted zip**, not from the working file, in a real headless browser at 2x
+through `tools\playtest\eyes.py` (the preview pane composites no frames, so it cannot take a
+picture).
+
+⚑ **The cover was already made and was nearly missed.** `marketing\itch\` was sitting untracked in
+the repo with a purpose-built 630x500 cover in it, its 1408x1117 source, and the prompt that
+produced it, against `art/src/stage-2/key/KEY-01D_main-menu-engraved-slashlight.png`. It has the
+title set across it and the whole company readable at thumbnail size, which a crop of the menu
+painting cannot have, so **that is the cover** and the crop is the fallback. It is committed now
+rather than left loose. **Look in `marketing\` before making a marketing asset.**
 
 ⚠ **The aftermath screen is deliberately not among the five.** At six or more crew the cards narrow
 to the point where a long nickname breaks inside the word (measured: the name column is 131px at
