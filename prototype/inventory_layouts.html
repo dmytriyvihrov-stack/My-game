@@ -1,0 +1,462 @@
+<meta charset="utf-8">
+<title>RabbleBound - the company screen, four layouts</title>
+<!--
+  ═══ FOUR LAYOUTS FOR THE COMPANY SCREEN ══════════════════════════════════
+  (User, 2026-08-18: "three or four other options of inventory screen where
+  inventory and perks take more place and in general it is cleaner and nicer,
+  like the after-battle screen... if information is not very important, better
+  hide it, and maybe a little bit less space for the character and paint with
+  artifacts, because now it also takes too much space.")
+
+  ⛔ ONE STYLESHEET FOR ALL FOUR, AND THAT IS THE POINT. Every variant is
+  built from the SAME tokens and the SAME furniture, so the only thing that
+  differs between them is the LAYOUT. Four mockups with four looks would be a
+  taste test; four mockups with one look is a layout decision, which is what
+  was actually asked for.
+
+  The tokens are copied verbatim from the build's :root, and the chip, the
+  medallion and the tray are #187's own aftermath furniture (.fxc / .fxi /
+  .amTray), so a variant that reads well here reads the same way in the game.
+
+  ⚠ THIS IS A SKETCH, NOT A BUILD. Nothing here is wired to the game; the data
+  is real (real names, real gear, real classes, the new `up · cost` trait
+  lines) so the boxes are the right SIZE, but no click does anything. Same
+  status as prototype/event_formats_sketch.html.
+
+  Today's screen for reference: roster 224 | character 606 | stash 450.
+-->
+<style>
+:root{
+  --bone:#d8d5cc; --steel:#96a1a5;
+  --t3:#7d9490; --t4:#c9c6bb;
+  --blood:#7a1f22; --blood-lit:#a33b34;
+  --panel:#152021; --line:#27383a; --field:#0c1113;
+  --g0:#1d1710; --g1:#3d2f1d; --g2:#6b5330; --g3:#a38652; --g4:#d9bd7e;
+  --g-ink:#100c06; --g-body:#c2b493;
+  --morale:#c9a227; --gold:#d9bd7e; --grain:#8ca35a;
+  --str:#b5563f; --agi:#6d9b6a; --int:#6a86b5; --mor:#c9a227;
+  --display:'Cinzel','Palatino Linotype',Georgia,serif;
+  --body:'Spectral',Georgia,'Times New Roman',serif;
+  --mono:'JetBrains Mono',Consolas,'Courier New',monospace;
+  --fs1:10px; --fs2:11px; --fs3:12px; --fs4:13px;
+  --fs5:15px; --fs6:17px; --fs7:20px; --fs8:24px;
+  --e1:#3d2f1d; --e2:#4d3c22; --e3:#6b5330;
+  --p1:2px; --p2:4px; --p3:6px; --p4:9px; --p5:12px; --p6:16px; --p7:24px;
+}
+*{box-sizing:border-box}
+body{margin:0;background:#0a0806;color:var(--t4);font-family:var(--body);
+     font-size:var(--fs4);padding:var(--p7)}
+
+/* ── the page chrome, which is NOT part of any variant ─────────────────── */
+h1{font-family:var(--display);font-size:var(--fs7);color:var(--g4);
+   letter-spacing:.08em;margin:0 0 var(--p3)}
+.note{max-width:1280px;font-size:var(--fs3);color:#8a7f6a;line-height:1.5;
+      margin:0 0 var(--p6)}
+.vhead{max-width:1280px;margin:var(--p7) 0 var(--p3);display:flex;
+       align-items:baseline;gap:var(--p5);flex-wrap:wrap}
+.vhead b{font-family:var(--display);font-size:var(--fs6);color:var(--g4);
+         letter-spacing:.06em}
+.vhead .room{font-family:var(--mono);font-size:var(--fs1);letter-spacing:.12em;
+             color:var(--grain)}
+.vhead .hid{font-family:var(--mono);font-size:var(--fs1);letter-spacing:.12em;
+            color:#8a7449}
+.why{max-width:1280px;font-size:var(--fs3);color:#9a8e78;line-height:1.5;
+     margin:0 0 var(--p4);border-left:2px solid var(--e1);padding-left:var(--p5)}
+
+/* ── the stage: the game's real 1280x720 ───────────────────────────────── */
+.stage{width:1280px;height:720px;background:var(--field);
+       border:1px solid var(--e2);display:flex;flex-direction:column;
+       overflow:hidden;position:relative}
+
+/* ── shared furniture, lifted from the build ───────────────────────────── */
+.bar{height:42px;background:var(--g0);border-bottom:2px solid var(--e1);
+     display:flex;align-items:center;padding:0 var(--p6);gap:var(--p5);flex:none}
+.bar h2{font-family:var(--display);font-size:var(--fs6);color:var(--g4);
+        letter-spacing:.09em;margin:0}
+.bar .sep{flex:1}
+.bar button{font-family:var(--mono);font-size:var(--fs1);letter-spacing:.12em;
+            color:var(--g3);background:#2a2114;border:1px solid var(--e2);
+            padding:var(--p2) var(--p5);cursor:pointer}
+/* #187's chip: a medallion, a number, a label */
+.fxc{display:flex;align-items:center;gap:var(--p4);min-height:58px;
+     padding:var(--p3) var(--p5);border:1px solid var(--e2);
+     background:linear-gradient(145deg,#2b1e0d,#17130c);
+     box-shadow:inset 0 1px rgba(255,239,187,.05)}
+.fxi{width:34px;height:34px;flex:none;display:grid;place-items:center;
+     border-radius:50%;border:1px solid var(--e3);
+     background:radial-gradient(circle,#38260e 0 48%,#15110a 50%);
+     font-size:var(--fs5);box-shadow:0 0 12px rgba(203,156,62,.12)}
+.fxn{font-family:var(--display);font-size:var(--fs8);color:var(--g4);line-height:1}
+.fxl{font-family:var(--mono);font-size:var(--fs1);letter-spacing:.12em;color:#8a7449}
+/* #187's tray */
+.tray{border:1px solid var(--e2);background:rgba(14,13,9,.9);padding:var(--p4);
+      box-shadow:inset 0 0 20px rgba(0,0,0,.36),0 8px 20px rgba(0,0,0,.24);
+      display:flex;flex-direction:column;min-height:0}
+.trayh{font-family:var(--mono);font-size:var(--fs1);letter-spacing:.16em;
+       color:#8a7449;border-bottom:1px solid var(--e1);
+       padding-bottom:var(--p2);margin-bottom:var(--p4);flex:none;
+       display:flex;align-items:center;gap:var(--p3)}
+.trayh .n{margin-left:auto;color:var(--g3)}
+.scroll{overflow:auto;min-height:0;flex:1}
+
+/* a face, everywhere */
+.face{border:1px solid var(--e2);background:
+      radial-gradient(circle at 42% 34%,#3d5654,#16211f);flex:none;
+      display:grid;place-items:center;font-size:var(--fs5);color:#0c1113}
+.face.c{background:radial-gradient(circle at 42% 34%,#4a2a42,#1a1016)}
+
+/* an item, everywhere. The one card the stash and the slots share. */
+.item{display:flex;gap:var(--p4);align-items:center;padding:var(--p3) var(--p4);
+      border:1px solid var(--e1);background:linear-gradient(145deg,#211a10,#14100a);
+      cursor:pointer}
+.item:hover{border-color:var(--e3);background:linear-gradient(145deg,#2b2214,#17120b)}
+.item .g{width:30px;height:30px;flex:none;display:grid;place-items:center;
+         border-radius:50%;border:1px solid var(--e2);
+         background:radial-gradient(circle,#33240f 0 48%,#14100a 50%);font-size:var(--fs4)}
+.item .nm{font-size:var(--fs3);color:var(--t4);line-height:1.25;min-width:0}
+.item .sub{font-family:var(--mono);font-size:var(--fs1);letter-spacing:.08em;
+           color:#7a6d55;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.item .r{margin-left:auto;font-family:var(--mono);font-size:var(--fs1);
+         color:var(--g3);white-space:nowrap}
+.item.empty{opacity:.4;border-style:dashed;cursor:default}
+.item.empty:hover{border-color:var(--e1);background:linear-gradient(145deg,#211a10,#14100a)}
+
+/* a perk */
+.perk{display:flex;gap:var(--p4);align-items:flex-start;padding:var(--p3) var(--p4);
+      border:1px solid var(--e1);background:linear-gradient(145deg,#1c1a10,#12110a)}
+.perk .g{width:26px;height:26px;flex:none;display:grid;place-items:center;
+         border:1px solid var(--e2);color:var(--grain);font-size:var(--fs3)}
+.perk b{display:block;font-family:var(--mono);font-size:var(--fs1);
+        letter-spacing:.12em;color:var(--g4);margin-bottom:var(--p1)}
+.perk i{font-style:normal;font-size:var(--fs2);color:#9a8e78;line-height:1.35}
+.perk.open{border-style:dashed;opacity:.5}
+.perk.open b{color:var(--grain)}
+
+/* the roster row */
+.rmem{display:flex;gap:var(--p3);align-items:center;padding:var(--p3) var(--p4);
+      border-bottom:1px solid #2a2114;cursor:pointer;width:100%;text-align:left;
+      background:none;border-left:2px solid transparent;color:inherit}
+.rmem.on{background:#221a0e;border-left-color:var(--g4)}
+.rmem .rn{font-size:var(--fs3);color:var(--t4);line-height:1.2}
+.rmem .rc{font-family:var(--mono);font-size:var(--fs1);letter-spacing:.09em;color:#7a6d55}
+.star{color:var(--g4)}
+
+/* the person's header line, shared by the variants that have one */
+.who{display:flex;align-items:center;gap:var(--p5);flex:none}
+.who .nm{font-family:var(--display);font-size:var(--fs6);color:var(--g4);
+         letter-spacing:.04em;line-height:1.1}
+.who .rl{font-family:var(--mono);font-size:var(--fs1);letter-spacing:.14em;color:#8a7449}
+.trait{font-size:var(--fs2);color:#9a8e78;font-style:italic}
+.trait b{font-style:normal;font-family:var(--mono);font-size:var(--fs1);
+         letter-spacing:.1em;color:var(--g3)}
+
+/* four stat chips, the aftermath's own shape at half height */
+.stats{display:flex;gap:var(--p3)}
+.stat{flex:1;display:flex;align-items:center;gap:var(--p3);padding:var(--p2) var(--p4);
+      border:1px solid var(--e1);background:linear-gradient(145deg,#211a10,#14100a)}
+.stat .v{font-family:var(--display);font-size:var(--fs7);line-height:1}
+.stat .k{font-family:var(--mono);font-size:var(--fs1);letter-spacing:.12em;color:#7a6d55}
+.stat.s .v{color:var(--str)} .stat.a .v{color:var(--agi)}
+.stat.i .v{color:var(--int)} .stat.m .v{color:var(--mor)}
+
+/* the equipped strip: the doll's replacement in three of the four */
+.strip{display:flex;gap:var(--p3)}
+.slot{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;
+      gap:var(--p2);padding:var(--p3) var(--p2);border:1px solid var(--e1);
+      background:linear-gradient(145deg,#211a10,#14100a);cursor:pointer}
+.slot:hover{border-color:var(--e3)}
+.slot .g{width:34px;height:34px;display:grid;place-items:center;border-radius:50%;
+         border:1px solid var(--e2);background:radial-gradient(circle,#38260e 0 48%,#15110a 50%);
+         font-size:var(--fs5)}
+.slot .k{font-family:var(--mono);font-size:var(--fs1);letter-spacing:.1em;color:#7a6d55}
+.slot .n{font-size:var(--fs1);color:var(--t4);text-align:center;line-height:1.2;
+         max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.slot.none .g{opacity:.35;border-style:dashed}
+.slot.none .n{color:#6b6152}
+
+/* the tab pair that lets GEAR and PERKS share one big area */
+.tabs{display:flex;flex:none;border-bottom:1px solid var(--e1)}
+.tab{flex:1;font-family:var(--mono);font-size:var(--fs1);letter-spacing:.14em;
+     color:#8a7449;background:#120d07;border:none;border-right:1px solid #2a2114;
+     padding:var(--p4) var(--p2);cursor:pointer}
+.tab.on{color:var(--g4);background:#221a0e;box-shadow:inset 0 -2px var(--g4)}
+
+.grid2{display:grid;gap:var(--p3)}
+.hint{font-family:var(--mono);font-size:var(--fs1);letter-spacing:.1em;
+      color:#6b6152;padding:var(--p3) 0}
+</style>
+
+<h1>THE COMPANY SCREEN &middot; four layouts</h1>
+<p class="note">
+  All four are drawn at the game's real <b>1280&times;720</b>, from the build's own tokens and
+  #187's aftermath furniture (the medallion, the chip, the tray), so the only thing that changes
+  between them is <b>where the room goes</b>. Today's split is <b>roster 224 &middot; character 606
+  &middot; stash 450</b>, and the character column is the one carrying the doll.
+  Nothing here is wired; the data is real so the boxes are the right size.
+</p>
+
+<!-- ═══════════════════ A ═══════════════════ -->
+<div class="vhead">
+  <b>A &middot; THE RAIL</b>
+  <span class="room">STASH 450 &rarr; 726 &middot; PERKS 0 &rarr; A REAL PANEL</span>
+  <span class="hid">HIDDEN: the doll &middot; the XP ring &middot; wages &middot; gear stat deltas</span>
+</div>
+<p class="why">
+  The smallest move from today, and the one with the least risk. The roster keeps its column but
+  loses everything except a face and a name; the character column loses the doll entirely and
+  states what is worn as a <b>six-medallion strip</b>, which is the same information in one row
+  instead of a picture. Everything that row frees goes to the stash and to a perk panel that
+  finally has somewhere to live.
+</p>
+<div class="stage" id="A"></div>
+
+<!-- ═══════════════════ B ═══════════════════ -->
+<div class="vhead">
+  <b>B &middot; TWO TRAYS</b>
+  <span class="room">GEAR 596 &middot; PERKS 596, SIDE BY SIDE</span>
+  <span class="hid">HIDDEN: the doll &middot; the roster column &middot; the trait paragraph</span>
+</div>
+<p class="why">
+  The biggest departure and the one that answers the ask most directly. The person becomes a
+  <b>thin band across the top</b> - face, name, four stat chips, one trait line - and the whole
+  body of the screen is two equal trays: everything you can wear on the left, everything they can
+  learn on the right. The roster moves into that band as a row of faces. <b>Equipped and stash are
+  in the SAME tray</b>, so moving a thing is one space rather than a journey across the screen.
+</p>
+<div class="stage" id="B"></div>
+
+<!-- ═══════════════════ C ═══════════════════ -->
+<div class="vhead">
+  <b>C &middot; STASH IS THE SCREEN</b>
+  <span class="room">STASH 850 AS A GRID &middot; PERKS SHARE THE SAME AREA</span>
+  <span class="hid">HIDDEN: the doll &middot; stats behind a hover &middot; the roster column</span>
+</div>
+<p class="why">
+  For the way the screen is actually used between fights, which is sorting loot. The stash stops
+  being a list and becomes a <b>grid of cards</b> filling most of the screen; <b>PERKS is a tab on
+  that same big area</b>, so both of the things you said need room get all of it, one at a time.
+  The wearer is a narrow left column of slots, and the roster is a rail of faces along the bottom.
+</p>
+<div class="stage" id="C"></div>
+
+<!-- ═══════════════════ D ═══════════════════ -->
+<div class="vhead">
+  <b>D &middot; THE FOLIO</b>
+  <span class="room">GEAR + PERKS INSIDE ONE CARD, 968 WIDE</span>
+  <span class="hid">HIDDEN: the doll &middot; everything not on the open person</span>
+</div>
+<p class="why">
+  The one that looks most like the after-battle screen, because it is built the same way: one
+  <b>card per person</b> with the emblem and the rays behind it, and gear and perks sitting side by
+  side <b>inside</b> that card rather than in separate furniture. The roster is a left rail of
+  faces. It is the prettiest of the four and the least flexible: a card has a fixed shape, so a
+  person with nine perks and a person with two look more alike than they should.
+</p>
+<div class="stage" id="D"></div>
+
+<script>
+/* ── real data, so the boxes are the right size ─────────────────────────── */
+const CREW=[
+  {n:'Vesna',nick:'Kolb',sur:'',g:'👤',cls:'SPEARWOMAN',race:'HUMAN',lv:4,star:2,
+   trait:['Widowed thrice','+17% damage under half hitpoints','−10% at or above half'],
+   st:[9,9,7,10],
+   gear:[['ARMOUR','🛡','Padded jack','+18 stops'],['MAIN','🗡','Boar spear','9-14 · reach 2'],
+         ['OFF','·','',''],['HELM','⛑','Kettle hat','+6 stops'],
+         ['TRINKET','◈','The Toll-Man’s Boots','+1 AGI −2 MOR'],['BAG','🧺','Pilum','throw, 1 use']],
+   perks:[['⚔','SPEAR WALL','Anything stepping into her front takes most of a spear on the way in.'],
+          ['◈','BULWARK','+8 dodge on any turn she has not moved.'],
+          ['✦','OPPORTUNE','+10 to the flanking figure.'],
+          ['✧','DUELLIST','+8 to hit when exactly one enemy is on her.']],
+   open:2},
+  {n:'Skree',nick:'the Half',sur:'',g:'🐀',cls:'CUTTER',race:'RATKIN',lv:3,star:0,
+   trait:['Keeps a list','+20% damage against whatever last hurt them','−6 to hit against anything that has not'],
+   st:[7,12,8,8],
+   gear:[['ARMOUR','🛡','Rat-silk shroud','+9 stops +1 AGI'],['MAIN','🗡','Gut-knife','5-9 · venom'],
+         ['OFF','🗡','Short sword','6-10'],['HELM','·','',''],
+         ['TRINKET','·','',''],['BAG','🧺','Shuriken','throw, 2 uses']],
+   perks:[['✦','GROUNDWISE','Marsh and scrub cost him nothing.'],
+          ['⚔','BACKCUT','+12% damage from the rear arc.']],
+   open:1},
+  {n:'Marrow',nick:'Quiet',sur:'',g:'🜁',cls:'MAGE',race:'HUMAN',lv:4,star:1,c:1,
+   trait:['Wind-touched','Casting costs 4 less nerve','−2 MOR'],
+   st:[6,7,13,9],
+   gear:[['ARMOUR','🛡','Rags and rope','+3 stops'],['MAIN','🪄','Working stave','arcane · range 4'],
+         ['OFF','·','',''],['HELM','·','',''],
+         ['TRINKET','◈','The Mirrored Sphere','+1 AGI −2 MOR'],['BAG','·','','']],
+   perks:[['✧','CONDUIT','+20% spell power.'],
+          ['✦','IRONJAW','+12 morale ceiling.'],
+          ['✧','ELEMENTAL WEAPON','A rolled element on the stave each battle.']],
+   open:0},
+  {n:'Bruht',nick:'Doorway',sur:'',g:'👹',cls:'BRUTE',race:'OGRE',lv:3,star:0,
+   trait:['Frightening','+5 MOR: it has never once been their problem','−6 morale to everyone within 2 hexes'],
+   st:[14,5,5,11],
+   gear:[['ARMOUR','🛡','Ogre scale','+26 stops −2 AGI'],['MAIN','🔨','Warclub','16-24 · two hands'],
+         ['OFF','·','',''],['HELM','⛑','Bucket, worn','+4 stops'],
+         ['TRINKET','·','',''],['BAG','·','','']],
+   perks:[['✦','THICK HIDE','+18 armour.'],
+          ['⚔','SWEEP','One swing catches everything adjacent.']],
+   open:0}
+];
+const STASH=[
+  ['🗡','Arming sword','8-13 · reach 1','WORTH 40'],
+  ['🛡','Mail hauberk','+34 stops · −1 AGI','WORTH 120'],
+  ['🏹','Hunting bow','7-11 · range 5','WORTH 55'],
+  ['🗡','Fence-post cudgel','6-11 · reach 1','WORTH 12'],
+  ['⛑','Kettle hat','+6 stops','WORTH 18'],
+  ['◈','Fingerprint Stone Shield','+14 stops · once a fight','RARE'],
+  ['🧺','Time-Cube','skip one enemy turn','RARE'],
+  ['🗡','Boar spear','9-14 · reach 2','WORTH 35'],
+  ['🛡','Stitched hides','+14 stops','WORTH 44'],
+  ['◈','Thunder-fish Kris','5-9 · bleeding','RARE'],
+  ['🧺','Pilum','throw, 1 use','WORTH 15'],
+  ['🛡','Scrap harness','+7 stops','WORTH 9']
+];
+const P=CREW[0];
+
+const face=(c,sz)=>'<div class="face'+(c.c?' c':'')+'" style="width:'+sz+'px;height:'+sz+
+  'px;font-size:'+(sz>34?'var(--fs6)':'var(--fs4)')+'">'+c.g+'</div>';
+const statRow=c=>'<div class="stats">'+
+  [['s','STR',c.st[0]],['a','AGI',c.st[1]],['i','INT',c.st[2]],['m','MOR',c.st[3]]]
+  .map(x=>'<div class="stat '+x[0]+'"><span class="v">'+x[2]+'</span><span class="k">'+x[1]+
+    '</span></div>').join('')+'</div>';
+const traitLine=c=>'<div class="trait"><b>'+c.trait[0].toUpperCase()+'</b> &nbsp;'+
+  c.trait[1]+' &middot; '+c.trait[2]+'</div>';
+const stripRow=c=>'<div class="strip">'+c.gear.map(g=>
+  '<div class="slot'+(g[2]?'':' none')+'"><div class="g">'+(g[1]==='·'?'+':g[1])+'</div>'+
+  '<div class="k">'+g[0]+'</div><div class="n" title="'+g[3]+'">'+(g[2]||'empty')+'</div></div>'
+  ).join('')+'</div>';
+const itemRow=(g,r)=>'<div class="item"><div class="g">'+g+'</div>'+
+  '<div class="nm">'+r[0]+'<div class="sub">'+r[1]+'</div></div>'+
+  '<div class="r">'+r[2]+'</div></div>';
+const stashList=n=>STASH.slice(0,n).map(r=>itemRow(r[0],[r[1],r[2],r[3]])).join('');
+const perkList=c=>c.perks.map(p=>'<div class="perk"><div class="g">'+p[0]+'</div>'+
+  '<div><b>'+p[1]+'</b><i>'+p[2]+'</i></div></div>').join('')+
+  (c.open?'<div class="perk open"><div class="g">＋</div><div><b>'+c.open+
+    ' POINT'+(c.open>1?'S':'')+' UNSPENT</b><i>Pick something. It does not expire, '+
+    'but neither does the next fight.</i></div></div>':'');
+const rosterList=sel=>CREW.map((c,i)=>'<button class="rmem'+(i===sel?' on':'')+'">'+
+  face(c,34)+'<div><div class="rn">'+(c.star?'<span class="star">&#9733;</span> ':'')+
+  c.n+' &ldquo;'+c.nick+'&rdquo;</div>'+
+  '<div class="rc">'+c.race+' &middot; '+c.cls+' L'+c.lv+'</div></div></button>').join('');
+const bar=extra=>'<div class="bar"><h2>THE SALT DOGS</h2>'+(extra||'')+
+  '<div class="sep"></div><button>BACK TO THE ROAD</button></div>';
+
+/* ── A · THE RAIL ──────────────────────────────────────────────────────── */
+document.getElementById('A').innerHTML=bar()+
+'<div style="flex:1;display:flex;min-height:0">'+
+  '<div style="width:186px;flex:none;background:#161009;border-right:2px solid var(--e1);overflow:auto">'+
+    rosterList(0)+'</div>'+
+  '<div style="width:368px;flex:none;padding:var(--p5);display:flex;flex-direction:column;'+
+       'gap:var(--p4);min-height:0;border-right:2px solid var(--e1)">'+
+    '<div class="who">'+face(P,44)+'<div><div class="nm">'+P.n+' '+P.nick+'</div>'+
+      '<div class="rl">'+P.race+' &middot; '+P.cls+' &middot; L'+P.lv+'</div></div></div>'+
+    traitLine(P)+statRow(P)+
+    '<div class="tray" style="flex:none"><div class="trayh">WORN<span class="n">6 SLOTS</span></div>'+
+      stripRow(P)+'</div>'+
+    '<div class="tray" style="flex:1"><div class="trayh">PERKS<span class="n">'+P.open+
+      ' UNSPENT</span></div><div class="scroll grid2">'+perkList(P)+'</div></div>'+
+  '</div>'+
+  '<div class="tray" style="flex:1;border:none;border-left:0;border-radius:0">'+
+    '<div class="trayh">THE STASH<span class="n">12 THINGS &middot; 726 WIDE</span></div>'+
+    '<div class="scroll grid2" style="grid-template-columns:1fr 1fr">'+stashList(12)+'</div>'+
+  '</div>'+
+'</div>';
+
+/* ── B · TWO TRAYS ─────────────────────────────────────────────────────── */
+document.getElementById('B').innerHTML=bar()+
+'<div style="flex:none;padding:var(--p4) var(--p6);display:flex;align-items:center;'+
+     'gap:var(--p6);border-bottom:1px solid var(--e1);background:#161009">'+
+  '<div style="display:flex;gap:var(--p3)">'+CREW.map((c,i)=>
+    '<div style="opacity:'+(i?'.5':'1')+';border-bottom:2px solid '+(i?'transparent':'var(--g4)')+
+    ';padding-bottom:var(--p2)">'+face(c,40)+'</div>').join('')+'</div>'+
+  '<div style="min-width:0"><div class="who" style="gap:var(--p4)"><div class="nm">'+P.n+
+    ' &ldquo;'+P.nick+'&rdquo;</div><div class="rl">'+P.race+' &middot; '+P.cls+' &middot; L'+
+    P.lv+'</div></div>'+traitLine(P)+'</div>'+
+  '<div style="flex:1"></div>'+
+  '<div style="width:352px">'+statRow(P)+'</div>'+
+'</div>'+
+'<div style="flex:1;display:flex;gap:var(--p5);padding:var(--p5);min-height:0">'+
+  '<div class="tray" style="flex:1">'+
+    '<div class="trayh">WHAT THEY CARRY<span class="n">WORN + STASH, ONE SPACE</span></div>'+
+    '<div class="scroll">'+
+      '<div class="hint">ON HER</div>'+stripRow(P)+
+      '<div class="hint">IN THE CART</div><div class="grid2">'+stashList(9)+'</div>'+
+    '</div></div>'+
+  '<div class="tray" style="flex:1">'+
+    '<div class="trayh">WHAT THEY KNOW<span class="n">'+P.open+' UNSPENT</span></div>'+
+    '<div class="scroll grid2">'+perkList(P)+'</div></div>'+
+'</div>';
+
+/* ── C · STASH IS THE SCREEN ───────────────────────────────────────────── */
+document.getElementById('C').innerHTML=bar(
+  '<span style="font-family:var(--mono);font-size:var(--fs1);letter-spacing:.12em;color:#8a7449">'+
+  P.n.toUpperCase()+' &middot; '+P.cls+' &middot; STR '+P.st[0]+' AGI '+P.st[1]+' INT '+P.st[2]+
+  ' MOR '+P.st[3]+'</span>')+
+'<div style="flex:1;display:flex;min-height:0">'+
+  '<div style="width:212px;flex:none;padding:var(--p4);display:flex;flex-direction:column;'+
+       'gap:var(--p3);border-right:2px solid var(--e1);background:#161009;overflow:auto">'+
+    '<div class="trayh" style="margin-bottom:0">WORN</div>'+
+    P.gear.map(g=>'<div class="item'+(g[2]?'':' empty')+'"><div class="g">'+
+      (g[1]==='·'?'+':g[1])+'</div><div class="nm">'+(g[2]||'empty')+
+      '<div class="sub">'+(g[0])+'</div></div></div>').join('')+
+  '</div>'+
+  '<div class="tray" style="flex:1;border:none">'+
+    '<div class="tabs" style="margin:calc(var(--p4) * -1) calc(var(--p4) * -1) var(--p4)">'+
+      '<button class="tab on">THE STASH &middot; 12</button>'+
+      '<button class="tab">PERKS &middot; '+P.open+' UNSPENT</button></div>'+
+    '<div class="scroll grid2" style="grid-template-columns:1fr 1fr 1fr">'+stashList(12)+'</div>'+
+  '</div>'+
+'</div>'+
+'<div style="flex:none;height:74px;border-top:2px solid var(--e1);background:#161009;'+
+     'display:flex;align-items:center;gap:var(--p5);padding:0 var(--p6)">'+
+  CREW.map((c,i)=>'<div style="display:flex;align-items:center;gap:var(--p3);opacity:'+
+    (i?'.55':'1')+';padding:var(--p2) var(--p4);border:1px solid '+
+    (i?'transparent':'var(--e3)')+'">'+face(c,38)+
+    '<div><div class="rn" style="font-size:var(--fs3)">'+(c.star?'<span class="star">&#9733;</span> ':'')+
+    c.n+'</div><div class="rc">'+c.cls+' L'+c.lv+'</div></div></div>').join('')+
+'</div>';
+
+/* ── D · THE FOLIO ─────────────────────────────────────────────────────── */
+document.getElementById('D').innerHTML=bar()+
+'<div style="flex:1;display:flex;min-height:0">'+
+  '<div style="width:96px;flex:none;background:#161009;border-right:2px solid var(--e1);'+
+       'display:flex;flex-direction:column;align-items:center;gap:var(--p4);padding:var(--p4) 0">'+
+    CREW.map((c,i)=>'<div style="position:relative;opacity:'+(i?'.55':'1')+
+      ';border:2px solid '+(i?'transparent':'var(--g4)')+';padding:var(--p1)">'+face(c,56)+
+      (c.star?'<span class="star" style="position:absolute;top:-4px;right:-4px">&#9733;</span>':'')+
+      '</div>').join('')+
+  '</div>'+
+  '<div style="flex:1;padding:var(--p6);min-height:0;display:flex">'+
+    '<div style="flex:1;position:relative;border:1px solid var(--e2);min-height:0;'+
+         'background:radial-gradient(ellipse at 50% 0%,#241a0e 0%,#12100a 62%);'+
+         'display:flex;flex-direction:column;padding:var(--p6);gap:var(--p5);overflow:hidden">'+
+      /* the rays, #187's own decoration, pinned so nothing crops */
+      '<div style="position:absolute;top:-120px;left:50%;width:520px;height:320px;'+
+           'transform:translateX(-50%);pointer-events:none;opacity:.35;'+
+           'background:conic-gradient(from 200deg at 50% 100%,transparent 0deg,'+
+           'rgba(217,189,126,.16) 8deg,transparent 16deg,transparent 26deg,'+
+           'rgba(217,189,126,.16) 34deg,transparent 42deg,transparent 52deg,'+
+           'rgba(217,189,126,.16) 60deg,transparent 68deg)"></div>'+
+      '<div class="who" style="position:relative;justify-content:center;flex-direction:column;'+
+           'gap:var(--p2);text-align:center">'+face(P,64)+
+        '<div class="nm" style="font-size:var(--fs7)">'+P.n+' &ldquo;'+P.nick+'&rdquo;</div>'+
+        '<div class="rl">'+P.race+' &middot; '+P.cls+' &middot; LEVEL '+P.lv+'</div>'+
+        traitLine(P)+'</div>'+
+      '<div style="position:relative">'+statRow(P)+'</div>'+
+      '<div style="position:relative;flex:1;display:flex;gap:var(--p5);min-height:0">'+
+        '<div class="tray" style="flex:1"><div class="trayh">WORN</div>'+
+          '<div class="scroll grid2">'+P.gear.map(g=>'<div class="item'+(g[2]?'':' empty')+
+          '"><div class="g">'+(g[1]==='·'?'+':g[1])+'</div><div class="nm">'+(g[2]||'empty')+
+          '<div class="sub">'+g[0]+(g[3]?' &middot; '+g[3]:'')+'</div></div></div>').join('')+
+          '</div></div>'+
+        '<div class="tray" style="flex:1"><div class="trayh">PERKS<span class="n">'+P.open+
+          ' UNSPENT</span></div><div class="scroll grid2">'+perkList(P)+'</div></div>'+
+      '</div>'+
+    '</div>'+
+  '</div>'+
+  '<div class="tray" style="width:300px;flex:none;border:none;border-left:2px solid var(--e1);'+
+       'background:#161009">'+
+    '<div class="trayh">THE STASH<span class="n">12</span></div>'+
+    '<div class="scroll grid2">'+stashList(12)+'</div></div>'+
+'</div>';
+</script>

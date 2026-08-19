@@ -1399,6 +1399,9 @@ Use the appropriate approved body base as a hard visual reference. Overlays cont
 | `TOK-LURCHER` | **MISSING — CREATE** | `Long-legged starved camp lurcher built to bite and leave, narrow chest, torn ears and no armour.` |
 | `TOK-RUNT` | **MISSING — CREATE** | `Smaller quicker pack runt, visible ribs, sharp silhouette and frightened aggression.` |
 | `TOK-FENLING` | **MISSING — CREATE** | `A person-sized thing made by fen-water, soaked hide or skin, one wrong watching eye motif and posture that does not react normally to pain; ambiguous origin, no bright glow.` |
+| `TOK-MIREHARE-DOE` | **LIVE — `BATTLE-doe-red-eyes-v4.png`** | `Female frog-rabbit mirehare: broad toad body, dense wet rabbit coat over crown, back and outer limbs, exposed slick throat and belly, long furred ears, webbed feet, vivid blood-red eye, exactly two broad chisel-edged ivory rabbit incisors and one restrained green saliva thread/drop; compact coiled landing silhouette, readable at 48×52.` |
+| `TOK-MIREHARE-BUCK` | **LIVE — `BATTLE-buck-red-eyes-v4.png`** | `Male of the same species: lean arrow-shaped body, dense wet rabbit coat, exposed frog throat and feet, vivid blood-red eye, exactly two broad chisel-edged ivory rabbit incisors and one restrained green saliva thread/drop; low straight-charge silhouette, readable at 54×40.` |
+| `EV-32` | **LIVE — THE RED LIGHTS** | `Wide traveller-view down a flooded road after dusk: the company and cart stop in the foreground while many paired red Mirehare eyes watch from reeds on both sides; bodies stay mostly concealed, with red eyes as the sharpest detail.` |
 | `TOK-ARMOUR` | **MISSING — CREATE** | `Something entirely sealed in oversized plate, no skin and no readable emblem, carrying a huge circular-sweeping sword in one hand; perfectly frontless silhouette, heavy enough to feel inevitable rather than fast.` |
 
 ### Non-fighting companion

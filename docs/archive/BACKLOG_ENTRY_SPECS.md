@@ -3340,3 +3340,162 @@ fight and its value is small.
 - Then: `claim.ps1 lock`, `XP_TABLE`/`xpNeed`/`levelUp`/`fightXP` beside `consequences()`, the crew
   card slot flipped, the ring, the level-0 stranger, the tab pick, `EVFX_ROWS`, `loadRun` migration,
   the tiers re-keyed, `LINT()` 0, the rule-9 harness reading written into `WHAT_TO_TEST.md`.
+
+---
+
+## 193 - The mirehares: a doe that only leaps, a buck that only charges
+
+**Status: IN THE BUILD.** `prototype/grimtoll_slice.html` and the generated `index.html` both carry
+the pair, the road card and the art. The measuring rig is `tools/mirehare_bench.js`, which **defines
+nothing**: an earlier cut of it carried its own statblocks and its own brain, which was right while
+the pair were a proposal and became a lie the moment they landed. Two competing mirehare designs in
+one repo is the drift this project has paid for before.
+
+### What was asked
+
+The user, 2026-08-18: *"I want to create and add monsters. Something between from [frog] and
+rabbit"* · *"For femal i want it only jump option (I think 3 tiles away ecatly) - and it hits, when
+it lands"* · *"And the male - only strait and vertical dash movment damage"* · *"generate it stats
+and try them into battle - i am making design in separate tab"* · *"First create them in independent
+prototype or test"*. Then 2026-08-19, with the art delivered and a full written spec: the creature
+design, the two battle icons, **THE RED LIGHTS** verbatim, the event painting, and
+*"Add it to a test battle and try to run it. **I want some damage, if player ignores logic of this
+enemy**"*.
+
+⚑ **THE LAST SENTENCE IS THE ONE THAT FOUND THE BUG**, and no win rate would have.
+
+### The pair, as they ship
+
+| | hp | armour | morale | skill | dodge | act | dice | armour mult |
+|---|---|---|---|---|---|---|---|---|
+| **doe** `mirehare_f` | 88 | 18 | 120 | 68 | 17 | THREE-HEX LANDING, cost 2, `leap:3` | 24-36 | 1.10 |
+| **buck** `mirehare_m` | 68 | 10 | 105 | 72 | 22 | STRAIGHT CHARGE, cost 2, `dash:4` | 19-30 | .95 |
+
+Authored figures; `build()` then applies its usual x0.9 hp, x0.75 armour and x0.9 dice. Both carry
+**`noWalk:true`**, so `build()` gives them no MOVE act at all: the leap IS her move and the charge IS
+his. The encounter is a fixed **2 does and 2 bucks**. Ground is `swamp`; the card is met between
+locations on the water road, and the map node is `f2`.
+
+⚑ **THE CHARGE IS AUTHORED IN CUBE SPACE AND THE COMMENT BESIDE IT SAYS WHY**: `DIR` is ordered
+around each offset row, so repeating one of its diagonal indexes zig-zags as row parity changes. The
+bench re-derives the same six vectors independently and checks them with the engine's own `hdist`
+from four different origins and both parities, so the check cannot agree with the bug by sharing its
+code. ⚠ **There is no screen-vertical lane on a hex board** - a column alternates NE and NW - so
+*"strait and vertical"* is these six and only these six.
+
+### ⛔ THE BUG: THE BUCK STOOD STILL FOR 85% OF THE FIGHT
+
+Neither body has a walk to fall back on, and each one's single verb only fires when a target is
+**already** sitting on a legal ring hex or a legal lane. `mirehareMove` returned `false` in every
+other case and the turn simply ended. Measured over 10 arena fights, counting only turns where the
+body could still afford its act:
+
+| | turns it could act | acted | **wasted** |
+|---|---|---|---|
+| doe, before | 85 | 57 | **28 (33%)** |
+| buck, before | 117 | 17 | **100 (85%)** |
+| doe, after | 78 | 78 | **0** |
+| buck, after | 107 | 107 | **0** |
+
+So a creature whose whole rule is *block his lane* was teaching nothing, because the lane was never
+threatened: he waited for the player to wander into one. **The fix is the second half of each verb,
+not a new verb** - the same geometry, the same lengths, used to REPOSITION when it cannot be used to
+strike, and paying no damage when it does. Statblocks, dice, costs, encounter size, the card and the
+art are all untouched.
+
+⚠ **AND THE FIRST MEASUREMENT OF THIS WAS WRONG IN A WAY WORTH RECORDING.** The naive counter said
+*doe 59% idle, buck 90% idle* and it was counting the SECOND `aiTurn` call of every turn: both acts
+cost 2 of 2 actions, so `canUse` correctly refuses the follow-up call, and a spent turn looks
+identical to a wasted one from inside `mirehareMove`. **A turn is only wasted if the body could still
+have paid for the act**, and the honest figures are the table above. ⛔ **Anything that wraps an AI
+verb has to ask what the engine would have allowed, not merely what the verb returned.**
+
+⚠ **A SECOND FALSE READING, SAME SESSION: THE BROWSER SERVED A CACHED 14 MB PROTOTYPE.** Three runs
+of "after the patch" numbers were really the unpatched build, and they looked plausible (the idle
+rate simply had not moved). The tell was cheap and is the standing check:
+`mirehareMove.toString().indexOf('<a phrase from the new code>')`. **Verify the running page contains
+the change before believing a single number off it.**
+
+### What ignoring the logic now costs
+
+The bench runs the SAME fight, the same company and the same brains, and only moves where your people
+are standing when it opens. n=12 each, after the fix:
+
+| | wins | rounds | of yours down | hp+armour taken | landings | charges |
+|---|---|---|---|---|---|---|
+| **stood off** in open ground (ignored) | 12/12 | 6.0 | **0.83** | **178** | 6.5 | 2.5 |
+| **closed to contact** (answered) | 12/12 | 4.1 | **0.08** | **121** | 2.5 | 3.2 |
+| standard deployment | 12/12 | 6.8 | 0.92 | 187 | 7.0 | 2.4 |
+
+**Standing off costs ten times as many people.** ⚑ **And the honest mechanism is not the one the
+design claims**: damage per round is almost identical either way (29.5 taken per round in contact,
+29.7 stood off). What closing buys is a **shorter fight** - 4.1 rounds against 6.0 - because you
+reach them instead of being visited. The creatures are not denied by contact; they simply get fewer
+turns. That is a real and teachable answer to *"I want some damage if the player ignores the logic"*,
+and it is worth knowing that it is a tempo answer rather than a counter.
+
+⚠ **THE TWO LEVERS, IF THAT IS NOT ENOUGH**, both deliberately NOT taken here because the brief said
+*"Do not redesign the Mirehares"*: make the doe's landing strike **every** body adjacent to where she
+comes down rather than the single one she aimed at (which would punish clumping and give her a real
+counter), or scale the buck's dice by the **length of the run** (x0 standing, x1 at three, x2 at six),
+which would make *block the lane* worth something on its own. Either is a small change to
+`mirehareMove` and neither touches a statblock.
+
+### The road card: THE RED LIGHTS
+
+His text, implemented verbatim, with the companion name coming off a live non-leader and falling back
+to the Captain. Two doors only.
+
+```
+THE RED LIGHTS
+
+You are still travelling after dusk, looking for dry ground in this forsaken swamp.
+
+Several red lights appear ahead. At first you take them for fireflies.
+
+Fireflies are not red.
+
+[NAME] says it is a bad sign. Turn back. Take the long way around. Safer for everyone.
+
+  ⚔️  Keep moving forward.   the red lights do not move
+  👣  Make a detour.         −2 days · the journey takes two days longer
+```
+
+⚠ **THE SECOND DOOR PRINTS ITS PRICE TWICE, AND IT IS ON THE RECORD RATHER THAN QUIETLY FIXED.**
+`fx:{days:2}` is rendered as the derived **−2 days** chip by `fxNote`, and the authored `c:` line then
+says the same thing in words. That is the one-sentence rule at the top of
+`.claude/rules/event-cards.md` (*the prose says what happened, the chips say what it cost, and a
+number in both is a second receipt*). The sub-line is his authored text, so it stands until he says
+otherwise; **dropping the `c:` is a one-word change** and leaves the door reading `−2 days`.
+
+### Verified, in the running build
+
+- both `prototype/grimtoll_slice.html` and the generated `index.html` parse with **0 JS errors**
+- the code change **survived `inject.ps1`** (checked by string, in the loaded page, not by reading the file)
+- `mirehare_doe` **48x52**, `mirehare_buck` **54x40**, both RGBA with real transparency
+- `EVENTART.mirehares` is `EV32` and the browser decodes it at **586x212**
+- the card opens on the road, prints both doors, and the detour moves the day counter **1 -> 3** and
+  charges nothing else
+- the six charge lanes are straight and collinear from four origins and both row parities; the doe's
+  ring is **18 hexes at exactly 3**
+- 12 fights, no stalls, no errors
+
+### How to run it
+
+```
+fetch('/tools/harness.js').then(r=>r.text()).then(eval)
+fetch('/tools/mirehare_bench.js').then(r=>r.text()).then(eval)
+MB.axes()      the lane geometry, checked against the engine's own hdist
+MB.run(12)     the shipped encounter, full AI both sides
+MB.gap(12)     answered against ignored
+MB.probe()     one fight, itemised
+```
+
+⚠ Keep a batch at 16 fights or fewer: more outruns a 30-second eval bridge.
+
+### Still open
+
+1. The duplicated sub-line on the detour door, above.
+2. Whether *"strait and vertical"* really means the six hex lanes. There is no seventh straight line
+   to give him on this grid, so the alternative is a different creature.
+3. The two levers above, if ignoring the logic should cost more than tempo.
