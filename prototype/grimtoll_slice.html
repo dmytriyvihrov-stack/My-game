@@ -25806,9 +25806,14 @@ function openCamp(spot,next,atPlace){
         'about the same moment. It goes quiet, and then it goes on.'});
   $('wChoices').innerHTML=visible.map((o,i)=>{
     const ok=doorOpen(o);                                        /* #197 */
+    /* ⚠ #197 - AND NO EMPTY `<i>` WHERE THERE IS NOTHING TO SAY. `choiceNote`
+       returns '' on a one-door pickup (its receipt is on the card), and both
+       renderers used to wrap that in an `<i></i>` regardless; `.choice i` is
+       display:block, so the empty box was a real, if small, line. */
+    const note=choiceNote(o);
     return '<button class="choice'+(o.needRace?' racey':'')+'" data-i="'+i+'"'+
       (ok?'':' disabled style="opacity:.38"')+
-      '><b>'+choiceIco(o)+o.t+'</b><i>'+choiceNote(o)+'</i></button>';}).join('');
+      '><b>'+choiceIco(o)+o.t+'</b>'+(note?'<i>'+note+'</i>':'')+'</button>';}).join('');
   $('wChoices').querySelectorAll('.choice').forEach(b2=>{
     if(b2.disabled)return;
     b2.onclick=()=>{
@@ -34237,9 +34242,10 @@ function openEvent(k){
   }
   $('wChoices').innerHTML=visible.map((c,i)=>{
     const ok=doorOpen(c);                                        /* #197 */
+    const note=choiceNote(c,!!c0);                               /* #197 - see below */
     return '<button class="choice'+((c.danger||(c.battle&&anyWayOut))?' danger':'')+(c.needRace?' racey':'')+
-      '" data-i="'+i+'"'+(ok?'':' disabled style="opacity:.38"')+'><b>'+choiceIco(c)+c.t+'</b><i>'+
-      choiceNote(c,!!c0)+'</i></button>';}).join('');
+      '" data-i="'+i+'"'+(ok?'':' disabled style="opacity:.38"')+'><b>'+choiceIco(c)+c.t+'</b>'+
+      (note?'<i>'+note+'</i>':'')+'</button>';}).join('');
   $('wChoices').querySelectorAll('.choice').forEach(b=>{
     /* THE CHOICE OBJECT, not its index: the appended walk-away is not in
        `e.choices` at all, so `indexOf` returned -1 and would have handed
