@@ -34574,8 +34574,8 @@ function canAfford(need){
    ⚠ `presetOf` EXISTS SO THE MAPPING IS IN ONE PLACE. It was a ternary inside
    `pickChoice`, i.e. a table only the payer could read; a gate that resolved
    presets its own way would be the second-source-of-truth shape again. */
-function presetOf(k){return k==='skree'?PRESET_SKREE:k==='nib'?PRESET_NIB
-  :k==='gell'?PRESET_HALF:k==='ash'?PRESET_ASH:PRESET_BRUHT;}
+function presetOf(k){return k==='skree'?PRESET_SKREE
+  :k==='ash'?PRESET_ASH:PRESET_BRUHT;}   /* #201 - nib and gell are gone; Ash replaced them */
 function doorRace(c){
   if(!c)return null;
   if(c.recruit)return c.recruit.race;
