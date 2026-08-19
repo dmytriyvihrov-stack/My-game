@@ -8342,6 +8342,49 @@ function sizeJoke(p){
   return 'It fits nowhere and pinches everywhere. Straps added by somebody who was guessing.';
 }
 function injure(p,inj){p.injuries=p.injuries||[];p.injuries.push(inj);}
+/* ═══ #197 · ONE INJURY, ONE APPLIER, AND THE DOOR SAYS WHICH KIND ════════
+   (User, 2026-08-19: *"Near all events write: permanent or temporary injury
+   (based on injury). And update consiquences on the next screen (and made
+   them shorter)"*.)
+
+   ⛔ THE FIRST THING THE ASK TURNED UP IS THAT NOTHING WAS PERMANENT. The
+   EVENTS picker branched on `hurt.lasting` and NOT ONE CARD IN THE BUILD SET
+   IT, so all seven `hurt` rows were hitpoints. Five of them are AUTHORED as
+   permanent and say so in their own `d`: *"−1 STR"*, *"−1 AGI"*, *"−1 INT"*.
+   That text was never on screen - the temporary branch prints only `hurt.n` -
+   so the promise was invisible rather than broken, which is why nobody
+   reading the cards could have found it. `derived, never authored` cannot fix
+   a field with one value, so the five were wired to what they already claimed
+   (his call, asked and answered) and the label now has two things to say.
+
+   ⛔ AND THE CAMPS PICKER HAD ITS OWN COPY THAT NEVER READ `lasting` AT ALL.
+   Two appliers, one of which could not express the thing the new label
+   promises: a camp card marked permanent would have shown PERMANENT INJURY on
+   the button and charged hitpoints. That is the second-source-of-truth shape
+   this file keeps deleting (`choiceNote` in #150, the receipt in #176), so
+   there is one function now and both pickers call it.
+
+   ⚠ THE TWO RANGES WERE DIFFERENT AND ARE NOW ONE. Events rolled 18-40% of
+   max hp and camps rolled 15-35%; nothing chose that, it is drift between two
+   copies. The events range wins because it serves 6 of the 7 rows. The one
+   camp hurt in the build (Split knuckles, at THE DEBT) therefore bites very
+   slightly harder than it did.
+
+   ⚠ IT PUSHES A COPY, NOT THE TABLE'S OWN OBJECT. `injure` used to store the
+   literal `c.hurt` off EVENTS, so a party member and the card's data were the
+   same object and anything writing to one would have edited the deck. */
+function applyHurt(h){
+  if(!h)return '';
+  const v=pickOne(G.party);
+  if(h.lasting){
+    injure(v,Object.assign({},h));
+    return '\n\n'+who(v)+' will carry this one: '+h.n+'. '+(h.d||'');
+  }
+  const u=unitFrom(v);
+  const dmg=h.hp||Math.round(u.hpMax*(0.18+Math.random()*0.22));
+  v.hpLoss=Math.min((v.hpLoss||0)+dmg,u.hpMax-1);
+  return '\n\n'+who(v)+' takes it: '+h.n+', '+dmg+' hitpoints.';
+}
 
 /* ============================================================
    3.  Art — painted assets, with procedural fallbacks
@@ -24907,7 +24950,7 @@ const CAMPS=[
       need:{food:3},fx:{food:-3,morale:4},
       after:'Hungry and healthy. A vocal minority considers this cowardice and says so at length.'},
      {t:'Boil it long enough and it is fine.',c:'',
-      fx:{morale:-2},hurt:{n:'Bad gut',d:'−1 STR. Three days of it, and it has left a mark.',str:-1},
+      fx:{morale:-2},hurt:{n:'Bad gut',d:'−1 STR. It has left a mark.',str:-1,lasting:true},
       after:'It is fine for almost everyone. It is very much not fine for the one it is not fine for.'},
      /* only exists if there IS an ogre — playtest #2 caught this offering
         itself to an all-human company and then crediting Bruht by name */
@@ -25655,11 +25698,7 @@ function openCamp(spot,next,atPlace){
           if(m.eq[sl]===o.dropGear)m.eq[sl]=null;}));
       }
       let hurtLine='';
-      if(o.hurt){
-        const v=pickOne(G.party),uu=unitFrom(v);
-        const dmg=o.hurt.hp||Math.round(uu.hpMax*(0.15+Math.random()*0.2));
-        v.hpLoss=Math.min((v.hpLoss||0)+dmg,uu.hpMax-1);
-        hurtLine='\n\n'+who(v)+' takes it: '+o.hurt.n+' — '+dmg+' hitpoints. It mends.';}
+      if(o.hurt)hurtLine+=applyHurt(o.hurt);   /* #197 - the one applier */
       /* some things at a fire are not done TO somebody — they are done to
          everybody sitting at it */
       if(o.hurtAll){
@@ -31979,7 +32018,11 @@ function choiceNote(o,skipMorale){
   const cost=fxNote(o.fx);if(cost)parts.push(resGlyphs(cost));
   if(o.c)parts.push(resGlyphs(o.c));
   if(!skipMorale){const m=moraleTag(o.fx);if(m)parts.push(m);}
-  if(o.hurt&&!o.hideHurt)parts.push('<span class="hurt">injury</span>');
+  /* #197 - PERMANENT or TEMPORARY, read off the injury itself. `hideHurt`
+     still wins over both: two doors buy a surprise and the beam that comes
+     down is the surprise (see THE RUINED STEADING). */
+  if(o.hurt&&!o.hideHurt)
+    parts.push('<span class="hurt">'+(o.hurt.lasting?'permanent':'temporary')+' injury</span>');
   if(!canAfford(o.need))parts.push(needTag(o.need));
   return parts.join(' · ');
 }
@@ -32287,7 +32330,8 @@ const EVENTS={
          'about it.'},
       {t:'Take the bridge apart. All of it.',ico:['take'],c:'',
        fx:{salvage:5,days:1},hideHurt:true,
-       hurt:{n:'Crushed foot',d:'−1 AGI. A beam went where a beam should not.',agi:-1},
+       hurt:{n:'Crushed foot',d:'−1 AGI. A beam went where a beam should not.',agi:-1,
+         lasting:true},
        after:'The beams are worth the trouble. The fourth one comes down early, with no '+
          'warning at all.'},
       /* ═══ #151 - THE GREEDY DOOR, RESTORED BY THE USER ════════════════════
@@ -32312,7 +32356,8 @@ const EVENTS={
       {t:'Take all of it. Purse, boots, beams.',ico:['take','evil'],c:'',
        sin:'the toll-post on the west road, taken down to the beams',
        danger:true,fx:{crowns:38,salvage:5,days:1,morale:-6},bootsOn:true,hideHurt:true,
-       hurt:{n:'Crushed foot',d:'−1 AGI. A beam went where a beam should not.',agi:-1},
+       hurt:{n:'Crushed foot',d:'−1 AGI. A beam went where a beam should not.',agi:-1,
+         lasting:true},
        after:'The purse first, then the boots, then the bridge, and it takes until dark.\n\n'+
          'The fourth beam comes down early, with no warning at all. Nobody says the two '+
          'things are connected. Everybody thinks it.'}]},
@@ -32334,7 +32379,7 @@ const EVENTS={
        sin:'the pedlar on the ridge, and his cart',
        c:'',
        danger:true,fx:{crowns:150,food:8,salvage:5,morale:-13},gear:'mail',
-       hurt:{n:'Pedlar’s knife',d:'−1 STR. He had a knife, and he was quicker than he looked.',str:-1},
+       hurt:{n:'Pedlar’s knife',d:'−1 STR. He was quicker than he looked.',str:-1,lasting:true},
        after:'It takes no time at all. That is the part nobody sleeps well about.\n\nHe had '+
          'a knife. {ANY} does not speak to you for two days.'},
       /* ═══ THE FREE DOOR (user, 2026-08-02) ══════════════════════════════
@@ -32404,7 +32449,7 @@ const EVENTS={
       {t:'The strongest of you lifts. Everyone else pretends to help.',ico:['take'],
        c:'',
        danger:true,fx:{gems:2,crowns:40,days:1},
-       hurt:{n:'Torn back',d:'−1 STR. He lifted it. It was heavier than the fen.',str:-1},
+       hurt:{n:'Torn back',d:'−1 STR. It was heavier than the fen.',str:-1,lasting:true},
        after:'Inside: coin, and two stones the wrong colour for this country.'},
       /* the wheels door and the maul door were MERGED in the 2026-08-12
          choice-weight pass (#123): both were "take the safe thing and go",
@@ -32433,7 +32478,7 @@ const EVENTS={
          'by evening.'},
       {t:'Camp at the edge and watch it all night.',ico:['rest'],c:'',
        danger:true,fx:{days:1,gems:1,morale:-4},
-       hurt:{n:'Bloom-touched',d:'−1 INT. Whatever was in the light, some of it is in him.',int:-1},
+       hurt:{n:'Bloom-touched',d:'−1 INT. Some of the light is in him now.',int:-1,lasting:true},
        after:'By morning the light has moved forty paces closer, and the man on watch has not blinked in some time.'}]},
   mother:{title:'THE FEN-MOTHER',art:'bloom',seed:88,
     body:'You took it for a fallen barn. Six legs. A head like a split anvil. Bloom-light '+
@@ -34001,22 +34046,10 @@ function pickChoice(k,i){
       hurtLine+='\n\n'+who(lost)+' is left in the dark. They know the road east.';
     }
   }
-  if(c.hurt){
-    const victim=pickOne(G.party);
-    /* Road accidents HURT, they do not cripple. Only being put down in a
-       battle leaves a permanent scar — see afterBattle(). A `hurt` with
-       `lasting:true` is the rare exception. */
-    if(c.hurt.lasting){
-      injure(victim,c.hurt);
-      hurtLine='\n\n'+who(victim)+' takes it, and will carry it: '+c.hurt.n+' — '+c.hurt.d;
-    }else{
-      const u=unitFrom(victim);
-      const dmg=c.hurt.hp||Math.round(u.hpMax*(0.18+Math.random()*0.22));
-      victim.hpLoss=Math.min((victim.hpLoss||0)+dmg,u.hpMax-1);
-      hurtLine='\n\n'+who(victim)+' takes it: '+c.hurt.n+' — '+dmg+
-        ' hitpoints, and a week of walking it off. Nothing permanent.';
-    }
-  }
+  /* #197 - one applier (see applyHurt), and `+=` rather than `=`: the
+     strandOne branch above writes into hurtLine and an assignment here would
+     have silently eaten it on any card that ever carried both. */
+  if(c.hurt)hurtLine+=applyHurt(c.hurt);
   /* ═══ WHAT IS IN THE HOLE, AND WHO IT BELONGS TO ═══════════════════════
      Paid here rather than in an `fx` block because the numbers depend on a
      ruling made at a fire days ago. OPEN: half the coin, because the fire
