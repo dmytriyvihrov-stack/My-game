@@ -1448,7 +1448,12 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:var(--f
 /* #191 - alone on the hex it takes back the 12px the odds were holding above it.
    The arithmetic is the note above run backwards: the odds occupied top:4 through
    to 14 and the damage cleared them at 16; with nothing there, the damage sits
-   where the odds did. Same type, same size - only the row moves. */
+   where the odds did. Same type, same size - only the row moves.
+   ⚠ #195: the odds are back, so `.solo` is NOT the shipping state any more -
+   it is the branch that fires when SHOW_HIT_ODDS is off, and it stays because
+   the flag stays. The pair at top:4 and top:16 is what the board draws today,
+   and that stack was re-measured at the 10px floor in #164 (see the note above
+   it): the odds end at 14 and the damage starts at 16. */
 .hdmg.solo{top:4px}
 /* ═══ LINE OF FIRE (backlog #36) ════════════════════════════════════════
    The costs are hidden in the odds like every other modifier; what is NOT
@@ -14060,8 +14065,33 @@ const SURE_AFTER=2;
 
    ⚠ AND THE COMPANY SHEET KEEPS ITS `TO HIT`. He scoped this to the fight
    ("из битвы"), and between fights that figure is what a gear or a perk choice
-   is judged by - see the `.idrv` row in drawInv. */
-const SHOW_HIT_ODDS=false;
+   is judged by - see the `.idrv` row in drawInv.
+
+   ╔═══ #195 (8f.217), 2026-08-19 · AND IT IS BACK, BY THE SAME ONE FLAG ═══
+   (User: "return % to hit - both in when i hover on enemy with hit + in
+   extended window more info about hit".)
+
+   ⛔ THE READING ABOVE IS LEFT WHOLE ON PURPOSE, because the rule it found is
+   what makes the REVERSAL correct rather than a revert. #191 learned that
+   hiding a total means hiding its signed PARTS - leaving `surrounded +10`
+   beside a hidden 73% just makes the player add the receipt back up. That
+   rule is symmetric, and it is the reason this is one boolean and not two
+   surgical edits at the two surfaces he named: SHOWING the total means
+   showing the parts too, or the card states a figure it will not explain.
+
+   ⛔ SO EVERY MEMBER OF THE FAMILY COMES BACK TOGETHER, and they are all
+   below on this flag: the % on the hovered hex, the CHANCE TO HIT headline
+   and its four signed terms on the aiming card, the arc's own `+15 · ×1.25`,
+   the plaque's own cell, the inspect card's SKILL row, and the sure hand's
+   NEXT ONE LANDS. Half of them restored is the state #191 called the worst of
+   the two, arrived at from the other side.
+
+   ⚡ WHAT STAYS AS #191 LEFT IT, because neither was ever a to-hit figure:
+   the ARC KEEPS ITS WORD (FRONT / FLANK / BACK is a place to stand, and it
+   now carries its figures again beside it), and the ground notes stay the
+   rules of the world. Those two were the half of #191 that was not about the
+   odds at all, and nothing here touches them. */
+const SHOW_HIT_ODDS=true;
 function hitBreakdown(a,d,act){
   /* ═══ MAGIC CAN MISS TOO (user) ═══════════════════════════════════════
      A working is aimed with the INTELLECT, not the hands: a caster's chance to
