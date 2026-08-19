@@ -25,6 +25,46 @@
 
 ---
 
+## ❤ THE HALF-RATKIN, AND THE FIRE CARD WHERE SHE TALKS  *(#201 · 2026-08-19 · build log 8f.223)*
+
+**Who she is.** `Ash “Nobody’s”`, a ratkin cutter with a knife in each hand and the **Dutiful**
+personality: **+8 dodge standing beside you, -4 anywhere else.** That is deliberate and it is the
+character rather than a stat - she fights better next to you because that is the whole of what she
+is looking for.
+
+**How to reach her, in three steps.**
+
+1. New run. Walk the first road to **Blood on the Road** (the clash).
+2. Take **either** the door that helps the ratkin **or** the door that helps nobody. Helping the
+   ratkin gives you Skree and her; standing back gives you her alone, out of the ditch.
+   *(The ogre door is the one path that does not introduce her at all.)*
+3. Camp on the road. **THE WRONG COLOUR** is in the incident deck from then on, and like every
+   incident it fires once per run.
+
+**What should happen at the fire.** Her painting at the top of the card, then three doors:
+
+| the door | what it costs | what it should do |
+|---|---|---|
+| Put another stick on. Keep listening. | -1 provision, +10 morale | she talks till dawn. This is the romance door |
+| Say it is late. Go to your blanket. | -5 morale | nothing breaks. She is exactly as friendly in the morning |
+| Remind her what she is, and make it hurt. | -15 morale, an injury | **the injury lands on HER**, and it goes on your sin ledger |
+
+**What would be a bug.**
+
+- The third door bruising **somebody else**. The injury is supposed to be hers and nobody else's.
+- The card arriving on a run where you took the **ogre** door at the clash. She is not in that
+  company and the card should never be dealt.
+- The card wearing **somebody else's painting** (the salt-wives, a cart, a standing stone). It is
+  the only camp card in the game with art of its own.
+- Her turning up on the battlefield as a **generic ratkin**, or at **twice the size** of the
+  bodies beside her. She has her own 36x37 sprite and it should sit in the same band as Skree's.
+- The first door charging **no provision** when the barrels have one, or charging one when the
+  chip says otherwise.
+
+⚠ **Nib and Gell are gone.** They were the two presets she replaced, so a run will not meet them
+again. That is the change, not a missing character.
+
+---
 ## ✎ YOUR TEXT LEDGER OF 08-19, APPLIED  *(#198 · 2026-08-19 · build log 8f.220)*
 
 All 24 marks are in. **Four of them did not land exactly as written, and those are the four worth
