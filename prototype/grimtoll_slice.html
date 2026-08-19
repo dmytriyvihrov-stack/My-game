@@ -11548,21 +11548,43 @@ function tavernContract(won,skipped){
      says +88 CROWNS. The purse still lands on the wood. It just stops being
      weighed twice. */
   proCard('THE MAN IN THE CORNER',
+    /* ═══ #198 - THE PURSE LANDS ONCE, AND IT LANDS LAST ═══════════════════
+       (Text ledger 2026-08-19: the purse was cut out of the opening paragraph
+       and written back in beside "It appears you are a company now".)
+
+       ⛔ THE LEDGER ONLY EDITED THE `skipped` BRANCH AND ALL THREE CARRIED
+       THE PURSE. Landing it as exported would have put the purse on the wood
+       twice on the two branches a player actually reaches, which is the
+       oldest defect in this file wearing prose instead of numbers. So the
+       three openings lose it together and the close gains it once.
+
+       ⚑ AND IT DOES NOT MOVE THE PAINTING. `art/src/stage-4/prologue/EV-00E`
+       is locked to "he crosses the wreckage, sits uninvited, and calmly
+       places a closed purse on the table, two paid swords still at the door"
+       (.claude/rules/static-event-art.md). Every one of those still happens
+       on this card; the purse is three paragraphs further down it. ⛔ What
+       the ledger asked for and did NOT get is "He throws a bag of coin" -
+       the lock says he never throws it, and the painting shows the purse set
+       down closed. A line that contradicts the picture beside it is the
+       wrong-unit defect with a canvas in it. */
     (skipped
-      ?'The far table has been watching you since dark, over one ale made to last the evening. '+
-       'When the room thins the man in the coat crosses to yours, sits down uninvited, and puts '+
-       'a purse on the wood. The two swords he pays for stay by the door.\n\n'
+      ?'The far table has been watching you since dark, over one ale made to last the '+
+       'evening. The two swords he pays for stay by the door.\n\n'
       :won
-      ?'He crosses the wreckage without looking at any of it, sits down at your table '+
-       'uninvited, and puts a purse on the wood. The two swords he pays for did not move '+
-       'once.\n\n'
-      :'He has your table set back on its legs, has you put in a chair at it, and puts a purse '+
-       'on the wood. The two swords he pays for never left his side, which tells you what he '+
-       'thought of the odds.\n\n')+
+      ?'He crosses the wreckage without looking at any of it and sits down at your table '+
+       'uninvited. The two swords he pays for did not move once.\n\n'
+      :'He has your table set back on its legs, has you put in a chair at it, and sits down '+
+       'across from you. The two swords he pays for never left his side, which tells you '+
+       'what he thought of the odds.\n\n')+
     /* #155 - "scum" is gone at the user's call ("we don't need 'scum' here").
        The address and the pleasant delivery are what the line is for; the
        insult was the one word doing none of that work. */
-    '“You lot,” he says, pleasantly, the way other men say GOOD EVENING. '+
+    /* #198 - ", the way other men say GOOD EVENING" is gone at the user's
+       mark. `pleasantly` already carries it; the clause was the adverb being
+       explained back to the reader. ⚠ The ledger's own replacement ran the
+       two quotes together with no stop after "pleasantly" - the full stop is
+       mine and the sentence needs it. */
+    '“You lot,” he says, pleasantly. '+
     (skipped?'“I asked the house who in here was cheap and still standing.'
       :'“I have watched better brawls, but none this cheap.')+'\n\n'+
     '“There is a man of mine at Skelbrook, the far side of the valley. One village, one hall, '+
@@ -11584,7 +11606,18 @@ function tavernContract(won,skipped){
        the sentence had become the strip's caption, written out. Cutting it is
        also what buys the merge - the card arrived 77px past its own 684px
        ceiling with it in. What survives is the line the user quoted back. */
-    'It appears you are a company now. Or a beggar\'s likeness of one.',
+    /* ⛔ #198 - ONE PARAGRAPH, AND THE BREAK I PUT HERE COST 13px I DID NOT
+       HAVE. The ledger's own replacement was a single paragraph and the split
+       was mine, for the pause before the last line. Measured against
+       `git show HEAD:` in a second tab: baseline body 176px / card 683 in a
+       684 ceiling, and the split made it 185 / 696, i.e. the card began to
+       SCROLL. ⚑ The line count was identical in both (seven); the whole
+       regression was one extra 9px paragraph gap. `.pcard` has had about one
+       pixel of headroom since #150 merged the picker onto this card, so on
+       THIS card a paragraph break is a layout change and has to be measured
+       like one. */
+    'He puts a purse on the wood. A few of you exchange a quick look, and it is '+
+    'clear. It appears you are a company now. Or a beggar\'s likeness of one.',
     [
       /* ═══ #138 - ONE DOOR, AND IT IS THE LAST SCREEN BEFORE THE MAP ═══════
          (User, 2026-08-13: *"for 138 - delete option 'put him on the floor' it
@@ -25877,7 +25910,13 @@ function openCamp(spot,next,atPlace){
      ruling anybody at the fire will remember you for. */
   if(visible.length&&!visible.some(o=>canAfford(o.need)))
     visible.push({t:'Say nothing. There is nothing to say it with.',ico:['leave'],
-      c:'no cost · and everybody notices',fx:{morale:-1},
+      /* #198 - "and everybody notices" deleted: it is the 64th member of the
+         family #176 cleared, and it survived that sweep only because this
+         door is built HERE, at the renderer, instead of in `CAMPS{}` where
+         the pass was scoped. `moraleTag` already prints the face this door
+         lands the company on. ⚑ A sweep over a table misses every row the
+         code writes at run time - check the builders, not only the data. */
+      c:'no cost',fx:{morale:-1},
       after:'You have nothing to settle it with and everybody at the fire works that out at '+
         'about the same moment. It goes quiet, and then it goes on.'});
   $('wChoices').innerHTML=visible.map((o,i)=>{
@@ -30260,7 +30299,9 @@ function goalTick(){
      a phone lay across the middle of the map. Nine words and the receipt now,
      and the strip wears `.cheer` for it: gold edge, upright, the one time the
      news is good news. */
-  say2('✦ SECOND OBJECTIVE DONE · morale +'+GOAL_PAY+' · more of you at the fire.','cheer');
+  /* #198 - SECONDARY, not SECOND, and on all four surfaces at once: this
+     cheer, the plate row, the card and the contract hover. */
+  say2('✦ SECONDARY OBJECTIVE DONE · morale +'+GOAL_PAY+' · more of you at the fire.','cheer');
 }
 /* the plate's second row. Nothing until the card has been dealt, and NOTHING
    AGAIN once it is paid.
@@ -30272,7 +30313,7 @@ function goalTick(){
 function goalRow(){
   const g=G.goal;if(!g||g.done)return '';
   return '<span class="qsec">'+
-    '<span class="qlab">SECOND OBJECTIVE</span>'+
+    '<span class="qlab">SECONDARY OBJECTIVE</span>'+
     '<span class="qtx">Recruit at least one more. You are '+G.party.length+
       ' of '+g.need+'.</span></span>';
 }
@@ -30287,16 +30328,32 @@ function openGoalCard(spot,next){
   /* ⚠ A PLAIN HYPHEN, and the neighbouring vignette headers are wrong rather
      than this one: `vLead+' — '+v.t` predates the no-em-dash rule and lives in
      the un-purged half of the file. New text is dash-free, always. */
-  dlg.innerHTML='<h3>ON THE ROAD - HOW FEW YOU ARE</h3>'+
+  /* ═══ #198 - THE CARD SAYS WHAT IT IS IN THE TITLE ════════════════════════
+     (Text ledger 2026-08-19, four marks on this one card.)
+
+     ⛔ THE `ql` LABEL WENT WITH THE TITLE AND HAD TO. The ledger renamed the
+     h3 to SECONDARY OBJECTIVE and left the `.qgoal` row's own label alone,
+     which puts the same two words twice on a card 45 words long - voice rule
+     5. The h3 is the louder of the two, so the row keeps the goal and the
+     price and gives up the caption.
+
+     ⚠ THE BODY LOSES THE WATCH AND KEEPS ITS BAND. The watch sentence and
+     "More at the fire..." were the third and fourth things the card said
+     about being few, after the h3 and the body's own first line had said it
+     twice. Measured after: 21 + 10 + 8 + 6 = 45 words, which is the LIGHT
+     floor exactly (was 62). ⚠ It also stops interpolating `n` twice, which
+     is the same rule one layer down: the count is news once.
+
+     ⚑ "And it is dangerous outside." is the ledger's line with its conjunction
+     turned into a sentence. The thought is the user's; the grammar is mine. */
+  dlg.innerHTML='<h3>SECONDARY OBJECTIVE</h3>'+
     '<div class="bd">There are '+n+' of you, on a road none of you has walked, in a country '+
-      'that was not expecting you.\n\nThe wagon has room. The watch has three shifts and '+n+
-      ' people to stand them, which is why nobody has slept properly since the tap-room.\n\n'+
-      'More at the fire, and the road stops being a thing you are getting away with.'+
-      '<div class="qgoal"><span class="ql">SECOND OBJECTIVE</span>'+
+      'that was not expecting you.\n\nThe wagon has room. Outside it, the country is '+
+      'dangerous.'+
+      '<div class="qgoal">'+
       '<span class="qt">Recruit at least someone else to your party.</span>'+
       '<span class="qp">morale +'+GOAL_PAY+' when it is done</span></div></div>'+
-    '<button class="choice" id="wV"><b>Then there should be more of you.</b>'+
-    '<i>it goes up beside the contract</i></button>';
+    '<button class="choice" id="wV"><b>Keep walking.</b><i></i></button>';
   dlg.classList.add('on');
   placeDlg(spot.x,spot.y);
   $('wV').onclick=()=>{G.pending=null;dlg.classList.remove('on');worldTick();saveRun();next();};
@@ -30695,7 +30752,7 @@ function worldTick(){
         /* #177 - the hover follows the row: it closes with the objective. A
            paragraph about a thing that is finished is the same defect as the
            row, one layer down. */
-        (G.goal&&!G.goal.done?'<br><br><b style="color:var(--g4)">SECOND OBJECTIVE</b><br>'+
+        (G.goal&&!G.goal.done?'<br><br><b style="color:var(--g4)">SECONDARY OBJECTIVE</b><br>'+
           'Nobody set this one. Recruit at least one more body and the whole company '+
           'walks easier for it - the watch splits properly and the wagon stops being '+
           'four people\'s work. <b>Morale +'+GOAL_PAY+'</b> the day it happens.':''),
@@ -32400,7 +32457,7 @@ const EVENTS={
   coin:{title:'THE COIN IN THE ROAD',art:'teal',seed:141,
     body:'A coin in the mud of the wheel-rut, shining where nothing else on this road '+
       'shines.\n\n{TELLER} picks it up. No head, no writing, heavier than it should be. '+
-      'Warm.\n\nBy the next mile the whole company is walking easier, and nobody can say why.',
+      'Warm. By the next mile the whole company is walking easier, and nobody can say why.',
     choices:[
       {t:'Keep walking.',ico:['leave'],c:'',
        fx:{morale:8},coinKeep:true,after:''}]},
@@ -32484,8 +32541,8 @@ const EVENTS={
          the running game, 2026-08-02: help the ratkin and 3 ogres come at you;
          help the ogres and 5 ratkin do; watch, and the 2 winners do. */
       'about to cost either of them.\n\nFour ratkin with spears and a sling, fast, loud, '+
-      'already committed. Three ogres with clubs, in no hurry at all.\n\nNeither side has '+
-      'seen you. That will not hold.',
+      'already committed. Three ogres with clubs, in no hurry at all. Neither side has '+
+      'seen you.',
     /* ═══ #150 - THE THIRD DOOR STOPPED BEING A SHRUG ════════════════════════
        (User, 2026-08-13: *"Shorter consiquenes... Change choise 'Wait and see'
        for 'Wait, and then finish winners' - it is more cruel, which is
@@ -32525,7 +32582,14 @@ const EVENTS={
        battle:'clash',clashSide:'ogre'},
       {t:'Wait. Then finish the winners.',ico:['fight','evil'],
        sin:'the survivors finished off on the west road',
-       c:'nobody beside you · 2 ogres against · both sides of the road are yours',danger:true,
+       /* #198 - the buy comes OFF the label. #150 put "both sides of the road
+          are yours" here to make the cruel door's payment real, and the text
+          ledger of 2026-08-19 asked for a `?` on this door instead. It cannot
+          have one: `mystery` eats the whole sub-line and this one is carrying
+          what the fight fields, which is the half a `?` may never hide. So it
+          gets the half a `?` is FOR - the payout is now discovered in
+          `clashAfter` and promised nowhere. */
+       c:'nobody beside you · 2 ogres against',danger:true,
        battle:'clash',clashSide:'none'}]},
   /* The mirehares are met between safe places, on the flooded water road.
      The card shows the warning before it shows the bodies: paired red lights
@@ -32724,8 +32788,15 @@ const EVENTS={
   mother:{title:'THE FEN-MOTHER',art:'bloom',seed:88,
     body:'You took it for a fallen barn. Six legs. A head like a split anvil. Bloom-light '+
       'running under the hide in slow bands.\n\nIt is not looking at you. It is looking at '+
-      'the small one behind it, which is trying to eat a rock.\n\n{MAGE} says the word for '+
-      'it, quietly, twice, and then says you should all leave.',
+      /* #198 - the {MAGE} naming beat is cut and a glimpse of the tooth takes
+         its place, both at the user's mark. ⚠ The replacement is NOT the
+         ledger's "You see something is laying around": `laying` wants an
+         object (it is `lying`), and "something" on a card whose first door is
+         "Take the shed tooth and go" is the vaguest possible sentence in
+         front of the most concrete possible door. It shows the thing instead,
+         and stops short of the reveal the door's own `after` is holding. */
+      'the small one behind it, which is trying to eat a rock.\n\nThere is something pale '+
+      'in the mud beside her.',
     choices:[
       /* ═══ #154 - TWO DOORS NOW, BY THE USER'S ORDER ═══════════════════════
          ("for fen mother leave only 2 choices: Take the shed tooth and go.
@@ -33348,13 +33419,28 @@ const EVENTS={
       'way down: swearing. Steady, inventive, entirely alive.\n\nThere is a passage down '+
       'there, and it does not come back up here.',
     choices:[
-      {t:'Go down after them. All of you.',ico:['help'],c:'opens a way under the hill',
+      /* #198 - "opens a way under the hill" is a payout written on a door,
+         which is what the ledger wanted a `?` for. The `?` is refused here by
+         LINT 6d (this door spends a day and a mystery door may charge
+         nothing), so the promise is simply deleted: the sub-line is the
+         derived −1 day and nothing else, and the new road is found by taking
+         it. */
+      {t:'Go down after them. All of you.',ico:['help'],c:'',
        fx:{days:1},opensRoad:true,
        after:'Down on a rope. You find them in twenty minutes: filthy, furious, unhurt.\n\n'+
          'The walls are cut, not worn. Ratkin work, old and dry, running east under '+
          'everything. A NEW ROAD has opened on the map.'},
-      {t:'Shout down that you will meet them on the road east.',ico:['leave'],
-       c:'no cost · they will catch you up, changed',fx:{},strandOne:true,
+      /* #198 - the euphemism goes and the lie does not arrive. The ledger
+         wanted this door to admit what it is ("forget about your teammate"),
+         and it is right that "meet them on the road east" was a plan rather
+         than an abandonment. But they are NOT forgotten: `strandOne` parks
+         them in `G.stranded` and `travel` walks them back out on a 50% roll
+         per leg. So the door names the leaving and promises nothing about the
+         return - which is also why "they will catch you up, changed" had to
+         go. `no cost` stays: two of the three doors here charge days, and
+         voice rule 7 is that the free door says so where the others cost. */
+      {t:'Leave them to find their own way out.',ico:['leave'],
+       c:'no cost',fx:{},strandOne:true,
        after:'They shout back something that is probably agreement.\n\nIt is the practical '+
          'decision. Everyone agrees it is the practical decision. Nobody enjoys making it.'},
       {t:'Spend the day getting them out with ropes.',ico:['help'],c:'',
@@ -33403,7 +33489,12 @@ const EVENTS={
          a battle cost line carries the exact tactical receipt, and the two
          dogs are the half of this fight that surprises people. Counted off
          `brigands()` above, which fields bcap + 2 sworder + poacher + 2 dog. */
-      {t:'“No.”',ico:['fight'],c:'BATTLE · 4 men and 2 dogs against · they break like people',
+      /* #198 - "they break like people" is deleted. The count stays, because
+         the count is the receipt rule 8 protects; the tail was the card
+         telling the player what the fight would feel like, which is the body's
+         job and which the body already does ("They are what a company like
+         yours turns into after one bad winter"). */
+      {t:'“No.”',ico:['fight'],c:'BATTLE · 4 men and 2 dogs against',
        fx:{},battle:'brigand'},
       {t:'Give them four days of food.',ico:['help'],c:'one of them stays',
        need:{food:4},fx:{food:-4,morale:6},recruit:{name:'Pell',race:'human',cls:'spear'},
@@ -33425,22 +33516,52 @@ const EVENTS={
      framing), out of `sinsSaid`, so the card names the actual road rather
      than gesturing at "your reputation". A run that robbed the tax collector
      and nobody else hears about the tax collector.
-     ⚠ Measured in the running build at 168 words on the worst branch, which
-     is inside the HEAVY band (140-175) and is the right band: this is the
-     road coming back for the player, and it is a card they will retell. */
+     ⚠ THE 168 THAT USED TO BE ON THIS LINE WAS MEASURED WITH THE COUNTER
+     THAT PREDATES BRANCH-GATED DOORS, and it has been wrong since the card
+     shipped: it summed all four `after`s when no company can ever read more
+     than two of them. `.claude/rules/event-cards.md` already carries the
+     right figures (137 one-sin, 125 two-sin) and this comment did not.
+     ⚑ Re-measured on the #198 build with the gated counter, on every branch
+     the card can take: 138 words on the ONE-sin branch, 118 on two, 118 on
+     three or more. That is MEDIUM (90-140) and not HEAVY, and MEDIUM is the
+     honest band for it - the accusation is two lines long, not a scene.
+     ⚠ The clean-ledger branch reads 75 and is UNREACHABLE in play: `holdDue`
+     sends a company with nothing on its account to `courier` instead. It
+     exists so `LINT` can read this body out of context without throwing. */
   holdmen:{title:'THE HOLD’S MEN',art:'gold',seed:277,
     body:()=>{
       const s=sinsSaid(2);
       const open='Riders across the road in one coat, with the same mark on all of them. '+
         'Grausen Hold’s. The first uniform this company has seen since the '+
-        'Landing.\n\nNobody draws. The serjeant walks his horse down the column looking at '+
-        'faces, and takes his time.\n\n';
+        /* #198 - "Nobody draws." is deleted: this card's last line is
+           "Nobody has drawn. Everybody has decided to.", so the opening was
+           spending the closing line's own move four paragraphs early. ⚠ And
+           "Then he stops in front of you." moves UP into `open`, which is
+           shared, so the one-sin branch gains the beat it never had - he
+           walks the column, he stops, he asks. */
+        'Landing.\n\nThe serjeant walks his horse down the column looking at faces, and '+
+        'takes his time. Then he stops in front of you.\n\n';
       if(s.length<2)
+        /* ⚠ #198 - AND ON THIS BRANCH TOO. Driven in the running build, the
+           one-sin branch still said "Was that this company?" while the two-sin
+           branch had the name: the same man, two cards apart, knowing who you
+           are on one road and not the other. ⛔ The name goes in the
+           SERJEANT'S MOUTH and nowhere else on this card - the opening line's
+           "the first uniform this company has seen" is the NARRATOR, and the
+           narrator has never known the company by its banner. */
         return open+'"Word came west," he says. "About '+(s[0]||'this road')+'. Was that '+
-          'this company?"\n\nHe is not accusing you. He is watching how long you take to '+
-          'answer.';
-      return open+'Then he stops in front of you.\n\n"'+sinAt(0,true)+'. And '+sinAt(1)+
-        '. That is this company and we both know it."\n\n'+
+          (G.coName||'this company')+'?"\n\nHe is not accusing you. He is watching how long '+
+          'you take to answer.';
+      /* ⚑ #198 - AND HE USES THE NAME THE PLAYER CHOSE. (Ledger note on this
+         body: "instead of 'company' - here you can add dynamic name of company
+         that person have chosem".) `G.coName` is set in `contractTake`, three
+         roads before this card can fire, and rides the run save - so the
+         fallback is only ever reached by a pre-#150 save or by `LINT`'s
+         out-of-context read of every body. This is the first time anything on
+         the road says the name back, and it is the right card for it: the
+         serjeant's whole point is that he knows exactly who you are. */
+      return open+'"'+sinAt(0,true)+'. And '+sinAt(1)+
+        '. That is '+(G.coName||'this company')+' and we both know it."\n\n'+
         'The hounds come off the leash-ring. Nobody has drawn. Everybody has decided to.';
     },
     choices:[
@@ -33457,9 +33578,19 @@ const EVENTS={
        c:'',fx:{crowns:-100},need:{crowns:100},needSins:2,
        after:'He takes his time counting it, and at the end he does not say you are innocent. '+
          'He says the road east is open. That is all it buys.'},
-      {t:'Ride them down. Nobody writes anything down after that.',ico:['fight','evil'],
-       /* #183 - two crests now, and style rule 8 means the receipt says two */
-       c:'battle · two crests, a bill line and the hounds',battle:'hold',
+      {t:'Smile, and draw.',ico:['fight','evil'],
+       /* #183 - two crests now, and style rule 8 means the receipt says two.
+          ⛔ #198 - AND IT SAID SOMETHING FALSE. The ledger cut this line to
+          bare "battle"; rule 8 does not allow a battle door with no receipt,
+          so it was measured instead of deleted - and `holdFoes` fields serj +
+          corp + 2 bills + a crossbow + ONE hound at four, growing to eight
+          bodies at party 6 and nine at party 8. "the hounds" was plural on
+          the starting company's screen, and the crossbow was never on the
+          label at all. ⚑ A static count CANNOT be right on a party-scaled
+          roster, so the label states the shape and the scaling, which is true
+          at every size. Same family as the waterworks' +1/+2 salvage: a
+          promise is the half that is allowed to be wrong. */
+       c:'BATTLE · the whole patrol, and it grows with your company',battle:'hold',
        sin:'the Hold’s own men, cut down on the lord’s own road'}]},
   /* ═══ #160 · AND WHAT THE OTHER ROAD SENDS ═════════════════════════════════
      Two roads from the bells, on a clean ledger only. One live door, so it is
@@ -33495,7 +33626,9 @@ const EVENTS={
         'night. It is not a life."\n\nThen he reaches behind him for the maul.';
     },
     choices:[
-      {t:'Then it is the road.',ico:['fight'],c:'battle',
+      /* #198 - BATTLE, upper case, on all eleven battle doors. See the sweep
+         note on THE RATKIN SNARE below. */
+      {t:'Then it is the road.',ico:['fight'],c:'BATTLE',
        fx:{},battle:true}]},
   /* ═══ #160 · THE ASK, TAKEN ════════════════════════════════════════════════
      (User: "they invite you into the camp", then "the next screen" is the
@@ -33519,7 +33652,7 @@ const EVENTS={
     },
     choices:[
       {t:'Stand with them.',ico:['fight','evil'],
-       c:'battle · the clan beside you · a great many coats',battle:'snarejoin',
+       c:'BATTLE · the clan beside you · a great many coats',battle:'snarejoin',
        sin:'the last of it, at the bells, with the clan'}]},
   snare:{title:'THE RATKIN SNARE',art:'teal',seed:5,
     body:'They have strung the road with bells. Even other clans spit at this use of '+
@@ -33527,8 +33660,14 @@ const EVENTS={
       'inside it.\n\nUnder the standard, the big one giving orders. At the back, the small '+
       'one, holding no weapon. Humming.',
     choices:[
-      {t:'Straight down the road. Let the bells ring.',ico:['fight'],c:'battle',fx:{},battle:true},
-      {t:'Through the marsh. Slower, but quiet.',ico:['fight'],c:'battle · you strike first',
+      /* ═══ #198 - ONE SPELLING FOR THE WORD THAT STARTS A FIGHT ═══════════
+         Eleven doors carry it and six were written BATTLE, five `battle`,
+         decided one card at a time across eight entries. It is #164's font
+         list in prose: nothing was wrong, everything was decided separately.
+         Upper case wins on the majority and because it reads as the warning
+         it is - the ⚔️ beside it is already shouting. */
+      {t:'Straight down the road. Let the bells ring.',ico:['fight'],c:'BATTLE',fx:{},battle:true},
+      {t:'Through the marsh. Slower, but quiet.',ico:['fight'],c:'BATTLE · you strike first',
        fx:{days:1},battle:true,ambush:true},
       /* ═══ #160 · THE THIRD DOOR ════════════════════════════════════════════
          ⛔ IT IS NOT MARKED EVIL AND THAT IS LOAD-BEARING, NOT AN OVERSIGHT.
@@ -33836,12 +33975,16 @@ function drawVillage(note){
     ('Forty houses, a church with the lead off the roof, and a wall that would not stop a '+
      'determined cow. It is the first place in nine days that is not trying to kill you, and the '+
      'people in it have priced that in.\n\nThey are perfectly civil. They are civil the way you '+
-     'are civil to weather. Nobody asks where you have been and everybody has already worked it '+
-     'out, and the innkeeper says "sirs" in a tone that has done a great deal of arithmetic.'+
+     /* #198 - three explanations out, at the user's mark, and the card is
+        stronger for each. The innkeeper's tone was the civility line being
+        glossed; "Nobody says why. Everybody knows why." was the gate line
+        being glossed, on the one beat in the game that should be left to
+        land; and "Four things worth having here, and one purse" counted the
+        rows that are drawn directly underneath it, with their prices on them
+        and the unaffordable ones already greyed. */
+     'are civil to weather.'+
      (outside.length?'\n\n'+outside.map(p=>who(p)).join(' and ')+
-       (outside.length>1?' are':' is')+' asked, politely, to wait by the gate. Nobody says why. '+
-       'Everybody knows why. You could make an issue of it and it would cost you the village.':'')+
-     '\n\nFour things worth having here, and one purse.'))+'</div>'+
+       (outside.length>1?' are':' is')+' asked, politely, to wait by the gate.':'')))+'</div>'+
     '<div id="wChoices" style="display:flex;flex-direction:column;gap:5px"></div>';
   dlg.classList.add('on');
   placeDlg(node.x,node.y);
@@ -34191,7 +34334,7 @@ function openEvent(k){
       evFxChips(evPaidOf(c0.fx,true),G.morale+((c0.fx&&c0.fx.morale)||0))+
       evGearStrip(c0.gear?[c0.gear]:c0.gear2||[])+
       /* #150 - it rides in the wagon now, so the strip stops promising a neck */
-      (c0.coinKeep?evGearStrip(['oddcoin'],'into the wagon · somebody can wear it'):''));
+      (c0.coinKeep?evGearStrip(['oddcoin'],'into the wagon'):''));
   }
   $('wChoices').innerHTML=visible.map((c,i)=>{
     const ok=canAfford(c.need);
@@ -34672,7 +34815,7 @@ function pickChoice(k,i){
      this is the second of the two strips that had to be told: the other is in
      openEvent's one-door preview. */
   const chips=evFxChips(paid)+evGearStrip(got)+
-    (c.coinKeep?evGearStrip(['oddcoin'],'into the wagon · somebody can wear it'):'');
+    (c.coinKeep?evGearStrip(['oddcoin'],'into the wagon'):'');
   const prose=(cast(c.after||'')+hurtLine).replace(/^\n+/,'');
   /* #143 - a one-door pickup already wore its loot on the card. With nothing
      left to say, the outcome would be an empty box with a button in it:
