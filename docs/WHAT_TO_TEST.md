@@ -25,6 +25,65 @@
 
 ---
 
+## 🎯 THE % TO HIT IS BACK, AND THE MIREHARES SHOW YOU WHERE THEY GO  *(#195 · 2026-08-19 · build log 8f.217)*
+
+Two things, and the second one is a bug fix you should be able to feel.
+
+### 1. The chance to hit, exactly as it was before
+
+Everything #191 hid is back on. **Four places**, and if any one of them is missing, that is a bug:
+
+- **on the enemy's hex**, with an attack in hand: the percentage, over the damage range;
+- **on the aiming card** (hover an enemy you can reach): the big **CHANCE TO HIT** headline, and
+  under it the signed terms that add up to it - `surrounded`, `your nerve`, `their nerve`, and
+  `sure hand` after two misses in a row. The arc row carries its `+15 · ×1.25 dmg` again;
+- **on the bottom plaque**, the acting body's own skill beside its dodge;
+- **on the inspect card** for one of theirs: `SKILL / DODGE`.
+
+**Reach it in three steps:** any battle -> pick a body with a melee weapon -> hover something of
+theirs standing next to it.
+
+⚠ **The ground notes and the `?` legend were never part of this** and did not move. Water still
+says −10 on its own hover, because that is a rule of the world rather than this swing's odds.
+
+### 2. The mirehares: hover one and you can now see where it can go
+
+⛔ **This was drawn WRONG before, not merely missing.** Hovering the doe painted 24 hexes of which
+**18 she can never reach**, and hovering the buck painted a blob with **none of his six lanes in
+it**. Both were being drawn as if they walk, and neither of them walks.
+
+**Reach it in three steps:** take the water road to **THE RED LIGHTS** -> in the fight, put your
+cursor on a mirehare -> look at the board, not the card.
+
+What you should see:
+
+- **the doe**: a **ring of dots at exactly three hexes**, with the middle empty. Nothing inside it,
+  because she cannot land closer than three. Where a landing would put her next to one of yours, a
+  **curved arc** is drawn onto it - that is where she is going to come down.
+- **the buck**: **six dashed lines** straight out from him, one per lane. If one of yours is standing
+  on a lane with two or more hexes of run in front of him, that lane turns **solid and bright with an
+  arrow-head** pointing into your man. That is the charge he is about to make.
+
+**And the useful half is what is NOT lit.** Stand a body **right up against** either animal and it
+goes out: the doe cannot land on somebody already beside her, and the buck needs two hexes of run.
+That is the whole counter to the encounter and the board now says so.
+
+**What would be a bug:**
+
+- any tinted hex the creature cannot actually reach (count the dots: the doe's are all at three);
+- a lane that bends, or a seventh lane;
+- the overlay reverting to a blob **after something moves** while your cursor has not left the
+  creature (this was real and is fixed: `render()` had a second copy of the rebuild);
+- a bright arrow into a body the buck cannot actually charge, or no arrow onto one he can;
+- anything lit next to a mirehare while your man is standing against it.
+
+**Measured, so you know what to expect:** playing the contact rule perfectly is 20/20 fights,
+0.00 of yours down and 46 hp+armour taken. Keeping your distance is 14/20, 2.50 down and 336 taken.
+The pair land **8.5x fewer blows** on a company that stays in contact - so if it still feels
+arbitrary once you can see the lanes, say so, because then it is the creature and not the readout.
+
+---
+
 ## 🐇 THE MIREHARES, AND THE RED LIGHTS ON THE WATER ROAD  *(#193 · 2026-08-19 · build log 8f.212)*
 
 Two animals that **cannot walk**. That is the whole encounter, and everything else follows from it.
