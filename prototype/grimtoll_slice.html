@@ -2406,6 +2406,58 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:var(--f
    max-width keeps long names wrapping at the node's own width. */
 .node.sighted .nm{position:absolute;left:50%;top:50%;transform:translate(-50%,42px);
   z-index:1;width:max-content;max-width:104px}
+/* ═══ #197 · A CAPTION AT THE FOOT OF THE MAP HANGS THE OTHER WAY ══════════
+   (User, 2026-08-19, arrows at the bottom edge: *"cant see down part of the
+   map"*.)
+
+   ⛔ MEASURED, NOT READ, AND THE FIRST TWO READINGS WERE BOTH WRONG. The
+   probe has to pin the camera to ROAD and to identity first: at the default
+   NEAR stop (z 1.22) the map overflows by 121px and six nodes are cut, which
+   is a fact about the ZOOM and not about the layout. Pinned to ROAD the real
+   number is 22px and three captions. And `b.style.top` is CAMERA space while
+   `getBoundingClientRect` is SCREEN space, so mixing them reports a node's
+   own caption as sitting 81px below itself.
+
+   THE ARITHMETIC, all in view px against a 678 window:
+     · a sighted node's caption reaches +84 below its point (top +42, ~42 of
+       two-line plate); a plain node's reaches +38
+     · the lowest node point is 629, so 629 + 84 = 713 against 678
+     · for a caption to fit below, the point must be at or above 594, which
+       is design y 559. FOUR nodes sit lower than that.
+
+   ⛔ AND EVERY GLOBAL FIX IS ARITHMETICALLY CLOSED, which is why this is a
+   per-node rule and not a constant somewhere:
+     · the map cannot grow: stage 720 = top bar 42 + map 678, exactly;
+     · it cannot be scaled down: `--fs1` is a 10px FLOOR (ui-scales.md §1) and
+       the plate text is already on it;
+     · `vy()` cannot map into a shorter band: the terrain canvas is stretched
+       638→678 by the same ratio and the nodes track the PAINTING (#190). Any
+       change to vy drifts every node off the ground it was placed on, by up
+       to 79px at the foot;
+     · and the nodes themselves may not move, which is the lesson #194 paid
+       for: placement here is decided by roads, plates, spacing AND the
+       painting under it, and four authored positions are not free to slide.
+
+   ⚑ SO THE ONE THING WITH SLACK IS THE CAPTION, and it has 96px of painting
+   directly above it to rise into.
+
+   ⛔ AND THE FIRST CUT OF THIS ROSE TOO FAR. It hung the plate off the art's
+   TOP edge instead of its bottom - a clean 122 design px the other way - and
+   the map's own gate caught it at once: `spacingViolations` went 0 -> 2 and
+   `labelViolations` 0 -> 1 against a `git show HEAD:` baseline driven to the
+   same screen (f3 against the Snare, the Steading against p1, and the road
+   out of e1 pushed onto the Black Fen's plate). Four plates moved into a row
+   that nobody had touched, which is this rule file's oldest finding arriving
+   again.
+
+   ⚑ SO THE CAPTION RISES BY ITS OWN OVERFLOW AND NOT ONE PIXEL MORE. `--lift`
+   is 16px on one node and 39 on the worst, written per node by drawNodes off
+   the same arithmetic as the check below, and it costs the bottom of that
+   node's painting rather than the bottom of the map. A name nobody can read
+   is worse than a painting with its feet in a caption.
+   ⚠ THE COVERED STRIP IS THE PAINTING'S OWN, never a neighbour's: the plate is
+   104px wide against a 96px sight and it carries its dark ground already. */
+.node.sighted.lowcap .nm{transform:translate(-50%,calc(42px - var(--lift,0px)))}
 .node.sighted .glyph img{--ring:var(--tc,#a08a5c);
   filter:drop-shadow(2px 0 0 var(--ring)) drop-shadow(-2px 0 0 var(--ring))
          drop-shadow(0 2px 0 var(--ring)) drop-shadow(0 -2px 0 var(--ring))
@@ -28507,7 +28559,25 @@ const hasSight=n=>{try{return !!sightFor(n);}catch(e){return false;}};
 /* THE TWO BOXES A ROAD LABEL MUST NOT LAND ON. Both are functions of the
    node rather than constants, because #116 gave the map two kinds of node
    and a single rectangle can no longer describe either one honestly. */
-const plateBox=n=>({x:n.x,y:n.y+(hasSight(n)?NAME_DY_SIGHT:NAME_DY),w:NAME_W,h:NAME_H});
+/* ═══ #197 · WHICH SIGHTED NODES WEAR THEIR CAPTION ABOVE ═════════════════
+   DERIVED FROM THE NODE'S OWN y AND NEVER AUTHORED, which is the rule this
+   map keeps having to relearn: a hand-flagged list is a list somebody forgets
+   the day a node moves. `LOWCAP_Y` is the design y whose caption's last row
+   lands exactly on the window's foot; anything lower flips.
+   ⚠ AND `plateBox` HAS TO KNOW, or `labelViolations()` goes on scoring road
+   labels against a plate that is 125 design px from where it is drawn - which
+   would read as "the map is clean" while a price sat on a name. Below-case
+   the plate's centre is +57 view under the point; flipped it is -72 (bottom
+   at -57, ~30 of plate above that). */
+const CAP_DROP_SIGHT=84;      /* measured: a two-line caption's last row, view px */
+const CAP_FOOT=2;             /* air left under it at the window's edge */
+/* how far THIS node's caption has to rise to stay inside the map, in view px.
+   0 for every node above the fold, which is 22 of the 26 on the shipped map. */
+const capLift=n=>!hasSight(n)?0:
+  Math.max(0,Math.round(vy(n.y)+CAP_DROP_SIGHT-(VIEWH-CAP_FOOT)));
+const plateBox=n=>({x:n.x,
+  y:n.y+(hasSight(n)?NAME_DY_SIGHT-Math.round(toDesign(capLift(n))):NAME_DY),
+  w:NAME_W,h:NAME_H});
 const artBox=n=>hasSight(n)?{x:n.x,y:n.y+ART_DY,w:ART_W,h:ART_H}:null;
 function labelViolations(){
   const out=[],boxHit=(p,q)=>{
@@ -29710,8 +29780,13 @@ function drawNodes(){
        ticks itself off. */
     const goal=(k===QUEST_GOAL&&!G.visited[k]);
     b.className='node '+st+' t-'+n.t+(n.mark?' mark':'')+(goal?' goal':'')+
-      (sight?' sighted':'');
+      (sight?' sighted':'')+(sight&&capLift(n)?' lowcap':'');     /* #197 */
     b.style.left=n.x+'px';b.style.top=vy(n.y)+'px';   /* #104: design -> view */
+    /* #197 - and how far its caption has to climb to stay on the map. Written
+       here rather than baked into the class so the CSS holds the RULE and the
+       node holds its own number, which is the only way `plateBox` and the
+       stylesheet can be reading the same figure. */
+    if(sight)b.style.setProperty('--lift',capLift(n)+'px');
     /* the TYPETAG used to be a permanent third line under every live node, and
        on a crowded map it landed squarely on the neighbour's name. It is on
        the glyph now (and in the hover card), where it costs no vertical room. */
