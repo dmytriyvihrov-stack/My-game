@@ -126,6 +126,47 @@ called at boot must go through the `hasSight` try/catch. This file has shipped t
 When `NODE_PLATE_H`, `NAME_H`, `NAME_DY` or the art box changes, change it there too or the editor
 will approve layouts the game flags.
 
+## ⛔ #197 · A CAPTION AT THE FOOT OF THE MAP, AND WHY THE NODE DOES NOT MOVE
+
+*(2026-08-19. The user, arrows at the bottom edge: **"cant see down part of the map"**.)*
+
+⛔ **THE MEASUREMENT HAS TO PIN THE CAMERA FIRST, AND TWO READINGS WERE WRONG BEFORE THE THIRD.**
+At the DEFAULT stop (`WCAM.i` is **1**, NEAR, z 1.22) the map overflows by **121px** and six nodes
+are cut, which is a fact about the ZOOM and not about the layout. And `b.style.top` is **camera
+space** while `getBoundingClientRect` is **screen space**, so mixing them reports a node's own
+caption as sitting 81px below itself. Pinned to ROAD, `WCAM.x=y=0`, `wcamApply()`, and **waited on**
+(the transform is transitioned, so a `getComputedStyle` in the same tick still returns 1.22), the
+real number is **22px and three captions**.
+
+⛔ **AND THEN EVERY GLOBAL FIX IS ARITHMETICALLY CLOSED, WHICH IS THE PART WORTH KEEPING:**
+
+- **the map cannot grow.** The stage is 720 and `#wBar` is 42 and `#wMap` is 678: exactly.
+- **nothing can scale down.** `--fs1` is a 10px FLOOR (`.claude/rules/ui-scales.md` §1) and the
+  name plate is already on it.
+- **`vy()` cannot map into a shorter band.** The terrain canvas is stretched 638 → 678 by the same
+  ratio and the nodes track the PAINTING (#190). Any change to `vy` drifts every node off the
+  ground it was placed on, by up to 79px at the foot.
+- **and the nodes may not move**, which is what #194 paid for: placement here is decided by roads,
+  plates, spacing AND the picture underneath, and four authored positions do not slide.
+
+⚑ **SO THE ONE THING WITH SLACK IS THE CAPTION, AND THE FIRST CUT USED ALL OF IT AND BROKE THE
+MAP.** Hanging the plate off the painting's TOP edge instead of its bottom is a clean 122 design px
+the other way, and the gate caught it at once: **`spacingViolations` 0 → 2 and `labelViolations`
+0 → 1** against a `git show HEAD:` baseline driven to the same screen. Four plates had moved into a
+row nobody had touched, which is this file's oldest finding arriving again.
+
+⛔ **THE SHIPPED RULE IS THAT A CAPTION RISES BY ITS OWN OVERFLOW AND NOT ONE PIXEL MORE.**
+`capLift(n)` is that arithmetic, `--lift` is it written onto the node, and **`plateBox` reads the
+same function** - or `labelViolations()` goes on scoring road labels against a plate that is not
+where it is drawn, and reports a clean map while a price sits on a name. Today it is 14 to 37px on
+four nodes and 0 on the other 22. **It costs the bottom of those four paintings**, which is the
+trade, and the alternative was measured: moving them up to y 555 leaves one spacing violation and
+takes four nodes off the ground #190 painted for them.
+
+⚠ **A NEW SIGHT AT THE FOOT OF THE MAP THEREFORE CHANGES ITS OWN PLATE**, the way #116's
+`NAME_DY_SIGHT` already does. Both are functions of the node, and both are why `plateBox` is a
+function rather than a rectangle.
+
 ## The picture that pays the gate
 
 The eye check is a page under `shots/`, because the preview pane composites nothing. Draw the new

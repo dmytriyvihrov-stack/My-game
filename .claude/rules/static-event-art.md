@@ -107,6 +107,21 @@ is wrong the day the tier changes, and it would clash with the frame drawn aroun
 it. Same rule as the intent glyph in `.claude/rules/event-cards.md`: the picture
 says what a thing IS, never what it costs or how rare it is.
 
+⚑ **AND SINCE #197 THAT FIELD EXISTS, SO THE PARAGRAPH ABOVE IS NO LONGER
+SPECULATIVE** *(2026-08-19)*. Every one of the 51 `GEAR` rows carries
+`rarity:'common'|'rare'|'epic'` (**21 / 22 / 9**) authored on the row beside
+`slot` and `dmg`, plus `unique:true` on the **14** that are a named thing out of
+one scene and may never be drawn by a random find. `RARITY{}` holds the three
+names and their colours - white `#c9c2b4`, green `#8ca35a`, purple `#a07cc9` -
+and `rarityTag(key)` is the one renderer.
+
+⚠ **WHAT IS STILL NOT DRAWN IS THE FRAME.** The tier prints as a WORD in its
+colour on the found row and nowhere else; the coloured border round a slot, a
+stash row, a shop row and the aftermath's `.abslot` is a UI pass of its own and
+needs its own picture before it is built (the user's own call: *rate now, frames
+later*). **When it is built it goes round the slot the GAME draws, never into
+the PNG.**
+
 ⚑ **FIVE KEYS ARE MAPPED TO ITEMS THAT DO NOT EXIST** (`pilum`, `shuriken`,
 `timecube`, `kris`, `stoneshield`, specced in `art/ITEM_PACK_01_TEXT.md`). That
 is deliberate: `itemArt()` reads a key and does not care whether `GEAR` has the

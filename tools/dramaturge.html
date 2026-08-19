@@ -2188,7 +2188,17 @@ const MAPW = 1280, MAPH = 638;
    table to ask, so it keeps the chip offset below and is therefore
    OPTIMISTIC about sighted nodes by ~33px of y. ⚠ That is the direction to
    know about when moving a coordinate here: the game may flag a plate
-   overlap this editor passed. The prototype's own TEST-mode overlay is the
+   overlap this editor passed.
+   #197 note (2026-08-19): AND THE ERROR NOW RUNS THE OTHER WAY AT THE FOOT OF
+   THE MAP. A sighted node below design y 559 has its caption LIFTED by exactly
+   the amount it would otherwise hang off the bottom of the 678px window (14 to
+   37px on the four that qualify today), because the map cannot grow, the type
+   cannot shrink and the nodes cannot move - see `capLift` and the `.lowcap`
+   rule in the prototype. So down there this editor is PESSIMISTIC instead: it
+   draws a plate lower than the game will, and may flag an overlap the game
+   does not have. ⛔ NOTHING TO COPY - it is a function of the node's own y, not
+   a constant - and the rule stands either way: the prototype's TEST overlay is
+   the authority and this page is the sketchpad. The prototype's own TEST-mode overlay is the
    authority. The paintings themselves may overlap on tight pairs, which is
    the user's 250% order; what these checks protect is the NAMES.
    Source of truth is the prototype. Copy from it, never the other way. */

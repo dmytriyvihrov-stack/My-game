@@ -106,6 +106,34 @@ cannot drift apart. **The `.pcard` phantom-scrollbar fix is the same thing and i
 same token**: the card's bottom padding and the footer's bottom padding are both `--p7`, so
 "matching" is a thing the file states instead of a thing somebody remembered.
 
+## 3b. ⛔ #197 · A SHARED BOX HEIGHT IS GEOMETRY, AND IT IS NOT ON ANY OF THE THREE SCALES
+
+*(2026-08-19. The user, red box round the world bar's left group: **"Make heights same size, so it
+looks nicer"**.)*
+
+**Measured before anything moved.** The left group ran **30 / 22 / 26 / 20 / 20** and the four
+resource segments on the right were **26**. ⚑ **Nothing was misconfigured**: all of them share
+`padding:var(--p1) var(--p4)`, a 1px border and `border-box`, and each was sized by its own
+CONTENT - a 24px painted bust, an emoji at `--fs1`, a figure at `--fs5`. That is this file's own
+Discord note (*"the UI elements all seem to have different outline colors and thicknesses;
+standardizing these would help"*) arriving on **height** instead of on edge, and it is the same
+mechanism: nobody decided it, so it was decided nine times.
+
+⛔ **A HEIGHT IS NOT A `--p` STEP AND MUST NOT BE MADE ONE.** This file governs `font-size`, a
+structural `border-color` and `padding`; a shared box size is none of the three, and substituting a
+spacing token for it would be the wrong-unit bug the file spends §2 forbidding. `--barChip:30px`
+sits in `:root` on the same footing as `#wBar`'s 64px reservation, and it carries its arithmetic
+for the same reason.
+
+⚑ **30 IS NOT A TASTE, IT IS THE ONE LOAD-BEARING CHIP.** The party chip holds a 24px bust plus
+that image's own 1px border, plus `--p1` and the chip's border top and bottom. Everything else was
+shorter only because a 10px word is shorter than a portrait. The bar is 42, so 30 leaves 6px of air
+either side. ⚠ **If the bust ever changes size this number moves with it.**
+
+⛔ **AND IT IS SCOPED TO `#wBar`**, which is #187's rule about shared furniture: `.cchip`,
+`.bcchip`, `.rseg` and `.tchip` are drawn only inside `#wCompany` and `#wRes` **today**, and an
+unscoped height would follow the first one of them that is ever reused on another screen.
+
 ## 4. ⛔ What the floor breaks, and it is never the text
 
 **A raised font size does not break the text. It breaks the box that was measured around the old
