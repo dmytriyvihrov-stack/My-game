@@ -1483,6 +1483,17 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:var(--f
 #bLos{position:absolute;left:0;top:0;overflow:visible;pointer-events:none}
 #bLos polyline{fill:none;stroke-width:2;stroke-linejoin:round;opacity:.9}
 #bLos circle{stroke:none}
+/* ═══ #195 · THE LINE OF MOVEMENT ════════════════════════════════════════
+   (User: "For merehere battle show more clear the line of movment of
+   creatures".) Same box, same reasons, same guarantees as #bLos above: in
+   #bFx, pointer-events:none, so it is a readout and never a control. It is a
+   sibling rather than a second use of #bLos because the two answer different
+   questions and can legitimately be on screen together - the ray is the shot
+   you are about to take, these are the lanes something else can run. */
+#bMove{position:absolute;left:0;top:0;overflow:visible;pointer-events:none}
+#bMove line{stroke-linecap:round}
+#bMove path{fill:none;stroke-linecap:round}
+#bMove circle{stroke:none}
 /* ═══ BODIES ON THE GROUND (backlog #48) ═══════════════════════════════
    `at()` reads `alive()`, so the hex used to come clean the moment somebody
    died and the field forgot the fight had ever been there. The body stays
@@ -9023,9 +9034,90 @@ function hdist(a,b){const A=cube(a[0],a[1]),B=cube(b[0],b[1]);
   return Math.max(Math.abs(A.x-B.x),Math.abs(A.y-B.y),Math.abs(A.z-B.z));}
 const DIR=[[[1,0],[0,-1],[-1,-1],[-1,0],[-1,1],[0,1]],
            [[1,0],[1,-1],[0,-1],[-1,0],[1,1],[0,1]]];
+/* ═══ #195 · THE SIX STRAIGHT LANES, IN CUBE SPACE, DECLARED ONCE ═════════
+   `DIR` is indexed per row parity, so repeating one of ITS indexes zig-zags as
+   the parity changes - which is why the charge was authored in cube space in
+   the first place. This array used to live inside `mirehareMove`, where it was
+   the brain's private property. The hover overlay now draws these lanes, and an
+   overlay drawing a lane the brain will not run is worse than the overlay that
+   was missing: it teaches a wrong rule confidently. ONE array, both readers. */
+const CUBE_AXIS=[[1,-1,0],[1,0,-1],[0,1,-1],[-1,1,0],[-1,0,1],[0,-1,1]];
 const nbrs=(c,r)=>DIR[r&1].map(d=>[c+d[0],r+d[1]])
   .filter(p=>p[0]>=0&&p[0]<COLS&&p[1]>=0&&p[1]<ROWS);
 const K=(c,r)=>c+','+r;
+/* ═══ #195 · ONE BUILDER FOR A CHARGE'S SIX LANES ═════════════════════════
+   From `from`, out to `len` hexes, down each of the six cube axes. A lane stops
+   at the board edge, at BLOCKED ground, or at the first body standing in it -
+   and that body is handed back as `blocker` with the distance `n` it was met
+   at, because "at least two hexes of run" is the rule the buck is built around
+   and `n` is the only thing that can answer it.
+
+     path     the clear hexes, in order. Where a charge ENDS
+     blocker  the body that stopped the lane, or null
+     n        how far out the blocker stands
+
+   `ignore` skips one body when the question is hypothetical: the brain's
+   look-ahead asks "would a charge be available if I stood over there", and its
+   OWN hex is on the lane back toward the line every time, so counting itself as
+   a wall scores every plan at zero. That was already true and is now said once
+   instead of twice. */
+function chargeLanes(from,len,ignore){
+  const out=[],q=cube(from[0],from[1]);
+  for(let d=0;d<6;d++){
+    const v=CUBE_AXIS[d],path=[];
+    let blocker=null,n=0;
+    for(let k=1;k<=len;k++){
+      const z=q.z+v[2]*k,x=q.x+v[0]*k;
+      const p=[x+((z-(z&1))/2),z];
+      if(p[0]<0||p[0]>=COLS||p[1]<0||p[1]>=ROWS||BLOCKED[B.terr[K(p[0],p[1])]])break;
+      const o=at(p[0],p[1]);
+      if(o&&o!==ignore){blocker=o;n=k;break;}
+      path.push(p);
+    }
+    out.push({dir:d,path:path,blocker:blocker,n:n});
+  }
+  return out;
+}
+/* ═══ #195 · WHERE A BODY CAN ACTUALLY END ITS MOVE ═══════════════════════
+   The one question the hover overlay asks, and it had exactly one answer for
+   every creature in the game: a cost-based flood fill. That is right for
+   everything that walks and it is a LIE for the two that do not.
+
+   ⛔ MEASURED BEFORE THIS EXISTED, hovering the shipped pair: the doe was
+   painted 24 hexes of which 18 were unreachable while 8 legal landings went
+   unpainted; the buck was painted 40 of which 22 were unreachable. A creature
+   whose whole design is a geometry the player must work out was being drawn
+   with the wrong geometry.
+
+   ⚑ AND THE TWO FAULTS ARE DIFFERENT, which is why no flood fill could be
+   tuned into the answer. The doe lands at EXACTLY three and clears the ground
+   between, so a budget of three that PAYS for marsh and water reaches a
+   fraction of her real ring. The buck travels only in straight lines, so no
+   disc of any radius is his envelope. `kind` is what the painter needs in order
+   to know which shape it is drawing.
+
+   ⚠ WALKERS ARE UNTOUCHED, deliberately: `reachMap(u,u.speed)` is exactly what
+   `peekOn` passed before, raw speed and all. Swapping in `moveBudget` here
+   would quietly change the overlay for every other enemy in the game, which is
+   a different change and wants its own measurement. */
+function moveEnvelope(u){
+  const leap=(u.acts||[]).find(a=>a.leap),dash=(u.acts||[]).find(a=>a.dash);
+  if(leap){
+    /* exactly N, and the ground in between is not paid for: she clears it */
+    const dist={},ring=[];
+    for(let r=0;r<ROWS;r++)for(let c=0;c<COLS;c++){
+      if(hdist([u.col,u.row],[c,r])!==leap.leap||!walkable(c,r))continue;
+      dist[K(c,r)]=leap.leap;ring.push([c,r]);
+    }
+    return {kind:'leap',rm:{dist:dist,prev:{}},ring:ring,n:leap.leap,act:leap};
+  }
+  if(dash){
+    const lanes=chargeLanes([u.col,u.row],dash.dash,null),dist={};
+    lanes.forEach(L=>L.path.forEach(p=>{dist[K(p[0],p[1])]=hdist([u.col,u.row],p);}));
+    return {kind:'dash',rm:{dist:dist,prev:{}},lanes:lanes,n:dash.dash,act:dash};
+  }
+  return {kind:'walk',rm:reachMap(u,u.speed)};
+}
 
 /* ---------- facing, and the six arcs around a body ----------
    0 = you are looking at its face
@@ -17731,31 +17823,19 @@ function mirehareMove(u,T){
     return true;
   }
   let best=null,bs=1e9;
-  /* DIR is ordered around each offset row, so repeating one of its diagonal
-     indexes would zig-zag as row parity changes. A charge is authored in
-     cube space instead: one fixed vector is one genuinely straight lane. */
-  const axis=[[1,-1,0],[1,0,-1],[0,1,-1],[-1,1,0],[-1,0,1],[0,-1,1]];
-  const q=cube(u.col,u.row);
-  for(let dir=0;dir<6;dir++){
-    const v=axis[dir];
-    let path=[];
-    for(let n=1;n<=dash.dash;n++){
-      const z=q.z+v[2]*n,x=q.x+v[0]*n;
-      const p=[x+((z-(z&1))/2),z];
-      if(p[0]<0||p[0]>=COLS||p[1]<0||p[1]>=ROWS||BLOCKED[B.terr[K(p[0],p[1])]])break;
-      const o=at(p[0],p[1]);
-      if(o){
-        /* A charge must actually travel. An adjacent body pins the buck and
-           is not quietly converted into an ordinary melee swing. */
-        if(o.side!==u.side&&!o.passive&&n>=2){
-          const sc=targetScore(o)-n*3;
-          if(sc<bs){bs=sc;best={t:o,p:path[path.length-1],path:path.slice(),n:n};}
-        }
-        break;
-      }
-      path.push(p);
+  /* The six vectors and the walk down them are `CUBE_AXIS` and `chargeLanes`
+     since #195, because the hover overlay draws these same lanes and a second
+     copy of this loop is a second answer waiting to disagree with it. The
+     scoring below is unchanged, line for line. */
+  chargeLanes([u.col,u.row],dash.dash,null).forEach(L=>{
+    /* A charge must actually travel. An adjacent body pins the buck and
+       is not quietly converted into an ordinary melee swing. */
+    if(L.blocker&&L.blocker.side!==u.side&&!L.blocker.passive&&L.n>=2){
+      const sc=targetScore(L.blocker)-L.n*3;
+      if(sc<bs){bs=sc;best={t:L.blocker,p:L.path[L.path.length-1],
+        path:L.path.slice(),n:L.n};}
     }
-  }
+  });
   /* ═══ NO BODY ON ANY LANE, SO GO AND MAKE ONE ═══════════════════════════
      This was the worse half by a distance: 90% of every buck turn in the
      fight was spent standing still, because a charge needs an enemy already
@@ -17774,34 +17854,16 @@ function mirehareMove(u,T){
        hex it is on? `u` is skipped for that reason: his own hex is on the
        lane back toward the line every time, and counting it as a wall is how
        a two-ply look-ahead scores every plan at zero. */
-    const lanesFrom=(p)=>{
-      let n2=0;
-      for(let d2=0;d2<6;d2++){
-        const q2=cube(p[0],p[1]),v2=axis[d2];
-        for(let k=1;k<=dash.dash;k++){
-          const z2=q2.z+v2[2]*k,x2=q2.x+v2[0]*k;
-          const g=[x2+((z2-(z2&1))/2),z2];
-          if(g[0]<0||g[0]>=COLS||g[1]<0||g[1]>=ROWS||BLOCKED[B.terr[K(g[0],g[1])]])break;
-          const o2=at(g[0],g[1]);
-          if(o2&&o2!==u){if(o2.side!==u.side&&!o2.passive&&k>=2)n2++;break;}
-        }
-      }
-      return n2;
-    };
+    const lanesFrom=(p)=>chargeLanes(p,dash.dash,u).filter(L=>
+      L.blocker&&L.blocker.side!==u.side&&!L.blocker.passive&&L.n>=2).length;
     let mv=null,ms=-1e9;
-    for(let dir=0;dir<6;dir++){
-      const v=axis[dir],path=[];
-      for(let n=1;n<=dash.dash;n++){
-        const z=q.z+v[2]*n,x=q.x+v[0]*n;
-        const p=[x+((z-(z&1))/2),z];
-        if(p[0]<0||p[0]>=COLS||p[1]<0||p[1]>=ROWS||BLOCKED[B.terr[K(p[0],p[1])]])break;
-        if(at(p[0],p[1]))break;
-        path.push(p);
+    chargeLanes([u.col,u.row],dash.dash,null).forEach(L=>{
+      L.path.forEach((p,i)=>{
         let near=99;live.forEach(t=>{const d=udist(p,t);if(d<near)near=d;});
         const sc=lanesFrom(p)*100-near*6-exposureAt(p,u.side);
-        if(sc>ms){ms=sc;mv={p:p,path:path.slice(),n:n};}
-      }
-    }
+        if(sc>ms){ms=sc;mv={p:p,path:L.path.slice(0,i+1),n:i+1};}
+      });
+    });
     if(!mv)return false;
     spend(u,dash);
     const f1=[u.col,u.row];
@@ -20594,9 +20656,16 @@ function render(){
      SECOND BAND GOES STALE THE MOMENT ANYTHING MOVES: this is the other of the
      two sites that rebuild the peek (peekOn is the first), and a map rebuilt
      in one and not the other is the bug #171's own overlay would have shipped.
-     peekThreat reads B.peekReach, so the order of these two lines matters. */
+     peekThreat reads B.peekReach, so the order of these two lines matters.
+     ⛔ #195 PROVED THAT WARNING BY WALKING INTO IT. When `peekOn` learned to
+     ask `moveEnvelope` and this site did not, the mirehare overlay was correct
+     for exactly one frame: the next render put the walk flood fill back under a
+     cursor that had not moved, and left `B.peekEnv` describing the previous
+     board. So BOTH sites go through the one builder, and `peekEnv` is written
+     here too - `peekThreat` reads it, which is why it is set first. */
   if(B.peek&&(!B.peekReach||B.peekStamp!==B.stamp)){
-    B.peekStamp=B.stamp;B.peekReach=reachMap(B.peek,B.peek.speed);
+    B.peekStamp=B.stamp;
+    B.peekEnv=moveEnvelope(B.peek);B.peekReach=B.peekEnv.rm;
     B.peekHit=peekThreat(B.peek);}
   if(u){
     /* "mine" means ON THE ROSTER, not merely on my side of the board — an
@@ -21716,6 +21785,42 @@ function render(){
    legs. */
 function peekThreat(t){
   if(!B||!B.peekReach||!t)return null;
+  /* ═══ #195 · A MOVEMENT-ONLY CREATURE THREATENS FROM ITS LANDINGS, AND
+     NEVER FROM WHERE IT IS STANDING ══════════════════════════════════════
+     The walker code below seeds from `hexesOf(t)` - where the body is now -
+     because everything that walks can also swing without moving. The mirehare
+     pair cannot: each has exactly ONE act and that act IS a move, so a body
+     already beside one of them is not in danger from it at all until it leaves.
+
+     ⛔ SEEDING FROM ITS OWN HEX WOULD THEREFORE PAINT THE EXACT OPPOSITE OF
+     THE COUNTER. Both counters fall straight out of the geometry once it is
+     drawn honestly, and both are the ones #193's bench was written to measure:
+
+       the DOE  no hex at distance 1 is adjacent to a hex at distance 3, so
+                CLOSING THE GAP AND STAYING IN IT puts you where she cannot
+                land on you. Her band is the ring's neighbours, nothing else.
+       the BUCK `n>=2` is the charge's own rule, so STANDING ON TOP OF HIM -
+                or off his six lanes - is safety. Distance-1 lane hexes are
+                where he can END UP but not where he can HIT.  */
+  const env=B.peekEnv;
+  if(env&&env.kind==='leap'){
+    const out={};
+    env.ring.forEach(p=>nbrs(p[0],p[1]).forEach(q=>{
+      const k=K(q[0],q[1]);
+      /* a landing is the darker band's own; only the ring it adds goes here */
+      if(B.terr[k]===undefined||env.rm.dist[k]!==undefined)return;
+      out[k]=1;}));
+    return out;
+  }
+  if(env&&env.kind==='dash'){
+    const out={},from=[t.col,t.row];
+    env.lanes.forEach(L=>{
+      /* stand on a clear lane at two or more and you ARE the blocker */
+      L.path.forEach(p=>{if(hdist(from,p)>=2)out[K(p[0],p[1])]=1;});
+      /* and whoever is already blocking one at two or more is the target */
+      if(L.blocker&&L.n>=2)out[K(L.blocker.col,L.blocker.row)]=1;});
+    return out;
+  }
   /* the longest arm it has, floored at 1: everything on this board can swing
      at something standing next to it, whether or not it declares a `reach` */
   let rc=1;
@@ -21747,6 +21852,114 @@ function peekThreat(t){
   Object.keys(seen).forEach(k=>{if(seen[k]>0)out[k]=1;});
   return out;
 }
+/* ═══ #195 · THE LANES AND THE RING, DRAWN ════════════════════════════════
+   A wash can only say WHICH hexes. It cannot say STRAIGHT, and "one of six
+   straight lanes, with at least two hexes of run" is the whole of what the
+   player has to work out about the buck. So the lanes are drawn as lines.
+
+   Built on `drawLosRay`'s pattern exactly: an SVG in #bFx, imperative and
+   OUTSIDE render() because it follows the cursor, positioned with `hexPt`,
+   which measures the live DOM and therefore lands correctly at any camera
+   zoom. #bFx is pointer-events:none, so none of this can be clicked.
+
+   TWO WEIGHTS, AND THE DIFFERENCE IS THE TELEGRAPH:
+     DIM   a lane he could run, or a hex she could land on. "Stay off this."
+     LIT   a run that ENDS IN A BLOW as the board stands. "This one, next."
+   A player who reads only the bright line has still read the useful half. */
+function clearMoveLines(){const e=$('bMove');if(e)e.remove();}
+function drawMoveLines(){
+  clearMoveLines();
+  const fx=$('bFx'),u=B&&B.peek,env=B&&B.peekEnv;
+  if(!fx||!u||!env||env.kind==='walk')return;
+  const p0=hexPt(u);if(!p0)return;
+  const NS='http://www.w3.org/2000/svg';
+  const svg=document.createElementNS(NS,'svg');
+  svg.id='bMove';
+  svg.setAttribute('width',fx.clientWidth);
+  svg.setAttribute('height',fx.clientHeight);
+  /* the same hue the wash uses for this side, so the pair read as one
+     creature's envelope and not as two unrelated overlays (#171's rule) */
+  const foe=u.side==='foe';
+  /* ⚠ #195 - THESE TWO WEIGHTS WERE SET BY A SCREENSHOT, NOT BY TASTE. At
+     .50 alpha and r=2.4 the doe's eighteen landing dots vanished into her own
+     wash, and her landing ring is the whole of what she teaches. Raised until
+     the ring reads as a ring on the build's own ground. */
+  const DIM=foe?'rgba(214,116,106,.72)':'rgba(96,164,190,.72)';
+  const LIT=foe?'#e0857a':'#7fc6dd';
+  const line=(a,b,col,w,dash)=>{
+    const l=document.createElementNS(NS,'line');
+    l.setAttribute('x1',a.x.toFixed(1));l.setAttribute('y1',a.y.toFixed(1));
+    l.setAttribute('x2',b.x.toFixed(1));l.setAttribute('y2',b.y.toFixed(1));
+    l.setAttribute('stroke',col);l.setAttribute('stroke-width',w);
+    if(dash)l.setAttribute('stroke-dasharray',dash);
+    svg.appendChild(l);return l;};
+  const dot=(p,r,col,op)=>{
+    const c=document.createElementNS(NS,'circle');
+    c.setAttribute('cx',p.x.toFixed(1));c.setAttribute('cy',p.y.toFixed(1));
+    c.setAttribute('r',r);c.setAttribute('fill',col);
+    if(op)c.setAttribute('fill-opacity',op);
+    svg.appendChild(c);};
+  /* a head on the bright line, so a charge reads as a direction and not as a
+     rod lying across the board. Two short strokes back off the tip at 28°. */
+  const head=(a,b,col)=>{
+    const dx=b.x-a.x,dy=b.y-a.y,L=Math.hypot(dx,dy)||1,ux=dx/L,uy=dy/L;
+    const T=.49,ang=.49;
+    [1,-1].forEach(s=>{
+      const cs=Math.cos(ang),sn=Math.sin(ang)*s;
+      const bx=-(ux*cs-uy*sn)*9, by=-(uy*cs+ux*sn)*9;
+      line(b,{x:b.x+bx,y:b.y+by},col,2.4);});
+  };
+
+  if(env.kind==='dash'){
+    env.lanes.forEach(L=>{
+      if(!L.path.length)return;
+      const live=L.blocker&&L.n>=2&&L.blocker.side!==u.side&&!L.blocker.passive;
+      const end=hexPt({col:L.path[L.path.length-1][0],row:L.path[L.path.length-1][1]});
+      if(!end)return;
+      if(live){
+        /* all the way INTO the body it ends on, because that is the point */
+        const tp=hexPt(L.blocker);
+        line(p0,tp||end,LIT,2.6);
+        if(tp)head(p0,tp,LIT);
+      }else{
+        line(p0,end,DIM,2.1,'5 4');
+        dot(end,3,DIM);
+      }
+      /* the first hex of a lane is where he can END but cannot HIT: no run.
+         Marked on the dim lanes only - on a live charge the head says it. */
+      if(!live&&L.path.length){
+        const f=hexPt({col:L.path[0][0],row:L.path[0][1]});
+        if(f)dot(f,1.6,DIM);
+      }
+    });
+  }else if(env.kind==='leap'){
+    /* every landing gets a dot; the ones that pay a blow get the arc as well.
+       The arc is a quadratic bowed off the midpoint, because a leap is not a
+       walk and a straight line here would read as one. */
+    const mine=alive().filter(x=>x.side!==u.side&&!x.passive);
+    env.ring.forEach(p=>{
+      const q=hexPt({col:p[0],row:p[1]});if(!q)return;
+      const hits=mine.some(m=>hdist([m.col,m.row],p)<=1);
+      if(hits){
+        /* a landing that pays a blow: the arc says WHERE FROM, the dot says
+           WHERE TO, and the pair is the only part of this overlay a player has
+           to read to play correctly */
+        const mx=(p0.x+q.x)/2,my=(p0.y+q.y)/2;
+        const dx=q.x-p0.x,dy=q.y-p0.y,L=Math.hypot(dx,dy)||1;
+        /* bow perpendicular to the leap, a fifth of its length */
+        const bx=mx-dy/L*L*.20, by=my+dx/L*L*.20;
+        const pa=document.createElementNS(NS,'path');
+        pa.setAttribute('d','M'+p0.x.toFixed(1)+' '+p0.y.toFixed(1)+
+          ' Q'+bx.toFixed(1)+' '+by.toFixed(1)+' '+q.x.toFixed(1)+' '+q.y.toFixed(1));
+        pa.setAttribute('stroke',LIT);pa.setAttribute('stroke-width',2.2);
+        pa.setAttribute('stroke-opacity','.85');
+        svg.appendChild(pa);
+        dot(q,3.4,LIT);
+      }else dot(q,3.2,DIM);
+    });
+  }
+  fx.appendChild(svg);
+}
 function paintPeek(){
   const list=B&&B.hexEls;if(!list)return;
   const R=B.peek?B.peekReach:null;
@@ -21772,19 +21985,28 @@ function paintPeek(){
     else if(bare&&T&&T[h.k])want=colH;
     if(h.cur!==want){h.cur=want;h.f.style.background=want;}
   }
+  /* #195 - and the lines, through the same door: `paintPeek` is what render()
+     calls to put a surviving peek back, so the lanes cannot outlive the wash
+     or go missing while it is still up. */
+  drawMoveLines();
 }
 /* Both maps are cached against the render stamp, so sweeping the cursor
    back and forth over the same body computes them once. */
 function peekOn(t){
   if(!B)return;
   if(B.peek!==t||B.peekStamp!==B.stamp){
-    B.peek=t;B.peekStamp=B.stamp;B.peekReach=reachMap(t,t.speed);
+    B.peek=t;B.peekStamp=B.stamp;
+    /* #195 - ONE BUILDER ANSWERS "WHERE CAN IT GO", and for two creatures in
+       the game the answer is not a flood fill. `B.peekReach` keeps its name and
+       its shape so every reader below is untouched; what changed is who
+       computed it. ⚠ `peekEnv` is set BEFORE peekThreat, which reads it. */
+    B.peekEnv=moveEnvelope(t);B.peekReach=B.peekEnv.rm;
     B.peekHit=peekThreat(t);}
   paintPeek();
 }
 function peekOff(){
   if(!B||!B.peek)return;
-  B.peek=null;B.peekReach=null;B.peekHit=null;B.peekStamp=null;
+  B.peek=null;B.peekReach=null;B.peekHit=null;B.peekStamp=null;B.peekEnv=null;
   paintPeek();
 }
 /* ═══ #96 point 1 - THE HEAD IN THE RAIL POINTS AT THE BODY ON THE BOARD ═══
