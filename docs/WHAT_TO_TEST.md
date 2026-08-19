@@ -25,6 +25,55 @@
 
 ---
 
+## ✒ THE EM DASH IS GONE FROM EVERYTHING YOU READ  *(#199 · 2026-08-19 · build log 8f.221)*
+
+**Nothing here is a new feature.** 188 pieces of player-facing text carried an em dash and now
+carry the punctuation their own sentence wanted. **What you are checking is that no sentence reads
+worse than it did**, because that is the only thing a sweep like this can break.
+
+**Reach it in three:** anywhere. It is on every screen. The four densest places are below.
+
+### Where to look, in the order they are quickest to reach
+
+* **⚔ the battle legend.** The **?** at the bottom-left of the battle screen. Its four lines used
+  to be three em dashes and one hyphen; they now read as four of a kind:
+  `2 actions a turn - move + strike` · `water - 2 hexes to enter` · `held - somebody is facing this
+  hex` · `morale broken - white flag, and they run`. **The third one is unchanged**, and the point
+  of the pass is that the other three now match it.
+* **? RULES**, the whole help screen. Seven sentences changed here and they are the longest ones in
+  the game. `Every body has two pools: armour, which is a shield you can strip, and hitpoints,
+  which are the person.` · `days cost wages: one number on the travel card` · `Prices are honest: a
+  merchant names his price, but nothing scores you.`
+* **🎒 the company sheet**, and any promotion or hire card. The name line is now
+  `Ummuk "Gatepost" - ogre, spearwoman`, and the trait under it `Slow to warm up - +8 to hit from
+  round four onward`.
+* **hover a trait or a perk.** These are the sentences that changed most: `CANNOT DISENGAGE: the
+  option is not on their sheet` · `−2 STR: there is not much of them` · `Morale can never fall
+  below 15%: you cannot rout` · and the one that became brackets,
+  `−7 to hit at close range (nerves) and +9 morale every time they actually land one`.
+
+### What is deliberately NOT changed, so it is not reported as a miss
+
+* **The `–` in a number range stays**, because it is a range and not a dash: `BOAR SPEAR 22–30`,
+  `1–9 fire the actions`. Only the long dash was the rule.
+* **An empty readout now shows `–` rather than the long dash.** Before a fight starts, the counts
+  capsule reads `⛊ – ↻ I ☠ –` and NERVE / hit / dodge each show `–`. **They must fill with real
+  values the moment a battle begins** (`⛊ 6`, `🙂 HAPPY`, `58%`). A cell still showing a dash in a
+  live fight is a bug.
+* **The source comments still contain 1,141 of them** and that was your call. Nothing a player
+  reads is among them.
+* **The hosted `index.html` is still the old text.** It is generated, it was last built at #194,
+  and it catches up on the next deploy.
+
+### What would be a bug
+
+A sentence that now reads wrong, a missing space, a doubled full stop, a lower-case word after a
+full stop, or a label whose two halves have run together. **Anywhere a colon reads as heavy or a
+hyphen reads as a bullet, say so and name the screen** - each one was a judgement and any of them
+can be changed on its own.
+
+---
+
 ## ✎ THE TEXT TOOL GROWS A HOVER MODE, AND CLASS AND RACE BECOME PICTURES  *(#196 · 2026-08-19 · build log 8f.218)*
 
 Three separate things. The first two are yours only, in dev mode; the third is on every screen.
