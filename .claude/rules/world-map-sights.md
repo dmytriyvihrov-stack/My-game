@@ -76,6 +76,48 @@ counters are the proof, not a screenshot.
 where an unsighted one uses `NAME_DY` (21). A node that gains art moves its own plate 33px down.
 That is why adding an icon can break a neighbour that nobody touched.
 
+## ⛔ ALL THREE COUNTERS CAN READ ZERO WHILE A ROAD RUNS THROUGH A PAINTING
+
+*(#194, 2026-08-19, adding a node to the first corridor.)* `labelViolations()` scores a road's
+**price LABEL** against plates and paintings. **Nothing scores the road CURVE itself.** So a node
+can be placed, pass 0/0/0, and still have `drawMap`'s quadratic drawn straight across its 79px
+painted core - and the counters will go on saying the map is clean, because none of them looks at
+`drawCurve`.
+
+⚑ **THE BUILD ALREADY KNEW THIS AND FIXED IT BY HAND, ONCE.** `EDGES` carries an optional sixth
+element, a vertical bow, and its only user is `dead→snare` with the comment *"a straight line from
+The Dead Company to The Snare passes through The Old Milestone's glyph"*. That is this fault,
+found by eye, patched at one site, and never turned into a check.
+
+⛔ **SO A NEW NODE IS CHECKED AGAINST EVERY EDGE BY HAND, AND THE ARITHMETIC IS THE CHECK.** For
+each edge `a→b` that does not touch the new node, sample the same curve `drawMap` draws and take
+the closest approach to the node point:
+
+```js
+/* every road, against every painted node it is not an endpoint of */
+(()=>{const bad=[],pt=(a,b,t,bow)=>{const cx=(a.x+b.x)/2,cy=(a.y+b.y)/2-((b.y-a.y)*.14)+(bow||0),
+    u=1-t;return{x:u*u*a.x+2*u*t*cx+t*t*b.x, y:u*u*a.y+2*u*t*cy+t*t*b.y};};
+  EDGES.forEach(e=>{const a=NODES[e[0]],b=NODES[e[1]];
+    Object.keys(NODES).forEach(k=>{ if(k===e[0]||k===e[1])return;
+      const n=NODES[k],A=artBox(n); if(!A)return;
+      for(let i=0;i<=40;i++){const p=pt(a,b,i/40,e[5]);
+        if(Math.abs(p.x-A.x)<A.w/2 && Math.abs(p.y-A.y)<A.h/2){
+          bad.push(e[0]+'->'+e[1]+' crosses '+n.n);break;}}});});
+  return bad;})()                                            // expect []
+```
+
+⚠ **AND IT IS WHY A PLACEMENT CAN BE GEOMETRICALLY LEGAL AND STILL WRONG.** #194's solver found a
+whole family of positions between the dogs and the muster that every counter passed, and all of
+them sat under the muster-to-fen road. The fix was to place the node somewhere else, not to bow
+the road: a bow is a patch for one edge, and it was already the only one in the file.
+
+⛑ **THE COUNTER WAS PROVED BY MAKING IT FIRE, WHICH IS THE ONLY WAY A NEW CHECK IS WORTH
+ANYTHING.** A check that has only ever returned `[]` is indistinguishable from one that is broken.
+Run on the shipped map it returns `[]`; the wedding then moved to the rejected `(790,296)` with
+`['hire','mother',...]` pushed back onto `EDGES`, and it returned exactly
+**`hire->mother crosses The Clan Wedding`**; restored, `[]` again. Do the same to any check added
+to this file - move a node into the fault on purpose, watch it report, put it back.
+
 ⚠ **`hasSight`/`sightFor` reach `MAP_SIGHT`, which is a `const` hundreds of lines below the boot
 IIFEs.** Reading it from its temporal dead zone throws and aborts the whole script. Anything
 called at boot must go through the `hasSight` try/catch. This file has shipped that crash once.

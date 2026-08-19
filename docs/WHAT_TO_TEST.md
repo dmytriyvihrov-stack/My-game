@@ -25,6 +25,98 @@
 
 ---
 
+## 🗺️ FOUR THINGS ON THE WORLD MAP  *(#194 · 2026-08-19 · build log 8f.216)*
+
+Four separate asks in one batch. They do not touch each other, so test them
+separately. Three are on the map screen and one is a road event.
+
+### 1. Places you have walked through stay lit
+
+**How to reach it:** start a run and walk three or four nodes east. Then look
+back west at where you came from.
+
+**What should happen**
+
+- Every node you have stood in is **fully visible** - the painting, the ring
+  and the name plate - with a **✓** in front of its name and the ring in a
+  pale grey-brown rather than its type colour.
+- It should read as **spent, not available**. A place you may walk to right now
+  is the only thing on the map that **pulses gold**; a walked one is still and
+  its colours are about half as strong.
+- A node you have never been near is still a faint ghost, the way it was.
+- The buried-cache node, once dug up, loses its green ✦ and joins the rest.
+
+**What would be a bug**
+
+- A walked node that **beats or glows**, or that you can click. Only gold ones
+  are roads.
+- A walked node that is still nearly invisible: that is the thing this changed.
+- A walked node whose name plate has gone dark or lost its ✓.
+
+### 2. The legend along the bottom of the map is gone
+
+**How to reach it:** open the world map.
+
+**What should happen**
+
+- The bottom-left corner has **RULES** and **MENU** and nothing else. The row of
+  coloured diamonds (`◆ battle · ◆ trade · ◆ strange ...`) is deleted.
+- **Nothing replaced it.** Hovering any node still tells you what it is.
+
+**What would be a bug** - the strip still showing after a reload, or an empty
+bordered box where it used to be.
+
+### 3. The clan wedding now happens on every run
+
+**How to reach it:** play east until the dog attack at **The Ruined Steading**,
+then the **Muster Field**. The next node is **THE CLAN WEDDING**.
+
+**What should happen**
+
+- It is a **named node with its own painting**, on the road between the muster
+  and the Black Fen, and **you cannot route around it** - whichever fork you
+  took at the start, this is the way through.
+- The card is the one you have seen before: stay for a drink, cut them down
+  (the `?` door), push politely through. With a **ratkin or an ogre** in the
+  company you also get their door, and *push politely through* correctly
+  **disappears** - a free door beats a walk-away, which is the existing rule.
+- Whatever you do, the road on out of it goes **down into the fen**.
+
+**What would be a bug**
+
+- Meeting the wedding **twice** in one run (it should no longer turn up in a
+  random "Something on the road" slot).
+- A road that skips it, or the muster leading straight to the Black Fen.
+- Its painting or name plate **sitting on top of** the Muster Field, Coldharrow
+  or the Black Fen.
+
+⚠ **This is one day longer than before.** The mandatory corridor gained a leg,
+so a whole run is now 20 to 24 days instead of 19 to 23, and that is one more
+day of wages. Say so if it feels like one day too many.
+
+⚑ **It is one stop later than you sketched, and you chose that.** There is no
+room between the dogs and the muster: they are 167px apart and the map's own
+spacing rule needs 90, so anything between them lands 83px from each. The two
+ways to force it there were to move The Muster Field or to let the wedding sit
+under the road down to the fen; you picked the version where nothing else moves.
+
+### 4. The day plaque no longer explains itself
+
+**How to reach it:** on the world map, hover the **DAY 3 MIDDAY** plaque in the
+middle of the top bar, and the little sun/moon disc beside it.
+
+**What should happen**
+
+- **Nothing.** No tooltip, and the cursor stays an ordinary arrow rather than
+  turning into a question mark.
+- Everything else on that bar still has its hover: the contract, the purse, the
+  provisions, the mood, the health.
+
+**What would be a bug** - the tooltip still appearing, the help cursor still
+showing over the plaque, or one of the *other* chips having lost its hover.
+
+---
+
 ## 🎲 SIX THINGS: THE GROUND SPEAKS, THE ODDS GO QUIET, AND THE GAME HAS A NAME  *(#191 · 2026-08-18 · build log 8f.211)*
 
 Six separate asks in one batch. They do not touch each other, so test them
