@@ -408,9 +408,13 @@ button:disabled{cursor:not-allowed}
 #bName .nm{flex:0 1 auto;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 /* shrink factor 2: when the row is tight the NICKNAME gives way first. The
    name is identity, the nickname is colour. */
+/* #202 - real Spectral italic at 10px is 13px of content in this 11.5px line
+   box, and the ellipsis needs overflow:hidden, so the y of "Nobody's Cousin"
+   was cut: padding paints the tail, the matching negative margin gives the
+   height back. Same fix, same reason, as `.itl .tv` on the sheet. */
 #bName .nick{flex:0 2 auto;font-family:var(--body);font-size:var(--fs1);color:var(--g3);
   font-style:italic;font-weight:400;white-space:nowrap;overflow:hidden;
-  text-overflow:ellipsis;min-width:0}
+  text-overflow:ellipsis;min-width:0;padding-bottom:var(--p1);margin-bottom:calc(var(--p1) * -1)}
 /* ═══ #105 point 5 · THE WORDS UNDER THE FACE GET FIFTEEN PER CENT ════════
    (User: "15% bigger font for words in the left buttom - hero description".)
    These two lines and the trait below them are the only PROSE on the battle
@@ -643,7 +647,14 @@ button:disabled{cursor:not-allowed}
    and both went to 10, so the role clipped mid-word (GUARDS ALLIES measured 7px
    over its 72) and the two clamped name lines each grew about 1.2px.
    72 -> 80 and 86 -> 90 pays both. Nine cards at 80+5 is 765px in the same
-   1280 band, so the row that was "still clear" still is. */
+   1280 band, so the row that was "still clear" still is.
+   ⛔ #202 RAN IT A THIRD TIME, BECAUSE #189 CHANGED THE FONT UNDER IT. Real
+   JetBrains Mono is exactly 6px a glyph at 10px (canvas-measured, Consolas
+   was 5.5), so GUARDS ALLIES went to 81px and clipped mid-word again in the
+   74px the role line has inside this card (80 - 2 border - 2x2 padding).
+   The card does not grow a second time: the ROLE{} table is capped at
+   TWELVE characters (12 x 6 = 72) and the role's tracking is 0, and that
+   is the arithmetic written beside the table. */
 .act{width:80px;height:90px;background:linear-gradient(#1e2c2d,#141f20);border:1px solid #3a4f52;
   flex:none;position:relative;display:flex;flex-direction:column;align-items:center;
   padding:0;transition:transform .12s ease}
@@ -690,7 +701,7 @@ button:disabled{cursor:not-allowed}
    of the 2026-08-10 report wearing a new coat. See ROLE{}.
    ⚠ ONE LINE, CLIPPED. Two lines here would put the card back where #102
    point 10 found it. */
-.act .role{font-family:var(--mono);font-size:var(--fs1);letter-spacing:.02em;color:#7f9490;
+.act .role{font-family:var(--mono);font-size:var(--fs1);letter-spacing:0;color:#7f9490;
   line-height:1.1;margin-top:2px;padding:0 var(--p1);text-align:center;
   max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:clip}
 .act.sel .role{color:#a7bab6}
@@ -3005,8 +3016,17 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:var(--f
 .itl{display:flex;align-items:baseline;justify-content:space-between;gap:8px;
   border-bottom:1px dotted #332818;padding-bottom:var(--p1);cursor:help;min-width:0}
 .itl .tk{font-family:var(--mono);font-size:var(--fs1);letter-spacing:.13em;flex:none}
+/* ⛑ #202 - THE DESCENDERS. Real Spectral (#189) at 12px has a 16px content
+   area and this box is 14.4 (line-height 1.2) with overflow:hidden for the
+   ellipsis, so the g of "strong" and the y of "Heavy-handed" lost their
+   tails - measured 16/14 on all four tells. The column is EXACTLY full on
+   the Captain (#200: 678 into 678, `iFoot` already squeezed to 1px), so the
+   line box may not grow. The padding below paints the tail and the matching
+   negative margin hands the 2px straight back to the layout, one number
+   wearing two names the way ui-scales.md §3 requires. */
 .itl .tv{font-family:var(--body);font-size:var(--fs3);color:#d8d5cc;line-height:1.2;
-  text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  padding-bottom:var(--p1);margin-bottom:calc(var(--p1) * -1)}
 /* a banked promotion is spent by clicking the tell itself (#122's door) */
 .itl.spend{cursor:pointer;border-bottom-color:#8ca35a}
 .itl.spend .tv:after{content:' ▲';color:#8ca35a;font-size:var(--fs1)}
@@ -3229,8 +3249,10 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:var(--f
   overflow:hidden}
 .iact .adm{position:absolute;top:3px;right:4px;font-family:var(--mono);font-size:var(--fs1);
   color:var(--g4);line-height:1}
+/* #202 - tracking 0, same as `.act .role` and for the same sum: 12 glyphs of
+   real JetBrains Mono are 72px and this card has 76 inside its border. */
 .iact .role{position:absolute;bottom:12px;left:0;right:0;text-align:center;
-  font-family:var(--mono);font-size:var(--fs1);letter-spacing:.02em;color:#8a9a5c;line-height:1;
+  font-family:var(--mono);font-size:var(--fs1);letter-spacing:0;color:#8a9a5c;line-height:1;
   white-space:nowrap;overflow:hidden}
 .iact .cost{position:absolute;bottom:3px;left:0;right:0;text-align:center;font-size:var(--fs1);
   line-height:1;color:var(--g4);letter-spacing:.16em}
@@ -17272,15 +17294,23 @@ const iconFor=a=>(a.k==='main'?(a.range?'➹':'⚔'):ICON[a.k])||
    first half of the complaint this whole pass exists to answer. What earns
    a line is an act whose JOB is not visible in its numbers: it moves a body,
    it holds ground, it takes something away, it buys somebody else the
-   opening. Keep them to about twelve characters - the card is 60px wide and
-   the line does not wrap. */
+   opening.
+   ⛔ TWELVE CHARACTERS IS A CAP, NOT A SUGGESTION (#202). The line is 10px
+   JetBrains Mono, which is exactly 6px a glyph (canvas-measured after #189
+   embedded the real face; Consolas was 5.5 and hid this), drawn in 74px
+   inside the battle card and 76 inside the sheet's. 12 x 6 = 72 fits both,
+   13 = 78 fits neither, and the line does not wrap: it is cut mid-word.
+   GUARDS ALLIES (13), OPENS ITS BACK (14) and HITS ALL NEAR (13) all shipped
+   clipped on the Captain's own HOLD THE LINE card and on both ratkin cards
+   once the real font landed. LINT 14 holds the cap. */
 const ROLE={
   dis:'CLEAN STEP',
   kick:'PUSH', throw:'PUSH', shove:'PUSH 2', hook:'PULL', grasp:'ROOTS THEM',
-  wall:'AREA CONTROL', rallyline:'GUARDS ALLIES', oath:'GUARDS ALLIES',
+  wall:'AREA CONTROL', rallyline:'GUARD ALLIES', oath:'GUARD ALLIES',
   command:'RALLY', roar:'BREAKS NERVE',
-  cripple:'SLOWS THEM', venom:'POISON', distract:'OPENS ITS BACK',
-  sweep:'HITS ALL NEAR', sink:'ESCAPE'};
+  cripple:'SLOWS THEM', venom:'POISON', distract:'TURN IT AWAY',
+  sweep:'HIT ALL NEAR', sink:'ESCAPE'};
+const ROLE_MAX=12;
 const roleOf=a=>ROLE[a.k]||'';
 /* ═══ #105 point 7 · THE TWO MARKS ON THE PLAQUE ══════════════════════════
    (User: "Maybe instead of words you paint near one - a sword (to hit) and a
@@ -23458,6 +23488,26 @@ window.LINT=function(){
   const scanLabel=(c,where)=>{
     if(/mora?le?\s*[+−-]\s*\d/i.test(c.c||''))
       hit('receipt',where,'label prints a morale number: "'+c.c+'"');
+    /* 6f (#176, written down; #202, actually written) - `c:` may not carry a
+       figure `fx` already carries. The sub-line's cost is derived off `fx`
+       by `fxNote`, so a "+30 crowns" typed into `c:` prints twice and the
+       typed half is the one allowed to be wrong. Both rule files cited this
+       check for two days while nothing in LINT ran it; the mercy screen
+       shipped exactly this defect on two rows in the meantime.
+       ⚠ Scoped to tables `choiceNote` renders (EVENTS, CAMPS, MERCY). The
+       aftermath's LOOT rows wear the same shape and are NOT under it. */
+    if(/(^|\s)[+−-]\d/.test(c.c||''))
+      hit('receipt',where,'`c:` carries a figure ("'+c.c+'"). The cost is derived off `fx` by '+
+        'fxNote; a typed one is a second receipt for the same payment');
+    /* and the mood has one renderer (moraleTag). The phrases are the ones the
+       sweeps kept deleting (#150 x24, #151 x16, #176 x63, #198 x1, #202 x2) */
+    if(/they will remember|quietly approved|barely worth a word|sits (?:badly|well) with them|think better of you/i.test(c.c||''))
+      hit('receipt',where,'`c:` echoes the mood in prose ("'+c.c+'"). moraleTag is the one renderer');
+    /* and the race gate is the glyph (#154, derived off needRace). A door that
+       is filtered when the race is absent cannot also SAY it needs the race:
+       the words only ever print beside a company that has one (#202 x5) */
+    if(c.needRace&&/needs an? (?:ratkin|ogre|human)/i.test(c.c||''))
+      hit('receipt',where,'`c:` says "'+c.c+'" on a needRace door, which is never shown without one');
   };
 
   Object.keys(EVENTS).forEach(k=>{
@@ -23544,7 +23594,11 @@ window.LINT=function(){
        handler calls markSin anyway, so the day one is written it is on the
        ledger and this is what makes it say something. */
     if((c.ico||[]).indexOf('evil')>=0&&!c.sin)
-      hit('sin',where,'evil door with no `sin` phrase');}));
+      hit('sin',where,'evil door with no `sin` phrase');
+    scanLabel(c,where);}));
+  /* 3 and 6f again, for the mercy screen (#202): it is rendered by choiceNote
+     too, and it is where the two-receipts row was found living */
+  if(typeof MERCY!=='undefined')MERCY.opts.forEach((c,i)=>scanLabel(c,'MERCY.opts['+i+']'));
   /* 7 — nicknames must not cross cultures */
   Object.keys(NICKS_BY_RACE).forEach(r=>{
     Object.keys(NICKS_BY_RACE).forEach(r2=>{
@@ -23985,6 +24039,19 @@ window.LINT=function(){
     Object.keys(EVENTS).forEach(k=>scan(k,EVENTS[k].choices));
     CAMPS.forEach(c=>scan('CAMPS.'+c.id,c.choices));
   })();
+
+  /* ═══ 14 · A ROLE LINE THAT FITS ITS CARD (#202) ═══════════════════════
+     ROLE{} is drawn in 10px JetBrains Mono, 6px a glyph, inside 74px on the
+     battle card and 76 on the sheet, and the line does not wrap: a 13th
+     character is cut mid-word. Three entries shipped that way for as long as
+     the real face has been in the build, because the cap lived in a comment
+     ("about twelve characters") and a comment cannot fail. This can. */
+  Object.keys(ROLE).forEach(k=>{
+    if(ROLE[k].length>ROLE_MAX)
+      hit('role','ROLE.'+k,'"'+ROLE[k]+'" is '+ROLE[k].length+' characters. The role line is '+
+        ROLE_MAX+' at most ('+ROLE_MAX+' x 6px in a 74px box) or it is cut mid-word on the card');
+    if(/—/.test(ROLE[k]))hit('role','ROLE.'+k,'contains an em dash');
+  });
 
   const byCat={};out.forEach(o=>{byCat[o.cat]=(byCat[o.cat]||0)+1;});
   console.log('%c[LINT] '+(out.length?out.length+' finding(s)':'clean'),
@@ -24765,17 +24832,19 @@ function cubChoice(){
     $('cubGo').onclick=()=>{G.spareLine=null;consequences(G.lastScarred||[]);};
     return;
   }
+  /* #202 - `c:` carries only what `fx` cannot say (the tooth, the pet); the
+     figures and the two mood echoes came off, see MERCY for the reason. */
   const opts=[
-    {t:'Take the cub. It has nowhere else to be.',c:'a milk-tooth · they will remember this · it follows the Captain now',
+    {t:'Take the cub. It has nowhere else to be.',c:'a milk-tooth · it follows the Captain now',
      fx:{morale:-6},gear:'cubtooth',cub:true,pet:'cub',ok:cubAlive,
      after:'It will not leave her. It takes two of you and a rope and most of an hour, and then it simply '+
        'walks beside the Captain as though this had always been the arrangement. Nobody has said '+
        'the word pet. It does not fight: it just does not leave, and somehow that is worth something.'},
-    {t:'Kill it too. Finish what you started.',c:'+2 gems · barely worth a word',danger:true,
+    {t:'Kill it too. Finish what you started.',danger:true,
      fx:{gems:2,morale:-12},ok:cubAlive,
      after:'It is quick. {ANY} goes and stands somewhere else for a while, and when they come back '+
        'nobody asks him anything.'},
-    {t:'Leave it. Take the hide and go.',c:'+3 gems +120 crowns',
+    {t:'Leave it. Take the hide and go.',
      fx:{gems:3,crowns:120,morale:-4},ok:true,
      after:'You are half a mile off before it starts making the sound, and it makes the sound for a '+
        'long time, and the road does not get any shorter for it.'}];
@@ -24787,11 +24856,12 @@ function cubChoice(){
         'anything at all, except waiting for something that is not going to happen.'
       : 'Both of them are down. There is a great deal of hide here and nothing else worth taking.')+'</p>'+
     '<div class="popts">'+live.map((o,i)=>'<button class="popt'+(o.danger?' danger':'')+
-      '" data-i="'+i+'"><b>'+o.t+'</b><i>'+o.c+'</i></button>').join('')+'</div>';
+      '" data-i="'+i+'"><b>'+o.t+'</b>'+(n=>n?'<i>'+n+'</i>':'')(choiceNote(o))+'</button>').join('')+'</div>';
   $('sCard').querySelectorAll('.popt').forEach(b=>b.onclick=()=>{
     const o=live[+b.dataset.i],f=o.fx||{};
     if(f.morale)G.morale+=f.morale;
-    payFx(f);
+    /* #202 - found crowns through lootMul(), as the label promises; see takeMercy */
+    payFx(Object.assign({},f,{crowns:f.crowns>0?Math.round(f.crowns*lootMul()):(f.crowns||0)}));
     if(f.gems)G.camp.gems+=f.gems;
     if(o.gear)G.stash.push(o.gear);
     if(o.cub)G.cub=true;
@@ -25059,15 +25129,25 @@ const mercyLine=r=>(MERCYSAY[r]||MERCYSAY.ratkin).was+
 /* what race is doing the asking. The broken list is people only by now, so
    the first one of them speaks for the rest. */
 const mercyRace=b=>(b&&b.length&&b[0].race)||'ratkin';
+/* ⛔ #202 - NO `c:` ON THESE ROWS, AND NO MOOD ECHO. They read "+5 salvage
+   +30 crowns · quietly approved of" and "+9 salvage +60 crowns +1 gem ·
+   barely worth a word" until 2026-08-19: the figures `fx` already carries,
+   which is the two-receipts defect #176 derived out of 147 road doors, and
+   the mood phrase #176 deleted 63 times and #198 once more - this pair and
+   the cub's three rows survived every sweep because LINT 6f is scoped to
+   EVENTS and CAMPS and this table is neither. ⚠ And the echo was WRONG: the
+   killing door pays −14 morale and wore the ±2 phrase. The sub-line is
+   `choiceNote(o)` now, the same builder as every road door, so the cost is
+   read off `fx` and the mood has its one renderer. */
 const MERCY={
   head:'THEY ASK FOR MERCY',
   opts:[
-    {t:'Let them go.',c:'',fx:{morale:14},sp:'spared',
+    {t:'Let them go.',fx:{morale:14},sp:'spared',
      after:'They go north without looking back.'},
-    {t:'Strip them to the fur first.',c:'+5 salvage +30 crowns · quietly approved of',
+    {t:'Strip them to the fur first.',
      fx:{salvage:5,crowns:30,morale:4},sp:'stripped',strip:true,
      after:'Grateful, and naked, which is the unpleasant part. {ANY} supervises and is thorough.'},
-    {t:'No prisoners. Finish it.',c:'+9 salvage +60 crowns +1 gem · barely worth a word',danger:true,
+    {t:'No prisoners. Finish it.',danger:true,
      fx:{salvage:9,crowns:60,gems:1,morale:-14},sp:'killed',
      after:'Quick and quiet and less time than burying the toll-man took. Nobody argues with you. '+
        'That is the thing about being the one they follow. They do not argue, they remember.'}]
@@ -25078,7 +25158,11 @@ let MERCYASK=null;
 function takeMercy(o){
   const f=o.fx||{};
   if(f.morale)G.morale+=f.morale;
-  payFx(f);
+  /* #202 - crowns FOUND go through lootMul(), the way pickChoice and takeLoot
+     pay them, because `fxNote` prints the multiplied figure and the label
+     and the purse may not disagree. A charge (negative) would pass through
+     flat; no mercy row charges one. */
+  payFx(Object.assign({},f,{crowns:f.crowns>0?Math.round(f.crowns*lootMul()):(f.crowns||0)}));
   /* THE SAME FOUR MATERIALS `takeLoot` PAYS, and for the same reason. `salvage`
      was missing here while both paying MERCY rows advertise it (+5 and +9), so
      "Strip them" landed the crowns and quietly paid no scrap - the dead-receipt
@@ -25551,10 +25635,12 @@ function consequences(scarred){
         MERCY.opts.map((o,i)=>'<button class="popt'+(o.danger?' danger':'')+
           '" data-i="'+i+'"><b>'+
           (o.strip?(MERCYSAY[mercyRace(mercy)]||MERCYSAY.ratkin).strip:o.t)+'</b>'+
-          /* ⚠ #155 - GUARDED, because the mercy row's `c` can be empty now.
-             `<i></i>` is not the same as no element: it still costs its
-             line-height, which is the fault #150 pinned on proCard. */
-          (o.c?'<i>'+o.c+'</i>':'')+'</button>').join('')+'</div>'+
+          /* ⚠ #155 - GUARDED, because the sub-line can be empty. `<i></i>` is
+             not the same as no element: it still costs its line-height,
+             which is the fault #150 pinned on proCard.
+             #202 - and the sub-line is DERIVED, off the same builder as a
+             road door: cost from `fx`, mood from `moraleTag`, nothing typed. */
+          (n=>n?'<i>'+n+'</i>':'')(choiceNote(o))+'</button>').join('')+'</div>'+
       /* NOT `disabled`. A disabled button eats the click and says nothing
          back, which is the same experience as a broken one. */
       '<div class="popts" style="grid-template-columns:1fr">'+
@@ -34103,7 +34189,7 @@ const EVENTS={
        after:'He thinks about it for the better part of a minute, which for him is impulsive.'},
       /* only shown if you already have an ogre — two of them talk in a
          register you cannot follow, and it changes the whole scene */
-      {t:'Let your own ogre do the talking.',ico:['help'],c:'needs an ogre',
+      {t:'Let your own ogre do the talking.',ico:['help'],c:'',
        needRace:'ogre',fx:{morale:14},
        after:'Eleven words in twenty minutes, and somehow that is a full conversation.\n\n'+
          '{OGRE} walks taller for a day afterward, and does not explain.'},
@@ -34121,8 +34207,13 @@ const EVENTS={
          written against. */
       /* a ratkin in the company reads this scene completely differently, and
          is the only one here who has ever been on the other end of it */
+      /* #202 - `c:'needs a ratkin'` / `'needs an ogre'` deleted here and on
+         four more doors: a needRace door is FILTERED when the race is absent
+         and wears the 🐀/👹 mark (derived, #154) when it is present, so the
+         words only ever printed beside a company that already had one, as a
+         gate it had already passed. */
       {t:'Your ratkin asks him what he is actually waiting for.',ico:['help'],
-       c:'needs a ratkin',needRace:'ratkin',
+       c:'',needRace:'ratkin',
        fx:{morale:10,crowns:45},
        after:'{RATKIN} does not ask it kindly. There is a clan-word in it that the ogre '+
          'understands and you do not.\n\nThen he laughs, enormous and slow, gets up for the '+
@@ -34169,7 +34260,7 @@ const EVENTS={
        rep:{ratkin:+12},
        after:'{ANY} does the covering, and does not explain, and nobody asks them to.'},
       {t:'Let your own ratkin decide what happens here.',ico:['honor'],
-       c:'needs a ratkin',needRace:'ratkin',
+       c:'',needRace:'ratkin',
        fx:{morale:18,salvage:3},
        after:'{RATKIN} goes down into the cutting alone, and comes back up with three pieces '+
          'of metal and an expression nobody asks about.\n\n"That one was a nobody. These two '+
@@ -34186,14 +34277,14 @@ const EVENTS={
          guest at this wedding, they are being greeted like family */
       /* #186 - `kin:'wedding'` on both race doors: the clan remembers, and
          two cousins may turn up when the company is down to two (reinforce) */
-      {t:'Let your ratkin lead the toast.',ico:['rest'],c:'needs a ratkin',
+      {t:'Let your ratkin lead the toast.',ico:['rest'],c:'',
        needRace:'ratkin',fx:{morale:20},kin:'wedding',
        after:'{RATKIN} knows the real toast, the long one, with the clan-names in it. The '+
          'whole wedding goes quiet to hear it done properly.\n\nFor about four minutes your '+
          'company is the most important thing on this island.'},
       /* only shown with an ogre already in the company — the joke the
          wedding is telling is a warmer one when it is YOUR ogre */
-      {t:'Let them have your ogre for a dance.',ico:['rest'],c:'needs an ogre',
+      {t:'Let them have your ogre for a dance.',ico:['rest'],c:'',
        needRace:'ogre',fx:{morale:16},kin:'wedding',
        after:'It takes four of them to lift one of him. They manage it twice.\n\nBy the end, '+
          '{OGRE} has been adopted by two separate clan-lines. He does not seem to mind.'},

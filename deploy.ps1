@@ -61,7 +61,7 @@ if (-not (Test-Path (Join-Path $root '.git'))) { Die "this is not a git repo. Ru
 Push-Location $root
 try {
   $common = (& git rev-parse --git-common-dir 2>$null)
-  $branch = (& git rev-parse --abbrev-ref HEAD 2>$null)
+  $curBranch = (& git rev-parse --abbrev-ref HEAD 2>$null)
 } finally { Pop-Location }
 
 if ($common) {
@@ -72,11 +72,11 @@ if ($common) {
     Die "this is a branch desk, and the live link is published from the MAIN desk only.`n         Merge first, then deploy from:  $mainRoot`n         (tools\branch.ps1 done <name>)"
   }
 }
-$onBranch = ($branch -and $branch.Trim() -ne 'main')
+$onBranch = ($curBranch -and $curBranch.Trim() -ne 'main')
 if ($onBranch -and -not $Branch) {
-  Die "on branch '$($branch.Trim())'. deploy pushes HEAD, so this would publish a work branch.`n         Switch to main and merge the branch in:  tools\branch.ps1 done <name>`n         (or pass -Branch to push this branch on purpose; the live link stays as it is)"
+  Die "on branch '$($curBranch.Trim())'. deploy pushes HEAD, so this would publish a work branch.`n         Switch to main and merge the branch in:  tools\branch.ps1 done <name>`n         (or pass -Branch to push this branch on purpose; the live link stays as it is)"
 }
-if ($onBranch) { $branch = $branch.Trim(); Write-Host "branch deploy: '$branch' will be pushed, main and the live link are untouched" -ForegroundColor Yellow }
+if ($onBranch) { $curBranch = $curBranch.Trim(); Write-Host "branch deploy: '$curBranch' will be pushed, main and the live link are untouched" -ForegroundColor Yellow }
 
 # ---- 0. the other session --------------------------------------------------
 # Step 4 below runs `git add -A`, which sweeps the ENTIRE working tree, and step
@@ -191,7 +191,7 @@ if ($remote -match 'github\.com[:/]([^/]+)/([^/.]+)') {
   if ($onBranch) {
     # Pages serves main/(root) only. Printing the live URL here would claim a
     # page a playtester cannot open yet.
-    Write-Host "PUSHED BRANCH '$branch'. THE LIVE LINK IS UNCHANGED." -ForegroundColor Yellow
+    Write-Host "PUSHED BRANCH '$curBranch'. THE LIVE LINK IS UNCHANGED." -ForegroundColor Yellow
     Write-Host "  to put it live: merge the branch into main, then run deploy.ps1 again from main."
     Write-Host "  it will then be at:   $url"
     if ($Player) { Write-Host "  and the playtester's page at:   ${url}play/" }
