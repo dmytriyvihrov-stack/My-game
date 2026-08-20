@@ -465,9 +465,39 @@ in this file so the next "the docs say X holds it" gets checked against the buil
 - THE RED LIGHTS' detour door still prints its price twice (the derived `−2 days` and your own "the
   journey takes two days longer") - your text, standing until you say otherwise (#193).
 
+## △ THE ARCHER'S OWN LINE NO LONGER STOPS THE ARROW  *(#212 · 2026-08-20 · build log 8f.235)*
+
+**What changed.** Two of your own people standing between an archer and a target used to withdraw the
+shot entirely. It costs accuracy now: a new lane state, **CROWDED, -20 to hit**, and the arrow always
+leaves the bow.
+
+**How to see it.** Any fight with a bow in it. Put Ilka behind two of your own, in a straight line to
+an enemy inside her range, and hover the enemy.
+
+| what you should see | |
+|---|---|
+| the target hex | still lit, still offering a percentage, washed pale sand |
+| the ray | pale sand, tightly dashed |
+| **every** one of your own in the lane | marked in the same sand |
+| the hit readout | a row saying **your own in the way -20** |
+
+**The five verdicts, so the ladder still reads in order.** Nothing between: **CLEAR**, no cost. One of
+yours adjacent with his back to you: **SCREENED**, -8, unchanged. One or more of yours otherwise:
+**CROWDED**, -20. One of theirs in the lane, whoever else is in it: **OBSTRUCTED**, -22 (the lane is
+worth the worst thing in it and your own men never add to it). Two or more of theirs: **BLOCKED**, no
+shot, and the board says *there are too many of them across the line*.
+
+**What would be a bug.**
+
+- A lane with only your own people in it refusing the shot at all.
+- The board marking one man in the lane and not the others.
+- AUTO or the enemy brain taking a crowded shot while a clean lane is on offer. It is a legal shot and
+  it is still not the one to take.
+- The refusal line saying *you would be shooting your own people*. Nothing can produce that now.
+
 ## ❤ THE HALF-RATKIN, AND THE FIRE CARD WHERE SHE TALKS  *(#201 · 2026-08-19 · build log 8f.223)*
 
-**Who she is.** `Ash “Nobody’s”`, a ratkin cutter with a knife in each hand and the **Dutiful**
+**Who she is.** `Asha “Nobody’s”`, a ratkin cutter with a knife in each hand and the **Dutiful**
 personality: **+8 dodge standing beside you, -4 anywhere else.** That is deliberate and it is the
 character rather than a stat - she fights better next to you because that is the whole of what she
 is looking for.
@@ -478,8 +508,9 @@ is looking for.
 2. Take **either** the door that helps the ratkin **or** the door that helps nobody. Helping the
    ratkin gives you Skree and her; standing back gives you her alone, out of the ditch.
    *(The ogre door is the one path that does not introduce her at all.)*
-3. Camp on the road. **THE WRONG COLOUR** is in the incident deck from then on, and like every
-   incident it fires once per run.
+3. Walk on until **The Black Fen** is behind you (#212). **THE WRONG COLOUR** only enters the
+   incident deck once you have been there, and like every incident it fires once per run.
+   *(Before the Fen it must never be dealt, however many fires you build.)*
 
 **What should happen at the fire.** Her painting at the top of the card, then three doors:
 
