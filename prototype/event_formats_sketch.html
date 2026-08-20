@@ -522,8 +522,8 @@ main{padding:26px 22px}
   width:36px;height:32px;line-height:1;white-space:nowrap}
 .storychoices .choice-glyphs img{width:27px;height:32px;object-fit:contain;filter:brightness(1.18) saturate(.82) contrast(1.05) drop-shadow(0 2px 3px #000)}
 .storychoices .choice-glyphs img+img{width:21px;margin-left:-6px}
-.storychoices .choice-glyphs .race-mark{position:absolute;right:-4px;bottom:-3px;width:18px;height:18px;line-height:1}
-.storychoices .choice-glyphs .race-mark img{width:18px;height:18px;object-fit:contain;filter:brightness(1.18) saturate(.84) contrast(1.05) drop-shadow(0 1px 2px #000)}
+.storychoices .choice-glyphs .race-mark{position:static;display:flex;flex:0 0 20px;width:20px;height:20px;margin-left:-6px;line-height:1}
+.storychoices .choice-glyphs .race-mark img{width:20px;height:20px;object-fit:contain;filter:brightness(1.24) saturate(.96) contrast(1.08) drop-shadow(0 1px 2px #000)}
 .storychoices .choice-copy{display:flex;min-width:0;flex-direction:column;gap:1px}
 .storychoices .choice b{display:block;overflow:hidden;font-size:12.5px;line-height:1.16;color:#e6dcc5;
   font-weight:500;white-space:nowrap;text-overflow:ellipsis}
@@ -622,8 +622,10 @@ main{padding:26px 22px}
 .lab-option .li{position:relative;display:flex;align-items:center;justify-content:center;width:24px;height:30px;line-height:1;white-space:nowrap}
 .lab-option .li img{width:24px;height:29px;object-fit:contain;filter:brightness(1.14) saturate(.82) contrast(1.05) drop-shadow(0 2px 2px #000)}
 .lab-option .li>img+img{width:20px;height:25px;margin-left:-6px}
-.lab-option .li small{position:absolute;right:-4px;bottom:-1px;font-size:9px;line-height:1}
-.lab-option .li small img{width:16px;height:16px;object-fit:contain;filter:brightness(1.2) saturate(.96) contrast(1.06) drop-shadow(0 1px 1px #000)}
+.lab-option.kind-race{grid-template-columns:35px minmax(0,1fr)}
+.lab-option.kind-race .li{width:34px}
+.lab-option .li small{position:static;display:flex;flex:0 0 19px;width:19px;height:19px;margin-left:-6px;font-size:9px;line-height:1}
+.lab-option .li small img{width:19px;height:19px;object-fit:contain;filter:brightness(1.24) saturate(.98) contrast(1.08) drop-shadow(0 1px 1px #000)}
 .lab-option strong{display:block;overflow:hidden;font-size:11.5px;line-height:1.12;font-weight:500;white-space:nowrap;text-overflow:ellipsis}
 .lab-option em{display:flex;gap:6px;overflow:hidden;margin-top:2px;font-family:var(--mono);font-size:7.5px;line-height:1.1;
   color:#ad876d;font-style:normal;white-space:nowrap;text-overflow:ellipsis}
@@ -1146,7 +1148,7 @@ const STORY_ICO={fight:'⚔️',help:'🤝',evil:'☠️',leave:'👣',trade:'�
 const STORY_ART=Object.fromEntries(Object.keys(STORY_ICO).map(k=>[k,'assets/intent-'+k+'-v1.png']));
 STORY_ART.leave='assets/intent-leave-v3.png';
 STORY_ART.take='assets/intent-take-v3.png';
-const STORY_RACE={ratkin:'assets/race-ratkin-v3.png',ogre:'assets/race-ogre-v3.png',human:'assets/race-human-v3.png'};
+const STORY_RACE={ratkin:'assets/race-ratkin-v3-card.png',ogre:'assets/race-ogre-v3-card.png',human:'assets/race-human-v3-card.png'};
 const STORY_RACE_NAME={ratkin:'RATKIN',ogre:'OGRE',human:'HUMAN'};
 const storySignalTone=c=>c.danger||/BATTLE|\?|injured/i.test(c.c||'')?'risk':/^−/.test(c.c||'')?'cost':'neutral';
 const storyDoorHTML = c => {
@@ -1371,6 +1373,11 @@ const STAGES = {
      ═══════════════════════════════════════════════════════════════════════ */
   wedding:{ n:'A WEDDING ON THE ROAD',
     title:'A WEDDING ON THE ROAD', back:A.EV22, sight:A.MAPEV22,
+    stageArt:'assets/EV-J4_clan-wedding-stage.png',
+    actors:[
+      {id:'captain',name:'Ilka Kolb',art:'assets/P1_The_Captain.png'},
+      {id:'skree',name:'Skree',art:'assets/P3_Skree.png'}
+    ],
     right:{nm:'THE WEDDING', sub:'drunk, and not moving for anyone', face:A.PORR05},
     left:P.skree,
     beats:[
@@ -1383,9 +1390,9 @@ const STAGES = {
       {s:'road', tx:'They are drunk, enormously friendly, and entirely unarmed.'}
     ],
     doors:[
-      {intent:['rest'], t:'Stay for one drink. Only one.',   c:'−1 day'},
-      {intent:['rest'], race:'ratkin', t:'Let your ratkin lead the toast.',  c:'', racey:true},
-      {intent:['fight','evil'], t:'Cut the whole wedding down.', c:'?', danger:true, mystery:true}
+      {intent:['rest'], t:'Stay for one drink. Only one.',   c:'−1 day', actor:'captain'},
+      {intent:['rest'], race:'ratkin', t:'Let your ratkin lead the toast.',  c:'', racey:true, actor:'skree'},
+      {intent:['fight','evil'], t:'Cut the whole wedding down.', c:'?', danger:true, mystery:true, actor:'captain'}
     ],
     foot:'⚠ THE OGRE DOOR EXISTS AND IS NOT SHOWN. Only one race door is ever offered and the ratkin wins (#159). The ? is the build\'s only mystery door.'},
 
@@ -1424,6 +1431,11 @@ const STAGES = {
      ═══════════════════════════════════════════════════════════════════════ */
   mother:{ n:'THE FEN-MOTHER',
     title:'THE FEN-MOTHER', back:A.EV08, sight:A.MAPEV08,
+    stageArt:'assets/EV-J5_fen-mother-stage.png',
+    actors:[
+      {id:'captain',name:'Ilka Kolb',art:'assets/P1_The_Captain.png'},
+      {id:'marrow',name:'Marrow',art:'assets/P5_Marrow.png'}
+    ],
     right:{nm:'THE FEN-MOTHER', sub:'six legs, and a small one behind her'},
     left:P.marrow,
     beats:[
@@ -1435,8 +1447,8 @@ const STAGES = {
       {s:'road', tx:'There is something pale in the mud beside her.'}
     ],
     doors:[
-      {intent:['take'], t:'Take the shed tooth and go. Quietly.', c:'−2 days · a great tooth'},
-      {intent:['fight'], t:'Kill it. That hide is worth a season\'s wages.', c:'BATTLE · she is enormous and she is not alone', danger:true}
+      {intent:['take'], t:'Take the shed tooth and go. Quietly.', c:'−2 days · a great tooth', actor:'marrow'},
+      {intent:['fight'], t:'Kill it. That hide is worth a season\'s wages.', c:'BATTLE · she is enormous and she is not alone', danger:true, actor:'captain'}
     ],
     foot:'⚑ FOUR BEATS, THREE PLATES. The first one is pushed out of the stack by the fourth, which is the cap doing its job.'}
 };
