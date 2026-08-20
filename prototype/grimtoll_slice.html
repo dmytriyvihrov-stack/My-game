@@ -1660,6 +1660,10 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:var(--f
   clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);
   background:rgba(192,122,44,.30);box-shadow:inset 0 0 0 1px rgba(224,168,90,.55)}
 .hex.inway.screen .hin::before{background:rgba(201,162,39,.22)}
+/* #212 - one of your own standing in the lane who is not braced for it. Amber
+   is the enemy in the way; this is the same problem wearing your own colour,
+   and the ring around it stays so the hex still says WHO. */
+.hex.inway.crowd .hin::before{background:rgba(202,160,106,.26)}
 /* ═══ #64 — GROUND AN OPEN BLOOM REACHES ═══════════════════════════════
    A ring rather than a wash, and deliberately weak. It has to be readable
    under the state tints and the reach overlay that already live on .hfill,
@@ -9332,7 +9336,14 @@ const PRESET_SKREE={id:'skree',name:'Skree',sur:'',race:'ratkin',cls:'cutter',ki
    pool, which is right for the generic bodies and wrong for the one whose
    nickname is the character. "Nobody's" is not in RATNICKS and cannot be
    rolled, so nobody else can ever turn up wearing it. */
-const PRESET_ASH={id:'ash',name:'Ash',nick:'Nobody’s',sur:'',race:'ratkin',
+/* ⚠ #212 - SHE IS **Asha** (user, 2026-08-20: *"Not name ash - but Asha"*),
+   AND THE `id` STAYS `ash` ON PURPOSE. The id is not a name: it is the key
+   `castMember`, `member()`, `paintedSpriteKey` (`ratkin_you_thief`), her
+   portrait `POR10` and every saved run reach her through. Renaming it would
+   rename her in five places that are not the screen and would strand every
+   run already in localStorage. The NAME is the field the player reads, and
+   it is the field that changed. */
+const PRESET_ASH={id:'ash',name:'Asha',nick:'Nobody’s',sur:'',race:'ratkin',
   cls:'cutter',kind:'ratkin',
   st:{str:5,agi:12,int:9,mor:9},trait:'dutiful',
   eq:{armour:'scrap',main:'knife',off:'offhand',trinket:null}};
@@ -10718,6 +10729,13 @@ const LOS={
      in. */
   COVER     :{n:'COVER',     hit:-14,col:'#b0863a',
               d:'A boulder across the lane. Not tall enough to stop the arrow, tall enough that you cannot see the legs.'},
+  /* #212 - THE FRIENDLY TWIN OF BLOCKED, AND IT REPLACES IT. Your own people
+     in the lane, none of them braced for the shot. Priced at -20: worse than
+     the man who IS braced (-8, he is cooperating), better than the enemy
+     across the line (-22, he is moving to spoil it), and it is a PRICE, so
+     the shot is always on offer. */
+  CROWDED   :{n:'CROWDED',   hit:-20,col:'#caa06a',
+              d:'Your own across the lane, and none of them braced for you. You can put an arrow through that. Not well.'},
   OBSTRUCTED:{n:'OBSTRUCTED',hit:-22,col:'#c07a2c',
               d:'A body is across the line, and it is not standing there for you.'},
   BLOCKED   :{n:'BLOCKED',   hit:null,col:'#c15d55',
@@ -10806,7 +10824,33 @@ function losState(a,d,from){
     if(r.cover&&(r.k==='CLEAR'||r.k==='SCREENED')){r.k='COVER';r.at=r.cover;}
     return B._losCache[ck]=r;};
   if(!seen.length)return withCover();
-  if(seen.length>1){r.k='BLOCKED';r.who=seen[0];return B._losCache[ck]=r;}
+  /* ═══ #212 · YOUR OWN PEOPLE NEVER STOP THE ARROW ══════════════════
+     (User, 2026-08-20: *"change full block of ally for an archer, it reduses
+     accurecy rather then block fully"*.)
+
+     The old rule counted BODIES: two of anything in the lane and the offer was
+     withdrawn. So the commonest way to lose a bow for a turn was your own line
+     closing up in front of it, and the refusal reads as the game taking the
+     turn away rather than as a position to fix.
+
+     ⛔ A FRIENDLY BODY IS A PRICE NOW AND NEVER A REFUSAL. The block is
+     counted off the ENEMIES in the lane and nothing else; what your own people
+     cost is CROWDED, -20, and the arrow always leaves the bow.
+
+     ⚑ It keeps this function's oldest law, which is the paragraph directly
+     above it: the lane is worth the WORST thing in it and never the sum. One
+     enemy across it is -22 whether or not your shieldman is standing there
+     too, because -22 is already the worse of the two. Nothing adds, and the
+     player can still read the verdict off the board. */
+  /* ⚠ `all` IS THE BODIES THAT PRODUCED THIS VERDICT, WHICH IS NOT THE SAME
+     LIST AS `seen`. A lane holding one of theirs and two of yours is
+     OBSTRUCTED, and marking your two men on the board as the problem would be
+     the readout naming the wrong bodies - the enemy is the problem and they
+     are furniture. `who` stays the first of them, because every other reader
+     of this object wants one body. */
+  const foes=seen.filter(o=>o.side!==a.side);
+  if(foes.length>1){r.k='BLOCKED';r.who=foes[0];r.all=foes;return B._losCache[ck]=r;}
+  if(foes.length){r.k='OBSTRUCTED';r.who=foes[0];r.all=foes;return B._losCache[ck]=r;}
   const s=seen[0];
   /* A SCREEN IS DELIBERATE, AND IT IS YOURS. Three conditions, all of them
      facts the player can see on the board: exactly one body in the lane, it
@@ -10830,11 +10874,16 @@ function losState(a,d,from){
      away, which is the exact class of lie the `from` parameter exists to
      stop - a scorer that believes a lane is good because of furniture it is
      about to walk away from. */
-  if(s.side===a.side&&udist(eye,s)<=1&&s.facing!==undefined&&!s.noArc){
+  /* #212 - `s.side===a.side` used to be tested here and is a FACT now: the
+     line above took every body that is not yours out of the lane. What this
+     still has to ask is the count, which the old `seen.length>1` return used
+     to answer one line up - two of your own is a crowd and cannot be a screen,
+     however well the front one is standing. */
+  if(seen.length===1&&udist(eye,s)<=1&&s.facing!==undefined&&!s.noArc){
     const sec=(sectorOf([s.col,s.row],eye)-s.facing+6)%6;
-    if(sec>=2&&sec<=4){r.k='SCREENED';r.who=s;return withCover();}
+    if(sec>=2&&sec<=4){r.k='SCREENED';r.who=s;r.all=[s];return withCover();}
   }
-  r.k='OBSTRUCTED';r.who=s;return B._losCache[ck]=r;
+  r.k='CROWDED';r.who=s;r.all=seen.slice();return B._losCache[ck]=r;
 }
 /* one place decides whether an act cares about the lane at all. A WORKING IS
    NOT AN ARROW — it is aimed with the INTELLECT and goes where it is sent, so the
@@ -10861,6 +10910,9 @@ const needsLane=act=>!!(act&&act.range&&!act.arcane&&act.dmg);
      COVER              2   -14 to hit. Worth two hexes of walking to avoid.
      OBSTRUCTED         5   -22, and #36 refuses it outright when a clean
                             lane exists - so the hex is often worth nothing.
+     CROWDED            5   #212 - -20, your own in the lane. Same tier and
+                            the same refusal: a shot through your own line is
+                            legal now and it is still not the one to take.
      BLOCKED           12   NO SHOT AT ALL. More than the whole band range,
                             which is the point: a shooter leaves its perfect
                             distance rather than stand where it cannot shoot.
@@ -10869,9 +10921,17 @@ const needsLane=act=>!!(act&&act.range&&!act.arcane&&act.dmg);
    archer will take a more dangerous hex to have a shot, and should - an
    archer that cannot shoot is worth nothing at all - but it will not walk
    into the middle of them to get one. */
-const LANETIER={CLEAR:0,SCREENED:0,COVER:1,OBSTRUCTED:2,BLOCKED:3};
+const LANETIER={CLEAR:0,SCREENED:0,COVER:1,CROWDED:2,OBSTRUCTED:2,BLOCKED:3};
 const LANEHEX=[0,2,5,12];
 const laneCost=(u,t,from)=>LANEHEX[LANETIER[losState(u,t,from).k]||0];
+/* ⛔ #212 - "THERE IS A BODY ACROSS THIS LANE AND IT IS NOT HELPING", AS ONE
+   PREDICATE. Both brains hand-wrote it as a pair of string tests against
+   BLOCKED and OBSTRUCTED, in four places, which is this file's most-repeated
+   bug shape - a third state would have had to be remembered in all four and
+   the fifth caller would have been written without it. Tier 2 is the whole
+   of the rule: OBSTRUCTED -22 and CROWDED -20 are the same size of problem
+   and cost the same five hexes of walking to get out of. */
+const laneClean=(u,t)=>LANETIER[losState(u,t).k]<2;
 
 /* ═══ ONE VERDICT PER SHOT (user, on seeing the first version) ═══════════
    *"if it is blocked highlight by red … if the range is not optimal (too
@@ -10887,6 +10947,7 @@ const laneCost=(u,t,from)=>LANEHEX[LANETIER[losState(u,t,from).k]||0];
 
      BLOCKED (red)      no shot at all — the offer is withdrawn
      OBSTRUCTED (amber) a body across the lane
+     CROWDED (sand)     #212 · your own across the lane, nobody braced
      FAR (yellow)       the extreme-range penalty the bow already pays
      COVER (bronze)     #82 · a boulder in the lane, and you are over it
      LONG (yellow)      the long-shot penalty
@@ -10924,6 +10985,9 @@ const SHOTBAND=(a,act,dd)=>{
 const SHOT={
   BLOCKED   :{n:'BLOCKED',   col:'#c15d55',dash:'3 4'},
   OBSTRUCTED:{n:'OBSTRUCTED',col:'#c07a2c',dash:'3 4'},
+  /* #212 - sand rather than a fourth amber, and the tightest dash on the
+     board: a broken line reads as a lane with people standing in it. */
+  CROWDED   :{n:'CROWDED',   col:'#caa06a',dash:'2 3'},
   FAR       :{n:'FAR',       col:'#e0c04a',dash:'7 5'},
   COVER     :{n:'COVER',     col:'#b0863a',dash:'5 4'},
   LONG      :{n:'LONG',      col:'#c9a227',dash:'7 5'},
@@ -10934,6 +10998,10 @@ function shotState(a,d,act){
   const L=losState(a,d);
   if(L.k==='BLOCKED')return {k:'BLOCKED',los:L};
   if(L.k==='OBSTRUCTED')return {k:'OBSTRUCTED',los:L};
+  /* #212 - -20 slots between the enemy in the lane and extreme range, which
+     is where the ladder above already sorted it. One insert, no argument,
+     for the same reason #82's COVER was one. */
+  if(L.k==='CROWDED')return {k:'CROWDED',los:L};
   const dd=udist(a,d);
   if(act&&act.range){
     const b=SHOTBAND(a,act,dd);                  /* #134 - the one band rule */
@@ -15948,6 +16016,10 @@ function hitBreakdown(a,d,act){
          a body walks off, a boulder does not. */
       po((L.k==='SCREENED'?'screened ':
         L.k==='COVER'?(B.terrain==='tavern'?'over the table ':'over a boulder '):
+        /* #212 - and whose body it is, because the two are different problems:
+           one of theirs is a shot to take anyway, one of yours is a shot to
+           step around. */
+        L.k==='CROWDED'?'your own in the way ':
         'a body in the way ')+LOS[L.k].hit);
     }
   }
@@ -18657,8 +18729,11 @@ function clickHex(c,r){
     if(needsLane(a)){
       const L=losState(u,tgt);
       if(L.k==='BLOCKED'){
+        /* #212 - a lane is BLOCKED by ROCK or by two of THEM now, and by
+           nothing else, so the old second line named the one case this
+           branch can no longer reach. */
         say(L.at?'There is rock between you and it. Nothing goes through that.'
-                :'There is too much in the way: you would be shooting your own people.');
+                :'There are too many of them across the line. Nothing goes through that.');
         return;}
     }
     /* #82 - the same contract one gate up: the offer is withdrawn, nothing is
@@ -19735,7 +19810,7 @@ function aiTurn(u){
        through his own shieldman reads as broken however good the arithmetic
        was. So it is a hard filter, and it is conditional — with nothing else
        on offer, a bad shot is still better than standing there. */
-    const laneOK=t=>{const L=losState(u,t);return L.k!=='BLOCKED'&&L.k!=='OBSTRUCTED';};
+    const laneOK=t=>laneClean(u,t);          /* #212 - one predicate, both brains */
     const hasCleanLane=u.acts.some(a=>needsLane(a)&&canUse(u,a)&&!engaged(u)&&
       T.some(t=>udist(u,t)<=a.range&&laneOK(t)));
     u.acts.filter(a=>(a.dmg||a.arcane)&&!a.move&&!a.self&&!a.buff&&!a.hex&&
@@ -19751,7 +19826,11 @@ function aiTurn(u){
              What is left here is the PREFERENCE: a shot through a friend is
              legal and it is not taken while a clean one exists. */
           if(!mayAim(u,a,t))return;
-          if(needsLane(a)&&hasCleanLane&&losState(u,t).k==='OBSTRUCTED')return;
+          /* #212 - and through your own line as well as through theirs. The
+             -20 is not the contract; "an archer who occasionally puts one
+             through his own shieldman reads as broken" is, and that reading
+             got MORE likely the day the lane stopped refusing him. */
+          if(needsLane(a)&&hasCleanLane&&!laneClean(u,t))return;
           const hb=hitBreakdown(u,t,a);
           const avg=(a.dmg?(a.dmg[0]+a.dmg[1])/2:14)*arcOn(u,t).dmg;
           /* profile off = the old rush: biggest dice, blind to the odds */
@@ -22931,7 +23010,13 @@ function render(){
     losOf={};inWay={};
     alive().filter(t=>t.side!==u.side&&udist(u,t)<=laneAct.range).forEach(t=>{
       const S=shotState(u,t,laneAct);losOf[K(t.col,t.row)]=S;
-      if(S.los.who)inWay[K(S.los.who.col,S.los.who.row)]=S.los.k;
+      /* ⛔ #212 - EVERY BODY THE VERDICT IS ABOUT, NOT JUST THE FIRST, AND
+         THIS WAS FOUND BY READING THE BOARD RATHER THAN THE CODE. `who` is one
+         field and CROWDED is by definition the state where there can be more
+         than one of them: the board was telling the player to move the front
+         man, and the lane was still crowded once he had. */
+      (S.los.all&&S.los.all.length?S.los.all:S.los.who?[S.los.who]:[])
+        .forEach(w=>{inWay[K(w.col,w.row)]=S.los.k;});
       if(S.los.at)inWay[K(S.los.at[0],S.los.at[1])]='TERR';});
   }
   clearLosRay();          /* a ray from the last board must not outlive it */
@@ -23044,6 +23129,10 @@ function render(){
           edge=SHOT[losHere.k].col;
           if(losHere.k==='BLOCKED'){odds=null;fill='rgba(60,20,22,.42)';}
           else if(losHere.k==='OBSTRUCTED')fill='rgba(192,122,44,.20)';
+          /* #212 - the same weight as the enemy in the lane, in the sand the
+             state wears everywhere else. It is offered, so it must not read
+             as refused; it costs 20, so it must not read as free. */
+          else if(losHere.k==='CROWDED')fill='rgba(202,160,106,.20)';
           else if(losHere.k==='FAR'||losHere.k==='LONG')fill='rgba(201,162,39,.16)';
           /* #82 - bronze, and heavier than the range bands: a shot over a
              boulder is offered, so it must not read as refused, and it costs
@@ -23124,7 +23213,8 @@ function render(){
            (OBSTRUCTED / BLOCKED, see #36); overloading the cursor with it
            would make one mark mean two things, which is #102's rule. */
         (rngA&&udist([c,r],u)>rngR?' hfar':'')+
-        (wayHere?' inway'+(wayHere==='SCREENED'?' screen':''):'');
+        (wayHere?' inway'+(wayHere==='SCREENED'?' screen':
+                           wayHere==='CROWDED'?' crowd':''):'');
       hx.dataset.k=K(c,r);
       /* the hexagon lives on its own layer so the token can stand proud of it */
       const hedge=document.createElement('div');hedge.className='hedge';
@@ -24539,7 +24629,7 @@ function autoStep(){
      its own shieldman while the enemy AI politely does not is the version of
      this the player will notice. (Two brains, one behaviour — the standing
      trap in this codebase, and it has bitten twice.) */
-  const laneOK=t=>{const L=losState(u,t);return L.k!=='BLOCKED'&&L.k!=='OBSTRUCTED';};
+  const laneOK=t=>laneClean(u,t);            /* #212 - one predicate, both brains */
   const hasCleanLane=u.acts.some(a=>needsLane(a)&&canUse(u,a)&&!engaged(u)&&
     fo.some(t=>udist(u,t)<=a.range&&laneOK(t)));
   u.acts.filter(a=>!a.move&&!a.self&&a.k!=='dis'&&!a.buff&&!a.hex&&!a.rear&&a.dmg&&
@@ -24553,7 +24643,7 @@ function autoStep(){
         /* #148 - the same shape as the enemy brain: BLOCKED is a refusal and
            now lives in mayAim, OBSTRUCTED is a preference and lives here. */
         if(!mayAim(u,a,t))return;
-        if(needsLane(a)&&hasCleanLane&&losState(u,t).k==='OBSTRUCTED')return;
+        if(needsLane(a)&&hasCleanLane&&!laneClean(u,t))return;   /* #212 - yours too */
         const hb=hitBreakdown(u,t,a);
         const avg=(a.dmg[0]+a.dmg[1])/2*arcOn(u,t).dmg;
         let ev=hb.total/100*avg;
@@ -24737,7 +24827,7 @@ setInterval(()=>{
    ═══════════════════════════════════════════════════════════════════════ */
 window.LINT=function(){
   const out=[],hit=(cat,where,what)=>out.push({cat,where,what});
-  const NAMES=['Skree','Ash','Bruht','Pell','Vesna','Marrow','Ilka','Wynn','Aldreth'];
+  const NAMES=['Skree','Asha','Bruht','Pell','Vesna','Marrow','Ilka','Wynn','Aldreth'];
   /* TELLER/TELLER1 (#73) resolve off `G.fireTeller`, which openEvent sets for
      the one card that uses them. A card that writes {TELLER} without anybody
      setting it renders the RATKIN fallback instead of a raw brace, so it is
@@ -25175,6 +25265,22 @@ window.LINT=function(){
          by openCamp and the author would never find out. */
       if(c.castLost&&(c.castRace||c.castTie||c.castKeep))
         hit('gate',w,'castLost with another cast gate - the cast can only come from one place');
+      /* #212 - `afterNode` fails the same two silent ways every gate in this
+         block fails: it can name a node the map no longer has, and it can
+         name one that only SOME companies walk. Either way the card simply
+         never comes, for the whole life of the project, which is the exact
+         class this function exists to catch. Enumerating the roads is what
+         8c already does for the two road stops. */
+      if(c.afterNode){
+        if(!NODES[c.afterNode])
+          hit('gate',w,'afterNode "'+c.afterNode+'" is not a node on the map');
+        else{
+          let rr=[];try{rr=allRoads('hold',QUEST_GOAL);}catch(e){}
+          if(rr.length&&rr.some(road=>road.indexOf(c.afterNode)<0))
+            hit('gate',w,'afterNode "'+c.afterNode+'" is missable - a company can reach '+
+              QUEST_GOAL+' without walking it, and this card would never come');
+        }
+      }
       if(c.needs){
         const par=byId[c.needs.id];
         if(!par)hit('gate',w,'needs missing incident "'+c.needs.id+'"');
@@ -27821,6 +27927,7 @@ const CAMPS=[
      ahead of and left a note about. It needs no new plumbing and it does need
      an authored `sin`, or the serjeant recites a vague accusation. */
   {id:'palefire',t:'THE WRONG COLOUR',seed:101,castMember:'ash',art:'EV33',
+   afterNode:'mother',       /* #212 - not until the Black Fen is behind you */
    body:(a)=>'Everyone else is down. '+a+' is still feeding the fire one stick at a time, '+
      'and talking, which she does not do.\n\nThe clans would not have her: too pale, wrong '+
      'in the mouth. The steadings would not either. She has been walking toward a flock her '+
@@ -27915,7 +28022,32 @@ function campPool(){
     return !c.castRace||
       G.party.filter(p=>p.race===c.castRace).length>=(c.castNeed||2);
   };
-  const ok=c=>!seen[c.id]&&(!c.needs||chose[c.needs.id]===c.needs.opt)&&ripe(c)&&castOk(c);
+  /* ═══ #212 · A CARD CAN WAIT FOR A PLACE ═══════════════════════
+     (User, 2026-08-20: *"Event on the road with asha a bit later - after fen
+     mother (when she tells stories)"*.)
+
+     ⛔ THE NARROWEST GATE IN THIS FUNCTION WAS A PERSON, AND THIS ONE IS A
+     NODE. `castMember` already held THE WRONG COLOUR back until Asha is in
+     the company - and she joins at Blood on the Road, which is the fourth
+     node of the run, so the card was landing at the first or second fire the
+     company ever built. It is a woman who has never told anybody her story
+     telling it, and it was being told to strangers three days in. `afterNode`
+     is the road she has to have walked with you before she says any of it.
+
+     ⚠ A NODE ID AND NOT A DAY COUNT, DELIBERATELY. A count of days is a rule
+     anchored to PROGRESS, and `armourWhere` carries the long note on why
+     those break silently the day somebody reorders the map. The Black Fen is
+     the beat the user named, so the Black Fen is what is asked for - and
+     `LINT` proves both halves of that: the node exists, and EVERY road to the
+     bells walks it, so the gate cannot quietly become unreachable.
+
+     ⚠ `G.visited[k]` IS SET ON ARRIVAL, one line before the boss fight is
+     dealt. That is still "after the Fen-Mother" for every fire the card can
+     reach, because the fires are on the ROADS and the next road out of the
+     fen is `mother -> vill`. */
+  const been=c=>!c.afterNode||!!G.visited[c.afterNode];
+  const ok=c=>!seen[c.id]&&(!c.needs||chose[c.needs.id]===c.needs.opt)&&
+              ripe(c)&&been(c)&&castOk(c);
   const all=CAMPS.filter(ok);
   const sequels=all.filter(c=>c.needs);
   return sequels.length?sequels:all;
@@ -36210,7 +36342,7 @@ function canAfford(need){
    `pickChoice`, i.e. a table only the payer could read; a gate that resolved
    presets its own way would be the second-source-of-truth shape again. */
 function presetOf(k){return k==='skree'?PRESET_SKREE
-  :k==='ash'?PRESET_ASH:PRESET_BRUHT;}   /* #201 - nib and gell are gone; Ash replaced them */
+  :k==='ash'?PRESET_ASH:PRESET_BRUHT;}   /* #201 - nib and gell are gone; Asha replaced them */
 function doorRace(c){
   if(!c)return null;
   if(c.recruit)return c.recruit.race;

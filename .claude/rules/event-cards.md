@@ -532,6 +532,41 @@ availible ones in the asked format (it would be ugly, but don`t worry)"*), and t
 change when a file lands: drop the PNG in `art/src/stage-6/j-stage/`, rebuild the pack, add one row
 to `JSTAGE`, and `.evstage.fit` picks up the lighter treatment by itself.
 
+## ⛔ #212 · A CAMP CARD CAN WAIT FOR A PLACE
+
+*(2026-08-20. The user: **"Event on the road with asha a bit later - after fen mother (when she tells
+stories)"**.)*
+
+`campPool` had four cast gates and they all ask about PEOPLE: `castRace`, `castTie`, `castMember`,
+`castLost`. **`afterNode` is the fifth and it asks about the MAP.** A card carrying
+`afterNode:'<node id>'` does not enter the pool until `G.visited[<id>]`.
+
+⛔ **IT EXISTS BECAUSE A CAST GATE IS NOT A TIMING GATE, AND THE TWO LOOK THE SAME UNTIL A CARD
+NEEDS BOTH.** `castMember:'ash'` already held THE WRONG COLOUR back until Asha is in the company,
+which reads like a delay and is not one: she joins at Blood on the Road, the fourth node of the run.
+So the one card in the game about *a woman who has never told anybody her story telling it* was being
+dealt at the first or second fire the company ever built, to strangers. The card was right and its
+place in the run was wrong, and nothing in the deck could say so.
+
+⚠ **A NODE ID, NEVER A DAY COUNT.** `armourWhere` carries the long note: a rule phrased against a
+node's PROGRESS through the run breaks silently the day somebody reorders the map, and #71 proved it.
+The Black Fen is the beat that was named, so the Black Fen is what is asked for.
+
+⛑ **AND IT FAILS THE SAME TWO SILENT WAYS EVERY GATE IN THAT BLOCK FAILS, SO `LINT` READS BOTH.** A
+gate keyed on a node the map no longer has, or on a node only SOME companies walk, does not crash and
+does not warn: the card simply never comes, for the whole life of the project. The check names the
+missing node, and it enumerates `allRoads('hold',QUEST_GOAL)` the way 8c already does for the two road
+stops. **Proved by moving the gate into each fault on purpose and watching it report** - `afterNode
+"nowhere" is not a node on the map`, `afterNode "sling" is missable` - then restoring it to silence.
+
+⚠ **`G.visited[k]` IS SET ON ARRIVAL**, one line before a boss card is dealt, so "after the
+Fen-Mother" is true of every fire the card can reach for the ordinary reason: the fires are on the
+ROADS, and the next road out of the fen is `mother -> vill`.
+
+⚑ **THE POOL CANNOT EMPTY ITSELF INTO A DEAD END**, which is the thing to check after adding any
+gate here: `openCamp` falls back to `openVignette` when nothing qualifies. Measured, 8 incidents
+before the Fen and 9 after.
+
 ## Before the card ships
 
 
