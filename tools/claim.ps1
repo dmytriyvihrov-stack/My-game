@@ -137,7 +137,11 @@ function In-MainWorktree {
   } catch { return $true }
 }
 $TtlHours  = 4          # a lock older than this is treated as abandoned
-$MaxEntry  = 200        # ceiling so a stray "#404" in prose cannot move the floor
+$MaxEntry  = 300        # ceiling so a stray "#404" in prose cannot move the floor.
+                        # was 200; raised 2026-08-20 after #211/#213 landed on main
+                        # and this ceiling made both invisible to the scan, so
+                        # `number entry` handed #211 out a second time. See #211's
+                        # commit for the entry that walked into it.
 $MaxBuild  = 400
 
 function Ensure-Store {

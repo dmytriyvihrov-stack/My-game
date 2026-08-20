@@ -26,6 +26,18 @@
 
 ---
 
+## 🗺 FIFTEEN MORE ROAD CARDS GET THEIR WIDE STAGE  *(#214 · 2026-08-20 · build log 8f.237)*
+
+**How to reach it in three steps:** open any of these cards on the road or at a camp: What Followed You Out, The Hollow Tree, The Dead Company, The Long Fire, The Ratkin Snare, The Warm Spring, Something in Armour, The Door-Shrine, The Woman in the Cage, The Red Lights, Bonepicker's Camp, The Sling-Line, The Steading-Line, Under the Bloom, The Salt-Wives, or They Come Over the Wall.
+
+**What it is.** All sixteen now open on a full 1672x941 painted stage instead of the old 586x212 letterbox (or, for two of them, nothing at all - `packev` and most CAMPS cards had no wide art before this). ⛔ **AND ONE OF THEM WAS SHOWING THE WRONG PICTURE.** The Steading-Line (four ogres blocking a mountain road) had been wearing They Come Over the Wall's art (dogs pouring through a ruined steading) since the J-pack first shipped - the two events both use the word "steading" and the filename-based wiring caught the wrong one. If you saw ogres over a fire in that card before, this build fixes it.
+
+**What should happen.** Each painting matches its card's own prose - ogres for the Steading-Line, dogs and a ruined wall for They Come Over the Wall, four boiling brine-pans for the Salt-Wives, and so on.
+
+**What would be a bug.** Any of these sixteen still opening on the old narrow letterbox, or two different cards showing the same painting.
+
+---
+
 ## ⚔ THE STEP THAT COSTS BLOOD SAYS SO ON THE CURSOR NOW  *(#213 · 2026-08-20 · build log 8f.236)*
 
 **How to reach it in three steps:** any fight → let an enemy get into contact with one of yours (front or shoulder, not behind) → it is your turn, MOVE is already the standing selection, so just move the pointer over the walkable ground.

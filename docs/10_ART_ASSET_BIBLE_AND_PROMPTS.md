@@ -222,6 +222,7 @@ accent in the prompt. Do not let the model add unrelated blue spells, orange rim
 |---|---:|---:|---|
 | Key/menu/background | 2560×1440, 16:9 | PNG or high-quality JPG | Keep the UI side calm and low-contrast; art contains no title or buttons. |
 | Event/place scene | 640×360, 16:9 | JPG | Keep the subject and story-bearing prop inside the middle 45% of image height so the live 398×104 panoramic crop still reads. |
+| J-stage event background | 1672×941, 16:9 | PNG | Keep roughly the left 45% calm for hero cards, prose and choices; paint the event subject on the right, but never duplicate the player's party there. |
 | Camp scene | 640×360, 16:9 | JPG | Fire near centre, cast arranged in a shallow arc, faces readable at card crop. |
 | Road vignette | 640×360, 16:9 | JPG | One incident, one or two figures, simple background; it must read small. |
 | Character portrait | 1024×1536, 2:3 | PNG/JPG | Chest-up three-quarter view, head in upper third, dark simple vignette; leave room for square and 4:5 crops. |
@@ -243,6 +244,20 @@ Add one of these between the subject prompt and master style block.
 Wide 16:9 event illustration, no text or interface. Compose as one legible story moment, not a
 montage. Keep every essential subject and prop in a broad central horizontal band so a very wide,
 shallow card crop remains understandable. Foreground detail may frame the scene but must not hide it.
+```
+
+**J-STAGE FORMAT**
+
+```text
+Full-screen 1672×941 event background for the J layout. Reserve roughly the left 45 percent as a
+calm, low-detail field beneath the separately rendered hero cards, event prose and choices. Place
+the event subject, readable silhouettes and peak contrast on the right. The player's company is
+already represented by the hero cards: do not paint player-party members, cropped shoulders,
+backs, packs or generic companion silhouettes into the right-side scene. NPCs, enemies, creatures,
+evidence and locations may occupy the right when they are the event itself. Dark atmosphere must
+not become uniform dimness; permit one deliberate story-bearing bright element such as fire,
+daylight, reflected water, exposed metal, ritual colour, coastal light or Bloom colour. No text,
+interface, frame or logo in the painting.
 ```
 
 **MENU FORMAT**
