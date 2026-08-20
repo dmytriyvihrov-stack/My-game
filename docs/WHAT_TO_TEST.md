@@ -26,6 +26,139 @@
 
 ---
 
+## 🧭 FIVE ON READING THE BATTLE  *(#206 · 2026-08-20 · build log 8f.228)*
+
+*(Your five, after playing: the hovered slot, an enemy behind END TURN, scrolling, the range of a
+skill that applies automatically, and the CLEAR SHOT / BLOCKED word under an archer's target.)*
+
+### 1. The hex you are about to step on
+
+**Three steps:** any fight → your turn → move the cursor over the lit ground.
+
+The hex under the pointer now takes an **ivory ring and a brighter fill** - the same mark the acting
+body's own hex wears, so the two read as one vocabulary. Everything else is unchanged.
+
+⚠ **A bug would be**: the ring appearing on ground you cannot actually walk to, on an enemy, or on
+a hex while you have an attack card selected rather than MOVE.
+
+### 2. The chrome gets out of the way of a body
+
+**Three steps:** any fight → wait until somebody stands in a corner → look at the control over them.
+
+The board is 964x682 at the FULL stop in a 1280x720 window, and the clear band along the bottom
+between the plaque and END TURN is 774px wide. **There is no way to slide a 964px board into 774px**,
+so moving the camera could never have fixed this. Instead the CONTROL goes half-transparent while a
+body is behind it, and comes straight back to full **the moment you point at it**.
+
+Measured across five fights: the turn-order rail in three, the plaque in one, **END TURN in the
+Snare**, and nothing at all in the tavern brawl (two bodies on the field).
+
+⚠ **Tell me if it reads as flicker.** It fires whenever more than 8% of somebody is covered, which
+is often, because that is how often the board is genuinely crowded. The dial is that percentage.
+
+### 3. Scrolling
+
+**Three steps:** the road → open any event card → wheel over the prose.
+
+**What was wrong:** the event card lives inside the map, and the map's wheel handler was swallowing
+every notch to step its own camera. So the card did not scroll and the map zoomed out behind it -
+measured, one notch over the card's heading. And macOS hides its scrollbar until something scrolls,
+so with the wheel dead there was nothing to grab either.
+
+Now: the wheel over a card scrolls the card, the wheel over the MAP still steps the camera, every
+scroller in the game has a visible bar, and **the card's second, outer scroller is gone** - it had
+never once scrolled on any of the ten cards measured, and it was what made a wheel that ran past the
+end of the prose drag the whole card, painting and buttons and all.
+
+⚠ **A bug would be**: the buttons at the foot of a card coming unpinned, or a long card (try THE
+CIRCLE) hiding its last line with no way to reach it.
+
+### 4. What an order reaches
+
+**Three steps:** any fight → the Captain's turn → **hover** COMMAND or HOLD THE LINE.
+
+The card's sub-line now says the radius (**1 ACT · 3 HEXES**), and hovering the card **rings every
+hex it reaches, including the ones with people standing on them** - an order is about WHO it lands
+on, not where you can step. Move off the card and the ring goes.
+
+⚠ It has to be the hover: these acts fire the instant you click them, so there is no moment when
+one is "selected".
+⚠ **SPEAR WALL deliberately shows nothing.** Its zone is the front arc at reach 2, not a circle, and
+drawing it as a circle would be a picture of the wrong rule.
+
+### 5. The archer's target says less
+
+**Three steps:** any fight → an archer's turn → hover an enemy at range.
+
+**CLEAR / SCREENED / OBSTRUCTED / BLOCKED is off the hex**, at your word. What remains is the
+coloured, dashed line from the shooter to the body, the hex's own tint, and the percentage. The words
+are still there in full on the hover readout, where the breakdown says *screened*, *a body in the
+way*, *over a boulder*, *long shot*, *extreme range* next to what each one costs.
+
+⚠ **The one to look at is BLOCKED**, because that is the state with no percentage at all - it is
+carried by the dark red fill and the red dashed ray now. If that reads as ambiguous, say so and the
+word comes back for that one state.
+
+---
+
+## 🩹 THE HEALTH BAR, THE WARNING BEFORE A SWING, AND THE BRAWL THAT COULD STOP  *(#205 · 2026-08-19 · build log 8f.227)*
+
+*(Your three: "На мобильном устройстве (андроид) и мак буке шкала здоровья в бою почему-то не
+отображается" · "Когда выбегаешь из зоны контроля - то давать какой-то ворнинг. Как минимум делать
+иконку стоп красной и рядом меч и красным подсвечивать юнита - который будет бить" · "В начальном
+бою твои солдаты не присоединяются. Токо бармен ... вы с барменом против 3х типов".)*
+
+### 1. The bar over a head actually has red in it now
+
+**Three steps:** menu → **The tutorial fight** → look at the two bars over anybody's head.
+
+The **top** bar is armour and the **bottom** one is hitpoints. What should happen: the bottom bar is
+a red strip that gets **shorter** as somebody is hurt, and the armour bar above it goes pale and
+then dark. What it did before: nothing at all - the fill had between one pixel and **zero** pixels of
+height depending on the camera stop, so on your phone and on the MacBook there was nothing to see
+and on the desktop it looked like an empty bar that never moved.
+
+**Test it on the phone**, because that is where it was reported. Also worth pressing the camera
+stops (mouse wheel on the board): the bar has to stay readable at all three.
+
+⚠ **A bug would be**: the pair sitting ON somebody's head instead of just above it, or the armour
+bar looking thicker than the health bar. They are 3px and 4px and there is exactly 1px of air over
+the tallest sprite in the game.
+
+### 2. The board says what a step is about to cost
+
+**Three steps:** any fight → let an enemy get right in front of one of yours → it is their turn,
+MOVE is already selected.
+
+What should happen: **⊘⚔ in red on the hex you are standing on**, that hex's ground goes red, and
+**every enemy who would get a free swing at you glows red**. Hover the ⊘⚔ and it names them.
+
+**Now press DISENGAGE.** The whole warning should vanish on the spot, because a disengaged step is
+free - that is the card's entire job and this is the first time the board says so.
+
+⚠ **A bug would be**: the warning showing when nobody can actually swing (somebody standing at your
+BACK cannot - the zone of control has been the front arc since #173), or it showing while you have
+an attack card selected rather than MOVE, or the ⊘⚔ swallowing a click.
+
+### 3. The tap-room brawl always finishes its script
+
+**Three steps:** menu → **The tutorial fight** → play it out.
+
+The shape is fixed and it should never vary: Harl breaks and **runs for the door** → three carters
+come in → two rounds later **the barman and the knife-man** → one round after that **Vesna, Marrow
+and Ilka stand up from the bar**. Ten bodies on the field.
+
+⚠ **What was wrong, so you know what to watch for**: Harl could talk himself back into the fight
+after breaking (his nerve recovers a little every turn and it was four tenths of a percent over the
+line), and **every wave in the brawl waits on him leaving the room** - so the whole tutorial stopped
+and you fought one drunk forever. Driven with a Captain who never swings, it sat there to round 55.
+
+⚠ **A bug would be**: anybody named in that sequence not appearing, or appearing and being
+invisible - if the room is ever full the game now puts them further out rather than on top of
+somebody. Or the fight ending the moment the knife-man walks in.
+
+---
+
 ## 🕹 THE ITCH BUILD, AND WHAT IT FOUND  *(#203 · 2026-08-19 · build log 8f.225)*
 
 *(Your ask: "подготовь билд на итч. И сделай описание проекта под итч (исходя из моих сообщений про

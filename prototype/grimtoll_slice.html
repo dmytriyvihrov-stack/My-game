@@ -1102,8 +1102,33 @@ button:disabled{cursor:not-allowed}
 /* shut, the header is the whole control: the round chip would wrap a 150px
    bar onto two lines and it says nothing the capsule does not */
 #bLogWrap:not(.open) #bLogRound{display:none}
-#bLog::-webkit-scrollbar{width:6px}
+/* ═══ ⛔ #206 · A SCROLLER NOBODY CAN SEE IS A SCROLLER NOBODY USES ══════
+   (User: *"I couldn't scroll properly with either the mouse wheel or the
+   scrollbar, which made it difficult to read everything in there"* - macOS.)
+
+   ⛔ macOS PAINTS AN OVERLAY SCROLLBAR AND HIDES IT UNTIL SOMETHING SCROLLS.
+   `#bLog` was the only box in the game that styled one, so every other
+   scroller - the road card's prose, the nine `.pcard` screens, the sheet's two
+   columns - showed the player nothing at all: no bar, no track, and (on the
+   road card, see wpanInit) no working wheel either. The second half of that
+   sentence is a bug and is fixed there; THIS half is that a box which scrolls
+   has to look like one on the platform where the OS will not say so.
+   ⚠ THE WIDTH IS 6px AND IT IS NOT ON THE SPACING SCALE, because it is not
+   spacing: it is the width of a control, the same class of number as
+   `--barChip` and `#wBar`'s 64px reservation. It matches `#bLog`, which is
+   where the value comes from.
+   ⚠ AND `scrollbar-color` IS THE FIREFOX HALF. Both are declared or the same
+   box has a visible bar in one browser and an invisible one in the next. */
+#bLog::-webkit-scrollbar,.pcard::-webkit-scrollbar,#wDlg .bd::-webkit-scrollbar,
+#iRoster::-webkit-scrollbar,#iChar::-webkit-scrollbar{width:6px}
 #bLog::-webkit-scrollbar-thumb{background:#35494c}
+.pcard::-webkit-scrollbar-thumb,#wDlg .bd::-webkit-scrollbar-thumb,
+#iRoster::-webkit-scrollbar-thumb,#iChar::-webkit-scrollbar-thumb{background:var(--e3)}
+#bLog::-webkit-scrollbar-track,.pcard::-webkit-scrollbar-track,
+#wDlg .bd::-webkit-scrollbar-track,#iRoster::-webkit-scrollbar-track,
+#iChar::-webkit-scrollbar-track{background:rgba(0,0,0,.35)}
+.pcard,#wDlg .bd,#iRoster,#iChar{scrollbar-width:thin;scrollbar-color:var(--e3) rgba(0,0,0,.35)}
+#bLog{scrollbar-width:thin;scrollbar-color:#35494c rgba(0,0,0,.35)}
 #bLog .ll{font-size:var(--fs1);line-height:1.3;color:#8b9a99;font-family:var(--body);
           border-left:2px solid transparent;padding-left:var(--p3)}
 #bLog .ll.mine{color:#cfe3d8;border-left-color:#4d6b6c}
@@ -1385,6 +1410,84 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:var(--f
    meant to cover would fail silently, in clicks, which nothing tests. */
 .aimpad{position:absolute;inset:0;z-index:20;
   clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%)}
+/* ═══ #205 · THE PARTING-SWING WARNING ══════════════════════════
+   ⛔ AN ACCENT EDGE, WHICH IS DELIBERATELY NOT ON THE `--e` SCALE. The three
+   scales (`.claude/rules/ui-scales.md` §2) govern the edge that DRAWS A BOX;
+   this one SAYS SOMETHING, and flattening it into the gold ladder would be the
+   wrong-unit bug arriving through a tidy-up. Same footing as `--blood-lit`
+   warning and `--grain` approving, and it is the same red the refusal cursors
+   are drawn in.
+   ⚠ THE GLYPH SITS OVER THE TORSO, NOT OVER THE HEAD. Everything above a
+   head on this board is spoken for - `.ubars` at `--head - 9`, `.umood`
+   top-right, `.wflag` top-centre - and a fourth thing up there is the clutter
+   #157 spent an entry removing. Middle of the hex, under the bars, over the
+   body it is about.
+   ⚠ `pointer-events:none`, or the mark eats the click on the very hex whose
+   move it is warning about.
+   ⛔ `.hin>.zwarn` AND NOT `.zwarn`, WHICH THIS FILE HAS SHIPPED WRONG ONCE.
+   `.hin>*{z-index:1}` is (0,1,0); a bare `.zwarn{z-index:6}` ties with it and
+   is broken by source order, which is exactly the silent failure the note on
+   `.hin>.stbar` records. (0,2,0) wins outright. The lift is real and it has to
+   be: the mark is appended BEFORE the sprite, so at z-index 1 the body it is
+   warning about would paint straight over it. */
+.hin>.zwarn{position:absolute;left:0;right:0;top:50%;transform:translateY(-46%);
+  text-align:center;font-size:var(--fs5);line-height:1;letter-spacing:-.06em;
+  color:#c15d55;pointer-events:none;z-index:6;
+  text-shadow:0 0 3px #000,0 0 3px #000,0 1px 2px #000,0 -1px 2px #000}
+/* the body that will take the swing, LIT rather than outlined: an edge on a
+   hex somebody is standing on is mostly hidden by them, which is the whole
+   reason the request asks for the unit and not the tile. */
+.hex.zhit .usp{filter:drop-shadow(0 0 2px #c15d55) drop-shadow(0 0 5px #c15d55)}
+/* ═══ #206 · THE ONE YOU ARE ABOUT TO PICK ═════════════════════════
+   (User, 2026-08-20: *"the slot the mouse is currently over could be
+   highlighted even more so we can clearly see which one we're selecting"*.)
+
+   ⛔ THERE WAS NO `:hover` RULE ON A HEX AT ALL, on any state, anywhere in
+   this file. The wash says WHICH GROUND is reachable - 59 hexes of it at a
+   four-hex stride - and nothing said which of the 59 the cursor was on. An
+   enemy hex has never had this problem: it carries the odds, the damage, the
+   aim pad, the LOS ray and the peek ring. Empty ground had a wash and a
+   cursor, and the cursor is 26px of boots that does not touch the hex edge.
+
+   ⚑ SAME VOCABULARY AS `.hex.acting`, DELIBERATELY: the ivory of "this is
+   yours and it is happening now", drawn as a hexagon on a pseudo-element,
+   because `.hedge`'s own `background` is written inline by render() and a
+   pseudo is the one place here that is both hexagon-shaped and free of it.
+   `::after` rather than `::before` so it can never collide with the acting
+   ring - which it cannot anyway, a lit hex is empty by construction, but the
+   two rules should not have to know that about each other.
+   ⚠ `.lit` IS STAMPED ONLY ON GROUND A CLICK WOULD ACTUALLY TAKE - the same
+   test the wash is drawn from, plus a move or a sink in hand. A ring on a hex
+   that does nothing is worse than no ring. */
+#bGrid .hex.lit:hover .hedge::after{content:'';position:absolute;
+  left:0;top:0;right:0;bottom:0;
+  clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);
+  background:rgba(240,230,192,.20);
+  box-shadow:inset 0 0 0 2px rgba(240,230,192,.92);
+  pointer-events:none}
+/* ═══ #206 · THE CHROME GETS OUT OF THE WAY OF A BODY ════════════════
+   (User: *"one enemy was positioned behind the End Turn button"*.)
+
+   ⛑ THE BOARD CANNOT BE MOVED OUT FROM UNDER IT, AND THE ARITHMETIC IS WHY.
+   Measured: the board is 588x416, the FULL stop is z 1.64, so it draws at
+   **964x682 in a 1280x720 window** - 316px of horizontal slack and 38 of
+   vertical. That is enough to clear the order rail on the left (which it
+   already does) and nothing else: `#bPlq` reaches x 272 at the bottom-left
+   and `#bEnd` starts at x 1046, so the bottom band has **774px of clear
+   ground for a 964px board**. Spending the vertical slack upward instead
+   would crop the top row's heads under `#bCap`. There is no offset that wins,
+   and the two closer stops PAN, so their overlap moves every turn anyway.
+
+   ⚑ SO THE CHROME YIELDS INSTEAD, WHICH NEEDS NO ARITHMETIC AND CANNOT GO
+   STALE. `veilChrome()` measures each control against every sprite once a
+   render; anything with a body meaningfully behind it drops to half and comes
+   straight back when the pointer is on it. A control you are reaching for is
+   never the one you are looking through.
+   ⚠ `#bActions` IS NOT IN THE SET. It is the row of cards being chosen from,
+   it is what the turn is FOR, and it sits on the very bottom edge. */
+.veiled{opacity:.5;transition:opacity .18s ease}
+.veiled:hover,.veiled:focus-within{opacity:1}
+@media (prefers-reduced-motion:reduce){.veiled{transition:none}}
 /* GROUND YOU CANNOT ENTER. Dark, hard-edged, and a glyph dead centre — the
    painted stones alone were ambiguous once the hexes got small. */
 .hex.blocked{cursor:not-allowed}
@@ -1483,14 +1586,16 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:var(--f
    and that stack was re-measured at the 10px floor in #164 (see the note above
    it): the odds end at 14 and the damage starts at 16. */
 .hdmg.solo{top:4px}
-/* ═══ LINE OF FIRE (backlog #36) ════════════════════════════════════════
-   The costs are hidden in the odds like every other modifier; what is NOT
-   hidden is the WORD, because the word is the thing the player acts on —
-   CLEAR is "shoot", SCREENED is "shoot anyway", OBSTRUCTED is "move first",
-   BLOCKED is "there is no shot". A percentage alone cannot say which. */
-.hlos{position:absolute;bottom:-3px;left:-6px;right:-6px;text-align:center;
-  font-family:var(--mono);font-size:var(--fs1);letter-spacing:.06em;font-weight:700;
-  text-shadow:0 0 3px #000,0 0 3px #000;pointer-events:none}
+/* ═══ LINE OF FIRE (backlog #36) ═ `.hlos` IS DELETED BY #206 ══════════
+   The rule read: *"the costs are hidden in the odds like every other modifier;
+   what is NOT hidden is the WORD, because the word is the thing the player
+   acts on - CLEAR is 'shoot', SCREENED is 'shoot anyway', OBSTRUCTED is 'move
+   first', BLOCKED is 'there is no shot'. A percentage alone cannot say which."*
+   It was right on the day it was written, when the board had no ray. It has
+   one now, coloured and dashed per state, and the hex is filled per state, and
+   the breakdown names the lane in words on the hover. See the note at the
+   deleted render site for the whole argument and for the one case (BLOCKED)
+   where the percentage genuinely cannot help. */
 /* whoever is standing in the lane, named on the board rather than in prose */
 .hex.inway .hin::before{content:'';position:absolute;left:0;top:0;right:0;bottom:0;
   clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);
@@ -1631,8 +1736,42 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:var(--f
    ABOVE somebody rather than drawn on them. See the .stbar note for why the
    two rows moved in opposite directions. */
 .ubars{position:absolute;left:50%;transform:translateX(-50%);
-  top:calc(var(--head,-13px) - 6px);width:26px}
-.ubars div{height:2px;background:#2a1e1f;border:1px solid rgba(0,0,0,.6);position:relative}
+/* ═══ ⛔ #205 · AND FOR TWO ENTRIES THE FILL HAD NO HEIGHT AT ALL ═════
+   (User, 2026-08-19: *"На мобильном устройстве (андроид) и мак буке шкала
+   здоровья в бою почему-то не отображается"*.)
+
+   ⛔ IT WAS NOT A PHONE BUG AND IT WAS NOT A BROWSER BUG, AND IT WAS NEVER
+   ABOUT THE TWO DEVICES IN THE REPORT. `*{box-sizing:border-box}` is the first
+   rule in this file, so a row declared `height:2px` with a 1px border top and
+   bottom leaves a content box of `2 - 2 × border`, and `i` is `height:100%` of
+   THAT. The fill has been a sliver since #157 thinned the pair from 3px to 2.
+
+   ⛑ AND THE SLIVER IS NOT A CONSTANT, WHICH IS THE WHOLE OF WHY IT READ AS A
+   PLATFORM BUG. The board is drawn inside a camera `zoom`, and `zoom` scales
+   COMPUTED LENGTHS: measured in the running build, one stop computes the
+   border at **0.513px** and leaves 0.97px of fill, and another computes it at
+   **1px** and leaves **exactly 0** - `getBoundingClientRect().height` on every
+   `.ubars div i` on the board, both rows, every body. So the same build paints
+   a hairline of red on one machine and nothing at all on the next, and neither
+   player could possibly have described it as the same defect.
+   ⚠ A SUB-PIXEL READOUT IS A BUG WHATEVER IT ROUNDS TO. What survives at any
+   stop is the TRACK (`#2a1e1f`) under a semi-transparent black border plus the
+   notch overlay: a dark strip that looks like an empty bar close up and is
+   simply gone at a phone's fit() scale.
+
+   ⛔ SO THE ROWS CARRY THEIR OWN BORDER NOW, WHICH IS THE ONE HONEST FIX:
+   health 4px = 1 + **2 of fill** + 1, armour 3px = 1 + **1 of fill** + 1. The
+   armour bar stays the thinner of the two and keeps the file's own floor
+   ("one pixel is the floor at which a bar is still a bar"), and the health
+   bar - the one the request is about - gets twice that.
+
+   ⚠ AND THE ANCHOR MOVES WITH IT, OR THE PAIR SITS ON THE HEAD. #163 left
+   exactly 1px of clear air: a 5px strip hung at `--head - 6` ends at
+   `--head - 1`. The strip is 3 + 1 + 4 = **8** now, so the hang is **-9** and
+   the foot lands on `--head - 1` again. Change either number and re-do this
+   sum; do not eyeball it. */
+  top:calc(var(--head,-13px) - 9px);width:26px}
+.ubars div{height:4px;background:#2a1e1f;border:1px solid rgba(0,0,0,.6);position:relative}
 .ubars div i{display:block;height:100%}
 /* #94 point 6, the board's half of it: the SAME rule at token scale, so the
    bar under a body and the bar on the plaque are obviously one reading. The
@@ -1656,7 +1795,7 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:var(--f
    next blow is the first one that counts. It is drawn only when the body has
    a shell at all, so a naked ratkin still shows one bar and not an empty
    promise of a second. */
-.ubars div.arm{height:2px;margin-bottom:1px;background:#1c2426}
+.ubars div.arm{height:3px;margin-bottom:1px;background:#1c2426}
 .ubars div.arm i{background:#a9b4b8}
 .ubars div.arm.thin i{background:#6f7377}
 /* The mood, as one face, top-right of the token — see the LADDER.
@@ -2639,9 +2778,31 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:var(--f
 
    The rule in one line: **content outranks chrome; only a modal outranks
    content.** */
+/* ═══ ⛔ #206 · `hidden`, NOT `auto`: THE CARD HAD TWO SCROLLERS ═════════
+   (User: *"Ideally fix scrolling and where it is unnecessary delete at all"*.)
+
+   The line below has said *"only the PROSE scrolls"* since it was written, and
+   the box around it was `overflow:auto` the whole time - so a wheel that ran
+   past the end of the prose fell through to the CARD and dragged the whole
+   thing, painting and pinned footer and all. Two scrollers nested one inside
+   the other is most of what "scrolling doesn't work very well" feels like.
+
+   ⛑ AND THE OUTER ONE HAS NEVER SCROLLED. Measured on ten cards including the
+   three heaviest and the one that pushed the ceiling: **outer `scrollHeight`
+   equals `clientHeight` on every single one** (569, 611, 632, 649, 657 against
+   a 658px cap), while the prose box scrolled on exactly one of them (the
+   Circle, 231 into 193). It cannot overflow either, because `.bd` is
+   `flex:1 1 auto` with `min-height:0` and absorbs the whole variance.
+   ⚠ THE STAGE IS A FIXED 1280x720 THAT IS SCALED, NEVER REFLOWED, so those
+   numbers are the same on every device the game has ever run on. This is not a
+   measurement that holds "on my machine".
+   ⚠ `hidden` AND NOT `visible`, AND THAT IS LOAD-BEARING. `#wChoices` below is
+   `position:sticky`, which needs a scroll CONTAINER - `overflow:hidden` is one
+   and `visible` is not, so dropping the overflow entirely would send the
+   sticky footer looking for `#wMap` and the buttons would stop being pinned. */
 #wDlg{position:absolute;width:620px;background:rgba(24,18,10,.97);border:1px solid #5c4a2c;
       box-shadow:0 12px 40px rgba(0,0,0,.7);padding:var(--p5) var(--p6);display:none;flex-direction:column;
-      gap:9px;z-index:30;overflow:auto}
+      gap:9px;z-index:30;overflow:hidden}
 #wDlg.on{display:flex}
 /* Only the PROSE scrolls. The choices stay pinned in view — a long event used
    to push its own buttons below the fold and the player had to discover that
@@ -10723,7 +10884,7 @@ function unitFrom(p){
     note:'Reach 1, and it does not care that your other weapon is a bow. For when '+
       'something is already on top of you.'});
   const sig={
-    captain:{k:'command',n:'COMMAND',cost:1,self:true,cool:3,
+    captain:{k:'command',n:'COMMAND',cost:1,self:true,cool:3,aura:3,
       note:'+20 morale to you, +24 to everyone within 3 hexes.'},
     /* THE WEAPON DECIDES THE SIGNATURE — a pattern the game had not used.
        With a boar spear she braces; with a halberd she shoves. Same class,
@@ -10848,9 +11009,9 @@ function unitFrom(p){
     }
   }
   /* the Captain gets a second leader ability; the Brute keeps ROAR */
-  if(p.cls==='captain')acts.push({k:'rallyline',n:'HOLD THE LINE',cost:2,self:true,
+  if(p.cls==='captain')acts.push({k:'rallyline',n:'HOLD THE LINE',cost:2,self:true,aura:2,
     note:'+10 dodge to every ally within 2 hexes until their next turn.'});
-  if(p.cls==='brute')acts.push({k:'roar',n:'ROAR',cost:1,self:true,cool:3,
+  if(p.cls==='brute')acts.push({k:'roar',n:'ROAR',cost:1,self:true,cool:3,aura:2,
     note:'−28 morale to every enemy within 2 hexes.'});
   /* The courageous do not get the button. It is not greyed out and it is not
      a penalty they pay — stepping back is simply not a thing they can be
@@ -11422,13 +11583,36 @@ function tavernFoes(){
    so an arrival acts at the end of the round and B.idx never re-runs a turn),
    disposition, ground under their feet, render. */
 function tavernPlace(u){
-  const spots=[[u.col,u.row]].concat(nbrs(u.col,u.row));
-  const s=spots.find(p=>{const t=B.terr[K(p[0],p[1])];
-    return t!==undefined&&!BLOCKED[t]&&!at(p[0],p[1]);})||[u.col,u.row];
+  /* ⛔ #205 - A RING SEARCH, AND THE FALLBACK MAY NOT BE AN OCCUPIED HEX.
+     It used to try the preferred hex and its six neighbours and then fall back
+     to **the preferred hex, occupied or not**. Two bodies on one hex is ONE
+     body: `at()` returns the first, so render draws the first, the click lands
+     on the first and the second is on the field with no way to see it or hit
+     it. By the time the door has opened four times that ring can genuinely be
+     full, and what the player reports is "he never came in".
+     ⚠ THE BFS IS BOUNDED BY `B.terr`, which is the bounds test the rest of
+     this file uses, so it terminates on the board's own rim. FALSE means there
+     was nowhere at all: the caller keeps the body OFF the field rather than
+     stacking it, which is the one honest failure. */
+  const free=p=>{const t=B.terr[K(p[0],p[1])];
+    return t!==undefined&&!BLOCKED[t]&&!at(p[0],p[1]);};
+  const seen={};let front=[[u.col,u.row]],s=null;
+  seen[K(u.col,u.row)]=1;
+  while(front.length&&!s){
+    const nx=[];
+    for(let i=0;i<front.length;i++){
+      if(free(front[i])){s=front[i];break;}
+      nbrs(front[i][0],front[i][1]).forEach(q=>{const k=K(q[0],q[1]);
+        if(seen[k]||B.terr[k]===undefined)return;seen[k]=1;nx.push(q);});
+    }
+    front=nx;
+  }
+  if(!s)return false;
   u.col=s[0];u.row=s[1];
   B.units.push(u);
   B.order.push(u);
   B.disp={you:disposition('you'),foe:disposition('foe')};
+  return true;
 }
 function tavernWave1(){
   if(!B.tut||B.tut.wave1)return;
@@ -11506,6 +11690,12 @@ function tavernWave3(){
    purpose: reach the doorway one turn, gone the next, so the player SEES the
    exit and the wave that follows it. */
 function tavernFlee(u,done){
+  /* #205 - a man who has started running does not talk himself back into it.
+     His nerve goes to the floor at the top of his own turn, which is AFTER
+     beginTurn has handed the situational lift out, so the state the board
+     draws and the state the script is acting on are the same one all turn.
+     See the note in aiTurn for the measurement. */
+  if(B.tut&&B.tut.harlBroke&&u.id==='harl'&&!u.dead)mor(u,-u.moraleMax,'');
   const door=B.tut&&B.tut.door;
   if(!door){routStep(u,done);return;}
   if(u.col===door[0]&&u.row===door[1]){
@@ -11559,13 +11749,37 @@ function tavernTick(){
   /* #111 - armour teaches on YOUR first dent, not the enemy's: your plaque
      holds still, his bar only blinks */
   if(!T.taught.armour&&cap&&cap.armour<T.arm0)tavTeach('armour');
-  if(T.phase===1&&harl&&!harl.dead&&!harl.fled){
+  /* ═══ ⛔ #205 · HARL MAY NOT RALLY, AND THE LATCH IS WHY HE COULD ═════
+     (User, 2026-08-19: *"В начальном бою твои солдаты не присоединяются"*.)
+
+     ⛔ THE WHOLE SCRIPT HANGS OFF ONE MAN LEAVING THE ROOM. Nothing arrives
+     until Harl is dead or through the door: wave one is gated on it, wave two
+     on wave one, the crew on wave two. This block used to be gated on
+     `T.phase===1`, and it set `T.phase=2` on the first frame he was routed -
+     so the sentence that BREAKS him could never run again. He then rallied
+     (his nerve recovers like anybody's), stood back up, and fought on with
+     nothing left in the game able to break him a second time.
+
+     ⛑ MEASURED, NOT REASONED: driven end-to-end in the running build with a
+     Captain who does not swing, the brawl sat at **phase 2, round 17, two
+     bodies on the field and every wave flag still false**. It is not a rare
+     shape either - the `B.round>=4` clause breaks him at FULL hitpoints, and a
+     braggart at full hitpoints is exactly who rallies.
+
+     ⚑ SO THE GATE IS `!T.wave1`, WHICH IS THE FACT THE SCRIPT ACTUALLY WAITS
+     ON, and his nerve goes back down every tick until he is out of the room.
+     The line is said once (`T.harlBroke`) because it is a beat, not a status.
+     ⚠ `T.phase=2` STILL LATCHES, because the two lessons it carries are
+     one-shot anyway (`tavTeach`) and phase 2 is what the rest of the tick
+     reads. What is unlatched is the BREAK, not the phase. */
+  if(!T.wave1&&harl&&!harl.dead&&!harl.fled){
     if(harl.state!=='routed'&&(harl.hp<=harl.hpMax*0.55||B.round>=4)){
-      say('Harl looks at the blood on his own sleeve, and the ale goes out '+
-        'of him all at once.');
+      if(!T.harlBroke){T.harlBroke=true;
+        say('Harl looks at the blood on his own sleeve, and the ale goes out '+
+          'of him all at once.');}
       mor(harl,-harl.moraleMax,'');
     }
-    if(harl.state==='routed'){T.phase=2;tavTeach('broken');tavTeach('nerve');}
+    if(harl.state==='routed'&&T.phase===1){T.phase=2;tavTeach('broken');tavTeach('nerve');}
   }
   /* beaten down before he could run: his friends heard the furniture */
   if(T.phase<3&&harl&&(harl.dead||harl.fled)&&!T.wave1)tavernWave1();
@@ -12451,7 +12665,7 @@ function pack(){
       aura:{r:3,kind:'dog',hit:8,dodge:5,n:'THE PACK',g:'✵',col:'#c9a227',
         d:'+8 to hit and +5 dodge to every dog within 3 hexes. It stops when she does.'},
       acts:[{k:'snap',n:'SNAP-AND-AWAY',cost:1,reach:1,dmg:[11,18],am:.40,ft:.55,bounce:2},
-            {k:'howl',n:'SHE CALLS THEM IN',cost:1,self:true,rally:true,cool:3,
+            {k:'howl',n:'SHE CALLS THEM IN',cost:1,self:true,rally:true,cool:3,aura:4,
              note:'Every dog within 4 hexes takes a fresh turn of nerve and comes back in.'}]},
     lurch:{kind:'dog',name:'Lurcher',hp:26,armour:6,mor:44,skill:58,dodge:26,speed:5,
       acts:[{k:'snap',n:'SNAP-AND-AWAY',cost:1,reach:1,dmg:[9,15],am:.35,ft:.55,bounce:2}]},
@@ -13916,6 +14130,31 @@ const holdsHex=(e,c,r)=>{
 const controllers=(c,r,side)=>engagers(c,r,side).filter(e=>holdsHex(e,c,r));
 const heldAt=(c,r,side)=>controllers(c,r,side).length;
 const held=u=>heldAt(u.col,u.row,u.side)>0;
+/* ═══ ⛔ #205 · WHO WOULD ACTUALLY SWING, AS ONE FUNCTION ══════════════
+   (User, 2026-08-19: *"Когда выбегаешь из зоны контроля - то давать какой-то
+   ворнинг. Как минимум делать иконку стоп красной и рядом меч и красным
+   подсвечивать юнита - который будет бить"*.)
+
+   ⛔ THE PRICE WAS ONLY EVER ANNOUNCED AFTER IT WAS CHARGED. Everything the
+   board said before the click was a RING - the red edge under your own feet -
+   and the ring is drawn on every held hex all turn, so it says "you are held"
+   and never "this step costs blood, and HE is the one taking it". The log line
+   (`X gets a parting swing`) arrives one animation too late to be a decision.
+
+   ⚑ AND #173's OWN NOTE NAMED FOUR PLACES THAT ASK ABOUT CONTROL AND MUST
+   AGREE. The picture is now a fifth, so the test stops being copied and
+   becomes this function: `partingShots` swings from it, the UNDO snapshot's
+   `clean` test is its emptiness, and render() draws it. One list, three
+   consumers, and a body that has already spent its swing drops out of all
+   three together.
+   ⚠ `!e.usedParting` AND `e.acts.some(reach)` ARE BOTH LOAD-BEARING. A
+   controller with no reach act cannot swing at all and an archer standing on
+   you is not a toll; a body that has already taken its parting swing this
+   round is not a second one. Warning about either is the readout printing a
+   price the till does not take, which is #102's rule. */
+const partingRisk=u=>(u.safeMove||has(u,'footwork'))?[]
+  :controllers(u.col,u.row,u.side)
+     .filter(e=>!e.usedParting&&e.acts.some(a=>a.reach));
 const has=(u,p)=>u.perks&&u.perks.indexOf(p)>=0;
 /* ═══ #72 - A BRACED SPEAR IS NOT THE SAME THING AS A WORKING ONE ════════
    (User: "but if somebody has already come right up to one hex, the zone of
@@ -16196,10 +16435,13 @@ function verbFx(u,a){
     return;}
   if(a.fear){ringFx(u,a.range||3,'#c2477f');return;}          /* THE SOUND SHE MAKES */
   if(a.bog){ringFx(u,a.bog,'#35c8b8',hexSpan()*0.22);return;} /* THE FEN ANSWERS - the GROUND */
-  if(a.rally){ringFx(u,4,'#c9a227');return;}                  /* SHE CALLS THEM IN */
-  if(a.k==='roar'){ringFx(u,2,'#c15d55');return;}
-  if(a.k==='command'){ringFx(u,3,'#d9bd7e');return;}
-  if(a.k==='rallyline'){ringFx(u,2,'#8ca35a');return;}        /* ...and plates, in the handler */
+  /* #206 - the radius comes off `a.aura` at all four of these, the same field
+     the handler charges and the card prints. The literals were the second of
+     three copies each. */
+  if(a.rally){ringFx(u,a.aura||4,'#c9a227');return;}          /* SHE CALLS THEM IN */
+  if(a.k==='roar'){ringFx(u,a.aura||2,'#c15d55');return;}
+  if(a.k==='command'){ringFx(u,a.aura||3,'#d9bd7e');return;}
+  if(a.k==='rallyline'){ringFx(u,a.aura||2,'#8ca35a');return;} /* ...and plates, in the handler */
   if(a.k==='wall'){plateFx(u,'#8fd0a8');return;}              /* SPEAR WALL */
 }
 /* A deferred step that belongs to ONE turn. If the turn has moved on by the
@@ -16507,6 +16749,7 @@ function beginTurn(){
     if(u.side==='you')fx(u,'OUTWEIGHED','#c07a2c',true);
   }
   B.sel=null;B.reach=null;
+  B.aura=null;               /* #206 - and no order's ring outlives its card */
   B.undo=null;               /* #91 - a new turn owes nobody last turn's step */
   /* the people you sided with fight their own fight. They are on your side of
      the board and they are not yours to command — you never get to spend their
@@ -16810,9 +17053,23 @@ function checkEnd(){
      wave has entered, it enters NOW. Wave two is allies and cannot keep the
      fight alive; it fires so the crew is standing there when the room
      settles, which is what the aftermath card says happened. */
+  /* ⛔ #205 - TWO DEFECTS IN FOUR LINES, AND BOTH ARE VISIBLE FROM THE ROOM.
+     · wave two puts a KNIFE on the field as well as the barman, so the count
+       taken at the top of this function is stale the moment it fires. Falling
+       through to the win below ended the fight on the round he walked in -
+       the door opens, a man comes through it, and the screen goes to spoils.
+       It returns false now, exactly as wave one does, for exactly one reason.
+     · and wave THREE was never in this net at all, though the comment above
+       has promised it since #108: "it fires so the crew is standing there when
+       the room settles, which is what the aftermath card says happened". Wave
+       two is the barman and the knife; the three at the bar are wave three,
+       and a brawl won between the waves left the aftermath describing people
+       who had never been on the field. Allies only, so it does NOT return -
+       the room has settled and the win below is correct. */
   if(B.tut&&!foe.length){
     if(!B.tut.wave1){tavernWave1();return false;}
-    if(!B.tut.wave2)tavernWave2();
+    if(!B.tut.wave2){tavernWave2();return false;}
+    if(!B.tut.wave3)tavernWave3();
   }
   if(!foe.length){B.won=true;
     endLater(()=>SIM.on?simResult('won'):toSpoils([]),700);return true;}
@@ -17173,13 +17430,16 @@ function fearBurst(src,act){
    scrum instead of standing in it. If the swing wants to be 0.75 again, this
    is the one line. */
 function partingShots(u,skip){
-  if(u.safeMove||has(u,'footwork'))return;
   /* ⛔ #173 - `controllers`, NOT `engagers`. The zone of control is the front
      arc now; a body you walked round is still ON you (and still costs you the
      surrounded penalty) but it cannot swing at you for leaving. This is the
      line the red edge on the board is a picture of - change one, change both,
-     and see the list in the note on `controllers`. */
-  controllers(u.col,u.row,u.side).forEach(e=>{
+     and see the list in the note on `controllers`.
+     ⚑ #205 - and it is `partingRisk` now, which IS that filter, so the board's
+     new warning and this loop cannot disagree about who swings. The two tests
+     that stay here are the ones a LIST cannot carry: the body that caused the
+     move (`skip`), and a mover who died partway down it. */
+  partingRisk(u).forEach(e=>{
     const atk=e.acts.find(a=>a.reach);
     if(!atk||u.dead||u.downed||e===skip||e.usedParting)return;
     e.usedParting=true;
@@ -17258,7 +17518,7 @@ function selectAct(i){
        'until they are off her.');
     B.sel=null;render();autoEnd(u);return;}
   if(a.k==='command'){spend(u,a);mor(u,20,'');
-    alive().filter(x=>x.side===u.side&&hdist([x.col,x.row],[u.col,u.row])<=3)
+    alive().filter(x=>x.side===u.side&&hdist([x.col,x.row],[u.col,u.row])<=(a.aura||3))
       .forEach(x=>{mor(x,24,'');if(has(u,'warleader'))x.rallyBuff=6;});
     say('You say the thing captains say. It works, mostly.');
     B.sel=null;render();autoEnd(u);return;}
@@ -17266,7 +17526,7 @@ function selectAct(i){
     /* #87 — the ring goes out from spend(), the plates close after it. That
        ordering IS the difference between this and COMMAND: an order that
        only travels, against an order that travels and then guards. */
-    alive().filter(x=>x.side===u.side&&hdist([x.col,x.row],[u.col,u.row])<=2)
+    alive().filter(x=>x.side===u.side&&hdist([x.col,x.row],[u.col,u.row])<=(a.aura||2))
       .forEach((x,i)=>{x.rallyBuff=10;fx(x,'+10 dodge','#8ca35a',true);
         setTimeout(()=>plateFx(x,'#8ca35a'),hitPaced(130+i*70));});
     say('Shields up, feet planted. Nobody moves and nobody dies.');
@@ -17275,7 +17535,7 @@ function selectAct(i){
     /* #87 — everybody inside the ring SHUDDERS where they stand. Not a
        recoil: a roar displaces nobody, and borrowing the recoil would have
        told the player a hex had changed hands when none had. */
-    alive().filter(x=>x.side!==u.side&&hdist([x.col,x.row],[u.col,u.row])<=2)
+    alive().filter(x=>x.side!==u.side&&hdist([x.col,x.row],[u.col,u.row])<=(a.aura||2))
       .forEach((x,i)=>{mor(x,-28,'the ogre is very loud');
         setTimeout(()=>shudderFx(x),hitPaced(120+i*45));});
     say(u.name+' roars. Somewhere a rat reconsiders its career.');
@@ -17745,8 +18005,7 @@ function clickHex(c,r){
        moment anything else is done; nextTurn clears it at the handover. */
     /* ⚠ #173 - this MIRRORS partingShots and has to move with it, or UNDO is
        offered on a step that drew blood. `controllers`, same as there. */
-    const clean=u.safeMove||has(u,'footwork')||
-      !controllers(u.col,u.row,u.side).some(e=>!e.usedParting&&e.acts.some(x=>x.reach));
+    const clean=!partingRisk(u).length;         /* #205 - the one list */
     const snap={id:u.id,col:u.col,row:u.row,facing:u.facing,actions:u.actions,
       usedMove:u.used[a.k]||0,movesUsed:u.movesUsed||0,moved:!!u.moved};
     spend(u,a);u.moved=true;u.movesUsed=(u.movesUsed||0)+1;partingShots(u);
@@ -18569,7 +18828,21 @@ function mirehareMove(u,T){
   return true;
 }
 function aiTurn(u){
-  if(u.state==='routed'){
+  /* ⛔ #205 - AND THE BRAWL'S OWN MAN KEEPS GOING ONCE HE HAS STARTED.
+     Every wave of the tap-room is gated on Harl being dead or through the
+     door - wave one on him, wave two on wave one, the crew on wave two - and
+     `state` is not a fact that stays put. The situational block in beginTurn
+     lifts every body a little at the top of its own turn, and **8 of his 52 is
+     .154 against a .15 break threshold**: four tenths of a percent, which is
+     why this read as intermittent rather than as broken.
+     ⛑ MEASURED IN THE RUNNING BUILD, with the position setter trapped: he
+     ran for the door on even rounds (`walkTo<tavernFlee<aiTurn`) and walked
+     back at the Captain on odd ones (`walkTo<step<aiTurn`), from round 4 to
+     round 55, with every wave flag still false.
+     ⚑ SO THE SCRIPTED EXIT HANGS OFF THE SCRIPT'S OWN FLAG AND NOT OFF A
+     NUMBER THAT OSCILLATES. `tavernFlee` puts his nerve back on the floor at
+     the top of the turn, so the plaque and the white flag agree with it. */
+  if(u.state==='routed'||(B.tut&&B.tut.harlBroke&&u.id==='harl'&&!u.fled)){
     (B.tut?tavernFlee:routStep)(u,()=>{B.busy=false;if(!checkEnd())nextTurn();});
     return;}
   /* the cub will not close while its mother still stands. It circles,
@@ -18610,7 +18883,8 @@ function aiTurn(u){
     /* SHE CALLS THEM IN — a pack-leader pulling shaken dogs back into it */
     const rallyAct=u.acts.find(a=>a.rally);
     if(rallyAct&&canUse(u,rallyAct)&&(u.rallyCool||0)<=0){
-      const sag=alive().filter(x=>x.side===u.side&&x!==u&&udist(u,x)<=4&&x.state!=='steady');
+      const sag=alive().filter(x=>x.side===u.side&&x!==u&&
+        udist(u,x)<=(rallyAct.aura||4)&&x.state!=='steady');
       if(sag.length>=2){
         spend(u,rallyAct);u.rallyCool=rallyAct.cool||3;
         sag.forEach(x=>{mor(x,26,'');fx(x,'CALLED IN','#c9a227',true);});
@@ -21584,7 +21858,10 @@ function render(){
              appends the lockout to the same line for free. */
           :a.k==='dis'?'1 act · +1 hex now · clean moving'
           :a.range?a.cost+' act · range '+a.range
-          :a.reach?a.cost+' act · reach '+a.reach:a.cost+' act';
+          :a.reach?a.cost+' act · reach '+a.reach
+          /* #206 - the radius an order carries, off the same field the
+             handler and the ring read. See the note beside `rngA`. */
+          :a.aura?a.cost+' act · '+a.aura+' hexes':a.cost+' act';
         /* #67 · the school this body is currently holding. It is not a
            cooldown and it must not read as one: a cooldown is the game
            telling you to wait, this is the game telling you it is already
@@ -21624,7 +21901,15 @@ function render(){
           '</button>';
       }).join('');
       $('bActions').querySelectorAll('.act').forEach(b=>{
-        b.onclick=()=>selectAct(+b.dataset.a);});
+        b.onclick=()=>selectAct(+b.dataset.a);
+        /* #206 - the radius of an act that has no target, while the pointer is
+           on its card. `data-a` indexes `u.acts`, which is what selectAct
+           reads, so the ring and the click can never mean two different acts.
+           A card with no `aura` sets nothing and clears nothing on enter, so
+           sweeping the row does not flicker. */
+        b.onmouseenter=()=>{const a=u.acts[+b.dataset.a];
+          if(a&&a.aura)auraOn(u,a);else auraOff();};
+        b.onmouseleave=auraOff;});
       /* #88's warmage-scroll remainder dissolved sideways: seven cards in a
          row are 450px against a 1280px band, measured in the bench, so
          every kit in the game fits with no scroller at all. */
@@ -21805,6 +22090,21 @@ function render(){
   const rngA=(B.sel&&!B.sel.move&&!B.sel.buff&&!B.sel.thrower&&
               (B.sel.range||B.sel.reach))?B.sel:null;
   const rngR=rngA?(rngA.range||rngA.reach):0;
+  /* ═══ #205 · THE PARTING SWING, DRAWN WHILE IT IS STILL A DECISION ═══════
+     Computed ONCE, outside the 273-hex loop, because `partingRisk` walks the
+     roster and this is the inner loop of the whole screen.
+     ⚠ GATED ON A MOVE ACTUALLY BEING IN HAND (`B.sel.move`), not on being
+     held. The red edge already says "you are held" all turn; this says "the
+     step you are about to take costs blood", which is only a sentence while
+     there is a step to take. And it goes out by itself the instant DISENGAGE
+     is pressed, because `safeMove` empties the list - which is the whole
+     lesson that card exists to teach, said in the picture for the first time.
+     ⚠ `hexesOf`, so a great beast holding you is ringed on her tail too. */
+  const partRisk=(B.sel&&B.sel.move&&u&&u.side==='you'&&!u.ally&&!u.pet&&
+                  B.won===null&&!B.busy)?partingRisk(u):[];
+  const partFrom=partRisk.length?K(u.col,u.row):null;
+  const partWho={};
+  partRisk.forEach(e=>hexesOf(e).forEach(p=>{partWho[K(p[0],p[1])]=1;}));
   let losOf=null,inWay=null;
   if(u&&u.side==='you'&&laneAct){
     losOf={};inWay={};
@@ -21891,6 +22191,16 @@ function render(){
       /* #173 - `heldAt` and not `threatsAt`: the front arc only, which is what
          partingShots now charges for. The two are one fact and one picture. */
       if(u&&u.side==='you'&&heldAt(c,r,'you')>0)edge='rgba(150,40,45,.44)';
+      /* #205 - and the hex the step is about to be PAID FOR leaving is louder
+         than the ring it sits in. Written HERE, in `edge`, and not as a CSS
+         override: `hedge.style.background` is an inline style further down, so
+         a stylesheet rule would have needed `!important` to reach it.
+         ⚠ The bodies that will swing get the SPRITE lit instead (.hex.zhit
+         .usp) rather than an edge, because an adjacent enemy is also a live
+         target while MOVE is standing and the offer's own edge is written
+         after this line. One of them has to lose and it must not be the
+         offer. */
+      if(partFrom&&K(c,r)===partFrom)edge='rgba(193,93,85,.72)';
       /* #46 — a body this act cannot move is NOT offered. The hex is left
          alone entirely rather than drawn live-and-then-refused, because a
          control that looks live and does nothing is worse than one that is
@@ -21960,6 +22270,15 @@ function render(){
       const hx=document.createElement('button');
       const wayHere=inWay&&inWay[K(c,r)];
       hx.className='hex'+(stab?' stabhere':'')+(blockedHere?' blocked':'')+
+        /* #205 - the bodies that will charge you for the step, off the same
+           list the swing itself is taken from. The hex you are LEAVING is
+           marked in `edge` above and by the ⊘⚔ below, so it needs no class. */
+        (partWho[K(c,r)]?' zhit':'')+
+        /* #206 - ground a click would actually take. Same test the walk wash
+           is drawn from, plus a move or a sink in hand: see the `.hex.lit`
+           rule for why a ring on a dead hex is worse than no ring. */
+        (d!==undefined&&!occ&&!tailHere&&u&&u.side==='you'&&!u.ally&&!u.pet&&
+         B.won===null&&B.sel&&(B.sel.move||B.sel.sink)?' lit':'')+
         /* #109 - a blade over a body, 8f.137 - only where the click would swing,
            #155 - and an ARROW where that click looses one instead */
         (occ&&occ.side==='foe'&&w0&&offerAtk(uCur,w0,occ)
@@ -21993,6 +22312,18 @@ function render(){
       hx.appendChild(hedge);
       hx.setAttribute('aria-label',t+' '+c+','+r);
       const inn=document.createElement('div');inn.className='hin';
+      /* #205 - ⛔⚔ on the hex you are standing on: the refusal glyph the
+         cursors already use (`--curStrikeNo`) and the blade that follows it.
+         The names are on the hover, because a list of names on a 37px hex is
+         not a warning, it is a paragraph. */
+      if(partFrom&&K(c,r)===partFrom){
+        const zw=document.createElement('span');zw.className='zwarn';
+        zw.textContent='⊘⚔';
+        zw.title='Stepping off this hex costs a free swing from '+
+          partRisk.map(e=>e.name).join(' and ')+
+          '. DISENGAGE first and the step is clean.';
+        inn.appendChild(zw);
+      }
       /* the tint is its own hexagonal layer now — see the .hin note in the CSS */
       const flr=document.createElement('div');flr.className='hfill';
       flr.style.background=fill;inn.appendChild(flr);
@@ -22314,10 +22645,23 @@ function render(){
           if(dv){const dd=document.createElement('div');
             dd.className='hdmg'+(SHOW_HIT_ODDS?'':' solo');
             dd.textContent=dv[0]+'-'+dv[1];inn.appendChild(dd);}}
-        /* #36 — the word, always, even when the percentage is withdrawn */
-        if(losHere){const lw=document.createElement('div');lw.className='hlos';
-          lw.style.color=SHOT[losHere.k].col;lw.textContent=SHOT[losHere.k].n;
-          inn.appendChild(lw);}
+        /* ⛔ #206 - AND THE WORD IS GONE. #36 shipped it with an argument that
+           was true when it was written and has been overtaken by its own
+           build: *"a percentage alone cannot say which"*. It is not alone any
+           more - the LANE IS DRAWN, in `SHOT[k].col` with `SHOT[k].dash`, from
+           the shooter to the body, plus the hex's own fill (dark red on a
+           refusal, amber on a body in the way, bronze over cover). The user's
+           ruling, having played it: *"колір лінії та % вже дають достатньо
+           інфи"*, so a seventh printed thing on a 37px hex is furniture.
+           ⚑ NOTHING IS LOST, AND THIS IS WHY THE DELETION IS SAFE: the lane is
+           still in WORDS one hover away, in the readout's own breakdown, where
+           `hitBreakdown` writes *screened*, *a body in the way*, *over a
+           boulder*, *long shot* and *extreme range* beside the figure each one
+           costs. That is where prose belongs; the hex is where the picture is.
+           ⚠ BLOCKED IS THE ONE CASE THE USER'S PREMISE DOES NOT COVER, because
+           its percentage is deliberately WITHDRAWN (#36: a number would imply
+           there was a shot). What says it there is the dark red fill and the
+           red dashed ray, which is two marks and enough. */
         /* #156 - the acting body's own hex, as a hexagon rather than as a
            rectangle bleeding out through the seams. See .hex.acting. */
         if(occ===u){
@@ -22383,6 +22727,9 @@ function render(){
      has drifted near an edge, which is what keeps it from sliding under the
      cursor while somebody is choosing where to go. */
   camApply();
+  /* #206 - after the camera, because the camera is what decides where a body
+     lands on the screen. See veilChrome for the transitionend half. */
+  veilChrome();
   /* a peek that survived a real state change gets its tint back */
   if(B.peek)paintPeek();
   /* #96 point 1 - and so does a rail head the cursor is still resting on */
@@ -22392,6 +22739,38 @@ function render(){
      moved, so every hex the walker measures is where it will still be when
      the walker gets there. Parked by walkTo(), consumed exactly once. */
   if(B.walk){const wk=B.walk;B.walk=null;walkFx(wk.u,wk.from,wk.path);}
+}
+/* ═══ #206 · WHICH CONTROLS HAVE A BODY BEHIND THEM ══════════════════
+   The whole argument is on `.veiled` in the CSS. Two notes that belong here:
+
+   ⚠ IT RUNS AFTER `camApply()` AND AGAIN ON ITS `transitionend`. The board's
+   transform is TRANSITIONED, so a rect read in the same tick as a camera move
+   is the position the board is leaving, not the one it is going to. Reading it
+   twice is a line; reprojecting every sprite through `CAM.tx/ty/z` by hand
+   would be a second copy of the camera and the thing this file keeps deleting.
+
+   ⚠ 8% OF A SPRITE, NOT A PIXEL. A control clipping the corner of somebody's
+   boot is not hiding them, and a veil that flickers on every step is worse
+   than the thing it is fixing. */
+const VEIL_IDS=['bCap','bTop','bPlq','bPace','bFlee','bIcons','bEnd','bUndo'];
+const VEIL_AT=0.08;
+function veilChrome(){
+  const g=$('bGrid');if(!g)return;
+  const rs=[];
+  g.querySelectorAll('img.usp').forEach(s=>{
+    const r=s.getBoundingClientRect();
+    if(r.width>1&&r.height>1)rs.push(r);});
+  VEIL_IDS.forEach(id=>{
+    const e=$(id);if(!e)return;
+    const b=e.getBoundingClientRect();
+    let on=false;
+    if(b.width>1&&b.height>1){
+      for(let i=0;i<rs.length;i++){
+        const r=rs[i];
+        const w=Math.min(r.right,b.right)-Math.max(r.left,b.left);
+        const h=Math.min(r.bottom,b.bottom)-Math.max(r.top,b.top);
+        if(w>0&&h>0&&(w*h)/(r.width*r.height)>VEIL_AT){on=true;break;}}}
+    e.classList.toggle('veiled',on);});
 }
 /* ═══ HOVERING IS NOT A STATE CHANGE, AND IT USED TO COST ONE ═══════════
    (User, 2026-08-01: "On the battle map hovers quit often freze and block
@@ -22649,10 +23028,48 @@ function drawMoveLines(){
   }
   fx.appendChild(svg);
 }
+/* ═══ ⛔ #206 · AN ACT WITH NO TARGET, PREVIEWED ON THE HOVER ══════════
+   (User, 2026-08-20: *"When I hover over a skill that applies automatically,
+   it would be nice if it showed the range/distance for that skill"*.)
+
+   ⛔ AND IT HAS TO BE THE HOVER, BECAUSE THERE IS NO SELECTED STATE TO DRAW.
+   The first cut of this hung the footprint off `B.sel` the way every other
+   act's reach is drawn, and `B.sel` NEVER HOLDS ONE OF THESE: COMMAND, HOLD
+   THE LINE and ROAR resolve inside `selectAct` itself - spend, apply,
+   `autoEnd` - so the card fires on the click and the selection the preview
+   needed lasts no frames at all. **Measured: clicking the COMMAND card leaves
+   `B.sel` as the standing MOVE and hands the turn on.** The request said
+   HOVER, and the request was right for a reason it could not have known.
+
+   ⚑ IT RIDES `paintPeek`, WHICH IS THE ONE LIGHT OVERLAY PASS. Hovering is
+   not a state change (see the long note above peekOn) and this is a read-only
+   wash over hexes the last render already built, so it must not call render().
+   ⚠ IT OUTRANKS THE WALK WASH AND IT PAINTS OCCUPIED HEXES, which is the
+   whole difference between an order and a blow: a swing wants to know where it
+   can LAND, an order wants to know WHO it reaches. `.hfill` is behind the
+   token, so a covered body reads as a ring around itself rather than a tint
+   over it - the same trick the peek uses for the hex your own man stands on.
+   ⚠ SPEAR WALL IS DELIBERATELY NOT ONE OF THESE. Its zone is the FRONT ARC at
+   reach 2, not a radius, and drawing it as a circle would be a readout
+   printing the wrong shape - #102's rule. It has no `aura` and gets no ring. */
+const AURA_COL='rgba(217,189,126,.30)';
+function auraOn(u,a){
+  if(!B||!u||!a||!a.aura)return;
+  if(B.aura&&B.aura.u===u&&B.aura.r===a.aura)return;
+  const set={};
+  for(let c=0;c<COLS;c++)for(let r=0;r<ROWS;r++){
+    if(B.terr[K(c,r)]===undefined)continue;
+    if(c===u.col&&r===u.row)continue;
+    if(udist([c,r],u)<=a.aura)set[K(c,r)]=1;}
+  B.aura={u:u,r:a.aura,set:set};
+  paintPeek();
+}
+function auraOff(){if(!B||!B.aura)return;B.aura=null;paintPeek();}
 function paintPeek(){
   const list=B&&B.hexEls;if(!list)return;
   const R=B.peek?B.peekReach:null;
   const T=B.peek?B.peekHit:null;
+  const A=B.aura||null;
   const foe=!!(B.peek&&B.peek.side==='foe');
   /* #171 - the pair. The darker is where the body goes, the lighter is where
      the arm goes, and they are the same hue so they read as one creature's
@@ -22666,12 +23083,17 @@ function paintPeek(){
       (overWalk&&(h.base===REACH_WASH.wet||h.base===REACH_WASH.dry||
                   h.base===REACH_WASH.act));
     let want=h.base;
-    if(bare&&R&&!h.occ&&R.dist[h.k]!==undefined)want=col;
+    /* #206 - the order's radius wins over everything, including your own walk
+       wash and the enemy's envelope: it is up for exactly as long as a finger
+       is resting on one card, and it is the answer to the question that card
+       asks. */
+    if(A&&A.set[h.k])want=AURA_COL;
+    else if(bare&&R&&!h.occ&&R.dist[h.k]!==undefined)want=col;
     /* ⚠ NO `!h.occ` ON THIS ONE, and that is the useful half: the hex it most
        matters that he can reach is the one your own man is standing in. The
        tint is on `.hfill`, behind the token, so it shows as a ring around the
        sprite rather than over it. */
-    else if(bare&&T&&T[h.k])want=colH;
+    else if(!A&&bare&&T&&T[h.k])want=colH;
     if(h.cur!==want){h.cur=want;h.f.style.background=want;}
   }
   /* #195 - and the lines, through the same door: `paintPeek` is what render()
@@ -23241,7 +23663,16 @@ $('bGrid').addEventListener('mouseleave',hideRead);
    `const` declared further down is a TDZ crash that aborts the whole file,
    which this project has already shipped once. */
 $('bField').addEventListener('wheel',e=>{
+  /* #206 - the same exclusion `wpanInit` learned: a control that scrolls is a
+     control that owns its own wheel. Nothing inside #bField scrolls today,
+     which was MEASURED (the log floats over the field, it is not inside it) -
+     the guard is here so that the day one does, it works. */
+  if(e.target&&e.target.closest&&e.target.closest('.scrolls'))return;
   e.preventDefault();camStep(e.deltaY>0?-1:1);},{passive:false});
+/* #206 - the board's transform is transitioned, so the veil computed during a
+   camera move is one position stale. This is the second read. */
+(()=>{const gr=$('bGround');if(gr)gr.addEventListener('transitionend',e=>{
+  if(e.propertyName==='transform')veilChrome();});})();
 addEventListener('resize',()=>camApply(true));
 camBar();panInit();
 /* ⚠ #156 - THE ROAD'S CAMERA IS *NOT* WIRED HERE, and that is on purpose:
@@ -30329,7 +30760,19 @@ function wpanInit(){
   const M=$('wMap');if(!M||M.__wpan)return;M.__wpan=1;
   /* passive:false because the page must not scroll under a player who is
      looking at the map. The wheel STEPS, it does not zoom freely. */
+  /* ⛔ #206 - AND IT HAS TO SKIP THE CARD, WHICH THE LINE BELOW IT ALREADY
+     KNEW AND THIS ONE DID NOT. `#wDlg` is a CHILD of `#wMap`, and its prose
+     box (`#wDlg .bd`) is the one real scroller on the road. So every wheel
+     over an open event card was `preventDefault()`ed and spent stepping the
+     map camera instead: **measured, `defaultPrevented` true and `WCAM.i` 1 to
+     0 on a single notch over the card's own heading.** The card could not be
+     scrolled by wheel at all, and on macOS the overlay scrollbar only appears
+     while something is scrolling - so there was nothing to grab either, which
+     is exactly the two halves of the report.
+     ⚑ `pointerdown` two lines down has excluded `#wZoom,#wDlg` since it was
+     written. The wheel simply never got the same sentence. */
   M.addEventListener('wheel',e=>{
+    if(e.target&&e.target.closest&&e.target.closest('#wZoom,#wDlg'))return;
     e.preventDefault();wcamStep(e.deltaY>0?-1:1);},{passive:false});
   M.addEventListener('pointerdown',e=>{
     if(e.button)return;                      /* left button and touch only */

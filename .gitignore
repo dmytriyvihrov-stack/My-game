@@ -41,6 +41,14 @@ audio_review/
 # check is paid at the time, and the rows in SHIPPED.md keep what was measured.
 shots/
 
+# a staging copy of painting masters, 17MB, made outside the pipeline. Same rule
+# as art/src/ above and for the same reason: the paintings that SHIP are the
+# base64 block inside index.html, and several of these files are byte-copies of
+# ones already in art/src/ (P1_The_Captain.png, EV-33_ash-at-the-fire.png).
+# `deploy.ps1` runs `git add -A`, so without this line the next deploy puts them
+# on the live repo - which is the failure the *.gdoc note below already records.
+prototype/assets/
+
 # tarball of the docs as they stood before the 2026-07-31 cleanup
 _archive_docs_*.tar.gz
 
