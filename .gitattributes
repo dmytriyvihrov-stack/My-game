@@ -9,6 +9,14 @@
 *.wav binary
 *.m4a binary
 *.gz  binary
+# 2026-08-20: and .docx, which is a zip. Git for Windows ships a default
+# `diff=astextplain` for it, that converter needs `docx2txt.exe`, and this
+# machine has not got one - so the PRE-COMMIT HOOK died on stderr the first
+# time a .docx was staged (claim.ps1 runs `git diff --cached` under
+# $ErrorActionPreference='Stop', where a native command's stderr is a
+# terminating NativeCommandError). Marking it binary stops the converter
+# being reached at all. The content/ books are the only .docx here today.
+*.docx binary
 
 # The built page is generated. A diff of it is 10MB of base64 and tells nobody
 # anything; read prototype/grimtoll_slice.html instead.

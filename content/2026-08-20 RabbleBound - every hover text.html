@@ -1,0 +1,656 @@
+<meta charset="utf-8"><style>
+.k0{border:1px solid #ccc;padding:4px 6px;vertical-align:top}
+.k1{margin:0 0 2px 0}
+.k2{margin:0 0 6px 0;color:#777;font-size:10pt}
+.k3{margin:16px 0 2px 0;padding:4px 8px;background-color:#eee8dc}
+.k4{margin:0 0 9px 22px}
+.k5{margin:0 0 0 14px;color:#222}
+.k6{color:#888;font-size:9pt}
+.k7{border:1px solid #ccc;padding:4px 6px;text-align:left;background-color:#f2efe8}
+.k8{margin:0 0 12px 22px}
+.k9{margin:0 0 3px 14px}
+.k10{color:#777}
+.k11{border-collapse:collapse;width:100%;margin:6px 0 12px 0}
+.k12{page-break-before:always}
+.k13{margin:0 0 0 14px;font-style:italic;color:#666}
+.k14{margin:0 0 3px 14px;font-style:italic;color:#666}
+.k15{margin:0 0 0 14px;color:#8a6d1f}
+.k16{margin:2px 0 0 14px;color:#777;font-size:10pt}
+.k17{color:#8a6d1f}
+.k18{margin:0 0 12px 22px;color:#777;font-size:10pt}
+.k19{margin:0 0 12px 36px}
+.k20{margin:0 0 6px 22px}
+.k21{margin:0 0 3px 0}
+.k22{margin:0}
+</style><div style="font-family:Georgia,serif;font-size:11pt;line-height:1.45"><h1>RabbleBound &mdash; every hover text</h1>
+<p><i>Every string the game shows on hover, grouped by the screen it belongs to. Generated 2026-08-20 from the shipped build.</i></p>
+<h2>How to read this</h2>
+<p>Each entry says <b>WHERE</b> it belongs before it gives the text, so a line can be found on screen without hunting for it.</p>
+<p>There are <b>two different hover systems</b> in this build and it matters which one a line is on:</p>
+<ul>
+<li><b>The browser tooltip</b> &mdash; a <code>title=</code> attribute. Plain text only, no bold, no colour, and it waits about a second before it appears. <b>43</b> of the player-facing hover sites are on this one, and several of them build a different string per body or per hex.</li>
+<li><b>The game&rsquo;s own tooltip box</b> (<code>#gtTip</code>) &mdash; styled, instant, follows the cursor, and can hold a heading, a coloured ladder and a footnote. <b>23</b> hover sites use this, and they carry most of the words.</li>
+</ul>
+<p style="color:#777;font-size:10pt"><i>Counted over the whole build: 83 hover sites, of which 17 are behind DEV.MODE (section 10) and 66 are player-facing.</i></p>
+<p><b>Values in {braces} are filled in at the moment of the hover.</b> <code>{G.run.crowns}</code> is what is in the chest right now; <code>{ms.n}</code> is whichever mood the company is in. They are shown as braces here so the sentence around them is readable.</p>
+<p>Where a hover is <b>derived</b> rather than authored &mdash; built out of the item's or the act's own numbers, so it cannot drift from them &mdash; the template is given, then the table it reads from.</p>
+<h1 class="k12">1 &middot; The top chrome</h1>
+<p><i>The button strip that sits above every screen.</i></p>
+<p class="k3"><b>WHERE:</b> top bar, right-hand end &mdash; present on the map, the card, the battle and the sheet</p>
+<p class="k2">Fires as the <b>browser&rsquo;s own tooltip</b> (a <code>title=</code> attribute): plain text, no styling, and it appears after the OS delay.</p>
+<table class="k11">
+<tr><th class="k7">the button</th><th class="k7">the hover</th></tr>
+<tr><td class="k0"><code>FEEDBACK</code></td><td class="k0">say what you think of this screen</td></tr>
+<tr><td class="k0">the count beside it</td><td class="k0">what you have said about this screen, this run</td></tr>
+<tr><td class="k0"><code>&#9834; ON</code></td><td class="k0">sound</td></tr>
+<tr><td class="k0"><code>? RULES</code></td><td class="k0">how any of this works</td></tr>
+<tr><td class="k0"><code>&#9776; MENU</code></td><td class="k0">back to the menu - the road is saved where it stands</td></tr>
+</table>
+<h1 class="k12">2 &middot; The world map</h1>
+<p class="k3"><b>WHERE:</b> a node on the map &mdash; the whole button, name plate and painting</p>
+<p class="k2">Fires as the <b>game&rsquo;s own tooltip box</b> (<code>#gtTip</code>): styled, instant, and it follows the cursor. The heading is the place&rsquo;s name; the body below it changes with how much the company can honestly know from where it is standing.</p>
+<div style="margin-left:22px">
+<table class="k11">
+<tr><th class="k7">which node</th><th class="k7">the hover</th></tr>
+<tr><td class="k0">a place already walked</td><td class="k0">Done with. The road remembers, and so do you.</td></tr>
+<tr><td class="k0">the cache, marked by a fire card</td><td class="k0">You know what is here, and roughly where it is buried. It is on the long road.</td></tr>
+<tr><td class="k0">a live node still keeping its secret</td><td class="k0">Nobody you have asked can say more than that. You would have to stand in it.</td></tr>
+<tr><td class="k0">a live node with a card behind it</td><td class="k0"><i>the first sentence of that card&rsquo;s own body, in quotes, cut at 140 characters</i></td></tr>
+<tr><td class="k0">a live node with nothing behind it</td><td class="k0"><i>its type word, from the table below</i></td></tr>
+<tr><td class="k0">anything further off</td><td class="k0">Too far to know more than the shape of it - <i>[its type word, lowercased]</i>.</td></tr>
+<tr><td class="k0">and on the contract&rsquo;s last node, above all of that</td><td class="k0">&#10022; THE CONTRACT ENDS HERE. The road east runs out at this place, and so does the act.</td></tr>
+</table>
+</div>
+<p class="k3"><b>WHERE:</b> the small glyph inside a node&rsquo;s picture</p>
+<p class="k2">Fires as the <b>browser&rsquo;s own tooltip</b> (a <code>title=</code> attribute): plain text, no styling, and it appears after the OS delay. This is the type word, and it is the same table the body above falls back to.</p>
+<table class="k11">
+<tr><th class="k7">node type</th><th class="k7">the hover</th></tr>
+<tr><td class="k0">town</td><td class="k0"><b>SHELTER</b></td></tr>
+<tr><td class="k0">battle</td><td class="k0"><b>TROUBLE</b></td></tr>
+<tr><td class="k0">event</td><td class="k0"><b>ON THE ROAD</b></td></tr>
+<tr><td class="k0">shop</td><td class="k0"><b>TRADE</b></td></tr>
+<tr><td class="k0">camp</td><td class="k0"><b>REST</b></td></tr>
+<tr><td class="k0">weird</td><td class="k0"><b>STRANGE</b></td></tr>
+<tr><td class="k0">hire</td><td class="k0"><b>SWORDS FOR HIRE</b></td></tr>
+</table>
+<p class="k3"><b>WHERE:</b> the camera-stop buttons at the edge of the map</p>
+<p class="k2">Fires as the <b>browser&rsquo;s own tooltip</b> (a <code>title=</code> attribute): plain text, no styling, and it appears after the OS delay.</p>
+<div class="k4">
+<p class="k1"><b>every stop</b></p>
+<p class="k5">how close the road is drawn</p>
+</div>
+<p class="k3"><b>WHERE:</b> a road on a crossroads card (the fork card, one row per road)</p>
+<p class="k2">Fires as the <b>browser&rsquo;s own tooltip</b> (a <code>title=</code> attribute): plain text, no styling, and it appears after the OS delay. Built live from what is actually on that road.</p>
+<div class="k4">
+<p class="k1"><b>the row</b></p>
+<p class="k5">{the place it reaches} first &amp;middot; {N fights you cannot walk past | N fights you could take or refuse | nothing standing on it} &amp;middot; {N places to stop | nowhere to stop along it}</p>
+</div>
+<h1 class="k12">3 &middot; The world bar</h1>
+<p><i>The strip of chips across the top of the map. These carry the most words of any hover in the game.</i></p>
+<p class="k2">Fires as the <b>game&rsquo;s own tooltip box</b> (<code>#gtTip</code>): styled, instant, and it follows the cursor. Each one is a heading, a body, sometimes an italic footnote, and sometimes a gold <b>&#9656; CLICK:</b> line saying what pressing it does.</p>
+<div class="k8">
+<p class="k1"><b>THE COMPANY</b> <span class="k10">&mdash; the left-hand chip with the portrait on it</span></p>
+<p class="k9">★ {lvUp} unspent level. Somebody has earned a perk or a stat point and nobody has chosen it yet. It waits on their sheet until you do.<br><br>How many bodies the wagon and the pay-chest can carry. Everybody takes room by size - ratkin 1, human 2, ogre 3 - so a fistful of ratkin and one ogre cost the same seats. Widen the wagon bed at a wheelwright to raise it, permanently.</p>
+<p class="k15">&#9656; CLICK: the roster, their sheets and their gear.</p>
+</div>
+<div class="k8">
+<p class="k1"><b>THE KIT</b> <span class="k10">&mdash; the leather sack chip beside it</span></p>
+<p class="k9">! Something in the wagon beats what somebody is wearing, or goes in a slot that is empty.<br><br>The wagon&#x27;s stash, and what everybody is wearing out of it.</p>
+<p class="k15">&#9656; CLICK: the same screen, straight to work.</p>
+</div>
+<div class="k8">
+<p class="k1"><b>PAYDAY</b> <span class="k10">&mdash; the PAYDAY chip</span></p>
+<p class="k9">Wages are paid every {num()} days, not daily. The bill grows with every day of road - ratkin 1, human 2, ogre 2, and the Captain draws one - and on the day, the chest opens.<br><br>Run up so far: ◉{owedNow}. Due in {num()} day: about ◉{pBill}, against {G.run.crowns} in the chest. That bill does not know what the road is about to charge you.</p>
+<p class="k14">It never stops you taking a road. Owing them is a way a run can go.</p>
+</div>
+<div class="k8">
+<p class="k1"><b>UNPAID</b> <span class="k10">&mdash; the red UNPAID chip, which only appears when wages are behind</span></p>
+<p class="k9">They counted, and they said nothing.<br><br>Every day the chest cannot pay drags the company&#x27;s mood down hard, and costs nerve on the field - the personalities disagree about how loudly.</p>
+<p class="k14">Fill the chest and the wages catch up on their own at day&#x27;s end.</p>
+</div>
+<div class="k8">
+<p class="k1"><b>{ms.ic} {ms.n}</b> <span class="k10">&mdash; the face chip &mdash; the company&rsquo;s mood</span></p>
+<p class="k14">Every fight starts closer to this mood than to steady.</p>
+<p class="k15">&#9656; CLICK: throw them a party - {feastCost()} provisions.</p>
+</div>
+<div class="k8">
+<p class="k1"><b>{hs.n} · {hs.pct}%</b> <span class="k10">&mdash; the heart chip &mdash; the company&rsquo;s health</span></p>
+<p class="k14">Days on the road are the only medicine in this game.</p>
+<p class="k15">&#9656; CLICK: double rations - {RATION_COST} provisions, and they mend twice as fast for {num()} days.</p>
+</div>
+<div class="k8">
+<p class="k1"><b>CROWNS</b> <span class="k10">&mdash; the &#9673; crowns segment</span></p>
+<p class="k9">The purse of THIS run - wages, tolls, hires, bribes. It does not survive the company. Spend it like somebody who knows that.</p>
+<p class="k14">Wages fall due every fourth day, walking or sitting.</p>
+</div>
+<div class="k8">
+<p class="k1"><b>PROVISIONS - THE GOOD BARRELS</b> <span class="k10">&mdash; the &#10086; provisions segment</span></p>
+<p class="k9">Your wages already buy the company bread. This is everything better than bread: salt meat, cheese, a jug.<br><br>Nothing eats them on its own - not a day on the road, not a wound mending. Every one you lose, you spent.<br>Double rations - wounds mend twice as fast for three days.<br>Lay out a proper meal - the mood lifts hard (once a day).<br>The road asks for it - feeding a stranger, a wedding, a hungry ogre.</p>
+<p class="k14">#157 took the last automatic drain off them: the wounded used to eat one a day whether you liked it or not.</p>
+</div>
+<div class="k8">
+<p class="k1"><b>SALVAGE</b> <span class="k10">&mdash; the &#9636; salvage segment</span></p>
+<p class="k9">Timber, iron and fittings pulled off the road. It builds things INTO THE WAGON between runs - beds, chests, fires - and pays village craftsmen.</p>
+<p class="k14">Survives the run. Everything else dies with the company.</p>
+</div>
+<div class="k8">
+<p class="k1"><b>GEMS</b> <span class="k10">&mdash; the &#9672; gems segment</span></p>
+<p class="k9">Stones the wrong colour for this country. The one thing both worlds take: spend them in-run in a pinch, or bank them for the wagon.</p>
+<p class="k14">The deliberate bridge between the purse and the future.</p>
+</div>
+<div class="k8">
+<p class="k1"><b>pet</b> <span class="k10">&mdash; the animal chip, when the company has one</span></p>
+<p class="k14">Assigned to the Captain. Check the company screen to change or remove it.</p>
+</div>
+<div class="k8">
+<p class="k1"><b>THE CONTRACT</b> <span class="k10">&mdash; the contract plaque</span></p>
+<p class="k9">A man of the lord&#x27;s holds Skelbrook, at the far end of the valley: one village, one hall, bandits in it since the thaw. He has been writing to the lord every week since. Bring back the head out of the hall&#x27;s chair. Keep the purse.</p>
+<p class="k14">It pays on delivery, and not before.</p>
+</div>
+<p style="margin:6px 0 12px 22px;padding:7px 10px;background-color:#fff2cc"><b>Worth a look.</b> The PROVISIONS hover ends on <i>&ldquo;#157 took the last automatic drain off them: the wounded used to eat one a day whether you liked it or not.&rdquo;</i> That is a changelog note about a build number, printed to the player in the italic footnote slot. It is the only hover in the game that references the development history.</p>
+<h1 class="k12">4 &middot; The event card</h1>
+<p class="k3"><b>WHERE:</b> the small glyph at the head of a door&rsquo;s label</p>
+<p class="k2">Fires as the <b>browser&rsquo;s own tooltip</b> (a <code>title=</code> attribute): plain text, no styling, and it appears after the OS delay. Reads <code>NAME &middot; what it means</code>.</p>
+<table class="k11">
+<tr><th class="k7">glyph</th><th class="k7">the hover</th></tr>
+<tr><td class="k0">⚔️ &nbsp;<code>fight</code></td><td class="k0"><b>FIGHT</b> &middot; starts a battle</td></tr>
+<tr><td class="k0">🤝 &nbsp;<code>help</code></td><td class="k0"><b>HELP</b> &middot; somebody is helped</td></tr>
+<tr><td class="k0">☠️ &nbsp;<code>evil</code></td><td class="k0"><b>EVIL</b> &middot; kill, rob, or worse</td></tr>
+<tr><td class="k0">👣 &nbsp;<code>leave</code></td><td class="k0"><b>LEAVE</b> &middot; walk away</td></tr>
+<tr><td class="k0">⚖️ &nbsp;<code>trade</code></td><td class="k0"><b>TRADE</b> &middot; buy, sell, or pay</td></tr>
+<tr><td class="k0">🧺 &nbsp;<code>take</code></td><td class="k0"><b>TAKE</b> &middot; take what lies there</td></tr>
+<tr><td class="k0">⛺ &nbsp;<code>rest</code></td><td class="k0"><b>REST</b> &middot; stay a while</td></tr>
+<tr><td class="k0">🙏 &nbsp;<code>honor</code></td><td class="k0"><b>HONOR</b> &middot; bury, pray, respect</td></tr>
+</table>
+<p class="k3"><b>WHERE:</b> the race mark, the second glyph on a race-gated door</p>
+<p class="k2">Fires as the <b>browser&rsquo;s own tooltip</b> (a <code>title=</code> attribute): plain text, no styling, and it appears after the OS delay. Derived from the door&rsquo;s <code>needRace</code>, never authored on the card.</p>
+<table class="k11">
+<tr><th class="k7">mark</th><th class="k7">the hover</th></tr>
+<tr><td class="k0">🐀 &nbsp;<code>ratkin</code></td><td class="k0"><b>RATKIN</b> &middot; only with a ratkin in the company</td></tr>
+<tr><td class="k0">👹 &nbsp;<code>ogre</code></td><td class="k0"><b>OGRE</b> &middot; only with an ogre in the company</td></tr>
+<tr><td class="k0">🧑 &nbsp;<code>human</code></td><td class="k0"><b>HUMAN</b> &middot; only with a human in the company</td></tr>
+</table>
+<p class="k18"><i>The human mark is defined and never used: there is no human-gated door in the build, because the company is human by default.</i></p>
+<p class="k3"><b>WHERE:</b> the <code>?</code> that replaces a door&rsquo;s whole sub-line</p>
+<p class="k2">Fires as the <b>browser&rsquo;s own tooltip</b> (a <code>title=</code> attribute): plain text, no styling, and it appears after the OS delay.</p>
+<div class="k4">
+<p class="k1"><b>the ? door</b></p>
+<p class="k5">Nobody here knows what this pays. You find out by doing it.</p>
+<p class="k16"><i>One door in the game carries it today: the massacre on A WEDDING ON THE ROAD.</i></p>
+</div>
+<p class="k3"><b>WHERE:</b> a row on the front-door menu (NEW COMPANY, the wagon, the notes)</p>
+<p class="k2">Fires as the <b>browser&rsquo;s own tooltip</b> (a <code>title=</code> attribute): plain text, no styling, and it appears after the OS delay. The sub-line each row used to print is now only its hover.</p>
+<p class="k18"><i>Built per row from the menu&rsquo;s own data, e.g. &ldquo;<b>{N} reactions &middot; every decision in order, and a friend&rsquo;s to read</b>&rdquo; and &ldquo;<b>what the companies before this one left in it</b>&rdquo;.</i></p>
+<h1 class="k12">5 &middot; The tavern and the muster field</h1>
+<p class="k3"><b>WHERE:</b> a body&rsquo;s stat line on the hire list</p>
+<p class="k2">Fires as the <b>browser&rsquo;s own tooltip</b> (a <code>title=</code> attribute): plain text, no styling, and it appears after the OS delay. Derived: the four stat words for that body, run together.</p>
+<div class="k4">
+<p class="k1"><b>the stat line</b></p>
+<p class="k5">{STRENGTH word} &amp;middot; {AGILITY word} &amp;middot; {INTELLECT word} &amp;middot; {MORALE word}</p>
+<p class="k16"><i>The words come off the ladder in section 7.</i></p>
+</div>
+<p class="k3"><b>WHERE:</b> a body&rsquo;s personality line on the hire list, and the same line on the roster row and the after-battle card</p>
+<p class="k2">Fires as the <b>browser&rsquo;s own tooltip</b> (a <code>title=</code> attribute): plain text, no styling, and it appears after the OS delay. Derived: the trait&rsquo;s own two halves, what it gives and what it costs, joined by a middle dot. The full paragraph is on the company sheet.</p>
+<table class="k11">
+<tr><th class="k7">personality</th><th class="k7">the short hover</th></tr>
+<tr><td class="k0">Stubborn</td><td class="k0">Nerve back twice as fast on a quiet turn &middot; −5 MOR</td></tr>
+<tr><td class="k0">Widowed thrice</td><td class="k0">+17% damage under half hitpoints &middot; −10% at or above half</td></tr>
+<tr><td class="k0">Counts aloud</td><td class="k0">+8 to hit on a turn they did not move &middot; −8 to hit on a turn they did</td></tr>
+<tr><td class="k0">Wind-touched</td><td class="k0">Casting costs 4 less nerve &middot; −2 MOR</td></tr>
+<tr><td class="k0">Twitchy</td><td class="k0">+2 AGI &middot; −3 MOR</td></tr>
+<tr><td class="k0">Insists he is a vegetarian</td><td class="k0">+6 MOR &middot; −10% damage</td></tr>
+<tr><td class="k0">Light-fingered</td><td class="k0">+15% crowns from every event, minds an empty chest least &middot; −4 MOR</td></tr>
+<tr><td class="k0">Kind</td><td class="k0">+6 morale to everyone within 2 hexes &middot; theirs too, and −1 STR</td></tr>
+<tr><td class="k0">Grim</td><td class="k0">Feels nothing when an ally dies &middot; starts 6 morale down</td></tr>
+<tr><td class="k0">Braggart</td><td class="k0">+10 morale on their own kill &middot; −8 on two misses running</td></tr>
+<tr><td class="k0">Cautious</td><td class="k0">+6 dodge below half hitpoints &middot; −5 to hit above it</td></tr>
+<tr><td class="k0">Old hand</td><td class="k0">+4 to hit, +4 dodge &middot; −1 AGI, −8 hitpoints</td></tr>
+<tr><td class="k0">Feral</td><td class="k0">+12% damage while Wavering or worse &middot; −3 MOR, breaks sooner</td></tr>
+<tr><td class="k0">Dutiful</td><td class="k0">+8 dodge beside the Captain &middot; −4 dodge away from him</td></tr>
+<tr><td class="k0">Ambition</td><td class="k0">+9 morale every time they land one &middot; −7 to hit up close, takes an unpaid week hardest</td></tr>
+<tr><td class="k0">Does not run</td><td class="k0">Cannot rout, ever &middot; −2 STR</td></tr>
+<tr><td class="k0">Has no stomach for it</td><td class="k0">+8 MOR &middot; −18 morale and −7% damage per kill they make</td></tr>
+<tr><td class="k0">Big</td><td class="k0">+16 hitpoints &middot; −2 AGI</td></tr>
+<tr><td class="k0">Courageous</td><td class="k0">+14% melee damage &middot; CANNOT DISENGAGE</td></tr>
+<tr><td class="k0">Very nimble</td><td class="k0">+16 dodge &middot; nothing, which is why nobody on the roster may have it</td></tr>
+<tr><td class="k0">Magpie-minded</td><td class="k0">Two fresh schools every round &middot; you do not choose which</td></tr>
+<tr><td class="k0">Frightening</td><td class="k0">+5 MOR: it has never once been their problem &middot; −6 morale to EVERYONE within 2 hexes, yours included</td></tr>
+<tr><td class="k0">Owes somebody</td><td class="k0">Works for half wages &middot; takes a missed payday twice as hard as anyone</td></tr>
+<tr><td class="k0">Slow to warm up</td><td class="k0">+8 to hit from round four onward &middot; −10 to hit in the first two rounds</td></tr>
+<tr><td class="k0">Keeps a list</td><td class="k0">+20% damage against whatever last hurt them &middot; −6 to hit against anything that has not</td></tr>
+<tr><td class="k0">Cannot be quiet</td><td class="k0">+4 to hit for every one of yours standing next to them &middot; the enemy picks them first</td></tr>
+</table>
+<p class="k3"><b>WHERE:</b> the class mark and the race mark, on any screen that does not run the full lore box &mdash; the roster, the battle rail, the tavern strip, the muster wall, the after-battle recruits</p>
+<p class="k2">Fires as the <b>browser&rsquo;s own tooltip</b> (a <code>title=</code> attribute): plain text, no styling, and it appears after the OS delay. Just the word, so the symbol is never mute.</p>
+<p class="k8">The class mark says the class name (<b>Captain</b>, <b>Spearwoman</b>, <b>Archer</b>, <b>Battle-mage</b>, <b>Mage</b>, <b>Cutter</b>, <b>Brute</b>). The race mark says the race in capitals (<b>HUMAN</b>, <b>RATKIN</b>, <b>OGRE</b>).</p>
+<h1 class="k12">6 &middot; The company sheet</h1>
+<p class="k3"><b>WHERE:</b> the race mark, anywhere the lore box is wired &mdash; the sheet and the muster field</p>
+<p class="k2">Fires as the <b>game&rsquo;s own tooltip box</b> (<code>#gtTip</code>): styled, instant, and it follows the cursor. The bare word above is <b>removed</b> here and this box supersedes it. Prose first, then the numbers, all derived: stride, seats, wage, the lean on each stat, and the formation this race can stand in.</p>
+<div class="k8">
+<p class="k1"><b>HUMAN</b></p>
+<p class="k9">Two generations off the ships and militarily a joke. What they are good at is farming, breeding animals, and turning up.</p>
+<p class="k15"><b>THE LINE</b> &middot; {threshold} of anyone, in a row &middot; {value} dodge to each of them<br><i class="k10">The one formation anybody can stand in. It was written for them.</i></p>
+</div>
+<div class="k8">
+<p class="k1"><b>RATKIN</b></p>
+<p class="k9">The most advanced people on the island and the worst manufacturers on it: cheap rubbish, very fast. Organised in clans, mostly at war with each other.</p>
+<p class="k15"><b>THE SWARM</b> &middot; {threshold} ratkin, on one enemy &middot; {value} to its chance to hit<br><i class="k10">The weakest thing you can hire, and what makes everybody else hurt.</i></p>
+</div>
+<div class="k8">
+<p class="k1"><b>OGRE</b></p>
+<p class="k9">Huge, slow, and profoundly uninterested. They live where nobody else wants to and farm it badly. Mostly they want to be left alone. Paid two crowns a day, a human&#x27;s wage: somebody finally told him what the others get, and he thinks slowly but he does not forget.</p>
+<p class="k15"><b>THE WEIGHT</b> &middot; {threshold} ogres, near each other &middot; {value} nerve a turn to everything nearby<br><i class="k10">Slow enough that they arrive together anyway. Keep them that way.</i></p>
+</div>
+<p class="k18"><i>And when the hover is over somebody already hired, a fourth block: <b>EVERY {RACE} CAN DO THIS</b>, listing that race&rsquo;s own verb with its real numbers off the act.</i></p>
+<p class="k3"><b>WHERE:</b> the class mark on the sheet, the muster field and the battle plaque</p>
+<p class="k2">Fires as the <b>game&rsquo;s own tooltip box</b> (<code>#gtTip</code>): styled, instant, and it follows the cursor. Prose, then an italic second line about how it plays, then &mdash; for somebody you have actually hired &mdash; the acts on their bar right now and the perk tree above them.</p>
+<div class="k8">
+<p class="k1"><b>CAPTAIN</b></p>
+<p class="k9">You. On the field, in reach, and worth killing, which is the point: leadership that costs nothing is not leadership.</p>
+<p class="k13">COMMAND steadies the line, HOLD THE LINE hardens it. If the Captain falls the whole company takes the shock, and he is the only one who is never left behind.</p>
+</div>
+<div class="k8">
+<p class="k1"><b>SPEARWOMAN</b></p>
+<p class="k9">The line. Reach 2 means she fights over the person in front of her, which is what turns a row of bodies into a wall.</p>
+<p class="k13">With a boar spear her signature is SPEAR WALL - one action, and anything stepping into reach takes 75% of it and is often shoved back out. It stops dead the moment somebody gets inside her reach, so she needs a front rank. With a HALBERD it is BRACE AND SHOVE instead: the weapon decides the job.</p>
+</div>
+<div class="k8">
+<p class="k1"><b>ARCHER</b></p>
+<p class="k9">Useless in a scrum and decisive from four hexes, so the rest of the line exists partly to keep the scrum off her.</p>
+<p class="k13">CRIPPLING SHOT does not kill the thing running at you. It takes its legs. Her off hand is a real decision: a quiver, or a dirk for when something reaches her anyway.</p>
+</div>
+<div class="k8">
+<p class="k1"><b>BATTLE-MAGE</b></p>
+<p class="k9">A mediocre swordsman who occasionally does something appalling. One school, one working a turn, and a free hand for a blade - low magic written as a class.</p>
+<p class="k13">Casting costs his own nerve, and a working is aimed with the INTELLECT, so a stupid one misses. What he HOLDS decides how far a working carries: a working stave adds 2 hexes to every school, a sword adds none and is a great deal better in the scrum.</p>
+</div>
+<div class="k8">
+<p class="k1"><b>MAGE</b></p>
+<p class="k9">Two schools and a second working each turn at half strength, and almost nothing else. Bad with a blade, bad at dodging, thin. The line exists to keep him alive.</p>
+<p class="k13">Deliberately worse in melee than the battle-mage: the best offence in the company should not also be adequate with a sword.</p>
+</div>
+<div class="k8">
+<p class="k1"><b>CUTTER</b></p>
+<p class="k9">Not a damage dealer. A SETUP piece: he makes the opening and the whole line takes it, including him.</p>
+<p class="k13">DISTRACT turns a target to face away from him: its back is then open to everybody, at +30 to hit and +25% damage. He also reads the ground: +1 hex on his first move.</p>
+</div>
+<div class="k8">
+<p class="k1"><b>BRUTE</b></p>
+<p class="k9">The answer to being surrounded is one horizontal reply through all of it.</p>
+<p class="k13">SWEEP hits every adjacent enemy at 75%. ROAR takes 28 morale off everything within two hexes. Wants to be where the crowd is, which is the opposite of everybody else.</p>
+</div>
+<p class="k3"><b>WHERE:</b> each of the four stat words on the sheet (STRENGTH, AGILITY, INTELLECT, MORALE)</p>
+<p class="k2">Fires as the <b>game&rsquo;s own tooltip box</b> (<code>#gtTip</code>): styled, instant, and it follows the cursor. The whole nine-rung ladder for that stat, with this body&rsquo;s rung lit, and an italic line saying what the axis is for.</p>
+<div class="k8">
+<p class="k1"><b>STRENGTH</b></p>
+<p class="k9">17+ <b>Monstrously strong</b> &middot; 15+ <b>Enormously strong</b> &middot; 13+ <b>Very strong</b> &middot; 11+ <b>Strong</b> &middot; 9+ <b>Strong enough</b> &middot; 7+ <b>Not strong</b> &middot; 5+ <b>Weak</b> &middot; 3+ <b>Feeble</b> &middot; 0+ <b>No use lifting anything</b></p>
+<p class="k13">Carries the weight and puts it behind the swing: hitpoints and melee damage. Nothing for bows or workings.</p>
+</div>
+<div class="k8">
+<p class="k1"><b>AGILITY</b></p>
+<p class="k9">17+ <b>Uncannily quick</b> &middot; 15+ <b>Very quick</b> &middot; 13+ <b>Quick</b> &middot; 11+ <b>Handy</b> &middot; 9+ <b>Steady enough</b> &middot; 7+ <b>Heavy-handed</b> &middot; 5+ <b>Clumsy</b> &middot; 3+ <b>Hopeless with their hands</b> &middot; 0+ <b>All thumbs, every time</b></p>
+<p class="k13">How well they land a blow and how hard they are to land one on. Movement belongs to the RACE, not to this.</p>
+</div>
+<div class="k8">
+<p class="k1"><b>INTELLECT</b></p>
+<p class="k9">17+ <b>Brilliant</b> &middot; 15+ <b>Sharp</b> &middot; 13+ <b>Clever</b> &middot; 11+ <b>Quick to see it</b> &middot; 9+ <b>Sensible</b> &middot; 7+ <b>Plain</b> &middot; 5+ <b>Slow-witted</b> &middot; 3+ <b>Simple</b> &middot; 0+ <b>Not all there</b></p>
+<p class="k13">Finds the opening, and aims a working: a stupid caster misses a great deal. Off the field it is how well the company reads a situation.</p>
+</div>
+<div class="k8">
+<p class="k1"><b>MORALE</b></p>
+<p class="k9">17+ <b>Afraid of nothing</b> &middot; 15+ <b>Fearless</b> &middot; 13+ <b>Brave</b> &middot; 11+ <b>Steady</b> &middot; 9+ <b>Fairly brave</b> &middot; 7+ <b>Nervous</b> &middot; 5+ <b>Easily frightened</b> &middot; 3+ <b>A coward, and knows it</b> &middot; 0+ <b>Runs before it starts</b></p>
+<p class="k13">How much nerve they have to spend before the white flag goes up, and the only axis that adds damage to EVERYTHING: sword, bow and spell alike.</p>
+</div>
+<p class="k3"><b>WHERE:</b> the swing figure on the sheet</p>
+<p class="k2">Fires as the <b>game&rsquo;s own tooltip box</b> (<code>#gtTip</code>): styled, instant, and it follows the cursor. Fully derived off the swing the game already built, so it cannot disagree with the number beside it.</p>
+<div class="k4">
+<p class="k1"><b>the swing</b></p>
+<p class="k5">{the weapon&amp;rsquo;s name}<br>THE WEAPON ROLLS {lo}-{hi}<br>THEIR ARM ADDS +{n}<br>BUILD AND NERVE +{n}%<br>SO IT LANDS FOR {lo}-{hi}<br>REACH / RANGE {n} hexes<br>BOTH HANDS</p>
+<p class="k16"><i>and then the fixed footnote: <b>What it does to a body once their armour has taken its share is the armour&rsquo;s business, not the weapon&rsquo;s. Hover their band to see it.</b></i></p>
+</div>
+<p class="k3"><b>WHERE:</b> the armour band on the sheet</p>
+<p class="k2">Fires as the <b>game&rsquo;s own tooltip box</b> (<code>#gtTip</code>): styled, instant, and it follows the cursor.</p>
+<div class="k4">
+<p class="k1"><b>LIGHT ARMOUR</b></p>
+<p class="k5">Half of a blow stops in it. You keep every point of your footwork.</p>
+<p class="k16"><i>then: STOPS 50% OF EVERY BLOW &middot; 50% REACHES THE BODY, and the points left in it.</i></p>
+</div>
+<div class="k4">
+<p class="k1"><b>MEDIUM ARMOUR</b></p>
+<p class="k5">Three-fifths of a blow stops in it, and it costs you 5 dodge.</p>
+<p class="k16"><i>then: STOPS 60% OF EVERY BLOW &middot; 40% REACHES THE BODY, and the points left in it.</i></p>
+</div>
+<div class="k4">
+<p class="k1"><b>HEAVY ARMOUR</b></p>
+<p class="k5">Three-quarters of a blow stops in it, and it costs you 10 dodge.</p>
+<p class="k16"><i>then: STOPS 75% OF EVERY BLOW &middot; 25% REACHES THE BODY, and the points left in it.</i></p>
+</div>
+<p class="k3"><b>WHERE:</b> the nerve row on the sheet, and the same row on the battle plaque</p>
+<p class="k2">Fires as the <b>game&rsquo;s own tooltip box</b> (<code>#gtTip</code>): styled, instant, and it follows the cursor. The six-rung ladder, then a footnote. The two screens use different footnotes on purpose.</p>
+<div class="k4">
+<p class="k1"><b>😄 It rocks</b></p>
+<p class="k5">+5 to hit and +5% damage. Nothing here frightens them, and it shows. Hard to reach and easy to lose: you have to earn it in the fight.</p>
+</div>
+<div class="k4">
+<p class="k1"><b>🙂 Happy</b></p>
+<p class="k5">Steady. No penalties, full skill, full dodge. This is where most fights start.</p>
+</div>
+<div class="k4">
+<p class="k1"><b>😐 Ok</b></p>
+<p class="k5">Wavering: 5 off their skill, 2 off their dodge. Watching the line.</p>
+</div>
+<div class="k4">
+<p class="k1"><b>😕 Shaken</b></p>
+<p class="k5">9 off their chance to hit, 4 off their dodge. They are looking at the way out, and they have not taken it.</p>
+</div>
+<div class="k4">
+<p class="k1"><b>😟 Breaking</b></p>
+<p class="k5">12 off their chance to hit, 5 off their dodge. Still in it, and one more bad thing from not being.</p>
+</div>
+<div class="k4">
+<p class="k1"><b>💀 Broken</b></p>
+<p class="k5">Routed. White flag, running for the edge, out of the fight until somebody rallies them.</p>
+</div>
+<div class="k4">
+<p class="k1"><b>the footnote, on the sheet</b></p>
+<p style="margin:0 0 0 14px">Everyone walks onto a field at HAPPY, and a quiet turn always walks them back to it. Below is what the fight did to them; above is what they did to it.</p>
+<p style="margin:6px 0 2px 0"><b>the footnote, on the battle plaque</b></p>
+<p style="margin:0 0 0 14px">It slides down when somebody near them falls, and a quiet turn walks it back to where they started. Above that line is earned: a kill, a rally, an order.</p>
+</div>
+<p class="k3"><b>WHERE:</b> the paper doll &mdash; the figure in the middle of the sheet</p>
+<p class="k2">Fires as the <b>game&rsquo;s own tooltip box</b> (<code>#gtTip</code>): styled, instant, and it follows the cursor. Headed <b>THE BODY</b>, then one line for every mark on it.</p>
+<div class="k4">
+<p class="k21">Always: <b>Head, body, two arms, two legs. Every mark is on the part it happened to.</b></p>
+<p class="k21">If nothing has: <i>Nothing has happened to this one yet.</i></p>
+<p class="k21">Then one red line per scar, one teal line per mutation, one line per condition:</p>
+</div>
+<table class="k11">
+<tr><th class="k7">mark</th><th class="k7">the short line on the doll&rsquo;s hover</th></tr>
+<tr><td class="k0">Gills of the Fen</td><td class="k0">water accepts them; dry country does not.</td></tr>
+<tr><td class="k0">Blooming Hand</td><td class="k0">reaches farther than its owner intends.</td></tr>
+<tr><td class="k0">Fen-Water in the Lungs</td><td class="k0">a cough that sounds like reeds. It never quite goes.</td></tr>
+<tr><td class="k0">Colour Beneath the Nail</td><td class="k0">one fingernail has gone glossy and magenta. It was not like that yesterday.</td></tr>
+</table>
+<p class="k18"><i>The long version of each of those is on its own row elsewhere on the sheet:</i></p>
+<div class="k4">
+<p class="k1"><b>Gills of the Fen</b></p>
+<p class="k5">Thin folds along the neck that move when rain is coming. Marsh costs them nothing to cross, and once a fight the water takes them and gives them back somewhere else. On a field with no water in it they stand 12 morale short, because part of them is listening for it.</p>
+</div>
+<div class="k4">
+<p class="k1"><b>Blooming Hand</b></p>
+<p class="k5">The fingers have gone to pale flowering tendrils with a saturated centre. It can take hold of somebody two hexes away and root them where they stand, and it cannot hold a weapon, so nothing two-handed fits them ever again. It reaches toward strange things without being asked.</p>
+</div>
+<div class="k4">
+<p class="k1"><b>Fen-Water in the Lungs</b></p>
+<p class="k5">Near-drowned in the fen, and some of the fen stayed. It does not slow them down and it does not stop them working. It is simply a thing that happened to this one, and you can hear it on a cold morning for the rest of the run.</p>
+</div>
+<div class="k4">
+<p class="k1"><b>Colour Beneath the Nail</b></p>
+<p class="k5">Bloom got in through a cut. It does nothing yet except tell them when more Bloom is near, and creep. The bone-setter can take the finger off while it is still only a finger. Or you can see what a hand becomes.</p>
+</div>
+<p class="k3"><b>WHERE:</b> the personality name on the sheet</p>
+<p class="k2">Fires as the <b>game&rsquo;s own tooltip box</b> (<code>#gtTip</code>): styled, instant, and it follows the cursor. The name, then <b>PERSONALITY &middot; {RACE}</b>, then the whole paragraph &mdash; the long form of the short line in section 5.</p>
+<div class="k8">
+<table class="k11">
+<tr><th class="k7">personality</th><th class="k7">the paragraph</th></tr>
+<tr><td class="k0">Stubborn</td><td class="k0">Gets their nerve back twice as fast on a quiet turn, and starts from further down: −5 MOR. Nobody has ever talked them into anything, which is the same fact from both ends.</td></tr>
+<tr><td class="k0">Widowed thrice</td><td class="k0">+17% damage against anything under half hitpoints, and −10% against anything above it. They have no interest in a fair fight and are visibly worse at one.</td></tr>
+<tr><td class="k0">Counts aloud</td><td class="k0">+8 to hit on any turn they have not moved, and −8 on any turn they have. They are counting something, and walking loses the count.</td></tr>
+<tr><td class="k0">Wind-touched</td><td class="k0">Casting costs them 4 less of their own nerve than it costs anybody else. Whatever it is, it does not seem to mind them. −2 MOR the rest of the time.</td></tr>
+<tr><td class="k0">Twitchy</td><td class="k0">+2 AGI, −3 MOR.</td></tr>
+<tr><td class="k0">Insists he is a vegetarian</td><td class="k0">−10% damage dealt, +6 MOR.</td></tr>
+<tr><td class="k0">Light-fingered</td><td class="k0">+15% crowns from every event. −4 MOR: nobody trusts them. Minds an empty pay-chest less than anybody, for reasons nobody investigates.</td></tr>
+<tr><td class="k0">Kind</td><td class="k0">+6 morale to EVERYONE within 2 hexes at the start of the fight, yours and theirs alike. It does not occur to them to make the distinction. −1 STR.</td></tr>
+<tr><td class="k0">Grim</td><td class="k0">Feels nothing when an ally dies. Starts every fight 6 morale down.</td></tr>
+<tr><td class="k0">Braggart</td><td class="k0">+10 extra morale on their own kill. −8 when they miss twice running.</td></tr>
+<tr><td class="k0">Cautious</td><td class="k0">+6 dodge below half hitpoints, −5 to hit above it.</td></tr>
+<tr><td class="k0">Old hand</td><td class="k0">+4 to hit and +4 dodge: they have done this before. −1 AGI and −8 hitpoints, because they have also been doing it a long time.</td></tr>
+<tr><td class="k0">Feral</td><td class="k0">+12% damage while their own nerve is Wavering or worse. Breaks sooner.</td></tr>
+<tr><td class="k0">Dutiful</td><td class="k0">+8 dodge beside the Captain, −4 dodge away from them.</td></tr>
+<tr><td class="k0">Ambition</td><td class="k0">Wants very badly to be somebody. −7 to hit at close range (nerves) and +9 morale every time they actually land one. Takes an unpaid week harder than anyone: they came here to get on, and this is the opposite of getting on.</td></tr>
+<tr><td class="k0">Does not run</td><td class="k0">Cannot rout. Whatever the rest of the line does, they are still standing there when it is over. −2 STR: there is not much of them.</td></tr>
+<tr><td class="k0">Has no stomach for it</td><td class="k0">Takes 18 morale of their OWN every time they kill somebody instead of the usual lift, and −7% damage for the rest of the battle per kill. +8 MOR to start: they are calm right up until it matters.</td></tr>
+<tr><td class="k0">Big</td><td class="k0">+16 hitpoints and there is more of them to hit: −2 AGI. Doorways are a negotiation and nobody has ever moved them who did not want to be moved.</td></tr>
+<tr><td class="k0">Courageous</td><td class="k0">+14% melee damage. CANNOT DISENGAGE: the option is not on their sheet. Walking away is not a thing they are able to do.</td></tr>
+<tr><td class="k0">Very nimble</td><td class="k0">+16 dodge. Almost impossible to catch from the front - and a body that will not stand still is still a body, which can only watch one side of itself at a time.</td></tr>
+<tr><td class="k0">Magpie-minded</td><td class="k0">Forgets their spells every single round and remembers different ones instead. You never know what they can do until their turn starts, and neither do they.</td></tr>
+<tr><td class="k0">Frightening</td><td class="k0">Everybody within 2 hexes starts the fight 6 morale down, yours and theirs alike, and they are 5 morale up. Something about them is wrong at a distance nobody can name, and the company has stopped asking them to stand in the middle.</td></tr>
+<tr><td class="k0">Owes somebody</td><td class="k0">Works for half wages, because half of it is already going somewhere else, and takes a missed payday twice as hard as anybody in the company. Whoever is owed is not in this act, and is patient.</td></tr>
+<tr><td class="k0">Slow to warm up</td><td class="k0">−10 to hit for the first two rounds and +8 from the fourth. They are not frightened and they are not warming their hands. They simply arrive at the fight some time after everybody else does.</td></tr>
+<tr><td class="k0">Keeps a list</td><td class="k0">+20% damage against whichever body last drew their blood, and −6 to hit against everything else on the field. They are not fighting a battle. They are settling one thing and putting up with the rest.</td></tr>
+<tr><td class="k0">Cannot be quiet</td><td class="k0">Anybody of yours standing next to them gets +4 to hit, because they call out everything they see, continuously, at volume. The other side can hear it too, and comes for them first.</td></tr>
+</table>
+</div>
+<p class="k3"><b>WHERE:</b> the experience ring on the sheet&rsquo;s chip row</p>
+<p class="k2">Fires as the <b>browser&rsquo;s own tooltip</b> (a <code>title=</code> attribute): plain text, no styling, and it appears after the OS delay. Derived.</p>
+<div class="k4">
+<p class="k1"><b>the ring</b></p>
+<p class="k5">{n} of {n} &amp;middot; {n} to level {n}</p>
+<p class="k16"><i>and at the cap: <b>level {n} &middot; as far as they go</b></i></p>
+</div>
+<p class="k3"><b>WHERE:</b> the kill count beside it, and the same chip on the battle rail</p>
+<p class="k2">Fires as the <b>browser&rsquo;s own tooltip</b> (a <code>title=</code> attribute): plain text, no styling, and it appears after the OS delay.</p>
+<div class="k4">
+<p class="k1"><b>the row of heads</b></p>
+<p class="k5">what this one has put in the ground</p>
+</div>
+<div class="k4">
+<p class="k1"><b>one head glyph</b></p>
+<p class="k5">{n} {man|men|ratkin|ogre|ogres|beast|beasts}</p>
+</div>
+<p class="k3"><b>WHERE:</b> the actions row on the sheet</p>
+<p class="k2">Fires as the <b>browser&rsquo;s own tooltip</b> (a <code>title=</code> attribute): plain text, no styling, and it appears after the OS delay.</p>
+<div class="k4">
+<p class="k1"><b>ACTIONS</b></p>
+<p class="k5">what one turn buys this body</p>
+</div>
+<p class="k3"><b>WHERE:</b> the DISMISS button</p>
+<p class="k2">Fires as the <b>browser&rsquo;s own tooltip</b> (a <code>title=</code> attribute): plain text, no styling, and it appears after the OS delay.</p>
+<div class="k4">
+<p class="k1"><b>DISMISS</b></p>
+<p class="k5">They walk out with whatever they are wearing. &amp;hellip;</p>
+</div>
+<p class="k3"><b>WHERE:</b> the two doors at the foot of the sheet, when they are open</p>
+<p class="k2">Fires as the <b>game&rsquo;s own tooltip box</b> (<code>#gtTip</code>): styled, instant, and it follows the cursor. The sub-line each door used to print is now its hover.</p>
+<div class="k4">
+<p class="k1"><b>✚ MEND A SCAR</b></p>
+<p class="k5">take one scar off {name} &amp;middot; you get ONE of these a run, and this is it</p>
+</div>
+<div class="k4">
+<p class="k1"><b>◈ CUT A GEM</b></p>
+<p class="k5">{name} goes up one level &amp;middot; costs 1 gem &amp;middot; (you have none) &amp;middot; ONE of these a run</p>
+</div>
+<h1 class="k12">7 &middot; Gear &mdash; the item tooltip</h1>
+<p class="k3"><b>WHERE:</b> any piece of gear, anywhere it is drawn: a slot on the sheet, a row in the stash, a row in a shop, a relic chip on the world bar, and the after-battle haul</p>
+<p class="k2">Fires as the <b>game&rsquo;s own tooltip box</b> (<code>#gtTip</code>): styled, instant, and it follows the cursor. One builder serves all five. The picture and the name head it, then the numbers <b>read off the item itself</b> as sentences, then the authored flavour line in italics.</p>
+<p class="k20"><b>The derived sentences, in this order:</b></p>
+<div class="k19">
+<p class="k1">&bull; Stops <b>{n}</b> damage before it reaches them.</p>
+<p class="k1">&bull; Hits for <b>{lo}&ndash;{hi}</b> / at up to {n} hexes. / , reaching {n} hexes.</p>
+<p class="k1">&bull; {Adds|Costs} <b>{n}</b> hitpoints.</p>
+<p class="k1">&bull; {Easier|Harder} to land a blow (<b>{&plusmn;n}</b> to hit).</p>
+<p class="k1">&bull; {Harder|Easier} to hit (<b>{&plusmn;n}</b> dodge).</p>
+<p class="k1">&bull; Arrows bite deeper (<b>+{n}</b> ranged damage).</p>
+<p class="k1">&bull; Casting takes <b>{n} less</b> out of them.</p>
+<p class="k1">&bull; A little {stronger|handier|sharper|steadier} / {weaker|clumsier|slower|twitchier} (<b>{&plusmn;n} STR</b>).</p>
+<p class="k1">&bull; Workings thrown off it reach <b>{n}</b> hexes further.</p>
+<p class="k1">&bull; Cut for a <b>{ratkin|human|ogre}</b> body. On anybody else it still works, at 70% and a sour mood.</p>
+</div>
+<p class="k20"><b>And for a trinket, one of two scope labels:</b></p>
+<div class="k19"><p class="k1"><b>COMPANY RELIC</b> &mdash; Works from the baggage. Nobody has to wear it.</p><p class="k22"><b>PERSONAL AMULET</b> &mdash; <i>(no second line: a slot is already a slot)</i></p></div>
+<p class="k20"><b>And where a piece only pays on some bodies, a called-out conditional:</b></p>
+<div class="k19"><p class="k1"><b>&#9733; It works on this one.</b> {the condition}</p><p class="k22"><b>Conditional.</b> Only {the condition}: this one does not qualify.</p></div>
+<h2>The authored line on each piece</h2>
+<p><i>33 of the 52 gear rows carry one. It is the last thing in the box, in italics.</i></p>
+<table class="k11">
+<tr><th class="k7">the piece</th><th class="k7">slot</th><th class="k7">the hover&rsquo;s last line</th></tr>
+<tr><td class="k0"><b>Cook-pot and straps</b><br><span class="k6">pot</span></td><td class="k0">armour</td><td class="k0">A stew-pot, worn as a helmet, with a jerkin under it.</td></tr>
+<tr><td class="k0"><b>Door-plank harness</b><br><span class="k6">planks</span></td><td class="k0">armour</td><td class="k0">Somebody’s front door, in three pieces, on a man.</td></tr>
+<tr><td class="k0"><b>A wardrobe</b><br><span class="k6">wardrobe</span></td><td class="k0">armour</td><td class="k0">A closet. Doors removed, arm-holes cut. He has to be helped into it.</td></tr>
+<tr><td class="k0"><b>Bucket, worn</b><br><span class="k6">bucket</span></td><td class="k0">armour</td><td class="k0">Just the bucket. There is no rest of the armour.</td></tr>
+<tr><td class="k0"><b>A broom</b><br><span class="k6">broom</span></td><td class="k0">main</td><td class="k0">Reach two, and utterly humiliating for everyone involved.</td></tr>
+<tr><td class="k0"><b>Pan-lid</b><br><span class="k6">panlid</span></td><td class="k0">off</td><td class="k0">It rings when hit. Constantly.</td></tr>
+<tr><td class="k0"><b>The Toll-Man’s Boots</b><br><span class="k6">deadboots</span></td><td class="k0">trinket</td><td class="k0">Good boots. Warm, dry, barely worn, and they were on a hanged man this morning. Whoever has them walks better and sleeps worse.</td></tr>
+<tr><td class="k0"><b>The Mirrored Sphere</b><br><span class="k6">discoball</span></td><td class="k0">trinket</td><td class="k0">A hanging ball of a thousand mirror-shards, found in a ruin nobody can explain. It throws light in every direction and answers no questions.</td></tr>
+<tr><td class="k0"><b>The Wood-Stick With Two Holes</b><br><span class="k6">woodstick</span></td><td class="k0">main</td><td class="k0">Heavier at one end than a stick has any business being. Two holes bored in it, one at each end, and the far one is black inside and smells of a fire that happened somewhere else. Marrow has tried drinking out of it. It has been swung at people eleven times and has worked eleven times.</td></tr>
+<tr><td class="k0"><b>Working stave</b><br><span class="k6">rod</span></td><td class="k0">main</td><td class="k0">A stripped ash pole, chalked its whole length and burnt black at the tip. Hitting a man with it works about as well as you would expect. That is not what it is for.</td></tr>
+<tr><td class="k0"><b>Halberd</b><br><span class="k6">halberd</span></td><td class="k0">main</td><td class="k0">A spear that lost an argument with an axe. The hook on the back is the point of it.</td></tr>
+<tr><td class="k0"><b>The Weeping Hammer</b><br><span class="k6">weeper</span></td><td class="k0">main</td><td class="k0">Forged at the Old Camp. The head sweats in cold weather. Nobody asks why.</td></tr>
+<tr><td class="k0"><b>Barrel-lid shield</b><br><span class="k6">lid</span></td><td class="k0">off</td><td class="k0">It is a barrel lid. It works.</td></tr>
+<tr><td class="k0"><b>Full quiver</b><br><span class="k6">quiver</span></td><td class="k0">off</td><td class="k0">Twenty more, fletched properly. Needs a hand to hang from, which a bow does not spare.</td></tr>
+<tr><td class="k0"><b>Off-hand dirk</b><br><span class="k6">offhand</span></td><td class="k0">off</td><td class="k0">Short, ugly, and drawn with the wrong hand. When something is already on top of you it is the only thing you own that still works.</td></tr>
+<tr><td class="k0"><b>Chalk-and-cord rod</b><br><span class="k6">focus</span></td><td class="k0">off</td><td class="k0">Something to hold onto while you do it. Spells cost 4 less of your own nerve.</td></tr>
+<tr><td class="k0"><b>Saint’s Fingerbone</b><br><span class="k6">bone</span></td><td class="k0">trinket</td><td class="k0">Faintly warm. Always.</td></tr>
+<tr><td class="k0"><b>Bloom-Stem</b><br><span class="k6">stem</span></td><td class="k0">trinket</td><td class="k0">Hums at a pitch you feel in your teeth.<br><span class="k17">conditional: +2 INT more on a battle-mage</span></td></tr>
+<tr><td class="k0"><b>Glass Apple</b><br><span class="k6">apple</span></td><td class="k0">trinket</td><td class="k0">A fruit that died standing.</td></tr>
+<tr><td class="k0"><b>Brass Token</b><br><span class="k6">brass</span></td><td class="k0">trinket</td><td class="k0">Ashmoor knows this mark. So do its gate-guards, and so do their prices.</td></tr>
+<tr><td class="k0"><b>The Company Banner</b><br><span class="k6">banner</span></td><td class="k0">trinket</td><td class="k0">Stitched from three different dead companies. Everyone walks a little straighter.</td></tr>
+<tr><td class="k0"><b>Marching Drum</b><br><span class="k6">drum</span></td><td class="k0">trinket</td><td class="k0">Keeps the pace. The column arrives in better heart than it left: +2 mood every leg.</td></tr>
+<tr><td class="k0"><b>Fen-Mother’s Tooth</b><br><span class="k6">tooth</span></td><td class="k0">trinket</td><td class="k0">Longer than your hand. Still warm at the root.<br><span class="k17">conditional: +2 STR and +8 HP more on an ogre</span></td></tr>
+<tr><td class="k0"><b>Pedlar’s Charm</b><br><span class="k6">charm</span></td><td class="k0">trinket</td><td class="k0">He swore it was lucky. He would.<br><span class="k17">conditional: +2 MOR more on a human</span></td></tr>
+<tr><td class="k0"><b>Rat-King’s Knuckle</b><br><span class="k6">ratking</span></td><td class="k0">trinket</td><td class="k0">Small, yellow, and far too clean.<br><span class="k17">conditional: +3 AGI and +6 HP more on a ratkin</span></td></tr>
+<tr><td class="k0"><b>Rosined String</b><br><span class="k6">fiddle</span></td><td class="k0">trinket</td><td class="k0">From a fiddler who ate your salt and left this behind.</td></tr>
+<tr><td class="k0"><b>Foundry Ledger-Pin</b><br><span class="k6">quillpen</span></td><td class="k0">trinket</td><td class="k0">A pin for holding accounts together. Wynn’s.<br><span class="k17">conditional: +3 MOR more on the Captain</span></td></tr>
+<tr><td class="k0"><b>Cub’s Milk-Tooth</b><br><span class="k6">cubtooth</span></td><td class="k0">trinket</td><td class="k0">Small enough to lose. Nobody has lost it.</td></tr>
+<tr><td class="k0"><b>The Cold Thing</b><br><span class="k6">coldthing</span></td><td class="k0">trinket</td><td class="k0">A hand-length of black metal that was inside the armour and did not go with the rest of it. It is cold, and it is exactly as cold in the sun as it is at night, which is the part nobody likes. Whoever carries it hits what they are looking at, and sleeps badly, and will not say what about.</td></tr>
+<tr><td class="k0"><b>The Ground-Glass Eyes</b><br><span class="k6">glasses</span></td><td class="k0">trinket</td><td class="k0">Two discs of ground glass in a bent wire frame. Whoever wears them can suddenly count the rivets on a man at forty paces and cannot find their own feet. The company has decided this is witchcraft and has stopped short of saying so.<br><span class="k17">conditional: +2 AGI more on an archer</span></td></tr>
+<tr><td class="k0"><b>An Unusual Coin</b><br><span class="k6">oddcoin</span></td><td class="k0">trinket</td><td class="k0">It feels good to keep in the hand. Nobody can say why.</td></tr>
+<tr><td class="k0"><b>A Treasure Map</b><br><span class="k6">tmap</span></td><td class="k0">trinket</td><td class="k0">Charcoal on the back of a tally-sheet, in a hand that was in a hurry. Two roads, a bend in a river and a cross. Somebody buried what they could not carry and then did not come back for it.</td></tr>
+<tr><td class="k0"><b>The Roll of Names</b><br><span class="k6">roll</span></td><td class="k0">trinket</td><td class="k0">A strip of linen folded eight times, written down the inside in eight different hands. Some of the names are people you remember. Most of them are not, which means the road has been talking about you for longer than you knew.</td></tr>
+</table>
+<p style="margin:0 0 12px 0;padding:7px 10px;background-color:#fff2cc"><b>Worth a look.</b> 19 of the 52 gear rows have <b>no authored line at all</b>, so their tooltip ends on a number. They are the ones a player is most likely to be comparing.</p>
+<h1 class="k12">8 &middot; The battle screen</h1>
+<p class="k3"><b>WHERE:</b> the three buttons above the board</p>
+<p class="k2">Fires as the <b>browser&rsquo;s own tooltip</b> (a <code>title=</code> attribute): plain text, no styling, and it appears after the OS delay.</p>
+<table class="k11">
+<tr><th class="k7">the button</th><th class="k7">the hover</th></tr>
+<tr><td class="k0">&#9654; AUTO</td><td class="k0">AUTO - the company fights itself<br><i>and once it is on:</i> AUTO ON - press to take the reins back</td></tr>
+<tr><td class="k0">&#9201; &times;1</td><td class="k0">SPEED &times;{n}. How fast the battlefield plays. Nothing about the fight changes - only how long you get to watch it.</td></tr>
+<tr><td class="k0">&#9873; flee</td><td class="k0">Leave the field. No spoils, the company takes it badly, and the place is done with.<br><i>and when there is no exit:</i> NO WAY OUT - {the reason}</td></tr>
+</table>
+<p class="k3"><b>WHERE:</b> the <code>?</code> at the corner of the legend, bottom left of the board</p>
+<p class="k2">Fires as the <b>browser&rsquo;s own tooltip</b> (a <code>title=</code> attribute): plain text, no styling, and it appears after the OS delay.</p>
+<div class="k4">
+<p class="k1"><b>the legend</b></p>
+<p class="k5">COMBAT LOGIC - the rules the board plays by</p>
+</div>
+<p class="k20"><i>and the legend itself, which is always on screen rather than on hover:</i></p>
+<div class="k19"><p class="k1">&bull; 2 actions a turn - move + strike, or strike twice</p><p class="k1">&bull; water - 2 hexes to enter, &minus;10% to hit, and one hex off your stride while you stand in it</p><p class="k1">&bull; held - somebody is facing this hex, so walking off it costs half a blow. Their back three hexes are free; DISENGAGE is one clean hex for one action</p><p class="k22">&bull; morale broken - white flag, and they run</p></div>
+<p class="k3"><b>WHERE:</b> the actions crystals on the acting body&rsquo;s plaque</p>
+<p class="k2">Fires as the <b>browser&rsquo;s own tooltip</b> (a <code>title=</code> attribute): plain text, no styling, and it appears after the OS delay.</p>
+<div class="k4">
+<p class="k1"><b>the crystals</b></p>
+<p class="k5">{n} of {n} actions left this turn</p>
+</div>
+<p class="k3"><b>WHERE:</b> the armour word on the plaque</p>
+<p class="k2">Fires as the <b>game&rsquo;s own tooltip box</b> (<code>#gtTip</code>): styled, instant, and it follows the cursor. Headed <b>{BAND} ARMOUR</b>.</p>
+<div class="k4">
+<p class="k1"><b>NONE</b></p>
+<p class="k5">Cloth, and whatever they are standing behind. Every blow that lands goes straight into the body.</p>
+</div>
+<div class="k4">
+<p class="k1"><b>LIGHT</b></p>
+<p class="k5">Rags, hides, a cook-pot, somebody’s door. One good blow and it is gone, and the next one is on them.</p>
+</div>
+<div class="k4">
+<p class="k1"><b>MEDIUM</b></p>
+<p class="k5">A padded jack, a rat-silk shroud, stitched hides. Two or three blows before the body takes any, and nothing it costs to move in.</p>
+</div>
+<div class="k4">
+<p class="k1"><b>HEAVY</b></p>
+<p class="k5">Mail, foundry plate, lashed ogre scale. It eats blows for most of a fight, and the heavy suits are slower: they take a step of agility off the wearer, which is dodge.</p>
+</div>
+<p style="margin:0 0 12px 36px;font-style:italic;color:#666">and always, under it: Armour takes the hit first. Only what gets through it reaches the body.</p>
+<p class="k3"><b>WHERE:</b> the personality line on the plaque</p>
+<p class="k2">Fires as the <b>game&rsquo;s own tooltip box</b> (<code>#gtTip</code>): styled, instant, and it follows the cursor. The name, the short line, then the paragraph. Same two texts as the sheet.</p>
+<p class="k18"><i>And for a body with no personality the line is not a hover at all, it is the description itself:</i></p>
+<div class="k19">
+<p class="k1"><b>an ally you just sided with</b> &mdash; You took their side an hour ago. They have not decided what they think of you yet.</p>
+<p class="k1"><b>something that will not fight</b> &mdash; It will not fight. It only wants to be somewhere else.</p>
+<p class="k1"><b>GREAT BEAST - LINDWURM</b> &mdash; Two hexes of her. She does not out-damage you; she takes your line apart.</p>
+<p class="k1"><b>WHELP</b> &mdash; It will not fight. It only wants to be somewhere else.</p>
+<p class="k1"><b>PACK-BEAST</b> &mdash; Bites and is gone. There is nothing here to hold a line against.</p>
+<p class="k1"><b>MIREHARE</b> &mdash; The doe only travels by a three-hex landing. The buck only travels by a straight charge.</p>
+<p class="k1"><b>FEN-THING</b> &mdash; Whatever the water made. It does not appear to mind being hurt.</p>
+<p class="k1"><b>SOMETHING IN ARMOUR</b> &mdash; There is no wrong side of it. Standing behind it is standing in front of it, and the sword goes all the way round.</p>
+</div>
+<p class="k3"><b>WHERE:</b> the order rail, down the side of the board</p>
+<p class="k2">Fires as the <b>browser&rsquo;s own tooltip</b> (a <code>title=</code> attribute): plain text, no styling, and it appears after the OS delay.</p>
+<div class="k4">
+<p class="k1"><b>a body in the queue</b></p>
+<p class="k5">{You | their name}{ - fighting on your side, not yours to command}{ - broken and running}</p>
+</div>
+<div class="k4">
+<p class="k1"><b>the divider in the queue</b></p>
+<p class="k5">the round turns here - everything below is next round&amp;rsquo;s order</p>
+</div>
+<p class="k3"><b>WHERE:</b> a status badge on a token</p>
+<p class="k2">Fires as the <b>browser&rsquo;s own tooltip</b> (a <code>title=</code> attribute): plain text, no styling, and it appears after the OS delay. Reads <code>Name (turns left) &middot; what it does [from whom]</code>. A tally is written &times;n and a clock is written (n).</p>
+<table class="k11">
+<tr><th class="k7">badge</th><th class="k7">the hover</th></tr>
+<tr><td class="k0">⊛ &nbsp;<b>Surrounded</b></td><td class="k0"><i>no line by design &mdash; the count in front of the mark is the whole message</i></td></tr>
+<tr><td class="k0">🍺 &nbsp;<b>Drunk</b></td><td class="k0">−12 to hit, −8 dodge, and his nerve started soft.</td></tr>
+<tr><td class="k0">⇸ &nbsp;<b>Crippled</b></td><td class="k0">Half movement, −10 dodge.</td></tr>
+<tr><td class="k0">🔥 &nbsp;<b>Burning</b></td><td class="k0">−{BURN_TICK} at the start of each of its turns. Water puts it out; the fire under it starts it again.</td></tr>
+<tr><td class="k0">👁 &nbsp;<b>Transfixed</b></td><td class="k0">Cannot move or disengage. It can still swing.</td></tr>
+<tr><td class="k0">⛨ &nbsp;<b>Spear wall</b></td><td class="k0">Reach 2. Anything stepping in takes 75% of her spear, and half the time is shoved a hex back out.</td></tr>
+<tr><td class="k0">⛨ &nbsp;<b>Wall broken</b></td><td class="k0">Does nothing until her front is clear again.</td></tr>
+<tr><td class="k0">◍ &nbsp;<b>Marked</b></td><td class="k0">−10 morale to anybody standing next to them, either side. Nothing to them.</td></tr>
+<tr><td class="k0">◌ &nbsp;<b>Next to that face</b></td><td class="k0">−10 morale while next to the ring. It lifts the moment they step away.</td></tr>
+<tr><td class="k0">✷ &nbsp;<b>Desperate</b></td><td class="k0">Bleeds on its own turn, hits half again as hard, two actions short. It will not run.</td></tr>
+<tr><td class="k0">☣ &nbsp;<b>Poisoned</b></td><td class="k0">+15% damage taken per cut, two rounds. Nothing caps it.</td></tr>
+<tr><td class="k0">✷ &nbsp;<b>Gathering</b></td><td class="k0">Lands at the start of their next turn, unless they are put down, broken, or the target walks out of reach.</td></tr>
+<tr><td class="k0">◎ &nbsp;<b>A working is coming</b></td><td class="k0">Arrives at the start of that caster&#x27;s next turn. Get out of reach, or get to the caster.</td></tr>
+<tr><td class="k0">❖ &nbsp;<b>Charged weapon</b></td><td class="k0"><span style="background-color:#fff2cc">no line at all: the hover is the name and nothing else</span></td></tr>
+</table>
+<p class="k3"><b>WHERE:</b> the formation badges on a token</p>
+<p class="k2">Fires as the <b>browser&rsquo;s own tooltip</b> (a <code>title=</code> attribute): plain text, no styling, and it appears after the OS delay.</p>
+<table class="k11">
+<tr><th class="k7">badge</th><th class="k7">the hover</th></tr>
+<tr><td class="k0">&#8801;</td><td class="k0">In the line: +5 dodge</td></tr>
+<tr><td class="k0">&#8779;</td><td class="k0">Swarmed: &minus;14 to hit</td></tr>
+<tr><td class="k0">&#8779; <i>(teal, on the neck)</i></td><td class="k0">Gills of the Fen</td></tr>
+</table>
+<p class="k3"><b>WHERE:</b> the mood face on a token</p>
+<p class="k2">Fires as the <b>browser&rsquo;s own tooltip</b> (a <code>title=</code> attribute): plain text, no styling, and it appears after the OS delay. Just the rung name: <b>It rocks &middot; Happy &middot; Ok &middot; Shaken &middot; Breaking &middot; Broken</b>. The full ladder is on the plaque.</p>
+<p class="k3"><b>WHERE:</b> the &#9216;&#9876; warning on the hex you are standing on</p>
+<p class="k2">Fires as the <b>browser&rsquo;s own tooltip</b> (a <code>title=</code> attribute): plain text, no styling, and it appears after the OS delay. The names are on the hover because a list of names on a 37px hex is a paragraph, not a warning.</p>
+<div class="k4">
+<p class="k1"><b>the warning</b></p>
+<p class="k5">Stepping off this hex costs a free swing from {who} and {who}. DISENGAGE first and the step is clean.</p>
+</div>
+<p class="k3"><b>WHERE:</b> the camera-stop buttons</p>
+<p class="k2">Fires as the <b>browser&rsquo;s own tooltip</b> (a <code>title=</code> attribute): plain text, no styling, and it appears after the OS delay.</p>
+<div class="k4">
+<p class="k1"><b>every stop</b></p>
+<p class="k5">how close the camera stands</p>
+</div>
+<p class="k3"><b>WHERE:</b> an act card&rsquo;s role line &mdash; the small word under the act&rsquo;s name, on the battle bar and on the sheet</p>
+<p class="k2">Not a hover: it is printed on the card. Listed here because it is the same vocabulary the hovers use, and it is capped at 12 characters so it cannot cut mid-word.</p>
+<div class="k8"><code>dis</code> <b>CLEAN STEP</b> &middot; <code>kick</code> <b>PUSH</b> &middot; <code>throw</code> <b>PUSH</b> &middot; <code>shove</code> <b>PUSH 2</b> &middot; <code>hook</code> <b>PULL</b> &middot; <code>grasp</code> <b>ROOTS THEM</b> &middot; <code>wall</code> <b>AREA CONTROL</b> &middot; <code>rallyline</code> <b>GUARD ALLIES</b> &middot; <code>oath</code> <b>GUARD ALLIES</b> &middot; <code>command</code> <b>RALLY</b> &middot; <code>roar</code> <b>BREAKS NERVE</b> &middot; <code>cripple</code> <b>SLOWS THEM</b> &middot; <code>venom</code> <b>POISON</b> &middot; <code>distract</code> <b>TURN IT AWAY</b> &middot; <code>sweep</code> <b>HIT ALL NEAR</b> &middot; <code>sink</code> <b>ESCAPE</b></div>
+<h1 class="k12">9 &middot; The after-battle screen</h1>
+<p class="k3"><b>WHERE:</b> a crew card on the spoils screen</p>
+<p class="k2">Fires as the <b>browser&rsquo;s own tooltip</b> (a <code>title=</code> attribute): plain text, no styling, and it appears after the OS delay.</p>
+<table class="k11">
+<tr><th class="k7">what is hovered</th><th class="k7">the hover</th></tr>
+<tr><td class="k0">the level chevron</td><td class="k0">promoted to level {n}</td></tr>
+<tr><td class="k0">the &#10022; figure</td><td class="k0">experience, this fight</td></tr>
+<tr><td class="k0">the row of heads</td><td class="k0">what this one has put in the ground</td></tr>
+<tr><td class="k0">the personality line</td><td class="k0"><i>the same short line as section 5</i></td></tr>
+</table>
+<h1 class="k12">10 &middot; Not player-facing</h1>
+<p><i>These are in the same build and the same <code>title=</code> layer, so they turn up in any sweep of the hover text. They are behind DEV.MODE and the player never meets them. Listed so the count is honest and so nobody edits them by mistake.</i></p>
+<table class="k11">
+<tr><th class="k7">the button</th><th class="k7">the hover</th></tr>
+<tr><td class="k0">&#9881; DEV.MODE</td><td class="k0">developer tools <i>/ developer tools - ON</i></td></tr>
+<tr><td class="k0">&#10003; WIN NOW</td><td class="k0">end this fight as a win</td></tr>
+<tr><td class="k0">&#9776; LINT</td><td class="k0">read every content table and report</td></tr>
+<tr><td class="k0">&#9003; WIPE HISTORY</td><td class="k0">forget this player completely and start from the front door</td></tr>
+<tr><td class="k0">&#10003; TEXT</td><td class="k0">click any text on any screen: delete it, change it, or leave a note for Claude to land in the source</td></tr>
+<tr><td class="k0">the TEXT tool&rsquo;s own buttons</td><td class="k0">record the rewrite. The screen shows it now as a preview; Claude lands it in the file<br>record a delete. The text hides now as a preview<br>change nothing now; pin this note to this text for a future session<br>drop this one<br>back to the narrow panel</td></tr>
+<tr><td class="k0">the TEXT tool&rsquo;s TOOLTIP kind</td><td class="k0">the title= attribute of the nearest element that owns one</td></tr>
+</table>
+<h1 class="k12">Appendix &mdash; what is NOT on a hover</h1>
+<p>Two things came up while collecting this and are worth writing down.</p>
+<p><b>Nothing on the world bar&rsquo;s resource segments says what a number will be tomorrow except PAYDAY.</b> Crowns, provisions, salvage and gems each explain what the resource IS, at length and well; only the payday chip tells you what is about to be taken off you.</p>
+<p><b>The two hover systems are not used consistently.</b> The company sheet and the world bar are almost entirely on the game&rsquo;s own tooltip box, where a line can be bold, coloured and instant. The battle screen &mdash; where the player has the least time and the most to read &mdash; is almost entirely on the browser tooltip, which is plain text and waits a second before appearing. Every status badge, every formation badge, the order rail and the zone-of-control warning are on the slow one.</p></div>
