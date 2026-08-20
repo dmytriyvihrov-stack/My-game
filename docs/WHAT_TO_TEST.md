@@ -26,6 +26,53 @@
 
 ---
 
+## ⛔ WHAT FOLLOWED YOU OUT, AND TWO NEW NODES ON THE OPENING ROAD  *(#210 · 2026-08-20 · build log 8f.233)*
+
+**How to reach it in three steps:** new company → win (or lose) the tap-room brawl → walk east.
+The road is now **hold → The Wheel-Rut → The Alder Cut → The Hollow Tree → Blood on the Road**,
+four days where it was two. The card is on The Alder Cut.
+
+**What it is.** Four of them on the road behind you. Two of the faces were at the Three Bells, and
+they are the men who ACTUALLY lived through your brawl - kill Harl and he is not there, kill
+everybody and the card says so and the friends came anyway. One of the four is ratkin with a dock
+hook. Two of them are still drunk.
+
+**Three doors, three currencies:**
+
+| door | costs | what happens |
+|---|---|---|
+| 👣 Cut the packs and run with freed hands | **3 provisions** | no fight, no day, nobody hurt |
+| ⚖️ Ask what it would take. Pay it | **40 crowns** | no fight; they go back the way they came |
+| ⚔️ Stand in the road | **free at the pick** | the fight, and you keep everything |
+
+**What should happen**
+
+- **Grausen Hold sits higher on the map** and out of the river channel it was standing in.
+- The two men from the tap-room are **named on the card AND on the battlefield**, and they are the
+  same two. If your brawl ended with nobody alive on their side, the card says *“Not one of these
+  faces was at the Three Bells. They did not have to be.”*
+- With an empty larder or under 40 crowns those doors go **grey with the reason on them**, before
+  they are pressed. The fight door is always live, so you can never be stuck.
+- The fight should be **won**, and end with the survivors on their knees: let them go, strip them,
+  or no prisoners. It costs about a fifth of the company's blood, two days before Blood on the
+  Road, which is the real price of the free door.
+- **If you lose it** they take **40 crowns and 3 provisions and no more** - exactly what you would
+  not pay them - and the run continues.
+- Payday now falls on the fourth day, at The Hollow Tree, so you arrive at Blood on the Road with
+  about **86 crowns instead of 107**. That is the two extra days, and the purse was deliberately
+  not raised to cover them.
+
+**What would be a bug**
+
+- A name on the card that is not on the battlefield, or a man you killed in the tap-room walking
+  the road.
+- “One face was at the Three Bells” when two of them are standing there.
+- Losing the fight ending the run, or emptying the whole chest instead of taking 40 and 3.
+- Any node plate on the west end sitting on another one, or a road price landing on a name.
+- The Alder Cut has **no painting on the map** yet, only the diamond mark. That is a shipping
+  state and not a bug: the card has no art either and both are a request away.
+
+---
 ## ⛨ THE CAPTAIN'S FIRST TOOL, AND THE WALL THAT REFUSES A SCRUM  *(#208 · 2026-08-20 · build log 8f.231)*
 
 Three rulings from the skill-tree session that the battle could already express. The tree itself
