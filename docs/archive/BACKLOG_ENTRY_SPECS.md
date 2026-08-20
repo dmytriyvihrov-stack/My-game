@@ -3698,7 +3698,8 @@ the same weapon rules the player does"* is the argument for it, and this entry d
 
 ⚑ **Picture before code**: the gate picture is the sheet's stat band with the digits on, and the
 hover open on STRENGTH, captured off the running build once the rungs render. Until then the
-mockup page `shots/204_ladders.html` (the artifact published with this spec) is the shape.
+mockup page `shots/204_ladders.html` (the artifact published with this spec) is the shape, and
+`tools/stat_ladder_calc.js` (`node tools/stat_ladder_calc.js`) is the arithmetic behind every number here.
 
 ### The migration, which is the real size of the work
 
@@ -3743,3 +3744,412 @@ two of today's points on STR and four on AGI**, so nothing can be carried over a
    alone.
 5. **Rung 0's word**: *Weak* (kept from today's table) against *Not strong*, which is today's word
    for the human 7-8 that most random recruits roll.
+
+### Round two, 2026-08-19, the same day: the body on the blow, the capstones, and the other two stats sketched
+
+His seven points, verbatim where they decide something: *"also add negative things right (for
+example strength of ratkins)"* · *"Размер умножает и ближний урон. И вероятность попасть (легче по
+большому, чем по мелкому)"* · MORALE: *"Стартовый дух (мораль + мораль на карте) · Скорость
+добавления / убавления морали"* · INTELLECT: *"Получаемый опыт · Дальность действия абилитис · Маг
+урон"* · *"На максимальном или пред максимальном уровне хочется добавить что-то жесткое. Например
+на уровне силы: Не падает, когда здоровье отрицательное - остается с 1 ХП. Ловкости: +1 Хекс.
+Интеллект: Доп 2 перка (?). Мораль: Бонус морали к союзникам рядом в начале хода"* · *"урон в спину
+- фланги - не уверен, куда это. Так-же, мне кажется, к морали можно добавить % не потратить действие
+на своем ходу"* · *"Помоги, пожалуйста, грамотно развести эти вещи - добавить в баланс и чтобы катать
+было интересно и приятно."* The page `shots/204_ladders.html` is the round-two picture.
+
+**THE BODY IS ONE TABLE NOW, AND IT MULTIPLIES THREE THINGS.** Size on melee is taken (it was the
+recommendation); the to-be-hit half ALREADY EXISTED as two rules in two places (`RACEDODGE` ratkin
++5 / ogre −5 and `SIZEHIT` +6 on a size-2 target, which together made the ogre 11 easier to hit than
+a human) and becomes one column:
+
+| body | hitpoints | melee dice | to be hit | replaces |
+|---|---|---|---|---|
+| small (ratkin) | ×0.75 = 42 | ×0.9 | −5 | `RACEDODGE.ratkin` +5 |
+| medium (human) | ×1 = 56 | ×1 | 0 | |
+| large (ogre) | ×1.25 = 70 | ×1.1 | +10 | `RACEDODGE.ogre` −5 and `SIZEHIT[2]` +6 |
+
+The step stays the race's (`RACESTEP`) and is not on this table. A HUGE row (the Fen-Mother's +12)
+is added when the enemy is moved onto it. **With the body on the blow the seven-body table closes on
+both races**: Skree 11-15 (today 10-14), Ash 12-16 (11-15), Bruht 37-56 (38-57). What remains is
+the two human founders at −8% (the flat) and the archer at −12% (the bow moved to STR); both still
+his call, below. `tools/stat_ladder_calc.js` carries `SIZE_MELEE`.
+
+**NEGATIVES ARE SHOWN, NOT IMPLIED.** Rung 0 prints its digit in red (`#c15d55`, the unpaid red)
+and its minus figures; a ratkin's −1 STR lean lands most of them there, so *"мало силы"* is a line
+on the sheet. The race hover lists `−1 STRENGTH` as a RUNG, not a lean. ⚠ The one gap: the floor is
+0, so a −1 injury on a body already at 0 takes nothing. Accept (rare: ratkin + a STR wound), or let
+the injury take its 10% of hitpoints directly when the rung cannot fall. Open item 8.
+
+**RUNG 5 IS A CAPSTONE ON EVERY LADDER, AND RUNGS 2-4 STAY NUMBERS.** His four, made into rules:
+
+| | capstone | the rule |
+|---|---|---|
+| STR 5 | **STANDS** | once a fight, the blow that would drop them leaves them at 1 hitpoint |
+| AGI 5 | **FLEET** | +1 hex of step, every turn. ⚠ The one place AGI touches the stride, which `STATHELP` says belongs to the race; a capstone is allowed one exception and this is it (ratkin 6, human 5, ogre 4) |
+| INT 5 | **TWICE-TAUGHT** | two perk points, now (his *"доп 2 перка (?)"*). The alternative that is not one-shot: +1 perk point and the tree's next tier opens one level early |
+| MOR 5 | **STANDARD** | allies beside them gain +5 nerve at the start of their own turn |
+
+Because rung 5 is the capstone, **STR's ceiling is +25% hp / +20% melee** (today's formula allowed
++55% melee at STR 18, which nobody reached). If that is too low, rung 4 becomes *+15% hitpoints ·
++10% melee*. AGI rung 4 becomes *+5 to hit · +5 dodge* so the held total at 4 is +10/+10.
+
+**INTELLECT, SKETCHED FOR ITS OWN ITERATION** (*reach and growth*): 0 Slow-witted −10% experience ·
+workings −10%, −5 to land · 1 Sensible base · 2 Quick to see it +10% experience · 3 Clever **the
+opening: +5 to hit per extra body on your target** · workings +15% · 4 Sharp +1 range on workings
+and shots · workings +15% · 5 TWICE-TAUGHT. ⚠ Today a working multiplies by `1 + 0.05 × INT`
+(`D.spell`, Marrow at 14 is ×1.70) and aims at `38 + 3.4 × INT`: rung 1 means the spell dice get
+RE-BASED to the rung-1 figure, not kept. `D.learn` (the XP rate, ±3%/pt) becomes the ±10% rungs.
+
+**MORALE, SKETCHED** (*tempo and the line*): 0 Nervous −10 nerve · loses nerve ×1.25 · 1 Fairly
+brave 90 nerve, starts HAPPY at 70, the road mood adds or takes as today · 2 Steady +10 nerve
+(starts 8 higher with it) · 3 Brave loses nerve ×0.75 · 4 Fearless **carried: 10% of strikes cost no
+action** (his idea; printed in the log when it fires, and it is the ONE random rung in the whole
+system) · 5 STANDARD. The rate rungs hook the one nerve-change site (`u.morale=clamp(u.morale+amt…)`
+at ~10473). ⛔ **TODAY MORALE ALSO ADDS UP TO +14% DAMAGE TO EVERYTHING** (`D.bonus` = MOR × 0.012,
+the Captain +7%, Bruht +14%), silently, and `STATHELP.MOR` has to say so in prose. The ladder drops
+that and **the nerve LADDER carries it instead** (HAPPY +5%, IT ROCKS +10% in place of today's +5%),
+so the bonus is a thing on the plaque that can be lost. ⚠ That is the one sketch item that moves a
+live number and it WAITS for the MOR iteration; until then `morBonus` stays and the STR/AGI build is
+measured with it in.
+
+**WHERE THE FLANK GOES (his 6).** Attacking from the side or back (`arcOn`) stays a rule of the
+ground for everybody with no stat on it: it is what the first fight teaches, and a stat on it reads
+"only clever people flank". Being SURROUNDED is where a stat already lives and nobody can see it:
+`flankPow = 8 + INT` per extra body (~17 at INT 9). It becomes a base of 15 for everybody plus INT
+rung 3's +5, which is `STATHELP.INT`'s *"finds the opening"* finally being true. AGI stays out by his
+own rule.
+
+**HOW IT READS (his 4 and 7), and the six rules that keep it interesting rather than merely clear:**
+
+1. **A rung is a sentence**, and the hover is the rulebook, six lines, the same shape on four stats.
+   The promotion card says what the next rung buys before it is pressed. Clearer, yes, by that
+   mechanism and not by fewer numbers.
+2. **Each stat's rungs are a different KIND of thing** - body (STR), dice (AGI), reach (INT), tempo
+   (MOR) - so a stat point is a choice between kinds. Four ladders of +% would be one choice four
+   times, and that is the failure to design against.
+3. **One random rung in the whole system** (MOR 4), and it prints when it fires.
+4. **Capstones stay rare.** One to two stat points an act (#174) means a specialist reaches 5 in act 3
+   and a generalist never does; do not cheapen rung 5 to fix that, it IS the build choice.
+5. **One gift a rung; two only when they are one idea** (+20% melee · +10% bow is one idea, the arm).
+6. **Rung 1 is today's human everywhere**, so the harness is the gate and the only knobs are the
+   flat, the body table and the rung sizes.
+
+**The body table is also the road to the enemy**: an enemy plaque can later read `STR 3 · AGI 1` off
+the same rows, which is his *"легче объяснить и союзников и врагов"* as a table rather than prose.
+Not this entry.
+
+### Open for his ruling, round two
+
+1. ~~Size on melee~~ taken; to-be-hit folded into the body table (small −5, large +10).
+2. The founders' −8%: accept, or flat +3 roster / +2 enemy.
+3. The archer's −12%: accept, or the bow's +10% one rung earlier (rung 2).
+4. Armour's AGI penalties: drop (the harness band already charges dodge for weight), or plate alone at −1.
+5. Rung 0's word: *Weak* or *Not strong*.
+6. The four capstones as drawn; and whether STR rung 4 also carries +10% melee.
+7. Morale's hidden damage onto the nerve ladder, at the MOR iteration.
+8. A wound on a rung-0 body.
+
+### Round three, 2026-08-19: nine rungs, the race carries the body, one bracket, and "deep beats wide"
+
+His points, verbatim where they decide: *"щас в прототипе вот стоко значений - нужно просчитать их
+все тоже. За негативные должен идти дебаф. Местами, он может быть не настолько жесткий, как баф"*
+(with the screenshot of the nine-word STRENGTH hover) · *"лучше статы даже не к размеру а к рассе
+тоже привязать... или какие-то на рассу, какие-то на размер как лучше и понятнее"* · *"Слишком
+сложная формула урона - нужно проще - максимально просто, пусть и это изменит часть текущих
+механик. Это ж все на тесты"* · *"leave armor as it is now - lets focus on the logic now · Judge some
+answers based on here"* · *"The more it is clear how the system works and why unit is stronger or
+weaker and what it provides, the better experience"* · and mid-turn: *"I feel i don't want straight
+easy progression in arithmetics as battle brothers - somehow this system feels encourages
+specialisation more."* **THIS ROUND SUPERSEDES THE 0-5 LADDERS ABOVE.** The page
+`shots/204_ladders.html` and `tools/stat_ladder_calc.js` are at round three.
+
+**NINE RUNGS, −4..+4, 0 IS THE ORDINARY HUMAN, AND THE NUMBER IS SIGNED.** Every one of `TELLS`'
+nine words keeps its place and gains a digit: STR *No use lifting anything −4 · Feeble −3 · Weak −2 ·
+Not strong −1 · Strong enough 0 · Strong +1 · Very strong +2 · Enormously strong +3 · Monstrously
+strong +4*; AGI *All thumbs −4 · Hopeless −3 · Clumsy −2 · Heavy-handed −1 · Steady enough 0 ·
+Handy +1 · Quick +2 · Very quick +3 · Uncannily quick +4*. ⚠ This is the one departure from his
+*"база обозначена 1"*, and the reason is his own point 0: with four rungs under the base a minus
+sign IS the debuff, and `STRENGTH −2 Weak` needs no legend where `STRENGTH 3` (of 9, 5 ordinary)
+would. The one-based alternative is 1-9 with 5 as ordinary and changes no table. **His call.**
+
+**THE RACE TABLE CARRIES THE BODY (his а).** Today the size already comes off the race
+(`RACEMOD[r].size`), so "size" is a second word for one fact. One table, one hover on the race chip:
+
+| race | hitpoints | melee | to be hit | step | lean (rungs) | replaces |
+|---|---|---|---|---|---|---|
+| human | 56 | 0 | 0 | 4 | INT +1 | `RACEMOD` int +2 |
+| ratkin | 42 (×0.75) | −10% | −5 | 5 | STR −1 · AGI +1 | `RACEMOD` str −1 agi +1 · `RACEDODGE` +5 |
+| ogre | 70 (×1.25) | +10% | +10 | 3 | STR +1 · AGI −1 · INT −1 · MOR +1 | `RACEMOD` str +2 agi −1 int −1 mor +1 · `RACEDODGE` −5 and `SIZEHIT` +6 |
+
+The `big` trait (+16, as today) and the monsters (the Fen-Mother's +12 to be hit) are the two
+exceptions and keep their own row. ⚑ **Hitpoints are the MULTIPLYING column** (his first-message
+sentence: big AND strong); melee and to-be-hit are lines in the bracket, because of (б).
+
+**ONE BRACKET (his б).** `DAMAGE = weapon dice × (1 + Σ STR rungs + race + nerve + perks)`. **No
+flat.** Today's `round(0.3×STR)` goes INTO the weapon row once (+2 both ends on every `GEAR` and
+enemy act row, the enemy's `dmgBonus:2` folded the same way), so the arming sword reads **18-26** on
+its own row and the bracket has nothing in it that is not a line on the aiming card. `HP = race hp ×
+(1 + Σ STR rungs)`; `to hit = 68 + Σ AGI rungs + the target's race + the card`; `dodge = 14 + Σ AGI
+rungs + harness + nerve`. Four lines, one multiplication.
+
+**THE STR LADDER, this rung gives / held:** −4 −15% melee −8% bow (held −15% hp · −30% melee) · −3
+−10% hp · −2 −15% melee −8% bow · −1 −5% hp · 0 base · +1 +10% hp · +2 +20% melee +10% bow · +3 +15% hp
+· +4 +20% melee +10% bow **+ STANDS** (held +25% hp · +40% melee · +20% bow). Today's formula ran
++50%/−22% over the same span; **the debuff is softer than the buff on purpose.**
+**THE AGI LADDER:** −4 −3 dodge · −3 −3 hit · −2 −3 dodge · −1 −3 hit · 0 base (68 · 14) · +1 +4 hit ·
++2 +4 dodge · +3 +4 hit · +4 +4 dodge **+ FLEET** (held +8 · +8, step +1). The roster's 7-point to-hit
+spread is 7 again (62..76 before the race). **INT and MOR** are sketched on the same nine-rung shape
+on the page (INT: experience ±, the opening +5/body at +2, +1 range at +3, workings %, TWICE-TAUGHT
+at +4; MOR: nerve ±10, loss rate ×0.75/×1.25, a rung lower start at −3, his 10% free strike at +3,
+STANDARD at +4) and are their own iteration.
+
+**THE SEVEN BODIES, rungs read off today's WORDS** (the sheet's words do not change, they gain a
+digit): Captain 0/−1 · Vesna 0/0 · Marrow −1/−1 · Ilka −1/+1 · Skree −3/+3 (+2, and +1 twitchy) · Ash −3/+2 ·
+Bruht +2/−3 (−2, and −1 big). Measured: **Skree 10-14 → 10-14, Ash 11-15 → 11-15, Bruht 38-57 → 36-55**;
+hitpoints and to-hit within three everywhere (the Captain hits at 65 instead of 68 because his
+sheet says *Heavy-handed* and today's formula quietly treated his 8 as the middle); the founders'
+swing −8% (the flat moving into the row) and the archer's −12% (the bow moved to STR) stand, inside
+what the harness reads at n=50. The wound-at-the-floor question is closed by the four lower rungs.
+The enemy: acts' dice +2, stands on STR −1, hp/skill/dodge authored as before.
+
+**DEEP BEATS WIDE (his mid-turn note), and it is the lever to protect.** The rungs are not equal
+steps: +1 is small (+10% hp), +2 real (+20% melee), +3 bigger, +4 the capstone nothing else buys; and
+the negatives bend the other way (−1 nearly free, −4 a cost but softer than +4 is a gain). Four
+points into four stats is four small things, four into one is a capstone - the curve bends upward,
+which is the opposite of Battle Brothers' flat per-point arithmetic and is what he felt. ⚠ The
+price: a promotion must be able to refuse (a stat at +4 has *no higher rung*, and the card offers
+the other three), and one-to-two stat points an act keeps the capstone an act-3 thing for a body
+that went all in - that pace is protected, not sped up.
+
+**RULINGS TAKEN ON HIS WORD ("judge some answers based on here")**: armour untouched · all nine
+words kept · the flat into the weapon row, the −8%/−12% accepted pending the harness · race carries
+the body · capstones ride ±4 with their number · morale's hidden damage to the nerve ladder at the
+MOR iteration · the flank: side/back a ground rule, "surrounded" = base 15 + INT +2's +5.
+**Still his:** the signed 0-based numbering; whether INT/MOR's sketched KINDS are the right ones.
+
+**The migration at nine rungs** (replaces the table above): `RACE{}` one table (hp, melee, tbh,
+step, lean) replacing `RACEMOD`, `RACEDODGE`, `SIZEHIT[1..2]`, the `size` field · `rollRecruit`
+rolls −1/0/+1 per stat at 25/50/25, then the lean · traits ±1 rung (twitchy +1 AGI, big −1 AGI,
+vet −1 AGI, the two STR traits −1) · trinkets (tooth +1 STR, +2 on an ogre; cubtooth +1 STR +1 AGI)
+· injuries −1 rung · `p.st[k]++` capped at +4 with the refusing card · `TELLS[k].s` indexed by rung
+−4..+4 · `thews` → `STR_RUNG` held sum, `D.hp/hit/dodge` → the four lines · `GEAR` and enemy act dice
++2 once, `dmgBonus` 0 · saved runs mapped once by band (≤2 −4 · 3-4 −3 · 5-6 −2 · 7-8 −1 · 9-10 0 ·
+11-12 +1 · 13-14 +2 · 15-16 +3 · 17+ +4) · armour `agi` rows LEFT AS THEY ARE at his word, and read as rungs they now weigh more: mail −1 =
+−3 to hit, plate −2 = −3 to hit −3 dodge, wardrobe −3 = −6 to hit −3 dodge, against today's −1.2
+hit / −1 dodge a point. Noted, not changed.
+
+### Round four, 2026-08-19: INT and MOR off the engine's own dials, the class leans, the race leans all four, the givens, the full sheet, and no crit
+
+His seven, verbatim where they decide: *"str and agi feel work quite decent"* · *"Lets add more decency
+to morale and int (what is working, have no idea)"* · *"Class adds also something - to stng or agility
+(battle mage ads to intl and morale)"* · *"Race have influence on morale and int also (so stats qud be
+spread more equally)"* · *"What parameters as hit / dodge are we taking as for granted?"* · *"Not sure i
+get first raw in the colum. Maybe you can show their full stats (and additional modefiers)"* · *"I am
+thinking about critical damage - should i add it, how do you feel? Or backtab raplaces it..."* · and
+mid-turn: *"i feel it is important to make this thing diferentible - i havent seen it like that and i
+vant to play and bring some freshness to here."* The page `shots/204_ladders.html` and the FULL SHEET
+block at the end of `tools/stat_ladder_calc.js` are at round four.
+
+**WHAT INT AND MOR DO TODAY, WIRED (his "have no idea"):** INT: the opening `flankPow = 8 + INT` to hit
+per extra body on the target (~17 at INT 9, and invisible), a working's damage `×(1 + 0.05×INT)`
+(`D.spell`, Marrow ×1.70), a working lands at `38 + 3.4×INT` (`arcSkill`), experience ±3% a point
+(`D.learn`); off the field nothing reads it. MOR: capacity `60 + 3×MOR` (`D.moral`), every fight
+starts at 78% of it (`START_NERVE`), events `MORALE{ownKill +30, allyKill +10, tookHit −5, allyDied −14,
+nearDeath −15}` weighted by `nearWeight`, a quiet turn climbs `MORALE.recover` 8 toward the start
+(`mrec` traits add), `STATES` set the hit/dodge penalties per rung, and **silently `D.bonus` = MOR ×
+0.012 damage on everything**. **The ladders keep exactly these dials and make them rungs.**
+
+**INT (reach and growth):** −4 workings −15%, −5 to land, the opening −5 · −3 −10% experience · −2
+workings −10%, −5 to land · −1 −5% experience · 0 experience ×1, the opening 15 a body, the working's
+own dice at 38+ · +1 +10% experience · +2 the opening +5 a body, workings +15% +5 to land · +3 +1 range
+on workings and shots · +4 workings +15% + **TWICE-TAUGHT** (two perk points). The working's dice get
+RE-BASED so rung 0 is the dice.
+**MOR (tempo and the line):** −4 never climbs back on its own · −3 starts the fight one rung lower ·
+−2 loses nerve ×1.25 · −1 −10 nerve, climbs 6 · 0 90 nerve, starts HAPPY at 70, loses ×1, climbs 8 ·
++1 +10 nerve (starts 8 higher), climbs 12 · +2 loses ×0.75 · +3 **carried**: 10% of strikes cost no
+action (his; logged when it fires; the one random rung) · +4 **STANDARD** (+5 nerve to adjacent allies
+at their turn start). The hidden damage moves onto the nerve rung: HAPPY +5%, IT ROCKS +10%.
+
+**THE CLASS LEANS (his 3), one rung each, two for the hybrid:** captain MOR +1 · spear STR +1 · archer
+AGI +1 · mage INT +1 · warmage INT +1 MOR +1 (his example) · cutter AGI +1 · brute STR +1 · none 0 (the
+stranger's rung arrives WITH the pick on the sheet, so the choice shows its number).
+**THE RACE LEANS, ALL FOUR (his 4):** human INT +1 · ratkin STR −1 AGI +1 **INT +1 MOR −1** · ogre STR +1
+AGI −1 INT −1 MOR +1. The ratkin as the cleverest and least brave race is what the clan cards already
+say. Seats differ (14/20/33) so rows need not sum to zero.
+
+**THE GIVENS (his 5), the ordinary human before any rung:** 56 hp (×0.9 bow/caster) · 68 to hit
+(HIT_EASE inside) · 14 dodge · step 4 · 2 actions · 90 nerve, starts 70, climbs 8 · experience ×1 ·
+the opening 15 · the weapon's dice · back +30/×1.25, flank +15/×1.10. A rung only ever moves one of
+these by a stated amount; the plaque = givens + rungs + the card, no third source.
+
+**THE FULL SHEET (his 6): `final = born + race + class + trait (+ gear)`**, four named lines per stat,
+the founders AUTHORED so `born` lands them on today's word; a recruit rolls born −1/0/+1 a stat:
+Captain STR 0 · AGI −1 · INT +1 (human) · MOR −2 (born −2, captain +1, stubborn −1) → 56 hp, 19-28,
+65/14, nerve 80 · Vesna 0 (born −1, spear +1) / 0 / 0 (born −1, human +1) / 0 → 56, 19-27, 68/14, 90 ·
+Marrow −1 / −1 / +2 (born 0, human +1, warmage +1) / −1 (born −1, warmage +1, wind-touched −1) → 48,
+9-13, 65/14, 80 · Ilka −1 / +1 (archer) / 0 / 0 → 48, 18-25, 72/14, 90 · Skree −3 (born −2, ratkin −1)
+/ +3 (ratkin, cutter, twitchy) / −1 (born −2, ratkin +1) / −3 (born −1, ratkin −1, twitchy −1) → 36,
+10-14, 76/18+5, 80 starts OK · Ash −3 / +2 / 0 / 0 (born +1, ratkin −1) → 36, 11-15, 78/18+5, 90 ·
+Bruht +2 (born 0, ogre +1, brute +1) / −3 (born −1, ogre −1, big −1) / −3 (born −2, ogre −1) / +1
+(ogre) → 93, 36-55, 62/11−10, 100. ⚠ Two honest moves: the Captain IS *Easily frightened* today
+(stubborn −5 on the old scale) and the card prints it; Skree's nerve 69 → 80 because −3 costs a lower
+START, not capacity. Both are one number to re-author.
+
+**NO CRIT STAT (his 7), and the reasoning is the pillar.** The back-stab IS the crit and the better
+kind: +30 to hit and ×1.25 from behind, +15/×1.10 from the flank, on the aiming card BEFORE the swing,
+with the red ring on the board saying where. A crit chance is a hidden roll the player learns about
+after the blow; it would also put a second dice stat beside AGI and a second random rung beside MOR +3.
+**If bigger moments are wanted: BACK ×1.5 instead of ×1.25, one number in `ARC`, called "a clean hit"
+on the card.** Position over luck.
+
+**WHAT MAKES IT DIFFERENT (his mid-turn note), and what to protect:** nobody in the genre does the
+stat as a SENTENCE: BB/Wartales/Urtuk are a 20-120 number and a formula to look up; here the stat is
+the word the sheet already prints, a small signed digit beside it, each rung one line read aloud, and
+the four lines under it (born, race, class, trait) are the biography as arithmetic. ⛔ **If a rung ever
+needs a formula to explain, it is wrong.** Three cheap extensions once it is in: a capstone is a
+MOMENT (STANDS barks, logs, becomes a road memory; FLEET lights a sixth hex); the word is a TITLE the
+road can speak (cards already read traits and race, they can read a rung: *the Monstrously strong
+one*; a wall recruit is *Feeble, but Uncannily quick*); the enemy is written in the same sentence once
+templates sit on the race table (*ogre · Very strong · Clumsy*), which is #89 part four's "why is this
+unit stronger" with the same four-line answer on both sides. And NOT for freshness: a fifth stat, a
+crit, a luck. Fresh here is fewer numbers that mean more.
+
+**Order of build, his call pending:** STR + AGI + the race and class tables first (one migration
+list), INT + MOR as the second pass on the same scaffolding; gate `ARENA.match()` eight fights n=50 a
+side before/after. Still his: the class leans as listed, the ratkin INT +1 / MOR −1, the INT/MOR
+ladders as drawn, BACK ×1.5 or not, the signed 0-based numbering.
+
+### Round five, 2026-08-19: the page splits into FIXED and OPEN, the mage rename, and six ideas with a home each
+
+His notes: *"Давай то что щас батл маг назовём 'маг', а старый маг удалить"* · *"Морально или
+интеллект сопротивление ефыектам"* · *"Шов бекстеб модифаер"* · *"Капитан е бит беттер статс
+(бекстори бонус)"*, later *"Капитан борн скорее сила +1 и ловкость +1"* · *"Джек оф олл трейтс -
+когда не выбирал, по ходу учится у всех"* · *"Шов клеер модифаер оф муд на карте. Что оно даёт"* ·
+*"Один из статов может разово добавить верхний модифаер к урону"* · *"Удали оттуда отработанное (как
+про крит) - добавь конкретику про инт и мораль"* · *"Думаю еще добавить бекстори (и она сможет
+расскрыться типа как в даркест данжне 2 по мере развития - и по мере развития дать бонус)"* ·
+*"там можеш зафиксить вещи - которые точно да (сила и аджилити) и идеи / наброски и опции по
+другим."*
+
+⛔ **THE PAGE IS NOW TWO PARTS AND THAT IS ITS SHAPE FROM HERE.** Part I is FIXED (STR, AGI, the
+race body table, the four class leans that touch them, the givens, the founders); Part II is IDEAS,
+SKETCHES AND OPTIONS (INT, MOR, the mood chip, resistances, the heavy blow, the jack of all trades,
+the backstory). The settled arguments were DELETED from the page rather than archived there - the
+crit reasoning, the today-against-proposal deltas of rounds one to three, the taken rulings - and
+they live in this file. **A decision page that keeps its own history stops being a decision page.**
+
+**THE MAGE RENAME, and it is a deletion.** `CLASSES.warmage` becomes **`mage`** (INT +1 · MOR +1, the
+working stave, stands in a line) and **the old `mage` row is deleted**. ⚠ Touch points to sweep:
+`CLASSES.mage`/`.warmage`, `CLS_BY_RACE` (human lists both, ratkin lists warmage), `KIND_BY_CLS`
+(both map to kind `mage`), `START_GEAR.mage` and `.warmage`, `isCaster()`, the `windtouched` trait's
+`cls:['mage','warmage']` gate, `MUTACT`/perk pools keyed by class, and every save with
+`cls:'warmage'` (map on load). Marrow's `cls` changes and nothing else about him does.
+
+**THE CAPTAIN IS BORN BETTER, and it is the backstory paying.** born **STR +1 · AGI +1** → the sheet
+reads *+1 Strong · +1 Handy*, 62 hitpoints, 72 to hit (he was 0 / −1). His MOR stays −2 (born −2 ·
+captain +1 · stubborn −1), which is *Easily frightened* and honest: `stubborn` costs −5 on today's
+scale. ⚑ **This is the first live use of the backstory idea below** and the reason to keep the
+`born` field visible in the hover: a bonus with a story attached reads as a character, a bonus off
+a formula reads as a buff.
+
+**SHOW THE BACK-STAB MODIFIER.** `ARC` is `+30 / ×1.25` from behind and `+15 / ×1.10` from a flank,
+on the aiming card as a line today. It joins the sheet's fixed row: `HIT 72 · DODGE 14 · STEP 4 ·
+BACK +30`, so the rule is READ once off the field instead of DISCOVERED on it. (The `×1.5` option
+from round four stands and is unrelated to the display.)
+
+**RESISTANCE TO EFFECTS: THE STAT THAT AIMS A THING IS THE STAT THAT SHRUGS IT OFF.** Two kinds of
+effect exist and each already runs through one door: a WORKING landing on a body goes through
+`arcSkill`, and everything that hits the MIND (fear, the circle's −10, the fire at its back, drink)
+goes through the one `mor(u, amt)` call. So `INT +2` gains *"workings against them land −5"* (the
+mirror of its own +5) and `MOR +2`'s *"loses nerve ×0.75"* IS the mind's resistance, already drawn.
+No new stat, no new screen, and the sentence a player learns is one line long.
+
+**THE HEAVY BLOW (his "один из статов может разово добавить верхний модификатор к урону").** Home:
+**`STR +3`**, beside the +15% hitpoints: *"HEAVY: once a fight, one blow at ×1.5, chosen."* It is a
+BUTTON and not a roll, which is why it is not the crit this file already refused: the player spends
+it. Options named so they are not re-invented: `INT +3` (the first blow into a back arc is ×1.5, the
+opening SEEN) or `MOR +3` in place of the 10% free action. **Recommended STR +3.** ⚠ If it lands
+there, STR +3 carries a number and a moment while +4 carries the capstone; that is deliberate
+(depth pays twice) and it is the one rung with two gifts.
+
+**THE MOOD ON THE MAP, SAID PLAINLY.** Today it is one-sided and unprinted: `unitFrom` adds
+`Math.min(0, G.morale)` to the starting nerve, so a GOOD company mood gives a body nothing and a bad
+one takes silently. Proposal: symmetric, and on the chip's hover, one line a rung: `😄 +8 nerve at
+the start of every fight · 🙂 +4 · 😐 0 · 😟 −4 · 💀 −8 (and the fight starts one rung lower)`. The
+number on the chip is then the number on the plaque, which is this project's one-receipt rule.
+
+**JACK OF ALL TRADES (the stranger who never picked).** Sketch: no signature and no class lean; each
+level he takes a perk from ANY class's tier-1 pool; and each act he gains +1 to the stat of the class
+he stood beside most (adjacency is `udist`, already counted). Cheaper on the wall (today's −25%),
+slow to matter, and by act 3 the one body that can be anything. ⚑ **It costs no new system**: the
+perk pools and the adjacency both exist; what it needs is a rule for WHEN the +1 lands and a line on
+the sheet saying who he has been learning from.
+
+**THE BACKSTORY, UNFOLDING (DD2's shape).** Three chapters a body; a chapter opens on a trigger (a
+level, a named fight, a road card that matches) and prints on the sheet as prose; the third pays a
+rung or a named bonus. The Captain's is already spent (born +1/+1). Uses `p.mem` for triggers and the
+sheet's ledger for display. ⚠ **It is a CONTENT system and needs its own entry**: three chapters ×
+every body is a writing job, and the rule about which bodies get one (founders only? anybody who
+survives an act?) is the first question.
+
+**BUILD ORDER, so the fixed half does not wait:** pass one = STR + AGI rungs, the race body table,
+the four class leans that touch them, the founders' `born`, the flat into the weapon rows, the sheet
+digit and hover, the refusing promotion, the BACK +30 row; INT and MOR keep today's wiring. Gate:
+`ARENA.match()` eight fights n=50 a side before/after, plus the sheet overflow probe against a
+`git show HEAD:` tab. Pass two = INT and MOR onto the same scaffolding, the mood line, the mage
+rename, the nerve-rung damage. Later, own entries: the jack of all trades, the backstory, the enemy
+on the race table.
+
+### Round six, 2026-08-19: the pixel arms, nine of them, one per Strength rung
+
+His ask (Ukrainian): *"спробуй ще додати оці параметри сили до сили до кожного рівня - подивитись, як
+воно буде. І онови частину статів картки капітана з ними - як вона буде виглядати (додав файл з
+кодекса з руками). Вони повинні бути маленькими і давати швидке візальне читання харк-ки."*
+
+⚑ **THE HANDOFF WAS ALREADY KEYED TO THIS ENTRY'S RUNGS, WHICH IS WHY IT COST NOTHING.**
+`prototype/assets/strength-biceps-pixel-v7/` (GPT, the same evening) ships **nine icons at 16px and
+nine at 24px**, RGBA with real alpha, plus `strength-levels.json` mapping **level −4..+4 to this
+file's own nine words** (`level-minus-3-feeble.png`, `level-plus-2-very-strong.png`). Nothing had to
+be sliced, renamed or re-keyed. ⚠ v1-v6 are earlier passes in the same folder and **v7 is the one**;
+the sprite sheets at the top of `prototype/assets/` are previews, not the ship.
+
+**Wired into the page** (`shots/204_ladders.html`, embedded as data URIs so the artifact stays
+self-contained): a 24px arm under the digit on every rung of the STRENGTH ladder, the nine in a row
+at real size, the hover with 16px arms in the number column, and the Captain's card in three
+arrangements.
+
+⚑ **THE SET WORKS BECAUSE IT IS A SEQUENCE, NOT NINE PICTURES.** The silhouette grows monotonically
+and the colour climbs skin → orange → red with veins at the top, so a row sorts itself by eye and the
+four negative rungs read as *less arm* rather than as a different icon. ⚠ **The bottom two are told
+apart only by the hand and the bend at 24px, and at 16px −4 and −3 are nearly one shape.** That is
+fine on a card being read and not enough in a list, which is the argument for the digit staying.
+
+⛔ **THE THREE ARRANGEMENTS, AND THE ONE TO BUILD IS A:**
+- **A · 24px, the icon in its own COLUMN before the value.** Same arrangement `.sart`/`.scol` already
+  uses for the item pictures on this sheet (`.claude/rules/static-event-art.md`: *an item icon is a
+  COLUMN, not a character on a line*), so it is a pattern the sheet has rather than a new one.
+- **B · 16px inline** is the fallback. ⚠ **The stat rows are 16px in a column that measures exactly
+  678 into 678** (#200), so a 24px icon adds ~8px a row and ~32px over four. **That measurement is
+  taken in the running build before A ships**; if it costs the column, the art column carries the
+  16px picture inside a 24px box rather than the row growing.
+- **C · the picture INSTEAD of the digit is a trap.** It reads beautifully on one row and fails the
+  moment two bodies are compared: the eye tells −3 from +2, never −3 from −4. **Picture and number
+  together, always.**
+
+⛔ **AND THE REAL DECISION IS WHAT IT COSTS THE OTHER THREE STATS.** Once Strength has a picture,
+AGILITY, INTELLECT and MORALE look unfinished without one: **either all four get a nine-icon set in
+the same pixel language and the same climb, or none does.** One illustrated stat beside three bare
+words is #102's wrong-unit bug drawn in pictures. The brief for the other three (same 16/24px, same
+alpha, same `strength-levels.json` shape): a HAND for agility, an EYE or a candle for intellect, a
+HEART or a banner for morale.
+
+⚠ **Two rules the icons obey when they are wired:** they are **decoration for the number and never
+the source** (the rung is the fact; a missing icon falls back to the digit and the word, exactly as
+`ITEM_ICON` falls back to `gGlyph`), and they are keyed **by RUNG, not by body**, so an ogre at +2
+and a ratkin at +2 show the same arm. The picture says what the rung IS, never who is holding it.
+
+⚠ **The pane could not composite** (the usual: a screenshot proves nothing here), so the page was
+checked by its own markup and the icons by `PIL`: nine 24x24 and nine 16x16, RGBA, alpha 0..255,
+496-1057 bytes each. The box measurement that matters is the sheet's, and it happens when pass one is
+built.

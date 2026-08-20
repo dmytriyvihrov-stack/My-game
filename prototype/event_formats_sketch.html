@@ -283,7 +283,15 @@ main{padding:26px 22px}
    stay small. */
 .stg{width:940px;background:#100c06;border:1px solid #5c4a2c;
   box-shadow:0 12px 40px rgba(0,0,0,.7);cursor:pointer;user-select:none}
-.stg .scene4{position:relative;height:392px;overflow:hidden}
+/* 440 and not 392: the stack needs room to grow, and the arithmetic is in the
+   .dropstack comment below. A scene that has to be measured twice gets the
+   number written down. */
+.stg .scene4{position:relative;height:440px;overflow:hidden}
+/* ⚠ THE 1.04 IS WHY `.scene4` REPORTS 19x9 OF OVERFLOW, AND IT IS DELIBERATE.
+   A blurred image has soft transparent edges, so it is scaled up past its own
+   box and cropped. That is a decoration cropped on purpose, which the overflow
+   probe cannot tell from clipped text, so it is written down here instead of
+   being chased later. */
 .stg .scene4 img.back{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
   filter:saturate(.5) brightness(.42) blur(1.5px);transform:scale(1.04)}
 .stg .scene4::after{content:"";position:absolute;inset:0;pointer-events:none;
@@ -294,7 +302,7 @@ main{padding:26px 22px}
   text-shadow:0 2px 12px #000,0 0 26px #000}
 
 /* ── the two flanks ─────────────────────────────────────────────────── */
-.flank{position:absolute;bottom:96px;z-index:3;display:flex;flex-direction:column;
+.flank{position:absolute;bottom:186px;z-index:3;display:flex;flex-direction:column;
   align-items:center;gap:8px;transition:filter .3s ease,opacity .3s ease,transform .3s ease}
 .flank.L{left:24px}
 .flank.R{right:24px}
@@ -319,7 +327,7 @@ main{padding:26px 22px}
 /* LEFT: a square JPEG head with a background, so it is faded into the gloom
    on every edge rather than cut out. Same finding as I - there is no alpha
    to cut, so the treatment has to be one that never needs one. */
-.flank.L .por{width:172px;height:214px;object-fit:cover;object-position:top center;
+.flank.L .por{width:156px;height:194px;object-fit:cover;object-position:top center;
   -webkit-mask-image:radial-gradient(ellipse 62% 58% at 50% 40%,#000 52%,transparent 100%);
   mask-image:radial-gradient(ellipse 62% 58% at 50% 40%,#000 52%,transparent 100%)}
 .flank.L.lit .por{filter:drop-shadow(0 0 22px rgba(217,189,126,.18))}
@@ -327,35 +335,62 @@ main{padding:26px 22px}
 /* RIGHT: the map sight. These ARE cut-outs with real alpha (MAP_ART is PNG,
    #113), so they need no frame and no mask, only the ground shadow the map
    already draws under them. */
-.flank.R .sight{width:216px;height:216px;object-fit:contain;
+.flank.R .sight{width:196px;height:196px;object-fit:contain;
   filter:drop-shadow(0 10px 16px rgba(0,0,0,.85))}
 .flank.R.lit .sight{filter:drop-shadow(0 10px 16px rgba(0,0,0,.85))
   drop-shadow(0 0 20px rgba(217,189,126,.22))}
 
-/* ── the dialogue, dropping in over the middle ───────────────────────── */
-.stg .drop{position:absolute;left:50%;transform:translateX(-50%);bottom:16px;z-index:7;
-  width:560px;background:linear-gradient(to bottom,rgba(31,24,16,.97),rgba(20,15,9,.98));
-  border:1px solid #5c4a2c;box-shadow:0 12px 30px rgba(0,0,0,.8);
-  padding:13px 18px 14px 84px;min-height:92px;display:flex;flex-direction:column;
-  justify-content:center;gap:5px}
-@keyframes dropIn{from{opacity:0;transform:translateX(-50%) translateY(-16px)}
-                    to{opacity:1;transform:translateX(-50%) translateY(0)}}
-.stg .drop.anim{animation:dropIn .26s cubic-bezier(.2,.9,.3,1)}
-.stg .drop .med4{position:absolute;left:14px;top:50%;margin-top:-27px;width:54px;height:54px;
-  border-radius:50%;background:#100c06;
-  box-shadow:0 0 0 1px #6b5330,0 0 0 3px #100c06,0 0 0 4px #3d2f1d,0 6px 16px rgba(0,0,0,.85)}
+/* ── the dialogue, STACKING rather than replacing ─────────────────────
+   (User, 2026-08-14: "чтобы диалог не закрывался а шел как бы один на
+   другой - последний чуть тускнел а актуальный подсвечивался".)
+
+   ⛔ THE ARITHMETIC, BECAUSE IT DECIDED THE SCENE HEIGHT AND WILL DECIDE IT
+   AGAIN. A plate is 92 tall and its HEAD BAND is 46. Each new plate is
+   pulled up by -(92-46) = -46, so exactly one head of the plate above stays
+   visible: its medallion and its name. Three plates therefore stand
+   46 + 46 + 92 = 184px tall, the stack sits 14 off the floor, and its top
+   edge lands at 440 - 14 - 184 = 242. The flanks are anchored at bottom:186,
+   i.e. their feet are at y 254, so the stack crosses them by 12px and the
+   plate is opaque and in front. That reads as depth. Any more and it reads
+   as a collision.
+
+   ⚑ AND THE CAP IS THREE. An uncapped stack grows into the title and off the
+   top of the scene on the four-beat cards, which is the whole reason a chat
+   log scrolls. Three is what fits, so three is the rule, and the fourth beat
+   pushes the first one out. */
+.stg .dropstack{position:absolute;left:50%;transform:translateX(-50%);bottom:14px;z-index:7;
+  width:520px;display:flex;flex-direction:column;align-items:stretch}
+.stg .drop{position:relative;
+  background:linear-gradient(to bottom,rgba(31,24,16,.97),rgba(20,15,9,.98));
+  border:1px solid #5c4a2c;box-shadow:0 10px 26px rgba(0,0,0,.8);
+  padding:0 16px 13px;min-height:92px;display:flex;flex-direction:column;gap:4px;
+  transition:opacity .28s ease,filter .28s ease}
+.stg .drop + .drop{margin-top:-46px}
+/* ⚑ THE TWO STATES THE USER ASKED FOR, AND NOTHING ELSE IS DIFFERENT.
+   `old` is still fully readable where it shows. It is quieter, not disabled. */
+.stg .drop.old{opacity:.72;filter:saturate(.55) brightness(.68)}
+.stg .drop.old2{opacity:.5;filter:saturate(.4) brightness(.55)}
+.stg .drop.cur{opacity:1}
+@keyframes dropIn{from{opacity:0;transform:translateY(-14px)}to{opacity:1;transform:translateY(0)}}
+.stg .drop.cur.anim{animation:dropIn .26s cubic-bezier(.2,.9,.3,1)}
+/* the head band is what survives being overlapped, so it carries the two
+   things you need in order to follow a conversation you can no longer read */
+.stg .drop .head4{height:46px;flex:0 0 46px;display:flex;align-items:center;gap:11px}
+.stg .drop .med4{width:34px;height:34px;flex:0 0 34px;position:relative;border-radius:50%;
+  background:#100c06;
+  box-shadow:0 0 0 1px #6b5330,0 0 0 2px #100c06,0 0 0 3px #3d2f1d,0 4px 10px rgba(0,0,0,.85)}
 .stg .drop .med4 img{width:100%;height:100%;border-radius:50%;object-fit:cover;object-position:top center}
 .stg .drop .med4::after{content:"";position:absolute;inset:0;border-radius:50%;
-  box-shadow:inset 0 0 10px rgba(0,0,0,.75)}
-.stg .drop .med4.them{box-shadow:0 0 0 1px #a06a3a,0 0 0 3px #100c06,0 0 0 4px #4d3320,0 6px 16px rgba(0,0,0,.85)}
-.stg .drop .med4.road{box-shadow:0 0 0 1px #3d2f1d,0 0 0 3px #100c06,0 0 0 4px #2a2114,0 6px 16px rgba(0,0,0,.85)}
+  box-shadow:inset 0 0 8px rgba(0,0,0,.75)}
+.stg .drop .med4.them{box-shadow:0 0 0 1px #a06a3a,0 0 0 2px #100c06,0 0 0 3px #4d3320,0 4px 10px rgba(0,0,0,.85)}
+.stg .drop .med4.road{box-shadow:0 0 0 1px #3d2f1d,0 0 0 2px #100c06,0 0 0 3px #2a2114,0 4px 10px rgba(0,0,0,.85)}
 .stg .drop .med4 .rune4{display:flex;align-items:center;justify-content:center;width:100%;height:100%;
-  font-size:18px;color:#6b5330}
+  font-size:15px;color:#6b5330}
 .stg .drop .nm4{font-family:var(--mono);font-size:9.5px;letter-spacing:.18em;color:var(--v-crew)}
 .stg .drop .nm4.them{color:var(--v-them)}
 .stg .drop .nm4.road{color:var(--v-road)}
 .stg .drop .nm4 .job{color:#6b5330;letter-spacing:.09em}
-.stg .drop .tx4{font-size:15px;line-height:1.4;color:#e6dcc4;text-wrap:pretty}
+.stg .drop .tx4{font-size:15px;line-height:1.4;color:#e6dcc4;text-wrap:pretty;padding-left:45px}
 .stg .drop .tx4.q{font-style:italic;color:#f2e8cf}
 .stg .beats4{position:absolute;bottom:6px;left:0;right:0;z-index:8;display:flex;gap:5px;justify-content:center}
 .stg .beats4 span{width:16px;height:2px;background:rgba(61,47,29,.9)}
@@ -366,6 +401,137 @@ main{padding:26px 22px}
   border-top:1px solid #2a2114;background:#181207}
 .stg .doors4 .foot4{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;color:#5c4a2c;
   padding-top:4px}
+
+/* J, final pass: Esoteric Ebb-like floating dialogue. The scene itself says
+   who is speaking, so the bubbles carry only the line — no repeated names. */
+.panel[data-k="stage"]{grid-template-columns:minmax(0,1fr)}
+.panel[data-k="stage"] .stage{width:100%;align-items:center}
+.panel[data-k="stage"] .stagelbl{width:min(100%,1040px);color:#766344}
+.panel[data-k="stage"] .note{display:none}
+.panel[data-k="stage"] .flip{width:min(100%,1040px);justify-content:center;flex-wrap:wrap;gap:5px;margin:0 0 6px}
+.panel[data-k="stage"] .flip button{border-color:#34291a;background:rgba(16,12,6,.76);padding:7px 12px}
+.panel[data-k="stage"] .flip button.on{color:#ead7ad;border-color:#80643b;
+  box-shadow:inset 0 0 18px rgba(154,119,64,.11),0 0 16px rgba(0,0,0,.45)}
+.stg{width:min(100%,1040px);background:#090806;border-color:#4c3b24;
+  box-shadow:0 24px 70px rgba(0,0,0,.82),0 0 0 1px rgba(190,151,82,.08)}
+.stg .scene4{height:520px}
+.stg .scene4::before{content:"";position:absolute;inset:9px;z-index:5;pointer-events:none;
+  border:1px solid rgba(142,111,64,.24)}
+.stg .scene4::after{background:
+  radial-gradient(ellipse at 50% 42%,rgba(16,12,6,.02),rgba(8,7,5,.78) 84%),
+  linear-gradient(to bottom,rgba(7,6,4,.76),transparent 24%,transparent 63%,rgba(7,6,4,.88))}
+.stg .scene4 img.back{filter:saturate(.64) sepia(.08) brightness(.52) contrast(1.08) blur(.7px)}
+.stg h3{top:20px;font-size:17px;letter-spacing:.27em;color:#eadfca}
+.stg .encounter-mark{position:absolute;z-index:7;top:52px;left:0;right:0;text-align:center;
+  font-family:var(--mono);font-size:8px;letter-spacing:.3em;color:#786443;text-transform:uppercase}
+.stg .encounter-mark::before,.stg .encounter-mark::after{content:"";display:inline-block;width:46px;height:1px;
+  margin:0 11px 3px;background:linear-gradient(90deg,transparent,#786443)}
+.stg .encounter-mark::after{transform:scaleX(-1)}
+.flank{bottom:94px;gap:0;z-index:3}
+.flank.L{left:18px;align-items:flex-start}
+.flank.R{right:15px;align-items:flex-end}
+.flank .cap4{display:none}
+.flank.L .por{width:205px;height:318px;object-position:center 14%;
+  -webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 12%,#000 73%,transparent 100%);
+  mask-image:linear-gradient(to bottom,transparent 0,#000 12%,#000 73%,transparent 100%)}
+.flank.R .sight{width:250px;height:250px}
+.flank.idle{filter:saturate(.18) brightness(.38);opacity:.7;transform:translateX(-5px) scale(.98)}
+.flank.subject{filter:saturate(.7) brightness(.75);opacity:.94}
+.flank.lit{filter:saturate(1.05) brightness(1.06);transform:translateY(-3px)}
+.stg .dropstack{inset:0;transform:none;width:auto;display:block;pointer-events:none}
+.stg .drop{position:absolute;min-height:0;width:500px;padding:18px 22px 19px;
+  border:1px solid rgba(132,104,62,.7);border-radius:3px;
+  background:linear-gradient(145deg,rgba(32,26,18,.97),rgba(15,13,10,.97));
+  box-shadow:0 16px 38px rgba(0,0,0,.72),inset 0 1px rgba(233,211,166,.05);
+  transition:opacity .28s ease,filter .28s ease,transform .28s ease}
+.stg .drop + .drop{margin-top:0}
+.stg .drop.you{left:178px}
+.stg .drop.them{right:206px}
+.stg .drop.road{left:50%;transform:translateX(-50%);width:540px;border-color:rgba(104,93,73,.62);
+  background:linear-gradient(145deg,rgba(25,24,21,.96),rgba(12,12,11,.97))}
+.stg .drop.you::before,.stg .drop.them::before,.stg .drop.road::before{content:"";position:absolute;width:18px;height:18px;
+  background:#1d1811;transform:rotate(45deg);bottom:20px}
+.stg .drop.you::before{left:-10px;border-left:1px solid rgba(132,104,62,.7);border-bottom:1px solid rgba(132,104,62,.7)}
+.stg .drop.them::before{right:-10px;border-right:1px solid rgba(132,104,62,.7);border-top:1px solid rgba(132,104,62,.7)}
+.stg .drop.road::before{left:50%;bottom:-10px;margin-left:-9px;border-right:1px solid rgba(104,93,73,.62);border-bottom:1px solid rgba(104,93,73,.62)}
+.stg .drop.old{opacity:.28;filter:saturate(.28) brightness(.7);transform:translateY(-5px) scale(.965)}
+.stg .drop.old.them{transform:translateY(-5px) scale(.965)}
+.stg .drop.old.road{transform:translateX(-50%) translateY(-5px) scale(.965)}
+.stg .drop.old2{display:none}
+.stg .drop.cur{opacity:1}
+.stg .drop.cur.road{transform:translateX(-50%)}
+@keyframes bubbleIn{from{opacity:0;filter:blur(2px);transform:translateY(10px) scale(.98)}to{opacity:1;filter:none;transform:none}}
+@keyframes bubbleRoadIn{from{opacity:0;filter:blur(2px);transform:translateX(-50%) translateY(10px) scale(.98)}to{opacity:1;filter:none;transform:translateX(-50%)}}
+.stg .drop.cur.anim{animation:bubbleIn .32s cubic-bezier(.16,.82,.26,1)}
+.stg .drop.cur.anim.road{animation:bubbleRoadIn .32s cubic-bezier(.16,.82,.26,1)}
+.stg .drop .head4,.stg .drop .med4,.stg .drop .nm4{display:none}
+.stg .drop .tx4{font-size:18px;line-height:1.42;color:#eee4d0;padding:0;text-wrap:pretty;text-shadow:0 1px 5px #000}
+.stg .drop .tx4.q{font-style:normal;color:#f4e8cf}
+.stg .drop .tx4.q::before{content:"“";color:#a98751;font-size:28px;line-height:0;vertical-align:-5px;margin-right:4px}
+.stg .drop .tx4.q::after{content:"”";color:#a98751}
+.stg .beats4{bottom:15px;gap:7px}
+.stg .beats4 span{width:22px;background:rgba(88,68,40,.55)}
+.stg .beats4 span.on{background:#b18b4e;box-shadow:0 0 8px rgba(177,139,78,.35)}
+.stg .adv4{right:24px;bottom:13px;color:#8f7144}
+.stg .doors4{padding:15px 18px 17px;background:linear-gradient(#151008,#0d0b07);border-top-color:#4a3820}
+.stg .doors4 .foot4{display:none}
+
+/* Full-painted story cards. Previous beats stay readable, while the current
+   beat and its doors feel painted into the scene instead of bolted below it. */
+.stg .scene4.story-mode{height:620px;cursor:pointer}
+.stg .scene4.story-mode img.back{filter:saturate(.78) brightness(.62) contrast(1.06);transform:scale(1.01)}
+.stg .scene4.story-mode::after{z-index:2;background:
+  linear-gradient(90deg,rgba(4,8,8,.97) 0%,rgba(5,9,9,.9) 32%,rgba(5,8,8,.42) 58%,rgba(4,6,6,.08) 78%),
+  linear-gradient(to bottom,rgba(3,5,5,.68),transparent 25%,transparent 72%,rgba(3,5,5,.86))}
+.stg .scene4.story-mode.hero-left img.back{transform:scaleX(-1) scale(1.01)}
+.stg .scene4.story-mode.hero-left img.back{filter:saturate(.9) brightness(.78) contrast(1.04)}
+.stg .scene4.story-mode.hero-left::after{background:
+  linear-gradient(90deg,rgba(4,8,8,.58) 0%,rgba(5,9,9,.72) 31%,rgba(5,8,8,.4) 59%,rgba(4,6,6,.05) 82%),
+  linear-gradient(to bottom,rgba(3,5,5,.68),transparent 25%,transparent 72%,rgba(3,5,5,.86))}
+.story-mode h3{left:42px;right:auto;text-align:left;top:23px;font-size:18px;letter-spacing:.22em}
+.story-mode .encounter-mark{left:42px;right:auto;top:54px;text-align:left}
+.story-mode .encounter-mark::before{display:none}
+.storyflow{position:absolute;z-index:6;left:42px;top:98px;width:min(49%,510px);bottom:40px;
+  display:flex;flex-direction:column;justify-content:flex-start;gap:13px;pointer-events:none}
+.storyline{position:relative;padding:0 0 0 16px;font-size:16px;line-height:1.46;color:#c8c8b7;
+  opacity:.7;text-shadow:0 2px 8px #000,0 0 18px #000;text-wrap:pretty}
+.hero-left .storyline{padding:5px 10px 6px 16px;background:linear-gradient(90deg,rgba(3,8,9,.82),rgba(3,8,9,.5) 76%,transparent)}
+.storyline::before{content:"";position:absolute;left:0;top:4px;bottom:3px;width:2px;background:#633345}
+.storyline.current{font-size:18px;color:#f0ead8;opacity:1}
+.storyline.current::before{background:#c45732;box-shadow:0 0 10px rgba(196,87,50,.4)}
+.storyline.quote{font-style:italic}
+.storychoices{display:flex;flex-direction:column;gap:7px;margin-top:5px;pointer-events:auto}
+.storychoices .choice{background:rgba(4,10,11,.91);border-color:rgba(111,88,52,.62);padding:10px 12px}
+.storychoices .choice:hover{background:rgba(17,21,18,.97);border-color:#9c7743;transform:translateX(4px)}
+.storychoices .choice b{font-size:14px;color:#eadfc8}
+.storychoices .choice i{font-size:10px}
+.story-mode .beats4{left:auto;right:18px;top:112px;bottom:112px;width:3px;height:auto;
+  flex-direction:column;justify-content:space-between;gap:0}
+.story-mode .beats4 span{width:3px;height:calc(100% / 8);min-height:22px;background:rgba(130,77,52,.38)}
+.story-mode .beats4 span.on{background:#cf623a;box-shadow:0 0 9px rgba(207,98,58,.4)}
+.story-mode .adv4{z-index:7;left:42px;right:auto;bottom:18px;color:#a77b4d}
+.story-mode.has-actor h3,.story-mode.has-actor .encounter-mark{left:226px}
+.story-mode.has-actor .storyflow{left:226px;width:min(43%,455px);bottom:22px}
+.actor-figure{position:absolute;z-index:4;left:12px;bottom:32px;width:238px;height:510px;
+  object-fit:cover;object-position:center top;filter:saturate(.72) brightness(.78) contrast(1.07)
+  drop-shadow(12px 16px 20px rgba(0,0,0,.85));
+  -webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 8%,#000 73%,transparent 100%);
+  mask-image:linear-gradient(to bottom,transparent 0,#000 8%,#000 73%,transparent 100%)}
+.story-mode.has-actor .storyline{background:linear-gradient(90deg,rgba(3,8,9,.86),rgba(3,8,9,.55) 78%,transparent);
+  padding:5px 10px 6px 16px}
+.story-mode.has-actor .storyline.current{box-shadow:-12px 0 28px rgba(0,0,0,.18)}
+@media (max-width:780px){
+  .stg .scene4.story-mode{height:650px}.storyflow{left:25px;width:68%;top:96px}
+  .story-mode h3,.story-mode .encounter-mark{left:25px}.storyline{font-size:14px}.storyline.current{font-size:16px}
+  .actor-figure{left:-28px;width:190px;height:430px;opacity:.72}
+  .story-mode.has-actor h3,.story-mode.has-actor .encounter-mark,.story-mode.has-actor .storyflow{left:126px}
+  .story-mode.has-actor .storyflow{width:62%}
+}
+@media (max-width:780px){
+  .stg .scene4{height:500px}.flank.L .por{width:150px;height:250px}.flank.R .sight{width:190px;height:190px}
+  .stg .drop{width:min(68vw,500px)}.stg .drop.you{left:80px}.stg .drop.them{right:82px}
+  .stg .drop.road{width:min(76vw,540px)}.stg .drop .tx4{font-size:16px}
+}
 
 /* ══ I - THE PLATE ════════════════════════════════════════════════════════
    Hades' ACTUAL dialogue box, which is the one shape A and E got wrong. The
@@ -513,7 +679,7 @@ h2:first-child{margin-top:0}
 </style>
 
 <header>
-  <h1>Event formats - six sketches against the shipped card</h1>
+  <h1>Event formats - seven sketches against the shipped card</h1>
   <div class="sub">separate prototype · real CSS and art from grimtoll_slice.html · real card text from clash / toll / pedlar / coin · the voice lines are new and not canon · the strip and the sigils were cut on 2026-08-14</div>
   <nav id="nav"></nav>
 </header>
@@ -624,7 +790,7 @@ h2:first-child{margin-top:0}
   <!-- ═══ J · THE STAGE ═══════════════════════════════════════════════ -->
   <section class="panel wide" data-k="stage">
     <div class="stage">
-      <div class="stagelbl">J · THE STAGE · YOUR PERSON LEFT, THE SUBJECT RIGHT, THE DIALOGUE DROPS IN · CLICK TO ADVANCE</div>
+      <div class="stagelbl">J · THE STAGE · ESOTERIC EBB RHYTHM · CLICK THE SCENE TO ADVANCE</div>
       <div class="flip" id="stgFlip"></div>
       <div class="stg" id="stgCard"></div>
       <button class="replay" onclick="mountStage()">↺ replay</button>
@@ -639,8 +805,15 @@ h2:first-child{margin-top:0}
       <h4>THE FLANKS ARE THE SPEAKER INDICATOR</h4>
       <p>They are not decoration. <b>Whoever is talking lights up</b>, and everything else drops back. That is what lets the plate stay small and lets the picture be most of the screen.</p><p>⛔ <b>Three states, not two, and that was a real bug caught by driving the second scene.</b> The first cut lit both flanks at once on the chapel, because one highlight was being asked to mean SPEAKING on one card and SUBJECT on the other. Now: <b>idle</b> is present and uninvolved, <b>subject</b> is what the card is about and never moves, <b>lit</b> is who is speaking and moves every beat.</p>
       <p>Watch the sitting stone: the stone is lit while the ogre asks his three questions, then <b>Bruht lights on the left</b> when your own ogre offers to take over, which is the card's <code>needRace:'ogre'</code> door arriving in the fiction before it arrives as a button.</p>
+      <h4>THE STACK</h4>
+      <p>A beat no longer closes the one before it. Plates <b>pile up</b>, each new one covering the body of the last and leaving its <b>head band</b> showing: medallion and name. The current plate is full strength, the one behind is quieter, the one behind that quieter still.</p>
+      <p>⚑ <b>The head band is the whole design decision.</b> Once a plate is overlapped you cannot read its line any more, so what survives has to be the two things you need in order to follow a conversation: <b>who spoke, and in what order</b>. The medallion and the name do that; a line of prose cut off at 46px would not.</p>
+      <p>⛔ <b>Capped at three, and the cap is arithmetic rather than taste.</b> A plate is 92 tall with a 46px head, so three stand 184px, the stack sits 14 off the floor, and its top edge lands at exactly <b>242</b> in a 440px scene. A fourth would climb into the flanks and then into the title. On the Fen-Mother, which has four beats, watch the first plate get pushed out.</p>
       <h4>IT ALSO HANDLES "OR AN EVENT"</h4>
-      <p>Switch to the chapel. Nobody talks back: the right slot holds a <b>place</b> and stays lit throughout as the subject. Same container, no special case.</p>
+      <p>Five scenes now, and they were picked to break the format rather than to flatter it.</p>
+      <p><b>The chapel</b> and <b>the Fen-Mother</b> have nobody to talk back: the right slot holds a place and a beast, both of which stay at <code>subject</code> and never reach <code>lit</code>.</p>
+      <p><b>The broken men</b> is the one worth reading twice. <b>Not a single new line was written for it.</b> Its shipped body already contains <i>"Food and the cart," the captain says. "Nobody has to be brave."</i>, which every other format on this page renders as narrated speech buried in a paragraph. Here it just goes in his mouth. That is the clearest evidence on the page that the writing is already halfway to this format.</p>
+      <p><b>The wedding</b> carries the build's only <code>mystery:true</code> door, so its sub-line is a bare <b>?</b>, and it shows the race-door rule: the ogre door exists on that card and is not offered, because only one race door is ever shown and the ratkin wins.</p>
       <h4>WHAT IT COSTS</h4>
       <p><span class="tag">free</span> map sights, portraits, beats and <code>cast()</code> all exist.</p>
       <p><span class="tag cost">width</span> 940px. This is a full-stage screen, not a 620px dialog, and that is the real decision in it.</p>
@@ -721,10 +894,14 @@ h2:first-child{margin-top:0}
     <p>Nothing says one container has to serve all 34. The build already sorts cards three ways it could reuse: the <b>length band</b> (light 45-90, medium 90-140, heavy 140-175), whether a door starts a <b>battle</b>, and whether the card has <b>one live door or several</b>.</p>
     <table>
       <tr><th style="width:104px">FORMAT</th><th style="width:150px">FIRES WHEN</th><th>THE ROAD DECK</th><th style="width:240px">WHY THAT RULE</th></tr>
-      <tr><td class="f">I · THE PLATE<br><span style="color:#5c4a2c">(A and E are its<br>bust variant)</span></td>
+      <tr><td class="f">J · THE STAGE<br><span style="color:#5c4a2c">(the end of the<br>A-E-I line)</span></td>
         <td class="f">the default</td>
-        <td><b>most of the deck</b>. toll · pedlar · taxman · shrine · oasis · saltwives</td>
-        <td>Beats already exist in the prose, the frame fits the portraits the build actually has, and the painting stays whole</td></tr>
+        <td><b>most of the deck</b>, and every card whose node carries a map sight</td>
+        <td>Your person, the subject, the painting and the dialogue, each doing exactly one job, and it costs no new art</td></tr>
+      <tr><td class="f">I · THE PLATE<br><span style="color:#5c4a2c">(A and E are its<br>bust variant)</span></td>
+        <td class="f">a card with<br>no map sight</td>
+        <td><b>the five unsighted nodes</b>, and any card that is not about a place</td>
+        <td>The same plate with the flanks taken off. It is J's own fallback, not a rival to it</td></tr>
       <tr><td class="f">H · THE OFFER</td><td class="f">the card was<br>always a choice<br>between things</td>
         <td><b>maybe 5</b>. pedlar's table · the muster · a shrine's three prayers</td>
         <td>Every part of it is a shipped door field. But it cuts prose rather than reframing it, so it cannot be the default</td></tr>
@@ -739,14 +916,19 @@ h2:first-child{margin-top:0}
         <td>Accumulating lines is what a conversation is. A pickup is not a conversation</td></tr>
     </table>
 
-    <h2>A, E and I are one format wearing three treatments</h2>
+    <h2>A, E, I and J are one lineage, and J is the end of it</h2>
+    <p>Read in the order they were built, each one adds exactly one thing to the one before:</p>
+    <p><b>A</b> walks the prose in beats and puts a bust on it. <b>E</b> adds a second bust and dims whoever is silent. <b>I</b> throws the busts away, because the build's portraits have no alpha to cut, and frames the speaker in a medallion so the painting is never covered. <b>J</b> keeps that medallion plate exactly as it is, and gives the frame two flanks: <b>your person on the left, the subject of the choice on the right, the scene behind all of it.</b></p>
+    <p>So there is no choice to make between the four. <b>J is the one to build</b>, and the other three are the steps that found it. I is worth keeping as J's fallback for the five nodes with no map art.</p>
+
+    <h2>What the old A-and-E note said, and it still holds</h2>
     <p>This is the thing that came out of building them side by side. <b>A is E with one bust, and I is the same beats with the bust replaced by a framed medallion.</b> Same renderer, same beat walk, same door footer. The real decision was never which of the three: it is whether the road uses <b>a beat-walked card with a named speaker</b>, and then how that speaker is drawn.</p>
     <p>So if A felt uncertain, that instinct was reading a production problem rather than a layout one. <b>The portraits in this build are square JPEG heads with backgrounds.</b> There is no alpha to cut, so any bust treatment leaves the pasted edge that A and E both have. I solves it by not cutting anything, and the frame turns out to be what the missing alpha channel was for.</p>
 
     <h2>The recommendation, in order</h2>
-    <p><b>1. Build I.</b> One container for the road, medallion treatment, painting never covered. The beats are already marked with <code>\n\n</code>, <code>cast()</code> already picks who speaks, and the portraits finally fit their container. It is the only shape here that improves <b>every</b> card rather than a category of them.</p>
-    <p><b>2. C, narrow, six cards.</b> It is the best-looking screen on this page and it is a special case, not a system. Build it after I so it inherits the same door footer.</p>
-    <p><b>3. H on a handful.</b> Cheap once I exists, because it reuses the same door fields. Never let it spread: it is the one shape that deletes prose instead of reframing it.</p>
+    <p><b>1. Build J</b>, with I as its fallback. One container for the road: beats already marked with <code>\n\n</code>, <code>cast()</code> already picking who speaks, portraits framed rather than cut, and the right-hand slot filled by a map sight that is already embedded. It is the only shape here that improves <b>every</b> card rather than a category of them.</p>
+    <p><b>2. C, narrow, six cards.</b> It is a special case, not a system. Build it after J so it inherits the same drop plate and door footer. ⚠ It may turn out to be J with two subject flanks and no company flank, in which case it is not a second container either.</p>
+    <p><b>3. H on a handful.</b> Cheap once J exists, because it reuses the same door fields. Never let it spread: it is the one shape that deletes prose instead of reframing it.</p>
     <p><b>4. G as a writing experiment</b>, on one card, before any of the above. See the box below.</p>
     <p><b>5. B held.</b> Its home is the camps, and the camps are not the complaint.</p>
     <p>A and E stay on the page as <b>the rejected treatment</b> rather than as options. They are worth keeping open beside I for one reason: they show what the same four beats look like when the speaker is standing on the painting instead of framed beside it.</p>
@@ -942,9 +1124,9 @@ function mountStandoff(){
    this sketch: Bruht offering to take over, and Marrow on the dry altar.
    ══════════════════════════════════════════════════════════════════════ */
 const STAGES = {
-  stone:{ n:'THE SITTING STONE · SOMEBODY TALKS BACK',
-    title:'THE SITTING STONE', back:A.EV19, sight:A.MAPEV19,
-    right:{nm:'THE OGRE', sub:'two winters on this rock'},
+  stone:{ n:'THE SITTING STONE',
+    title:'THE SITTING STONE', back:A.EV19, sight:A.MAPEV19, stageArt:'assets/EV-J1_sitting-stone-stage.png', actorArt:'assets/P4_Bruht.png',
+    right:{nm:'THE OGRE', sub:'two winters on this rock', face:A.P8},
     left:P.bruht,
     beats:[
       {s:'road', tx:'An ogre is sitting on a rock beside the road. Two winters now, by his own account.'},
@@ -960,8 +1142,8 @@ const STAGES = {
       {ico:'🤝👹', t:'Let your own ogre do the talking.', c:'', racey:true}
     ],
     foot:'⚠ THE REAL BUILD WOULD OFFER THE RATKIN DOOR INSTEAD ON THIS COMPANY. Only one race door is ever shown and the ratkin wins (#159).'},
-  chapel:{ n:'THE DROWNED CHAPEL · NOBODY TALKS BACK',
-    title:'THE DROWNED CHAPEL', back:A.EV04, sight:A.MAPEV04,
+  chapel:{ n:'THE DROWNED CHAPEL',
+    title:'THE DROWNED CHAPEL', back:A.EV04, sight:A.MAPEV04, stageArt:'assets/EV-J2_drowned-chapel-stage.png', actorArt:'assets/P5_Marrow.png',
     right:{nm:'THE CHAPEL', sub:'drowned these twenty years'},
     left:P.marrow,
     beats:[
@@ -975,7 +1157,107 @@ const STAGES = {
       {ico:'🧺', t:'Wade in. Take what the water left.', c:'+6 salvage · a day'},
       {ico:'🧺', t:'Send the gilled one down. The crypt has been under water for years.', c:'needs the gills of the fen', racey:true}
     ],
-    foot:'⚑ THE RIGHT SLOT IS A PLACE HERE AND STAYS LIT THROUGHOUT. Same container, no special case.'}
+    foot:'⚑ THE RIGHT SLOT IS A PLACE HERE AND NEVER REACHES `lit`. Same container, no special case.'},
+
+  /* ═══ THE BROKEN MEN ═══════════════════════════════════════════════════
+     ⚑ THE CARD THAT NEEDED NO NEW WRITING AT ALL. Its shipped body already
+     contains a quoted line from their captain - *"Food and the cart," the
+     captain says. "Nobody has to be brave."* - which every other format on
+     this page renders as narrated speech inside a paragraph. Here it simply
+     goes in his mouth, and the only thing the format did was give it a face.
+     ═══════════════════════════════════════════════════════════════════════ */
+  broken:{ n:'THE BROKEN MEN',
+    title:'THE BROKEN MEN', back:A.EV26, sight:A.MAPEV26,
+    right:{nm:'THEIR CAPTAIN', sub:'half a uniform, Ashmoor buttons', face:A.P6},
+    left:P.you,
+    beats:[
+      {s:'road', tx:'Four of them out of the treeline, and two lean dogs that do not sit down.'},
+      {s:'road', tx:'Deserters. Half a uniform each, and the buttons are Ashmoor\'s. Nobody has paid them since the foundry fell.'},
+      {s:'them', q:true, tx:'Food and the cart. Nobody has to be brave.'},
+      {s:'road', tx:'They are what a company like yours turns into after one bad winter, and everybody on both sides of the road knows it.'}
+    ],
+    doors:[
+      {ico:'⚔️', t:'"No."',                          c:'BATTLE · 4 men and 2 dogs against'},
+      {ico:'🤝', t:'Give them four days of food.',   c:'−4 provisions · one of them stays'},
+      {ico:'⚖️', t:'Hand over the coin they can see.',c:'−40 crowns'}
+    ],
+    foot:'⚑ NOT ONE NEW LINE WAS WRITTEN FOR THIS CARD. The quoted speech was already in the shipped body; the format only gave it a face.'},
+
+  /* ═══ A WEDDING ON THE ROAD ════════════════════════════════════════════
+     Five doors exist on this card and only FOUR can ever be offered: the two
+     race doors are filtered to one by raceDoorPick (#159, the ratkin wins on
+     a company holding both). Shown here as the ratkin branch.
+     ⚠ The massacre door is the build's ONE `mystery:true`, so its whole
+     sub-line is a single `?` and it may charge nothing at the pick.
+     ═══════════════════════════════════════════════════════════════════════ */
+  wedding:{ n:'A WEDDING ON THE ROAD',
+    title:'A WEDDING ON THE ROAD', back:A.EV22, sight:A.MAPEV22,
+    right:{nm:'THE WEDDING', sub:'drunk, and not moving for anyone', face:A.PORR05},
+    left:P.skree,
+    beats:[
+      {s:'road', tx:'A ratkin clan-wedding has spilled across the road and is not moving for anyone.'},
+      /* NEW, and it is the shipped sentence "they have collectively decided
+         your company is the finest thing that has happened to them all
+         season" said by somebody who believes it. */
+      {s:'them', q:true, tx:'You are the finest thing that has happened to us all season. Sit down. Sit DOWN.'},
+      {s:'left', q:true, tx:'They mean it. That is the part people get wrong about us.'},
+      {s:'road', tx:'They are drunk, enormously friendly, and entirely unarmed.'}
+    ],
+    doors:[
+      {ico:'⛺',   t:'Stay for one drink. Only one.',   c:'−1 day'},
+      {ico:'⛺🐀', t:'Let your ratkin lead the toast.',  c:'', racey:true},
+      {ico:'⚔️☠️', t:'Cut the whole wedding down.',      c:'?', danger:true, mystery:true}
+    ],
+    foot:'⚠ THE OGRE DOOR EXISTS AND IS NOT SHOWN. Only one race door is ever offered and the ratkin wins (#159). The ? is the build\'s only mystery door.'},
+
+  ashroad:{ n:'BLOOD ON THE ROAD · ASH',
+    title:'BLOOD ON THE ROAD', stageArt:'assets/EV-J3_blood-on-road-ash-stage.png', actorArt:'assets/P1_The_Captain.png',
+    beats:[
+      {s:'road', tx:'A ratkin foraging party and an ogre steading-line have met over a dead deer.'},
+      {s:'them', q:true, tx:'Three clubs. Four spears. One deer. None of this is worth dying over.'},
+      {s:'road', tx:'Neither side has seen you. That will not hold.'}
+    ],
+    doors:CLASH.choices,
+    foot:''},
+
+  ashfire:{ n:'ASH AT THE FIRE',
+    title:'THE WRONG COLOUR', stageArt:'assets/EV-33_ash-at-the-fire.png', actorArt:'assets/P1_The_Captain.png', heroLeft:true, mark:'a night at the fire',
+    beats:[
+      {s:'road', tx:'Everyone else is down. Ash is still feeding the fire one stick at a time, and talking, which she does not do.'},
+      {s:'them', tx:'The clans would not have her: too pale, wrong in the mouth. The steadings would not either.'},
+      {s:'them', tx:'She has been walking toward a flock her whole life without once arriving at one.'},
+      {s:'road', tx:'Then she stops, and waits to find out if that was a mistake.'}
+    ],
+    doors:[
+      {ico:'🔥', t:'Put another stick on. Keep listening.', c:'−1 provision · +10 morale'},
+      {ico:'🌙', t:'Say it is late. Go to your blanket.', c:'−5 morale'},
+      {ico:'✦', t:'Remind her what she is, and make it hurt.', c:'Ash is injured · −15 morale', danger:true}
+    ],
+    foot:''},
+
+  /* ═══ THE FEN-MOTHER ═══════════════════════════════════════════════════
+     The second card with no mouth on the right, and a much harder one than
+     the chapel: she is ALIVE and she is looking at something. The subject
+     state has to carry "she is the reason this card exists" without her
+     ever saying a word.
+     ═══════════════════════════════════════════════════════════════════════ */
+  mother:{ n:'THE FEN-MOTHER',
+    title:'THE FEN-MOTHER', back:A.EV08, sight:A.MAPEV08,
+    right:{nm:'THE FEN-MOTHER', sub:'six legs, and a small one behind her'},
+    left:P.marrow,
+    beats:[
+      {s:'road', tx:'You took it for a fallen barn. Six legs. A head like a split anvil. Bloom-light running under the hide in slow bands.'},
+      {s:'road', tx:'It is not looking at you. It is looking at the small one behind it, which is trying to eat a rock.'},
+      /* NEW. Marrow is the `windtouched` warmage and the bloom is his
+         subject, so the one thing he adds is the thing a mage would know. */
+      {s:'left', q:true, tx:'The bands are slowing. She is not hunting. Do not make her.'},
+      {s:'road', tx:'There is something pale in the mud beside her.'}
+    ],
+    doors:[
+      {ico:'🧺', t:'Take the shed tooth and go. Quietly.', c:'−2 days · a great tooth'},
+      {ico:'⚔️', t:'Kill it. That hide is worth a season\'s wages.', c:'BATTLE · she is enormous and she is not alone', danger:true}
+    ],
+    foot:'⚑ FOUR BEATS, THREE PLATES. The first one is pushed out of the stack by the fourth, which is the cap doing its job.'}
 };
 let stgWhich = 'stone', stgAt = 0;
 function mountStage(){ stgAt = 0; drawStage(); }
@@ -987,38 +1269,62 @@ function drawStage(){
     stgWhich = b.dataset.s; stgAt = 0; drawStage(); };
 
   const S = STAGES[stgWhich], b = S.beats[stgAt], last = stgAt === S.beats.length-1;
+  if(S.stageArt){
+    const history = S.beats.slice(0,stgAt+1);
+    document.getElementById('stgCard').innerHTML =
+      '<div class="scene4 story-mode'+(S.heroLeft?' hero-left':'')+(S.actorArt?' has-actor':'')+'">'+
+        '<img class="back" src="'+S.stageArt+'">'+
+        (S.actorArt?'<img class="actor-figure" src="'+S.actorArt+'" alt="">':'')+
+        '<h3>'+S.title+'</h3>'+
+        '<div class="encounter-mark">'+(S.mark||'a road encounter')+'</div>'+
+        '<div class="storyflow">'+history.map((bt,i)=>
+          '<div class="storyline'+(i===stgAt?' current':'')+(bt.q?' quote':'')+'">'+bt.tx+'</div>'
+        ).join('')+
+          (last?'<div class="storychoices">'+S.doors.map(doorHTML).join('')+'</div>':'')+
+        '</div>'+
+        '<div class="beats4">'+S.beats.map((_,i)=>'<span class="'+(i<=stgAt?'on':'')+'"></span>').join('')+'</div>'+
+        (last?'':'<div class="adv4">CLICK ▸</div>')+
+      '</div>';
+    document.getElementById('stgCard').onclick = e => {
+      if(e.target.closest('.storychoices')) return;
+      if(stgAt < S.beats.length-1){ stgAt++; drawStage(); }
+    };
+    return;
+  }
   /* ⚑ WHO IS LIT, AND IT IS ONLY EVER THE SPEAKER. The narrator lights
      nobody, which is correct: it is the one voice that belongs to neither
      side of the frame. The RIGHT flank is the subject on every card and
      therefore never drops to idle, but it only reaches `lit` when it has a
-     mouth and is using it. The chapel never does. */
+     mouth and is using it. The chapel and the Fen-Mother never do. */
   const stateL = b.s === 'left' ? 'lit' : 'idle';
   const stateR = b.s === 'them' ? 'lit' : 'subject';
-  const kind = b.s === 'them' ? 'them' : b.s === 'left' ? 'you' : 'road';
-  const face = b.s === 'left' ? S.left.art : null;
-  const name = b.s === 'left' ? S.left.nm.toUpperCase()+' <span class="job">· '+S.left.job+'</span>'
-             : b.s === 'them' ? S.right.nm+' <span class="job">· '+S.right.sub+'</span>'
-             : 'THE ROAD';
 
+  /* ── the stack. Last three beats, oldest first, current last ─────────── */
+  const from = Math.max(0, stgAt-1);
+  const shown = S.beats.slice(from, stgAt+1);
+  const plate = (bt, i) => {
+    const n = shown.length, isCur = i === n-1;
+    /* two degrees of quiet, so a three-deep stack still reads as a sequence
+       rather than as two identical greys */
+    const age = isCur ? 'cur anim' : 'old';
+    const kind = bt.s === 'them' ? 'them' : bt.s === 'left' ? 'you' : 'road';
+    const lift = isCur ? 44 : 150;
+    return '<div class="drop '+kind+' '+age+'" style="z-index:'+(10+i)+';bottom:'+lift+'px">'+
+      '<div class="tx4'+(bt.q?' q':'')+'">'+bt.tx+'</div>'+
+    '</div>';
+  };
   document.getElementById('stgCard').innerHTML =
     '<div class="scene4">'+
       '<img class="back" src="'+S.back+'">'+
       '<h3>'+S.title+'</h3>'+
+      '<div class="encounter-mark">a road encounter</div>'+
       '<div class="flank L '+stateL+'">'+
         '<img class="por" src="'+S.left.art+'">'+
-        '<div class="cap4">'+S.left.nm.toUpperCase()+'<em>'+S.left.job+'</em></div>'+
       '</div>'+
       '<div class="flank R '+stateR+'">'+
         '<img class="sight" src="'+S.sight+'">'+
-        '<div class="cap4">'+S.right.nm+'<em>'+S.right.sub+'</em></div>'+
       '</div>'+
-      '<div class="drop anim">'+
-        '<div class="med4 '+kind+'">'+
-          (face ? '<img src="'+face+'">' : '<div class="rune4">'+(kind==='them'?'◈':'◆')+'</div>')+
-        '</div>'+
-        '<div class="nm4 '+kind+'">'+name+'</div>'+
-        '<div class="tx4'+(b.q?' q':'')+'">'+(b.q?'"'+b.tx+'"':b.tx)+'</div>'+
-      '</div>'+
+      '<div class="dropstack">'+shown.map(plate).join('')+'</div>'+
       '<div class="beats4">'+S.beats.map((_,i)=>'<span class="'+(i<=stgAt?'on':'')+'"></span>').join('')+'</div>'+
       (last?'':'<div class="adv4">CLICK ▸</div>')+
     '</div>'+
