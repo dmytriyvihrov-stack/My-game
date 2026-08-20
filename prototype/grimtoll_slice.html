@@ -5498,8 +5498,115 @@ const SFXMAP={
   cast        :['magic' ,.45,1   ],
   grasp       :['magic' ,.45,1   ],
   sink        :['magic' ,.45,1   ],
-  venom       :['magic' ,.45,1   ]
+  venom       :['magic' ,.45,1   ],
+  /* ═══ A CHOICE MAKES A NOISE, AND IT IS THE KIND OF CHOICE THAT DECIDES ══
+     (User, 2026-08-18: "we need SFX on choices... not for a specific choice,
+     but for the TYPE of choice, like with fight, or help, some sound that can
+     relate to this kind of choice, so when the person picks it... just simple
+     sounds, just to make this decision impactful.")
+
+     ⚑ THE KEY ALREADY EXISTED AND NOTHING NEW IS AUTHORED. #154 put an intent
+     glyph on every road door - fight, help, evil, leave, trade, take, rest,
+     honor - and LINT holds it, so the card ALREADY declares what kind of thing
+     each door is. The sound reads that. A card written next month gets its
+     noise for free, and a door cannot end up with the wrong sound without
+     also wearing the wrong glyph, which the linter catches.
+
+     ⚑ NO NEW FILES. Seven samples make ten voices the way `hit_ratkin` and
+     `hit_ogre` already do it: same wave, different gain and playbackRate. The
+     relationships are what carry the meaning - EVIL is the FIGHT blow pitched
+     down and uglier, HONOR is the HELP tone slowed and made grave, TAKE is
+     TRADE's coin snatched quicker.
+
+     ⚠ Quieter than the battle rows across the board (.34 to .58 against .60+).
+     A road card is read in silence; a click that competes with a sword is a
+     click that gets turned off. */
+  /* the run itself starting. The promote tone at its gravest, because it is
+     the one press in the game that throws everything away and begins again. */
+  newrun      :['promote',.52,0.72]
 };
+/* ═══ AND THE SOUND HAS TO BE THE SHAPE OF THE ACT ═══════════════════════
+   (User, one message later: *"of course this sound should represent this kind
+   of action - if it's fight, it's more violent, if it's help, it's more soft,
+   and etc."*)
+
+   ⛔ THE FIRST VERSION WAS PICKED FROM THE FOLDER RATHER THAN FROM THE
+   MEANING, and it showed. FIGHT was one dulled `hit`, which is a thud, not
+   violence; HELP was `promote`, which is a level-up fanfare and therefore the
+   LOUDEST thing on the road rather than the gentlest. Every entry was one
+   sample with the pitch nudged, so all nine were the same gesture wearing
+   different hats.
+
+   ⚑ THE PRINCIPLE, AND IT IS WHAT MAKES THE PALETTE READ WITHOUT NEW ASSETS:
+   **violence is LAYERED and loud, kindness is SINGLE and quiet.** A door that
+   hurts somebody fires two samples a few tens of milliseconds apart, so the
+   ear hears an EVENT with a consequence - a blow going into iron, a blade
+   drawn after it. A door that helps fires one quiet sample and stops. That
+   contrast is structural, so it survives someone later retuning any single
+   number, and it is why FIGHT and HELP can never converge again.
+
+   ⚠ TWO LAYERS IS THE CEILING. `sample()` caps the mix at six voices and the
+   road can fire a card's sound over a fading map cue; three-layer doors would
+   start stealing voices from each other and the loudest door in the game would
+   be the one that drops half of itself at random.
+
+   [file, gain, rate, delayMs]. The delay is what turns two samples into one
+   gesture rather than a chord. */
+const CHOICE_SFX={
+  /* ⚔️ a blow going INTO iron. The second layer is the whole difference
+     between "violent" and "a thud". */
+  fight:[['hit'    ,.62,0.85    ],['armour' ,.40,0.92,45]],
+  /* ☠️ the same blow pitched into the floor, and a blade drawn after it. The
+     `miss` sample is a weapon moving through air, which is exactly the sound
+     of finishing something that was not fighting back. */
+  evil :[['hit'    ,.60,0.64    ],['miss'   ,.34,0.70,80]],
+  /* 🤝 one quiet tone and nothing else. Gain .28: the softest thing on the
+     road by a wide margin, and deliberately under the ambience. */
+  help :[['promote',.28,1.12    ]],
+  /* 🙏 the same tone taken right down. Grave rather than sad, and still
+     single, because a burial is not an impact. */
+  honor:[['promote',.30,0.68    ]],
+  /* ⚖️ coin, plainly. A transaction is not an event. */
+  trade:[['coin'   ,.48,1       ]],
+  /* 🧺 coin snatched, then pocketed. Two layers, but both light: taking is
+     brisk rather than violent. */
+  take :[['coin'   ,.44,1.24    ],['click'  ,.26,1.10,55]],
+  /* ⛺ low, soft, slow. The quietest entry in the table. */
+  rest :[['magic'  ,.26,0.60    ]],
+  /* 👣 the flattest, least eventful noise available, because walking away is
+     the one door on the card where nothing happens. */
+  leave:[['click'  ,.38,0.84    ]],
+  /* a bare door: a ruling at the fire. Pressed, and no more than pressed. */
+  say  :[['click'  ,.46,1       ]]
+};
+function playChoiceSfx(k){
+  const rec=CHOICE_SFX[k]||CHOICE_SFX.say;
+  if(!AU.on)return;
+  rec.forEach(L=>{
+    if(!L[3])sample(L[0],L[1],L[2]);
+    /* ⚠ `later` is the battle clock and this is not a battle beat, so a plain
+       setTimeout is correct here: the gap between a blow and the iron it lands
+       on is a fact about the SOUND, and slowing the game down must not stretch
+       it into two separate noises. */
+    else setTimeout(()=>sample(L[0],L[1],L[2]),L[3]);
+  });
+}
+/* ⛔ `evil` OUTRANKS THE VERB, AND THAT IS THE ONE PLACE THIS DISAGREES WITH
+   #154's READING ORDER. On the glyphs the verb comes first and the moral
+   colour second (⚔️☠️ is fighting as the predator), because the player is
+   sorting doors by what they DO. A sound is not sorting anything: it lands
+   after the press, and what should land is the weight of it. Robbing a cart
+   and taking a windfall are the same verb and must not be the same noise.
+   Everything else reads the first glyph, which is the verb. */
+const CHOICE_SFX_ORDER=['evil','fight','help','honor','trade','take','rest','leave'];
+function choiceSfx(o){
+  const ico=(o&&o.ico)||[];
+  const k=CHOICE_SFX_ORDER.find(x=>ico.indexOf(x)>=0);
+  /* a bare door is a RULING (the fire's deck is mostly judgments and 22 of
+     53 camp doors carry no glyph on purpose), and a ruling still gets pressed.
+     Silence there would read as a dead button. */
+  playChoiceSfx(k||'say');
+}
 /* ═══ THE FOUR THAT WENT QUIET, AND WHY EACH ONE DID ════════════════════
    `rout`  - 9 call sites, and the loudest of them is the moment the game is
              actually about (somebody breaks, somebody goes down, DESPERATE).
@@ -10884,8 +10991,16 @@ function unitFrom(p){
     note:'Reach 1, and it does not care that your other weapon is a bow. For when '+
       'something is already on top of you.'});
   const sig={
-    captain:{k:'command',n:'COMMAND',cost:1,self:true,cool:3,aura:3,
-      note:'+20 morale to you, +24 to everyone within 3 hexes.'},
+    /* #208 - the morale order is EARNED, not issued at the door (user: "Boost
+       morale automatically unlocks from 3d lvl"). A fresh captain holds the
+       line with his hands first; the voice that steadies a company arrives at
+       level 3, by itself, no perk point. Foes never pass through unitFrom(),
+       so only the roster is gated; a preset without a level counts as 1. */
+    captain:(p.level||1)>=3
+      ? {k:'command',n:'COMMAND',cost:1,self:true,cool:3,aura:3,
+         note:'+20 morale to you, +24 to everyone within 3 hexes. His from level 3: '+
+           'a new captain has the arm before he has the voice.'}
+      : null,
     /* THE WEAPON DECIDES THE SIGNATURE — a pattern the game had not used.
        With a boar spear she braces; with a halberd she shoves. Same class,
        two different jobs, chosen in the inventory rather than at creation. */
@@ -10902,8 +11017,9 @@ function unitFrom(p){
          buys the new rule's exception instead - see wallLive(). */
       : {k:'wall',n:'SPEAR WALL',cost:1,self:true,cool:2,
          note:'One action. Anything stepping into your reach this round takes 75% of your '+
-           'spear, and half the time is shoved a hex back out of it. It stops working the '+
-           'moment somebody is already inside your reach - a spear is no use in a scrum.'},
+           'spear, and half the time is shoved a hex back out of it. It will not go up, '+
+           'and stops working, with somebody already inside your reach - a spear is no '+
+           'use in a scrum.'},
     /* AIMED SHOT was "your normal attack, but better" - two actions for more
        of the same thing, which is not a signature, it is a tax. CRIPPLING
        SHOT is what an archer is actually FOR: it does not kill the target, it
@@ -11008,8 +11124,12 @@ function unitFrom(p){
         a.note=(a.note||'')+' They are holding it wrong and everyone can see.';}});
     }
   }
-  /* the Captain gets a second leader ability; the Brute keeps ROAR */
-  if(p.cls==='captain')acts.push({k:'rallyline',n:'HOLD THE LINE',cost:2,self:true,aura:2,
+  /* the Captain gets a second leader ability; the Brute keeps ROAR.
+     #208 - HOLD THE LINE is the captain's STARTER now and costs 1 (user: "basic
+     skill that availible from the begining - hold the line that gives a dodge.
+     It costs 1"). At 2 it was the whole turn, so it competed with COMMAND and
+     lost; at 1 it is the thing a level-1 captain actually does. */
+  if(p.cls==='captain')acts.push({k:'rallyline',n:'HOLD THE LINE',cost:1,self:true,aura:2,
     note:'+10 dodge to every ally within 2 hexes until their next turn.'});
   if(p.cls==='brute')acts.push({k:'roar',n:'ROAR',cost:1,self:true,cool:3,aura:2,
     note:'−28 morale to every enemy within 2 hexes.'});
@@ -14184,6 +14304,19 @@ function wallLive(u,ignore){
   if(has(u,'bracewall'))return true;
   return !alive().some(x=>x!==ignore&&x.side!==u.side&&!x.passive&&udist(u,x)<=1);
 }
+/* #208 - and the wall cannot be RAISED in a scrum either (user: "Spear wall
+   inposible to do when enemy near by - make it unuvalible and kind of grey -
+   and if hover on grey - the reason"). Same adjacency question wallLive asks,
+   same bracewall exception: the perk is the one licence to break the rule.
+   Lives beside wallLive so "inside your reach" stays ONE fact in one place. */
+function wallBlocked(u){
+  /* wallLive never reaches alive() outside a battle because u.spearwall is
+     its first question; this one has no such accident, so it asks on purpose.
+     B is null between fights and alive() reads B.units (measured: it throws). */
+  if(!B)return false;
+  return !has(u,'bracewall')&&
+    alive().some(x=>x.side!==u.side&&!x.passive&&udist(u,x)<=1);
+}
 
 /* ═══════════════════════════════════════════════════════════════════════
    FORMATIONS — what a race is FOR, expressed as a reason to stand together.
@@ -17205,6 +17338,11 @@ function canUse(u,a){
   if(a.k==='dis'&&!held(u))return false;
   /* transfixed: you can swing, you can cast, you cannot make your feet work */
   if((a.move||a.k==='dis')&&u.rooted>0)return false;
+  /* #208 - a spear is no use in a scrum, and now the BUTTON says so before the
+     click instead of the wall failing silently after it. One door, so both AI
+     brains, AUTO, the hotkeys and the click all inherit the refusal; the card
+     paints the reason in its receipt. bracewall is exempt inside wallBlocked. */
+  if(a.k==='wall'&&wallBlocked(u))return false;
   /* ONE real spell a turn (the mage gets a second, at half). WILL-KICK is a
      cantrip and never counts, or a caster too shaken for a school would have
      nothing at all to do. */
@@ -21869,6 +22007,10 @@ function render(){
         const gath=!!(u.gather&&u.gather.a.k===a.k);
         const receipt=gath?'HELD · IT IS ALREADY HAPPENING'
           :cd?'READY IN '+cd+' TURN'+(cd>1?'S':'')
+          /* #208 - the greyed wall says WHY on hover, the same way a cooldown
+             does. It reads wallBlocked, the exact predicate canUse refused
+             with, so the card and the click can never tell two stories. */
+          :(a.k==='wall'&&wallBlocked(u))?'NO ROOM: SOMETHING IS ALREADY INSIDE YOUR REACH'
           :(sub+(a.strain?' · '+strainCost(u,a)+' nerve':'')+
             (a.cool?' · '+a.cool+'-turn cooldown':'')+
             (gathers(a)?' · lands next turn':'')).toUpperCase();
@@ -25620,6 +25762,11 @@ let MERCYASK=null;
 /* the one applier, so the card cannot pay a price the old screen did not */
 function takeMercy(o){
   const f=o.fx||{};
+  /* #202 gave the mercy screen a road door's sub-line; it gets a road door's
+     noise for the same reason. Its rows carry no `ico`, so the moral weight is
+     read off the one thing they do declare: a row that takes no prisoners is
+     the ugly sound, a row that lets them go is the good one. */
+  playChoiceSfx(o.evil?'evil':(f.morale||0)>0?'help':'take');
   if(f.morale)G.morale+=f.morale;
   /* #202 - crowns FOUND go through lootMul(), the way pickChoice and takeLoot
      pay them, because `fxNote` prints the multiplied figure and the label
@@ -27155,6 +27302,8 @@ function openCamp(spot,next,atPlace){
     if(b2.disabled)return;
     b2.onclick=()=>{
       const o=visible[+b2.dataset.i],f=o.fx||{};
+      /* the fire speaks the same glyph language, so it makes the same noise */
+      choiceSfx(o);
       /* the ruling itself is what a sequel keys on — recorded by the option's
          index in the AUTHORED list, never the filtered one, or a race gate
          upstream would silently shift every id */
@@ -35918,6 +36067,11 @@ const lootMul=()=>1+relicSum('coCrowns')+
 function pickChoice(k,i){
   const e=EVENTS[k],c=(i&&typeof i==='object')?i:e.choices[i],f=(c&&c.fx)||{};
   if(!c)return;
+  /* the noise is about the PRESS, so it fires before anything is paid. It also
+     has to be ahead of the `battle` branch further down, which leaves this
+     function for the field: a fight door that made no sound because the screen
+     changed under it would be the one door in the deck that is silent. */
+  choiceSfx(c);
   /* the journal watches, and only watches — see JOURNAL. The label is the
      card's TITLE, not its id, because the report is read by a friend who
      has never seen the source. */
@@ -36903,6 +37057,11 @@ function tavernSkip(){
 }
 function openPrologue(){
   JOURNAL.startRun('a new company');
+  /* ⚠ HERE AND NOT ON THE MENU BUTTON. "A NEW COMPANY" arms BOOT_NEW and then
+     RELOADS THE PAGE (#124), so a sound started on that click is cut off
+     mid-sample by the navigation. This is the far side of the reload and the
+     first moment of the run that actually exists. */
+  sfx('newrun');
   if(LEGACY.brawlDone){tavernSkip();return;}
   /* #150 - no title, and no sub-label on the door. Both by the user's own
      call; proCard drops the elements rather than drawing them empty. */

@@ -93,6 +93,7 @@ main{padding:26px 22px}
 .choice.racey{border-color:#5a7a6a}
 .choice b{font-size:15px;color:var(--g4);font-weight:400}
 .choice i{font-family:var(--mono);font-size:12.5px;color:#c2a877;font-style:normal;line-height:1.35}
+.choice .potential{display:none}
 .cig{font-style:normal;font-size:18px;line-height:1;margin-right:6px}
 .choices{display:flex;flex-direction:column;gap:6px}
 .abfx{display:flex;gap:9px;flex-wrap:wrap;align-items:stretch}
@@ -404,15 +405,15 @@ main{padding:26px 22px}
 
 /* J, final pass: Esoteric Ebb-like floating dialogue. The scene itself says
    who is speaking, so the bubbles carry only the line — no repeated names. */
-.panel[data-k="stage"]{grid-template-columns:minmax(0,1fr)}
+.panel[data-k="stage"].on{grid-template-columns:minmax(0,1fr)}
 .panel[data-k="stage"] .stage{width:100%;align-items:center}
-.panel[data-k="stage"] .stagelbl{width:min(100%,1040px);color:#766344}
+.panel[data-k="stage"] .stagelbl{width:min(100%,1180px);color:#766344}
 .panel[data-k="stage"] .note{display:none}
-.panel[data-k="stage"] .flip{width:min(100%,1040px);justify-content:center;flex-wrap:wrap;gap:5px;margin:0 0 6px}
+.panel[data-k="stage"] .flip{width:min(100%,1180px);justify-content:center;flex-wrap:wrap;gap:5px;margin:0 0 6px}
 .panel[data-k="stage"] .flip button{border-color:#34291a;background:rgba(16,12,6,.76);padding:7px 12px}
 .panel[data-k="stage"] .flip button.on{color:#ead7ad;border-color:#80643b;
   box-shadow:inset 0 0 18px rgba(154,119,64,.11),0 0 16px rgba(0,0,0,.45)}
-.stg{width:min(100%,1040px);background:#090806;border-color:#4c3b24;
+.stg{width:min(100%,1180px);background:#090806;border-color:#4c3b24;
   box-shadow:0 24px 70px rgba(0,0,0,.82),0 0 0 1px rgba(190,151,82,.08)}
 .stg .scene4{height:520px}
 .stg .scene4::before{content:"";position:absolute;inset:9px;z-index:5;pointer-events:none;
@@ -500,31 +501,170 @@ main{padding:26px 22px}
 .storyline.current{font-size:18px;color:#f0ead8;opacity:1}
 .storyline.current::before{background:#c45732;box-shadow:0 0 10px rgba(196,87,50,.4)}
 .storyline.quote{font-style:italic}
-.storychoices{display:flex;flex-direction:column;gap:7px;margin-top:5px;pointer-events:auto}
-.storychoices .choice{background:rgba(4,10,11,.91);border-color:rgba(111,88,52,.62);padding:10px 12px}
-.storychoices .choice:hover{background:rgba(17,21,18,.97);border-color:#9c7743;transform:translateX(4px)}
-.storychoices .choice b{font-size:14px;color:#eadfc8}
-.storychoices .choice i{font-size:10px}
-.story-mode .beats4{left:auto;right:18px;top:112px;bottom:112px;width:3px;height:auto;
-  flex-direction:column;justify-content:space-between;gap:0}
-.story-mode .beats4 span{width:3px;height:calc(100% / 8);min-height:22px;background:rgba(130,77,52,.38)}
-.story-mode .beats4 span.on{background:#cf623a;box-shadow:0 0 9px rgba(207,98,58,.4)}
+.storychoices{display:flex;flex-direction:column;gap:4px;margin-top:3px;width:min(100%,292px);pointer-events:auto}
+.storychoices .choice{position:relative;display:grid;grid-template-columns:40px minmax(0,1fr);align-items:center;
+  gap:0;width:100%;min-height:44px;overflow:hidden;padding:4px 10px 4px 7px;
+  border:1px solid rgba(94,104,95,.5);border-left:2px solid #63766f;border-radius:12px 16px 12px 7px;
+  background:linear-gradient(96deg,rgba(13,22,21,.96),rgba(5,11,12,.92) 78%);
+  box-shadow:0 5px 13px rgba(0,0,0,.24);
+  transition:transform .14s ease,border-color .14s ease,background .14s ease,box-shadow .14s ease}
+.storychoices .choice::before{content:"";position:absolute;left:0;top:8px;bottom:8px;width:1px;background:#82958b}
+.storychoices .choice::after{content:"";position:absolute;inset:2px;pointer-events:none;border:1px solid rgba(183,151,91,.17);
+  border-radius:10px 14px 10px 5px;background:
+  radial-gradient(circle at 8px 6px,rgba(199,164,96,.75) 0 1px,transparent 1.4px),
+  radial-gradient(circle at calc(100% - 8px) calc(100% - 6px),rgba(199,164,96,.58) 0 1px,transparent 1.4px)}
+.storychoices .choice:hover{transform:translateX(4px);border-color:#789a9b;
+  background:linear-gradient(96deg,rgba(17,31,31,.98),rgba(5,14,17,.96) 78%);box-shadow:0 8px 18px rgba(0,0,0,.4)}
+.storychoices .choice:hover::after{border-color:rgba(199,174,116,.3)}
+.storychoices .choice.picked{border-color:#6097b5;border-left-color:#82c1e2;
+  background:linear-gradient(96deg,rgba(14,38,51,.98),rgba(5,15,20,.96) 80%);box-shadow:0 0 0 1px rgba(83,150,184,.12),0 8px 20px rgba(0,0,0,.44)}
+.storychoices .choice-glyphs{position:relative;display:flex;align-items:center;justify-content:center;gap:0;
+  width:36px;height:32px;line-height:1;white-space:nowrap}
+.storychoices .choice-glyphs img{width:27px;height:32px;object-fit:contain;filter:brightness(1.18) saturate(.82) contrast(1.05) drop-shadow(0 2px 3px #000)}
+.storychoices .choice-glyphs img+img{width:21px;margin-left:-6px}
+.storychoices .choice-glyphs .race-mark{position:absolute;right:-4px;bottom:-3px;width:18px;height:18px;line-height:1}
+.storychoices .choice-glyphs .race-mark img{width:18px;height:18px;object-fit:contain;filter:brightness(1.18) saturate(.84) contrast(1.05) drop-shadow(0 1px 2px #000)}
+.storychoices .choice-copy{display:flex;min-width:0;flex-direction:column;gap:1px}
+.storychoices .choice b{display:block;overflow:hidden;font-size:12.5px;line-height:1.16;color:#e6dcc5;
+  font-weight:500;white-space:nowrap;text-overflow:ellipsis}
+.storychoices .choice-signals{display:flex;align-items:center;gap:7px;min-width:0;font-family:var(--mono);
+  font-size:8px;line-height:1.15;white-space:nowrap}
+.storychoices .choice i{overflow:hidden;color:#aa9872;text-overflow:ellipsis}
+.storychoices .choice i.cost{color:#bf896c}.storychoices .choice i.risk{color:#ce7268}.storychoices .choice i.neutral{color:#91866c}
+.storychoices .choice .potential{display:block;overflow:hidden;color:#79a99e;text-overflow:ellipsis}
+.storychoices .choice .potential::before{content:"↗";margin-right:4px;color:#8bc9ba}
+.storychoices .choice.danger{border-color:rgba(142,65,56,.68);border-left-color:#aa4e43;
+  border-radius:5px 15px 5px 15px;background:linear-gradient(96deg,rgba(40,20,19,.96),rgba(13,11,12,.95))}
+.storychoices .choice.danger::before{background:#d06455}.storychoices .choice.danger::after{border-color:rgba(184,92,74,.25);border-radius:3px 13px 3px 13px}.storychoices .choice.danger .potential{color:#c98178}
+.storychoices .choice.racey{border-color:rgba(91,128,106,.68);border-left:3px double #77a186;
+  border-radius:12px 4px 12px 7px}
+.storychoices .choice.racey::after{border-color:rgba(118,160,135,.26);border-radius:10px 2px 10px 5px}
+.storychoices .choice.mystery{border-style:dashed;border-color:#7e7190;border-radius:18px 7px 18px 7px;background:linear-gradient(96deg,rgba(28,24,37,.94),rgba(7,10,14,.94))}
+.storychoices .choice.mystery::after{border-style:dotted;border-color:rgba(137,119,158,.28);border-radius:16px 5px 16px 5px}
+.storychoices .choice.picked{border-left-color:#82c1e2;box-shadow:0 0 0 1px rgba(83,150,184,.16),0 8px 20px rgba(0,0,0,.44)}
+.storychoices .choice.racey.picked{border-left:3px double #82c1e2}.storychoices .choice.picked::before{background:#86c9eb}
+.story-mode .beats4{display:none}
 .story-mode .adv4{z-index:7;left:42px;right:auto;bottom:18px;color:#a77b4d}
-.story-mode.has-actor h3,.story-mode.has-actor .encounter-mark{left:226px}
-.story-mode.has-actor .storyflow{left:226px;width:min(43%,455px);bottom:22px}
-.actor-figure{position:absolute;z-index:4;left:12px;bottom:32px;width:238px;height:510px;
-  object-fit:cover;object-position:center top;filter:saturate(.72) brightness(.78) contrast(1.07)
-  drop-shadow(12px 16px 20px rgba(0,0,0,.85));
-  -webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 8%,#000 73%,transparent 100%);
-  mask-image:linear-gradient(to bottom,transparent 0,#000 8%,#000 73%,transparent 100%)}
+.story-mode.has-actor h3,.story-mode.has-actor .encounter-mark{left:294px}
+.story-mode.has-actor .storyflow{left:294px;top:86px;width:min(39%,450px);bottom:14px;gap:8px}
+.actor-stack{position:absolute;z-index:4;left:12px;bottom:28px;width:268px;height:520px}
+.actor-card{position:absolute;left:0;bottom:24px;width:202px;height:482px;overflow:hidden;
+  border:1px solid rgba(125,96,56,.38);background:#070807;transform-origin:50% 92%;
+  box-shadow:10px 18px 30px rgba(0,0,0,.82);filter:saturate(.62) brightness(.67);
+  opacity:.79;transition:transform .22s ease,filter .22s ease,opacity .22s ease,box-shadow .22s ease}
+.actor-card:nth-child(2){left:70px;bottom:58px;transform:rotate(2.2deg)}
+.actor-card.front{z-index:5;opacity:1;filter:saturate(.82) brightness(.86);transform:translateY(-13px) rotate(-1deg) scale(1.015);
+  box-shadow:13px 22px 38px rgba(0,0,0,.92),0 0 0 1px rgba(167,126,68,.18)}
+.actor-card:nth-child(2).front{bottom:24px}
+.actor-card img{width:100%;height:100%;object-fit:cover;object-position:center top;
+  -webkit-mask-image:linear-gradient(to bottom,#000 0,#000 78%,transparent 100%);
+  mask-image:linear-gradient(to bottom,#000 0,#000 78%,transparent 100%)}
+.actor-nameplate{position:absolute;left:8px;bottom:0;z-index:8;min-width:150px;padding:5px 9px 4px;
+  border-left:2px solid #a05236;background:linear-gradient(90deg,rgba(5,9,9,.94),rgba(5,9,9,.45),transparent);
+  font-family:var(--mono);font-size:9px;letter-spacing:.19em;color:#d6c6a3;text-transform:uppercase;
+  text-shadow:0 2px 7px #000;transition:opacity .18s ease}
+.actor-stack.single .actor-card{left:0;width:220px;transform:rotate(-1deg)}
+.actor-stack.single .actor-card.front{transform:translateY(-10px) rotate(-1deg) scale(1.01)}
 .story-mode.has-actor .storyline{background:linear-gradient(90deg,rgba(3,8,9,.86),rgba(3,8,9,.55) 78%,transparent);
   padding:5px 10px 6px 16px}
 .story-mode.has-actor .storyline.current{box-shadow:-12px 0 28px rgba(0,0,0,.18)}
+/* Three voices, three geometries. No repeated speaker names: the edge and
+   direction do the same job as the portraits in J-A. */
+.story-mode .storyline.voice-party{margin-right:34px;background:linear-gradient(90deg,rgba(11,25,34,.94),rgba(5,13,18,.59) 82%,transparent)}
+.story-mode .storyline.voice-party::before{background:#4f86a6}
+.story-mode .storyline.voice-party::after{content:"";position:absolute;left:-5px;top:15px;width:9px;height:9px;
+  background:#0d1d27;transform:rotate(45deg);border-left:1px solid rgba(79,134,166,.78);border-bottom:1px solid rgba(79,134,166,.78)}
+.story-mode .storyline.voice-other{margin-left:38px;padding:5px 16px 6px 10px;
+  background:linear-gradient(270deg,rgba(13,22,23,.84),rgba(7,11,12,.56) 82%,transparent)}
+.story-mode .storyline.voice-other::before,.story-mode .storyline.voice-other::after{display:none}
+.story-mode .storyline.voice-other.current{background:linear-gradient(270deg,rgba(21,36,38,.9),rgba(7,12,13,.6) 82%,transparent)}
+.story-mode .storyline.voice-narrator{margin-left:16px;margin-right:28px;padding:4px 8px 4px 27px;
+  color:#aaa997;background:linear-gradient(90deg,rgba(5,9,9,.48),transparent);font-size:15px;font-style:normal}
+.story-mode .storyline.voice-narrator::before{left:5px;top:12px;bottom:auto;width:7px;height:7px;
+  background:#77715f;transform:rotate(45deg);box-shadow:none}
+.story-mode .storyline.voice-party.current::before{background:#79bde2;box-shadow:0 0 10px rgba(105,183,225,.38)}
+.story-mode .storyline.voice-narrator.current::before{background:#c7b98f;box-shadow:0 0 9px rgba(199,185,143,.28)}
+
+/* The button lab is deliberately a separate screen. It uses the shipped
+   eight-glyph intent grammar and changes only frame language, not meaning. */
+.panel[data-k="buttonlab"].on{grid-template-columns:minmax(0,1fr)}
+.panel[data-k="buttonlab"] .stage{width:100%;align-items:center}
+.panel[data-k="buttonlab"] .stagelbl{width:min(100%,1180px);color:#6f806f}
+.button-lab-shell{width:min(100%,1180px);padding:22px 24px 26px;border:1px solid #354039;
+  background:radial-gradient(circle at 76% 0,rgba(53,94,104,.12),transparent 36%),linear-gradient(150deg,#111712,#070b0b 72%);
+  box-shadow:0 24px 70px rgba(0,0,0,.72)}
+.lab-top{display:flex;align-items:flex-start;justify-content:space-between;gap:22px;margin-bottom:15px}
+.lab-top h3{font-family:var(--display);font-size:18px;letter-spacing:.2em;color:#e5dcc8;font-weight:500}
+.lab-top p{margin-top:5px;font-family:var(--mono);font-size:8.5px;letter-spacing:.1em;color:#75817a}
+.intent-key{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:4px;max-width:510px}
+.intent-key span{display:flex;align-items:center;gap:4px;padding:3px 6px;border-bottom:1px solid #34423b;
+  font-family:var(--mono);font-size:7.5px;letter-spacing:.09em;color:#8c978e}
+.intent-key b{font-size:13px;font-weight:400}.intent-key img{width:20px;height:24px;object-fit:contain;filter:brightness(1.12) saturate(.8) drop-shadow(0 1px 2px #000)}
+.lab-keys{display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+.race-key{display:flex;gap:5px;justify-content:flex-end}
+.race-key span{display:flex;align-items:center;gap:4px;padding:2px 7px;border-bottom:1px solid #3b3f35;
+  font-family:var(--mono);font-size:7.5px;letter-spacing:.09em;color:#8e8a78}
+.race-key img{width:26px;height:26px;object-fit:contain;filter:brightness(1.18) saturate(.95) contrast(1.06) drop-shadow(0 1px 2px #000)}
+.lab-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
+.lab-family{position:relative;padding:13px 14px 14px;border:1px solid #27332e;background:rgba(7,12,11,.7);
+  cursor:pointer;transition:border-color .15s ease,transform .15s ease,background .15s ease}
+.lab-family:hover{transform:translateY(-2px);border-color:#526a61;background:rgba(10,18,17,.86)}
+.lab-family.selected{border-color:#5f9ab7;box-shadow:0 0 0 1px rgba(92,159,190,.13),0 12px 30px rgba(0,0,0,.3)}
+.lab-family.selected::after{content:"✓";position:absolute;right:11px;top:8px;color:#7ec5e5;font-size:15px}
+.lab-family-head{display:flex;align-items:baseline;gap:9px;margin-bottom:8px;padding-right:22px}
+.lab-family-head b{font-family:var(--mono);font-size:9px;letter-spacing:.14em;color:#d8ccb2;font-weight:500}
+.lab-family-head span{font-family:var(--mono);font-size:7px;letter-spacing:.09em;color:#68756e}
+.lab-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px}
+.lab-option{position:relative;display:grid;grid-template-columns:25px minmax(0,1fr);align-items:center;min-height:43px;
+  padding:4px 8px 4px 7px;text-align:left;color:#ddd3bd;background:#0d1413;border:1px solid #3b4943;
+  font-family:var(--body);cursor:pointer;transition:transform .12s ease,border-color .12s ease}
+.lab-option:hover{transform:translateX(3px);border-color:#74948d}
+.lab-option .li{position:relative;display:flex;align-items:center;justify-content:center;width:24px;height:30px;line-height:1;white-space:nowrap}
+.lab-option .li img{width:24px;height:29px;object-fit:contain;filter:brightness(1.14) saturate(.82) contrast(1.05) drop-shadow(0 2px 2px #000)}
+.lab-option .li>img+img{width:20px;height:25px;margin-left:-6px}
+.lab-option .li small{position:absolute;right:-4px;bottom:-1px;font-size:9px;line-height:1}
+.lab-option .li small img{width:16px;height:16px;object-fit:contain;filter:brightness(1.2) saturate(.96) contrast(1.06) drop-shadow(0 1px 1px #000)}
+.lab-option strong{display:block;overflow:hidden;font-size:11.5px;line-height:1.12;font-weight:500;white-space:nowrap;text-overflow:ellipsis}
+.lab-option em{display:flex;gap:6px;overflow:hidden;margin-top:2px;font-family:var(--mono);font-size:7.5px;line-height:1.1;
+  color:#ad876d;font-style:normal;white-space:nowrap;text-overflow:ellipsis}
+.lab-option em .gain{color:#77ae9d}.lab-option em .risk{color:#ca7168}
+
+/* A: the selected direction — compact, but softer and more hand-held. */
+.skin-cut .lab-option{border-left:2px solid #697b73;border-radius:12px 16px 12px 7px}
+.skin-cut .lab-option::after{content:"";position:absolute;inset:2px;pointer-events:none;border:1px solid rgba(183,151,91,.17);
+  border-radius:10px 14px 10px 5px;background:
+  radial-gradient(circle at 7px 5px,rgba(199,164,96,.7) 0 1px,transparent 1.4px),
+  radial-gradient(circle at calc(100% - 7px) calc(100% - 5px),rgba(199,164,96,.52) 0 1px,transparent 1.4px)}
+.skin-cut .kind-race{border-left:3px double #7c9d87;border-radius:12px 4px 12px 7px}
+.skin-cut .kind-race::after{border-color:rgba(118,160,135,.27);border-radius:10px 2px 10px 5px}
+.skin-cut .kind-danger{border-color:#88483f;border-radius:5px 15px 5px 15px}.skin-cut .kind-danger::after{border-color:rgba(184,92,74,.26);border-radius:3px 13px 3px 13px}
+.skin-cut .kind-mystery{border-style:dashed;border-color:#746984;border-radius:18px 7px 18px 7px}.skin-cut .kind-mystery::after{border-style:dotted;border-color:rgba(137,119,158,.3);border-radius:16px 5px 16px 5px}
+
+/* B: road strips — almost no card, fastest to scan. */
+.skin-strip .lab-option{border:0;border-bottom:1px solid #405047;background:linear-gradient(90deg,rgba(26,37,32,.82),transparent)}
+.skin-strip .lab-option::before{content:"";position:absolute;left:0;top:8px;bottom:8px;width:2px;background:#708279}
+.skin-strip .kind-race::before{width:4px;background:repeating-linear-gradient(to bottom,#7e9f89 0 3px,transparent 3px 5px)}
+.skin-strip .kind-danger{background:linear-gradient(90deg,rgba(50,25,22,.82),transparent);border-bottom-color:#7d4039}
+.skin-strip .kind-danger::before{background:#b75a4d}.skin-strip .kind-mystery{border-bottom-style:dashed}
+
+/* C: intent tabs — the glyph has a rectangular tab, never a circle. */
+.skin-tab .lab-option{grid-template-columns:31px minmax(0,1fr);padding-left:0;border-left:0}
+.skin-tab .lab-option .li{align-self:stretch;display:flex;align-items:center;justify-content:center;background:#25342e;border-right:1px solid #52635a}
+.skin-tab .kind-race .li{background:#294235}.skin-tab .kind-danger .li{background:#502822}
+.skin-tab .kind-mystery .li{background:#30293b}.skin-tab .kind-race{border-right:3px double #72947e}
+.skin-tab .kind-danger{border-color:#81443c}.skin-tab .kind-mystery{border-style:dashed}
+
+/* D: type-shaped — every decision family owns a visibly different hull. */
+.skin-types .kind-help{border-radius:8px 2px 8px 2px;border-color:#52736a}
+.skin-types .kind-race{border:3px double #617e6b;clip-path:polygon(0 0,88% 0,100% 50%,88% 100%,0 100%,7px 50%)}
+.skin-types .kind-danger{border-color:#8f453d;clip-path:polygon(0 0,94% 0,100% 7px,97% 45%,100% 100%,5px 100%,0 82%,3px 37%)}
+.skin-types .kind-mystery{border:1px dashed #776a87;border-radius:12px 2px 12px 2px;background:linear-gradient(90deg,rgba(42,34,53,.6),rgba(9,13,15,.9))}
+@media (max-width:860px){.lab-grid{grid-template-columns:1fr}.lab-top{flex-direction:column}.lab-keys{align-items:flex-start}.intent-key,.race-key{justify-content:flex-start}.lab-options{grid-template-columns:1fr 1fr}}
 @media (max-width:780px){
   .stg .scene4.story-mode{height:650px}.storyflow{left:25px;width:68%;top:96px}
   .story-mode h3,.story-mode .encounter-mark{left:25px}.storyline{font-size:14px}.storyline.current{font-size:16px}
-  .actor-figure{left:-28px;width:190px;height:430px;opacity:.72}
-  .story-mode.has-actor h3,.story-mode.has-actor .encounter-mark,.story-mode.has-actor .storyflow{left:126px}
+  .actor-stack{left:-28px;width:190px;height:450px;opacity:.78}.actor-card{width:155px;height:410px}.actor-card:nth-child(2){left:48px}
+  .actor-stack.single .actor-card{width:170px}.story-mode.has-actor h3,.story-mode.has-actor .encounter-mark,.story-mode.has-actor .storyflow{left:146px}
   .story-mode.has-actor .storyflow{width:62%}
 }
 @media (max-width:780px){
@@ -821,6 +961,14 @@ h2:first-child{margin-top:0}
     </div>
   </section>
 
+  <!-- ═══ DECISION BUTTON LAB ════════════════════════════════════════ -->
+  <section class="panel wide" data-k="buttonlab">
+    <div class="stage">
+      <div class="stagelbl">DECISION BUTTON LAB · FOUR COMPACT FAMILIES · CLICK A FAMILY TO MARK IT</div>
+      <div class="button-lab-shell" id="buttonLab"></div>
+    </div>
+  </section>
+
   <!-- ═══ I · THE PLATE ═══════════════════════════════════════════════ -->
   <section class="panel" data-k="plate">
     <div class="stage">
@@ -964,9 +1112,9 @@ const CLASH = {
        'Four ratkin with spears and a sling, fast, loud, already committed. Three ogres with clubs, in no hurry at all.\n\n'+
        'Neither side has seen you. That will not hold.',
   choices:[
-    {ico:'⚔️🤝', t:'Wade in for the ratkin.', c:'3 spears beside you · 3 ogres against · 2 may join after'},
-    {ico:'⚔️🤝', t:'Wade in for the ogres.',  c:'2 clubs beside you · 5 ratkin against · 1 may join after'},
-    {ico:'⚔️☠️', t:'Wait. Then finish the winners.', c:'nobody beside you · 2 ogres against · both sides of the road are yours', danger:true}
+    {ico:'⚔️🤝', intent:['fight','help'], t:'Wade in for the ratkin.', c:'3 spears with you · 3 ogres against', out:'two ratkin may stay'},
+    {ico:'⚔️🤝', intent:['fight','help'], t:'Wade in for the ogres.',  c:'2 clubs with you · 5 ratkin against', out:'one ogre may stay'},
+    {ico:'⚔️☠️', intent:['fight','evil'], t:'Wait. Then finish the winners.', c:'nobody beside you · 2 ogres against', out:'loot from both sides', danger:true}
   ]
 };
 const TOLL = {
@@ -982,11 +1130,37 @@ const TOLL = {
   ]
 };
 
-const doorHTML = c =>
-  '<button class="choice'+(c.danger?' danger':'')+(c.racey?' racey':'')+(c.locked?' locked':'')+'">'+
-    '<b>'+(c.n?'<span class="numk">'+c.n+'</span>':'')+'<span class="cig">'+c.ico+'</span>'+c.t+'</b>'+
+const doorHTML = c => {
+  const legacyIntent=(c.intent||[]).map(k=>({fight:'⚔️',help:'🤝',evil:'☠️',leave:'👣',trade:'⚖️',take:'🧺',rest:'⛺',honor:'🙏'}[k]||k)).join('');
+  const legacyRace=c.race?({ratkin:'🐀',ogre:'👹',human:'🧑'}[c.race]||''):'';
+  return '<button'+(c.actor?' data-actor="'+c.actor+'"':'')+' class="choice'+(c.danger?' danger':'')+(c.racey?' racey':'')+(c.locked?' locked':'')+'">'+
+    '<b>'+(c.n?'<span class="numk">'+c.n+'</span>':'')+'<span class="cig">'+(c.ico||legacyIntent+legacyRace)+'</span>'+c.t+'</b>'+
     '<i>'+(c.locked?'<span class="why">'+c.c+'</span>':c.c)+'</i>'+
+    (c.out?'<span class="potential">'+c.out+'</span>':'')+
   '</button>';
+};
+
+/* Canonical encounter grammar from the game renderer. J consumes the same
+   intent tokens as every road/fire card; race is a separate derived mark. */
+const STORY_ICO={fight:'⚔️',help:'🤝',evil:'☠️',leave:'👣',trade:'⚖️',take:'🧺',rest:'⛺',honor:'🙏'};
+const STORY_ART=Object.fromEntries(Object.keys(STORY_ICO).map(k=>[k,'assets/intent-'+k+'-v1.png']));
+STORY_ART.leave='assets/intent-leave-v3.png';
+STORY_ART.take='assets/intent-take-v3.png';
+const STORY_RACE={ratkin:'assets/race-ratkin-v3.png',ogre:'assets/race-ogre-v3.png',human:'assets/race-human-v3.png'};
+const STORY_RACE_NAME={ratkin:'RATKIN',ogre:'OGRE',human:'HUMAN'};
+const storySignalTone=c=>c.danger||/BATTLE|\?|injured/i.test(c.c||'')?'risk':/^−/.test(c.c||'')?'cost':'neutral';
+const storyDoorHTML = c => {
+  const glyphs=(c.intent||[]).map(k=>STORY_ART[k]?'<img src="'+STORY_ART[k]+'" alt="">':(STORY_ICO[k]||k)).join('');
+  const race=c.race?'<small class="race-mark"><img src="'+STORY_RACE[c.race]+'" alt="'+STORY_RACE_NAME[c.race]+'"></small>':'';
+  return '<button'+(c.actor?' data-actor="'+c.actor+'"':'')+' class="choice'+
+    (c.danger?' danger':'')+(c.racey?' racey':'')+(c.mystery?' mystery':'')+'">'+
+      '<span class="choice-glyphs">'+(glyphs||c.ico||'')+race+'</span>'+
+      '<span class="choice-copy"><b>'+c.t+'</b><span class="choice-signals">'+
+        (c.c?'<i class="'+storySignalTone(c)+'">'+c.c+'</i>':'')+
+        (c.out?'<span class="potential">'+c.out+'</span>':'')+
+      '</span></span>'+
+    '</button>';
+};
 
 /* ══ 0 · TODAY ════════════════════════════════════════════════════════ */
 function mountToday(){
@@ -1125,7 +1299,11 @@ function mountStandoff(){
    ══════════════════════════════════════════════════════════════════════ */
 const STAGES = {
   stone:{ n:'THE SITTING STONE',
-    title:'THE SITTING STONE', back:A.EV19, sight:A.MAPEV19, stageArt:'assets/EV-J1_sitting-stone-stage.png', actorArt:'assets/P4_Bruht.png',
+    title:'THE SITTING STONE', back:A.EV19, sight:A.MAPEV19, stageArt:'assets/EV-J1_sitting-stone-stage.png',
+    actors:[
+      {id:'captain',name:'Ilka Kolb',art:'assets/P1_The_Captain.png'},
+      {id:'bruht',name:'Bruht',art:'assets/P4_Bruht.png'}
+    ],
     right:{nm:'THE OGRE', sub:'two winters on this rock', face:A.P8},
     left:P.bruht,
     beats:[
@@ -1137,13 +1315,14 @@ const STAGES = {
       {s:'left', q:true, tx:'I will talk to him. It will take a while.'}
     ],
     doors:[
-      {ico:'🤝',   t:'Give him bread. Sit a while.', c:'−2 provisions · needs 2 provisions'},
-      {ico:'🤝',   t:'Ask him to come with you.',    c:'an ogre may join'},
-      {ico:'🤝👹', t:'Let your own ogre do the talking.', c:'', racey:true}
+      {intent:['help'], t:'Give him bread. Sit a while.', c:'−2 provisions', out:'the ogre remembers you', actor:'captain'},
+      {intent:['help'], t:'Ask him to come with you.', c:'no immediate cost', out:'an ogre may join', actor:'captain'},
+      {intent:['help'], race:'ogre', t:'Let your own ogre do the talking.', c:'Bruht takes the lead', out:'the talk may stay peaceful', racey:true, actor:'bruht'}
     ],
     foot:'⚠ THE REAL BUILD WOULD OFFER THE RATKIN DOOR INSTEAD ON THIS COMPANY. Only one race door is ever shown and the ratkin wins (#159).'},
   chapel:{ n:'THE DROWNED CHAPEL',
-    title:'THE DROWNED CHAPEL', back:A.EV04, sight:A.MAPEV04, stageArt:'assets/EV-J2_drowned-chapel-stage.png', actorArt:'assets/P5_Marrow.png',
+    title:'THE DROWNED CHAPEL', back:A.EV04, sight:A.MAPEV04, stageArt:'assets/EV-J2_drowned-chapel-stage.png',
+    actors:[{id:'marrow',name:'Marrow',art:'assets/P5_Marrow.png'}],
     right:{nm:'THE CHAPEL', sub:'drowned these twenty years'},
     left:P.marrow,
     beats:[
@@ -1154,8 +1333,8 @@ const STAGES = {
       {s:'road', tx:'Something under the altar is still dry.'}
     ],
     doors:[
-      {ico:'🧺', t:'Wade in. Take what the water left.', c:'+6 salvage · a day'},
-      {ico:'🧺', t:'Send the gilled one down. The crypt has been under water for years.', c:'needs the gills of the fen', racey:true}
+      {intent:['take'], t:'Wade in. Take what the water left.', c:'one day', out:'+6 salvage', actor:'marrow'},
+      {intent:['take'], t:'Send the gilled one down.', c:'needs the gills of the fen', out:'the drowned crypt opens', racey:true, actor:'marrow'}
     ],
     foot:'⚑ THE RIGHT SLOT IS A PLACE HERE AND NEVER REACHES `lit`. Same container, no special case.'},
 
@@ -1177,9 +1356,9 @@ const STAGES = {
       {s:'road', tx:'They are what a company like yours turns into after one bad winter, and everybody on both sides of the road knows it.'}
     ],
     doors:[
-      {ico:'⚔️', t:'"No."',                          c:'BATTLE · 4 men and 2 dogs against'},
-      {ico:'🤝', t:'Give them four days of food.',   c:'−4 provisions · one of them stays'},
-      {ico:'⚖️', t:'Hand over the coin they can see.',c:'−40 crowns'}
+      {intent:['fight'], t:'"No."',                          c:'BATTLE · 4 men and 2 dogs against'},
+      {intent:['help'], t:'Give them four days of food.',   c:'−4 provisions · one of them stays'},
+      {intent:['trade'], t:'Hand over the coin they can see.',c:'−40 crowns'}
     ],
     foot:'⚑ NOT ONE NEW LINE WAS WRITTEN FOR THIS CARD. The quoted speech was already in the shipped body; the format only gave it a face.'},
 
@@ -1204,14 +1383,15 @@ const STAGES = {
       {s:'road', tx:'They are drunk, enormously friendly, and entirely unarmed.'}
     ],
     doors:[
-      {ico:'⛺',   t:'Stay for one drink. Only one.',   c:'−1 day'},
-      {ico:'⛺🐀', t:'Let your ratkin lead the toast.',  c:'', racey:true},
-      {ico:'⚔️☠️', t:'Cut the whole wedding down.',      c:'?', danger:true, mystery:true}
+      {intent:['rest'], t:'Stay for one drink. Only one.',   c:'−1 day'},
+      {intent:['rest'], race:'ratkin', t:'Let your ratkin lead the toast.',  c:'', racey:true},
+      {intent:['fight','evil'], t:'Cut the whole wedding down.', c:'?', danger:true, mystery:true}
     ],
     foot:'⚠ THE OGRE DOOR EXISTS AND IS NOT SHOWN. Only one race door is ever offered and the ratkin wins (#159). The ? is the build\'s only mystery door.'},
 
   ashroad:{ n:'BLOOD ON THE ROAD · ASH',
-    title:'BLOOD ON THE ROAD', stageArt:'assets/EV-J3_blood-on-road-ash-stage.png', actorArt:'assets/P1_The_Captain.png',
+    title:'BLOOD ON THE ROAD', stageArt:'assets/EV-J3_blood-on-road-ash-stage.png',
+    actors:[{id:'captain',name:'Ilka Kolb',art:'assets/P1_The_Captain.png'}],
     beats:[
       {s:'road', tx:'A ratkin foraging party and an ogre steading-line have met over a dead deer.'},
       {s:'them', q:true, tx:'Three clubs. Four spears. One deer. None of this is worth dying over.'},
@@ -1221,7 +1401,8 @@ const STAGES = {
     foot:''},
 
   ashfire:{ n:'ASH AT THE FIRE',
-    title:'THE WRONG COLOUR', stageArt:'assets/EV-33_ash-at-the-fire.png', actorArt:'assets/P1_The_Captain.png', heroLeft:true, mark:'a night at the fire',
+    title:'THE WRONG COLOUR', stageArt:'assets/EV-33_ash-at-the-fire.png', heroLeft:true, mark:'a night at the fire',
+    actors:[{id:'captain',name:'Ilka Kolb',art:'assets/P1_The_Captain.png'}],
     beats:[
       {s:'road', tx:'Everyone else is down. Ash is still feeding the fire one stick at a time, and talking, which she does not do.'},
       {s:'them', tx:'The clans would not have her: too pale, wrong in the mouth. The steadings would not either.'},
@@ -1229,9 +1410,9 @@ const STAGES = {
       {s:'road', tx:'Then she stops, and waits to find out if that was a mistake.'}
     ],
     doors:[
-      {ico:'🔥', t:'Put another stick on. Keep listening.', c:'−1 provision · +10 morale'},
-      {ico:'🌙', t:'Say it is late. Go to your blanket.', c:'−5 morale'},
-      {ico:'✦', t:'Remind her what she is, and make it hurt.', c:'Ash is injured · −15 morale', danger:true}
+      {intent:['rest','help'], t:'Put another stick on. Keep listening.', c:'−1 provision', out:'Ash talks until dawn · +10 morale'},
+      {intent:['leave'], t:'Say it is late. Go to your blanket.', c:'−5 morale', out:'distance settles between you'},
+      {intent:['evil'], t:'Remind her what she is, and make it hurt.', c:'−15 morale', out:'Ash is injured', danger:true}
     ],
     foot:''},
 
@@ -1254,37 +1435,66 @@ const STAGES = {
       {s:'road', tx:'There is something pale in the mud beside her.'}
     ],
     doors:[
-      {ico:'🧺', t:'Take the shed tooth and go. Quietly.', c:'−2 days · a great tooth'},
-      {ico:'⚔️', t:'Kill it. That hide is worth a season\'s wages.', c:'BATTLE · she is enormous and she is not alone', danger:true}
+      {intent:['take'], t:'Take the shed tooth and go. Quietly.', c:'−2 days · a great tooth'},
+      {intent:['fight'], t:'Kill it. That hide is worth a season\'s wages.', c:'BATTLE · she is enormous and she is not alone', danger:true}
     ],
     foot:'⚑ FOUR BEATS, THREE PLATES. The first one is pushed out of the stack by the fourth, which is the cap doing its job.'}
 };
-let stgWhich = 'stone', stgAt = 0;
-function mountStage(){ stgAt = 0; drawStage(); }
+let stgWhich = 'ashroad', stgAt = 0, stgActorFront = null;
+function mountStage(){ stgAt = 0; stgActorFront = null; drawStage(); }
 function drawStage(){
   document.getElementById('stgFlip').innerHTML = Object.keys(STAGES).map(k=>
     '<button class="'+(k===stgWhich?'on':'')+'" data-s="'+k+'">'+STAGES[k].n+'</button>').join('');
   document.getElementById('stgFlip').onclick = e => {
     const b = e.target.closest('button'); if(!b) return;
-    stgWhich = b.dataset.s; stgAt = 0; drawStage(); };
+    stgWhich = b.dataset.s; stgAt = 0; stgActorFront = null; drawStage(); };
 
   const S = STAGES[stgWhich], b = S.beats[stgAt], last = stgAt === S.beats.length-1;
   if(S.stageArt){
     const history = S.beats.slice(0,stgAt+1);
+    const actors = S.actors || [];
+    const frontId = actors.some(a=>a.id===stgActorFront) ? stgActorFront : (actors[0]&&actors[0].id);
+    const frontActor = actors.find(a=>a.id===frontId) || actors[0];
+    const actorDeck = actors.length ?
+      '<div class="actor-stack'+(actors.length===1?' single':'')+'">'+
+        actors.map(a=>'<div class="actor-card'+(a.id===frontId?' front':'')+'" data-actor-id="'+a.id+'">'+
+          '<img src="'+a.art+'" alt="'+a.name+'">'+
+        '</div>').join('')+
+        '<div class="actor-nameplate">'+frontActor.name+'</div>'+
+      '</div>' : '';
     document.getElementById('stgCard').innerHTML =
-      '<div class="scene4 story-mode'+(S.heroLeft?' hero-left':'')+(S.actorArt?' has-actor':'')+'">'+
+      '<div class="scene4 story-mode'+(S.heroLeft?' hero-left':'')+(actors.length?' has-actor':'')+'">'+
         '<img class="back" src="'+S.stageArt+'">'+
-        (S.actorArt?'<img class="actor-figure" src="'+S.actorArt+'" alt="">':'')+
+        actorDeck+
         '<h3>'+S.title+'</h3>'+
         '<div class="encounter-mark">'+(S.mark||'a road encounter')+'</div>'+
-        '<div class="storyflow">'+history.map((bt,i)=>
-          '<div class="storyline'+(i===stgAt?' current':'')+(bt.q?' quote':'')+'">'+bt.tx+'</div>'
-        ).join('')+
-          (last?'<div class="storychoices">'+S.doors.map(doorHTML).join('')+'</div>':'')+
+        '<div class="storyflow">'+history.map((bt,i)=>{
+          const voice = bt.s==='them' ? 'other' : (bt.s==='left'||bt.s==='you') ? 'party' : 'narrator';
+          return '<div class="storyline voice-'+voice+(i===stgAt?' current':'')+(bt.q?' quote':'')+'">'+bt.tx+'</div>';
+        }).join('')+
+          (last?'<div class="storychoices">'+S.doors.map(storyDoorHTML).join('')+'</div>':'')+
         '</div>'+
         '<div class="beats4">'+S.beats.map((_,i)=>'<span class="'+(i<=stgAt?'on':'')+'"></span>').join('')+'</div>'+
         (last?'':'<div class="adv4">CLICK ▸</div>')+
       '</div>';
+    const raiseActor = id => {
+      if(!id || !actors.some(a=>a.id===id)) return;
+      document.querySelectorAll('#stgCard .actor-card').forEach(c=>c.classList.toggle('front',c.dataset.actorId===id));
+      const name = actors.find(a=>a.id===id).name;
+      const plate = document.querySelector('#stgCard .actor-nameplate');
+      if(plate) plate.textContent = name;
+    };
+    const choices = document.querySelector('#stgCard .storychoices');
+    if(choices){
+      choices.addEventListener('mouseover',e=>{ const c=e.target.closest('.choice[data-actor]'); if(c) raiseActor(c.dataset.actor); });
+      choices.addEventListener('focusin',e=>{ const c=e.target.closest('.choice[data-actor]'); if(c) raiseActor(c.dataset.actor); });
+      choices.addEventListener('mouseleave',()=>raiseActor(stgActorFront||frontId));
+      choices.addEventListener('click',e=>{
+        const c=e.target.closest('.choice[data-actor]'); if(!c) return;
+        stgActorFront=c.dataset.actor; raiseActor(stgActorFront);
+        choices.querySelectorAll('.choice').forEach(x=>x.classList.toggle('picked',x===c));
+      });
+    }
     document.getElementById('stgCard').onclick = e => {
       if(e.target.closest('.storychoices')) return;
       if(stgAt < S.beats.length-1){ stgAt++; drawStage(); }
@@ -1521,7 +1731,39 @@ function mountOwn(){
         '<span><span class="fxn">+8</span><span class="fxl">MORALE</span></span></div></div>'+
       '<div class="split">⚑ THE PROSE IS <b>HIS ACCOUNT</b> AND MAY BE WRONG. '+
         'THE SUB-LINE AND THE CHIP ARE <b>THE GAME\'S FIGURES</b> AND MAY NOT.</div>'+
-    '</div>';
+      '</div>';
+}
+
+/* ══ DECISION BUTTON LAB ═════════════════════════════════════════════ */
+const LAB_FAMILIES=[
+  {id:'cut', skin:'skin-cut', name:'A · ROUNDED CUT', note:'selected for J · soft asymmetric corners'},
+  {id:'strip', skin:'skin-strip', name:'B · ROAD STRIP', note:'least invasive · fastest scan'},
+  {id:'tab', skin:'skin-tab', name:'C · INTENT TAB', note:'emoji owns a rectangular tab'},
+  {id:'types', skin:'skin-types', name:'D · TYPE-SHAPED', note:'every decision kind gets a hull'}
+];
+const LAB_OPTIONS=[
+  {kind:'help', intent:'help', title:'Offer help.', cost:'−2 food', gain:'trust'},
+  {kind:'race', intent:'help', race:'ogre', title:'Let your ogre speak.', cost:'Bruht', gain:'peace'},
+  {kind:'danger', intent:'fight', title:'Stand your ground.', cost:'4 against', risk:'battle'},
+  {kind:'mystery', intent:['fight','evil'], title:'Finish the survivors.', cost:'?', risk:'unknown'}
+];
+let labWhich='cut';
+const labOptionHTML=o=>'<button class="lab-option kind-'+o.kind+'"><span class="li">'+(Array.isArray(o.intent)?o.intent:[o.intent]).map(k=>'<img src="'+STORY_ART[k]+'" alt="">').join('')+(o.race?'<small><img src="'+STORY_RACE[o.race]+'" alt="'+STORY_RACE_NAME[o.race]+'"></small>':'')+'</span><span>'+(
+  '<strong>'+o.title+'</strong><em><span class="'+(o.risk?'risk':'')+'">'+o.cost+'</span>'+
+  (o.gain?'<span class="gain">↗ '+o.gain+'</span>':'')+(o.risk?'<span class="risk">◆ '+o.risk+'</span>':'')+'</em>')+'</span></button>';
+function mountButtonLab(){
+  const el=document.getElementById('buttonLab');
+  el.innerHTML='<div class="lab-top"><div><h3>ONE GRAMMAR · FOUR SKINS</h3><p>BLUE = YOUR PICK · GREEN = GAIN · RUST = COST · RED = DANGER</p></div>'+
+    '<div class="lab-keys"><div class="intent-key">'+Object.entries(STORY_ICO).map(([k,v])=>'<span><img src="'+STORY_ART[k]+'" alt=""><b hidden>'+v+'</b>'+k.toUpperCase()+'</span>').join('')+'</div>'+
+    '<div class="race-key">'+Object.entries(STORY_RACE).map(([k,v])=>'<span><img src="'+v+'" alt="">'+STORY_RACE_NAME[k]+'</span>').join('')+'</div></div></div>'+
+    '<div class="lab-grid">'+LAB_FAMILIES.map(f=>'<article class="lab-family '+f.skin+(f.id===labWhich?' selected':'')+'" data-family="'+f.id+'">'+
+      '<div class="lab-family-head"><b>'+f.name+'</b><span>'+f.note+'</span></div><div class="lab-options">'+
+      LAB_OPTIONS.map(labOptionHTML).join('')+'</div></article>').join('')+'</div>';
+  el.onclick=e=>{
+    const family=e.target.closest('.lab-family');if(!family)return;
+    labWhich=family.dataset.family;
+    el.querySelectorAll('.lab-family').forEach(x=>x.classList.toggle('selected',x===family));
+  };
 }
 
 /* ══ tabs ═════════════════════════════════════════════════════════════ */
@@ -1530,6 +1772,7 @@ const TABS = [
   ['speaker', 'A · THE SPEAKER',   mountSpeaker],
   ['two',     'E · THE TWO-HANDER',mountTwo],
   ['stage',   'J · THE STAGE',     mountStage],
+  ['buttonlab','DECISION BUTTON LAB',mountButtonLab],
   ['plate',   'I · THE PLATE',     mountPlate],
   ['offer',   'H · THE OFFER',     mountOffer],
   ['standoff','C · THE STANDOFF',  mountStandoff],

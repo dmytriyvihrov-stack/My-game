@@ -26,6 +26,39 @@
 
 ---
 
+## ⛨ THE CAPTAIN'S FIRST TOOL, AND THE WALL THAT REFUSES A SCRUM  *(#208 · 2026-08-20 · build log 8f.231)*
+
+Three rulings from the skill-tree session that the battle could already express. The tree itself
+is still a lab page, not the game: open `tools/skilltree_lab.html` in a browser to iterate it.
+
+### 1. HOLD THE LINE is what a new captain opens with
+
+**Three steps:** new run → first fight → look at the Captain's act row.
+**Should happen:** HOLD THE LINE at ONE pip (+10 dodge to allies within 2 hexes), and NO
+COMMAND anywhere on the row.
+**A bug:** COMMAND on a level-1 or level-2 captain, or HOLD THE LINE still costing two.
+
+### 2. COMMAND arrives at level 3, by itself
+
+**Three steps:** level the Captain to 3 → any fight → the row again.
+**Should happen:** COMMAND is simply there. Nothing was picked, no point was spent.
+**A bug:** it asking to be chosen, or arriving before 3.
+
+### 3. The wall refuses a scrum, and says why
+
+**Three steps:** any fight with Vesna → walk her ADJACENT to an enemy → hover SPEAR WALL.
+**Should happen:** the card is greyed and the hover reads NO ROOM: SOMETHING IS ALREADY
+INSIDE YOUR REACH. Step one hex back: it lights again. Enemy spear-carriers obey the same
+refusal.
+**A bug:** the wall raisable point-blank, the greyed card silent on hover, or anything at
+all changed for a body with BRACED WALL - that perk is the licence to raise it in contact.
+
+*(NOT built on purpose: DISENGAGE stays a basic action. Your ruling moves it into the
+general skill tree, but the tree is not in the game yet, and without it every scrum would
+be a soft lock. It is drafted as GEN18 in the lab.)*
+
+---
+
 ## 🧭 FIVE ON READING THE BATTLE  *(#206 · 2026-08-20 · build log 8f.228)*
 
 *(Your five, after playing: the hovered slot, an enemy behind END TURN, scrolling, the range of a
