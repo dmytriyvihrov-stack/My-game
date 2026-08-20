@@ -2894,23 +2894,25 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:var(--f
 .evstage::after{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;
   background:linear-gradient(90deg,rgba(9,7,4,.95) 0%,rgba(9,7,4,.88) 30%,rgba(9,7,4,.44) 58%,rgba(9,7,4,.06) 80%),
              linear-gradient(to bottom,rgba(7,6,4,.74),transparent 24%,transparent 66%,rgba(7,6,4,.88))}
-/* ⛔ #209 · A CARD THAT HAS THE WIDE PAINTING IS TREATED LESS, AND THAT IS NOT
-   TASTE. The dimming and the blur above are not decoration: they exist to make
-   a 586x212 letterbox survive being cover-cropped into a 1180x620 box, which is
-   what every un-re-exported card still is. The J masters do NOT need any of it
-   - they are 1672x941 composed for exactly this frame, with the left 45% already
-   painted as dark low-detail ground for the interface. Running the crop
-   treatment over them is the same scrim applied twice, and it read as mud on
-   the right half of A WEDDING ON THE ROAD. So the treatment follows the ART, and
-   it is DERIVED from `jStageFor(k)` at render time rather than flagged per card:
-   the day a card is re-exported wide, it is one row in `JSTAGE` and this comes
-   with it. Same rule as the race mark and the intent glyph - the renderer can
-   see the fact, so it is never told twice.
+/* ⛔ #209 · A CARD WHOSE PICTURE IS NOT BEING CROPPED IS TREATED LESS, AND
+   THAT IS NOT TASTE. The dimming and the blur above are not decoration: they
+   exist to make a 586x212 letterbox survive being cover-cropped into a 1180x620
+   box, which is what every un-re-exported card still is. Two pictures do not
+   need any of it - a J master, which is 1672x941 composed for exactly this
+   frame with the left 45% already painted as dark low-detail ground for the
+   interface, and the PROCEDURAL fallback, which `paint()` draws at this box's
+   own size. Running the crop treatment over either is the same scrim applied
+   twice, and it read as mud on the right half of A WEDDING ON THE ROAD.
+   ⚠ SO THE NAME IS `fit` AND NOT `wide`. The question this class answers is
+   *is this picture being cropped*, and it is DERIVED at render time rather than
+   flagged per card: the day a card is re-exported wide it is one row in
+   `JSTAGE` and this comes with it, untyped. Same rule as the race mark and the
+   intent glyph - the renderer can see the fact, so it is never told twice.
    ⚠ The bottom scrim is UNCHANGED on both, because that one is not about the
    crop: it is what the beat pips and the CLICK line sit on. */
-.evstage.wide .evback{filter:saturate(.94) brightness(.88) contrast(1.02);
+.evstage.fit .evback{filter:saturate(.94) brightness(.88) contrast(1.02);
   transform:scale(1.005);transform-origin:100% 100%}
-.evstage.wide::after{background:
+.evstage.fit::after{background:
   linear-gradient(90deg,rgba(9,7,4,.9) 0%,rgba(9,7,4,.62) 26%,rgba(9,7,4,.16) 52%,rgba(9,7,4,0) 72%),
   linear-gradient(to bottom,rgba(7,6,4,.6),transparent 22%,transparent 70%,rgba(7,6,4,.84))}
 /* the hairline inside the frame, so the stage still reads as a card */
@@ -2919,6 +2921,9 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:var(--f
 #wDlg .evstage h3{position:absolute;z-index:6;left:300px;top:23px;margin:0;
   font-family:var(--display);font-size:var(--fs6);letter-spacing:.22em;color:#eadfca;
   font-weight:600;text-shadow:0 2px 12px #000,0 0 26px #000}
+/* a vignette titled ON THE ROAD has no second thing to say, and an empty mark
+   would still draw its 46px rule. See openVignette. */
+.evstage .evmark:empty{display:none}
 .evstage .evmark{position:absolute;z-index:6;left:300px;top:52px;
   font-family:var(--mono);font-size:var(--fs1);letter-spacing:.3em;color:#8a7449;
   text-transform:uppercase;text-shadow:0 2px 8px #000}
@@ -3042,6 +3047,15 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:var(--f
 /* an empty door list must not pay the --p6 above it: the flow renders
    #wChoices on every beat and only fills it on the last one */
 #wDlg .evchoices:empty{display:none}
+/* ⚑ AND A CARD WHOSE DOORS ARE ALL BARE DOES NOT RESERVE THE GLYPH COLUMN.
+   `.claude/rules/event-cards.md`: *"A DOOR MAY BE BARE, AND THE FIRE'S RULINGS
+   ARE ... bare reads as this is you deciding, not doing"* - 31 of 53 camp doors
+   carry a mark and the rest are judgments. A 44px empty cell is worth paying on
+   a card where SOME door has a mark, because that is what keeps the labels in
+   one column; on a card where none does it is 10% of the text column holding
+   nothing. Set per card off the visible doors, in evDoors, beside the list. */
+#wDlg .evchoices.nomark .choice{grid-template-columns:minmax(0,1fr)}
+#wDlg .evchoices.nomark .cigs{display:none}
 #wDlg .evchoices .choice{position:relative;display:grid;
   grid-template-columns:44px minmax(0,1fr);align-items:center;gap:var(--p3);
   width:100%;padding:var(--p3) var(--p4);text-align:left;
@@ -3122,9 +3136,22 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:var(--f
    one-intent door, so the column never changes width. */
 #wDlg .evchoices .cigs .cig+.cig{margin-left:-10px;align-self:flex-end}
 #wDlg .evchoices .cigs .cig+.cig .cico{width:22px;height:29px}
-#wDlg .evchoices .cigs .cig.crace{position:absolute;right:-4px;bottom:-3px;
-  font-size:var(--fs2)}
-#wDlg .evchoices .cigs .cig.crace .cico{width:19px;height:19px;vertical-align:0}
+/* ⚑ THE RACE MARK STANDS BESIDE THE INTENT AND SLIGHTLY BEHIND IT, WHICH IS
+   THE USER'S OWN LATER CALL. The first cut hung it off the intent's corner as
+   a badge, the way an inventory overlay does; he moved it in the sketch the
+   same afternoon (`position:static;flex:0 0 20px;margin-left:-6px`) and he is
+   right - a badge reads as a STATUS on the thing it sits on, and the race is
+   not a property of the verb, it is the second half of what this door is.
+   Overlapped rather than spaced, so the pair still reads as one mark.
+   ⚠ IT STAYS NESTED INSIDE THE LAST `.cig`, which is what lets it flow here as
+   an inline-flex sibling of the picture and still read as one small character
+   in the same span on the camp card, the loot picker and the shop. One string
+   from `choiceIco`, two arrangements, no second builder.
+   ⚠ AND THE CELL IS ALREADY WIDE ENOUGH: 30 + 19 - 6 = 43 in a 44px box. */
+#wDlg .evchoices .cigs .cig.crace{position:static;flex:0 0 19px;
+  margin-left:-6px;font-size:var(--fs2)}
+#wDlg .evchoices .cigs .cig.crace .cico{width:19px;height:19px;vertical-align:0;
+  filter:brightness(1.24) saturate(.96) contrast(1.08) drop-shadow(0 1px 2px #000)}
 .choice{padding:var(--p3) var(--p4);background:#2a2114;border:1px solid var(--e2);display:flex;flex-direction:column;
         gap:1px;width:100%}
 .choice:hover:not(:disabled){background:#372a18;border-color:var(--g3)}
@@ -27798,18 +27825,11 @@ function openCamp(spot,next,atPlace){
   const dlg=$('wDlg');
   /* keep the whole card on screen — dialogs run ~420px tall */
   /* positioned by placeDlg after the content is in */
-  dlg.innerHTML='<h3>'+(c.needs?'AND THEN - ':atPlace?'AT THE FIRE - ':'ON THE ROAD - ')+c.t+'</h3>'+
-    artTag()+
-    '<div class="bd">'+c.body(cast1.a,cast1.b,bothHere)+'</div>'+
-    '<div id="wChoices" style="display:flex;flex-direction:column;gap:5px"></div>';
-  dlg.classList.add('on');
-  placeDlg(spot.x,spot.y);             /* the incident happens ON the road */
   /* #201 - `c.art` is the override and the random deal is still the default.
      A card about whoever happens to be arguing is right to wear a different
      picture every time; a card about ONE named person is not, because the
      game knows exactly who the scene is and can show her. */
   const ca=artFor(c.art||pickOne(['E4','E8','E9','E7']));
-  if(ca)drawArt($('wArt'),ca);else paint($('wArt'),'gold',c.seed);
   /* same race gate as events — "feed it to the ogre" needs an ogre at the fire,
      and #159's one-race-door rule rides on the same builder both use */
   /* ...and the same dead-exit rule the road uses. A ruling at the fire is a
@@ -27832,20 +27852,28 @@ function openCamp(spot,next,atPlace){
       c:'no cost',fx:{morale:-1},
       after:'You have nothing to settle it with and everybody at the fire works that out at '+
         'about the same moment. It goes quiet, and then it goes on.'});
-  $('wChoices').innerHTML=visible.map((o,i)=>{
-    const ok=doorOpen(o);                                        /* #197 */
-    /* ⚠ #197 - AND NO EMPTY `<i>` WHERE THERE IS NOTHING TO SAY. `choiceNote`
-       returns '' on a one-door pickup (its receipt is on the card), and both
-       renderers used to wrap that in an `<i></i>` regardless; `.choice i` is
-       display:block, so the empty box was a real, if small, line. */
-    const note=choiceNote(o);
-    return '<button class="choice'+(o.needRace?' racey':'')+'" data-i="'+i+'"'+
-      (ok?'':' disabled style="opacity:.38"')+
-      '><b>'+choiceIco(o)+o.t+'</b>'+(note?'<i>'+note+'</i>':'')+'</button>';}).join('');
-  $('wChoices').querySelectorAll('.choice').forEach(b2=>{
-    if(b2.disabled)return;
-    b2.onclick=()=>{
-      const o=visible[+b2.dataset.i],f=o.fx||{};
+  /* ⛔ #209 - THE FIRE IS THE SAME STAGE, and its two people are on the plates.
+     The lead came off the header and onto the encounter mark: the title used
+     to read `AT THE FIRE - THE ARGUMENT` because the card had one line to say
+     both things in, and the stage has a line for each.
+     ⚠ THE CAST IS RESOLVED FROM THE PROSE NAMES THE SCENE WAS ALREADY CAST
+     WITH, so the faces and the sentences cannot disagree about who is in the
+     room. On a `castLost` card one of the two is gone and `evWhoIs` returns
+     null for them - correct, and the empty place in the company IS that card.
+     ⚠ And a solo company can cast the same body as both, so the pair is
+     de-duplicated or the Captain would stand behind himself.
+     ⛔ THE DOOR LIST IS NOT BUILT HERE ANY MORE. It was thirteen lines that
+     said the same thing as openEvent's thirteen, which is the drift this whole
+     function is being merged to stop; `evDoors` builds both. */
+  evStageOpen({dlg:dlg,title:c.t,
+    mark:c.needs?'and then':atPlace?'a night at the fire':'on the road',
+    art:ca,paintKey:'gold',seed:c.seed,
+    raw:c.body(cast1.a,cast1.b,bothHere),
+    cast:[evWhoIs(cast1.a),evWhoIs(cast1.b)].filter(Boolean)
+         .filter((p,i,a)=>a.indexOf(p)===i),
+    doors:visible,x:spot.x,y:spot.y,
+    pick:o=>{
+      const f=o.fx||{};
       /* the fire speaks the same glyph language, so it makes the same noise */
       choiceSfx(o);
       /* the ruling itself is what a sequel keys on — recorded by the option's
@@ -27919,7 +27947,7 @@ function openCamp(spot,next,atPlace){
         evFxChips(evPaidOf(f))+evGearStrip(o.gear?[o.gear]:[]);
       $('wChoices').innerHTML='<button class="choice" id="wOn"><b>Carry on</b></button>';/* #197 */
       $('wOn').onclick=()=>{dlg.classList.remove('on');worldTick();saveRun();next();};
-      worldTick();};});
+      worldTick();}});
   drawNodes();
 }
 
@@ -34604,19 +34632,36 @@ function openVignette(spot,next,atPlace){
      "ON THE ROAD — AT THE FIRE" (playthrough, 2026-08-02). When the title IS
      a lead it is the more specific statement of the two, so it becomes the
      whole header and the prefix is dropped. */
-  const vLead=atPlace?'AT THE FIRE':'ON THE ROAD',
-        vHead=(v.t==='ON THE ROAD'||v.t==='AT THE FIRE')?v.t:vLead+' - '+v.t;
-  dlg.innerHTML='<h3>'+vHead+'</h3>'+
-    '<div class="bd">'+body+evFxChips(evPaidOf(v.fx))+'</div>'+
-    /* #197 - no sub-line on a door that is not a decision (user: *"When it is
-       a simple door don't need smaller text below"*). Four of these carried a
-       caption whose whole content was that there was nothing to decide, which
-       is a sentence about the absence of a sentence. The event outcome's
-       "Back to the road" has never had one and is the model. */
-    '<button class="choice" id="wV"><b>Keep moving</b></button>';
-  dlg.classList.add('on');
-  placeDlg(spot.x,spot.y);
-  $('wV').onclick=()=>{G.pending=null;dlg.classList.remove('on');worldTick();saveRun();next();};
+  /* ⛔ #209 - AND THE OLD FIX FOR THIS BUG IS NOW THE BUG. Five vignettes are
+     TITLED `ON THE ROAD` and two `AT THE FIRE`, which are the wrapper's own
+     leads, so the 2026-08-02 playthrough read `ON THE ROAD - ON THE ROAD`; the
+     answer then was to let the title BE the whole header. The stage has two
+     lines for it, so the lead moved down to the encounter mark - and a vignette
+     titled with a lead promptly said it twice again, one line apart. Same rule,
+     one surface out: the more specific of the two lines keeps it and the other
+     says nothing. */
+  const vLead=atPlace?'a night at the fire':'on the road',
+        vIsLead=(v.t==='ON THE ROAD'||v.t==='AT THE FIRE');
+  /* ⛔ #209 - AND THE VIGNETTE IS THE SAME STAGE TOO, which is what makes the
+     form canon rather than a treatment the road happens to get. It is the
+     thinnest card in the game - one beat, no decision, one button - and that
+     is exactly why it is worth running through the same opener: a third
+     renderer for the easy case is how the first two grew apart.
+     ⚠ ITS RECEIPT IS HANDED IN RATHER THAN DERIVED. `applyFx` fired six lines
+     up, so the money is already spent and the mood face is already the new
+     one; the pickup path would draw the chips as a PROJECTION and multiply the
+     crowns a second time. See the note in `evFlow`.
+     ⚠ #197 - no sub-line on a door that is not a decision (user: *"When it is
+     a simple door don't need smaller text below"*). Four of these carried a
+     caption whose whole content was that there was nothing to decide, which is
+     a sentence about the absence of a sentence. */
+  evStageOpen({dlg:dlg,title:v.t,mark:vIsLead?'':vLead,
+    art:artFor(v.art||null),paintKey:'gold',seed:v.seed||7,
+    raw:body,cast:[shuffled[0],shuffled[1]].filter(Boolean)
+        .filter((p,i,a)=>a.indexOf(p)===i),
+    receipt:evFxChips(evPaidOf(v.fx)),
+    doors:[{t:'Keep moving',ico:['leave']}],x:spot.x,y:spot.y,
+    pick:()=>{G.pending=null;dlg.classList.remove('on');worldTick();saveRun();next();}});
 }
 
 const EVENTS={
@@ -36558,13 +36603,18 @@ function evFlow(){
     /* #143 - a one-door card is a pickup and a pickup wears its loot on the
        card. Same two strips as before, moved out of `.bd` because `.bd` is
        the OUTCOME's box here and it must be empty until a door is pressed. */
-    (last&&S.c0?'<div class="evline evrec">'+
-      /* #150 - drawn BEFORE the payment, so the face is the mood this door
-         lands the company in, not the one it is standing in */
+    /* ⚠ `receipt` IS HANDED IN WHOLE AND `c0` IS DERIVED, AND THE DIFFERENCE
+       IS WHO HAS ALREADY PAID. A road pickup is drawn BEFORE the payment, so
+       the face has to be the mood the door LANDS the company in (#150) and its
+       crowns have to go through lootMul the way pickChoice will pay them. A
+       vignette calls `applyFx` on the way in - the money is spent before
+       anything renders - so its chips are the current state, and deriving them
+       a second time here would multiply what was never doubled. */
+    (last&&(S.receipt||S.c0)?'<div class="evline evrec">'+(S.receipt||
       evFxChips(evPaidOf(S.c0.fx,true),G.morale+((S.c0.fx&&S.c0.fx.morale)||0))+
       evGearStrip(S.c0.gear?[S.c0.gear]:S.c0.gear2||[])+
       /* #150 - it rides in the wagon now, so the strip stops promising a neck */
-      (S.c0.coinKeep?evGearStrip(['oddcoin'],'into the wagon'):'')+'</div>':'')+
+      (S.c0.coinKeep?evGearStrip(['oddcoin'],'into the wagon'):''))+'</div>':'')+
     '<div class="bd"></div>'+
     '<div id="wChoices" class="evchoices"></div>';
   const beats=$('wDlg').querySelector('.evbeats');
@@ -36576,6 +36626,7 @@ function evFlow(){
 }
 function evDoors(){
   const S=EVSTAGE,ch=$('wChoices');if(!S||!ch)return;
+  ch.className='evchoices'+(S.visible.some(c=>(c.ico&&c.ico.length)||c.needRace)?'':' nomark');
   ch.innerHTML=S.visible.map((c,i)=>{
     const ok=doorOpen(c);                                        /* #197 */
     const note=choiceNote(c,!!S.c0);                             /* #197 */
@@ -36598,12 +36649,86 @@ function evDoors(){
        fold of a box the player has no reason to think scrolls. It reads the
        DOM back rather than assuming: the same click may have started a battle
        or closed the card, and then there is nothing to scroll. */
-    if(!b.disabled)b.onclick=()=>{pickChoice(EVSTAGE.k,EVSTAGE.visible[+b.dataset.i]);
+    /* ⛔ THE DECK'S OWN HANDLER, AND IT IS THE ONE THING THE STAGE DOES NOT
+       KNOW. The road pays through pickChoice, the fire records a ruling and
+       remembers who was in it, the vignette just walks on. Each hands its
+       handler in; everything else about a card is the same three decks over. */
+    if(!b.disabled)b.onclick=()=>{const i=+b.dataset.i;
+      EVSTAGE.pick(EVSTAGE.visible[i],i);
       const f=$('wFlow'),bd=f&&f.querySelector('.bd');
       if(f&&bd&&bd.textContent.trim())f.scrollTop=Math.max(0,bd.offsetTop-f.offsetTop);};
     b.onmouseenter=()=>evFront(b.dataset.who);});
   ch.onmouseleave=()=>evFront(EVSTAGE.cast[0]?EVSTAGE.cast[0].id:'');
 }
+/* ⛔ #209 · ONE STAGE, THREE DECKS, AND IT IS ONE FUNCTION BECAUSE THIS FILE
+   HAS PAID FOR THE ALTERNATIVE FOUR TIMES. (User, 2026-08-20: *"but form of
+   all events new - as was in new design - it is canon now"*.)
+
+   The road, the fire and the vignette are three decks of the same object - a
+   title, some prose, a few doors, a receipt - and since #143 they have spoken
+   one receipt language. They had two and a half renderers between them, which
+   is exactly the shape `choiceNote` was merged out of in #150, `raceDoorPick`
+   in #159, `applyHurt` in #197 and the mood echo in #176: one fact with two
+   implementations, every time, and every one of them had drifted by the time
+   it was found. So the stage is built HERE and each deck hands in the four
+   things that are genuinely its own - what it is called, what it is about,
+   which doors, and what pressing one does.
+
+   ⚠ `paintKey`/`seed` FEED THE PROCEDURAL FALLBACK, which is what a card with
+   no painting gets. `paint()` draws to cv.width, so the canvas is created at
+   the stage's real size and nothing is stretched - which is the one thing the
+   letterbox cards cannot say for themselves. */
+function evStageOpen(o){
+  const dlg=o.dlg||$('wDlg');
+  EVSTAGE={k:o.k||null,at:0,beats:evBeats(o.raw),cast:o.cast||[],
+           visible:o.doors||[],c0:o.c0||null,receipt:o.receipt||'',
+           anyWayOut:o.anyWayOut!==false,pick:o.pick||function(){}};
+  /* ⚑ `fit` IS DERIVED HERE AND NEVER PASSED IN AS A JUDGEMENT. Either the
+     caller handed a picture composed for this frame, or it handed none at all
+     and `paint()` is about to draw one at exactly this size. Both are pictures
+     that are not being cropped; a letterbox out of `EVENTART` is the only thing
+     that is. */
+  const fit=o.fit||!o.art;
+  dlg.innerHTML='<div class="evstage'+(fit?' fit':'')+'">'+
+    (o.art?'<img class="evback" src="'+o.art+'" alt="">'
+          :'<canvas class="evback" width="1180" height="620"></canvas>')+
+    (EVSTAGE.cast.length?'<div class="evcast">'+EVSTAGE.cast.map((p,i)=>
+        '<div class="evcard'+(i?'':' front')+'" data-who="'+p.id+'" data-nm="'+
+        evShortName(p)+'"><canvas width="200" height="260"></canvas></div>').join('')+
+      '<div class="evname">'+evShortName(EVSTAGE.cast[0])+'</div></div>':'')+
+    '<h3>'+o.title+'</h3>'+
+    /* ⚠ `==null` AND NOT `||`. An empty mark is a REQUEST for no mark - the
+       lead-titled vignette says its lead in the title and must not say it
+       twice - and `||` read that as "not supplied" and helpfully put the
+       default back. Measured on a forced card, not reasoned about. */
+    '<div class="evmark">'+(o.mark==null?'a road encounter':o.mark)+'</div>'+
+    '<div class="evflow" id="wFlow"></div>'+
+    '<div class="evbeats">'+EVSTAGE.beats.map(()=>'<span></span>').join('')+'</div>'+
+    '<div class="evadv">CLICK &#9656;</div>'+
+  '</div>';
+  dlg.classList.add('on');
+  /* ⚠ the painting goes in AFTER the box is in the document, because the
+     procedural fallback draws to cv.width and a detached canvas has none */
+  if(!o.art)paint(dlg.querySelector('canvas.evback'),o.paintKey||'gold',o.seed||1);
+  /* the busts. `bustFor` is the one that already knows to fall back to the
+     procedural silhouette when a body has no painting, so a hired stranger
+     stands in this scene the same way they stand on the roster. */
+  EVSTAGE.cast.forEach(p=>{const c=dlg.querySelector('.evcard[data-who="'+p.id+'"] canvas');
+    if(c)bustFor(c,p);});
+  evFlow();
+  placeDlg(o.x,o.y);
+  /* ⚠ THE ADVANCE LISTENS ON THE STAGE AND SKIPS THE DOORS. A click on a door
+     must not also step the beat, and on the last beat there is nothing to
+     step - so a stray click on the painting is inert rather than wrong. */
+  dlg.querySelector('.evstage').onclick=ev=>{
+    if(ev.target.closest&&ev.target.closest('#wChoices'))return;
+    if(EVSTAGE&&EVSTAGE.at<EVSTAGE.beats.length-1){EVSTAGE.at++;evFlow();}};
+}
+/* who of the company a PROSE NAME points at. The fire casts its scenes by
+   `who(p)` strings rather than by id and `stillHere` already matches them by
+   prefix; this is the same test returning the body instead of a boolean, so
+   the faces and the sentences cannot disagree about who is in the room. */
+const evWhoIs=n=>G.party.filter(m=>String(n||'').indexOf(proseName(m))===0)[0]||null;
 function openEvent(k){
   /* the muster always opens on the wall, never on the cart's inner face */
   if(k==='hire'){QMOPEN=false;openHire();return;}
@@ -36799,42 +36924,12 @@ function openEvent(k){
   const c0=(visible.length===1&&!visible[0].battle)?visible[0]:null;
   /* ── #209 · and now the stage ─────────────────────────────────────────── */
   const raw=evBody(e);
-  const cast4=evCast(visible,raw);
-  EVSTAGE={k:k,at:0,beats:evBeats(raw),cast:cast4,visible:visible,
-           anyWayOut:anyWayOut,c0:c0};
   /* the wide stage if this card has one, the old letterbox if it does not */
   const wide=jStageFor(k);
-  const pa=wide||artFor(EVENTART[k]);
-  dlg.innerHTML='<div class="evstage'+(wide?' wide':'')+'">'+
-    (pa?'<img class="evback" src="'+pa+'" alt="">'
-       :'<canvas class="evback" width="1180" height="620"></canvas>')+
-    (cast4.length?'<div class="evcast">'+cast4.map((p,i)=>
-        '<div class="evcard'+(i?'':' front')+'" data-who="'+p.id+'" data-nm="'+
-        evShortName(p)+'"><canvas width="200" height="260"></canvas></div>').join('')+
-      '<div class="evname">'+evShortName(cast4[0])+'</div></div>':'')+
-    '<h3>'+e.title+'</h3>'+
-    '<div class="evmark">a road encounter</div>'+
-    '<div class="evflow" id="wFlow"></div>'+
-    '<div class="evbeats">'+EVSTAGE.beats.map(()=>'<span></span>').join('')+'</div>'+
-    '<div class="evadv">CLICK &#9656;</div>'+
-  '</div>';
-  dlg.classList.add('on');
-  /* ⚠ the painting goes in AFTER the box is in the document, because the
-     procedural fallback draws to cv.width and a detached canvas has none */
-  if(!pa)paint(dlg.querySelector('canvas.evback'),e.art,e.seed);
-  /* the busts. `bustFor` is the one that already knows to fall back to the
-     procedural silhouette when a body has no painting, so a hired stranger
-     stands in this scene the same way they stand on the roster. */
-  cast4.forEach(p=>{const c=dlg.querySelector('.evcard[data-who="'+p.id+'"] canvas');
-    if(c)bustFor(c,p);});
-  evFlow();
-  placeDlg(node.x,node.y);
-  /* ⚠ THE ADVANCE LISTENS ON THE STAGE AND SKIPS THE DOORS. A click on a door
-     must not also step the beat, and on the last beat there is nothing to
-     step - so a stray click on the painting is inert rather than wrong. */
-  dlg.querySelector('.evstage').onclick=ev=>{
-    if(ev.target.closest&&ev.target.closest('#wChoices'))return;
-    if(EVSTAGE&&EVSTAGE.at<EVSTAGE.beats.length-1){EVSTAGE.at++;evFlow();}};
+  evStageOpen({dlg:dlg,k:k,title:e.title,mark:'a road encounter',
+    art:wide||artFor(EVENTART[k]),fit:!!wide,paintKey:e.art,seed:e.seed,
+    raw:raw,cast:evCast(visible,raw),doors:visible,c0:c0,anyWayOut:anyWayOut,
+    x:node.x,y:node.y,pick:o=>pickChoice(k,o)});
   drawNodes();
 }
 /* company relics work from the baggage — held in the stash OR carried by anyone */

@@ -441,7 +441,99 @@ haul still may never charge morale or days** (the `lootIsChoice` rule).
 ⚑ **THE `?` IS ONLY WORTH ANYTHING WHILE IT IS RARE.** Three or four across the whole road and it
 reads as "this one is a gamble"; on every second door it is a font. Today there is exactly one.
 
+## ⛔ #209 · THE CARD IS A PAINTED STAGE, AND THE FORM IS CANON ON ALL THREE DECKS
+
+*(2026-08-20. The user, pointing at `prototype/event_formats_sketch.html` tab J: **"I want you to
+change events style shown ... I like style j (the sitting stone) ... inherit composition and
+everething else"**, and then, once the road deck was on it: **"but form of all events new - as was
+in new design - it is canon now"**.)*
+
+**A card is a 1180x620 painting with the company standing in it.** The title and a small encounter
+mark top left, the cast on plates below them, the prose down the middle **one beat at a time**, and
+the doors as the last beat. `evStageOpen` builds it, `evFlow` is the only thing that re-runs on a
+click, `evDoors` builds the door list. **The road deck, the CAMPS incidents and the VIGNETTES all go
+through it**, which is the same three tables this file has governed since #143.
+
+⛔ **AND EVERY PART OF IT IS DERIVED, WHICH IS WHY 99 CARDS CHANGED FORM IN ONE EDIT AND NONE OF
+THEM CHANGED A WORD.** This is #137's rule applied to a LAYOUT instead of to a field:
+
+| what the stage shows | what it reads |
+|---|---|
+| the beats | the card's own blank-line paragraphs |
+| the voice of a beat | its own first character: a quote mark is somebody else, `{` is a cast token and therefore one of yours, anything else is the road |
+| the first face | `G.fireTeller`, **only if the raw body says `{TELLER}`**; else the Captain |
+| the second face | the member a visible `needRace` door needs |
+| the fire's two faces | `evWhoIs(cast1.a)` / `evWhoIs(cast1.b)`, off the prose names it was cast with |
+| which face a door belongs to | `needRace`, else the first face |
+| the picture treatment | whether the picture is being CROPPED (`.evstage.fit`) |
+| the glyph column | whether ANY visible door has a mark (`.evchoices.nomark`) |
+
+⛔ **THE TELLER IS ONLY THIS CARD'S SUBJECT IF THIS CARD ASKS FOR HIM.** `G.fireTeller` is set by
+the four cards that need a named speaker and is **never cleared**, by design: `cast()` reads it and
+`{TELLER}` has to resolve to the same body in the body, the outcome and the effect prose. So the
+field outlives its card, and the first cut of `evCast` put THE COIN IN THE ROAD's finder on the front
+plate of A WEDDING ON THE ROAD three nodes later. **A picture is a claim, and a stale one is a claim
+nothing else on screen agrees with.**
+
+⛑ **ONE STAGE, THREE DECKS, ONE FUNCTION, AND THAT IS THE POINT RATHER THAN THE TIDY-UP.** The
+road and the fire kept two door builders that said the same thing in thirteen lines each, and the
+vignette a third half-renderer. That is the shape `choiceNote` was merged out of in #150,
+`raceDoorPick` in #159, the mood echo in #176 and `applyHurt` in #197 - **one fact with two
+implementations, four times, and every one of them had drifted by the time it was found.** Each deck
+now hands in exactly four things: **its title, its prose, its doors, and what pressing one does.** A
+new deck adds a fifth caller, never a second renderer.
+
+⛔ **THE MODE FOLLOWS THE CONTENT AND NEVER A CLASS ON `#wDlg`.** Twelve functions open that box
+and only three of them are cards; a class the other nine had to remember to clear is a rule that
+survives exactly until somebody writes the thirteenth opener. The stylesheet gates on
+**`:has(.evstage)`**, which cannot drift because every opener writes `dlg.innerHTML=` from scratch.
+The muster, the shop, the withdraw screen and the returner are still the 620px column, and that is
+correct: **the stage is for a card with prose and doors, not for a wall of recruits or a row of
+prices.**
+
+⚠ **THE SKETCH'S OWN TYPE WOULD NOT HAVE PASSED, AND A SKETCH NEVER HAS TO.** Tab J sets the door
+label at 12.5px and its receipt line at **8px**, under `--fs1`'s 10px floor, and clips both with
+`white-space:nowrap;text-overflow:ellipsis` - which is the exact regression table in
+`.claude/rules/ui-scales.md` §4. Ported, every size is a `--fs` step, every pad a `--p` step, every
+structural edge an `--e`, and **the door label wraps instead of clipping**. The user asked for this
+in the same round (*"also follow rules with fonts size and eveething"*), and it is the general rule:
+**a mockup is a picture of the intent, and the three scales are not part of what is being copied.**
+
+⛔ **THE DOORS WEAR THE GAME'S OWN COLOURS.** (*"make buttons of choices a bit more in colors of
+game (i feel now they use colors what don`t use in the game)"*.) The sketch's `#63766f`, `#82958b`
+and `rgba(13,22,21)` are this build's **battle chrome** (`--e4`/`--e5`), i.e. a colour that already
+means *you are on the field*. Every hex on a stage door is lifted off the column card's own `.choice`
+rules: `#2a2114` ground, `--e2` edge, `--g3` lit, `#8c3a31`/`--blood-lit` for the fight door,
+`#5a7a6a`/`#8ca35a` for the race door. The three prose voices took the same treatment: `--gem` for
+your own people and `--wood` for everybody else, **not** the sketch's teal and orange.
+
+⚑ **AND THE AIR BETWEEN THE PROSE AND THE DOORS IS A NUMBER, NOT A FEELING.** (*"add a bit more
+space between text and choices"*.) The flow's beat gap is `--p4` and `.evchoices` sits at `--p6`, so
+a door is nearly twice as far from the last line as two lines are from each other. That is what makes
+the doors read as a different kind of thing rather than as a fifth paragraph.
+
+⚠ **WHAT BROKE, AND ALL THREE WERE FOUND BY DRIVING RATHER THAN BY READING:**
+
+- **`placeDlg` read `DLGW` and there are two card widths now**, so the stage opened 280px right of
+  centre - #197's own complaint arriving through the back door. It measures `dlg.offsetWidth`.
+- **A column flex SHRINKS its items before it scrolls**, so THE BROKEN MEN's outcome came back with
+  its chip row cut in half and no scrollbar. `flex:0 0 auto` on every child of `.evflow`. ⚠ Found
+  on the OUTCOME, not on the card: **a card that fits never shows it.**
+- **The blurred background overflowed its box by 12x6**, and `.claude/rules/ui-scales.md` §5 forbids
+  adding a fifth entry to the known-overflow list to make a decoration fit. The same file records the
+  free fix: overflow to the LEFT and the TOP is not scrollable, so `transform-origin:100% 100%` sends
+  every grown pixel up and left. **The decoration changed, not the counter.**
+
+⏳ **THE ART IS THE OPEN HALF AND IT LANDS ONE CARD AT A TIME.** Seven road cards have a wide
+1672x941 master composed for this frame; everything else is still a 586x212 letterbox being
+cover-cropped into a 1.9:1 box, which throws away nearly half its width. **That is a known, accepted
+shipping state** (the user: *"even arts are not ready - we will replace them slovly - just use
+availible ones in the asked format (it would be ugly, but don`t worry)"*), and the renderer needs no
+change when a file lands: drop the PNG in `art/src/stage-6/j-stage/`, rebuild the pack, add one row
+to `JSTAGE`, and `.evstage.fit` picks up the lighter treatment by itself.
+
 ## Before the card ships
+
 
 Run these in the running build and expect what is named:
 

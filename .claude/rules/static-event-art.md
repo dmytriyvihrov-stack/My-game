@@ -159,7 +159,83 @@ tree the tool's word is not the evidence; the file is.**
 replacement keys. `floor` is deliberately unmapped: its obsolete EV00A image
 was deleted when that narrative door was parked.
 
+## ⛔ #209 · THE J PACK: THE DOOR MARKS AND THE WIDE STAGES
+
+*(2026-08-20. The card is a 1180x620 painted stage now - see
+`.claude/rules/event-cards.md` - so it needs two kinds of asset the old
+letterbox card never did.)*
+
+⛔ **THEY ARE BUILT AND INJECTED BY THEIR OWN PAIR, NEVER BY `build_assets.ps1`.**
+
+```
+python art\build_j_pack.py
+powershell -NoProfile -ExecutionPolicy Bypass -File art\inject_j_pack.ps1
+```
+
+`inject.ps1` rewrites the whole 10 MB `/*__ART_DATA__*/` block, and two desks
+that both run it produce the conflict nothing can resolve that
+`PARALLEL_SESSIONS.md` still lists as open. **The J pack is the half of the build
+that is still being redrawn**, so it gets `/*__J_PACK__*/` and its own 2 MB
+block: re-running one can never touch the other.
+
+| what | source | box | format |
+|---|---|---|---|
+| the eight intent marks | `art/src/intent-icons/intent-<k>-<ver>.png` | **120x160** | PNG, alpha |
+| the three race marks | `art/src/intent-icons/race-<r>-v3-card.png` | **128x128** | PNG, alpha |
+| the wide event stages | `art/src/stage-6/j-stage/EV-J<N>_<slug>-stage.png` | **1672x941** | JPEG q82 |
+
+⛔ **A MARK IS PNG AND A STAGE IS JPEG, AND THAT IS NOT A PREFERENCE.** A mark is
+a cut-out that sits on a button's own ground and a JPEG has no alpha - the same
+rule this file already states for the item icons. A stage is a full-bleed scene
+with no transparency anywhere in it, and a PNG of one is 2 MB against 180 KB.
+**q82 is `build_assets.ps1`'s own number**; the house setting is used rather than
+a second one.
+
+⛔ **A STAGE IS EMBEDDED AT ITS NATIVE SIZE AND NOTHING IS RESAMPLED.** The card
+draws it into 1180x620 and the 1280x720 stage is SCALED to the window, so a
+downscale here would be an upscale on any monitor wider than about 1400. The day
+the art is re-exported at another size, the pipeline does not change.
+
+⛔ **`cook` OR `as-delivered` IS A DECLARATION IN `PICK`, NOT A MEASUREMENT.** A
+source already at the target box goes in verbatim: trimming would re-centre a
+composition somebody approved, and the alpha floor would eat its antialiasing
+ring, which on a 128px cut-out is the difference between a drawn edge and a
+jagged one. ⚑ **The first cut tried to detect that by asking how much of the
+canvas is faint, and that number cannot tell the two cases apart**: the v1
+intents read 2-8% because they carry a real wash across 384x512, and the v3 race
+cards read 2.7-4.4% because a one-pixel antialiasing ring is a big share of a
+128px box. Same number, opposite meanings. **What actually differs is whether the
+file still has to be resized, and only the pipeline knows that.**
+
+⚠ **THE ALPHA FLOOR (40) STAYS ON ANYTHING THAT IS COOKED.** A door draws
+`drop-shadow()` on these marks and a drop-shadow lights up EVERY non-zero pixel,
+so a near-invisible wash prints as a glowing rectangle behind the glyph. It is
+the same pass `build_assets.ps1` runs on the map sights, after the same bug.
+
+⚑ **WHERE A CARD MEETS A STAGE IS `JSTAGE{}` AND NOWHERE ELSE**, the same shape
+and the same rule as `MAP_SIGHT{}`. The key is the filename prefix with hyphens
+removed (`EV-J4_clan-wedding-stage.png` -> `EVJ4`). **A card with no key is a
+legitimate shipping state**: it falls back to `EVENTART`'s letterbox, and to the
+procedural `paint()` under that. Adding art is three steps and one row:
+
+1. drop the 1672x941 PNG in `art/src/stage-6/j-stage/`
+2. `python art\build_j_pack.py` then `art\inject_j_pack.ps1`
+3. one row in `JSTAGE`
+
+⚠ **THE LEFT 45% OF A STAGE IS RESERVED AND THE BRIEF SAYS SO.** The title, the
+cast plates, the beats and the doors all live there. A master with its subject on
+the left will be covered by the interface, which is a composition fault this
+pipeline cannot fix. See `art/src/stage-6/J_STAGE_PROMPTS_USED.md` for the
+prompts the eight shipped masters were made with.
+
+⚠ **`EVJ8` IS THE MUSTER FIELD AND IS DELIBERATELY UNMAPPED.** `openEvent` hands
+`hire` straight to `openHire()`, which is the muster WALL and not a card, so there
+is no card for it to be the stage of. It is embedded because it arrived with the
+set, and **an asset sitting on disk unbuilt is the silent-failure shape #190 wrote
+down**; wiring it is one line on the day that screen gets the treatment.
+
 ## Narrative locks
+
 
 - `EV00E` follows the shipped contract prose. After the won brawl, the employer
   crosses the wreckage, sits uninvited, and calmly places a closed purse on the

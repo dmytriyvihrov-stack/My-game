@@ -73,6 +73,62 @@ hook. Two of them are still drunk.
   state and not a bug: the card has no art either and both are a request away.
 
 ---
+## ⛩ EVERY CARD IS A PAINTED STAGE  *(#209 · 2026-08-20 · build log 8f.232)*
+
+**What it is.** Your own style J out of `prototype/event_formats_sketch.html`, built for real, and
+it is now the form of **every card in the game**: the road deck, the fire incidents and the little
+vignettes. A card is no longer a 620px column with a letterbox picture on top. The painting is the
+whole card, 1180x620 in the middle of the map, your people stand in it on the left, and the prose
+arrives **one paragraph at a time** with the doors on the last one.
+
+**How to reach it in three steps.** Take the road · walk to any node, or camp between two ·
+click the card to advance a beat.
+
+**What should happen.**
+
+- **The card opens centred**, whatever corner of the map the node is in. Same place every time.
+- **Click anywhere on the painting to advance.** The line you are on is bigger and brighter; the
+  ones behind it stay readable, just quieter. `CLICK ▸` bottom left goes away on the last beat,
+  and the dashes beside it fill as you go.
+- **Three kinds of line, and they look different.** The road narrates in plain type. Somebody of
+  yours speaks with a **blue** edge and a little arrow. Somebody who is not yours speaks **italic,
+  indented right, with an amber edge**. Nothing was rewritten for this: THE BROKEN MEN, OUR CALIBRE
+  OF FILTH and THE HOLD'S MEN have had spoken lines in them all along.
+- **The left column is who the scene is about.** On the road: the Captain, plus whoever unlocks a
+  race door standing behind him - and **hovering that door brings them forward** and changes the
+  name on the plate. On THE COIN IN THE ROAD and THE FALLING STAR the person the card is actually
+  about is in front. **At the fire it is the two people the card names**, which is the one thing the
+  old fire card could say in words and never show.
+- **The doors are the game's colours now.** Gold plate, gold edge, the fight door red, the race door
+  green, and a painted mark in its own column instead of an emoji. There is more air between the
+  last line of prose and the first door than between two lines. A card whose doors are all plain
+  rulings has no mark column at all, which is most of the fire's cards and is correct.
+- **Seven road cards have the new wide painting** - the sitting stone, the drowned chapel, blood on
+  the road, the wedding, the fen-mother, the coin, the ruined steading - and those look composed:
+  the scene on the right, the dark left where the words go.
+- **After you press a door**, the outcome and its chips appear in the same column below the beats,
+  and the card scrolls itself to them.
+
+**What would be a bug.**
+
+- A card that opens off-centre, or a MUSTER / SHOP / trade screen that opens as a wide stage. **Those
+  four are still the old 620px card and that is correct** - the stage is for cards with prose and
+  doors, which is the road deck, the fire and the vignettes.
+- Text clipped or cut off anywhere, a chip row sliced in half, a door label with its end missing.
+- A face on the left plate who has nothing to do with the card.
+- A header that says the same thing twice (`ON THE ROAD - ON THE ROAD`), or a fire card still
+  reading `AT THE FIRE - THE ARGUMENT` in its title instead of on the small line under it.
+- A door whose mark is missing, or two marks where there should be one plus a small race badge.
+
+**⏳ The cards that do not have new art yet.** Every card except those seven is still wearing the
+old 586x212 letterbox, and a 2.76:1 picture cover-cropped into a 1.9:1 box throws away nearly half
+its width. Those are dimmed and blurred to survive it, which is why they look murkier than the seven.
+**That is expected and it is not the layout being wrong** - each one is a re-export at 1672x941 with
+the left 45% left dark, plus one row in `JSTAGE`, and the game picks the lighter treatment up by
+itself the moment the file lands.
+
+---
+
 ## ⛨ THE CAPTAIN'S FIRST TOOL, AND THE WALL THAT REFUSES A SCRUM  *(#208 · 2026-08-20 · build log 8f.231)*
 
 Three rulings from the skill-tree session that the battle could already express. The tree itself
