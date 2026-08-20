@@ -12324,6 +12324,94 @@ function tavernTick(){
   }
 }
 /* ─── the spotlight layer ─────────────────────────────────────────────── */
+/* ════════════════════════════════════════════════════════════════════════
+   #210 · WHAT FOLLOWED YOU OUT. The tap-room's bill, walking.
+   (User, 2026-08-20: *"The idea - that 'friends of guys' who you have finished
+   are following you"*, and then *"make 4 of them, don`t need 5 (and 1 of for is
+   a ratling)"*.)
+
+   ⛔ IT IS THE CHEAP FIGHT AND IT MUST STAY THE CHEAP FIGHT. It sits between
+   the wheel-rut and Blood on the Road, which is the fight the game TEACHES
+   with, so this one has to read as harder than nothing and easier than that.
+   Two of the four are drunk (#108's own flag, -12 to hit and -8 dodge) and they
+   are the two you can afford to ignore; the sober pair are the knife and the
+   hook, and they are the fight.
+
+   ⚑ THE KNIFE IS WEFT'S PUZZLE AND IT IS THE PAYOFF, NOT A REPEAT. #145 put a
+   dodge-20 body in the brawl so the player would learn that an angle beats a
+   dodge, and the spotlight taught it there with a step of its own. This is the
+   first time the game ASKS for that lesson without teaching it, one node later,
+   on a man the player has already met and can see coming.
+
+   ⚠ NOBODY HERE IS `noRout`. They break, so the mercy screen fires and the card
+   ends on let-them-go / strip / no prisoners, which is the sin ledger's own
+   question and exactly the right one to ask about four drunks in a road.
+   ⚠ ARMOUR FIGURES ARE PRE-`build()`, WHICH TRIMS THEM x0.75, so the carter's 14
+   is 11 on the board. Anything tuned by eye off this table is tuning three
+   quarters of a number (CLASH_T learned that one the expensive way).
+   ════════════════════════════════════════════════════════════════════════ */
+const CHASE_T={
+  /* the one who does the talking, and the only crest on the field */
+  carter:{kind:'human',name:'The carter',hp:50,armour:14,mor:54,skill:50,dodge:10,
+    speed:4,trait:'braggart',captain:true,
+    acts:[{k:'chop',n:'HATCHET',cost:1,reach:1,dmg:[10,16],am:.55,ft:.32,
+      note:'A tool. Eleven years of swinging it at wood and none at all at anybody.'}]},
+  /* the one that actually hurts. Slow, and he does not need to be quick */
+  wharf:{kind:'human',name:'The big one off the wharf',hp:46,armour:12,mor:48,skill:46,
+    dodge:10,speed:4,trait:'stubborn',
+    acts:[{k:'club',n:'CARGO MAUL',cost:1,reach:1,dmg:[12,19],am:.80,ft:.26}]},
+  /* #145's puzzle, sober, and this time nobody explains him */
+  knife:{kind:'human',name:'The thin one',hp:34,armour:6,mor:44,skill:44,dodge:20,
+    speed:5,trait:'nimble',
+    acts:[{k:'knife',n:'BONING KNIFE',cost:1,reach:1,dmg:[7,12],am:.28,ft:.55,
+      note:'You have met this problem before, in a tap-room, and an angle solved it.'}]},
+  /* the hook: reach 2, small damage, and it takes one of YOURS out of the line.
+     Its whole job is that the line is the thing a starting company owns. Same
+     verb as the Snare's hook-pole, met four nodes earlier and much cheaper. */
+  hook:{kind:'ratkin',name:'The one with the hook',hp:36,armour:10,mor:50,skill:52,
+    dodge:18,speed:5,
+    acts:[{k:'hook',n:'DOCK HOOK',cost:1,reach:2,pull:1,cool:2,dmg:[6,11],am:.35,ft:.35,
+      note:'Small damage, and it drags them a hex toward the hook, out of your line.'},
+      {k:'jab',n:'JAB',cost:1,reach:1,dmg:[7,12],am:.45,ft:.30}]}
+};
+/* ⛔ ONE SOURCE FOR WHO CAME BACK, read by the CARD'S PROSE and by the BOARD,
+   so the two can never name different men. That is the whole reason this is a
+   function and not two lists: the body says *"Harl the carter, and Weft a step
+   behind him"* and then the field has to have them on it.
+   ⚠ `TAV_BACK` IS AN ORDER, NOT A SECOND COPY OF A FACT. Harl started it, so
+   Harl leads; Weft is the knife in the tap-room and the knife on the road,
+   whoever else lived. Everything else about them is read out of TAVERN_T. */
+const TAV_BACK=['harl','weft','brakk','osper','tull'];
+function chaseWho(){
+  const back=(G.tavKept||[]).filter(k=>TAVERN_T[k])
+    .sort((a,b)=>TAV_BACK.indexOf(a)-TAV_BACK.indexOf(b));
+  /* ⚠ WEFT IS THE KNIFE WHEREVER HE IS, AND THE SECOND SLOT IS NOT HIS ALONE.
+     The first cut of this read `knife` as Weft or nobody, so a run where BRAKK
+     AND OSPER walked out reported one face instead of two and the card said
+     *"One face was at the Three Bells"* over a company that had beaten two of
+     them. Found by driving the branch, not by reading it: every survivor list
+     that has ever come out of that brawl fits in six cases and all six were
+     rendered. Weft still wins the slot when he is in it, because he is the
+     knife on the board as well as in the sentence. */
+  const knife=back.indexOf('weft')>=0?'weft':null;
+  const rest=back.filter(k=>k!=='weft');
+  const lead=rest[0]||null,second=knife||rest[1]||null;
+  return {lead:lead,knife:second,n:(lead?1:0)+(second?1:0)};
+}
+function chaseFoes(){
+  const CY=ROWS>>1;
+  /* init 27-33 against the roster's 35-45: the company acts first, because you
+     stood still and let them come to you and the board should say so */
+  const f=build([[10,CY-1,'carter',30],[10,CY+1,'wharf',27],
+                 [11,CY,'knife',33],[11,CY+2,'hook',31]],CHASE_T);
+  const w=chaseWho();
+  if(w.lead)f[0].name=TAVERN_T[w.lead].name;
+  if(w.knife)f[2].name=TAVERN_T[w.knife].name;
+  /* two of four, and it is the joke the whole card is built on: a day and a
+     half out of Grausen and they have not sobered up to do this */
+  f[0].drunk=true;f[1].drunk=true;
+  return f;
+}
 const TUTSTEPS={
   act:{h:'YOUR SKILLS',
     t:'These are your skills: to move, and to fight. Click a green hex to '+
@@ -13101,6 +13189,20 @@ function tavernAfter(){
      and the menu's own tutorial row can never claim it. */
   LEGACY.brawlDone=true;saveLegacy();
   const kills=B.units.filter(u=>u.side==='foe'&&u.dead).length;
+  /* ═══ #210 · WHO WALKED OUT OF THIS ROOM, BECAUSE A CARD THREE NODES EAST
+     NAMES THEM ═══════════════════════════════════════════════════════════════════
+     WHAT FOLLOWED YOU OUT opens on two faces from the tap-room, and until this
+     line there was no way to know which faces those were: this function counted
+     the dead and threw the number away (`void kills` below), so a card naming
+     Harl would have been lying on every run that killed him.
+     ⚠ FLED IS NOT DEAD AND THAT IS THE WHOLE POINT. `tavernFlee` walks a broken
+     brawler out of the door and leaves `dead` false, which is precisely the man
+     who turns up on the road two days later with friends.
+     ⚑ IT STORES `variant`, THE TEMPLATE KEY `build()` ALREADY STAMPS ON EVERY
+     BODY, and never the name. The name lives in TAVERN_T; a copy of it in the
+     save would be the second source of truth this file keeps deleting, and it
+     would go stale the day somebody renames a carter. See chaseWho(). */
+  G.tavKept=B.units.filter(u=>u.side==='foe'&&!u.dead).map(u=>u.variant);
   /* receipts carry, but a scar is not a thing fists and floorboards give */
   G.party.forEach(p=>{
     const u=B.units.find(x=>x.id===p.id);
@@ -13893,6 +13995,7 @@ function startBattle(kind){
            :G.battleKind==='circle'?circleFoes()
            :G.battleKind==='wedding'?weddingFoes()
            :G.battleKind==='tavern'?tavernFoes()
+           :G.battleKind==='chase'?chaseFoes()
            :G.battleKind==='hold'?holdFoes()
            :G.battleKind==='snarejoin'?holdHost()
            :G.battleKind==='slingline'?slingline():foes();
@@ -14483,6 +14586,13 @@ const noFleeWhy=k=>NOWITHDRAW[k]||null;
    not the same act as walking out on four hungry deserters, and the price
    should say which one you just did. */
 const FLEECOST={
+  /* #210 - they are on foot, they are drunk, and half of them have been
+     walking since Grausen. Nobody here is catching a column that wants to go,
+     so this costs the company's opinion of you and nothing else. */
+  chase:{mor:12,crowns:0,days:0,
+    why:'They are drunk and they are on foot. They will not keep up.',
+    line:'You outwalk them inside a mile. Somebody back there is still shouting when '+
+      'you can no longer make out the words.'},
   /* #74 - the cheapest withdrawal in the game, and deliberately so. They
      wanted a member, not a chase, and a fight you are told you cannot win
      has to leave the door open or the warning on the button is a lie. */
@@ -20247,6 +20357,11 @@ const FIELDS={
      lost, forest 6.3rd · 1.1 down · 0/16 lost. The trees do not move this
      fight; they only stop the card from lying. */
   brigand  :{t:'forest',marsh:.94, rock:.99},
+  /* #210 - the alder cut, off the road and down in the trees. The same ground
+     the Broken Men are fought on, which is right rather than lazy: those are
+     the two fights in the act that are entirely people, and both of them happen
+     because somebody followed somebody into a wood. */
+  chase    :{t:'forest',marsh:.94, rock:.99},
   /* ⚑ THE TEACHING FIGHT DRAWS FROM THREE AND NOT FIVE, and that is a
      clarity-pass decision rather than a terrain one: Blood on the Road is
      already carrying eleven Captain lessons, allied NPCs, a side to pick and
@@ -25159,7 +25274,11 @@ function runBlob(){
            asked for. The plate is saved with the node; this is the price. */
         cache:G.cache,
         /* #108 - the brawl fires once per run, before the world opens */
-        tavernDone:G.tavernDone,
+        /* #210 - and WHO walked out of it, which a card two nodes east reads.
+           The load side is the generic flag copy below; every reader guards
+           with `||[]`, so a save written before this arrives with nobody
+           recognised, which is the honest reading of a run nobody recorded. */
+        tavernDone:G.tavernDone,tavKept:G.tavKept,
         /* #118 - the company's chosen name · #120 - whether the map's
            spotlight tour has run. Older saves arrive without either and
            simply have no signature and no re-tour. */
@@ -25353,6 +25472,21 @@ function carryEverybodyOut(){
    owns its own prose and its own bill, because a beating is specific to who
    is doing the beating. */
 const BEATEN={
+  /* ═══ #210 · THE BILL YOU WOULD NOT PAY, TAKEN OFF YOU IN THE ROAD ═══════
+     ⛔ THIS ROW IS NOT DECORATION. `toBeaten` falls through to `toDefeat()` for
+     any battle kind with no entry here, so an OPTIONAL roadside brawl on the
+     second node of the run would have been the one fight in the act that can
+     end a company, and it would have done it before Blood on the Road.
+     ⚑ AND THE BILL IS EXACTLY WHAT THE OTHER TWO DOORS QUOTED: forty crowns,
+     three provisions. That is the card's whole argument arriving as a receipt
+     rather than as a sentence: the price was always the same, and this is it
+     paid badly. `takeAll` was the other candidate and it empties the chest,
+     which is a different and much crueller card. */
+  chase:{
+    t:'THEY TAKE IT IN THE ROAD',
+    mor:12,take:{crowns:40,food:3},
+    b:'It stops being a fight some way before it stops, and what it turns into is four men going through a heap on the ground, with the ratkin doing the counting because nobody else can.\n\nNobody dies. They did not walk a day and a half for that.',
+    b2:'The carter says something close to your ear on the way past, and you do not quite catch it. Whatever it was, he is pleased with it.'},
   /* #108 - losing the intro brawl must not end a run that has not started.
      `soft`: nobody is scarred by fists and floorboards; `go`: the world has
      not been entered yet, so the continue button opens it. */
@@ -25403,11 +25537,39 @@ function toBeaten(){
   if(!G.party.length){toDefeat();return;}
   G.morale-=spec.mor||0;
   let bill='';
+  /* ⚠ #210 - ONE PLURAL, BECAUSE BOTH BILLS CAN READ ONE. The figures here
+     are what the chest ACTUALLY held, not what the row asked for, so they are
+     not free to be plural: a company robbed of its last crown was being told
+     it lost "1 crowns and 1 provisions". `fxNote` gets away with a flat
+     "provisions" because no authored fx charges exactly one; a clamped bill
+     has no such promise. Caught by driving the loss on an almost-empty chest,
+     which is the state that reads worst and the one nobody opens by hand. */
+  const plur=(n,w)=>n+' '+w+(n===1?'':'s');
   if(spec.takeAll){
     const hadF=G.run.food,hadC=G.run.crowns;
     pay('food',-hadF);pay('crowns',-hadC);
     bill='They take every barrel and every crown in the chest'+
-      (hadF||hadC?': '+hadF+' provisions and '+hadC+' crowns':'')+'.';
+      (hadF||hadC?': '+plur(hadF,'provision')+' and '+plur(hadC,'crown'):'')+'.';
+  }
+  /* ═══ #210 · AND A BEATING MAY COST A NAMED BILL RATHER THAN THE CHEST ════
+     `takeAll` is the right answer where the losing IS the robbery (the Circle
+     settles and takes everything). It is the wrong answer where the fight had
+     a price on the door: THE CHASE quotes forty crowns and three provisions on
+     its own middle door, and losing should charge that and not more.
+     ⚑ THE BILL IS BUILT OFF THE PAYMENT, NEVER OFF THE FIELD. `pay()` returns
+     what actually moved and clamps at zero, so a chest holding eleven crowns
+     reports eleven. A sentence printing `spec.take.crowns` would be a second
+     receipt, and it would be the wrong one on exactly the company that could
+     least afford to be lied to. */
+  else if(spec.take){
+    const gotC=-pay('crowns',-(spec.take.crowns||0));
+    const gotF=-pay('food',-(spec.take.food||0));
+    const bits=[];
+    if(gotC)bits.push(plur(gotC,'crown'));
+    if(gotF)bits.push(plur(gotF,'provision'));
+    bill=bits.length
+      ?'They take '+bits.join(' and ')+', which is what you would not give them.'
+      :'There is nothing in the chest worth stooping for, and they look.';
   }
   let markLine='';
   if(spec.mark){
@@ -25591,6 +25753,15 @@ const LOOT={
      the brawl's aftermath is one card, not an inventory pass */
   tavern:[
     {t:'Harl\'s tab, abandoned on the bar.',c:'+8 crowns',fx:{crowns:8}}],
+  /* #210 - one row per currency, which is the shape every other haul on this
+     table has. The jack is the point of the fight: a starting company owns one
+     piece of real armour and this is where the second one comes from. */
+  chase:[
+    {t:'The carter\'s purse. Most of it was somebody else\'s this morning.',
+     c:'+30 crowns',fx:{crowns:30}},
+    {t:'The padded jack off the big one. It fits somebody.',c:'a padded jack',gear:'jack'},
+    {t:'The hatchets, the hook, and the buckles off all four.',c:'+4 salvage',
+     fx:{salvage:4}}],
   clash:[
     {t:'Their spears and whatever the slings were made of.',c:'a boar spear · +3 salvage',
      fx:{salvage:3},gear:'spear'},
@@ -26701,6 +26872,11 @@ const AFTER={
       'at the door, counting the street. None of them has anywhere better to '+
       'be.\n\nAt the corner table, a man in a very good coat sets down an untouched cup and '+
       'looks at you the way a buyer looks at a horse.'},
+  /* #210 - the road behind you, empty again, and the card refuses to say for
+     how long. The carter had four friends; nobody in the company knows the
+     number and the aftermath is not going to pretend it does. */
+  chase:{t:'THE ROAD BEHIND YOU IS EMPTY AGAIN',
+    b:'It takes about as long as a bad argument and it ends the same way, with everybody standing further apart than they started.\n\nOne of yours asks whether that was all of them. Nobody answers, because nobody knows how many friends a carter has.'},
   /* #74 - it is not supposed to be reachable and it is reachable. Whoever
      gets here has done something no company in this act is built to do, and
      the card says so and does not gloat for them. */
@@ -30078,7 +30254,17 @@ $('iBack').onclick=()=>{G.mustKit=false;show('world');worldTick();};
    `spacingViolations()` before you believe it. */
 const NODES={
   /* ── the hold, and the first fork ─────────────────────────────────── */
-  hold  :{x:100,y:330,n:'Grausen Hold',        t:'town'},
+  /* ═══ #210 · 330 -> 276, AND 20px EAST WITH IT ════════════════════════
+     (User, 2026-08-20: *"On the map you can put graushen hold a bit up"*.)
+     ⚑ THE 20px EAST IS NOT DRIFT, IT IS THE PAINTING. #190 put ground under
+     these coordinates after they were placed, and nobody re-read them against
+     it: sampled off `world-map-illustrated.webp`, (100,330) is 50% open water
+     and (120,276) is 16%. A fortified hold standing in a river channel is a
+     thing only the painting can tell you, and only if you ask it.
+     ⚠ x MAY NOT GO PAST 130. `clash` is at 240 and the plate rule wants 110px
+     across or 79px down; at 276 there is only 54px of y to spend, so the x is
+     the half that has to pay. */
+  hold  :{x:120,y:276,n:'Grausen Hold',        t:'town'},
   /* ═══ #112 · ONE NIGHT BETWEEN THE TAP-ROOM AND THE FIRST REAL FIGHT ═══
      (User: "Between first part add an event 'faling star' - where characters
      can make a wish... So we have at least one event between intro fight and
@@ -30119,6 +30305,43 @@ const NODES={
      16, so the plate can only get narrower), and all three counters were
      re-run. */
   coin  :{x:168,y:424,n:'The Wheel-Rut',       t:'event',ev:'coin'},
+  /* ═══ #210 · TWO NODES BETWEEN THE COIN AND BLOOD ON THE ROAD ═══════════
+     (User, 2026-08-20: *"Add some event from [the deck] adfter the coin (easy
+     from already created)"* and *"between coin and new event 'chase' - this is
+     road acident"*.) So the order is coin → the chase → the tree → the clash,
+     and the opening corridor goes from two days to four.
+
+     ⛔ THE ROAD DIPS SOUTH AND THE REASON IS ARITHMETIC, NOT SCENERY. Five
+     nodes have to live inside 236px of map width; the plate rule wants 110px
+     across OR 79px down on every pair, which allows about three columns; and
+     `f1` at (330,452) owns the middle of what is left. Every layout that keeps
+     the road running straight east fails on `f1`'s plate. The loop into the wet
+     woods is what survives, and it happens to be the right picture: you leave
+     the road to shake them and you come back onto it further along.
+
+     ⚑ MEASURED, NOT EYEBALLED, AND MEASURED TWICE. `spacingViolations()`,
+     `labelViolations()` and #194's road-curve check all read 0 on these
+     coordinates, AND still read 0 with every floating slot dealt a painted card
+     - which is the state the shipped map is actually in and the state the
+     undealt table cannot show you. The checks were then made to FIRE on
+     purpose: `chase` at (250,470) reports three spacing violations and the tree
+     at (300,470) reports `clash->f1 crosses The Hollow Tree`.
+
+     ⚠ NAMED FOR THE GROUND, WHICH IS THE RULE AT `snare`. The plate says The
+     Alder Cut because a plate reading "Friends of Harl" would hand the player
+     the card two days before they stand in it. The tree keeps its own name
+     because it is a place and the card is about the place. */
+  chase :{x:170,y:555,n:'The Alder Cut',       t:'event',ev:'chase'},
+  /* ⛔ AND IT LEAVES `FLOATING` IN THE SAME EDIT OR IT FIRES TWICE. #194's
+     wedding rule: a card that is both fixed and floating is dealt to a slot as
+     well, so one run in two would meet the hollow tree a second time.
+     ⚠ SIXTEEN CARDS FOR SEVEN SLOTS, counted in the running build and not off
+     the source: the neighbouring #194 comment says fifteen and has been one out
+     since the day it was written. Still comfortably more road than slots.
+     Picked off the deck because it is the lightest thing in it (58
+     words, two doors, take or respect) and because it already has both a map
+     painting and a card painting. */
+  tree  :{x:285,y:545,n:'The Hollow Tree',     t:'event',ev:'hollow'},
   clash :{x:240,y:330,n:'Blood on the Road',   t:'battle',ev:'clash'},
   /* ── NORTH: shorter, and the Broken Men are standing on it. One slot,
        one fight, and a fire between that fight and the next one ──────── */
@@ -30652,7 +30875,19 @@ const EDGES=[
      the same description because there is nothing to compare them to - only
      a fork ever draws one (see `forkHere`). */
   ['hold','coin',1,1,'the only road east'],
-  ['coin','clash',1,1,'the only road east'],
+  /* #210 - one leg became three. The opening runs hold → wheel-rut → the alder
+     cut → the hollow tree → Blood on the Road, which is FOUR days where it was
+     two, and the first payday (#152, every fourth day, about thirty crowns)
+     now lands at the clash instead of after it.
+     ⚠ THE PURSE DID NOT MOVE TO PAY FOR IT, AND THAT IS A RULING RATHER THAN
+     AN OVERSIGHT. #112 raised it 17 when it added one day; asked the same
+     question here the user said no (2026-08-20: *"nope, don`t increase
+     purse"*). The opening is two days poorer on purpose. If the muster ever
+     stops being affordable, THIS is the change that did it and 107 is the
+     constant to move, not the road. */
+  ['coin','chase',1,1,'the only road east'],
+  ['chase','tree',1,1,'the only road east'],
+  ['tree','clash',1,1,'the only road east'],
   /* ══ CROSSROAD A — TWO ROADS, NOT THREE ═══════════════════════════════
      (User, 2026-08-01: "on one fork more fights and more money, but your
      people get crippled. On the other, safer, but the chance to get less.")
@@ -30939,7 +31174,12 @@ function branchOf(from){
    callback. This pool is the one place that decides, and the deck is fifteen
    cards for seven slots, which is still comfortably more road than slots. */
 const FLOATING=['toll','pedlar','chapel','wain','bloom','milestone','saltwives',
-  'ratcart','hollow','ogrestone','taxman','bogbody','aqueduct','shipwreck','sinkhole',
+  /* ⛔ #210 - `hollow` IS NOT IN THIS LIST ANY MORE, for the same reason
+     `wedding` is not: it is a fixed node on the opening corridor now (see
+     `tree` in NODES), and a card that is both fixed and floating is dealt to a
+     slot as well. `FLOATING.length` reads 16, which is what seven slots draw
+     from now. */
+  'ratcart','ogrestone','taxman','bogbody','aqueduct','shipwreck','sinkhole',
   /* #74 - the heaviest card in the deck. It is in the floating pool rather
      than on a node because meeting them is a thing that happens to you, not
      a place you decided to walk to. */
@@ -34479,6 +34719,61 @@ const EVENTS={
        c:'yours, and it does not wear off',
        fx:{morale:-6},starWish:'you',
        after:''}]},
+  /* ═══ #210 · WHAT FOLLOWED YOU OUT ════════════════════════════════
+     (User, 2026-08-20, the whole brief: *"'friends of guys' who you have
+     finished are following you... There 1-2 from first tavern fight and some of
+     their friends. Suprisinly, some of them still drunk..."*, then *"make 4 of
+     them… 1 of for is a ratling"*.)
+
+     ⚑ THE THREE DOORS ARE THREE CURRENCIES AND NOTHING IS A BETTER VERSION OF
+     ANYTHING ELSE. Provisions are cheap on day two and dear at Coldharrow; forty
+     crowns is a third of the opening purse; the fight is free at the pick and
+     pays a haul, and it is free BECAUSE the other two cost, which is rule 7.
+     The user's own wording on the first door is kept: *"run with freed hands"*,
+     and *"just - 3 provisions"* is why it charges no mood on top.
+
+     ⛔ THE BODY IS A FUNCTION AND IT HAS THREE BRANCHES, because the tap-room
+     does not promise survivors. `chaseWho()` reads what walked out of the brawl
+     (G.tavKept, written by tavernAfter) and the prose names up to two of them;
+     the no-survivor branch is the better card anyway, and it is true either way:
+     *"Not one of these faces was at the Three Bells. They did not have to be."*
+     ⚠ MEASURED ON EVERY BRANCH, per the length rule: 131-133 / 123-125 / 126 words body
+     and outcomes together, which is MEDIUM (90-140) on all three. A function
+     body measured on whichever branch today's run produces is not measured.
+
+     ⚠ AND IT IS NEVER A PICKUP. The one-door rule fires on `visible.length===1`,
+     and an unaffordable `need:` door is DISABLED rather than filtered, so a
+     company with no food and no coin still reads three doors and can still only
+     press one. That is the card working, not the card breaking. */
+  chase:{title:'WHAT FOLLOWED YOU OUT',art:'teal',seed:97,
+    body:()=>{
+      const w=chaseWho(),nm=k=>TAVERN_T[k].name;
+      const open='Four of them on the road behind you, at your pace, and they have been '+
+        'there since the last bend.\n\n';
+      const rat='One of them is ratkin, small and unhurried, carrying a dock hook.';
+      const close='\n\nA day and a half since the tap-room, and half of them are still '+
+        'drunk. They have not sobered up to do this.';
+      if(w.n>=2)return open+'Two of the faces were at the Three Bells: '+nm(w.lead)+
+        ', and '+nm(w.knife)+' a step behind him. The other two were not. '+rat+close;
+      if(w.n===1)return open+'One face was at the Three Bells. '+nm(w.lead||w.knife)+
+        ' has found three friends since. '+rat+close;
+      return open+'Not one of these faces was at the Three Bells. They did not have to '+
+        'be. '+rat+close;
+    },
+    choices:[
+      {t:'Cut the packs and run with freed hands.',ico:['leave'],c:'',
+       need:{food:3},fx:{food:-3},
+       after:'They stop for it. The last you see of the ratkin, he is sitting in the road '+
+         'with your barrel open on his knees.'},
+      {t:'Ask what it would take. Pay it.',ico:['trade'],c:'',
+       need:{crowns:40},fx:{crowns:-40},
+       after:'He names a number badly, the way a man does who has never had to ask for '+
+         'money.\n\nThey go back the way they came. The ratkin counts it twice.'},
+      /* rule 8 - the tactical receipt, and every word of it is a fact the fight
+         will honour: four bodies, the hook is real, two of them wear the 🍺 badge. */
+      {t:'Stand in the road. They came to you.',ico:['fight'],
+       c:'BATTLE · four of them · one ratkin · two are still drunk',
+       battle:'chase',after:''}]},
   clash:{title:'BLOOD ON THE ROAD',art:'gold',seed:266,
     body:'A ratkin foraging party and an ogre steading-line have met over a dead deer. It '+
       'is not worth what it is '+
@@ -38821,6 +39116,8 @@ $('menuBtn').onclick=()=>{
    it — which is most of what there is to learn here. */
 const SIM_FIGHTS=[
   {k:'tavern',   n:'The Three Bells',   d:'The tap-room brawl the run opens with. One drunk, then his friends, then yours.'},
+  {k:'chase',    n:'What Followed You Out',
+   d:'Four out of the tap-room. Two drunk, one nimble, one hook that pulls you out of line.'},
   {k:'clash',    n:'Blood on the Road', d:'Three ogres. The one the game teaches with.'},
   {k:'brigand',  n:'The Broken Men',    d:'Human deserters and two dogs. They break like people.'},
   {k:'pack',     n:'The Pack',          d:'You are inside the palisade. Hold the two gaps.'},
