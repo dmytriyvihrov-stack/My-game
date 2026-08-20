@@ -26,6 +26,36 @@
 
 ---
 
+## ⚔ THE STEP THAT COSTS BLOOD SAYS SO ON THE CURSOR NOW  *(#213 · 2026-08-20 · build log 8f.236)*
+
+**How to reach it in three steps:** any fight → let an enemy get into contact with one of yours (front or shoulder, not behind) → it is your turn, MOVE is already the standing selection, so just move the pointer over the walkable ground.
+
+**What it is.** The ⊘⚔ that used to sit on your own body is gone. Instead:
+
+- **the cursor turns red and grows a pair of crossed blades** over any hex a click would actually walk to;
+- **every enemy who would take a free swing glows red** (that part shipped in #205) **and now wears a small red plate reading `⚔ NN%`** - the chance that swing lands on you;
+- the red ring under your own feet stays: that is which hex is being paid for.
+
+Hover the plate and it names the body and points at DISENGAGE.
+
+**What should happen.** Press DISENGAGE and every one of those marks goes out at once - the cursor back to white boots, the plates gone, the glow off - because the step is clean now. Walk instead and the swing you were shown is the swing you get: the percentage is taken from the same roll, on the same hex, before you move.
+
+**What would be a bug.** A red cursor on ground you cannot reach, or over an enemy (a click there is an attack, so it should be the blade or the arrow). A plate on a body that is behind you - the zone of control is the front arc and a body you walked round cannot swing. A percentage that does not match what the log says the swing rolled. A great beast wearing the plate twice (she is lit on head and tail; the number belongs on the head only). And the one that is a known trade: **a plate half-hidden behind a body standing in front of the swinger.** Say so if it happens - the foot of the hex was the only slot left and the fix is to move the other two numbers, not this one.
+
+---
+
+## 🗿 THE THREE RACES WEAR ONE PICTURE NOW  *(#211 · 2026-08-20 · build log 8f.234)*
+
+**How to reach it in three steps:** open the company sheet (C, or the portrait on the world bar) → look at the roster down the left and at the race chip beside the name → then open the muster wall, a battle, and any event card with a race door.
+
+**What it is.** #209 painted ratkin, ogre and human as three small portraits and used them on event doors only. Everywhere else was still 🐀 👹 🧑, i.e. the same fact wearing two different pictures on two screens you cross in a minute. Now there is one picture: the sheet's race chip and its roster rows, the battle rail's name line, the enemy inspect card, the muster wall, the tavern's roster strip, the recruits who join after a fight, the promotion card, and the race hover.
+
+**What should happen.** Nothing moves. The words are exactly where they were - the mark still replaces the WORD only in a list you are scanning, and keeps it wherever one body is being studied - and no row got taller. Hovering a mark still opens the race box.
+
+**What would be a bug.** A row that now wraps or clips, a mark you cannot tell apart from its neighbour at a glance, or an emoji still showing anywhere (that is the fallback, and it should never fire in a normal build).
+
+---
+
 ## ⛔ WHAT FOLLOWED YOU OUT, AND TWO NEW NODES ON THE OPENING ROAD  *(#210 · 2026-08-20 · build log 8f.233)*
 
 **How to reach it in three steps:** new company → win (or lose) the tap-room brawl → walk east.

@@ -1417,23 +1417,56 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:var(--f
    wrong-unit bug arriving through a tidy-up. Same footing as `--blood-lit`
    warning and `--grain` approving, and it is the same red the refusal cursors
    are drawn in.
-   ⚠ THE GLYPH SITS OVER THE TORSO, NOT OVER THE HEAD. Everything above a
-   head on this board is spoken for - `.ubars` at `--head - 9`, `.umood`
-   top-right, `.wflag` top-centre - and a fourth thing up there is the clutter
-   #157 spent an entry removing. Middle of the hex, under the bars, over the
-   body it is about.
    ⚠ `pointer-events:none`, or the mark eats the click on the very hex whose
-   move it is warning about.
-   ⛔ `.hin>.zwarn` AND NOT `.zwarn`, WHICH THIS FILE HAS SHIPPED WRONG ONCE.
-   `.hin>*{z-index:1}` is (0,1,0); a bare `.zwarn{z-index:6}` ties with it and
+   move it is about.
+   ⛔ `.hin>.zodds` AND NOT `.zodds`, WHICH THIS FILE HAS SHIPPED WRONG ONCE.
+   `.hin>*{z-index:1}` is (0,1,0); a bare `.zodds{z-index:6}` ties with it and
    is broken by source order, which is exactly the silent failure the note on
    `.hin>.stbar` records. (0,2,0) wins outright. The lift is real and it has to
-   be: the mark is appended BEFORE the sprite, so at z-index 1 the body it is
-   warning about would paint straight over it. */
-.hin>.zwarn{position:absolute;left:0;right:0;top:50%;transform:translateY(-46%);
-  text-align:center;font-size:var(--fs5);line-height:1;letter-spacing:-.06em;
-  color:#c15d55;pointer-events:none;z-index:6;
-  text-shadow:0 0 3px #000,0 0 3px #000,0 1px 2px #000,0 -1px 2px #000}
+   be: the chip is appended BEFORE the sprite, so at z-index 1 the body it is
+   about would paint straight over it.
+   ═══ ⛔ #213 · AND THE NUMBER MOVED TO THE BODY THAT CHARGES IT ════════
+   (User, 2026-08-20: *"And highlights enemy who will hit and probability"*.)
+   The glyph over the mover's torso is gone (it is the cursor now, see
+   `--curWalkZoc`) and what stands here instead is the swing's own chance to
+   land, on the hex of the body that would take it. `.hex.zhit` already lit
+   that sprite red; this says how much the light is worth.
+   ⛔ THE FOOT OF THE HEX, AND THE OTHER FOUR SLOTS WERE MEASURED BEFORE IT WAS
+   TAKEN. Driven, at the 2.2 camera stop, against the hex's own 37x42 box:
+     .hin      y  3..40      the box everything here is positioned in
+     .hodds    y  7..17      YOUR chance on this body
+     .hdmg     y 19..29      YOUR damage on this body
+     sprite    y-12..33      the painted body, 33 wide in a 37px hex
+     row ahead y 32..42      `.hrow{margin-top:-10px}`, painted LATER
+   An enemy in contact IS a live target while MOVE is standing (#91), so both
+   of those rows are on this hex whenever this chip is, and the corner slots
+   are spoken for too: `.wbadge` top:13 right, `.umood` top:-2 right, `.wflag`
+   top:-2 centre, `.ubars` the head band. A first cut put the chip TOP-LEFT and
+   it measured 31px wide in a 33px box - i.e. straight across the odds. There
+   is no uncontested slot on a 37px hex; there is only the cheapest collision.
+   ⚡ SO IT IS A PLATE AND NOT BARE TEXT, WHICH IS THE ONE PLACE THIS CHIP
+   DEPARTS FROM `.hodds` AND `.hdmg`. It sits in the band the row in FRONT
+   paints over - the band #157 pulled the health bar out of - and an opaque
+   ground plus a red edge is what survives a body standing there, where a
+   text-shadow does not. ⚠ THAT IS A REAL TRADE AND NOT A DODGE: with somebody
+   directly in front of the swinger the chip is partly covered, and the two
+   readouts it would otherwise cover are on screen every turn of the game while
+   this one is on screen for the length of one decision. The hover on the chip
+   and the red glow on the sprite are both still there when it is.
+   ⚠ `#e0a89c` AND NOT `--blood-lit`, same as `.fbadge.sw` four hundred lines
+   up and for the same reason: `#c15d55` is a warning colour at 15px and a grey
+   smudge at the 10px floor. The EDGE carries the red; the figure carries the
+   legibility. ⚠ `.fbadge` IS ALSO DOWN HERE (bottom:1 left:2, a braced spear),
+   and the two can touch on a spearman who is holding you. It is a two-glyph
+   badge against a plate that is drawn over it, and the plate wins, which is
+   the right way round for the one of them that is a price. */
+.hin>.zodds{position:absolute;top:auto;bottom:-1px;left:50%;
+  transform:translateX(-50%);
+  font-family:var(--mono);font-size:var(--fs1);line-height:1;font-weight:700;
+  letter-spacing:-.02em;padding:1px 2px;white-space:nowrap;
+  color:#e0a89c;background:rgba(18,10,10,.9);border:1px solid #c15d55;
+  border-radius:2px;pointer-events:none;z-index:6;
+  text-shadow:0 1px 2px #000}
 /* the body that will take the swing, LIT rather than outlined: an edge on a
    hex somebody is standing on is mostly hidden by them, which is the whole
    reason the request asks for the unit and not the tile. */
@@ -1500,6 +1533,26 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:var(--f
    keeps not-allowed by the :not() below, not by luck. */
 :root{
   --curWalk:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='26' height='26'><g transform='rotate(-14 8 10)'><ellipse cx='8' cy='8' rx='3.4' ry='4.6' fill='%23d9bd7e'/><ellipse cx='8' cy='14.4' rx='1.8' ry='1.3' fill='%23d9bd7e'/></g><g transform='rotate(12 18 15)'><ellipse cx='18' cy='13' rx='3.4' ry='4.6' fill='%23a38652'/><ellipse cx='18' cy='19.4' rx='1.8' ry='1.3' fill='%23a38652'/></g></svg>") 13 13,pointer;
+  /* ═══ ⛔ #213 · THE PRICE OF THE STEP RIDES ON THE HAND THAT TAKES IT ═══
+     (User, 2026-08-20: *"when in zone of control show engayd ... not on the
+     character But rather near your movment cursor - it changes from white to
+     red and it adds the knives"*.)
+     #205 drew ⊘⚔ over the torso of the body about to move. It is the right
+     FACT in the wrong place: the thing the eye is following while a move is
+     being chosen is the pointer, and the body it was drawn on is the one
+     square the player has already stopped looking at.
+     ⛔ AND THE ⊘ DOES NOT COME WITH IT, WHICH IS NOT A TRIM. ⊘ is what the
+     three refusal cursors above mean - `--curStrikeNo` and its two brothers -
+     and this step is ALLOWED, it just costs blood. A refusal glyph on a legal
+     move is one mark meaning two things, which is #102's wrong-unit rule on
+     the one surface where being wrong stops the click. Red plus the knives is
+     exactly what he asked for and exactly what is true.
+     ⚠ SAME 13 13 HOTSPOT AND THE SAME 26px OF BOOTS as `--curWalk`, for the
+     reason the note below `--curStrikeNo` gives: the pointer must not JUMP
+     when the cursor swaps. The knives hang into the spare corner of a 32px
+     canvas rather than moving anything. ⚠ 32 AND NOT 34: Firefox refuses a
+     cursor image over 32x32 outright and falls back to the keyword. */
+  --curWalkZoc:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><g transform='rotate(-14 8 10)'><ellipse cx='8' cy='8' rx='3.4' ry='4.6' fill='%23e0a89c' stroke='%23151b1c' stroke-width='1.4'/><ellipse cx='8' cy='14.4' rx='1.8' ry='1.3' fill='%23e0a89c' stroke='%23151b1c' stroke-width='1.2'/></g><g transform='rotate(12 18 15)'><ellipse cx='18' cy='13' rx='3.4' ry='4.6' fill='%23c15d55' stroke='%23151b1c' stroke-width='1.4'/><ellipse cx='18' cy='19.4' rx='1.8' ry='1.3' fill='%23c15d55' stroke='%23151b1c' stroke-width='1.2'/></g><path d='M19.5 30 L29.5 20' stroke='%23151b1c' stroke-width='4.4' stroke-linecap='round'/><path d='M21 20 L30 29' stroke='%23151b1c' stroke-width='4.4' stroke-linecap='round'/><path d='M19.5 30 L29.5 20' stroke='%23e0a89c' stroke-width='2.2' stroke-linecap='round'/><path d='M21 20 L30 29' stroke='%23c15d55' stroke-width='2.2' stroke-linecap='round'/><circle cx='30.3' cy='29.3' r='1.9' fill='%23d9bd7e' stroke='%23151b1c' stroke-width='.9'/></svg>") 13 13,pointer;
   --curStrike:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='28' height='28'><path d='M3 3 L17 17' stroke='%23151b1c' stroke-width='5.4' stroke-linecap='round'/><path d='M3 3 L17 17' stroke='%23c9c6bb' stroke-width='3.2' stroke-linecap='round'/><path d='M3.6 3.6 L15 15' stroke='%23eeeadf' stroke-width='1.2' stroke-linecap='round'/><path d='M13.4 20.6 L20.6 13.4' stroke='%23a38652' stroke-width='3.2' stroke-linecap='round'/><path d='M17.8 17.8 L22.4 22.4' stroke='%235a4326' stroke-width='4.2' stroke-linecap='round'/><circle cx='23.6' cy='23.6' r='2.2' fill='%23d9bd7e'/></svg>") 3 3,pointer;
   /* #111 - a shot and a working get their own hands: a fletched arrow, and
      the Bloom's own magenta spark */
@@ -1514,6 +1567,12 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:var(--f
   --curCastNo:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='30' height='30'><g opacity='.45'><path d='M12 2.6 L14.6 11.4 L23.4 14 L14.6 16.6 L12 25.4 L9.4 16.6 L .6 14 L9.4 11.4 Z' fill='%23e28fb4' stroke='%238a2f6a' stroke-width='1.3'/></g><circle cx='20' cy='20' r='8.2' fill='none' stroke='%23151b1c' stroke-width='4.6'/><path d='M14.2 25.8 L25.8 14.2' stroke='%23151b1c' stroke-width='4.6' stroke-linecap='round'/><circle cx='20' cy='20' r='8.2' fill='none' stroke='%23c15d55' stroke-width='2.4'/><path d='M14.2 25.8 L25.8 14.2' stroke='%23c15d55' stroke-width='2.4' stroke-linecap='round'/></svg>") 12 14,pointer;
 }
 #bGrid.cMove .hex:not(.blocked){cursor:var(--curWalk)}
+/* #213 - and RED where the step is paid for. `.lit` and not every hex: it is
+   #206's own test for "ground a click would actually take", so the red hand
+   appears on exactly the hexes that would charge the swing and the plain boots
+   stay on ground that is not a step at all. `.lit` requires an empty hex and
+   `.hfoe` an occupied one, so this can never race the two rules below it. */
+#bGrid.cMove.zoc .hex.lit:not(.blocked){cursor:var(--curWalkZoc)}
 #bGrid.cMove .hex.hfoe:not(.blocked){cursor:var(--curStrike)}
 /* ⛔ #155 - THE SLOT IS NOT THE WEAPON, AND THIS WAS THE LAST SITE THAT STILL
    THOUGHT IT WAS. `--curStrike` above is drawn crossed blades, and it landed on
@@ -22811,6 +22870,29 @@ function render(){
   const partFrom=partRisk.length?K(u.col,u.row):null;
   const partWho={};
   partRisk.forEach(e=>hexesOf(e).forEach(p=>{partWho[K(p[0],p[1])]=1;}));
+  /* ═══ ⛔ #213 · WHAT THE FREE SWING IS ACTUALLY WORTH ══════════════
+     (User: *"And highlights enemy who will hit and probability"*.) #205 lit
+     the sprite and stopped there, so the board said WHO and never HOW LIKELY -
+     and two of these are a very different decision from one at 22%.
+     ⛑ THE FIGURE IS EXACT RATHER THAN AN ESTIMATE, AND THE CALL ORDER IS WHY.
+     `partingShots(u)` fires BEFORE `walkTo`, so the swing is rolled while the
+     mover is still standing here - which makes `hitBreakdown(e,u,atk)` taken
+     now the very roll the click will make. The 0.5 multiplier `partingShots`
+     passes is DAMAGE and never touches the chance.
+     ⚠ KEYED ON THE SWINGER'S OWN HEX, not on `hexesOf`: a great beast is
+     ringed on her tail (`partWho` above) and carries the number once, on the
+     hex her head is drawn from. One body, one figure.
+     ⚠ `atk` IS THE SAME `acts.find(a=>a.reach)` `partingShots` SWINGS WITH.
+     A second way of choosing the act here would be a fifth place that asks
+     about control and must agree - read the note on `controllers`. */
+  const partOdds={};
+  partRisk.forEach(e=>{
+    const atk=e.acts.find(a=>a.reach);
+    partOdds[K(e.col,e.row)]={e:e,
+      pct:(atk&&atk.dmg)?hitBreakdown(e,u,atk).total:null};});
+  /* the hand that will pay for the step, drawn on the pointer rather than on
+     the body doing the stepping. See `--curWalkZoc`. */
+  g.classList.toggle('zoc',partRisk.length>0);
   let losOf=null,inWay=null;
   if(u&&u.side==='you'&&laneAct){
     losOf={};inWay={};
@@ -23018,17 +23100,24 @@ function render(){
       hx.appendChild(hedge);
       hx.setAttribute('aria-label',t+' '+c+','+r);
       const inn=document.createElement('div');inn.className='hin';
-      /* #205 - ⛔⚔ on the hex you are standing on: the refusal glyph the
-         cursors already use (`--curStrikeNo`) and the blade that follows it.
-         The names are on the hover, because a list of names on a 37px hex is
-         not a warning, it is a paragraph. */
-      if(partFrom&&K(c,r)===partFrom){
-        const zw=document.createElement('span');zw.className='zwarn';
-        zw.textContent='⊘⚔';
-        zw.title='Stepping off this hex costs a free swing from '+
-          partRisk.map(e=>e.name).join(' and ')+
+      /* ⛔ #213 - #205's ⊘⚔ OVER THE MOVER'S TORSO IS DELETED. It is the
+         cursor now (`--curWalkZoc`) and the figure below, and leaving a copy
+         on the body would be the same fact in two places - the thing the whole
+         receipt rule at .claude/rules/event-cards.md exists to stop, arriving
+         on the board. The red edge under the mover's feet STAYS: that is a
+         ring saying which hex is being paid for, and the cursor cannot say it
+         while the pointer is four hexes away.
+         ⚠ AND THE SENTENCE SURVIVES THE GLYPH. The deleted mark carried the
+         only hover in the game that named who swings and pointed at DISENGAGE;
+         it is on the chip now, per body, which is better than a joined list. */
+      const zsw=partOdds[K(c,r)];
+      if(zsw){
+        const zo=document.createElement('span');zo.className='zodds';
+        zo.textContent='⚔'+(zsw.pct==null?'':zsw.pct+'%');
+        zo.title=zsw.e.name+' gets a free swing the moment you step off that hex'+
+          (zsw.pct==null?'':', and it lands '+zsw.pct+' times in a hundred')+
           '. DISENGAGE first and the step is clean.';
-        inn.appendChild(zw);
+        inn.appendChild(zo);
       }
       /* the tint is its own hexagonal layer now — see the .hin note in the CSS */
       const flr=document.createElement('div');flr.className='hfill';
