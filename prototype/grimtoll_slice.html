@@ -3388,6 +3388,40 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:var(--f
    anyway, and giving the box one would put a second race readout next to the
    first. */
 .bmk{font-size:var(--fs5);line-height:1;letter-spacing:0;cursor:help}
+/* ═══ ⛔ #211 · AND SINCE THE DOORS WERE PAINTED, `.bmk` HELD THE LAST EMOJI ══
+   (User, 2026-08-20: *"update emojies of ratkin, ogr and human for a new ones
+   (that are in event choices)"*, then *"use the ones in event choices and add
+   to inventory and other screens"*.)
+   #209 gave the three races a painted 128px card and wired it to ONE surface,
+   the event door. Every other surface that names a body - the sheet, the
+   roster, the battle rail, the muster wall, the tavern strip, the aftermath -
+   went on printing the `RACE_ICON` emoji, so the same fact wore two pictures
+   on two screens a player crosses in a minute. That is #102's wrong-unit rule
+   with the glyphs as the units, and it is the SECOND time this pair has had
+   it: #196 deleted the last split (◆ ▪ ⬢ against the door's emoji) by making
+   `RACE_ICON` the one table. The emoji is now the fallback under the painting.
+   ⚠ 16px IS THE BIGGEST SIZE THAT COSTS NOTHING, MEASURED, which is #209's own
+   method one screen over: a picture in a line of text is free until the LINE
+   BOX grows, and the line box is what breaks a row measured around a glyph
+   (`.claude/rules/ui-scales.md` §4). Driven against a `git show HEAD:` baseline
+   in a second tab, company sheet and muster wall, fonts loaded:
+     16px  roster rows 68/68/68/70 (was 69x4) · race chip 21 (was 21) · muster
+           dialog 467 (was 473) · `#iChar` 678 into 678 · overflow probe []
+     17px  the chip goes to 22 and the fourth roster row to 71
+     20px  chip 25, row 73
+   So 17 is where it starts costing and 16 is where it stops. ⚠ The chip is the
+   tell rather than the row: `.ichip` is the ONE box here with nothing else in
+   it to set its height, so it reports the mark's line box directly.
+   ⛑ AND `vertical-align:middle` RATHER THAN A PIXEL, WHICH REMOVED A SHIPPED
+   CLIP. `#bClass` on the battle rail is a 15px `overflow:hidden;nowrap` box and
+   the EMOJI already overflowed it by 2 - it is a fourth member of the probe's
+   known list that nobody had written down, confirmed on the baseline tab. A
+   16px picture on a -3px baseline offset kept that 2px; on `middle` the box
+   settles at 17 into 17 and the battle screen's probe drops from four findings
+   to the documented three (`#bField`, `#bLog`, `#bTrait`). `#bPlq` is 197 either
+   way, so the rail's reservation pays for it. */
+.rart{display:inline-block;width:16px;height:16px;object-fit:contain;vertical-align:middle;
+  filter:brightness(1.24) saturate(.96) contrast(1.08) drop-shadow(0 1px 2px #000)}
 /* ═══ #133 · THE COMPANY SHEET ON ONE SCREEN ══════════════════════════════
    (User, 2026-08-13, a voice brief over five reference screenshots: Urtuk,
    Battle Brothers, Caves of Qud, Wartales, Wildermyth. "too much information
@@ -8749,7 +8783,27 @@ const cIcon=k=>CLASS_ICON[k]||'✦';
 /* ⚠ THE FALLBACK IS DELIBERATELY OFF THE FAMILY. It used to be ◆, which WAS
    the human's mark, so anything with an unknown race silently printed as a
    human. A shape among three faces reads as "not one of these three". */
-const rIcon=k=>RACE_ICON[k]||'◆';
+/* ═══ ⛔ #211 · THE MARK IS THE PAINTING, AND THE EMOJI IS THE FALLBACK ═══
+   `RACE_ART` is #209's pack of three 128px cards and until now the event door
+   was its only reader. This is the ONE other reader, so every surface built on
+   `rIcon`/`rMark`/`rcMarks` - the company sheet's race chip and its roster
+   rows, the battle rail, the inspect readout, the muster wall, the tavern
+   strip, the aftermath's recruits, the promotion card and the race lore tip -
+   picks the painting up without a line of its own. #196's law is untouched:
+   the WORD still comes off `RACE_ICON`/`title=` and the mark is still derived.
+   ⛔ AND THE READ IS IN A try/catch BECAUSE OF WHERE IT SITS. `RACE_ART` is a
+   `const` a thousand lines BELOW this one, so a call before that line executes
+   is a temporal-dead-zone throw - and `typeof` does not save you from a const
+   in its TDZ, only from a name that was never declared. This is the same guard
+   `hasSight` carries for `MAP_SIGHT`, for the same reason, after the same
+   crash (`.claude/rules/world-map-sights.md`). It also covers a build where
+   `art\inject_j_pack.ps1` has not been run: a fresh checkout, a bisect, a
+   half-finished merge. Those all fall back to the emoji instead of taking the
+   whole script down. */
+const raceArt=r=>{try{return RACE_ART[r]||null;}catch(e){return null;}};
+const rIcon=k=>{const src=raceArt(k);
+  return src?'<img class="rart" src="'+src+'" alt="'+String(k||'').toUpperCase()+'">'
+            :(RACE_ICON[k]||'◆');};
 /* ═══ ⛔ #196 · THE PAIR IS TWO MARKS AND THE WORDS ARE ON THE HOVER ═══════
    ONE builder, so a surface cannot invent a fourth way of writing the pair.
    Both halves carry `data-cls`/`data-race`, which is what `bindLoreTips` wires
