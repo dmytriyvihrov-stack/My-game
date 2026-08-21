@@ -250,7 +250,7 @@ First, that the three scales are still closed. In the file, from a shell:
 
 ```bash
 grep -o "font-size:[ ]*[0-9.]*px" prototype/grimtoll_slice.html | sort -u | wc -l   # 0
-grep -o "padding[a-z-]*:[^;}\"']*" prototype/grimtoll_slice.html | grep -oE "[0-9.]+px" | sort -u  # 1px 2px 86px
+grep -o "padding[a-z-]*:[^;}\"']*" prototype/grimtoll_slice.html | grep -oE "[0-9.]+px" | sort -u  # 86px
 grep -o "border[a-z-]*:[^;}\"']*" prototype/grimtoll_slice.html | grep -icE "#(3d2f1d|4d3c22|6b5330|2c3d3f|35494c|33474a|3d5250)"  # 0
 ```
 
