@@ -3811,6 +3811,28 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:var(--f
 #wNews.warn{border-color:var(--blood-lit);color:#e8bdb6;font-style:normal;
   font-family:var(--mono);font-size:var(--fs2);letter-spacing:.06em}
 #wNews.cheer.big,#wNews.warn.big{font-size:var(--fs4)}
+/* ═══ ⛔ #221 · A PAYDAY IS A RECEIPT, SO IT IS A FIGURE AND A LINE ═════
+   (User, 2026-08-21: *"in payday window - shorter tex - more amount of crons
+   (bigger size) and when next one"*.)
+   The figure is the thing being read, so it is `--fs8`, the display line on a
+   card, in the display face - and the sentence under it drops to the label
+   size. ⚠ THE FIGURE TAKES ITS COLOUR FROM THE TONE and never carries one of
+   its own: gold when the chest opened, red when it could not, which is the
+   same pair the chip and the purse already use for the same fact. */
+#wNews .nfig{display:block;font-family:var(--display);font-size:var(--fs8);
+  line-height:1;font-weight:600;margin-bottom:var(--p3);letter-spacing:.02em}
+#wNews.cheer .nfig{color:var(--g4)}
+#wNews.warn .nfig{color:var(--blood-lit)}
+#wNews .ntx{display:block}
+/* ⛔ AND A RECEIPT IS READ IN A GLANCE, SO IT DOES NOT HOLD THE MAP FOR SEVEN
+   SECONDS. #221 made the card WAIT for a loud line rather than share the screen
+   with it, which turns this duration into a pause the player sits through - so
+   the two lengths are now a decision instead of one default. 6.5s is for the
+   loud lines that are PROSE (somebody walking out of the company); 3.4s is for
+   the ones that are a figure and a clause.
+   ⚑ `say2` READS THIS BACK OUT OF `getComputedStyle` rather than carrying its
+   own copy, so the stylesheet is the one place the number lives. */
+#wNews.big.rcpt.fade{animation-duration:3.4s}
 /* ⚠ THE TRANSFORM HAS TO BE RESTATED IN EVERY FRAME. The centring lives in
    `transform`, so a keyframe that touches `transform` at all REPLACES it: a pop
    written as `scale(.95)` alone would fling the box to the middle-right of the
@@ -32597,7 +32619,41 @@ const partyUsed=()=>G.party.reduce((s,p)=>s+COST[p.race],0);
    come back as a plain line, and `.big` in particular would otherwise leave the
    next piece of narration parked across the middle of the map. That is why these
    are three `toggle`s and not three `add`s. */
-function say2(t,tone){
+/* ═══ ⛔ #221 · A LOUD LINE AND A CARD MAY NOT SHARE THE SCREEN ═══════
+   (User, 2026-08-21, with a screenshot of the payday line lying across the
+   middle of THE BROKEN MEN: *"on the event screen payday often blocks the
+   event - maybe we should do first paday, and then event. Or oposite"*.)
+
+   ⛔ THE LAYER LADDER ALREADY SAID THIS AND THE CODE DID NOT. #112's rule is
+   *content outranks chrome; only a modal outranks content*, and `#wNews` sits
+   at **40** against the card's 30 - so the one line in the game that is drawn
+   in the MIDDLE was drawn in the middle OF THE CARD. It is not a z-index fix:
+   a 1180x620 stage leaves nowhere for a 520px box to stand, so the two have to
+   take turns.
+
+   ⚑ BOTH HALVES, WHICH IS WHY THIS IS FOUR LINES IN TWO PLACES:
+   · a loud line raised while a card holds the map is HELD here and played by
+     `worldTick` when the map comes back - that is the `f.days` path, a door
+     that costs a day and ticks a payday while its own outcome is on screen;
+   · and a card that is about to open WAITS for a loud line already playing -
+     that is `newsHold`, used by the arrival in `travel`.
+   ⚠ The QUIET strip at the foot of the map is untouched by all of this. It is
+   narration, it is meant to be caught out of the corner of the eye, and it has
+   never been in the way of anything.
+
+   ⚠ A HELD LINE IS NOT LOGGED TWICE: the queue is taken before `G.log.push`,
+   and the flush comes back through this same function. */
+let NEWSTILL=0;                        /* when the loud line on screen stops */
+function newsHeld(){return (G.newsQ||[]).length>0;}
+/* how long a caller must wait for the map to be its own again. 0 when nothing
+   loud is playing, which is every call but the handful after a day tick. */
+function newsLeft(){return Math.max(0,NEWSTILL-Date.now());}
+function newsHold(fn){const w=newsLeft();if(w<=0){fn();return;}setTimeout(fn,w);}
+function say2(t,tone,fig){
+  const loud=tone==='cheer'||tone==='warn';
+  /* a card holds the map: the line waits for it rather than lying across it */
+  if(loud&&(G.pending||$('wDlg').classList.contains('on'))){
+    (G.newsQ=G.newsQ||[]).push({t:t,tone:tone,fig:fig});return;}
   G.log.push(t);
   let el=$('wNews');
   if(!el){
@@ -32605,13 +32661,27 @@ function say2(t,tone){
     const map=$('wMap');if(!map)return;
     map.appendChild(el);
   }
-  const loud=tone==='cheer'||tone==='warn';
-  el.textContent=t;el.classList.remove('fade');
+  el.classList.remove('fade');
   el.classList.toggle('cheer',tone==='cheer');
   el.classList.toggle('warn',tone==='warn');
   el.classList.toggle('big',loud);
+  /* #221 - the receipt shape. Two text nodes rather than one string, so the
+     figure can be its own size and neither half is ever parsed as markup. */
+  el.classList.toggle('rcpt',!!(loud&&fig));
+  if(loud&&fig){
+    el.innerHTML='<b class="nfig"></b><span class="ntx"></span>';
+    el.querySelector('.nfig').textContent=fig;
+    el.querySelector('.ntx').textContent=t;
+  }else el.textContent=t;
   void el.offsetWidth;                 /* restart the css animation */
   el.classList.add('fade');
+  /* ⛔ THE DURATION IS READ, NOT DECLARED. The stylesheet decides whether this
+     line is a 6.5s piece of prose or a 3.4s receipt, and a second copy of that
+     number in here is the two-receipts bug wearing a stopwatch. Read AFTER the
+     class is on and the reflow has happened, or it answers for the last line. */
+  NEWSTILL=loud
+    ?Date.now()+(parseFloat(getComputedStyle(el).animationDuration)||6.5)*1000
+    :0;
 }
 /* ═══ #104 · THE BAR'S DRAWN GLYPHS ═══════════════════════════════════════
    ("More old school sack · paint a heart full medium or empty.") The font
@@ -32898,6 +32968,12 @@ function worldTick(){
      it is one of the biggest things that can happen to a person and must
      not be a toast. Deferred while any other dialog holds the map. */
   if(G.condNews){say2(G.condNews);G.condNews=null;}
+  /* #221 - a loud line the map was too busy to show. Same gate as the mutation
+     card below it, one per tick: worldTick runs on every close, so a second
+     held line arrives on the next one rather than on top of this one. */
+  if(newsHeld()&&!$('wDlg').classList.contains('on')&&!G.pending){
+    const n=G.newsQ.shift();say2(n.t,n.tone,n.fig);
+  }
   if(G.mutNews&&!$('wDlg').classList.contains('on')&&!G.pending){
     const nw=G.mutNews;G.mutNews=null;
     const dlg=$('wDlg');
@@ -33486,6 +33562,9 @@ function passDays(n){
       /* pay() returns the signed amount actually moved, so adding it to the
          bill IS the settlement: a full chest zeroes it, a scraped chest
          leaves the remainder standing. The chest is never overdrawn. */
+      /* #221 - what the chest is being asked for, kept before it is settled:
+         the receipt below prints the figure and `G.owed` is 0 by then. */
+      const bill=G.owed;
       G.owed+=pay('crowns',-G.owed);
       if(G.owed<=0){
         G.owed=0;
@@ -33499,8 +33578,16 @@ function passDays(n){
           /* #191 - the middle of the screen, at the user's word. This is one of
              the two lines a run turns on, and it was being walked past at the
              foot of the map. */
-          say2(pickOne(['Payday. The chest opens and every hand at the fire is paid.',
-            'Payday. Counted out in front of everybody, and the count is right.']),'cheer');
+          /* ⛔ #221 - AND IT IS A RECEIPT NOW (user: *"shorter tex - more amount
+             of crons (bigger size) and when next one"*). The figure is what
+             left the chest, the clause is who got it, and the last four words
+             are the question the line always left standing. ⚠ The word
+             "Payday" is off the front of both: the chip says PAYDAY, the coin
+             sound says it, and the gold figure says it louder than either. */
+          say2(pickOne(['Every hand at the fire, paid. Next payday in '+
+              num(payIn())+' days.',
+            'Counted out in front of everybody. Next payday in '+
+              num(payIn())+' days.']),'cheer','◉'+bill);
         }else if(behind){
           say2('The back wages are squared. Nobody says thank you.','cheer');
         }
@@ -33527,8 +33614,12 @@ function passDays(n){
            chest could not cover is the most expensive thing that can happen
            quietly on this screen: 10 mood a day until it is fixed, and it ends
            in somebody walking. */
-        if(worst===1)say2('Payday, and the chest cannot cover it. Nobody says anything, '+
-          'which is how you know they counted.','warn');
+        /* ⛔ #221 - the other face of the same window, so it is the same shape:
+           the figure is what is STILL owed, in red, and the line under it is
+           the one clause worth keeping. A receipt on the good day and a
+           paragraph on the bad one would be two designs for one moment. */
+        if(worst===1)say2('The chest cannot cover it. Nobody says anything, which is '+
+          'how you know they counted.','warn','◉'+G.owed);
         else if(worst===3)say2('Three days unpaid. '+who(pickOne(due))+' has started asking '+
           'what exactly the arrangement is, in a tone that is not quite a question.','warn');
         /* And eventually somebody stops asking and simply goes. Deliberately
@@ -34236,60 +34327,78 @@ function travel(k){
     /* standing in the place, the map learns its real name — and keeps it */
     if(NODES[k].real){NODES[k].n=NODES[k].real;delete NODES[k].real;}
     saveRun();          /* arrival — a coherent moment */
-    G.moving=false;placeToken();worldTick();
-    /* whoever went down the hole catches up, and carries it for good */
-    if(G.stranded&&Math.random()<.5){
-      const p=G.stranded;G.stranded=null;
-      if(partyUsed()+COST[p.race]<=PARTYCAP){
-        const s=pickOne(SCARS);injure(p,s);p.hpLoss=Math.round(D.hp({st:effStats(p)})*.4);
-        G.party.push(p);sfx('promote');
-        say2(who(p)+' walks out of the treeline three days later, filthy and thinner, and falls '+
-          'in at the back of the column as though nothing happened. '+s.n+' - '+s.d);
+    /* ═══ ⛔ #221 · THE REST OF ARRIVING WAITS FOR THE LOUD LINE ═══════
+       (User: *"maybe we should do first paday, and then event"*.) The payday
+       fires in `passDays` four lines above this and the node's card opens at
+       the foot of it, so on every fourth day the two landed together and the
+       card won on z-index. Payday first, then the card.
+       ⛔ AND `G.moving` IS CLEARED ON THE FAR SIDE OF THE WAIT, WHICH IS THE
+       WHOLE GUARD. It is what refuses a second road (`travel`, `openProvisions`,
+       the three camp doors and every node's onclick all ask it), so leaving it
+       set for the length of the line means the player cannot walk off in the
+       gap and lose the card that was about to open - `firstTime` is already
+       false by then and the place never speaks again. Nothing new was invented
+       for this: the map is drawn exactly as it is drawn mid-walk, minus the
+       destination, because `G.dest` was cleared at the top of `arrive`.
+       ⚠ The `return`s inside are returns from `land`, which is what they were
+       when this was the tail of `arrive`. */
+    const land=()=>{
+      G.moving=false;placeToken();worldTick();
+      /* whoever went down the hole catches up, and carries it for good */
+      if(G.stranded&&Math.random()<.5){
+        const p=G.stranded;G.stranded=null;
+        if(partyUsed()+COST[p.race]<=PARTYCAP){
+          const s=pickOne(SCARS);injure(p,s);p.hpLoss=Math.round(D.hp({st:effStats(p)})*.4);
+          G.party.push(p);sfx('promote');
+          say2(who(p)+' walks out of the treeline three days later, filthy and thinner, and falls '+
+            'in at the back of the column as though nothing happened. '+s.n+' - '+s.d);
+        }
       }
-    }
-    /* THE DOG AMBUSH — once a run, on ARRIVAL rather than mid-road. Firing it
-       from the middle of the walk would have stranded the token: `travel`'s
-       `arrive` is the only thing that clears G.moving and moves G.at, so
-       jumping to a battle before it ran left the company nowhere. Arriving,
-       making camp inside a ruined steading, and being hit that night reads the
-       same and cannot softlock. It takes precedence over the node's own event,
-       which is still waiting when the fight is done. */
-    /* the dog ambush is a NODE now (`camp1`), not a roll on arrival — every
-       road runs through it, so it cannot be missed. See the NODES entry. */
-    /* ═══ SOMETHING IN ARMOUR (backlog #18) ═════════════════════════════
-       The one thing on this road that is not a place. It catches you on the
-       last stretch, so it fires HERE — on arrival, after G.moving is clear
-       and G.at has moved — and never from rollCampAt, which would strand
-       the party token mid-journey (the dog ambush was moved for exactly
-       this reason). It takes precedence over whatever the place itself had
-       to say; that event is still standing there when the fight is done. */
-    if(armourDue(k)){
-      G.armourDone=true;
-      G.queuedEv=(firstTime&&NODES[k].ev)||null;
-      saveRun();      /* re-save: the arrival save above predates both flags */
-      openEvent('armour');
-      return;
-    }
-    /* ═══ #160 - THE TWO THINGS ON THIS ROAD THAT ARE NOT PLACES ═════════
-       Same shape as the ambush above and for the same three reasons: they
-       fire on ARRIVAL (firing mid-walk strands the token, which is why the
-       dog ambush was moved), they take precedence over whatever the place
-       itself had to say, and that event is still standing there when this is
-       dealt with. Which of the two fires is decided by the ledger and by
-       nothing else - see holdDue/courierDue.
-       ⚠ The ORDER is arithmetic rather than preference: the Hold's band is
-       three roads out and the courier's is two, so they cannot both be true
-       on one arrival even before the ledger is asked. */
-    if(holdDue(k)||courierDue(k)){
-      const which=holdDue(k)?'holdmen':'courier';
-      if(which==='holdmen')G.holdDone=true;else G.courierDone=true;
-      G.queuedEv=(firstTime&&NODES[k].ev)||null;
-      saveRun();
-      openEvent(which);
-      return;
-    }
-    /* a place only happens to you once - see `firstTime` above */
-    if(firstTime&&NODES[k].ev)openEvent(NODES[k].ev);
+      /* THE DOG AMBUSH - once a run, on ARRIVAL rather than mid-road. Firing it
+         from the middle of the walk would have stranded the token: `travel`'s
+         `arrive` is the only thing that clears G.moving and moves G.at, so
+         jumping to a battle before it ran left the company nowhere. Arriving,
+         making camp inside a ruined steading, and being hit that night reads the
+         same and cannot softlock. It takes precedence over the node's own event,
+         which is still waiting when the fight is done. */
+      /* the dog ambush is a NODE now (`camp1`), not a roll on arrival - every
+         road runs through it, so it cannot be missed. See the NODES entry. */
+      /* ═══ SOMETHING IN ARMOUR (backlog #18) ═════════════════════════════
+         The one thing on this road that is not a place. It catches you on the
+         last stretch, so it fires HERE - on arrival, after G.moving is clear
+         and G.at has moved - and never from rollCampAt, which would strand
+         the party token mid-journey (the dog ambush was moved for exactly
+         this reason). It takes precedence over whatever the place itself had
+         to say; that event is still standing there when the fight is done. */
+      if(armourDue(k)){
+        G.armourDone=true;
+        G.queuedEv=(firstTime&&NODES[k].ev)||null;
+        saveRun();      /* re-save: the arrival save above predates both flags */
+        openEvent('armour');
+        return;
+      }
+      /* ═══ #160 - THE TWO THINGS ON THIS ROAD THAT ARE NOT PLACES ═════════
+         Same shape as the ambush above and for the same three reasons: they
+         fire on ARRIVAL (firing mid-walk strands the token, which is why the
+         dog ambush was moved), they take precedence over whatever the place
+         itself had to say, and that event is still standing there when this is
+         dealt with. Which of the two fires is decided by the ledger and by
+         nothing else - see holdDue/courierDue.
+         ⚠ The ORDER is arithmetic rather than preference: the Hold's band is
+         three roads out and the courier's is two, so they cannot both be true
+         on one arrival even before the ledger is asked. */
+      if(holdDue(k)||courierDue(k)){
+        const which=holdDue(k)?'holdmen':'courier';
+        if(which==='holdmen')G.holdDone=true;else G.courierDone=true;
+        G.queuedEv=(firstTime&&NODES[k].ev)||null;
+        saveRun();
+        openEvent(which);
+        return;
+      }
+      /* a place only happens to you once - see `firstTime` above */
+      if(firstTime&&NODES[k].ev)openEvent(NODES[k].ev);
+    };
+    newsHold(land);
   };
   /* ═══ A LONGER ROAD IS MORE ROAD, NOT JUST A BIGGER BILL ═══════════════
      (User, 2026-07-31: "fix a bit economy, especially for the longer

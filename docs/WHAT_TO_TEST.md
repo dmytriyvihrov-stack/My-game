@@ -26,6 +26,21 @@
 
 ---
 
+## 💰 THE PAYDAY GETS OUT OF THE CARD'S WAY, AND SAYS WHAT IT PAID  *(#221 · 2026-08-21 · build log 8f.244)*
+
+**How to reach it in three steps:** walk the road until a day divisible by four → arrive somewhere with a card waiting → watch the order things happen in.
+
+**What it is.** Your screenshot: the payday line lying across the middle of THE BROKEN MEN. Two changes:
+
+- **they take turns now.** Payday first, then the card. If the payday lands while a card is already open - a door that costs you a day, for instance - the line waits and plays when you close it.
+- **the payday is a receipt**: the crowns in big gold figures, one short line under them, and when the next payday falls. The word "Payday" is off the front of it, because the chip, the coin sound and the gold figure all already say so.
+
+**What should happen.** On a payday arrival the map holds for about three and a half seconds while the receipt plays, then the card opens. During that hold the roads are locked, the same way they are while you are walking - that is deliberate, so you cannot walk off and lose the card that was about to open. An unpaid payday does the same thing in red, with what is still owed.
+
+**What would be a bug.** Any line still lying across a card. A hold that feels long - say so, the number is one line to change. Roads that stay locked after the receipt has faded. And the one to watch for: **a card that never opens** after a payday arrival. That would be the hold not releasing, and it is the thing I would want to hear about first.
+
+---
+
 ## 🧮 THE BAR SAYS HOW MANY OF YOU THERE ARE, THE MOOD IS JUST A FACE, AND THE MENU IS TOP RIGHT  *(#220 · 2026-08-21 · build log 8f.243)*
 
 **How to reach it in three steps:** continue the road → look at the top-left group of the world bar → hover the first chip and the smiling one.
