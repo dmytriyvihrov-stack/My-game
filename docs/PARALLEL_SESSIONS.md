@@ -97,6 +97,11 @@ This is the part that decides whether parallel work is real or just deferred pai
 > to rebuild. A generated file that survives a merge untouched is a generated file that is now lying
 > about the source it came from.
 
+⛑ **THE WHOLE LANDING PROCEDURE IS A SKILL NOW: [`.claude/skills/land/SKILL.md`](../.claude/skills/land/SKILL.md).**
+Survey, land, the two conflict families, the record, driving the merged build, deploy, and the
+chat sweep for what was lost. Written 2026-08-21 out of the six-desk landing, so every trap in it
+cost a session once. This file stays the REASONING; the skill is the order to do it in.
+
 ### ⛔ AND THE PRICE OF `merge=union`: ITS DAMAGE NEVER CONFLICTS
 
 *(2026-08-21, landing six desks at once.)* `union` is the right driver for an append-only log and

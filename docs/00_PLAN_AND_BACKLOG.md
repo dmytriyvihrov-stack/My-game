@@ -558,6 +558,15 @@ neither would have been seen by reading the diff.
   state per `.claude/rules/static-event-art.md` and is still 29 cards. Each is a 1672x941 master plus
   one row.
 
+- **878 em dashes survive in the DOCS**, against a standing hard rule of none anywhere. #199 swept
+  the game and stopped there, correctly: it needed a lexer to tell a player-facing string from a
+  code sample, and the docs have the same problem worse. The count on 2026-08-21:
+  `01_GAME_CONCEPT` 401 · `10_ART_ASSET_BIBLE` 254 · `DRAMATURGE` 63 · `02_ART_DIRECTION` 53 ·
+  `CHANGELOG` 41 · `05_BUDGET` 28 · `08_MUTATIONS` 20 · `09_SETTLEMENTS` 17. ⚡ **`.claude/rules/`
+  is already clean**: its one hit is inside the regex that TESTS for em dashes. ⚠ It makes no
+  session harder, which is why it was not done during the 2026-08-21 cleanup, but it is a rule the
+  repo states and does not keep.
+
 ⚠ **AND ONE ENVIRONMENT NOTE, NOT A DEFECT**: `claim.ps1`'s repo scan intermittently runs past two to
   three minutes on this machine because the repo lives on a Google Drive path. It looks exactly like a
   hang and it is not one. Same shape as `LINT()`'s documented ~25s.
