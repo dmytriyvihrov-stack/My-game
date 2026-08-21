@@ -524,7 +524,7 @@ function Verb-Land {
       # are not both entry rows, so a real disagreement still reaches a human.
       if ($conf | Where-Object { $_ -like "docs/*" }) {
         Say "Docs conflicted, and that part is mechanical:"
-        Write-Host "      python toolsecord.py fix" -ForegroundColor Cyan
+        Write-Host "      python tools/record.py fix" -ForegroundColor Cyan
       }
       Say "Resolve, then:  git add <files> ; git commit"
       Say "Then run land -Go again for whatever is left."
@@ -540,7 +540,7 @@ function Verb-Land {
   Say "  the generated files kept main's copy on purpose, so index.html does"
   Say "  not match the source that was just merged."
   Write-Host ""
-  Say "  1. python toolsecord.py check   - what a union merge did to the docs"
+  Say "  1. python tools/record.py check   - what a union merge did to the docs"
   Say "  2. serve it and run LINT() and regress() on the MERGED prototype"
   Say "  3. powershell -NoProfile -File deploy.ps1 -m ""...what shipped..."""
   Say "  4. branch.ps1 done <name> for each desk, to take the folders away"
