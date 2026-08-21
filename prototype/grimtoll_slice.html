@@ -6185,9 +6185,17 @@ function fireLoop(on){
 /* What a blow sounds like depends on WHAT was hit and WHOSE it was. A cudgel
    into an ogre and a knife into a ratkin should not be the same sample, and
    taking one should not sound like landing one. */
+/* ⛔ #217 - `isBeast` REPLACED A HAND-KEPT LIST THAT WAS ALREADY WRONG. This
+   picker named `cub` and nothing else, and leaned on the dogs arriving as
+   'ratkin' to give them a sample at all - so the moment the race was fixed
+   they would have fallen through to `hit_human`, i.e. a dog would have sounded
+   like a person being hit. It also means the MIREHARES have been landing on
+   `hit_human` since #193, because they declare `race:'beast'` and this chain
+   had no branch for it. One test, and the two of them are covered by the fact
+   rather than by being named. */
 function sfxStrike(att,def,armD,hpD){
-  const body=def.big?'beast':def.race==='ogre'||def.kind==='ogre'?'ogre'
-            :def.race==='ratkin'||def.kind==='ratkin'||def.kind==='cub'?'ratkin':'human';
+  const body=def.big||isBeast(def)?'beast':def.race==='ogre'||def.kind==='ogre'?'ogre'
+            :def.race==='ratkin'||def.kind==='ratkin'?'ratkin':'human';
   const mine=def.side==='you'&&!def.ally;
   if(armD>hpD)sfx(mine?'armour_taken':'armour');
   else sfx(mine?'taken':'hit_'+body);
@@ -12049,7 +12057,7 @@ function brigands(){
        you cannot pin it — you have to either shoot it, corner it, or accept
        that it will keep taking small bites out of whoever is furthest out.
        Its whole purpose is to punish a straggler. */
-    dog:{kind:'dog',name:'Lurcher',hp:26,armour:6,mor:44,skill:58,dodge:26,speed:5,
+    dog:{kind:'dog',name:'Lurcher',hp:26,armour:6,mor:44,skill:58,dodge:31,speed:5,
       acts:[{k:'snap',n:'SNAP-AND-AWAY',cost:1,reach:1,dmg:[9,15],am:.35,ft:.55,
         bounce:2,
         note:'Bites and is gone: two hexes back, no parting swing, one action.'}]}
@@ -13636,7 +13644,7 @@ function tavernAfter(){
    ═══════════════════════════════════════════════════════════════════════ */
 function pack(){
   const T={
-    bitch:{kind:'dog',name:'The Bitch',hp:39,armour:10,mor:70,skill:62,dodge:24,speed:5,
+    bitch:{kind:'dog',name:'The Bitch',hp:39,armour:10,mor:70,skill:62,dodge:29,speed:5,
       captain:true,
       /* 1.5× the hitpoints of a lurcher, and a presence the others fight inside */
       aura:{r:3,kind:'dog',hit:8,dodge:5,n:'THE PACK',g:'✵',col:'#c9a227',
@@ -13644,9 +13652,9 @@ function pack(){
       acts:[{k:'snap',n:'SNAP-AND-AWAY',cost:1,reach:1,dmg:[11,18],am:.40,ft:.55,bounce:2},
             {k:'howl',n:'SHE CALLS THEM IN',cost:1,self:true,rally:true,cool:3,aura:4,
              note:'Every dog within 4 hexes takes a fresh turn of nerve and comes back in.'}]},
-    lurch:{kind:'dog',name:'Lurcher',hp:26,armour:6,mor:44,skill:58,dodge:26,speed:5,
+    lurch:{kind:'dog',name:'Lurcher',hp:26,armour:6,mor:44,skill:58,dodge:31,speed:5,
       acts:[{k:'snap',n:'SNAP-AND-AWAY',cost:1,reach:1,dmg:[9,15],am:.35,ft:.55,bounce:2}]},
-    runt:{kind:'dog',name:'Runt',hp:20,armour:4,mor:38,skill:55,dodge:28,speed:6,
+    runt:{kind:'dog',name:'Runt',hp:20,armour:4,mor:38,skill:55,dodge:33,speed:6,
       acts:[{k:'snap',n:'SNAP-AND-AWAY',cost:1,reach:1,dmg:[7,12],am:.30,ft:.55,bounce:2}]}
   };
   /* ═══ YOU ARE THE ONES IN THE CAMP ══════════════════════════════════════
@@ -13797,7 +13805,7 @@ const HOLD_T={
   cross:{kind:'archer',name:'Hold crossbow',hp:34,armour:30,mor:70,skill:62,dodge:16,speed:4,
     bow:true,acts:[{k:'bolt',n:'WINDLASS BOW',cost:1,range:5,dmg:[14,21],am:1.00,ft:.45}]},
   /* off the leash-ring. Same lurcher the deserters run, better fed. */
-  hound:{kind:'dog',name:'Hold hound',hp:30,armour:10,mor:62,skill:60,dodge:25,speed:5,
+  hound:{kind:'dog',name:'Hold hound',hp:30,armour:10,mor:62,skill:60,dodge:30,speed:5,
     acts:[{k:'snap',n:'SNAP-AND-AWAY',cost:1,reach:1,dmg:[10,16],am:.40,ft:.55,bounce:2,
       note:'Bites and is gone: two hexes back, no parting swing, one action.'}]}
 };
@@ -14124,8 +14132,25 @@ function build(plan,T){
     /* race is derived from kind, not hardcoded: formations, hit sounds and
        the ogre WEIGHT effect all read u.race, and an ogre labelled 'ratkin'
        silently breaks every one of them */
+    /* ═══ ⛔ #217 · AND THE LAST BRANCH IS A DEFAULT, SO IT CAUGHT THE DOGS ═══
+       This chain named `wyrm` and `cub` and then swept everything else into
+       'ratkin', so every dog in the game - The Bitch, the Lurchers, the Runts,
+       the Hold hound - shipped as `race:'ratkin'`. Not one of the five rules
+       that read the field agreed with it, and the one directly below this
+       comment states the opposite in words: *"Monsters are not a race and keep
+       their authored speeds."* It then handed the Runt `RACESTEP.ratkin` and
+       took its authored 6 down to 5.
+
+       ⛑ `BEAST_KIND` IS THE LIST AND IT WAS ALREADY IN THIS FUNCTION. #215
+       hoisted `build()`'s own `ANIMAL` array out to sit beside MONSTERS,
+       because "which bodies get a personality" and "which bodies are animals"
+       are one question. "Which bodies are of the beast race" is the same
+       question a third time. One array, three readers - #137's derive-never-
+       author rule, and the reason a new beast now needs no line here at all.
+       ⚠ A FEN-THING IS DELIBERATELY NOT ON THAT LIST and so is still ratkin:
+       its `kind` IS 'ratkin', it is a twisted one, and the sheet is true of it. */
     const rc=t.race||(t.kind==='ogre'?'ogre':t.kind==='human'||t.kind==='archer'?'human'
-             :t.kind==='wyrm'||t.kind==='cub'?'beast':'ratkin');
+             :BEAST_KIND.indexOf(t.kind)>=0?'beast':'ratkin');
     /* the camp's dogs are placed by hand INSIDE the palisade, so the blanket
        push toward the far edge would throw them over their own wall */
     const shift=(G.battleKind==='pack'||G.battleKind==='tavern')?0:FOE_SHIFT;
@@ -15203,11 +15228,26 @@ function wallBlocked(u){
    ═══════════════════════════════════════════════════════════════════════ */
 /* lineMor was struck 2026-08-01: the line is a dodge formation now, not a
    morale one. See the note where it used to be applied. */
-const FORM={swarmNeed:3,weightNeed:3,lineNeed:3,
+/* ⛔ #217 - `swarmRaces` IS THE SWARM'S OWN LIST, and it is here rather than
+   spelled 'ratkin' at the two sites that ask, because there ARE two: the rule
+   inside hitBreakdown and the ≋ badge the hex draws. They were separate
+   literals, so the day one moved the board would have marked a body the rule
+   did not charge - #102's wrong-unit bug with a formation as the unit.
+   ⚑ THE SWARM IS SMALL BODIES AND NEVER ONE PEOPLE. Its own line has always
+   read *"too many small bodies on you to swing at any one of them"*, which is
+   as true of a dog pack as of a ratkin one, and a pack surrounding you is the
+   thing that fight is about. Beasts joined the list on the day they stopped
+   being ratkin, so the -14 lands exactly where it landed before: measured at
+   3.5% of your swings in the pack fight, on both sides of the change.
+   ⚠ HUMANS STAY OFF IT, for the reason the header above already gives - they
+   have no special trick, so the trick they get is the one anybody can learn. */
+const FORM={swarmNeed:3,weightNeed:3,lineNeed:3,swarmRaces:['ratkin','beast'],
   swarmHit:-14,weightMor:-9,lineDodge:5};
-/* how many of `race` are engaging this unit */
+/* how many of `race` are engaging this unit. `race` may be one name or a list. */
 function ringOf(u,race){
-  return engagers(u.col,u.row,u.side).filter(e=>e.race===race||e.kind===race).length;
+  const rr=Array.isArray(race)?race:[race];
+  return engagers(u.col,u.row,u.side)
+    .filter(e=>rr.indexOf(e.race)>=0||rr.indexOf(e.kind)>=0).length;
 }
 /* is this unit standing in a row of 3+ of its own side?
    A "row" is three bodies on one hex axis — any of the three directions. */
@@ -15845,6 +15885,15 @@ const tr=(u,k)=>{
    the roster and on the enemy statblocks from one definition. A monster is
    not a race and gets nothing. Applied INSIDE dodgeOf, which means both AI
    brains, the hit preview and the tooltip inherit it without being told. */
+/* ⚠ #217 - THIS IS A ROSTER-RACE TABLE AND `raceKey` RETURNS null FOR A BEAST,
+   which is correct and was a silent +5 for as long as a dog said 'ratkin'. The
+   points were not deleted with the borrow: every dog's authored `dodge` went up
+   by exactly 5 in the same edit (Bitch 24->29, Lurcher 26->31, Runt 28->33,
+   Hold hound 25->30), so the shipped number is unchanged and it is now written
+   on the statblock where a per-creature number belongs. A blanket `beast:+5`
+   here was the other option and it is the wrong one: it would have handed the
+   same five points to the Fen-Mother, the cub and both mirehares, none of which
+   have ever had them. */
 const RACEDODGE={ratkin:+5,ogre:-5};
 /* ═══ #146 - HOW MUCH OF YOU THERE IS TO MISS ════════════════════════════
    (User, 2026-08-13: "update dodge modifiers for different tirget size, so
@@ -16206,7 +16255,7 @@ function hitBreakdown(a,d,act){
   if(a.drunk){other-=12;po('drunk −12');}
   if(tr(a,'cautious')&&a.hp>=a.hpMax*.5){other-=5;po('cautious −5');}
   /* THE SWARM: too many small bodies on you to swing at any one of them */
-  if(ringOf(a,'ratkin')>=FORM.swarmNeed){other+=FORM.swarmHit;
+  if(ringOf(a,FORM.swarmRaces)>=FORM.swarmNeed){other+=FORM.swarmHit;
     po('swarmed '+FORM.swarmHit);}
   if(has(a,'deadeye')&&act.range){other+=6;po('dead eye +6');}
   /* a pack-leader in earshot */
@@ -23808,7 +23857,7 @@ function render(){
           const lb=document.createElement('span');lb.className='fbadge';
           lb.textContent='≡';lb.title='In the line: +5 dodge';
           inn.appendChild(lb);}
-        if(ringOf(occ,'ratkin')>=FORM.swarmNeed){
+        if(ringOf(occ,FORM.swarmRaces)>=FORM.swarmNeed){
           const sb=document.createElement('span');sb.className='fbadge sw';
           sb.textContent='≋';sb.title='Swarmed: −14 to hit';
           inn.appendChild(sb);}
