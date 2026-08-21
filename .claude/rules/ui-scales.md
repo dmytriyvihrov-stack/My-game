@@ -38,6 +38,7 @@ wrong. Everything was decided thirty separate times.
 
 | token | px | what lives there |
 |---|---|---|
+| `--fs0` | 8 | **a SCALED surface only.** The two figures on a battle hex, and nothing else |
 | `--fs1` | **10** | every label, chip, caption, counter and role line. **THE FLOOR.** |
 | `--fs2` | 11 | a dense row that is read rather than glanced at |
 | `--fs3` | 12 | body |
@@ -54,6 +55,24 @@ were not decoration: they were the whole label layer. The channel's own test is 
 it costs nothing:
 
 > *"Try stepping away from the screen, how far away can you get and still read it?"*
+
+⛔ **AND `--fs0` IS THAT TEST TAKEN LITERALLY, WHICH IS WHY IT IS NOT A HOLE IN THE FLOOR**
+*(#231, 2026-08-21, the user: "damage and chance to hit 20% smaller", about `.hodds` and `.hdmg`)*.
+The floor is a rule about what an EYE gets. `#bGrid` is drawn inside a camera, so a design pixel
+there has never been a screen pixel: measured on the running board at the three `CAMS` stops,
+`.hodds` at `--fs1` renders at **16.4 / 22 / 25 real px**, and at `--fs0` at **13.1 / 17.6 / 20**.
+The smallest of those, at the stop that shows the most ground, is three points OVER the floor.
+
+⛔ **SO THE STEP IS FOR A MAGNIFIED SURFACE AND FOR NOTHING ELSE, AND §5's PROBE IS WHAT KEEPS
+THAT TRUE.** The check divides by nothing and multiplies by the element's own transform chain
+measured against `#stage`, so on every unscaled screen it reads exactly what it read before and a
+`--fs0` there is reported as the bug it would be. Two readers today, both on a hex. **If a third
+appears somewhere the camera does not magnify, the probe is what says so, not this paragraph.**
+
+⚠ **AND #111's OLD RULING IS BACK IN FORCE, NOT OVERTURNED.** *"If the pair shouts again at the
+close stop, the answer is dimmer or narrower, never smaller"* - that is still the answer, and there
+is no `--fs-1`. This step exists because 20% of 10 is a number the camera can afford; a second cut
+is not, and would be argued against the same three measurements rather than against taste.
 
 ⚠ **THE FLOOR RAISED 153 DECLARATIONS AND THAT IS THE MAJORITY OF THE FILE.** Everything from 7px
 to 10.5px collapsed into `--fs1`. That is the point (nine of the old sizes were doing one job) and
@@ -100,7 +119,14 @@ carry the comment this paragraph asks for:
 | | what it reserves |
 |---|---|
 | `#wBar{padding:0 86px 0 var(--p5)}` | the run of bar the top-right button group stands in |
-| `.hin>.zodds{padding:1px 2px}` | the one free band of a 37x42 hex, measured by #213 |
+
+⚡ **AND THE SECOND ROW WAS DELETED BY #231, WHICH IS THE HEALTHY DIRECTION FOR THIS TABLE.**
+`.hin>.zodds{padding:1px 2px}` reserved the one free band of a 37x42 hex for an opaque PLATE, and
+the plate existed because the chip had to survive a body standing on its hex. #231 moved that
+readout under the body that pays it and made it text with a halo, so the geometry it was reserving
+stopped existing and the literal went with it. **The file's own grep now returns `86px` alone.**
+⛑ A geometry literal that outlives the geometry is the thing this table is really guarding
+against: it is not a licence, it is a list of things somebody has to justify again.
 
 A scale step substituted at either is a bug. ⚑ **THE SECOND ONE ARRIVED ON 2026-08-21 AND IS WHY
 THIS PARAGRAPH IS A TABLE.** #213's zone-of-control odds plate is the only chip on a hex with an
@@ -231,10 +257,31 @@ grep -o "border[a-z-]*:[^;}\"']*" prototype/grimtoll_slice.html | grep -icE "#(3
 In the running build, per screen:
 
 ```js
-/* nothing under the floor. Run it on EVERY screen, not the one that is open */
-[...document.querySelectorAll('#stage *')].filter(e=>{const c=getComputedStyle(e);
-  if(c.display==='none')return 0;const f=parseFloat(c.fontSize);
-  return f>0&&f<10&&(e.textContent||'').trim();}).length                    // 0
+/* nothing under the floor. Run it on EVERY screen, not the one that is open.
+   ⛔ #231 - IT MEASURES WHAT THE EYE GETS, NOT WHAT THE DECLARATION SAYS. `#bGrid` is inside a
+   camera; a raw `fontSize<10` reports its two --fs0 figures as violations while they render at
+   13-20 real px, and would go on passing a 10px label on a surface scaled DOWN. The scale is
+   taken against #stage, so every unscaled screen reads exactly what it always did.
+   ⚠ THREE FALSE POSITIVES WERE FOUND BUILDING IT AND ALL THREE ARE IN THE CODE BELOW:
+     · a `display:none` SCREEN does not make its children compute `display:none`, so the old
+       guard let twelve hidden screens report at once - `offsetParent` is the real test;
+     · `matrix.a` alone is **-1.00** on a mirrored element, which reads as "smaller than zero";
+     · and `matrix.a` is **0** under the portrait `rotate(90deg)`, which reads as "infinitely
+       small". `Math.hypot(a,b)` is the length of the transformed x unit vector and is right for
+       all three. */
+(()=>{const sc=el=>{let s=1,e=el;while(e&&e!==document.documentElement){
+    const m=new DOMMatrixReadOnly(getComputedStyle(e).transform);
+    s*=Math.hypot(m.a,m.b)||1;e=e.parentElement;}return s;};
+  const S=sc($('stage'))||1;
+  return [...document.querySelectorAll('#stage *')].filter(e=>{const c=getComputedStyle(e);
+    if(c.display==='none'||c.visibility==='hidden')return 0;
+    if(!e.offsetParent&&c.position!=='fixed')return 0;
+    const f=parseFloat(c.fontSize);
+    return f>0&&f*(sc(e)/S)<10&&(e.textContent||'').trim();}).length;})()      // 0
+
+/* ⛑ AND PROVE IT BY MAKING IT FIRE, which is this file's own condition for a new check:
+   `$('buildTag').style.fontSize='9.5px'` and it must report `buildTag`; clear it and it must
+   return to 0. A floor check that has only ever returned 0 is indistinguishable from a broken one. */
 
 /* nothing CLIPPED. ⚠ skip overflow:visible and overflow:auto or you get noise:
    a hex is visible by design (#157) and a scroller is auto by design */

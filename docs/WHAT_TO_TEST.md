@@ -1542,6 +1542,16 @@ The earlier cuts are further back: `git show 1d2e1b3:docs/WHAT_TO_TEST.md` is th
 2026-08-19, `git show 5bb2bf2:docs/WHAT_TO_TEST.md` before 2026-08-14, and
 `git show 5bb2bf2:docs/archive/WHAT_TO_TEST_OLDER.md` is 2026-08-02 and earlier.
 
+## #231 - the battle readouts on demand (8f.254)
+
+**Play one fight and watch the hexes rather than the numbers.** The point of the change is that the board is quiet until it is asked.
+
+- with MOVE standing and the pointer nowhere, an enemy in reach should carry **no percentage and no damage range**. Pick a skill, or rest the pointer on its card, and every body that skill can reach lights up with its chance. Point at ONE of them and only that one quotes the blow.
+- ⚠ **the thing to feel for is whether it is now too quiet.** The odds were on the board all turn and they are two states away; if picking a card to see a number reads as a chore rather than as a question, say so - it is one boolean.
+- both figures are a fifth smaller. They are on a screen the camera magnifies, so they should still be readable at the FULL stop; **if they are not, the answer is dimmer or narrower and never bigger**, or the whole ask comes back.
+- step away from a body two enemies are holding: the price is **one number under your own feet** now, not a plate on the ground you are aiming at, and it is the chance that ANY of them lands - so it reads higher than either of them separately. The hover names each one.
+- rest on an enemy low on the field and read the card to the bottom: **WHAT IT CAN DO TO YOU should be fully visible above the row of skills.**
+
 ---
 
 ## Checked
