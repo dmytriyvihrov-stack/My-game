@@ -76,3 +76,7 @@ desktop.ini
 *.gdoc
 *.gsheet
 *.gslides
+
+# Steam reference cache: other peoples marketing copy, rebuildable by the scripts beside it
+marketing/steam_refs/structure.json
+marketing/steam_refs/raw_*.json
