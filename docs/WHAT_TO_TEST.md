@@ -92,6 +92,34 @@
 **What should happen.** A board of steady people should read as a board of people, not as a row of yellow dots - but a face you go looking for should still be findable, and a body that is BREAKING should still stand out from one that is merely Ok.
 
 **What would be a bug.** Not being able to tell 😟 from 😐 at a glance any more. That would mean the gap has gone rather than the volume, and the answer is to bring the loud rungs back up rather than the quiet ones.
+## 💰 THE PAYDAY GETS OUT OF THE CARD'S WAY, AND SAYS WHAT IT PAID  *(#221 · 2026-08-21 · build log 8f.244)*
+
+**How to reach it in three steps:** walk the road until a day divisible by four → arrive somewhere with a card waiting → watch the order things happen in.
+
+**What it is.** Your screenshot: the payday line lying across the middle of THE BROKEN MEN. Two changes:
+
+- **they take turns now.** Payday first, then the card. If the payday lands while a card is already open - a door that costs you a day, for instance - the line waits and plays when you close it.
+- **the payday is a receipt**: the crowns in big gold figures, one short line under them, and when the next payday falls. The word "Payday" is off the front of it, because the chip, the coin sound and the gold figure all already say so.
+
+**What should happen.** On a payday arrival the map holds for about three and a half seconds while the receipt plays, then the card opens. During that hold the roads are locked, the same way they are while you are walking - that is deliberate, so you cannot walk off and lose the card that was about to open. An unpaid payday does the same thing in red, with what is still owed.
+
+**What would be a bug.** Any line still lying across a card. A hold that feels long - say so, the number is one line to change. Roads that stay locked after the receipt has faded. And the one to watch for: **a card that never opens** after a payday arrival. That would be the hold not releasing, and it is the thing I would want to hear about first.
+
+---
+
+## 🧮 THE BAR SAYS HOW MANY OF YOU THERE ARE, THE MOOD IS JUST A FACE, AND THE MENU IS TOP RIGHT  *(#220 · 2026-08-21 · build log 8f.243)*
+
+**How to reach it in three steps:** continue the road → look at the top-left group of the world bar → hover the first chip and the smiling one.
+
+**What it is.** Three notes on the global map:
+
+- **the company chip counts BODIES now.** It used to be a portrait of the Captain and one figure, and that figure is **seats**, not people - everybody takes room by size (ratkin 1, human 2, ogre 3), so four of you could read `8/13` and nothing anywhere said four. It reads **🧑 4 · SEATS 8/13**: the mark, how many of you there are, and how much room is left.
+- **the mood chip is the face alone.** No STEADY, no AT EASE on the bar. The word, the sentence about why, and the "throw them a party" line are all on the hover, where they always were.
+- **☰ MENU sits top right**, under the ROAD / NEAR / CLOSE row, instead of bottom left beside ? RULES.
+
+**What should happen.** Recruit somebody and the bold number goes up by one and the seats go up by their size - a ratkin costs 1, an ogre 3. Hover the chip and the box opens with both figures written out in words before it explains anything. Hover the face and it still names the mood (😐 AT EASE, 🙂 STEADY, and so on) and still offers the feast; click it and the feast card still opens.
+
+**What would be a bug.** The two numbers running together so the chip reads *48/13* - say so if it does, that was the thing I measured hardest. A mood chip that has lost its colour (the border is the mood's colour and always was). The MENU button sitting on top of the word CLOSE, or covering a place name on the map. And on the battle screen the menu should still be **bottom left** - it moved on the map only, because the battle's top-right corner is the sound button's.
 
 ---
 
