@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Character sheet stat icon test</title>
+<style>
+  :root{
+    --ink:#100c07;--panel:#171208;--panel2:#1d160d;--edge:#44351e;--edge2:#65502d;
+    --bone:#ded2b5;--dim:#8d774d;--gold:#c9a45b;--green:#8ca35a;--red:#b85f55;
+    --mono:"Courier New",monospace;--serif:Georgia,"Times New Roman",serif;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0;background:#090704;color:var(--bone);font-family:var(--serif)}
+  body{display:grid;place-items:center;overflow:auto;background:
+    radial-gradient(circle at 50% 10%,#272011 0,#0d0a06 58%,#070503 100%)}
+  button{font:inherit}
+  .sheet{width:min(1120px,96vw);height:min(610px,94vh);min-height:520px;border:1px solid #382b18;
+    background:var(--ink);box-shadow:0 18px 60px #000;display:flex;flex-direction:column}
+  .topbar{height:40px;flex:none;display:flex;align-items:center;padding:0 14px;border-bottom:2px solid var(--edge);
+    background:#171109;letter-spacing:.1em}
+  .topbar h1{font-size:18px;font-weight:500;margin:0}.topbar .spacer{flex:1}
+  .tiny-note{font:9px var(--mono);color:var(--dim);letter-spacing:.12em}
+  .back{border:1px solid var(--edge);background:#21180e;color:var(--dim);padding:6px 12px;font:10px var(--mono);letter-spacing:.08em}
+  .main{display:grid;grid-template-columns:190px minmax(430px,1fr) 290px;min-height:0;flex:1}
+  .roster{border-right:2px solid var(--edge);background:#130e08;overflow:hidden}
+  .member{display:flex;gap:8px;align-items:center;padding:9px 9px;border-bottom:1px solid #2b2113;min-height:68px}
+  .member.on{background:#271d10;border-left:3px solid var(--gold);padding-left:6px}
+  .face{width:48px;height:48px;flex:none;border:1px solid var(--edge2);background:
+    radial-gradient(circle at 50% 35%,#8a7352 0 14%,transparent 15%),
+    linear-gradient(70deg,transparent 31%,#5b4934 32% 68%,transparent 69%),#171a16;
+    filter:saturate(.7) contrast(1.2)}
+  .who b{display:block;font-size:12px;line-height:1.1;font-weight:500;letter-spacing:.02em}
+  .who small{display:block;margin-top:5px;font:9px var(--mono);color:var(--dim);letter-spacing:.08em}
+  .char{padding:10px 12px;min-width:0;overflow:hidden}
+  .head{display:flex;min-height:104px;gap:10px}.portrait{width:96px;height:104px;border:1px solid var(--edge);
+    background:linear-gradient(#192019,#12110c);display:grid;place-items:center;position:relative;overflow:hidden}
+  .portrait:before{content:"";width:55px;height:79px;border:2px solid #81745d;border-radius:45% 45% 20% 20%;
+    background:linear-gradient(#4b4438 0 28%,#77705f 29% 54%,#292721 55%);opacity:.8}
+  .portrait:after{content:"ON THE FIELD";position:absolute;right:3px;bottom:3px;color:#65736e;font:7px var(--mono);letter-spacing:.08em}
+  .identity{min-width:0}.identity h2{font-size:20px;margin:3px 0 7px;font-weight:500}.chips{display:flex;gap:5px}
+  .chip{border:1px solid var(--edge);background:#1a140c;padding:3px 6px;font:9px var(--mono);color:var(--dim);letter-spacing:.1em}
+  .identity p{font-size:12px;color:#a99572;font-style:italic;margin:8px 0}.identity p b{color:var(--bone);font-style:normal}
+  .spend{font:9px var(--mono);color:var(--green);letter-spacing:.13em;margin:6px 0}
+  .stats{border:1px solid var(--edge);background:var(--panel);padding:8px 10px}
+  .stats-top{display:grid;grid-template-columns:185px 1fr;gap:18px}.bars{font:9px var(--mono);color:var(--dim)}
+  .barline{display:flex;justify-content:space-between}.barline b{font-weight:400;color:var(--bone)}
+  .bar{height:6px;background:#30201b;border:1px solid #0a0805;margin:2px 0 5px}.bar i{display:block;height:100%;background:#7d3a38}
+  .bar.arm i{background:#718589}.bar.nerve i{background:#8ca35a}
+  .tells{display:grid;gap:2px}.tell{min-height:21px;display:grid;grid-template-columns:86px 20px minmax(0,1fr) 12px;
+    align-items:center;border-bottom:1px dotted #3a2d1b;cursor:default}
+  .tell .label{font:9px var(--mono);letter-spacing:.12em;color:var(--dim)}
+  .stat-icon{display:block;width:16px;height:16px;object-fit:contain;image-rendering:pixelated;filter:drop-shadow(0 1px 1px #000)}
+  .tell .value{text-align:right;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .tell .up{color:var(--green);font-size:10px;text-align:right}
+  .drive{display:flex;gap:17px;margin-top:7px;padding-top:6px;border-top:1px solid #322615;font:9px var(--mono);color:var(--dim);white-space:nowrap}
+  .drive b{color:var(--bone);font-weight:400}.body-label{margin:9px 0 5px;font:9px var(--mono);color:var(--dim);letter-spacing:.14em}
+  .body-grid{height:146px;border:1px solid #302516;background:#151109;display:grid;grid-template-columns:150px 1fr 150px;gap:8px;padding:8px}
+  .slots{display:grid;gap:7px}.slot{border:1px solid #45351f;background:#1c160d;padding:7px;font:8px var(--mono);color:var(--dim);letter-spacing:.1em}
+  .slot b{display:block;color:#d0c39f;font-size:10px;margin-top:3px}.doll{display:grid;place-items:center;color:#746e5e;font-size:74px;line-height:1;opacity:.8}
+  .tester{border-left:2px solid var(--edge);background:#151007;padding:10px;min-width:0;overflow:hidden}
+  .tester h3{font-size:15px;font-weight:500;margin:1px 0 5px}.tester p{font:9px/1.45 var(--mono);color:var(--dim);margin:0 0 8px}
+  .switches{display:flex;gap:5px;margin-bottom:8px}.switches button,.size-switch button{border:1px solid var(--edge);background:#21180e;color:var(--dim);padding:5px 7px;font:9px var(--mono);letter-spacing:.08em}
+  .switches button.on,.size-switch button.on{border-color:var(--gold);color:var(--bone);background:#322514}
+  .ladder{border-top:1px solid var(--edge)}.grade{width:100%;height:34px;border:0;border-bottom:1px solid #2e2315;background:transparent;color:var(--bone);
+    display:grid;grid-template-columns:22px 20px 1fr;align-items:center;text-align:left;padding:0 5px;cursor:pointer}
+  .grade:hover,.grade.on{background:#2a2012}.grade.on{box-shadow:inset 2px 0 var(--gold)}
+  .grade .num{font:9px var(--mono);color:var(--dim)}.grade img{width:16px;height:16px;image-rendering:pixelated;object-fit:contain}.grade .name{font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .size-switch{display:flex;align-items:center;gap:5px;margin-top:8px}.size-switch span{font:8px var(--mono);color:var(--dim);margin-right:auto}
+  .sheet.big-icons .stat-icon{width:24px;height:24px}.sheet.big-icons .tell{min-height:29px;grid-template-columns:86px 28px minmax(0,1fr) 12px}
+  @media(max-width:900px){.main{grid-template-columns:160px 1fr}.tester{display:none}.sheet{width:98vw}.roster{width:auto}}
+</style>
+</head>
+<body>
+<div class="sheet" id="sheet">
+  <header class="topbar"><h1>THE MANGY CROWS</h1><span class="spacer"></span><span class="tiny-note">ISOLATED ICON PROTOTYPE · MAIN GAME UNTOUCHED</span><span style="width:12px"></span><button class="back">BACK TO THE ROAD</button></header>
+  <main class="main">
+    <aside class="roster">
+      <div class="member on"><div class="face"></div><div class="who"><b>YOU “TWO TEETH”</b><small>HUMAN · CAPTAIN L3</small><small>STUBBORN</small></div></div>
+      <div class="member"><div class="face"></div><div class="who"><b>VESNA “THE QUIET”</b><small>HUMAN · L2</small><small>WIDOWED THRICE</small></div></div>
+      <div class="member"><div class="face"></div><div class="who"><b>MARROW “BAD PENNY”</b><small>HUMAN · L1</small><small>WIND-TOUCHED</small></div></div>
+      <div class="member"><div class="face"></div><div class="who"><b>SKREE “TWO WINTERS”</b><small>RATKIN · L1</small><small>TWITCHY</small></div></div>
+    </aside>
+
+    <section class="char">
+      <div class="head"><div class="portrait"></div><div class="identity"><h2>YOU “TWO TEETH”</h2><div class="chips"><span class="chip">HUMAN</span><span class="chip">⚑ CAPTAIN</span><span class="chip">L3</span></div><p><b>Stubborn</b> · Nerve back twice as fast on a quiet turn</p></div></div>
+      <div class="spend">1 LEVEL TO SPEND. CLICK A TRAIT</div>
+      <section class="stats">
+        <div class="stats-top">
+          <div class="bars">
+            <div class="barline"><span>ARMOUR LIGHT</span><b>34</b></div><div class="bar arm"><i style="width:100%"></i></div>
+            <div class="barline"><span>HITPOINTS</span><b>57/57</b></div><div class="bar"><i style="width:100%"></i></div>
+            <div class="barline"><span>NERVE</span><b>🙂 HAPPY</b></div><div class="bar nerve"><i style="width:78%"></i></div>
+          </div>
+          <div class="tells">
+            <div class="tell"><span class="label">STRENGTH</span><img class="stat-icon" id="strengthIcon" alt=""><span class="value" id="strengthValue"></span><span class="up">▲</span></div>
+            <div class="tell"><span class="label">AGILITY</span><span></span><span class="value">Heavy-handed</span><span class="up">▲</span></div>
+            <div class="tell"><span class="label">INTELLECT</span><img class="stat-icon" id="brainIcon" alt=""><span class="value" id="brainValue"></span><span class="up">▲</span></div>
+            <div class="tell"><span class="label">MORALE</span><span></span><span class="value">Easily frightened</span><span class="up">▲</span></div>
+          </div>
+        </div>
+        <div class="drive"><span>ACTIONS <b>◆◆</b></span><span>ARMING SWORD <b>21–30</b></span><span>TO HIT <b>68%</b></span><span>DODGE <b>13</b></span><span>STEP <b>4 hex</b></span></div>
+      </section>
+      <div class="body-label">THE BODY</div>
+      <div class="body-grid"><div class="slots"><div class="slot">⛨ ARMOUR<b>PADDED JACK</b></div><div class="slot">⚔ MAIN HAND<b>ARMING SWORD</b></div></div><div class="doll">♙</div><div class="slots"><div class="slot">✧ TRINKET<b>— EMPTY —</b></div><div class="slot">🤚 OFF HAND<b>— EMPTY —</b></div></div></div>
+    </section>
+
+    <aside class="tester">
+      <h3>TINY ICON TEST</h3>
+      <p>Click a grade. The real 16px file updates in the character sheet—not a large preview.</p>
+      <div class="switches"><button class="on" data-kind="strength">STRENGTH</button><button data-kind="brain">INTELLECT</button></div>
+      <div class="ladder" id="ladder"></div>
+      <div class="size-switch"><span>INLINE SIZE</span><button class="on" data-size="16">16PX</button><button data-size="24">24PX</button></div>
+    </aside>
+  </main>
+</div>
+<script>
+  const grades=[
+    {v:-4,f:'grade-minus-4.png',s:'No use lifting anything',b:'Empty-headed'},
+    {v:-3,f:'grade-minus-3.png',s:'Feeble',b:'Simple'},
+    {v:-2,f:'grade-minus-2.png',s:'Weak',b:'Slow'},
+    {v:-1,f:'grade-minus-1.png',s:'Not strong',b:'Not clever'},
+    {v:0,f:'grade-0.png',s:'Strong enough',b:'Ordinary mind'},
+    {v:1,f:'grade-plus-1.png',s:'Strong',b:'Quick to see it'},
+    {v:2,f:'grade-plus-2.png',s:'Very strong',b:'Clever'},
+    {v:3,f:'grade-plus-3.png',s:'Enormously strong',b:'Brilliant'},
+    {v:4,f:'grade-plus-4.png',s:'Monstrously strong',b:'Genius'}
+  ];
+  const selected={strength:0,brain:1}; let active='strength'; let size=16;
+  const base='assets/stat-icons-pixel-v3/';
+  const path=(kind,grade)=>base+kind+'/pixel-'+size+'px/'+grade.f;
+  function updateSheet(){
+    const sg=grades.find(g=>g.v===selected.strength),bg=grades.find(g=>g.v===selected.brain);
+    strengthIcon.src=path('strength',sg); strengthIcon.alt=sg.s; strengthValue.textContent=sg.s;
+    brainIcon.src=path('brain',bg); brainIcon.alt=bg.b; brainValue.textContent=bg.b;
+  }
+  function renderLadder(){
+    ladder.innerHTML=grades.slice().reverse().map(g=>`<button class="grade ${g.v===selected[active]?'on':''}" data-grade="${g.v}"><span class="num">${g.v>0?'+':''}${g.v}</span><img src="${base+active+'/pixel-16px/'+g.f}" alt=""><span class="name">${active==='strength'?g.s:g.b}</span></button>`).join('');
+    ladder.querySelectorAll('.grade').forEach(button=>button.onclick=()=>{selected[active]=Number(button.dataset.grade);renderLadder();updateSheet()});
+  }
+  document.querySelectorAll('[data-kind]').forEach(button=>button.onclick=()=>{active=button.dataset.kind;document.querySelectorAll('[data-kind]').forEach(b=>b.classList.toggle('on',b===button));renderLadder()});
+  document.querySelectorAll('[data-size]').forEach(button=>button.onclick=()=>{size=Number(button.dataset.size);sheet.classList.toggle('big-icons',size===24);document.querySelectorAll('[data-size]').forEach(b=>b.classList.toggle('on',b===button));updateSheet()});
+  updateSheet();renderLadder();
+</script>
+</body>
+</html>
