@@ -672,11 +672,47 @@ function Verb-Verify {
   }
   if ($held.Count -eq 0) { if (-not $Json) { Write-Host "clear: no other session is holding a number" -ForegroundColor Green }; return }
 
+  # NO 2>$null ON EITHER OF THESE, AND THE REDIRECTION WAS THE WHOLE BUG.
+  # Under $ErrorActionPreference='Stop', REDIRECTING a native command's stderr
+  # is itself what promotes a harmless warning into a terminating
+  # NativeCommandError. Unredirected stderr is inert. Get-StoreRoot carries the
+  # same note and PARALLEL_SESSIONS.md records the trap; this call site never
+  # got either.
+  #
+  # WHAT IT COST, AND WHERE IT HID. `git diff HEAD` refreshes against the
+  # WORKING COPY, so one tracked file sitting with LF endings is enough for git
+  # to say "LF will be replaced by CRLF the next time Git touches it" - and the
+  # redirection turned that sentence into a throw. `verify staged` never showed
+  # it, because a --cached diff reads the INDEX and never touches the working
+  # copy. So the pre-commit hook stayed green and no commit was ever refused,
+  # while the BY-HAND check was unusable for anybody whose checkout had one such
+  # file. The by-hand check is what a session runs BEFORE it writes a number
+  # into the docs, which is the exact moment this file exists to defend: a guard
+  # that works only where nobody is looking is #144's lesson arriving on the
+  # other verb. (#222)
+  $diff    = @()
+  $gitExit = 0
   Push-Location $Root
   try {
-    if ($Arg -eq 'staged') { $diff = & git diff --cached -U0 2>$null }
-    else { $diff = & git diff HEAD -U0 2>$null }
+    if ($Arg -eq 'staged') { $diff = @(& git diff --cached -U0) }
+    else { $diff = @(& git diff HEAD -U0) }
+    $gitExit = $LASTEXITCODE
   } finally { Pop-Location }
+
+  # AND IT MAY NOT FAIL QUIETLY, WHICH IS THE OTHER HALF OF #144. The diff is
+  # the entire evidence this backstop has. If git could not produce one there is
+  # nothing to scan, and every branch below would answer "clear" - the one word
+  # this file has already paid for wearing while a guard was off. Neither
+  # `git diff` form is passed --exit-code or --quiet, so a non-zero status here
+  # means failure and never "there were differences".
+  if ($gitExit -ne 0) {
+    Write-Host ""
+    Write-Host "CANNOT VERIFY: git would not produce the diff" -ForegroundColor Red
+    Write-Host ("  git diff exited {0}, so the scan has nothing to read." -f $gitExit)
+    Write-Host "  This is NOT a clear. Fix git, then run this again." -ForegroundColor Yellow
+    Write-Host ""
+    exit 1
+  }
 
   $added = @()
   foreach ($line in $diff) {
