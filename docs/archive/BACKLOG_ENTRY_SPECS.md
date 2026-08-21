@@ -4197,3 +4197,53 @@ the Captain is row one and unremovable; twelve rows, because twelve is the deplo
 
 **What refines later:** the band multipliers against measured win rates; per-perk pricing if +3%
 a level proves too blunt; showing a fight's points on the aftermath for post-fight comparison.
+
+---
+
+## §229 · The Gauntlet: the campaign battle bench (2026-08-21, built the same day, 8f.252)
+
+**The user, verbatim:** *"Hey, how do we measure battles through campeign? I feel we need to
+specifiacaly for it. To measure lengh and difficuly of each battle. And also, while you have
+differnt points of your characters (it is important)"* · *"Also, it would change when i update
+perks. So it would be nice to see this tool"* · *"Also to this tool and auto resolve we can add 3
+strategies: agresciev - move all units in front the maximum to hit enemy, and mor steady - goes
+slowly with formation"* · and, mid-session: *"put it all in inependent tool, that maximally
+disconected from main build and could be easily updated from it after balance changes"*.
+
+**What it is:** `tools/gauntlet.html`, a standalone page in the dramaturge's shape. It loads the
+live `prototype/grimtoll_slice.html` into a hidden same-origin iframe and evals a bridge into it
+(the same indirect-eval door `tools/harness.js` has always used), so the game's own tables,
+builders and brains are the only source. **Nothing in the prototype changed for it**, and a
+balance edit reaches the tool at the next RELOAD BUILD press.
+
+**The instrument:** the `runFight`/`ARENA.match` loop verbatim - both sides driven by `aiTurn`
+(mirror AI), `checkEnd()` between turns, render/fx/say/sfx/paintTerrain/`JOURNAL.put` stubbed and
+restored in a finally. **Plus one stub the harness never needed: `SEENF.mark`** - it predates
+#216, and a measurement may never unlock a spoiler fight. Every run is seeded (LCG, the game's
+own `seededly` shape), so same seed = same crew and same dice, and a **Δ column** compares any
+run against the previous completed run with the same setup: edit the prototype, reload, re-run,
+and the delta is what the change did.
+
+**The two modes.** THE BENCH: any `simComps()` company (including *"Your company, as it stands"*
+off the save, and the #216 hand-picked bench) leveled to N via `simLevelTo`, against every fight.
+THE CAMPAIGN WALK: the founders march the fight list in order; XP is paid by `payFightXP`, the
+banked points are spent by the bench's own policy (`STAT_PRIO` + first open perk), everybody is
+mended between fights, and the joins are editable (Asha default before the Broken Men, per #212's
+Blood-on-the-Road join; Skree + Bruht plus the seasoned six's own armour step before the Snare).
+Points are re-priced at every arrival, so the table answers "at the points you would actually
+have there".
+
+**The three strategies are `AIP.you` profiles and nothing else**, per AIP's own written contract
+("All 1 = the real AI. All 0 = the pre-rework rush"): AGGRESSIVE keeps only `ev`
+(flank/kite/fallback/cohere/hold/doct at 0 - everyone straight in, aim kept); STEADY is the brain
+with `cohere:3, flank:.4, pile:1.3`; THE BRAIN is all 1. The enemy always plays FULL.
+
+**Fixed shapes so runs are comparable:** clash fought with no side taken · SOMETHING IN ARMOUR
+entered on FORM · mercy counts as a win (runFight's own rule) · THE THREE BELLS is priced but not
+simulated (scripted waves around the tutorial).
+
+**What refines later:** the in-game AUTO / auto-resolve strategy picker off the same three
+profiles (one caller when wanted - the profiles are AIP rows; it waits on the prototype and on a
+mockup, per the standing gate) · the band multipliers, now that the tool measures them against
+win rates on demand (#216's named remainder) · the fifth-body and level non-monotonicity findings
+(see the changelog row).
