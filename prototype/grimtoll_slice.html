@@ -2981,6 +2981,100 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:var(--f
 /* the hairline inside the frame, so the stage still reads as a card */
 .evstage::before{content:"";position:absolute;inset:9px;z-index:5;pointer-events:none;
   border:1px solid var(--e1)}
+
+/* ═══ #218 · THE CARD UNFOLDS ═════════════════════════════════
+   (User, 2026-08-21: *"i also want when event unfolds - add some animation to
+   the screen (like unfolding) - similar as choices where in frostpank"*.)
+
+   Frostpunk's decision panel does not fade in, it OPENS: the box arrives as a
+   lit seam, the content parts from that seam, and the buttons come last, one
+   after another.
+
+   ⚠ THE DURATIONS WERE CUT ONCE, AGAINST A MEASUREMENT AND NOT A FEELING.
+   The first cut read ═ sampled every 40ms in a real headless browser ═ was
+   **600ms** to settle, because the two longest members are a DELAY plus a
+   DURATION and nobody had added them up. It is 470 now: the first beat of
+   prose begins arriving at 170 and the column is still at 450, the doors
+   cascade for a further 225 once the last beat is reached. ⚠ THIS IS PAID ON
+   EVERY CARD IN THE GAME - 34 road cards, 53 camp doors and the vignettes -
+   so the ceiling is what a player sits through thirty-four times in a run,
+   never what looks best once.
+
+   ⛔ NOTHING HERE IS A CLASS ON `#wDlg`, WHICH IS THE RULE THE STAGE WAS BUILT
+   ON. Twelve functions open that box, and a one-shot class the other eleven
+   have to remember to clear is exactly the drift #209 wrote down. Two things
+   re-arm these animations by themselves and neither can go stale:
+     · `.evstage` and everything inside it is a BRAND NEW ELEMENT on every
+       open, because `evStageOpen` writes `dlg.innerHTML=` from scratch. A CSS
+       animation on a fresh element runs exactly once, untold.
+     · `#wDlg` goes `display:none` -> `flex` through `.on`, and an element
+       that becomes displayed starts its animations fresh.
+
+   ⚠ SO THE BOX'S GATE IS `.on:has(.evstage)` AND NOT THE `:has` ALONE, and
+   that is a fact about how a card CLOSES rather than a preference. Every close
+   in this file is `dlg.classList.remove('on')` and nothing else - the HTML is
+   left standing - so `#wDlg` goes on matching `:has(.evstage)` for the rest of
+   the session and an animation hung on the `:has` would fire once, on the
+   first road card, and never again. `.on` is the half that comes and goes.
+   ⚠ It is also why the gate is not `.on` bare: the muster wall, the shop and
+   the withdraw screen are still the 620px column, and they were not asked for.
+
+   ⛔ EVERY RESTING STATE IS THE NATURAL ONE, AND THAT IS A SAFETY RULE RATHER
+   THAN A STYLE. `.claude/rules/ui-scales.md` §5 says the preview pane
+   composites no frames; a build where these never advance has to come out
+   merely STILL, never one where the doors are invisible and the card cannot be
+   answered. So the seam's own base opacity is 0 (it is a flash, and an un-run
+   flash is nothing), the frame's base inset is its final one, and every
+   animation below fills BACKWARDS and never FORWARDS.
+
+   ⚠ `backwards` AND NOT `both`, AND THE DIFFERENCE IS A SHIPPED HOVER. A
+   `forwards` fill keeps the animation's final `transform:none` in force after
+   the animation ends, and an animated transform outranks a declared one - so
+   `both` on the doors silently killed `.choice:hover`'s `translateX(4px)`,
+   which is the one piece of feedback a door has. `backwards` holds the `from`
+   state through the DELAY, which is all the stagger needs, and hands the
+   element back at the end. */
+@keyframes evCardIn{from{opacity:0;transform:scale(.965)}
+                    to{opacity:1;transform:none}}
+@keyframes evPart{from{clip-path:inset(49% 0 49% 0)}to{clip-path:inset(0 0 0 0)}}
+@keyframes evFrameOpen{from{inset:50% 9px}to{inset:9px}}
+@keyframes evSeam{0%{opacity:0;transform:scaleX(.16)}
+                  22%{opacity:.95}
+                  100%{opacity:0;transform:scaleX(1.02)}}
+@keyframes evColIn{from{opacity:0;transform:translateX(-16px)}
+                   to{opacity:1;transform:none}}
+@keyframes evRise{from{opacity:0;transform:translateY(22px) scale(.97)}
+                  to{opacity:1;transform:none}}
+@keyframes evDoorIn{from{opacity:0;transform:translateX(-18px)}
+                    to{opacity:1;transform:none}}
+#wDlg.on:has(.evstage){animation:evCardIn .18s cubic-bezier(.2,.8,.3,1)}
+/* the picture parts from the middle. ⚠ `clip-path` AND NOT A SCALE: the two
+   `.evback` rules above already own `transform` and `filter` (the crop
+   treatment, and `.fit`'s lighter version of it), and an animation on either
+   would be fighting the thing that makes a 586x212 letterbox survivable. */
+.evstage .evback{animation:evPart .4s cubic-bezier(.16,.84,.3,1)}
+.evstage::before{animation:evFrameOpen .4s cubic-bezier(.16,.84,.3,1)}
+/* the lit line the picture parts from. ⚠ A REAL ELEMENT AND NOT A THIRD
+   PSEUDO: `.evstage::before` is the hairline frame and `::after` is the two
+   scrims, both load-bearing, and neither may be spent on a flash.
+   ⚠ `pointer-events:none` or it eats the click that advances the beat. */
+.evstage .evseam{position:absolute;z-index:5;left:9px;right:9px;top:50%;height:2px;
+  margin-top:-1px;opacity:0;pointer-events:none;
+  background:linear-gradient(90deg,transparent,var(--g3) 18%,#f4ecd8 50%,var(--g3) 82%,transparent);
+  box-shadow:0 0 14px rgba(163,134,82,.7);
+  animation:evSeam .4s cubic-bezier(.16,.84,.3,1)}
+/* the left column arrives behind the picture, in reading order. The cast RISES
+   instead of sliding, because the plates are standing in the scene rather than
+   printed on it. */
+#wDlg .evstage h3{animation:evColIn .26s cubic-bezier(.2,.8,.3,1) .1s backwards}
+.evstage .evmark{animation:evColIn .26s cubic-bezier(.2,.8,.3,1) .15s backwards}
+.evstage .evcast{animation:evRise .34s cubic-bezier(.2,.8,.3,1) .12s backwards}
+.evstage .evflow{animation:evColIn .28s cubic-bezier(.2,.8,.3,1) .17s backwards}
+.evstage .evbeats{animation:evColIn .26s ease-out .21s backwards}
+@media (prefers-reduced-motion:reduce){
+  #wDlg.on:has(.evstage),.evstage .evback,.evstage::before,.evstage .evseam,
+  #wDlg .evstage h3,.evstage .evmark,.evstage .evcast,.evstage .evflow,
+  .evstage .evbeats,#wDlg .evchoices .choice{animation:none}}
 #wDlg .evstage h3{position:absolute;z-index:6;left:300px;top:23px;margin:0;
   font-family:var(--display);font-size:var(--fs6);letter-spacing:.22em;color:#eadfca;
   font-weight:600;text-shadow:0 2px 12px #000,0 0 26px #000}
@@ -3137,6 +3231,107 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:var(--f
 #wDlg .evchoices .choice.racey:hover:not(:disabled){border-color:#8ca35a;
   background:linear-gradient(96deg,#1c2a22,rgba(14,21,17,.96) 78%)}
 #wDlg .evchoices .choice.front{border-color:var(--g3)}
+/* ═══ #218 · THE DOOR'S EDGE SAYS WHAT KIND OF ACT THIS IS ════════════
+   (User, 2026-08-21: *"improwe a bit design of butons on the choices sreen (i
+   like icons and placment) - maybe some borders more thematic and coreleated
+   to choice"*.)
+
+   ⛔ THE OUTLINE IS STATE AND THE RAIL IS INTENT, AND MERGING THEM WOULD BE
+   #102's WRONG-UNIT BUG. The four-sided border on a door is a READOUT and has
+   been since #137: `--e2` at rest, `#8c3a31` when the door is a warning,
+   `#5a7a6a` when it is only open because of who is in the company, `--g3`
+   under the pointer. `.claude/rules/ui-scales.md` §2 says in capitals that an
+   accent edge carries meaning and may not be flattened into the scale, so none
+   of that is touched. What was empty is the 2px LEFT RAIL, which every door in
+   the game wore in the same `--e3` whatever the door did.
+
+   ⛑ AND IT IS DERIVED, WHICH IS #137's RULE ON ITS SIXTH SURFACE. The classes
+   are `iv-<key>` off the door's own `ico`, written beside the two classes
+   `evDoors` already writes, so a door authored next month gets its rail untaught
+   and not one card gains a field. The glyph column says what the act IS and the
+   rail says what KIND of act it is; two channels read off one field cannot come
+   to disagree. WHICH intent wins on a door that has two is decided by the ORDER
+   of the rows below - see the block immediately above them.
+
+   ⛔ IT IS NOT A SECOND RECEIPT. The same rules file forbids an intent glyph
+   that starts meaning "this one pays well", and the same line binds here: the
+   rail is keyed on `ico` and on nothing else - never on `fx`, never on what a
+   door costs. A door that takes a purse and a door that takes a dead man's
+   boots wear the same amber.
+
+   ⚠ EVERY HEX IS ONE THIS BUILD ALREADY PAINTS WITH, which is the user's own
+   #209 note (*"they use colors what don`t use in the game"*) answered a second
+   time. Nothing below is a new colour:
+     fight  --blood-lit   the fight door's own red. Fresh blood
+     evil   --blood       the dried half of the same two-step ladder
+     help   --grain       the approve green: morale-up, and the mended heart
+     take   --wood        the salvage chip's amber - what you pick up
+     trade  --morale      coin-yellow. ⛔ AND NOT `--gold`, WHICH IS STATE:
+                          `--g3`/`--g4` is hover and select, and a gold rail on
+                          the 24 trade doors would read as "these are chosen"
+     rest   --gem         the coldest colour on the card, for the one door that
+                          ends the day
+     honor  --ore         grave stone
+     leave  (none)        ⛑ THE QUIETEST DOOR IS THE ONE WITH NO COLOUR
+
+   ⛑ AND THAT LAST ROW IS THE LOAD-BEARING ONE. 35 of the game's 149 doors are
+   `leave`; it is the null option, and a rail on it would tint a third of every
+   card to say "nothing happens here". It has no rule, so it falls to the `--e3`
+   default - and so does every one of the 22 CAMP doors that carry no `ico` at
+   all, which is the same rules file's *"a door may be bare, and the fire's
+   rulings are ... bare reads as this is you deciding, not doing"* arriving on
+   the edge without being told twice. A NINTH intent gets the same treatment on
+   the day one is written: uncoloured, never broken.
+
+   ⚠ A PSEUDO AND NOT `border-left-color`, AND THE REASON IS SPECIFICITY.
+   `.choice:hover` sets the `border-color` SHORTHAND, which writes all four
+   sides, so a rail painted as a border is erased by the pointer at exactly the
+   moment the player is reading it. A `::before` cannot be clobbered by a
+   shorthand, and it can light up in its own colour on hover instead. */
+/* ⛔ THE ORDER OF THESE NINE LINES IS THE RULE, AND IT IS NOT COSMETIC.
+   A door wears EVERY intent it carries as a class, so a two-glyph door matches
+   two of the rows below at identical specificity and the LATER one wins. The
+   five verbs are listed first and the two moral colours last, which is the
+   head of `.claude/rules/event-cards.md` (*"the verb comes first and the moral
+   colour second"*) written as a cascade instead of as a `.slice()`:
+     ⚔️☠️  fight + evil  -> blood       fighting as the predator
+     ⚔️🤝  fight + help  -> grain       fighting for somebody
+     🧺☠️  take  + evil  -> blood       robbing rather than finding
+     🧺👣  take  + leave -> wood        ⛑ AND THIS IS THE ONE THAT PAID FOR IT
+   ⛑ THE FIRST CUT KEYED ON THE LAST INTENT ALONE and THE WARM SPRING broke
+   it inside an hour: its second door is marked `['take','leave']`, which is two
+   VERBS rather than a verb and a colour, and "last wins" handed the null rail
+   to a door that takes something. `leave` has no row here at all, so under the
+   cascade it can never win one - and the JS no longer has to know which keys
+   are coloured, which is the second table this was going to grow. */
+#wDlg .evchoices .choice{--rail:var(--e3)}
+#wDlg .evchoices .choice.iv-fight{--rail:var(--blood-lit)}
+#wDlg .evchoices .choice.iv-take {--rail:var(--wood)}
+#wDlg .evchoices .choice.iv-trade{--rail:var(--morale)}
+#wDlg .evchoices .choice.iv-rest {--rail:var(--gem)}
+#wDlg .evchoices .choice.iv-honor{--rail:var(--ore)}
+/* ── and the two that outrank a verb, which is why they are last ── */
+#wDlg .evchoices .choice.iv-help {--rail:var(--grain)}
+#wDlg .evchoices .choice.iv-evil {--rail:var(--blood)}
+/* ⚠ `left:-2px` REACHES THE OUTER EDGE AND `left:0` WOULD NOT. Everything
+   here is border-box, and an absolutely positioned child is laid out against
+   its parent's PADDING box - so the rail has to step back over the 2px left
+   border it is replacing, and 1px over the top and bottom ones, or it floats
+   inside the outline instead of being the door's edge. */
+#wDlg .evchoices .choice::before{content:"";position:absolute;left:-2px;top:-1px;bottom:-1px;
+  width:3px;pointer-events:none;background:var(--rail);
+  transition:width .14s ease,box-shadow .14s ease}
+#wDlg .evchoices .choice:hover:not(:disabled)::before{width:4px;
+  box-shadow:0 0 9px var(--rail)}
+/* ⛑ THE DOORS ARRIVE LAST AND ONE AFTER ANOTHER, WHICH IS THE HALF OF THE
+   UNFOLD THE PLAYER ACTUALLY WATCHES - they are what the card is asking for.
+   `--i` is the row index, written by `evDoors` into the same inline style that
+   already carried the disabled dimming. ⚠ THE `--i:0` DEFAULT IS NOT TIDINESS:
+   the OUTCOME's own button (`Back to the road`) is written by `pickChoice`
+   into this same list and carries no index, and `calc(var(--i) * 55ms)` on an
+   undefined property invalidates the whole `animation` shorthand. */
+#wDlg .evchoices .choice{--i:0;
+  animation:evDoorIn .26s cubic-bezier(.2,.8,.3,1) calc(var(--i) * 55ms) backwards}
 /* the outcome writes ONE button into the same list and it carries no glyph
    (`Back to the road`, `Open the inventory`), so its label takes the whole
    row rather than sitting in the text column with a 34px hole beside it */
@@ -36932,6 +37127,24 @@ function evFlow(){
   if(last)evDoors();
   fl.scrollTop=fl.scrollHeight;
 }
+/* ═══ #218 · THE DOOR'S EDGE, AND IT IS THE DOOR'S OWN LAST INTENT ═════
+   (User, 2026-08-21: *"maybe some borders more thematic and coreleated to
+   choice"*.) The palette, the reasoning and what `leave` gets are all in the
+   `iv-` block in the stylesheet; this is the whole of the derivation.
+
+   ⛔ EVERY INTENT, NOT THE LAST ONE, AND THE DIFFERENCE IS A DOOR THAT BROKE
+   THE FIRST CUT. This read `ico.slice(-1)` for an hour, on the reasoning that
+   the moral colour is authored second - true of ⚔️☠️ and ⚔️🤝, and not
+   true of THE WARM SPRING's `['take','leave']`, which is two VERBS and was
+   handed the null rail as a result. Writing both classes moves the whole
+   question into the cascade, where the stylesheet's row order answers it.
+
+   ⚠ SO THERE IS NO TABLE HERE AT ALL, WHICH IS THE POINT. This function does
+   not know which intents have a colour, nor which of two wins; it knows that a
+   door's `ico` is the fact. A table here would be a list that has to be kept
+   level with `CHOICE_ICO` AND with the CSS, which is the one-fact-two-
+   implementations shape this file has now merged out four times. */
+const evRail=c=>(c.ico||[]).map(k=>' iv-'+k).join('');
 function evDoors(){
   const S=EVSTAGE,ch=$('wChoices');if(!S||!ch)return;
   ch.className='evchoices'+(S.visible.some(c=>(c.ico&&c.ico.length)||c.needRace)?'':' nomark');
@@ -36942,9 +37155,14 @@ function evDoors(){
        surface writes `<b>`+choiceIco(c)+label, which is a mark inside a line
        of text; the stage wants it as its own grid cell, and a cell cannot be
        a descendant of the thing it sits beside. */
+    /* ⚠ #218 - THE DIMMING MOVED INSIDE ONE `style=`, IT DID NOT GAIN A
+       SECOND. The stagger needs `--i` on every door and the closed door needs
+       its opacity, and a button carrying two `style` attributes keeps only the
+       first: the row index would have silently won and every disabled door
+       would have come back at full strength. */
     return '<button class="choice'+((c.danger||(c.battle&&S.anyWayOut))?' danger':'')+
-      (c.needRace?' racey':'')+'" data-i="'+i+'" data-who="'+evDoorWho(c)+'"'+
-      (ok?'':' disabled style="opacity:.38"')+
+      (c.needRace?' racey':'')+evRail(c)+'" data-i="'+i+'" data-who="'+evDoorWho(c)+'"'+
+      ' style="--i:'+i+(ok?'':';opacity:.38')+'"'+(ok?'':' disabled')+
       '><span class="cigs">'+choiceIco(c)+'</span><span class="ccopy"><b>'+c.t+'</b>'+
       (note?'<i>'+note+'</i>':'')+'</span></button>';}).join('');
   ch.querySelectorAll('.choice').forEach(b=>{
@@ -37000,6 +37218,11 @@ function evStageOpen(o){
   dlg.innerHTML='<div class="evstage'+(fit?' fit':'')+'">'+
     (o.art?'<img class="evback" src="'+o.art+'" alt="">'
           :'<canvas class="evback" width="1180" height="620"></canvas>')+
+    /* #218 - the lit line the picture parts from. It is written into the
+       markup rather than drawn by a pseudo because both of `.evstage`'s are
+       already spent on the frame and the scrims; see the CSS. It carries no
+       state and is inert once its 440ms are up. */
+    '<i class="evseam"></i>'+
     (EVSTAGE.cast.length?'<div class="evcast">'+EVSTAGE.cast.map((p,i)=>
         '<div class="evcard'+(i?'':' front')+'" data-who="'+p.id+'" data-nm="'+
         evShortName(p)+'"><canvas width="200" height="260"></canvas></div>').join('')+
