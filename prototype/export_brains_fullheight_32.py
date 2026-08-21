@@ -49,8 +49,11 @@ import sys
 from PIL import Image
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-SRC = os.path.join(HERE, 'assets', 'stat-icons-pixel-v4-24px', 'brain', 'pixel-24px')
-OUT = os.path.join(HERE, 'assets', 'stat-icons-final-32px', 'BRAINS')
+# the pack is gitignored and lives in the MAIN working tree, so a desk running this
+# has to be able to point at it. Defaults to the folder beside this file. (#234)
+ROOT = os.environ.get('GT_ART_ROOT') or os.path.join(HERE, 'assets')
+SRC = os.path.join(ROOT, 'stat-icons-pixel-v4-24px', 'brain', 'pixel-24px')
+OUT = os.path.join(ROOT, 'stat-icons-final-32px', 'BRAINS')
 
 GRADES = ['grade-minus-4', 'grade-minus-3', 'grade-minus-2', 'grade-minus-1',
           'grade-0', 'grade-plus-1', 'grade-plus-2', 'grade-plus-3', 'grade-plus-4']
@@ -59,6 +62,28 @@ CANVAS = 32          # the box the game reserves
 FIT = 30             # content may fill this much of it: one clear pixel each side
 TARGET_H = 26        # the common content height the family is normalised to
 ORPHAN = 0.20        # a component under this share of the main one is a speck
+
+# ⛔ #234 - AND THE BOTTOM OF THE FAMILY TAKES ITS OWN, NARROWER CAPS.
+#   (User, 2026-08-22: "in the char inventory screen - make 2,3 brains smaller - so
+#   the flat and small. Becasue now it looks a bit as ass", and, asked which two of
+#   the nine: the cream lump and the grey two-lobe, counting from the weak end.)
+#
+# The note above is why they were wrong: this script normalises the family to a
+# common HEIGHT and lets the 30px WIDTH cap catch whatever is drawn flat - and all
+# four lumps hit that cap, so the four weakest pictures in the family came out as
+# the four WIDEST. Grade 3 is a pair of round grey lobes with a cleft down the
+# middle at 30x21, which is what the ask is describing and it is not wrong about it.
+#
+# ⛔ THE FIX IS A NARROWER CAP AND NEVER A SQUASH. Scaling height alone would be a
+# non-uniform resample of a pixel painting, which is the one thing this whole file
+# exists to avoid; these come down UNIFORMLY and read as small because they are.
+# ⚠ GRADE 1 IS IN THE TABLE THOUGH NOBODY ASKED, AND THAT IS THE LADDER TALKING.
+# It is the WEAKEST picture in the family; leaving it at the 30px cap while 2 and 3
+# came down would have made the bottom of the ladder run big-small-small-big, i.e. a
+# readout that is not monotonic in the thing it reads. 18 / 21 / 24 against the 30
+# grade 4 keeps, so the four lumps now GROW the way the five brains above them do.
+# Measured after: 18x9 / 21x13 / 24x17 / 30x20 / 28x22 / 28x22 / 29x26 / 30x24 / 29x26.
+LUMP_W = {'grade-minus-4': 18, 'grade-minus-3': 21, 'grade-minus-2': 24}
 
 
 def components(img):
@@ -115,7 +140,7 @@ def rebuild(name):
     # before this was written: 2x is clean and 2.14x is not, for 2px of height.
     # Only the two bare brains can take an integer - everything else in this
     # family is 20-21px wide at the master, so 2x would be 40 in a 30px box.
-    fit = min(TARGET_H / h, FIT / w)
+    fit = min(TARGET_H / h, LUMP_W.get(name, FIT) / w)
     whole = int(fit)
     scale = whole if whole >= 2 else fit
     nw, nh = max(1, round(w * scale)), max(1, round(h * scale))
