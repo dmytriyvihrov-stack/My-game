@@ -26,6 +26,22 @@
 
 ---
 
+## 🧮 THE BAR SAYS HOW MANY OF YOU THERE ARE, THE MOOD IS JUST A FACE, AND THE MENU IS TOP RIGHT  *(#220 · 2026-08-21 · build log 8f.243)*
+
+**How to reach it in three steps:** continue the road → look at the top-left group of the world bar → hover the first chip and the smiling one.
+
+**What it is.** Three notes on the global map:
+
+- **the company chip counts BODIES now.** It used to be a portrait of the Captain and one figure, and that figure is **seats**, not people - everybody takes room by size (ratkin 1, human 2, ogre 3), so four of you could read `8/13` and nothing anywhere said four. It reads **🧑 4 · SEATS 8/13**: the mark, how many of you there are, and how much room is left.
+- **the mood chip is the face alone.** No STEADY, no AT EASE on the bar. The word, the sentence about why, and the "throw them a party" line are all on the hover, where they always were.
+- **☰ MENU sits top right**, under the ROAD / NEAR / CLOSE row, instead of bottom left beside ? RULES.
+
+**What should happen.** Recruit somebody and the bold number goes up by one and the seats go up by their size - a ratkin costs 1, an ogre 3. Hover the chip and the box opens with both figures written out in words before it explains anything. Hover the face and it still names the mood (😐 AT EASE, 🙂 STEADY, and so on) and still offers the feast; click it and the feast card still opens.
+
+**What would be a bug.** The two numbers running together so the chip reads *48/13* - say so if it does, that was the thing I measured hardest. A mood chip that has lost its colour (the border is the mood's colour and always was). The MENU button sitting on top of the word CLOSE, or covering a place name on the map. And on the battle screen the menu should still be **bottom left** - it moved on the map only, because the battle's top-right corner is the sound button's.
+
+---
+
 ## 🗺 FIFTEEN MORE ROAD CARDS GET THEIR WIDE STAGE  *(#214 · 2026-08-20 · build log 8f.237)*
 
 **How to reach it in three steps:** open any of these cards on the road or at a camp: What Followed You Out, The Hollow Tree, The Dead Company, The Long Fire, The Ratkin Snare, The Warm Spring, Something in Armour, The Door-Shrine, The Woman in the Cage, The Red Lights, Bonepicker's Camp, The Sling-Line, The Steading-Line, Under the Bloom, The Salt-Wives, or They Come Over the Wall.

@@ -124,12 +124,18 @@
      Same footing as `#wBar`'s own 64px right-hand reservation, and it carries
      its arithmetic for the same reason.
 
-     30 IS NOT A TASTE. It is the tallest chip's natural height and the only
-     one that is load-bearing: the party chip holds a 24px painted bust plus
-     its own 1px border, plus 2px of `--p1` and 1px of chip border top and
-     bottom. Everything else was shorter only because a 10px word is shorter
-     than a portrait. The bar is 42, so 30 leaves 6px of air above and below.
-     ⚠ IF THE BUST EVER CHANGES SIZE, THIS NUMBER MOVES WITH IT. */
+     30 WAS THE TALLEST CHIP'S NATURAL HEIGHT: the party chip held a 24px
+     painted bust plus its own 1px border, plus 2px of `--p1` and 1px of chip
+     border top and bottom. Everything else was shorter only because a 10px
+     word is shorter than a portrait. The bar is 42, so 30 leaves 6px of air
+     above and below.
+     ⛔ #220 TOOK THE BUST OFF THAT CHIP AND 30 STAYS, WHICH MAKES THIS A
+     DECLARED HEIGHT RATHER THAN A DERIVED ONE. Nothing on the bar is taller
+     than a 16px `.rart` mark now, so every chip would settle around 22 and
+     the row would sit thin in a 42px bar. The number is the bar's rhythm
+     from here on: it is what makes eight chips of different content read as
+     one strip, which is the ask this token was cut for. It is no longer a
+     function of anything, so nothing upstream can move it by accident. */
   --barChip:30px;
   /* ═══ #81 - THE BATTLE CLOCK, ONE NUMBER ═══════════════════════════════
      Every duration on the battlefield is written as a base × this, so the
@@ -2405,16 +2411,38 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:var(--f
 #wDisc .gd{position:absolute;left:0;right:0;bottom:0;height:30%;z-index:2;
            background:linear-gradient(180deg,#1c1409,#0e0a05);border-top:1px solid #5a4426}
 @media (prefers-reduced-motion:reduce){#wDisc .wh{transition:none}}
-/* the Captain's painted head in the party chip, and the inline-SVG glyphs
-   (sack, heart, paw) that replaced the font glyphs in #104 */
-.cchip .bust{width:24px;height:24px;border:1px solid var(--e1);display:block;flex:none}
+/* the inline-SVG glyphs (sack, heart, paw) that replaced the font glyphs in
+   #104. ⛔ `.cchip .bust` went with the portrait in #220 - the party chip
+   wears the race mark now, which `.rart` already sizes. */
 .cchip svg{display:block;flex:none}
+/* ⛔ #220 - AND THE ONE RACE MARK ON THIS BAR IS BIGGER THAN THE OTHERS.
+   `.rart` is 16px everywhere because #211 measured 16 as the biggest size that
+   costs nothing IN A LINE OF TEXT - 17 grows the line box and the row moves.
+   A `.cchip` is not a line of text: it is a flex row with `min-height` already
+   pinned at `--barChip`, so a mark costs nothing at all until it passes
+   30 - 2 (`--p1`) - 2 (border) = 26. 22 is taken and the chip measures 30,
+   unchanged. ⚑ It earns the size: this is the one place a race mark is
+   standing ALONE, with no name beside it and nothing else in the box to say
+   what the figure counts. */
+.cchip .rart{width:22px;height:22px}
 .tchip{display:flex;align-items:center;gap:4px;background:#2a1420;border:1px solid #5d2f45;
        padding:var(--p1) var(--p3);font-family:var(--mono);font-size:var(--fs1);color:var(--bloom-lit);cursor:help}
 /* Blessings & Curses — Total War style named company states */
 .bcchip{display:flex;align-items:center;gap:5px;background:#1a1a14;border:1px solid var(--e1);
        padding:var(--p1) var(--p4);font-family:var(--mono);font-size:var(--fs1);cursor:help}
 .bcchip b{font-weight:500;font-size:var(--fs1);letter-spacing:.06em}
+/* ⛔ #220 - THE MOOD FACE LOST ITS WORD, SO IT MAY NOT STAY AT LABEL SIZE.
+   (User: *"at mood show only icon on global map - not text. Text and full info
+   show only when expanded"*.) `.bcchip` sets `--fs1`, which was right while
+   the face was a bullet in front of STEADY and is the item-icon finding again
+   the moment the word goes: a picture standing alone at 10px is a smudge
+   (`.claude/rules/static-event-art.md`). `--fs5` is the chip's own figure size
+   two chips over, and `line-height:1` keeps the emoji's line box off the
+   chip's height - 15+2+2+2 is 21 against `--barChip`'s 30, so the strip does
+   not move. ⚠ The NAME is not lost: `WTIPS.mood.t` has been
+   `ms.ic+' '+ms.n` since it was written, so the hover is already the expanded
+   reading the ask names. */
+.bcchip .mface{font-size:var(--fs5);line-height:1}
 /* ⛔ #112 point 4 · THE CLASS WAS WRITTEN AND NEVER STYLED, AND THAT IS THE
    WHOLE BUG. ("When mouse hover on mood or health it show also, that it is
    actionable.") #106 points 7 and 8 made the mood chip and the heart into
@@ -4988,6 +5016,23 @@ a.popt.sendit{display:block;text-decoration:none}
   border:1px solid var(--e1);padding:var(--p1) var(--p4)}
 #menuBtn.on{display:block}
 #menuBtn:hover{color:var(--g4)}
+/* ⛔ #220 - AND ON THE MAP IT SITS TOP RIGHT (user: *"Move a menu to the
+   top right"*). Scoped to the world screen exactly the way `#audioBtn` carries
+   its own two overrides, and for the same reason: `MENU_ON` draws this button
+   on five screens and the battle's top-right corner is already spoken for by
+   the audio button at `top:74`. An unscoped move would follow it there.
+   ⛔ AND `top:52` IS TAKEN, WHICH ONLY THE SCREEN SAID. That row is
+   `#wZoom` - ROAD / NEAR / CLOSE, x 1118..1270, y 52..75 - and the first cut
+   of this rule put the button straight through the word CLOSE. It is not in
+   the stylesheet near either of these rules and nothing named it; a probe over
+   every visible box in the map's top-right corner is what found it, in one
+   pass, after the picture showed two words in the same place.
+   ⚠ SO THE ROW IS 82, AND IT IS ARITHMETIC: `#wZoom` ends at 75, this
+   button measures 24, and the tester's stack starts at `#winBtn`'s 134. 82..106
+   touches neither, with 7px of air above and 28 below.
+   ⚑ ? RULES stays bottom left: it is the only thing down there now, which is
+   the point of moving this one. */
+body:has(#world.on) #menuBtn{left:auto;right:10px;top:82px;bottom:auto}
 /* ═══ #108 - THE SPOTLIGHT TEACH LAYER ════════════════════════════════════
    One dim sheet inside #stage with a bright cutout over one REAL element.
    z 61: above the battle chrome (39-41) and the card popovers (60), below
@@ -33024,9 +33069,27 @@ function worldTick(){
   /* #150 - what is waiting behind each of the two doors, on the door itself */
   const lvUp=levelsWaiting(),kitUp=G.mustKit||kitWaiting();
   $('wCompany').innerHTML=
+    /* ═══ ⛔ #220 · THE CHIP COUNTS BODIES, AND THE PORTRAIT IS GONE ═════
+       (User, 2026-08-21: *"Add 1 more thing: amount of units. You can add just
+       human class icon and number. For party size instead of protrait"*.)
+       ⚑ THE COUNT HE ASKED FOR HAD NEVER BEEN ON THIS BAR, WHICH IS THE FIND.
+       `partyUsed()` is SEATS and seats are size-weighted - ratkin 1, human 2,
+       ogre 3 - so a company of five could read 9/12 and nothing on any screen
+       said five. The headcount is the bold figure now; the seats keep their
+       pair in the dim `.nm` label the PAYDAY chip already uses.
+       ⚠ AND THE WORD GOES BETWEEN THE TWO FIGURES, NOT AFTER THEM, WHICH IS
+       A MEASUREMENT AND NOT A PREFERENCE: driven on the shipped save the chip
+       read `4` `8/13 SEATS` and the two numbers land 6px apart, so the row
+       says "48/13" to anybody not already reading closely. `SEATS 8/13` is
+       the PAYDAY chip's own order - a `.nm` label, then its figure - and it
+       costs the chip nothing (127px either way).
+       ⚠ `rIcon('human')` AND NOT `rMark('human')`. The mark writes
+       `data-race`, which `bindLoreTips` opens the RACE lore box on - and this
+       picture does not mean "there is a human in the company", it means "a
+       body". The picture only, and the chip's own hover says the rest. */
     '<span class="cchip click'+(lvUp?' waiting':'')+'" data-w="party">'+
-      '<canvas class="bust" width="24" height="24"></canvas><b>'+
-      partyUsed()+'/'+PARTYCAP+'</b>'+
+      rIcon('human')+'<b>'+G.party.length+'</b>'+
+      '<span class="nm">SEATS '+partyUsed()+'/'+PARTYCAP+'</span>'+
       (lvUp?'<span class="cbadge star">★'+(lvUp>1?lvUp:'')+'</span>':'')+'</span>'+
     '<span class="cchip click'+(kitUp?' waiting':'')+'" data-w="kit">'+SACK_SVG+
       (kitUp?'<span class="cbadge">!</span>':'')+'</span>'+
@@ -33044,8 +33107,14 @@ function worldTick(){
       '<b style="color:#c15d55;font-size:var(--fs1)">UNPAID</b></span>':'')+
     /* #106 points 7 and 8: both of these are doors now, and each opens the
        one thing that changes what it measures */
+    /* ⛔ #220 - the FACE, and nothing else. The name is on the hover, whose
+       title has been `ms.ic+' '+ms.n` since #106 built it, and the colour
+       stays on the border where it always was - so the chip still sorts by
+       eye and costs the row 42px instead of 96. ⚠ The face is the ladder
+       out of `MOODSTATES`, which the road card's own morale chip wears too:
+       one glyph, one unit (#102). */
     '<span class="bcchip click" data-w="mood" style="border-color:'+ms.col+'66">'+
-      '<span>'+ms.ic+'</span><b style="color:'+ms.col+'">'+ms.n+'</b></span>'+
+      '<span class="mface">'+ms.ic+'</span></span>'+
     /* #150 - the heart, then the company's own figure beside it. The red pip
        is the "somebody is nearly down" alarm #106 built, given its own mark
        so it can no longer be mistaken for the average being low. */
@@ -33056,10 +33125,13 @@ function worldTick(){
       PAW_SVG+'</span>':'')+
     relics.map(k=>'<span class="tchip" data-tri="'+k+'">'+
       (GEAR[k].g||'✧')+' '+GEAR[k].n+'</span>').join('');
-  /* #104 point 1: the party chip wears the Captain's actual painted head
-     (or whoever leads what is left), the same bustFor() the token uses */
-  const bc=$('wCompany').querySelector('canvas.bust');
-  if(bc){const lead=member('you')||G.party[0];if(lead)bustFor(bc,lead);}
+  /* ⛔ #220 - #104 point 1 put the Captain's painted head on the party chip
+     and this is where it was drawn. It is off: a portrait answers "who leads
+     this lot", and the one job of the left-hand group is "how many bodies,
+     how much room is left, what do they cost". It was also the only 24px
+     object in a row of 16px marks, which is what the `--barChip` note above
+     was measured against. `bustFor` is untouched and still paints every
+     token, the roster, the tap-room strip and the battle portrait. */
   /* the counted resources, Battle Brothers' strip mirrored to the right.
      One SALVAGE segment on purpose: wood and iron alias the same pool,
      and showing both was the same number twice with different names on it */
@@ -33144,9 +33216,15 @@ function worldTick(){
       d:(lvUp?'<b style="color:#d9bd7e">★ '+lvUp+' unspent '+(lvUp>1?'levels':'level')+
           '.</b> Somebody has earned a perk or a stat point and nobody has chosen it '+
           'yet. It waits on their sheet until you do.<br><br>':'')+
-        'How many bodies the wagon and the pay-chest can carry. Everybody takes room by '+
-        'size - ratkin 1, human 2, ogre 3 - so a fistful of ratkin and one ogre cost the '+
-        'same seats. Widen the wagon bed at a wheelwright to raise it, permanently.',
+        /* ⛔ #220 - THE CHIP CARRIES TWO FIGURES NOW, SO THE HOVER READS THEM
+           BOTH, in order, before it explains anything. This is the expanded
+           half of the ask (*"full info show only when expanded"*): the bar
+           states the two numbers and the box says which is which. */
+        '<b>'+G.party.length+'</b> on the books, <b>'+partyUsed()+' of '+PARTYCAP+
+        '</b> seats spent.<br><br>'+
+        'Seats are what the wagon and the pay-chest can carry, and everybody takes room '+
+        'by size - ratkin 1, human 2, ogre 3 - so a fistful of ratkin and one ogre cost '+
+        'the same. Widen the wagon bed at a wheelwright to raise it, permanently.',
       act:'CLICK: the roster, their sheets and their gear.'},
     kit:{t:'THE KIT',col:'var(--g4)',
       d:(kitUp?'<b style="color:#8ca35a">! Something in the wagon beats what somebody '+
