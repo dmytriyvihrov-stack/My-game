@@ -259,7 +259,7 @@ Every outcome renders `evFxChips(paid)` plus `evGearStrip(got)`. The chips are t
 
 ⛔ **THE GLYPHS ARE NOT INTERCHANGEABLE, AND #150 FIXED THEM ONCE.** A morale chip wears the
 company's own **face** out of `MOODSTATES` (💀 😟 😐 🙂 😄), the same ladder the map's mood chip and
-the battle's nerve rungs use, and it shows the mood the choice **lands** the company in. **♥ means
+the battle's mood rungs use, and it shows the mood the choice **lands** the company in. **♥ means
 BLOOD and only blood**: it is the MENDED row, paid by `healAll` and the spring, and it is the same
 heart the road bar's health chip wears. Putting a heart on a morale row was a readout printing the
 wrong unit, which is #102's rule, and it survived from #143 to #150 because nobody said it aloud.

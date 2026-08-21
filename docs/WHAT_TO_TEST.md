@@ -26,6 +26,46 @@
 
 ---
 
+## 🙂 IT IS CALLED MOOD NOW, THE CAPTAIN HAS HIS OWN TRAIT, AND THE STAT BLOCK IS RE-LAID  *(#232 · 2026-08-22 · build log 8f.255)*
+
+**Reach it in three steps:** start a run → open the company sheet (the roster on the left) → you are
+looking at the whole of it. For the battle half: any fight, and read the plaque bottom-left.
+
+**What changed, and what should happen**
+
+- **The word is MOOD.** The sheet's third bar, the battle plaque, the aiming card's two rows, the
+  ladder hover, every skill's cost line, the RULES page (*HOW MOOD WORKS*), the tavern's teaches.
+  **A bug is any surface still saying NERVE.**
+- **Hover the MOOD row on the sheet.** The ladder is five rungs and each one now says only what it
+  costs. Under it, three lines: what it starts at, what puts it UP (+10 / +30), what puts it DOWN
+  (−14 / −5). **Those figures are read off the game's own table**, so if one is wrong the game is
+  wrong, not the caption.
+- **The teal banner is on IT ROCKS alone.** Happy has no picture. The three white flags below are
+  unchanged. On the battlefield nothing moved at all.
+- **The Captain is ★ CAPTAIN**, the same star he wears on the board.
+- **His trait is SLEEPS IN THE HARNESS**: +1 STR and +1 MOR, and **−2 MOR in anything under HEAVY**.
+  He starts in a padded jack, so he starts at the penalty: MORALE reads *Fairly brave*. **Put plate
+  on him and it should go to *Steady*.** That is the trait working.
+- **The block under ARMOUR / HITPOINTS / MOOD** now holds ACTIONS, the weapon, TO HIT, DODGE and
+  STEP, in the space that used to be empty. The four attribute icons and the four words should each
+  start on one straight vertical line, on every body in the party.
+- **THE BODY caption is gone**; **WHAT THEY CAN DO is SKILLS**. On a skill card the damage sits
+  under the name, the way it does on the battle card - not in the corner on top of the icon.
+- **The little battle figure moved** from under the portrait to the far right of the header.
+- **The stash starts with the cook-pot only.** Marrow's short sword is not in it any more.
+
+**What would be a bug**
+
+- Any readout still saying NERVE, or a place where MOOD and morale read as the same number (they are
+  not: MORALE is the capacity, MOOD is what is left of it).
+- A skill card whose damage overlaps its icon, or whose role word is painted over.
+- An attribute icon that does not line up with the three above it.
+- The Captain's morale NOT changing when you move him between light and heavy armour.
+- A sheet that scrolls on a plain level-1 body. It should not; the worst case measured 32px of room
+  to spare.
+
+---
+
 ## ⚑ EVERY STAT HAS A PICTURE NOW, AND IT CHANGES WITH THE WORD  *(#230 · 2026-08-21 · build log 8f.253)*
 
 **How to reach it in three steps:** open THE COMPANY (the roster button on the road) → look at the four
