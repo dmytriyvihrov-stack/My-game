@@ -94,10 +94,23 @@ The channel's suggested resting value was 24. **That number was not copied**, be
 to a game with room; this one is a fixed 1280x720 stage carrying a battle, a map and a company
 sheet. The scale is fitted to the build and 24 is its ceiling rather than its body.
 
-⛔ **A PADDING OVER 24 IS NOT SPACING, IT IS GEOMETRY, AND IT KEEPS ITS LITERAL.** Exactly one
-survives: `#wBar{padding:0 64px 0 var(--p5)}`, which reserves the run of bar the centred day plaque
-swings through. A scale step substituted there is a bug. If a second one ever appears, it gets a
-comment saying what it reserves, the way that one does.
+⛔ **A PADDING THAT IS GEOMETRY RATHER THAN SPACING KEEPS ITS LITERAL.** Two survive, and both
+carry the comment this paragraph asks for:
+
+| | what it reserves |
+|---|---|
+| `#wBar{padding:0 64px 0 var(--p5)}` | the run of bar the centred day plaque swings through |
+| `.hin>.zodds{padding:1px 2px}` | the one free band of a 37x42 hex, measured by #213 |
+
+A scale step substituted at either is a bug. ⚑ **THE SECOND ONE ARRIVED ON 2026-08-21 AND IS WHY
+THIS PARAGRAPH IS A TABLE.** #213's zone-of-control odds plate is the only chip on a hex with an
+opaque ground and a border, which is what makes it survive a body standing there where its two
+neighbours, `.hodds` and `.hdmg`, are text with a shadow and carry no padding at all. Its entry
+records the arithmetic: `.hodds` is y 7-17, `.hdmg` y 19-29, the sprite y -12-33 and the row in
+front paints from y 32, so **there is no uncontested slot, only the cheapest collision**. `--p1`
+grows the plate 2px into that collision and `0` puts the red edge flush against the digits. ⚠ It
+shipped off-scale and undocumented in #213 and was found by this counter during the 2026-08-21
+landing; the fix was the comment the rule already demanded, not a different number.
 
 ⛔ **AND A PADDING PAIRED WITH A NEGATIVE MARGIN IS ONE NUMBER WEARING TWO NAMES.** Two sticky
 footers on this build (`#wDlg #wChoices`, `.popts`) cancel their own bottom padding with a matching
@@ -211,7 +224,7 @@ First, that the three scales are still closed. In the file, from a shell:
 
 ```bash
 grep -o "font-size:[ ]*[0-9.]*px" prototype/grimtoll_slice.html | sort -u | wc -l   # 0
-grep -o "padding[a-z-]*:[^;}\"']*" prototype/grimtoll_slice.html | grep -oE "[0-9.]+px" | sort -u  # 64px, alone
+grep -o "padding[a-z-]*:[^;}\"']*" prototype/grimtoll_slice.html | grep -oE "[0-9.]+px" | sort -u  # 1px 2px 64px
 grep -o "border[a-z-]*:[^;}\"']*" prototype/grimtoll_slice.html | grep -icE "#(3d2f1d|4d3c22|6b5330|2c3d3f|35494c|33474a|3d5250)"  # 0
 ```
 
