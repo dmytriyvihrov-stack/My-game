@@ -56,6 +56,27 @@ BACKLOG = os.path.join(ROOT, "docs", "00_PLAN_AND_BACKLOG.md")
 TESTBENCH = os.path.join(ROOT, "docs", "WHAT_TO_TEST.md")
 CLAIMDIR = os.path.join(ROOT, ".grimtoll", "claims")
 
+# ⛔ THE ARCHIVES COUNT AS THE RECORD, OR THE SPLIT LOOKS LIKE A MASS DELETION.
+# CHANGELOG.md was 1.26 MB on 2026-08-21 and 82% of it was build-log rows from
+# before the era anybody was working in. Moving 195 of them under docs/archive/
+# is a MOVE: `grep` still reaches them, `claim.ps1`'s $ShipRecord still reads
+# them, and so does this. Read them here and the four-writes counter goes on
+# seeing every entry that ever shipped; forget them and it reports two hundred
+# entries as missing on the first run after the split.
+CHANGELOG_ARCHIVES = [
+    os.path.join(ROOT, "docs", "archive", "CHANGELOG_BUILD_LOG_pre_8f200.md"),
+    os.path.join(ROOT, "docs", "archive", "CHANGELOG_BUILT_ENTRY_TEXT.md"),
+]
+
+
+def changelog_text():
+    """The live changelog plus whatever has been split out of it."""
+    parts = ["".join(read(CHANGELOG))]
+    for p in CHANGELOG_ARCHIVES:
+        if os.path.exists(p):
+            parts.append("".join(read(p)))
+    return "\n".join(parts)
+
 # ⛔ THE FLOOR IS NOT AN OPINION ABOUT OLD WORK, IT IS THE LINE THIS CHECK WAS
 # BORN ON. Entries below it predate the counter and are summarised in one line
 # rather than listed: 16 of them have no registry row and re-deriving what
@@ -81,6 +102,14 @@ KNOWN_MISSING_SHIPPED = {196, 198, 199, 201, 208, 209}
 # ⚠ THE BAR IS "NOTHING TO PLAY", NOT "SMALL" OR "INTERNAL". A one-line CSS fix
 # to a screen still changes a screen and still gets its section.
 NO_TESTBENCH = {222}
+
+# ⚠ AN ENTRY CAN HONESTLY BE SHIPPED AND PARKED AT THE SAME TIME, WHICH IS WHY
+# WRITE 3 IS A NOTE AND NOT A FAULT. #134 is the case that proves it: the joke
+# door LEAVING the opening shipped (SHIPPED.md, 8f.162), and the door itself is
+# parked for a future set at the user's own word. Two different things wearing
+# one number, and neither row is wrong. A checker cannot tell that apart from a
+# backlog row nobody struck, so it reports and a human decides.
+SHIPPED_AND_STILL_PENDING_OK = {134}
 
 # ROW SHAPES. One regex per file and nowhere else, so a format change is one
 # edit here rather than four scattered greps. `8f.161b` is real, hence the
@@ -238,7 +267,7 @@ def structural(rep):
 def four_writes(rep):
     """Every entry at or above the floor, against the contract in SHIPPED.md's
     own header."""
-    cl = "".join(read(CHANGELOG))
+    cl = changelog_text()
     sh = "".join(read(SHIPPED))
     bl = "".join(read(BACKLOG))
     wt = "".join(read(TESTBENCH))
@@ -267,6 +296,26 @@ def four_writes(rep):
             rep.note("#%d has no row in the backlog's shipped table. That is "
                      "only a fault if it belongs to the clarity pass." % n)
 
+    # WRITE 3 OF 4: "strike it from the backlog". An entry with a registry row
+    # that is still sitting in NEXT / LATER / PARKED / YOURS is work the plan
+    # still thinks is waiting. Struck rows (`| ~~**NN**~~`) and rows already
+    # carrying a tick are not counted, because that IS the strike.
+    bl_lines = read(BACKLOG)
+    sec = ''
+    for l in bl_lines:
+        if l.startswith('# '):
+            sec = l
+        m = re.match(r'^\| \*\*(\d+)\*\*', l)
+        if not m:
+            continue
+        if not any(k in sec for k in ('NEXT', 'LATER', 'PARKED', 'YOURS')):
+            continue
+        n = int(m.group(1))
+        if n in in_sh and n not in SHIPPED_AND_STILL_PENDING_OK and '✅' not in l:
+            rep.note('#%d has a registry row and is STILL LISTED as pending in %s'
+                     ' (write 3 of 4: strike it, or say why it is both)'
+                     % (n, sec.lstrip('# ').strip()[:22]))
+
     stale = KNOWN_MISSING_SHIPPED & in_sh
     if stale:
         rep.note("KNOWN_MISSING_SHIPPED names %s, which now HAVE registry "
@@ -293,7 +342,8 @@ def claims(rep):
     """
     if not os.path.isdir(CLAIMDIR):
         return
-    blob = "".join("".join(read(p)) for p in (CHANGELOG, SHIPPED, BACKLOG, TESTBENCH))
+    blob = changelog_text() + "".join("".join(read(p))
+                                      for p in (SHIPPED, BACKLOG, TESTBENCH))
     for f in sorted(os.listdir(CLAIMDIR)):
         m = re.match(r"^(entry|build)-(\d+)\.claim$", f)
         if not m:
@@ -616,6 +666,20 @@ def do_prove():
 
 
 if __name__ == "__main__":
+    # ⛔ THE CONSOLE WILL NOT BE UTF-8 AND THIS TOOL PRINTS THE DOCS' OWN TEXT.
+    # A finding quotes a heading, and every heading in this repo carries a mark
+    # (⛔ ⚑ ⚠ ⏸ 🟡). On a default Windows console that is cp1251/cp866, and
+    # `print` raises UnicodeEncodeError - so the tool DIES on exactly the finding
+    # it was written to report, and dies hardest inside the pre-commit hook,
+    # where the console is cp866 and there is nobody watching the traceback.
+    # ⚠ Found by making the write-3 check fire: it produced a note naming the
+    # PARKED section and took the whole process down with it.
+    for _s in (sys.stdout, sys.stderr):
+        try:
+            _s.reconfigure(encoding="utf-8", errors="replace")
+        except Exception:
+            pass
+
     verb = sys.argv[1] if len(sys.argv) > 1 else "check"
     strict = "--strict" in sys.argv
     if verb == "check":

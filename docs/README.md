@@ -457,10 +457,10 @@ feel like filler too.
 |---|---|
 | **`README.md`** *(this)* | **Orientation.** What the game is, the pillar, the traps. Start here |
 | [`00_PLAN_AND_BACKLOG.md`](00_PLAN_AND_BACKLOG.md) | **The work.** The current focus, then one line per entry. **Everything in it is actionable** |
-| [`archive/BACKLOG_ENTRY_SPECS.md`](archive/BACKLOG_ENTRY_SPECS.md) | the full text of every unbuilt entry, for when a session picks one up. **235 KB: open the one entry, never the file** |
-| [`SHIPPED.md`](SHIPPED.md) | **The registry.** One line per shipped entry, **every open remainder named**, which numbers are spent. 188 KB |
-| [`CHANGELOG.md`](CHANGELOG.md) | **The record.** The build log with the reasoning, and shipped entries in full. **History, never instructions.** **1.1 MB: open one dated row, never the file** |
-| [`WHAT_TO_TEST.md`](WHAT_TO_TEST.md) | **The test bench, and it is the USER'S file.** How to reach each new thing in three steps, what should happen, what would be a bug. A session **writes** to it and never takes instructions from it. **104 KB: open one section**, and since the 2026-08-19 cut it keeps 2026-08-17 onward |
+| [`archive/BACKLOG_ENTRY_SPECS.md`](archive/BACKLOG_ENTRY_SPECS.md) | the full text of every unbuilt entry, for when a session picks one up. **290 KB: open the one entry, never the file** |
+| [`SHIPPED.md`](SHIPPED.md) | **The registry.** One line per shipped entry, **every open remainder named**, which numbers are spent. 207 KB |
+| [`CHANGELOG.md`](CHANGELOG.md) | **The record.** The build log with the reasoning. **History, never instructions.** **257 KB: open one dated row, never the file.** ⛑ **Split on 2026-08-21**: the 195 build rows before `8f.200` and the full text of entries #1-#123 are in [`archive/`](archive/), still greppable |
+| [`WHAT_TO_TEST.md`](WHAT_TO_TEST.md) | **The test bench, and it is the USER'S file.** How to reach each new thing in three steps, what should happen, what would be a bug. A session **writes** to it and never takes instructions from it. **88 KB: open one section**, and since the 2026-08-21 cut it keeps **2026-08-19 onward** |
 | [`DEPLOY.md`](DEPLOY.md) | one command, and why the hosted page is generated rather than copied |
 | [`ITCH_PAGE.md`](ITCH_PAGE.md) | **the itch.io release** *(#203)*: `tools\build_itch.ps1` for the zip, the page text to paste, the cover and screenshots, and why the embed is 1280x720 and not smaller |
 | [`PARALLEL_SESSIONS.md`](PARALLEL_SESSIONS.md) | **two sessions, two desks.** `tools\branch.ps1 new <name>` gives a session its own branch and its own checkout, so nobody waits on the prototype; `tools\branch.ps1 done <name>` merges it back. **Numbers are still claimed**, because git cannot merge a counter. Read it before running two sessions |
@@ -472,18 +472,20 @@ feel like filler too.
 | [`08_MUTATIONS.md`](08_MUTATIONS.md) · [`09_SETTLEMENTS_AND_LEGACY.md`](09_SETTLEMENTS_AND_LEGACY.md) | two designed systems, partly built |
 | `content/` | authoring source. **`events_book.html` runs the other way**: every authored word generated OUT of the running build for the user to edit |
 | [`../.claude/rules/`](../.claude/rules/) | **standing procedures for jobs that repeat.** Read the one that matches before touching that surface, or it gets re-derived: **`ui-scales.md`** (type, edge and spacing: the three closed vocabularies every screen shares, and the 10px floor) · **`event-cards.md`** (how long a card's prose may be, and where the receipt lives) · **`world-map-sights.md`** (the icon on a map node) · **`static-event-art.md`** (stage-3 event art mapping) |
-| `docs/archive/` | **three files, all of them live references**, and all three are linked from this table where they are wanted: `BACKLOG_ENTRY_SPECS.md`, `PLAN_REASONING.md`, `README_WHERE_IT_STOOD.md`. The six dated snapshots that used to sit beside them were deleted on 2026-08-14: see the note below |
+| `docs/archive/` | **six files, all of them live references**, and all three are linked from this table where they are wanted: `BACKLOG_ENTRY_SPECS.md`, `PLAN_REASONING.md`, `README_WHERE_IT_STOOD.md`, `MOLE_PEOPLE_PARKED_CONCEPT.md`, and the two changelog splits. The six dated snapshots that used to sit beside them were deleted on 2026-08-14: see the note below |
 | **the running build** | **what is actually true. It wins over every document.** |
 
 ### ⛔ Open the big files by section, never whole
 
-`CHANGELOG.md` (1.1 MB), `archive/BACKLOG_ENTRY_SPECS.md` (235 KB) and `WHAT_TO_TEST.md` (104 KB) are
+`archive/CHANGELOG_BUILD_LOG_pre_8f200.md` (758 KB), `archive/BACKLOG_ENTRY_SPECS.md` (290 KB),
+`CHANGELOG.md` (257 KB), `SHIPPED.md` (207 KB) and `archive/CHANGELOG_BUILT_ENTRY_TEXT.md` (215 KB) are
 **records, not reading**. Grep for the entry number or the dated heading and read that range. A
 session that reads any of them end to end spends a fifth of its context on history before it has
 opened the game.
 
-⚠ **Those three figures were 640, 152 and 63 until 2026-08-14, then 877, 199 and 93 until
-2026-08-19, and every one of them had been wrong for days by the time it was read.** A size written
+⚠ **Those figures were 640, 152 and 63 until 2026-08-14, then 877, 199 and 93 until 2026-08-19,
+then 1.1 MB, 235 and 104 until 2026-08-21, and every one of them had been wrong for days by the
+time it was read.** A size written
 into prose is a counter that lives in a sentence, which is the same shape as the entry number that
 cost five collisions. **Re-measure rather than trust the sentence:** `ls -la docs/ docs/archive/`.
 
@@ -492,7 +494,19 @@ cost five collisions. **Re-measure rather than trust the sentence:** `ls -la doc
 > the bench keeps 2026-08-12 onward. ⛔ **Nothing was copied into a new file, because git is the
 > archive that costs nothing**: `git show 5bb2bf2:docs/archive/<name>` returns any of them whole.
 > **A superseded document does not need a shelf, it needs a commit hash.** What is left in
-> `archive/` is the three files that are live references, and they are linked from this table.
+> `archive/` is the files that are live references, and they are linked from this table.
+>
+> ⛔ **AND ON 2026-08-21 THAT RULE GOT ITS ONE EXCEPTION, WITH A REASON.** `CHANGELOG.md` had
+> reached **1.26 MB** and **82% of it was build-log rows from before the era anybody was working
+> in**. Those rows went to `archive/CHANGELOG_BUILD_LOG_pre_8f200.md` and the built-entry full
+> texts to `archive/CHANGELOG_BUILT_ENTRY_TEXT.md` - **as files, not as a hash** - because
+> `.claude/rules/*` and the memory index cite old entry numbers constantly (#82's *worth the
+> worst thing in it*, #102's wrong-unit rule, #137's *derived, never authored*, #143's receipt)
+> and **a rule that points at an argument `grep` cannot reach is worse than a long file.**
+> ⚡ The test bench was cut the same day the OTHER way, by deleting and naming a hash, because
+> **a played test has no such readers**. The distinction is the rule: keep what is CITED, hash
+> what is merely PAST. ⚠ `tools/claim.ps1`'s `$ShipRecord` and `tools/record.py` both read the
+> two changelog archives, or a split would look to them like a mass deletion.
 
 ---
 

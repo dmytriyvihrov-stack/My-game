@@ -374,11 +374,19 @@ function Claim-One([string] $kind, [hashtable] $used) {
 # what "shipped" means in this repo. A number in shots\ or in the prototype but
 # not in these is work in flight, and its claim is meant to survive.
 # ---------------------------------------------------------------------------
+# 2026-08-21: CHANGELOG.md was split. 82% of it was build-log rows from
+# before the era anybody was working in, so 195 of them and the built-entry
+# full texts moved under docs/archive/. THEY ARE LISTED HERE OR THE SHIPPED
+# SCAN FORGETS EVERY NUMBER IT EVER KNEW, and this scan is what lets a spent
+# claim sweep itself. The split is a move, not a deletion, exactly so both
+# this list and `grep` still reach the reasoning.
 $ShipRecord = @(
   'docs/CHANGELOG.md',
   'docs/SHIPPED.md',
   'docs/WHAT_TO_TEST.md',
-  'docs/00_PLAN_AND_BACKLOG.md'
+  'docs/00_PLAN_AND_BACKLOG.md',
+  'docs/archive/CHANGELOG_BUILD_LOG_pre_8f200.md',
+  'docs/archive/CHANGELOG_BUILT_ENTRY_TEXT.md'
 )
 
 function Get-ShippedNumbers([string] $Ref = 'main') {
