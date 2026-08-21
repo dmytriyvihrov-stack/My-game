@@ -99,7 +99,7 @@ carry the comment this paragraph asks for:
 
 | | what it reserves |
 |---|---|
-| `#wBar{padding:0 64px 0 var(--p5)}` | the run of bar the centred day plaque swings through |
+| `#wBar{padding:0 86px 0 var(--p5)}` | the run of bar the top-right button group stands in |
 | `.hin>.zodds{padding:1px 2px}` | the one free band of a 37x42 hex, measured by #213 |
 
 A scale step substituted at either is a bug. ⚑ **THE SECOND ONE ARRIVED ON 2026-08-21 AND IS WHY
@@ -135,7 +135,7 @@ mechanism: nobody decided it, so it was decided nine times.
 ⛔ **A HEIGHT IS NOT A `--p` STEP AND MUST NOT BE MADE ONE.** This file governs `font-size`, a
 structural `border-color` and `padding`; a shared box size is none of the three, and substituting a
 spacing token for it would be the wrong-unit bug the file spends §2 forbidding. `--barChip:30px`
-sits in `:root` on the same footing as `#wBar`'s 64px reservation, and it carries its arithmetic
+sits in `:root` on the same footing as `#wBar`'s 86px reservation, and it carries its arithmetic
 for the same reason.
 
 ⚑ **30 IS NOT A TASTE, IT IS THE ONE LOAD-BEARING CHIP.** The party chip holds a 24px bust plus
@@ -224,7 +224,7 @@ First, that the three scales are still closed. In the file, from a shell:
 
 ```bash
 grep -o "font-size:[ ]*[0-9.]*px" prototype/grimtoll_slice.html | sort -u | wc -l   # 0
-grep -o "padding[a-z-]*:[^;}\"']*" prototype/grimtoll_slice.html | grep -oE "[0-9.]+px" | sort -u  # 1px 2px 64px
+grep -o "padding[a-z-]*:[^;}\"']*" prototype/grimtoll_slice.html | grep -oE "[0-9.]+px" | sort -u  # 1px 2px 86px
 grep -o "border[a-z-]*:[^;}\"']*" prototype/grimtoll_slice.html | grep -icE "#(3d2f1d|4d3c22|6b5330|2c3d3f|35494c|33474a|3d5250)"  # 0
 ```
 
