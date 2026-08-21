@@ -92,6 +92,100 @@ AGI) · head still ringing (−2 INT) · rattled (−2 MOR) · **dead arm (one a
 **What is deliberately not there yet.** AUTO will still walk a last-rung body into a losing exchange,
 and the road card that asks somebody to pull the Thing in Armour off the road now sends them up the
 ladder without saying so. Both are named in #34 and both are the next work here.
+## ⚔ THE SEVEN-ASK BATCH  *(#224 · 2026-08-21 · build log 8f.247)*
+
+Seven separate things. They do not touch each other, so any one of them can be judged on its own.
+
+### 1. The opportunity-attack % is on your cursor now
+
+**How to reach it in three steps:** any fight → let an enemy or two get right up against one of
+yours → with MOVE in hand, hover a green hex.
+
+**What should happen.** A red chip on the hex under the pointer, reading `⚔ 68% · 83%`: what each
+body holding you would land if you took that step. The enemies themselves still glow red (that is
+WHO), and they no longer carry a number. Hover the chip and it names them one by one. With more
+than three holding you it reads `⚔ 100% · 72% · 8% +3`, and the hover still names all of them.
+
+**What would be a bug.** A number left on an enemy sprite. A chip that stays up when you move the
+pointer off the green. A chip on a hex the click would not actually take you to.
+
+### 2. The chase and Blood on the Road are fought on open ground
+
+**How to reach it in three steps:** start a run → take the chase on the wheel-rut road → look at
+the field before you move anybody.
+
+**What should happen.** Open ground with room to walk: a thin stand of alder instead of a wood, no
+burning scrub, almost no water. Blood on the Road the same, on the fen. Every other fight in the
+game is untouched, including THE BROKEN MEN, which is still 26 trees.
+
+**What would be a bug.** Fire on either of those two boards. A wall of stone across the middle.
+**Or the opposite complaint, which is worth having:** if the alder cut now reads as *not a wood at
+all*, say so - seven trunks is one number.
+
+### 3. You can walk out of the wedding, until you have killed somebody
+
+**How to reach it in three steps:** the wedding, take the door that starts the fight → look at
+WITHDRAW before you swing at anybody → kill one of them and look again.
+
+**What should happen.** Before any blood: WITHDRAW is live and it costs **nothing at all**. The
+moment one of them is dead the button greys and reads *"Your hands are in blood already. Whatever
+this was going to be, it is that now, and every one of you knows it has to be finished."* A body
+knocked DOWN but still breathing does not shut the door - only a dead one does.
+
+**What would be a bug.** A withdrawal that still charges mood. The button greying before anybody
+has died. The old 22-point price appearing anywhere.
+
+### 4. THE SECOND SHAPE - a trinket that puts another one of you on the board
+
+**How to reach it in three steps:** find or buy the trinket (it is rare - Coldharrow's rack, or a
+find after a fight) → put it on somebody → in a fight, press **CAST A SHAPE**.
+
+**What should happen.** Another one of that body appears beside them, identical, and never moves.
+It is very hard to hit. Anything that does land goes straight through it and it is gone - *"The
+blow goes through X and there is nothing in it. There never was."* Untouched, it stands for two of
+the caster's turns and then vanishes quietly. One at a time, and a three-turn cooldown.
+
+**What would be a bug.** A shape that takes a turn on the rail. A shape that counts on the ⛊
+capsule at the top of the screen. A shape whose death is announced as a kill, or which pays
+anybody experience. **And the one to watch for:** if your whole company goes down while a shape is
+standing, the fight must still END.
+
+### 5. The kill tally, once, at the foot of the company sheet
+
+**How to reach it in three steps:** company sheet → pick somebody who has killed people → look at
+the top of the sheet and then at **WHAT HAPPENED TO THEM**.
+
+**What should happen.** Nothing at the top any more. At the foot: `🧑 4  🐀 1  🐾 2` and then
+`7 DEAD` - the same race marks the rest of the game uses, a paw for beasts, and a figure instead of
+a row of repeated glyphs. Hover a pair for *"4 men"*.
+
+**What would be a bug.** The old ◉ ⬩ ⬢ marks anywhere. A tally still up in the chip row.
+
+### 6. What kind of company this was, at the end of the run
+
+**How to reach it in three steps:** play a run → finish it, either way → read the end card.
+
+**What should happen.** A row under **WHAT YOU DID ON THE ROAD** (or *WHAT THEY DID*, on a dead
+company): the same eight door marks the cards use, each with how many times you took that kind of
+door. `⚔️ FIGHT 3  ☠️ EVIL 1  👣 LEAVE 5  🙏 HONOR 2`. A door wearing two marks counts on both.
+
+**What would be a bug.** A count that does not match what you remember doing. A row on a company
+that never opened a card. Anything that reads as a SCORE rather than as a record.
+
+### 7. The crossbow
+
+**How to reach it in three steps:** buy it at Coldharrow (165) or find one after a fight → put it
+on somebody → shoot something standing right next to them.
+
+**What should happen.** It hits hard (24-34), it takes **both hands** so no quiver and no shield,
+and it does not care in the least that somebody is on top of you - **31% adjacent against the
+hunting bow's 5% on the same hex**. Anything man-sized it hits goes back a hex; an ogre does not.
+Then the card greys and reads EMPTY: WIND IT FIRST, and **WIND IT** costs one action. The ordinary
+turn is shoot · wind. Under AUTO the company does the same by itself.
+
+**What would be a bug.** A crossbow that can be fired twice in a row. A WIND IT that is live on a
+loaded weapon. A body under AUTO that fires once and then never shoots again for the whole fight -
+that is the one thing this could get wrong and it would be quiet.
 
 ---
 
