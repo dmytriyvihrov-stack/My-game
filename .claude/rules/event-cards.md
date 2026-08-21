@@ -567,6 +567,72 @@ ROADS, and the next road out of the fen is `mother -> vill`.
 gate here: `openCamp` falls back to `openVignette` when nothing qualifies. Measured, 8 incidents
 before the Fen and 9 after.
 
+## ⛔ #219 · THE OPENING IS THE FOURTH DECK, AND THE STAGE STOPPED ASSUMING ITS BOX
+
+*(2026-08-21. The user: **"make intro (before fight) and after picking name in the same event style
+(after you kind of get people and money)"**.)*
+
+#209's law is *"a new deck adds a fifth caller, never a second renderer"*, and **the opening was the
+deck nobody had counted**. THE THREE BELLS and THE MAN IN THE CORNER are prose and doors like every
+other card in the game, and they were still being drawn by `proCard` into the 800px column the road,
+the fire and the vignette all left behind. `prStage()` is the new caller and it is nine lines. **Not
+one word of either card changed**, which is the same result #209 got across 99 cards and for the same
+reason: the beats, the voices, the faces and the picture treatment are all DERIVED.
+
+⛔ **WHICH BOX THE STAGE IS IN IS STATE NOW, AND IT WAS A LOOKUP FOR AS LONG AS THERE WAS ONLY ONE.**
+`evFlow`, `evFront` and the beat pips read `$('wDlg')` by name; `#wDlg` is a child of `#wMap`, and the
+map does not exist yet when these two cards are read. `EVSTAGE.dlg` holds the host and `evHost()` is
+the one reader. ⚠ **`placeDlg` IS OPTED OUT OF (`place:false`)**, because it centres inside `#wMap`
+and reads `$('wDlg')` itself, so an unguarded call would have moved the WORLD's card instead of its
+own. The opening's host is centred by `#prologue`'s own flexbox: measured 50,49 in a 1280x720 stage,
+which is 1180x622 dead centre.
+
+⛑ **THE CSS IS `:is(#wDlg,#prDlg)` AND NOT A SHARED CLASS, AND THAT IS ARITHMETIC RATHER THAN
+STYLE.** `:is()` takes the specificity of its most specific argument, so all **30** stage selectors
+keep exactly the weight they had. A class would have dropped them below `#wDlg .bd{overflow-y:auto}`
+and handed the stage its own scrollbar - the fault #206 deleted from this card. ⚠ **Anything added
+to the stage's CSS goes in the `:is()`**, or it lands on the road cards and not on the opening.
+
+⚑ **A DECK MAY HAND IN TWO MORE THINGS AND THEY BOTH BELONG TO THE LAST BEAT.** `extra` is an HTML
+string rendered into the flow after the receipt, and `wire` is a callback run after `evDoors`. The
+contract card uses both for the 7x7 naming form, which is neither prose nor a door and must not be
+seen before the offer has been read to the end. ⚠ **`wire` runs AFTER `evDoors` on purpose**: the
+picker writes the chosen name onto the door that spends it, so the door has to exist first. ⚠ And
+`.evflow` is `pointer-events:none` so a click on the prose steps the beat - anything INTERACTIVE in
+there hands the pointer back, the way `.evchoices` already does.
+
+⛔ **THE CONTRACT CARD IS THE FIRST CARD IN THE GAME WHOSE FLOW DOES NOT FIT, AND THE NUMBER IS THE
+ARGUMENT.** 698 into 518, against **439** for THE DOOR SHRINE, which is the heaviest card the road
+has. It is not badly written: it carries a receipt strip AND a naming form on top of four beats, and
+no road card carries either. Three cuts, each right on its own merits:
+
+- the picker goes to **one list per row** (four rows to two, 115px to 53) with the tracking off,
+  which is `.claude/rules/ui-scales.md` §4's own trade on `.role`, made for the same reason - the box
+  may not grow, so the letter-spacing gives instead of the size. **No word clips**, measured;
+- **"THE ROOM SETTLES" and its divider are hidden inside the stage.** A road card's receipt is chips
+  and nothing else (#143), and a third small-caps heading under a title and a mark is exactly the
+  furniture this file keeps deleting. ⚠ Hidden rather than cut from `tavernReceipt`, because the
+  dormant column path has no title of its own and still wants it;
+- and the last **99px fades at the top edge** rather than slicing a line in half. `.evflow.cut` is
+  set by `evFlow` and by the box's own `onscroll`, so it is gone the moment the player scrolls back.
+  ⚠ **The threshold is 8px and not 0**: the opening measures 521 into 518, three pixels of
+  sub-pixel rounding across six beats, and a fade over a card that is effectively full reads as a
+  smudge on its first line.
+
+⚑ **AND #150's TITLE CUT IS OVERRULED BY THE FORM, NOT BY TASTE.** *"we don't need a name for it so
+far at left right corner"* was said about a COLUMN card sitting one pixel under a hard 684px ceiling,
+where an `<h1>` cost 33px of prose. On the stage the title is absolutely positioned over the painting
+and costs nothing, and every other card in the game carries one. The opening is **THE THREE BELLS ·
+before the road**; the contract keeps its own title and takes **after the brawl** / **the far table**,
+derived from the branch its prose already branches on. If the title is still not wanted, `title:''`
+and the `<h3>` is not drawn.
+
+⚠ **`proCard` HAS NO LIVE CALLER NOW** and is kept for the reason `contractSettle` and `prologueEnd`
+are: the parked joke door (#134) and the parked floor door (#138) both land there. ⛔ **A restored
+door lands on the STAGE** - a `doors:[]` row in the `prStage` call, never a fourth argument to
+`proCard`.
+
+
 ## Before the card ships
 
 

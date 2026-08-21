@@ -234,6 +234,28 @@ is no card for it to be the stage of. It is embedded because it arrived with the
 set, and **an asset sitting on disk unbuilt is the silent-failure shape #190 wrote
 down**; wiring it is one line on the day that screen gets the treatment.
 
+
+⚑ **AND THE OPENING'S TWO CARDS ARE ON `EVJ64` AND `EVJ65`** *(#219, 2026-08-21)*. `prStage()`
+asks `jStageFor` first, the same as every other deck, so the two prologue cards took the wide
+treatment the hour the masters arrived: `EV-J64_three-bells-prologue-stage.png` and
+`EV-J65_contract-after-brawl-stage.png`, both 1672x941, mapped as `prologue:'EVJ64'` and
+`contract:'EVJ65'`. ⚑ **The whole landing was two file copies, `build_j_pack.py` +
+`inject_j_pack.ps1`, and two rows** - which is the point of the three-steps-and-one-row shape above,
+demonstrated rather than asserted. **`EV00P` and `EV00E` are NOT deleted**: they are what `prStage`
+falls back to in a build where the J pack has not been injected, and they are what the two cards
+shipped on for the few hours in between.
+
+⛔ **AND THESE TWO PAINTINGS SHOW THE COMPANY, WHICH IS AN APPROVED EXCEPTION AND NOT A DRIFT.**
+The standing composition rule keeps the party in the hero cards on the left and OUT of the painted
+right side, so a card can never show a body the roster disagrees with. The user explicitly approved
+breaking it for these two, because a tavern confrontation with nobody in it and a contract scene with
+nobody to hand the purse to are not scenes. ⚠ **It binds these two keys and nothing else.** A road
+or camp master that puts your people in the painting is still a composition fault.
+
+⛔ **`EV00E`'s narrative lock below binds `EVJ65` too**: he crosses the wreckage, sits uninvited,
+and sets a CLOSED purse down. He never throws it. The delivered master obeys it - the purse is
+placed, and the two paid swords are small at the open door.
+
 ## Narrative locks
 
 

@@ -82,6 +82,7 @@ RACE_BOX   = (128, 128)   # drawn at 19x19 in the corner of that cell
 ALPHA_FLOOR = 40
 AIR = 0.04                # keep a little air or a trimmed glyph touches its edges
 JPEG_Q = 82               # build_assets.ps1's own quality. One house number.
+STAGE_BOX = (1672, 941)    # the authored J canvas; reject one-pixel drift
 
 
 def build_mark(path, box, mode):
@@ -160,6 +161,9 @@ def main():
         if not f.lower().endswith('.png'):
             continue
         img = Image.open(os.path.join(STAGE, f))
+        if img.size != STAGE_BOX:
+            sys.exit('%s is %s and the J stage box is %s: normalize the master '
+                     'before embedding it' % (f, img.size, STAGE_BOX))
         key = f.split('_')[0].replace('-', '')
         b = jpeg_bytes(img)
         groups['JSTAGE_ART'].append((key, 'jpeg', base64.b64encode(b).decode('ascii')))
