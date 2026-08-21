@@ -26,6 +26,26 @@
 
 ---
 
+## 🧪 NINE SMALL ONES: THE CARD SCROLLS, THE HOVERS STOP BEING CUT, AND THE MAP GETS ITS CONTRAST BACK  *(#223 · 2026-08-21 · build log 8f.246)*
+
+**How to reach it in three steps:** open the game → read the contract card to the end and try the wheel over the prose → then the world bar, then the company sheet.
+
+**What it is.** Your batch of nine. Four of them turned out to be the same kind of fault - a thing that was built, wired and invisible - so they are grouped here:
+
+- **the card scrolls.** The wheel over the prose and the scrollbar both work, and the bar is the thin gold one every other box in the game has rather than the white Windows one in your screenshot.
+- **the ◎ THE CIRCLE chip has its hover.** It always had one, since #136; it lived in a 24px row and every pixel of it was cut off. Same for three popovers on the sheet that were being sliced 61px, 21px and 21px on the left and right - the ARMING SWORD card and the BAG and OFF HAND slots.
+- **the map is darker and reads sharper.** Measured rather than eyeballed: the flat black wash it used was taking 44% of the picture's local contrast, which is what an eye calls soft. It is a brightness/contrast filter now - darker at the median than before AND a quarter more separation - and the canvas draws at twice the resolution.
+- **☰ MENU and ♪ swap places** on the map: MENU into the top bar, the sound toggle under it.
+- **the seat count is ⤢ 8/13** instead of the word SEATS. The word is still on the chip's hover, in full.
+- **the payday hover names everybody.** Each body, what they draw a day, and the total under them.
+- **the bag and the empty pet slot** stop printing *"throwables and potions, later"* and *"Found on the road, not bought."* on the face of the slot. Hover the bag and it still tells you what it is for.
+- **negative feedback has a SEND IT button** again, on the 👎 branch only.
+
+**What should happen.** On a card long enough to overflow (the contract card is the one that does) the wheel moves the prose and the top edge fades. On the sheet, mark somebody with THE CIRCLE and hover the chip: a box opens ABOVE it, whole, even though it hangs far outside the column - and the same for the leftmost ability card. The map should look like the same painting with the haze taken off. The payday hover should add up: each wage summed is the ◉ figure it prints, and that figure times the days left is the bill on the chip. SEND IT should say THANK YOU for a beat and close, and your words are kept either way - they are written as you type, exactly as before.
+
+**What would be a bug.** A card that scrolls but whose beats stop advancing when you click the prose - that click is supposed to still step the card. A popover that now covers something you needed to read: it escapes its column on purpose, so say where. A map that has gone too dark, or too contrasty - both are one constant and one line to change. The bag hover saying nothing at all. And **the terrain will still be a little soft at the NEAR camera stop, and that one I cannot fix here**: the map paintings are 1280 wide and the default zoom shows them at 1562, so there is no more detail in the file. A wider master is the only thing that changes it.
+
+---
 ## 💰 THE PAYDAY GETS OUT OF THE CARD'S WAY, AND SAYS WHAT IT PAID  *(#221 · 2026-08-21 · build log 8f.244)*
 
 **How to reach it in three steps:** walk the road until a day divisible by four → arrive somewhere with a card waiting → watch the order things happen in.
