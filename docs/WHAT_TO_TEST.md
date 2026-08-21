@@ -26,6 +26,62 @@
 
 ---
 
+## 🪞 THE MIRROR - A PRACTICE FIGHT WHERE YOUR HAND GOES THE OTHER WAY  *(#215 · 2026-08-21 · build log 8f.238)*
+
+**How to reach it in three steps:** menu → THE PRACTICE FIELD → under the three columns there is a new row, **THE RULE**. Pick **The mirror**, then TAKE THE FIELD.
+
+**What it is.** Every click you make on the board is folded across the vertical line through the body that is acting. Point at a hex to the left and you walk to the mirror of it on the right. Point at the enemy on your left and you swing at the one on your right. It is the whole board, not just movement: steps, swings, shots, workings, and both halves of a throw.
+
+**Three things are there to keep it fair rather than cruel:**
+
+- **a dashed line down the board**, through whoever is acting - that is the fold;
+- **an ivory ring on the hex your click would actually land on**, the moment you point anywhere. It is the same ring the board already draws under the pointer, moved to the other side;
+- **the cursor is a mirrored pair of boots**, on every hex, because the sword-and-arrow cursors describe the hex you are pointing at and in the mirror that is not the hex you will hit.
+
+**What should happen.** Reading the board is honest - the odds on a hex, the hover card, the damage preview all describe the hex they are on. What is turned round is only your hand. If the fold lands off the edge of the board, the click does nothing, spends nothing, and the log says *"Your hand goes the other way, and there is nothing over there."* Standing near an edge therefore costs you options, which is the point: the middle of the board is where a mirrored company wants to be.
+
+**What would be a bug.** Anything mirrored outside a practice fight with THE MIRROR picked - a campaign battle, or a practice fight on **Straight** - is a leak and I want to hear about it immediately. Also: a click landing anywhere other than the ring; the ring failing to appear while you sweep the pointer over the board; AUTO (developer tools on) playing badly, because AUTO is deliberately NOT mirrored; the dashed line not moving when the turn passes to your next body.
+
+**What I want your ruling on.** Whether it is fun or merely annoying, and whether the landing ring gives too much away - the alternative is to hide it and make you work the fold out in your head, which is harder and more of a prank. It is one line to change either way.
+
+---
+
+## ⚔ THE OPPORTUNITY-ATTACK % ONLY SHOWS WHILE YOU ARE AIMING A STEP  *(#215 · 2026-08-21 · build log 8f.238)*
+
+**How to reach it in three steps:** any fight → let an enemy get into contact with one of yours, front or shoulder → it is your turn, so just move the pointer around the board.
+
+**What it is.** #213's red `⚔ NN%` plates used to stand on the board for the whole turn. Now they appear only while the pointer is on ground a step would actually take - the same hexes the red cursor appears on - and go out again the moment you point at anything else.
+
+**What should happen.** The red glow on the enemies who would swing stays up all turn (that is *"these bodies have a hand on you"*). The percentage is the answer to *"and what does this particular step cost"*, so it comes with the red boots and leaves with them.
+
+**What would be a bug.** A percentage still showing while you are pointing at your own body, at an enemy, or off the board. A percentage that does NOT show while the cursor is the red boots.
+
+---
+
+## 🐺 A BEAST IS NOT GIVEN A PEOPLE'S FACE  *(#215 · 2026-08-21 · build log 8f.238)*
+
+**How to reach it in three steps:** practice field → **The Pack** (or **The Mirehares**) → hover any dog, and watch the left-hand panel when one of them takes its turn.
+
+**What it is.** A Lurcher used to read `🐺 PACK-BEAST · 🐀 RATKIN`, with a ratkin's painting beside the word, and the plaque drew a ratkin foot-soldier's portrait on it (a ratkin CHIEFTAIN's, on The Bitch). Mirehares had the same. An animal now gets its bestiary line and nothing else, and no ratkin sheet.
+
+**What should happen.** `🐺 PACK-BEAST` alone on a dog, `♞ MIREHARE` alone on a hare, `🐉 GREAT BEAST - LINDWURM` on the Fen-Mother. Ratkin, ogres and humans are untouched - they keep the race word and the mark.
+
+**What would be a bug.** Any animal still showing a race word, or a rat's face on the plaque. And the one I already know about and left alone: **the Fen-Mother wears the cub's portrait.** That is a beast sheet on a beast, so it is honest about the kind of thing she is and wrong about which one - say if it bothers you and it gets its own art row.
+
+---
+
+## 😐 THE MOOD FACE ON A TOKEN IS DIMMER  *(#215 · 2026-08-21 · build log 8f.238)*
+
+**How to reach it in three steps:** any fight with six or more bodies on the field → look at the top-right corner of the tokens.
+
+**What it is.** The quiet faces (😐 Ok, 😕 Shaken) went from 66% to **40%** opacity and got greyer; the loud ones (😄 😟 💀) came down with them, 95% to **78%**.
+
+**What should happen.** A board of steady people should read as a board of people, not as a row of yellow dots - but a face you go looking for should still be findable, and a body that is BREAKING should still stand out from one that is merely Ok.
+
+**What would be a bug.** Not being able to tell 😟 from 😐 at a glance any more. That would mean the gap has gone rather than the volume, and the answer is to bring the loud rungs back up rather than the quiet ones.
+
+---
+
 ## 🗺 FIFTEEN MORE ROAD CARDS GET THEIR WIDE STAGE  *(#214 · 2026-08-20 · build log 8f.237)*
 
 **How to reach it in three steps:** open any of these cards on the road or at a camp: What Followed You Out, The Hollow Tree, The Dead Company, The Long Fire, The Ratkin Snare, The Warm Spring, Something in Armour, The Door-Shrine, The Woman in the Cage, The Red Lights, Bonepicker's Camp, The Sling-Line, The Steading-Line, Under the Bloom, The Salt-Wives, or They Come Over the Wall.

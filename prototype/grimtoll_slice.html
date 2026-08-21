@@ -1466,7 +1466,39 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:var(--f
   letter-spacing:-.02em;padding:1px 2px;white-space:nowrap;
   color:#e0a89c;background:rgba(18,10,10,.9);border:1px solid #c15d55;
   border-radius:2px;pointer-events:none;z-index:6;
-  text-shadow:0 1px 2px #000}
+  text-shadow:0 1px 2px #000;display:none}
+/* ═══ ⛔ #215 · AND IT ONLY SPEAKS WHILE A STEP IS BEING AIMED ══════
+   (User, 2026-08-21: *"show % of opportunity atack only if i am triyng to
+   move from the enemy (when cursor of movment hovers red). Otherwise don`t
+   show"*.)
+
+   #213 put the figure on the board for as long as MOVE was in hand, and MOVE
+   is the STANDING selection since #91 - so on a body two enemies are holding,
+   two red plates stand there through the whole turn, including while the
+   player is reading the board, choosing a card, or deciding not to move at
+   all. A price is only a price at the moment a destination is being weighed.
+
+   ☑ SO THE CHIP RIDES THE SAME TEST THE RED HAND ALREADY RIDES. The
+   `--curWalkZoc` boots are drawn on `#bGrid.cMove.zoc .hex.lit` and nowhere
+   else, which IS "the pointer is over ground this step would be paid for".
+
+   ⛑ THE TEST IS `#bGrid.aiming`, STAMPED BY THE ONE POINTER TRACKER, AND NOT
+   `:has(.hex.lit:hover)`. The `:has()` version was written first and it is the
+   prettier CSS - but the MIRROR (see `#bGrid.mirror` below) needs a pointer
+   tracker anyway, because there the hex the click LANDS on is not the hex the
+   pointer is over. Two hover mechanisms describing one pointer is the *one
+   fact, two implementations* shape this file has deleted four times, so
+   `handOn`/`paintHand` is the one - and it answers the question this rule
+   actually asks, "is the ground THIS CLICK WOULD TAKE a step that costs
+   blood", which `:hover` alone cannot answer in the mirror.
+   ⚠ THE STATE IS ON `B` AND THE CLASS IS REPAINTED BY render(), so a chip
+   cannot be left up by a board that was rebuilt under a resting pointer.
+
+   ⚠ THE RED GLOW ON THE SWINGER STAYS (`.hex.zhit .usp`). "These bodies have
+   a hand on you" is true for the whole turn and is what #205 was asked for;
+   "and this one lands 41 times in a hundred" is an answer to a question only
+   a destination asks. One of them is a state and the other is a quote. */
+#bGrid.aiming .hin>.zodds{display:block}
 /* the body that will take the swing, LIT rather than outlined: an edge on a
    hex somebody is standing on is mostly hidden by them, which is the whole
    reason the request asks for the unit and not the tile. */
@@ -1492,12 +1524,56 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:var(--f
    ⚠ `.lit` IS STAMPED ONLY ON GROUND A CLICK WOULD ACTUALLY TAKE - the same
    test the wash is drawn from, plus a move or a sink in hand. A ring on a hex
    that does nothing is worse than no ring. */
-#bGrid .hex.lit:hover .hedge::after{content:'';position:absolute;
+/* ⚠ #215 - `:not(.mirror)`. In the mirror the hex under the pointer is not
+   the hex the click takes, so the "this is the one you are about to pick" ring
+   belongs on the LANDING hex and would be a straight lie here. Same rule, one
+   class further along: see `.hex.mland` below. */
+#bGrid:not(.mirror) .hex.lit:hover .hedge::after{content:'';position:absolute;
   left:0;top:0;right:0;bottom:0;
   clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);
   background:rgba(240,230,192,.20);
   box-shadow:inset 0 0 0 2px rgba(240,230,192,.92);
   pointer-events:none}
+/* ═══ ⛔ #215 · THE MIRROR, AS THE BOARD DRAWS IT ══════════════
+   (User, 2026-08-21: *"i want you design mirrored battle. When all of your
+   actions mirrored. You chosing to move left - and moving right, etc. Put it
+   in the practie field so far. Same with hitting"*.)
+
+   THE RULE IS ONE SENTENCE: every click on the board is folded across the
+   vertical line through the body that is acting. The whole implementation is
+   `mirrorOf()` and `handHex()`; everything here is the picture of it.
+
+   ⛔ ONE HAND, AND THE FOUR ACT-CURSORS COME OFF. `--curStrike` over an enemy
+   means "this click swings at THAT body", and in the mirror it does not: the
+   click lands somewhere else entirely. A cursor that describes the hex under
+   the pointer is the wrong-unit bug (#102) with the pointer as the unit, so
+   render() strips `cMove`/`cStrike`/`cShot`/`cCast` while the mirror is on and
+   this is the only cursor rule left that can match. `.blocked` keeps
+   not-allowed by the `:not()`, exactly as the eight rules above it do.
+   ⚠ SAME 13 13 HOTSPOT as `--curWalk`, for the reason the `--curWalkZoc` note
+   gives: the pointer must not JUMP when the hand swaps. The boots are
+   `--curWalk`'s own two, reflected about x=13 so the cursor is itself a
+   picture of the rule, with a double-headed arrow under them.
+   ⚠ 32 AND NOT 34: Firefox refuses a cursor image over 32x32 outright. */
+#bGrid.mirror .hex:not(.blocked){cursor:var(--curMirror)}
+/* ⛑ THE LANDING MARK IS THE SAME IVORY RING `.lit:hover` DRAWS, and reusing
+   it is the point rather than a saving: that ring already means "this is the
+   one you are about to pick", and the only thing the mirror changes about
+   that sentence is WHICH hex it is on. So the player is never guessing and no
+   click is ever silently dead - what they have to do is move their hand the
+   wrong way, which is the whole of what was asked for.
+   ⚠ THE RING AND THE GLOW, BOTH, because a landing is either a step onto
+   empty ground or a blow onto somebody, and a ring under a 33px sprite is
+   mostly hidden - which is the argument `.hex.zhit .usp` already made two
+   hundred lines up. Ivory and not red: this is where your hand goes, it is
+   not a warning. */
+#bGrid.mirror .hex.mland .hedge::after{content:'';position:absolute;
+  left:0;top:0;right:0;bottom:0;
+  clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);
+  background:rgba(240,230,192,.16);
+  box-shadow:inset 0 0 0 2px rgba(240,230,192,.92);
+  pointer-events:none}
+#bGrid.mirror .hex.mland .usp{filter:drop-shadow(0 0 2px #f0e6c0) drop-shadow(0 0 6px #f0e6c0)}
 /* ═══ #206 · THE CHROME GETS OUT OF THE WAY OF A BODY ════════════════
    (User: *"one enemy was positioned behind the End Turn button"*.)
 
@@ -1553,6 +1629,10 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:var(--f
      canvas rather than moving anything. ⚠ 32 AND NOT 34: Firefox refuses a
      cursor image over 32x32 outright and falls back to the keyword. */
   --curWalkZoc:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><g transform='rotate(-14 8 10)'><ellipse cx='8' cy='8' rx='3.4' ry='4.6' fill='%23e0a89c' stroke='%23151b1c' stroke-width='1.4'/><ellipse cx='8' cy='14.4' rx='1.8' ry='1.3' fill='%23e0a89c' stroke='%23151b1c' stroke-width='1.2'/></g><g transform='rotate(12 18 15)'><ellipse cx='18' cy='13' rx='3.4' ry='4.6' fill='%23c15d55' stroke='%23151b1c' stroke-width='1.4'/><ellipse cx='18' cy='19.4' rx='1.8' ry='1.3' fill='%23c15d55' stroke='%23151b1c' stroke-width='1.2'/></g><path d='M19.5 30 L29.5 20' stroke='%23151b1c' stroke-width='4.4' stroke-linecap='round'/><path d='M21 20 L30 29' stroke='%23151b1c' stroke-width='4.4' stroke-linecap='round'/><path d='M19.5 30 L29.5 20' stroke='%23e0a89c' stroke-width='2.2' stroke-linecap='round'/><path d='M21 20 L30 29' stroke='%23c15d55' stroke-width='2.2' stroke-linecap='round'/><circle cx='30.3' cy='29.3' r='1.9' fill='%23d9bd7e' stroke='%23151b1c' stroke-width='.9'/></svg>") 13 13,pointer;
+  /* #215 - THE MIRRORED HAND. `--curWalk`'s boots reflected about x=13 (the
+     hotspot, so it does not move) with a double-headed arrow underneath: the
+     cursor is a picture of the rule it is announcing. See `#bGrid.mirror`. */
+  --curMirror:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><g transform='translate(26,0) scale(-1,1)'><g transform='rotate(-14 8 10)'><ellipse cx='8' cy='8' rx='3.4' ry='4.6' fill='%23d9bd7e' stroke='%23151b1c' stroke-width='1.2'/><ellipse cx='8' cy='14.4' rx='1.8' ry='1.3' fill='%23d9bd7e' stroke='%23151b1c' stroke-width='1'/></g><g transform='rotate(12 18 15)'><ellipse cx='18' cy='13' rx='3.4' ry='4.6' fill='%23a38652' stroke='%23151b1c' stroke-width='1.2'/><ellipse cx='18' cy='19.4' rx='1.8' ry='1.3' fill='%23a38652' stroke='%23151b1c' stroke-width='1'/></g></g><path d='M15 27 H29 M15 27 l3.4 -3.4 M15 27 l3.4 3.4 M29 27 l-3.4 -3.4 M29 27 l-3.4 3.4' stroke='%23151b1c' stroke-width='3.6' fill='none' stroke-linecap='round' stroke-linejoin='round'/><path d='M15 27 H29 M15 27 l3.4 -3.4 M15 27 l3.4 3.4 M29 27 l-3.4 -3.4 M29 27 l-3.4 3.4' stroke='%23f0e6c0' stroke-width='1.7' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>") 13 13,pointer;
   --curStrike:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='28' height='28'><path d='M3 3 L17 17' stroke='%23151b1c' stroke-width='5.4' stroke-linecap='round'/><path d='M3 3 L17 17' stroke='%23c9c6bb' stroke-width='3.2' stroke-linecap='round'/><path d='M3.6 3.6 L15 15' stroke='%23eeeadf' stroke-width='1.2' stroke-linecap='round'/><path d='M13.4 20.6 L20.6 13.4' stroke='%23a38652' stroke-width='3.2' stroke-linecap='round'/><path d='M17.8 17.8 L22.4 22.4' stroke='%235a4326' stroke-width='4.2' stroke-linecap='round'/><circle cx='23.6' cy='23.6' r='2.2' fill='%23d9bd7e'/></svg>") 3 3,pointer;
   /* #111 - a shot and a working get their own hands: a fletched arrow, and
      the Bloom's own magenta spark */
@@ -1867,10 +1947,23 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:var(--f
    monsters, and it read as a debug build. Smaller, desaturated and dimmed
    until you look for it. (Placeholder until painted state icons land —
    backlog #25.) */
+/* ⛑ #215 - AND TURNED DOWN AGAIN, WHICH IS THE SECOND TIME THIS EXACT NOTE
+   HAS BEEN GIVEN (user, 2026-08-21: *"Morale more transparent on the
+   batlfield"*). The paragraph above is #164 answering the same complaint, so
+   this is not taste arriving twice: it is a number that was still wrong after
+   being moved once, which is the shape `.claude/rules/ui-scales.md` and the
+   battle-screen entries keep recording. .66 -> .40 and grayscale .35 -> .55.
+   ⚠ THE FLOOR IS THAT IT MUST STILL BE FINDABLE WHEN LOOKED FOR. Deleting the
+   quiet faces outright was considered and refused: 😐 and 😕 are the two rungs
+   that change the numbers without being an emergency, and a token with no face
+   already means HAPPY (see the #91 note below) - a second silent rung would
+   make that read meaningless. */
 .umood{position:absolute;top:-2px;right:-1px;font-size:var(--fs1);line-height:1;
-  opacity:.66;filter:grayscale(.35) drop-shadow(0 1px 2px #000);pointer-events:none}
-/* the ones that matter still speak up */
-.umood.loud{font-size:var(--fs2);opacity:.95;filter:drop-shadow(0 1px 2px #000)}
+  opacity:.40;filter:grayscale(.55) drop-shadow(0 1px 2px #000);pointer-events:none}
+/* the ones that matter still speak up - and they come down with it, because
+   what has to survive is the GAP between a rung that is news and one that is
+   not, never the absolute weight of either */
+.umood.loud{font-size:var(--fs2);opacity:.78;filter:drop-shadow(0 1px 2px #000)}
 /* #169 - `.crest` shared this anchor and is deleted; the white flag keeps it,
    and now has the space above the head entirely to itself.
    ⚑ MERGE NOTE (#164 x #169): the selector is #169's (the crest is gone) and
@@ -4958,13 +5051,29 @@ a.popt.sendit{display:block;text-decoration:none}
    name ("Something in Armour") still sits on one line. */
 .simgrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px}
 .simcol .lbl{margin-bottom:6px}
-.simpick{display:flex;flex-direction:column;gap:4px;max-height:352px;overflow:auto}
+/* 352 -> 336 in #215, and it is arithmetic rather than taste. Measured on the
+   card with the RULE row on it: h1 32 + blurb 43 + grid 371 + rule 91 + footer 87
+   plus the pcard padding lands at 683 against a 684px ceiling, i.e. one pixel of
+   overflow and a scrollbar on a card that has never had one. All three lists
+   already scroll (THE FIGHT wants 867), so the 16px comes off a scroller and
+   hides nothing that was visible. Card now measures 667. */
+.simpick{display:flex;flex-direction:column;gap:4px;max-height:336px;overflow:auto}
 .simpick button{background:#241c11;border:1px solid var(--e1);padding:var(--p3) var(--p4);text-align:left;
   display:flex;flex-direction:column;gap:1px}
 .simpick button:hover{background:#33280f;border-color:var(--g3)}
 .simpick button.on{background:#3a2b16;border-color:var(--gold)}
 .simpick b{font-family:var(--display);font-size:var(--fs4);color:var(--g4);font-weight:600}
 .simpick i{font-family:var(--mono);font-size:var(--fs1);color:#8a7449;font-style:normal;line-height:1.3}
+/* ⛔ #215 - THE FOURTH PICKER IS A ROW AND NOT A FOURTH COLUMN, AND THAT IS
+   ARITHMETIC. The note above measured this grid at 255px a column on the card's
+   shipped 860px; a fourth column takes all four to 191 and puts "Something in
+   Armour" onto two lines, which is the one thing that measurement was taken to
+   protect. It is also a different KIND of choice - the three above pick what the
+   fight is, this picks how your hand works inside it - so under the line is
+   where it belongs anyway. Same builder, one class. */
+.simrow{margin-top:var(--p5)}
+.simrow .simpick{flex-direction:row;max-height:none;overflow:visible}
+.simrow .simpick button{flex:1 1 0;min-width:0}
 .helpsec{border-top:1px solid var(--e1);padding-top:var(--p5)}
 .helpsec h2{font-family:var(--display);font-size:var(--fs6);color:var(--g4);margin:0 0 6px;font-weight:600}
 .helpsec p{font-size:var(--fs4);line-height:1.5;margin:0 0 7px}
@@ -6469,7 +6578,11 @@ function setPace(v,save){
    on in the run", and it is the DEFAULT on purpose: the picker must never be
    able to quietly change what a shipped fight looks like. Read by
    `fieldFor()` behind `SIM.on`, so it can never reach a run. */
-const SIM={on:false,snap:null,cap:null,fight:'clash',comp:'start',ground:'as'};
+/* `rule` is #215's fourth column and it is fenced exactly the way `ground` is:
+   nothing reads it except through `mirrorOn()`, which asks `SIM.on` FIRST, and
+   `simRestore` puts `SIM.on` back to false on every exit. A practice rule that
+   could reach a run would be the leak this whole object exists to prevent. */
+const SIM={on:false,snap:null,cap:null,fight:'clash',comp:'start',ground:'as',rule:'straight'};
 function winNow(){
   if(!B||B.won!==null)return;
   autoStop();
@@ -8535,6 +8648,39 @@ const MONSTER_ICON='☠';
    with the tag the way the class icons once did */
 const monTag=k=>MONSTERS[k]?(MONSTERS[k].ico||MONSTER_ICON)+' '+MONSTERS[k].tag
   :MONSTER_ICON+' BEAST';
+/* ═══ ⛔ #215 · A BEAST IS NOT A PEOPLE, AND THIS IS THE ONE TEST ═════
+   (User, 2026-08-21: *"Don`t show class for beasts animals on the
+   battlfield"*.)
+
+   ⛔ THE RULE WAS ALREADY WRITTEN TWICE IN THIS FILE AND IT ONLY EVER COVERED
+   HALF THE LINE. "CLASSES ARE A HUMAN IDEA... Monsters get their kind and
+   their nature, never a class" is on the plaque, and "a monster is never a
+   profession - it gets its bestiary face and nothing else" is on the token
+   badge. Both are about the CLASS. Nothing said the same thing about the RACE
+   or about the PORTRAIT, so on the shipped build:
+
+     · the hover readout on a Lurcher said `🐺 PACK-BEAST · 🐀 RATKIN`, with
+       #211's ratkin painting beside the word;
+     · the battle plaque drew `C1_Ratkin_Rank_and_File` on a dog and on a
+       mirehare, and `C2_Ratkin_Chieftain` on The Bitch.
+
+   ⚠ AND THE RACE FIELD IS NOT THE BUG TO FIX. `build()` derives `race` from
+   `kind` and a dog falls through to 'ratkin' - which the SWARM (`ringOf`), the
+   AI's weights and the barks all read, and which is shipped balance. The
+   display is what was asked about and the display is what changes: the fact
+   stays, the readout stops repeating it at a creature it is not true of.
+
+   ⛑ `BEAST_KIND` IS `build()`'s OWN `ANIMAL` LIST, HOISTED. It was already
+   sitting inside that function deciding which bodies get a personality ("a dog
+   is a dog"), which is the same question this asks. One array, two readers, the
+   same move #195 made with `CUBE_AXIS`. `race==='beast'` is in the test as
+   well, so the pet and anything a template declares outright are covered
+   without being named twice.
+   ⚠ A FEN-THING IS DELIBERATELY NOT ON THIS LIST. Its `kind` is 'ratkin' and
+   it is a twisted one, so its ratkin sheet and its race word are both true of
+   it. The ask was about animals and this test is about animals. */
+const BEAST_KIND=['dog','wyrm','cub','beast','mirehare_f','mirehare_m'];
+const isBeast=u=>!!u&&(u.race==='beast'||BEAST_KIND.indexOf(u.kind)>=0);
 const MONSTERS={
   wyrm:{ico:'🐲',tag:'GREAT BEAST - LINDWURM',
     nature:'Two hexes of her. She does not out-damage you; she takes your line apart.'},
@@ -13989,8 +14135,9 @@ function build(plan,T){
        ambitious one overextends, a courageous one will not fall back at all.
        Animals do not get them: a dog is a dog. Roughly two in three, so a
        line is a mix of temperaments rather than a uniform. */
-    const ANIMAL=['dog','wyrm','cub','beast','mirehare_f','mirehare_m'];
-    const trait=t.trait||((ANIMAL.indexOf(t.kind)<0&&Math.random()<.66)
+    /* #215 - `BEAST_KIND` is this list, moved up beside MONSTERS so the
+       readouts can ask the same question. See isBeast(). */
+    const trait=t.trait||((BEAST_KIND.indexOf(t.kind)<0&&Math.random()<.66)
       ?pickOne(['cautious','courage','feral','nofear','stubborn','veteran','braggart'])
       :null);
     /* the playtest-#3 balance shave, applied in ONE place so every template —
@@ -14068,7 +14215,7 @@ function build(plan,T){
       fenborn:!!t.fenborn,noWalk:!!t.noWalk,
       aura:t.aura||null,trait:trait,noRout:!!t.noRout,
       /* a monster gets a bestiary entry instead of a class — see MONSTERS */
-      monster:t.monster||(ANIMAL.indexOf(t.kind)>=0?t.kind:null),
+      monster:t.monster||(BEAST_KIND.indexOf(t.kind)>=0?t.kind:null),
       used:{},dead:false,fled:false,safeMove:false,
       /* `int` is the one stat a template may override, because magic is aimed
          with the INTELLECT now (see hitBreakdown) and a stupid caster has to be
@@ -17953,7 +18100,7 @@ function checkEnd(){
      NOT `race`: `build()` derives race from kind and a dog comes out
      **`race:'ratkin'`**, so a race test would have let the pack straight
      through. Every beast and every authored monster carries `monster`
-     (`ANIMAL` stamps dog/wyrm/cub/beast, the templates stamp wyrm/cub/armour),
+     (`BEAST_KIND` stamps dog/wyrm/cub/beast, the templates stamp wyrm/cub/armour),
      so this covers the Fen-Mother and the Thing in Armour without naming
      either, and any beast fight added later inherits it. That is what makes
      it a rule about the fight rather than a list of exceptions.
@@ -18655,6 +18802,116 @@ function throwRock(u,act,from,c,r){
      changed hex has to throw it away by hand or every shooter keeps
      believing in a rock that is not there any more */
   B._occSig=null;B._losCache={};
+}
+/* ═══ ⛔ #215 · THE MIRROR: THE HAND GOES THE OTHER WAY ═════════════
+   (User, 2026-08-21: *"i want you design mirrored battle. When all of your
+   actions mirrored. You chosing to move left - and moving right, etc. Put it
+   in the practie field so far. Same with hitting"*.)
+
+   ⛑ THE MIRROR SITS BETWEEN THE POINTER AND THE BOARD, AND NOWHERE ELSE.
+   That one decision is what makes the whole thing four functions instead of a
+   pass over the engine. `clickHex` is already the ONE door every board click
+   goes through - a step, a swing, a shot, a working, both halves of a throw -
+   so folding its argument folds *"same with hitting"* for free and can never
+   fall out of step with a rule it does not know about. And because the fold is
+   on the POINTER and not inside `clickHex`, everything that is not a hand -
+   AUTO, both AI brains, the tutorial - goes on calling `clickHex` directly and
+   plays the fight straight. The mirror is a fact about the player, not a fact
+   about the game.
+
+   ⛔ THE FOLD IS ACROSS THE ACTOR, NOT ACROSS THE BOARD. Reflecting in the
+   board's centre line was the first idea and it is unplayable: the acting body
+   does not move, so a hex one step away lands eleven columns off. Reflected
+   about the body that is acting, "left" and "right" mean what the player means
+   by them, and a neighbour is always a neighbour.
+
+   ⛑ IN CUBE SPACE IT IS A SWAP AND THE ROW NEVER MOVES. Take the delta from
+   the actor, exchange its x and y components, add it back. `x+y+z=0` survives
+   the exchange and z is the ROW, so the mirror of a hex is on its own row with
+   its column folded about the actor's - which is exactly a vertical mirror on
+   screen, including for the half-row offset that makes a straight column look
+   like a zig-zag. Done in `DIR` terms instead it would need a per-parity table
+   and would be the second copy of the geometry #173 spent an entry deleting.
+
+   ⚠ OFF THE BOARD IS A REFUSAL, AND IT COSTS NOTHING. Near an edge the fold
+   of a far hex lands outside the grid; the click then does nothing, spends
+   nothing and says so, which is the same contract a blocked lane and an
+   oversized shove already have in `clickHex`. It is also the mode's one real
+   tactical consequence: in the mirror the middle of the board is where your
+   options are, and a body backed into a corner has half of them folded into
+   nothing. That is worth having rather than worth smoothing away.
+
+   ⚠ AND READING THE BOARD IS NOT FOLDED. Odds, damage, the readout card, the
+   lore boxes - a hover is a question about the hex it is on and is answered
+   honestly. What is folded is the hand: `paintHand` marks the hex the click
+   would land on, so the answer is always visible before the click. The mode is
+   an inverted mouse, not a blindfold. */
+const mirrorOn=()=>!!(typeof SIM!=='undefined'&&SIM.on&&SIM.rule==='mirror');
+function mirrorOf(u,c,r){
+  const A=cube(u.col,u.row),T=cube(c,r);
+  const rr=A.z+(T.z-A.z), x=A.x+(T.y-A.y);
+  const cc=x+((rr-(rr&1))/2);
+  if(cc<0||cc>=COLS||rr<0||rr>=ROWS)return null;
+  return [cc,rr];
+}
+/* the one door between a POINTER and the board. Bound by render() on every
+   hex; nothing else in the file calls it. */
+function handHex(c,r){
+  if(!mirrorOn()){clickHex(c,r);return;}
+  const u=cur();
+  if(!u||u.side!=='you'){clickHex(c,r);return;}   /* clickHex refuses it anyway */
+  const m=mirrorOf(u,c,r);
+  if(!m){say('Your hand goes the other way, and there is nothing over there. '+
+    'Nothing is spent.');return;}
+  clickHex(m[0],m[1]);
+}
+/* ═══ #215 · WHERE THE POINTER IS, AND WHERE THE CLICK WOULD LAND ═════
+   ONE tracker for the whole board, delegated on `#bGrid` rather than added to
+   the three per-hex `onmouseenter` branches in render(): `mouseover` bubbles
+   and `mouseenter` does not, which is the whole reason this can be one line.
+   ⚠ THE STATE IS ON `B` AND THE PAINT IS DERIVED FROM IT, which is `paintSpot`'s
+   own shape and the lesson [[render destroys DOM state]] records: render() does
+   `g.innerHTML=''`, so a class written straight onto a hex would be gone on the
+   next state change while the pointer had not moved. */
+function handOn(k){if(B&&B.hand!==k){B.hand=k;paintHand();}}
+function paintHand(){
+  const g=$('bGrid');if(!g||!B)return;
+  g.querySelectorAll('.hex.mland').forEach(h=>h.classList.remove('mland'));
+  let land=B.hand;
+  if(land&&mirrorOn()){
+    const u=cur(),p=land.split(',').map(Number);
+    const m=(u&&u.side==='you')?mirrorOf(u,p[0],p[1]):null;
+    land=m?K(m[0],m[1]):null;
+  }
+  const el=land?g.querySelector('[data-k="'+land+'"]'):null;
+  if(el&&mirrorOn())el.classList.add('mland');
+  /* #213/#215 - the parting-swing figure speaks while a step is being AIMED,
+     and the hex that decides that is the one the click lands on. */
+  g.classList.toggle('aiming',!!(el&&el.classList.contains('lit')));
+}
+/* the axis itself, drawn so the rule needs no words: everything you click is
+   folded across this line. In `#bFx` beside the LOS ray and the movement
+   lanes, by its own id, so each drawer owns exactly one element. */
+function clearMirrorAxis(){const e=$('bMirr');if(e)e.remove();}
+function drawMirrorAxis(){
+  clearMirrorAxis();
+  if(!mirrorOn()||!B||B.won!==null)return;
+  const fx=$('bFx');if(!fx)return;
+  const u=cur();
+  if(!u||u.side!=='you'||u.ally||u.pet)return;
+  const p=hexPt(u);if(!p)return;
+  const NS='http://www.w3.org/2000/svg',H=fx.clientHeight;
+  const svg=document.createElementNS(NS,'svg');
+  svg.id='bMirr';
+  svg.setAttribute('width',fx.clientWidth);svg.setAttribute('height',H);
+  const ln=document.createElementNS(NS,'line');
+  ln.setAttribute('x1',p.x.toFixed(1));ln.setAttribute('y1','0');
+  ln.setAttribute('x2',p.x.toFixed(1));ln.setAttribute('y2',H);
+  ln.setAttribute('stroke','rgba(240,230,192,.26)');
+  ln.setAttribute('stroke-width','1.4');
+  ln.setAttribute('stroke-dasharray','3 7');
+  svg.appendChild(ln);
+  fx.appendChild(svg);
 }
 function clickHex(c,r){
   const u=cur();
@@ -22565,7 +22822,10 @@ function render(){
         ('Lv '+u.level+' · '+rcMarks(u)):
         u.pet?'♥ THE COMPANY’S. IT FOLLOWS THE CAPTAIN':
         u.ally?'⚔ FIGHTING ON YOUR SIDE, NOT YOURS TO COMMAND':
-        u.monster?monTag(u.monster):
+        /* #215 - `isBeast` as well as `monster`, so an animal can never fall
+           through to CAPTAIN or RABBLE. `monTag(undefined)` is '☠ BEAST',
+           which is the honest answer for a creature with no bestiary row. */
+        (u.monster||isBeast(u))?monTag(u.monster):
         (u.captain?'★ CAPTAIN':u.caster?'✷ CASTER':u.big?'⬢ GREAT BEAST':'RABBLE');
       if(mine)bindLoreTips($('bClass'),member(u.id),u);
     }
@@ -22595,11 +22855,20 @@ function render(){
          precisely the right picture — a dark outline of something the size of
          a person, and no features. Handing it C1 would have put a ratkin's
          face on the one creature whose whole content is that you cannot tell. */
-      const ek=u.noFace?null:(u.big||u.passive?'C5':u.captain?'C2':u.caster?'C3':
-        u.kind==='human'||u.kind==='archer'?'C4':'C1');
+      /* ⛔ #215 - AND AN ANIMAL IS NOT HANDED A RATKIN'S FACE. C1 is
+         `C1_Ratkin_Rank_and_File` and C2 is the chieftain; the cascade below
+         reached them by elimination, so every dog and every mirehare on the
+         board wore one. C5 is `C5_The_Cub`, a beast sheet, so `big`/`passive`
+         keep theirs - a whelp's portrait on the Fen-Mother is a picture of the
+         wrong beast, which is a different and much smaller wrong than a rat's
+         face on a dog. An animal with no sheet of its own falls to the generic
+         silhouette, exactly as the Warden does, until one is painted. */
+      const ek=(u.noFace||(isBeast(u)&&!(u.big||u.passive)))?null
+        :(u.big||u.passive?'C5':u.captain?'C2':u.caster?'C3':
+          u.kind==='human'||u.kind==='archer'?'C4':'C1');
       const src=artFor(ek);
       if(src)drawArt($('bPortrait'),src);
-      else bust($('bPortrait'),u.noFace?'unknown':'ratkin',u.caster);
+      else bust($('bPortrait'),(u.noFace||isBeast(u))?'unknown':'ratkin',u.caster);
     }
     /* #94 point 4 - the crystals. Spent ones stay on the panel, dark, so the
        price of what was just done is still readable for the rest of the turn;
@@ -22921,6 +23190,18 @@ function render(){
   g.classList.toggle('cCast',!!(selAtk&&B.sel.arcane));
   g.classList.toggle('cShot',!!(selAtk&&!B.sel.arcane&&B.sel.range));
   g.classList.toggle('cStrike',!!(selAtk&&!B.sel.arcane&&!B.sel.range));
+  /* ⛔ #215 - AND IN THE MIRROR ALL FOUR COME OFF AGAIN. Every act-cursor
+     above describes the hex the pointer is ON, and in the mirror the click
+     does not land there - see the `#bGrid.mirror` block in the CSS. Stripping
+     them here rather than out-specifying them in the stylesheet is what keeps
+     the mirrored hand a single rule that nothing can beat on specificity.
+     ⚠ ONE TRACKER FOR THE POINTER, bound here because `g` survives
+     `g.innerHTML=''` and re-assigning the same handler is free. */
+  g.classList.toggle('mirror',mirrorOn());
+  if(mirrorOn())g.classList.remove('cMove','cStrike','cShot','cCast');
+  g.onmouseover=e=>{const h=e.target&&e.target.closest&&e.target.closest('.hex');
+    handOn(h?h.dataset.k:null);};
+  g.onmouseleave=()=>handOn(null);
   /* 8f.137 - the blade under MOVE goes through the SAME offer gate as the
      click (#91), or the cursor promises a swing the click would refuse */
   const w0=mineTurn?mainAtk(uCur):null;
@@ -23625,7 +23906,7 @@ function render(){
         const bk=backRing(tailHere);if(bk)inn.appendChild(bk);
         hx.onmouseenter=e=>{peekNow(tailHere);armRead(ev=>readout(tailHere,ev),e);};
         hx.onmouseleave=hideRead;
-        hx.onclick=()=>clickHex(c,r);
+        hx.onclick=()=>handHex(c,r);         /* #215 - the pointer's door */
       /* ⛔ #156 - the `.hbadge` branch that drew the step count stood here, and
          it went with the number. `badge` is gone from the whole loop. */
       }else if(t==='field'&&PROPS[K(c,r)]){
@@ -23635,7 +23916,7 @@ function render(){
          branches above own `hx.onmouseenter`, which is why this sits here rather
          than beside the paint: at this point in the chain the hex is empty. */
       if(!occ&&!tailHere){const gh=groundTipHTML(c,r);if(gh)tipOn(hx,gh);}
-      hx.onclick=()=>clickHex(c,r);
+      hx.onclick=()=>handHex(c,r);         /* #215 - the pointer's door */
       hx.appendChild(inn);row.appendChild(hx);}
     g.appendChild(row);}
   /* #66 — ONE call site for the camera, and this is it. render() runs after
@@ -23652,6 +23933,11 @@ function render(){
   if(B.peek)paintPeek();
   /* #96 point 1 - and so does a rail head the cursor is still resting on */
   if(B.spot)paintSpot();
+  /* #215 - and so does the hand: which hex the click would land on, and
+     therefore whether the parting-swing figure is up. Both are read off
+     `B.hand`, so a render cannot lose either. */
+  paintHand();
+  drawMirrorAxis();
   /* ⚑ #94 point 9 - THE ONE PLACE A WALK IS PLAYED, and it is last on
      purpose: the board underneath it is finished, the camera has already
      moved, so every hex the walker measures is where it will still be when
@@ -24215,11 +24501,15 @@ function inspect(t,e){
       (own?bmk(cIcon(t.cls))+' '+CLASSES[t.cls].n+' · LEVEL '+t.level
          :t.pet?'♥ THE COMPANY’S'
          :t.ally?'⚔ FIGHTING BESIDE YOU'
-         :t.monster?monTag(t.monster)
+         :(t.monster||isBeast(t))?monTag(t.monster)      /* #215 - see isBeast */
          :t.captain?'⚑ CHIEFTAIN':t.caster?'✷ CASTER':t.big?'⬢ GREAT BEAST':'⚔ RABBLE')+
       /* the race is suppressed for the unnameable one — "◆ UNKNOWN" is still
          an answer, and this readout is not allowed to give one */
-      (t.noFace?'':' · '+bmk(rIcon(t.race))+' '+t.race.toUpperCase())+'</div>'+
+      /* #215 - and a beast alongside `noFace`, for the same reason and by the
+         same means: the race half of this line is a people's category, and on
+         an animal it was printing 'RATKIN' with a rat's painting beside it.
+         The bestiary tag in front of it already says what the thing is. */
+      (t.noFace||isBeast(t)?'':' · '+bmk(rIcon(t.race))+' '+t.race.toUpperCase())+'</div>'+
     '<div class="rr"><span>HITPOINTS</span><span style="color:#c15d55">'+
       Math.max(0,Math.ceil(t.hp))+' / '+t.hpMax+'</span></div>'+
     '<div class="rr"><span>ARMOUR</span><span style="color:var(--steel)">'+
@@ -39569,6 +39859,18 @@ const SIM_GROUNDS=[
   {k:'camp',   n:'A camp',          d:'A palisade ring with two gaps and a fire in the middle. You start inside.'},
   {k:'outpost',n:'An outpost',      d:'A wall with one gate and one rotten run. You start outside it.'}
 ];
+/* ═══ ⛔ #215 · THE FOURTH COLUMN: HOW YOUR HAND WORKS ════════════
+   The three pickers above choose what the fight IS. This one changes what YOU
+   are, which is why it reads under the line rather than beside it - and why
+   `straight` is first and is the default, the same safety property #61 gave
+   `as`: the screen cannot quietly change what a fight is unless asked. */
+const SIM_RULES=[
+  {k:'straight',n:'Straight',
+   d:'Your hand goes where you point it. The ordinary rules.'},
+  {k:'mirror',  n:'The mirror',
+   d:'Every click is folded across the line you are standing on. Point left to go '+
+     'right, and the same for a blow. Reading the board is not folded, only your hand.'}
+];
 const SIM_COMPS=[
   {k:'start', n:'The company you start with',
    d:'Four humans: captain, spear, battle-mage, bow.', make:()=>makeParty()},
@@ -39620,7 +39922,7 @@ function openSim(){
   SIM.on=false;                 /* the picker is not a fight */
   const comps=simComps();
   if(!comps.some(c=>c.k===SIM.comp))SIM.comp=comps[0].k;
-  const col=(title,items,sel,attr)=>'<div class="simcol"><div class="lbl" style="color:#8a7449">'+
+  const col=(title,items,sel,attr,cls)=>'<div class="simcol '+(cls||'')+'"><div class="lbl" style="color:#8a7449">'+
     title+'</div><div class="simpick" data-attr="'+attr+'">'+
     items.map(o=>'<button data-k="'+o.k+'" class="'+(o.k===sel?'on':'')+'"><b>'+o.n+'</b><i>'+
       o.d+'</i></button>').join('')+'</div></div>';
@@ -39633,6 +39935,9 @@ function openSim(){
       col('WHO MEETS IT',comps,SIM.comp,'comp')+
       col('THE GROUND',SIM_GROUNDS,SIM.ground,'ground')+
     '</div>'+
+    /* #215 - same builder, one extra class. See `.simrow` for why it is not a
+       fourth column: the grid is measured at 255px each on this card. */
+    col('THE RULE',SIM_RULES,SIM.rule,'rule','simrow')+
     '<div class="popts"><button class="popt" id="simGo"><b>Take the field</b>'+
       '<i>fight it for real - the same rules, none of the consequences</i></button>'+
       '<button class="popt" id="simBack"><b>Back</b><i>to the menu</i></button></div>';
@@ -39694,7 +39999,14 @@ function simStart(){
   }
   simFight();
 }
-function simFight(){startBattle(SIM.fight);}
+function simFight(){
+  startBattle(SIM.fight);
+  /* #215 - the mirror says what it is, once, in the log. The dashed line down
+     the board and the mirrored hand carry it after that. */
+  if(mirrorOn())say('THE MIRROR. Everything your hand does is folded across the '+
+    'line you are standing on: point left to go right, and the same for a blow. '+
+    'What you READ is honest - only the hand is turned round.');
+}
 /* the only exit from a practice fight. Puts `G` back exactly as it was and
    reports what happened, using the same order-of-battle the real after-fight
    screen uses — which is the whole reason to come here. */
@@ -39711,6 +40023,10 @@ function simRestore(){
     PARTYCAP=SIM.cap;
     SIM.snap=null;SIM.cap=null;
   }
+  /* #215 - and this line is the mirror's fence as well: `mirrorOn()` asks
+     `SIM.on` before it asks `SIM.rule`, so the rule survives for the next visit
+     to the picker and is dead everywhere else the moment a practice fight ends
+     or is abandoned. Same fence `SIM.ground` has had since #61. */
   SIM.on=false;B=null;
 }
 function simResult(how){
