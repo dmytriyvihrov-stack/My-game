@@ -567,6 +567,149 @@ ROADS, and the next road out of the fen is `mother -> vill`.
 gate here: `openCamp` falls back to `openVignette` when nothing qualifies. Measured, 8 incidents
 before the Fen and 9 after.
 
+## ⛔ #218 · THE CARD OPENS, AND THE DOOR'S LEFT RAIL SAYS WHAT KIND OF ACT IT IS
+
+*(2026-08-21. The user: **"i also want when event unfolds - add some animation to the screen (like
+unfolding) - similar as choices where in frostpank"** and **"improwe a bit design of butons on the
+choices sreen (i like icons and placment) - maybe some borders more thematic and coreleated to
+choice"**.)*
+
+### The unfold
+
+**The painting parts from a lit hairline at the middle, the frame opens with it, the left column
+arrives behind them in reading order, and the doors cascade once the last beat is reached.** 470ms
+end to end, the first beat of prose beginning at 170.
+
+⛔ **NOT ONE PART OF IT IS A CLASS ON `#wDlg`, WHICH IS #209's OWN RULE ARRIVING ON MOTION.** Twelve
+functions open that box and a one-shot class the other eleven have to remember to clear is a rule
+that survives until somebody writes the thirteenth. Two things re-arm these animations by
+themselves and neither can go stale: **`.evstage` is a brand new element on every open** (every
+opener writes `dlg.innerHTML=` from scratch, so a CSS animation on it runs exactly once, untold),
+and **`#wDlg` goes `display:none` -> `flex` through `.on`**, and an element that becomes displayed
+starts its animations fresh.
+
+⚠ **SO THE BOX'S GATE IS `.on:has(.evstage)` AND NEVER THE `:has` ALONE, AND THAT IS A FACT ABOUT
+HOW A CARD CLOSES.** Every close in the file is `dlg.classList.remove('on')` and nothing else: the
+HTML is left standing, so `#wDlg` goes on matching `:has(.evstage)` for the rest of the session and
+an animation hung on the `:has` would fire **once**, on the first road card of the run, and never
+again. `.on` is the half that comes and goes. ⚠ It is also why the gate is not `.on` bare: the
+muster wall, the shop and the withdraw screen are still the 620px column.
+
+⛑ **`backwards`, NEVER `both`, AND THE DIFFERENCE IS A SHIPPED HOVER.** A `forwards` fill keeps
+the animation's final `transform:none` in force after the animation ends, and **an animated
+transform outranks a declared one** - so `both` on the doors silently killed
+`.choice:hover{transform:translateX(4px)}`, the one piece of feedback a door has, with nothing in
+the console and nothing in the stylesheet looking wrong. `backwards` holds the `from` state through
+the DELAY, which is all a stagger needs, and hands the element back at the end. **The test is one
+line and it needs no pointer**: write the hover's transform inline, wait out `.choice`'s own 140ms
+transition, and read it back. If the declaration wins, the fill is right. ⚠ Reading it at t=0
+returns the identity matrix and looks exactly like a broken fill; that cost one wrong conclusion.
+
+⛔ **EVERY RESTING STATE IS THE NATURAL ONE, AND THAT IS A SAFETY RULE RATHER THAN A STYLE.**
+`.claude/rules/ui-scales.md` §5 says the preview pane composites no frames; a build where these
+never advance has to come out merely **still**, never one where the doors are invisible and the
+card cannot be answered. So the seam's own base opacity is 0 (a flash that never runs is nothing),
+the frame's base `inset` is its final one, and `prefers-reduced-motion` drops every one of them
+rather than freezing one.
+
+⚠ **AND THE DURATION IS MEASURED, NOT FELT.** The first cut ran **600ms**, because the two longest
+members are a DELAY plus a DURATION and nobody had added them up. ⛑ **Read it off the animation
+timeline and never off a sampling loop** - `a.startTime` plus `a.effect.getComputedTiming().endTime`
+- because a loop polling `getAnimations()` measures its own latency and reported 725ms for the same
+470ms choreography. **This is paid on every card in the game**, so the ceiling is what a player sits
+through thirty-four times in a run, never what looks best once.
+
+⚠ **A card is captured by PAUSING the timeline, not by racing it.** `document.getAnimations()`
+returns CSS animations like any others: pause them, set `currentTime` to the millisecond you want,
+and the screenshot is exact. That is what the gate picture for this entry is.
+
+### The door's edge
+
+⛔ **THE OUTLINE IS STATE AND THE RAIL IS INTENT, AND MERGING THEM WOULD BE #102's WRONG-UNIT BUG.**
+The four-sided border on a door is a READOUT and has been since #137: `--e2` at rest, `#8c3a31` when
+the door is a warning, `#5a7a6a` when it is only open because of who is in the company, `--g3` under
+the pointer. `.claude/rules/ui-scales.md` §2 says in capitals that an accent edge carries meaning
+and may not be flattened, so none of it is touched. **What was empty is the 2px LEFT RAIL**, which
+every door in the game wore in the same `--e3` whatever the door did.
+
+⛑ **DERIVED, WHICH IS #137's RULE ON ITS SIXTH SURFACE.** The classes are `iv-<key>` off the
+door's own `ico`, written by `evRail` beside the two classes `evDoors` already writes. **The glyph
+column says what the act IS and the rail says what KIND of act it is**, and two channels read off
+one field cannot come to disagree.
+
+⛔ **IT IS NOT A SECOND RECEIPT.** The head of this file forbids an intent glyph that starts
+meaning *"this one pays well"*, and the same line binds here: the rail is keyed on `ico` and on
+nothing else, never on `fx`, never on what a door costs. A door that takes a purse and a door that
+takes a dead man's boots wear the same amber.
+
+| | rail | why this hex |
+|---|---|---|
+| `fight` | `--blood-lit` | the fight door's own red. Fresh blood |
+| `evil` | `--blood` | the dried half of the same two-step ladder |
+| `help` | `--grain` | the approve green: morale-up, and the mended heart |
+| `take` | `--wood` | the salvage chip's amber. What you pick up |
+| `trade` | `--morale` | coin-yellow. ⛔ **AND NOT `--gold`** |
+| `rest` | `--gem` | the coldest colour on the card, for the door that ends the day |
+| `honor` | `--ore` | grave stone |
+| `leave` | **no row** | ⛑ the quietest door is the one with no colour |
+
+⛔ **`trade` IS `--morale` AND NOT `--gold` BECAUSE GOLD IS STATE.** `--g3`/`--g4` is hover and
+select on this very button, and a gold rail on the 24 trade doors would read as *these are chosen*.
+
+⛑ **AND THE `leave` ROW IS THE LOAD-BEARING ONE.** It is **28 of the 158 doors** in the two decks
+and it is the null option; a rail on it would tint a third of every card to say *nothing happens
+here*. It has no rule, so it falls to the `--e3` default - **and so do the 19 CAMPS doors that carry
+no `ico` at all**, which is this file's own *"a door may be bare, and the fire's rulings are ... bare
+reads as this is you deciding, not doing"* arriving on the edge without being told twice. A NINTH
+intent gets the same treatment on the day one is written: uncoloured, never broken. ⚠ **Nothing
+lints this**, and it cannot: an intent with no row is indistinguishable from an oversight, because
+`leave` is deliberately exactly that.
+
+⛔ **WHICH INTENT WINS ON A TWO-GLYPH DOOR IS THE STYLESHEET'S ROW ORDER, AND THE ORDER IS THE
+RULE.** A door wears EVERY intent as a class, so a two-glyph door matches two rows at identical
+specificity and the LATER one wins. The five verbs are listed first and **`help` and `evil` last**,
+which is this file's own *"the verb comes first and the moral colour second"* written as a cascade:
+⚔️☠️ is blood, ⚔️🤝 is green, 🧺☠️ is blood.
+
+⛔ **THE FIRST CUT KEYED ON `ico.slice(-1)` AND ONE DOOR BROKE IT INSIDE AN HOUR.** THE WARM
+SPRING's second door is marked `['take','leave']`, which is **two VERBS** rather than a verb and a
+moral colour, so "last wins" handed the null rail to a door that takes something. Moving the
+question into the cascade fixed it and deleted the second table it was about to grow: `evRail` does
+not know which intents have a colour, nor which of two wins, and it must not learn.
+
+⚠ **A PSEUDO AND NOT `border-left-color`, AND THE REASON IS SPECIFICITY.** `.choice:hover` sets the
+`border-color` SHORTHAND, which writes all four sides, so a rail painted as a border is erased by
+the pointer at exactly the moment the player is reading it. A `::before` cannot be clobbered by a
+shorthand, and it can light up in its own colour instead. ⚠ `left:-2px;top:-1px;bottom:-1px`: an
+absolutely positioned child is laid out against its parent's PADDING box, so the rail has to step
+back over the border it replaces or it floats inside the outline.
+
+### After a change here
+
+```js
+/* every ico combination in the two decks, against a REAL .evchoices list */
+(()=>{const h=document.createElement('div');h.className='evchoices';
+  $('wDlg').appendChild(h);const seen=new Set(['']);
+  [...Object.values(EVENTS),...Object.values(CAMPS)].flatMap(e=>e.choices||[])
+    .forEach(c=>seen.add((c.ico||[]).join(',')));
+  const out=[...seen].sort().map(k=>{const b=document.createElement('button');
+    b.className='choice'+evRail({ico:k?k.split(','):[]});h.appendChild(b);
+    const v=getComputedStyle(b,'::before').backgroundColor;h.removeChild(b);
+    return (k||'(bare)')+' -> '+v;});
+  h.remove();return out;})()
+```
+
+⛑ **AND PROVE THE CASCADE BY MAKING IT FIRE, NOT BY READING IT.** Append
+`#wDlg .evchoices .choice.iv-fight{--rail:var(--blood-lit)}` to `<head>` and `fight,evil` must flip
+from `rgb(122,31,34)` to `rgb(163,59,52)`; remove it and it must flip home. Source-order precedence
+is exactly the kind of rule that is right in the head and wrong in the file, and a check that has
+only ever agreed with you is indistinguishable from one that is broken.
+
+⚠ **A STRIP BUILT TO PHOTOGRAPH THE RAILS MUST BE BUILT INSIDE `#wDlg`.** Hung off `document.body`
+it comes back with no rails and a collapsed grid, because every rule here is
+`#wDlg .evchoices .choice`. That is the scoping working, not a bug, and it is worth thirty seconds
+of confusion once rather than a widened selector.
+
 ## Before the card ships
 
 

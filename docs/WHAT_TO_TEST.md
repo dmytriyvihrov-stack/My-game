@@ -26,6 +26,51 @@
 
 ---
 
+## 🕯 THE CARD UNFOLDS, AND A DOOR'S EDGE SAYS WHAT KIND OF ACT IT IS  *(#218 · 2026-08-21 · build log 8f.241)*
+
+**How to reach it in three steps:** take the road · walk to any node with an event on it · watch the card arrive, then look
+at the left edge of each door before you read the labels.
+
+**What it is.** Two things.
+
+**(1) The card opens instead of appearing.** The painting parts from a lit hairline at the middle, the frame opens with it,
+and the title, the mark, the company's plates and the prose arrive behind them in reading order. When you click through to
+the last beat, the doors come in one after another rather than all at once. It is **470ms** end to end and the first line of
+prose starts arriving at 170. It is on the road deck, the fire and the vignettes - every card that opens on the painted
+stage.
+
+**(2) A door's left rail is coloured by what the door DOES.** The four-sided border is unchanged and still means what it
+meant: dim gold at rest, red on a warning, green on a race door, lit gold under the pointer. The 2px strip on the LEFT is
+new, and it is read off the intent glyph you are already looking at:
+
+| | |
+|---|---|
+| ⚔️ fight | fresh blood red |
+| ☠️ evil | deep, dried blood |
+| 🤝 help | the approve green |
+| 🧺 take | the salvage amber |
+| ⚖️ trade | coin yellow |
+| ⛺ rest | cold blue |
+| 🙏 honor | grave-stone grey |
+| 👣 leave | **nothing** - it stays the default |
+
+**A door with two glyphs takes the moral colour.** ⚔️☠️ is blood, ⚔️🤝 is green. The Hanged Toll-Man is the card to look
+at: three doors on grey and amber, and the fourth - *take all of it* - on the predator's blood even though its first glyph
+is a basket.
+
+**What should happen.** The unfold plays once per card and never again while you are reading it; clicking to advance a beat
+does not replay it. Hovering a door slides it 4px, lights its outline and makes its own rail glow in its own colour.
+
+**What would be a bug.** A card that arrives with no motion at all, or one whose picture never finishes opening · the doors
+appearing before the prose · a door that stops sliding when you hover it · a rail whose colour disagrees with the glyph
+beside it · the animation replaying every time you click to the next beat.
+
+**What I want to know.** Two calls are yours, and both are one line to change: **honor on grave-stone grey** is the coldest
+thing on a warm card, and **rest on cold blue** is a campfire in blue, justified only by it being the one door that ends the
+day. And the pace: 470ms is quick in isolation and you will see it thirty-four times in a run.
+
+---
+
 ## 🗺 FIFTEEN MORE ROAD CARDS GET THEIR WIDE STAGE  *(#214 · 2026-08-20 · build log 8f.237)*
 
 **How to reach it in three steps:** open any of these cards on the road or at a camp: What Followed You Out, The Hollow Tree, The Dead Company, The Long Fire, The Ratkin Snare, The Warm Spring, Something in Armour, The Door-Shrine, The Woman in the Cage, The Red Lights, Bonepicker's Camp, The Sling-Line, The Steading-Line, Under the Bloom, The Salt-Wives, or They Come Over the Wall.
