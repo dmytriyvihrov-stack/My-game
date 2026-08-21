@@ -46,6 +46,55 @@
 **What would be a bug.** A card that scrolls but whose beats stop advancing when you click the prose - that click is supposed to still step the card. A popover that now covers something you needed to read: it escapes its column on purpose, so say where. A map that has gone too dark, or too contrasty - both are one constant and one line to change. The bag hover saying nothing at all. And **the terrain will still be a little soft at the NEAR camera stop, and that one I cannot fix here**: the map paintings are 1280 wide and the default zoom shows them at 1562, so there is no more detail in the file. A wider master is the only thing that changes it.
 
 ---
+## ✚ THE INJURY LADDER - A FALL COSTS MORE EVERY TIME  *(#225 · 2026-08-21 · build log 8f.248)*
+
+**What it is.** Going down in a fight is no longer always a scar. It is a ladder, and every rung is
+visible before you climb it:
+
+| the body was | the fall costs |
+|---|---|
+| sound | a **temporary INJURY**, 7 to 14 days. One real penalty and a little blood |
+| injured | a **SCAR**, forever, exactly as today - **and a fresh injury on top** |
+| injured **and** scarred | **they do not get up.** The Captain gets one extra rung: two scars |
+
+**The injury heals, and that is the whole second chance.** A scarred body whose clock has run out is
+back on the bottom rung. The only way to reach the top of the ladder is to take somebody hurt into a
+fight, which is a decision rather than a dice roll.
+
+**How to reach it in three steps.** Take a fight you can nearly lose, let somebody go down, and read
+the aftermath card. Then start the next fight and look under their feet.
+
+**What should happen.**
+
+- the **aftermath** card for that body turns amber with a strip reading `hurt · cracked ribs · 9d`,
+  and the **first time it ever happens in a run** a spotlight explains the ladder;
+- the **company sheet** shows `✚ 9d` on their roster row (red instead of amber once they are one fall
+  from the end) and a ledger chip with the days left, what it costs, and what the next fall costs;
+- **on the board** they wear a ✚ under their feet for the whole fight. Amber means the next fall is a
+  scar; red means it is the last one. Hover it;
+- **at the head of the fight** a dimmed card names them and says which it will be. It fires **once per
+  body per rung**, so it does not stop every fight - and it fires again the day they climb a rung;
+- the log says `Vesna (opened thigh) walks onto this field already hurt.` every fight;
+- on the road, when the clock runs out: `Vesna is sound again. Opened thigh, mended.`
+
+**The nine injuries**, one penalty each plus a little blood: cracked ribs (−2 STR) · turned ankle (−2
+AGI) · head still ringing (−2 INT) · rattled (−2 MOR) · **dead arm (one action a turn)** · opened thigh
+(−8 dodge) · blood in one eye (−12 to hit) · torn shoulder (−15% damage) · bled white (−18 hitpoints).
+
+**What would be a bug.**
+
+- a body dying who was not carrying **both** an injury and a scar;
+- the warning card saying somebody is scarred when they are not, or naming somebody who is sound;
+- the badge under the feet not matching what the aftermath then does;
+- an injury that never mends, or one that mends the same day it lands;
+- the intro brawl in the Three Bells injuring anybody. It may not: fists and floorboards do not scar.
+
+**What is deliberately not there yet.** AUTO will still walk a last-rung body into a losing exchange,
+and the road card that asks somebody to pull the Thing in Armour off the road now sends them up the
+ladder without saying so. Both are named in #34 and both are the next work here.
+
+---
+
 ## 💰 THE PAYDAY GETS OUT OF THE CARD'S WAY, AND SAYS WHAT IT PAID  *(#221 · 2026-08-21 · build log 8f.244)*
 
 **How to reach it in three steps:** walk the road until a day divisible by four → arrive somewhere with a card waiting → watch the order things happen in.
