@@ -26,6 +26,38 @@
 
 ---
 
+## 🗺 A NEW WORLD MAP AND SEVEN NEW FACES  *(#233 · 2026-08-22 · build log 8f.256)*
+
+**Reach it in three steps:** start a run → you are on the map → open the company sheet for the faces.
+
+**What changed, and what should happen**
+
+- **The world map is a new painting**, and it is the first one big enough for the screen: 2560x1276
+  against a canvas that has been 2560 wide since #223. **At the NEAR and CLOSE camera stops it
+  should look sharper than it ever has**, because the picture is finally being shrunk to fit
+  instead of stretched. Cycle ROAD / NEAR / CLOSE top-right and compare.
+- **Nothing moved.** Same aspect ratio, so every node, road and name plate is exactly where it was.
+  The three map counters read 0 / 0 / 0 and no road crosses a painting.
+- **The darkening is unchanged and that was a decision, not an oversight.** Measured on the live
+  canvas, the new painting sits at median luminance 46 where the old one sat at 61 - and the name
+  plates were designed against a ground of 48. **If the names are hard to read it will be because
+  the new painting is busier under them, not because it is brighter.** Say so and the plate backing
+  is the thing to change.
+- **Seven portraits are repainted**: the Captain, Vesna Kolb, Skree, Bruht, Marrow, Ilka Renn and
+  Wynn Aldreth. Look at them in the roster (48px), on the sheet (94px) and in a dialogue.
+- **Asha is deliberately untouched**, along with the two retired portraits and the moustached
+  ratkin. Verified byte-identical, not just looked at.
+
+**What would be a bug**
+
+- A face that is unrecognisable at the 48px roster bust, or two that read as the same person.
+- Asha looking different from before.
+- A name plate on the map that is now unreadable - worth reporting with the node name.
+- The map looking *softer* than before at the CLOSE stop. That would mean the new file is not the
+  one being drawn.
+
+---
+
 ## 🙂 IT IS CALLED MOOD NOW, THE CAPTAIN HAS HIS OWN TRAIT, AND THE STAT BLOCK IS RE-LAID  *(#232 · 2026-08-22 · build log 8f.255)*
 
 **Reach it in three steps:** start a run → open the company sheet (the roster on the left) → you are
