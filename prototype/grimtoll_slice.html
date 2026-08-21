@@ -4965,6 +4965,41 @@ a.popt.sendit{display:block;text-decoration:none}
 .simpick button.on{background:#3a2b16;border-color:var(--gold)}
 .simpick b{font-family:var(--display);font-size:var(--fs4);color:var(--g4);font-weight:600}
 .simpick i{font-family:var(--mono);font-size:var(--fs1);color:#8a7449;font-style:normal;line-height:1.3}
+/* ═══ #216 - the practice field's points, its locks, and the crew bench ════
+   Every colour here is one the file already owns; every size is a --fs step,
+   every pad a --p step, every structural edge an --e (ui-scales). */
+.simpick i.spts{color:#a3bd6c}
+.simpick button.lock{opacity:.45}
+.simpick button:disabled{cursor:default}
+.simpick button.lock:hover{background:#241c11;border-color:var(--e1)}
+#simCrew{margin-top:var(--p5);border-top:1px solid var(--e1);padding-top:var(--p4)}
+.screws{display:flex;flex-direction:column;gap:4px;margin:var(--p3) 0}
+.scrow{display:flex;flex-wrap:wrap;align-items:center;gap:var(--p1) var(--p3);background:#241c11;
+  border:1px solid var(--e1);padding:var(--p2) var(--p4);
+  font-family:var(--mono);font-size:var(--fs1);color:#c9b98a}
+.scrow>b{font-family:var(--display);font-size:var(--fs3);color:var(--g4)}
+.scwho{color:#8a7449}
+.sclv{display:flex;align-items:center;gap:var(--p1)}
+.sclv b{color:var(--g4);min-width:14px;text-align:center}
+.sclv button,.scx{background:#1c150c;border:1px solid var(--e2);color:#c9b98a;
+  padding:0 var(--p2);font-size:var(--fs2);line-height:1.5;cursor:pointer}
+.sclv button:hover,.scx:hover{border-color:var(--g3)}
+.scrow select{background:#1c150c;border:1px solid var(--e1);color:#c9b98a;
+  font-family:var(--mono);font-size:var(--fs1);padding:var(--p1);max-width:112px}
+/* with the bench open the three columns give up height to it, so the whole
+   errand fits one screen instead of scrolling under the sticky footer */
+#simCard:has(#simCrew) .simpick{max-height:200px}
+.scpts{color:#a3bd6c;margin-left:auto}
+.scx{color:#c15d55}
+.scadd{display:flex;flex-wrap:wrap;gap:4px}
+.scadd button{background:#241c11;border:1px solid var(--e1);color:#c9b98a;
+  font-family:var(--mono);font-size:var(--fs1);padding:var(--p1) var(--p3);cursor:pointer}
+.scadd button:hover{border-color:var(--g3);background:#33280f}
+.scfull,.scnote{font-family:var(--mono);font-size:var(--fs1);color:#8a7449;font-style:normal}
+.scnote{display:block;margin-top:var(--p2)}
+.devpts{color:#7fa8c9;font-family:var(--mono);font-size:var(--fs1)}
+.node .devpts{position:absolute;left:50%;transform:translateX(-50%);top:-15px;
+  pointer-events:none;text-shadow:0 1px 2px #000;white-space:nowrap}
 .helpsec{border-top:1px solid var(--e1);padding-top:var(--p5)}
 .helpsec h2{font-family:var(--display);font-size:var(--fs6);color:var(--g4);margin:0 0 6px;font-weight:600}
 .helpsec p{font-size:var(--fs4);line-height:1.5;margin:0 0 7px}
@@ -14156,6 +14191,9 @@ function startBattle(kind){
   }
   mark(null);                     /* the card that started it is gone; this is a fight now */
   if(!SIM.on)JOURNAL.put('battle','fight: '+G.battleKind,{pick:'joined'});
+  /* #216 - the campaign unlocks its fight for the practice field. Same gate
+     as the journal row: a practice fight may never mark anything. */
+  if(!SIM.on)SEENF.mark(G.battleKind);
   $('bLegend').classList.toggle('open',!!LEGACY.legendOpen);
   const you=G.party.map(unitFrom);
   /* #108 - the brawl opens with the Captain alone. The rest of the future
@@ -24837,6 +24875,17 @@ window.LINT=function(){
   const FXKEYS=['crowns','food','salvage','gems','morale','days','wood','iron',
     'xp'];   /* #174 - a door may pay experience */
 
+  /* #216 - the practice field's arithmetic stays wired: every fight prices
+     to something, and a lock can only name a fight that exists. Proved by
+     seeding a bogus lock key and watching it fire. */
+  try{
+    SIM_FIGHTS.forEach(f=>{
+      if(!(fightNet(f.k,4)>0))hit('structure','SIM_FIGHTS','"'+f.k+'" prices to nothing');});
+    Object.keys(FIGHT_LOCK).forEach(k=>{
+      if(!SIM_FIGHTS.some(f=>f.k===k))
+        hit('structure','FIGHT_LOCK','locks "'+k+'", which is not a practice fight');});
+  }catch(e){hit('structure','#216','points engine threw: '+e.message);}
+
   /* 1 — tokens: unknown ones, and any literal brace that survives cast() */
   const scanTokens=(txt,where)=>{
     (String(txt).match(/\{[A-Z0-9]+\}/g)||[]).forEach(t=>{
@@ -32378,6 +32427,17 @@ function drawNodes(){
          the layout column and outside the plate arithmetic */
       (goal?'<span class="gmark">'+TROPHY_SVG+'</span>':'')+'</span>'+
       '<span class="nm">'+(st==='done'?'✓ ':'')+n.n+'</span>';
+    /* #216 - dev only: what the fights behind this node are worth, so the
+       route can be balanced off the map. try/catch because EVENTS is a const
+       declared far below this function (the hasSight shape). */
+    if(typeof TEST!=='undefined'&&TEST.on&&n.ev)try{
+      const kinds=[];(EVENTS[n.ev].choices||[]).forEach(c=>{
+        if(c.battle&&kinds.indexOf(c.battle)<0)kinds.push(c.battle);});
+      if(kinds.length){
+        const worst=kinds.reduce((m,q)=>Math.max(m,fightNet(q,G.party.length)),0);
+        b.innerHTML+='<span class="devpts">⚔'+worst+'</span>';
+      }
+    }catch(e){}
     if(st==='live'&&!G.moving)b.onclick=()=>confirmTravel(k);
     /* standing on an unfinished place (a battle you withdrew from):
        knock on its door again — this is also the way out of the Snare */
@@ -34843,6 +34903,12 @@ function choiceNote(o,skipMorale){
   if(!canAfford(o.need))parts.push(needTag(o.need));
   /* #197 - the muster wall's own phrasing, so one shortage has one name */
   else if(!hasRoomFor(o))parts.push('<span class="hurt">no room left</span>');
+  /* #216 - dev only: the fight behind this door on the one points scale.
+     A balancing readout, not a receipt; TEST.on is why it may name figures. */
+  if(typeof TEST!=='undefined'&&TEST.on&&o.battle)try{
+    const t=fightPts(o.battle,o.clashSide!==undefined?{clashSide:o.clashSide}:{});
+    parts.push('<span class="devpts">⚔ '+t.net+' pts · you '+compPts(G.party)+'</span>');
+  }catch(e){}
   return parts.join(' · ');
 }
 /* moraleLine, the prose twin of the tag, retired in #143: the outcome's
@@ -39512,6 +39578,283 @@ $('menuBtn').onclick=()=>{
   saveRun();openMenu();
 };
 
+/* ═══════════════════════════════════════════════════════════════════════
+   #216 (8f.239) - POINTS: ONE SCALE FOR A BODY, A PIECE OF KIT AND A FIGHT
+   (User: "Each character and artifact has its points value. And for each
+   fight it is recomended point values for easy, mid, hard ... This one in
+   the future would help both for AI and manual balancing, and also for
+   safely chickng the game and learning to fight.")
+
+   THE POINTS ARE DERIVED, NEVER AUTHORED - #137's rule on one more surface.
+   Both sides of every fight come out of the same two factories (unitFrom for
+   the roster, build for a statblock), so ONE function prices the unit and
+   everything else is a sum: a character is what he would be on the field
+   (gear, trait, level and perks priced by construction), a fight is what it
+   fields minus what stands beside you, and an artifact is what it adds to
+   the body wearing it. Change a statblock and every number here moves by
+   itself, which is the whole reason to have them.
+
+   The formula is a geometric mean of offence and staying power:
+     offence = best damage-per-round, weighted by hit skill
+     staying = (hp + 0.8 armour + 22 per point of soak) x a dodge weight,
+               x1.25 if nothing can rout it
+     pts     = sqrt(offence x staying) x PTS_SCALE
+   sqrt, because a glass cannon and an anvil are both worth less than their
+   best half claims. PTS_SCALE is calibrated so THE FOUR FOUNDERS SUM TO
+   ~100: "bring 100 points" means "bring the company the run starts with".
+
+   Everything random is SEEDED for the measurement (seededly): the steading
+   rolls its wall, build() rolls foe personalities, a caster tops up his
+   schools. One number per build, never a flicker. */
+const PTS_SCALE=0.42;   /* the dial. Recalibrate against the founders, nothing else. */
+function seededly(fn){
+  const real=Math.random;let s=1234567;
+  Math.random=()=>{s=(s*1103515245+12345)%2147483648;return s/2147483648;};
+  try{return fn();}finally{Math.random=real;}
+}
+function unitPts(u){
+  if(!u||u.passive)return 0;              /* the cub is a decision, not a threat */
+  let dpr=0;
+  (u.acts||[]).forEach(a=>{
+    if(!a.dmg||a.move)return;
+    const avg=(a.dmg[0]+a.dmg[1])/2+(u.dmgBonus||0);
+    let v=avg*((u.actionsMax||2)/Math.max(1,a.cost||1));
+    if(a.sweep)v*=1.35;                   /* hits everything adjacent */
+    if(a.range)v*=1.10;                   /* distance is rounds of free work */
+    dpr=Math.max(dpr,v);
+  });
+  if(u.caster)dpr=Math.max(dpr,26*(u.spellPow||1));   /* a school, through armour */
+  let off=dpr*(.35+.011*(u.mskill||50));
+  /* the wedding's whole difficulty tuning is this flag (#159), so the scale
+     has to read it: a drunk body swings at -12 and dodges at -8 */
+  if(u.drunk)off*=0.7;
+  const dv=Math.max(0,(u.dodgeBase||0)-(u.drunk?8:0));
+  const stay=((u.hpMax||1)+.8*(u.armourMax||0)+22*(u.soak||0))
+    *(1+dv/90)*(u.noRout?1.25:1);
+  return Math.max(1,Math.round(Math.sqrt(off*stay)*PTS_SCALE));
+}
+/* a roster body, priced as the unit it would be on the field. The deep copy
+   is load-bearing: unitFrom writes a caster's schools onto its argument. */
+function charPts(p){
+  try{return seededly(()=>{
+    const u=unitFrom(JSON.parse(JSON.stringify(p)));
+    /* +3% a level for what the formula cannot see: most perks are
+       CONDITIONAL (+8 dodge if unmoved, +17% under half) and price as
+       nothing above, so a level was measuring at ~1 point. First-cut
+       weight, stated once here; the founders are level 1, so the
+       100-point calibration does not move. */
+    return Math.round(unitPts(u)*(1+.03*((p.level||1)-1)));
+  });}
+  catch(e){return 0;}
+}
+const compPts=list=>list.reduce((s,p)=>s+charPts(p),0);
+/* ─── a fight, priced by building the roster it would actually field ───────
+   The builders read G, so the borrowed fields go back in a finally: party
+   (its length decides the >=6/>=8 pushes), the clash side, battleKind
+   (build() reads it for FOE_SHIFT alone). The tavern is the one special
+   case, because its fight arrives in scripted waves the builder does not
+   own: this is the room's whole roster, minus the barman on your side. */
+function fightPts(kind,opt){
+  opt=opt||{};
+  return seededly(()=>{
+    const keep={party:G.party,side:G.clashSide,bk:G.battleKind};
+    try{
+      if(opt.partyLen&&opt.partyLen!==G.party.length)G.party={length:opt.partyLen};
+      if(opt.clashSide!==undefined)G.clashSide=opt.clashSide;
+      G.battleKind=kind;
+      let foe,ally=[];
+      if(kind==='tavern'){
+        foe=build([[8,6,'harl',24],[10,6,'brakk',22],[11,6,'osper',21],
+          [10,5,'tull',20],[11,6,'weft',19]],TAVERN_T);
+        ally=build([[6,4,'barman',18]],TAVERN_T);
+      }else{
+        foe=kind==='mother'?beasts():kind==='brigand'?brigands()
+          :kind==='mirehares'?mirehares():kind==='clash'?clashFoes()
+          :kind==='pack'?pack():kind==='steading'?steading()
+          :kind==='armour'?armourFoe():kind==='circle'?circleFoes()
+          :kind==='wedding'?weddingFoes():kind==='chase'?chaseFoes()
+          :kind==='hold'?holdFoes():kind==='snarejoin'?holdHost()
+          :kind==='slingline'?slingline():foes();
+        if(kind==='clash')ally=clashAllies();
+        if(kind==='snarejoin')ally=snareClan();
+      }
+      const f=foe.reduce((s,u)=>s+unitPts(u),0);
+      const a=ally.reduce((s,u)=>s+unitPts(u),0);
+      return {foe:f,ally:a,net:Math.max(1,f-a)};
+    }catch(e){return {foe:0,ally:0,net:0};}
+    finally{G.party=keep.party;G.clashSide=keep.side;G.battleKind=keep.bk;}
+  });
+}
+/* the one number a list can sort by: the worst door of a branchy fight */
+function fightNet(kind,partyLen){
+  if(kind==='clash')return ['ratkin','ogre','none']
+    .reduce((m,s)=>Math.max(m,fightPts('clash',{partyLen:partyLen,clashSide:s}).net),1);
+  return fightPts(kind,{partyLen:partyLen}).net;
+}
+/* the three recommendations. First-cut multipliers, stated once here: the
+   harness refines them the day the ratios are measured against win rates. */
+const simBands=net=>({easy:Math.round(net*1.3),even:net,hard:Math.round(net*0.75)});
+
+/* ─── the six surprises stay locked until a campaign has shown them ────────
+   (User: "Not in the dev mod, important fights (like fen mother) or rabbits,
+   or thing in the arnor - locked, until you open it in the campeign".)
+   The record is META (gt_seen_fights), not the save: a fight met in ANY run
+   stays met, because the lock is a spoiler gate and a spoiler only works
+   once. startBattle marks it at the same door the journal writes, so a
+   practice fight (SIM.on) can never unlock anything. Dev mode opens all. */
+const FIGHT_LOCK={armour:1,mother:1,mirehares:1,snare:1,circle:1,wedding:1};
+const SEENF={k:'gt_seen_fights',
+  all(){try{return JSON.parse(localStorage.getItem(this.k))||{};}catch(e){return {};}},
+  mark(kind){try{const a=this.all();if(a[kind])return;a[kind]=1;
+    localStorage.setItem(this.k,JSON.stringify(a));}catch(e){}}};
+const fightOpen=k=>TEST.on||!FIGHT_LOCK[k]||!!SEENF.all()[k];
+
+/* ─── the hand-picked company ──────────────────────────────────────────────
+   (User: "you can pick specific caracters, Also you can lvl up them and add
+   artifacts from the pool".)
+   A row is a RECIPE (source, level, gear), never a person: the person is
+   rebuilt from the recipe on every read, so lowering a level or swapping a
+   piece can never leave yesterday's arithmetic on the body. The Captain is
+   row one and cannot be removed - every company in this game is his. */
+const SIMCREW={k:'gt_simcrew',_r:null,
+  rows(){
+    if(!this._r){
+      try{this._r=JSON.parse(localStorage.getItem(this.k))||null;}catch(e){this._r=null;}
+      if(!Array.isArray(this._r)||!this._r.length||this._r[0].src!=='you')
+        this._r=[{src:'you',level:1,eq:null}];
+    }
+    return this._r;
+  },
+  save(){try{localStorage.setItem(this.k,JSON.stringify(this.rows()));}catch(e){}}};
+const SIMCREW_NAMED={you:1,vesna:1,marrow:1,ilka:1,skree:1,ash:1,bruht:1};
+/* a deterministic hire off the wall: mid-roll stats, Stubborn on everybody,
+   so two stock bodies differ by nothing but race, class and what they carry */
+function simStock(race,cls){
+  const g=START_GEAR[cls]||['rags','cudgel'];
+  return finishRecruit({id:'stock_'+race+'_'+cls,
+    name:({human:'Sellsword',ratkin:'Clan-blade',ogre:'Hill-hand'})[race]||'Sellsword',
+    sur:'',race:race,cls:cls,
+    kind:race==='ratkin'?'ratkin':race==='ogre'?'ogre':(KIND_BY_CLS[cls]||'human'),
+    st:{str:8,agi:8,int:7,mor:8},trait:'stubborn',
+    eq:{armour:g[0],main:g[1],off:null,trinket:null}});
+}
+/* the level is paid the way promotions pay it (levelUp banks the points) and
+   the bank is then spent by POLICY, because this bench has no sheet to ask
+   you on: stats down the class's own priority, perks the first open door of
+   each tier. A level-6 body here is therefore a real level-6 body. */
+const STAT_PRIO={captain:['mor','str','agi','int'],spear:['str','agi','mor','int'],
+  archer:['agi','str','mor','int'],warmage:['int','mor','str','agi'],
+  mage:['int','agi','mor','str'],cutter:['agi','str','mor','int'],
+  brute:['str','mor','agi','int'],none:['str','agi','mor','int']};
+function simLevelTo(p,L){
+  L=Math.max(1,Math.min(XP_CAP,L|0));
+  while((p.level||0)<L)levelUp(p);
+  p.xp=xpNeed(p,p.level);
+  const prio=STAT_PRIO[p.cls]||STAT_PRIO.none;let i=0;
+  while((p.statPoints||0)>0){p.st[prio[i%prio.length]]+=1;p.statPoints--;i++;}
+  while((p.perkPoints||0)>0){
+    const open=perkPool(p).filter(k=>p.perks.indexOf(k)<0);
+    if(!open.length){p.perkPoints=0;break;}
+    p.perks.push(open[0]);p.perkPoints--;
+  }
+}
+function crewPerson(r){
+  let p;
+  if(r.src==='you'||r.src==='vesna'||r.src==='marrow'||r.src==='ilka')
+    p=makeParty().find(x=>x.id===r.src);
+  else if(r.src==='skree')p=finishRecruit(JSON.parse(JSON.stringify(PRESET_SKREE)));
+  else if(r.src==='ash')p=finishRecruit(JSON.parse(JSON.stringify(PRESET_ASH)));
+  else if(r.src==='bruht')p=finishRecruit(JSON.parse(JSON.stringify(PRESET_BRUHT)));
+  else{const bits=r.src.split(':');p=simStock(bits[0],bits[1]);}
+  if(r.eq)p.eq=Object.assign({},p.eq,r.eq);
+  simLevelTo(p,r.level||1);
+  return p;
+}
+function crewBuild(){
+  return seededly(()=>{
+    const seen={};
+    return SIMCREW.rows().map(r=>{const p=crewPerson(r);
+      while(seen[p.id])p.id+='b';        /* two Sellswords may not share an id */
+      seen[p.id]=1;return p;});
+  });
+}
+/* the bench under the grid, drawn only while WHO MEETS IT says Hand-picked */
+function simCrewPanel(crew,myPts){
+  const rows=SIMCREW.rows();
+  const fight=SIM_FIGHTS.find(f=>f.k===SIM.fight)||{n:'the field',k:SIM.fight};
+  const b=simBands(fightNet(fight.k,crew.length||1));
+  const vs=myPts>=b.easy?'they should have it EASY':myPts>=b.even?'better than EVEN'
+    :myPts>=b.hard?'a HARD fight':'past HARD - bring more';
+  const slotOpts=(p,slot)=>{
+    const bare=JSON.parse(JSON.stringify(p));bare.eq[slot]=null;
+    const base0=charPts(bare);
+    let h='<option value="">('+slot+': nothing)</option>';
+    Object.keys(GEAR).forEach(k=>{
+      const g=GEAR[k];
+      if(g.slot!==slot||g.company)return;
+      const w=JSON.parse(JSON.stringify(p));w.eq[slot]=k;
+      const m=charPts(w)-base0;
+      const wrong=slot==='armour'&&g.size&&g.size!=='any'&&g.size!==RACEMOD[p.race].size;
+      h+='<option value="'+k+'"'+(p.eq[slot]===k?' selected':'')+'>'+g.n+' '+(m>=0?'+':'')+m+
+        (wrong?' (wrong size)':'')+'</option>';
+    });
+    return '<select data-slot="'+slot+'" title="'+slot.toUpperCase()+
+      ': each piece priced as what it adds to THIS body">'+h+'</select>';
+  };
+  const rowHtml=rows.map((r,i)=>{
+    const p=crew[i];if(!p)return '';
+    return '<div class="scrow" data-i="'+i+'">'+
+      '<b>'+p.name+'</b><span class="scwho">'+p.race+' '+
+        (CLASSES[p.cls]?CLASSES[p.cls].n.toLowerCase():p.cls)+'</span>'+
+      '<span class="sclv">Lv <button data-a="lvdn" title="a level lower">−</button><b>'+
+        (r.level||1)+'</b><button data-a="lvup" title="a level higher">+</button></span>'+
+      slotOpts(p,'armour')+slotOpts(p,'main')+slotOpts(p,'off')+slotOpts(p,'trinket')+
+      '<span class="scpts">'+charPts(p)+' pts</span>'+
+      (r.src==='you'?'':'<button class="scx" data-a="del" title="off the list">✕</button>')+
+      '</div>';
+  }).join('');
+  const have={};rows.forEach(r=>{have[r.src]=1;});
+  let adders='';
+  if(rows.length<12){
+    [['vesna','Vesna the spear'],['marrow','Marrow the battle-mage'],['ilka','Ilka the bow'],
+     ['skree','Skree'],['ash','Asha'],['bruht','Bruht']].forEach(a=>{
+      if(!have[a[0]])adders+='<button data-add="'+a[0]+'">+ '+a[1]+'</button>';});
+    ['human','ratkin','ogre'].forEach(rc=>{
+      CLS_BY_RACE[rc].filter((c,i,arr)=>arr.indexOf(c)===i).forEach(cls=>{
+        adders+='<button data-add="'+rc+':'+cls+'">+ '+rc+' '+cls+'</button>';});});
+  }else adders='<i class="scfull">twelve is what the field deploys</i>';
+  return '<div id="simCrew">'+
+    '<div class="lbl" style="color:#8a7449">HAND-PICKED · '+crew.length+' of them · '+myPts+
+      ' pts · against '+fight.n+': <b style="color:#a3bd6c">'+vs+'</b></div>'+
+    '<div class="screws">'+rowHtml+'</div>'+
+    '<div class="scadd">'+adders+'</div>'+
+    '<i class="scnote">Levels spend themselves here: stats down the class\'s own priority, '+
+    'perks the first door of each tier. The sheet does it by hand; this bench does it by policy.</i>'+
+    '</div>';
+}
+function simCrewWire(){
+  const box=$('simCrew');if(!box)return;
+  const rows=SIMCREW.rows();
+  box.querySelectorAll('.scrow').forEach(el=>{
+    const i=+el.dataset.i,r=rows[i];if(!r)return;
+    el.querySelectorAll('button[data-a]').forEach(bt=>bt.onclick=()=>{
+      if(bt.dataset.a==='lvup')r.level=Math.min(XP_CAP,(r.level||1)+1);
+      else if(bt.dataset.a==='lvdn')r.level=Math.max(1,(r.level||1)-1);
+      else if(bt.dataset.a==='del')rows.splice(i,1);
+      SIMCREW.save();openSim();
+    });
+    el.querySelectorAll('select[data-slot]').forEach(s=>s.onchange=()=>{
+      r.eq=r.eq||{};r.eq[s.dataset.slot]=s.value||null;
+      SIMCREW.save();openSim();
+    });
+  });
+  box.querySelectorAll('button[data-add]').forEach(bt=>bt.onclick=()=>{
+    if(rows.length>=12)return;
+    rows.push({src:bt.dataset.add,level:1,eq:null});
+    SIMCREW.save();openSim();
+  });
+}
+
 /* ---------- the practice field ---------- */
 /* Every fight the act has, and a company to meet it with. `foes()` and the
    camp/steading builders read `G.party.length` to decide how many bodies to
@@ -39614,39 +39957,71 @@ function simComps(){
     d:live.party.length+' of them, day '+live.day+'. A copy: whatever happens here does not '+
       'follow them home.',
     make:()=>JSON.parse(JSON.stringify(live.party))});
+  /* #216 - and the one you build yourself, on the bench under the grid */
+  comps.push({k:'custom',n:'Hand-picked',
+    d:'Build them yourself: who stands, their level, and what they carry.',
+    make:()=>crewBuild()});
   return comps;
 }
 function openSim(){
   SIM.on=false;                 /* the picker is not a fight */
   const comps=simComps();
   if(!comps.some(c=>c.k===SIM.comp))SIM.comp=comps[0].k;
-  const col=(title,items,sel,attr)=>'<div class="simcol"><div class="lbl" style="color:#8a7449">'+
-    title+'</div><div class="simpick" data-attr="'+attr+'">'+
-    items.map(o=>'<button data-k="'+o.k+'" class="'+(o.k===sel?'on':'')+'"><b>'+o.n+'</b><i>'+
-      o.d+'</i></button>').join('')+'</div></div>';
+  /* #216 - a locked pick cannot survive into the launch button */
+  if(!fightOpen(SIM.fight))SIM.fight=SIM_FIGHTS.filter(f=>fightOpen(f.k))[0].k;
+  /* #216 - price the picked company FIRST: the fight list is recommended
+     against its size, because half the fights field more bodies against six */
+  const pick=comps.find(c=>c.k===SIM.comp);
+  const crew=seededly(()=>pick.make());
+  const myPts=compPts(crew),myLen=crew.length||1;
+  const col=(title,rows,attr)=>'<div class="simcol"><div class="lbl" style="color:#8a7449">'+
+    title+'</div><div class="simpick" data-attr="'+attr+'">'+rows.join('')+'</div></div>';
+  const fightRows=SIM_FIGHTS.map(f=>{
+    if(!fightOpen(f.k))
+      return '<button data-k="'+f.k+'" class="lock" disabled><b>'+f.n+'</b>'+
+        '<i>LOCKED - meet it on the road first. The practice field only fields '+
+        'what a campaign has shown you.</i></button>';
+    const b=simBands(fightNet(f.k,myLen));
+    return '<button data-k="'+f.k+'" class="'+(f.k===SIM.fight?'on':'')+'" '+
+      'title="recommended company points against your '+myLen+': at '+b.easy+
+      ' it should be easy, around '+b.even+' even, at '+b.hard+' hard"><b>'+f.n+'</b><i>'+
+      f.d+'</i><i class="spts">easy '+b.easy+' · even '+b.even+' · hard '+b.hard+
+      (TEST.on&&FIGHT_LOCK[f.k]&&!SEENF.all()[f.k]?' · dev-open':'')+'</i></button>';
+  });
+  const compRows=comps.map(c=>{
+    const P=c.k===SIM.comp?crew:seededly(()=>c.make());
+    return '<button data-k="'+c.k+'" class="'+(c.k===SIM.comp?'on':'')+'"><b>'+c.n+'</b><i>'+
+      c.d+'</i><i class="spts">'+P.length+' of them · ~'+(c.k===SIM.comp?myPts:compPts(P))+
+      ' pts</i></button>';
+  });
+  const groundRows=SIM_GROUNDS.map(o=>'<button data-k="'+o.k+'" class="'+
+    (o.k===SIM.ground?'on':'')+'"><b>'+o.n+'</b><i>'+o.d+'</i></button>');
   $('simCard').innerHTML='<h1>THE PRACTICE FIELD</h1>'+
     '<p style="color:#8a7449;font-style:italic;margin-top:-4px">A stretch of nothing in '+
     'particular, and a fight on it. Nobody is scarred here, nothing is looted, no day passes and '+
     'no company is spent. Lose as often as you like.</p>'+
     '<div class="simgrid">'+
-      col('THE FIGHT',SIM_FIGHTS,SIM.fight,'fight')+
-      col('WHO MEETS IT',comps,SIM.comp,'comp')+
-      col('THE GROUND',SIM_GROUNDS,SIM.ground,'ground')+
+      col('THE FIGHT',fightRows,'fight')+
+      col('WHO MEETS IT',compRows,'comp')+
+      col('THE GROUND',groundRows,'ground')+
     '</div>'+
+    (SIM.comp==='custom'?simCrewPanel(crew,myPts):'')+
     '<div class="popts"><button class="popt" id="simGo"><b>Take the field</b>'+
       '<i>fight it for real - the same rules, none of the consequences</i></button>'+
       '<button class="popt" id="simBack"><b>Back</b><i>to the menu</i></button></div>';
+  /* a pick re-renders the whole card: the fight recommendations follow the
+     company's size, so the two columns cannot be allowed to drift apart */
   $('simCard').querySelectorAll('.simpick').forEach(box=>{
     const attr=box.dataset.attr;
     box.querySelectorAll('button').forEach(b=>b.onclick=()=>{
-      SIM[attr]=b.dataset.k;
-      box.querySelectorAll('button').forEach(x=>x.classList.remove('on'));
-      b.classList.add('on');});});
+      SIM[attr]=b.dataset.k;openSim();});});
+  simCrewWire();
   $('simGo').onclick=simStart;
   $('simBack').onclick=openMenu;
   show('sim');
 }
 function simStart(){
+  if(!fightOpen(SIM.fight)){openSim();return;}   /* #216 - a locked fight cannot launch */
   const comps=simComps();
   const def=comps.find(c=>c.k===SIM.comp)||comps[0];
   /* ═══ BORROW `G`, AND GIVE IT BACK ═════════════════════════════════════

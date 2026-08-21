@@ -4153,3 +4153,47 @@ and a ratkin at +2 show the same arm. The picture says what the rung IS, never w
 checked by its own markup and the icons by `PIL`: nine 24x24 and nine 16x16, RGBA, alpha 0..255,
 496-1057 bytes each. The box measurement that matters is the sheet's, and it happens when pass one is
 built.
+
+---
+
+## 216 - The practice field: points on both sides, a hand-picked crew, the campaign lock
+
+*(2026-08-21, 8f.239. Asked and built the same day; this section is what a future session reads
+before touching the scale. The full reasoning and the shipped numbers are in the changelog row.)*
+
+**The ask, verbatim (2026-08-21):** *"And change in the practice field - when piking my crew - that
+you can pick specific caracters, Also you can lvl up them and add artifacts from the pool. Each
+character and artifact has its points value. And for each fight it is recomended point values for
+easy, mid, hard. Not in the dev mod, important fights (like fen mother) or rabbits, or thing in the
+arnor - locked, until you open it in the campeign. This one in the future would help both for AI
+and manual balancing, and also for safely chickng the game and learning to fight."* And the second
+half: *"And each fight has recomended points value (the points value we should calculate for each
+fight in the game, so we can compare thread lvls later). But it is visible only in dev mod for
+campeign. In the dev mod you can show this points for battls also on global map (so it would be
+easier to balance the final route)."*
+
+**The scale, and every dial in it** (all in the #216 block above `SIM_FIGHTS` in the prototype):
+
+| dial | value | why |
+|---|---|---|
+| `PTS_SCALE` | 0.42 | calibrated so the four founders sum to exactly 100. Recalibrate against the founders, never against a fight |
+| offence | best damage-per-round x (.35 + .011 x skill) | sweep x1.35, range x1.10, a caster floors at 26 x spellPow, drunk x0.7 |
+| staying | (hp + 0.8 armour + 22/soak) x dodge weight | noRout x1.25; drunk costs 8 dodge |
+| the mean | sqrt(offence x staying) | a glass cannon and an anvil are both worth less than their best half |
+| level | +3% a level on a roster body | conditional perks price as nothing above; without this five levels measured two points |
+| bands | easy 1.3x · even 1.0x · hard 0.75x of the fight's net | ⏳ FIRST CUT. They ignore the player's tactical edge (the hold patrol at even points measured 93% in #183). Refine against win rates |
+
+**The structural rules, so they are not re-derived:** `fightPts` builds the REAL foe roster
+through the same kind map startBattle uses and restores every borrowed `G` field in a finally;
+allies subtract (clash, snarejoin); a LIST takes the worst door of a branchy fight while a door's
+own dev chip prices its own side; the tavern is special-cased to the room's whole roster minus the
+barman because its waves belong to the script; everything runs under `seededly` or the steading's
+rolled wall makes the picker flicker. The locks are `FIGHT_LOCK` (armour · mother · mirehares ·
+snare · circle · wedding) against the META store `gt_seen_fights`, marked in startBattle beside
+the journal write under the same `!SIM.on` gate; TEST.on bypasses. The bench stores RECIPES
+(source, level, eq) in `gt_simcrew` and rebuilds the person on every read; levels are paid through
+`levelUp`'s own bank and spent by policy (`STAT_PRIO` per class, first open perk of each tier);
+the Captain is row one and unremovable; twelve rows, because twelve is the deployment-slot count.
+
+**What refines later:** the band multipliers against measured win rates; per-perk pricing if +3%
+a level proves too blunt; showing a fight's points on the aftermath for post-fight comparison.
