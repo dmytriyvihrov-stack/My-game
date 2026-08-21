@@ -247,6 +247,42 @@ In the running build, per screen:
     bad.push(e.tagName+'.'+e.className+'#'+e.id);} return bad;})()
 ```
 
+⛔ **AND A THIRD COUNTER, BECAUSE THE ONE ABOVE IS BLIND TO THE COMMONEST WAY A FIXED COLUMN
+BREAKS** *(#230, 2026-08-21)*. The clip counter skips `overflow:visible` **by design** - a hex is
+visible on purpose, and so is nearly every block on this build. So when a flex column runs out of
+room and shrinks a child that has a fixed-height thing inside it, the thing does not clip, **it
+paints over its neighbour**, and every gate in this file reads 0 while it happens. The company
+sheet shipped exactly that: `#iBody` was `flex:0 1 auto;min-height:0` around a 196px `#iDollBox`,
+and on a body wearing THE CIRCLE with a promotion point banked the figure lay **12.6px across the
+SKILLS caption** on HEAD, with `LINT()` 0, the clip counter 0 and nothing in the stylesheet looking
+wrong. Run this on any screen whose column is fixed-height:
+
+```js
+/* one child's PAINTED bottom against the next child's top. Expect [] */
+(()=>{const box=document.getElementById('iChar'),kids=[...box.children],bad=[];
+  for(let i=1;i<kids.length;i++){
+    const pr=kids[i-1].getBoundingClientRect(),cr=kids[i].getBoundingClientRect();
+    const pb=Math.max(pr.bottom,...[...kids[i-1].querySelectorAll('*')]
+      .map(e=>e.getBoundingClientRect().bottom).concat([pr.bottom]));
+    if(pb-cr.top>0.5)bad.push((kids[i-1].id||kids[i-1].className)+' over '+
+      (kids[i].id||kids[i].className)+' by '+(pb-cr.top).toFixed(1));}
+  return bad;})()
+```
+
+⚠ **THE CHILD'S OWN RECT IS NOT ENOUGH AND THAT IS WHY THE PROBE WALKS ITS DESCENDANTS.** The
+shrunk parent reports its shrunk height honestly; it is the fixed-height GRANDCHILD that hangs out
+of it, so a check on the parent's rect alone sees a tidy column.
+
+☑ **THE FIX IS TO STOP THE SHRINK, NOT TO CHASE THE OVERLAP.** `flex:0 0 auto` on the box makes the
+column exceed its window and the scroller do its job, which is a visible, honest degradation. ⚠ It
+is a real cost where a screen has promised not to scroll (#133 promised it for this one), so it is
+a decision to take out loud and write down, never a silent one.
+
+⚠ **AND MEASURE THE WORST BODY, NOT THE ONE THE SCREEN OPENS ON.** #200 established the Captain as
+this sheet's worst case FOR WIDTH (six ability cards). For HEIGHT he is the *best* case: he has no
+dismiss button, so his `iFoot` is 2px against every crew member's 25. A slack measured on him reads
+53px and the real number is 30. **Whose worst case a screen has is a per-AXIS fact.**
+
 **Known and pre-existing, on the shipped build, so do not chase them**: `#wMap` (the map is bigger
 than its window), `#bField` and `#bLog` in the battle, and `#menu`/`#mTitle` on the front door. All
 four are in the committed build before this pass; they were confirmed by running the same probe

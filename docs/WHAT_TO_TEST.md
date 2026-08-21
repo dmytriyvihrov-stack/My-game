@@ -26,6 +26,37 @@
 
 ---
 
+## ⚑ EVERY STAT HAS A PICTURE NOW, AND IT CHANGES WITH THE WORD  *(#230 · 2026-08-21 · build log 8f.253)*
+
+**How to reach it in three steps:** open THE COMPANY (the roster button on the road) → look at the four
+stat lines on the right of the head → hover one of them.
+
+**What it is.** The icons you sent, all four sets, wired to the nine bands each stat already had.
+
+- **an arm for STRENGTH, boots for AGILITY, a brain for INTELLECT, a heart for MORALE**, at 32px beside
+  the word. Two of the four had a 16px picture before and two had nothing.
+- **nine steps per stat, and the picture is the word.** The boots go broken clogs → repaired → leather
+  → winged with a yellow trail; the arm goes thin to red and swollen; the brain goes shut and grey to
+  crowned; the heart goes cracked husk to gold.
+- **hover a stat and you get the whole ladder**, all nine pictures with their words, the one you are
+  standing on lit. That is the surface the art really pays on.
+
+**What should happen.** The picture and the word always agree, on every body and every band. A strong
+ogre and a strong ratkin show the same arm: the picture says what the RUNG is, never who is standing
+on it.
+
+**What would be a bug.** A picture one step off its word - the commonest way this breaks is the order,
+because the files ship weakest-first and the sheet reads strongest-first. Anything blurry or smoothed:
+these are pixel paintings drawn at exactly their own size and nothing may resample them.
+
+**⚠ THE ONE THING TO JUDGE, BECAUSE IT COST SOMETHING.** At 32px the four rows are nearly twice as tall
+as they were, and that column measures exactly its window with nothing spare. It was paid for by
+tightening the gaps between the blocks on that screen. **Two states now scroll a few pixels** rather
+than fit: a body with a promotion point banked (8px) and a body wearing THE CIRCLE (21px). Before this,
+the sheet did not scroll - it silently painted the figure over the SKILLS label instead, which HEAD
+still does on a CIRCLE body with a point banked. **If the tighter sheet reads worse to you than the
+bigger icons read better, say so: 26px removes all of the pressure and 24px gives the old air back.**
+
 ## ⚑ THE FLAG MOVES OFF THE HEAD, AND THE NERVE LADDER LOSES A RUNG  *(#228 · 2026-08-21 · build log 8f.251)*
 
 **How to reach it in three steps:** start any fight → click a body and look at the NERVE line, then hover it for the whole ladder → let somebody's nerve go and watch the flag over them.
