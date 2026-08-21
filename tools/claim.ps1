@@ -381,7 +381,7 @@ $ShipRecord = @(
   'docs/00_PLAN_AND_BACKLOG.md'
 )
 
-function Get-ShippedNumbers {
+function Get-ShippedNumbers([string] $Ref = 'main') {
   $entry = @{}
   $build = @{}
   $read  = 0
@@ -399,13 +399,13 @@ function Get-ShippedNumbers {
     try { [Console]::OutputEncoding = [System.Text.Encoding]::UTF8 } catch { }
 
     $have = @()
-    try { $have = @(& git ls-tree -r --name-only main -- docs) } catch { $have = @() }
+    try { $have = @(& git ls-tree -r --name-only $Ref -- docs) } catch { $have = @() }
     if ($have.Count -eq 0) { return $null }
 
     foreach ($f in $ShipRecord) {
       if ($have -notcontains $f) { continue }
       $txt = ''
-      try { $txt = ((& git show ("main:" + $f)) -join "`n") } catch { continue }
+      try { $txt = ((& git show ($Ref + ":" + $f)) -join "`n") } catch { continue }
       if (-not $txt) { continue }
       Add-BuildNumbers $txt $build $f
       Add-EntryNumbers $txt $entry $f -Markdown
@@ -424,7 +424,11 @@ function Get-ShippedNumbers {
   return @{ entry = $entry; build = $build }
 }
 
-# Drops every claim, anybody's, whose number is in main's record. Returns what
+# Drops every claim, anybody's, whose number is in MAIN's record - and only
+# main's, which is why the sweep keeps the default $Ref. A number written into a
+# DESK's record is not defended by the repo scan yet, so its claim has to stand.
+# Verb-Verify reads the same parser at HEAD for a different question; see there.
+# Returns what
 # it took so the caller can say so: a claim vanishing silently is how a session
 # would come to distrust the one file it has to trust.
 function Sweep-SpentClaims {
@@ -668,6 +672,68 @@ function Verb-Verify {
     $rec = Read-Record $f.FullName
     if ($rec -and $rec.by -and $rec.by -ne $me) {
       $held[("{0}-{1}" -f $rec.kind, $rec.number)] = $rec
+    }
+  }
+  # ---------------------------------------------------------------------------
+  # #217: A NUMBER THIS BRANCH ALREADY CARRIES IS ONE AN EARLIER COMMIT SPENT.
+  #
+  # This scan cannot tell a number being SPENT from a number being CITED, and
+  # for as long as every desk branched off main that did not matter: main's
+  # numbers are swept, so the only held numbers a diff could name were another
+  # desk's, and naming one was the mistake worth refusing.
+  #
+  # #217 was stacked on work/mirror-battle at the user's call, because it
+  # extends #215's BEAST_KIND rather than duplicating it. Its changelog entry
+  # and its code comments therefore cite #215 and 8f.238 several times each -
+  # they have to, the entry is unreadable without saying what #215 did and did
+  # not do - and both claims are still held, because a claim only sweeps itself
+  # once it is on MAIN and #215 is on a desk. So the guard refused an honest
+  # commit whose only crime was quoting its own parent.
+  #
+  # THE TEST IS THE SAME ONE THE MERGE SKIP ABOVE MAKES, ASKED OF ONE NUMBER
+  # INSTEAD OF THE WHOLE COMMIT: is this number already in the committed record
+  # on this branch? If it is, an ancestor commit spent it and this one is only
+  # referring to it. A merge is that answer for every number at once.
+  #
+  # ---------------------------------------------------------------------------
+  # THE CLAIM IS NOT DROPPED, AND THAT IS THE HALF THAT MATTERS. Sweep-
+  # SpentClaims deletes a claim file once the number is on main and the repo
+  # scan defends it; here it is NOT on main, so another session must still be
+  # refused that number. This filter reaches only this one verify, so the guard
+  # goes on protecting the thing it was built for - a session inventing a number
+  # - and stops refusing a branch for quoting the branch under it.
+  #
+  # It is also the one PARALLEL_SESSIONS.md rule about numbers, once more: one
+  # fact, two readers. The branch record is read by the SAME parser as main's,
+  # with the ref passed in, so a guard added to Add-EntryNumbers cannot reach
+  # one and miss the other.
+  #
+  # Fails CLOSED: any trouble reading HEAD leaves $branch null and every held
+  # number standing, which is the strict answer and the safe one.
+  # ---------------------------------------------------------------------------
+  if ($held.Count -gt 0) {
+    $branch = $null
+    try { $branch = Get-ShippedNumbers 'HEAD' } catch { $branch = $null }
+    if ($branch) {
+      $ancestral = @()
+      foreach ($k in @($held.Keys)) {
+        $rec = $held[$k]
+        $n = -1
+        try { $n = [int] $rec.number } catch { continue }
+        $tbl = $null
+        if     ($rec.kind -eq 'entry') { $tbl = $branch.entry }
+        elseif ($rec.kind -eq 'build') { $tbl = $branch.build }
+        if (-not $tbl -or -not $tbl.ContainsKey($n)) { continue }
+        $label = ("#{0}" -f $n)
+        if ($rec.kind -eq 'build') { $label = ("8f.{0}" -f $n) }
+        $ancestral += ("{0}  held by {1}, and already in {2} on this branch" -f $label, $rec.by, $tbl[$n])
+        $held.Remove($k)
+      }
+      if (@($ancestral).Count -gt 0 -and -not $Json) {
+        Write-Host ""
+        Write-Host ("citing {0} number(s) this branch already carries - not spent here, so not refused" -f @($ancestral).Count) -ForegroundColor DarkGray
+        foreach ($a in $ancestral) { Write-Host ("  {0}" -f $a) -ForegroundColor DarkGray }
+      }
     }
   }
   if ($held.Count -eq 0) { if (-not $Json) { Write-Host "clear: no other session is holding a number" -ForegroundColor Green }; return }
