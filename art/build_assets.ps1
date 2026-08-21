@@ -361,7 +361,7 @@ foreach ($e in $battleEntries) {
   [void]$sb.AppendLine(("  '{0}':{{src:'data:image/png;base64,{1}',w:{2},h:{3}}}," -f $e.Key, $e.B64, $e.W, $e.H))
 }
 [void]$sb.AppendLine('};')
-# the map-node sights, keyed MAPEV00A and MAPEV01..MAPEV31 — MAP_SIGHT{} in the prototype
+# the map-node sights, keyed MAPEV00A and MAPEV01..MAPEV34 — MAP_SIGHT{} in the prototype
 # is what turns an event key into one of these
 [void]$sb.AppendLine('const MAP_ART={')
 foreach ($e in $siteEntries) {

@@ -42,7 +42,12 @@ Push-Location $Root
 try {
 
   # -- where am I ------------------------------------------------------------
-  $common = (& git rev-parse --git-common-dir 2>$null)
+  # NO 2>$null (#226, sweeping #222's declared remainder). Under
+  # $ErrorActionPreference='Stop', REDIRECTING a native command's stderr is what
+  # promotes a harmless git warning into a terminating NativeCommandError;
+  # unredirected stderr is inert. The Die below already covers a real failure.
+  $common = ''
+  try { $common = & git rev-parse --git-common-dir } catch { $common = '' }
   if (-not $common) { Die "not a git repo" }
   $common = $common.Trim()
   if (-not [System.IO.Path]::IsPathRooted($common)) { $common = Join-Path $Root $common }

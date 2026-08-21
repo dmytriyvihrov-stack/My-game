@@ -58,11 +58,30 @@ if (-not (Test-Path (Join-Path $root '.git'))) { Die "this is not a git repo. Ru
 # so a deploy from a branch desk would push work\<name> to the live link with
 # half a feature in it. In a worktree `.git` is a FILE, not a folder, so the
 # check above passes there and is not enough on its own.
+# NO 2>$null ON EITHER OF THESE (#226, sweeping #222's declared remainder).
+# Under $ErrorActionPreference='Stop', REDIRECTING a native command's stderr is
+# itself what promotes a harmless warning into a terminating NativeCommandError;
+# unredirected stderr is inert. One tracked file with LF endings is enough to make
+# git warn, and that sentence used to be the throw. tools\claim.ps1 carries the long
+# version of this note at both of its call sites, and PARALLEL_SESSIONS.md records
+# the trap; #222 fixed the one site that was reported and said so.
+$common = ''
+$curBranch = ''
 Push-Location $root
 try {
-  $common = (& git rev-parse --git-common-dir 2>$null)
-  $curBranch = (& git rev-parse --abbrev-ref HEAD 2>$null)
+  $common = & git rev-parse --git-common-dir
+  $curBranch = & git rev-parse --abbrev-ref HEAD
+} catch {
+  $common = ''
+  $curBranch = ''
 } finally { Pop-Location }
+
+# AND AN UNREADABLE BRANCH REFUSES INSTEAD OF DEFAULTING. The check below reads
+# $curBranch to decide whether this deploy would publish a work branch, and an
+# empty string makes $onBranch FALSE - i.e. a failure here would silently pass the
+# one guard that stops half a feature reaching the live link. Deploying blind is
+# the thing that must not happen quietly; saying so costs a line.
+if (-not $curBranch) { Die "could not read the current branch (git rev-parse --abbrev-ref HEAD failed).`n         This script pushes HEAD, so it will not deploy without knowing what HEAD is." }
 
 if ($common) {
   $common = $common.Trim()

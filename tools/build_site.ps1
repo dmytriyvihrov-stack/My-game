@@ -91,6 +91,39 @@ if ($Player) {
   "player : TEST forced off, DEV.MODE button removed (/*__PLAYER_BUILD__*/ marker set)"
 }
 
+# ---- the build stamp ------------------------------------------------------
+# #226. The page carries a dim build id in its top right corner so a bug report
+# can name the build it came from. The working file always reads 'dev', which is
+# itself the fact a report needs; this is the only place a real one is written.
+#
+# WHY THE CHANGELOG NUMBER AND NOT A COMMIT HASH. deploy.ps1 builds the page and
+# only THEN runs `git add -A`, so a hash read here is the PARENT commit's - a
+# stamp that is precisely wrong, which is worse than one that is coarsely right.
+# `8f.NNN` is the vocabulary every doc in this repo already cites.
+#
+# LOUD, NOT SILENT, on both halves: an unmatched marker throws (the page would
+# ship saying 'dev' and nobody would know which build a tester was on), and an
+# unreadable changelog warns and falls back to the date alone.
+$mk    = '/*__BUILD_ID__*/'
+$mkEnd = '/*__END_BUILD_ID__*/'
+$stamp = (Get-Date -Format 'yyyy-MM-dd')
+$chg   = Join-Path $root 'docs\CHANGELOG.md'
+if (Test-Path -LiteralPath $chg) {
+  $nums = [regex]::Matches((Get-Content $chg -Raw -Encoding utf8), '8f\.(\d+)') |
+          ForEach-Object { [int]$_.Groups[1].Value }
+  # the separator is written as a code point: this file must stay pure ASCII (see the header).
+  if ($nums.Count -gt 0) { $stamp = ('8f.{0} {1} {2}' -f ($nums | Measure-Object -Maximum).Maximum, [char]0x00B7, $stamp) }
+  else { Write-Warning "no 8f.NNN found in docs\CHANGELOG.md - the stamp is the date alone" }
+} else {
+  Write-Warning "docs\CHANGELOG.md is missing - the stamp is the date alone"
+}
+$pat = [regex]::Escape($mk) + '.*?' + [regex]::Escape($mkEnd)
+$n = ([regex]::Matches($html, $pat)).Count
+if ($n -ne 1) { throw "build stamp: expected the BUILD_ID marker pair exactly once, found $n. Has it moved? Update build_site.ps1." }
+$html = [regex]::Replace($html, $pat, ("{0}'{1}'{2}" -f $mk, $stamp, $mkEnd))
+if ($html -notmatch [regex]::Escape("'$stamp'")) { throw "build stamp: the replacement did not land" }
+"stamp  : $stamp"
+
 [System.IO.File]::WriteAllText($out, $html, (New-Object System.Text.UTF8Encoding($false)))
 
 # ---- icons -----------------------------------------------------------------

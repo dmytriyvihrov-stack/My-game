@@ -26,6 +26,59 @@
 
 ---
 
+## ⚑ THE FLAG MOVES OFF THE HEAD, AND THE NERVE LADDER LOSES A RUNG  *(#228 · 2026-08-21 · build log 8f.251)*
+
+**How to reach it in three steps:** start any fight → click a body and look at the NERVE line, then hover it for the whole ladder → let somebody's nerve go and watch the flag over them.
+
+**What it is.** Your four notes on the flag and the ladder.
+
+- **the flag stands to the right of the body** instead of over its head. The pole sits on the body's centreline and the flag flies right from it.
+- **it is see-through until it is all the way out.** Your colours fully up, or the white flag fully streaming, are solid; the half-out one is faded.
+- **the nerve readouts all wear it now.** The NERVE line on the plaque, the whole ladder on its hover, the target's nerve row, the two nerve lines inside the chance-to-hit breakdown, and the promotion preview. The emoji faces are gone from all of them.
+- **Ok is merged into Happy and neither costs anything.** One free band from 52% to 90% of a body's nerve. The first penalty is now Shaken.
+
+**What should happen.** Most of a fight, most bodies have nothing over them. A solid teal flag means somebody is at the top and getting +5 to hit; a faded white one means Breaking; a solid white one means routed and running. The plaque and the flag over the same body must always agree. Nothing should take a penalty until the word says **SHAKEN**.
+
+**What would be a bug.** A flag overlapping the captain's ★, or hanging over the next hex. The plaque saying HAPPY while the board shows a white flag on the same body. Any nerve readout still showing a face. ⚠ **Two things are deliberate:** the **world bar's mood face on the map is NOT the same ladder** and keeps its emoji - that is the company's road morale, not a body's nerve in a fight, and they are separate on purpose. And **the step into Shaken is now a bigger drop** than it was, because the small -5/-2 rung between them is what you merged away; if the fights feel like they turn too suddenly, that is the thing to say, and softening Shaken is a one-line answer.
+
+**Measured:** eight fights x 16 runs either side of the merge, mean win **80.6% -> 79.8%** with 0 errors, so the difficulty did not move. ⚠ Sixteen runs cannot resolve a per-fight swing of ten points, so treat that as "nothing showed up" rather than proof.
+
+---
+
+## 🏳 WHAT THE ROAD HANDS YOU, WHAT A CHEAP HIRE COSTS, AND THE FLAG OVER A HEAD  *(#227 · 2026-08-21 · build log 8f.250)*
+
+**How to reach it in three steps:** win two or three map fights and look at what lands in the cart → open a muster wall and find the one with no class → let somebody's nerve go in a fight.
+
+**What it is.** Your three asks.
+
+- **loot after a fight leans on what you do NOT have.** It will not hand you a second bow when somebody is already carrying one, and a weapon has to actually beat something you swing before it is offered. Armour got a real share of the roll: it was about 4% a fight and it is about 15%.
+- **the level-0 stranger is half price and arrives with empty hands.** About 28 crowns for a human instead of 41. His row says `comes with no weapon` before you buy him.
+- **the morale flag.** Your v5 art, over a body's head, and only at the two ends: your own teal colours when somebody is at the top of the ladder, the white flag half out when they are Breaking and fully out when they are Broken. The emoji face and the old 🏳 are both gone.
+
+**What should happen.** Over about eight fights an act you should now see roughly three or four extra pieces rather than two, and none of them a repeat. **Arm the stranger before you field him**: with no weapon he has no attack at all and can only walk, which is deliberate and is the price of the discount - the tool for whatever trade he picks arrives in the stash at his first level. On the board, most bodies should have nothing over their heads most of the time; a flag appearing is news.
+
+**What would be a bug.** A find that hands you something you already own, or a weapon plainly worse than what everyone carries. The muster wall never showing a no-class candidate, or showing one without the `comes with no weapon` clause. Two flags over one body, or a flag sitting on the captain's ★. ⚠ **And two things are deliberate, so they are not bugs**: **Ok and Shaken now show nothing at all** over a head, where they used to have a dim face - that is your "only when maximum or breaking", and the furled white flag is cut and mapped and simply not drawn, so it is one line to turn on if the board feels too quiet. And **late in a run the weapon finds will dry up**, because once you hold the club, the crossbow and the maul there is little left that is both new and better; it will hand over a duplicate rather than nothing at that point.
+
+---
+
+## 🧿 THE BUILD NAMES ITSELF, THE SEATS MARK, AND YOUR OLD ROADS STAY VISIBLE  *(#226 · 2026-08-21 · build log 8f.249)*
+
+**How to reach it in three steps:** open the game and look at the top right corner → take the road and look at the world bar's first chip → walk two or three nodes and look back at where you came from.
+
+**What it is.** Three of your asks plus one thing off the backlog.
+
+- **a build stamp in the top right corner.** It reads **`dev`** in the working prototype and `8f.249 · 2026-08-21` in anything built and deployed, so a bug report can name the build it came from. On the map, in a fight and on the company sheet it sits one row lower, just under the top bar, because the corner itself is already the MENU / zoom / BACK button on those three.
+- **the seats mark is two expands crossed** instead of one arrow, and it now stands against the seats figure rather than halfway between it and the headcount.
+- **a road you have already walked is no longer transparent.** It was drawn at 55% and, against the painted map, that put it a hair away from the dashed road you *cannot* take. It is solid now, with the same dark casing the live gold road uses, one size down.
+- **and three map nodes that had art nobody could see.** The wheel-rut road, the pursuers and the mirehares had their paintings finished and exported and were still drawing the plain type mark, because the last step of the pipeline had never been run. They are painted now, which also moves their own name plates down.
+- **and off the backlog:** #222's leftover sweep, three places where a redirected `git` error could kill `deploy.ps1` or `merge.ps1` with a confusing message. Nothing you can see; it stops a tool failing strangely. `deploy.ps1` also refuses to run now if it cannot tell which branch it is on, which it used to treat as "we must be on main".
+
+**What should happen.** The stamp should be there on every screen and easy to ignore: dim, tiny, and it must never take a click. On the world bar the first chip reads **portrait · 4 · ✦ 8/13**, with the crossed mark touching the 8 and a clear gap back to the 4; hovering it still says *seats spent* in words. Walking away from a node, the road behind you should stay plainly there: dimmer and thinner than the gold road you can take, but obviously a road, and obviously not the dotted one that means *not from here*.
+
+**What would be a bug.** The stamp sitting on top of the ☰ MENU button, the zoom row or the BACK button, or reading `dev` on something you deployed - that would mean the build script did not stamp it. The crossed mark looking like a blob at that size, or heavier than the number next to it (it was measured to be the same weight as the digit `8`, so if it reads heavier, say so and it is one number). A name plate on one of the three newly painted nodes sitting on a neighbour's, or a road running through one of the new paintings - all three counters read 0 and the road check was made to fire on purpose before being trusted, but an eye beats a counter on a map. And the walked road reading as **available**: it must not start looking like the gold road, because gold is the only thing on that map allowed to say *you may go here*. ⚠ The dashed *not from here* road was left exactly as it was, on purpose - that is a refusal rather than a path you walked - so if you meant those too, that is a second change and a small one.
+
+---
+
 ## 🧪 NINE SMALL ONES: THE CARD SCROLLS, THE HOVERS STOP BEING CUT, AND THE MAP GETS ITS CONTRAST BACK  *(#223 · 2026-08-21 · build log 8f.246)*
 
 **How to reach it in three steps:** open the game → read the contract card to the end and try the wheel over the prose → then the world bar, then the company sheet.

@@ -4197,3 +4197,113 @@ the Captain is row one and unremovable; twelve rows, because twelve is the deplo
 
 **What refines later:** the band multipliers against measured win rates; per-perk pricing if +3%
 a level proves too blunt; showing a fight's points on the aftermath for post-fight comparison.
+
+### Round seven, 2026-08-21: the icons are IN THE PROTOTYPE, and the row grew for a reason nobody guessed
+
+His ask: *"Чекни онови відповідно до оновленої гілки гри. Спробуй вбудувати оновлені руки і мозок в
+інтелект (давай подивимось як спрацює) ... Пока работай токо с файлом прототипа нашего, не трогай
+основной бюлд."* **Built, prototype only. `index.html` untouched, nothing injected, nothing deployed.**
+The gate picture is `shots/204_stat_icons.html` (four live panels, the build's own CSS).
+
+⚑ **THE V3 SET SUPERSEDES V7 AND IT LANDED WITH A BRAIN.** `prototype/assets/stat-icons-pixel-v3/`
+carries nine STRENGTH arms and nine BRAIN icons at 16px and 24px with a `manifest.json` keyed
+weakest-to-strongest. Its exporter is `prototype/export_stat_icons_v3.ps1`, committed as a bench in
+`c02ba84` with the warning that it **cannot be re-run as it stands** (absolute paths into
+`~/.codex/generated_images/`, and its output root is gitignored). ⚠ **So the eighteen PNGs are the
+only copy and they are NOT in git.** They are now embedded in the prototype as data URIs, which is
+also what makes them survive; the folder should still be backed up.
+
+⛔ **THE ICON IS KEYED ON THE INDEX THE WORD IS KEYED ON, AND THAT IS THE WHOLE DESIGN.** `tellIdx(k,v)`
+is the band index; `tell()` was rewritten to read it, `statIco()` reads it, and `tellLadderHTML` asks
+for the icon **by position** rather than re-deriving it from a value. One lookup, two renderers, so a
+picture cannot end up a band away from its own sentence. **Verified end to end by byte fingerprint**,
+which is the only check that actually proves the ORDER: `STAT_ICON.str[0]` is 451 B = `grade-plus-4`
+against *Monstrously strong*, `[4]` is 472 B = `grade-0` against *Strong enough*, `[8]` is 519 B =
+`grade-minus-4` against *No use lifting anything*; the brain agrees at both ends (533 / 283).
+
+⛔ **THE ROW GREW 3.9px AND THE NEGATIVE MARGIN WAS NOT THE FIX. IT TAKES TWO DECLARATIONS.**
+
+| | row height, illustrated | bare row |
+|---|---|---|
+| `margin:-1px 0` alone | **20.8** | 16.9 |
+| `align-self:center` alone | **18.5** | 16.9 |
+| both | **16.9** | 16.9 |
+
+⚑ **The cause is a rule about flex baselines nobody had hit here before: `.itl` is
+`align-items:baseline`, and A FLEX CONTAINER TAKES ITS BASELINE FROM ITS FIRST ITEM** - which is now
+an image, whose baseline is its bottom edge. So the row was hanging the whole value off the bottom of
+a picture, and the margin (which does shrink the outer box, exactly as #202 used it for the
+descenders) was fighting the wrong thing. ⛔ **And never "fix" it by setting `width/height:14`: that
+RESAMPLES a 16px painting into 14px.** The 1px bleed either way is free because **every one of the
+eighteen files carries at least 2px of transparent padding on every edge** - measured with PIL, not
+assumed.
+
+✅ **THE GATES, on the running build at `localhost:8834`:** `LINT()` **0 findings** · the ui-scales
+overflow probe on the open sheet **[]** · nothing under the 10px floor **0** · `#iChar` **678 into
+678** with no scroll, i.e. #200's exactly-full column is still exactly full · all four rows **17.4px,
+identical** · **no word clipped at any band, probed 9 bands x 4 stats** · the ladder is 9 rungs, all
+with a picture, the held one lit · **`agi`/`mor` render no `<img>` at all** (not an empty one).
+
+⚠ **AND THE MEASUREMENT ALMOST HAPPENED ON SOMEBODY ELSE'S BUILD.** `serve.ps1` on 8791 refused to
+bind (*"conflicts with an existing registration"*) and **exited 0 while printing the serving line**,
+so the browser was answered by another session's server and reported `STAT_ICON is not defined` on a
+file that plainly had it. The tell was arithmetic: the port returned **28,679,857 bytes** against the
+patched file's **28,838,803**. ⛔ **Fetch the file the server actually serves and compare its LENGTH
+before believing any measurement.** Moved to 8834, free, and everything above is from there.
+
+⛔ **THE FINDING THAT IS ABOUT THE ART AND NOT THE CODE: V3 IS A COLOUR SEQUENCE, NOT A SIZE ONE.**
+V7's arms grew monotonically, which is what made a row of them sort itself. Measured ink area out of
+256 px, weakest to strongest:
+
+- **strength** 93, 70, 63, 64, 93, 90, 87, 94, 102 - the bottom rung (a splayed broken hand) has MORE
+  ink than the two above it, and the top five are flat within 15;
+- **brain** 60, 83, 88, 88, 52, 67, 119, 55, 108 - **`+3` (55) is smaller than `+2` (119) and smaller
+  than `-2` (88)**, so the silhouette actively reverses near the top.
+
+So both sets read by the palette climb (skin → orange → red; white → pink → gold) and not by mass.
+That is legible on a card being read and it is **weaker in a list**, which is the argument the digit
+was already making. ⚠ **`+2` and `+3` of the brain are the pair to look at first** on the gate
+picture: a gold ring against thin rays is the one place the ladder can be read backwards.
+
+⏳ **STILL OPEN, and it is what the picture is for:** AGILITY and MORALE have no set, so the sheet is
+now **two illustrated stats beside two bare ones**. This file's own rule from round six says *either
+all four or none*; the build is the exception on purpose, so it can be LOOKED at rather than argued
+about. If it reads badly, the fix is a hand and a heart in the same pixel language, not removing the
+two that exist.
+
+### Round eight, 2026-08-21: "a third bigger" was measured, and the answer is no
+
+His ask: *"а якщо ми зробимо цю іконку на 33% більшою - стане вони більш інформативною з точки зору
+іконок?"* Nothing in the prototype changed this round; `shots/204_stat_icons.html` was rebuilt from
+the running build as the comparison (four panels: the same rows at 16 / 21 / 24, all nine bands at 16
+against 24, the shapes magnified 5x, and the table).
+
+⛔ **BIGGER IS NOT MORE INFORMATIVE, AND THE NUMBER SAYS SO.** "Informative" for an icon SET means one
+thing: how much a step up the ladder changes the picture. Measured as the share of pixels that differ
+between a rung and the one below it, over all eight pairs:
+
+| | 16px | 24px | |
+|---|---|---|---|
+| the arm | **26.7%** | **27.5%** | +3% relative |
+| the brain | **28.4%** | **28.9%** | +2% relative |
+
+**The 24px export carries essentially the same distinguishing signal as the 16px one.** What size
+buys is legibility on a stage that is itself scaled to the window; it adds nothing to what the set
+can say. ⚑ **And the same table names the pairs that stay confusable at ANY size, because the two
+drawings are genuinely alike**: brain −2→−1 (12.5%), brain 0→+1 (14.5%), brain −4→−3 (17.2%), arm
++1→+2 (17.2%), arm −2→−1 and 0→+1 (19.1%). Those are an ART problem and no zoom fixes them.
+
+⛔ **AND 21px IS THE WORST OF THE THREE SIZES ON OFFER.** 16 x 1.33 = 21.3, so a 16px painting is
+stretched by a fraction: **5 of every 16 pixel rows are doubled and 11 are not**, which is exactly
+what a pixel icon may not survive. The three honest choices are **16 (shipped)**, **24 (a real
+export, +50%)**, or **32 (an exact 2x of 16)**. ⚑ **The 24px files are NOT the 16px ones enlarged**:
+only **316 of 576** pixels agree with a nearest-neighbour upscale of the 16px arm, and **445 of 576**
+for the brain, so 24 is a genuine higher-detail render and costs no resampling at all.
+
+⚠ **IF 24 IS TAKEN, THE ROW HAS TO BE RE-MEASURED AND IT WILL NOT SIMPLY FIT.** Round seven's trick
+hides a 16px picture inside a 14px box because every file carries at least 2px of transparent
+padding. **The 24px files carry 2px too, not 3** (measured), so a 24px icon in a 14px box would bleed
+5px each way into the rows above and below rather than into its own empty border. The options are the
+row growing (which breaks #200's exactly-full 678 column, four rows x ~7px) or the tells getting a
+real art column with its own width, which is the arrangement `.sart`/`.scol` already uses for items.
+**Not built; this is the arithmetic that decides it.**
