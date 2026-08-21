@@ -513,8 +513,19 @@ function Verb-Land {
     if ($LASTEXITCODE -ne 0) {
       Write-Host ""
       Hm "CONFLICT merging $($w.branch). The merge is half-done and waiting for you."
-      foreach ($f in @(Gitx diff --name-only --diff-filter=U)) { Dim "    $f" }
+      $conf = @(Gitx diff --name-only --diff-filter=U)
+      foreach ($f in $conf) { Dim "    $f" }
       Write-Host ""
+      # A DOCS CONFLICT IS MECHANICAL AND HAS A TOOL. Every desk adds a row at
+      # the top of the same newest-first table, so 00_PLAN_AND_BACKLOG.md
+      # conflicts on EVERY landing - four times out of six on 2026-08-21 - and
+      # the resolution is always the same: keep both rows, order by number.
+      # record.py fix does exactly that, and REFUSES a conflict whose two sides
+      # are not both entry rows, so a real disagreement still reaches a human.
+      if ($conf | Where-Object { $_ -like "docs/*" }) {
+        Say "Docs conflicted, and that part is mechanical:"
+        Write-Host "      python toolsecord.py fix" -ForegroundColor Cyan
+      }
       Say "Resolve, then:  git add <files> ; git commit"
       Say "Then run land -Go again for whatever is left."
       Say "Or back out:    powershell -NoProfile -File tools\merge.ps1 -Abort"
@@ -529,9 +540,24 @@ function Verb-Land {
   Say "  the generated files kept main's copy on purpose, so index.html does"
   Say "  not match the source that was just merged."
   Write-Host ""
-  Say "  1. serve it and run LINT() and regress() on the MERGED prototype"
-  Say "  2. powershell -NoProfile -File deploy.ps1 -m ""...what shipped..."""
-  Say "  3. branch.ps1 done <name> for each desk, to take the folders away"
+  Say "  1. python toolsecord.py check   - what a union merge did to the docs"
+  Say "  2. serve it and run LINT() and regress() on the MERGED prototype"
+  Say "  3. powershell -NoProfile -File deploy.ps1 -m ""...what shipped..."""
+  Say "  4. branch.ps1 done <name> for each desk, to take the folders away"
+  Write-Host ""
+  # STEP 1 IS FIRST BECAUSE IT IS THE ONE A HUMAN CANNOT DO BY READING.
+  # CHANGELOG.md, SHIPPED.md and WHAT_TO_TEST.md are merge=union, so their
+  # damage NEVER CONFLICTS: it arrives looking exactly like success. The
+  # 2026-08-21 landing merged in a duplicated registry row and a changelog row
+  # with a second row spliced into the middle of it. Both clean, both invisible
+  # in the diff, both found only by counting. So it is RUN here, not suggested.
+  $py = (Get-Command python -CommandType Application -ErrorAction SilentlyContinue |
+         Select-Object -First 1)
+  if ($py) {
+    & $py.Source (Join-Path $PSScriptRoot "record.py") check
+  } else {
+    Hm "  python is not on PATH, so the record check did not run. Do step 1 by hand."
+  }
   Write-Host ""
 }
 

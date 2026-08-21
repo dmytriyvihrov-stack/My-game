@@ -97,6 +97,62 @@ This is the part that decides whether parallel work is real or just deferred pai
 > to rebuild. A generated file that survives a merge untouched is a generated file that is now lying
 > about the source it came from.
 
+### ⛔ AND THE PRICE OF `merge=union`: ITS DAMAGE NEVER CONFLICTS
+
+*(2026-08-21, landing six desks at once.)* `union` is the right driver for an append-only log and
+the reason is in the table above. The cost is the other half of the same sentence: **a union merge
+cannot fail, so when it is wrong it arrives looking exactly like success.** That landing produced,
+silently and with a clean diff:
+
+- **`SHIPPED.md` carrying #215 TWICE** - once as authored and once as #217 had edited it to close
+  its own remainder, because `work/beast-race` was stacked on `work/mirror-battle`. ⛑ **The two
+  rows DIFFER**, so this is not a tidy-up: keeping the wrong one leaves the registry claiming an
+  open remainder that is closed;
+- **`CHANGELOG.md` with #221's row written INTO THE MIDDLE of #220's**, on one line, and #220's own
+  text orphaned on the line below. It renders as one broken row. ⚠ That one arrived on the BRANCH
+  rather than from the merge, which is the point: nothing was looking either way.
+
+⛑ **SO THE RECORD HAS A COUNTER NOW, AND IT IS RUN BY `land` RATHER THAN REMEMBERED.**
+
+```
+python tools/record.py check     # what is wrong. Exit 1 on a structural fault
+python tools/record.py fix       # resolve conflicts, dedupe, sort. Then check
+python tools/record.py prove     # make all eight checks fire, then go quiet
+```
+
+It counts **the four writes** that `SHIPPED.md`'s own header has always demanded (changelog row ·
+registry row · struck from the backlog · a test-bench section), and it catches what a human cannot
+catch by reading: conflict markers, a row spliced into another row, a fragment orphaned under a
+row, the same number twice, rows out of order, and a claim holding a number that is written in no
+doc. ⚡ **The contract is not new and neither is the failure**: `SHIPPED.md` records that #117,
+#137 and #138 went missing the same way and were restored by a hand audit in #151, which left
+nothing behind to do it again. By 2026-08-21 twenty-two entries had a changelog row and no registry
+row. **A contract that is only ever checked by somebody remembering to check it is a habit, not a
+contract.**
+
+⚠ **`fix` IS DELIBERATELY NARROW.** It keeps BOTH sides of a conflict and orders them by number,
+which is the only resolution a backlog row conflict has ever wanted - and it **refuses** a conflict
+whose two sides are not both entry rows, so a real disagreement still reaches a human. On a
+duplicate whose rows DIFFER it keeps the longer one and says out loud what it dropped, because an
+edit that supersedes a row adds text.
+
+⛑ **AND IT IS PROVED BY MAKING IT FIRE**, which is this repo's standing rule for a new check and
+which earned its keep inside an hour: the four-writes counter reported a spotless record on its
+first run because its one regex was missing `re.M` and had matched nothing at all. `record.py
+prove` seeds each of the eight faults into the real file, watches it report, restores with `git
+checkout --` and watches it go quiet. It refuses to run on a dirty tree, having eaten an
+uncommitted fix the first time it was used.
+
+⚠ **The pre-commit hook runs `check --faults-only`, and only when a `docs/*.md` is staged.** The
+four writes finish at DIFFERENT TIMES - code and the changelog row in one commit, the registry row
+often in the next - so a hook that demanded all four would refuse the ordinary commit on its way to
+making them, and a guard that refuses correct work is bypassed within a day. A spliced row is never
+a stage on the way to anything. ⚠ **The hook lives in `.git/hooks/` and is therefore NOT tracked**,
+the same standing weakness the claim guard has; `branch.ps1 land` runs the full check regardless,
+which is the tracked backstop.
+
+---
+
 ⛔ **`merge=ours` is not a built-in driver.** It has to be declared once per clone or the lines in
 `.gitattributes` do nothing at all and you find out inside a 10 MB conflict:
 

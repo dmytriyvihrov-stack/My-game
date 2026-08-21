@@ -26,6 +26,103 @@
 
 ---
 
+## 💰 THE PAYDAY GETS OUT OF THE CARD'S WAY, AND SAYS WHAT IT PAID  *(#221 · 2026-08-21 · build log 8f.244)*
+
+**How to reach it in three steps:** walk the road until a day divisible by four → arrive somewhere with a card waiting → watch the order things happen in.
+
+**What it is.** Your screenshot: the payday line lying across the middle of THE BROKEN MEN. Two changes:
+
+- **they take turns now.** Payday first, then the card. If the payday lands while a card is already open - a door that costs you a day, for instance - the line waits and plays when you close it.
+- **the payday is a receipt**: the crowns in big gold figures, one short line under them, and when the next payday falls. The word "Payday" is off the front of it, because the chip, the coin sound and the gold figure all already say so.
+
+**What should happen.** On a payday arrival the map holds for about three and a half seconds while the receipt plays, then the card opens. During that hold the roads are locked, the same way they are while you are walking - that is deliberate, so you cannot walk off and lose the card that was about to open. An unpaid payday does the same thing in red, with what is still owed.
+
+**What would be a bug.** Any line still lying across a card. A hold that feels long - say so, the number is one line to change. Roads that stay locked after the receipt has faded. And the one to watch for: **a card that never opens** after a payday arrival. That would be the hold not releasing, and it is the thing I would want to hear about first.
+
+---
+
+## 🧮 THE BAR SAYS HOW MANY OF YOU THERE ARE, THE MOOD IS JUST A FACE, AND THE MENU IS TOP RIGHT  *(#220 · 2026-08-21 · build log 8f.243)*
+
+**How to reach it in three steps:** continue the road → look at the top-left group of the world bar → hover the first chip and the smiling one.
+
+**What it is.** Three notes on the global map:
+
+- **the company chip counts BODIES now.** It used to be a portrait of the Captain and one figure, and that figure is **seats**, not people - everybody takes room by size (ratkin 1, human 2, ogre 3), so four of you could read `8/13` and nothing anywhere said four. It reads **🧑 4 · SEATS 8/13**: the mark, how many of you there are, and how much room is left.
+- **the mood chip is the face alone.** No STEADY, no AT EASE on the bar. The word, the sentence about why, and the "throw them a party" line are all on the hover, where they always were.
+- **☰ MENU sits top right**, under the ROAD / NEAR / CLOSE row, instead of bottom left beside ? RULES.
+
+**What should happen.** Recruit somebody and the bold number goes up by one and the seats go up by their size - a ratkin costs 1, an ogre 3. Hover the chip and the box opens with both figures written out in words before it explains anything. Hover the face and it still names the mood (😐 AT EASE, 🙂 STEADY, and so on) and still offers the feast; click it and the feast card still opens.
+
+**What would be a bug.** The two numbers running together so the chip reads *48/13* - say so if it does, that was the thing I measured hardest. A mood chip that has lost its colour (the border is the mood's colour and always was). The MENU button sitting on top of the word CLOSE, or covering a place name on the map. And on the battle screen the menu should still be **bottom left** - it moved on the map only, because the battle's top-right corner is the sound button's.
+## 🔔 THE OPENING AND THE CONTRACT ARE PAINTED CARDS NOW  *(#219 · 2026-08-21 · build log 8f.242)*
+
+**How to reach it in three steps:** main menu → **A new company** → read THE THREE BELLS, take the fight, then read THE MAN IN THE CORNER.
+
+**What it is.** The two cards that open the game were the last ones still drawn in the old narrow column, while every road card, fire card and vignette had already moved to the wide painted stage. They are on the stage now, and **not one word of either card changed** - who is speaking, whose face is on the plate, which door is dangerous and whether the picture is cropped are all worked out from the text that was already there.
+
+**What should happen.** The card fills the screen with a painting, the title sits over it top left, and the prose arrives **one beat at a time**: click anywhere on the card to take the next beat. The doors are the last beat. On the contract card the lord's two quoted paragraphs come out as *him* and the narration as the room, the naming form appears only after the offer has been read to the end, and the fight door on the first card is red without having been told to be.
+
+**What would be a bug.** A card that arrives with all its text at once, or one that will not step. Doors that appear before the last beat. On the contract card: a line sliced in half at the top edge instead of fading out, or a name button that steps a beat when you press it - it must not. Both cards should sit dead centre whatever else is on screen.
+
+---
+
+## 🕯 THE CARD UNFOLDS, AND A DOOR'S EDGE SAYS WHAT KIND OF ACT IT IS  *(#218 · 2026-08-21 · build log 8f.241)*
+
+**How to reach it in three steps:** take the road · walk to any node with an event on it · watch the card arrive, then look
+at the left edge of each door before you read the labels.
+
+**What it is.** Two things.
+
+**(1) The card opens instead of appearing.** The painting parts from a lit hairline at the middle, the frame opens with it,
+and the title, the mark, the company's plates and the prose arrive behind them in reading order. When you click through to
+the last beat, the doors come in one after another rather than all at once. It is **470ms** end to end and the first line of
+prose starts arriving at 170. It is on the road deck, the fire and the vignettes - every card that opens on the painted
+stage.
+
+**(2) A door's left rail is coloured by what the door DOES.** The four-sided border is unchanged and still means what it
+meant: dim gold at rest, red on a warning, green on a race door, lit gold under the pointer. The 2px strip on the LEFT is
+new, and it is read off the intent glyph you are already looking at:
+
+| | |
+|---|---|
+| ⚔️ fight | fresh blood red |
+| ☠️ evil | deep, dried blood |
+| 🤝 help | the approve green |
+| 🧺 take | the salvage amber |
+| ⚖️ trade | coin yellow |
+| ⛺ rest | cold blue |
+| 🙏 honor | grave-stone grey |
+| 👣 leave | **nothing** - it stays the default |
+
+**A door with two glyphs takes the moral colour.** ⚔️☠️ is blood, ⚔️🤝 is green. The Hanged Toll-Man is the card to look
+at: three doors on grey and amber, and the fourth - *take all of it* - on the predator's blood even though its first glyph
+is a basket.
+
+**What should happen.** The unfold plays once per card and never again while you are reading it; clicking to advance a beat
+does not replay it. Hovering a door slides it 4px, lights its outline and makes its own rail glow in its own colour.
+
+**What would be a bug.** A card that arrives with no motion at all, or one whose picture never finishes opening · the doors
+appearing before the prose · a door that stops sliding when you hover it · a rail whose colour disagrees with the glyph
+beside it · the animation replaying every time you click to the next beat.
+
+**What I want to know.** Two calls are yours, and both are one line to change: **honor on grave-stone grey** is the coldest
+thing on a warm card, and **rest on cold blue** is a campfire in blue, justified only by it being the one door that ends the
+day. And the pace: 470ms is quick in isolation and you will see it thirty-four times in a run.
+
+---
+
+## 🐕 A DOG IS A BEAST, NOT A RATKIN  *(#217 · 2026-08-21 · build log 8f.240)*
+
+**How to reach it in three steps:** main menu → **The practice field** → pick **THE PACK** → take the field and hover a Lurcher, then move it.
+
+**What it is.** The round before stopped the dogs *showing* a ratkin's face and class. This is the half underneath: every dog was literally filed as `ratkin` in the data, and things nobody meant were reading that. `beast` is a race of its own now.
+
+**What should happen.** The dogs still swarm and still wear the ≋ badge for it - that is deliberate, the pack bonus is theirs as much as the clans'. Two numbers moved. **The Runt walks 6 hexes instead of 5**: its own statblock always said 6 and the race table had been quietly clipping it. And the dodge a dog used to get for being ratkin now sits on each dog's own statblock, so the shipped number did not change. Dogs and mirehares also sound like animals when they are hit, which they did not before.
+
+**What would be a bug.** A dog that no longer swarms, or has lost the ≋ badge. A pack fight that feels clearly harder or easier than it used to: 200 seeded runs won 200/200 before and after, so a real swing would be news. Any people-sound on an animal. And any class or race word appearing on a dog's line - it should carry its bestiary line and nothing else.
+
+---
+
 ## ⚖ THE PRACTICE FIELD PRICES EVERYTHING IN POINTS, AND YOU CAN HAND-PICK THE CREW  *(#216 · 2026-08-21 · build log 8f.239)*
 
 **How to reach it in three steps:** main menu → The practice field → in WHO MEETS IT pick **Hand-picked** (bottom of the column).
@@ -92,79 +189,6 @@
 **What should happen.** A board of steady people should read as a board of people, not as a row of yellow dots - but a face you go looking for should still be findable, and a body that is BREAKING should still stand out from one that is merely Ok.
 
 **What would be a bug.** Not being able to tell 😟 from 😐 at a glance any more. That would mean the gap has gone rather than the volume, and the answer is to bring the loud rungs back up rather than the quiet ones.
-## 💰 THE PAYDAY GETS OUT OF THE CARD'S WAY, AND SAYS WHAT IT PAID  *(#221 · 2026-08-21 · build log 8f.244)*
-
-**How to reach it in three steps:** walk the road until a day divisible by four → arrive somewhere with a card waiting → watch the order things happen in.
-
-**What it is.** Your screenshot: the payday line lying across the middle of THE BROKEN MEN. Two changes:
-
-- **they take turns now.** Payday first, then the card. If the payday lands while a card is already open - a door that costs you a day, for instance - the line waits and plays when you close it.
-- **the payday is a receipt**: the crowns in big gold figures, one short line under them, and when the next payday falls. The word "Payday" is off the front of it, because the chip, the coin sound and the gold figure all already say so.
-
-**What should happen.** On a payday arrival the map holds for about three and a half seconds while the receipt plays, then the card opens. During that hold the roads are locked, the same way they are while you are walking - that is deliberate, so you cannot walk off and lose the card that was about to open. An unpaid payday does the same thing in red, with what is still owed.
-
-**What would be a bug.** Any line still lying across a card. A hold that feels long - say so, the number is one line to change. Roads that stay locked after the receipt has faded. And the one to watch for: **a card that never opens** after a payday arrival. That would be the hold not releasing, and it is the thing I would want to hear about first.
-
----
-
-## 🧮 THE BAR SAYS HOW MANY OF YOU THERE ARE, THE MOOD IS JUST A FACE, AND THE MENU IS TOP RIGHT  *(#220 · 2026-08-21 · build log 8f.243)*
-
-**How to reach it in three steps:** continue the road → look at the top-left group of the world bar → hover the first chip and the smiling one.
-
-**What it is.** Three notes on the global map:
-
-- **the company chip counts BODIES now.** It used to be a portrait of the Captain and one figure, and that figure is **seats**, not people - everybody takes room by size (ratkin 1, human 2, ogre 3), so four of you could read `8/13` and nothing anywhere said four. It reads **🧑 4 · SEATS 8/13**: the mark, how many of you there are, and how much room is left.
-- **the mood chip is the face alone.** No STEADY, no AT EASE on the bar. The word, the sentence about why, and the "throw them a party" line are all on the hover, where they always were.
-- **☰ MENU sits top right**, under the ROAD / NEAR / CLOSE row, instead of bottom left beside ? RULES.
-
-**What should happen.** Recruit somebody and the bold number goes up by one and the seats go up by their size - a ratkin costs 1, an ogre 3. Hover the chip and the box opens with both figures written out in words before it explains anything. Hover the face and it still names the mood (😐 AT EASE, 🙂 STEADY, and so on) and still offers the feast; click it and the feast card still opens.
-
-**What would be a bug.** The two numbers running together so the chip reads *48/13* - say so if it does, that was the thing I measured hardest. A mood chip that has lost its colour (the border is the mood's colour and always was). The MENU button sitting on top of the word CLOSE, or covering a place name on the map. And on the battle screen the menu should still be **bottom left** - it moved on the map only, because the battle's top-right corner is the sound button's.
-## 🕯 THE CARD UNFOLDS, AND A DOOR'S EDGE SAYS WHAT KIND OF ACT IT IS  *(#218 · 2026-08-21 · build log 8f.241)*
-
-**How to reach it in three steps:** take the road · walk to any node with an event on it · watch the card arrive, then look
-at the left edge of each door before you read the labels.
-
-**What it is.** Two things.
-
-**(1) The card opens instead of appearing.** The painting parts from a lit hairline at the middle, the frame opens with it,
-and the title, the mark, the company's plates and the prose arrive behind them in reading order. When you click through to
-the last beat, the doors come in one after another rather than all at once. It is **470ms** end to end and the first line of
-prose starts arriving at 170. It is on the road deck, the fire and the vignettes - every card that opens on the painted
-stage.
-
-**(2) A door's left rail is coloured by what the door DOES.** The four-sided border is unchanged and still means what it
-meant: dim gold at rest, red on a warning, green on a race door, lit gold under the pointer. The 2px strip on the LEFT is
-new, and it is read off the intent glyph you are already looking at:
-
-| | |
-|---|---|
-| ⚔️ fight | fresh blood red |
-| ☠️ evil | deep, dried blood |
-| 🤝 help | the approve green |
-| 🧺 take | the salvage amber |
-| ⚖️ trade | coin yellow |
-| ⛺ rest | cold blue |
-| 🙏 honor | grave-stone grey |
-| 👣 leave | **nothing** - it stays the default |
-
-**A door with two glyphs takes the moral colour.** ⚔️☠️ is blood, ⚔️🤝 is green. The Hanged Toll-Man is the card to look
-at: three doors on grey and amber, and the fourth - *take all of it* - on the predator's blood even though its first glyph
-is a basket.
-
-**What should happen.** The unfold plays once per card and never again while you are reading it; clicking to advance a beat
-does not replay it. Hovering a door slides it 4px, lights its outline and makes its own rail glow in its own colour.
-
-**What would be a bug.** A card that arrives with no motion at all, or one whose picture never finishes opening · the doors
-appearing before the prose · a door that stops sliding when you hover it · a rail whose colour disagrees with the glyph
-beside it · the animation replaying every time you click to the next beat.
-
-**What I want to know.** Two calls are yours, and both are one line to change: **honor on grave-stone grey** is the coldest
-thing on a warm card, and **rest on cold blue** is a campfire in blue, justified only by it being the one door that ends the
-day. And the pace: 470ms is quick in isolation and you will see it thirty-four times in a run.
-
----
-
 ## 🗺 FIFTEEN MORE ROAD CARDS GET THEIR WIDE STAGE  *(#214 · 2026-08-20 · build log 8f.237)*
 
 **How to reach it in three steps:** open any of these cards on the road or at a camp: What Followed You Out, The Hollow Tree, The Dead Company, The Long Fire, The Ratkin Snare, The Warm Spring, Something in Armour, The Door-Shrine, The Woman in the Cage, The Red Lights, Bonepicker's Camp, The Sling-Line, The Steading-Line, Under the Bloom, The Salt-Wives, or They Come Over the Wall.

@@ -515,11 +515,21 @@ are in the repo and can never be issued again, claim file or no claim file. ⚠ 
 untouched by this.** Freeing a claim says nothing about whether the work shipped; it only stops the
 number refusing honest sentences. Somebody still has to write the row or record the abandonment.
 
-⚠ **AND SIX SHIPPED ENTRIES HAVE NO ROW IN THE REGISTRY.** #196, #198, #199, #201, #208 and #209 each
-have a `CHANGELOG.md` row AND a row in this file, and none of them is in `SHIPPED.md`. #209 is the
-painted event stage, i.e. the largest single change on the board, so this is not a tail of small ones.
-⛑ The reason to care is stated in `SHIPPED.md`'s own header: it is **the registry that names every
-open remainder**, so an entry missing from it has its leftovers recorded nowhere.
+⛔ **AND TWENTY-TWO SHIPPED ENTRIES HAVE NO ROW IN THE REGISTRY.** ⚠ **This entry first said SIX,
+because the sweep had only looked from #195 up.** Counted over the whole record it is **22**: sixteen
+below #195 (45 · 71 · 154 · 165 · 169-172 · 187-194) and six above it (#196, #198, #199, #201, #208,
+#209). Each has a `CHANGELOG.md` row and none has a `SHIPPED.md` row. **#209 is the painted event
+stage**, i.e. the largest single change on the board, so this is not a tail of small ones. ⛑ The
+reason to care is stated in `SHIPPED.md`'s own header: it is **the registry that names every open
+remainder**, so an entry missing from it has its leftovers recorded nowhere.
+
+⚡ **AND THIS EXACT FAILURE IS ALREADY WRITTEN DOWN IN THAT HEADER, WHICH IS WHY IT IS NOW COUNTED
+RATHER THAN NOTICED.** `SHIPPED.md` states the contract - *"when an entry ships, four writes"* - and
+records the day it broke: *"#117, #137 and #138 were added to this table on 2026-08-14 by #151's
+audit ... so the four writes were three."* That audit was done by hand, once, and left nothing behind
+to do it again. **`python tools/record.py check` is what was left behind this time**, and the six
+above the floor are named in its `KNOWN_MISSING_SHIPPED` list so that a NEW gap fires while these
+stay parked. Each leaves that list the day its row is written.
 
 ⚡ **THE THREE ROWS THAT WERE WRONG WERE REPAIRED RATHER THAN PARKED**, and they are worth knowing
 because two of them came out of the same mechanism: `docs/CHANGELOG.md` and `docs/SHIPPED.md` are
