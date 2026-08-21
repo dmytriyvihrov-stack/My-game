@@ -561,6 +561,19 @@ neither would have been seen by reading the diff.
   state per `.claude/rules/static-event-art.md` and is still 29 cards. Each is a 1672x941 master plus
   one row.
 
+- **#224: the two new items have no painting, and most runs will never meet either.** THE SECOND
+  SHAPE and the crossbow are both `rare` and reachable only through `findPool` or Coldharrow's rack
+  (one row of six), so a run can finish without either ever appearing. Neither has an entry in
+  `ITEM_ICON{}`, so both fall back to `gGlyph` - a legitimate shipping state per
+  `.claude/rules/static-event-art.md`, and still two items whose whole point is that you can see
+  what they are. Each is one 128x128 cut-out with alpha plus one row.
+- **#224: the shape's zone of control is deliberate and was never measured.** It exerts a ZOC on the
+  enemy and not on you, for free and unarranged, because `engaged` is adjacency while `partingRisk`
+  filters `acts.some(a=>a.reach)` and the shape has none. The desk declared that asymmetry a design
+  choice and shipped it without a number: nobody knows what a free scrum-lock beside an archer is
+  worth. ⚠ It wants `ARENA.match()` or the eight-fight regression with and without the trinket
+  fielded, not an argument.
+
 - **878 em dashes survive in the DOCS**, against a standing hard rule of none anywhere. #199 swept
   the game and stopped there, correctly: it needed a lexer to tell a player-facing string from a
   code sample, and the docs have the same problem worse. The count on 2026-08-21:

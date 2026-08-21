@@ -458,9 +458,9 @@ feel like filler too.
 | **`README.md`** *(this)* | **Orientation.** What the game is, the pillar, the traps. Start here |
 | [`00_PLAN_AND_BACKLOG.md`](00_PLAN_AND_BACKLOG.md) | **The work.** The current focus, then one line per entry. **Everything in it is actionable** |
 | [`archive/BACKLOG_ENTRY_SPECS.md`](archive/BACKLOG_ENTRY_SPECS.md) | the full text of every unbuilt entry, for when a session picks one up. **290 KB: open the one entry, never the file** |
-| [`SHIPPED.md`](SHIPPED.md) | **The registry.** One line per shipped entry, **every open remainder named**, which numbers are spent. 207 KB |
-| [`CHANGELOG.md`](CHANGELOG.md) | **The record.** The build log with the reasoning. **History, never instructions.** **257 KB: open one dated row, never the file.** ⛑ **Split on 2026-08-21**: the 195 build rows before `8f.200` and the full text of entries #1-#123 are in [`archive/`](archive/), still greppable |
-| [`WHAT_TO_TEST.md`](WHAT_TO_TEST.md) | **The test bench, and it is the USER'S file.** How to reach each new thing in three steps, what should happen, what would be a bug. A session **writes** to it and never takes instructions from it. **88 KB: open one section**, and since the 2026-08-21 cut it keeps **2026-08-19 onward** |
+| [`SHIPPED.md`](SHIPPED.md) | **The registry.** One line per shipped entry, **every open remainder named**, which numbers are spent. 213 KB |
+| [`CHANGELOG.md`](CHANGELOG.md) | **The record.** The build log with the reasoning. **History, never instructions.** **279 KB: open one dated row, never the file.** ⛑ **Split on 2026-08-21**: the 195 build rows before `8f.200` and the full text of entries #1-#123 are in [`archive/`](archive/), still greppable |
+| [`WHAT_TO_TEST.md`](WHAT_TO_TEST.md) | **The test bench, and it is the USER'S file.** How to reach each new thing in three steps, what should happen, what would be a bug. A session **writes** to it and never takes instructions from it. **100 KB: open one section**, and since the 2026-08-21 cut it keeps **2026-08-19 onward** |
 | [`DEPLOY.md`](DEPLOY.md) | one command, and why the hosted page is generated rather than copied |
 | [`ITCH_PAGE.md`](ITCH_PAGE.md) | **the itch.io release** *(#203)*: `tools\build_itch.ps1` for the zip, the page text to paste, the cover and screenshots, and why the embed is 1280x720 and not smaller |
 | [`PARALLEL_SESSIONS.md`](PARALLEL_SESSIONS.md) | **two sessions, two desks.** `tools\branch.ps1 new <name>` gives a session its own branch and its own checkout, so nobody waits on the prototype; `tools\branch.ps1 done <name>` merges it back. **Numbers are still claimed**, because git cannot merge a counter. Read it before running two sessions. ⛑ **Its section 3 also holds [`tools/record.py`](../tools/record.py)**, the counter for the four writes and for what a `merge=union` file does silently |
@@ -478,7 +478,7 @@ feel like filler too.
 ### ⛔ Open the big files by section, never whole
 
 `archive/CHANGELOG_BUILD_LOG_pre_8f200.md` (758 KB), `archive/BACKLOG_ENTRY_SPECS.md` (290 KB),
-`CHANGELOG.md` (257 KB), `SHIPPED.md` (207 KB) and `archive/CHANGELOG_BUILT_ENTRY_TEXT.md` (215 KB) are
+`CHANGELOG.md` (279 KB), `SHIPPED.md` (213 KB) and `archive/CHANGELOG_BUILT_ENTRY_TEXT.md` (215 KB) are
 **records, not reading**. Grep for the entry number or the dated heading and read that range. A
 session that reads any of them end to end spends a fifth of its context on history before it has
 opened the game.
