@@ -440,10 +440,12 @@ changes between ten and thirty: **a friend asks you what a screen means, a stran
 
 ---
 
-# Two rulings still waiting on you
+# Rulings still waiting on you
 
-*Both are one line, neither blocks anything. From the QA day, details in
-[`QA_PLAYTEST_2026-08-02.md`](QA_PLAYTEST_2026-08-02.md).*
+*Every one is one line and none of them blocks anything. The first is from the QA day, details
+in [`QA_PLAYTEST_2026-08-02.md`](QA_PLAYTEST_2026-08-02.md); the rest were raised by the desks of
+2026-08-21 and collected here when they landed, because a question asked at the end of a session
+report is a question nobody can find a week later.*
 
 - ~~**QA-7: fleeing the Thing in Armour deletes the Dead Company beat.**~~ ✅ **CASHED BY #157,
   2026-08-14 (8f.185), and by a fourth way nobody had listed: the fight cannot be fled at all now**
@@ -453,10 +455,102 @@ changes between ten and thirty: **a friend asks you what a screen means, a stran
   system it names is touched.
 - **QA-27: the defeat epilogue opens with "The bells are still ringing"** wherever the company dies,
   including half a map from Grausen. Keep it placeless, or key one clause on where the run ended.
+- **#219: the opening card now carries a title, `THE THREE BELLS · before the road`.** #150 deleted
+  the old card's title at your word (*"we don't need a name for it so far at left right corner"*), but
+  that was a COLUMN card one pixel under a hard 684px ceiling where an `<h1>` cost 33px of prose. On
+  the stage the title is absolutely positioned over the painting and costs nothing, and every other
+  card in the game has one. ⚡ One word and it goes back to blank: `title:''` and the `<h3>` is not
+  drawn.
+- **#218: three colours and a pace, all one-liners.** `honor` sits on grave-stone grey, which is the
+  coldest thing on a warm card; `rest` sits on blue, which is a campfire in blue; and the unfold is
+  **470ms**, which is a pace you meet thirty-four times in a run rather than once. ⚠ The 470 is the
+  one with a measurement behind it: the first cut was 600 because the two longest members are a
+  DELAY plus a DURATION and nobody had added them up.
+- **#215: the mirror's landing ring.** An ivory ring marks the hex your click will actually land on,
+  which makes the mode an inverted mouse: you sweep until the ring is where you want it and click.
+  Hiding it makes you do the flip in your head, which is much harder and closer to a prank. It is one
+  line either way.
 
 *(Four older open questions live in [`README.md`](README.md) §8: AUTO doctrine, numbers in the
 chronicle, the run contract, generated voice; the fifth, the name, was settled by #191. Nothing is
 blocked on any of them.)*
+
+---
+
+# ⛔ PARKED BY THE LANDING SWEEP OF 2026-08-21
+
+*Six desks landed together on 2026-08-21 (#215 through #222). Everything below was found while
+checking that nothing had been lost, and none of it was fixed in that session. It is here rather than
+in six session reports nobody will reopen. ⚡ **None of it blocks anything and none of it is a
+regression**: every item either shipped this way or was never written down at all.*
+
+## The record has holes, and the sweep is how they were found
+
+⛔ **NINE NUMBERS ARE CLAIMED AND APPEAR NOWHERE IN THE DOCS.** `claim.ps1 status` holds them and
+`grep` finds no trace of any of them in `CHANGELOG.md`, `SHIPPED.md` or this file:
+
+| held | by | the claim's own title |
+|---|---|---|
+| `#204` + `8f.226` | 5860cf8e | STR/AGI level ladders: what each rung gives, size-multiplied hp |
+| `#207` + `8f.229` + `8f.230` | 0986b7da | skill groundwork: HOLD THE LINE costs 1, COMMAND from level 3, SPEAR WALL refuses a scrum |
+| `#153` | c96915f4 | the doc cut and clean-out |
+| `#158` + `8f.186` | 9de4365c | (no title recorded) |
+| `8f.213` | 22aadaab | (no title recorded) |
+
+⛑ **EACH ONE IS THE SAME TWO-WAY QUESTION AND IT CANNOT BE ANSWERED BY READING THE CLAIM.** Either
+the work shipped and wants its row written, or it was abandoned and wants `claim.ps1 release`. ⚠ Two
+are known from the outside: **#204 is the stat-ladder proposal that was never built** and is waiting on
+your ruling, and **#207's claim title describes what actually shipped as #208 (8f.231)**, so that
+session appears to have taken a second number and left the first standing. ⛔ **A STRANDED CLAIM IS
+NOT INERT**: `claim.ps1`'s own #144 note is that a spent claim stops holding a seat and starts holding
+a WORD, so the next changelog row that happens to cite one of these numbers is refused.
+
+⛑ **AND THIS SECTION PROVED THAT ON ITSELF, WHICH IS WHY THE NINE CLAIM FILES ARE NOW FREED.** The
+table above CITES all nine, so the pre-commit guard refused the commit that adds it: the guard reads a
+citation and a spend identically, which is #144's trap and the case #217 taught it only for a stacked
+desk. They were moved to **`.grimtoll/freed/20260821-163937-sweep/`** and can be put back by copying
+them into `.grimtoll/claims/`. ⚡ **Freeing them loses nothing, and the argument is #144's own**: the
+issuing floor comes from a scan of the REPO, so the moment this paragraph is committed all nine numbers
+are in the repo and can never be issued again, claim file or no claim file. ⚠ **The parked question is
+untouched by this.** Freeing a claim says nothing about whether the work shipped; it only stops the
+number refusing honest sentences. Somebody still has to write the row or record the abandonment.
+
+⚠ **AND SIX SHIPPED ENTRIES HAVE NO ROW IN THE REGISTRY.** #196, #198, #199, #201, #208 and #209 each
+have a `CHANGELOG.md` row AND a row in this file, and none of them is in `SHIPPED.md`. #209 is the
+painted event stage, i.e. the largest single change on the board, so this is not a tail of small ones.
+⛑ The reason to care is stated in `SHIPPED.md`'s own header: it is **the registry that names every
+open remainder**, so an entry missing from it has its leftovers recorded nowhere.
+
+⚡ **THE THREE ROWS THAT WERE WRONG WERE REPAIRED RATHER THAN PARKED**, and they are worth knowing
+because two of them came out of the same mechanism: `docs/CHANGELOG.md` and `docs/SHIPPED.md` are
+`merge=union` in `.gitattributes`. #221's row had been written INTO THE MIDDLE of #220's and rendered
+as one broken line; #215's row was in `SHIPPED.md` twice, once as authored and once as #217 edited it
+to close its remainder; and #222 had written no row anywhere at all. ⛔ **A UNION MERGE NEVER
+CONFLICTS, WHICH IS WHY IT NEEDS A COUNTER**: the duplicate and the splice both merged clean and
+neither would have been seen by reading the diff.
+
+## Open remainders the desks declared, and one that half closed itself
+
+- **#216: the easy / even / hard multipliers are a first cut.** 1.3 / 1.0 / 0.75 against a fight's
+  points, and they ignore the player's tactical edge entirely. ⚡ The scale itself validated against
+  something it never read (the seasoned six price at 202 against the six-body Snare's 199, the fight
+  #160 measured at 45% win), so it is the MULTIPLIERS that want refining against real win rates when
+  the balancing pass starts, not the pricing under them.
+- **#222: the `2>$null` sweep was never run.** #222 fixed the one call site that was reported, and by
+  its own argument every other redirection of a native command's stderr under
+  `$ErrorActionPreference='Stop'` is a throw waiting for the right working copy. Nobody has grepped
+  `tools\` for the rest.
+- **#214's art remainder is now HALF closed, measured in the running build on 2026-08-21.** Its row
+  reads *"18 of 40 `EVENTS` cards, plus every one of the 19 `CAMPS` incidents and all 10 `VIGNETTES`"*
+  fall back to the letterbox. **All 40 `EVENTS` now have a `JSTAGE` key and there are 0 orphans**, so
+  the road deck is done. ⚠ **What is left is the whole of the other two decks**: 19 camp incidents and
+  10 vignettes still cover-crop a 586x212 letterbox into a 1.9:1 box, which is a legitimate shipping
+  state per `.claude/rules/static-event-art.md` and is still 29 cards. Each is a 1672x941 master plus
+  one row.
+
+⚠ **AND ONE ENVIRONMENT NOTE, NOT A DEFECT**: `claim.ps1`'s repo scan intermittently runs past two to
+  three minutes on this machine because the repo lives on a Google Drive path. It looks exactly like a
+  hang and it is not one. Same shape as `LINT()`'s documented ~25s.
 
 ---
 
