@@ -109,6 +109,41 @@ bigger icons read better, say so: 26px removes all of the pressure and 24px give
 **What would be a bug.** The stamp sitting on top of the ☰ MENU button, the zoom row or the BACK button, or reading `dev` on something you deployed - that would mean the build script did not stamp it. The crossed mark looking like a blob at that size, or heavier than the number next to it (it was measured to be the same weight as the digit `8`, so if it reads heavier, say so and it is one number). A name plate on one of the three newly painted nodes sitting on a neighbour's, or a road running through one of the new paintings - all three counters read 0 and the road check was made to fire on purpose before being trusted, but an eye beats a counter on a map. And the walked road reading as **available**: it must not start looking like the gold road, because gold is the only thing on that map allowed to say *you may go here*. ⚠ The dashed *not from here* road was left exactly as it was, on purpose - that is a refusal rather than a path you walked - so if you meant those too, that is a second change and a small one.
 
 ---
+## 🧪 THE GAUNTLET: A TOOL PAGE, NOT A GAME SCREEN - EVERY FIGHT MEASURED  *(#229 · 2026-08-21 · build log 8f.252)*
+
+**What it is:** the battle-balance bench you asked for. It runs every fight in the game through the
+game's own AI, at the party you choose, under three strategies, and prints win% / rounds / bodies
+down / hp lost per fight. It reads the live build, so after you change perks or stats: press
+⟳ RELOAD BUILD, run again, and the Δ numbers beside win% and rounds are what your change did.
+
+**How to reach it, three steps:**
+1. `powershell -NoProfile -ExecutionPolicy Bypass -File tools\serve.ps1` (if not already running)
+2. open `http://localhost:8777/tools/gauntlet.html`
+3. press **RUN THE GAUNTLET** (about 3-4 minutes for the full default grid; STOP works mid-run)
+
+**What to try:**
+- **The bench** with *"Your company, as it stands"* (only offered when you have a save): can YOUR
+  crew take the Snare, and which strategy does it best with?
+- **The campaign walk**: founders march the road in order, XP is paid fight by fight, Asha joins
+  before the Broken Men, Skree + Bruht + an armour refit before the Snare (all three editable).
+  The LVL and YOURS columns show what the road actually delivers at each gate.
+- **The strategies**: AGGRESSIVE is "everyone straight in", STEADY is "the line advances
+  together", THE BRAIN is the shipped AI. They genuinely split: steady holds the palisade,
+  aggressive eats the Broken Men.
+- **The Δ loop**: run once, change one perk in the prototype, RELOAD BUILD, run again with the
+  same seed. Green/red deltas appear on every cell that moved.
+
+**What would be a bug:** a FATAL/∞ mark in any cell (an engine error or a stalled fight) · the
+founders pricing anything other than 100 pts · two runs with the same seed and build disagreeing ·
+the tool changing anything in your real game (it must not touch saves, the journal, or the
+practice-field unlocks).
+
+**Worth knowing:** THE THREE BELLS is priced but not simulated (its waves are scripted around the
+tutorial). The AI plays both sides, so a 30% here can still be a comfortable HUMAN win: read the
+columns as "how hard the fight is for the brain", and trust the comparisons more than the
+absolute numbers. **And keep the tab visible while it runs**: the browser starves a hidden tab of
+CPU, so the same grid that takes 4 minutes in front can take 20 in the background (the run
+survives it, it is only slow).
 
 ## 🧪 NINE SMALL ONES: THE CARD SCROLLS, THE HOVERS STOP BEING CUT, AND THE MAP GETS ITS CONTRAST BACK  *(#223 · 2026-08-21 · build log 8f.246)*
 

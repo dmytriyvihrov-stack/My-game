@@ -1,0 +1,631 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>RabbleBound · The Gauntlet</title>
+<!-- ═══════════════════════════════════════════════════════════════════════
+  THE GAUNTLET (#229) - every fight on the road, measured. A dev instrument,
+  never shipped to players, in the dramaturge's shape: it LIVE-LOADS the game
+  file and reads the engine out of it, so a balance change in the prototype is
+  in this tool at the next RELOAD BUILD press. Nothing here is a second copy
+  of a table, a builder or a brain.
+
+  User (2026-08-21): "measure battles through campaign ... length and
+  difficulty of each battle. And also, while you have different points of your
+  characters (it is important). Also, it would change when i update perks."
+  And: "put it all in independent tool, that maximally disconnected from main
+  build and could be easily updated from it after balance changes."
+
+  HOW IT CONNECTS: a hidden same-origin iframe holds the running game; a
+  bridge script is eval'd INTO that frame (the same indirect-eval door
+  tools/harness.js has always used, which is what makes the game's top-level
+  consts reachable). The tool never edits the game and the game never knows
+  the tool exists. Serve both with tools/serve.ps1 and open
+      http://localhost:8777/tools/gauntlet.html
+
+  WHAT A CELL IS: n seeded fights of one kind, both sides driven by the
+  game's own aiTurn (mirror AI, the same instrument #89's benchmark and every
+  ARENA retune used), with the ally side's AIP profile set by the strategy
+  column. Rendering, sfx, the journal and the gt_seen_fights spoiler marks
+  are stubbed for the duration and restored after, exactly as runFight does.
+  ═══════════════════════════════════════════════════════════════════════ -->
+<style>
+  :root{
+    --bg:#0e1414;--panel:#16201f;--edge:#2c3d3f;--edge2:#35494c;
+    --gold:#d9bd7e;--dim:#8a7449;--ink:#d8d5cc;--mut:#8a958f;
+    --ok:#8ca35a;--mid:#c07a2c;--bad:#a33b34;--teal:#7da8a4;
+    --mono:'JetBrains Mono',Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);font:12px/1.55 var(--mono);padding:16px 18px 40px}
+  h1{font-size:20px;color:var(--gold);letter-spacing:.06em;margin-bottom:2px}
+  h1 small{font-size:11px;color:var(--mut);letter-spacing:0}
+  .sub{color:var(--mut);font-size:11px;margin-bottom:12px;max-width:1100px}
+  .bar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:8px 0}
+  .card{background:var(--panel);border:1px solid var(--edge);padding:10px 12px;margin:8px 0}
+  .lbl{font-size:10px;letter-spacing:.12em;color:var(--dim);text-transform:uppercase}
+  select,input[type=number],button{
+    background:#0f1817;border:1px solid var(--edge2);color:var(--ink);
+    font:12px var(--mono);padding:4px 7px}
+  input[type=number]{width:64px}
+  button{cursor:pointer}
+  button:hover{border-color:var(--gold);color:var(--gold)}
+  button:disabled{opacity:.4;cursor:default}
+  button.primary{background:#2a2114;border-color:#6b5330;color:var(--gold);
+    font-weight:bold;padding:7px 18px;letter-spacing:.08em}
+  .chip{display:inline-flex;gap:5px;align-items:center;border:1px solid var(--edge);
+    padding:2px 8px;cursor:pointer;user-select:none;color:var(--mut)}
+  .chip.on{border-color:#6b5330;color:var(--ink);background:#1d2320}
+  .chip input{accent-color:#8ca35a}
+  #status{color:var(--teal);font-size:11px;min-height:16px}
+  #status.err{color:#c15d55}
+  #prog{height:6px;background:#0f1817;border:1px solid var(--edge);margin:6px 0;display:none}
+  #prog i{display:block;height:100%;background:#5a7a6a;width:0%}
+  table{border-collapse:collapse;margin-top:10px;width:100%}
+  th,td{border:1px solid #22302f;padding:4px 7px;text-align:right;white-space:nowrap}
+  th{color:var(--dim);font-size:10px;letter-spacing:.08em;background:#121b1a}
+  td.name{text-align:left;color:var(--ink)}
+  td.name small{color:var(--mut);display:block;font-size:10px;white-space:normal;max-width:230px}
+  th.grp{border-bottom:2px solid var(--edge2);text-align:center;color:var(--gold)}
+  td.band{text-align:center;font-size:10px;letter-spacing:.06em}
+  td .d{font-size:10px;margin-left:4px}
+  td .d.up{color:var(--ok)} td .d.dn{color:#c15d55}
+  .w85{color:#8ca35a}.w60{color:#a8b060}.w40{color:#c07a2c}.w20{color:#b05a3a}.w0{color:#a33b34}
+  .crew{color:var(--mut);font-size:11px;margin-top:6px}
+  .crew b{color:var(--ink);font-weight:normal}
+  .note{color:var(--mut);font-size:10.5px;line-height:1.6;max-width:1100px;margin-top:14px}
+  .note b{color:var(--dim)}
+  .warn{color:#c07a2c}
+  #frameWrap{position:fixed;left:-4000px;top:0;width:1300px;height:740px;overflow:hidden}
+  iframe{width:1280px;height:720px;border:0}
+  a{color:var(--teal)}
+</style>
+</head>
+<body>
+
+<h1>THE GAUNTLET <small>· every fight on the road, measured · the game file is the only source</small></h1>
+<div class="sub">Each cell is n seeded fights driven by the game's own brains. The ally side plays one of
+three strategies; the enemy always plays its real game. Points come off the same <b>unitPts</b> scale the
+practice field prices with (founders = 100), so the BAND column is the game's recommendation and the WIN
+column is what actually happens: where they disagree, the band multipliers are wrong, which is exactly
+what #216 left open to measure.</div>
+
+<div class="bar">
+  <span id="buildTag" class="lbl">build: loading…</span>
+  <button id="reload">⟳ RELOAD BUILD</button>
+  <span class="lbl">after a balance or perk edit in the prototype, press it and re-run: same tool, new game.</span>
+</div>
+
+<div class="card">
+  <div class="bar">
+    <span class="lbl">Mode</span>
+    <label class="chip on" id="mBench"><input type="radio" name="mode" value="bench" checked> the bench · one company vs every fight</label>
+    <label class="chip" id="mWalk"><input type="radio" name="mode" value="walk"> the campaign walk · founders march, XP paid fight by fight</label>
+  </div>
+  <div class="bar" id="benchCtl">
+    <span class="lbl">Company</span><select id="comp"></select>
+    <span class="lbl">level up to</span><input type="number" id="level" min="1" max="10" value="1">
+    <span class="lbl">runs / cell</span><input type="number" id="runs" min="1" max="50" value="10">
+  </div>
+  <div class="bar" id="walkCtl" style="display:none">
+    <span class="lbl">walks</span><input type="number" id="walks" min="1" max="20" value="5">
+    <span class="lbl">Asha joins before</span><select id="joinAsh"></select>
+    <span class="lbl">Skree + Bruht join before</span><select id="joinClan"></select>
+    <span class="lbl">armour refit before</span><select id="refit"></select>
+  </div>
+  <div class="bar">
+    <span class="lbl">Strategies</span>
+    <label class="chip on"><input type="checkbox" id="sCurrent" checked> THE BRAIN · the shipped AI</label>
+    <label class="chip on"><input type="checkbox" id="sAggressive" checked> AGGRESSIVE · everyone straight in</label>
+    <label class="chip on"><input type="checkbox" id="sSteady" checked> STEADY · the line advances together</label>
+    <span class="lbl" style="margin-left:14px">seed</span><input type="number" id="seed" value="1234">
+  </div>
+  <div class="bar" id="fightChips"></div>
+  <div class="bar">
+    <button id="run" class="primary">RUN THE GAUNTLET</button>
+    <button id="cancel" disabled>STOP</button>
+    <button id="copy" disabled>COPY TABLE (markdown)</button>
+  </div>
+  <div id="prog"><i></i></div>
+  <div id="status">waiting for the build…</div>
+  <div class="crew" id="crewLine"></div>
+</div>
+
+<div id="out"></div>
+
+<div class="note" id="notes">
+<b>What is pinned, so two runs are comparable:</b> every fight is seeded (same seed, same crew, same
+dice); the clash is fought with no side taken (its race doors are a different door each); SOMETHING IN
+ARMOUR is entered on the FORM deployment; a rout that ends in mercy counts as a win, the way runFight
+counts it. <b>The walk</b> mends everybody between fights and pays XP through the game's own
+payFightXP, then spends the banked points by the practice bench's own policy, so a level 4 here is a
+real level 4 and a perk edit in the prototype moves this table. <b>THE THREE BELLS</b> is scripted in
+waves around the tutorial and is priced but not simulated. <b>Δ figures</b> compare against the
+previous completed run with the same setup: edit the prototype, RELOAD BUILD, re-run, and the delta is
+what your change did. Two identical runs report identical numbers (measured: zero deltas), but fights
+leave traces in the engine between runs, so for a comparison you intend to act on, press RELOAD BUILD
+first and measure from a clean room.
+</div>
+
+<div id="frameWrap"></div>
+
+<!-- ═══ THE BRIDGE - eval'd inside the game iframe, in its global scope ═══
+     Everything below runs IN THE GAME. It may therefore name the game's own
+     top-level consts (SIM_FIGHTS, AIP, SEENF, STAT_PRIO...) exactly the way
+     tools/harness.js always has: an indirect eval sees the global lexical
+     scope, which is the whole reason this file can stay outside the build. -->
+<script type="text/plain" id="bridgeSrc">
+window.GT=(function(){
+  window.__gterrs=[];
+  window.onerror=(m,s,l)=>{window.__gterrs.push(m+' @'+l);};
+  const FULL={ev:1,flank:1,pile:1,kite:1,fallback:1,cohere:1,hold:1,doct:1};
+  /* The three strategies are AIP profiles on the ally side and nothing else.
+     The game's own comment on AIP is the contract: "All 1 = the real AI.
+     All 0 = the pre-rework rush."
+       aggressive - the rush with its aim kept: nobody kites, falls back,
+                    holds or keeps formation; ev stays 1 so a body still
+                    swings at the best expected damage once it arrives.
+       steady     - the same brain with the formation knot weighted x3, less
+                    lone arc-hunting, more piling onto started fights. The
+                    anchor it coheres to is disposition()'s own centroid. */
+  const STRATS={
+    current:   {n:'THE BRAIN', prof:{}},
+    aggressive:{n:'AGGRESSIVE',prof:{flank:0,kite:0,fallback:0,cohere:0,hold:0,doct:0}},
+    steady:    {n:'STEADY',    prof:{cohere:3,flank:0.4,pile:1.3}}
+  };
+  const mkRand=seed=>{let s=(seed>>>0)||1;
+    return()=>{s=(s*1103515245+12345)%2147483648;return s/2147483648;};};
+  const hashK=k=>{let h=0;for(let i=0;i<k.length;i++)h=(h*31+k.charCodeAt(i))>>>0;return h;};
+
+  function fights(){
+    const list=SIM_FIGHTS.map(f=>({k:f.k,n:f.n,d:f.d,sim:f.k!=='tavern'}));
+    /* the two event fights the practice list does not carry; both route
+       through startBattle, so they measure like any other kind */
+    try{if(typeof holdFoes==='function')
+      list.push({k:'hold',n:"The Hold's Men",d:'The enforcers, if the ledger says fight.',sim:true,opt:true});}catch(e){}
+    try{if(typeof holdHost==='function')
+      list.push({k:'snarejoin',n:'The Snare, beside the clan',d:'The finale with the clan standing with you.',sim:true,opt:true});}catch(e){}
+    return list;
+  }
+  function comps(){return simComps().map(c=>({k:c.k,n:c.n,d:c.d}));}
+
+  /* ─── the bench company: built once, deterministically, then cloned per run.
+     seededly is the game's own fixed-seed wrapper, so the crew here is the
+     same crew the practice field would show for the same pick. */
+  let MAKE=null;
+  function setParty(compKey,level){
+    const c=simComps().find(x=>x.k===compKey)||simComps()[0];
+    MAKE=()=>seededly(()=>{const P=c.make();
+      P.forEach(p=>{p.perks=p.perks||[];
+        if(level>1)simLevelTo(p,Math.max(p.level||1,level));});
+      return P;});
+    const P=MAKE();
+    return {n:c.n,len:P.length,pts:compPts(P),
+      names:P.map(p=>(p.name||'?')+' L'+(p.level||1))};
+  }
+  function price(kind,len){
+    const fp=fightPts(kind,{partyLen:len,clashSide:kind==='clash'?'none':undefined});
+    const b=simBands(Math.max(1,fp.net));
+    return {foe:fp.foe,ally:fp.ally,net:fp.net,bands:b};
+  }
+
+  /* ─── one fight, the runFight/ARENA loop with the crew handed in ───────── */
+  function runOne(kind,prof,seed,party,pay){
+    const _r=render,_f=fx,_s=say,_x=sfx,_p=paintTerrain;
+    const _jp=(typeof JOURNAL!=='undefined'&&JOURNAL)?JOURNAL.put:null;
+    const _sm=SEENF.mark,_rand=Math.random;
+    render=()=>{};fx=()=>{};sfx=()=>{};paintTerrain=()=>{};say=t=>{G.log.push(t);};
+    if(_jp)JOURNAL.put=()=>{};
+    SEENF.mark=()=>{};                 /* a measurement may never unlock a spoiler */
+    Math.random=mkRand(seed);
+    let res;
+    try{
+      G.party.length=0;party.forEach(p=>G.party.push(p));
+      G.morale=0;G.log.length=0;G.cub=false;G.run.food=8;
+      G.clashSide='none';G.armourPlan='form';
+      const cap=member('you');if(cap)cap.pet=null;
+      Object.assign(AIP.you,FULL,prof||{});
+      Object.assign(AIP.foe,FULL);
+      startBattle(kind);
+      const mine=()=>B.units.filter(u=>u.side==='you'&&!u.pet&&!u.ally);
+      const hpMax0=mine().reduce((s,u)=>s+(u.hpMax||0),0)||1;
+      let g=0;
+      while(B&&B.won===null&&g++<3000){
+        if(checkEnd())break;
+        const u=cur();if(!u)break;
+        if(u.dead||u.downed||u.fled){B.busy=false;nextTurn();continue;}
+        let st=0;
+        while(B&&B.won===null&&cur()===u&&st++<8){
+          const a0=u.actions;B.busy=false;
+          try{aiTurn(u);}catch(e){window.__gterrs.push(kind+': '+e.message);g=1e9;break;}
+          if(!B||B.won!==null||cur()!==u||u.actions===a0)break;}
+        if(B&&B.won===null&&cur()===u){B.busy=false;nextTurn();}
+      }
+      const my=B?mine():[];
+      const hpLeft=my.reduce((s,u)=>s+Math.max(0,u.hp||0),0);
+      const won=B?B.won:'-';
+      res={won:won,rounds:B?B.round:0,guard:g>=3000,
+        down:my.filter(u=>u.dead||u.downed).length,
+        hpLost:Math.max(0,Math.min(1,1-hpLeft/hpMax0))};
+      if(pay&&(won===true||won==='mercy'))payFightXP();
+    }catch(e){res={won:'FATAL',fatal:e.message,rounds:0,down:0,hpLost:1,guard:false};
+      window.__gterrs.push(kind+' FATAL: '+e.message);}
+    finally{render=_r;fx=_f;say=_s;sfx=_x;paintTerrain=_p;
+      if(_jp)JOURNAL.put=_jp;SEENF.mark=_sm;Math.random=_rand;
+      Object.assign(AIP.you,FULL);Object.assign(AIP.foe,FULL);
+      B=null;}
+    return res;
+  }
+  const agg=rows=>{
+    const wins=rows.filter(r=>r.won===true||r.won==='mercy').length;
+    const rds=rows.map(r=>r.rounds).sort((a,b)=>a-b);
+    return {n:rows.length,wins:wins,win:Math.round(100*wins/rows.length),
+      rdMed:rds[rds.length>>1]||0,rdMin:rds[0]||0,rdMax:rds[rds.length-1]||0,
+      down:+(rows.reduce((s,r)=>s+r.down,0)/rows.length).toFixed(1),
+      hp:Math.round(100*rows.reduce((s,r)=>s+r.hpLost,0)/rows.length),
+      guards:rows.filter(r=>r.guard).length,
+      fatals:rows.filter(r=>r.won==='FATAL').length};
+  };
+  function runCell(kind,stratKey,n,baseSeed){
+    const prof=STRATS[stratKey].prof,rows=[];
+    for(let i=0;i<n;i++)
+      rows.push(runOne(kind,prof,(baseSeed*7919+i*104729+hashK(kind))>>>0,MAKE(),false));
+    return agg(rows);
+  }
+
+  /* ─── the campaign walk: one company, carried, paid, mended ────────────── */
+  let WALK=null;
+  function walkStart(){WALK={party:seededly(()=>makeParty())};
+    WALK.party.forEach(p=>p.perks=p.perks||[]);}
+  function walkJoin(who){
+    if(WALK.party.some(p=>p.id===who))return;
+    const p=seededly(()=>crewPerson({src:who,level:1}));
+    p.perks=p.perks||[];WALK.party.push(p);
+  }
+  function walkRefit(){
+    /* the seasoned six's own armour step, from SIM_COMPS - the game's one
+       written picture of what a mid-act shopping trip buys */
+    WALK.party.forEach(p=>{
+      if(p.cls==='captain'||p.cls==='spear')p.eq.armour='mail';
+      else if(p.race==='ogre')p.eq.armour='lashed';
+      else if(p.eq.armour==='rags')p.eq.armour='jack';});
+  }
+  function spendPolicy(p){
+    const prio=STAT_PRIO[p.cls]||STAT_PRIO.none;let i=0;
+    while((p.statPoints||0)>0){p.st[prio[i%prio.length]]+=1;p.statPoints--;i++;}
+    while((p.perkPoints||0)>0){
+      const open=perkPool(p).filter(k=>p.perks.indexOf(k)<0);
+      if(!open.length){p.perkPoints=0;break;}
+      p.perks.push(open[0]);p.perkPoints--;}
+  }
+  function walkFight(kind,stratKey,seed){
+    const meta={len:WALK.party.length,
+      pts:compPts(WALK.party),
+      lvl:+(WALK.party.reduce((s,p)=>s+(p.level||1),0)/WALK.party.length).toFixed(1)};
+    const res=runOne(kind,STRATS[stratKey].prof,seed,WALK.party,true);
+    WALK.party.forEach(p=>{spendPolicy(p);p.hpLoss=0;});
+    return {meta:meta,res:res};
+  }
+
+  return {ok:true,STRATS:Object.keys(STRATS).reduce((o,k)=>(o[k]=STRATS[k].n,o),{}),
+    fights:fights,comps:comps,setParty:setParty,price:price,
+    runCell:runCell,walkStart:walkStart,walkJoin:walkJoin,walkRefit:walkRefit,
+    walkFight:walkFight,errs:()=>window.__gterrs.slice(-12),
+    /* for console probes only: one fight with any crew, and the walk's state */
+    runOne:runOne,walk:()=>WALK};
+})();
+</script>
+
+<script>
+(function(){
+'use strict';
+const $=id=>document.getElementById(id);
+let FR=null,GT=null,RUN=null,LASTMD='';
+/* ⛔ THE YIELD IS A MessageChannel, NOT setTimeout - the harness's own trick,
+   for the harness's own reason: a backgrounded tab throttles timers to one a
+   second (and later to one a MINUTE), and a four-minute run lives exactly in
+   the window where the user switches away. A message port is not throttled.
+   Real waits (the boot poll) keep setTimeout: 250ms at 1s floor still polls. */
+const MQ=[],MC=new MessageChannel();
+MC.port1.onmessage=()=>{const f=MQ.shift();if(f)f();};
+const tick=ms=>new Promise(r=>{
+  if(ms&&ms>20)setTimeout(r,ms);
+  else{MQ.push(r);MC.port2.postMessage(0);}
+});
+
+/* ─── boot: load the game, wait for it, inject the bridge ───────────────── */
+async function boot(){
+  $('status').className='';$('status').textContent='loading the build…';
+  $('buildTag').textContent='build: loading…';GT=null;
+  $('frameWrap').innerHTML='';
+  FR=document.createElement('iframe');
+  FR.src='../prototype/grimtoll_slice.html';
+  $('frameWrap').appendChild(FR);
+  /* ⚠ NO DEADLINE ON THE BOOT. The game file is 14 MB, and in a hidden or
+     backgrounded tab the browser parses it at background priority - measured
+     over 45s where a visible tab takes 8. A timeout here reads as "broken"
+     when the truth is "slow", so the poll runs until it answers and the
+     status carries the elapsed time instead. */
+  const t0=Date.now();
+  for(;;){
+    await tick(250);
+    try{const w=FR.contentWindow;
+      if(w&&w.ARENA&&w.startBattle&&w.simComps)break;}catch(e){}
+    const s=Math.round((Date.now()-t0)/1000);
+    $('status').textContent='loading the build… '+s+'s'+
+      (s>20?' (a hidden tab loads much slower - bring this tab to the front)':'');
+    if(s>300){$('status').className='err';
+      $('status').textContent='no build after '+s+'s - is tools\\serve.ps1 running? '+
+        'This page must be opened through http, not file://. Press RELOAD BUILD to retry.';
+      return;}
+  }
+  try{
+    const w=FR.contentWindow;
+    if(!w||!w.ARENA)throw new Error('the game never booted');
+    w.eval(document.getElementById('bridgeSrc').textContent);
+    GT=w.GT;
+    if(!GT||!GT.ok)throw new Error('bridge refused');
+  }catch(e){
+    $('status').className='err';
+    $('status').textContent='could not load the build: '+e.message+
+      ' - serve the repo first (tools\\serve.ps1) and open this page through http, not file://';
+    return;
+  }
+  $('buildTag').textContent='build: live · loaded '+new Date().toLocaleTimeString();
+  fillControls();
+  $('status').textContent='ready. '+GT.fights().filter(f=>f.sim).length+
+    ' fights simulable, founders price at 100 by calibration.';
+}
+
+/* ─── controls ──────────────────────────────────────────────────────────── */
+function fillControls(){
+  const comps=GT.comps();
+  $('comp').innerHTML=comps.map(c=>'<option value="'+c.k+'" title="'+(c.d||'')+'">'+c.n+'</option>').join('');
+  const fs=GT.fights();
+  const optsFor=def=>'<option value="">never</option>'+fs.filter(f=>f.sim)
+    .map(f=>'<option value="'+f.k+'"'+(f.k===def?' selected':'')+'>'+f.n+'</option>').join('');
+  $('joinAsh').innerHTML=optsFor('brigand');
+  $('joinClan').innerHTML=optsFor('snare');
+  $('refit').innerHTML=optsFor('snare');
+  $('fightChips').innerHTML='<span class="lbl">Fights</span>'+fs.map(f=>{
+    const on=f.sim&&!f.opt;
+    return '<label class="chip'+(on?' on':'')+'" title="'+(f.d||'')+'">'+
+      '<input type="checkbox" data-k="'+f.k+'"'+(on?' checked':'')+(f.sim?'':' disabled')+'> '+
+      f.n+(f.sim?'':' <span class="warn">(scripted)</span>')+'</label>';}).join('');
+  document.querySelectorAll('#fightChips input').forEach(i=>
+    i.onchange=()=>i.closest('.chip').classList.toggle('on',i.checked));
+  document.querySelectorAll('input[name=mode]').forEach(r=>r.onchange=()=>{
+    const walk=document.querySelector('input[name=mode]:checked').value==='walk';
+    $('benchCtl').style.display=walk?'none':'flex';
+    $('walkCtl').style.display=walk?'flex':'none';
+    $('mBench').classList.toggle('on',!walk);$('mWalk').classList.toggle('on',walk);
+  });
+  document.querySelectorAll('.chip input[type=checkbox]').forEach(i=>
+    i.addEventListener('change',()=>i.closest('.chip').classList.toggle('on',i.checked)));
+}
+function cfgNow(){
+  const strats=[];
+  if($('sCurrent').checked)strats.push('current');
+  if($('sAggressive').checked)strats.push('aggressive');
+  if($('sSteady').checked)strats.push('steady');
+  const fights=[...document.querySelectorAll('#fightChips input')]
+    .filter(i=>i.checked).map(i=>i.dataset.k);
+  return {mode:document.querySelector('input[name=mode]:checked').value,
+    comp:$('comp').value,level:+$('level').value||1,runs:+$('runs').value||10,
+    walks:+$('walks').value||5,seed:+$('seed').value||1234,
+    joinAsh:$('joinAsh').value,joinClan:$('joinClan').value,refit:$('refit').value,
+    strats:strats,fights:fights};
+}
+
+/* ─── the run ───────────────────────────────────────────────────────────── */
+function prog(done,total,text){
+  $('prog').style.display='block';
+  $('prog').firstElementChild.style.width=Math.round(100*done/total)+'%';
+  $('status').textContent=text;
+}
+async function runAll(){
+  if(!GT){$('status').textContent='no build loaded';return;}
+  const cfg=cfgNow();
+  if(!cfg.strats.length||!cfg.fights.length){
+    $('status').textContent='pick at least one strategy and one fight';return;}
+  RUN={cancel:false};
+  $('run').disabled=true;$('cancel').disabled=false;$('copy').disabled=true;
+  const fightsAll=GT.fights();
+  const rows=[];
+  try{
+    if(cfg.mode==='bench'){
+      const meta=GT.setParty(cfg.comp,cfg.level);
+      $('crewLine').innerHTML='<b>'+meta.n+'</b> · '+meta.len+' bodies · <b>'+meta.pts+
+        ' pts</b> · '+meta.names.join(' · ');
+      const total=cfg.fights.length*cfg.strats.length;let done=0;
+      for(const k of cfg.fights){
+        const f=fightsAll.find(x=>x.k===k);if(!f)continue;
+        const row={f:f,price:GT.price(k,meta.len),cells:{}};
+        for(const s of cfg.strats){
+          if(RUN.cancel)throw 'stopped';
+          prog(done,total,f.n+' · '+s+' · '+cfg.runs+' fights…');await tick();
+          row.cells[s]=GT.runCell(k,s,cfg.runs,cfg.seed);
+          done++;
+        }
+        rows.push(row);renderBench(rows,cfg,meta);await tick();
+      }
+      finishRun(cfg,rows,meta);
+    }else{
+      /* the walk: per strategy, per seed, the fights in order, one company */
+      const acc={};cfg.fights.forEach(k=>{acc[k]={};cfg.strats.forEach(s=>acc[k][s]={runs:[],meta:[]});});
+      const total=cfg.strats.length*cfg.walks*cfg.fights.length;let done=0;
+      for(const s of cfg.strats){
+        for(let w=0;w<cfg.walks;w++){
+          if(RUN.cancel)throw 'stopped';
+          GT.walkStart();
+          for(const k of cfg.fights){
+            const f=fightsAll.find(x=>x.k===k);if(!f)continue;
+            if(cfg.joinAsh===k)GT.walkJoin('ash');
+            if(cfg.joinClan===k){GT.walkJoin('skree');GT.walkJoin('bruht');}
+            if(cfg.refit===k)GT.walkRefit();
+            prog(done,total,'walk '+(w+1)+'/'+cfg.walks+' · '+s+' · '+f.n);await tick();
+            const r=GT.walkFight(k,s,(cfg.seed*13+w*101+k.length*7+k.charCodeAt(0))>>>0);
+            acc[k][s].runs.push(r.res);acc[k][s].meta.push(r.meta);
+            done++;
+            if(RUN.cancel)throw 'stopped';
+          }
+          renderWalk(acc,cfg,fightsAll);await tick();
+        }
+      }
+      finishRun(cfg,null,null,acc,fightsAll);
+    }
+  }catch(e){
+    if(e!=='stopped'){$('status').className='err';$('status').textContent='run failed: '+(e.message||e);}
+    else $('status').textContent='stopped.';
+  }
+  $('run').disabled=false;$('cancel').disabled=true;
+  $('prog').style.display='none';
+}
+
+/* ─── rendering ─────────────────────────────────────────────────────────── */
+const wc=w=>w>=85?'w85':w>=60?'w60':w>=40?'w40':w>=20?'w20':'w0';
+const aggOf=list=>{
+  const wins=list.filter(r=>r.won===true||r.won==='mercy').length;
+  const rds=list.map(r=>r.rounds).sort((a,b)=>a-b);
+  return {n:list.length,win:Math.round(100*wins/list.length),
+    rdMed:rds[rds.length>>1]||0,rdMin:rds[0]||0,rdMax:rds[rds.length-1]||0,
+    down:+(list.reduce((s,r)=>s+r.down,0)/list.length).toFixed(1),
+    hp:Math.round(100*list.reduce((s,r)=>s+r.hpLost,0)/list.length),
+    guards:list.filter(r=>r.guard).length,fatals:list.filter(r=>r.won==='FATAL').length};
+};
+function bandCell(price,myPts,win){
+  const b=price.bands;
+  const v=myPts>=b.easy?'EASY':myPts>=b.even?'EVEN':myPts>=b.hard?'HARD':'PAST HARD';
+  let warn='';
+  if(win!=null){
+    if((v==='EASY'&&win<60)||(v==='EVEN'&&win<40))warn=' <span class="warn" title="harder than the band says">⚠</span>';
+    if((v==='HARD'||v==='PAST HARD')&&win>=80)warn=' <span class="warn" title="easier than the band says">⚠</span>';
+  }
+  return v+warn;
+}
+function deltaTag(prev,key,win,rd){
+  if(!prev||!prev[key])return ['',''];
+  const dw=win-prev[key].win,dr=rd-prev[key].rd;
+  const t=(d,inv)=>d===0?'':' <span class="d '+((inv?d<0:d>0)?'up':'dn')+'">'+(d>0?'+':'')+d+'</span>';
+  return [t(dw,false),t(dr,true)];
+}
+function cellsHTML(a,prev,key){
+  if(!a)return '<td colspan="4" style="color:#5a6a64">·</td>';
+  const [dw,dr]=deltaTag(prev,key,a.win,a.rdMed);
+  const flag=(a.fatals?' <span class="warn" title="fatal errors">✗'+a.fatals+'</span>':'')+
+             (a.guards?' <span class="warn" title="hit the 3000-turn guard">∞</span>':'');
+  return '<td class="'+wc(a.win)+'">'+a.win+'%'+dw+flag+'</td>'+
+    '<td title="'+a.rdMin+' to '+a.rdMax+'">'+a.rdMed+dr+'</td>'+
+    '<td>'+a.down+'</td><td>'+a.hp+'%</td>';
+}
+const HEAD4='<th>WIN</th><th>RDS</th><th>DOWN</th><th>HP−</th>';
+function renderBench(rows,cfg,meta){
+  const prev=loadPrev(cfg);
+  let h='<table><tr><th rowspan="2" style="text-align:left">FIGHT</th>'+
+    '<th rowspan="2">THEIRS<br>net pts</th><th rowspan="2">YOURS<br>'+meta.pts+' pts</th>'+
+    '<th rowspan="2">BAND<br>SAYS</th>'+
+    cfg.strats.map(s=>'<th class="grp" colspan="4">'+({current:'THE BRAIN',aggressive:'AGGRESSIVE',steady:'STEADY'})[s]+'</th>').join('')+
+    '</tr><tr>'+cfg.strats.map(()=>HEAD4).join('')+'</tr>';
+  rows.forEach(row=>{
+    const bestWin=Math.max(...cfg.strats.map(s=>row.cells[s]?row.cells[s].win:-1));
+    h+='<tr><td class="name">'+row.f.n+'<small>'+(row.f.d||'')+'</small></td>'+
+      '<td>'+row.price.net+(row.price.ally?' <span style="color:#5a7a6a" title="allies stand with you">(+'+row.price.ally+')</span>':'')+'</td>'+
+      '<td>'+meta.pts+'</td>'+
+      '<td class="band">'+bandCell(row.price,meta.pts,bestWin<0?null:bestWin)+'</td>'+
+      cfg.strats.map(s=>cellsHTML(row.cells[s],prev,row.f.k+'|'+s)).join('')+'</tr>';
+  });
+  h+='</table>';
+  $('out').innerHTML=h;
+  LASTMD=benchMD(rows,cfg,meta);
+}
+function renderWalk(acc,cfg,fightsAll){
+  const prev=loadPrev(cfg);
+  let h='<table><tr><th rowspan="2" style="text-align:left">FIGHT · in march order</th>'+
+    '<th rowspan="2">LVL at<br>arrival</th><th rowspan="2">YOURS<br>pts</th>'+
+    '<th rowspan="2">THEIRS<br>net pts</th><th rowspan="2">BAND<br>SAYS</th>'+
+    cfg.strats.map(s=>'<th class="grp" colspan="4">'+({current:'THE BRAIN',aggressive:'AGGRESSIVE',steady:'STEADY'})[s]+'</th>').join('')+
+    '</tr><tr>'+cfg.strats.map(()=>HEAD4).join('')+'</tr>';
+  cfg.fights.forEach(k=>{
+    const f=fightsAll.find(x=>x.k===k);if(!f)return;
+    const c=acc[k];const any=cfg.strats.find(s=>c[s].runs.length);
+    if(!any)return;
+    const metas=c[any].meta;
+    const lvl=(metas.reduce((s,m)=>s+m.lvl,0)/metas.length).toFixed(1);
+    const pts=Math.round(metas.reduce((s,m)=>s+m.pts,0)/metas.length);
+    const price=GT.price(k,metas[0].len);
+    const joins=[cfg.joinAsh===k?'Asha joins':null,cfg.joinClan===k?'Skree + Bruht join':null,
+      cfg.refit===k?'armour refit':null].filter(Boolean).join(' · ');
+    const bestWin=Math.max(...cfg.strats.map(s=>c[s].runs.length?aggOf(c[s].runs).win:-1));
+    h+='<tr><td class="name">'+f.n+'<small>'+(joins||f.d||'')+'</small></td>'+
+      '<td>'+lvl+'</td><td>'+pts+'</td><td>'+price.net+'</td>'+
+      '<td class="band">'+bandCell(price,pts,bestWin<0?null:bestWin)+'</td>'+
+      cfg.strats.map(s=>c[s].runs.length?cellsHTML(aggOf(c[s].runs),prev,k+'|'+s)
+        :'<td colspan="4" style="color:#5a6a64">·</td>').join('')+'</tr>';
+  });
+  h+='</table>';
+  $('out').innerHTML=h;
+  LASTMD=walkMD(acc,cfg,fightsAll);
+}
+
+/* ─── the delta store: last completed run with the same setup ───────────── */
+const prevKey=cfg=>'gauntlet_prev_'+cfg.mode+'_'+(cfg.mode==='bench'?cfg.comp+'_L'+cfg.level:'walk')+
+  '_'+cfg.seed;
+function loadPrev(cfg){
+  try{return JSON.parse(localStorage.getItem(prevKey(cfg)))||null;}catch(e){return null;}
+}
+function finishRun(cfg,rows,meta,acc,fightsAll){
+  const flat={};
+  if(cfg.mode==='bench'&&rows)
+    rows.forEach(r=>cfg.strats.forEach(s=>{if(r.cells[s])
+      flat[r.f.k+'|'+s]={win:r.cells[s].win,rd:r.cells[s].rdMed};}));
+  if(cfg.mode==='walk'&&acc)
+    cfg.fights.forEach(k=>cfg.strats.forEach(s=>{const c=acc[k]&&acc[k][s];
+      if(c&&c.runs.length){const a=aggOf(c.runs);flat[k+'|'+s]={win:a.win,rd:a.rdMed};}}));
+  try{localStorage.setItem(prevKey(cfg),JSON.stringify(flat));}catch(e){}
+  const errs=GT.errs();
+  $('status').textContent='done. this run is now the Δ baseline for the next one.'+
+    (errs.length?' engine errors: '+errs.join(' | '):'');
+  $('copy').disabled=false;
+}
+
+/* ─── copy as markdown ──────────────────────────────────────────────────── */
+const s4=(a,pv,key)=>{if(!a)return ' · | · | · | · |';
+  return ' '+a.win+'% | '+a.rdMed+' ('+a.rdMin+'-'+a.rdMax+') | '+a.down+' | '+a.hp+'% |';};
+function benchMD(rows,cfg,meta){
+  let m='## The Gauntlet · bench · '+meta.n+' · '+meta.pts+' pts · runs/cell '+cfg.runs+' · seed '+cfg.seed+'\n\n';
+  m+='| fight | theirs | band |'+cfg.strats.map(s=>' '+s+' win | rds | down | hp− |').join('')+'\n';
+  m+='|---|---|---|'+cfg.strats.map(()=>'---|---|---|---|').join('')+'\n';
+  rows.forEach(r=>{m+='| '+r.f.n+' | '+r.price.net+' | '+
+    bandCell(r.price,meta.pts,null).replace(/<[^>]*>/g,'')+' |'+
+    cfg.strats.map(s=>s4(r.cells[s])).join('')+'\n';});
+  return m;
+}
+function walkMD(acc,cfg,fightsAll){
+  let m='## The Gauntlet · campaign walk · walks '+cfg.walks+' · seed '+cfg.seed+'\n\n';
+  m+='| fight | lvl | yours | theirs |'+cfg.strats.map(s=>' '+s+' win | rds | down | hp− |').join('')+'\n';
+  m+='|---|---|---|---|'+cfg.strats.map(()=>'---|---|---|---|').join('')+'\n';
+  cfg.fights.forEach(k=>{const f=fightsAll.find(x=>x.k===k);const c=acc[k];
+    const any=cfg.strats.find(s=>c[s].runs.length);if(!f||!any)return;
+    const metas=c[any].meta;
+    m+='| '+f.n+' | '+(metas.reduce((s,x)=>s+x.lvl,0)/metas.length).toFixed(1)+' | '+
+      Math.round(metas.reduce((s,x)=>s+x.pts,0)/metas.length)+' | '+
+      GT.price(k,metas[0].len).net+' |'+
+      cfg.strats.map(s=>c[s].runs.length?s4(aggOf(c[s].runs)):' · | · | · | · |').join('')+'\n';});
+  return m;
+}
+
+/* ─── wiring ────────────────────────────────────────────────────────────── */
+$('run').onclick=runAll;
+$('cancel').onclick=()=>{if(RUN)RUN.cancel=true;};
+$('reload').onclick=boot;
+$('copy').onclick=async()=>{
+  try{await navigator.clipboard.writeText(LASTMD);$('status').textContent='table copied as markdown.';}
+  catch(e){const t=document.createElement('textarea');t.value=LASTMD;
+    document.body.appendChild(t);t.select();document.execCommand('copy');t.remove();
+    $('status').textContent='table copied as markdown.';}
+};
+boot();
+})();
+</script>
+</body>
+</html>
