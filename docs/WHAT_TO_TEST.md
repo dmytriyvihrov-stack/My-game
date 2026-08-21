@@ -26,6 +26,22 @@
 
 ---
 
+## ⚖ THE PRACTICE FIELD PRICES EVERYTHING IN POINTS, AND YOU CAN HAND-PICK THE CREW  *(#216 · 2026-08-21 · build log 8f.239)*
+
+**How to reach it in three steps:** main menu → The practice field → in WHO MEETS IT pick **Hand-picked** (bottom of the column).
+
+**What it is.** One scale now prices both sides of every fight. Every company in WHO MEETS IT shows its points (the four you start with are **~100 pts** - that is the calibration). Every fight shows three recommended company-point values, `easy · even · hard`, recomputed against the size of the company you have picked. **Hand-picked** opens a bench under the columns: add the founders, Skree, Asha, Bruht, or stock hires of any race and class; step each body's level 1-10 (levels spend themselves - stats down the class's own priority, perks the first door of each tier, and the bench says so); hang armour, weapons and trinkets from the whole pool on them, and every piece in a dropdown is priced as what it adds to THAT body (+9 mail on Vesna, +1 "(wrong size)" door-planks on Bruht). The header keeps a running total and says how the picked fight should feel against it.
+
+**The locks.** Six fights are LOCKED until a campaign has shown them to you: Something in Armour, the Fen-Mother, the Mirehares, the Snare, the Circle, the Wedding. Meet one on the road, in any run, and it opens here for good. Dev mode (⚙) opens all of them and marks those rows `dev-open`.
+
+**Dev mode extras.** With ⚙ on: every fight door on a road card grows a `⚔ N pts · you M` chip, and every battle node on the world map wears its threat points, so the final route can be balanced off the map at a glance.
+
+**What should happen.** The founders read ~100 and the ladder sorts the act: brawl 36 · chase ~51 · wedding ~60 · clash ~72 · snare ~146 against four and ~199 against six · the Circle 257 (you are not meant to win it, and now the number says so). Adding a level or a piece of kit moves a body's points immediately.
+
+**What would be a bug.** A fight you have never met in any campaign standing open outside dev mode · points that flicker between two opens of the same screen · a practice fight unlocking anything · the map chips or door chips showing with dev mode off · a hand-picked crew arriving in the fight different from the bench that priced it.
+
+---
+
 ## 🗺 FIFTEEN MORE ROAD CARDS GET THEIR WIDE STAGE  *(#214 · 2026-08-20 · build log 8f.237)*
 
 **How to reach it in three steps:** open any of these cards on the road or at a camp: What Followed You Out, The Hollow Tree, The Dead Company, The Long Fire, The Ratkin Snare, The Warm Spring, Something in Armour, The Door-Shrine, The Woman in the Cage, The Red Lights, Bonepicker's Camp, The Sling-Line, The Steading-Line, Under the Bloom, The Salt-Wives, or They Come Over the Wall.
