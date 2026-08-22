@@ -246,15 +246,55 @@ a thing just cost) stays exact; a forecast (what a road holds) carries its uncer
 
 - **Play it, do not read it.** Almost every real bug here was found by running the game. A
   regression that only checks *"the fight completed"* proves very little.
-- Run the local server, never `file://`. `tools/serve.ps1` is in the repo and `.claude/launch.json`
-  starts it: **preview_start `grimtoll`**, then
-  `http://localhost:8777/prototype/grimtoll_slice.html`.
+
+- ⛔ **`tools/dev/` IS THE SESSION TOOLKIT. LOAD IT, DO NOT REBUILD IT** *(#234, 2026-08-22)*, the
+  same rule `tools/harness.js` already carries. Four verbs cover a whole session:
+
+  ```bash
+  python tools/dev/gt.py launch          # headless Chrome on THIS worktree's prototype
+  python tools/dev/gt.py eval gates.js   # a probe, with probes/lib.js prepended
+  python tools/dev/gt.py check           # every inline <script> through node's parser
+  python tools/dev/gt.py close
+  ```
+
+  plus `shot`, `arena` and `grep`. `tools/dev/README.md` is the reference and the `/drive` skill is
+  the procedure. **Every file in it used to be rewritten from scratch each session**, from notes
+  that said so out loud, and had been rebuilt at least three times.
+
+- ⛔ **AND `preview_start` IS NOT THE PATH, WHICH THIS SECTION USED TO SAY IT WAS.** Two things
+  break it and neither is obvious: **the preview tool runs in the session's PRIMARY directory**, so
+  a desk at `%USERPROFILE%\grimtoll-desks\<name>` is never what gets served (the served bytes were
+  md5-different from the desk's file on the first try); and **in a non-interactive session the
+  Browser pane is hidden**, so `javascript_tool` times out and a screenshot returns *"the page is
+  not compositing frames"*. `tools/serve.ps1` and `.claude/launch.json` are still right for an
+  INTERACTIVE session on the main desk, and only there.
+
+- ⛔ **AND A PROBE MUST PROVE WHICH BUILD IT IS LOOKING AT.** #234 connected to a port another desk
+  already held and measured the wrong build for one call. `gt.py` derives its port from the
+  worktree path and asserts `location.href` on every connection - and it is still worth checking
+  the page holds YOUR edit: `typeof <a symbol only your edit has>`.
+
+- ⛔ **EVERY SCRIPTED EDIT GOES THROUGH `tools/dev/safeedit.py`.** The prototype is **30 MB, 91% of
+  it embedded base64**, and there is no second copy: `open(p,'w')` truncates *before* it encodes
+  (#191 lost the whole file to one bad character), the file is CRLF so a byte pattern written with
+  `\n` matches nothing *silently*, and an anchor that matches twice is worse than one that misses.
+  Every `old` must match exactly once or **nothing at all is written**. It also refuses a path
+  outside its own worktree, because #234 edited the shared main tree from a desk by accident.
+
+- ⚠ **`grep` OVER THE PROTOTYPE RETURNS MEGABYTES.** 337 lines hold 27.5 MB of base64 and they
+  contain almost any short pattern. Use `gt.py grep`: filtering with `awk 'length<600' | grep -n`
+  RENUMBERS the output and sends you to the wrong lines.
+
 - After anything touching combat, run all eight fights: `clash · brigand · pack · slingline ·
-  steading · snare · mother · armour`. The harness must call `checkEnd()` between turns.
+  steading · snare · mother · armour` (`gt.py arena regress.js`). The harness must call `checkEnd()`
+  between turns. ⚠ The gate is **no ERR, no FATAL, no HIT GUARD** - the round counts differ run to
+  run and a diff in them is only a finding at n>=20 a side.
 - Run `LINT()` after touching content. It checks every class of content bug this project has shipped.
+  `gt.py eval gates.js` runs it beside the two ui-scales counters, the #230 column-overlap probe,
+  the three map counters and the event-card checks, on three screens, in one round trip.
 - **`tools/harness.js` is the test rig. Load it, do not rebuild it.**
   `fetch('/tools/harness.js').then(r=>r.text()).then(eval)` gives `regress()`, `runFight(kind,{probe})`,
-  `stage(fight,comp)` and `shotBoard(name,caption,note)`.
+  `stage(fight,comp)` and `shotBoard(name,caption,note)` - and `gt.py arena` loads it for you.
 - **The hidden preview pane breaks two things flatly, and both look like game bugs.**
   `requestAnimationFrame` never fires (travel animations stop dead, which reads exactly like a hang)
   and `setTimeout` is floored at ~1s. Routing timers through a **`MessageChannel`** port is not

@@ -26,6 +26,71 @@
 
 ---
 
+## ⚔ THE BOARD ANSWERS AGAIN, THE BLOW SHOWS ON THE BAR, AND THE SHEET'S HEADER IS REBUILT  *(#234 · 2026-08-22 · build log 8f.257)*
+
+**Reach it in three steps:** start a run → walk into any fight for the board half → BACK TO THE ROAD
+and open the company sheet for the rest.
+
+**On the battlefield**
+
+- **The hit % is back on every enemy you can already reach**, with MOVE standing and no card
+  picked. It is still measured from the hex you are ON: a foe you would have to walk to first
+  carries no figure, and never did.
+- **Hover an enemy and the blow is drawn on their two bars.** The part of the shell and the part of
+  the flesh that this swing would take goes *pale and warm*, with a lit line marking where the bar
+  will end. The exact pair (`21-30`) stays on the hex; the band answers the other question, which
+  is *does this finish it*. Only the one you are pointing at gets it.
+- **The morale banner sits 3px further right** than it did, clear of the body.
+- **SHAKEN now flies a flag too**, and the three that fly one are three different weights: Shaken is
+  faint, Breaking is half-out, Broken is fully out. Ok and Happy are still bare on purpose.
+- **When you hold the pointer over ground a step would be paid for**, the enemy who gets the free
+  swing now *breathes red* the way your own acting body breathes ivory, and the `⚔ 60%` under your
+  feet says what stepping off costs. Move the pointer off that ground and both go at once.
+- **On the enemy's turn none of it is on screen** - no percentages, no bands, no red breathing.
+  Same while anybody is mid-walk.
+- **When something kicks, shoves or hooks you, the thing that did it says so.** `KICK` in dusty gold
+  over the kicker, beside the `SHOVED` over you. Only forced movement does this; an ordinary sword
+  swing still says nothing.
+
+**In the fights themselves**
+
+- **The chase (The Alder Cut, four out of the tap-room):** the ratkin carries a **short knife** now,
+  reach 1. Nothing in that fight drags you out of your line any more. The pole is still waiting at
+  the Snare, later.
+- **The tap-room brawl:** when the barman comes over the bar, **the fifth man does not cross the
+  room on that round.** He stops just inside the door and looks at it first, and the log says so.
+  Walk up to him and he fights back at once.
+- **Help the ratkin at Blood on the Road** and Skree joins as an **archer with a hunting bow**, not
+  a knife. Asha is unchanged.
+
+**On the company sheet**
+
+- **The portrait is bigger** (104x80 where it was 94x74) and **the field figure has lost its box and
+  its ON THE FIELD caption** and is 20% larger, standing in the air at the right of the header.
+- **There is more air between the blocks.** Measured, every body has more room than it did, and the
+  two states that used to scroll 15px now scroll 5.
+- **The Captain's trait is `Experienced`, +1 STR and +1 MOR**, with no armour condition. His MORALE
+  tell should read one band better than it used to while he is in the padded jack.
+- **Every item name is in its rarity's colour**: white common, green rare, purple epic. Worn slots,
+  the stash, the shop rack, the hover box, and what a fight hands you.
+- **CUT A GEM is not on the sheet at all when you hold no gems.** Pick one up and it appears, live.
+- **The three weakest INTELLECT pictures are smaller and flatter.** Hover INTELLECT to see the whole
+  nine-rung ladder at once.
+
+**What would be a bug**
+
+- A percentage on an enemy you cannot actually reach from where you stand.
+- The damage band on more than one enemy at a time, or on one you are not pointing at.
+- The band reading as *empty bar* rather than as *this is about to go*.
+- Anything red or any percentage still on screen while an enemy is taking its turn.
+- `KICK` printing over an ordinary sword swing.
+- The company sheet scrolling on a body with nothing special about it, or the figure in the doll
+  box painting across the SKILLS caption.
+- A common item name that is green or purple, or a name that stayed gold.
+- The tap-room's fifth man standing there being hit and not swinging back.
+
+---
+
 ## 🗺 A NEW WORLD MAP AND SEVEN NEW FACES  *(#233 · 2026-08-22 · build log 8f.256)*
 
 **Reach it in three steps:** start a run → you are on the map → open the company sheet for the faces.
