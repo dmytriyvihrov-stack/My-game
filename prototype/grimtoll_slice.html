@@ -1811,7 +1811,26 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:var(--f
    place, and nothing about what a click DOES has changed.
    ⚠ `SHOW_HIT_ODDS` is inside the toggle, so with the flag off nothing sets the
    class and `.hdmg` keeps the top slot below by itself. */
-.hodds{position:absolute;top:4px;left:0;right:0;text-align:center;font-family:var(--mono);
+/* ⛔ #236 · AND IT STANDS WHERE THE DAMAGE USED TO, ON EVERY BODY IN REACH
+   (User, 2026-08-22: *"Вообще не показывать урон цифрой на персонаже. На место где
+   был урон сдвинуть % и показывать у всех, они там лучше смотрятся"*.)
+
+   `top:4` was never the odds' own slot, it was the TOP of a stack of two, and the
+   stack is one row long now. The lower slot is the better one and the reason is
+   the sprite: a token is painted from y -12, so y 4..12 lands on the HEAD and
+   y 14..22 lands on the chest, where the body is widest and darkest and a figure
+   with a halo reads against it. Four camera stops and 34 bodies all say the same
+   thing, and the user said it first.
+   ⛔ AND THE DAMAGE ROW IS DELETED RATHER THAN MOVED. `.hdmg` and its three
+   rules are gone: the blow is on the target's own two bars (#234) and in the
+   readout card's breakdown, and a third statement of it was the second receipt
+   `.claude/rules/event-cards.md` forbids on a card and #102 forbids on a readout.
+   ⚠ What goes with it is the `full` figure, i.e. *how hard is this skill*
+   before armour (#98 point 7). That question is answered on the CARD the swing
+   comes off, which is where a comparison between two cards is made; what the
+   board now says is what this swing does to THIS body, which is the question the
+   board is for. */
+.hodds{position:absolute;top:14px;left:0;right:0;text-align:center;font-family:var(--mono);
        font-size:var(--fs0);line-height:1;font-weight:700;text-shadow:0 0 3px #000,0 0 3px #000;
        display:none}
 #bGrid.odds .hodds{display:block}
@@ -1845,15 +1864,12 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:var(--f
    With no odds showing it takes the top slot itself, which is what `.hdmg.solo`
    used to be for - so `solo` is DELETED: the default IS the solo position now and
    `#bGrid.odds` is the one thing that pushes it down. */
-.hdmg{position:absolute;top:4px;left:-4px;right:-4px;text-align:center;
-      font-family:var(--mono);font-size:var(--fs0);line-height:1;font-weight:700;color:#e08a80;
-      text-shadow:0 0 3px #000,0 0 3px #000;pointer-events:none;display:none}
-.hex.hand .hdmg{display:block}
-#bGrid.odds .hex.hand .hdmg{top:14px}
-/* #191 gave the damage a `.solo` position for the build where SHOW_HIT_ODDS is
-   off. #231 turned that into the DEFAULT (see above): the odds are hidden far
-   more often than they are shown now, so the slot they used to hold belongs to
-   the damage until something asks for them. The class is gone with the rule. */
+/* ⛑ #236 · `.hdmg` IS DELETED AND ITS SLOT WENT TO THE ODDS. The three rules
+   that were here - the row, `.hex.hand .hdmg`, and the `#bGrid.odds` push down to
+   top:14 - are gone with the element. The arithmetic they carried survives above,
+   because the odds now sit at the 14 the damage was measured onto. #191's `.solo`
+   position and #231's inversion of it are both moot: there is one row on a hex now
+   and it needs no rule about what is above it. */
 /* ═══ LINE OF FIRE (backlog #36) ═ `.hlos` IS DELETED BY #206 ══════════
    The rule read: *"the costs are hidden in the odds like every other modifier;
    what is NOT hidden is the WORD, because the word is the thing the player
@@ -2063,6 +2079,21 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:var(--f
    needed one per row. */
 .ubars b.dpv{position:absolute;top:0;bottom:0;display:none;box-sizing:border-box;
   background:rgba(255,196,150,.45);border-left:1px solid #ffe7d2;pointer-events:none}
+/* ⛔ #236 - THE WINDOW BETWEEN THE MINIMUM AND THE MAXIMUM, AND IT IS A TEXTURE.
+   See the builder in render(). ⚠ THE PERIOD IS 2px AND THE FIRST CUT WAS 3, WHICH
+   THE PICTURE OVERRULED AND NO MEASUREMENT WOULD HAVE. The window this band draws is
+   the width of ONE DIE - on the shipped Lurcher, 5 hitpoints of a 23-point bar, i.e.
+   5.6 design px - so a 3px period put ONE stripe in it and it read as a smudge with
+   a diagonal edge rather than as a texture. At 2px there are three, and a row whose
+   FILL is 2px tall (health) and 1px (armour) turns a 45deg hatch into clean dashes,
+   which is what is wanted: not-solid, at a glance, at every camera stop. ⚠ A SECOND ALPHA WOULD NOT HAVE WORKED and that is #234's own measurement,
+   not a guess: the two shades it rejected were 1px of bar apart. ⚠ The lit edge
+   drops to .45 here: two 1px rules at full brightness inside a 13px run is furniture,
+   and the bright one belongs to the end the swing is PROMISING. */
+.ubars b.dpv.may{background:repeating-linear-gradient(45deg,
+    rgba(255,196,150,.62) 0, rgba(255,196,150,.62) 1px,
+    rgba(255,196,150,0) 1px, rgba(255,196,150,0) 2px);
+  border-left-color:rgba(255,231,210,.45)}
 .hex.hand .ubars b.dpv{display:block}
 /* #94 point 6, the board's half of it: the SAME rule at token scale, so the
    bar under a body and the bar on the plaque are obviously one reading. The
@@ -10916,9 +10947,17 @@ function makeParty(){
        CART, NOT DELETED - it is the other half of the decision the stave
        exists to pose, and putting it back on him is one click on the company
        sheet. His class still says he may carry it (see CLASSES.warmage). */
+    /* ⛔ #236 · AND HIS OFF HAND IS EMPTY (User, 2026-08-22: *"also, don`t give
+       the mage at the begining chalk and cord rod"*.) The focus is a FOURTH thing on
+       a body the opening is already introducing as the stave, the school and the
+       mood cost, and what it does - *spells cost 4 less of your own mood* - cannot
+       even be read until the player has paid that cost once. ⚡ It is not deleted
+       from the game: it is `GEAR.focus` still, still in the ARMOURY rack at 80, and
+       still the obvious first purchase for a caster. What changed is that the
+       company is not holding it before anybody has asked what it is for. */
     {id:'marrow',name:'Marrow',sur:'',race:'human',cls:'warmage',kind:'mage',
      st:{str:8,agi:8,int:12,mor:9},trait:'windtouched',
-     eq:{armour:'rags',main:'rod',off:'focus',trinket:null}},
+     eq:{armour:'rags',main:'rod',off:null,trinket:null}},
     /* the fourth: a human archer carrying AMBITION, so the personality that
        reads differently on every race is in the party from the first minute
        — and the human version is the quiet one, which is the joke */
@@ -26009,12 +26048,10 @@ function render(){
              damage now the larger figure the percentage had to yield the
              emphasis it was holding. */
           const dp=dmgPreview(u,occ,offA);
-          const dv=dp&&(dp.full||dp.hp);
-          /* #191 - alone on the hex now, so it takes the odds' own slot back.
-             See `.hdmg.solo`, which carries the arithmetic. */
-          if(dv){const dd=document.createElement('div');
-            dd.className='hdmg';
-            dd.textContent=dv[0]+'-'+dv[1];inn.appendChild(dd);}
+          /* ⛔ #236 - THE FIGURE IS GONE FROM THE BODY. `dp` is still built here
+             and is still what the two bands below are drawn from; what has been
+             deleted is the `.hdmg` div that printed `full` as text over the
+             sprite. See the note beside `.hodds` in the stylesheet. */
           /* ═══ ⛔ #234 · AND THE SAME BLOW IS DRAWN ON THE BARS IT COMES OUT OF
              (User, 2026-08-22: *"With hit - show on that bar potential damaga"*, with
              two arrows on a screenshot pointing at the target's health bar.)
@@ -26041,18 +26078,48 @@ function render(){
              above it: `.hex.hand .ubars b.dpv` is the whole gate, so the pointer
              tracker reveals it without a re-render. #231's ruling stands - *"we need
              to show exact amount damage only to enemy that we hover"*. */
+          /* ⛔ #236 · AND THE BAND IS A RANGE NOW, WHICH IS WHAT A RANGE LOOKS LIKE
+             (User, 2026-08-22: *"Показывать на этой шкале минимальный урон как щас
+             (полностью снесенный) - а верхнее окно урона со штриховкой"*.)
+
+             #234 drew the MAX and said so out loud: *"at 26px a two-shade min/max
+             split is 1px a shade, i.e. a smudge; the exact pair is on the hex two
+             rows above."* ⛔ THE SECOND HALF OF THAT SENTENCE IS WHAT ASK 1 JUST
+             DELETED, so the argument for one figure went with the figure. The bar is
+             the only place the range is still said, and it has to say it.
+             ⛑ TWO BANDS AND NOT TWO SHADES, WHICH IS WHY IT IS LEGIBLE WHERE THE
+             SHADES WERE NOT. The solid run is the damage that is CERTAIN - the
+             minimum roll, drawn exactly as #234 drew the max, warm lift plus a lit
+             left edge where the bar ends if the dice are unkind to you. The window
+             between minimum and maximum is HATCHED, so *maybe* is a different
+             TEXTURE rather than a different brightness: 45deg stripes survive at
+             1px of row height where a second alpha does not, and nothing else on
+             this board is striped.
+             ⚠ THE EDGES SAY WHICH IS WHICH. The solid band keeps the bright
+             `#ffe7d2` rule at the guaranteed end; the hatched one takes the same
+             colour at .45 at the worst-case end, so the two ends of the range are
+             both marked and only one of them shouts.
+             ⚠ A ZERO-WIDTH BAND IS NOT DRAWN, which covers the three real cases:
+             a flat-damage act (min === max, no hatch at all), an act that cannot
+             reach this row (`arm` on a bare body), and a blow that overruns the
+             pool - both ends clamp to 0 and the whole bar is solid, which is the
+             true reading of *this finishes it whatever it rolls*. */
           if(dp){
-            const band=(row,frac,cut,max)=>{
-              if(!row||!max||!(cut>0)||!(frac>0))return;
-              const lo=Math.max(0,frac-cut/max);
-              const bd=document.createElement('b');bd.className='dpv';
-              bd.style.left=(100*lo).toFixed(2)+'%';
-              bd.style.width=(100*(frac-lo)).toFixed(2)+'%';
-              row.appendChild(bd);};
+            const band=(row,frac,pair,max)=>{
+              if(!row||!max||!(frac>0)||!pair)return;
+              const at=v=>Math.max(0,frac-(v>0?v:0)/max);
+              const put=(l,r,cls)=>{ if(!(r-l>0))return;
+                const bd=document.createElement('b');bd.className=cls;
+                bd.style.left=(100*l).toFixed(2)+'%';
+                bd.style.width=(100*(r-l)).toFixed(2)+'%';
+                row.appendChild(bd);};
+              put(at(pair[0]),frac,'dpv');            /* certain */
+              put(at(pair[1]),at(pair[0]),'dpv may'); /* the window above it */
+            };
             /* lastElementChild is the health row whether or not there is a shell
                above it; firstElementChild is the shell only when one was drawn. */
-            band(bars.lastElementChild,hpF,dp.hp[1],occ.hpMax);
-            if(occ.armourMax)band(bars.firstElementChild,arF,dp.arm[1],occ.armourMax);
+            band(bars.lastElementChild,hpF,dp.hp,occ.hpMax);
+            if(occ.armourMax)band(bars.firstElementChild,arF,dp.arm,occ.armourMax);
           }}
         /* ⛔ #206 - AND THE WORD IS GONE. #36 shipped it with an argument that
            was true when it was written and has been overtaken by its own
@@ -27611,6 +27678,25 @@ window.LINT=function(){
         if(on!==1)hit('map',ev,'the road through '+r.slice(-4).join('→')+' passes '+on+
           ' nodes at '+n+' out, so the stop is '+(on?'doubled':'missable'));});
     });
+  })();
+  /* ═══ 8g (#236) - THE EARLY-FIND GATE HANGS ON ONE NODE, SO CHECK THE NODE.
+     `earlyFind` refuses epic armour and a casting stave until the company is past
+     BLOOD ON THE ROAD, and it fails the same silent way every node-anchored rule in
+     this block fails: rename `clash`, delete it, or move it onto a road only some
+     companies walk, and the gate never opens - two rows leave the find pool for the
+     whole life of the project with nothing on screen to say so. The enumeration is
+     8c's, for 8c's reason. */
+  (function(){
+    const K='clash';
+    if(!NODES[K]){hit('map','earlyFind','the find gate is anchored to "'+K+'", which is not '+
+      'a node - epic armour and the stave could never be found');return;}
+    let rr=[];try{rr=allRoads('hold',QUEST_GOAL);}catch(e){}
+    if(rr.length&&rr.some(r=>r.indexOf(K)<0))
+      hit('map','earlyFind','"'+K+'" is missable - a company can reach '+QUEST_GOAL+
+        ' without walking it, and the find gate would never open');
+    if(!Object.keys(GEAR).some(k=>{const g=GEAR[k];return !g.unique&&
+        ((g.slot==='armour'&&g.rarity==='epic')||g.spellRange);}))
+      hit('map','earlyFind','the gate holds nothing findable back - the rule is dead code');
   })();
   /* ═══ 8b — THE GRAPH ITSELF (backlog #6) ═══════════════════════════════
      The map is hand-placed data, and hand-placed data rots. These are the
@@ -33135,10 +33221,31 @@ function tipFor(key,p,foot){
      with no wearer at all" is the only thing that tells the two apart, and it
      is now the SAME sentence `gearLine` prints rather than a second wording
      of it. */
-  const scope=g.slot!=='trinket'?null
-    :(g.company?{t:'COMPANY RELIC',c:'#d9bd7e',
+  /* ⛔ #236 · AND IT SAYS THE TIER AND THE SLOT, BECAUSE THIS BOX WAS THE ONE
+     SURFACE THAT SAID NEITHER
+     (User, 2026-08-22: *"in inventry - write rarity of artifct on hover. And also
+     in hover wher it belongs (armor, main, two handed. etc)"*, with the stash's own
+     row and its hover side by side in the shot.)
+
+     ⛑ THE ROW UNDER THE CURSOR ALREADY SAID BOTH AND THE CARD IT OPENED SAID
+     NEITHER, which is what makes this a defect rather than an addition: `.id` on a
+     stash row prints `ARMOUR · stops 12` and #234 put the tier into the NAME's
+     colour, so a hover was a step DOWN in information from the thing it was
+     explaining. The hover is also the only one of the five gear surfaces a player
+     reaches from the shop and from the aftermath, where there is no row to read.
+     ⛔ ONE LINE AND NOT TWO, AND IT IS THE SCOPE LINE IT REPLACES. A trinket's
+     COMPANY RELIC / PERSONAL AMULET is already the answer to *where does this
+     belong* - printing TRINKET above it would be the same fact twice, which is
+     `.claude/rules/event-cards.md`'s one sentence arriving on a tooltip.
+     ⚠ `hands===2` IS PART OF WHERE IT BELONGS AND THE USER NAMED IT. It is the
+     one property that decides whether taking this thing costs you the off-hand,
+     and it was on no surface at all: the stash row prints the slot alone.
+     ⚠ THE TIER IS `rarityTag`, THE ONE RENDERER (#197), so the word and the
+     colour cannot drift from the five places that already print them. */
+  const scope=g.company?{t:'COMPANY RELIC',c:'#d9bd7e',
         d:'Works from the baggage. Nobody has to wear it.'}
-      :{t:'PERSONAL AMULET',c:'#c2477f',d:''});
+    :g.slot==='trinket'?{t:'PERSONAL AMULET',c:'#c2477f',d:''}
+    :{t:g.slot.toUpperCase()+(g.hands===2?' · TWO HANDS':''),c:'#8a7449',d:''};
   /* every line answers "and what does that mean for me" — the raw token is
      kept in brackets for anybody who wants it, never on its own */
   const rows=[];
@@ -33169,8 +33276,9 @@ function tipFor(key,p,foot){
   let html='<div style="font-family:var(--display);font-size:var(--fs5);color:var(--g4);'+
     'margin-bottom:4px;display:flex;align-items:center;gap:var(--p3)">'+
     (tipArt||(g.g?g.g+' ':''))+'<span>'+rarityName(key)+'</span></div>';
-  if(scope)html+='<div style="font-family:var(--mono);font-size:var(--fs1);letter-spacing:.12em;'+
-    'color:'+scope.c+';margin-bottom:4px">'+scope.t+'</div>';
+  html+='<div style="font-family:var(--mono);font-size:var(--fs1);letter-spacing:.12em;'+
+    'margin-bottom:4px">'+rarityTag(key)+
+    '<span style="color:'+scope.c+'"> \u00b7 '+scope.t+'</span></div>';
   if(rows.length)html+='<div style="font-size:var(--fs3);color:#e0d3b4;margin-bottom:5px">'+
     rows.map(r=>'• '+r).join('<br>')+'</div>';
   if(scope&&scope.d)html+='<div style="font-size:var(--fs3);color:#a8b5b3;margin-bottom:4px">'+
@@ -40620,6 +40728,39 @@ function weaponAdvance(k){
 /* `slot` and `loose` are the two things the caller loosens when a pool comes
    back empty. `loose` drops BOTH the duplicate guard and the advance test,
    because they are the same idea (this is not new to you) wearing two names. */
+/* ═══ ⛔ #236 · THE OPENING MAY NOT HAND YOU THE THING THE ACT IS ABOUT ═══
+   (User, 2026-08-22: *"dont give epic armor or staff after first 2 battles (until
+   blood on the road, on it also don`t give). But you can give after"*.)
+
+   #227 raised the find rate and opened the armour slot, and this is its bill: at
+   `FIND_ODDS.battle.epic` = .12 a company can be wearing FOUNDRY PLATE - 96 armour,
+   the best shell in the act - out of the second fight it ever has, and the whole
+   clarity pass is about the first fifteen minutes not being a wall. The same roll
+   hands a WORKING STAVE to a company that has one, because `loose` drops the
+   duplicate guard when a pool empties.
+
+   ⛔ A NODE AND NEVER A FIGHT COUNT, WHICH IS `armourWhere`'s LESSON AND #71's.
+   The ask says *"first 2 battles"* and then names the beat it actually means; a rule
+   phrased against progress breaks silently the day the map is reordered, and this
+   file has shipped that once. `clash` is BLOOD ON THE ROAD and it is on every road
+   out of the tavern, so the gate cannot stick shut - LINT 8g asserts exactly that
+   rather than leaving it as a thing somebody checked in August.
+   ⚠ `G.at!=='clash'` IS THE SECOND HALF AND THE ASK IS EXPLICIT ABOUT IT
+   (*"on it also don`t give"*). `G.visited[k]` is set ON ARRIVAL, one line before the
+   node's card is dealt (#212), so the fight's own aftermath rolls with `visited.clash`
+   already true. Standing on it is what says *not yet*.
+   ⛔ AND BOTH HALVES ARE DERIVED OFF THE ROWS, NOT A LIST OF KEYS. Epic armour is
+   `slot==='armour'` at the top tier - two rows today, and an epic armour written next
+   month is covered untaught - and a stave is `spellRange`, the property that makes it
+   one. This is #137's rule; a hand-written `{plate:1,ogrescale:1,rod:1}` is the shape
+   that goes stale on the next row somebody adds.
+   ⚠ IT IS ABOVE `loose` ON PURPOSE. The two things `loose` drops are both about
+   *what this company already has*; this one is about WHEN, and no emptied pool is a
+   reason to hand over the plate three fights early. Two or three keys out of 51
+   cannot empty the pool anyway, and `rollFind` still steps down a tier under it. */
+const earlyFind=k=>{const g=GEAR[k];
+  if(G.visited&&G.visited['clash']&&G.at!=='clash')return false;
+  return (g.slot==='armour'&&g.rarity==='epic')||!!g.spellRange;};
 function findPool(tier,slot,loose){
   const races={};(G.party||[]).forEach(p=>{races[p.race]=1;});
   const own=loose?{}:ownedKeys();
@@ -40628,6 +40769,7 @@ function findPool(tier,slot,loose){
     if(g.size&&g.size!=='any'&&!races[g.size])return false;
     if(slot&&g.slot!==slot)return false;
     if(own[k])return false;
+    if(earlyFind(k))return false;
     if(!loose&&g.slot==='main'&&!weaponAdvance(k))return false;
     return true;});
 }

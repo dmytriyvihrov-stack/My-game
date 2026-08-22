@@ -42,11 +42,15 @@
   handOn(K(f.col, f.row));
   o.preview = dmgPreview(u, f, mainAtk(u));
   o.bandsOnTarget = [].slice.call(GT.hexOf(f).querySelectorAll('.ubars b.dpv')).map(b => ({
-    row: b.parentElement.className || 'hp', display: cs(b).display,
+    row: b.parentElement.className || 'hp', cls: b.className, display: cs(b).display,
     left: b.style.left, width: b.style.width,
     bg: cs(b).backgroundColor, edge: cs(b).borderLeftColor }));
-  o.hdmg = [].slice.call(GT.hexOf(f).querySelectorAll('.hdmg'))
-    .map(e => e.textContent + ' ' + cs(e).display);
+  /* #236 - the damage figure is off the body for good. This must stay 0. */
+  o.hdmg = document.querySelectorAll('#bGrid .hdmg').length;
+  /* #236 - and the odds took its slot: y in DESIGN px off the hex's own top */
+  o.oddsY = (() => { const e = GT.hexOf(f).querySelector('.hodds'); if (!e) return null;
+    const u = GT.hexUnit(), h = GT.hexOf(f).getBoundingClientRect();
+    return +((e.getBoundingClientRect().top - h.top) / u).toFixed(1); })();
   o.bandsShownAfter = GT.shown('#bGrid .ubars b.dpv').length;
 
   /* the parting swing: at rest, then with the pointer on ground it is paid for */

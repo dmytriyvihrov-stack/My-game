@@ -63,6 +63,7 @@ section used to carry each entry in full, which made the work file a second chan
 
 | | the subtraction | log |
 |---|---|---|
+| **#236** *(08-22)* | **the damage figure comes off the body and the bar learns to say *maybe***: `.hdmg` deleted, `.hodds` into its slot on every foe in reach (y 6.5 -> 16.5, chest not head) · the preview band split SOLID minimum + HATCHED window, which is #234's own rejected min/max split becoming necessary the moment ask 1 deleted the figure that carried the pair · the gear hover says `TIER · WHERE IT BELONGS` (TWO HANDS included) · no epic armour and no stave FOUND until past Blood on the Road, derived off the rows and anchored to a node with `LINT 8g` · Marrow's off hand starts empty | 8f.259 |
 | **#235** *(08-22)* | **the working file stops carrying 27 MB of base64**: 30.2 MB -> **3.4 MB**, because 88% of it was two GENERATED art blocks nobody reads and everything paid for - every page load, every grep, every scripted edit. They are `art/embed/art_data.js` and `art/embed/j_pack.js` now, tracked, loaded by two classic script tags, and `build_site.ps1` pours them back inline · ⛑ **nothing about what ships changes**: `index.html`, the player build and the itch zip are still ONE self-contained file, measured at **350 `data:image` payloads against the shipped page's 350** · ⛑ **not one line of game code changed**, because a top-level `const` in a classic script is a global lexical binding · `inject.ps1` and `inject_j_pack.ps1` stop touching the prototype, which retires the claim gate, the whole-file-rewrite hazard and #209's reason for a second injector · ⚠ `art/embed/` is tracked and must stay tracked, or a fresh desk gets a game with no art · ⛔ two self-inflicted bugs, both syntax inside a comment that ends the comment, and **the gate grew to fit**: `gt.py check` follows `<script src>` and strips HTML comments, proved by making it fire | 8f.258 |
 | **#234** *(08-22)* | **the board answers again, the blow is drawn on the bar it comes out of, and the sheet's header pays for its own air** *(seventeen asks in two messages)*: the hit % back on whatever is already in reach (`offA`, i.e. #91's fall-through inside #231's gate - the ask's own *"without movment"* is what overrules it, and `udist` was always measured from the hex you stand on) · **the damage drawn on the armour and health bars**, `dp.arm` and `dp.hp`, one body at a time, ⛔ **lighting the doomed run rather than darkening it** because the empty track is already dark and the first cut read as a bar that was that short · the banner 3px further right (an EDGE anchor, so the overhang stays constant at every cut) · **SHAKEN flies again** at .34 against Breaking .55 and Broken 1 · **the hand on you breathes red while a step is weighed**, `actorpulse` in red on the same `aiming` gate the price rides · ⚑ **ask 6 was already true and is now measured** (foe's turn and mid-walk: 0 aiming, 0 zodds, 0 zhit, 0 odds, 0 bands; `paintHand()` runs at the foot of `render()`) · a forced-movement verb names itself over the body that swung it · the chase's ratkin swaps the DOCK HOOK for a SHORT KNIFE (the Snare keeps the only pole) · **Skree carries the bow again**, three fields and no art, #201's own bill paid · the brawl's fifth man holds the doorway one round (`holdTill`, `!engaged` so he still swings back) · the Captain's trait is **Experienced**, +1 STR +1 MOR, condition dropped, with `authored:true` as the second sanctioned exemption beside `foeOnly` · CUT A GEM hidden on an empty pouch · ⛔ **the sheet's header paid for itself**: `ON THE FIELD` measured **85.2px** of vertical caption against the 58px token it labelled and was what made the row 95.2 tall, so deleting it bought the portrait 104x80 (store 208x160) AND `#iChar{gap}` `--p2`->`--p3`; against a `git show HEAD:` browser driven to the same screen, **all sixteen body-and-state cases have more slack than HEAD and the two that scrolled 15px now scroll 5** · every item name in its tier's colour through one `rarityName()` at five surfaces · the three weakest BRAINS to 18/21/24 wide, because a height-normalised family let its width cap make the four weakest pictures the four widest | 8f.257 |
 | **#233** *(08-22)* | **the new world map is canon and seven portraits are repainted**: ⛑ **the map is 2560x1276, a 1:1 match to the 2x canvas store**, so the NEAR stop is a downscale for the first time - #223 recorded that the blur *"only new art moves"* · same aspect to four places, no node moved, `build_assets.ps1` unchanged (it embeds verbatim and reads its key out of the prototype) · **the dim was re-measured**: 22 / 46 / 84 spread 62 against #223's 27 / 61 / 96, darker at every quantile and closer to the median 48 the plates were designed for, so the filter stands · seven portraits to their handoff's hard guards, **POR-07/08/10/R05 byte-identical**, all 220x220, and **12 of 12 embedded payloads byte-compared to disk** | 8f.256 |
@@ -559,10 +560,12 @@ neither would have been seen by reading the diff.
   something it never read (the seasoned six price at 202 against the six-body Snare's 199, the fight
   #160 measured at 45% win), so it is the MULTIPLIERS that want refining against real win rates when
   the balancing pass starts, not the pricing under them.
-- **#222: the `2>$null` sweep was never run.** #222 fixed the one call site that was reported, and by
-  its own argument every other redirection of a native command's stderr under
-  `$ErrorActionPreference='Stop'` is a throw waiting for the right working copy. Nobody has grepped
-  `tools\` for the rest.
+- ~~**#222: the `2>$null` sweep was never run.**~~ ✅ **CASHED BY #226 the same day**, and this row
+  outlived it by a session: *"#222's own declared sweep was run: three live `2>$null` sites, proved by
+  making them fire, plus a guard `deploy.ps1` was missing - an unreadable branch silently PASSED the
+  check that keeps a work branch off the live link."* ⛑ **The lesson is the one this whole section is
+  about**: a remainder can be cashed by the NEXT entry without anybody going back to strike the row, so
+  re-read a parked item before scheduling work against it (#133's own finding, twice now).
 - **#214's art remainder is now HALF closed, measured in the running build on 2026-08-21.** Its row
   reads *"18 of 40 `EVENTS` cards, plus every one of the 19 `CAMPS` incidents and all 10 `VIGNETTES`"*
   fall back to the letterbox. **All 40 `EVENTS` now have a `JSTAGE` key and there are 0 orphans**, so
@@ -583,6 +586,17 @@ neither would have been seen by reading the diff.
   choice and shipped it without a number: nobody knows what a free scrum-lock beside an archer is
   worth. ⚠ It wants `ARENA.match()` or the eight-fight regression with and without the trinket
   fielded, not an argument.
+
+- **#236: the opening fight stalled once, and thirty more runs could not reproduce it.** The
+  eight-fight regression returned `clash: 1rd DRAW/STALL HIT GUARD` on its first pass of the session.
+  Re-run n=15 on that build and n=15 on a `git show HEAD:` baseline driven in a second browser: **30/30
+  clean, mean 4.2 rounds, no guard**. So it is not a regression and it is not that entry's - and it is
+  not nothing either. ⛔ **A one-round draw in BLOOD ON THE ROAD is a soft lock in the fourth node of
+  the game**, which is the single worst place on the map to hold a rare one. ⚡ What is known: the row
+  read `1rd`, i.e. the guard fired on the FIRST round, and `clash` is the only fight in the act with
+  allied NPCs the player does not command. ⚠ It wants a seeded loop over that one fight at n>=200 with
+  `B.order` dumped on the failing run, not an argument; `runFight` already returns `guard`, so the
+  instrument exists.
 
 - **878 em dashes survive in the DOCS**, against a standing hard rule of none anywhere. #199 swept
   the game and stopped there, correctly: it needed a lexer to tell a player-facing string from a

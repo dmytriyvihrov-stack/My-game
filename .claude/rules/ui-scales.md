@@ -66,8 +66,9 @@ The smallest of those, at the stop that shows the most ground, is three points O
 ⛔ **SO THE STEP IS FOR A MAGNIFIED SURFACE AND FOR NOTHING ELSE, AND §5's PROBE IS WHAT KEEPS
 THAT TRUE.** The check divides by nothing and multiplies by the element's own transform chain
 measured against `#stage`, so on every unscaled screen it reads exactly what it read before and a
-`--fs0` there is reported as the bug it would be. Two readers today, both on a hex. **If a third
-appears somewhere the camera does not magnify, the probe is what says so, not this paragraph.**
+`--fs0` there is reported as the bug it would be. **ONE reader today, `.hodds`, on a hex** - it was
+two until #236 deleted `.hdmg` and moved the odds into its slot. **If a second appears somewhere the
+camera does not magnify, the probe is what says so, not this paragraph.**
 
 ⚠ **AND #111's OLD RULING IS BACK IN FORCE, NOT OVERTURNED.** *"If the pair shouts again at the
 close stop, the answer is dimmer or narrower, never smaller"* - that is still the answer, and there
@@ -277,7 +278,7 @@ In the running build, per screen:
 ```js
 /* nothing under the floor. Run it on EVERY screen, not the one that is open.
    ⛔ #231 - IT MEASURES WHAT THE EYE GETS, NOT WHAT THE DECLARATION SAYS. `#bGrid` is inside a
-   camera; a raw `fontSize<10` reports its two --fs0 figures as violations while they render at
+   camera; a raw `fontSize<10` reports its --fs0 figure as a violation while it renders at
    13-20 real px, and would go on passing a 10px label on a surface scaled DOWN. The scale is
    taken against #stage, so every unscaled screen reads exactly what it always did.
    ⚠ THREE FALSE POSITIVES WERE FOUND BUILDING IT AND ALL THREE ARE IN THE CODE BELOW:
