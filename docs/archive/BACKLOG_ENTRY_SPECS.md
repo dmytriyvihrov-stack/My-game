@@ -4357,3 +4357,218 @@ profiles (one caller when wanted - the profiles are AIP rows; it waits on the pr
 mockup, per the standing gate) · the band multipliers, now that the tool measures them against
 win rates on demand (#216's named remainder) · the fifth-body and level non-monotonicity findings
 (see the changelog row).
+
+
+---
+
+## 238 - The wagon comes on the road: one card from the bar, five upgrades paid in the run's own salvage, and a mule only the road can replace
+
+> 🗺 **THE ROAD BAR** (a chip right of the chest) · 🎒 **THE COMPANY SHEET** (a button in the header)
+> · 🛒 **a `#wDlg` column card** on the village/shop shape
+> **SYSTEMS** `FITTINGS{}` + `hasFit()` (the four fittings, every one already wired in-run:
+> `feastCost`, the +3 at a stop, the bed's mend, `moraleMax+10`, `G.aidLeft`) · `PARTYCAP` /
+> `PARTYBASE` / `LEGACY.yard` (seats) · `drawVillage`'s `wag` row (the wheelwright, -7 ▤, +1 seat
+> permanent) · `openCampScreen` (the between-runs wagon: the travel-forge, `LEGACY.built`,
+> `LEGACY.bank`) · `worldTick` (the bar) · `saveRun`/`loadRun` (`partyCap` rides the save) ·
+> `canAfford`/`needTag`/`resGlyphs` (the village's own row receipt) · `G.camp.salvage`/`G.camp.gems`
+> **RELATED** concept §11 (The Wagon: "three slots, four fittings", the travel-forge, the cousin's
+> cart) · [`09_SETTLEMENTS_AND_LEGACY.md`](../09_SETTLEMENTS_AND_LEGACY.md) (*"materials get spent
+> NOW, inside the story"*, and *"carrying full built power forward produces the standard
+> metaprogression failure"*) · #152 (payday, the other thing the chest is for) · #197 (*"a door the
+> player cannot afford has to say so BEFORE it is pressed"*, `no room left`) · #220/#226 (the bar's
+> left group, the seats glyph) · #223 (the 86px MENU reservation the chip sits against) ·
+> `.claude/rules/event-cards.md` (the receipt is derived, the sub-line is cost plus one clause)
+> **STATE** 📐 **PROPOSED 2026-08-22, picture taken in the running build, waiting for three rulings
+> (below). Nothing in the prototype has changed.** The mock probes and the four captures are
+> `shots/238_wagon_mock_*.{js,png}`; the salvage measurement is `shots/238_salvage_curve.js`.
+
+**The ask, verbatim (2026-08-22, four messages):**
+
+> *"Я хочу добавить механику фургона в систему, доступную из любого места. По примеру батл
+> брозерс. Хочу фургон, в котором до 5 апрейгдов можно сделать. И что-то выковать - но это прям
+> ниже по ним. По апрейгдам - апргрейд вместительности можно сделать несколько раз. Можно это
+> назвать корпус/основа. Первый - чтобы игрок смог сделать впервой половине. Второй, ориентировочно
+> перед последним боем. И третий - не успел. с каждым новым уровнем увеличивается стоимость.
+> Остальные апрейгды можна разовые."*
+>
+> *"кнопку добавить в меню на глобал меп - справа от ресурсов. И так-же куда-то добавить эту кнопку
+> (может тоже в хедер) в меню инвенторя"*
+>
+> *"Я думаю это кенди - т.к. игрок видит последствия решений быстро и видит прогрессию силы отряда
+> в общем, а не конкретного человека. Хочу, так-же, что возле этой повозки была опция животоного,
+> которая тянет. Потом его менять и это тоже даст бонусы. Но его сменить/улучшить можно токо через
+> ивенты"*
+>
+> *"ну и вообще, что думаешь о таком решении? наскоко оно ложится в цикл мой игровой по твоему
+> мнению и в концепт?"*
+
+**The one-sentence version.** Salvage finally has somewhere to go while the run is still happening:
+a wagon card one click from the road bar or the sheet, with one repeatable track (the FRAME: seats)
+and four one-time fittings, paid in the run's own salvage and gone with the run; a mule that only a
+road event can replace; the forge later.
+
+### Why it fits, and the one number that says so
+
+**Today salvage has no use inside the run.** `G.camp.salvage` is collected on every road card and
+every field, the chest hover says it is *"for fitting out the wagon, and it outlives the run"*, and
+the only place it is ever spent is the between-runs screen (`openCampScreen`) and one village row.
+Dima's 2026-08-16 run sat on **▤0** the whole way and read it as a promise about later. So every
+`+N SALVAGE` chip on a road card is a receipt for nothing the player will see this run. This entry
+is the `09_SETTLEMENTS` thesis (*materials get spent NOW*) landing on the smallest possible surface:
+the wagon the concept already has, moved from between the runs to inside one.
+
+**It is a MERGE as much as an addition**, which is how it squares with the clarity pass: the village
+wheelwright row (-7 ▤, +1 seat, permanent) and the between-runs BOLTED IN station are two places
+that sell the same wagon, and both fold into this card. The five upgrades are not new mechanics:
+**every one of the four fittings is already wired in-run** (`feastCost`, the stop's +3, the bed's
+half-mend on a leg, `moraleMax+10`, `G.aidLeft`) and the frame is `PARTYCAP`, which the wheelwright
+has moved since playtest #5. The build is a screen, a save field and `hasFit` reading a different
+array. Nothing in a fight changes.
+
+**And "candy" is the right word, measurably**: the seats chip `⛊ 8/13` is on the bar the player
+crosses most, and the frame moves its denominator. Company-level progression is the thing the run
+does not show today: XP, levels and perks are all per body.
+
+### The salvage curve, measured on the shipped map (2026-08-22)
+
+`shots/238_salvage_curve.js`, run in the build. A fight's haul is ONE `LOOT` row at random, so a
+battle door is worth the MEAN of its table; an event door its own `fx.salvage` plus that. **ex** =
+a player who takes salvage when it is offered (the average over paying doors); **mx** = the
+greediest door and the luckiest row, every time. Cumulative, with the day off `EDGES`. Start: ▤0.
+
+| | short road (21 nodes, 25 days) | long road (23 nodes, 23 days) |
+|---|---|---|
+| the clash, d5 | 2 / 7 | 2 / 7 |
+| the brigands, d7 | 4 / 13 | 4 / 13 |
+| the first muster, d10 | 6 / 18 | 6 / 18 |
+| **the Black Fen, d12 (mid-run)** | **12 / 39** | **12 / 39** |
+| Coldharrow, d13 | 12 / 39 | 12 / 39 |
+| the spring, d18-19 | 21 / 48 | 18 / 51 |
+| **the Door-Shrine, the last fire before the Snare** | **30 / 57** (d23) | **34 / 77** (d21) |
+| the Snare | the last fight; its own haul is after it | |
+
+Gems: **0 to 4 in a run**, from three places (the Fen's light 2 on one row in three, the sunken
+wain's strongbox 2, the collector), and two road doors already ask `need:{gems:2}`. A gem fitting is
+therefore a real trade against a road door, which is correct and is kept.
+
+### The rules
+
+**A. Where it opens.** Two doors, one card, one host.
+
+- **The bar**: a chip after `#wRes`, in `#wBar`'s own 8px gap, before the 86px MENU reservation.
+  Measured on the mock: **x 1156..1194, 38 wide, 30 tall (`--barChip`)**, 521px of air between the
+  left group and the chest at four bodies. A cart glyph in `SACK_SVG`'s palette (drawn in
+  `238_wagon_mock_road.js`), `.cchip click`, hover *"THE WAGON - what is bolted in, what the next
+  thing costs, and who pulls it"*. ⚠ **Measure the bar at a FULL company before shipping** (13-19
+  seats, UNPAID, a pet, relics): the left group grows and nothing today stops it meeting the chest.
+- **The sheet**: a `THE WAGON` button in `#iBar` before BACK TO THE ROAD, same rule as `#iBar
+  button` (measured 103x25 at x 1001, 12px from BACK). Pressing it does what BACK does and then
+  opens the card: the sheet has no dialog layer and `#wDlg` is the one host; closing the wagon
+  leaves you on the road, which is where BACK would have left you.
+- **A `!` badge on the chip** (the kit chip's own `.cbadge`) while something un-bought is
+  affordable and the card has not been opened since the chest last rose. `G.wagonNew` is set where
+  `pay()` raises salvage or gems and cleared when the card opens. ⛔ No badge for a thing you cannot
+  afford: a `!` that leads to a greyed row is the tease #197's rule forbids.
+- **It is there from the first screen.** Not delayed, not hidden until the first salvage: a
+  built-and-invisible feature is reported as missing (#156), and the chest hover already names the
+  wagon. The card's first two lines carry the explanation.
+
+**B. The card.** A `#wDlg` 620 column on `drawVillage`'s shape: `<h3>THE WAGON</h3>`, two lines of
+prose, a status line, rows built by the village's own renderer (`<b>name</b><i>receipt</i>`,
+`resGlyphs`, `needTag`, greyed at `.38` when it cannot be paid). ⛔ **No painting slot.** Measured:
+with `artTag()` the card is **658 into a 684 window and the prose scrolls by 85px**; without, **569**,
+every row visible. The shop and the muster wall, the other two price lists in the column, carry no
+painting either; #209's own line is that the stage is for prose and doors and the column for *"a
+wall of recruits or a row of prices"*. If a wagon painting is wanted later, there is 115px of slack,
+not 212.
+
+| row | cost | what it does | how often |
+|---|---|---|---|
+| **▤ THE FRAME** I · II · III | **6 · 12 · 24 ▤** | **+2 seats a tier: 13 → 15 → 17 → 19.** The row says `I of III` and the NEXT price; the hover shows the ladder | three times, rising |
+| ▤ THE BED | 8 ▤ | the worst-hurt mends half the gap on every leg (`hasFit('bed')`, exists) | once |
+| ✚ THE MEDICINE CHEST | 5 ▤ 2 ◈ | one scar off one person, once a run (`G.aidLeft`, exists) | once |
+| ♨ THE COOK-FIRE | 8 ▤ | +3 morale at every stop, a meal costs one provision less (exists) | once |
+| ✧ THE RELIQUARY | 6 ▤ 2 ◈ | +10 maximum morale for everybody, every fight (exists) | once |
+| THE MULE · pulls | - | **a plate, not a door**: who pulls, its one line, *changes only on the road* | - |
+| Back to the road | - | nothing is spent | |
+
+The four fitting prices are the shipped `FITTINGS{}` numbers, unchanged; their long `d` texts move to
+the row's hover, and the row's sub-line is the cost plus one clause, which is `event-cards.md`'s
+rule for a sub-line. **`FIT_SLOTS` is retired: the money is the cap.** Everything on the card sums
+to **69 ▤ + 4 ◈** against a run's 30-34 expected, so a company gets under half of it and the one it
+leaves out is still the one it decided to keep suffering. Sum of the frame alone: 42.
+
+**Why those three frame prices, against the table above:**
+
+| | needs | lands, on *ex* | lands, on *mx* |
+|---|---|---|---|
+| FRAME I | 6 | **the brigands to the first muster, d7-10** (*"в первой половине"*) | d5 |
+| FRAME II | 18 in frame | **the Door-Shrine, d21-23**, if at most one fitting was bought first (*"перед последним боем"*) | the Fen, d12 |
+| FRAME III | 42 in frame | **never on a normal run** (30-34 at the last fire) (*"не успел"*) | the shrine, and only by a company that bought nothing else and drew the best row in every field |
+
+⚑ The third tier exists to be SEEN: its price sits on the row from the first screen, so the
+frugal company that skips the cook-fire and the chest can reach it, and that is a choice rather
+than a tease.
+
+**C. It lives and dies with the run.** `G.wagon = {frame:0, built:[], beast:'mule'}` rides
+`saveRun`. `PARTYCAP = PARTYBASE + (LEGACY.yard||0) + 2 * G.wagon.frame`, derived at load (the saved
+`partyCap` stays for old saves). `hasFit(k)` reads `G.wagon.built`, so all five in-run readers
+follow in one line. What it takes away, which the gate asks for:
+
+- **the village `wag` row goes** (the frame is reachable from the village too, and one wagon is sold
+  in one place). `LEGACY.yard` stays honoured at boot for the testers who already paid for it, and
+  nothing writes to it any more;
+- **the between-runs BOLTED IN station goes** from `openCampScreen`; the screen keeps the
+  travel-forge, the bank and the roster. `LEGACY.built` grants nothing any more (three testers,
+  accepted; say so in WHAT_TO_TEST). The bank keeps only the forge's purpose;
+- the chest hover's *"it outlives the run"* and *"between runs - beds, chests, fires"* become
+  untrue and are rewritten: *"fitting out the wagon; what is left over banks for the forge"*.
+
+**D. The mule.** Canon already: *"one mule that has outlived several owners"* (the camp screen's
+first line). It is a plate on the card with the animal's name, one line, and *"changes only on the
+road"*. ⛔ It is NOT a greyed door: grey on this card means *cannot afford*, and a plate that cannot
+be pressed for a different reason must not wear the same grey (#102's one-glyph-one-unit rule; the
+mock shows it as a greyed row and that is the thing to change). **Its bonus is a ROAD fact and
+never a fight number.** This entry ships the plate, `G.wagon.beast` and the rule; the swaps are
+road doors (`fx:{beast:'ox'}`) authored in a follow-up entry, one card each. The candidate ladder,
+for that entry:
+
+| | where the road offers it | what it changes |
+|---|---|---|
+| the mule | you start with it | nothing, and it never dies |
+| an ox | THE SUNKEN WAIN (*"The oxen are gone"* today: a third door finds one) | **+3 ▤ on every field you pick over**: it hauls what the company would have left. The only bonus that feeds the wagon itself |
+| a horse | the carter's, after THE CHASE | **one road a run is walked in a day less**, picked at a fork. The only bonus that touches time, and the payday clock with it |
+
+**E. The forge: not this entry.** `CRAFT` and the travel-forge stay between runs. An in-run forge
+competes with the armourer for the same decision and needs its own picture; it is the *"прям ниже"*
+and it waits below this.
+
+### The three rulings that are yours
+
+1. **Per-run (recommended) or permanent.** Your *"третий - не успел"* is a per-run sentence, and
+   `09_SETTLEMENTS` already calls carried-forward built power the standard metaprogression failure;
+   but playtest #5's wheelwright was permanent on your word (*"it was a permanent purchase, worked
+   great"*). Per-run is what is specced above. Permanent means the frame resets nothing and the third
+   tier is a second-run purchase instead of a stretch.
+2. **+2 seats a tier (recommended) or +1.** A human takes 2 and an ogre 3, so +1 often buys nothing
+   visible at the muster; +2 is *a human or two ratkin* at I, *an ogre* at II.
+3. **The mule's ladder**: the ox and the horse above, or something else. Nothing is built for it
+   until you pick; the plate ships either way.
+
+### Build, in order, and the gates
+
+1. `WAGON{}` beside `FITTINGS{}` (the frame's three prices and seat steps), `G.wagon`, the save
+   round trip, `PARTYCAP` derived, `hasFit` re-pointed. `gt.py check`.
+2. `openWagon()` on the village renderer; the chip in `worldTick`; the sheet button; the badge.
+3. The three deletions in C, and the hover rewrite.
+4. Gates: `LINT()` 0 · `GT.floor()` `[]` on the card, the bar and the sheet · `GT.clip()` unchanged
+   (`#wMap` only; the mock measured exactly that) · the card **fits with every row visible** · the
+   bar at a full company, measured · the eight fights (`arena regress.js`), which this must not
+   touch · a save written with `G.wagon`, reloaded, `PARTYCAP` equal.
+5. `WHAT_TO_TEST.md` the same session: three steps to the card, what each row should do, and the
+   sentence that the old permanent fittings no longer apply.
+
+**What refines later:** the mule's swap doors · an in-run forge · the frame's prices against a
+measured run (the curve above is the table's arithmetic, not a played run; `tools/playtest/run.ps1
+-Who all` is the instrument) · whether the badge should also light for a ROW that just became
+affordable without the chest moving (a gem found, a fitting bought making room).
