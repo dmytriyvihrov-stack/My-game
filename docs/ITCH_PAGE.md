@@ -32,7 +32,7 @@
 | **Tags** | tactical, turn-based, roguelike, hex, dark-fantasy, party-based, singleplayer, story-rich, low-magic, mercenary |
 | **Community** | Comments on |
 | **Banner** *(Edit theme)* | **`marketing\itch\rabblebound-itch-banner-1920x800.jpg`**, 1920x800. The engraved key art with the cover's own RABBLEBOUND lifted onto it. itch asks for 960x400 and this is that at 2x, so it stays sharp on a retina screen. |
-| **Background** *(Edit theme)* | **`marketing\itch\rabblebound-itch-background-1920x1080.jpg`**, 1920x1080, 72 KB. The same painting blurred, desaturated and pushed most of the way to black. Set it to **cover / no repeat**, and keep the page's own text panel dark. |
+| **Background** *(Edit theme)* | **`marketing\itch\rabblebound-itch-background-1920x1080.jpg`**, 1920x1080, 65 KB. Set it to **cover / no repeat**, and keep the page's own text panel dark. It is a copy of the **bloom** variant; four others sit beside it as `rabblebound-itch-bg-<name>-1920x1080.jpg` and swapping is one file copy. |
 
 > ⛔ **1280 x 720 IS NOT A PREFERENCE, IT IS THE TYPE FLOOR.** The whole game is one 1280x720 stage
 > and `fit()` scales it as a unit, so the embed size multiplies every glyph in the build: measured,
@@ -185,6 +185,23 @@ rather than left loose. **Look in `marketing\` before making a marketing asset.*
 `marketing\itch\make_page_art.py` reads the two paintings that already exist - the engraved key art
 at `art\src\stage-2\key\KEY-01D_main-menu-engraved-slashlight.png` and the cover source that
 carries the wordmark - and writes both files in one run. Re-run it after either painting changes.
+
+⚑ **THE BACKGROUND IS CUT FROM AN EVENT PAINTING, AND THERE ARE FIVE OF THEM.**
+`marketing\itch\make_page_backgrounds.py` builds the lot: **bloom** (UNDER THE BLOOM, shipped),
+**keyart** (the menu painting, i.e. the banner's own picture), **fallingstar**, **redlights** and
+**worldmap**. Swapping is a copy over `rabblebound-itch-background-1920x1080.jpg`. Bloom ships
+because its magenta is the banner's palette without being the banner's picture.
+
+⛔ **A BACKGROUND IS JUDGED UNDER THE CONTENT COLUMN AND NEVER ON ITS OWN**, which is why the script
+also writes `bg_variants_sheet.png`: itch's centre column and the 1280x720 game frame, drawn over
+every candidate. **On a wide monitor the only part of a background anybody sees is the two side
+margins**, so a painting whose subject is dead centre contributes nothing.
+
+⚠ **AND THE SAME TREATMENT IS WRONG FOR A DARK SOURCE AND A LIGHT ONE, MEASURED BOTH WAYS.** THE RED
+LIGHTS is already near black, so the standard push-to-black returned **an empty rectangle**: it takes
+a brightness LIFT (x1.7) and almost no sink. The illustrated world map is a light painting, and at
+the same sink it lit the whole page up and fought the text: it takes 0.74 sink and its colour cut to
+0.42. **A single "darken it" number cannot serve both, so the table carries one per source.**
 
 ⛔ **THE WORDMARK IS KEYED OUT OF THE COVER PAINTING, AND THE OBVIOUS WAY TO CLEAN THE KEY DESTROYS
 IT.** The letters are bone-coloured stone with dark speckles baked into them, so a luminance
