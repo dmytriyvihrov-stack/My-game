@@ -26,6 +26,38 @@
 
 ---
 
+## \u2694 THE BOARD SAYS ONE NUMBER PER BODY, AND THE BAR SAYS *AT LEAST THIS MUCH*  *(#236 \u00b7 2026-08-22 \u00b7 build log 8f.259)*
+
+**Reach it in three steps:** start any fight \u2192 pick a skill (or just hover one) \u2192 move the pointer
+across the enemies in reach.
+
+**What changed, and what should happen**
+
+- **No damage number on anybody, ever.** The red `20-29` over the body you were pointing at is gone.
+- **The % moved down into that slot and is on every foe you can reach**, over the chest instead of
+  over the head. This is your *"they look better there"* - tell me if a three-character figure ever
+  runs into the weapon badge on the right of a hex.
+- **The health bar under the body you are pointing at now shows the RANGE.** Solid = the damage you
+  are certain of (the minimum roll), with the bright line marking where the bar ends if the dice go
+  badly for you; hatched = the extra you might get, up to the maximum. If the whole bar goes solid,
+  the swing kills whatever it rolls.
+- **A bug would be:** a damage figure surviving anywhere on a body; the % sitting on the head again;
+  a hatched band on a flat-damage weapon (there is nothing to be uncertain about, so there should be
+  no hatch); or a band that reaches past the left end of the bar.
+
+**And three off the board**
+
+- **Hover any item, anywhere** - the stash, a worn slot, the shop, the aftermath. The card now opens
+  with `COMMON \u00b7 ARMOUR`, `EPIC \u00b7 MAIN \u00b7 TWO HANDS`, `RARE \u00b7 MAIN`, in the tier's own colour. It said
+  neither of those before, while the row you were hovering said both.
+- **Nothing epic in armour, and no stave, can be FOUND until you are past Blood on the Road** - and
+  not on that fight either. After it, both are back in the pool. Authored rewards are untouched: a
+  card that hands you something still hands it to you.
+- **Marrow starts with an empty off hand.** The chalk-and-cord rod is still in the game and still on
+  Coldharrow's rack at 80 crowns; he just is not holding one before anybody has asked what it does.
+
+---
+
 ## 🧰 NOTHING SHOULD LOOK DIFFERENT, AND THAT IS THE TEST  *(#235 · 2026-08-22 · build log 8f.258)*
 
 **Reach it in three steps:** open the game → play a few minutes → look at the pictures.
