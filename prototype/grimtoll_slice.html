@@ -4005,6 +4005,26 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:var(--f
 .gart{flex:0 0 60px;height:60px;display:flex;align-items:center;justify-content:center;
       font-size:var(--fs8);line-height:1;color:#a89468;background:#1d160c;border:1px solid var(--e1)}
 .choice.gitem:hover:not(:disabled) .gart{border-color:var(--e3)}
+/* #238 - the wagon's tiles: the shop's art box beside a name, a DERIVED cost
+   line and one clause, in a two-column grid inside the card's prose box; the
+   frame spans both columns. Grey here means ONE thing, cannot afford; a bought
+   tile is green-edged. Every size is a scale step; the 10px pip is geometry. */
+.wagGrid{display:grid;grid-template-columns:1fr 1fr;gap:var(--p3);margin-top:var(--p4)}
+.wtile{display:flex;align-items:flex-start;gap:var(--p4);text-align:left;padding:var(--p3) var(--p4);
+       background:#2a2114;border:1px solid var(--e2);color:var(--g4);cursor:pointer;font-family:inherit;
+       min-width:0;white-space:normal}
+.wtile.wide{grid-column:1/-1}
+.wtile:hover:not(:disabled):not(.built){background:#3a2b16;border-color:var(--g3)}
+.wtile:hover:not(:disabled):not(.built) .gart{border-color:var(--e3)}
+.wtile:disabled{opacity:.38;cursor:default}
+.wtile.built{border-color:#8ca35a;cursor:default}
+.wtile b{font-size:var(--fs5);font-weight:400;color:var(--g4)}
+.wtile i{font-family:var(--mono);font-size:var(--fs3);font-style:normal;line-height:1.35}
+.wpips{display:inline-flex;gap:3px;margin-left:var(--p3);vertical-align:middle}
+.wpip{width:10px;height:10px;border:1px solid var(--e3);background:#1d160c}
+.wpip.on{background:#c9a227;border-color:#c9a227}
+.rseg.click{cursor:pointer}
+.rseg.click:hover{border-color:var(--g3)}
 .gtx{flex:1 1 auto;display:flex;flex-direction:column;gap:2px;min-width:0}
 .gtx .gpr{color:var(--g4);letter-spacing:.04em}
 .gtx .gsay{color:#a08a5e;line-height:1.4;white-space:normal}
@@ -6290,6 +6310,8 @@ body:has(#world.on) #menuBtn{left:auto;right:10px;top:8px;bottom:auto;z-index:30
     <div id="wCompany"></div>
     <div class="sep"></div>
     <div id="wRes"></div>
+    <!-- #238 - the wagon, right of the chest: the door to the one place salvage is spent -->
+    <span class="cchip click" id="wWagon" data-w="wagon"></span>
     <!-- ⚑ #112 point 1 · THE DAY CAME UP OUT OF THE MAP ("days up").
          #106 put the plaque at the top-right edge, #107 sent it back to the
          middle, and both left it INSIDE #wMap, hanging 36px of solid box
@@ -6353,7 +6375,7 @@ body:has(#world.on) #menuBtn{left:auto;right:10px;top:8px;bottom:auto;z-index:30
        back to the generic. -->
   <div id="iBar"><h2 id="iCoName">THE COMPANY</h2>
     <span id="iNag" class="lbl" style="color:#c9a227;display:none">NEW KIT IN THE STASH - PUT IT ON SOMEBODY</span>
-    <div class="sep"></div><button id="iBack">BACK TO THE ROAD</button></div>
+    <div class="sep"></div><button id="iWagon" title="the wagon: what is bolted in, what the next thing costs, and the seats">THE WAGON</button><button id="iBack">BACK TO THE ROAD</button></div>
   <div id="iMain"><div id="iRoster"></div><div id="iChar"></div><div id="iStash"></div></div>
 </section>
 
@@ -9376,6 +9398,11 @@ const gGlyph=g=>g.g||ITEM_GLYPH[Object.keys(GEAR).find(k=>GEAR[k]===g)]||
    will draw off `rarity:` when that field exists; nothing about a tier is in
    the PNG (the task's rule 2), so re-tiering an item is a data edit. */
 const ITEM_ICON={
+  /* #238 - the wagon card's five tiles. Not GEAR keys, on purpose: `itemArt`
+     reads a key and does not care whether GEAR has the row (the same as the
+     five pre-mapped items). ITEM-57..61 are specced in art/WAGON_ART_BRIEF.md
+     and the tile shows the glyph until they land. */
+  wagon_frame:'ITEM57',wagon_bed:'ITEM58',wagon_aid:'ITEM59',wagon_fire:'ITEM60',wagon_shrine:'ITEM61',
   pilum:'ITEM01',shuriken:'ITEM02',timecube:'ITEM03',kris:'ITEM04',stoneshield:'ITEM05',
   cudgel:'ITEM06',sword:'ITEM07',shortsw:'ITEM08',spear:'ITEM09',halberd:'ITEM10',
   club:'ITEM11',maul:'ITEM12',woodstick:'ITEM13',broom:'ITEM14',knife:'ITEM15',
@@ -10714,8 +10741,25 @@ const wageOf=p=>{
    carries 15 and never more.
 
    NOTHING ELSE MAY WRITE TO PARTYCAP. Recruits, allied NPCs, the pet and the
-   cub all CONSUME room; none of them grant it. */
+   cub all CONSUME room; none of them grant it.
+   ⚠ #238 - AND THE ONE IN-RUN WRITER IS THE FRAME, through `wagonCap()` below:
+   the village wheelwright row that wrote `LEGACY.yard` is gone; the field is
+   still honoured at boot for the testers who paid for it. */
 const PARTYBASE=13;
+/* ═══ #238 · THE FRAME: the wagon's seats, bought on the road ═════════════
+   Three tiers, paid in THIS run's salvage, gone with the run. Seats per tier
+   are +1, +2, +2 (the user's ruling, 2026-08-22: "+1 seat first tier, +2
+   second and third"), so the table is cumulative: 13 -> 14 -> 16 -> 18.
+   Prices 6 / 12 / 24 are set against a measured curve (shots/238_salvage_curve.js:
+   a salvage-taking company holds ~12 by the Fen and 30-34 at the last fire, a
+   greedy lucky one 39 / 57-77), so I lands in the first half, II at the last
+   fire if at most one fitting was bought first, and III only by a company that
+   bought nothing else - which is "the third: didn't make it", on purpose.
+   ⚠ DECLARED HERE, beside PARTYBASE, and not beside FITTINGS 30,000 lines
+   down: `wagonCap()` runs at load and at a purchase, and a const read above its
+   own declaration is the temporal-dead-zone throw this file has shipped once. */
+const FRAME_COST=[6,12,24],FRAME_SEATS=[0,1,3,5];
+function wagonCap(){return PARTYBASE+(LEGACY.yard||0)+FRAME_SEATS[(typeof G!=='undefined'&&G.wagon&&G.wagon.frame)||0];}
 let PARTYCAP=PARTYBASE+(LEGACY.yard||0);
 const G={ day:1, at:'hold', battleRounds:0, log:[], ambush:false, contact:false,
   spared:null, cub:false, pending:null, afterBattleDialog:false,
@@ -10756,6 +10800,10 @@ const G={ day:1, at:'hold', battleRounds:0, log:[], ambush:false, contact:false,
      one row again, which is #157's own move on this screen, and the road hands
      out more weapons than anybody can carry by the second node. */
   stash:['pot'], party:null,
+  /* #238 - what THIS run has bolted into the wagon: the frame tier, the
+     fittings, and the chest signature the card was last opened at (the chip's
+     ! badge). Run state: it rides the save and a new company starts bare. */
+  wagon:{frame:0,built:[],seen:''},
   recruits:null, hiredHere:0, battleKind:'snare',
   /* ═══ #160 · THE LEDGER OF WHAT THIS COMPANY HAS DONE ═════════════════════
      One row per evil door taken, in the order they were taken, each holding
@@ -10799,7 +10847,9 @@ const G={ day:1, at:'hold', battleRounds:0, log:[], ambush:false, contact:false,
 LEGACY.pending.forEach(k=>{if(GEAR[k])G.stash.push(k);});
 if(LEGACY.pending.length){LEGACY.pending=[];saveLegacy();}
 /* one free scar-removal per run, if the medicine chest is bolted in */
-G.aidLeft=LEGACY.built.indexOf('aid')>=0?1:0;
+/* #238 - the chest is bought ON THE ROAD now and grants its one use then
+   (`wagonDo`); `LEGACY.built` is no longer read by anything. */
+G.aidLeft=0;
 
 /* ═══════════════════════════════════════════════════════════════════════
    BLESSINGS & CURSES — the company's mood shown as a named state
@@ -14651,7 +14701,7 @@ const TUTSTEPS={
   w_res:{h:'THE CHEST',
     t:()=>RES_ICON.crowns+' CROWNS - wages, provisions, and anything you buy.\n'+
       RES_ICON.food+' PROVISIONS - what the road asks for, and mending the hurt faster.\n'+
-      RES_ICON.salvage+' SALVAGE - fitting out the wagon, and it outlives the run.\n'+
+      RES_ICON.salvage+' SALVAGE - fitting out the wagon, on the road. What is left banks for the forge.\n'+
       RES_ICON.gems+' GEMS - the few things nothing else buys.\n\n'+
       'Wages fall due every '+num(PAY_EVERY)+' days. An empty chest on payday is how '+
       'companies end, and everybody remembers it.',
@@ -28178,7 +28228,7 @@ function runBlob(){
   return JSON.stringify({
       stamp:SAVE_STAMP,day:G.day,at:G.at,run:G.run,camp:G.camp,morale:G.morale,
       party:G.party,stash:G.stash,visited:G.visited,path:G.path,
-      partyCap:PARTYCAP,
+      partyCap:PARTYCAP,wagon:G.wagon,
       /* the shape of THIS run's map: which floating event landed where, and
          which names have been learned by standing in them */
       /* `mark` joined this row with the cache: the plate is the only thing
@@ -28314,7 +28364,11 @@ function loadRun(){
   /* `||[]` and not a migration: a save written before ties simply arrives
      without them, and the company starts remembering from here. */
   G.bonds=r.bonds||[];
-  PARTYCAP=r.partyCap||PARTYBASE;
+  /* #238 - `||` and not a migration: an older save arrives with no wagon and
+     starts bare. The cap is DERIVED from the wagon, never read back off the
+     save: the saved `partyCap` predates the frame. */
+  G.wagon=r.wagon||{frame:0,built:[],seen:''};
+  PARTYCAP=wagonCap();
   Object.keys(r.nodes||{}).forEach(k=>{
     if(!NODES[k])return;
     const s=r.nodes[k];NODES[k].ev=s.ev;NODES[k].n=s.n;NODES[k].t=s.t;
@@ -33425,6 +33479,10 @@ function ask(title,body,opts){
    #wCompany, and those are rebuilt (and rebound) by every worldTick, so
    nothing to wire at boot any more. */
 $('iBack').onclick=()=>{G.mustKit=false;show('world');worldTick();};
+/* #238 - the sheet has no dialog layer and `#wDlg` is the one host, so THE
+   WAGON from here does what BACK does and then opens the card: closing the
+   wagon leaves you on the road, which is where BACK would have left you. */
+$('iWagon').onclick=()=>{G.mustKit=false;show('world');worldTick();openWagon();};
 
 /* ============================================================
    10. World
@@ -35685,6 +35743,12 @@ const SEATS_SVG='<svg class="seatx" width="12" height="12" viewBox="0 0 24 24" '
   '<path d="M19.5 4.5 l-5.8 1.6 M19.5 4.5 l-1.6 5.8"/>'+
   '<path d="M4.5 19.5 l5.8 -1.6 M4.5 19.5 l1.6 -5.8"/>'+
   '</g></svg>';
+/* #238 - the wagon chip's mark, in SACK_SVG's own palette: a bed, a shaft, two wheels */
+const CART_SVG='<svg width="18" height="15" viewBox="0 0 18 15">'+
+  '<path d="M1 4.5 H12.5 L13.5 8.5 H2.2 Z" fill="#8a6a3c" stroke="#2c2011" stroke-width="1.1"/>'+
+  '<path d="M13.5 8.5 L16.8 4.2" stroke="#2c2011" stroke-width="1.4" stroke-linecap="round"/>'+
+  '<circle cx="4.4" cy="11.2" r="2.6" fill="#6b5330" stroke="#2c2011" stroke-width="1.1"/>'+
+  '<circle cx="11" cy="11.2" r="2.6" fill="#6b5330" stroke="#2c2011" stroke-width="1.1"/></svg>';
 const SACK_SVG='<svg width="15" height="16" viewBox="0 0 16 17">'+
   '<path d="M5.6 4.6 C2.9 6.2 1.9 9.1 1.9 11.4 C1.9 14.6 4.5 16 8 16 '+
   'C11.5 16 14.1 14.6 14.1 11.4 C14.1 9.1 13.1 6.2 10.4 4.6 Z" '+
@@ -36243,6 +36307,20 @@ function worldTick(){
     seg('prov',RES_ICON.food,G.run.food,'var(--grain)')+
     seg('salvage',RES_ICON.salvage,G.camp.salvage,'var(--wood)')+
     seg('gems',RES_ICON.gems,G.camp.gems,'var(--gem)');
+  /* ═══ #238 · THE WAGON CHIP ═════════════════════════════════════════════════════
+     The door to the one place salvage is spent, right of the chest (user:
+     "справа от ресурсов"). Static markup, filled here like the chips: the ! is lit
+     while something un-bought is AFFORDABLE and the card has not been opened
+     since the chest last changed (`wagonWaiting`). ⛔ Never for a thing you
+     cannot afford: a ! that leads to a greyed tile is the tease #197's rule
+     forbids. The salvage segment is a second door to the same card, because
+     it is the resource the card spends. */
+  const wg=$('wWagon');
+  if(wg){const wn=wagonWaiting();
+    wg.innerHTML=CART_SVG+(wn?'<span class="cbadge">!</span>':'');
+    wg.classList.toggle('waiting',wn);wg.onclick=openWagon;}
+  const sv=$('wRes').querySelector('[data-w="salvage"]');
+  if(sv){sv.classList.add('click');sv.onclick=openWagon;}
   /* the flash is one rebuild wide: the animation plays out on the nodes just
      written, and the next tick builds them plain */
   if(G.paidFlash)G.paidFlash=false;
@@ -36323,6 +36401,12 @@ function worldTick(){
           'is wearing</b>, or goes in a slot that is empty.<br><br>':'')+
         'The wagon\'s stash, and what everybody is wearing out of it.',
       act:'CLICK: the same screen, straight to work.'},
+    /* #238 - the wagon's door. The ! answers for itself first, like the kit's */
+    wagon:{t:'THE WAGON',col:'var(--g4)',
+      d:(wagonWaiting()?'<b style="color:#8ca35a">! Something on the wagon can be paid for.</b><br><br>':'')+
+        'What is bolted in, what the next thing costs, and how many seats there are. Paid in '+
+        'salvage, on the road, and gone with the run.',
+      act:'CLICK: the wagon.'},
     keep:{t:'PAYDAY',col:payShort?payC:'var(--g4)',
       d:'Wages are paid every '+num(PAY_EVERY)+' days, not daily. The bill grows with '+
         'every day of road - ratkin 1, human 2, ogre 2, and the Captain draws one - and '+
@@ -36400,12 +36484,13 @@ function worldTick(){
       x:'#157 took the last automatic drain off them: the wounded used to eat one a '+
         'day whether you liked it or not.'},
     salvage:{t:'SALVAGE',col:'var(--wood)',
-      d:'Timber, iron and fittings pulled off the road. It builds things INTO THE WAGON '+
-        'between runs - beds, chests, fires - and pays village craftsmen.',
-      x:'Survives the run. Everything else dies with the company.'},
+      d:'Timber, iron and fittings pulled off the road. It builds things INTO THE WAGON, '+
+        'on the road: the frame, a bed, a chest, a fire.',
+      x:'What is left at the end banks for the travel-forge.',
+      act:'CLICK: the wagon.'},
     gems:{t:'GEMS',col:'var(--gem)',
       d:'Stones the wrong colour for this country. The one thing both worlds take: spend '+
-        'them in-run in a pinch, or bank them for the wagon.',
+        'them in-run in a pinch, on the wagon or at a road door, or bank them for the forge.',
       x:'The deliberate bridge between the purse and the future.'},
     pet:{t:(PETS[petKey]?PETS[petKey].n:'A companion'),col:'#8ca35a',
       d:(petKey&&PETS[petKey]?PETS[petKey].d:'A companion follows the company.'),
@@ -39925,7 +40010,7 @@ function openVillage(){
   G.pending='village';mark('village: Coldharrow');
   /* ONE board, not three. `stock` stays an array so every reader downstream
      is unchanged — it simply never has more than one thing on it. */
-  if(!G.vill)G.vill={healed:false,fed:false,armed:false,wagon:false,
+  if(!G.vill)G.vill={healed:false,fed:false,armed:false,
     stock:ARMOURY.slice().sort(()=>Math.random()-.5).slice(0,1)};
   drawVillage(null);
 }
@@ -39936,7 +40021,7 @@ function drawVillage(note){
   const hurt=G.party.filter(p=>p.hpLoss>0);
   /* one salvage requirement — split wood/iron needs both alias the same pool
      and would quietly demand only the larger of the two */
-  const heal={crowns:45},feed={crowns:55},wag={salvage:7};
+  const heal={crowns:45},feed={crowns:55};
   const rows=[];
   const sick=G.party.filter(p=>p.cond);
   rows.push({id:'heal',t:'The bone-setter, and two days of not walking.',
@@ -39954,10 +40039,10 @@ function drawVillage(note){
     price:v.stock[0]?v.stock[0][1]:0,
     c:v.stock.length?'':'nothing on the rack worth your money',done:v.armed,
     dis:!v.stock.length,disC:'the rack is bare'});
-  rows.push({id:'wag',t:'The wheelwright. Widen the wagon bed.',
-    c:LEGACY.yard>=2?'the bed is as wide as a bed gets':
-      '−7 salvage · +1 PARTY SIZE now and on every run after this one',
-    need:wag,done:v.wagon||LEGACY.yard>=2});
+  /* #238 - the wheelwright's row is gone: the frame is bought on THE WAGON
+     card, which opens from the bar here as anywhere, and one wagon is sold in
+     one place. `LEGACY.yard` is still honoured at boot for the testers who paid
+     for it; nothing writes it any more. */
   dlg.innerHTML='<h3>COLDHARROW</h3>'+
     artTag()+
     '<div class="bd">'+(note||
@@ -40039,25 +40124,116 @@ function villageDo(id){
           'other companies to disappoint. It is in the stash: open INVENTORY and put it on '+
           'somebody, because it is no use to anyone in a cart.');
       };});
-  }else if(id==='wag'){
-    G.camp.salvage-=7;v.wagon=true;
-    LEGACY.yard=Math.min(2,(LEGACY.yard||0)+1);saveLegacy();
-    /* PERMANENT, and derived from the same constant as the boot value — the
-       old version rebuilt it from a hardcoded 12 against a real base of 13, so
-       the first widening moved 13 → 13 and appeared to do nothing. */
-    PARTYCAP=PARTYBASE+LEGACY.yard;
-    sfx('promote');
-    drawVillage('The wheelwright takes the wood, looks at the iron for longer than is polite, and '+
-      'has two of his sons on it before you have finished explaining what you want.\n\n'+
-      'By evening the bed is a foot wider, there is a second bench, and the mule has been shod out '+
-      /* the old last sentence pointed at "the muster field, one day east". The
-         Muster Field is BEHIND the village and has been since #71; the only
-         muster still ahead is The Last Muster, at the far end of the act. */
-      'of what was left over. PARTY SIZE '+(PARTYCAP-1)+' → '+PARTYCAP+': one more name the '+
-      'company has room for, starting now, and on every run after this one. There is one more '+
-      'muster on this road, and it is a long way down it.');
   }
   worldTick();
+}
+/* ═══════════════════════════════════════════════════════════════════════
+   #238 · THE WAGON, ON THE ROAD
+   (User, 2026-08-22: "Хочу фургон, в котором до 5 апрейгдов можно сделать...
+   апргрейд вместительности можно сделать несколько раз... Первый - в первой
+   половине. Второй - перед последним боем. И третий - не успел" · "кнопку
+   добавить в меню на глобал меп - справа от ресурсов... и в хедер инвенторя"
+   · "это кенди - игрок видит прогрессию силы отряда в общем" · "Made that
+   screen a bit more as it was in battle brothers... more visuals".)
+
+   One card, opened from the bar's chip, the salvage segment and the sheet's
+   header button: the FRAME (seats, three tiers, rising price) and the four
+   fittings that used to be bought between runs, paid in THIS run's salvage
+   and gems and gone with the run. Salvage had no in-run use before this - it
+   was banked at the epilogue - so every +N ▤ on a road card was a receipt
+   for nothing the player would see this run (Dima's playtest sat on ▤0 and
+   read it as "for later").
+
+   ⛔ THE TILES ARE PICTURES WITH A RECEIPT, NOT ROWS OF TEXT - the user's
+   "more visuals", and Battle Brothers' own station grid. Each tile is the
+   shop's `.gart` box (the 128px painting when it lands through ITEM_ICON,
+   the glyph until then: the same fallback as an item with no icon) beside a
+   name, the DERIVED cost (`wagonCost`, off the table, never typed) and one
+   clause (`s`). Grey is ONE thing on this card: cannot afford. A bought
+   tile is green-edged and says BOLTED IN. The frame wears three pips.
+
+   ⛔ NO PAINTING SLOT UNTIL THE PAINTING EXISTS. With `artTag()` the card is
+   658 into a 684 window and the prose scrolls 85px (measured on the mock);
+   the shop and the muster, the other two price lists in the column, carry
+   none either. `WAGON_ART` is the key it reads the day `EV-40_the-wagon.png`
+   is built and embedded; the brief is art/WAGON_ART_BRIEF.md.
+
+   ⛔ IT DOES NOT OPEN OVER ANOTHER CARD. The chip is on the bar, which stays
+   up while a road card is open, and `#wDlg` is one box: writing the wagon
+   into it would delete the event under the player's hand.
+   ═══════════════════════════════════════════════════════════════════════ */
+const WAGON_ART='EV40';
+const WAGON_KEYS=['frame','bed','aid','fire','shrine'];
+const FRAME_WORD=['I','II','III'];
+const FRAME_NOTE=[
+  'A foot of bench and a second strap. The mule looks at the new weight the way mules do.',
+  'A second axle and a bench that does not fold. In places the wagon is wider than the road.',
+  'As wide as a cart bed gets. Carters stop to look at it, and one of them asks who built it.'];
+/* what the next purchase of `k` costs, or null when there is nothing left to buy */
+function wagonCost(k){
+  if(k==='frame')return G.wagon.frame>=FRAME_COST.length?null:{salvage:FRAME_COST[G.wagon.frame]};
+  return hasFit(k)?null:FITTINGS[k].cost;
+}
+function wagonSig(){return G.camp.salvage+'/'+G.camp.gems;}
+function wagonWaiting(){
+  if(!G.wagon||wagonSig()===G.wagon.seen)return false;
+  return WAGON_KEYS.some(k=>{const c=wagonCost(k);return !!c&&canAfford(c);});
+}
+function wagonTile(k){
+  const isF=k==='frame',F=isF?null:FITTINGS[k],cost=wagonCost(k);
+  const done=!cost,ok=!!cost&&canAfford(cost);
+  const art=itemImg('wagon_'+k,56);
+  const glyph=isF?'◎':F.g;
+  let receipt,clause,hover;
+  if(isF){
+    const t=G.wagon.frame;
+    hover='The frame. Three tiers, each wider than the last, paid in salvage: '+
+      FRAME_COST.join(' / ')+'. Seats go 13, 14, 16, 18.';
+    clause=done?'as wide as a cart bed gets':'seats '+PARTYCAP+' → '+(PARTYCAP-FRAME_SEATS[t]+FRAME_SEATS[t+1]);
+    receipt=done?'':resGlyphs('−'+cost.salvage+' salvage')+(ok?'':' · '+needTag(cost));
+  }else{
+    hover=F.d;clause=F.s;
+    receipt=done?'<span style="color:#8ca35a">BOLTED IN</span>'
+      :resGlyphs(Object.keys(cost).map(r=>'−'+cost[r]+' '+r).join(' '))+(ok?'':' · '+needTag(cost));
+  }
+  const pips=isF?'<span class="wpips">'+FRAME_WORD.map((w,i)=>'<span class="wpip'+
+    (i<G.wagon.frame?' on':'')+'" title="'+w+'"></span>').join('')+'</span>':'';
+  return '<button class="wtile'+(isF?' wide':'')+(done?' built':'')+'" data-k="'+k+'"'+
+    (ok?'':' disabled')+' title="'+hover.replace(/"/g,'&quot;')+'">'+
+    '<span class="gart">'+(art||glyph)+'</span>'+
+    '<span class="gtx"><b>'+(isF?'THE FRAME':F.n.toUpperCase())+pips+'</b>'+
+    (receipt?'<i class="gpr">'+receipt+'</i>':'')+'<i class="gsay">'+clause+'</i></span></button>';
+}
+function openWagon(note){
+  if(typeof note!=='string')note=null;            /* it is also an onclick handler */
+  const dlg=$('wDlg');
+  if(dlg.classList.contains('on')&&!dlg.querySelector('.wagGrid'))return;
+  G.wagon.seen=wagonSig();
+  const built=G.wagon.built.map(k=>FITTINGS[k].n).join(', ');
+  dlg.innerHTML='<h3>THE WAGON</h3>'+(artFor(WAGON_ART)?artTag():'')+
+    '<div class="bd">'+(note||'One cart and one mule that has outlived several owners. Whatever '+
+      'nobody is wearing rides in the back, and salvage is what it is rebuilt with.')+
+    '\n\n<span class="lbl">SEATS '+partyUsed()+' OF '+PARTYCAP+' · BOLTED IN: '+(built||'nothing yet')+'</span>'+
+    '<div class="wagGrid">'+WAGON_KEYS.map(wagonTile).join('')+'</div></div>'+
+    '<div id="wChoices" style="display:flex;flex-direction:column;gap:5px">'+
+    '<button class="choice" data-i="go"><b>Back to the road</b><i>nothing is spent</i></button></div>';
+  dlg.classList.add('on');
+  const n=NODES[G.at]||{x:640,y:300};placeDlg(n.x,n.y);
+  const wa=artFor(WAGON_ART);if(wa)drawArt($('wArt'),wa);
+  dlg.querySelectorAll('.wtile').forEach(b=>{
+    if(!b.disabled&&!b.classList.contains('built'))b.onclick=()=>wagonDo(b.dataset.k);});
+  dlg.querySelector('[data-i="go"]').onclick=()=>{dlg.classList.remove('on');worldTick();};
+  drawNodes();
+}
+function wagonDo(k){
+  const cost=wagonCost(k);if(!cost||!canAfford(cost))return;
+  Object.keys(cost).forEach(r=>{G.camp[r]-=cost[r];});
+  let note;
+  if(k==='frame'){G.wagon.frame++;PARTYCAP=wagonCap();note=FRAME_NOTE[G.wagon.frame-1];}
+  else{G.wagon.built.push(k);if(k==='aid')G.aidLeft=1;note=FITTINGS[k].d;}
+  sfx('promote');saveRun();
+  /* the bar first (seats, the chest, the badge), then the card on the new state */
+  worldTick();openWagon(note);
 }
 /* ═══════════════════════════════════════════════════════════════════════
    CASTING — no event may ever name somebody who is not in the company.
@@ -41419,36 +41595,39 @@ const CRAFT=[
 ];
 
 /* ═══════════════════════════════════════════════════════════════════════
-   WHAT IS BOLTED INTO THE WAGON — three slots, four fittings.
+   WHAT IS BOLTED INTO THE WAGON - four fittings, bought on the road (#238).
 
-   This is the metaprogression that actually persists, and it is deliberately
-   NOT power: nothing here raises a number in a fight. Each one removes a
+   Since #238 these are bought on THE WAGON card with the run's own salvage
+   and die with the run (`G.wagon.built`; `LEGACY.built` is no longer read).
+   Deliberately NOT power: nothing here raises a number in a fight. Each one removes a
    different kind of grind — wounds that take a week, scars you can never
    undo, food arithmetic, and the sag in morale before a fight starts.
 
-   Three slots and four fittings means every wagon is a statement about what
-   the last company kept dying of.
+   The money is the cap: everything on the card sums to 69 salvage against a
+   run's measured 30-34, so every wagon is still a statement about what this
+   company decided to keep suffering. `s` is the tile's one clause; `d` is
+   the hover and the note the purchase prints.
    ═══════════════════════════════════════════════════════════════════════ */
 const FITTINGS={
-  bed:{n:'The Bed',cost:{salvage:8},g:'▤',
+  bed:{n:'The Bed',cost:{salvage:8},g:'▤',s:'the worst-hurt mends half the gap on every leg',
     d:'A real cot with a strap, instead of whoever is least injured getting the cart floor. '+
       'On every leg of road, the worst-hurt person in the company recovers HALF of what they '+
       'are missing instead of the usual few hitpoints a day.'},
-  aid:{n:'The Medicine Chest',cost:{salvage:5,gems:2},g:'✚',
+  aid:{n:'The Medicine Chest',cost:{salvage:5,gems:2},g:'✚',s:'one scar off one person, once a run',
     d:'Boiled linen, a bone-hook and something in a stoppered jar. ONCE PER RUN you may take '+
       'one permanent scar off one character. There is no other way to undo a scar in this '+
       'country and there is not supposed to be: this is the exception you built.'},
-  fire:{n:'The Cook-Fire',cost:{salvage:8},g:'♨',
+  fire:{n:'The Cook-Fire',cost:{salvage:8},g:'♨',s:'+3 morale at every stop · a meal costs one less',
     d:'A proper iron fire-box that travels lit. The company takes +3 morale every time it '+
       'stops, and a proper meal costs ONE LESS PROVISION to lay out. Hot food is not a small '+
       'thing when the alternative is what is in the sack.'},
-  shrine:{n:'The Reliquary',cost:{salvage:6,gems:2},g:'✧',
+  shrine:{n:'The Reliquary',cost:{salvage:6,gems:2},g:'✧',s:'+10 maximum morale, everybody, every fight',
     d:'A shelf, a curtain, and whatever the company has decided is worth putting behind it. '+
       'Everyone in the company has +10 MAXIMUM morale, in every battle, forever. Nobody agrees '+
       'about what is behind the curtain and everybody touches it on the way past.'}
 };
-const FIT_SLOTS=3;
-const hasFit=k=>LEGACY.built.indexOf(k)>=0;
+/* #238 - read off THIS run's wagon. `FIT_SLOTS` is gone: the money is the cap. */
+const hasFit=k=>!!(G.wagon&&G.wagon.built.indexOf(k)>=0);
 function openCampScreen(bankIt){
   if(bankIt&&!G.banked){
     /* ═══ B01 — BANKING USED TO DOUBLE EVERY SALVAGE ══════════════════════
@@ -41485,19 +41664,13 @@ function openCampScreen(bankIt){
       'line-height:1.7;margin-bottom:5px">PACKED FOR THE ROAD: '+
       LEGACY.pending.map(k=>GEAR[k]?GEAR[k].n:k).join(' · ')+'</div>':'')+
     '<div id="cForge" style="display:flex;flex-direction:column;gap:5px"></div></div>'+
-    '<div class="station"><h4>⚙ BOLTED INTO THE WAGON - '+
-      LEGACY.built.length+' of '+FIT_SLOTS+' fittings</h4>'+
-    '<div class="lbl" style="color:#8a7449">this is the part that stays. None of it makes anybody '+
-    'hit harder: it takes away the four things that grind a company down.</div>'+
-    '<div id="cFit" style="display:flex;flex-direction:column;gap:5px"></div></div>'+
-    '<div class="station"><h4>⚑ THE BED</h4>'+
-    '<div class="lbl" style="color:#8a7449">widened at a village wheelwright, on the road - not here. '+
-    'Whatever the last company paid for, this one inherits.</div>'+
-    '<div style="font-family:var(--mono);font-size:var(--fs1);color:#a38652;line-height:1.7">'+
-    (LEGACY.yard>=2?'As wide as a cart bed gets. +2 party size, permanent.'
-      :LEGACY.yard?'Widened once. +1 party size. A wheelwright could take it one step further.'
-      :'Never been touched. Seven salvage at any village with a wheelwright in it '+
-       'buys a foot of bench and a name to sit on it.')+'</div></div>'+
+    /* #238 - the fittings and the frame are bought ON THE ROAD now, from the
+       wagon card, with the run's own salvage, and they die with the run. The
+       two stations that sold them here (BOLTED IN, THE BED) are gone; the bank
+       keeps the forge. */
+    '<div class="station"><h4>⚙ THE FITTINGS</h4>'+
+    '<div class="lbl" style="color:#8a7449">bought on the road, from the wagon card, with the '+
+    'run\'s own salvage - and gone with the run. What is banked here pays the forge.</div></div>'+
     /* what the wagon remembers that is not a thing — see the epilogue */
     (LEGACY.ashmoor?'<div class="station"><h4>✦ WHAT IS KNOWN OF YOU</h4>'+
       '<div class="lbl" style="color:#8a7449">carried by people, not by the cart</div>'+
@@ -41525,26 +41698,6 @@ function openCampScreen(bankIt){
       LEGACY.pending.push(c.k);saveLegacy();sfx('promote');
       openCampScreen(false);};
     forge.appendChild(b);});
-  /* three slots, four fittings — the wagon is a statement about what the last
-     company kept dying of */
-  const fit=$('cFit');
-  Object.keys(FITTINGS).forEach(k=>{
-    const F=FITTINGS[k],built=hasFit(k),full=LEGACY.built.length>=FIT_SLOTS;
-    const can=!built&&!full&&Object.keys(F.cost).every(r=>bank[r]>=F.cost[r]);
-    const b=document.createElement('button');
-    b.className='craft'+(built?' made':'');
-    b.disabled=!can;
-    b.innerHTML='<b>'+F.g+' '+F.n+'</b><i>'+
-      (built?'<b style="color:#8ca35a">BOLTED IN - permanent</b>'
-        :Object.keys(F.cost).map(r=>F.cost[r]+' '+r).join(' · ')+
-         (full?' - no slots left; the wagon holds three':
-          can?'':' - not enough banked'))+
-      '<br>'+F.d+'</i>';
-    if(can)b.onclick=()=>{
-      Object.keys(F.cost).forEach(r=>{bank[r]-=F.cost[r];});
-      LEGACY.built.push(k);saveLegacy();sfx('promote');
-      openCampScreen(false);};
-    fit.appendChild(b);});
   /* #124 - "Take the road again" means a run, not a title screen. Armed ONLY
      when nothing is out there: this screen is also reachable from the menu
      mid-run, and there the reload must land back on the menu so Continue is

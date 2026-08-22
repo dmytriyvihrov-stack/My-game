@@ -26,6 +26,45 @@
 
 ---
 
+## 🛒 THE WAGON IS ON THE ROAD, AND SALVAGE HAS SOMEWHERE TO GO  *(#238 · 2026-08-23 · build log 8f.261)*
+
+**Reach it in three steps:** start a run -> on the map, press the cart chip right of the chest (the ▤ salvage
+figure and THE WAGON in the company sheet's header open the same card) -> the card.
+
+**What changed, and what should happen**
+- The card: a title, two lines, `SEATS · BOLTED IN`, and **five tiles**: THE FRAME across the top with three
+  pips, then THE BED · THE MEDICINE CHEST · THE COOK-FIRE · THE RELIQUARY. Each tile is a picture box
+  (the glyph until the icons land), the name, the price in ▤ and ◈, and one line of what it does. Hover a
+  tile for the long version.
+- Prices: the frame **6, then 12, then 24 ▤** for **+1, +2, +2 seats** (13 -> 14 -> 16 -> 18); the bed 8 ▤;
+  the chest 5 ▤ 2 ◈; the fire 8 ▤; the reliquary 6 ▤ 2 ◈. A tile you cannot pay for is grey and says
+  why. A bought tile is green-edged and says BOLTED IN. Everything on the card costs 69 ▤ and a run finds
+  about 30, so you are meant to leave most of it.
+- Buying the frame: the seats figure on the bar (8/13) moves at once, a pip fills, the card's prose becomes
+  the note for what you bought.
+- The **!** on the chip is lit when you can afford something you have not bought and have not looked at the
+  card since the chest last changed; opening the card clears it. It never lights for a thing you cannot pay.
+- **Gone:** the wheelwright row in Coldharrow, and the BOLTED IN and THE BED stations on the between-runs wagon
+  screen. **The fittings no longer carry across runs**: a new company starts bare, and a fitting bolted in
+  permanently by an earlier run is gone. The seat widening an old village purchase paid for is still honoured.
+- The effects are the old ones, bought earlier: the bed mends the worst-hurt on every leg (the road names who
+  had the cot), the fire pays +3 morale at every stop and one provision off a feast, the chest's one scar
+  removal is on the sheet, the reliquary is +10 maximum morale in every fight.
+
+**What would be a bug**
+- the chip touching MENU or the chest on a full bar (many bodies, UNPAID, a pet, relics)
+- the card scrolling, or a tile cut off
+- the ! lit with nothing affordable, or still lit after you opened the card
+- the seats figure not moving after a frame purchase, or moving back after a reload
+- the wagon opening on top of a road card (it should do nothing while a card is open)
+- the village still offering the wheelwright
+
+**What I want from you:** whether the first frame feels like an unlock at the first muster, or whether you
+never hit the seat cap anyway (then the lever is the base 13, not the wagon); and whether ~30 salvage a run
+against 69 on the card reads as a choice or as starvation.
+
+---
+
 ## 🗺 THE MAP IS REPAINTED, AND EVERY PLACE ON IT HAS A PICTURE  *(#237 · 2026-08-22 · build log 8f.260)*
 
 **Reach it in three steps:** start a run -> you are on the map -> press ROAD to see the whole thing.

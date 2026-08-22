@@ -4378,9 +4378,10 @@ win rates on demand (#216's named remainder) · the fifth-body and level non-mon
 > player cannot afford has to say so BEFORE it is pressed"*, `no room left`) · #220/#226 (the bar's
 > left group, the seats glyph) · #223 (the 86px MENU reservation the chip sits against) ·
 > `.claude/rules/event-cards.md` (the receipt is derived, the sub-line is cost plus one clause)
-> **STATE** 📐 **PROPOSED 2026-08-22, picture taken in the running build, waiting for three rulings
-> (below). Nothing in the prototype has changed.** The mock probes and the four captures are
-> `shots/238_wagon_mock_*.{js,png}`; the salvage measurement is `shots/238_salvage_curve.js`.
+> **STATE** ✅ **BUILT 2026-08-23 (8f.261)** on the rulings answered below: per-run · seats +1 / +2 / +2
+> · no pack animal · tiles with pictures. This section stays as what a future session reads before
+> touching the prices; the shipped numbers and the gates are in the changelog row. The mock probes and
+> captures are `shots/238_wagon_mock_*.{js,png}`; the salvage measurement is `shots/238_salvage_curve.js`.
 
 **The ask, verbatim (2026-08-22, four messages):**
 
@@ -4544,6 +4545,12 @@ competes with the armourer for the same decision and needs its own picture; it i
 and it waits below this.
 
 ### The three rulings that are yours
+
+**Answered 2026-08-22, verbatim: *"1) per rum 2) +1 seat first tier, + 2 second and third 3) ok, lets not
+focus on pack animal. Made that screen a bit more as it was in battle brotherhers, where was not only text.
+But more visuals"*.** So: per-run; the frame is +1, +2, +2 (13 -> 14 -> 16 -> 18), which overrules the +2 a
+tier in the table above; no mule plate and no `beast` field (the ladder in D is parked, not rejected); and the
+card is a grid of picture tiles on the shop's art box, not rows of text. The rulings as they were asked:
 
 1. **Per-run (recommended) or permanent.** Your *"третий - не успел"* is a per-run sentence, and
    `09_SETTLEMENTS` already calls carried-forward built power the standard metaprogression failure;
