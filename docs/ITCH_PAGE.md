@@ -45,14 +45,31 @@
 *(itch takes plain text with simple formatting. The horizontal rules are optional.)*
 
 ⚑ **REWRITTEN 2026-08-22 ON THE MEASURED SHELF** in
-[`marketing/STEAM_COPY_REFERENCES.md`](../marketing/STEAM_COPY_REFERENCES.md). Three changes and
-they are all somebody else's evidence rather than taste: **the genre sentence moved into the first
-paragraph** (13 of the 15 reference pages name it in sentence one), **seven sections became six
-verb-phrase headings of one paragraph each** (The Iron Oath's architecture, the closest on the shelf
-to this game, at 302 words), and the body came down from about 600 words to **366**, which sits
-between The Banner Saga (310) and Wartales (375) on the same shelf.
+[`marketing/STEAM_COPY_REFERENCES.md`](../marketing/STEAM_COPY_REFERENCES.md), then cut again the
+same day on the user's own note: *"shorter sentences. Add about clases, races and artifacts with
+strangness. Check to the best in the ganre"*.
 
-⛔ **AND FOUR FACTS HAD GONE STALE IN THE BUILD, WHICH ONLY RE-COUNTING FOUND.** The page said
+⛔ **THE SENTENCE LENGTH WAS NOT A TASTE CALL, IT WAS THE ONE THING THE SHELF RANKS BY.** Mean words
+per sentence, measured over the same fifteen pages, against their review scores: **Shogun Showdown
+9.2 at 95% · Slay the Spire 10.2 at 97% · The Last Spell 10.6 at 91% · Our Adventurer Guild 13.3 at
+95% · Path of Achra 16.1 at 98%**, and at the other end **Wartales 26.8 at 86% · Battle Brothers
+32.9 at 88%**. The corpus median is 14. ⚠ **This is an association across fifteen pages and not a
+law**: what is safe to say is that no page above 94% carries a mean over 19, and the two
+longest-winded pages in the set sit at 88% and 86%. **This page now runs a mean of 6.7 words a sentence over 53 of them, and its longest is 15
+words**, against a corpus 90th percentile of 35. That is shorter than every page on the shelf,
+including Shogun Showdown. ⚠ **Three of the lists are deliberate fragments** - the trade verbs, the
+race verbs and the four named objects - and they are what carries the rhythm. If the page ever
+reads as a telegram, join the utility lines back up and leave those three alone.
+
+⚑ **AND THE THREE THINGS THAT WERE MISSING ARE THE THREE THE SHELF SELLS HARDEST.** Pattern 7 of
+that file is that countable content is the proof, and the page was printing counts for cards and
+seats while saying nothing about **what a body can BE**. Added: the seven trades with their
+signature verbs, the three playable races with the skill each one owns (`RACESKILL`: humans KICK,
+ratkin POISON THE BLADE, ogres PICK UP AND THROW), and the gear, which is where the strangeness
+lives. `GEAR{}` holds **54 pieces, 21 common · 24 rare · 9 epic, and 15 of them `unique:true`**, one
+of a kind, out of one scene, never handed out by a random find.
+
+⛔ **FOUR FACTS HAD GONE STALE IN THE BUILD, WHICH ONLY RE-COUNTING FOUND.** The page said
 thirty-nine road cards and `EVENTS{}` holds **forty**; twenty-six places against `NODES{}`'s
 **twenty-eight**, all of which lie on a route; twenty-six personalities against `TRAITS{}`'s
 **twenty-seven**; and it still said **nerve**, which #232 renamed to **MOOD** everywhere the player
@@ -65,40 +82,47 @@ twenty-two days" was counting and is not a number a player can check either. A r
 
 **You cannot afford to be good to everyone.**
 
-RabbleBound is a dark medieval tactical roguelike. You are the Captain of a company nobody chose:
-strangers who were in the same room when the work turned up, bound to one contract and to each
-other's debts, walking a road that is going to ask you for money you do not have. The island calls
-you mercenaries. You are the rabble.
+RabbleBound is a dark medieval tactical roguelike. You are the Captain of a company nobody chose.
+Strangers, one contract, and each other's debts. The road ahead will ask you for money you do not
+have. The island calls you mercenaries. You are the rabble.
 
 **Fight on the field, not from a portrait.**
-Hex battles where facing, reach, cover, the ground under you and the mood of the person beside you
-decide a swing before the dice do. Two actions each, everybody. The Captain goes out there himself,
-and he can go down.
+Hex battles. Facing, reach, cover, and the ground under your boots. The mood of the person beside
+you counts too. Two actions each, everybody. The Captain goes out there himself. He can go down.
 
-**Answer forty road cards.**
-Written to be read once and remembered: a hanged toll-man, a clan wedding that has stopped the road,
-a company of the dead still holding formation. Nineteen more happen at the fire, when the company
-talks about itself.
+**Seven trades. Three races.**
+Spear wall. Aimed shot. Backstab. Sweep and roar. The battle-mage holds one school and a line. The
+mage holds two schools and almost nothing else. Humans kick. Ratkin poison the blade. Ogres pick a
+body up and throw it.
 
 **Spend people.**
-Thirteen seats in the wagon. A human takes two of them, a ratkin one, an ogre three. Everybody eats,
-everybody is owed wages, and the purse empties every fourth day whether the week went well or not.
+Thirteen seats in the wagon. A human takes two, a ratkin one, an ogre three. Everybody eats.
+Everybody is owed wages. The purse empties every fourth day, good week or bad.
 
-**Watch them become somebody.**
-Seven trades, twenty-six perks, twenty-seven personalities, and scars that do not wash off. There
-are no good or bad personalities, only ways of behaving that cost something.
+**Nobody stays the same.**
+Twenty-six perks, twenty-seven personalities, and scars that do not wash off. No personality here
+is good or bad. Each one is a way of behaving that costs something.
+
+**Carry strange things.**
+Fifty-four pieces of gear, and fifteen of them are one of a kind. The Cold Thing. The Ground-Glass
+Eyes. The Mirrored Sphere. Fen-Mother's Tooth. This is a low-magic island. A strange object is an
+event, not a stat.
+
+**Answer forty road cards.**
+Written to be read once and remembered. A hanged toll-man. A clan wedding that has stopped the road.
+A company of the dead, still holding formation. Nineteen more happen at the fire.
 
 **Pay for the kind door.**
-Mercy costs a day, or the coin you needed for provisions. Robbing the pedlar genuinely pays.
-Nothing scores you for it. The game remembers instead, in the prices people quote you and in who
-is still willing to travel with you.
+Mercy costs a day, or the coin you needed for provisions. Robbing the pedlar genuinely pays. Nothing
+scores you for it. The game remembers instead. It remembers in the prices people quote you, and in
+who still travels with you.
 
-**A run is act one:** eight roads out of the Hold, twenty-eight places, about an hour. Every road
-misses something the other roads had. What is not in it yet: the acts after this one, and the
-mortality chain: a body that goes down today is scarred, not lost.
+**A run is act one.** Eight roads out of the Hold, twenty-eight places, about an hour. Every road
+misses something the other roads had. Not in yet: the later acts, and the mortality chain. A body
+that goes down today is scarred, not lost.
 
-Mouse for everything, Esc for the menu, and hovering anything tells you what it is, including the
-ground. Free, saves in your browser, installs nothing.
+Mouse for everything, Esc for the menu. Hover anything and it tells you what it is, the ground
+included. Free, saves in your browser, installs nothing.
 
 **There is a ✉ FEEDBACK button in the corner of every screen. Two sentences beat a polite silence.**
 
