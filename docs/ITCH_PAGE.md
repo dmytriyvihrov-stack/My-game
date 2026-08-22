@@ -44,67 +44,63 @@
 
 *(itch takes plain text with simple formatting. The horizontal rules are optional.)*
 
+⚑ **REWRITTEN 2026-08-22 ON THE MEASURED SHELF** in
+[`marketing/STEAM_COPY_REFERENCES.md`](../marketing/STEAM_COPY_REFERENCES.md). Three changes and
+they are all somebody else's evidence rather than taste: **the genre sentence moved into the first
+paragraph** (13 of the 15 reference pages name it in sentence one), **seven sections became six
+verb-phrase headings of one paragraph each** (The Iron Oath's architecture, the closest on the shelf
+to this game, at 302 words), and the body came down from about 600 words to **366**, which sits
+between The Banner Saga (310) and Wartales (375) on the same shelf.
+
+⛔ **AND FOUR FACTS HAD GONE STALE IN THE BUILD, WHICH ONLY RE-COUNTING FOUND.** The page said
+thirty-nine road cards and `EVENTS{}` holds **forty**; twenty-six places against `NODES{}`'s
+**twenty-eight**, all of which lie on a route; twenty-six personalities against `TRAITS{}`'s
+**twenty-seven**; and it still said **nerve**, which #232 renamed to **MOOD** everywhere the player
+can see it. ⚠ **The day range is gone rather than corrected.** Summed over `EDGES`, the eight routes
+cost 22, 23, 23, 24, 24, 25, 25 and 26 days of TRAVEL, which is not what the old "eighteen to
+twenty-two days" was counting and is not a number a player can check either. A run is sold as
+**about an hour**, which they can time.
+
 ---
 
 **You cannot afford to be good to everyone.**
 
-You are the Captain of a company nobody chose. Strangers who were in the same room when the work
-turned up, bound to one contract and to each other's debts, walking a road that is going to ask you
-for money you do not have.
+RabbleBound is a dark medieval tactical roguelike. You are the Captain of a company nobody chose:
+strangers who were in the same room when the work turned up, bound to one contract and to each
+other's debts, walking a road that is going to ask you for money you do not have. The island calls
+you mercenaries. You are the rabble.
 
-The island calls you mercenaries. You are the rabble.
+**Fight on the field, not from a portrait.**
+Hex battles where facing, reach, cover, the ground under you and the mood of the person beside you
+decide a swing before the dice do. Two actions each, everybody. The Captain goes out there himself,
+and he can go down.
 
-**RabbleBound** is a dark medieval tactical roguelike: hex battles with facing, engagement and
-nerve, a road of authored events between them, and named people who remember what you spent them
-on. Low magic, no chosen ones, and a purse that empties every fourth day whether the week went well
-or not.
+**Answer forty road cards.**
+Written to be read once and remembered: a hanged toll-man, a clan wedding that has stopped the road,
+a company of the dead still holding formation. Nineteen more happen at the fire, when the company
+talks about itself.
 
-**A run is act one:** eighteen to twenty-two days, eight routes through twenty-six places, and about
-an hour. Every road misses something the other roads had.
+**Spend people.**
+Thirteen seats in the wagon. A human takes two of them, a ratkin one, an ogre three. Everybody eats,
+everybody is owed wages, and the purse empties every fourth day whether the week went well or not.
 
-### What you actually do
+**Watch them become somebody.**
+Seven trades, twenty-six perks, twenty-seven personalities, and scars that do not wash off. There
+are no good or bad personalities, only ways of behaving that cost something.
 
-- **Fight on a hex field** where facing, reach, cover, the ground under you and the nerve of the
-  person beside you all decide a swing before the dice do. Two actions each, everybody, including
-  you.
-- **Take the Captain onto the field yourself.** He is not a portrait in a corner. He can go down.
-- **Answer thirty-nine road cards** written to be read once and remembered: a hanged toll-man, a
-  clan wedding that has stopped the road, a company of the dead who are still holding formation.
-  Nineteen more happen at the fire when the company talks to itself.
-- **Spend people.** Thirteen seats in the wagon. A human takes two of them, a ratkin one, an ogre
-  three, and every one of them eats and is owed wages on payday.
-- **Watch them become somebody.** Seven trades, twenty-six perks, twenty-six personalities, and
-  scars that do not wash off. *There are no good or bad personalities: there are ways of behaving
-  that cost something.*
+**Pay for the kind door.**
+Mercy costs a day, or the coin you needed for provisions. Robbing the pedlar genuinely pays.
+Nothing scores you for it. The game remembers instead, in the prices people quote you and in who
+is still willing to travel with you.
 
-### What the game is actually about
+**A run is act one:** eight roads out of the Hold, twenty-eight places, about an hour. Every road
+misses something the other roads had. What is not in it yet: the acts after this one, and the
+mortality chain: a body that goes down today is scarred, not lost.
 
-Every door on the road is priced, and the kind one is never free. Mercy costs a day, or the coin
-you needed for provisions, or the thing you were going to sell. Robbing the pedlar genuinely pays.
-The game never tells you what a decision was worth, and it never gives you a score for it: what it
-does is remember, in the prices people quote you and in who is still willing to travel with you.
+Mouse for everything, Esc for the menu, and hovering anything tells you what it is, including the
+ground. Free, saves in your browser, installs nothing.
 
-> **Every body keeps the receipt. Every relationship remembers who paid.**
-
-### This is a slice, and it is honest about it
-
-Act one is finished and plays end to end. What is not in it yet: the acts after this one, the
-mortality chain (today a body that goes down is scarred, not lost), and the settlements the wagon
-is supposed to outlive you into.
-
-**What it needs is you telling it where you stopped and why.** There is a ✉ FEEDBACK button in the
-corner of every screen and a *Send the run* row in the menu: it puts your notes and a record of the
-run on your clipboard and opens a mail already addressed. Two sentences are worth more than a
-polite silence.
-
-### Controls
-
-Mouse for everything. **1 to 5** press the skill cards, **Esc** opens the menu, and the three
-buttons in the top right of a fight (FULL / FIELD / CLOSE) move the camera. Hovering anything
-tells you what it is, including the ground, and hovering an enemy shows what it can reach.
-
-Runs in the browser, saves in the browser, installs nothing. Headphones are worth it: the music is
-written for the road and the fight separately.
+**There is a ✉ FEEDBACK button in the corner of every screen. Two sentences beat a polite silence.**
 
 ---
 
