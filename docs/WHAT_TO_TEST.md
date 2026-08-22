@@ -26,6 +26,25 @@
 
 ---
 
+## 🗺 THE MAP IS REPAINTED, AND EVERY PLACE ON IT HAS A PICTURE  *(#237 · 2026-08-22 · build log 8f.260)*
+
+**Reach it in three steps:** start a run -> you are on the map -> press ROAD to see the whole thing.
+
+**What changed, and what should happen**
+
+- **The ground is your new painting.** Same size as before, so nothing moved and nothing should be
+  blurrier than it was.
+- **Five places that used to wear an abstract mark are painted now**: Grausen Hold, the Roadside
+  Fire, the Muster Field, Coldharrow, and the Last Muster. There should be **no abstract glyph left
+  anywhere on the map**.
+- **They are drawn smaller than an event on purpose** - 64px against 96 - because a place you pass
+  through is not a thing that happens to you. If they read as too quiet, that number is one line.
+- **A bug would be:** a place picture on a node that is not one of those five; a name plate sitting
+  on top of a painting or on another node's; or the Last Muster looking different from the Muster
+  Field, since both use the same picture.
+
+---
+
 ## \u2694 THE BOARD SAYS ONE NUMBER PER BODY, AND THE BAR SAYS *AT LEAST THIS MUCH*  *(#236 \u00b7 2026-08-22 \u00b7 build log 8f.259)*
 
 **Reach it in three steps:** start any fight \u2192 pick a skill (or just hover one) \u2192 move the pointer

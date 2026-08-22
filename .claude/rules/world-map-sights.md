@@ -179,6 +179,63 @@ for the same purpose.
 scratch, so it is gone rather than archived. **The surviving example of the shape is
 `shots/143_event_chips.html`**: the build's own CSS, live captures, nothing composited by hand.
 
+## \u26d4 #237 \u00b7 A PERMANENT PLACE IS A SECOND TABLE, AND IT IS KEYED ON THE NODE
+
+*(2026-08-22. The user: **"icons on global map for the events that are missing"**.)*
+
+This file has said since #116 that **`MAP_SIGHT{}` is the ONE place a key meets a picture and
+`sightFor(n)` is the ONE gate**. That is still true OF EVENTS and it is no longer the whole census.
+
+\u26d4 **THE SENTENCE THAT FORCED A SECOND TABLE IS FIVE WORDS LONG: `hold` HAS NO `ev`.** `sightFor`
+opens with `if(!n||!n.ev)return null`, so Grausen Hold could never have been painted however many
+rows `MAP_SIGHT` grew - the start of the run was structurally unreachable by the only mechanism the
+map had. Giving it a fake `ev` would have been worse: `ev` is what decides which CARD is dealt.
+
+| | events | permanent places |
+|---|---|---|
+| the row says | `ev:'<event key>'` | `site:'<place key>'` |
+| the table | `MAP_SIGHT{}` | `MAP_PLACE{}` |
+| the gate | `sightFor(n)` | `placeFor(n)` |
+| the files | `MAP-EV<NN>_<slug>-128.png` | `MAP-LOC<NN>_<slug>-128.png` |
+| drawn at | **96px**, `.sighted` | **64px**, `.place-sighted` |
+| the caption | `NAME_DY_SIGHT` (54) | `NAME_DY_PLACE` (41) |
+
+\u26d1 **64 AND NOT 96, AND THAT IS THE ENTRY'S ONE DESIGN CLAIM.** A place you pass through is not a
+thing that happens to you, and five of them at an event's size would have made the road read as
+thirty-two encounters. It is one constant if that is ever judged wrong.
+
+\u26d4 **KEYED ON THE NODE AND NEVER ON `t:'hire'` OR `t:'town'`, WHICH IS #137's DERIVATION RULE
+DELIBERATELY NOT APPLIED.** Everywhere else in this build a fact that already exists is read rather
+than re-authored; here the type does NOT carry the fact, because *what a place looks like* is
+particular to that place. Deriving off the type would have handed the next town Coldharrow's
+farmstead, silently, on the day it was added.
+\u26a1 **AND THE COST OF THAT RULE SHOWED UP INSIDE THE HOUR: THE LAST MUSTER WAS LEFT BARE**, i.e. the
+one abstract glyph among 27 paintings, on a node that is the same kind of place as the one the
+picture was made for. **The answer is a second explicit key, not a fall-through** - the rule is
+right and it needs somebody to look at the map after obeying it.
+
+\u26a0 **THE ORPHAN CHECK IS OVER BOTH TABLES NOW, AND THAT IS NOT OPTIONAL:**
+
+```js
+Object.entries(MAP_SIGHT).concat(Object.entries(MAP_PLACE))
+  .filter(([k,v])=>!MAP_ART[v])                                  // expect []
+/* and the census this entry was actually about: */
+Object.keys(NODES).filter(k=>!sightFor(NODES[k])&&!placeFor(NODES[k]))   // expect []
+```
+
+\u26d4 **AND `build_assets.ps1` FILTERS `MAP-*-128.png`, NOT `MAP-EV*`.** The four `MAP-LOC` sources sat
+built on disk, unembedded and unmentioned, because the embedder's filter had the event prefix baked
+in - **the silent-failure shape #190 wrote down and #226 found three more of**. A new filename family
+under `art/src/world-map-sites/` therefore needs nothing from the build script, and that is the point.
+
+\u23f3 **WHAT HAS NO COUNTER, AND IT IS WORTH KNOWING BEFORE THE NEXT PLACE IS ADDED.**
+`spacingViolations` and `labelViolations` score against `artBox`, which returns the **event** box for
+a sighted node and the place box for a place - so the plates are checked, but nothing checks a 64px
+painting for crowding the way the 79x74 event core is checked, and `EDGES` is still checked against
+paintings only by the hand-run curve probe above. **A place crowded by a neighbour would pass all
+three counters.** Today all five sit where an abstract mark sat and nothing moved; the day one is
+placed fresh, measure it by eye against the picture that pays this file's gate.
+
 ## Numbers that are load-bearing, with the reason attached
 
 | Thing | Value | Why it is that and not bigger |
