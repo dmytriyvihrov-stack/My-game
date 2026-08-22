@@ -4579,3 +4579,40 @@ card is a grid of picture tiles on the shop's art box, not rows of text. The rul
 measured run (the curve above is the table's arithmetic, not a played run; `tools/playtest/run.ps1
 -Who all` is the instrument) · whether the badge should also light for a ROW that just became
 affordable without the chest moving (a gem found, a fitting bought making room).
+
+### Acts 1-2: how the wagon grows *(proposed 2026-08-23; the user: "как думаешь дальше доработать? для 1-2 актов?")*
+
+**The premise that decides everything: a run is ONE company across the acts, so act 2 continues
+the same wagon, the same chest and the same frame tier.** That is the arc the three prices already
+draw: *"the third: didn't make it"* in act 1 becomes *made it* in act 2. **The frame needs no new
+tiers.** Act 2's curve (measure it with `shots/238_salvage_curve.js` over act 2's roads the day the
+map exists) decides where III lands; the target is the middle of act 2, and the dial is act 2's
+salvage, never a fourth tier.
+
+**What the card gains in act 2, and it is two tiles, not a second card** (measured room: the card
+stands at 480-512 of 684 today; one more row of two tiles is about 95px):
+
+| | bought | does | why this shape |
+|---|---|---|---|
+| **THE TRAVEL-FORGE** | act 1, one-time, about 10 ▤ | nothing in act 1 except that the FORGE rows exist in act 2 | the one act-1 purchase that pays across the break: *what did you decide to keep suffering* arriving on the act boundary. It is the user's *"выковать - прям ниже"* in its place |
+| **the forge rows** | act 2, once each | `CRAFT`'s five (plate, shroud, weeper, lashed, the glasses) into the stash, priced on act 2's curve | the pieces and their prose exist; they move from between runs to the road the way the fittings did. ⚠ whether `LEGACY.pending` (the between-runs forge) survives is a separate ruling: keep it until act 2 ships, then decide whether anything but the cousin's gift crosses a run (09's answer is *not the buildings*) |
+
+**The mule ladder is act 2's content**, not act 1's: the ox (+3 ▤ on every field: the act-2
+economy lever that feeds the forge) and the horse (one act-2 road a day shorter, which matters on a
+longer act: *deeper beats longer*). Both are road doors with `fx:{beast:...}`; the plate on the card
+is the cheap half and waits for the first door.
+
+**The act break is where the wagon meets `09_SETTLEMENTS`.** The settlement spends the same salvage,
+at the moment the chest is fullest (the Snare's own haul lands after the last fight of act 1). That
+is the decision the 09 doc was written for, *the wagon or the village*, and it needs no new
+mechanism: two screens, one pool.
+
+**What must NOT grow:** no fourth frame tier · no fitting that is a fight number (the reliquary is
+the one exception and stays the one) · no second currency · no tile whose effect does not print
+where it fires (the bed and the fire already name themselves on the road; a forge piece arrives in
+the stash under the kit chip's `!`, the ox's +3 rides the aftermath's own derived chip row).
+
+**The act-1 polish that is cheaper than any of the above, in order:** the six pictures
+(`art/ART_QUEUE.md`) · the badge on a tile that became affordable without the chest moving · the
+`PARTYBASE` question after a played run (a seat upgrade is only candy when the cap binds).
+
