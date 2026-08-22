@@ -87,15 +87,20 @@ def same_url(a, b):
     return n(a) == n(b)
 
 
-def connect(port, expect=True):
+def connect(port, expect=True, want=None):
+    """⚠ `want` IS THE BUILD THIS COMMAND IS ABOUT, and it is not always this
+    worktree's own prototype: the baseline-diff recipe in the `/drive` skill
+    launches a SECOND browser on `git show HEAD:` written to a temp file, and an
+    assertion hard-wired to `PROTO` refuses it. `--url` moves the check with the
+    question. `expect=False` skips it and is only for `close`."""
     eyes = load_eyes()
     c = eyes.CDP(port)
     if expect:
         href = c.eval('location.href')
-        want = url_for(PROTO)
+        want = url_for(want or PROTO)
         if not same_url(href, want):
-            raise SystemExit('REFUSED: port %d is holding\n  %s\nand this worktree is\n  %s\n'
-                             'That is another desk\'s browser. Run `gt.py launch` first.'
+            raise SystemExit('REFUSED: port %d is holding\n  %s\nand this command is about\n  %s\n'
+                             'Run `gt.py launch` first, or name the build with --url.'
                              % (port, href, want))
     return c
 
@@ -149,7 +154,7 @@ def cmd_launch(a):
 
 
 def cmd_eval(a):
-    c = connect(a.port or port_for(ROOT))
+    c = connect(a.port or port_for(ROOT), want=a.url or None)
     lib = ''
     if os.path.exists(LIB) and not a.nolib:
         with open(LIB, 'r', encoding='utf-8') as f:
@@ -167,7 +172,7 @@ def cmd_eval(a):
 
 
 def cmd_arena(a):
-    c = connect(a.port or port_for(ROOT))
+    c = connect(a.port or port_for(ROOT), want=a.url or None)
     with open(HARNESS, 'r', encoding='utf-8') as f:
         c.eval(f.read())
     if c.eval('typeof runFight') != 'function':
@@ -184,7 +189,7 @@ def cmd_arena(a):
 
 
 def cmd_shot(a):
-    c = connect(a.port or port_for(ROOT))
+    c = connect(a.port or port_for(ROOT), want=a.url or None)
     if a.setup:
         path = a.setup if os.path.exists(a.setup) else os.path.join(PROBES, a.setup)
         with open(path, 'r', encoding='utf-8') as f:
@@ -239,37 +244,44 @@ def cmd_close(a):
 
 
 def main():
-    ap = argparse.ArgumentParser(prog='gt.py')
-    ap.add_argument('--port', type=int, default=0)
+    # ⚠ `--port` AND `--url` SIT ON BOTH SIDES OF THE VERB ON PURPOSE. argparse
+    # accepts a top-level option only BEFORE the subcommand, and
+    # `gt.py eval x.js --port 9999` is what anybody actually types. A shared
+    # parent parser gives both spellings one definition.
+    common = argparse.ArgumentParser(add_help=False)
+    common.add_argument('--port', type=int, default=0)
+    common.add_argument('--url', default='',
+                        help='the build this command is about (default: this worktree)')
+    ap = argparse.ArgumentParser(prog='gt.py', parents=[common])
     sub = ap.add_subparsers(dest='cmd', required=True)
 
-    p = sub.add_parser('launch'); p.add_argument('--browser', default='chrome')
-    p.add_argument('--profile', default=''); p.add_argument('--url', default='')
+    p = sub.add_parser('launch', parents=[common]); p.add_argument('--browser', default='chrome')
+    p.add_argument('--profile', default='')
     p.set_defaults(fn=cmd_launch)
 
-    p = sub.add_parser('eval'); p.add_argument('probe', nargs='+')
+    p = sub.add_parser('eval', parents=[common]); p.add_argument('probe', nargs='+')
     p.add_argument('--timeout', type=int, default=120); p.add_argument('--nolib', action='store_true')
     p.set_defaults(fn=cmd_eval)
 
-    p = sub.add_parser('arena'); p.add_argument('probe', nargs='+')
+    p = sub.add_parser('arena', parents=[common]); p.add_argument('probe', nargs='+')
     p.add_argument('--timeout', type=int, default=900)
     p.set_defaults(fn=cmd_arena)
 
-    p = sub.add_parser('shot'); p.add_argument('out')
+    p = sub.add_parser('shot', parents=[common]); p.add_argument('out')
     p.add_argument('--setup', default=''); p.add_argument('--clip', nargs=5, default=None)
     p.add_argument('--timeout', type=int, default=120)
     p.set_defaults(fn=cmd_shot)
 
-    p = sub.add_parser('grep'); p.add_argument('pattern')
+    p = sub.add_parser('grep', parents=[common]); p.add_argument('pattern')
     p.add_argument('--file', default=''); p.add_argument('--max', type=int, default=600)
     p.add_argument('--head', type=int, default=80); p.add_argument('--width', type=int, default=200)
     p.add_argument('--case', action='store_true')
     p.set_defaults(fn=cmd_grep)
 
-    p = sub.add_parser('check'); p.add_argument('--file', default='')
+    p = sub.add_parser('check', parents=[common]); p.add_argument('--file', default='')
     p.set_defaults(fn=cmd_check)
 
-    p = sub.add_parser('close'); p.set_defaults(fn=cmd_close)
+    p = sub.add_parser('close', parents=[common]); p.set_defaults(fn=cmd_close)
 
     a = ap.parse_args()
     a.fn(a)

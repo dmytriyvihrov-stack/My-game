@@ -17,7 +17,7 @@ asking is not *can you win the fight* but **who are you willing to spend to win 
 
 | | |
 |---|---|
-| **The working file** | `prototype/grimtoll_slice.html`, one self-contained file, ~14 MB since the paintings, the map ground and the three typefaces were embedded. **This is the one you change.** |
+| **The working file** | `prototype/grimtoll_slice.html`, **3.4 MB since #235 moved the paintings out to `art/embed/*.js`** (it was 30 MB, 88% of it base64 nobody reads). It loads those two files with a script tag and `tools/build_site.ps1` pours them back for the page that ships, so what is HOSTED is still one self-contained file. **This is the one you change.** |
 | **The build people play** | `index.html` at the repo root, **generated and never hand-edited.** ⚠ Its audio table is empty in the working file **on purpose**, so copying instead of building ships a game that is silent for everybody but you. One command, `deploy.ps1`, does the whole thing and refuses to push a silent page. **Since #202 there are two generated pages**: `index.html` (yours, with the ⚙ developer tools behind the cog) and `play/index.html` (`deploy.ps1 -Player`: the playtester's, with no cog and `TEST` forced off). **See [`DEPLOY.md`](DEPLOY.md) before touching any of this.** |
 | **Production target** | Godot 4. HTML is for iteration speed; the scope lock happens after the systems stop moving |
 | **Art** | painted, not pixel. "Ash & Iron" palette. **Line before noise:** silhouette, gesture and connected shapes do the work before texture. See [`02_ART_DIRECTION.md`](02_ART_DIRECTION.md) |
@@ -281,9 +281,16 @@ a thing just cost) stays exact; a forecast (what a road holds) carries its uncer
   Every `old` must match exactly once or **nothing at all is written**. It also refuses a path
   outside its own worktree, because #234 edited the shared main tree from a desk by accident.
 
-- ⚠ **`grep` OVER THE PROTOTYPE RETURNS MEGABYTES.** 337 lines hold 27.5 MB of base64 and they
-  contain almost any short pattern. Use `gt.py grep`: filtering with `awk 'length<600' | grep -n`
-  RENUMBERS the output and sends you to the wrong lines.
+- ⛑ **AND SINCE #235 THE PROTOTYPE IS 3.4 MB, NOT 30.** The two art blocks moved to
+  `art/embed/art_data.js` and `art/embed/j_pack.js`, which the working file loads with two script
+  tags and `tools/build_site.ps1` pours back inline for the page that ships. Everything about the
+  hosted build, the player build and the itch zip is unchanged: they are still one self-contained
+  file. What changed is that a page load, a grep and a scripted edit stopped paying for 27 MB of
+  base64 they never read. ⚠ **The art keys are not in the prototype any more** - looking for one
+  there will say the art is missing when it is not.
+- ⚠ **`grep` OVER THE PROTOTYPE STILL RETURNS MORE THAN YOU WANT** (the fonts and the stat icons
+  are still inline). Use `gt.py grep`: filtering with `awk 'length<600' | grep -n` RENUMBERS the
+  output and sends you to the wrong lines.
 
 - After anything touching combat, run all eight fights: `clash · brigand · pack · slingline ·
   steading · snare · mother · armour` (`gt.py arena regress.js`). The harness must call `checkEnd()`
