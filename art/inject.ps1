@@ -1,40 +1,16 @@
-# Injects art/out/art_data.js into the prototype at the /*__ART_DATA__*/ marker,
-# writing prototype/grimtoll_slice.html in place. Idempotent: if art is already
-# embedded it is replaced, not duplicated.
+# ⛔ #235 - THIS NO LONGER TOUCHES THE PROTOTYPE, AND THE NAME IS KEPT ON PURPOSE.
 #
-#   powershell -ExecutionPolicy Bypass -File art\inject.ps1
-
-$root  = Split-Path $PSScriptRoot -Parent
-$html  = Join-Path $root 'prototype\grimtoll_slice.html'
-$data  = Join-Path $PSScriptRoot 'out\art_data.js'
-
-# This script reads the whole prototype and writes the whole prototype back, so
-# it is the exact shape that erases a parallel session's work. Ask first.
-& powershell -NoProfile -ExecutionPolicy Bypass -File (Join-Path $root 'tools\claim.ps1') gate
-if ($LASTEXITCODE -ne 0) { throw "another session owns the prototype. Not injecting." }
-
-if (-not (Test-Path $data)) { throw "run build_assets.ps1 first" }
-
-$src = Get-Content $html -Raw -Encoding utf8
-$art = Get-Content $data -Raw -Encoding utf8
-
-$startTag = '/*__ART_DATA__*/'
-$endTag   = '/*__END_ART_DATA__*/'
-
-$block = "$startTag`n$art`n$endTag"
-
-if ($src -match [regex]::Escape($startTag)) {
-  if ($src -match [regex]::Escape($endTag)) {
-    # replace whatever is between the markers
-    $pattern = [regex]::Escape($startTag) + '[\s\S]*?' + [regex]::Escape($endTag)
-    $src = [regex]::Replace($src, $pattern, { param($m) $block })
-  } else {
-    $src = $src -replace [regex]::Escape($startTag), $block
-  }
-} else {
-  throw "marker $startTag not found in the prototype"
-}
-
-Set-Content -Path $html -Value $src -Encoding utf8 -NoNewline
-$kb = [math]::Round((Get-Item $html).Length / 1KB, 1)
-"injected. prototype is now $kb KB"
+#   powershell -NoProfile -ExecutionPolicy Bypass -File art\inject.ps1
+#
+# It used to read the whole 30 MB prototype and write it whole back, pouring
+# art\out\art_data.js into a /*__ART_DATA__*/ marker - and it carried its own
+# warning that this "is the exact shape that erases a parallel session's work.
+# Ask first." The paintings live in art\embed\art_data.js now and the prototype
+# loads them with a script tag, so this forwards to art\embed.ps1: one block,
+# one file, nothing shared to erase, and no claim gate needed.
+#
+# The name survives because `.claude\rules\static-event-art.md`, the changelog
+# and every habit in this project say "run inject.ps1" after rebuilding the art.
+# That instruction is still correct and still does the right thing.
+$ErrorActionPreference = 'Stop'
+& powershell -NoProfile -ExecutionPolicy Bypass -File (Join-Path $PSScriptRoot 'embed.ps1') art_data

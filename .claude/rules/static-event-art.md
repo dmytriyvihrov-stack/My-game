@@ -299,15 +299,53 @@ placed, and the two paid swords are small at the open door.
 - Do not regenerate a listed painting just to make the pack stylistically
   uniform. Read its live event first and preserve the approved composition.
 
+## ⛔ #235 · WHERE THE BLOCK LIVES, AND IT IS NOT IN THE PROTOTYPE ANY MORE
+
+*(2026-08-22. The user, on being shown the arithmetic: "lets do it as new entry".)*
+
+**The two art blocks are two tracked, generated files: `art/embed/art_data.js` and
+`art/embed/j_pack.js`.** The working file loads them with two classic script tags
+and is **3.4 MB instead of 30.2**; `tools/build_site.ps1` pours them back inline,
+so the page that ships is still ONE self-contained file and neither GitHub Pages
+nor the itch zip changed at all.
+
+⛑ **`inject.ps1` AND `inject_j_pack.ps1` STILL EXIST AND STILL DO THE RIGHT
+THING.** They forward to `art/embed.ps1`, because "run inject.ps1 after rebuilding
+the art" is written in this file, in the changelog and in everybody's habits, and
+that instruction is still correct. What changed is that neither of them reads or
+writes the prototype - so the `claim.ps1 gate` they carried, and the warning that
+each was *"the exact shape that erases a parallel session's work"*, are gone with
+the danger.
+
+⛔ **`art/embed/` IS TRACKED AND MUST STAY TRACKED.** It is the only copy of the
+paintings in git now. `art/src/` and `art/out/` are still ignored, and a desk is a
+fresh checkout: ignore `art/embed/` and every new desk gets a game with no art in
+it and no error to say why.
+
+⚠ **CLASSIC SCRIPTS, IN ORDER, NEVER `defer` OR `type=module`.** A top-level
+`const` in a classic script is a global lexical binding, which is the whole reason
+not one line of game code changed. Either attribute would drop the game silently
+to `HASART`'s procedural fallback. ⚑ And that fallback is why a missing file is a
+degraded picture rather than a crash - it has always been written that way.
+
+⚠ **THE BUILD FINDS THE TAGS BY `data-embed`, NOT BY THEIR `src`**, and a tag that
+survives the pour is a fatal build error. A hosted page that quietly lost its art
+would look like a rendering bug, which is the silent-failure shape the audio pour
+beside it already exists to prevent.
+
 ## Build and verification
 
 1. `art/build_assets.ps1` reads stage 3 and stage 4 automatically, derives the
    art key from the filename prefix (`EV-00E` -> `EV00E`), and embeds PNG bytes.
 2. Run `powershell -NoProfile -ExecutionPolicy Bypass -File art/build_assets.ps1`.
-3. Run `powershell -NoProfile -ExecutionPolicy Bypass -File art/inject.ps1`.
+3. Run `powershell -NoProfile -ExecutionPolicy Bypass -File art/inject.ps1`
+   (which is `art/embed.ps1 art_data`).
 4. Run `powershell -NoProfile -ExecutionPolicy Bypass -File tools/build_site.ps1`.
-5. Verify the expected key in `art/out/art_data.js`,
-   `prototype/grimtoll_slice.html`, and `index.html`, and confirm the dimensions
-   before finishing.
+5. Verify the expected key in `art/out/art_data.js`, **`art/embed/art_data.js`**
+   and `index.html`, and confirm the dimensions before finishing. ⚠ The key is no
+   longer in `prototype/grimtoll_slice.html` and looking for it there will say the
+   art is missing when it is not.
+6. `python tools/dev/gt.py check` parses the prototype AND both embed files. It
+   is the gate that catches a block which did not survive its own rebuild.
 
-Never hand-edit the embedded base64 block or the generated root `index.html`.
+Never hand-edit `art/embed/*.js` or the generated root `index.html`.

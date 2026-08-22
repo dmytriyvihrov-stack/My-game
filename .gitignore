@@ -2,17 +2,25 @@
 # What this repo is FOR: the playable build, the docs, and everything needed to
 # rebuild the playable build. Not the asset masters.
 #
-# The paintings and the recordings are already INSIDE index.html - the art as
-# base64 PNG, the music and sfx as base64 AAC. Committing the sources as well
-# would put ~360MB of PNG and WAV into every clone to ship a 10MB page. They
-# live in the Google Drive folder, which is where the pipeline reads them from.
+# The paintings and the recordings are already IN THE REPO AS BASE64 - the art
+# in art/embed/*.js, the music and sfx poured into index.html at build time.
+# Committing the sources as well would put ~360MB of PNG and WAV into every
+# clone to ship a 30MB page. They live in the Google Drive folder, which is
+# where the pipeline reads them from.
+#
+# #235: the art block used to be inside prototype/grimtoll_slice.html, which is
+# why this paragraph said "inside index.html". It is two tracked, generated
+# files under art/embed/ now and the working file loads them with a script tag.
 #
 # If a source folder here ever needs to be in git, take it out one folder at a
 # time and say why - do not delete this file.
 # ---------------------------------------------------------------------------
 
-# painting masters, 130MB. build_assets.ps1 + inject.ps1 turn these into the
-# base64 block in the prototype; the block is committed, the PNGs are not.
+# painting masters, 130MB. build_assets.ps1 + inject.ps1 turn these into
+# art/embed/art_data.js; the BLOCK is committed, the PNGs are not.
+# ⚠ #235 - art/embed/ IS NOT IGNORED AND MUST NOT BE. It is the only copy of
+# the paintings in git now, and a desk (`branch.ps1 new`) is a fresh checkout:
+# an ignored art/embed/ would give every new desk a game with no art in it.
 art/src/
 art/out/
 

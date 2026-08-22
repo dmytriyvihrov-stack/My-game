@@ -72,6 +72,35 @@ if (Test-Path -LiteralPath $data) {
   Write-Warning "Run: powershell -NoProfile -ExecutionPolicy Bypass -File audio\build_audio.ps1"
 }
 
+# ---- pour the ART back in --------------------------------------------------
+# #235. The working file stopped carrying 26.8 MB of base64 (88% of it) and
+# loads art\embed\art_data.js and art\embed\j_pack.js with two script tags
+# instead. THE PAGE THAT SHIPS IS STILL ONE SELF-CONTAINED FILE: GitHub Pages
+# serves index.html on its own, the itch upload is a zip with index.html at its
+# root and nothing beside it, and a playtester saving the page has to get the
+# art with it. So each tag is swapped here for an inline copy of the file.
+#
+# ⛔ THE TAG IS FOUND BY `data-embed`, NOT BY ITS src PATH, so moving the files
+# does not silently stop the pour - and a tag that is present and NOT poured is
+# a fatal error rather than a warning. A hosted build that quietly lost its art
+# would fall back to procedural painting and look like a rendering bug, which is
+# exactly the class of silent failure the audio block above exists to prevent.
+# ⚠ AND A MISSING FILE THROWS. The working file degrades (see HASART); a BUILD
+# may not, because nobody would be looking at it when it went out.
+foreach ($e in @('art_data', 'j_pack')) {
+  $f = Join-Path $root ('art\embed\' + $e + '.js')
+  $pat = '<script src="[^"]*" data-embed="' + [regex]::Escape($e) + '"></script>'
+  $m = [regex]::Match($html, $pat)
+  if (-not $m.Success) { throw "art: no <script data-embed=""$e""> in the prototype. Has the tag moved? Update build_site.ps1." }
+  if (-not (Test-Path -LiteralPath $f)) { throw "art: $f is missing. Run art\inject.ps1 (art_data) or art\inject_j_pack.ps1 (j_pack) first." }
+  $blk = [System.IO.File]::ReadAllText($f)
+  # a MatchEvaluator, never a replacement string: $ in 13 MB of base64 would be
+  # read as a capture reference. Same reason the audio pour above uses one.
+  $html = [regex]::Replace($html, $pat, { param($x) "<script>`n" + $blk + "`n</script>" }.GetNewClosure(), 1)
+  "art    : $e poured in ({0:N1} MB)" -f ($blk.Length / 1MB)
+}
+if ($html -match 'data-embed=') { throw "art: a data-embed tag survived the pour - the built page would load a file that is not beside it" }
+
 # ---- the player build: take the developer tools out of reach ---------------
 # Two exact-string replacements, each asserted to match exactly once. A regex
 # that silently matched zero times would ship the dev build under the player

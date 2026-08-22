@@ -69,10 +69,14 @@ the same store**. Take a number before you write one.
 > three times while every one of them believed the tool had protected it. The fix is four lines and
 > it is the load-bearing part of the whole change.
 
-**2. The whole-file rewrite.** Solved by isolation. `art/inject.ps1` slurps the whole prototype and
-writes the whole thing back, which is catastrophic in a shared folder and completely safe in a desk:
-it rewrites **your** copy. `claim.ps1 gate` therefore returns clear in a desk and still gates the
-main folder.
+**2. The whole-file rewrite.** ⛑ **Solved outright by #235, and it used to be solved by
+isolation.** `art/inject.ps1` slurped the whole prototype and wrote the whole thing back - safe in a
+desk because it rewrote *your* copy, catastrophic in the shared folder, and gated by `claim.ps1
+gate` for exactly that reason. **It does not touch the prototype at all now.** The two art blocks
+are two tracked files under `art/embed/`, each written by its own run of `art/embed.ps1`, so two
+desks rebuilding two different blocks cannot collide even in one folder. The gate is gone with the
+danger it guarded. ⚠ The working file went from 30 MB to 3.4 MB in the same change, which is why
+a prototype conflict is now a diff a person can read.
 
 **3. The deploy.** [`deploy.ps1`](../deploy.ps1) runs `git add -A` and pushes to the live link, so it
 now **refuses to run anywhere but the main desk on `main`**. A deploy from a branch would publish
