@@ -2985,7 +2985,7 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:var(--f
                     50%{opacity:1;transform:translateX(-50%) translateY(-2px)}}
 @media (prefers-reduced-motion:reduce){.node.goal .gmark{animation:none;opacity:1}}
 .node.goal .nm{color:#f0e6c0;background:rgba(24,17,6,.92);box-shadow:0 0 0 1px #6b5330}
-.node.goal.sighted .glyph img{--ring:#d9bd7e}
+.node.goal.sighted .glyph img,.node.goal.place-sighted .glyph img{--ring:#d9bd7e}
 .node.t-weird.live .glyph{border-color:var(--bloom-lit);box-shadow:0 0 12px rgba(226,143,180,.35)}
 /* the glyph border says what KIND of place it is, at a glance. `--tc` is the
    same colour a second time, for the sighted ring below — one place per type */
@@ -3027,6 +3027,10 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:var(--f
    a speck. */
 .node.sighted .glyph{position:absolute;left:50%;top:50%;transform:translate(-50%,-58%);
   width:96px;height:96px;border:none;background:transparent;box-shadow:none}
+/* Permanent service places are painted too, but at a deliberately quieter
+   64px tier: they identify the road without competing with a 96px event. */
+.node.place-sighted .glyph{position:absolute;left:50%;top:50%;transform:translate(-50%,-58%);
+  width:64px;height:64px;border:none;background:transparent;box-shadow:none}
 /* #116/#117: the name is a CAPTION UNDER THE LANDMARK (user: "Name of the
    event on the lower bottom part of the event", then "the name of event
    even lower - so i can see full painting"). Absolute like the art.
@@ -3037,6 +3041,8 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:var(--f
    NAME_DY_SIGHT below and the art box labelSpot dodges.
    max-width keeps long names wrapping at the node's own width. */
 .node.sighted .nm{position:absolute;left:50%;top:50%;transform:translate(-50%,42px);
+  z-index:1;width:max-content;max-width:104px}
+.node.place-sighted .nm{position:absolute;left:50%;top:50%;transform:translate(-50%,29px);
   z-index:1;width:max-content;max-width:104px}
 /* ═══ #197 · A CAPTION AT THE FOOT OF THE MAP HANGS THE OTHER WAY ══════════
    (User, 2026-08-19, arrows at the bottom edge: *"cant see down part of the
@@ -3090,17 +3096,20 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:var(--f
    ⚠ THE COVERED STRIP IS THE PAINTING'S OWN, never a neighbour's: the plate is
    104px wide against a 96px sight and it carries its dark ground already. */
 .node.sighted.lowcap .nm{transform:translate(-50%,calc(42px - var(--lift,0px)))}
-.node.sighted .glyph img{--ring:var(--tc,#a08a5c);
+.node.sighted .glyph img,.node.place-sighted .glyph img{--ring:var(--tc,#a08a5c);
   filter:drop-shadow(2px 0 0 var(--ring)) drop-shadow(-2px 0 0 var(--ring))
          drop-shadow(0 2px 0 var(--ring)) drop-shadow(0 -2px 0 var(--ring))
          drop-shadow(0 3px 5px rgba(0,0,0,.85))}
 /* every state that painted the chip's background repaints the RING instead.
    The live pulse (nodebeat) still runs: a soft halo behind a cut-out reads
    as "you may walk here" just as well as it did behind a box. */
-.node.sighted.live .glyph,.node.sighted.walking .glyph{background:transparent}
-.node.sighted.live:hover .glyph,.node.sighted.here .glyph{background:transparent}
-.node.sighted.live .glyph img{--ring:var(--g4)}
-.node.sighted.live:hover .glyph img,.node.sighted.here .glyph img{--ring:var(--blood-lit)}
+.node.sighted.live .glyph,.node.sighted.walking .glyph,
+.node.place-sighted.live .glyph,.node.place-sighted.walking .glyph{background:transparent}
+.node.sighted.live:hover .glyph,.node.sighted.here .glyph,
+.node.place-sighted.live:hover .glyph,.node.place-sighted.here .glyph{background:transparent}
+.node.sighted.live .glyph img,.node.place-sighted.live .glyph img{--ring:var(--g4)}
+.node.sighted.live:hover .glyph img,.node.sighted.here .glyph img,
+.node.place-sighted.live:hover .glyph img,.node.place-sighted.here .glyph img{--ring:var(--blood-lit)}
 /* ═══ #194 · AND HERE IS WHAT A WALKED NODE ACTUALLY LOOKS LIKE ══════════
    The opacity is up beside `.node.far`; this is the rest of it, and it lives
    DOWN HERE because both halves of the map's colour language are above it and
@@ -33400,7 +33409,7 @@ const NODES={
      ⚠ x MAY NOT GO PAST 130. `clash` is at 240 and the plate rule wants 110px
      across or 79px down; at 276 there is only 54px of y to spend, so the x is
      the half that has to pay. */
-  hold  :{x:120,y:276,n:'Grausen Hold',        t:'town'},
+  hold  :{x:120,y:276,n:'Grausen Hold',        t:'town', site:'hold'},
   /* ═══ #112 · ONE NIGHT BETWEEN THE TAP-ROOM AND THE FIRST REAL FIGHT ═══
      (User: "Between first part add an event 'faling star' - where characters
      can make a wish... So we have at least one event between intro fight and
@@ -33490,7 +33499,7 @@ const NODES={
      the only content in the game that runs all six links. It also splits
      two fights that were one day apart, and it rhymes with what follows:
      a camp where nothing happens, then a camp where everything does. */
-  fire  :{x:640,y:178,n:'The Roadside Fire',   t:'camp', ev:'firenight'},
+  fire  :{x:640,y:178,n:'The Roadside Fire',   t:'camp', ev:'firenight',site:'fire'},
   /* ── SOUTH: the water road. Longer, wetter, three slots, no fight ─── */
   f1    :{x:330,y:452,n:'Something on the road',t:'event'},
   /* The middle crossing is where the water road introduces the mirehares.
@@ -33520,7 +33529,7 @@ const NODES={
      exactly once. ⚠ MOVING THIS NODE MOVES THE THING IN ARMOUR: see
      `armourDue`, which used to anchor off `G.visited['hire']` and would now
      fire the ambush on top of the Fen-Mother. */
-  hire  :{x:782,y:200,n:'The Muster Field',    t:'hire', ev:'hire'},
+  hire  :{x:782,y:200,n:'The Muster Field',    t:'hire', ev:'hire',site:'muster'},
   /* ═══ #194 · THE CLAN WEDDING IS A PLACE NOW, NOT A CARD YOU MIGHT DRAW ══
      (User, 2026-08-19: *"Ratking weedin I want as mandatory event on the main
      paths (you can add it after dogs atack) on the global map"*.)
@@ -33559,7 +33568,7 @@ const NODES={
   /* ── the spine, and the head of the water ─────────────────────────── */
   /* named for the ground, not for what is on it — see the note at `snare` */
   mother:{x:832,y:418,n:'The Black Fen',       t:'weird',ev:'mother'},
-  vill  :{x:948,y:296,n:'Coldharrow',          t:'town', ev:'village'},
+  vill  :{x:948,y:296,n:'Coldharrow',          t:'town', ev:'village',site:'coldharrow'},
   /* ── and here the road starts up the Hunch's north shoulder, because
      there is no other way past it. FORK B leaves from the village ────── */
   /* a ranged ratkin fight up on the ridge itself — high ground, which is
@@ -33624,7 +33633,15 @@ const NODES={
   p1    :{x:985,y:430,n:'Something on the road',t:'event'},
   /* the last quiet place. Everything after this node is the Snare. */
   shrine:{x:800,y:570,n:'The Door-Shrine',     t:'camp', ev:'shrine'},
-  hire2 :{x:668,y:548,n:'The Last Muster',     t:'hire', ev:'hire'},
+  /* ⛑ #237 - THE SECOND MUSTER TAKES THE SAME PAINTING, WRITTEN OUT RATHER THAN
+     INHERITED. The rule beside `MAP_PLACE` is that a place is keyed on the NODE so a
+     future hire stop does not silently pick up somebody else's art, and that rule is
+     kept: this is a second explicit key, not a fall-through on `t:'hire'`. It is here
+     because the alternative was ONE abstract glyph standing among 27 paintings, on a
+     node that is literally the same kind of place as the one the picture was made for.
+     ⚠ A node that gains art moves its own name plate (`NAME_DY_PLACE`), so the three
+     map counters are the gate for this one line and not a formality. */
+  hire2 :{x:668,y:548,n:'The Last Muster',     t:'hire', ev:'hire',site:'muster'},
   /* the map does not name what is waiting in it. The event does, once
      you are standing in it and it is too late to have picked another road.
      It sits at the mountain's southern foot — which is the whole reason the
@@ -33889,6 +33906,8 @@ const toDesign=v=>v*MAPH/VIEWH;             /* view px -> design px */
 /* the caption's top edge is +42 (the art's bottom), the plate runs ~30 tall,
    so its centre sits ~57 view px under the node point */
 const NAME_DY_SIGHT=Math.round(toDesign(57));   /* 54 */
+/* compact permanent places: 64px at the same -58% anchor, caption at +29 */
+const NAME_DY_PLACE=Math.round(toDesign(44));   /* 41 */
 /* the painting itself: 96px at translate(-50%,-58%), so it hangs from
    -55.7 to +40.3 around the node point and its centre is 7.7px ABOVE it.
    ⚑ THE OBSTACLE IS THE PAINTED CORE, NOT THE FILE'S BOX. Every one of
@@ -33899,6 +33918,8 @@ const NAME_DY_SIGHT=Math.round(toDesign(57));   /* 54 */
    a label may sit in the margin, which is invisible. */
 const ART_W=Math.round(96*.82), ART_H=Math.round(toDesign(96)*.82),
       ART_DY=-Math.round(toDesign(7.7));
+const PLACE_W=Math.round(64*.82), PLACE_H=Math.round(toDesign(64)*.82),
+      PLACE_DY=-Math.round(toDesign(5.1));
 /* ⚠ AND IT HAS TO SURVIVE BEING ASKED AT BOOT. `checkSpacing` and
    `checkRoadLabels` are boot IIFEs that run BEFORE `MAP_SIGHT` (a const,
    hundreds of lines below) is initialised, and reading a const from its
@@ -33909,6 +33930,7 @@ const ART_W=Math.round(96*.82), ART_H=Math.round(toDesign(96)*.82),
    the TEST-mode overlay and every drawNodes call are exact because by then
    the table exists. */
 const hasSight=n=>{try{return !!sightFor(n);}catch(e){return false;}};
+const hasPlace=n=>{try{return !!placeFor(n);}catch(e){return false;}};
 /* THE TWO BOXES A ROAD LABEL MUST NOT LAND ON. Both are functions of the
    node rather than constants, because #116 gave the map two kinds of node
    and a single rectangle can no longer describe either one honestly. */
@@ -33929,9 +33951,11 @@ const CAP_FOOT=2;             /* air left under it at the window's edge */
 const capLift=n=>!hasSight(n)?0:
   Math.max(0,Math.round(vy(n.y)+CAP_DROP_SIGHT-(VIEWH-CAP_FOOT)));
 const plateBox=n=>({x:n.x,
-  y:n.y+(hasSight(n)?NAME_DY_SIGHT-Math.round(toDesign(capLift(n))):NAME_DY),
+  y:n.y+(hasSight(n)?NAME_DY_SIGHT-Math.round(toDesign(capLift(n))):
+    hasPlace(n)?NAME_DY_PLACE:NAME_DY),
   w:NAME_W,h:NAME_H});
-const artBox=n=>hasSight(n)?{x:n.x,y:n.y+ART_DY,w:ART_W,h:ART_H}:null;
+const artBox=n=>hasSight(n)?{x:n.x,y:n.y+ART_DY,w:ART_W,h:ART_H}:
+  hasPlace(n)?{x:n.x,y:n.y+PLACE_DY,w:PLACE_W,h:PLACE_H}:null;
 function labelViolations(){
   const out=[],boxHit=(p,q)=>{
     const ox=(p.w+q.w)/2-Math.abs(p.x-q.x), oy=(p.h+q.h)/2-Math.abs(p.y-q.y);
@@ -34531,6 +34555,11 @@ const MAP_SIGHT={
   snare:'MAPEV27', wynn:'MAPEV28', oasis:'MAPEV29', bonfire:'MAPEV30',
   circle:'MAPEV31', coin:'MAPEV32', chase:'MAPEV33', mirehares:'MAPEV34'
 };
+/* Permanent places use a compact painted tier. They are keyed explicitly on
+   the node (`site`) so another hire stop or town does not inherit the art. */
+const MAP_PLACE={
+  hold:'MAPLOC01', fire:'MAPLOC02', muster:'MAPLOC03', coldharrow:'MAPLOC04'
+};
 /* ═══ THE SIGHT SHOWS FROM THE FIRST MINUTE - THE NAME STILL DOES NOT ════
    #113 hid a floating slot's painting behind the same `n.real` gate that
    hides its title ("a picture is a louder spoiler than a title"). #116 is
@@ -34547,6 +34576,11 @@ const MAP_SIGHT={
 function sightFor(n){
   if(!n||!n.ev)return null;
   const k=MAP_SIGHT[n.ev];
+  return (k&&typeof MAP_ART!=='undefined'&&MAP_ART[k])?MAP_ART[k]:null;
+}
+function placeFor(n){
+  if(!n||!n.site)return null;
+  const k=MAP_PLACE[n.site];
   return (k&&typeof MAP_ART!=='undefined'&&MAP_ART[k])?MAP_ART[k]:null;
 }
 /* ═══════════════════════════════════════════════════════════════════════
@@ -35227,14 +35261,15 @@ function drawNodes(){
        move onto a silhouette ring. #115/#116: the sight is a 96px landmark
        floating on the node point, out of the layout column entirely, its
        name a foot-caption, and a dealt slot shows it before arrival. */
-    const sight=sightFor(n);
+    const sight=sightFor(n),place=placeFor(n),art=sight||place;
     /* #150 - the contract's own destination. It shows from minute one, like a
        painted sight does, and it stops the moment the company stands in it:
        a trophy over a place you have already been is a to-do list that never
        ticks itself off. */
     const goal=(k===QUEST_GOAL&&!G.visited[k]);
     b.className='node '+st+' t-'+n.t+(n.mark?' mark':'')+(goal?' goal':'')+
-      (sight?' sighted':'')+(sight&&capLift(n)?' lowcap':'');     /* #197 */
+      (sight?' sighted':'')+(place?' place-sighted':'')+
+      (sight&&capLift(n)?' lowcap':'');     /* #197 */
     b.style.left=n.x+'px';b.style.top=vy(n.y)+'px';   /* #104: design -> view */
     /* #197 - and how far its caption has to climb to stay on the map. Written
        here rather than baked into the class so the CSS holds the RULE and the
@@ -35245,7 +35280,7 @@ function drawNodes(){
        on a crowded map it landed squarely on the neighbour's name. It is on
        the glyph now (and in the hover card), where it costs no vertical room. */
     b.innerHTML='<span class="glyph" title="'+(TYPETAG[n.t]||'')+'">'+
-      (sight?'<img src="'+sight+'" alt="">':GLYPH[n.t])+
+      (art?'<img src="'+art+'" alt="">':GLYPH[n.t])+
       /* #150 - inside the glyph, hanging off its top edge, so it is outside
          the layout column and outside the plate arithmetic */
       (goal?'<span class="gmark">'+TROPHY_SVG+'</span>':'')+'</span>'+

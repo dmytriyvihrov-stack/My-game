@@ -241,9 +241,9 @@ if (Test-Path $battleDir) {
 # stage-1/2/3 passes use.
 $siteDir = Join-Path $out 'world-map-sites'
 if (Test-Path $siteDir) {
-  # `MAP-EV*` and not `*-128`: the contact sheet lives in this folder too and
+  # `MAP-*` and not `*-128`: the contact sheets live in this folder too and
   # is a 480x320 proof, not an asset.
-  Get-ChildItem $siteDir -Filter 'MAP-EV*-128.png' | Sort-Object Name | ForEach-Object {
+  Get-ChildItem $siteDir -Filter 'MAP-*-128.png' | Sort-Object Name | ForEach-Object {
     $img = [System.Drawing.Image]::FromFile($_.FullName)
     $w = $img.Width; $h = $img.Height
     if ($w -ne 128 -or $h -ne 128) { $img.Dispose(); throw "$($_.Name) is ${w}x${h}, not 128x128 - rebuild it with build_event_sites.py" }

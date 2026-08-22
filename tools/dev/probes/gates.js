@@ -26,7 +26,8 @@
   o.map = {
     spacing: typeof spacingViolations === 'function' ? spacingViolations().length : 'n/a',
     label: typeof labelViolations === 'function' ? labelViolations().length : 'n/a',
-    orphans: Object.entries(MAP_SIGHT).filter(([k, v]) => !MAP_ART[v]).length,
+    orphans: Object.entries(MAP_SIGHT).concat(Object.entries(MAP_PLACE))
+      .filter(([k, v]) => !MAP_ART[v]).length,
   };
 
   o.cards = {
