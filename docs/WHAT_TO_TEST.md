@@ -26,6 +26,30 @@
 
 ---
 
+## 🧰 NOTHING SHOULD LOOK DIFFERENT, AND THAT IS THE TEST  *(#235 · 2026-08-22 · build log 8f.258)*
+
+**Reach it in three steps:** open the game → play a few minutes → look at the pictures.
+
+**What changed, and what should happen**
+
+- **The paintings moved out of the working file.** 88% of it was two generated blocks of base64;
+  they are two files under `art/embed/` now and the build pours them back for the page you play.
+- **So the answer to both of your questions is yes.** The page on the link is still ONE
+  self-contained file - measured, 350 paintings in it, the same 350 as before - and the itch zip is
+  built by the same script and is unchanged. Nothing about uploading or packaging is different.
+- **What you should notice: nothing at all.** Same art, same map, same portraits, same item icons,
+  same event stages.
+
+**What would be a bug**
+
+- **Any painting missing** - a blank event card, a flat-coloured map, a token with no picture, an
+  item slot showing a glyph where a painting used to be. That is the one failure this change could
+  cause, and it would be obvious rather than subtle.
+- The MENU background not painted on the front door.
+- Anything at all in the itch build that is not in the web build.
+
+---
+
 ## ⚔ THE BOARD ANSWERS AGAIN, THE BLOW SHOWS ON THE BAR, AND THE SHEET'S HEADER IS REBUILT  *(#234 · 2026-08-22 · build log 8f.257)*
 
 **Reach it in three steps:** start a run → walk into any fight for the board half → BACK TO THE ROAD
