@@ -203,6 +203,24 @@ Where there is slack, raise the line-height. Here there was none: #200 left `#iC
 678 with `iFoot` already squeezed to 1px, and the plaque's row height is the rail's reservation.
 
 
+⛔ **AND A THIRD SHAPE, WHICH IS NEITHER A SIZE NOR A WIDTH: A CAPTION SET SIDEWAYS IS THE
+TALLEST THING IN ITS ROW AND NOTHING ON SCREEN SAYS SO** *(#234, 2026-08-22)*. The company
+sheet's header carried `ON THE FIELD` beside the battle token in `writing-mode:vertical-rl` at
+`--fs1`. Measured: **85.2px tall, against the 58px picture it was labelling.** So the row was
+95.2px high to hold a LABEL, on every body in the game, and the two pictures the row exists for
+were both shorter than it. `#iChar` had **3.8px of slack on its worst body**, so every ask to
+grow anything in that header had been arithmetically impossible for as long as the caption was
+there, and nobody had looked because a caption is not the sort of thing a height audit opens.
+⚑ **THE GENERAL RULE: WHEN A FIXED COLUMN HAS NO ROOM, MEASURE THE THINGS THAT ARE NOT THE
+CONTENT.** A rotated label, a vertical rule, a sticky footer's own negative margin: each is a
+box with a height, and a height that comes from `writing-mode` is a LENGTH OF TEXT wearing the
+wrong axis - the one number in a layout that grows when somebody edits a string.
+⚠ **AND THE FIX WAS TO DELETE IT, WHICH IS ONLY AVAILABLE BECAUSE IT WAS FURNITURE.** A 26x38
+painted body, on a sheet already carrying this person's portrait, name, class and weapon, is
+not ambiguous; the sentence saying it is what they look like on the field is `.claude/rules/
+event-cards.md`'s own furniture cut arriving on a layout problem. **Check whether the thing
+setting the height is saying anything before you go looking for pixels elsewhere.**
+
 ⚑ **AND THE SAME RULE ON THE OTHER AXIS, WHICH IS WORSE BECAUSE THE BREAK MOVES** *(#200,
 2026-08-19)*. A raised font size breaks the box measured around the old one; **a narrowed COLUMN
 breaks the ROW measured for the old one, and the damage does not stay where the change was.** The

@@ -133,6 +133,39 @@ One hunk of this change silently reverted to its previous version while the
 row of run-together text. The editor reported success. **On a shared working
 tree the tool's word is not the evidence; the file is.**
 
+## ⛔ #234 · A FAMILY NORMALISED ON ONE AXIS INVERTS ITS OWN LADDER ON THE OTHER
+
+*(2026-08-22. The user, about the INTELLECT pack: "make 2,3 brains smaller - so the flat and
+small. Becasue now it looks a bit as ass".)*
+
+The nine BRAINS are re-exported by `prototype/export_brains_fullheight_32.py`, which #230 wrote
+to normalise the family to a **common content HEIGHT of 26**, capped by a **30px width**. Its
+own note says the cap is what keeps the flat lumps flat. What neither the note nor anybody
+reading it noticed is what the cap does to the LADDER: the four weakest pictures are drawn
+WIDE and FLAT, so all four hit the width cap and came out as **the four WIDEST images in the
+family** - 30x15, 30x18, 30x21, 30x20 against the crowned ones at 29x26. A readout whose
+pictures grow, shrink, then grow again is not reading the thing it is drawn from.
+
+⛑ **THE FIX IS A PER-GRADE CAP, AND IT IS NEVER A SQUASH.** `LUMP_W = {minus-4: 18, minus-3:
+21, minus-2: 24}` against the 30 grade minus-1 keeps, so the bottom of the family now grows
+the way the top does: **18x9 / 21x13 / 24x17 / 30x20 / 28x22 / 28x22 / 29x26 / 30x24 / 29x26**.
+Scaling height alone would have been a non-uniform resample of a pixel painting, which is the
+one thing this whole pipeline exists to refuse.
+⚠ **GRADE 1 CAME DOWN THOUGH NOBODY ASKED FOR IT**, and that is the ladder talking rather than
+taste: it is the WEAKEST picture in the set, and leaving it at the cap while 2 and 3 came down
+would have made the bottom run big-small-small-big.
+
+⛔ **AND `STAT_ICON` IS EMBEDDED FROM THE PACK, ROW BY ROW, NEVER HAND-EDITED.** The block in
+the prototype is generated and its rows carry their grade as a comment for exactly this
+purpose: re-embedding is a script that matches `/* minus-2 */'data:image/png;base64,...'`
+inside the `int:[ ... ]` slice and rewrites only the grades whose PNG changed. ⚠ **The rows
+are in `TELLS` order, STRONGEST FIRST, and the pack ships the other way round**; the grade
+comment is the only thing that makes a row identifiable, so it is load-bearing and not
+decoration.
+⚠ **The pack lives in `prototype/assets/`, which is gitignored and therefore exists only in the
+MAIN working tree.** A desk running the exporter passes `GT_ART_ROOT` at it; the embedded
+base64 in the prototype is what actually ships, and it is what a desk commits.
+
 ## Exact live mapping
 
 | Live scene | Art key | File |
