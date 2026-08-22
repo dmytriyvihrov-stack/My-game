@@ -75,13 +75,25 @@ def url_for(path):
     return 'file:///' + os.path.abspath(path).replace('\\', '/')
 
 
+def same_url(a, b):
+    """⛔ THE BROWSER PERCENT-ENCODES WHAT WE HAND IT, AND THIS REPO'S PATH IS
+    CYRILLIC. `location.href` comes back as `Google%20%D0%94%D0%B8%D1%81%D0%BA`
+    against the `Google Диск` we asked for, so a raw string compare refuses the
+    MAIN desk - the one every session starts on - and tells you it is somebody
+    else's browser. Unquote both sides. ⚠ `unquote`, never `unquote_plus`: the
+    folder is literally called `Battle rothers + taletop`."""
+    from urllib.parse import unquote
+    n = lambda s: unquote(str(s or '')).replace('\\', '/').rstrip('/').lower()
+    return n(a) == n(b)
+
+
 def connect(port, expect=True):
     eyes = load_eyes()
     c = eyes.CDP(port)
     if expect:
         href = c.eval('location.href')
         want = url_for(PROTO)
-        if (href or '').lower() != want.lower():
+        if not same_url(href, want):
             raise SystemExit('REFUSED: port %d is holding\n  %s\nand this worktree is\n  %s\n'
                              'That is another desk\'s browser. Run `gt.py launch` first.'
                              % (port, href, want))
@@ -95,7 +107,7 @@ def cmd_launch(a):
     url = url_for(a.url or PROTO)
     try:                                   # already ours? then say so and stop
         c = eyes.CDP(port)
-        if (c.eval('location.href') or '').lower() == url.lower():
+        if same_url(c.eval('location.href'), url):
             out(json.dumps({'port': port, 'url': url, 'reused': True}))
             return
         raise SystemExit('port %d is held by another page: %s' % (port, c.eval('location.href')))
