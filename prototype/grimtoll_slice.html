@@ -4510,7 +4510,14 @@ body:has(#battle.on) #audioBox button{font-size:var(--fs2);padding:var(--p1) var
    what the ask is describing. */
 .itl{display:flex;align-items:center;gap:8px;
   border-bottom:1px dotted #332818;cursor:help;min-width:0}
-.itl .tk{font-family:var(--mono);font-size:var(--fs2);letter-spacing:.13em;flex:none;width:78px}
+/* ⛔ #240 - 30 AND NOT 78, AND IT IS MEASURED. Three glyphs of real JetBrains
+   Mono at `--fs2` plus .13em of tracking render at **26.6px** (canvas-measured
+   on the running sheet, the way #202's own table was); 30 is that plus the
+   trailing letter-space the tracking adds after the last glyph and a pixel of
+   air. The other 48 go to `.tv`, which is what stops Skree and Bruht clipping.
+   ⚠ Re-measure if the face or `--fs2` moves: this is #202's finding on the
+   same row, one column across. */
+.itl .tk{font-family:var(--mono);font-size:var(--fs2);letter-spacing:.13em;flex:none;width:30px}
 /* ═══ #204 + #230 - THE STAT'S OWN PICTURE ══════════════════════
    `image-rendering:pixelated` or a 32px painting resampled into a 32px box is
    still smoothed by the browser's default filter on a fractional device pixel
@@ -8606,18 +8613,31 @@ const TELLS={
        [9,'Fairly brave'],[7,'Nervous'],[5,'Easily frightened'],[3,'A coward, and knows it'],
        [0,'Runs before it starts']]}
 };
-/* ⛔ #240 - THE FOUR WORDS COME OFF THE COMPANY SHEET'S STAT ROWS.
-   (User: *"Из инвентаря где статы - выпилить слова 'STrength', Intelect, etc.
-   Оставить токо значения (ну и соответсвенно у них будет больше спейса). (но
-   оставить возможность их вернуть, если будет віглядить плохо)"*.)
-   ⛑ THE ROW IS `[LABEL 78px][32px PICTURE][the tell, ellipsis-clipped]`, and
-   the picture is the half that identifies the stat - which is what #204 and
-   #230 built the four families FOR. The label was saying the same thing again
-   in a mono column 78px wide, and `.itl .tv` has been clipping since #202
-   because of it. What the cut buys is exactly that 78px, handed to the value.
-   ⚠ THE FLAG IS PART OF THE ASK AND IS NOT DECORATION ("но оставить
-   возможность их вернуть"). One `true` here and the sheet is as it was. */
-const SHEET_STAT_WORDS=false;
+/* ═══ ⛔ #240 · THE STAT LABEL IS THREE LETTERS, AND THE FLAG EARNED ITS KEEP
+   (User, first: *"Из инвентаря где статы - выпилить слова 'STrength',
+   Intelect, etc. Оставить токо значения (ну и соответсвенно у них будет
+   больше спейса). (но оставить возможность их вернуть, если будет віглядить
+   плохо)"*. Then, having looked at it: *"Returned it, just shorten: STR. INT
+   ..."*.)
+
+   ⛑ THE ROW WAS `[LABEL 78px][32px PICTURE][the tell, ellipsis-clipped]` and
+   the whole 78 was the problem: `.itl .tv` had been clipping since #202
+   because of it (measured, all 16 body x state cases: **8 clipped rows on
+   Skree and Bruht, and 0 with the column gone**). Deleting the label bought
+   the room and cost the row its name; three letters buy **most** of the room
+   and keep it. **The switch this file insisted on writing is what made the
+   second answer cost one line instead of a re-argument** - which is the whole
+   reason "leave a way back" is in the ask and in this file.
+
+   ⛔ AND THE SHORT FORM IS THE KEY ITSELF, NOT A FIFTH TABLE. `str`/`agi`/
+   `int`/`mor` are already the three letters; `TELLS[k].lbl` stays the long
+   word for every other surface that wants one (the gear comparison, the
+   promotion card, the muster hover). A `short:` field here would be the same
+   fact written twice, which is what #137 is about.
+   ⚠ `false` STILL WORKS and still means the picture alone. */
+const SHEET_STAT_WORDS=true;
+/* the sheet's own label. `k.toUpperCase()` and nothing else. */
+const statKey=k=>k.toUpperCase();
 const tell=(k,v)=>(TELLS[k].s[tellIdx(k,v)]||['','–'])[1];
 /* the description one band better than the one they have — so a promotion can
    always say what it is moving them TOWARD even when this single point is not
@@ -33271,7 +33291,7 @@ function drawInv(){
      pinned to the left edge would be a picture of a stat it is not next to. */
   const tellCell=k=>'<div class="itl'+(statPts>0?' spend':'')+'" data-tell="'+k+'">'+
     (SHEET_STAT_WORDS
-      ?'<span class="tk" style="color:'+TELLS[k].col+'">'+TELLS[k].lbl+'</span>':'')+
+      ?'<span class="tk" style="color:'+TELLS[k].col+'">'+statKey(k)+'</span>':'')+
     '<span class="tvw">'+statIco(k,s[k])+
     '<span class="tv">'+tell(k,s[k])+'</span></span></div>';
 

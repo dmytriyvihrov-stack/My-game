@@ -91,11 +91,12 @@ to be reports about something the build was not doing at all** and both are at t
   *If it gets in the way, say so* - the honest fix is moving the pair off that screen, which is a
   decision rather than a tidy-up.
 
-- **The four stat rows lost their labels.** STRENGTH · AGILITY · INTELLECT · MORALE are gone and the
-  picture carries the name; the word that was being clipped now has 78px more room. **Skree's and
-  Bruht's rows were clipping on the shipped build and are not now.**
-  *If it looks worse than it reads:* say so - it is one `true` in the file (`SHEET_STAT_WORDS`) and
-  the labels are back.
+- **The four stat rows say STR · AGI · INT · MOR.** The long words are gone and the three-letter
+  label stays, which is your own correction after seeing them deleted outright. The column went 78px
+  to **30** and the other 48 went to the word beside the picture: **Skree's and Bruht's tells were
+  clipping on the shipped build and are not now.**
+  *If you would rather have no label at all after all,* it is still one `false`
+  (`SHEET_STAT_WORDS`).
 
 ### THE MUSTER · reach it: the muster field node
 

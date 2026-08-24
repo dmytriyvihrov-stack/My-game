@@ -389,6 +389,25 @@ with `#iChar`'s slack unchanged.
 one ternary. *"но оставить возможность их вернуть, если будет виглядить плохо"* is a request for a
 switch, not a hedge, and a rule file that records the cut without recording the switch loses it.
 
+⚡ **AND HE LOOKED AT IT AND USED THE SWITCH THE SAME DAY**: *"Returned it, just shorten: STR. INT
+..."*. So the shipped answer is **`true`, with the label three letters wide** - which is the reading
+the whole entry was circling: **the 78px column was the fault and the NAME was not.** Three letters
+cost 30px and give the other 48 to the value, and Skree and Bruht still do not clip.
+⛔ **THE SHORT FORM IS `k.toUpperCase()` AND NEVER A FIFTH TABLE.** `str`/`agi`/`int`/`mor` are
+already the three letters; `TELLS[k].lbl` stays the long word for every other surface that wants one.
+⛑ **THE SWITCH IS WHY THE SECOND ANSWER COST ONE LINE.** That is the argument for writing one every
+time something is cut on somebody's word: the ask and the correction were hours apart, and without it
+the second would have been a re-argument instead of a `true`.
+⚠ **30 IS MEASURED, NOT PICKED**: three glyphs of real JetBrains Mono at `--fs2` plus .13em of
+tracking is **24.1px** on the canvas, identical for all four words, and 30 is that plus the trailing
+letter-space and a pixel of air. Driven on all 16 body x state cases: 0 labels clipped, 0 tells
+clipped.
+⛑ **AND FORCE THE COMPANY BEFORE COMPARING A SHEET ACROSS TWO BUILDS.** The first reading of this
+said the worst slack had gone -5 to **-24** and named a 19px growth in `#iHead` - a block this change
+cannot reach. `makeParty()` rolls names per page load and a longer one wraps that header. On an
+IDENTICAL company (`ARENA.COMPS.prepared()`) the two builds are byte-identical: worst `vesna/both` at
+-5, the same eight child heights, both ways.
+
 ⚠ **AND THE SAME PICTURES WENT THE OTHER WAY ON THE MUSTER WALL IN THE SAME EDIT**, which is worth
 reading beside this: #197 HID the four adjectives there for the opposite reason (they were the
 longest line on the row and nobody could compare them by eye) and said in capitals that hiding them
