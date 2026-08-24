@@ -236,6 +236,53 @@ paintings only by the hand-run curve probe above. **A place crowded by a neighbo
 three counters.** Today all five sit where an abstract mark sat and nothing moved; the day one is
 placed fresh, measure it by eye against the picture that pays this file's gate.
 
+## ⛔ #239 · THE GOAL FADES WITH THE MAP AND ITS TROPHY DOES NOT
+
+*(2026-08-24. The user: **"final destination on the map - make it the same transparent as the other
+ones that are not available yet. And still show the cup over it as the final destination."**)*
+
+`.node.goal` was `opacity:.92`, which made **the one place you have never been the brightest thing on
+the map** - brighter than a node you had walked (`done` is 1 but desaturated) and two and a half times
+a node you had merely heard of (`far` is .38). The Snare read as somewhere already open, and the
+trophy - the thing actually saying *this is where the contract ends* - carried no more information than
+the glow beside it.
+
+⛔ **THE FADE MOVES OFF THE NODE AND ONTO THE NODE'S TWO PARTS, BECAUSE `opacity` IS A GROUP AND NO
+CHILD CAN CLIMB BACK OUT OF ONE.** A parent at .38 composites its whole subtree at .38; there is no
+declaration a child can carry that undoes it. The pip lives INSIDE `.glyph` (#150: `bottom:100%` is
+what makes one rule work on a 40px chip and a 96px painting alike), so the only way to fade the picture
+and not the pip is to fade **what is beside the pip** rather than the box around it:
+
+```css
+.node.goal{opacity:1}
+.node.goal.far>.glyph>*:not(.gmark),.node.goal.far>.nm{opacity:.38}
+.node.goal.locked>.glyph>*:not(.gmark),.node.goal.locked>.nm{opacity:.28}
+```
+
+⚠ **THE CHIP'S OWN BORDER AND GROUND ARE NOT IN THOSE RULES, AND TODAY THAT IS EXACTLY NOTHING.**
+`snare` is in `MAP_SIGHT`, so the goal is `.sighted` and its `.glyph` is already
+`border:none;background:transparent` - the painting IS the whole of it. **If the contract ever ends
+somewhere unpainted, the 40px chip's edge and ground have to join the list - and they may NOT simply
+take `opacity`,** for the reason in capitals above.
+
+⛑ **PROVED BY MEASURING THE EFFECTIVE OPACITY OF EACH PART, NOT BY LOOKING AT IT**, because the
+trophy carries `goalbeat` and a screenshot samples it at whatever phase it is in:
+
+```js
+/* the goal's painting and plate must equal any other `far` node's; its pip must not */
+(()=>{const eff=el=>{let o=1,e=el;while(e&&e.id!=='wCam'){o*=parseFloat(getComputedStyle(e).opacity);
+    e=e.parentElement;}return +o.toFixed(3);};
+  const n=document.querySelector('.node.goal'),f=document.querySelector('.node.far:not(.goal)');
+  return {picture:eff(n.querySelector('.glyph img')),plate:eff(n.querySelector('.nm'));
+          trophy:eff(n.querySelector('.gmark')),neighbour:eff(f.querySelector('.glyph img'))};})()
+/* shipped: picture .38 · plate .38 · neighbour .38 · trophy .72 (its own resting beat) */
+```
+
+⚠ **THE PIP'S POSITION IS UNCHANGED AND IT HANGS CLEAR OF THE PAINTING'S TOP EDGE**, which is
+more visible now that the painting under it is dim. Captured against a `git show HEAD:` baseline driven
+to the same node: identical placement, both builds. If it is ever judged detached, the fix is inside
+`.gmark` and it still costs the plate arithmetic nothing.
+
 ## Numbers that are load-bearing, with the reason attached
 
 | Thing | Value | Why it is that and not bigger |

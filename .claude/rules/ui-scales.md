@@ -260,6 +260,67 @@ to 10. **This is a real trade and it was made knowingly**, on the newer instruct
 distance test. If the pair shouts again at the close stop, the answer is dimmer or narrower, never
 smaller.
 
+## 4b. ⛔ #239 · A CARD WITH A HARD CEILING DOES NOT CLIP, IT CRUSHES THE THING BESIDE IT
+
+*(2026-08-24. Coldharrow's rack went from one pictured row to three.)*
+
+§5's clip counter and §5's overlap probe both read **0** while this happened, and so did `LINT()`.
+`#wDlg` is `max-height:658px; overflow-y:hidden`, and `#wChoices` inside it is `position:sticky`. Add
+322px of buttons and the buttons **win**: the card overflowed its own box by **165px** and `.bd` - the
+card's prose - was squeezed to a height of **ZERO**. The whole Coldharrow paragraph was on the card, in
+the DOM, measurable, and invisible.
+
+⛔ **SO THE MEASUREMENT FOR A `#wDlg` CARD IS `scrollHeight - clientHeight` ON THE CARD ITSELF, AND THE
+HEIGHT OF `.bd`.** Neither counter in §5 asks either question: the clip counter skips `overflow:auto`
+(and `.bd` IS auto, by design), and #230's overlap probe walks a column's CHILDREN, which are all
+exactly where they should be. This is a third failure mode beside those two and it belongs beside them:
+
+```js
+/* any card in #wDlg. Expect 0 overflow and a .bd with height in it. */
+(()=>{const d=$('wDlg'),b=d.querySelector('.bd');
+  return {cardOverflow:d.scrollHeight-d.clientHeight,
+          bdHeight:b?+b.getBoundingClientRect().height.toFixed(0):null,
+          lastRowInMap:(r=>r&&r.bottom<=$('wMap').getBoundingClientRect().bottom+.5)
+            ((d.querySelector('#wChoices .choice:last-child')||{}).getBoundingClientRect
+              ?d.querySelector('#wChoices .choice:last-child').getBoundingClientRect():null)};})()
+```
+
+⚠ **AND `replaceDlg()` FIRST, OR THE FIRST TWO READINGS ARE BOTH WRONG.** #197 wrote this down for the
+map and it bites here identically: a card placed while its screen was hidden measures every
+`offsetHeight` as zero, so the box lands somewhere it will never be again. Measured before
+`replaceDlg`, Coldharrow's road-out button read **y 811 on a stage that ends at 760** - a soft lock that
+was not there. Measured after, 683..737 and fine. **Pin the card before you believe a pixel.**
+
+⛑ **THE ANSWER WAS THE PICTURE, WHICH IS #238'S RULING ON THE WAGON ONE CARD LATER**: a price list in
+this column does not get a painting, because 212px is exactly the room three pictured rows need. With
+it gone the card measures **0 overflow** and the prose gets 77px back. ⚑ The picture was also an
+orphan - `artFor('E5')`, the retired first-generation Ratkin Snare plate, which no card maps to since
+the stage-4 pack re-pointed `snare` at `EV27`.
+
+## 4c. ⛔ #239 · A BAR'S CHIPS MAY LIVE ON TWO SCREENS, AND `:is()` IS WHY THAT COSTS NOTHING
+
+*(The user: **"keep showing the top bar (count, size, resources etc.) with the global menu on the
+inventory page."**)*
+
+⛔ **A SECOND 42px BAR ON THE COMPANY SHEET IS ARITHMETICALLY CLOSED.** The stage is 720, `#iBar` is
+already 42, and §5's own note records `#iChar` at **678 into 678 with 3.8px of slack on its worst
+body**. There is nowhere to put a bar. There is room in the bar that is already there.
+
+⛑ **SO `#wCompany` AND `#wRes` ARE MOVED, NOT COPIED**, by `show()`, exactly the way `helpBtn` is
+reparented twelve lines above it. A copy is a dead box: both are written BY ID by `worldTick`, so a
+duplicate would never update. **Ids, handlers and hovers all survive a move**; what does not survive is
+a selector that names one parent, and there were two - `#wBar .cchip,...{min-height:var(--barChip)}`
+and `worldTick`'s `querySelectorAll('#wBar [data-w]')`. Both are `:is(#wBar,#iBar)` now.
+
+⛔ **`:is()` AND NEVER A SHARED CLASS**, which is #219's arithmetic on a second surface: `:is()` takes
+the specificity of its most specific argument, so the rule keeps exactly the weight it had. A class
+would drop it under whatever `#iBar` rule happens to sit above.
+⚠ **THE MEASUREMENT THAT SAYS IT FITS**: 1176 of 1280 used, seven chips all at `--barChip` 30,
+`#iChar` unchanged at 678, `GT.clip()` `[]` on the sheet. ⚠ **The day the company name or either button
+grows, re-run it** - the slack is about 30px.
+⚠ **AND THE WAGON CHIP AND THE DAY PLAQUE STAY ON THE MAP**: the sheet already has a THE WAGON button,
+and `#wPlaque` is absolutely centred on its own bar, so on this one it lands across the company name.
+
 ## 5. Before the CSS ships
 
 ⛔ **THE PREVIEW PANE COMPOSITES NOTHING, SO A SCREENSHOT PROVES NOTHING AND `setInterval` FIRES

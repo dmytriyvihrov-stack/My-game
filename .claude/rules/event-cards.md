@@ -785,6 +785,57 @@ door lands on the STAGE** - a `doors:[]` row in the `prStage` call, never a four
 `proCard`.
 
 
+## ⛔ #239 · A PAYOUT IS DERIVED TWICE NOW: FROM THE FX, AND FROM THE WORLD
+
+*(2026-08-24. The user: **"Salvage - 50% of the income from the current things in everything, for
+everything where it is more than 3 salvage"** and **"in the second fight (the chase) - much stingier,
+the choice for letting go or killing prisoners"**.)*
+
+This file has said since #176 that a door's cost is READ off its `fx` and never typed. Two asks push
+that one step further: what a row is WORTH is no longer a property of the row alone.
+
+⛔ **A NUMBER ON A CARD IS AN AMOUNT OF STUFF, NOT AN AMOUNT OF PAY.** `salvageCut(n)` halves anything
+over three; the pile a card describes is unchanged and what it is worth is decided in one place. The
+alternative was editing **40 of the 49 salvage figures in the content**, which puts the rule in 40
+places and gets it wrong on the 41st card somebody writes.
+
+⛔ **AND THE CUT IS TAKEN AT `payMat`, WHICH IS THE ONE MATERIALS DOOR, BECAUSE THERE WERE FIVE.**
+`takeLoot`, `takeMercy`, the CAMPS picker, `applyFx` and `pickChoice` each carried their own copy of
+`['salvage','wood','iron','gems'].forEach(...)`. That is the shape this file has merged out four times
+(`choiceNote` #150, `raceDoorPick` #159, the mood echo #176, `applyHurt` #197) and every one of them
+had drifted by the time somebody looked. **A cut applied at four of five sites is not a nerf, it is a
+bug.** `payMat` returns what it paid, so `pickChoice`'s `addPaid`, `clashAfter`'s travelling
+`G.clashHaul` and `consequences`' chip row all report the payment rather than the authored figure;
+`evPaidOf` takes the same cut, so `fxNote` promises it.
+
+⛔ **A ROW MAY ALSO BE DERIVED FROM THE FIELD IT IS DEALT ON, AND `MERCY` IS THE FIRST.** The three
+prisoner rows paid a flat +30/+5 and +60/+9/+1 gem whether **one** body was kneeling or **six**. The
+screen already knew: it speaks their race in `mercyLine` and names their kit in `MERCYSAY.strip`, and
+the payout was the one thing on the card that did not read `MERCYASK`. `MERCY.per` is per head,
+`mercyOpts(n)` builds the live rows, and **the renderer and `takeMercy` are handed the SAME built
+objects** - a row built twice with two counts is the promise-versus-payment defect wearing a new coat.
+⚑ **A chase-only special case would have been a second mercy table**, which is what this file spends
+its length deleting. The user named one fight; the fault was in all of them.
+⛔ **MORALE IS FLAT AND STAYS FLAT.** What it costs the company to watch you do this is a fact about
+the DECISION and not about the body count. The gem is a THRESHOLD (4 heads) for the same reason: it is
+the one thing on the card that is not money, and a fifth of a gem is nothing.
+
+⚠ **AND TWO DERIVATIONS CAN STACK, ON PURPOSE.** The mercy salvage is per head AND then cut by
+`payMat`, because the cut is a rule about every pile in the game. Both apply, the chips are derived, and
+nothing on screen can disagree about which. **A new payout that does not want to be cut authors its
+figure at three or under** - which is what the break-down table in the stash does, and it says so.
+
+### After a change here
+
+```js
+/* the label a door prints, against what the door pays. Expect them equal. */
+(c=>{G.camp.salvage=0;const said=fxNote(c.fx),paid=payMat(c.fx).salvage;G.camp.salvage=0;
+  return {authored:c.fx.salvage,label:said,paid:paid};})
+  (EVENTS.aqueduct.choices.find(c=>c.fx&&c.fx.salvage))    // authored 6 -> "+3 salvage" -> 3
+/* and the mercy table at every count a field can produce */
+[1,2,3,4,6].map(n=>n+': '+mercyOpts(n).map(o=>choiceNote(o).replace(/<[^>]*>/g,'')).join(' | '))
+```
+
 ## Before the card ships
 
 

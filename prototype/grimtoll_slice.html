@@ -2644,7 +2644,12 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:var(--f
    `.cchip`, `.bcchip`, `.rseg` and `.tchip` are drawn only inside #wCompany
    and #wRes today, and an unscoped height would follow the first one of them
    that is ever reused on another screen. */
-#wBar .cchip,#wBar .bcchip,#wBar .rseg,#wBar .tchip{min-height:var(--barChip)}
+/* #239 - and `#iBar`, which is the same 42px bar on the sheet and now holds
+   the same chips. `:is()` takes the specificity of its most specific
+   argument, so both keep exactly the weight this rule had (#219's own
+   arithmetic, and the reason it is not a shared class). */
+:is(#wBar,#iBar) .cchip,:is(#wBar,#iBar) .bcchip,
+:is(#wBar,#iBar) .rseg,:is(#wBar,#iBar) .tchip{min-height:var(--barChip)}
 #wCompany{display:flex;align-items:center;gap:6px;min-width:0}
 #wRes{display:flex;align-items:center;flex:none}
 /* the counted resources: one strip, segments sharing borders */
@@ -3006,8 +3011,40 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:var(--f
    Gold, not the cache's green: green is "you know what is here" (and the
    Snare's plate must not start claiming that), gold is "this is the one
    that ends the run". */
-.node.goal{opacity:.92}
-.node.goal.live,.node.goal.here,.node.goal.walking{opacity:1}
+/* ═══ ⛔ #239 · AND IT FADES WITH THE REST OF THE MAP ═══════════════════
+   (User, 2026-08-24: *"final destination on the map - make it the same
+   transparent as the other ones that are not available yet. And still show
+   the cup over it as the final destination."*)
+
+   `.92` made the one place you have never been the BRIGHTEST thing on the
+   map, brighter than a node you had walked (`done` is 1 but desaturated) and
+   two and a half times a node you had merely heard of (`far` is .38). So the
+   Snare read as somewhere already open, and the trophy - which is the thing
+   actually saying "this is where the contract ends" - was carrying no more
+   information than the glow beside it.
+
+   ⛔ THE FADE MOVES OFF THE NODE AND ONTO THE NODE'S TWO PARTS, BECAUSE
+   `opacity` IS A GROUP AND NO CHILD CAN CLIMB BACK OUT OF ONE. A parent at
+   .38 composites its whole subtree at .38; there is no declaration a child
+   can carry that undoes it. The pip lives INSIDE `.glyph` (see #150 above -
+   `bottom:100%` is what makes one rule work on a 40px chip and a 96px
+   painting alike), so the only way to fade the picture and not the pip is to
+   fade what is beside the pip rather than the box around it.
+
+   ⚠ THE CHIP'S OWN BORDER AND GROUND ARE NOT IN THESE RULES, AND TODAY THAT
+   IS EXACTLY NOTHING. `snare` is in `MAP_SIGHT`, so this node is `.sighted`
+   and its `.glyph` is already `border:none;background:transparent` - the
+   painting IS the whole of it. If the contract ever ends somewhere unpainted,
+   the 40px chip's edge and ground have to join the list here, and they may
+   NOT simply take `opacity` for the reason in capitals above.
+
+   ⚑ THE OTHER FOUR STATES KEEP 1 AND ARE WRITTEN OUT, not left to fall
+   through: `here`, `live` and `walking` are the states that mean "you may
+   act on this", and `done` is #194's walked-and-spent. Only `far` and
+   `locked` are the "not yet" the ask is about. */
+.node.goal{opacity:1}
+.node.goal.far>.glyph>*:not(.gmark),.node.goal.far>.nm{opacity:.38}
+.node.goal.locked>.glyph>*:not(.gmark),.node.goal.locked>.nm{opacity:.28}
 .node.goal .gmark{position:absolute;left:50%;bottom:100%;transform:translateX(-50%);
   margin-bottom:2px;line-height:0;pointer-events:none;z-index:3;
   filter:drop-shadow(0 2px 4px rgba(0,0,0,.9));animation:goalbeat 2.4s ease-in-out infinite}
@@ -4027,6 +4064,11 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:var(--f
 .rseg.click:hover{border-color:var(--g3)}
 .gtx{flex:1 1 auto;display:flex;flex-direction:column;gap:2px;min-width:0}
 .gtx .gpr{color:var(--g4);letter-spacing:.04em}
+/* #239 - the tier and the slot, in the same mono label the stash row's `.id`
+   wears. Same size, same colour, same tracking: it is the SAME sentence on a
+   different screen, and a shop that said it in its own voice would be the
+   fourth vocabulary for four slots. */
+.gtx .gsl{font-family:var(--mono);font-size:var(--fs1);color:#8a7449;letter-spacing:.1em}
 .gtx .gsay{color:#a08a5e;line-height:1.4;white-space:normal}
 /* ═══ THE FORK CARD (#58) ══════════════════════════════════════════════════
    A road row is three things on ONE line — where it goes, what the leg costs,
@@ -5017,6 +5059,21 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:var(--f
 /* and on the rail, so it is visible without opening anybody */
 .rmem .star{font-size:var(--fs2);color:#d9bd7e;text-shadow:0 0 5px rgba(217,189,126,.6)}
 .itabbody{flex:1;overflow:auto;padding:var(--p4);display:none;flex-direction:column;gap:5px}
+/* #239 - the break-down door and what a row says in that mode. Bottom RIGHT,
+   which is the ask; `align-self` rather than a float because the tab body is
+   a flex column and a float in one is a rule that does nothing. */
+.iscrapbtn{align-self:flex-end;margin-top:var(--p3);font-family:var(--mono);
+  font-size:var(--fs1);letter-spacing:.12em;color:#8a7449;background:#1d160c;
+  border:1px solid var(--e2);padding:var(--p3) var(--p5);cursor:pointer;flex:none}
+.iscrapbtn:hover:not(:disabled){color:#c9b98f;border-color:var(--e3)}
+.iscrapbtn:disabled{opacity:.38;cursor:default}
+.iscrapbtn.on{color:#e0a89c;border-color:#8c3a31;background:#241210}
+/* the row wears the blood edge while it is a thing you are about to destroy,
+   which is the same `--blood-lit` a danger door wears on a card */
+.item.scrapping{border-color:#8c3a31}
+.item.scrapping:hover{background:#2a1512}
+.item .iscrap{font-family:var(--mono);font-size:var(--fs1);letter-spacing:.04em;
+  color:#c9a227;margin-top:2px}
 .itabbody.on{display:flex}
 /* #192 - a row, for the same reason the slot is one: the picture beside the
    lines rather than inside the first of them */
@@ -6849,6 +6906,35 @@ const show=i=>{
   /* #130 - the way back to the menu, on every screen that has a coherent out.
      See MENU_ON above for which and why. */
   const mb=$('menuBtn');if(mb)mb.classList.toggle('on',!!MENU_ON[i]);
+  /* ═══ ⛔ #239 · THE ROAD BAR'S READOUTS FOLLOW THE PLAYER ONTO THE SHEET
+     (User, 2026-08-24: *"keep showing the top bar (count, size, resources
+     etc.) with the global menu on the inventory page."*)
+
+     ⛔ MOVED, NOT COPIED, AND CERTAINLY NOT A SECOND BAR. `#wCompany` and
+     `#wRes` are written BY ID by `worldTick`/`resStrip`, so a duplicate would
+     be a dead box that never updates - and a second 42px bar is arithmetically
+     closed anyway: the stage is 720, `#iBar` already takes 42, and `#iChar`
+     measures 678 into 678 with 3.8px of slack on its worst body (#230). There
+     is nowhere to put a bar; there is room in the bar that is already there.
+
+     ⛑ IT IS THE `helpBtn` REPARENT DIRECTLY ABOVE THIS, and for the same
+     reason: ids, handlers and hovers all survive a move, and `#iBar`'s own
+     `.sep{flex:1}` puts the strips left of the two buttons without one new
+     layout rule.
+     ⚠ THE WAGON CHIP AND THE DAY PLAQUE STAY ON THE MAP. `#iBar` already has
+     a THE WAGON button - a third door to one card on one screen is the clutter
+     #238 was careful about - and `#wPlaque` is absolutely centred on its own
+     bar, so on this one it would land across the company name.
+     ⚠ RESTORED IN `#wBar`'S OWN ORDER (company, sep, res, wagon, plaque), or
+     the strip comes home on the wrong side of the gap. */
+  (()=>{const wb=$('wBar'),ib=$('iBar'),co=$('wCompany'),re=$('wRes');
+    if(!wb||!ib||!co||!re)return;
+    if(i==='inv'){const sep=ib.querySelector('.sep');
+      if(co.parentNode!==ib){ib.insertBefore(co,sep);ib.insertBefore(re,sep);}
+    }else if(co.parentNode!==wb){
+      wb.insertBefore(co,wb.querySelector('.sep'));
+      wb.insertBefore(re,$('wWagon')||wb.querySelector('#wPlaque'));
+    }})();
   /* the REAL screen id, not a pre-collapsed battle/world. Which cue a screen
      gets is setMusicMode's question and nobody else's; this line answering
      half of it early is what made a menu cue impossible to add. */
@@ -8965,7 +9051,11 @@ function drawDoll(cv,p){
   }
   /* how much of them is still standing: the torso fills from the feet up.
      The bars above print the number; this is the shape of it. */
-  const uu={st:effStats(p)},hpMax=D.hp(uu),left=Math.max(0,hpMax-(p.hpLoss||0));
+  /* #239 - the doll fills from the SAME hitpoints the field uses (bodyHp),
+     not from the bare stat curve. `p.eq` is the test for a real roster body:
+     bustFor is also handed a bare {race,cls} shape by the battle plaque. */
+  const uu={st:effStats(p)},hpMax=(p.eq&&p.st)?bodyHp(p):D.hp(uu),
+        left=Math.max(0,hpMax-(p.hpLoss||0));
   const frac=hpMax?left/hpMax:1;
   if(frac<1){
     const b=P.body;
@@ -9061,6 +9151,14 @@ function wireWhoCard(p){const c=$('wcFace');if(c&&p)bustFor(c,p);}
    makes you put the spear down. It is the cheapest real decision in the
    inventory: reach and damage, or the thing in your other hand. */
 const handsFree=p=>{const m=GEAR[p.eq&&p.eq.main];return !(m&&m.hands===2);};
+/* ═══ ⛔ #239 · WHAT A WEAPON IS, READ OFF WHAT IT DOES ══════════════════
+   The paper doll has drawn the figure's hand from this exact cascade since
+   #136 (*"drawn from what the weapon DOES - range, reach, hands - and never
+   from its key, so a new entry in GEAR{} arrives wearing the right
+   silhouette"*). This is that sentence lifted out so the BATTLE SPRITE can
+   ask it too. One cascade, two pictures of the same body. */
+const wepShape=g=>!g?null:g.range?'bow':(g.reach||1)>=2?'spear'
+  :g.hands===2?'heavy':'blade';
 /* wrong-size armour: a bad idea you are allowed to have, not a wall */
 const WRONGSIZE={mult:.70,agi:-1,mor:-3};
 
@@ -10037,8 +10135,35 @@ const isCaster=cls=>cls==='mage'||cls==='warmage';
 const MONSTER_ICON='☠';
 /* one place builds the monster line, so the icon can never drift out of sync
    with the tag the way the class icons once did */
-const monTag=k=>MONSTERS[k]?(MONSTERS[k].ico||MONSTER_ICON)+' '+MONSTERS[k].tag
-  :MONSTER_ICON+' BEAST';
+/* ═══ ⛔ #239 · THE FACE IS FOR THE THING THE FIGHT IS ABOUT ════════════
+   (User, 2026-08-24: *"remove the monster icon from the class for dogs and
+   for monsters generally. It can stay on the boss. But we still remember they
+   are in that class."*)
+
+   ⛑ THE GLYPH WAS DOING THE OPPOSITE OF WHAT IT WAS PUT THERE FOR. It was
+   added so a monster would not wear a TRADE - a wyrm did not train at
+   anything - and on a field of ten lurchers it became ten identical faces on
+   ten identical rows, which is furniture (`.claude/rules/event-cards.md`: a
+   phrase you can grep twenty-four times is furniture, whatever it says). The
+   Fen-Mother's dragon is the only one on its own field and it is the reason
+   that field exists.
+
+   ⛔ `boss` IS DERIVED AND IS NOT A LIST OF KEYS. A `nature` line is what a
+   MONSTERS row is FOR, so the ones that are somebody rather than something
+   already declare it: `big` for a two-hex beast, and a row `armour` that is
+   the act's own ambush. Written as a field on the row, one word, so the day a
+   second boss is written it says so instead of being remembered here.
+   ⛑ AND THE CLASS IS NOT DELETED, WHICH IS THE USER'S SECOND SENTENCE. The
+   row, the tag and `u.monster` are all untouched - only the pictogram in
+   front of the tag goes. PACK-BEAST still reads PACK-BEAST, and the bestiary
+   hover under it still says what a pack-beast does.
+   ⚠ THE TOKEN BADGE OVER THE BODY IS THE SAME FACT AND TAKES THE SAME CUT -
+   see `wb.textContent` in the hex renderer. Fixing one of the two would have
+   left the field saying it in a place the plaque had stopped saying it. */
+const monBoss=k=>!!(MONSTERS[k]&&MONSTERS[k].boss);
+const monTag=k=>(MONSTERS[k]
+    ?(monBoss(k)?(MONSTERS[k].ico||MONSTER_ICON)+' ':'')+MONSTERS[k].tag
+    :'BEAST');
 /* ═══ ⛔ #215 · A BEAST IS NOT A PEOPLE, AND THIS IS THE ONE TEST ═════
    (User, 2026-08-21: *"Don`t show class for beasts animals on the
    battlfield"*.)
@@ -10073,7 +10198,9 @@ const monTag=k=>MONSTERS[k]?(MONSTERS[k].ico||MONSTER_ICON)+' '+MONSTERS[k].tag
 const BEAST_KIND=['dog','wyrm','cub','beast','mirehare_f','mirehare_m'];
 const isBeast=u=>!!u&&(u.race==='beast'||BEAST_KIND.indexOf(u.kind)>=0);
 const MONSTERS={
-  wyrm:{ico:'🐲',tag:'GREAT BEAST - LINDWURM',
+  /* #239 - `boss` is the one row on this register the face is kept for: she
+     is two hexes of the act's own centrepiece and there is one of her. */
+  wyrm:{ico:'🐲',boss:true,tag:'GREAT BEAST - LINDWURM',
     nature:'Two hexes of her. She does not out-damage you; she takes your line apart.'},
   cub :{ico:'🥚',tag:'WHELP',
     nature:'It will not fight. It only wants to be somewhere else.'},
@@ -10089,7 +10216,7 @@ const MONSTERS={
      The `nature` line is also where the fight's ONE tactical rule is stated
      plainly, because the rule is unguessable and the game does not punish
      you for not having met it before — it punishes you for ignoring it. */
-  armour:{ico:'⚔',tag:'SOMETHING IN ARMOUR',
+  armour:{ico:'⚔',boss:true,tag:'SOMETHING IN ARMOUR',
     nature:'There is no wrong side of it. Standing behind it is standing in front of it, and '+
       'the sword goes all the way round.'}
 };
@@ -10134,6 +10261,27 @@ const xpNeed=(p,L)=>Math.round(XP_TABLE[Math.max(0,Math.min(L,XP_CAP))]*(XP_RACE
    the bare four (~4.0 and ~4.6). XP_KILL is a flat kill bonus in hitpoint
    units: the peers' kill-stealing threads all start with a PERCENTAGE. */
 const XP_PER_HP=1.5, XP_LEAD=40, XP_KILL=15;
+/* ═══ ⛔ #239 · EVERYTHING IS LEARNED A FIFTH SLOWER ════════════════
+   (User, 2026-08-24: *"slow the experience and level progression by 20%"*.)
+
+   ⛑ ON WHAT IS EARNED, NOT ON WHAT IS NEEDED, AND THAT IS AN ARITHMETIC
+   CHOICE RATHER THAN A TASTE ONE. The two are the same slowdown: 0.8x earned
+   is 1.25x needed. But `XP_TABLE` is a deliberate triangle of round hundreds
+   (+50 a step) that a player reads on the sheet's hover as *"310 of 350"*,
+   and x1.25 makes every rung of it a decimal. The dial belongs where
+   `XP_PER_HP`'s own note already says the dials live.
+
+   ⛔ AND IT IS AT `grantXP`, WHICH IS THE ONE DOOR EVERY GRANT PASSES
+   THROUGH. Scaling `XP_PER_HP` alone would have left the road's `xp:` doors,
+   the camp cards and the vignettes paying full rate - three sources at two
+   speeds, and nothing on screen to say which was which.
+
+   ⛔ `raw` IS THE ONE THING THAT IS NOT EARNINGS. A cut gem is a PURCHASE
+   (see the iGem door): it buys a level outright, so taxing it 20% would be
+   charging a gem for four fifths of what the card promises. It is the only
+   caller that passes the flag, and the flag exists so that fact is written
+   down at the door rather than remembered. */
+const XP_RATE=.8;
 /* the trade the stranger has not picked yet - see CLASSES.none */
 const tradeOwed=p=>p.cls==='none'&&(p.level||0)>=1;
 /* one level, paid the way consequences() always paid it: perk, then stat,
@@ -10218,9 +10366,9 @@ function takeTrade(p,cls){
 /* the one door every grant passes through. Returns what was actually
    written (0 at the cap), and raises the level while the xp clears the
    next threshold - an early fight can pay two levels at once. */
-function grantXP(p,n){
+function grantXP(p,n,raw){
   if((p.level||0)>=XP_CAP)return 0;
-  n=Math.round(n);if(n<=0)return 0;
+  n=Math.round(raw?n:n*XP_RATE);if(n<=0)return 0;   /* #239 - see XP_RATE */
   p.xp=(p.xp||0)+n;
   while((p.level||0)<XP_CAP&&p.xp>=xpNeed(p,p.level+1))levelUp(p);
   if(p.level>=XP_CAP)p.xp=xpNeed(p,XP_CAP);
@@ -10540,8 +10688,11 @@ const NAMEPOOL={
                 'Wyl','Mig'],
          sur:['Kolb','Vend','Orrin','Sallow','Vay','Marchand','Dunmoor','Reeve','Brack',
               'Ferrant','Halloran','']},
+  /* #239 - 'Fairy Tail' is the user's own addition to the wall, and it is a
+     FIRST name like every other row here: a ratkin sur is '' by design, so a
+     two-word entry is the only way a ratkin gets two words. */
   ratkin:{first:['Skree','Skit','Nark','Chew','Gribb','Tass','Wick','Snarl','Fen','Pik',
-                 'Vess','Rist'],sur:['']},
+                 'Vess','Rist','Fairy Tail'],sur:['']},
   ogre:{first:['Bruht','Bolg','Ummuk','Grot','Hoom','Dreg','Naab','Orlu','Vhan','Gudd',
                'Thrunn','Osk'],sur:['']}
 };
@@ -11267,6 +11418,50 @@ function bonusHp(p){
     const b=trinketFires(g,p);if(b&&b.hp)h+=b.hp;});
   return h;
 }
+/* ═══ ⛔ #239 · A LEVEL IS WORTH SOMETHING BEFORE A POINT IS SPENT ══════
+   (User, 2026-08-24: *"Each lvl increses health by 5%, and adds 1% skill
+   (atack) and 1% dodge"*.)
+
+   Until this line a level paid a perk OR a stat point and nothing else, so
+   the level a body BOUGHT the point at was worth nothing on its own and two
+   bodies at level 2 and level 5 with the same four stats were the same body.
+   This is the flat half of a promotion, and it is deliberately small: at the
+   act-1 target of level 4 it is +15% hitpoints, +3 to hit and +3 dodge.
+
+   ⛔ STEPS ABOVE THE FIRST, NEVER THE LEVEL ITSELF. Level 1 is where a body
+   with a trade starts, so paying for it would hand every recruit a bonus for
+   existing; and a level-0 stranger must not read -1. `Math.max(0, ...)` is
+   both halves of that.
+
+   ⚠ TO HIT AND DODGE ARE PERCENTAGE POINTS ON THIS BUILD, NOT PERCENTAGES.
+   `mskill` and `dodgeBase` are the numbers `hitBreakdown` adds and subtracts
+   directly (DRUNK is -12 to hit, CRIPPLED -10 dodge), so "1%" is +1 on each
+   of them. Reading it as a multiplier would make a level worth 0.69 of a
+   point at the bottom of the ladder and 1.2 at the top, which is a bonus that
+   grows for the people who need it least.
+   ⛑ THE HITPOINTS ARE A MULTIPLIER, because the ask says percent and because
+   hp is the one channel where a flat number means something completely
+   different to a ratkin and to an ogre. */
+const LVL_HP=.05, LVL_HIT=1, LVL_DODGE=1;
+const levelSteps=p=>Math.max(0,(p&&p.level||0)-1);
+/* ⛔ AND THE HITPOINTS A ROSTER BODY HAS ARE ONE FUNCTION NOW, BECAUSE THEY
+   WERE THREE. `unitFrom` built the real figure (gear, trait, the shooter's
+   x0.9, the temporary injury); the company sheet printed `D.hp(uu)` and the
+   paper doll filled its torso from `D.hp(uu)` - so the sheet was already
+   telling an archer in a padded jack a different number from the one his own
+   battle plaque shows, and adding a level term would have widened that.
+   ⚠ THE ORDER IS LOAD-BEARING AND IS `unitFrom`'S OWN: level, then the
+   shooter's tithe, then the injury - or a hurt caster pays the 10% on the
+   wound as well as on the body. The old code's own note says so. */
+function bodyHp(p){
+  const s=effStats(p);
+  let h=D.hp({st:s})+bonusHp(p)+traitHp(p);
+  h=Math.round(h*(1+LVL_HP*levelSteps(p)));
+  const m=GEAR[p.eq&&p.eq.main];
+  if((m&&m.range)||isCaster(p.cls))h=Math.round(h*0.9);
+  if(p.hurt&&p.hurt.hp)h=Math.max(14,h+p.hurt.hp);
+  return h;
+}
 /* ⛔ #232 - THESE TWO SIT HERE AND NOT BESIDE `ARMOUR_BANDS`, WHICH IS WHERE
    THEY WERE WRITTEN. `effStats` below reads `bandKey` for the harness trait and
    is called from six sites; a `const` read from above its own declaration is
@@ -11821,6 +12016,35 @@ function paintedSpriteKey(kind,side,opt){
   if(typeof BATTLE_ART!=='object'||!BATTLE_ART)return null;
   opt=opt||{};
   const u=opt.unit||{},v=u.variant||'',cls=u.cls||'';
+  /* ═══ ⛔ #239 · A BODY IS DRAWN HOLDING WHAT IT IS HOLDING ═════════════
+     (User, 2026-08-24: *"if the player changes the weapon of a secondary
+     character (not Asha or the main or the mage) - load the icon with the
+     corresponding correct weapon (for example if the ogre was a spearman but
+     the player gave him a club - load the ogre-with-club icon in battle and on
+     the character card)"*.)
+
+     ⛑ THE CASCADE BELOW ASKED WHAT SOMEBODY WAS TRAINED AS AND NEVER WHAT
+     THEY WERE CARRYING, so an ogre spearwoman handed a warclub kept a pike on
+     the board and on her own sheet, permanently, with the inventory screen
+     three feet away saying otherwise. `cls` is a TRADE (it decides the perk
+     tree); the picture is about the object in the hand.
+
+     ⛔ THE THREE EXCLUSIONS ARE THE USER'S OWN AND EVERY ONE IS ALREADY
+     TESTED ABOVE THE WEAPON. The Captain is a star whatever he picks up,
+     Asha is a person and not a role (#201), and a caster is drawn as a caster
+     because a stave in the hand is not what makes a mage - `u.caster` is the
+     class and the class is the school. Everybody else is a body with a tool.
+     ⚠ `w` IS ABSENT ON EVERY FOE AND ON THE ALLIES `build()` MAKES, so each
+     branch falls back to exactly the cascade it had. Only bodies that came
+     through `unitFrom` carry it, which is the roster and nothing else.
+     ⚠ AND ON AN OGRE, `heavy` AND `blade` SHARE ONE PICTURE. The warclub and
+     the two-hand maul are both `hands:2 reach:1` - nothing they DO tells them
+     apart - so both land on `ogre_you_brute`, which is the club-holding
+     silhouette a brute has always had. `ogre_you_maul` stays where it was, on
+     the authored `maul` variant. Same for a bow: there is no ogre archer
+     painting, so an ogre handed one keeps the brute rather than falling
+     through to `null` and losing his picture entirely. */
+  const w=u.wep;
   const race=u.race||(kind==='ogre'?'ogre':
     (kind==='human'||kind==='archer'||kind==='mage')?'human':
     (kind==='ratkin'||kind==='bruiser')?'ratkin':null);
@@ -11837,8 +12061,9 @@ function paintedSpriteKey(kind,side,opt){
   }else if(race==='human'){
     if(side==='you'){
       k=(u.leader||u.captain||cls==='captain')?'human_you_captain':
-        (kind==='archer'||u.bow||cls==='archer')?'human_you_archer':
         (kind==='mage'||u.caster||cls==='mage'||cls==='warmage')?'human_you_mage':
+        w?(w==='bow'?'human_you_archer':w==='spear'?'human_you_spear':'human_you_cutter')
+        :(kind==='archer'||u.bow||cls==='archer')?'human_you_archer':
         cls==='spear'?'human_you_spear':'human_you_cutter';
     }else{
       k=(u.captain||v==='bcap')?'human_foe_captain':
@@ -11855,10 +12080,12 @@ function paintedSpriteKey(kind,side,opt){
          ever missing, the tail of this function returns null and she falls
          back to a drawn body: a degraded picture, never a broken one. */
       k=u.id==='ash'?'ratkin_you_thief':
-        (v==='ratsling'||v==='slinger'||kind==='archer'||u.bow||cls==='archer')?
-          'ratkin_you_archer':
         (v==='sniffer'||u.caster||cls==='mage'||cls==='warmage')?'ratkin_you_mage':
-        (v==='ratspear'||v==='spear'||v==='screen'||cls==='spear')?'ratkin_you_spear':
+        w?(w==='bow'?'ratkin_you_archer':w==='spear'?'ratkin_you_spear'
+           :(u.level>=3?'ratkin_you_veteran':'ratkin_you_cutter'))
+        :(v==='ratsling'||v==='slinger'||kind==='archer'||u.bow||cls==='archer')?
+          'ratkin_you_archer':
+        (v==='ratspear'||v==='spear'||v==='screen')?'ratkin_you_spear':
         (u.level>=3?'ratkin_you_veteran':'ratkin_you_cutter');
     }else{
       k=(v==='fenling')?'ratkin_foe_fenling':
@@ -11874,8 +12101,9 @@ function paintedSpriteKey(kind,side,opt){
   }else if(race==='ogre'){
     if(side==='you'){
       k=(v==='ogremage'||u.caster)?'ogre_you_mage':
-        (v==='pike'||v==='spear'||cls==='spear')?'ogre_you_spear':
-        v==='maul'?'ogre_you_maul':v==='guardian'?'ogre_you_guardian':'ogre_you_brute';
+        v==='maul'?'ogre_you_maul':v==='guardian'?'ogre_you_guardian':
+        w?(w==='spear'?'ogre_you_spear':'ogre_you_brute')
+        :(v==='pike'||v==='spear'||cls==='spear')?'ogre_you_spear':'ogre_you_brute';
     }else{
       k=(v==='ogremage'||u.caster)?'ogre_foe_mage':
         v==='pike'?'ogre_foe_pike':v==='maul'?'ogre_foe_maul':
@@ -13233,18 +13461,22 @@ function unitFrom(p){
   const s=effStats(p),main=GEAR[p.eq.main],off=handsFree(p)?GEAR[p.eq.off]:null;
   const u={id:p.id,side:'you',name:unitName(p),nick:p.nick,kind:p.kind,race:p.race,
     leader:!!p.leader,cls:p.cls,trait:p.trait,perks:p.perks.slice(),level:p.level,st:s,
-    hpMax:D.hp({st:s})+bonusHp(p)+traitHp(p),
+    hpMax:bodyHp(p),                    /* #239 - one door; see bodyHp */
     armourMax:armourValue(p)+(p.perks.indexOf('thickhide')>=0?18:0)+
       (p.perks.indexOf('stoneskin')>=0?10:0),
     moraleMax:D.moral({st:s})+(p.perks.indexOf('ironjaw')>=0?12:0),
     /* the stride belongs to the race, not to agility — see RACESTEP */
     /* #146 - the roster's ease knob, at the one door a roster body comes
        through. See HIT_EASE. */
-    mskill:D.hit({st:s})+HIT_EASE.you,dodgeBase:D.dodge({st:s}),speed:RACESTEP[p.race]||4,
+    /* #239 - and the flat half of every promotion above the first */
+    mskill:D.hit({st:s})+HIT_EASE.you+LVL_HIT*levelSteps(p),
+    dodgeBase:D.dodge({st:s})+LVL_DODGE*levelSteps(p),speed:RACESTEP[p.race]||4,
     flankPow:D.flank({st:s})+(p.perks.indexOf('opportune')>=0?10:0),
     spellPow:D.spell({st:s})*(p.perks.indexOf('conduit')>=0?1.2:1),
     dmgBonus:D.dmg({st:s}),morBonus:D.bonus({st:s}),
     caster:isCaster(p.cls),bow:!!(main&&main.range),
+    /* #239 - and what is actually in the hand, for the sprite. See wepShape. */
+    wep:wepShape(main),
     /* TWO actions a turn, not three (playtest #1): with reactions and parting
        shots in play, three made every turn a puzzle and balance a nightmare.
        Two is move+strike or strike+strike, and reads instantly. */
@@ -13274,7 +13506,8 @@ function unitFrom(p){
      damage down 20% the archer and the casters still carry the fight from
      range, so their bodies pay for it — 10% off the ceiling. A shooter who
      gets caught should be in real trouble; that is what the line is for. */
-  if(u.bow||u.caster)u.hpMax=Math.round(u.hpMax*0.9);
+  /* #239 - the shooter's tithe and the injury's bite are both inside
+     `bodyHp` now, so the sheet and the doll take them too. See there. */
   /* wounds carry over and mend on the road — no healers in this country */
   /* ═══ #225 · THE INJURY, ON THE FOUR CHANNELS A STAT CANNOT SAY ════════
      The str/agi/int/mor half is already inside `s` through effStats, so it is
@@ -13290,7 +13523,6 @@ function unitFrom(p){
   if(hz){
     u.injured=true;u.lastFall=nextRung(p);u.scarN=(p.injuries||[]).length;
     u.hurtName=hz.n;u.hurtNote=hz.d;u.hurtDays=hz.days;
-    if(hz.hp)u.hpMax=Math.max(14,u.hpMax+hz.hp);
     if(hz.dodge)u.dodgeBase+=hz.dodge;
     if(hz.hit)u.mskill+=hz.hit;
     if(hz.dmg)u.hurtDmg=hz.dmg;
@@ -14193,7 +14425,9 @@ function illusionOf(u){
        A shape that is not pixel-identical to the body it copies is not an
        illusion, it is a second unit with a family resemblance. */
     name:u.name,nick:u.nick,kind:u.kind,race:u.race,cls:u.cls,leader:u.leader,
-    bow:u.bow,caster:u.caster,mark:u.mark||null,trait:u.trait,
+    /* #239 - `wep` joins the list this comment is about: the sprite reads it,
+       so an illusion without it is a body with a different weapon in its hand. */
+    bow:u.bow,caster:u.caster,wep:u.wep,mark:u.mark||null,trait:u.trait,
     illusion:true,owner:u.id,ttl:ILLU_TURNS,
     /* it is not a body: nothing counts it, nothing tallies it, nothing on your
        own side plans around it. See checkEnd and the counts capsule. */
@@ -14270,19 +14504,37 @@ function tavernWave1(){
    the fight cannot end between the two waves and the crew can never be
    skipped by a fast kill - which is exactly what could happen when the only
    thing in the wave was friendly. */
+/* ═══ ⛔ #239 · THE BARMAN COMES IN ALONE, AND NOBODY FOLLOWS HIM ═══════
+   (User, 2026-08-24: *"in the first fight (the tutorial) - I want to adapt
+   the logic. When the barman joins, do not join anyone else to the fight (not
+   the bandit that turn, not your boys the next turn)."*)
+
+   The brawl was FIVE bodies arriving after the first exchange - three carters,
+   then a knife AND an ogre together, then your three future crew - on the
+   screen a player has been looking at for four minutes. It is now: the three
+   carters, and then one enormous man who owns the furniture.
+
+   ⛑ WEFT AND THE CREW ARE PARKED, NOT DELETED, AND THAT IS DELIBERATE.
+   `tavernWave3` keeps its body and loses its caller (the same treatment
+   `proCard` has since #219), `TAVERN_T.weft` stays on the register, and
+   `TUTSTEPS.crew` stays in the table. Restoring either is one line.
+   ⚑ AND NOTHING DOWNSTREAM BREAKS ON WEFT'S ABSENCE, WHICH IS #210'S OWN
+   FORESIGHT RATHER THAN LUCK. `chaseWho` reads *"the second slot is not his
+   alone"* and already falls to `rest[1]`, so the chase still comes back with
+   two named faces off whoever actually walked out of this room.
+   ⚠ THE CREW ARE IN `G.party` FROM `makeParty` AND ALWAYS WERE. Not standing
+   up in the brawl costs the BEAT, never the company: Vesna, Marrow and Ilka
+   are on the roster before the tap-room opens and they are on it after.
+
+   ⛔ AND `checkEnd`'S WAVE NET HAD TO CHANGE IN THE SAME EDIT OR THE BRAWL
+   SOFT-LOCKS. #205's note there says in as many words that wave two may
+   `return false` on an empty field *because it puts a knife on it*. With the
+   knife gone it is allies only, so returning false would leave a fight with
+   no enemies in it and nothing able to end it. See there. */
 function tavernWave2(){
   if(!B.tut||B.tut.wave2)return;
   B.tut.wave2=true;B.tut.phase=4;
-  /* the round it landed on, so wave three can be one clear round behind it */
   B.tut.w2round=B.round;
-  const n=build([[11,6,'weft',19]],TAVERN_T)[0];
-  n.id='tavN';n.facing=3;
-  /* #234 - and he does not cross the room on the round he arrives on. See the
-     `holdTill` branch in aiTurn for why this round in particular is full. */
-  n.holdTill=B.round;
-  tavernPlace(n);
-  say('The door swings again. A thin man comes in off the street sideways, '+
-    'already moving, with a boning knife held low and easy.');
   const o=build([[6,4,'barman',18]],TAVERN_T)[0];
   o.id='tavBar';besideYou(o);o.facing=0;
   tavernPlace(o);
@@ -14290,7 +14542,11 @@ function tavernWave2(){
     'furniture you are all breaking.');
   /* #111's spare step used to be armed here and #156 deleted it: everybody
      gets two, including him. BACKSTAB still lands on this round, which is the
-     half of the beat that was doing the teaching. */
+     half of the beat that was doing the teaching.
+     ⚠ #239 - AND BACKSTAB SURVIVES THE KNIFE'S DELETION BECAUSE IT WAS NEVER
+     ABOUT HIM. Its spotlight is `B.units.find(x=>x.side==='foe')` - any body
+     guards its front - and its sentence is the general rule. `TUTSTEPS.nimble`
+     WAS his (dodge 20, two misses) and simply never fires in this room now. */
   tavTeach('ogre');tavTeach('backstab');
   render();
 }
@@ -14452,8 +14708,9 @@ function tavernTick(){
      ⚠ It is NOT here because the brawl got harder. It did not: n=50 a side,
      this build and the one before it finish the Captain at the same 45%.
      See the note on `weft` for the measurement that said otherwise. */
-  if(T.phase===4&&T.wave2&&
-     (B.round>=(T.w2round||B.round)+1||(cap&&cap.hp<=cap.hpMax*0.45)))tavernWave3();
+  /* ⛔ #239 - AND THE CREW DOES NOT STAND UP. The trigger is gone, not the
+     function: see the header on tavernWave2 for why it is parked rather than
+     deleted, and for the one line that brings it back. */
   /* #111 - KICK is taught as the first synergy: an enemy with your blade AND
      a friend's on him is a body worth pushing */
   if(T.phase>=4&&cap&&!cap.dead&&!T.taught.kick){
@@ -20033,11 +20290,15 @@ function checkEnd(){
        and a brawl won between the waves left the aftermath describing people
        who had never been on the field. Allies only, so it does NOT return -
        the room has settled and the win below is correct. */
-  if(B.tut&&!foe.length){
-    if(!B.tut.wave1){tavernWave1();return false;}
-    if(!B.tut.wave2){tavernWave2();return false;}
-    if(!B.tut.wave3)tavernWave3();
-  }
+  /* ⛔ #239 - AND THE NET IS ONE LINE NOW, WHICH IS WHAT THE PARAGRAPH ABOVE
+     TURNS INTO ONCE WAVE TWO IS ALLIES ONLY. Wave one is the only arrival
+     left that puts an ENEMY on the field, so it is the only one that can keep
+     a fight alive and the only one allowed to return false here. Firing wave
+     two into an empty room would either soft-lock the brawl (returning false
+     with nobody to fight) or walk the barman through the door for a single
+     frame before the win screen. A room that empties before he gets there is
+     simply a room that settled early. */
+  if(B.tut&&!foe.length&&!B.tut.wave1){tavernWave1();return false;}
   if(!foe.length){B.won=true;
     endLater(()=>SIM.on?simResult('won'):toSpoils([]),700);return true;}
   /* #74 - a fight in `BEATEN` does not end the run when you lose it. Its
@@ -20132,8 +20393,35 @@ function checkEnd(){
      is already taught to spawn the waves rather than win (#108, forty lines
      up), so the fight cannot finish through the empty-field door either. The
      brawl now ends where it always ended: when the room is settled. */
-  if(!B.routAsked&&!SIM.on&&!B.auto&&!B.tut&&foe.length&&B.round>=3&&
-     foe.every(f=>f.state==='routed')){
+  /* ═══ ⛔ #239 · AND IT WAITS A WHOLE ROUND BEFORE IT ASKS ═══════════════
+     (User, 2026-08-24: *"say that the enemies are running and offer to end
+     early - only after at least 1 turn when they are all running. This will
+     stop premature ending."*)
+
+     ⛑ `every(routed)` IS TRUE FOR AN INSTANT ON FIELDS THAT ARE NOT BROKEN.
+     A body's nerve is a number that moves every turn, and `restate` puts it
+     back the moment anything goes right for it - a rally, a kill, a captain's
+     COMMAND, or simply the magnet in `morBase` pulling it home. So the last
+     man standing wobbling for one turn, or three men all wobbling on the same
+     turn, put the card up over a fight that was still very much on, and the
+     card is a DOOR: taking it ends the fight and pays the haul.
+
+     ⛔ SO THE TEST IS NOT "ARE THEY ALL ROUTED" BUT "HAVE THEY ALL BEEN
+     ROUTED SINCE THE LAST ROUND", AND `B.routSince` IS THAT SENTENCE.
+     ⚠ IT IS CLEARED THE INSTANT ANYBODY RALLIES, which is what makes it a
+     ROUND OF RUNNING rather than a round-counter that latches. A field that
+     breaks, comes back, and breaks again has to earn its round again.
+     ⚠ IT IS WRITTEN OUTSIDE THE `!B.routAsked` GUARD ON PURPOSE - the clock
+     has to run even on the turns the question could not be asked (the AI's
+     own turn, `B.busy`, AUTO), or the offer would need a player turn to start
+     the round AND a second one to finish it.
+     ⚑ `B.round>=3` STAYS. It is a different sentence - a fight cannot end
+     early in its opening moves - and the two are cheap. */
+  const allRout=!!(foe.length&&foe.every(f=>f.state==='routed'));
+  if(!allRout)B.routSince=null;
+  else if(B.routSince==null)B.routSince=B.round;
+  if(!B.routAsked&&!SIM.on&&!B.auto&&!B.tut&&allRout&&B.round>=3&&
+     B.round>B.routSince){
     const c=cur();
     if(c&&c.side==='you'&&!c.ally&&!c.pet&&!B.busy){
       B.routAsked=true;
@@ -25600,7 +25888,40 @@ function render(){
          moveBudget() call. A readout repeated 59 times is furniture.
          ⚠ THE WASH IS NAMED NOW (REACH_WASH) rather than written inline,
          because paintPeek has to be able to recognise it. See there. */
-      if(d!==undefined&&u&&u.side==='you'&&!occ){
+      /* ═══ ⛔ #239 · A BLOW IN HAND OWNS THE BOARD, AND `!rngA` IS THE
+         WHOLE OF IT ══════════════════════════════════════════════════
+         (User, 2026-08-24: *"when picking the spear, show its range in the
+         battle - exactly the same as picking the bow does now"*.)
+
+         ⛑ THE FOOTPRINT WAS ALREADY BEING DRAWN AND THE BOW WAS ONLY
+         WORKING BY ACCIDENT. Measured on the shipped build, with the act
+         selected and `B.hexEls` counted by wash:
+
+             bow, range 5    46 amber   ·   0 teal
+             spear, reach 2  12 amber   ·  22 teal
+             sword, reach 1   5 amber   ·  28 teal
+
+         A step budget of 4 opens ~34 hexes. Range 5 SWALLOWS all of them,
+         so picking the bow happens to leave one wash on the board and it
+         reads as a range. Reach 2 leaves the walk preview standing over
+         nearly twice the ground the reach covers, at .24 against the
+         footprint's .15 - so the spear's own answer was the DIMMEST and
+         SMALLEST thing on a board that was still busy answering a
+         different question. It read as a hole, not as a reach.
+
+         ⛔ AND THE TEAL WAS A PREVIEW OF SOMETHING THE CLICK WOULD NOT DO.
+         `.hex.lit` is gated on `B.sel.move||B.sel.sink`, so with a blow
+         picked not one of those 22 hexes was clickable. #94's own note
+         here said *"one wash, one meaning"* and there were two.
+
+         ⚠ IT COSTS THE BOW NOTHING, WHICH IS THE PROOF IT IS THE RIGHT
+         CUT: the bow's teal count was already 0. Only the short weapons
+         change, and they change INTO what the bow already looks like.
+         ⚠ `rngA` AND NOT `pickA`, so a HOVERED card gets the same clean
+         board (#231's half of the feature). MOVE is excluded from `rngA`
+         by construction, so the walk preview is untouched when a walk is
+         what is actually in hand. */
+      if(d!==undefined&&u&&u.side==='you'&&!occ&&!rngA){
         fill=t==='marsh'?REACH_WASH.wet:REACH_WASH.dry;}
       /* ═══ #94 point 10 - THE FOOTPRINT, AND IT OUTRANKS THE MOVE REACH ═══
          It has to be written AFTER the block above and not before it, and
@@ -25999,8 +26320,12 @@ function render(){
            way round so that the day something does, it keeps its painted
            bestiary face rather than becoming a star. */
         const boss=!occ.monster&&(occ.leader||occ.captain);
+        /* #239 - and the badge answers the same way the class line does: a
+           beast that is not the boss wears nothing at all rather than falling
+           through to a WEAPON glyph, which would put a sword over a dog. */
         wb.textContent=boss?'★'
-          :occ.monster?((MONSTERS[occ.monster]||{}).ico||MONSTER_ICON)
+          :occ.monster?(monBoss(occ.monster)
+              ?((MONSTERS[occ.monster]||{}).ico||MONSTER_ICON):'')
           :occ.caster?'✷':atk&&atk.range?'➹':atk&&atk.reach>=2?'⌇':
           occ.big?'⬢':atk?'⚔':'✦';
         wb.style.color=boss?(occ.side==='you'?'#f0e6c0':'#d9bd7e')
@@ -28986,14 +29311,55 @@ const LOOT={
    *"+90 crowns +1 gem"* paid ninety crowns and no gem; clash's *"−1 day ·
    they think better of you"* cost nothing and bought nothing. Six rows were
    printing a price the game did not charge. One applier now, all of it. */
+/* ═══ ⛔ #239 · SALVAGE PAYS HALF ABOVE THREE, AND AT ONE DOOR ══════════
+   (User, 2026-08-24: *"Salvage - 50% of the income from the current things in
+   everything, for everything where it is more than 3 salvage"*.)
+
+   ⛔ THE CUT IS A FUNCTION AND NOT 40 REWRITTEN ROWS. Measured on the build
+   before the change, the content carries 49 salvage figures: **9 at three or
+   under and 40 above it**, from +4 up to the Aqueduct's +16. Editing 40 rows
+   would put the rule in 40 places, so the next card written next month gets
+   it wrong and nothing says so. The TABLES still say what the pile looks
+   like; this says what a pile is worth.
+
+   ⛔ AND IT IS ONE APPLIER, WHICH IS THE HALF THAT ACTUALLY COSTS SOMETHING.
+   Five separate sites wrote materials into `G.camp` - takeLoot, takeMercy,
+   the camps picker, applyFx and pickChoice - each with its own copy of the
+   same four-key list. That is the shape this build has merged four times
+   (`choiceNote` in #150, `raceDoorPick` in #159, the mood echo in #176,
+   `applyHurt` in #197) and every one of them had drifted by the time somebody
+   looked. A cut applied at four of five sites is not a nerf, it is a bug.
+
+   ⛑ IT RETURNS WHAT IT PAID, so a caller building a receipt beside its own
+   `pay()` (pickChoice's `addPaid`, clashAfter's travelling haul) prints the
+   figure that actually landed. `evPaidOf` runs the same cut for the sites
+   whose payment IS the raw fx. The label and the purse cannot disagree,
+   which is `.claude/rules/event-cards.md`'s one sentence.
+
+   ⚠ `Math.round` AND NOT `floor`: fifty percent is the ask, and floor turns
+   +5 into 2, which is 40%. The nine rows at 3 and under are untouched by
+   construction - a scrap heap that pays one buckle still pays one buckle.
+   ⚠ A NEGATIVE PASSES THROUGH FLAT. Nothing in the content charges salvage
+   today (the wagon spends it directly, see wagonBuy), and halving a CHARGE
+   would be a discount wearing a nerf's clothes.
+   ⚠ `wood`/`iron` ARE SUMMED, NOT CUT SEPARATELY. `materialPool` aliases
+   both onto `salvage`, so they are one pile; cutting them one at a time would
+   round twice and pay more than the sum does. There are no numeric `iron:` or
+   `wood:` rows left in the content (measured: zero), so this is for old saves
+   and for anything a future card writes. */
+const salvageCut=n=>n>3?Math.round(n/2):n;
+function payMat(f){
+  const out={};if(!f)return out;
+  const mat=(f.salvage||0)+(f.wood||0)+(f.iron||0);
+  if(mat){out.salvage=mat>0?salvageCut(mat):mat;G.camp.salvage+=out.salvage;}
+  if(f.gems){out.gems=f.gems;G.camp.gems+=f.gems;}
+  return out;
+}
 const lootIsChoice=l=>!!(l.fx&&(l.fx.morale||l.fx.days));
 function takeLoot(l){
   const f=l.fx||{};
   payFx(f);                                  /* the purse has one door — invariant #3 */
-  if(f.salvage)G.camp.salvage+=f.salvage;
-  if(f.iron)G.camp.iron+=f.iron;
-  if(f.wood)G.camp.wood+=f.wood;
-  if(f.gems)G.camp.gems+=f.gems;
+  payMat(f);                                 /* #239 - and the scrap has one too */
   if(f.morale)G.morale+=f.morale;
   if(f.days)passDays(f.days);
   if(l.gear)G.stash.push(l.gear);
@@ -29126,8 +29492,13 @@ function clashAfter(){
      receipt that evaporates is worse than one that came a screen late. It is
      cleared by whoever prints it. */
   if(side==='none'&&!already){
+    /* #239 - `paid` IS the receipt (it travels to consequences as
+       `G.clashHaul`), so it is overwritten with what `payMat` actually put in
+       the cart. Authoring `salvageCut(5)` on the row instead would have put
+       the rule in a second place. */
     const paid={crowns:55,salvage:5,food:2};
-    pay('crowns',paid.crowns);pay('food',paid.food);G.camp.salvage+=paid.salvage;
+    pay('crowns',paid.crowns);pay('food',paid.food);
+    Object.assign(paid,payMat(paid));
     G.clashHaul=paid;
   }
   let joinLine='';
@@ -29334,19 +29705,72 @@ const mercyRace=b=>(b&&b.length&&b[0].race)||'ratkin';
    killing door pays −14 morale and wore the ±2 phrase. The sub-line is
    `choiceNote(o)` now, the same builder as every road door, so the cost is
    read off `fx` and the mood has its one renderer. */
+/* ═══ ⛔ #239 · A PRISONER IS WORTH A PRISONER, AND THE FLAT ROW WAS THE
+   WHOLE BUG ═══════════════════════════════════════════════════════════════
+   (User, 2026-08-24: *"in the second fight (the chase) - much stingier, the
+   choice for letting go or killing prisoners"*.)
+
+   ⛑ HE NAMED ONE FIGHT AND THE FAULT IS IN ALL OF THEM. These three rows
+   paid a flat +30/+5 and +60/+9/+1 gem whether **one** body was kneeling or
+   **six**, so the chase - which is one ratling, on the third node of the run -
+   handed over a gem and sixty crowns for one small wet pair of hands. That is
+   not a number that is too big, it is a number that is not about anything.
+
+   ⛔ SO IT IS DERIVED OFF `MERCYASK`, WHICH IS #137'S RULE AND NOT A SECOND
+   MERCY TABLE. The screen already knows exactly who is on their knees - it
+   speaks their race in `mercyLine` and names their kit in `MERCYSAY.strip` -
+   and it was the one thing on the card the payout did not read. A chase-only
+   special case would have been a second table, which is the shape this build
+   has merged out four times.
+
+   ⚠ THE RATES ARE SET AGAINST THE FIGURES THEY REPLACE, SO A BIG ROUT DOES
+   NOT BECOME A PAYDAY NOBODY ASKED FOR. Four prisoners is the flat row's own
+   arithmetic almost exactly (8x4=32 against 30, 15x4=60 against 60); one
+   prisoner is a quarter of it. The ask was for less, not for a redistribution.
+   ⚠ AND THE SALVAGE IS CUT ON TOP, BY `payMat`, because #239's other half is
+   a rule about every pile in the game and this is a pile. Both apply; the
+   chips are derived, so nothing on screen can disagree about which.
+
+   ⛔ MORALE IS FLAT AND STAYS FLAT. What it costs the company to watch you do
+   this is a fact about the DECISION, not about the body count - killing one
+   man who has put his hands up is the same thing you are as killing five.
+   That is the pillar this card exists to state and it is not for sale by the
+   head.
+   ⛑ THE GEM IS A THRESHOLD RATHER THAN A RATE, for the same reason: it is the
+   one thing on the card that is not money, and a fifth of a gem is nothing.
+   Four bodies is where a rout is a rout. */
 const MERCY={
   head:'THEY ASK FOR MERCY',
+  per:{strip:{crowns:8,salvage:1},kill:{crowns:15,salvage:2}},
+  gemAt:4,
   opts:[
     {t:'Let them go.',fx:{morale:14},sp:'spared',
      after:'They go north without looking back.'},
     {t:'Strip them to the fur first.',
-     fx:{salvage:5,crowns:30,morale:4},sp:'stripped',strip:true,
+     fx:{morale:4},per:'strip',sp:'stripped',strip:true,
      after:'Grateful, and naked, which is the unpleasant part. {ANY} supervises and is thorough.'},
     {t:'No prisoners. Finish it.',danger:true,
-     fx:{salvage:9,crowns:60,gems:1,morale:-14},sp:'killed',
+     fx:{morale:-14},per:'kill',sp:'killed',
      after:'Quick and quiet and less time than burying the toll-man took. Nobody argues with you. '+
        'That is the thing about being the one they follow. They do not argue, they remember.'}]
 };
+/* the three rows as THIS field's own count of kneeling bodies makes them.
+   ⚠ ONE BUILDER, and both the renderer and `takeMercy` are handed the SAME
+   built object - the sub-line is `choiceNote(o)` off `o.fx`, so a row built
+   twice with two counts would be the promise-versus-payment defect wearing a
+   new coat. `drawTwo` builds once and holds it.
+   ⚠ A FLOOR OF 1: `checkEnd` only reaches this card with somebody on it, and
+   a zero here would silently pay nothing on a screen that promises money. */
+function mercyOpts(n){
+  n=Math.max(1,n||1);
+  return MERCY.opts.map(o=>{
+    if(!o.per)return o;
+    const r=MERCY.per[o.per],f=Object.assign({},o.fx);
+    f.crowns=r.crowns*n;f.salvage=r.salvage*n;
+    if(o.per==='kill'&&n>=MERCY.gemAt)f.gems=1;
+    return Object.assign({},o,{fx:f});
+  });
+}
 /* set by toSpoils, read once by consequences, and null the rest of the time */
 let MERCYASK=null;
 /* the one applier, so the card cannot pay a price the old screen did not */
@@ -29368,10 +29792,9 @@ function takeMercy(o){
      "Strip them" landed the crowns and quietly paid no scrap - the dead-receipt
      class of 8f.54 again, found by the 2026-08-02 playthrough. `wood` joins it
      because a receipt written tomorrow must not have to remember this list. */
-  if(f.salvage)G.camp.salvage+=f.salvage;
-  if(f.wood)G.camp.wood+=f.wood;
-  if(f.iron)G.camp.iron+=f.iron;
-  if(f.gems)G.camp.gems+=f.gems;
+  /* #239 - the four materials, through the one door `takeLoot` uses. The list
+     that used to be copied here is what `payMat` exists to delete. */
+  payMat(f);
   G.spared=o.sp;G.spareLine=o.after;
 }
 /* ---------- the butcher's bill: who was carried off, and what it cost ----------
@@ -29756,6 +30179,15 @@ function consequences(scarred){
   const gotFx=Object.assign({},haul.fx||{});
   if(extra)Object.keys(extra).forEach(k=>{gotFx[k]=(gotFx[k]||0)+extra[k];});
   if(a.mor)gotFx.morale=a.mor;                     /* #159 - what it cost, beside what it paid */
+  /* ⛔ #239 - THE CHIP IS A FACT, SO IT TAKES THE CUT THE PURSE TAKES.
+     `takeLoot` pays this haul through `payMat`; a chip built off the raw row
+     would print +12 SALVAGE over a cart that got 6, which is the promise-
+     versus-payment defect this build has caught six times. */
+  if(gotFx.salvage||gotFx.wood||gotFx.iron){
+    const m=(gotFx.salvage||0)+(gotFx.wood||0)+(gotFx.iron||0);
+    delete gotFx.wood;delete gotFx.iron;
+    gotFx.salvage=m>0?salvageCut(m):m;
+  }
   const chips=fxChips(gotFx);
   /* ═══ #187 - ONE TRAY, AND THE FLAVOUR SITS BESIDE THE NUMBERS ═══════════
      The three cases did not change and neither did what any of them pays: a
@@ -29870,13 +30302,16 @@ function consequences(scarred){
      unchanged from the old beat two: what you chose keeps its colour and a
      tick, what you did not fades, the road button lights. */
   const drawTwo=()=>{
+    /* #239 - built ONCE, off how many are actually kneeling, and the same
+       objects are what the click pays. See mercyOpts. */
+    const rows=mercyOpts(mercy?mercy.length:1);
     $('sCard').innerHTML=
       '<h1 style="text-align:center">'+MERCY.head+'</h1>'+
       /* the paragraph and the strip label are spoken by whoever is actually
          kneeling. See MERCYSAY: `mercy` is people only by construction */
       '<div class="abtop"><p>'+mercyLine(mercyRace(mercy))+'</p></div>'+
       '<div class="popts" id="sMercy" style="grid-template-columns:1fr">'+
-        MERCY.opts.map((o,i)=>'<button class="popt'+(o.danger?' danger':'')+
+        rows.map((o,i)=>'<button class="popt'+(o.danger?' danger':'')+
           '" data-i="'+i+'"><b>'+
           (o.strip?(MERCYSAY[mercyRace(mercy)]||MERCYSAY.ratkin).strip:o.t)+'</b>'+
           /* ⚠ #155 - GUARDED, because the sub-line can be empty. `<i></i>` is
@@ -29899,7 +30334,7 @@ function consequences(scarred){
     const mb=$('sMercy');
     mb.querySelectorAll('.popt').forEach(b=>b.onclick=()=>{
       if(done)return;done=true;
-      const o=MERCY.opts[+b.dataset.i];
+      const o=rows[+b.dataset.i];        /* #239 - the row that was SHOWN */
       sfx(o.sp==='killed'?'death':'coin');
       takeMercy(o);              /* the same one applier the old screen used */
       mb.querySelectorAll('.popt').forEach(x=>{x.disabled=true;
@@ -31008,7 +31443,7 @@ function openCamp(spot,next,atPlace){
       if(f.days)passDays(f.days);
       if(f.morale)G.morale+=f.morale;
       payFx(f);                        /* one door, and it has a floor — see pay() */
-      ['salvage','wood','iron','gems'].forEach(r=>{if(f[r])G.camp[r]+=f[r];});
+      payMat(f);                       /* #239 - and so do the materials */
       if(o.gear)G.stash.push(o.gear);
       /* a sequel can take back what the first card gave you */
       if(o.dropGear){
@@ -32046,7 +32481,7 @@ function coach(key){
   document.getElementById('stage').appendChild(el);
   el.querySelector('.cok').onclick=()=>el.remove();
 }
-const openInv=()=>{show('inv');drawInv();
+const openInv=()=>{SCRAPMODE=false;show('inv');drawInv();   /* #239 */
   $('iNag').style.display=G.mustKit?'inline':'none';};
 /* #133 - which tab the right pane is showing. It lives out here for the same
    reason the tree drawer's flag used to: buying a perk redraws the whole
@@ -32055,6 +32490,84 @@ const openInv=()=>{show('inv');drawInv();
    screen, not one per person: a player reading trees is reading trees.
    (`TREEOPEN` and `treeLbl` retired with the drawer: the tree has a tab.) */
 let ITAB='stash';
+/* ═══ ⛔ #239 · THE TWO-HANDS RULE WAS WRITTEN DOWN AND NEVER IMPLEMENTED
+   (User, 2026-08-24: *"right now even when the off hand is taken I can put an
+   artifact in the offhand. But in fact, if it is taken, an artifact in the
+   offhand takes the mainhand off. Make it work properly."*)
+
+   ⛑ HE IS DESCRIBING `handsFree`'S OWN COMMENT, WHICH HAS PROMISED EXACTLY
+   THIS SINCE THE FUNCTION WAS WRITTEN: *"A two-handed weapon takes the
+   off-hand slot with it, so equipping the spear drops your shield into the
+   stash and picking up a shield makes you put the spear down. It is the
+   cheapest real decision in the inventory."* Not one half of that sentence
+   was code. The stash click was `p.eq[g.slot]=k` and nothing else, so both
+   went on at once and the sheet printed TAKEN over a shield that was on the
+   body, in the pack, doing nothing, for the rest of the run.
+
+   ⛔ ONE FUNCTION, BECAUSE THE RULE IS SYMMETRIC AND A SYMMETRIC RULE
+   WRITTEN AT TWO CALL SITES IS TWO RULES. What comes off goes to the stash
+   exactly the way a swapped piece already does - never deleted, which on the
+   one screen whose whole subject is your kit would be the worst surprise in
+   the game.
+   ⚠ `handsFree` IS ASKED BEFORE THE NEW MAIN LANDS, so it is still reading
+   the weapon being replaced. That is the question this needs. */
+function equipFromStash(p,idx){
+  const k=G.stash[idx],g=GEAR[k];if(!g)return;
+  G.stash.splice(idx,1);
+  const shed=x=>{if(x)G.stash.push(x);};
+  if(g.slot==='main'&&g.hands===2){shed(p.eq.off);p.eq.off=null;}
+  if(g.slot==='off'&&!handsFree(p)){shed(p.eq.main);p.eq.main=null;}
+  shed(p.eq[g.slot]);
+  p.eq[g.slot]=k;
+  drawInv();
+}
+/* ═══ ⛔ #239 · BREAKING A THING DOWN ═══════════════════════
+   (User, 2026-08-24: *"in the inventory add, where the arts are, bottom right
+   an option BREAK DOWN - and you get a bit of money for common arts, money and
+   salvage for uncommon, and money, salvage and gems for rare. But the maths
+   must still be much worse than buying an art."*)
+
+   ⛔ THE THREE ROWS ARE THE THREE TIERS AND NOTHING ELSE, which is what makes
+   the last sentence of the ask checkable rather than a feeling. Against
+   `gearPrice` on the same piece:
+
+       padded jack    common   buy 100   break  10 crowns               10%
+       mail hauberk   rare     buy 200   break  25 crowns + 2 salvage   13%
+       foundry plate  epic     buy 290   break  45 crowns + 3 salvage   16%
+                                                + 1 gem
+
+   ⛑ AND NO SALVAGE FIGURE HERE IS OVER THREE, WHICH IS DELIBERATE RATHER
+   THAN A COINCIDENCE. `payMat` halves anything above three (#239's other
+   half), so a row authored at 4 would pay 2 and the receipt would have to
+   explain itself. Written under the threshold, what is authored is what
+   lands - and it still goes through the one materials door.
+   ⚠ THE CROWNS GO THROUGH `lootMul()` BECAUSE `fxNote` PRINTS THE MULTIPLIED
+   FIGURE. A company carrying the Brass Token would otherwise be promised more
+   than the purse gets, which is the promise-versus-payment defect this build
+   has caught six times.
+   ⚠ A UNIQUE CAN BE BROKEN UP. It is the player's own named thing to lose,
+   the confirm says its name, and nothing in the game sells it back - which is
+   exactly why this asks first and the row is `danger`. */
+const SCRAP={common:{crowns:10},rare:{crowns:25,salvage:2},
+             epic:{crowns:45,salvage:3,gems:1}};
+const scrapPay=k=>SCRAP[rarityOf(k)]||SCRAP.common;
+/* UI state, like ITAB: which face the stash column is showing. Reset by
+   `openInv`, so it can never survive a trip to the road. */
+let SCRAPMODE=false;
+function scrapFromStash(p,idx){
+  const k=G.stash[idx],g=GEAR[k];if(!g)return;
+  const f=scrapPay(k);
+  ask('BREAK IT DOWN?',
+    g.n+' comes apart on the tailgate. Whatever is worth carrying goes in the '+
+    'cart and the rest goes in the ditch. Nobody sells it back to you.',
+    [{t:'Break it down.',c:fxNote(f),danger:true,go:()=>{
+        const at=G.stash.indexOf(k);if(at<0)return;
+        G.stash.splice(at,1);
+        pay('crowns',Math.round((f.crowns||0)*lootMul()));
+        payMat(f);
+        sfx('coin');resStrip();drawInv();}},
+     {t:'Keep it.',c:'it is in the cart either way'}]);
+}
 /* which acts a change hands out. The sheet marks them teal and says where
    they came from, because "why does this one have a skill the others do not"
    is a question the old sheet answered nowhere. ⚠ One line per mutation as
@@ -32181,7 +32694,10 @@ function drawInv(){
      ledger, the story) scrolls INSIDE itself: the stats and the body do not
      leave the screen for anybody. */
   const p=member(iSel),s=effStats(p),uu={st:s},u=unitFrom(p);
-  const hpMax=D.hp(uu),hpNow=Math.max(1,hpMax-(p.hpLoss||0)),hpF=hpNow/hpMax;
+  /* #239 - `u.hpMax` and not `D.hp(uu)`: `u` is right here, it is the body
+     that walks onto the field, and the two have never agreed on gear hp, the
+     shooter's 10% or an open wound. A sheet is a readout (#102). */
+  const hpMax=u.hpMax,hpNow=Math.max(1,hpMax-(p.hpLoss||0)),hpF=hpNow/hpMax;
   const arm=armourValue(p),bd=bandOf(u),sw=swingOf(u);
   const nu={morale:D.moral(uu)*0.78,moraleMax:D.moral(uu)},nl=LADDER[ladderAt(nu)];
   const statPts=p.statPoints||0,perkPts=p.perkPoints||0;
@@ -32711,8 +33227,11 @@ function drawInv(){
   if(spendBtn)spendBtn.onclick=()=>showTab('perks');
 
   const st=$('iStashBody');
-  st.innerHTML='<div class="lbl" style="color:#8a7449">CLICK A THING TO PUT IT ON '+
-    p.name.toUpperCase()+'</div>';
+  /* #239 - the column has two faces now, and the label is the one thing that
+     says which. Red, because in this one everything is one click from gone. */
+  st.innerHTML='<div class="lbl" style="color:'+(SCRAPMODE?'#c15d55':'#8a7449')+'">'+
+    (SCRAPMODE?'CLICK A THING TO BREAK IT DOWN. IT DOES NOT COME BACK'
+              :'CLICK A THING TO PUT IT ON '+p.name.toUpperCase())+'</div>';
   if(!G.stash.length)st.innerHTML+='<div style="font-family:var(--mono);font-size:var(--fs1);'+
     'color:#5c4a2c">Empty. Everything is on somebody.</div>';
   G.stash.forEach((k,idx)=>{
@@ -32732,10 +33251,34 @@ function drawInv(){
         (d[1]>0?'▲':'▼')+' '+d[0]+' '+(d[1]>0?'+':'')+d[1]+'</span>').join('')+'</div>':'')+
       (wrong?'<div class="iw">'+g.size+'-sized · wrong for a '+RACEMOD[p.race].size+'</div>':'')+
       '</div>';
-    b.onclick=()=>{const old=p.eq[g.slot];p.eq[g.slot]=k;G.stash.splice(idx,1);
-      if(old)G.stash.push(old);drawInv();};
+    /* #239 - one door for the hand rule, and the column's other face */
+    if(SCRAPMODE){
+      b.classList.add('scrapping');
+      const sc=document.createElement('div');sc.className='iscrap';
+      sc.innerHTML='\u2702 '+fxNote(scrapPay(k));
+      b.querySelector('.scol').appendChild(sc);
+      b.onclick=()=>scrapFromStash(p,idx);
+    }else b.onclick=()=>equipFromStash(p,idx);
     bindTip(b,k,p);
     st.appendChild(b);});
+  /* #239 - the door, bottom right of the arts, which is where the ask put it.
+     ⚠ INSIDE `#iStashBody` AND NOT PINNED UNDER IT: the body IS the scroller,
+     so a footer outside it would need its own height taken off a column that
+     has none to give (#230). At the end of the list it is where a player who
+     has finished reading the list is already looking.
+     ⚠ IT IS DRAWN ON AN EMPTY STASH TOO, disabled - a control that only
+     appears once you happen to be holding something is #156's built-and-
+     invisible shape, and unlike the gem door there is no world-bar chip
+     anywhere else announcing that this one exists. */
+  const sb=document.createElement('button');
+  sb.id='iScrapBtn';sb.className='iscrapbtn'+(SCRAPMODE?' on':'');
+  sb.disabled=!G.stash.length&&!SCRAPMODE;
+  sb.textContent=SCRAPMODE?'\u2715 DONE BREAKING':'\u2702 BREAK SOMETHING DOWN';
+  sb.title=SCRAPMODE?'back to putting things on people'
+    :'turn something in the stash into crowns, salvage and, for the best of it, '+
+     'a gem. You will never get near what it is worth.';
+  sb.onclick=()=>{SCRAPMODE=!SCRAPMODE;drawInv();};
+  st.appendChild(sb);
 
   /* ═══ THE TREE, WHOLE, IN ITS OWN TAB ═══════════════════════════════════
      (User: "choice of perks in separate tab because I feel we will have,
@@ -32955,8 +33498,28 @@ function drawInv(){
       [{t:'Do it. '+p.name+' goes up.',c:'costs 1 gem · level +1',go:()=>{
           if(G.gemLevel||(G.camp.gems||0)<1)return;
           G.camp.gems-=1;
-          levelUp(p);
-          p.xp=Math.max(p.xp||0,xpNeed(p,p.level));
+          /* ⛔ #239 - THE GEM PAYS A LEVEL'S WORTH OF EXPERIENCE, NOT THE
+             REMAINDER OF ONE. (User: *"when using a gem for a level-up, give
+             exactly the amount of experience this level takes, not up to the
+             end of the level"*.)
+
+             ⛑ THE OLD PAIR PUNISHED PROGRESS, WHICH IS THE OPPOSITE OF WHAT
+             A PURCHASE SHOULD DO. `levelUp` then `xp = max(xp, threshold)`
+             floored the bar to the new level's start, so a body 90% of the
+             way up bought the same thing as a body at 0% and threw the 90%
+             away. The best moment to cut a gem was on somebody who had just
+             levelled, which nobody would ever work out and everybody would
+             quietly lose by.
+
+             ⛔ AND IT GOES THROUGH `grantXP`, SO THE LEVEL IS PAID THE WAY A
+             FOUGHT LEVEL IS PAID - perk, then stat, then perk, or the trade
+             for a level-0 stranger. `raw:true`: a gem is not earnings and does
+             not take XP_RATE's 20%.
+             ⚠ IT IS EXACTLY ONE LEVEL, ALWAYS. The span it pays is this
+             level's own, and `XP_TABLE` rises, so the gift can never clear two
+             thresholds however far along the body already was. */
+          const gL=p.level||0;
+          grantXP(p,xpNeed(p,gL+1)-xpNeed(p,gL),true);
           G.gemLevel=p.id;
           remember(p,'Went up a level on a cut gem, and did not ask where it came from.');
           sfx('promote');
@@ -33237,8 +33800,29 @@ function gearCardRow(k,sub){
   const g=GEAR[k];if(!g)return '<b>'+k+'</b>';
   /* #192 - the reserved art box finally has art in it: 56 inside the 60px
      square (the box keeps its own edge and 2px of ground round the picture) */
+  /* ═══ ⛔ #239 · AND THE ROW SAYS WHAT KIND OF THING IT IS ════════════════
+     (User, 2026-08-24: *"on the shop page show what the artifact is (armour,
+     trinket etc.) and the rarity by colour. Logic like the inventory page."*)
+
+     ⛑ HALF OF IT WAS ALREADY HERE AND THE OTHER HALF WAS ON EVERY OTHER
+     SURFACE. `rarityName` has coloured the name since #234, so the colour was
+     right; the SLOT was printed by the stash row (`.id` reads `ARMOUR ·
+     stops 12`) and by the hover (#236 put it there for exactly this reason)
+     and by nothing on the rack. So a shop was the one place a player met a
+     thing without being told where it goes - which is the decision, on the
+     screen where it costs money.
+
+     ⛔ IT IS `tipFor`'S OWN SCOPE LINE AND NOT A FOURTH WORDING. A company
+     relic works from the baggage, a trinket is a personal amulet, and
+     everything else is its slot plus `TWO HANDS` where that is the whole
+     decision. One vocabulary across the row, the stash line and the hover, or
+     the shop would be teaching a fourth name for the same four slots. */
+  const scope=g.company?'COMPANY RELIC'
+    :g.slot==='trinket'?'PERSONAL AMULET'
+    :g.slot.toUpperCase()+(g.hands===2?' \u00b7 TWO HANDS':'');
   return '<span class="gart">'+(itemImg(k,56)||gearMark(g))+'</span><span class="gtx"><b>'+
     rarityName(k)+'</b>'+
+    '<i class="gsl">'+rarityTag(k)+' \u00b7 '+scope+'</i>'+
     (sub?'<i class="gpr">'+sub+'</i>':'')+'<i class="gsay">'+gearLine(g)+'</i></span>';
 }
 /* ---------- hover tip: what a trinket actually does ---------- */
@@ -36017,6 +36601,36 @@ function openGoalCard(spot,next){
   placeDlg(spot.x,spot.y);
   $('wV').onclick=()=>{G.pending=null;dlg.classList.remove('on');worldTick();saveRun();next();};
 }
+/* ═══ ⛔ #239 · THE FOUR FIGURES ARE THEIR OWN BUILDER ═══════════════
+   They were eight lines in the middle of `worldTick`, which also runs
+   `goalTick`, deals held news, may put a mutation card on the map and ends
+   with `drawMap(); drawNodes();`. The company sheet needs the FIGURES
+   refreshed after a purchase or a break-down and must run none of the rest:
+   a news card dealt onto a hidden map is a card the player never sees.
+   ⚠ ONE BUILDER, TWO CALLERS, which is the shape this file merges toward
+   every time (`choiceNote`, `raceDoorPick`, `applyHurt`, `payMat`).
+   ⚠ IT IS GUARDED ON THE BOX EXISTING, because the strip is REPARENTED
+   onto the sheet (see show()) and a caller should not have to know where it
+   currently lives - only that there is one of it. */
+function resStrip(){
+  if(!$('wRes'))return;
+  const seg=(key,ic,v,col,cls)=>'<span class="rseg'+(cls||'')+'" data-w="'+key+'"'+
+    '><span class="ri" style="color:'+col+'">'+ic+'</span><b>'+v+'</b></span>';
+  $('wRes').innerHTML=
+    /* #152 - the purse flashes with the PAYDAY chip the tick after a payday
+       is met, the same one-shot flag; both are rebuilt every tick, so the
+       class rides one rebuild and the flag is dropped below. */
+    seg('crowns',RES_ICON.crowns,G.run.crowns,'var(--g4)',G.paidFlash?' payflash':'')+
+    /* #106 point 6: the barrels are a READOUT, not a door. Both things you
+       could do with them moved onto the chips that name their effect (the
+       mood chip and the heart), and a chip that opens a card the player has
+       no reason to expect is exactly the clutter this pass is cutting.
+       ⚠ `openProvisions` is kept, unwired: the user's "later we will use
+       it" is a plan, and both new doors call its two halves. */
+    seg('prov',RES_ICON.food,G.run.food,'var(--grain)')+
+    seg('salvage',RES_ICON.salvage,G.camp.salvage,'var(--wood)')+
+    seg('gems',RES_ICON.gems,G.camp.gems,'var(--gem)');
+}
 function worldTick(){
   /* #161 - a RULES step, at the head and ahead of every draw below. See the
      one-door note on goalTick: this is where the six recruiters meet. */
@@ -36291,22 +36905,7 @@ function worldTick(){
   /* the counted resources, Battle Brothers' strip mirrored to the right.
      One SALVAGE segment on purpose: wood and iron alias the same pool,
      and showing both was the same number twice with different names on it */
-  const seg=(key,ic,v,col,cls)=>'<span class="rseg'+(cls||'')+'" data-w="'+key+'"'+
-    '><span class="ri" style="color:'+col+'">'+ic+'</span><b>'+v+'</b></span>';
-  $('wRes').innerHTML=
-    /* #152 - the purse flashes with the PAYDAY chip the tick after a payday
-       is met, the same one-shot flag; both are rebuilt every tick, so the
-       class rides one rebuild and the flag is dropped below. */
-    seg('crowns',RES_ICON.crowns,G.run.crowns,'var(--g4)',G.paidFlash?' payflash':'')+
-    /* #106 point 6: the barrels are a READOUT, not a door. Both things you
-       could do with them moved onto the chips that name their effect (the
-       mood chip and the heart), and a chip that opens a card the player has
-       no reason to expect is exactly the clutter this pass is cutting.
-       ⚠ `openProvisions` is kept, unwired: the user's "later we will use
-       it" is a plan, and both new doors call its two halves. */
-    seg('prov',RES_ICON.food,G.run.food,'var(--grain)')+
-    seg('salvage',RES_ICON.salvage,G.camp.salvage,'var(--wood)')+
-    seg('gems',RES_ICON.gems,G.camp.gems,'var(--gem)');
+  resStrip();      /* #239 - lifted out whole; see the function above worldTick */
   /* ═══ #238 · THE WAGON CHIP ═════════════════════════════════════════════════════
      The door to the one place salvage is spent, right of the chest (user:
      "справа от ресурсов"). Static markup, filled here like the chips: the ! is lit
@@ -36542,7 +37141,10 @@ function worldTick(){
           '▸ '+inf.act+'</div>':'');
       TIP.style.display='block';moveTip(e);};
     el.onmousemove=moveTip;el.onmouseleave=()=>{TIP.style.display='none';};};
-  document.querySelectorAll('#wBar [data-w]').forEach(el=>{
+  /* #239 - `#iBar` too, because the two strips MOVE there while the sheet is
+     up (see show()). A selector naming only the bar would silently drop every
+     hover on the screen the player spends the most time on. */
+  document.querySelectorAll('#wBar [data-w],#iBar [data-w]').forEach(el=>{
     const inf=WTIPS[el.dataset.w];if(inf)bindW(el,inf);});
   /* #194 - the plaque and the disc no longer bind anything. They were the two
      callers of WTIPS.day and both are the same readout, so both go: the disc
@@ -37491,7 +38093,7 @@ function travel(k){
       if(G.stranded&&Math.random()<.5){
         const p=G.stranded;G.stranded=null;
         if(partyUsed()+COST[p.race]<=PARTYCAP){
-          const s=pickOne(SCARS);injure(p,s);p.hpLoss=Math.round(D.hp({st:effStats(p)})*.4);
+          const s=pickOne(SCARS);injure(p,s);p.hpLoss=Math.round(bodyHp(p)*.4);  /* #239 */
           G.party.push(p);sfx('promote');
           say2(who(p)+' walks out of the treeline three days later, filthy and thinner, and falls '+
             'in at the back of the column as though nothing happened. '+s.n+' - '+s.d);
@@ -37757,8 +38359,10 @@ function applyFx(f){
   /* `salvage` FIRST and by name — every reward now writes it directly. The
      three appliers only listed wood/iron/gems, so the moment the content was
      normalised to `salvage:N` every material reward silently paid nothing.
-     wood/iron stay as write-through aliases for any old data. */
-  ['salvage','wood','iron','gems'].forEach(r=>{if(f[r])G.camp[r]+=f[r];});
+     wood/iron stay as write-through aliases for any old data.
+     ⛑ #239 - AND THE THREE APPLIERS ARE ONE APPLIER NOW. `payMat` is where
+     that list lives, and where the half-above-three cut is taken. */
+  payMat(f);
 }
 /* ═══ #143 - THE RECEIPT IS THE AFTERMATH'S OWN CHIPS ═══════════════════════
    (User, 2026-08-13: "If resurses are consiquences of the choise - make them
@@ -37783,8 +38387,11 @@ function evPaidOf(f,mulCrowns){
   if(f.morale)p.morale=f.morale;
   if(f.crowns)p.crowns=(mulCrowns&&f.crowns>0)?Math.round(f.crowns*lootMul()):f.crowns;
   if(f.food)p.food=f.food;
+  /* #239 - the same cut `payMat` takes, so a door's own sub-line promises
+     what the cart will actually hold. `fxNote` reads this; so do the camp,
+     vignette and one-door-pickup chip rows. */
   const mat=f.salvage!=null?f.salvage:(f.iron||0)+(f.wood||0);
-  if(mat)p.salvage=mat;
+  if(mat)p.salvage=mat>0?salvageCut(mat):mat;
   if(f.gems)p.gems=f.gems;
   if(f.xp)p.xp=f.xp;                     /* #174 */
   return p;
@@ -39775,8 +40382,14 @@ const hirePrice=(r,already)=>{
    ⚠ First muster only. `hire2` is a day short of the bells and a shop there
    would be a second chance at the same decision, which is what makes a
    decision stop being one. */
-const QM_RACK=[['buckler',55],['quiver',50],['shield',60],['shortsw',65],
-  ['spear',75],['jack',95]];
+/* #239 - `QM_RACK` and `ARMOURY` are gone: both carts roll `rollRack()` now,
+   which is one common that is not a weapon, one rare and one epic, priced by
+   `gearPrice`. Their twelve authored prices survive as the calibration that
+   function was fitted to - see the table in its header - so nothing was
+   thrown away, it was moved to where it can answer for all 54 rows.
+   ⚑ THE TWO SHOPS KEEP THEIR TWO JOBS (#179): the cart is the opening kit
+   you meet before the Fen and Coldharrow is the mid-run board, and both
+   still sell exactly ONE thing. What changed is what is on them. */
 /* UI state, not run state: which face of the muster card is showing. Reset
    on every entry to the screen, so it cannot survive a save or a reload. */
 let QMOPEN=false;
@@ -39796,7 +40409,7 @@ function openHire(){
   if(late&&!G.lateHireRolled){G.lateHireRolled=true;G.recruits=null;G.hiredHere=0;}
   /* the cart's three boards, rolled once and remembered, so walking back out
      of the rack and in again is not a re-roll */
-  if(!late&&!G.qm)G.qm={stock:QM_RACK.slice().sort(()=>Math.random()-.5).slice(0,3),done:false};
+  if(!late&&!G.qm)G.qm={stock:rollRack(),done:false};      /* #239 */
   if(!G.recruits){G.recruits=[];
     while(G.recruits.length<3)G.recruits.push(rollRecruit(G.recruits));}
   if(G.hiredHere===undefined)G.hiredHere=0;
@@ -40004,14 +40617,12 @@ function openHire(){
    belongs. It is also `rarity:'rare'` and not `unique`, so `findPool` can hand
    one out - a weapon that exists in exactly one shop that rolls one row of five
    is a weapon most runs never see. */
-const ARMOURY=[['mail',210],['maul',150],['bow',110],['plate',260],['focus',80],
-               ['crossbow',165]];
+/* #239 - see the note where QM_RACK stood. */
 function openVillage(){
   G.pending='village';mark('village: Coldharrow');
   /* ONE board, not three. `stock` stays an array so every reader downstream
      is unchanged — it simply never has more than one thing on it. */
-  if(!G.vill)G.vill={healed:false,fed:false,armed:false,
-    stock:ARMOURY.slice().sort(()=>Math.random()-.5).slice(0,1)};
+  if(!G.vill)G.vill={healed:false,fed:false,armed:false,stock:rollRack()};   /* #239 */
   drawVillage(null);
 }
 function drawVillage(note){
@@ -40031,20 +40642,59 @@ function drawVillage(note){
     disC:'nobody is carrying anything worth 45 crowns'});
   rows.push({id:'feed',t:'Buy out the market. Salt, meal, and a barrel.',
     c:'−55 crowns · +10 provisions',need:feed,done:v.fed});
-  /* #179 - the armourer's one piece is the same card the cart draws. It is the
-     most expensive thing in the act and it was a name in lower case inside a
-     sentence about how long he has been sitting on it. */
-  rows.push({id:'arm',t:'The armourer, and the one good thing he has.',
-    gear:v.stock[0]&&GEAR[v.stock[0][0]]?v.stock[0][0]:null,
-    price:v.stock[0]?v.stock[0][1]:0,
-    c:v.stock.length?'':'nothing on the rack worth your money',done:v.armed,
-    dis:!v.stock.length,disC:'the rack is bare'});
+  /* #179 - the armourer's pieces are the same card the cart draws. They are the
+     most expensive things in the act and they were a name in lower case inside a
+     sentence about how long he has been sitting on them.
+     ═══ ⛔ #239 · AND THE RACK IS ON THE CARD, NOT BEHIND A DOOR ═══════════
+     (User, 2026-08-24: *"in one of the shops you have to click on the artifact
+     twice to buy it (first on the general one, then in the choice - where it is
+     alone). Make it one screen: if you click BUY on it, you buy it."*)
+
+     ⛑ HIS SCREENSHOT IS THIS SHOP AND THE SECOND SCREEN WAS LITERALLY THE
+     SAME ROW. `v.stock` held exactly one piece, the row above drew it with
+     `gearCardRow` - picture, name, price and all - and clicking it replaced
+     the card with a list containing that one piece again. Two identical
+     buttons, one behind the other, and the second one was the real one.
+     ⚑ THE RULE THE DOOR WAS PROTECTING IS UNTOUCHED: he sells ONE thing.
+     `v.armed` still closes the whole rack the moment anything is bought, and
+     the three rows grey together. What went is the click that bought nothing.
+     ⚠ THE `id` CARRIES THE INDEX (`arm0`), so `villageDo` needs no second
+     branch and a rack that rolls two rows instead of three simply draws two. */
+  v.stock.forEach((s,i)=>{
+    if(!GEAR[s[0]])return;
+    rows.push({id:'arm'+i,t:GEAR[s[0]].n,gear:s[0],price:s[1],done:v.armed,
+      need:{crowns:s[1]},
+      dis:v.armed,disC:'he has packed the rest of it away'});
+  });
+  if(!v.stock.length)rows.push({id:'armnone',t:'The armourer.',
+    c:'nothing on the rack worth your money',dis:true,disC:'the rack is bare'});
   /* #238 - the wheelwright's row is gone: the frame is bought on THE WAGON
      card, which opens from the bar here as anywhere, and one wagon is sold in
      one place. `LEGACY.yard` is still honoured at boot for the testers who paid
      for it; nothing writes it any more. */
+  /* ═══ ⛔ #239 · AND THE CARD GIVES UP ITS PAINTING TO HOLD ITS OWN RACK
+     Three pictured rows instead of one is +322px of buttons on a card whose
+     box is a hard `max-height:658px` with `overflow-y:hidden`. Measured with
+     the painting still on it: the card overflowed by **165px** and `#wChoices`
+     is `position:sticky`, so the buttons won and `.bd` was crushed to **0** -
+     i.e. the whole Coldharrow paragraph was on the card and invisible, which
+     is a worse failure than the one being fixed. With the 212px picture gone
+     the card measures **0 overflow**, the prose gets 94px and scrolls 12, and
+     every row including the road out is inside the map.
+
+     ⛑ THIS IS #238'S OWN RULING ON THE WAGON, ONE CARD LATER: *"NO PAINTING
+     SLOT UNTIL THE PAINTING EXISTS. With `artTag()` the card is 658 into a
+     684 window and the prose scrolls 85px; the shop and the muster, the other
+     two price lists in the column, carry none either." Coldharrow is the
+     third price list and it now has a price list's problem.
+     ⚑ AND THE PICTURE WAS AN ORPHAN. It drew `artFor('E5')`, which was the
+     first-generation RATKIN SNARE plate; `EVENTART.snare` was re-pointed at
+     `EV27` by the stage-4 pack, so no card in the game maps to E5 any more
+     and Coldharrow was showing a retired painting of somewhere else.
+     ⏳ The day a Coldharrow master is painted, this is one line back - and
+     the rack goes behind its own face at the same moment, because the
+     arithmetic above does not change. */
   dlg.innerHTML='<h3>COLDHARROW</h3>'+
-    artTag()+
     '<div class="bd">'+(note||
     ('Forty houses, a church with the lead off the roof, and a wall that would not stop a '+
      'determined cow. It is the first place in nine days that is not trying to kill you, and the '+
@@ -40062,7 +40712,6 @@ function drawVillage(note){
     '<div id="wChoices" style="display:flex;flex-direction:column;gap:5px"></div>';
   dlg.classList.add('on');
   placeDlg(node.x,node.y);
-  const va=artFor('E5');if(va)drawArt($('wArt'),va);else paint($('wArt'),'gold',404);
   $('wChoices').innerHTML=rows.map(r=>{
     const ok=canAfford(r.need)&&!r.dis;
     const tail=(r.done?' · done':ok?'':' · '+(r.dis?r.disC:needTag(r.need)));
@@ -40103,27 +40752,15 @@ function villageDo(id){
     drawVillage('Salt, meal, a barrel of something that is legally beer, and a cheese that Marrow '+
       'is already suspicious of.\n\nTen days of food, bought at village prices from people who '+
       'watched you count the purse. +10 provisions.');
-  }else if(id==='arm'){
-    $('wChoices').innerHTML=v.stock.map((s,i)=>{
-      const g=GEAR[s[0]],ok=G.run.crowns>=s[1];
-      return '<button class="choice" data-i="'+i+'"'+(ok?'':' disabled style="opacity:.38"')+
-        '><b>'+g.n+'</b><i>−'+s[1]+' crowns'+(g.d?' · '+g.d:'')+
-        (ok?'':' · cannot afford')+'</i></button>';}).join('')+
-      '<button class="choice" data-i="none"><b>Buy nothing. Keep the coin.</b>'+
-      '<i>he is not offended · he expected it</i></button>';
-    $('wChoices').querySelectorAll('.choice').forEach(b=>{
-      if(b.disabled)return;
-      b.onclick=()=>{
-        if(b.dataset.i==='none'){drawVillage('He puts the rack away without any change of '+
-          'expression at all. He has been doing this a long time and you are not the first '+
-          'company to walk in and look and leave.');return;}
-        const s=v.stock[+b.dataset.i];
-        pay('crowns',-s[1]);G.stash.push(s[0]);v.armed=true;G.mustKit=true;sfx('coin');
-        drawVillage(GEAR[s[0]].n+': bought, paid for, and in the cart.\n\n'+
-          'He will not sell you a second thing. He says the roads are what they are and he has '+
-          'other companies to disappoint. It is in the stash: open INVENTORY and put it on '+
-          'somebody, because it is no use to anyone in a cart.');
-      };});
+  }else if(/^arm\d+$/.test(id)){
+    /* #239 - the row IS the purchase. See the note where the rows are built. */
+    const s=v.stock[+id.slice(3)];
+    if(!s||v.armed||G.run.crowns<s[1])return;
+    pay('crowns',-s[1]);G.stash.push(s[0]);v.armed=true;G.mustKit=true;sfx('coin');
+    drawVillage(GEAR[s[0]].n+': bought, paid for, and in the cart.\n\n'+
+      'He will not sell you a second thing. He says the roads are what they are and he has '+
+      'other companies to disappoint. It is in the stash: open INVENTORY and put it on '+
+      'somebody, because it is no use to anyone in a cart.');
   }
   worldTick();
 }
@@ -40917,6 +41554,86 @@ const dmgMean=g=>(g&&g.dmg)?(g.dmg[0]+g.dmg[1])/2:0;
    first bow, a first reach weapon or a first stave through on their own merit
    rather than on their damage. ⚠ The weakest and not the best: a find that only
    beats the worst weapon in the company still upgrades somebody. */
+/* ═══ ⛔ #239 · WHAT A THING COSTS, OFF WHAT IT DOES ═════════════════════
+   (User, 2026-08-24: *"in the shops show random rarer artifacts (one common
+   (but not a main-hand weapon), one uncommon, one epic). For every shop or
+   artifact purchase station."*)
+
+   ⛔ A ROLLED RACK NEEDS A PRICE FOR EVERY ROW IN `GEAR`, AND TWELVE OF THE
+   FIFTY-FOUR HAD ONE. The prices lived inside the two hand-written racks as
+   `['mail',210]` pairs, so the moment a shop stops being a hand-written list
+   there is nothing to charge for the other forty-two.
+
+   ⛑ SO THE TWELVE BECOME THE CALIBRATION RATHER THAN A SECOND TABLE, which
+   is #137's rule on the last surface that still authored its own number. The
+   weights below were FITTED to the approved prices and every one of them
+   lands within about a sixth of what was typed:
+
+       jack     34 armour   x3   -> 100  (95)
+       mail     66 armour        -> 200  (210)
+       plate    96 armour        -> 290  (260)
+       shortsw  avg 16      x4   ->  65  (65)
+       spear    avg 18.5         ->  75  (75)
+       maul     avg 34           -> 135  (150)
+       bow      avg 17.5    x6   -> 105  (110)   <- ranged, and it costs more
+       crossbow avg 29           -> 175  (165)
+       buckler  +4 dod +4 hit    ->  50  (55)
+       quiver   +5 rangedDmg     ->  50  (50)
+       shield   +9 dodge         ->  70  (60)    <- on the rare floor
+       focus    4 windsCut       ->  60  (80)
+
+   ⛔ THE FLOOR IS BY TIER AND IT IS WHAT PRICES A TRINKET AT ALL. Most
+   trinkets do their work through `bonusD`, a CONDITION rather than a number,
+   so a purely additive model values them at nothing. The tier is the honest
+   answer there: it is the one thing the row says about how good it is.
+   ⚠ A NEGATIVE STAT IS NOT A DISCOUNT. Mail is `agi:-1` and plate `agi:-2`,
+   and both are priced by the armour they stop; charging less for the cost of
+   wearing them would make the best harness in the game the cheapest.
+   ⚠ ROUNDED TO FIVE, because a price is read at a glance and 287 is not. */
+const GEAR_FLOOR={common:45,rare:70,epic:120};
+function gearPrice(k){
+  const g=GEAR[k];if(!g)return 0;
+  let v=(g.armour||0)*3;
+  if(g.dmg)v+=((g.dmg[0]+g.dmg[1])/2)*(g.range?6:4);
+  v+=(g.dodge||0)*6+(g.hit||0)*6+(g.rangedDmg||0)*10+
+     (g.windsCut||0)*15+(g.spellRange||0)*35;
+  ['str','agi','int','mor'].forEach(s=>{if(g[s]>0)v+=g[s]*25;});
+  if(g.hp>0)v+=g.hp*2;
+  if(g.company)v+=40;
+  return Math.max(GEAR_FLOOR[g.rarity||'common']||45,Math.round(v/5)*5);
+}
+/* ⛔ AND A RACK IS THREE TIERS, ROLLED THE WAY A FIND IS ROLLED.
+   `findPool` is the one pool in the game and it already answers every
+   question a shop has: no uniques (a named thing out of one scene may not be
+   sold off a cart), nothing sized for a race nobody in the company is,
+   nothing the company already owns, nothing `earlyFind` holds back, and for
+   a main-hand weapon nothing that is not an advance on what is already in
+   hand. Writing a second filter here would be a second pool.
+
+   ⛔ THE COMMON ROW IS NEVER A MAIN-HAND WEAPON, WHICH IS THE USER'S OWN
+   PARENTHESIS AND IS THE ROW'S WHOLE JOB. A cheap sword is the thing a
+   company already has six of; the cheap row is for the shield, the quiver,
+   the padded jack - the slot nobody thinks to fill.
+   ⚠ IT STEPS TO A LOOSE POOL BEFORE IT GIVES UP A ROW, the way `rollFind`
+   does, and for the same reason: a rack with a hole in it reads as a bug,
+   and by the late muster a one-race company can genuinely have bought the
+   epic tier out. A rack of two is a legitimate shipping state; a rack of
+   zero is caught by the caller.
+   ⚠ ROLLED ONCE AND REMEMBERED (`G.qm`, `G.vill`), so walking out of a shop
+   and back in is not a re-roll. That was already true of both racks and it
+   is the reason `stock` keeps its `[key,price]` shape: a run saved before
+   this entry still reads. */
+function rollRack(){
+  const out=[];
+  const take=(tier,noMain)=>{
+    const ok=k=>out.indexOf(k)<0&&(!noMain||GEAR[k].slot!=='main');
+    let pool=findPool(tier).filter(ok);
+    if(!pool.length)pool=findPool(tier,null,true).filter(ok);
+    if(pool.length)out.push(pickOne(pool));
+  };
+  take('common',true);take('rare');take('epic');
+  return out.map(k=>[k,gearPrice(k)]);
+}
 function weaponAdvance(k){
   const g=GEAR[k];if(!g||g.slot!=='main')return true;
   const mine=(G.party||[]).map(p=>GEAR[p.eq&&p.eq.main]).filter(Boolean);
@@ -41048,8 +41765,11 @@ function pickChoice(k,i){
   const crownsPaid=f.crowns>0?Math.round(f.crowns*lootMul()):(f.crowns||0);
   pay('crowns',crownsPaid);addPaid('crowns',crownsPaid);
   pay('food',f.food||0);addPaid('food',f.food||0);
-  ['salvage','wood','iron','gems'].forEach(r=>{if(f[r]){G.camp[r]+=f[r];
-    addPaid(r==='gems'?'gems':'salvage',f[r]);}});
+  /* #239 - the materials go through `payMat`, and the CHIP is built off what
+     came back out of it rather than off the authored figure. That is #137's
+     rule surviving the cut: the door promises `fxNote`, which runs the same
+     `salvageCut`, and the chip reports the payment. */
+  const mp=payMat(f);addPaid('salvage',mp.salvage||0);addPaid('gems',mp.gems||0);
   /* #174 - a door may pay experience, to the whole company (the LINE half
      only: nobody's hand did anything here), each × their learning rate. The
      chip prints the authored figure, the way the morale chip does. */

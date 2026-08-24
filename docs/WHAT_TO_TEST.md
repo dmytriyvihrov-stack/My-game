@@ -26,6 +26,101 @@
 
 ---
 
+## 🧾 TWENTY SMALL THINGS, BY SCREEN  *(#239 · 2026-08-24 · build log 8f.262)*
+
+*Your own list, in your own grouping. Three of them were **checks** and the answers are at the bottom.*
+
+### THE MAP · reach it: start a run
+- **The Snare** (the trophy node) is now **exactly as faded as every other place you have not been**,
+  painting and name plate alike, and **the gold cup above it stays bright**. It lights up normally the
+  moment a road actually runs to it.
+- *A bug would be:* the cup dimming with the node, or the Snare still being the brightest thing on the map.
+
+### THE BATTLE · reach it: any fight
+- **Pick the spear (or any melee card) and the board shows its reach and nothing else.** The teal walk
+  preview goes out while a blow is in hand - it was showing you ground a click would have refused anyway.
+  This is why the bow "worked" and the spear did not: the bow's range simply covered the whole walk.
+- **Dogs and beasts no longer wear a monster face** on the class line or over their heads. They still say
+  PACK-BEAST, MIREHARE, FEN-THING. **The Fen-Mother and the Thing in Armour keep theirs.**
+- **"They are all running" now waits a full round.** Everybody has to still be running on your NEXT turn.
+  If one of them rallies, the clock starts over.
+- **A body is drawn holding what it is holding.** Give an ogre spearwoman a warclub and the figure on the
+  board AND on her sheet becomes the club-carrying ogre. Give anybody a bow and they draw as an archer.
+  **The Captain, Asha and the casters never change** - that was your exclusion.
+- *A bug would be:* a sword or an arrow glyph appearing over a dog · the running offer on the first turn
+  they break · a body losing its picture entirely after a weapon swap.
+
+### THE FIRST FIGHT · reach it: new run
+- **When the barman comes over his bar, nobody else comes.** No knife off the street that round, and your
+  three crew do not stand up the round after. You finish the room with the barman.
+- Vesna, Marrow and Ilka are still in the company afterwards - they always were, they simply do not join
+  the brawl any more.
+- *A bug would be:* the fight not ending when the last carter goes down · a fourth enemy arriving.
+- ⚠ **This is the one to tell me about.** Driven 50 times a side, the fight is the same length and leaves
+  the Captain at the same fraction of his blood - but the machine loses it 7 times in 50 against 4 before.
+  That is inside the noise at 50 runs. **If it feels harder, say so and it comes back to 3 waves.**
+
+### AFTER A FIGHT · reach it: win one where somebody breaks and lives
+- **The prisoners are worth what is actually kneeling there.** One ratling (the chase) pays **+8 crowns
+  +1 salvage** to strip and **+15 +2** to finish, **and no gem**. Four of them pays +32/+2 and +60/+4 and
+  a gem. Letting them go is +14 morale whoever they are - that price is about the decision, not the count.
+- *A bug would be:* a gem on a single prisoner · the figures on the button disagreeing with the chips.
+
+### THE PURSE · everywhere
+- **Salvage above 3 pays half.** A card that says it will give you +12 gives 6; a card that gives 3 still
+  gives 3. The button already says the halved figure, so what you read is what you get.
+- **Measured: a run that takes salvage when it is offered now ends on about 23-24 instead of 42.**
+  ⚠ **The wagon is still 6 / 12 / 24, on your call.** So the third seat tier is now something almost
+  nobody reaches, and the second is a late-run goal. Say the word and it becomes 4/9/18 or 3/6/12.
+- **Experience is 20% slower**, everywhere - fights, road cards, camps.
+- **Every level is now worth something by itself: +5% hitpoints, +1 to hit, +1 dodge.** A level-4 body has
+  +15% blood over a level-1 one before a single point is spent.
+- **A cut gem gives exactly one level's worth of experience.** If you were 60% through the level, you come
+  out 48% through the next one - your progress is no longer thrown away.
+- ⚠ **Two hitpoint numbers on the sheet will look different to you and both are corrections.** The sheet
+  was printing the bare stat curve and ignoring your gear, an open wound, and the 10% shooters and casters
+  pay. Ilka now reads **45/45** on her sheet, which is what her battle plaque has always said.
+
+### THE SHOPS · reach it: the quartermaster's cart at the muster, and Coldharrow
+- **Both racks now roll three pieces: one common that is never a main-hand weapon, one rare, one epic.**
+  Every price is derived, so anything in the game can turn up.
+- **Coldharrow buys in one click.** All three pieces are on the card itself; clicking one buys it. He still
+  only sells you ONE thing.
+- **Every shop row now says `COMMON · OFF` or `EPIC · MAIN · TWO HANDS`**, and the name is in its tier's
+  colour, the same as in the inventory.
+- ⚠ **Coldharrow has lost its painting** and its opening paragraph now scrolls in a short box. Three
+  pictured rows do not fit under it: with the picture the card overflowed by 165px and the prose was
+  crushed to nothing. The picture it was showing was the old Ratkin Snare plate, which no card uses any
+  more. It comes back the day Coldharrow gets its own.
+- *A bug would be:* "Back to the road" not visible · a piece you cannot afford not saying so · the same
+  piece on the rack twice.
+
+### THE COMPANY SHEET · reach it: INVENTORY
+- **The road bar's readouts are on this screen now**: bodies, seats, the sack, payday, the mood face, the
+  blood, and the four resource figures, all live, all with their hovers, on the header you already had.
+  They go back to the map when you leave.
+- **A two-handed weapon and the off hand now actually fight over the hand.** Put a warclub on somebody
+  wearing a shield and **the shield goes into the stash**. Put a shield on somebody holding a warclub and
+  **the club goes into the stash**. Nothing is ever destroyed by this - it goes to the stash.
+- **BREAK SOMETHING DOWN**, bottom right of the stash. It turns the list red; each row then shows what it
+  would pay and asks before it does it. **Common: 10 crowns. Rare: 25 crowns + 2 salvage. Epic: 45 crowns
+  + 3 salvage + 1 gem.** That is 10-16% of what the same piece costs in a shop, which is the point.
+- *A bug would be:* the header wrapping or the two buttons being pushed off the right · a piece
+  disappearing without the confirm · breaking something down not moving the figures in the header.
+
+### THE THREE CHECKS YOU ASKED FOR
+- **Do scars really cut stats?** **Yes, all the way to the field.** A gut-wound takes Vesna STR 9->8 and
+  AGI 9->8, and that becomes hitpoints 57->53, to-hit 69->68, dodge 15->14, damage bonus 3->2.
+- **Can a spear reach and a bow shoot across shallow water?** **Yes, and across the fen's deep water too.**
+  Both read exactly like open ground; a tree is what refuses them.
+- **Does picking a spear show its range?** It always drew one - and the walk preview was drawn on top of
+  twice as much ground, brighter. Fixed, and the fix costs the bow nothing.
+
+### AND
+- **'Fairy Tail' is in the ratkin name pool.**
+
+---
+
 ## 🛒 THE WAGON IS ON THE ROAD, AND SALVAGE HAS SOMEWHERE TO GO  *(#238 · 2026-08-23 · build log 8f.261)*
 
 **Reach it in three steps:** start a run -> on the map, press the cart chip right of the chest (the ▤ salvage
