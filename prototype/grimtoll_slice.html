@@ -5460,6 +5460,20 @@ body:has(#world.on) #audioBox button{font-size:var(--fs2);padding:var(--p1) var(
 #teditBtn.on{display:block}
 #teditBtn:hover{background:#3a2b16;color:var(--g4)}
 #teditBtn.live{color:#e8c15c;border-color:#8a6a34;border-style:dashed;background:rgba(40,30,10,.95)}
+/* ═══ #242 - THE DEV BOARD BRUSH ═══════════════════════════════════════════
+   Joins the tester stack (134/164/194/224, 30 apart) at 254, same right:10
+   rail, same deliberately-plain family. Practice fights only; syncTest shows
+   it. It sits over the board's east edge the way WIN NOW already does, which
+   is accepted for a developer's tool and would be a fault on anything else. */
+#brushBox{position:absolute;right:10px;top:254px;z-index:22;display:none;
+  flex-direction:column;gap:2px;width:112px}
+#brushBox.on{display:flex}
+#brushBox .bttl{font-family:var(--mono);font-size:var(--fs1);letter-spacing:.12em;color:#7d8a54}
+#brushBox button{background:rgba(20,26,18,.92);border:1px dashed #3d5a3d;color:#8a9a74;
+  font-family:var(--mono);font-size:var(--fs1);padding:var(--p1) var(--p2);text-align:left;
+  cursor:pointer}
+#brushBox button.on{border-style:solid;border-color:#8ca35a;color:#c3d18a}
+#brushBox button:hover{background:#2c4a3a;color:#c3d18a}
 /* the target ring while the mode is armed. OUTLINE, not border: an outline
    changes no layout, so hovering a button cannot shove its row around. */
 .teHov{outline:1px dashed #e8c15c;outline-offset:1px;cursor:crosshair}
@@ -6161,8 +6175,9 @@ a.popt.sendit{display:block;text-decoration:none}
 .scrow select{background:#1c150c;border:1px solid var(--e1);color:#c9b98a;
   font-family:var(--mono);font-size:var(--fs1);padding:var(--p1);max-width:112px}
 /* with the bench open the three columns give up height to it, so the whole
-   errand fits one screen instead of scrolling under the sticky footer */
-#simCard:has(#simCrew) .simpick{max-height:200px}
+   errand fits one screen instead of scrolling under the sticky footer.
+   #242 - the foe bench is a second bench and takes the same trade. */
+#simCard:has(#simCrew) .simpick,#simCard:has(#devFoes) .simpick{max-height:200px}
 .scpts{color:#a3bd6c;margin-left:auto}
 .scx{color:#c15d55}
 .scadd{display:flex;flex-wrap:wrap;gap:4px}
@@ -6184,6 +6199,28 @@ a.popt.sendit{display:block;text-decoration:none}
 .simrow{margin-top:var(--p5)}
 .simrow .simpick{flex-direction:row;max-height:none;overflow:visible}
 .simrow .simpick button{flex:1 1 0;min-width:0}
+/* ═══ #242 - THE DEV BENCH ════════════════════════════════════════════════
+   Dev-only rows wear a dashed dev-green LEFT RAIL so nothing player-facing
+   can ever be mistaken for them - the same "deliberately plain" rule the
+   WIN NOW button has carried since it was built. The greens are the tester
+   family's own (#winBtn hover, testBtn.on); every size is a --fs step and
+   every pad a --p step (ui-scales). The dashed edge is an ACCENT that says
+   "developer's", so it stays literal like ✎ TEXT's armed dash. */
+.devrow{border-left:2px dashed #4a5a34;padding-left:var(--p4)}
+.devrow .lbl{color:#7d8a54}
+/* the perk editor: a full-width panel under its crew row */
+.pkpanel{background:#1c150c;border:1px solid var(--e1);border-left:2px dashed #4a5a34;
+  padding:var(--p3) var(--p4)}
+.pkchips{display:flex;flex-wrap:wrap;gap:var(--p2)}
+.pkchip{background:#241c11;border:1px solid var(--e1);color:#c9b98a;font-family:var(--mono);
+  font-size:var(--fs1);padding:var(--p1) var(--p3);cursor:pointer}
+.pkchip:hover{border-color:var(--g3)}
+.pkchip.on{border-color:var(--gold);color:var(--g4);background:#3a2b16}
+.pkchip.pol{opacity:.55}
+.scpk{background:#1c150c;border:1px dashed #4a5a34;color:#7d8a54;font-family:var(--mono);
+  font-size:var(--fs1);padding:var(--p1) var(--p3);cursor:pointer}
+.scpk:hover{border-color:#8ca35a}
+.scpk.has{color:#a3bd6c;border-style:solid}
 .helpsec{border-top:1px solid var(--e1);padding-top:var(--p5)}
 .helpsec h2{font-family:var(--display);font-size:var(--fs6);color:var(--g4);margin:0 0 6px;font-weight:600}
 .helpsec p{font-size:var(--fs4);line-height:1.5;margin:0 0 7px}
@@ -6662,6 +6699,10 @@ body:has(#world.on) #menuBtn{left:auto;right:10px;top:8px;bottom:auto;z-index:30
      The record is the deliverable; see the TEDIT block in the script. -->
 <button id="teditBtn" title="click any text on any screen: delete it, change it, or leave a note for Claude to land in the source">✎ TEXT</button>
 <div id="tePanel"></div>
+<!-- #242 · the dev board brush. Practice fights only; filled and wired at
+     boot, shown by syncTest. An armed brush eats the hex click before the
+     hand does - see handHex. -->
+<div id="brushBox"></div>
 <!-- #226 · which build this is. Filled from BUILD_ID in the script; the
      working file reads "dev" and tools\build_site.ps1 stamps a real one. -->
 <div id="buildTag" title="which build this is - name it in a bug report"></div>
@@ -7869,7 +7910,15 @@ function setPace(v,save){
    nothing reads it except through `mirrorOn()`, which asks `SIM.on` FIRST, and
    `simRestore` puts `SIM.on` back to false on every exit. A practice rule that
    could reach a run would be the leak this whole object exists to prevent. */
-const SIM={on:false,snap:null,cap:null,fight:'clash',comp:'start',ground:'as',rule:'straight'};
+/* #242 - the dev bench rides the same object and the same fence. `foes` is
+   THE OTHER SIDE ('as' = the shipped encounter, the default for the same
+   reason `ground` defaults to 'as'); `ordYou`/`ordFoe` are THE ORDERS
+   (read only inside simFight, behind TEST.on); `pkOpen` is which crew row's
+   perk editor is unfolded; `brush` is the armed board brush, cleared by
+   simRestore and by the ⚙ going off. None of the four can reach a run:
+   every reader asks SIM.on or TEST.on first. */
+const SIM={on:false,snap:null,cap:null,fight:'clash',comp:'start',ground:'as',rule:'straight',
+  foes:'as',ordYou:'hand',ordFoe:'own',pkOpen:null,brush:null};
 function winNow(){
   if(!B||B.won!==null)return;
   autoStop();
@@ -7887,6 +7936,34 @@ function winNow(){
   render();
   if(B.won===null){B.won=true;
     endLater(()=>SIM.on?simResult('won'):toSpoils([]),300);}
+}
+/* ═══ #242 - THE DEV BOARD BRUSH ══════════════════════════════════════════
+   (User: "Same add obstcles and ground effects".)
+   It writes the board's own terrain words - the same vocabulary every fight
+   builder writes - so pathing, cover, wet aim and the ogre's boulder pull
+   all react at once with no new rule anywhere. Painting is free, takes no
+   action, and exists only in a practice fight with the ⚙ on. */
+const BRUSHES=[['','off · your hand plays'],['field','field'],['marsh','marsh · water'],
+  ['rock','rock · boulder'],['tree','tree'],['wall','wall'],['fire','fire']];
+function devPaint(c,r){
+  if(!B||!B.terr)return;
+  const k=K(c,r);
+  if(B.terr[k]===undefined)return;        /* off the board */
+  if(B.units&&B.units.some(u=>!u.dead&&u.col===c&&u.row===r)){
+    say('[BRUSH] Somebody is standing there.');return;}
+  B.terr[k]=SIM.brush;
+  paintTerrain();render();
+}
+function syncBrush(){
+  const bx=$('brushBox');if(!bx)return;
+  if(!bx.childElementCount)
+    bx.innerHTML='<span class="bttl">⚙ BRUSH</span>'+BRUSHES.map(b=>
+      '<button data-br="'+b[0]+'">'+b[1]+'</button>').join('');
+  bx.querySelectorAll('button').forEach(bt=>{
+    bt.onclick=e=>{e.stopPropagation();SIM.brush=bt.dataset.br||null;syncBrush();};
+    bt.classList.toggle('on',(bt.dataset.br||null)===SIM.brush);});
+  bx.classList.toggle('on',TEST.on&&SIM.on&&$('battle').classList.contains('on'));
+  if(!TEST.on)SIM.brush=null;              /* authority hands back, like AUTO */
 }
 function syncTest(){
   const t=$('testBtn'),w=$('winBtn'),l=$('lintBtn'),wp=$('wipeBtn');
@@ -7931,6 +8008,9 @@ function syncTest(){
     au.classList.toggle('on',TEST.on);
     if(!TEST.on&&typeof B!=='undefined'&&B&&B.auto&&typeof toggleAuto==='function')toggleAuto();
   }
+  /* #242 - the board brush rides the same switch: shown only on a practice
+     battle with the ⚙ on, disarmed the moment the ⚙ goes off */
+  syncBrush();
   /* the playtest-notes screen grew two tester-only controls (2026-08-03) and it
      is drawn once per open, so the switch has to redraw it under the player if
      it moves while the screen is up. `typeof` because this function runs during
@@ -16609,6 +16689,23 @@ let B=null;
    feature and not one anybody asked for.
    ⚠ SIM.on leaves it null, so the practice field keeps its own restart. */
 let FIGHTBACK=null;
+/* ═══ #242 - WHICH FIGHT FIELDS WHAT, AS ONE TABLE ════════════════════════
+   startBattle and fightPts each carried this mapping as its own ternary
+   chain - two chains, one fact, which is the drift shape this file keeps
+   merging out (choiceNote #150, raceDoorPick #159, applyHurt #197, payMat
+   #239). The dev bench needed a THIRD reader (the foe catalogue), so the
+   chains became the table. A new fight adds one row here and all three
+   callers follow. `snare` is `foes`, which is also the fallback. */
+const FOE_BUILD={mother:beasts,brigand:brigands,mirehares:mirehares,clash:clashFoes,
+  pack:pack,steading:steading,armour:armourFoe,circle:circleFoes,wedding:weddingFoes,
+  tavern:tavernFoes,chase:chaseFoes,hold:holdFoes,snarejoin:holdHost,
+  slingline:slingline,snare:foes};
+/* #242 - the whole tap-room, as one plan. tavernFoes() fields Harl alone
+   (the waves arrive scripted), so anything that wants the ROOM - fightPts
+   pricing it, the dev bench cataloguing it - reads this instead of keeping
+   its own copy of five rows. */
+const TAVERN_ROOM=[[8,6,'harl',24],[10,6,'brakk',22],[11,6,'osper',21],
+  [10,5,'tull',20],[11,6,'weft',19]];
 function startBattle(kind){
   G.battleKind=kind||'snare';
   /* ⛔ AND IT MUST NOT WRITE THE SAVE FILE TO GET THE BLOB. The first version
@@ -16701,31 +16798,23 @@ function startBattle(kind){
   you.forEach((u,i)=>{
     while(you.some((o,j)=>j<i&&o.col===u.col&&o.row===u.row)){
       u.row=(u.row+1)%ROWS;}});
-  const foe=G.battleKind==='mother'?beasts():G.battleKind==='brigand'?brigands()
-           :G.battleKind==='mirehares'?mirehares()
-           :G.battleKind==='clash'?clashFoes()
-           :G.battleKind==='pack'?pack()
-           :G.battleKind==='steading'?steading()
-           :G.battleKind==='armour'?armourFoe()
-           :G.battleKind==='circle'?circleFoes()
-           :G.battleKind==='wedding'?weddingFoes()
-           :G.battleKind==='tavern'?tavernFoes()
-           :G.battleKind==='chase'?chaseFoes()
-           :G.battleKind==='hold'?holdFoes()
-           :G.battleKind==='snarejoin'?holdHost()
-           :G.battleKind==='slingline'?slingline():foes();
+  /* #242 - a hand-picked other side wins over the fight's own cast, and it
+     is a whole other side: the scripted extras (allies, the turncoat) sit
+     out with the cast they belong to. Never in a run: devFoesOn asks SIM.on
+     and TEST.on first. */
+  const foe=devFoesOn()?devFoeSide():(FOE_BUILD[G.battleKind]||foes)();
   /* the side you took stands with you */
-  if(G.battleKind==='clash')clashAllies().forEach(a=>you.push(a));
+  if(G.battleKind==='clash'&&!devFoesOn())clashAllies().forEach(a=>you.push(a));
   /* #160 - and so does the clan, if you asked them for a place at their fire
      and they believed you. Same rule as the clash: on your side, not on your
      roster, and afterBattle() must never go looking for them in G.party. */
-  if(G.battleKind==='snarejoin')snareClan().forEach(a=>you.push(a));
+  if(G.battleKind==='snarejoin'&&!devFoesOn())snareClan().forEach(a=>you.push(a));
   /* THE TURNCOAT — somebody you dismissed before they owed you anything can
      turn up in the deserter line (RimWorld: the world keeps your leavers).
      Only the brigand fight: humans down on their luck is exactly who the
      broken men recruit. Loyal veterans (3+ fights) never do this — they get
      the fire-side return instead. */
-  if(G.battleKind==='brigand'&&G.dismissed&&G.dismissed.length){
+  if(G.battleKind==='brigand'&&!devFoesOn()&&G.dismissed&&G.dismissed.length){
     const ti=G.dismissed.findIndex(r=>r.fights<3);
     if(ti>=0&&Math.random()<0.6){
       const rec=G.dismissed.splice(ti,1)[0],tp=rec.p;
@@ -21525,6 +21614,10 @@ function mirrorOf(u,c,r){
 /* the one door between a POINTER and the board. Bound by render() on every
    hex; nothing else in the file calls it. */
 function handHex(c,r){
+  /* #242 - an armed dev brush eats the click before the hand does, and BEFORE
+     the mirror: paint lands where you point, because the fold is for the HAND
+     and a folded brush would paint the wrong half of the board. */
+  if(SIM.on&&TEST.on&&SIM.brush){devPaint(c,r);return;}
   if(!mirrorOn()){clickHex(c,r);return;}
   const u=cur();
   if(!u||u.side!=='you'){clickHex(c,r);return;}   /* clickHex refuses it anyway */
@@ -22340,6 +22433,25 @@ const AIP={
   foe:{ev:1,flank:1,pile:1,kite:1,fallback:1,cohere:1,hold:1,doct:1}
 };
 const aip=u=>AIP[u.side]||AIP.foe;
+/* ═══ #242 - THE ORDERS: named profiles over these knobs ══════════════════
+   (User: "i can do autobattle (where i can choose strategy for my units and
+   enemy units - agressive, steady moving, defencive)".)
+   `aggressive` and `steady` are the gauntlet's own two rows, verbatim
+   (tools/gauntlet.html PROF carries the cross-reference); `brain` is the
+   empty profile, i.e. the full AI. `defensive` is NEW and FIRST-CUT: hold
+   the knot (cohere up), no flanking runs, no focus-fire pile - the numbers
+   get measured in the gauntlet before they are trusted, the same road the
+   band multipliers are on. Read only by simFight, behind TEST.on.
+   ⚠ AIP_FULL carries `doct` where ARENA's old reset did not, and that was a
+   real leak: a profile that set doct:0 survived ARENA's finally. One table
+   now, three readers (simFight, simRestore, ARENA). */
+const AIP_FULL={ev:1,flank:1,pile:1,kite:1,fallback:1,cohere:1,hold:1,doct:1};
+const ORDER_PROF={
+  brain:{},
+  aggressive:{flank:0,kite:0,fallback:0,cohere:0,hold:0,doct:0},
+  steady:{cohere:3,flank:0.4,pile:1.3},
+  defensive:{cohere:3.5,flank:0,pile:0.6}
+};
 
 /* ═══════════════════════════════════════════════════════════════════════
    DOCTRINE — how this body prefers to fight, by race and class.
@@ -28701,15 +28813,15 @@ window.LINT=function(){
      and it is not hypothetical: #74's fight served nine ratkin the first
      time it was stood up on the board.
 
-     Read off the function's own source, because the chain is the only place
-     that knows, and a hand-kept list here would be the second source of
-     truth this check exists to prevent. */
+     It used to read the function's own SOURCE, because the chain was the only
+     place that knew. #242 made the dispatch a table (FOE_BUILD) with three
+     readers, so the check asks the table itself now - same fact, no parsing.
+     Proved by deleting a key and watching it fire, like every check here. */
   (function(){
-    const src=String(startBattle);
     ['clash','brigand','pack','slingline','steading','mother','armour','circle','tavern',
      'wedding'].forEach(k=>{
-      if(src.indexOf("==='"+k+"'")<0)
-        hit('structure','startBattle','fight "'+k+'" has no foe builder in the dispatch - it '+
+      if(!FOE_BUILD[k])
+        hit('structure','FOE_BUILD','fight "'+k+'" has no foe builder in the table - it '+
           'will silently fight the Snare\'s army');});
   })();
   /* 9b — and every fight needs somewhere for its spoils to come from. A
@@ -43496,7 +43608,10 @@ window.ARENA=(function(){
       P.push(forced('human','archer'),forced('human','archer'),
              forced('ratkin','archer'),forced('human','spear'));return P;}
   };
-  const FULL={ev:1,flank:1,pile:1,kite:1,fallback:1,cohere:1,hold:1};
+  /* #242 - the one reset table now (AIP_FULL), and it carries `doct` where
+     this literal did not: a profile that set doct:0 used to survive the
+     finally below and leak into every fight after the arena run. */
+  const FULL=AIP_FULL;
   A.match=function(comp,kind,n,youProf,foeProf){
     const _r=render,_f=fx,_s=say,_x=sfx,_p=paintTerrain;
     render=()=>{};fx=()=>{};sfx=()=>{};paintTerrain=()=>{};
@@ -44740,17 +44855,14 @@ function fightPts(kind,opt){
       G.battleKind=kind;
       let foe,ally=[];
       if(kind==='tavern'){
-        foe=build([[8,6,'harl',24],[10,6,'brakk',22],[11,6,'osper',21],
-          [10,5,'tull',20],[11,6,'weft',19]],TAVERN_T);
+        /* #242 - the room's plan is TAVERN_ROOM now, one copy for its three
+           readers (here, the dev catalogue, and whoever is next) */
+        foe=build(TAVERN_ROOM,TAVERN_T);
         ally=build([[6,4,'barman',18]],TAVERN_T);
       }else{
-        foe=kind==='mother'?beasts():kind==='brigand'?brigands()
-          :kind==='mirehares'?mirehares():kind==='clash'?clashFoes()
-          :kind==='pack'?pack():kind==='steading'?steading()
-          :kind==='armour'?armourFoe():kind==='circle'?circleFoes()
-          :kind==='wedding'?weddingFoes():kind==='chase'?chaseFoes()
-          :kind==='hold'?holdFoes():kind==='snarejoin'?holdHost()
-          :kind==='slingline'?slingline():foes();
+        /* #242 - the second copy of the fight->builder chain became a read
+           of the ONE table beside startBattle */
+        foe=(FOE_BUILD[kind]||foes)();
         if(kind==='clash')ally=clashAllies();
         if(kind==='snarejoin')ally=snareClan();
       }
@@ -44784,6 +44896,175 @@ const SEENF={k:'gt_seen_fights',
   mark(kind){try{const a=this.all();if(a[kind])return;a[kind]=1;
     localStorage.setItem(this.k,JSON.stringify(a));}catch(e){}}};
 const fightOpen=k=>TEST.on||!FIGHT_LOCK[k]||!!SEENF.all()[k];
+
+/* ═══ #242 (8f.265) - THE DEV BENCH: THE OTHER SIDE ═══════════════════════
+   (User: "That i can add any unit or artifact to any character ... And also
+   add any enemy ... So idea that i can test things fast and create needed
+   scenarios. (and this is availble only in dev mod)".)
+
+   A foe row is a RECIPE (fight, variant, count), the same shape as SIMCREW's
+   rows: the body is rebuilt from the fight's OWN builder on every read, so
+   nothing here is authored twice and a statblock change moves the bench by
+   itself. The catalogue is DERIVED by running every FOE_BUILD builder once,
+   seeded, and keeping each distinct variant it fields - a new fight's bodies
+   appear on the bench with no wiring, which is #137's rule on this surface.
+   Dev-mode only: the launch gate (devFoesOn) asks SIM.on AND TEST.on, so a
+   recipe left in storage can never reach a run or a dev-off practice fight. */
+const DEVFOES={k:'gt_devfoes',_r:null,
+  rows(){
+    if(!this._r){
+      try{this._r=JSON.parse(localStorage.getItem(this.k))||[];}catch(e){this._r=[];}
+      if(!Array.isArray(this._r))this._r=[];
+    }
+    return this._r;
+  },
+  save(){try{localStorage.setItem(this.k,JSON.stringify(this.rows()));}catch(e){}}};
+const DEVFOE_CAP=14;         /* the far-side deployment below has 14 slots */
+/* borrow G the way fightPts does, run ONE builder, give everything back.
+   party.length 6 so the >=6 reinforcement clauses field their extra body
+   and the catalogue knows the whole cast. */
+function devFoeRun(kind,side){
+  /* ⚠ seededly PER RUN, never one stream over many runs: the steading ROLLS
+     its wall, so in a shared stream the same builder fields a different cast
+     depending on how many rolls the runs before it spent - and a variant the
+     catalogue offered would silently fail to build when the side-builder met
+     it at a different stream position. A fresh seed per run makes every call
+     return the same cast, everywhere, forever. */
+  return seededly(()=>{
+    const keep={party:G.party,side:G.clashSide,bk:G.battleKind,plan:G.armourPlan};
+    try{
+      G.party={length:6};G.clashSide=side||'none';
+      if(!G.armourPlan)G.armourPlan='form';
+      G.battleKind=kind;
+      try{
+        if(kind==='tavern')return build(TAVERN_ROOM,TAVERN_T);
+        return FOE_BUILD[kind]?FOE_BUILD[kind]():[];
+      }catch(e){return [];}
+    }finally{G.party=keep.party;G.clashSide=keep.side;G.battleKind=keep.bk;
+      G.armourPlan=keep.plan;}
+  });
+}
+/* the whole pool a fight can field. The clash's cast depends on the side
+   you take (ratkin side fights ogres, ogre side fights ratkin), so its pool
+   is both runs; every other fight is one. */
+function devFoeUnits(kind){
+  if(kind==='clash')return devFoeRun(kind,'ratkin').concat(devFoeRun(kind,'ogre'));
+  return devFoeRun(kind);
+}
+let DEVFOE_CAT=null;         /* statblocks do not change at runtime; cached */
+function devFoeCatalog(){
+  if(DEVFOE_CAT)return DEVFOE_CAT;
+  const out=[],seen={};
+  Object.keys(FOE_BUILD).forEach(k=>{
+    devFoeUnits(k).forEach(u=>{
+      const pts=seededly(()=>unitPts(u));
+      if(u.passive||!pts)return;            /* the cub is a decision, not a foe */
+      /* the same name at the same price is the same body wearing two
+         fights (the Hold's men stand in `hold` AND `snarejoin`, the
+         lurchers in two packs), and a bench does not offer one body
+         twice. A shared name at a DIFFERENT price is two statblocks
+         and both stay. */
+      const key=u.name+'|'+pts;
+      if(seen[key])return;seen[key]=1;
+      out.push({f:k,v:u.variant,n:u.name,race:u.race,pts:pts});
+    });
+  });
+  out.sort((a,b)=>a.pts-b.pts);
+  return DEVFOE_CAT=out;
+}
+/* the one launch gate. The tap-room is out because its waves are scripted
+   around its own cast (tavernPlace rides checkEnd), and a hand-picked side
+   under a script that spawns the shipped one is two fights in one room. */
+const devFoesOn=()=>SIM.on&&TEST.on&&SIM.foes==='custom'&&
+  DEVFOES.rows().length>0&&G.battleKind!=='tavern';
+function devFoeSide(){
+  const out=[];
+  DEVFOES.rows().forEach(r=>{
+    const t=devFoeUnits(r.f).find(u=>u.variant===r.v);if(!t)return;
+    for(let i=0;i<(r.n||1);i++)out.push(JSON.parse(JSON.stringify(t)));
+  });
+  out.length=Math.min(out.length,DEVFOE_CAP);
+  /* the player's own deployment shape, mirrored to the far side. init stays
+     the template's, so a fast body still goes early. */
+  const CY=(ROWS>>1),M=COLS-1;
+  const slots=[[M-2,CY-2],[M-2,CY],[M-1,CY-1],[M-1,CY+1],[M-2,CY+2],[M-3,CY-1],
+    [M-1,CY-3],[M-3,CY+1],[M-1,CY+3],[M-3,CY-3],[M,CY],[M,CY-2],[M-3,CY+3],[M,CY+2]];
+  out.forEach((u,i)=>{u.id='foe'+i;u.side='foe';u.ally=false;
+    const p=slots[i%slots.length];u.col=p[0];u.row=p[1];});
+  out.forEach((u,i)=>{
+    while(out.some((o,j)=>j<i&&o.col===u.col&&o.row===u.row))u.row=(u.row+1)%ROWS;});
+  return out;
+}
+/* the bench under the grid, the crew bench's twin for the far side */
+function devFoePanel(myPts){
+  const rows=DEVFOES.rows(),cat=devFoeCatalog();
+  const of=r=>cat.find(x=>x.f===r.f&&x.v===r.v);
+  const total=rows.reduce((s,r)=>{const c=of(r);return s+(c?c.pts*(r.n||1):0);},0);
+  const cnt=rows.reduce((s,r)=>s+(r.n||1),0);
+  const vs=!total?'nobody yet - add somebody below'
+    :myPts>=Math.round(total*1.3)?'you should have it EASY'
+    :myPts>=total?'better than EVEN'
+    :myPts>=Math.round(total*0.75)?'a HARD fight':'past HARD - bring more';
+  const rowHtml=rows.map((r,i)=>{
+    const c=of(r);if(!c)return '';
+    const f=SIM_FIGHTS.find(x=>x.k===c.f);
+    return '<div class="scrow" data-i="'+i+'">'+
+      '<b>'+c.n+'</b><span class="scwho">'+c.race+' · out of '+(f?f.n:c.f)+'</span>'+
+      '<span class="sclv">×<button data-a="dn" title="one fewer">−</button><b>'+
+        (r.n||1)+'</b><button data-a="up" title="one more">+</button></span>'+
+      '<span class="scpts">'+c.pts+' pts each</span>'+
+      '<button class="scx" data-a="del" title="off the field">✕</button></div>';
+  }).join('');
+  let adders='';
+  if(cnt<DEVFOE_CAP)cat.forEach(c=>{
+    adders+='<button data-addf="'+c.f+':'+c.v+'" title="'+c.pts+' pts · out of '+
+      ((SIM_FIGHTS.find(x=>x.k===c.f)||{}).n||c.f)+'">+ '+c.n+'</button>';});
+  else adders='<i class="scfull">fourteen is what the far side deploys</i>';
+  return '<div id="devFoes" class="devrow" style="margin-top:var(--p5)">'+
+    '<div class="lbl">⚙ HAND-PICKED FOES · '+cnt+' of them · '+total+' pts · against your '+
+      myPts+': <b style="color:#a3bd6c">'+vs+'</b></div>'+
+    '<div class="screws">'+rowHtml+'</div>'+
+    '<div class="scadd">'+adders+'</div>'+
+    '<i class="scnote">Every body every fight builder fields, priced on the same scale as your '+
+    'side. The fight column still decides the ground and the layout; these stand where its '+
+    'foes would, and its scripted allies sit out with its cast.</i></div>';
+}
+function devFoeWire(){
+  const box=$('devFoes');if(!box)return;
+  const rows=DEVFOES.rows();
+  box.querySelectorAll('.scrow').forEach(el=>{
+    const i=+el.dataset.i,r=rows[i];if(!r)return;
+    el.querySelectorAll('button[data-a]').forEach(bt=>bt.onclick=()=>{
+      if(bt.dataset.a==='up')r.n=Math.min(9,(r.n||1)+1);
+      else if(bt.dataset.a==='dn')r.n=Math.max(1,(r.n||1)-1);
+      else if(bt.dataset.a==='del')rows.splice(i,1);
+      DEVFOES.save();openSim();});
+  });
+  box.querySelectorAll('button[data-addf]').forEach(bt=>bt.onclick=()=>{
+    const b=bt.dataset.addf.split(':');
+    const ex=rows.find(r=>r.f===b[0]&&r.v===b[1]);
+    if(ex)ex.n=Math.min(9,(ex.n||1)+1);else rows.push({f:b[0],v:b[1],n:1});
+    DEVFOES.save();openSim();});
+}
+/* ═══ #242 - THE PERK EDITOR, on a crew row ═══════════════════════════════
+   (User: "So in first phase / option i can add / try unlimited artifacts
+   and skills".)
+   Acts come off the weapon and the weapon is already on the gear selects;
+   perks are the half of a build the bench could not reach, because the
+   level policy spends them and nobody chooses. A row with dev picks stops
+   spending by policy: what you ticked is what stands - any class, any
+   tier, any count. Clear every tick and the policy is back. */
+function devPerkPanel(r,p){
+  const on={},pol={};(r.pk||[]).forEach(k=>on[k]=1);
+  if(!(r.pk&&r.pk.length))(p.perks||[]).forEach(k=>pol[k]=1);
+  return '<div class="pkpanel"><div class="lbl">⚙ EVERY PERK · '+p.name+
+    ' · ticked is what stands, faint is what the policy would grant</div>'+
+    '<div class="pkchips">'+
+    Object.keys(PERKS).map(k=>'<button class="pkchip'+(on[k]?' on':pol[k]?' pol':'')+
+      '" data-pk="'+k+'" title="'+PERKS[k].d.replace(/"/g,'&quot;')+'">'+
+      PERKS[k].n+'</button>').join('')+
+    '</div></div>';
+}
 
 /* ─── the hand-picked company ──────────────────────────────────────────────
    (User: "you can pick specific caracters, Also you can lvl up them and add
@@ -44844,6 +45125,10 @@ function crewPerson(r){
   else{const bits=r.src.split(':');p=simStock(bits[0],bits[1]);}
   if(r.eq)p.eq=Object.assign({},p.eq,r.eq);
   simLevelTo(p,r.level||1);
+  /* #242 - dev perk picks override the policy: what you ticked is what
+     stands. TEST.on gated, so a row saved with picks reads as a plain
+     policy row the moment the ⚙ goes off. */
+  if(TEST.on&&r.pk&&r.pk.length){p.perks=r.pk.slice();p.perkPoints=0;}
   return p;
 }
 function crewBuild(){
@@ -44885,9 +45170,13 @@ function simCrewPanel(crew,myPts){
       '<span class="sclv">Lv <button data-a="lvdn" title="a level lower">−</button><b>'+
         (r.level||1)+'</b><button data-a="lvup" title="a level higher">+</button></span>'+
       slotOpts(p,'armour')+slotOpts(p,'main')+slotOpts(p,'off')+slotOpts(p,'trinket')+
+      /* #242 - the perk editor's door, dev only */
+      (TEST.on?'<button class="scpk'+(r.pk&&r.pk.length?' has':'')+'" data-a="pk">⚙ perks'+
+        (r.pk&&r.pk.length?' · '+r.pk.length:'')+'</button>':'')+
       '<span class="scpts">'+charPts(p)+' pts</span>'+
       (r.src==='you'?'':'<button class="scx" data-a="del" title="off the list">✕</button>')+
-      '</div>';
+      '</div>'+
+      (TEST.on&&SIM.pkOpen===i?devPerkPanel(r,p):'');
   }).join('');
   const have={};rows.forEach(r=>{have[r.src]=1;});
   let adders='';
@@ -44916,7 +45205,9 @@ function simCrewWire(){
     el.querySelectorAll('button[data-a]').forEach(bt=>bt.onclick=()=>{
       if(bt.dataset.a==='lvup')r.level=Math.min(XP_CAP,(r.level||1)+1);
       else if(bt.dataset.a==='lvdn')r.level=Math.max(1,(r.level||1)-1);
-      else if(bt.dataset.a==='del')rows.splice(i,1);
+      else if(bt.dataset.a==='del'){rows.splice(i,1);SIM.pkOpen=null;}
+      /* #242 - fold the editor open or shut; a second press is the shut */
+      else if(bt.dataset.a==='pk')SIM.pkOpen=(SIM.pkOpen===i?null:i);
       SIMCREW.save();openSim();
     });
     el.querySelectorAll('select[data-slot]').forEach(s=>s.onchange=()=>{
@@ -44927,6 +45218,17 @@ function simCrewWire(){
   box.querySelectorAll('button[data-add]').forEach(bt=>bt.onclick=()=>{
     if(rows.length>=12)return;
     rows.push({src:bt.dataset.add,level:1,eq:null});
+    SIMCREW.save();openSim();
+  });
+  /* #242 - the perk chips. The FIRST tick seeds the picks with what the
+     policy had granted (the faint chips), so ticking one perk adds it to
+     the build that was standing rather than deleting the other seven. */
+  box.querySelectorAll('.pkpanel button[data-pk]').forEach(bt=>bt.onclick=()=>{
+    const r=rows[SIM.pkOpen];if(!r)return;
+    if(!(r.pk&&r.pk.length))
+      r.pk=[...box.querySelectorAll('.pkpanel button.pol')].map(b=>b.dataset.pk);
+    const ix=r.pk.indexOf(bt.dataset.pk);
+    if(ix<0)r.pk.push(bt.dataset.pk);else r.pk.splice(ix,1);
     SIMCREW.save();openSim();
   });
 }
@@ -45055,6 +45357,10 @@ function openSim(){
   SIM.on=false;                 /* the picker is not a fight */
   const comps=simComps();
   if(!comps.some(c=>c.k===SIM.comp))SIM.comp=comps[0].k;
+  /* #242 - the dev state cannot outlive what it points at: an open perk
+     editor on a deleted row, a value the picker never offers */
+  if(SIM.foes!=='custom')SIM.foes='as';
+  if(SIM.pkOpen!=null&&(!TEST.on||SIM.pkOpen>=SIMCREW.rows().length))SIM.pkOpen=null;
   /* #216 - a locked pick cannot survive into the launch button */
   if(!fightOpen(SIM.fight))SIM.fight=SIM_FIGHTS.filter(f=>fightOpen(f.k))[0].k;
   /* #216 - price the picked company FIRST: the fight list is recommended
@@ -45088,6 +45394,32 @@ function openSim(){
     (o.k===SIM.ground?'on':'')+'"><b>'+o.n+'</b><i>'+o.d+'</i></button>');
   const ruleRows=SIM_RULES.map(o=>'<button data-k="'+o.k+'" class="'+
     (o.k===SIM.rule?'on':'')+'"><b>'+o.n+'</b><i>'+o.d+'</i></button>');
+  /* ═══ #242 - the dev bench rows, drawn only under the ⚙ ═══════════════════
+     Rows, not columns: #215's arithmetic (255px a column on this card) binds
+     these too. The generic .simpick wiring below picks them up by data-attr,
+     so a dev row costs no second wiring path. */
+  const tavCust=SIM.fight==='tavern';
+  const devFoeRows=TEST.on?[
+    '<button data-k="as" class="'+(SIM.foes!=='custom'?'on':'')+'"><b>As the fight is</b>'+
+      '<i>What this fight actually fields. The shipped encounter.</i></button>',
+    '<button data-k="custom" class="'+(SIM.foes==='custom'?'on':'')+(tavCust?' lock':'')+'"'+
+      (tavCust?' disabled':'')+'><b>Hand-picked</b><i>'+
+      (tavCust?'Not in the tap-room: the brawl’s waves are scripted around its own cast.'
+        :'Any body the campaign can field, in any number. The bench opens below.')+
+      '</i></button>']:[];
+  const ordRow=(list,cur)=>list.map(o=>'<button data-k="'+o.k+'" class="'+
+    (o.k===cur?'on':'')+'"><b>'+o.n+'</b><i>'+o.d+'</i></button>');
+  const devOrdYou=TEST.on?ordRow([
+    {k:'hand',n:'Your own hand',d:'you play them'},
+    {k:'brain',n:'The brain',d:'the full AI · autobattle'},
+    {k:'aggressive',n:'Aggressive',d:'everyone straight in'},
+    {k:'steady',n:'Steady',d:'the line advances together'},
+    {k:'defensive',n:'Defensive',d:'hold the knot, no runs'}],SIM.ordYou):[];
+  const devOrdFoe=TEST.on?ordRow([
+    {k:'own',n:'Their own game',d:'each fight’s doctrine'},
+    {k:'aggressive',n:'Aggressive',d:'everyone straight in'},
+    {k:'steady',n:'Steady',d:'the line advances together'},
+    {k:'defensive',n:'Defensive',d:'hold the knot, no runs'}],SIM.ordFoe):[];
   $('simCard').innerHTML='<h1>THE PRACTICE FIELD</h1>'+
     '<p style="color:#8a7449;font-style:italic;margin-top:-4px">A stretch of nothing in '+
     'particular, and a fight on it. Nobody is scarred here, nothing is looted, no day passes and '+
@@ -45104,7 +45436,14 @@ function openSim(){
        preceding it - the bench is the tall thing that grows, so it goes last and
        nothing above it jumps when it opens. */
     col('THE RULE',ruleRows,'rule','simrow')+
+    /* #242 - the ⚙ rows. THE OTHER SIDE first (what the fight is), then the
+       two ORDERS rows (how each side plays it); the benches keep to the tail
+       of the card because they are the tall things that grow. */
+    (TEST.on?col('⚙ THE OTHER SIDE',devFoeRows,'foes','simrow devrow'):'')+
+    (TEST.on?col('⚙ YOUR SIDE PLAYS',devOrdYou,'ordYou','simrow devrow'):'')+
+    (TEST.on?col('⚙ THEIR SIDE PLAYS',devOrdFoe,'ordFoe','simrow devrow'):'')+
     (SIM.comp==='custom'?simCrewPanel(crew,myPts):'')+
+    (TEST.on&&SIM.foes==='custom'&&!tavCust?devFoePanel(myPts):'')+
     '<div class="popts"><button class="popt" id="simGo"><b>Take the field</b>'+
       '<i>fight it for real - the same rules, none of the consequences</i></button>'+
       '<button class="popt" id="simBack"><b>Back</b><i>to the menu</i></button></div>';
@@ -45115,6 +45454,7 @@ function openSim(){
     box.querySelectorAll('button').forEach(b=>b.onclick=()=>{
       SIM[attr]=b.dataset.k;openSim();});});
   simCrewWire();
+  devFoeWire();                /* #242 - the foe bench's own buttons */
   $('simGo').onclick=simStart;
   $('simBack').onclick=openMenu;
   show('sim');
@@ -45155,7 +45495,11 @@ function simStart(){
           G.armourSac=v?v.id:null;simFight();}}]);
     return;
   }
-  if(SIM.fight==='clash'){
+  /* #242 - with a hand-picked other side the clash question has nothing left
+     to decide (its whole payload is which cast stands where, and both casts
+     are sitting out), so it is not asked. The armour question stays: the
+     deployment it buys is real whoever is coming up the road. */
+  if(SIM.fight==='clash'&&!(TEST.on&&SIM.foes==='custom'&&DEVFOES.rows().length)){
     ask('BLOOD ON THE ROAD','A ratkin foraging party and an ogre line have found each other. '+
       'Whichever side you take is the side that stands with you.',
       [{t:'Wade in for the ratkin.',c:'three beside you · three ogres against',
@@ -45169,7 +45513,21 @@ function simStart(){
   simFight();
 }
 function simFight(){
+  /* ═══ #242 - THE ORDERS ══════════════════════════════════════════════════
+     Reset FIRST, so a previous practice fight can never leak its brain into
+     this one, then the picked profiles go on. Dev-only: with the ⚙ off both
+     sides are the full AI, exactly as before. simRestore is the other half
+     of the fence. */
+  Object.assign(AIP.you,AIP_FULL);Object.assign(AIP.foe,AIP_FULL);
+  if(TEST.on){
+    Object.assign(AIP.you,ORDER_PROF[SIM.ordYou]||{});
+    Object.assign(AIP.foe,ORDER_PROF[SIM.ordFoe]||{});
+  }
   startBattle(SIM.fight);
+  /* a brain picked for your side IS the autobattle: AUTO engages at round
+     one and plays the whole fight at battle speed. The button, the white
+     flag and the reins stay yours - press AUTO to take them back. */
+  if(TEST.on&&SIM.ordYou!=='hand'&&B&&!B.auto)toggleAuto();
   /* #215 - the mirror says what it is, once, in the log. The dashed line down
      the board and the mirrored hand carry it after that. */
   if(mirrorOn())say('THE MIRROR. Everything your hand does is folded across the '+
@@ -45196,6 +45554,11 @@ function simRestore(){
      `SIM.on` before it asks `SIM.rule`, so the rule survives for the next visit
      to the picker and is dead everywhere else the moment a practice fight ends
      or is abandoned. Same fence `SIM.ground` has had since #61. */
+  /* #242 - the orders and the brush die with the fight the same way. The
+     PICKS survive for the next visit to the picker; the applied profiles and
+     the armed brush do not. */
+  Object.assign(AIP.you,AIP_FULL);Object.assign(AIP.foe,AIP_FULL);
+  SIM.brush=null;
   SIM.on=false;B=null;
 }
 function simResult(how){
