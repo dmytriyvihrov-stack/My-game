@@ -26,6 +26,36 @@
 
 ---
 
+## 🗺 THE GROUND GOES ON PAST THE FIELD  *(#241 · 2026-08-24 · build log 8f.264)*
+
+**Three steps:** start any fight (the road, or ⚙ TEST > a battle) · press **CLOSE** top right ·
+walk somebody down to the bottom rank and look at where the skill cards are.
+
+**What it is.** The painted ground now runs one hex above the field, two below it and three either
+side. That band is not marked out into hexes, nothing can be clicked there and nothing can walk
+there: it is scenery, and it is what the floating chrome is meant to sit on from now on.
+
+| | what should happen |
+|---|---|
+| **FULL** | exactly what it always did, to the pixel. The board is in the same place and the same size; what changed is that the empty gradient down both sides is ground now |
+| **FIELD / CLOSE, a body at the bottom rank** | the last row of hexes sits **above** the skill cards instead of behind them. Measured: 41px clear at FIELD, 60 at CLOSE, against a 100px overlap before |
+| **FIELD / CLOSE, a body at the left rank** | the order rail on the left stands on bare ground rather than on hexes |
+| **dragging the board** | still refused at FULL (there is nothing to look around at), and at the two closer stops it now stops with the apron's outer edge on the screen edge rather than the field's |
+| **a boulder shoved, ground changed mid-fight** | the band redraws identically. Grass and stones must not jump about |
+
+**What would be a bug:** a hex you can stand on out in the band · the band ending in a hard line
+rather than fading · the board jumping when you let go of a drag · anything on the field itself
+having moved at FULL · the tap-room brawl showing grass around the floorboards (it should be the
+same boards, going dark).
+
+⚡ **One thing to judge and it is yours.** You asked for two things in one breath - *чуть
+выходящие квадратики* (tiles sticking out past the field) and *они не размечены* (they are
+not marked out). **Bare ground shipped**, on the second sentence. If you wanted to SEE the tiles
+out there, say so: `APRON_LATTICE` is one number (0 now; .05 is a whisper, .10 a lattice) and it
+draws the apron's hexes as outlines under the same fade. Still nothing to stand on either way.
+
+---
+
 ## 🧾 NINETEEN SMALL THINGS, BY SCREEN  *(#240 · 2026-08-24 · build log 8f.263)*
 
 *Your second list of the day, grouped by screen the way the last one was. **Two of them turned out

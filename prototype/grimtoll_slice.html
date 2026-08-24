@@ -1285,7 +1285,21 @@ body:has(#battle.on) #audioBox button{font-size:var(--fs2);padding:var(--p1) var
    anchored by measuring (hexRect − fieldRect) ÷ the #stage scale, which is
    correct at any zoom precisely because #bFx sits OUTSIDE the zoomed layer.
    Breaking either half breaks all of them at once, and silently. */
+/* ═══ #241 · THE PADDING IS THE APRON ═════════════════════════
+   (User: "Хочу, чтобы ты сделал чуть более широко карту - чем реальная
+   площадь боя ... Они не размечены и на них нельзя становиться".)
+
+   The ground goes on past the marked-out field: one hex above, two below and
+   three either side of painted world nobody can stand on. It is PADDING on
+   this box and not hexes in the grid, and that is the whole reason 195 hexes,
+   every `data-k` lookup, `hexCentre`, the pathing and the AI did not have to
+   change - the play area keeps its own origin and the apron hangs off it.
+   ⚠ THE FOUR VARS ARE WRITTEN BY `apronApply()` AND FALL BACK TO 0. A build
+   where it has not run (the harness, a stubbed render) is a board with no
+   apron rather than a board that is mis-framed, because the camera READS the
+   padding off this element (`apronOf`) instead of assuming the constant. */
 #bGround{position:absolute;left:0;top:0;transform-origin:0 0;
+         padding:var(--aprT,0px) var(--aprR,0px) var(--aprB,0px) var(--aprL,0px);
          transition:transform .22s cubic-bezier(.25,.6,.3,1)}
 /* ═══ #105 point 2 · THE BLACK LINE ACROSS THE TOP OF THE BOARD ══════════
    (User: "A big black line that covers part of the top tile - we don't need
@@ -1307,7 +1321,15 @@ body:has(#battle.on) #audioBox button{font-size:var(--fs2);padding:var(--p1) var
    origin rather than its box's. See hexCentre for the x half of the same
    drift. The canvas is 440 tall against a 416 board, so the bottom stays
    covered with fourteen pixels to spare. */
-#bTerrain{position:absolute;left:0;top:-10px;pointer-events:none;width:600px;height:440px}
+/* ⚠ #241 - AN ABSOLUTE CHILD IS LAID OUT AGAINST THE PADDING BOX, so the
+   canvas has to step back OVER the apron to cover it: `-aprL`, and `-aprT` on
+   top of the -10 the note above explains. The 600x440 is the play area's own
+   slop and is untouched, so every coordinate inside paintTerrain still means
+   exactly what it meant before the apron existed. */
+#bTerrain{position:absolute;left:calc(var(--aprL,0px) * -1);
+  top:calc(var(--aprT,0px) * -1 - 10px);pointer-events:none;
+  width:calc(600px + var(--aprL,0px) + var(--aprR,0px));
+  height:calc(440px + var(--aprT,0px) + var(--aprB,0px))}
 /* ═══ #66 — the three stops. A state, not a number: no slider, no percentage.
    Top-right because bottom-right belongs to #53's reaction bar. ═══ */
 /* #91 shifted this left so the AUTO/PACE/WITHDRAW icons could keep the
@@ -24806,6 +24828,50 @@ function terrainCheck(terr,units){
    now, so there is one. */
 const HEXW=38,HEXH=32,HEXOFF=19;
 const hexCentre=(c,r)=>({x:c*HEXW+(r&1?HEXOFF:0)+18.5, y:r*HEXH+21});
+/* ═══ ⛔ #241 · THE GROUND GOES ON PAST THE FIELD ═══════════════════
+   (User, 2026-08-24: "чуть более широко карту - чем реальная площадь
+   боя ... в размере одного гекса вверху, 2х гексов внизу и 2-3 гекса справа
+   слева", for two stated reasons: so the floating chrome stops sitting on
+   ground that is played on, and so there is somewhere to put the world.)
+
+   ⛔ THE APRON IS NOT HEXES, AND THAT IS THE DESIGN RATHER THAN A SAVING.
+   A hex in this build is a BUTTON with a `data-k`, a hexagon of tint, a
+   cursor, a hover card and a place in `B.hexEls`; an apron built out of them
+   would be 60 more of all of that, each one having to be excluded from
+   pathing, from `at()`, from the AI's target lists and from every counter -
+   i.e. the rule "you cannot stand here" written in nine places. Painted
+   ground cannot be stood on because there is nothing there to stand on, and
+   the user's own words for it are `не размечены` - not marked out. The
+   marking IS the hex.
+
+   ⚠ THE VERTICAL UNIT IS THE ROW PITCH (32) AND NOT THE HEX (42), because
+   rows overlap by ten: two rows of apron is what two more ranks of bodies
+   would have occupied, which is what "2 hexes below" means on this board.
+   ⚑ ONE CONSTANT, THREE READERS: `apronApply` writes it onto the box, the
+   painter draws it, and the camera reads it back off the box. */
+const APRON={t:1,b:2,l:3,r:3};
+const APR={t:APRON.t*HEXH,b:APRON.b*HEXH,l:APRON.l*HEXW,r:APRON.r*HEXW};
+/* the play area inside the CANVAS's own coordinates: x 0..588 is the widest
+   row, and y 0..426 because #bTerrain is pinned 10px above the grid's box and
+   the last row's foot is at board 416. Both derived, so a column or a rank
+   added to the field moves the apron with it. */
+const PLAY_W=COLS*HEXW-1+HEXOFF, PLAY_H=ROWS*HEXH+10;
+function apronApply(){
+  const el=$('bGround');if(!el)return;
+  el.style.setProperty('--aprT',APR.t+'px');el.style.setProperty('--aprB',APR.b+'px');
+  el.style.setProperty('--aprL',APR.l+'px');el.style.setProperty('--aprR',APR.r+'px');
+}
+/* ⛔ WHAT THE CAMERA MOVES, MEASURED OFF THE BOX RATHER THAN ASSUMED. The
+   constant above is what the apron SHOULD be; this is what it IS. They differ
+   in exactly one case and it is the one that matters: a board whose ground has
+   never been painted (the harness, the arena, a stubbed render) has no padding
+   yet, reads 0 on all four sides, and every line of camera arithmetic below
+   collapses to what it was before this entry. */
+function apronOf(el){
+  const c=getComputedStyle(el);
+  return {l:parseFloat(c.paddingLeft)||0,r:parseFloat(c.paddingRight)||0,
+          t:parseFloat(c.paddingTop)||0,b:parseFloat(c.paddingBottom)||0};
+}
 
 /* ═══════════════════════════════════════════════════════════════════════
    THE CAMERA — three stops (backlog #66)
@@ -24897,13 +24963,27 @@ function camSubject(){
 /* snap=true re-frames now (stop changed, battle opened, window resized).
    Called with no argument from render(), where it must be nearly free and must
    NOT re-frame while the player is choosing something. */
+/* ⛑ #241 - WHERE THE BOARD SITS ON AN AXIS THAT DOES NOT PAN: the PLAY area
+   centred, the apron hanging off both ends of it. One function because
+   camApply and camNudge both need the answer and a second copy of it is the
+   drift this project has merged out four times. With no apron it is exactly
+   the `(V-w)/2` it replaces. */
+function camRest(V,P,ap,z){return (V-P*z)/2-ap*z;}
 function camApply(snap){
   const el=$('bGround'),F=$('bField');
   if(!el||!F)return;
   const VW=F.offsetWidth,VH=F.offsetHeight;
   if(!VW||!VH)return;                    /* screen not up: AUTO, tests, boot */
   const z=CAMS[CAM.i].z,BW=el.offsetWidth||596,BH=el.offsetHeight||416;
-  const w=BW*z,h=BH*z,panX=w>VW,panY=h>VH;
+  /* ⛔ #241 - TWO BOXES NOW, AND WHICH ONE ANSWERS WHICH QUESTION IS THE WHOLE
+     OF THE CHANGE. `BW/BH` is the GROUND, apron and all, and it is what the
+     view is CLAMPED to - that is what buys a body on the bottom rank the room
+     to sit clear of the cards, which is the ask. `PW/PH` is the PLAY area, and
+     it decides whether an axis pans at all and where the board rests when it
+     does not - so FULL still means "the whole 15x13 board, exactly where it
+     was", to the pixel, and #206's arithmetic about that stop is untouched. */
+  const A=apronOf(el),PW=BW-A.l-A.r,PH=BH-A.t-A.b;
+  const w=BW*z,h=BH*z,panX=PW*z>VW,panY=PH*z>VH;
   let tx,ty;
   if(!panX&&!panY&&CAM.z===z&&!snap&&CAM.tx!==undefined)return;   /* FULL: nothing moves */
   const u=camSubject();
@@ -24923,7 +25003,12 @@ function camApply(snap){
   const sid=u?u.id:null;
   if(CAM.free&&!snap&&CAM.subj===sid)return;
   CAM.free=false;CAM.subj=sid;
-  const p=u?hexCentre(u.col,u.row):{x:BW/2,y:BH/2};
+  /* ⚠ hexCentre IS PLAY-RELATIVE (it is the painter's own coordinate system,
+     which starts at the field's corner), and everything from here down is in
+     the GROUND box the transform is written against. The apron is the offset
+     between the two, and it is added exactly once, here. */
+  const p=u?(q=>({x:q.x+A.l,y:q.y+A.t}))(hexCentre(u.col,u.row))
+           :{x:A.l+PW/2,y:A.t+PH/2};
   /* still comfortably inside the view, and the stop has not changed: leave it */
   if(!snap&&CAM.z===z&&CAM.tx!==undefined&&(panX||panY)){
     const sx=CAM.tx+z*p.x,sy=CAM.ty+z*p.y;
@@ -24932,7 +25017,7 @@ function camApply(snap){
     if(okX&&okY)return;
   }
   /* clamped to the board, so the view never shows off-board emptiness */
-  tx=panX?Math.max(VW-w,Math.min(0,VW/2-z*p.x)):(VW-w)/2;
+  tx=panX?Math.max(VW-w,Math.min(0,VW/2-z*p.x)):camRest(VW,PW,A.l,z);
   /* #95 point 8 - THE SLACK IS NOT SPLIT EVENLY, because the two ends are
      not symmetrical. A sprite is bottom-anchored in its hex and stands ~8
      board-pixels proud of it, so only the TOP end can crop a body - and only
@@ -24940,7 +25025,7 @@ function camApply(snap){
      upward, which puts a top-row head at y36 against a capsule that ends at
      34. Applies to FULL alone: the other two stops pan, and a panning camera
      is clamped to the board on purpose. */
-  ty=panY?Math.max(VH-h,Math.min(0,VH/2-z*p.y)):(VH-h)/2+CAM_TOPBIAS;
+  ty=panY?Math.max(VH-h,Math.min(0,VH/2-z*p.y)):camRest(VH,PH,A.t,z)+CAM_TOPBIAS;
   const first=CAM.tx===undefined;
   CAM.tx=tx;CAM.ty=ty;CAM.z=z;
   /* the very first placement must not GLIDE in from the top-left corner of an
@@ -24993,9 +25078,15 @@ function panScale(F){
 function camNudge(tx,ty){
   const el=$('bGround'),F=$('bField');if(!el||!F)return;
   const VW=F.offsetWidth,VH=F.offsetHeight;if(!VW||!VH)return;
-  const z=CAMS[CAM.i].z,w=(el.offsetWidth||596)*z,h=(el.offsetHeight||416)*z;
-  CAM.tx=w>VW?Math.max(VW-w,Math.min(0,tx)):(VW-w)/2;
-  CAM.ty=h>VH?Math.max(VH-h,Math.min(0,ty)):(VH-h)/2+CAM_TOPBIAS;
+  /* ⚠ #241 - THE PAN TEST IS THE PLAY BOX AND THE CLAMP IS THE GROUND BOX,
+     the same pair camApply uses and for the same reason: two writers of one
+     transform that disagreed about which box they were moving would make a
+     drag jump the moment the player let go. */
+  const z=CAMS[CAM.i].z,A=apronOf(el);
+  const BW=el.offsetWidth||596,BH=el.offsetHeight||416,w=BW*z,h=BH*z;
+  const PW=BW-A.l-A.r,PH=BH-A.t-A.b;
+  CAM.tx=PW*z>VW?Math.max(VW-w,Math.min(0,tx)):camRest(VW,PW,A.l,z);
+  CAM.ty=PH*z>VH?Math.max(VH-h,Math.min(0,ty)):camRest(VH,PH,A.t,z)+CAM_TOPBIAS;
   CAM.z=z;CAM.free=true;
   /* the .22s glide is what makes a STOP CHANGE read as a camera move; on a
      drag it is 220ms of the board trailing the cursor, which reads as lag */
@@ -25006,8 +25097,10 @@ function panSettle(){const el=$('bGround');if(el)el.style.transition='';}
 const camPans=()=>{
   const el=$('bGround'),F=$('bField');
   if(!el||!F||!F.offsetWidth)return false;
-  const z=CAMS[CAM.i].z;
-  return (el.offsetWidth||596)*z>F.offsetWidth||(el.offsetHeight||416)*z>F.offsetHeight;
+  /* the PLAY box, so FULL is still the stop with nothing to look around at */
+  const z=CAMS[CAM.i].z,A=apronOf(el);
+  return ((el.offsetWidth||596)-A.l-A.r)*z>F.offsetWidth||
+         ((el.offsetHeight||416)-A.t-A.b)*z>F.offsetHeight;
 };
 /* ⚠ A CHAINED setTimeout AND NOT setInterval, for the reason README §5 gives
    about requestAnimationFrame: in the hidden preview pane an interval fires
@@ -25218,6 +25311,99 @@ const GROUND={
     vig:'linear-gradient(rgba(14,21,15,0) 0%,rgba(14,21,15,0) 76%,'+
         'rgba(14,21,15,.55) 100%)'}
 };
+/* ═══ ⛔ #241 · THE BAND BEYOND THE FIELD ════════════════════════
+   Ground, and nothing on it that could be mistaken for a hex. Two jobs, and
+   the first one is why it is shaded at all: with the marking gone the eye has
+   to be told where the fight is, so the apron falls away from the field's edge
+   and is darkest at the rim. That is the same sentence `.vig` already says
+   about the bottom of the screen, turned outward on all four sides.
+   ⛔ ITS OWN rnd STREAM, SEEDED OFF THE SAME FIELD. paintTerrain's `rnd` is
+   ONE shared sequence and every draw in that function pulls from it in order,
+   so scattering a single tuft with it would move every puddle, stone and reed
+   on the board. Seeded from `B.terrSeed`, so the apron is still the same apron
+   for the same battlefield, and the field itself is untouched.
+   ⏳ AND THIS IS WHERE THE FURNITURE GOES, which is the user's own reason for
+   asking ("в будущем можно будет добавить туда всякие дизайн штуки ну и
+   просто для атмосферности мира"). A cart, a fence, a treeline, a road
+   running off the edge: drawn here, in board coordinates, anywhere outside
+   0..PLAY_W / 0..PLAY_H. Nothing else needs to be told.
+   ⚠ SCATTER FIRST, SHADE SECOND, so the far rim's own decoration fades with
+   the ground it is standing on. */
+const APRON_RIM=.42;              /* how dark the outermost pixel goes */
+/* ⛑ #241 - THE WAY BACK, AND IT IS PART OF THE ASK RATHER THAN A HEDGE. The
+   user asked for two things that pull opposite ways in the same breath -
+   "чуть выходящие квадратики" (tiles sticking out past the field) and
+   "они не размечены" (they are not marked out). The second sentence is the
+   one about how it LOOKS, so bare ground ships and this is 0. Give it an alpha
+   (.05 reads as a whisper, .10 as a lattice) and the apron's hexes are drawn
+   as outlines - still nothing to stand on, because there is still nothing
+   there but paint. One number, no other edit, which is why it is written down
+   rather than argued about a second time. */
+const APRON_LATTICE=0;
+function apronDress(g,P,CW,CH){
+  if(!APR.l&&!APR.t&&!APR.r&&!APR.b)return;
+  const X0=-APR.l,Y0=-APR.t,X1=CW-APR.l,Y1=CH-APR.t;
+  let s=(((B&&B.terrSeed)||7)*7919+13)%2147483648;
+  const rnd=()=>(s=(s*1103515245+12345)%2147483648)/2147483648;
+  /* 6px of clearance, so nothing painted here crowds the outermost rank */
+  const out=(x,y)=>x<-6||x>PLAY_W+6||y<-6||y>PLAY_H+6;
+  g.save();
+  for(let i=0;i<220;i++){
+    const x=X0+rnd()*(X1-X0),y=Y0+rnd()*(Y1-Y0),k=rnd();
+    if(!out(x,y))continue;
+    if(k<.16){                                     /* a stone, lit from above */
+      g.globalAlpha=.5+rnd()*.25;
+      g.fillStyle=P.rockShadow;g.beginPath();
+      g.ellipse(x,y+1.5,3+rnd()*3,2+rnd()*2,0,0,7);g.fill();
+      g.fillStyle=P.rockFace;g.beginPath();
+      g.ellipse(x,y,2.5+rnd()*2.5,1.6+rnd()*1.6,0,0,7);g.fill();
+    }else if(k<.30){                               /* bare, damp ground */
+      g.globalAlpha=.10+rnd()*.10;
+      g.fillStyle=rnd()>.5?P.damp[0]:P.damp[1];g.beginPath();
+      g.ellipse(x,y,10+rnd()*22,6+rnd()*12,rnd()*3,0,7);g.fill();
+    }else{                                         /* grass */
+      g.globalAlpha=.35+rnd()*.35;
+      g.strokeStyle=P.tuft[rnd()>.5?0:1];g.lineWidth=1;
+      for(let b=0;b<2+((rnd()*3)|0);b++){
+        const bx=x+rnd()*7-3.5,by=y+rnd()*4-2;
+        g.beginPath();g.moveTo(bx,by);
+        g.quadraticCurveTo(bx+(rnd()*3-1.5),by-3,bx+(rnd()*5-2.5),by-5-rnd()*3);
+        g.stroke();
+      }
+    }
+  }
+  g.restore();
+  /* ⚠ the lattice, if it is ever turned on, goes UNDER the fall-off with
+     everything else: a hex outline that stays bright at the rim would read as
+     the field being bigger than it is, which is the one thing this band must
+     never say. `hexCentre` is linear and `r&1` is correct for a negative row,
+     so the apron's hexes are the same lattice continued rather than a second
+     grid drawn beside it. */
+  if(APRON_LATTICE>0){
+    g.save();g.strokeStyle='rgba(120,140,138,'+APRON_LATTICE+')';g.lineWidth=1;
+    for(let r=-APRON.t-1;r<ROWS+APRON.b+1;r++)for(let c=-APRON.l-1;c<COLS+APRON.r+1;c++){
+      if(c>=0&&c<COLS&&r>=0&&r<ROWS)continue;
+      const p=hexCentre(c,r);
+      if(p.x<X0-20||p.x>X1+20||p.y<Y0-24||p.y>Y1+24)continue;
+      g.beginPath();
+      g.moveTo(p.x,p.y-21);g.lineTo(p.x+18.5,p.y-10.5);g.lineTo(p.x+18.5,p.y+10.5);
+      g.lineTo(p.x,p.y+21);g.lineTo(p.x-18.5,p.y+10.5);g.lineTo(p.x-18.5,p.y-10.5);
+      g.closePath();g.stroke();
+    }
+    g.restore();
+  }
+  /* the fall-off: nothing at the field's own edge, APRON_RIM at the rim */
+  const band=(x0,y0,x1,y1)=>{
+    const q=g.createLinearGradient(x0,y0,x1,y1);
+    q.addColorStop(0,'rgba(0,0,0,0)');q.addColorStop(1,'rgba(0,0,0,'+APRON_RIM+')');
+    return q;};
+  g.save();
+  g.fillStyle=band(0,0,X0,0);      g.fillRect(X0,Y0,-X0,CH);
+  g.fillStyle=band(PLAY_W,0,X1,0); g.fillRect(PLAY_W,Y0,X1-PLAY_W,CH);
+  g.fillStyle=band(0,0,0,Y0);      g.fillRect(X0,Y0,CW,-Y0);
+  g.fillStyle=band(0,PLAY_H,0,Y1); g.fillRect(X0,PLAY_H,CW,Y1-PLAY_H);
+  g.restore();
+}
 function paintTerrain(){
   const cv=$('bTerrain');if(!cv)return;
   /* ═══ #66 — THE GROUND IS PAINTED AT 2× AND SHOWN AT 1× ═══════════════
@@ -25227,15 +25413,27 @@ function paintTerrain(){
      ⚠ setTransform, never scale(): paintTerrain runs again on every new
      battlefield and a scale() would compound each time. */
   const DPR=2, BW=600, BH=440;
-  if(cv.width!==BW*DPR){cv.width=BW*DPR;cv.height=BH*DPR;}
+  /* ⛔ #241 - THE CANVAS GREW AND THE ORIGIN DID NOT. The bitmap carries the
+     apron on all four sides and the context is translated back onto the play
+     area's own corner, so every coordinate below - hexCentre included - still
+     means exactly what it meant before the apron existed. The apron is the
+     negative quadrant and whatever lies past W/H; nothing else in this
+     function has to know it is there.
+     ⚠ apronApply() HERE because this is the one function that decides what a
+     battlefield looks like, and the element's padding and this bitmap are two
+     halves of one number: a canvas sized for an apron the box does not have
+     would paint the band into thin air. */
+  apronApply();
+  const CW=BW+APR.l+APR.r, CH=BH+APR.t+APR.b;
+  if(cv.width!==CW*DPR){cv.width=CW*DPR;cv.height=CH*DPR;}
   const g=cv.getContext('2d'),W=BW,H=BH;
-  g.setTransform(DPR,0,0,DPR,0,0);
+  g.setTransform(DPR,0,0,DPR,APR.l*DPR,APR.t*DPR);
   /* the practice field and a reloaded page can both reach here before a
      battle has chosen one — the fen is the default in every sense */
   const P=GROUND[(B&&B.ground)||'teal']||GROUND.teal;
   let s=(B&&B.terrSeed)||7;
   const rnd=()=>(s=(s*1103515245+12345)%2147483648)/2147483648;
-  g.clearRect(0,0,W,H);
+  g.clearRect(-APR.l,-APR.t,CW,CH);
   /* the surround and the vignette belong to the ground, not to the stylesheet
      — one place decides what this battlefield looks like */
   const fEl=$('bField'),vEl=$('bVig');
@@ -25245,7 +25443,12 @@ function paintTerrain(){
   const base=g.createLinearGradient(0,0,W*.3,H);
   base.addColorStop(0,P.base[0]);base.addColorStop(.5,P.base[1]);
   base.addColorStop(1,P.base[2]);
-  g.fillStyle=base;g.fillRect(0,0,W,H);
+  /* ⚠ #241 - THE GRADIENT IS UNCHANGED AND ONLY THE RECT GREW, which is what
+     keeps the field itself byte-identical to the build before the apron: a
+     canvas gradient CLAMPS to its end colours past its own ends, so the band
+     outside carries the wash's first and last colour and the 588x426 inside it
+     is painted exactly as it was. */
+  g.fillStyle=base;g.fillRect(-APR.l,-APR.t,CW,CH);
   /* broad patches, so the ground is never one flat colour */
   for(let i=0;i<40;i++){
     const x=rnd()*W,y=rnd()*H,rr=26+rnd()*70;
@@ -25253,6 +25456,7 @@ function paintTerrain(){
     g.fillStyle=rnd()>.5?P.damp[0]:P.damp[1];
     g.beginPath();g.ellipse(x,y,rr,rr*(.4+rnd()*.4),rnd()*3,0,7);g.fill();g.restore();
   }
+  apronDress(g,P,CW,CH);
   /* #108 - the tap-room floor: plank seams over the base wash. Deterministic
      (no rnd), so the shared stream is untouched. */
   if(B&&B.terrain==='tavern'){
