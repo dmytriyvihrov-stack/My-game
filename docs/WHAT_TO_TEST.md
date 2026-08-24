@@ -31,8 +31,8 @@
 **Three steps:** start any fight (the road, or ⚙ TEST > a battle) · press **CLOSE** top right ·
 walk somebody down to the bottom rank and look at where the skill cards are.
 
-**What it is.** The painted ground now runs one hex above the field, two below it and three either
-side. That band is not marked out into hexes, nothing can be clicked there and nothing can walk
+**What it is.** The painted ground now runs one hex above the field, two below it, two to the left
+and four to the right. That band is not marked out into hexes, nothing can be clicked there and nothing can walk
 there: it is scenery, and it is what the floating chrome is meant to sit on from now on.
 
 | | what should happen |
@@ -42,6 +42,14 @@ there: it is scenery, and it is what the floating chrome is meant to sit on from
 | **FIELD / CLOSE, a body at the left rank** | the order rail on the left stands on bare ground rather than on hexes |
 | **dragging the board** | still refused at FULL (there is nothing to look around at), and at the two closer stops it now stops with the apron's outer edge on the screen edge rather than the field's |
 | **a boulder shoved, ground changed mid-fight** | the band redraws identically. Grass and stones must not jump about |
+
+⚡ **Round two (8f.266) fixed the thing you spotted**: *"async of textures of map and actual options
+of turn"* was real and it was mine - the first cut put the ground canvas one apron outside the box,
+so **every painted tree, rock and puddle sat 114px left and 32px up of the hex it belonged to**. A
+tree looked like it was on the tile next door and nothing in the build could say otherwise. **The
+thing to check is that a rock or a tree is now centred on the tile that refuses to let you walk
+there** - stand next to one and try. The rim is also darker (.58 over a fixed 84px, so all four
+edges read the same), and the band is 2 hexes on the left against 4 on the right.
 
 **What would be a bug:** a hex you can stand on out in the band · the band ending in a hard line
 rather than fading · the board jumping when you let go of a drag · anything on the field itself

@@ -10,8 +10,19 @@
   startBattle('brigand');
   GT.playerTurn();
   const cv = document.getElementById('bTerrain'), ctx = cv.getContext('2d');
-  const band = () => { const d = ctx.getImageData(0, 200, 120, 600).data;
+  /* ⚠ 8f.266 - THE WINDOW IS THE OUTERMOST 20 DESIGN PX AND NOT 60, and the
+     reason is worth keeping: a HUGE tree standing on column 0 is drawn from
+     the hex centre with a canopy and a root spread far wider than its tile,
+     and it arrives as an IMAGE whose `onload` repaints the whole ground. A
+     sample window a sprite can bleed into reports the apron as unstable when
+     what moved was a tree in the field. */
+  const band = () => { const d = ctx.getImageData(0, 200, 40, 600).data;
     let h = 0; for (let i = 0; i < d.length; i += 5) h = (h * 31 + d[i]) % 1e9; return h; };
+  /* ⚠ WARM UP FIRST. The ground's trees and rocks are IMAGES and every
+     `onload` repaints the whole canvas, so the first sample on a fresh page is
+     a race and not a measurement: this probe read "unstable" three times on a
+     build whose apron a full-canvas pixel diff (diff243.js) called identical. */
+  paintTerrain();
   const a = band(); paintTerrain();
   const b = band(); paintTerrain();
   const c = band();
