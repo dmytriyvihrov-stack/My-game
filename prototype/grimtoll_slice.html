@@ -1235,7 +1235,24 @@ body:has(#battle.on) .whisp{bottom:138px}
    at the same right edge it is a column of three settings and nothing else.
    ⚠ `bottom:auto` IS LOAD-BEARING. The base rule pins bottom:44, and an
    absolutely positioned box given both edges stretches instead of moving. */
-body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:var(--fs2);padding:var(--p1) var(--p4)}
+/* ⛔ #240 - ON THE BOARD THE PAIR IS A COLUMN, AND THE MEASUREMENT IS WHY.
+   Side by side the box is 96px wide against one button's 46, and #bGrid is
+   underneath it: driven on the brigand field, the wide box sat over **2
+   playable hexes** where the single button covered none. The board is not
+   chrome's to take.
+   ⛑ AND THE COLUMN GROWS UPWARD INTO ROOM THAT WAS ALREADY THERE. `#bZoom`
+   ends at design y 31 and `#bPace` starts at 102, so the band 31..102 held one
+   20px button and 51px of nothing. `column-reverse` puts the FIRST child at
+   the bottom, so ♪ keeps the exact 74 its own comment and #102's stack
+   arithmetic both record, and the new switch takes 50..70 above it. Nothing
+   else on this screen moves: ⏱ SPEED is still 102 and the tester stack still
+   starts at 134.
+   ⚠ 50 IS 74 MINUS ITS OWN HEIGHT AND THE GAP (20 + `--p2`), not a round
+   number: change the button's size or the gap and this has to be re-derived,
+   which is what the arithmetic is written here for. */
+body:has(#battle.on) #audioBox{top:50px;bottom:auto;right:10px;
+  flex-direction:column-reverse;align-items:flex-end}
+body:has(#battle.on) #audioBox button{font-size:var(--fs2);padding:var(--p1) var(--p4)}
 /* ═══ #102 point 3 · ⏱ SPEED, UP HERE, WITH THE NUMBER ON ITS FACE ════════
    (User: "Speed also move more on top and it doesnt work properly now.")
    ⚑ IT WORKED. WHAT IT COULD NOT DO WAS SAY SO. It was a 28px icon button
@@ -4535,6 +4552,11 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:var(--f
 .itl .tvw{display:flex;align-items:center;gap:var(--p2);min-width:0;flex:1;
   justify-content:flex-start;align-self:center}
 .tico{image-rendering:pixelated;flex:none;display:block}
+/* #240 - the muster wall's four marks, inline on the recruit's own second line.
+   `inline-flex` because `.tico` is `display:block` for the sheet's column and a
+   bare img here would break the line it sits on. */
+.rstats{display:inline-flex;gap:var(--p3);align-items:center;vertical-align:middle;
+  margin-left:var(--p4)}
 .itl .tico{width:32px;height:32px;margin:-1px 0}
 .ladfull .lrung .tico{width:32px;height:32px;margin-right:1px}
 /* ⛑ #202 - THE DESCENDERS. Real Spectral (#189) at 12px has a 16px content
@@ -5318,10 +5340,18 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:var(--f
 #rxWhy{margin-bottom:calc(var(--p2) * -1)}
 /* 20 — chrome, and chrome sits UNDER the cards. See the layer scale by #wDlg.
    Lifted to bottom:44 to leave the bottom-right corner to the reaction bar. */
-#audioBtn{position:absolute;right:10px;bottom:44px;z-index:20;font-family:var(--mono);
+/* ⛔ #240 - THE BOX MOVES AND THE BUTTONS DO NOT, which is what keeps three
+   position rules working for two switches. Every rule that used to place
+   `#audioBtn` now places `#audioBox`, and the pair inside it lay themselves
+   out - so the ♪ at 74 on the battle screen and the tester stack starting at
+   134 are both still the numbers their own comments record. A second absolute
+   box would have been a second set of three rules to keep in step. */
+#audioBox{position:absolute;right:10px;bottom:44px;z-index:20;display:flex;gap:var(--p2)}
+#audioBox button{font-family:var(--mono);
           font-size:var(--fs4);color:#8a7449;background:rgba(16,12,6,.8);border:1px solid var(--e1);
           padding:var(--p1) var(--p4)}
-#audioBtn:hover{color:var(--g4)}
+#audioBox button:hover{color:var(--g4)}
+#audioBox button.off{color:#6b5836;border-color:#2c2214}
 /* #103 point 5: on the road the music toggle is part of the top bar, far
    right, where the user asked for it. Everywhere else it keeps its
    bottom-right home. #wBar reserves 64px of right padding for it. */
@@ -5334,7 +5364,8 @@ body:has(#battle.on) #audioBtn{top:74px;bottom:auto;right:10px;font-size:var(--f
    the only two rules that write this corner on the world screen, and each is
    scoped `body:has(#world.on)` so neither follows the other onto the battle,
    where ♪ still owns `top:74` and the tester's stack starts at 134. */
-body:has(#world.on) #audioBtn{top:82px;right:10px;bottom:auto;font-size:var(--fs2);padding:var(--p1) var(--p4);z-index:30}
+body:has(#world.on) #audioBox{top:82px;right:10px;bottom:auto;z-index:30}
+body:has(#world.on) #audioBox button{font-size:var(--fs2);padding:var(--p1) var(--p4)}
 /* tester tools — top right, and unmistakably not part of the game.
    ── #100 points 3 and 4 · IT COMES DOWN A ROW AND IT SAYS WHAT IT IS ────
    (User: "Move Test a bit lower (as on screenshot). Call it dev.mode.")
@@ -6609,7 +6640,7 @@ body:has(#world.on) #menuBtn{left:auto;right:10px;top:8px;bottom:auto;z-index:30
   <span id="reactCount" title="what you have said about this screen, this run"></span>
   <span id="reactWhat"></span>
 </div>
-<button id="audioBtn" title="sound">♪ ON</button>
+<span id="audioBox"><button id="audioBtn" title="sound effects">♪ ON</button><button id="musicBtn" title="music">♫ ON</button></span>
 <button id="helpBtn" title="how any of this works">? RULES</button>
 <button id="menuBtn" title="back to the menu - the road is saved where it stands">☰ MENU</button>
 <!-- TESTER TOOLS (user's request). Off by default and remembered; when on, a
@@ -6989,7 +7020,7 @@ const JOURNAL={
      screen gets the name the player would use for it, not its element id */
   SCREENS:{world:'the road (map)',inv:'the company (roster & sheet)',
     spoils:'after the battle',promo:'promotion',epilogue:'the end of the run',
-    camp:'the wagon',prologue:'the prologue',menu:'the menu',sim:'the practice field',
+    camp:'the old camp',prologue:'the prologue',menu:'the menu',sim:'the practice field',
     help:'the rules',notes:'the playtest notes',poll:'the questionnaire'},
   where(){
     if(JOURNAL.card)return JOURNAL.card;
@@ -7128,6 +7159,15 @@ const ELEM={
    WebAudio context is kept only because it is the cheapest reliable test
    that the user has interacted with the page at all.
    ============================================================ */
+/* ⛔ #240 - TWO SWITCHES, NOT ONE. (User: *"Отдельно музіка, отдельно звуки в
+   настройках (два вкл выкл, вместо одного)"*.) `AU.on` is the SOUND EFFECTS
+   and keeps `gt_mute`, so nobody's existing setting changes meaning; the music
+   is `MUS.on` off its own key, declared with the rest of MUS below.
+   ⚑ THE SPLIT IS ALREADY HALF-BUILT AND HAS BEEN SINCE THE RECORDINGS LANDED:
+   the note on `musMute` says in capitals that the music is NOT in the WebAudio
+   graph, because these are `<audio>` elements and `AU.master` cannot reach
+   them - which is exactly why one button had to have two jobs. It has one
+   again. */
 const AU={ctx:null,master:null,on:localStorage.getItem('gt_mute')!=='1',mode:'world'};
 function audioCtx(){
   if(AU.ctx)return AU.ctx;
@@ -7467,7 +7507,7 @@ const MUSDEF={
 /* quietFade: the gap timer below can restart a cue two ways. A battle cue
    comes back at full volume because the fight never stopped; the menu cue
    comes back over a 1.5s ramp because the silence was part of it. */
-const MUS={mode:null,cur:null,el:{},bag:[],last:null,
+const MUS={mode:null,cur:null,el:{},bag:[],last:null,on:localStorage.getItem('gt_music')!=='1',
            started:false,timer:null,quiet:0,quietFade:0,xf:false};
 /* ONE ELEMENT PER TRACK, EVER. These are 14–16MB files; a second element
    for the same track is a second download. Reused across every entry into
@@ -7549,10 +7589,10 @@ function musSet(mode){
   MUS.mode=mode;
   if(MUS.cur){fadeTo(MUS.cur.a,0,1.0,true);MUS.cur=null;}
   MUS.quiet=0;MUS.quietFade=0;MUS.xf=false;
-  if(MUS.started&&AU.on)musEnter();
+  if(MUS.started&&MUS.on)musEnter();
 }
 function musEnter(){
-  if(!MUS.mode||!MUS.started||!AU.on||MUS.cur)return;
+  if(!MUS.mode||!MUS.started||!MUS.on||MUS.cur)return;
   musPlay(MUS.mode==='world'?worldNext():MUS.mode,1.0);
 }
 /* Started by the first pointer gesture, never before - the same gesture
@@ -7580,7 +7620,7 @@ function musTick(){
     if(done){v=f.to;MUSFADE.splice(i,1);if(f.pause){try{a.pause();}catch(e){}}}
     try{a.volume=Math.max(0,Math.min(1,v));}catch(e){}
   }
-  if(!MUS.started||!AU.on||document.hidden)return;
+  if(!MUS.started||!MUS.on||document.hidden)return;
   /* the gap after a battle cue has run out before the fight has */
   if(MUS.quiet>0&&--MUS.quiet===0&&MUS.cur){
     if(MUS.quietFade)musPlay(MUS.cur.key,MUS.quietFade);   /* the menu theme, easing back in */
@@ -7606,7 +7646,7 @@ document.addEventListener('visibilitychange',()=>{
        still be there underneath the new cue on the way back. Only ONE is
        ever resumed, so pausing them all is free. */
     Object.keys(MUS.el).forEach(k=>{try{MUS.el[k].pause();}catch(e){}});
-  }else if(MUS.started&&AU.on&&MUS.cur&&!MUS.quiet){
+  }else if(MUS.started&&MUS.on&&MUS.cur&&!MUS.quiet){
     try{const p=MUS.cur.a.play();if(p&&p.catch)p.catch(()=>{});}catch(e){}
   }
 });
@@ -8371,8 +8411,16 @@ document.addEventListener('DOMContentLoaded',()=>{
     teBadge();
     syncTest();
   }
-  const b=$('audioBtn');
-  const label=()=>{b.textContent=AU.on?'♪ ON':'♪ OFF';};
+  /* ⛔ #240 - ONE BUTTON EACH, AND EACH OWNS EXACTLY THE THING IT NAMES.
+     ⚠ THE MUSIC IS NOT IN THE WEBAUDIO GRAPH and that is why this was ever one
+     control: `AU.master`'s gain silences every sample and cannot reach an
+     `<audio>` element, so the old ♪ had to call `musMute` by hand. Now the
+     halves are separate and each is one line. Anything added later that plays
+     OUTSIDE the graph belongs on the music switch, not the sound one. */
+  const b=$('audioBtn'),mb=$('musicBtn');
+  const label=()=>{
+    b.textContent=AU.on?'♪ ON':'♪ OFF';b.classList.toggle('off',!AU.on);
+    mb.textContent=MUS.on?'♫ ON':'♫ OFF';mb.classList.toggle('off',!MUS.on);};
   label();
   b.onclick=e=>{
     e.stopPropagation();
@@ -8380,14 +8428,16 @@ document.addEventListener('DOMContentLoaded',()=>{
     localStorage.setItem('gt_mute',AU.on?'0':'1');
     audioCtx();
     if(AU.master)AU.master.gain.value=AU.on?0.5:0;
-    /* ⚠ THE MUSIC IS NOT IN THE WEBAUDIO GRAPH. It used to be — the drone
-       hung off AU.master, so one gain value silenced everything and this
-       button never had to know what music was. The recordings are <audio>
-       elements and AU.master cannot reach them, so the button now has two
-       jobs. Anything added later that plays outside the graph needs a line
-       here too, or it will keep playing through a mute. */
-    musMute(AU.on);
-    if(AU.on)musStart();
+    label();
+  };
+  mb.onclick=e=>{
+    e.stopPropagation();
+    MUS.on=!MUS.on;
+    localStorage.setItem('gt_music',MUS.on?'0':'1');
+    /* the context still has to be unlocked by a gesture, and this is one */
+    audioCtx();
+    musMute(MUS.on);
+    if(MUS.on)musStart();
     label();
   };
 });
@@ -8556,6 +8606,18 @@ const TELLS={
        [9,'Fairly brave'],[7,'Nervous'],[5,'Easily frightened'],[3,'A coward, and knows it'],
        [0,'Runs before it starts']]}
 };
+/* ⛔ #240 - THE FOUR WORDS COME OFF THE COMPANY SHEET'S STAT ROWS.
+   (User: *"Из инвентаря где статы - выпилить слова 'STrength', Intelect, etc.
+   Оставить токо значения (ну и соответсвенно у них будет больше спейса). (но
+   оставить возможность их вернуть, если будет віглядить плохо)"*.)
+   ⛑ THE ROW IS `[LABEL 78px][32px PICTURE][the tell, ellipsis-clipped]`, and
+   the picture is the half that identifies the stat - which is what #204 and
+   #230 built the four families FOR. The label was saying the same thing again
+   in a mono column 78px wide, and `.itl .tv` has been clipping since #202
+   because of it. What the cut buys is exactly that 78px, handed to the value.
+   ⚠ THE FLAG IS PART OF THE ASK AND IS NOT DECORATION ("но оставить
+   возможность их вернуть"). One `true` here and the sheet is as it was. */
+const SHEET_STAT_WORDS=false;
 const tell=(k,v)=>(TELLS[k].s[tellIdx(k,v)]||['','–'])[1];
 /* the description one band better than the one they have — so a promotion can
    always say what it is moving them TOWARD even when this single point is not
@@ -9315,7 +9377,24 @@ const GEAR={
      that only fires for the right race or the right class. */
   bone   :{rarity:'common',n:'Saint’s Fingerbone',slot:'trinket',g:'✦',mor:+3,hp:+4,
            d:'Faintly warm. Always.'},
-  stem   :{rarity:'rare',n:'Bloom-Stem',        slot:'trinket',g:'❋',int:+2,mor:-1,
+  /* ⛔ #240 - THESE THREE ARE `unique` NOW, AND THE ASK WAS PHRASED AS A
+     DESCRIPTION OF THE BUILD. (User: *"Некоторіе арті - токо под ивенты.
+     Например - стебель цветка - только под ивент с блумом (ка щас). И их нету
+     в общем пуле покупок. И так-же к вфен мозер и некоторыми другими"*.)
+     ⛑ "КА ЩАС" WAS NOT TRUE OF THE STEM, AND THE AUDIT IS WHAT SAID SO.
+     Fourteen `GEAR` keys are handed over by a card in `EVENTS` or `CAMPS`;
+     four carried `unique` - the Fen-Mother's tooth among them, which is the
+     one he named as the standard - and ten did not. Seven of the ten are
+     ORDINARY KIT that a card happens to hand you (mail off a pedlar, plate off
+     the dead company, an off-hand dirk) and they belong in the pool. Three are
+     a named thing out of ONE scene, and those are these: the flower he asked
+     about, the pedlar's own charm, and the string off the fiddler who ate your
+     salt. **Their `d` line names the person they came from, which is the
+     test.**
+     ⚠ `unique` KEEPS A ROW OUT OF `findPool`, which is the ONE pool the road
+     finds, the aftermath and (since #239) both shop racks all roll from - so
+     this is one flag and not a rule written at four counters. */
+  stem   :{rarity:'rare',unique:true,n:'Bloom-Stem', slot:'trinket',g:'❋',int:+2,mor:-1,
            forCls:'mage',bonus:{int:2},bonusD:'+2 INT more on a battle-mage',
            d:'Hums at a pitch you feel in your teeth.'},
   apple  :{rarity:'common',n:'Glass Apple',       slot:'trinket',g:'◆',int:+2,hp:+3,
@@ -9346,13 +9425,13 @@ const GEAR={
   tooth  :{rarity:'rare',unique:true,n:'Fen-Mother’s Tooth',slot:'trinket',g:'❥',str:+2,hp:+6,
            forRace:'ogre',bonus:{str:2,hp:8},bonusD:'+2 STR and +8 HP more on an ogre',
            d:'Longer than your hand. Still warm at the root.'},
-  charm  :{rarity:'rare',n:'Pedlar’s Charm',    slot:'trinket',g:'✧',agi:+2,
+  charm  :{rarity:'rare',unique:true,n:'Pedlar’s Charm',slot:'trinket',g:'✧',agi:+2,
            forRace:'human',bonus:{mor:2},bonusD:'+2 MOR more on a human',
            d:'He swore it was lucky. He would.'},
   ratking:{rarity:'rare',unique:true,n:'Rat-King’s Knuckle',slot:'trinket',g:'✜',agi:+1,hp:+4,
            forRace:'ratkin',bonus:{agi:3,hp:6},bonusD:'+3 AGI and +6 HP more on a ratkin',
            d:'Small, yellow, and far too clean.'},
-  fiddle :{rarity:'rare',n:'Rosined String',    slot:'trinket',g:'♪',mor:+4,
+  fiddle :{rarity:'rare',unique:true,n:'Rosined String',slot:'trinket',g:'♪',mor:+4,
            d:'From a fiddler who ate your salt and left this behind.'},
   quillpen:{rarity:'rare',unique:true,n:'Foundry Ledger-Pin',slot:'trinket',g:'✎',int:+3,
            forCls:'captain',bonus:{mor:3},bonusD:'+3 MOR more on the Captain',
@@ -12893,6 +12972,40 @@ const START_NERVE=0.78;   /* the neutral, as a fraction of the ceiling */
 const MORALE={ownKill:30,allyKill:10,tookHit:-5,allyDied:-14,nearDeath:-15,
   recover:8,   /* MOST it may climb back toward the start in one quiet turn */
   settle:4};   /* MOST it may sink back toward the start in one quiet turn */
+/* ═══ ⛔ #240 · A DEATH IS A FRACTION OF THE LINE, NOT A FLAT FEE ══════════
+   (User: *"В больших битвах убегают раньше времени сейчас.. Как-то подфиксить
+   єто"*.)
+
+   ⛑ THE FLAT −14 IS WHY A BIG FIGHT BREAKS EARLIER THAN A SMALL ONE, AND THE
+   ARITHMETIC IS THE WHOLE ARGUMENT. The shock a side takes is charged PER
+   DEATH and the pool it comes out of is per BODY, so the number of shocks
+   scales with how many bodies are on the field and the pool does not. Kill
+   three of a company of five and the survivors have taken up to −42 of an ~85
+   pool, which is a collapse and is meant to be one. Kill three of a warband of
+   ten and the other seven have taken exactly the same −42 - for a line that
+   still outnumbers you. **Losing one of five is a catastrophe; losing one of
+   ten is a bad day, and the build was charging the same for both.**
+
+   ⛔ SO IT IS SCALED BY THE SIZE THE SIDE STARTED AT, AND NEVER BY THE SIZE IT
+   IS NOW. The live count only ever goes down, so a live divisor would make
+   each successive death hurt MORE - a death spiral, which is the fault this is
+   here to remove, arriving faster.
+
+   ⚑ FIVE IS NOT A TASTE, IT IS THE LINE THE −14 WAS TUNED AGAINST: the
+   player's own company runs four to six all act, and every softening this
+   number has had (−22 → −18 → −14, playtest #6 and #129) was measured on it.
+   So a company of five is EXACTLY unchanged, which is the property that makes
+   this safe to ship without re-tuning anything the player feels: it is the
+   eight-dog pack and the seven-body sling-line that move.
+   ⚠ FLOORED AT .45, so a twelve-body horde still notices its dead. A rule that
+   goes to nothing at the top is a rule with a hole in it. */
+const DEATH_REF=5;
+const deathScale=n=>clamp(DEATH_REF/Math.max(1,n||DEATH_REF),0.45,1);
+/* how many that side walked on with. `B.side0` is stamped in startBattle;
+   the fallback keeps every older caller and the company sheet's own hover
+   (which asks outside a battle) reading the same function. */
+const sideStart=s=>(B&&B.side0&&B.side0[s])||DEATH_REF;
+const deathShock=n=>Math.round(MORALE.allyDied*deathScale(n));
 /* how much of a morale event reaches somebody, by how close they were to it.
    1.0 adjacent, ~0.35 at the far side of the board. See the note in strike(). */
 function nearWeight(a,b){
@@ -13304,6 +13417,51 @@ const despActs=u=>Math.max(2,Math.ceil((u.actionsMax||2)*0.6));
    clothes. Now nerve moves in faces: ▲ arrows for the size of it, a mouth for
    the direction, green for lifting and amber-red for sinking. The engine still
    works in numbers; the player is told a mood. */
+/* ═══ ⛔ #240 · ONE FLOAT A BEAT, AND IT IS THE TOTAL ══════════════════════
+   (User: *"Уменьшение морали токо одна анимация (щас за один удар может быть
+   несколько разных значений показать). Показывать наибольше или складывать
+   эффекты и показывать суммарно"*.)
+
+   ⛑ `mor()` IS CALLED SEVERAL TIMES BY ONE BLOW AND ALWAYS HAS BEEN, which is
+   correct and is not the bug: a landed swing charges the body it hit, credits
+   the swinger, and pays grief to everybody who watched - three different facts
+   about the same second. What was wrong is that each of them drew its own
+   number over the same head, so one hit printed a column of arrows and the
+   player had to add them up to learn what had happened.
+
+   ⛔ THE SUM AND NOT THE LARGEST, which is the second half of his sentence and
+   the right half: two of the three can point OPPOSITE ways (a body that killed
+   somebody and watched a friend drop in the same beat), and printing the
+   larger of those would be a readout of one term rather than of the change.
+   A beat that cancels to nothing draws nothing, which is the honest answer.
+
+   ⛑ A MICROTASK AND NOT A TIMER, and that is what makes "one beat" exact
+   rather than tuned: every `mor()` a single blow produces happens inside ONE
+   synchronous call stack, so a microtask flush lands after the last of them
+   and before anything else in the game runs. There is no window to pick.
+   ⚠ IT IS SAFE ACROSS `render()`, which is the trap this file names in six
+   places: `render()` rebuilds all 195 hexes and destroys anything written onto
+   a sprite - but `#bFx` is NOT rebuilt (see the note in fx()), which is
+   precisely why the floating numbers have always survived a redraw and the
+   lunge did not.
+   ⚠ AND THE THRESHOLDS ARE THE ONES `mor` USED: nothing under 5 either way is
+   worth a number over a head, and the drift tick is mostly 1-4. */
+const MORFLUSH=[];
+function flushMorFloats(){
+  while(MORFLUSH.length){
+    const u=MORFLUSH.shift(),n=Math.round(u._morPend||0);
+    u._morPend=0;u._morQ=false;
+    if(n<=-5)fx(u,moodFace(n),'#d98a58',true);
+    else if(n>=6)fx(u,moodFace(n),'#8ca35a',true);
+  }
+}
+function morFloat(u,amt){
+  if(!amt)return;
+  u._morPend=(u._morPend||0)+amt;
+  if(u._morQ)return;
+  u._morQ=true;MORFLUSH.push(u);
+  Promise.resolve().then(flushMorFloats);
+}
 const moodFace=amt=>{
   const a=Math.abs(amt);
   const bars=a>=22?'▲▲▲':a>=12?'▲▲':'▲';
@@ -13326,8 +13484,7 @@ function mor(u,amt,why){
     const t=AU.ctx?AU.ctx.currentTime:0;
     if(!AU.rungAt||t-AU.rungAt>.14){AU.rungAt=t;sfx(nowRung>wasRung?'rung_down':'rung_up');}
   }
-  if(amt<=-5)fx(u,moodFace(amt),'#d98a58',true);
-  else if(amt>=6)fx(u,moodFace(amt),'#8ca35a',true);
+  morFloat(u,amt);
   if(u.state!==was){
     if(u.state==='routed'){say(u.name+' breaks. White flag, and gone.');sfx('rout');}
     else if(was==='routed')say(u.name+' steadies. Back in the line.');
@@ -13667,7 +13824,41 @@ function unitFrom(p){
        takes the target's legs, so the thing running at your line stops being
        able to reach it. One action. It changes the shape of the fight, which
        is the job of a signature. */
-    archer:{k:'cripple',n:'CRIPPLING SHOT',cost:1,range:((main&&main.range)||4)+R,aim:10,cool:2,
+    /* ═══ ⛔ #240 · AND THE CROSSBOW GETS ITS OWN ONE ════════════════════
+       (User: *"Артефакт: Сначала файта арбалет заведенній. Заводка дает на 1
+       вістрел (выстрел или скил. В скиле больше дамага). Заводка стоит 1
+       екшнпоинт"*.)
+
+       ⛑ THREE OF THE FOUR CLAUSES WERE ALREADY TRUE AND THE FOURTH WAS THE
+       BUG. A crossbow starts a fight wound (`u.spent` is unset, so `canUse`
+       lets the first bolt go), and WIND IT has cost 1 since #224. What was not
+       true is *"заводка дает на 1 выстрел (выстрел или скил)"*: CRIPPLING SHOT
+       carried no `reload`, so one winding paid for the signature AND the
+       ordinary shot in the same turn - two bolts out of one crank.
+       ⛔ AND ONCE THE SKILL SPENDS THE BOLT, CRIPPLING SHOT IS THE WRONG SKILL
+       FOR THIS WEAPON. It is deliberately HALF damage, bought with the
+       cripple; spend a crossbow's whole loading on half a crossbow and the
+       signature is a downgrade you cannot decline. He said the skill should do
+       MORE (*"в скиле больше дамага"*), and this file already has the pattern
+       for saying so: *"THE WEAPON DECIDES THE SIGNATURE"*, the spearwoman's
+       own rule six lines above, where a halberd turns SPEAR WALL into BRACE
+       AND SHOVE. Same class, same slot, a different job.
+       ⚠ THE ARITHMETIC, because a signature has to be worth its cooldown. On
+       the crossbow's own 24-34: PUNCH THROUGH averages 41 against 29, on a
+       cool of 2, so the turn after it is the ordinary shot - about 1.2x over
+       two turns, paid for by being an archer. `am` +.35 is where it is really
+       spent: this is the shot that opens armour.
+       ⚠ NO `aim`. CRIPPLING SHOT gets +10 because it is a placed shot at the
+       legs; a quarrel driven through a shield is not a more careful one. */
+    archer:(main&&main.reload)
+      ? {k:'punch',n:'PUNCH THROUGH',cost:1,range:(main.range||4)+R,cool:2,
+         reload:true,pointBlank:!!main.pointBlank,
+         dmg:[Math.round(main.dmg[0]*1.4),Math.round(main.dmg[1]*1.4)],
+         am:main.am+.35,ft:main.ft,
+         note:'The whole winding in one bolt: half again the damage and it opens armour. '+
+           'It empties the crossbow like any other shot, and it will not come round again '+
+           'for two turns.'}
+      : {k:'cripple',n:'CRIPPLING SHOT',cost:1,range:((main&&main.range)||4)+R,aim:10,cool:2,
       cripple:true,
       dmg:main?[Math.round(main.dmg[0]*.55),Math.round(main.dmg[1]*.55)]:[8,13],
       am:(main&&main.am)||.5,ft:(main&&main.ft)||.5,
@@ -13702,6 +13893,15 @@ function unitFrom(p){
   [main,off,trk].forEach(g=>{if(g&&g.act)acts.push(Object.assign({},g.act));});
   if(RACESKILL[p.race])acts.push(Object.assign({},RACESKILL[p.race]));
   if(sig)acts.push(sig);
+  /* ⛔ #240 - ANYTHING THAT DISCHARGES THE WEAPON SPENDS THE WINDING, and it
+     is one line here rather than a `reload:true` typed onto each act that
+     might one day be a shot. `spend` already sets the lock off `a.reload` and
+     `canUse` already reads it, so this is only about which acts are IN the
+     family - and the family is "carries a range, is not a working, is not the
+     crank itself". A trinket that hands out a ranged verb inherits it untold,
+     which is the whole reason the test is on the ACT and not on a list. */
+  if(main&&main.reload)acts.forEach(a=>{
+    if(a.range&&!a.arcane&&a.reload!=='do')a.reload=true;});
   /* ── the two kinds of caster (#157 numbers) ───────────────────────────
      BATTLE-MAGE: ONE school, one casting a turn, and a real sword. He is a
        mediocre swordsman who sometimes does something appalling — which is
@@ -15802,6 +16002,27 @@ function steading(){
   if(G.party.length>=6)plan.push([12,3,pickOne(['club','pike']),33]);
   return build(plan,T);
 }
+/* ═══ ⛔ #240 · HOW MANY OF THEM ARE ACROSS THE ROAD, ASKED AND NOT TYPED ═══
+   (User: *"В событии с ограми писало 4, а стало 5 в бою. Писать корректно"*.)
+
+   ⛑ THE CARD WAS WRITTEN WHEN THE FIGHT WAS FOUR AND THE FIGHT LEARNED TO
+   GROW. Six encounters carry a `G.party.length>=6` reinforcement clause and
+   the Steading-Line is the only one whose card COUNTS OUT LOUD - twice, in the
+   prose (*"Four of them across the road"*) and on the door (*"BATTLE · four
+   ogres"*). So this is not a card that wants rewording, it is a card that has
+   to stop authoring a number the fight decides.
+   ⛔ DERIVED, WHICH IS #137's RULE ARRIVING ON THE ONE FIELD NOBODY HAD
+   APPLIED IT TO. `steadingHeads()` is the same `>=6` test the plan makes, said
+   once; the body and the door label both read it, and the day the wall grows a
+   sixth ogre neither has to be found and edited.
+   ⚠ IT IS A FUNCTION AND NOT A CONSTANT, because `G.party` changes between one
+   card being read and the next: a muster between the two would leave a stale
+   figure on a card that is dealt later.
+   ⚠ AND THE COUNT IS SPELLED OUT, because every other number on a road card is
+   ("nine men in a ditch", "two winters now, by his own account"). */
+const NUMWORD=['no','one','two','three','four','five','six','seven','eight','nine','ten'];
+const numWord=n=>NUMWORD[n]||String(n);
+function steadingHeads(){return 4+((typeof G!=='undefined'&&G.party&&G.party.length>=6)?1:0);}
 /* ═══════════════════════════════════════════════════════════════════════
    #160 - THE HOLD'S MEN. The only uniform in the act.
 
@@ -16110,6 +16331,13 @@ function beasts(){
          desperateAt: and when her nerve finally goes, THAT is the turn in the
          fight — she stops defending herself rather than standing there
          unchanged. The narrative was already here: she is over a child. */
+      /* ⛔ #240 - `guards:'cub'`. (User: *"в битве с фен мозер - когда бьеш
+         питомца - то мать должна бежать к нему"*.) The comment on the cub's own
+         template thirty lines below has claimed since it was written that
+         *"the cub keeps its distance until somebody hurts its mother"* - the
+         sentence the other way round, and neither half of it was ever built:
+         she has had no idea the cub was on the field. */
+      guards:'cub',
       big:true,bigkill:true,actions:5,noTrim:true,noRout:true,desperateAt:true,acts:[
         {k:'anvil',n:'ANVIL-HEAD',cost:1,reach:2,dmg:[22,33],am:1.20,ft:.32},
         {k:'lash',n:'TAIL-LASH',cost:2,reach:1,sweep:true,dmg:[16,25],am:1.05,ft:.30},
@@ -16287,6 +16515,7 @@ function build(plan,T){
          to back. See beastFlip() in render(), which keeps them joined once
          she starts moving. */
       tail:t.big?[cc+1,e[1]]:null,skittish:!!t.skittish,passive:!!t.passive,
+      guards:t.guards||null,        /* #240 - what this body will come back for */
       fenborn:!!t.fenborn,noWalk:!!t.noWalk,
       aura:t.aura||null,trait:trait,noRout:!!t.noRout,
       /* a monster gets a bestiary entry instead of a class — see MONSTERS */
@@ -16566,6 +16795,13 @@ function startBattle(kind){
         with the fight, never restored, so a broken line cannot survive a
         save. Null on every board that is not a fort. */
      outpost:(TF.layout==='outpost'&&foe.some(u=>u.post))?{off:false,said:false}:null,
+     /* #240 - how many each side walked on with, for `deathShock`. Stamped
+        once and never recounted: a live count only goes down, and a shock that
+        grows as a side shrinks is the death spiral this exists to stop.
+        ⚠ The passives are not in it - the cub is not a body anybody is
+        counting - and neither is the Captain's pet. */
+     side0:{you:you.filter(x=>!x.passive&&!x.pet).length,
+            foe:foe.filter(x=>!x.passive&&!x.pet).length},
      auto:false,autoTimer:null,peek:null,peekReach:null};
   B.terrSeed=TF.seed*13+7;
   /* #15 built this and #61 moved its owner: the palette is now named by the
@@ -16842,18 +17078,33 @@ const mcost=(c,r,u)=>{
    ⛔ IT DOES NOT SPREAD AND IT DOES NOT GO OUT. A fire that walked across the
    board would be a second AI to write; this one is terrain, drawn once with
    the field, and it stays where the seed put it.
-   ⚠ THE NUMBERS ARE ONE FIGHT'S TAX, NOT A WEAPON. Six and four against a
+   ⚠ THE NUMBERS ARE ONE FIGHT'S TAX, NOT A WEAPON. Six and three against a
    40-hp body is a mistake you can make once and walk away from; it is there
    so the shove into the fire and the short cut through it are decisions. If
-   they move, they move here and nowhere else. */
-const EMBER_HIT=6, BURN_TICK=4, BURN_TURNS=2;
+   they move, they move here and nowhere else.
+   ⚠ #240 - THE TICK WENT 4 TO 3 AT THE USER'S WORD (*"Стояние в огне домажит 6,
+   статус огня дамажит 3"*), which widens the gap between STANDING in it and
+   CARRYING it out: the ground is twice the price of the clock now, where it
+   used to be half again. That is the reading the rule wants - the fire is a
+   place, and the burn is what you took away from it. */
+const EMBER_HIT=6, BURN_TICK=3, BURN_TURNS=2;
 const onEmber=u=>!!(B&&B.terr&&B.terr[K(u.col,u.row)]==='ember');
 /* what both brains charge a hex for being on fire, in the scorers' own
-   unit (six a hex of walking, so this is two hexes and a bit): enough that a
-   body never ENDS on it when any other hex reaches the target, not so much
-   that it will not cross it to get to somebody. `mcost` already prices the
-   crossing. One read of B.terr, so it may sit in the inner loop. */
-const EMBER_AI=14;
+   unit (six a hex of walking). `mcost` already prices the CROSSING; this is
+   only about where a turn ENDS. One read of B.terr, so it may sit in the
+   inner loop.
+   ⛔ #240 - IT WAS 14 AND THE COMMENT ABOVE IT PROMISED SOMETHING 14 COULD NOT
+   BUY. (User: *"Враги стараются избегать огня, если у них есть другая
+   безопасная опция"*.) It read *"enough that a body never ENDS on it when any
+   other hex reaches the target"*, and the arithmetic beside it says otherwise:
+   the arc bonus alone is `16 * flank * arcW`, i.e. up to 24 on a ratkin, so
+   standing in the fire BEHIND somebody outbid standing out of it in front.
+   ⛑ 60 OUTBIDS THE BEST ARC PLUS FIVE HEXES OF WALKING AND IS STILL A PRICE
+   RATHER THAN A BAN, which is the whole of why it is a number: it is added to
+   every ember hex equally, so on a turn where the fire is the only ground that
+   reaches anybody it cancels out and the body goes in. That is the user's own
+   condition - "if they have another safe option" - written as arithmetic. */
+const EMBER_AI=60;
 const emberPen=p=>B.terr[K(p[0],p[1])]==='ember'?EMBER_AI:0;
 /* damage from the ground rather than from a body: no attacker, no arc, no
    armour, and the fall goes through the same two doors strike() uses (your
@@ -16888,7 +17139,9 @@ function envHurt(u,n,why,defer){
   }
   alive().forEach(x=>{
     if(x.side!==u.side||tr(x,'noGrief'))return;
-    mor(x,Math.round(MORALE.allyDied*nearWeight(x,u)),'it watched one of its own drop');});
+    /* #240 - the shock is a fraction of the line it started as. See deathShock. */
+    mor(x,Math.round(deathShock(sideStart(u.side))*nearWeight(x,u)),
+      'it watched one of its own drop');});
   return true;
 }
 /* light a body: the entry hit, and the clock. `why` is what put it there
@@ -16999,12 +17252,40 @@ const reachLane=act=>!!(act&&!act.range&&act.reach>=2&&!act.arcane);
 function reachBlocked(a,d,act){
   if(!reachLane(act)||!a||!d||a.col===undefined||d.col===undefined)return null;
   const line=hexLine([a.col,a.row],[d.col,d.row]);
+  let hitAt=null;
   for(let i=0;i<line.length;i++){
     const c=line[i][0],r=line[i][1];
     if(c<0||c>=COLS||r<0||r>=ROWS)continue;
-    if(heightAt(c,r)==='TALL')return [c,r];
+    if(heightAt(c,r)==='TALL'){hitAt=[c,r];break;}
   }
-  return null;
+  if(!hitAt)return null;
+  /* ═══ ⛔ #240 · ONE LINE IS NOT THE ONLY WAY ROUND A TREE ════════════════
+     (User: *"Когда копейщик сбоку от дерева может быть. (когда стоит дерево
+     буквой Г к противнику - то дерево как-бі частично перекрівает траекторию,
+     но если противник на коцне Г - то бить можна)"*.)
+
+     ⛑ `hexLine` RETURNS ONE ROUTE AND AT REACH 2 THERE ARE USUALLY TWO. Two
+     hexes apart on a hex grid, the pair is either straight (one hex between
+     them, and a tree there really does refuse the spear) or BENT - the Г he is
+     drawing - and a bent pair has TWO hexes between them, one on each side of
+     the corner. `hexLine` samples whichever its rounding lands on, so half the
+     time it reported the oak and the other half it reported clear ground, on
+     the identical board. A rule that depends on which way a rounding error
+     went is not a rule the player can learn.
+     ⛔ SO THE QUESTION IS "IS THERE A WAY ROUND", NOT "IS THIS WAY CLEAR". The
+     corners are exactly the hexes adjacent to BOTH ends, and if any of them is
+     not TALL the point gets there. At reach 1 there is no hex between at all,
+     which this same test answers correctly for free.
+     ⚠ A BODY STANDING IN THE CORNER IS NOT A BLOCK, and that is deliberate and
+     unchanged: `heightAt` is about the GROUND. A spear past a shoulder is a
+     spear past a shoulder; what a body in the way costs a SHOT is `losState`'s
+     job and it is a different question with a different answer.
+     ⚠ Reach 3+ keeps the single line: no act in the game has one, and guessing
+     at a rule for a shape that does not exist is how a wrong one ships. */
+  if(hdist([a.col,a.row],[d.col,d.row])===2&&
+     nbrs(a.col,a.row).some(p=>hdist(p,[d.col,d.row])===1&&heightAt(p[0],p[1])!=='TALL'))
+    return null;
+  return hitAt;
 }
 /* ═══ THE VEIL ON GROUND YOU CANNOT ENTER ══════════════════════════════
    ⚑ WHAT CHANGED, AND WHY THE OLD ANSWER WAS RIGHT WHEN IT WAS WRITTEN.
@@ -18277,8 +18558,24 @@ function hitBreakdown(a,d,act){
      `noArc` cancels it — "it takes no flanking penalty" has to mean the
      NUMBERS one as well as the facing one, or ringing the Thing in Armour
      would pay +30 a head and the ring would be the correct play after all,
-     which is the exact opposite of the fight. */
-  const around=d.noArc?0:Math.max(0,threatsAt(d.col,d.row,d.side)-1);
+     which is the exact opposite of the fight.
+     ⛔ #240 - AND A SHOT NEVER GETS IT. (User: *"иногда при выстреле пишет
+     'окружен' - хотя конкретно при выстреле это не имеет смысла"*.) He is
+     reading the aiming card's `surrounded` row, and the row was HONEST - the
+     bonus really did reach a bow - so what is wrong is the RULE and not the
+     readout. A ring of bodies is worth something to the blades standing in it,
+     because none of them has to watch its own back; it is worth nothing to
+     somebody aiming from four hexes away who was never going to be hit by the
+     man he is shooting at.
+     ⛑ THE BOARD ALREADY CHARGED THE OTHER HALF OF THIS AND ALWAYS HAS:
+     `shooting in a scrum` is what a crowd does to an archer. Now the two
+     agree about what a crowd is.
+     ⚠ `act.range` AND NEVER A WEAPON LOOKUP, for the reason `pointBlank` is
+     not one: this function is scored by both AI brains as well as printed, and
+     a foe's authored act has no `GEAR` row behind it. An arcane act carries
+     `range` too, and a working aimed with the INTELLECT is not helped by a
+     scrum either. */
+  const around=(act.range||d.noArc)?0:Math.max(0,threatsAt(d.col,d.row,d.side)-1);
   const fl=around*a.flankPow;
   if(around)parts.push(around+' on it +'+Math.round(fl));
   if(d.noArc)parts.push('no wrong side of it');
@@ -19031,7 +19328,8 @@ function strike(a,d,act,mult){
            ×2 for a tie: it doubles the grief they were ALREADY going to
            take, so somebody who does not grieve still does not — the tie
            holds them anyway, it does not manufacture a feeling. */
-        mor(x,Math.round((MORALE.allyDied+((d.captain||d.leader||d.bigkill)?-10:0))*near)*
+        mor(x,Math.round((deathShock(sideStart(d.side))+
+              ((d.captain||d.leader||d.bigkill)?-10:0))*near)*
               (tied?2:1),
           tied?'the one it owes is down'
           :(d.captain||d.leader)?'its captain is dead'
@@ -21049,6 +21347,56 @@ function throwBody(u,act,pas,c,r){
      is a position, not a kill, and an ogre that could delete a body by
      throwing it would be exactly the damage button this entry refuses. */
 }
+/* ═══ ⛔ #240 · AND ONE OF YOURS MAY BE AIMED AT SOMEBODY ══════════════════
+   (User: *"Когда бросок союзника - ты можеш бросать впротивника (у огра).
+   Вероятность попасть 100% - и он становится рядом с противником"*.)
+
+   ⛑ THE VERB ALREADY HAD THIS SHAPE AND ONLY THE BODY WAS EXCLUDED FROM IT.
+   `throwSpots(u,range,aimed)` has carried an `aimed` flag since #46 and the
+   BOULDER passes it - *"a stone may be aimed AT somebody, so occupied hexes
+   stay on the table"*. A body was the one cargo that could only be put on
+   empty ground, so the ogre could deliver your spearwoman NEXT TO their line
+   and never INTO it.
+
+   ⛔ IT CANNOT MISS, AND THE FLAG FOR THAT ALREADY EXISTS AND ALREADY MEANS
+   THIS. `act.impact` is what the mirehares' leap and charge carry, and
+   `hitBreakdown` prints its reason in the player's own words: *"movement
+   becomes the hit"*. That is exactly what a thrown body is. So "100%" is not a
+   special case bolted on here, it is the third user of a rule the board
+   already had.
+   ⚠ THE IMPACT IS SMALL ON PURPOSE. The boulder is [22,34] at am 1.15 and CAN
+   miss; this is [12,20] at .70 and cannot. The throw is a POSITION - the whole
+   of #46 is that this verb is not a damage button - and what the player is
+   buying is a body arriving inside their line with its own turn still in hand.
+   ⚠ AND THE LANDING IS THE FAR SIDE, which is `throwRock`'s own rule for where
+   a stone comes to rest ("it landed PAST them"), for the same reason: the hex
+   beyond is the one you could not have walked to.
+
+   Returns false when there is nowhere beside that body to come down, so the
+   offer can be withheld before the click rather than refused after it. */
+function throwSpotBy(u,tgt){
+  const free=nbrs(tgt.col,tgt.row).filter(p=>!at(p[0],p[1])&&!BLOCKED[B.terr[K(p[0],p[1])]]);
+  if(!free.length)return null;
+  free.sort((p,q)=>hdist(q,[u.col,u.row])-hdist(p,[u.col,u.row]));
+  return free[0];
+}
+const throwAimOK=(u,pas,tgt)=>!!(tgt&&pas&&tgt.side!==pas.side&&!tgt.passive&&
+  throwSpotBy(u,tgt));
+function throwBodyAt(u,act,pas,tgt){
+  const land=throwSpotBy(u,tgt);
+  if(!land)return false;
+  const slam={k:'slam',n:'THROWN BODY',cost:0,reach:1,impact:true,dmg:[12,20],am:.70,ft:.36};
+  throwBody(u,act,pas,land[0],land[1]);
+  if(!tgt.dead&&!tgt.downed&&!pas.dead&&!pas.downed){
+    /* ⚠ NOT `fst()`. It takes the FIRST WORD, which is right for a body
+       called "Bruht the Unasked" and reads as *"the comes down on top of
+       Ratkin,."* for a body called "the Unasked" swung at "Ratkin, spear" -
+       measured, in the log, on the first drive of this. */
+    say(pas.name+' comes down on top of '+tgt.name+'.');
+    strike(u,tgt,slam);
+  }
+  return true;
+}
 /* A BOULDER. The stone leaves where it was and COMES BACK DOWN ON THE GROUND
    — the user's ruling, and the reason the ogre is the only body that can
    change what the map is. It hits hard and it can miss; a miss still lands
@@ -21305,9 +21653,11 @@ function clickHex(c,r){
   if(a&&a.thrower&&!B.hurl&&!B.hurlRock){
     if(tgt&&B.hurlFrom&&B.hurlFrom.indexOf(tgt)>=0){
       B.hurl=tgt;
-      B.reach={dist:throwSpots(u,a.range),prev:{}};render();
+      /* #240 - `true`, the boulder's own flag: a body may be aimed at somebody
+         now, and `clickHex` below decides which occupied hexes are legal. */
+      B.reach={dist:throwSpots(u,a.range,true),prev:{}};render();
       say(tgt.name+' is off the ground and does not appear to have been consulted. '+
-        'Click where they land.');
+        'Click where they land - open ground, or one of theirs.');
     }else if(B.hurlRocks&&B.hurlRocks.indexOf(K(c,r))>=0){
       B.hurlRock=[c,r];
       /* a stone flies three hexes, a body four — and the stone may be aimed
@@ -21320,6 +21670,14 @@ function clickHex(c,r){
     return;
   }
   /* ═══ THROW, step two: the landing ════════════════════════════════════ */
+  /* #240 - aimed at a body: it lands beside them and the impact cannot miss */
+  if(a&&a.thrower&&B.hurl&&B.reach&&B.reach.dist[K(c,r)]!==undefined&&tgt&&
+     throwAimOK(u,B.hurl,tgt)){
+    const pas=B.hurl;
+    B.sel=null;B.reach=null;B.hurl=null;B.hurlFrom=null;B.hurlRocks=null;
+    throwBodyAt(u,a,pas,tgt);render();
+    if(!checkEnd())autoEnd(u);
+    return;}
   if(a&&a.thrower&&B.hurl&&B.reach&&B.reach.dist[K(c,r)]!==undefined&&!tgt){
     throwBody(u,a,B.hurl,c,r);
     B.sel=null;B.reach=null;B.hurl=null;B.hurlFrom=null;B.hurlRocks=null;render();
@@ -21547,6 +21905,45 @@ function routStep(u,done){
       if(checkEnd())return;done&&done();return;}
     render();later(go,130);};
   go();
+}
+/* ═══ ⛔ #240 · WHAT A BODY WILL COME BACK FOR ═════════════════════════════
+   `guards:'<kind>'` on a template names a body on its own side; the moment
+   that body is HURT this returns it, for the rest of the fight. Read by
+   `aiTurn` only - a passive it is guarding is not a target, so nothing else on
+   the board has to learn anything.
+   ⚠ `hp<hpMax` and not a fraction: the ask is *when you hit the pet*, and one
+   scratch is somebody hitting it. */
+function guardWard(u){
+  if(!u||!u.guards)return null;
+  const w=alive().find(x=>x.side===u.side&&x.kind===u.guards);
+  if(!w)return null;
+  /* it has been hurt SINCE SHE LAST LOOKED. `guardHp` is the watermark, so the
+     second wound arms her again after she has already been and gone.
+     ⛔ IT STARTS AT `hpMax` AND NOT AT `hp`, AND THE DRIVE IS WHAT CAUGHT IT.
+     Stamped from the live figure, the FIRST reading happens on whatever the
+     body is at when somebody first asks - which on the turn the player shoots
+     the cub is the already-wounded number, so the wound that armed her was the
+     one she could never see. A watermark taken after the event is not a
+     watermark. */
+  if(u.guardHp===undefined)u.guardHp=w.hpMax;
+  if(w.hp<u.guardHp){
+    u.guardHp=w.hp;
+    if(!u.guardOn){
+      u.guardOn=true;
+      if(!u.guardSaid){u.guardSaid=true;
+        say(u.name+' has heard it. Whatever she was doing, she is not doing it now.');}
+    }
+  }
+  if(!u.guardOn)return null;
+  /* ⛔ AND IT LETS GO THE MOMENT SHE IS THERE, WHICH IS A SAFETY RULE AND NOT
+     A SOFTENING. A latch that held for the fight would park 470 hitpoints of
+     boss beside a passive body it is not allowed to leave - and a player who
+     then stood off and shot would be in a fight that cannot end, because she
+     carries `noRout` and no ranged damage. She comes when it is hurt, she
+     arrives, and then she is a lindwurm again. Hurt it a second time and she
+     comes a second time. */
+  if(udist(u,w)<=1){u.guardOn=false;return null;}
+  return w;
 }
 function targetScore(t){
   let s=t.hp+t.armour*0.7;
@@ -22749,6 +23146,48 @@ function aiTurn(u){
     /* opening the ground back up: pick the reachable hex furthest from all of
        them and end the turn there. Used by kiting shooters and by the hurt. */
     const nearD=T.length?Math.min.apply(null,T.map(t=>udist(u,t))):99;
+    /* ═══ ⛔ #240 · A HOLDING LINE CLOSES UP. IT DOES NOT CLOSE IN ═════════
+       (User: *"В бойне с крысами они сильно быстро побежали вперед (где у них
+       много лучников). Конкретно им дать больше защитную стратегию -
+       сгруппироваться и ждать на месте. Копейщики защищают стрелков -
+       становятся пеерд ними и делают стену копий"*.)
+
+       ⛑ THE FIGHT HE IS DESCRIBING IS THE SLING-LINE AND ITS OWN HEADER
+       PROMISES THE OPPOSITE OF WHAT IT DOES: *"ratkin who have no intention of
+       meeting you ... the player has to cross open ground under fire"*. The
+       stance is real and it fires; what leaks is the gate one branch above,
+       `(iShoot && shotInRange)`. A slinger at eight hexes has NOTHING in
+       range, so it falls out of the hold and into the movement scorer, whose
+       `doc.band` walks it to four hexes of you - and a ratkin stride is 5, so
+       the entire line crosses half the board on round one. It then stands at
+       the band it wanted, which reads exactly like a charge that stopped.
+
+       ⛔ AND THAT IS #126's FINDING, WHICH IS NOT BEING REVERSED. #126 was
+       right that a shooter frozen with nothing in range does *literally
+       nothing for the whole battle*, and returning early is what caused it.
+       The answer to both is not a stance flag, it is a PRICE: this body may
+       move, and it may not end its turn closer to anybody than it already is.
+       It re-forms, it steps out of a lane, it takes a better hex on its own
+       ground - and the ground it is on does not move toward you.
+
+       ⛑ THE SPEARS DID NOT NEED A RULE OF THEIR OWN, WHICH IS THE FIND. The
+       screens are DEALT in front of the slingers ([10,3] and [10,5] against
+       [11,8] and [12,2..6]) and they already hold and already brace. What
+       broke the picture was the shooters running out past the wall they were
+       standing behind. Stop the shooters and "копейщики защищают стрелков" is
+       just the deployment doing what it was written to do.
+       ⚠ `iShoot||wallAct`, i.e. the same two bodies the hold branch is for, so
+       nothing else on any field changes stance.
+       ⛔ AND THE SHOOTER TEST HERE IS `disposition`'s OWN, NOT `iShoot`.
+       `iShoot` asks `canUse`, i.e. *can it shoot RIGHT NOW*, and a caster that
+       has just spent its strain answers no - so the Warp-sniffer counted into
+       the hold when the stance was decided and then walked out of it four
+       columns on the turn it could not cast. Measured: every slinger held at
+       column 13 and the sniffer alone was at 9. A body that is counted INTO a
+       stance has to be held BY it, so this is the same predicate
+       `disposition()` used to decide there was a stance at all. */
+    const rooted=holds&&aip(u).hold&&!canSwing&&!engaged(u)&&
+      (wallAct||u.acts.some(a=>(a.range||a.arcane)&&a.dmg));
     /* ═══ GIVING GROUND IS FINITE ══════════════════════════════════════
        Once the race set the stride (ratkin 5 vs your 4) a shooting line
        could retreat one hex further than you could advance, every turn,
@@ -22870,7 +23309,7 @@ function aiTurn(u){
          line. A body that runs ahead alone gets surrounded and killed, which
          is exactly what one lone ratkin out in front used to do every fight. */
       const lonely=aheadOfLine(u);
-      const anchor=disp.anchor;
+      let anchor=disp.anchor;                /* #240 - a guard re-points it */
       let cohere=(melee.length&&!iShoot)?(lonely>=3?9:lonely>=2?4:0):0;
       /* a captain is the head — it does not lead the charge in person */
       if(u.captain)cohere=Math.max(cohere,5);
@@ -22890,6 +23329,26 @@ function aiTurn(u){
          `i*6` for each place down that list, so re-sorting it by distance IS
          the whole behaviour change — see doctrine(). */
       if(doc.nearest)want.sort((a,b)=>udist(u,a)-udist(u,b));
+      /* ═══ ⛔ #240 · AND A THING THAT IS GUARDING SOMETHING GOES TO IT ══════
+         ⛑ BOTH HALVES, OR IT IS NOT "RUNS TO IT". The anchor alone would make
+         her drift back over several turns while she went on fighting whoever
+         was nearest; re-sorting `want` by distance to the cub is what points
+         her AT the body standing over it, and the `!best` branch below then
+         closes on `want[0]` - so on a turn where she can reach nobody she
+         walks the whole way. One field, two lines, and the movement scorer is
+         untouched.
+         ⛔ IT LATCHES AND DOES NOT LET GO (`guardOn`), which is the difference
+         between a mother and a thermostat: released the moment the cub is
+         topped up, she would walk away from it and come back on the next
+         scratch, twice a fight. She has seen it now.
+         ⚠ The line is said ONCE and it is said because a boss behaviour the
+         player cannot see is reported as a missing feature, which is this
+         project's own #156. */
+      const ward=guardWard(u);
+      if(ward){
+        anchor=[ward.col,ward.row];cohere=Math.max(cohere,9);
+        want.sort((a,b)=>udist(a,ward)-udist(b,ward));
+      }
       /* an ogre keeps near the other ogres: three of them close is a WEIGHT
          the enemy's nerve pays for every turn */
       const others=doc.herd?alive().filter(x=>x.side===u.side&&x!==u&&
@@ -22928,6 +23387,16 @@ function aiTurn(u){
       let best=null,bs=1e9;
       Object.keys(rm.dist).forEach(k=>{
         const p=k.split(',').map(Number);
+        /* ⛔ #240 - AND A ROOTED BODY MAY NOT END ITS TURN NEARER TO ANYBODY
+           THAN IT ALREADY STANDS. The hex is dropped and not merely PRICED,
+           and the first cut of this got it wrong in a way worth keeping:
+           +400 on every candidate is +0 on the choice, because a body eight
+           hexes out has no reachable hex that is NOT closer than eight - so
+           every candidate paid the same and the ranking never moved. Measured
+           on the sling-line, the line still crossed three columns in two
+           rounds with the penalty in. **A price only decides anything when
+           somebody can decline it.** */
+        if(rooted&&T.length&&Math.min.apply(null,T.map(x=>udist(p,x)))<nearD)return;
         /* penalty for standing further from my own centre than I already do */
         let knot=anchor?hdist(p,anchor)*cohere:0;
         if(oAnchor)knot+=hdist(p,oAnchor)*3;
@@ -22975,19 +23444,32 @@ function aiTurn(u){
           const sc=distScore+i*6+rm.dist[k]+knot+chase[t.id]+exposed+fireP+emberP+lane
             -arcBon-lineB-(piled[t.id]||0)*doc.pack*aip(u).pile;
           if(dd<=rng&&sc<bs){bs=sc;best=p;}});});
-      if(!best){let bd=1e9;
+      /* #240 - and it does not fall through to "walk at want[0]" either: that
+         branch is the charge, and this body is not making one. */
+      if(!best&&!rooted){let bd=1e9;
+        /* ⛔ #240 - WHERE THIS BODY IS WALKING, WHICH IS NOT ALWAYS A TARGET.
+           The anchor alone could not move the Fen-Mother one hex toward the cub
+           and the measurement is why: this branch scores hexes against
+           `want[0]` at weight 1 and against the anchor at 0.7 x cohere, which
+           the anchor wins - and then the pocket fix below reads "that hex is
+           not closer to want[0] than I am" as being STUCK and calls `closeOn`,
+           which walks the real path AT THE TARGET and overwrites the pick.
+           So the anchor was outvoted by a guard written for a different fault.
+           ⛑ ONE NAME FOR THE DESTINATION, READ BY BOTH HALVES. Everything that
+           is not a guard passes `want[0]` and behaves exactly as before. */
+        const goal=ward||want[0];
         Object.keys(rm.dist).forEach(k=>{const p=k.split(',').map(Number);
           /* closing on the target, but not so far ahead that nobody is with me */
-          const dd=hdist(p,[want[0].col,want[0].row])+
+          const dd=hdist(p,[goal.col,goal.row])+
             (anchor?hdist(p,anchor)*(cohere?0.7:0):0)+emberPen(p)/6;   /* #186 */
           if(dd<bd){bd=dd;best=p;}});
         /* ...and if that pick does not actually get us any closer, we are in a
            pocket and it will oscillate there forever. Walk the real path. See
            closeOn(). Deliberately narrow: every approach turn that DOES close
            keeps exactly the behaviour it had, cohesion weighting and all. */
-        const now=hdist([u.col,u.row],[want[0].col,want[0].row]);
-        if(best&&hdist(best,[want[0].col,want[0].row])>=now){
-          const walked=closeOn(u,rm,want[0]);
+        const now=hdist([u.col,u.row],[goal.col,goal.row]);
+        if(best&&hdist(best,[goal.col,goal.row])>=now){
+          const walked=closeOn(u,rm,goal);
           if(walked)best=walked;
         }}
       if(best){
@@ -26021,6 +26503,12 @@ function render(){
       if(B.sel&&B.sel.thrower&&!B.hurl&&!B.hurlRock&&
          B.hurlRocks&&B.hurlRocks.indexOf(K(c,r))>=0){
         edge='#d9bd7e';fill='rgba(217,189,126,.32)';liftHere=true;}
+      /* #240 - a body aimed AT somebody: their hex is a legal landing, and it
+         wears the fight red rather than the throw's gold, because what happens
+         there is a blow and not a placement. */
+      if(B.sel&&B.sel.thrower&&B.hurl&&!B.hurlRock&&d!==undefined&&occ&&
+         throwAimOK(u,B.hurl,occ)){
+        edge='#c15d55';fill='rgba(193,93,85,.30)';}
       /* step two: where it can come down — gold, because it is not a walk */
       if(B.sel&&B.sel.thrower&&(B.hurl||B.hurlRock)&&d!==undefined&&
          (!occ||B.hurlRock)){
@@ -27280,8 +27768,9 @@ function placeRead(rd,e,away){
   /* never let it escape the battlefield and cover the character panel */
   const lo=8,hi=Math.max(8,f.offsetWidth-w-8);
   let x=(away==='left')?left:right;
-  if(x<lo||x>hi){const alt=(away==='left')?right:left;if(alt>=lo&&alt<=hi)x=alt;}
-  rd.style.left=clamp(x,lo,hi)+'px';
+  const alt=(away==='left')?right:left;
+  const fits=v=>v>=lo&&v<=hi;
+  if(!fits(x)&&fits(alt))x=alt;
   /* ═══ ⛔ #231 · AND IT STOPS AT THE TOP OF THE ROW OF CARDS ════════
      (User, 2026-08-21, red box round a card running under the skills: *"not
      readible fully on hover with skills"*.)
@@ -27306,7 +27795,35 @@ function placeRead(rd,e,away){
   rd.classList.add('on');
   const acts=$('bActions'),fr=f.getBoundingClientRect();
   const ar=acts?acts.getBoundingClientRect():null;
-  const floorY=(ar&&ar.top>fr.top)?(ar.top-fr.top-8):(f.offsetHeight-8);
+  /* ═══ ⛔ #240 · THE FLOOR IS THE ROW OF CARDS ONLY WHERE THE ROW IS ══════
+     (User: *"В бою Ховер стаов противника не закрывать скилами - лучше не
+     давать ему колайдить со скилами (был момент, когда закрыл)"*.)
+
+     ⛑ #231's FLOOR IS RIGHT AND IT IS APPLIED ACROSS THE WHOLE WIDTH OF A
+     BOARD THE CARDS OCCUPY A QUARTER OF. Measured on the Snare: `#bActions`
+     is **335px of the field's 1280**, centred, so on nine tenths of the
+     columns a card could run to the bottom edge and touch nothing - and
+     instead every card in the game was being squeezed into the band above the
+     row. The one case #231's own note names ("a card taller than the band
+     pins to 8 and overlaps") is therefore not a card that is too tall, it is
+     a card that was told to stand in the wrong place.
+     ⛔ SO THE FLOOR IS CONDITIONAL ON THE HORIZONTAL OVERLAP, and the card
+     gets one more chance to avoid the question: if this side would put it over
+     the cards and it does not fit above them, the OTHER side is tried first.
+     That side is chosen by `awayFrom` for a reason (the card opens away from
+     whoever is looking), so it is only overruled when the alternative is
+     covering the row the ask is about.
+     ⚠ MEASURED AFTER `.on` AND NOT BEFORE. `#bRead` is `display:none` until
+     then, so `offsetHeight` is 0 - which is #231's own note, and the reason
+     the class goes on one line above this. */
+  const deepY=f.offsetHeight-8;
+  const shallowY=(ar&&ar.top>fr.top&&acts.offsetHeight)?(ar.top-fr.top-8):deepY;
+  const overActs=v=>!!ar&&acts.offsetHeight>0&&
+    (v+w)>(ar.left-fr.left)&&v<(ar.right-fr.left);
+  if(overActs(x)&&rd.offsetHeight>shallowY-8&&fits(alt)&&!overActs(alt))x=alt;
+  x=clamp(x,lo,hi);
+  rd.style.left=x+'px';
+  const floorY=overActs(x)?shallowY:deepY;
   rd.style.top=clamp(p.y-90,8,Math.max(8,floorY-rd.offsetHeight))+'px';
 }
 /* which side of the hovered body the card belongs on, so it opens away from
@@ -27882,8 +28399,12 @@ window.LINT=function(){
   };
   /* 3 — arithmetic receipts in choice labels (the pillar) */
   const scanLabel=(c,where)=>{
-    if(/mora?le?\s*[+−-]\s*\d/i.test(c.c||''))
-      hit('receipt',where,'label prints a morale number: "'+c.c+'"');
+    /* #240 - the RESOLVED label, or a function `c:` is scanned as source and
+       every one of these five checks quietly finds nothing. Same trap and same
+       fix as `evBody` two scans above. */
+    const cc=evLabel(c);
+    if(/mora?le?\s*[+−-]\s*\d/i.test(cc))
+      hit('receipt',where,'label prints a morale number: "'+cc+'"');
     /* 6f (#176, written down; #202, actually written) - `c:` may not carry a
        figure `fx` already carries. The sub-line's cost is derived off `fx`
        by `fxNote`, so a "+30 crowns" typed into `c:` prints twice and the
@@ -27892,18 +28413,18 @@ window.LINT=function(){
        shipped exactly this defect on two rows in the meantime.
        ⚠ Scoped to tables `choiceNote` renders (EVENTS, CAMPS, MERCY). The
        aftermath's LOOT rows wear the same shape and are NOT under it. */
-    if(/(^|\s)[+−-]\d/.test(c.c||''))
-      hit('receipt',where,'`c:` carries a figure ("'+c.c+'"). The cost is derived off `fx` by '+
+    if(/(^|\s)[+−-]\d/.test(cc))
+      hit('receipt',where,'`c:` carries a figure ("'+cc+'"). The cost is derived off `fx` by '+
         'fxNote; a typed one is a second receipt for the same payment');
     /* and the mood has one renderer (moraleTag). The phrases are the ones the
        sweeps kept deleting (#150 x24, #151 x16, #176 x63, #198 x1, #202 x2) */
-    if(/they will remember|quietly approved|barely worth a word|sits (?:badly|well) with them|think better of you/i.test(c.c||''))
-      hit('receipt',where,'`c:` echoes the mood in prose ("'+c.c+'"). moraleTag is the one renderer');
+    if(/they will remember|quietly approved|barely worth a word|sits (?:badly|well) with them|think better of you/i.test(cc))
+      hit('receipt',where,'`c:` echoes the mood in prose ("'+cc+'"). moraleTag is the one renderer');
     /* and the race gate is the glyph (#154, derived off needRace). A door that
        is filtered when the race is absent cannot also SAY it needs the race:
        the words only ever print beside a company that has one (#202 x5) */
-    if(c.needRace&&/needs an? (?:ratkin|ogre|human)/i.test(c.c||''))
-      hit('receipt',where,'`c:` says "'+c.c+'" on a needRace door, which is never shown without one');
+    if(c.needRace&&/needs an? (?:ratkin|ogre|human)/i.test(cc))
+      hit('receipt',where,'`c:` says "'+cc+'" on a needRace door, which is never shown without one');
   };
 
   Object.keys(EVENTS).forEach(k=>{
@@ -27918,7 +28439,7 @@ window.LINT=function(){
     if(!e.choices||!e.choices.length){hit('structure',k,'no choices');return;}
     e.choices.forEach((c,i)=>{
       const where=k+'.choice['+i+']';
-      scanTokens(c.t||'',where+'.t');scanTokens(c.c||'',where+'.c');
+      scanTokens(c.t||'',where+'.t');scanTokens(evLabel(c),where+'.c');
       scanTokens(c.after||'',where+'.after');
       scanNames(c.after||'',where+'.after',floating);
       scanLabel(c,where);
@@ -29362,8 +29883,8 @@ function takeLoot(l){
   payMat(f);                                 /* #239 - and the scrap has one too */
   if(f.morale)G.morale+=f.morale;
   if(f.days)passDays(f.days);
-  if(l.gear)G.stash.push(l.gear);
-  if(l.gear2)l.gear2.forEach(k=>G.stash.push(k));
+  if(l.gear)stashGain(l.gear);
+  if(l.gear2)l.gear2.forEach(stashGain);
   /* #197 - a treasure map is a place, so taking one marks the place. Silent
      on purpose: `plantStash` is idempotent and returns where it went, but the
      aftermath is not the screen that names a node - the map is, and it names
@@ -29424,7 +29945,7 @@ function cubChoice(){
     /* #202 - found crowns through lootMul(), as the label promises; see takeMercy */
     payFx(Object.assign({},f,{crowns:f.crowns>0?Math.round(f.crowns*lootMul()):(f.crowns||0)}));
     if(f.gems)G.camp.gems+=f.gems;
-    if(o.gear)G.stash.push(o.gear);
+    if(o.gear)stashGain(o.gear);
     if(o.cub)G.cub=true;
     if(o.pet){const cap=member('you');if(cap)cap.pet=o.pet;}
     G.cubLine=cast(o.after);
@@ -30086,7 +30607,7 @@ function consequences(scarred){
      put its cache on the road: the two are independent and neither reads the
      other's result. */
   const found=rollFind('battle');
-  if(found)G.stash.push(found);
+  if(found)stashGain(found);
   /* ═══ #174 - THE RANDOM PROMOTION IS GONE ═══════════════════════════════
      This line used to read `const hero=pickOne(G.party); hero.level++;` and
      then alternate a perk point and a stat point onto that one lucky body -
@@ -31444,7 +31965,7 @@ function openCamp(spot,next,atPlace){
       if(f.morale)G.morale+=f.morale;
       payFx(f);                        /* one door, and it has a floor — see pay() */
       payMat(f);                       /* #239 - and so do the materials */
-      if(o.gear)G.stash.push(o.gear);
+      if(o.gear)stashGain(o.gear);
       /* a sequel can take back what the first card gave you */
       if(o.dropGear){
         const gi=G.stash.indexOf(o.dropGear);
@@ -32749,7 +33270,8 @@ function drawInv(){
      The word is right-aligned and the label is 180px away from it, so an icon
      pinned to the left edge would be a picture of a stat it is not next to. */
   const tellCell=k=>'<div class="itl'+(statPts>0?' spend':'')+'" data-tell="'+k+'">'+
-    '<span class="tk" style="color:'+TELLS[k].col+'">'+TELLS[k].lbl+'</span>'+
+    (SHEET_STAT_WORDS
+      ?'<span class="tk" style="color:'+TELLS[k].col+'">'+TELLS[k].lbl+'</span>':'')+
     '<span class="tvw">'+statIco(k,s[k])+
     '<span class="tv">'+tell(k,s[k])+'</span></span></div>';
 
@@ -33447,7 +33969,11 @@ function drawInv(){
         'shifts back to it.</div>'+
         '<div class="mwup"><b>UP</b> an enemy died somewhere <i>+'+MORALE.allyKill+
         '</i> · standing among allies · they killed somebody <i>+'+MORALE.ownKill+'</i></div>'+
-        '<div class="mwdn"><b>DOWN</b> an ally goes down <i>'+MORALE.allyDied+
+        /* #240 - the figure is DERIVED, because it is not flat any more: a
+           bigger line feels each death less (see deathShock). On a company of
+           five or fewer it prints the −14 it has always printed. */
+        '<div class="mwdn"><b>DOWN</b> an ally goes down <i>'+
+        deathShock((G.party||[]).length)+
         '</i> · surrounded by enemies · taking a blow <i>'+MORALE.tookHit+'</i></div>'+
         '</div>';
       TIP.style.display='block';moveTip(e);};
@@ -35194,6 +35720,16 @@ function dealEvents(){
 /* an EVENTS body may be a string or a function of no arguments. One place
    resolves it, and every reader of `e.body` goes through here. */
 const evBody=e=>(typeof e.body==='function'?e.body():e.body)||'';
+/* ⛔ #240 - AND A DOOR'S `c:` MAY BE A FUNCTION FOR THE SAME REASON A BODY
+   MAY. `evBody` exists because a card's prose can depend on the state it is
+   read in; a door's sub-line has exactly the same problem the moment anything
+   on it is derived (today: how many ogres are across the road). ONE resolver,
+   read by `choiceNote` and by all five of `LINT`'s label scans, or the linter
+   quietly scans a function object and finds nothing - which is the trap the
+   note on `evBody` above was written about.
+   ⚠ It swallows a throw and returns '': a label that cannot be built must not
+   take the card down with it. */
+const evLabel=c=>{try{return (typeof c.c==='function'?c.c():c.c)||'';}catch(e){return '';}};
 const STASH_ARMS=['f1','f2','f3','q1','p1'];
 /* how the company says where it is, on the card. The map plate is always
    "The Cache" - one name, so it is recognisable from across the valley. */
@@ -36476,6 +37012,15 @@ function kitWanter(){
   return hit;
 }
 const kitWaiting=()=>!!kitWanter();
+/* ⛔ #240 - THE ONE DOOR SOMETHING ARRIVES IN THE CART THROUGH. Sixteen sites
+   push onto `G.stash` and they are two different events wearing one call: kit
+   coming in FROM THE WORLD (a loot row, a card, a find, a purchase) and kit
+   moving BETWEEN a body and the cart (unequipping, the two-hands rule, a
+   dismissal). Only the first is news, so only the first goes through here.
+   ⚠ A body handing its own sword back is not a delivery, and lighting the
+   badge for it would put the mark up on the one screen the player is already
+   looking at. */
+function stashGain(k){if(!k)return;G.stash.push(k);G.mustKit=true;}
 /* ═══════════════════════════════════════════════════════════════════════════
    #161 · THE SECOND OBJECTIVE: BE MORE OF YOU
    (User, 2026-08-16: "on the road to the first event the first quest pops up.
@@ -36814,7 +37359,22 @@ function worldTick(){
      with the company chips rather than on any one character's sheet */
   const relics=heldGear().filter(k=>GEAR[k]&&GEAR[k].company);
   /* #150 - what is waiting behind each of the two doors, on the door itself */
-  const lvUp=levelsWaiting(),kitUp=G.mustKit||kitWaiting();
+  /* ⛔ #240 - THE KIT BADGE IS THE EVENT AND NOT THE STANDING TRUTH.
+     (User: *"Инвентарь горит токо первій раз, когда ДОБАВЛЯЕТСЯ новій
+     предмент. Потом после захода не горит (иначе он почти всегда горит).
+     Имею ввиду воскл знак"*.)
+     ⛑ `kitWaiting()` IS DERIVED AND THAT IS EXACTLY WHY IT IS WRONG HERE. It
+     asks *is anything in the cart better than what somebody is wearing*, which
+     stays true for as long as the answer is yes - so from the first spare
+     jack onward the road bar carried a permanent exclamation mark, and a badge
+     that is always on is furniture (#176's own finding about a phrase you can
+     grep 24 times). `G.mustKit` is the other kind of fact: something ARRIVED.
+     It is set by `stashGain` at every door the world hands kit through and
+     cleared when the player leaves the sheet, so it fires once per delivery.
+     ⚑ `kitWanter()` IS NOT DELETED and must not be: it is what #157 wired the
+     badge's CLICK to (open the sheet on the person it came up for), and it is
+     still the right answer to *which body*. Only the LIGHTING changed. */
+  const lvUp=levelsWaiting(),kitUp=G.mustKit;
   $('wCompany').innerHTML=
     /* ═══ ⛔ #220 · THE CHIP COUNTS BODIES, AND THE PORTRAIT IS GONE ═════
        (User, 2026-08-21: *"Add 1 more thing: amount of units. You can add just
@@ -38801,7 +39361,8 @@ function choiceNote(o,skipMorale){
     return canAfford(o.need)?q:q+' · '+needTag(o.need);
   }
   const cost=fxNote(o.fx);if(cost)parts.push(resGlyphs(cost));
-  if(o.c)parts.push(resGlyphs(o.c));
+  const oc=evLabel(o);                                   /* #240 - `c:` may be a function */
+  if(oc)parts.push(resGlyphs(oc));
   if(!skipMorale){const m=moraleTag(o.fx);if(m)parts.push(m);}
   /* #197 - PERMANENT or TEMPORARY, read off the injury itself. `hideHurt`
      still wins over both: two doors buy a surprise and the beam that comes
@@ -39711,7 +40272,9 @@ const EVENTS={
        after:'You go down across the wet ground, and they watch you do it the whole '+
          'way.\n\nNobody is hurt. Everybody is furious, mostly with the road.'}]},
   steading:{title:'THE STEADING-LINE',art:'gold',seed:137,
-    body:'Four of them across the road, down off the Hunch. A fire, and the ground around '+
+    /* #240 - the head count is `steadingHeads()` and never a word typed here:
+       the fight fields a fifth ogre on a company of six or more. */
+    body:()=>cap1(numWord(steadingHeads()))+' of them across the road, down off the Hunch. A fire, and the ground around '+
       'them packed flat.\n\nThe one in the middle is old. Not slow. Old. It does not get '+
       'up.\n\n"Road\'s ours today," it says. "Was yours yesterday. Be yours again '+
       'tomorrow."\n\nWhich, if you think about it, is an offer.',
@@ -39721,7 +40284,8 @@ const EVENTS={
        after:'It costs the light and most of the water.\n\nNobody says the word cowardice. '+
          'Everybody has privately decided whether it applies, which is worse and lasts '+
          'longer.'},
-      {t:'“It is ours today.”',ico:['fight'],c:'BATTLE · four ogres · they will not chase you',danger:true,
+      {t:'“It is ours today.”',ico:['fight'],
+       c:()=>'BATTLE · '+numWord(steadingHeads())+' ogres · they will not chase you',danger:true,
        battle:'steading',after:''},
       /* both peaceful doors offer the same young ogre (user, 2026-08-03 doc
          pass: "one of them decides to join your party, if you have a free
@@ -40470,7 +41034,7 @@ function openHire(){
       b.innerHTML=gearCardRow(s[0],RES_ICON.crowns+s[1]+
         (ok?'':'<span class="hurt"> · cannot afford</span>'));
       if(!b.disabled)b.onclick=()=>{
-        pay('crowns',-s[1]);G.stash.push(s[0]);G.qm.done=true;QMOPEN=false;sfx('coin');
+        pay('crowns',-s[1]);stashGain(s[0]);G.qm.done=true;QMOPEN=false;sfx('coin');
         say2('He takes the coin without counting it, which is either trust or arithmetic done '+
           'already. '+g.n+' goes in the wagon.');
         worldTick();openHire();};
@@ -40543,6 +41107,25 @@ function openHire(){
          the personality is rolled per person, not per class. */
       '<br><span title="'+esc(traitShort(r))+'" style="cursor:help;border-bottom:1px dotted var(--e3)">'+
       TRAITS[r.trait].n+'</span>'+
+      /* ═══ ⛔ #240 · AND THE FOUR STATS AS FOUR PICTURES ═══════════════════
+         (User: *"На страничке наема рекрутов - показывать у них картинками эти
+         статы - выйдет 4 картинки. Но они дадут больше инфы о рекруте"*.)
+         ⛑ THIS IS THE OTHER HALF OF #197's CUT, NOT A REVERSAL OF IT. That
+         entry hid the four ADJECTIVES because they were the longest line on
+         the row and the one nobody could compare by eye - *"Not strong.
+         Clumsy. Plain. Nervous."* against *"Weak. Heavy-handed. Quick to see
+         it. Nervous."* - and it said in capitals that hiding them makes hiring
+         blind unless the numbers reach the row some other way. Four pictures
+         are that way: three strangers side by side become twelve marks in
+         three rows, which is a comparison the eye can make and the sentence
+         never was. The words are still on the name's hover, unchanged.
+         ⛔ 32 AND NOT A SMALLER BOX. `statIcoAt` takes a size because each
+         caller reserves its own, but #230's note is the constraint: these are
+         pixel paintings and 24 is a 3:4 resample that smears the grid. 32 is
+         native, and four of them ride inside the row's existing two lines. */
+      '<span class="rstats">'+['str','agi','int','mor'].map(k=>
+        '<span title="'+esc(TELLS[k].lbl+': '+tell(k,s[k]))+'">'+statIco(k,s[k])+'</span>'
+      ).join('')+'</span>'+
       /* #227 - and the second half of what makes him cheap. This file's own
          standing rule is that a price has to be readable BEFORE the press, and
          empty hands are a price: `--wood` is the salvage/kit amber, not the
@@ -40756,7 +41339,7 @@ function villageDo(id){
     /* #239 - the row IS the purchase. See the note where the rows are built. */
     const s=v.stock[+id.slice(3)];
     if(!s||v.armed||G.run.crowns<s[1])return;
-    pay('crowns',-s[1]);G.stash.push(s[0]);v.armed=true;G.mustKit=true;sfx('coin');
+    pay('crowns',-s[1]);stashGain(s[0]);v.armed=true;sfx('coin');
     drawVillage(GEAR[s[0]].n+': bought, paid for, and in the cart.\n\n'+
       'He will not sell you a second thing. He says the roads are what they are and he has '+
       'other companies to disappoint. It is in the stash: open INVENTORY and put it on '+
@@ -41774,8 +42357,8 @@ function pickChoice(k,i){
      only: nobody's hand did anything here), each × their learning rate. The
      chip prints the authored figure, the way the morale chip does. */
   if(f.xp){payXPAll(f.xp);addPaid('xp',f.xp);}
-  if(c.gear)G.stash.push(c.gear);
-  if(c.gear2)c.gear2.forEach(g=>G.stash.push(g));
+  if(c.gear)stashGain(c.gear);
+  if(c.gear2)c.gear2.forEach(stashGain);
   /* A STRANGE CONDITION lands on somebody, and the clock starts. One carrier
      at a time in the whole company — a mutation is meant to be the thing that
      happened to ONE person, not a company-wide status effect.
@@ -41855,7 +42438,7 @@ function pickChoice(k,i){
        in the game (see FIND_ODDS) because it is the one place the player was
        told about in advance and walked to on purpose. */
     const inHole=rollFind('cache');
-    if(inHole){G.stash.push(inHole);dug.push(inHole);}
+    if(inHole){stashGain(inHole);dug.push(inHole);}
     G.cache=null;
   }
   /* the shrine: two days of lying still, or whatever praying does */
@@ -42045,7 +42628,7 @@ function pickChoice(k,i){
      the body names them twice and a memory about somebody else would be a
      lie in the sheet. They just do not get to keep it. */
   if(c.coinKeep){
-    G.stash.push('oddcoin');
+    stashGain('oddcoin');
     const one=member(G.fireTeller)||G.party.find(p=>!p.leader)||G.party[0];
     if(one)remember(one,'Found a coin in a wheel-rut on the road east, and put it in the wagon.');
   }
@@ -42369,13 +42952,31 @@ function openCampScreen(bankIt){
       p.injuries.map(i=>i.n).join(', ')+'</span>':'')+
     (p.hpLoss?' · <span style="color:#c15d55">mending ('+p.hpLoss+' hp short)</span>':'')+
     '</div>').join('');
-  let html='<h1>THE WAGON</h1>'+
-    '<p>One cart, one mule that has outlived several owners, and a folding travel-forge bolted '+
-    'to the bed that lights on the second try. It does not stay anywhere: it waits at the last '+
-    'safe place behind whatever company is currently pulling it, and it keeps what you carry '+
-    'home whether or not you are the one who carries it back.</p>'+
+  /* ═══ ⛔ #240 · THIS SCREEN IS NOT THE WAGON ANY MORE ═══════════════════
+     (User: *"Вконце всего рана убрать показ вагона..... Щас єто не мета
+     механика - а механика кокретного рана"* and *"Убрать вагон из меню"*.)
+
+     ⛑ #238 MOVED THE WAGON INTO THE RUN AND LEFT ITS NAME ON THE DOOR HERE.
+     The cart is bought, fitted and lost with the company that pulled it, and
+     this screen is what OUTLIVES a company: the bank, the forge, and a name
+     that knows you. It was still titled THE WAGON, still opened on a paragraph
+     about a mule, still counted a `Wagon bed`, and still carried a `⚙ THE
+     FITTINGS` station whose entire content was a sentence saying the fittings
+     are somewhere else - a heading for a thing that is not here, which is the
+     furniture this project keeps deleting.
+     ⚠ THE OLD CAMP IS NOT A NEW NAME. It is what the code has called this the
+     whole time: the block that loads `LEGACY` is headed *"0b. The Old Camp
+     remembers - the only thing that survives a run"*, and the key is
+     `gt_camp`. The screen has caught up with its own section header.
+     ⚠ `Wagon bed` GOES AND `Party size` STAYS. `LEGACY.yard` is still honoured
+     at boot (an old save can carry one) and still decides the number below it;
+     what came off is the row that named the cart, not the fact. */
+  let html='<h1>THE OLD CAMP</h1>'+
+    '<p>A yard behind a wall, a folding travel-forge that lights on the second try, and '+
+    'whatever the last company managed to carry back to it. It does not go out on the road '+
+    'with anybody. It waits, and it keeps what you send it.</p>'+
     '<div class="tally">'+t2('Salvage',bank.salvage)+t2('Gems',bank.gems)+
-      t2('Runs made',LEGACY.runs)+t2('Wagon bed',LEGACY.yard)+
+      t2('Runs made',LEGACY.runs)+
       t2('Party size',PARTYBASE+LEGACY.yard)+'</div>'+
     '<div class="station"><h4>⚒ THE TRAVEL-FORGE</h4>'+
     '<div class="lbl" style="color:#8a7449">for the NEXT RUN ONLY - it goes out with them and it '+
@@ -42384,13 +42985,11 @@ function openCampScreen(bankIt){
       'line-height:1.7;margin-bottom:5px">PACKED FOR THE ROAD: '+
       LEGACY.pending.map(k=>GEAR[k]?GEAR[k].n:k).join(' · ')+'</div>':'')+
     '<div id="cForge" style="display:flex;flex-direction:column;gap:5px"></div></div>'+
-    /* #238 - the fittings and the frame are bought ON THE ROAD now, from the
-       wagon card, with the run's own salvage, and they die with the run. The
-       two stations that sold them here (BOLTED IN, THE BED) are gone; the bank
-       keeps the forge. */
-    '<div class="station"><h4>⚙ THE FITTINGS</h4>'+
-    '<div class="lbl" style="color:#8a7449">bought on the road, from the wagon card, with the '+
-    'run\'s own salvage - and gone with the run. What is banked here pays the forge.</div></div>'+
+    /* #240 - and the FITTINGS station is gone with the name. #238 emptied it
+       and left the heading standing over one sentence explaining where its
+       contents went; a station that sells nothing is a signpost to a room that
+       is not in this building. What it was pointing at is the wagon card, on
+       the road, inside a run. */
     /* what the wagon remembers that is not a thing — see the epilogue */
     (LEGACY.ashmoor?'<div class="station"><h4>✦ WHAT IS KNOWN OF YOU</h4>'+
       '<div class="lbl" style="color:#8a7449">carried by people, not by the cart</div>'+
@@ -44752,8 +45351,11 @@ function openMenu(){
       go:openNotes});
   }
   if(LEGACY&&(LEGACY.runs||LEGACY.bank&&(LEGACY.bank.salvage||LEGACY.bank.gems)))
-    opts.push({t:'The wagon',
-      c:'what the companies before this one left in it',go:()=>openCampScreen(false)});
+    /* #240 - the WORD goes, the door stays. This row opens the between-runs
+       bank and forge, which is not the wagon and has not been since #238. */
+    opts.push({t:'The old camp',
+      c:'the bank and the forge - what the companies before this one left behind',
+      go:()=>openCampScreen(false)});
   /* #156 - `o.c` is no longer drawn. It is deliberately still WRITTEN on every
      row above rather than stripped out of them: the strings are the rows' own
      documentation, several of them are quoted in the entries that added the

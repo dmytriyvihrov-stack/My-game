@@ -276,3 +276,4 @@ separate tab. Its spec lives inside `tools/dramaturge.html`, on the tab.
 | **-** | **The front door.** Menu · a new company · the practice field · `? RULES` · the wagon | none |
 | **11** | Teach the new verbs | → merged into **#14** |
 | **41** | The first one down | → merged into **#51** as the HEART tier |
+| **240** | **The nineteen-ask batch.** A shot stops getting the ring bonus · a death is a fraction of the line · the sling-line holds and the Fen-Mother comes for the cub · a spear reaches round a Г · one mood float a beat · the ogre throws one of yours at somebody · two audio switches · the sheet's stat labels off · the end-of-run screen is THE OLD CAMP | **the Steading-Line is 1.7 rounds longer** and wants a played run · `PUNCH THROUGH` priced but never fielded |

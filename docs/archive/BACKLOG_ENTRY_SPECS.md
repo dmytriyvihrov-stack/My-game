@@ -4616,3 +4616,114 @@ the stash under the kit chip's `!`, the ox's +3 rides the aftermath's own derive
 (`art/ART_QUEUE.md`) · the badge on a tile that became affordable without the chest moving · the
 `PARTYBASE` question after a played run (a seat upgrade is only candy when the cap binds).
 
+
+
+## 240 - The nineteen-ask batch (2026-08-24, the second one the same day)
+
+*The user, one message, nineteen asks. Grouped by screen the way #239's twenty were, at his own
+suggestion the day before: "probably it makes sense to group them by screen and do them one after
+another". His words are kept verbatim, in his own language, because half of these are reports of a
+thing the build does and the wording is the evidence.*
+
+### THE BOARD - what the fight does
+
+1. **"в битве с фен мозер - когда бьеш питомца - то мать должна бежать к нему"**
+   The cub is `passive:true` and the Fen-Mother has no idea it exists. She should go to it when it
+   is hurt. ⚠ Her own template comment already claims *"the cub keeps its distance until somebody
+   hurts its mother"*, which is the sentence the other way round and is not implemented either.
+
+2. **"В больших битвах убегают раньше времени сейчас.. Как-то подфиксить єто."**
+   The suspected mechanism before measuring: `MORALE.allyDied` is a FLAT −14 weighted only by
+   distance, so the shock a side takes scales with the number of bodies that die and the morale
+   pool does not. Losing one of four is a catastrophe; losing one of ten is a bad day, and the
+   build charges the same for both.
+
+3. **"Когда копейщик сбоку от дерева может быть. (когда стоит дерево буквой Г к противнику - то
+   дерево как-бі частично перекрівает траекторию, но если противник на коцне Г - то бить можна)"**
+   `reachBlocked` walks ONE `hexLine` and refuses the spear if any hex on it is TALL. At reach 2
+   on a hex grid there are usually TWO shortest routes; if the sampled one clips the oak and the
+   other is clear, the reach should be allowed.
+
+4. **"иногда при выстреле пишет 'окружен' - хотя конкретно при выстреле это не имеет смысла."**
+   The aiming card's `rrIf('surrounded',bd.flank,...)` row. It is not a readout bug: `hitBreakdown`
+   really does pay the flanking bonus on a SHOT, so the row is honest and the RULE is what is
+   wrong. A ring of bodies helps blades, not arrows.
+
+5. **"Враги стараются избегать огня, если у них есть другая безопасная опция"**
+   `EMBER_AI` is 14 against 6-a-hex-of-walking, so an arc bonus outbids it.
+
+6. **"Стояние в огне домажит 6, статус огня дамажит 3."**
+   `EMBER_HIT` is already 6. `BURN_TICK` is 4.
+
+7. **"Когда бросок союзника - ты можеш бросать впротивника (у огра). Вероятность попасть 100% - и
+   он становится рядом с противником."**
+   Today `throwSpots(u,range,aimed)` is called with `aimed` FALSE for a body, so an occupied hex is
+   not offered at all. He wants the ally aimed AT an enemy: it always connects, and the ally comes
+   down beside that enemy.
+
+8. **"Уменьшение морали токо одна анимация (щас за один удар может быть несколько разных значений
+   показать). Показывать наибольше или складывать эффекты и показывать суммарно"**
+   `mor()` floats per call and one blow calls it several times.
+
+9. **"В бойне с крысами они сильно быстро побежали вперед (где у них много лучников). Конкретно им
+   дать больше защитную стратегию - сгруппироваться и ждать на месте. Копейщики защищают стрелков -
+   становятся пеерд ними и делают стену копий"**
+   THE SLING-LINE. The stance exists (`disp.hold`) and #126 deliberately let a shooter with nothing
+   in range fall through to the movement scorer, which walks it to `bandFor` = 4 hexes of the
+   player. Crossing eight hexes to stand at four is the "running forward" he is describing. The
+   screens hold where they were dealt and never move to stand in front of anybody.
+
+10. **"В бою Ховер стаов противника не закрывать скилами - лучше не давать ему колайдить со
+    скилами (был момент, когда закрыл)"**
+    #231 already floors `#bRead` at the top of `#bActions`. Its own note names the remaining case:
+    *"If a card ever exceeds the band it pins to 8 and overlaps, and THAT is the day this box needs
+    a max-height and a way to be read."*
+
+11. **"В событии с ограми писало 4, а стало 5 в бою. Писать корректно"**
+    THE STEADING-LINE. The card says *"Four of them across the road"* and the door says
+    `BATTLE · four ogres`; `steading()` adds a fifth at `G.party.length>=6`. Six fights in the game
+    carry a party-size reinforcement and this is the one whose card counts out loud.
+
+### THE ROAD - the wagon stops being a meta object
+
+12. **"Вконце всего рана убрать показ вагона..... Щас єто не мета механика - а механика кокретного
+    рана"**
+13. **"Убрать вагон из меню"**
+    #238 made the wagon per-run and left the between-runs screen titled `THE WAGON`, with a wagon
+    paragraph, a `Wagon bed` tally row and a `⚙ THE FITTINGS` station whose whole content is a
+    sentence saying the fittings are somewhere else. The front menu still offers *"The wagon"*.
+
+### THE KIT
+
+14. **"Некоторіе арті - токо под ивенты. Например - стебель цветка - только под ивент с блумом (ка
+    щас). И их нету в общем пуле покупок. И так-же к вфен мозер и некоторыми другими."**
+    `findPool` already refuses `unique`, so this is an AUDIT: which items an event hands out are
+    missing the flag.
+
+15. **"Артефакт: Сначала файта арбалет заведенній. Заводка дает на 1 вістрел (выстрел или скил. В
+    скиле больше дамага). Заводка стоит 1 екшнпоинт"**
+    The crossbow (#224) already carries `reload:true` and both brains already know how to wind one
+    (`a.reload==='do'`). What is missing is the START of the fight being wound, and a SKILL that
+    spends the same span for more damage.
+
+### THE SCREENS
+
+16. **"Отдельно музіка, отдельно звуки в настройках (два вкл выкл, вместо одного)"**
+    One `AU.on` drives `AU.master.gain` and `musMute` together.
+
+17. **"Инвентарь горит токо первій раз, когда ДОБАВЛЯЕТСЯ новій предмент. Потом после захода не
+    горит (иначе он почти всегда горит). Имею ввиду воскл знак"**
+    The road bar's kit badge is `G.mustKit||kitWaiting()`, and `kitWaiting()` is DERIVED - it is
+    true for as long as anything in the stash beats anything worn, which on a full cart is most of
+    the run. He is asking for the event flag and not the standing truth.
+
+18. **"Из инвентаря где статы - выпилить слова 'STrength', Intelect, etc. Оставить токо значения
+    (ну и соответсвенно у них будет больше спейса). (но оставить возможность их вернуть, если будет
+    віглядить плохо)"**
+    The `.itl` row is `[label 78px][32px picture][the tell word, ellipsis-clipped]`. The label is
+    the word to cut; the picture is what carries the identity, which is what #204/#230 built it for.
+    **The flag to bring them back is part of the ask and is not optional.**
+
+19. **"На страничке наема рекрутов - показывать у них картинками эти статы - выйдет 4 картинки. Но
+    они дадут больше инфы о рекруте"**
+    The muster wall. `statIco(k,v)` already exists and is the same lookup as the word.

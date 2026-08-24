@@ -836,6 +836,56 @@ figure at three or under** - which is what the break-down table in the stash doe
 [1,2,3,4,6].map(n=>n+': '+mercyOpts(n).map(o=>choiceNote(o).replace(/<[^>]*>/g,'')).join(' | '))
 ```
 
+## ⛔ #240 · A DOOR'S LABEL MAY BE A FUNCTION, AND A CARD MAY NOT COUNT OUT LOUD
+
+*(2026-08-24. The user: **"В событии с ограми писало 4, а стало 5 в бою. Писать корректно"**.)*
+
+THE STEADING-LINE says *"Four of them across the road"* in its prose and `BATTLE · four ogres` on
+its door, and `steading()` fields a FIFTH on a company of six or more. **Six encounters in the game
+carry a `G.party.length>=6` reinforcement clause and this is the only one whose card counts out
+loud**, which is why it is the only one that was ever wrong.
+
+⛔ **SO THE COUNT IS DERIVED, WHICH IS #137's RULE ARRIVING ON THE ONE FIELD NOBODY HAD APPLIED IT
+TO.** `steadingHeads()` is the same `>=6` test the plan makes, said once; `body` and `c:` both read
+it. The day the wall grows a sixth ogre neither has to be found and edited.
+
+⛔ **AND THAT MEANS `c:` MAY BE A FUNCTION, FOR THE SAME REASON `body` MAY.** `evBody(e)` has existed
+since a card's prose first depended on the state it was read in; a door's sub-line has exactly the
+same problem the moment anything on it is derived. **`evLabel(c)` is the one resolver** and it is
+read by `choiceNote` AND by all five of `LINT`'s label scans:
+
+```js
+const evLabel=c=>{try{return (typeof c.c==='function'?c.c():c.c)||'';}catch(e){return '';}};
+```
+
+⚠ **THE LINTER IS HALF THE POINT.** Handed a function object, `scanLabel`'s five regexes test the
+SOURCE and quietly find nothing - the receipt check, the mood-echo check and the needRace check all
+pass a card they have not read. That is the trap the note on `evBody` was written about, one field
+across.
+⚠ **It swallows a throw and returns `''`.** A label that cannot be built must not take the card
+down with it.
+⚠ **A FUNCTION IS TRUTHY, so a `mystery` door with one still trips LINT 6d** (*"mystery door also
+carries a c: line"*), which is correct: a `?` door has no label to derive.
+
+⛑ **THE COUNT IS SPELLED OUT (`numWord`), because every other number on a road card is** - *"nine
+men in a ditch three miles back"*, *"Two winters now, by his own account"*. A card that says
+*"BATTLE · 5 ogres"* is the only digit in the deck.
+
+⚠ **AND IT IS A FUNCTION RATHER THAN A CONSTANT** because `G.party` changes between one card being
+read and the next: a muster between the two would leave a stale figure on a card dealt later.
+
+### After a change here
+
+```js
+/* the card and the field, at both party sizes. Expect them equal. */
+[4,6].map(n=>{const keep=G.party.slice();G.party.length=0;
+  for(let i=0;i<n;i++)G.party.push(keep[i%keep.length]);
+  const r=steadingHeads()+' / '+evLabel(EVENTS.steading.choices.find(c=>c.battle==='steading'));
+  G.party.length=0;keep.forEach(p=>G.party.push(p));return r;})
+// ["4 / BATTLE · four ogres · they will not chase you",
+//  "5 / BATTLE · five ogres · they will not chase you"]
+```
+
 ## Before the card ships
 
 

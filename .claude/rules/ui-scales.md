@@ -321,6 +321,83 @@ grows, re-run it** - the slack is about 30px.
 ⚠ **AND THE WAGON CHIP AND THE DAY PLAQUE STAY ON THE MAP**: the sheet already has a THE WAGON button,
 and `#wPlaque` is absolutely centred on its own bar, so on this one it lands across the company name.
 
+## 4d. ⛔ #240 · A SETTING THAT BECOMES TWO SETTINGS IS A WIDTH PROBLEM, AND THE BOARD PAYS IT
+
+*(2026-08-24. The user: **"Отдельно музіка, отдельно звуки в настройках (два вкл выкл, вместо
+одного)"**.)*
+
+`#audioBtn` was ONE button in THREE places: `bottom:44` by default, `top:82` on the world screen,
+`top:74` on the battle screen, each with its own comment recording why. Two switches is therefore
+not a second button, it is **a second set of three rules to keep in step** - unless the thing that
+moves stops being the button.
+
+⛑ **SO `#audioBox` IS WHAT THE THREE RULES PLACE AND THE PAIR INSIDE IT LAYS ITSELF OUT.** Every
+position comment (♪ at 74, the tester stack starting at 134) still names the number it always did,
+because the box's first child is still where the button was.
+
+⛔ **AND THE WIDTH IS WHERE IT WENT WRONG, MEASURED RATHER THAN NOTICED.** Side by side the box is
+**95.7px against one button's 45.9**, and on the battle screen `#bGrid` is underneath it: driven on
+the brigand field, the wide box sat over **2 playable hexes** where the single button covered
+**none**. Chrome growing sideways over a board is the same class of fault as §4's raised font
+breaking the box that was measured around the old one - **the element grew and the thing underneath
+it was never asked.**
+
+⛑ **THE FIX IS A COLUMN, AND THE ROOM WAS ALREADY THERE.** `#bZoom` ends at design y 31 and
+`#bPace` starts at 102, so that band held one 20px button and **51px of nothing**.
+`flex-direction:column-reverse` from `top:50` puts the FIRST child at the bottom, so ♪ keeps exactly
+the 74 its own comment records and the new switch takes 50..70 above it. **Nothing else on the
+screen moves.**
+
+⚠ **50 IS DERIVED AND NOT ROUND**: it is 74 minus the button's own height and the gap (20 + `--p2`).
+Change either and this has to be re-derived, which is what writing the arithmetic down is for.
+
+⚠ **THE WORLD SCREEN KEEPS THE PAIR SIDE BY SIDE, AND THAT IS A MEASUREMENT TOO**: `wZoom` sits at
+design 52..75, directly where a column would grow, and the horizontal box covers **no node and no
+plate** (`nodesUnder: []`). Same widget, two layouts, each because of what is under it.
+
+⛔ **AND THE STATE STAYS A WORD.** #102 point 3 records the ⏱ SPEED lesson in full: a control whose
+press only changed *"a `title` attribute and a border tint"* could not say what it had done, and the
+face got the number. `♪ ON` / `♪ OFF` is the same rule; a glyph dimmed to mean OFF would be
+repeating a mistake this file has already paid for.
+
+```js
+/* the corner, on every screen it can be seen on. Expect 0 hexes and no buttons. */
+(()=>{const b=document.getElementById('audioBox'),R=e=>e.getBoundingClientRect();
+  return ['world','inv','battle'].map(s=>{show(s);const r=R(b);
+    return s+': '+[...document.querySelectorAll('#bGrid .hex')].filter(h=>{const a=R(h);
+      return a.right>r.left+1&&a.left<r.right-1&&a.bottom>r.top+1&&a.top<r.bottom-1;}).length;});})()
+```
+
+## 4e. ⛔ #240 · A LABEL BESIDE A PICTURE OF THE SAME THING IS THE THING TO CUT
+
+*(The user: **"Из инвентаря где статы - выпилить слова 'STrength', Intelect, etc. Оставить токо
+значения (ну и соответсвенно у них будет больше спейса). (но оставить возможность их вернуть, если
+будет віглядить плохо)"**.)*
+
+`.itl` was `[label 78px][32px picture][the tell, right-aligned, ellipsis-clipped]`. §4's own table
+records the clip: *"real Spectral at 12px is 16px of content in a 14.4px line ... the column is
+EXACTLY full on the Captain, so the line box may not grow"*. That entry solved the DESCENDERS and
+left the WIDTH, because the width was not the ask that day.
+
+⛑ **THE PICTURE IS WHAT IDENTIFIES THE STAT AND IT HAS BEEN SINCE #204/#230.** That is what the four
+families were drawn for; the 78px mono column was saying it a second time in words. Cutting it hands
+the whole 78 to the value, and **the two bodies that were clipping stop**: measured across all 16
+body x state cases, HEAD clips 8 rows (Skree and Bruht, every state) and the new build clips **0**,
+with `#iChar`'s slack unchanged.
+
+⛔ **THE WAY BACK IS PART OF THE ASK AND IS NOT DECORATION.** `SHEET_STAT_WORDS` is one `const` and
+one ternary. *"но оставить возможность их вернуть, если будет виглядить плохо"* is a request for a
+switch, not a hedge, and a rule file that records the cut without recording the switch loses it.
+
+⚠ **AND THE SAME PICTURES WENT THE OTHER WAY ON THE MUSTER WALL IN THE SAME EDIT**, which is worth
+reading beside this: #197 HID the four adjectives there for the opposite reason (they were the
+longest line on the row and nobody could compare them by eye) and said in capitals that hiding them
+makes hiring blind unless the numbers reach the row another way. Four 32px marks are that way. **The
+word is too long to compare and the picture is not - that is one finding, and it cuts a label on one
+screen and adds four icons on another.**
+⚠ **32 AND NOT 24.** `statIcoAt` takes a size because each caller reserves its own box, but #230's
+note is the constraint: these are pixel paintings and 24 is a 3:4 resample that smears the grid.
+
 ## 5. Before the CSS ships
 
 ⛔ **THE PREVIEW PANE COMPOSITES NOTHING, SO A SCREENSHOT PROVES NOTHING AND `setInterval` FIRES

@@ -26,6 +26,110 @@
 
 ---
 
+## 🧾 NINETEEN SMALL THINGS, BY SCREEN  *(#240 · 2026-08-24 · build log 8f.263)*
+
+*Your second list of the day, grouped by screen the way the last one was. **Two of them turned out
+to be reports about something the build was not doing at all** and both are at the bottom.*
+
+### THE BATTLE · reach it: any fight
+
+- **A ring of bodies no longer helps an arrow.** The aiming card's `surrounded` row is gone from
+  every SHOT and every working, because the bonus itself is gone from them: a crowd is worth
+  something to the blades standing in it and nothing to somebody aiming from four hexes away.
+  Nothing changed for a sword.
+  *A bug would be:* the row still appearing on a bow, or disappearing on a melee swing.
+- **A spear reaches round the corner of a tree.** Stand two hexes from somebody with an oak between
+  you: if the tree is on ONE side of the bend the point gets there, and only a tree on both sides
+  (or a tree straight between you) refuses it.
+  *A bug would be:* the same board refusing the spear one turn and allowing it the next.
+- **Standing in fire costs 6 and carrying it costs 3** (it was 4). And the enemy now goes round it:
+  a foe will only end its turn in the fire when the fire is the only ground that reaches anybody.
+- **In a big fight they hold on longer.** What a death costs the survivors is now a fraction of the
+  line they started as, so an eight-dog pack or a seven-body sling-line feels each one less than a
+  company of five does. **A company of five or fewer is exactly unchanged.** Measured over 16 runs a
+  side: 1.25 fewer dogs run away, 1.25 fewer ratkin, and your own casualties within a quarter of a
+  body of where they were.
+- **The rat sling-line stops charging.** They now group up and wait where they were dealt, the two
+  spearmen stand in front of the shooters and brace, and YOU cross the open ground. Driven: every
+  slinger held at column 13 and both spears at 12, where before the whole line crossed three columns
+  in the first two rounds.
+  *A bug would be:* them standing still while you also stand still and nothing ever happening - they
+  will still come at you once nothing of theirs can shoot.
+- **One mood animation per blow.** Three separate morale charges from one hit now show as ONE arrow
+  with the total on it, instead of three numbers stacking over the same head.
+- **The ogre can throw one of yours AT somebody.** Pick up an ally, and an enemy's own hex is now a
+  legal landing: the throw always connects, the enemy takes a bump, and your body comes down on the
+  far side of them with its own turn still in hand.
+  *A bug would be:* the enemy hex being offered when there is no free hex beside them to land on.
+- **The Fen-Mother comes when you hurt the cub.** Hit it and she drops whatever she was walking
+  toward and goes to it; once she is beside it she is a lindwurm again. Hurt it a second time and
+  she comes a second time.
+- **The enemy's hover card never runs under the row of skills.** It now uses the space beside the
+  row instead of being squeezed above it, so even a body carrying every status in the game gets a
+  card you can read.
+- **Sound and music are two switches.** ♪ is the effects, ♫ is the recordings, and on the board they
+  are a column above ⏱ SPEED. Each is remembered on its own.
+
+### THE ROAD · reach it: the map
+
+- **THE STEADING-LINE counts correctly.** The card says *four of them* to a company of five and
+  *five of them* to a company of six or more, because the fight fields a fifth ogre at six. Both the
+  paragraph and the door label read the same number the field will.
+- **Three artifacts are event-only now.** The Bloom-Stem, the Pedlar's Charm and the Rosined String
+  can only come from the card that hands them over - they are out of the find pool and out of both
+  shop racks, the way the Fen-Mother's Tooth already was.
+- **The ! on the sack only lights when something ARRIVES.** It used to be on for most of the run,
+  because it was answering *is anything in the cart better than what somebody is wearing* - which
+  stays true once it is true. Now it fires when the road hands you kit and goes out when you leave
+  the sheet.
+
+### THE COMPANY SHEET · reach it: the sack on the road bar
+
+- ⚠ **Known, and it was there before today:** the ♪♫ pair sits in the bottom-right corner of the
+  sheet, over the stash list. With a full cart it covers the right ~105px of the last row (the old
+  single button covered ~50px of the same row). The row still opens from anywhere else along it.
+  *If it gets in the way, say so* - the honest fix is moving the pair off that screen, which is a
+  decision rather than a tidy-up.
+
+- **The four stat rows lost their labels.** STRENGTH · AGILITY · INTELLECT · MORALE are gone and the
+  picture carries the name; the word that was being clipped now has 78px more room. **Skree's and
+  Bruht's rows were clipping on the shipped build and are not now.**
+  *If it looks worse than it reads:* say so - it is one `true` in the file (`SHEET_STAT_WORDS`) and
+  the labels are back.
+
+### THE MUSTER · reach it: the muster field node
+
+- **Every stranger shows their four stats as four pictures.** Three candidates side by side are
+  twelve marks in three rows, which is a comparison you can make by eye; the words are still on the
+  name's hover where #197 put them.
+
+### THE CROSSBOW · reach it: put one on an archer
+
+- **The winding pays for ONE discharge.** It starts the fight wound; a shot OR a skill empties it;
+  winding costs one action. Before this, CRIPPLING SHOT did not empty it, so one crank fired twice.
+- **And an archer holding a crossbow gets a different signature: PUNCH THROUGH** - half again the
+  damage and it opens armour, on a two-turn cooldown, instead of CRIPPLING SHOT. Same rule as the
+  spearwoman's halberd: the weapon decides the signature. With a bow, CRIPPLING SHOT is unchanged.
+
+### BETWEEN RUNS · reach it: finish a run, or the menu
+
+- **The end-of-run screen is THE OLD CAMP, not THE WAGON.** The wagon is a fact about the run you
+  are in (#238), so the paragraph about the mule, the `Wagon bed` row and the empty `⚙ THE FITTINGS`
+  station are gone. The bank, the forge and the roster are untouched. The menu row is *The old camp*.
+
+---
+
+### ⚑ THE TWO THAT WERE REPORTS ABOUT SOMETHING THAT WAS NOT THERE
+
+- **"the flower stem is bloom-only, as it is now"** - it was not. Fourteen items are handed over by a
+  card and only four were flagged as one-of-a-kind, so the stem, the charm and the fiddler's string
+  could all be rolled into a shop rack or a battlefield find. They are flagged now. The other seven
+  are ordinary kit a card happens to give you (mail, plate, a dirk) and they stay in the pool.
+- **"at the start of the fight the crossbow is wound"** - it already was. What was missing was the
+  other half of the same sentence: the skill was not spending the winding.
+
+---
+
 ## 🧾 TWENTY SMALL THINGS, BY SCREEN  *(#239 · 2026-08-24 · build log 8f.262)*
 
 *Your own list, in your own grouping. Three of them were **checks** and the answers are at the bottom.*
