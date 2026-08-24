@@ -167,7 +167,11 @@ window.GT=(function(){
                     swings at the best expected damage once it arrives.
        steady     - the same brain with the formation knot weighted x3, less
                     lone arc-hunting, more piling onto started fights. The
-                    anchor it coheres to is disposition()'s own centroid. */
+                    anchor it coheres to is disposition()'s own centroid.
+     ⚠ #242 - the prototype's ORDER_PROF (the practice field's dev orders)
+     mirrors these two rows verbatim and adds `defensive`. This tool runs
+     against ANY build the iframe loads, so it keeps its own literals; a
+     change to either copy is a change to both, by hand. */
   const STRATS={
     current:   {n:'THE BRAIN', prof:{}},
     aggressive:{n:'AGGRESSIVE',prof:{flank:0,kite:0,fallback:0,cohere:0,hold:0,doct:0}},

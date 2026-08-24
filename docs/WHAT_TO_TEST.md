@@ -53,6 +53,37 @@ same boards, going dark).
 not marked out). **Bare ground shipped**, on the second sentence. If you wanted to SEE the tiles
 out there, say so: `APRON_LATTICE` is one number (0 now; .05 is a whisper, .10 a lattice) and it
 draws the apron's hexes as outlines under the same fade. Still nothing to stand on either way.
+## ⚙ THE DEV BENCH - build any fight you can imagine  *(#242 · 2026-08-24 · build log 8f.265)*
+
+**What it is:** dev-mode extensions to the practice field so you can test anything fast: field any
+enemy in the game in any number, hand any perk to anybody, give either side a strategy and watch
+the fight play itself, and paint the board mid-fight. With the ⚙ off, the practice field is
+exactly what it was yesterday.
+
+**How to reach it:** press the dimmed **⚙** in the bottom-right corner (dev mode on) → menu →
+**The practice field**. Three new dashed-green rows sit under THE RULE: **⚙ THE OTHER SIDE**,
+**⚙ YOUR SIDE PLAYS**, **⚙ THEIR SIDE PLAYS**.
+
+- **Any enemy:** THE OTHER SIDE → Hand-picked. A bench opens at the bottom with every body the
+  campaign can field (53 of them, the wedding bride at 4 pts to the warden at 164), each priced on
+  the same points scale as your side. Add rows, set counts, and the label says how it compares to
+  your company. The fight column still decides the ground and the layout. **A bug would be:** a
+  fight that throws with a custom side, the fight's own scripted allies showing up anyway, or the
+  tap-room accepting a custom side (it must refuse - its waves are scripted).
+- **Any perk:** WHO MEETS IT → Hand-picked → the **⚙ perks** button on any crew row. All 26 perks
+  as chips; ticked is what stands, faint is what the level policy would grant. The first tick keeps
+  the policy's picks and adds yours. **A bug would be:** picks surviving with dev mode off, or the
+  points readout not moving when you stack perks.
+- **Autobattle:** set YOUR SIDE PLAYS to anything but "Your own hand" and take the field - AUTO
+  engages at round one and the whole fight runs at battle speed. Press AUTO to take the reins back.
+  Try THEIR SIDE on Aggressive vs Defensive on the same fight and watch the difference. ⚠
+  **Defensive is a first cut and unmeasured** - if it plays like Steady, say so, that is exactly
+  the feedback wanted.
+- **The board brush:** in any practice fight (dev on), a **⚙ BRUSH** strip sits under ✎ TEXT on
+  the right. Arm a word (rock, marsh, tree, wall, fire), click hexes; your hand comes back when
+  you pick "off". Pathing, cover and wet aim react at once. It refuses a hex somebody stands on.
+  **A bug would be:** a painted hex the rules ignore, or the brush swallowing clicks after the
+  fight ends.
 
 ---
 
