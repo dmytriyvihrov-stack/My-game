@@ -14,9 +14,34 @@
 
 ---
 
+## ⏸ PARKED 2026-08-25: anything about PERKS, CLASSES or STATS
+
+> The user: *"summarise something that not related to perks, clases and stats (they are under
+> rework)"*.
+>
+> **Five questions leave the live list and none of them is answered.** They are parked because the
+> systems under them are being reworked, and a ruling taken now would be a ruling about a shape that
+> is changing.
+
+| | what it was | why it is parked |
+|---|---|---|
+| **A1** | **#204**, stats become signed ladders | it IS the stat rework. It comes back as the rework's own first decision, not as a question beside it |
+| **A2** | **#47**, the spear gets its weakness | a class contract. The whole entry is what one class is FOR |
+| **B4** | **#243**, the glass-cannon mage behind `MAGE_GLASS` | two buttons that differ only in perks |
+| **B9** | **#240**, `PUNCH THROUGH` priced and never fielded | an archer perk |
+| **C5** | **#134**, the joke door needs a readable reason | its own note says the reason has to be *a stat, a trait, a personality* - so it is blocked on the rework by construction |
+
+⚠ **`C3` (the muster may not be distinguishing anybody) stays LIVE and that is a judgement call.**
+Its bands are read off stats, so the rework could move it - but the fault is that **four sentences a
+head say the same thing about all three candidates**, and that is a writing and banding problem that
+will still be there whatever the numbers become. ⛑ **A question the rework might incidentally fix is
+not the same as a question the rework OWNS.**
+
+---
+
 ## A · The two you asked about
 
-### A1 · What is #204?
+### A1 · What is #204?  ⏸ PARKED (the stat rework)
 
 **STRENGTH and AGILITY become visible ladders instead of invisible modifiers.** Your own words,
 2026-08-19: *"возле уровня показать, что он дает. Базовый уровень - условно средний для человека и
@@ -45,7 +70,7 @@ every damage number in the game at once, so it wants the Gauntlet (#229) run bef
 
 **→ Your answer:** _______
 
-### A2 · What is #47?
+### A2 · What is #47?  ⏸ PARKED (the class rework)
 
 **The spear gets its weakness, and that turns it from a poke into field control.** Today the spear
 is reach 2 with two signature moves and **no downside at all**. Your own version of the missing half:
@@ -87,12 +112,12 @@ one-line change.*
 | **#247** | **Two heart-ish marks are on one screen.** The mood row's mark is an emoji face (😄🙂😕😟💀) sitting beside two drawn glyphs (⛨ ♥), and the sheet's **MOR** stat tell is a painted heart two columns from the **♥** that means blood. Neither is wrong alone. #102's wrong-unit rule is what would decide it | leave the faces, redraw the MOR tell as something that is not a heart |
 | **#246** | **`wear` was kept on the roster tile** against a literal reading of *"other things"*. It is a clock (how long until the injury clears), not a description. Should it go? | keep it - it is the one thing on that tile that changes |
 | **#244** | **The dogs' pack aura is live and could not be reproduced as a bug.** Her radius is 3 against a 2-hex bounce, which is probably the impression you had. It is a dial | drop the radius to 2 so it matches the bounce |
-| **#243** | **The glass-cannon mage is off the wall**, behind `MAGE_GLASS=false`. Two identical buttons, same word, same globe, different perks - the price is what makes it a choice | leave it off until the perk tree is real |
+| ⏸ **#243** | **The glass-cannon mage is off the wall**, behind `MAGE_GLASS=false`. Two identical buttons, same word, same globe, different perks - the price is what makes it a choice | leave it off until the perk tree is real |
 | **#241** | **`APRON_LATTICE=0`.** The apron round the board is bare painted ground. If *"чуть выходящие квадратики"* meant you wanted to SEE tiles out there, this draws them as outlines | leave it bare - marked tiles you cannot stand on is a promise the board breaks |
 | **#239** | **The wagon is not re-priced** against the new salvage curve. 6 / 12 / 24 ▤ for the three frames, against a measured **23-24 salvage a run** now that #239 halved it. Tier III is currently a greedy-run purchase | re-price to about 5 / 10 / 18, or say you want tier III to stay a stretch |
 | **#239** | **A rare-tier shop roll leans to trinkets**, because most rare rows are trinkets. If it reads as repetitive the fix is a slot preference in `rollRack` | fix it - it is the same complaint #227 already answered for road finds |
 | **#238** | **The weak joint is `PARTYBASE`, not the wagon.** A seat upgrade is only candy when the cap binds, and four founders at 8 of 13 rarely hit it before the first muster. **13 → 11 is the lever** | take it to 11 |
-| **#240** | **`PUNCH THROUGH` is priced and never fielded** - an archer perk nobody has met | leave it for the perk tree |
+| ⏸ **#240** | **`PUNCH THROUGH` is priced and never fielded** - an archer perk nobody has met | leave it for the perk tree |
 | **#232** | **Two ★ meet on one roster row** - the gold unspent-level star on the name line and the Captain's class mark below it. Different lines, different colours | dim the class mark |
 | **#230** | **Two states scroll the company sheet** (a banked point, 8px; THE CIRCLE, 21px), against #133's promise of one screen and no scroll | accept it - the alternative is a smaller stat icon |
 | **#219** | **The opening card carries a title again**, `THE THREE BELLS · before the road`. You deleted the old card's title, but that was a narrow column card; on the painted stage a title costs nothing and every other card has one | keep it |
@@ -112,7 +137,7 @@ current build; the ones below are the ones that still describe something that ex
 | **#96** | **Your pet scores as an ALLY, not as yours** (gold, not blue) | make it blue - it is yours in every other sense |
 | **#157** | **The muster's `tellLine` may not be distinguishing anybody.** Measured live, all three candidates read *"Steady enough"* and *"Easily frightened"*, so four sentences a head are spent on something that often says the same thing about all of them | widen the bands so a candidate can read as unusual |
 | **#147** | **The finale is one row from softer** if you want it. `plains` and `outpost` are two arenas that stay unused, with the reason recorded | leave it - #245 already moved this fight to 40% |
-| **#134** | **The joke door needs a reason the player can read before it comes back** - a stat, a trait, a personality - or it returns as the same dice roll it was cut for | it comes back when there is a CHARM-ish stat to hang it on, not before |
+| ⏸ **#134** | **The joke door needs a reason the player can read before it comes back** - a stat, a trait, a personality - or it returns as the same dice roll it was cut for | it comes back when there is a CHARM-ish stat to hang it on, not before |
 | **#93 / #90 / #146** | **The Fen-Mother sits on an authored board, not a rolled one.** The finding underneath is real either way: *a centred mass taxes whoever needs range*, so her 12-14 round band is partly an accident of the seed. ⚠ #146 then made her **12 points easier to hit** and recorded that as *"the closest this pass comes to her reserved re-tune"*, so the reserved re-tune is still owed | leave her - she is a boss, and an authored board is allowed to be authored |
 
 ---
