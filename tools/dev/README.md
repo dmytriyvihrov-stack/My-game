@@ -111,6 +111,7 @@ carries the setup that keeps being rewritten - `GT.playerTurn()`, `GT.standNextT
 | `reach.js` | the built-but-unreachable census: art keys pointing at nothing, cards no node can deal, gear with no painting |
 | `tutorial.js` | the world tour still runs and a battle lesson still stops and restarts the clock |
 | `locktrace.js` | who WROTE a flag, with a stack, by trapping it with `defineProperty` after every `startBattle` |
+| `reach.js` | … and its `deadGates` half: a door gated on something nothing in the build can grant |
 | `align243.js` · `apron241e.js` · `diff243.js` · `road243i.js` | the four one-offs a changelog row names as the instrument that measured it |
 
 ## ⛔ A PROBE IS EITHER AN INSTRUMENT OR IT IS SCRATCH, AND SCRATCH DOES NOT STAY
