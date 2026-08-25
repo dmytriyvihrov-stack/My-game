@@ -26,6 +26,76 @@
 
 ---
 
+## 🚩 THE MIREHARES EXIST NOW, AND SO DOES THE BAG  *(#245 · 2026-08-25 · build log 8f.269)*
+
+**Eleven asks. Three of them turned out to be things that were BUILT AND UNREACHABLE**, which is why
+they read as *"I have never seen this"* rather than as bugs.
+
+### 1. The mirehares. Three steps: take the SOUTH road out of Blood on the Road
+
+The water road's middle crossing is a named place now - **The Red Lights** - with its painting on the
+map from the first screen. **It should be there on every run that walks the south fork.**
+
+⚠ **It was never there before.** The node carried the key and was ALSO in the dealt-slot list, so a
+random card overwrote it before you took a step: 0 survivals in 20 deals. **A bug would be seeing
+anything else on that node**, or seeing the mirehares somewhere they are not.
+
+### 2. The BAG. Three steps: win a fight, look at the found item, put it in the bag slot
+
+Four things can go in it now. All four are cards on the battle sheet, all four are **once or twice a
+fight** and grey out when spent rather than disappearing:
+
+| | what it does |
+|---|---|
+| **Healing Draught** *(uncommon)* | 1 action, **10 hitpoints back**, once a fight. Greys out at full health |
+| **Pilum** *(common)* | 1 action, **range 3, 22-32 damage**, armour counts fully. One throw a fight |
+| **Shuriken, a pair** *(uncommon)* | 1 action, **range 4**, a scratch - but a hit costs them **one action on their next turn**. Two throws |
+| **The Time-Cube** *(epic)* | 1 action, **every enemy at half actions for two rounds**, then it is gone for good |
+
+**How to get one fast:** they are in the find pool, so a won fight can hand one over. ⚡ **A bug would
+be:** a card that vanishes instead of greying, a draught that heals more than 10 or works twice, a
+shuriken that stacks to -2 actions, the cube surviving its own use, or the cube slowing YOUR side.
+
+⏳ **Two of #192's five are still not built and that is on purpose**: the Thunder-fish Kris and the
+Fingerprint Stone Shield. The kris needs a BLEEDING status the game does not have.
+
+### 3. If the dogs get three on one body, they stop running away
+
+SNAP-AND-AWAY bites and jumps two hexes clear. **With three or more of them on one of yours - the
+⊛ SURROUNDED badge over that head is the tell - the dog stands its ground and bites again with its
+second action.** The badge is up BEFORE it happens, which is the whole point.
+
+⚡ **A bug would be** a dog standing still with only one or two on the target, or bouncing away while
+the badge is up.
+
+### 4. The enforcer finale is harder, and three of them wear a shoulder-board
+
+If you throw in with the clan, the host at the bells has **two more billmen and three CHAMPIONS**: a
+gold **epaulette** at the top right of the hex, a warm rim on the body, and `▰ CHAMPION` on the hover
+card. A champion is **half again the hitpoints, armour and damage** of one of these, +10% to hit, +5%
+dodge.
+
+*Measured, 30 fights a row: this fight was **53%** and the honest finale is **27%** - the wrong way
+round, since joining the clan brings eight more bodies. It is **40%** now.* ⚡ **Say so if it now feels
+unfair rather than merely hard**: the dial is the bill count and it is one line.
+
+### 5. PROVISIONS are SUPPLIES, everywhere
+
+Same resource, same ❦ glyph, one word. **A bug is the old word surviving anywhere** - the chest
+tooltip, the store, a door's price, the run-end tally, the rules card.
+
+### 6. Four smaller ones
+
+- **the days sit ON the road now**, beside the line rather than floating 40-90px above it. ⚠ On the
+  crowded corridors (the wedding to the fen, the low road to the Dead Company) a chip still stands
+  well off its line, because there is no clean space near it - that is the map, not the label;
+- **the muster and Coldharrow's market re-open** while you are standing on them. Ordinary cards still
+  fire once;
+- **hover any hex inside an enemy's red arc** and it says who holds it and the three ways out;
+- **the Sitting Stone's ogre costs six supplies.** He was the only free body in the game.
+
+---
+
 ## 🚩 THE ZONE OF CONTROL IS THREE SHORT LINES  *(#244 · 2026-08-25 · build log 8f.268)*
 
 **Reach it in three steps:** any fight → stand next to an enemy → look at the ground under them.
