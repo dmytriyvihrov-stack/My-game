@@ -566,6 +566,12 @@ cost five collisions. **Re-measure rather than trust the sentence:** `ls -la doc
 
 ## 8. The questions that are yours
 
+> ➡ **ALL OF THEM, INCLUDING THESE, ARE COLLECTED IN
+> [`OPEN_QUESTIONS.md`](OPEN_QUESTIONS.md)** *(#248, 2026-08-25)*. The five below are the design
+> questions that shape a later system; that file also carries the fourteen one-line taste calls from
+> the last ten batches, the older `👤` rulings that nothing had ever collected, and the two things
+> that turned out to be broken rather than undecided. **Answer them there.**
+
 *Nothing in the plan is blocked on these, but each changes what a later batch looks like.*
 
 1. ~~**The name.**~~ **Settled 2026-08-18 (#191): the game is RabbleBound.** The note here used to

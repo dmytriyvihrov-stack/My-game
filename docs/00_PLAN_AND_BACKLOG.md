@@ -16,12 +16,26 @@
 > The user, 2026-08-22, while ordering #238 (the wagon): *"and change the rule add no more, i get 7
 > feedbacks, waiting for 3 more. Need to sinish build"*.
 >
-> So: **the ten-friends gate stands at 7 of 10**, the rule below (*nothing is added; cut, delay,
-> merge*) no longer decides an argument, and an entry is judged by whether it **finishes the build**.
-> Everything the clarity pass found stays as the measuring habit (measure the box before the font,
-> a sign is not a readout, the receipt is derived) and as history; it is no longer the veto. The
-> first entry under the new rule is **#238**, and its spec still passes the gate the old way: rules,
-> a picture, then code.
+> So: the rule below (*nothing is added; cut, delay, merge*) no longer decides an argument, and an
+> entry is judged by whether it **finishes the build**. Everything the clarity pass found stays as
+> the measuring habit (measure the box before the font, a sign is not a readout, the receipt is
+> derived) and as history; it is no longer the veto. The first entry under the new rule is **#238**,
+> and its spec still passes the gate the old way: rules, a picture, then code.
+
+> ## ✅ 2026-08-25: **THE TEN-FRIENDS GATE IS PAID. TEN PEOPLE HAVE PLAYED IT.**
+>
+> The user: *"10 people played, I slowly implement feedback."*
+>
+> ⛑ **So the gate below stops being a thing to reach and becomes a thing that is RUNNING.** The
+> question it was built to ask - *does it survive somebody who is not you* - has been asked ten
+> times, and the answer arrives as a queue of feedback rather than as a verdict. **What that changes
+> for this file: an entry earns its place by being on that queue, not by an argument made here.**
+>
+> ⚠ **And it retires the phrase *before the friends play*, which is the sorting rule 🟡 NEXT and
+> ⚪ LATER were both written against.** Neither bucket means what its heading says any more: NEXT was
+> *"still before the friends play"* and LATER was *"after the friends have played"*, and both of
+> those moments are now behind us. **Read them as cost, not as time** - NEXT is what is small and
+> finishable, LATER is the depth pass that is still deliberately not started.
 
 > ## The feedback, 2026-08-10, in the user's words
 >
@@ -215,7 +229,7 @@ section used to carry each entry in full, which made the work file a second chan
 
 | | | done when |
 |---|---|---|
-| **1** | **Measure the opening before touching it.** Words shown, cards opened, clicks made, and systems introduced, from launch to the first decision that costs something. | there is a number, and it is written down here |
+| ~~**1**~~ | ~~Measure the opening before touching it.~~ ✅ **CLOSED 2026-08-25 BY THE USER, AND NOT BY A MEASUREMENT.** *"close, it is manual tuning, I was returning it many times"*. ⛑ **The step asked for a number so that #86's cuts would have something to argue with, and the cuts happened anyway** - #108 put the brawl first, #112 added a node, #118-#120 reshaped the whole opening, #138 collapsed four cards into one, #141 made the second card LIGHT, #219 put both cards on the painted stage. **Six passes of hand tuning, each judged by playing it**, and then ten people played the result. ⚠ **A count taken now would be measuring a thing that is already settled**, which is the opposite of what step 1 was for. | closed by ruling |
 | **2** | **[#86 - the first fifteen minutes](#86--the-first-fifteen-minutes)** | the numbers from step 1 are cut hard, and the teaching survives the cut |
 | **3** | **The screen pass**, five surfaces, one at a time, before-and-after shots | ✅ 🎒 **company** *(#133 · #136 · #140)* · ✅ 🗺 **road** *(ten rounds, #103-#107 · #112-#117 · #121)* · ✅ 📜 **aftermath** *(#122)* · ✅ ⚔ **battle** *(nine passes, #88 · #91 · #94-#105)* · ⏳ 🚪 **front door** - rebuilt by #108, #111, #118-#120, #138 and #150, and what it still owes is step 1's measurement · ⏳ **the practice field**, untouched. ⚑ ~~The target for what is left is a number: 61 declarations below 10px~~ **cashed by #164 (2026-08-16): the 10px floor raised all 153 of them and `font-size` literals in the file are 0** - re-measured by #202 on every screen, nothing under the floor. Each round's rules are in the focus section above; the rows are in [`SHIPPED.md`](SHIPPED.md) |
 | **4** | **[#39 - Meet the Rabble](archive/BACKLOG_ENTRY_SPECS.md)** | the crew is introduced without a fourth modal. **It must replace or enrich the arrival cards, never add to them** |
@@ -366,8 +380,8 @@ name them, not because they stopped mattering.*
 | **89** | **The combat benchmark, and the three things it did not measure** - ✅ the document is written: [`COMBAT_BENCHMARK_2026-08-11.md`](COMBAT_BENCHMARK_2026-08-11.md) | ⚑ **the second instrument.** #13 measures *win rates*, this one measures **shape**: RabbleBound now sits in a table beside Battle Brothers, Wildermyth and Wartales at **8.45 rounds · 71.4 unit-turns · 115 actions · 1.61 actions per unit-turn · 4.6 skills per unit**, all measured. ⛔ **The remainder was three MEASUREMENTS, not builds** - the mop-up tail, a real stopwatch, and hit-rate distribution - so it does not argue with the clarity pass. ✅ **HIT-RATE DISTRIBUTION IS NOW TAKEN** (2026-08-13, during #146, ~1,200 swings a side across all eight fights, probed at `hitBreakdown` inside `runFight`): **before the pass, mean 60.3% · yours 58.7% · theirs 61.8% · 30.5% of every swing in the game was a coin flip or worse.** After: **65.6% · 66.3% · 65.0% · 19.4% under fifty.** ⚑ **AND THE MEASUREMENT FOUND SOMETHING NOBODY HAD ASKED ABOUT: BEFORE THIS PASS THE ENEMY WAS THE BETTER-AIMING SIDE**, by three points, in every fight in the act. It is not in any statblock - it falls out of the penalties only the player's side pays (shooting in a scrum, their own nerve, cautious) against the flanking bonus a side with more bodies collects - which is **THE FIGURE IN A STATBLOCK IS NOT THE FIGURE ON THE BOARD** arriving on a quantity nobody had thought to point it at. ⏳ **Four measurements still open**: the mop-up tail, a real stopwatch, and **two added 2026-08-18 by PART FOUR** - the forced-answer test and token legibility. Two readings are already live: **`brigand` runs 2.4x the opener at an even 6 v 6**, which is the exact shape of Wartales' *"longer, not harder"*, and the **enemy skill gap is 2:1** in the player's favour, which is what "one strategy beats everything" looks like from the inside. ⚑ **PART FOUR (2026-08-18, the user's GPT pass) ANSWERED THE SKILL-GAP TRAP AND IS THE PART TO READ**: *the unit of variety is not the race, it is the weapon* - Battle Brothers gets ten problems out of ten humans because **its enemies run on the same weapon rules the player does** (a spear is spearwall, a shield splits, a hook drags, a hammer breaks armour). ⛔ **So RabbleBound does not need new races or ten monsters. It needs the humans, ratkin and ogres it already has to force a different answer, visibly.** Its test routes the whole argument: *"what was I forced to do here that I did not do in the previous fight?"* - **same answer = MECHANICAL problem, different answers but same feel = PRESENTATION problem.** ⚠ **And it corrected itself on the way**: the research assumed most battle tokens were undrawn, and the check disproved it - **50 painted tokens are embedded, 41 of them units, nothing falls back to the silhouette** - which turns a vague worry into the measurable question in gap **e** (distinct as a FILE, but distinct as an OBJECT at 26x39 px?) | [spec](archive/BACKLOG_ENTRY_SPECS.md) |
 | - | **The class pass** - pick up each of the seven and adjust | the human test the arena cannot run: **can the class be said in one sentence.** A class that needs a paragraph is a balance problem wearing a UI problem's clothes | [reasoning](archive/PLAN_REASONING.md) |
 | - | **The race pass** - three ways to play, not three stat blocks | three banked questions: the poison stack is uncapped · a gilled body reaches 62% further in the swamp · is an ogre's 3 stride a tax or a shape | [reasoning](archive/PLAN_REASONING.md) |
-| **50** | **The balance pass, at playtest grade only** | make the eight fights survivable, readable and fair. **Not the terminal pass.** Order matters: classes, then races, then fights | [spec](archive/BACKLOG_ENTRY_SPECS.md) |
-| **27** | Balance: the optional fight is harder than the finale | inside #50's parking lot, and one of the few balance readings already written down | [spec](archive/BACKLOG_ENTRY_SPECS.md) |
+| ~~**50**~~ | ✅ **DONE 2026-08-25, on the user's word**: *"that balance - done"*. The eight fights are survivable, readable and fair enough for strangers, which is all this entry ever claimed - it was always *"not the terminal pass"*. ⚑ **What actually paid it was not one session**: #216 priced both sides, #229 built the Gauntlet, #227 and #245 re-tuned the finale from a drifted 53% to 40%, #239 halved salvage and cut xp, and #242 gave the bench any foe and any perk. ⏳ **The TERMINAL pass is a different entry and is not claimed here** - #80's armour bands and #45's synergy rule are still its two named debts. | done by ruling |
+| ~~**27**~~ | ~~Balance: the optional fight is harder than the finale~~ ⛑ **CARRIED BY #50's closure**, since this row's own note was *"inside #50's parking lot"*, and #245 measured and moved exactly this number: the enforcer finale had drifted to **53% against the honest one's 27%** and is **40%** now. ⚠ If the optional fight still reads as the harder one in play, it comes back as its own row with a win rate attached. | carried by #50 |
 | **12** | Painted faces, pack 03 | mostly the user's generator work. A face is legibility, so it is arguably clarity work, but it is not a subtraction | [spec](archive/BACKLOG_ENTRY_SPECS.md) |
 | **158** | ➹ **The shot that always hits** | ⛔ **specced only, and deliberately unbuilt** - the user's own framing, 2026-08-14: *"add a skill (for the future, into the perk branch which is under development)."* An archer PERK, 2 actions, cool 3, **55-60% of the bow**, and it ignores the roll and only the roll: ⛔ the lane still refuses it, or *"always hits"* deletes #82's cover and #36's lane in one perk. ⚑ Its reason is measured rather than felt - the average chance to hit is 65.6% and 19.4% of swings are under fifty, so what an archer lacks is not power but the ability to **promise** anything. **It waits on #50 or at least #13**, because its value is exactly as large as the current hit rate is bad, and this pass has already moved that number once | [spec](archive/BACKLOG_ENTRY_SPECS.md) |
 | **47** | The spear becomes a zone | **a rework, not an addition**, which argues for earlier. It touches enemy AI in **both brains**, which is not what you destabilise the week before strangers arrive. **The trigger that pulls it forward:** the class pass finds the spearwoman unsayable in one sentence | [spec](archive/BACKLOG_ENTRY_SPECS.md) |
@@ -443,9 +457,19 @@ name them, not because they stopped mattering.*
 
 ---
 
-# The gate: ten friends
+# ✅ The gate: ten friends - PAID, 2026-08-25
 
-**What the gate is for:** *does it survive somebody who is not you?* Friends forgive rough edges, so
+> **Ten people have played it** (*"10 people played, I slowly implement feedback"*). The gate is
+> behind us and the feedback is now a QUEUE rather than a verdict, worked through a batch at a time:
+> #243 eighteen asks, #244 sixteen, #245 eleven, #246 twelve, #247 fourteen. ⛑ **The section below
+> is kept for the question list and for what gate 2 would be**, not as a thing still to reach.
+>
+> ⚑ **The one line worth carrying forward is what the batches keep proving**: in #245 and again in
+> #247, **three asks in a row turned out to be features that had SHIPPED and could not be SEEN**.
+> A player saying *"I have never seen X"* is the only instrument this project has for that class of
+> fault, and no gate, linter or probe found any of them first. **That is what ten players bought.**
+
+**What the gate was for:** *does it survive somebody who is not you?* Friends forgive rough edges, so
 this gate tests **understanding**, not tolerance. That is exactly what the 2026-08-10 feedback is
 about, which is why the focus above replaced the old thirteen-step list.
 
@@ -482,40 +506,33 @@ changes between ten and thirty: **a friend asks you what a screen means, a stran
 
 # Rulings still waiting on you
 
-*Every one is one line and none of them blocks anything. The first is from the QA day, details
-in [`QA_PLAYTEST_2026-08-02.md`](QA_PLAYTEST_2026-08-02.md); the rest were raised by the desks of
-2026-08-21 and collected here when they landed, because a question asked at the end of a session
-report is a question nobody can find a week later.*
+> ## ➡ **THEY ALL LIVE IN [`OPEN_QUESTIONS.md`](OPEN_QUESTIONS.md) NOW** *(#248, 2026-08-25)*
+>
+> The user: *"what questions? can you please gather all questions and send to me in one go?"*
+>
+> ⛔ **The reason he had never seen them as a list is that there were FOUR lists and one of them was
+> not a list at all.** Five rulings sat here, four design questions in [`README.md`](README.md) §8,
+> **twenty marked `👤` inside `SHIPPED.md` rows** - a convention that was faithfully written for
+> twenty entries and that nothing ever collected - and the rest as `⏳` remainders spread over ten
+> entries. **A question filed in the row of the entry that raised it is filed where nobody will ever
+> look for it.**
+>
+> ⛑ **So the rule is now the same one this project uses for everything else: ONE place, and the
+> other places point at it.** A `👤` in a `SHIPPED.md` row is still the right way to RAISE one - it
+> is written where the reasoning is - but it is not where it lives. **An entry that raises a ruling
+> adds a row to `OPEN_QUESTIONS.md` in the same session**, the way it already adds a row to
+> `WHAT_TO_TEST.md`.
+>
+> ⚠ **Ten of them came back ANSWERED by the sweep and are in that file's section F**, unstruck,
+> because a question closed by somebody other than the person who asked it should be seen before it
+> disappears.
 
-- ~~**QA-7: fleeing the Thing in Armour deletes the Dead Company beat.**~~ ✅ **CASHED BY #157,
-  2026-08-14 (8f.185), and by a fourth way nobody had listed: the fight cannot be fled at all now**
-  (the user: *"you must not be able to leave the battle with the man in armour"*). No fled path, no
-  seam, and nothing downstream needed a special case. ⚑ **The lesson is worth keeping: a ruling can
-  be closed by a change made for another reason entirely**, so re-read the parking lot when a
-  system it names is touched.
-- **QA-27: the defeat epilogue opens with "The bells are still ringing"** wherever the company dies,
-  including half a map from Grausen. Keep it placeless, or key one clause on where the run ended.
-- **#219: the opening card now carries a title, `THE THREE BELLS · before the road`.** #150 deleted
-  the old card's title at your word (*"we don't need a name for it so far at left right corner"*), but
-  that was a COLUMN card one pixel under a hard 684px ceiling where an `<h1>` cost 33px of prose. On
-  the stage the title is absolutely positioned over the painting and costs nothing, and every other
-  card in the game has one. ⚡ One word and it goes back to blank: `title:''` and the `<h3>` is not
-  drawn.
-- **#218: three colours and a pace, all one-liners.** `honor` sits on grave-stone grey, which is the
-  coldest thing on a warm card; `rest` sits on blue, which is a campfire in blue; and the unfold is
-  **470ms**, which is a pace you meet thirty-four times in a run rather than once. ⚠ The 470 is the
-  one with a measurement behind it: the first cut was 600 because the two longest members are a
-  DELAY plus a DURATION and nobody had added them up.
-- **#215: the mirror's landing ring.** An ivory ring marks the hex your click will actually land on,
-  which makes the mode an inverted mouse: you sweep until the ring is where you want it and click.
-  Hiding it makes you do the flip in your head, which is much harder and closer to a prank. It is one
-  line either way.
+**The one older item that is not a taste call**, from the QA day
+([`QA_PLAYTEST_2026-08-02.md`](QA_PLAYTEST_2026-08-02.md)):
 
-*(Four older open questions live in [`README.md`](README.md) §8: AUTO doctrine, numbers in the
-chronicle, the run contract, generated voice; the fifth, the name, was settled by #191. Nothing is
-blocked on any of them.)*
-
----
+- **QA-27: the defeat epilogue opens with *"The bells are still ringing"*** wherever the company
+  dies, including half a map from Grausen. Keep it placeless, or key one clause on where the run
+  ended.
 
 # ⛔ PARKED BY THE LANDING SWEEP OF 2026-08-21
 
@@ -673,4 +690,5 @@ cheap model cannot escalate judgment it does not know it is missing.
 | [`SHIPPED.md`](SHIPPED.md) | one line per shipped entry, and **every open remainder named** |
 | [`CHANGELOG.md`](CHANGELOG.md) | the build log with the reasoning, and every shipped entry in full |
 | [`WHAT_TO_TEST.md`](WHAT_TO_TEST.md) | **the user's file.** How to reach each new thing in three steps and what it should do |
+| [`OPEN_QUESTIONS.md`](OPEN_QUESTIONS.md) | **the user's other file.** Every ruling waiting on him, gathered from four places into one. A new one lands here the session it is raised |
 | the running build | **what is actually true. It wins over every document.** |
