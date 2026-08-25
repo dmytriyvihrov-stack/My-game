@@ -26,6 +26,57 @@
 
 ---
 
+## 🧪 FIVE THINGS YOU RULED ON, AND ONE OF THEM WAS NOT WHAT IT LOOKED LIKE  *(#248 · 2026-08-25 · build log 8f.273)*
+
+### 1. The muster reads differently now, and the reason is worth thirty seconds
+
+Open a muster and read three candidates. **They should no longer all sound mediocre.**
+
+⛑ **What you reported was that they all say the same thing, and measured, that is not what was
+happening**: two candidates share a whole four-sentence line **0.7%** of the time. What WAS the same
+is that every one of them read badly. The ladder's nine phrases were written for a 0-17 range and a
+body in this game runs **3 to 13** - so the average recruit was being called *Not strong*, and *Very
+strong* needed a 13 that has never once been rolled.
+
+⚡ **The bands moved, not the words.** An ordinary body now reads *Strong enough / Steady enough /
+Sensible*, and the good and bad ends are both reachable. **The four stat PICTURES moved with them**,
+because they read the same ladder - str was showing 5 of its 9 paintings and now shows 8.
+
+⚡ **A bug would be**: a candidate whose word and picture disagree, everybody reading *Monstrously
+strong*, or the company sheet suddenly calling your founders geniuses. MOOD is deliberately unchanged.
+
+### 2. The Fingerprint Stone Shield exists
+
+**Take the bread door on THE SITTING STONE** (*"Give him bread. Sit a while."*, costs 2 supplies). He
+stands up and hands you the rock he has been sitting on. Put it in somebody's MAIN hand.
+
+⚡ It is **two-handed** (the off hand empties itself), does very little damage, and gives **+30
+armour and +12 dodge**. **Every hit shoves the target back a hex** - that is the whole weapon: you
+are not killing anybody with it, you are moving them.
+
+⚡ **A bug would be**: the armour or dodge figure on the sheet not matching what the battle card
+says, an off-hand item staying equipped beside it, or a hit that does not shove.
+
+### 3. The wagon is cheaper and the cart starts smaller
+
+**The company cap is 11 now, not 13.** The frames cost **5 / 10 / 18** salvage and take you to
+**11 → 12 → 14 → 16** seats.
+
+⚡ **Why**: salvage was halved in #239 and nobody re-priced the wagon, so the third frame cost most
+of everything a whole run earns. And at 13 seats you almost never ran out of room, so buying a seat
+bought a feeling rather than a decision. **This is the change most likely to want a second opinion
+after a run** - if the muster now feels tight in a bad way rather than a tense way, say so.
+
+### 4. The shops stop offering trinkets
+
+Open a shop a few times. The three rows should spread across **weapons, armour, off-hand, bag and
+trinkets** instead of leaning to trinkets, because the slot is now rolled before the item.
+
+⚡ **A bug would be**: an empty row, or the cheap row offering a main-hand weapon (it may not).
+
+---
+
+
 ## 🧹 THE MAINTENANCE PASS - almost nothing to look at, and that is the point  *(#248 · 2026-08-25 · build log 8f.272)*
 
 **You asked whether the last ten batches were finished.** They are: the record has every row, every

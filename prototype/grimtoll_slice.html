@@ -9146,20 +9146,52 @@ const HIT_EASE={you:10,foe:5};
    ⚠ `tell()` reads this with .find(v>=threshold), so the rows MUST stay sorted
    descending. Out of order, a stat silently reads the wrong word. */
 const TELLS={
+  /* ═══ ⛔ #248 · THE LADDER DESCRIBED A RANGE NO BODY EVER OCCUPIES ══════
+     (User: *"c3 - find how to resolve it"*, about the muster reading the same
+     for every candidate.)
+
+     ⛑ THE COMPLAINT WAS NOT LITERALLY TRUE AND THE MEASUREMENT IS WHAT SAID SO.
+     Over 400 musters, two candidates shared a whole four-sentence line **0.7%**
+     of the time and all three shared one **0%**. The words DO differ. What is
+     the same is the REGISTER: `Not strong` 38% · `Heavy-handed` 39% · `Plain`
+     40% · and every one of them sits below the middle of its own vocabulary, so
+     three candidates read as three flavours of disappointing and nothing on the
+     wall ever reads as good.
+
+     ⛔ THE CAUSE IS ARITHMETIC. Measured over 1,740 bodies (500 musters plus 60
+     rolled companies): str/agi/int run **3 to 13, median 8, p95 11**. The old
+     thresholds were 17/15/13/11/9/7/5/3/0, so the median body landed on the
+     SIXTH of nine phrases and the top four were unreachable - `Very strong`
+     needs 13 and the highest str in 1,740 bodies was 12.
+     ⚡ AND #230'S PAINTINGS WERE PAYING FOR IT TOO, which is the half nobody
+     would have looked for: `statIco` is keyed on this same index, so **str
+     showed 5 of its 9 grades and agi and int 6 of 9**. Four paintings per family
+     had never once been on screen.
+
+     ⛑ SO THE BANDS MOVE AND NOT ONE WORD OF THE VOCABULARY DOES. The median
+     body (8) now takes the MIDDLE phrase of nine, p85 takes `Strong`, p95 takes
+     `Very strong`, and the floor and ceiling are reachable instead of decorative.
+     ⚠ THIS IS A READOUT CHANGE AND NOT THE STAT REWORK. #204 is parked and it
+     re-derives this ladder from scratch (0 = the ordinary human, signed rungs);
+     until it lands, what a stat is CALLED should at least describe the bodies
+     the game actually rolls.
+     ⚠ `mor` IS DELIBERATELY UNTOUCHED. It runs 1 to 19 because relics, traits
+     and the mood pool all push it, and it already uses **9 of 9** grades. A stat
+     whose ladder fits gets left alone. */
   str:{lbl:'STRENGTH',  col:'var(--str)',
-    s:[[17,'Monstrously strong'],[15,'Enormously strong'],[13,'Very strong'],[11,'Strong'],
-       [9,'Strong enough'],[7,'Not strong'],[5,'Weak'],[3,'Feeble'],
+    s:[[13,'Monstrously strong'],[12,'Enormously strong'],[11,'Very strong'],[10,'Strong'],
+       [8,'Strong enough'],[7,'Not strong'],[6,'Weak'],[5,'Feeble'],
        [0,'No use lifting anything']]},
   agi:{lbl:'AGILITY',   col:'var(--agi)',
     /* deliberately not "slow" anywhere on this axis — that word belongs to
        STEP, and a player reading "Slow" next to "STEP 2 hex" will think it is
        the same fact stated twice */
-    s:[[17,'Uncannily quick'],[15,'Very quick'],[13,'Quick'],[11,'Handy'],
-       [9,'Steady enough'],[7,'Heavy-handed'],[5,'Clumsy'],[3,'Hopeless with their hands'],
+    s:[[13,'Uncannily quick'],[12,'Very quick'],[11,'Quick'],[10,'Handy'],
+       [8,'Steady enough'],[7,'Heavy-handed'],[6,'Clumsy'],[5,'Hopeless with their hands'],
        [0,'All thumbs, every time']]},
   int:{lbl:'INTELLECT', col:'var(--int)',
-    s:[[17,'Brilliant'],[15,'Sharp'],[13,'Clever'],[11,'Quick to see it'],
-       [9,'Sensible'],[7,'Plain'],[5,'Slow-witted'],[3,'Simple'],
+    s:[[13,'Brilliant'],[12,'Sharp'],[11,'Clever'],[10,'Quick to see it'],
+       [8,'Sensible'],[7,'Plain'],[6,'Slow-witted'],[5,'Simple'],
        [0,'Not all there']]},
   /* MORALE, not NERVE. The battle ladder owns the word NERVE, and both of them
      used to print on this same sheet. See the block above. */
@@ -9925,6 +9957,30 @@ const GEAR={
              'that somebody is standing on top of you.'},
   shortsw:{rarity:'common',n:'Short sword',     slot:'main',dmg:[13,19],am:.70,ft:.30,reach:1},
   maul   :{rarity:'epic',n:'Two-hand maul',   slot:'main',dmg:[27,41],am:1.45,ft:.18,reach:1,hands:2},
+  /* ═══ ⛔ #248 · THE FINGERPRINT STONE SHIELD ═════════════════════════════
+     (User: *"Stone shield - do"*. The brief is his own, in
+     `art/ITEM_PACK_01_TEXT.md` §2.5: *"щит, требует двух рук. Дает большую
+     броню, додж и при ударе отпихивает противника на 1 клетку. Урон достаточно
+     низкий. Легендарное. Требует двух рук."*)
+
+     ⛑ IT LIVES IN THE MAIN SLOT WITH `hands:2`, NOT IN THE OFF HAND, and that
+     is what *"requires two hands"* means on this sheet: `handsFree()` already
+     empties the off hand for a two-handed main. **The off-hand slot cannot say
+     "both hands"**, so a shield that IS your weapon is a main.
+     ⚑ ITS PAINTING HAS BEEN EMBEDDED AND UNREACHABLE SINCE #192, mapped in
+     `ITEM_ICON` with no `GEAR` row to hang on - one of the two the census in
+     `probes/reach.js` reports. The art landed first and the row is the half
+     that was missing.
+     ⚠ `armour` AND `dodge` ON A MAIN-HAND ROW ARE BOTH NEW and both are wired
+     at their one reader (see `armourValue` and `unitFrom`). The brief predicted
+     the first and said so in capitals; the second was found by driving it.
+     ⚠ `push:1` NEEDED NOTHING - #224 moved the shove onto a `push:` field on
+     the WEAPON for the crossbow, so every hit already shoves by construction. */
+  stoneshield:{rarity:'epic',unique:true,n:'Fingerprint Stone Shield',slot:'main',
+           dmg:[8,13],am:.60,ft:.20,reach:1,hands:2,armour:30,dodge:12,push:1,
+           d:'A slab of grey stone the size of a door, worn smooth, with a thumbprint pressed '+
+             'into the middle of it as deep as your hand is long. Whoever left it did not need '+
+             'a shield. You do, and it takes both arms to say so.'},
   /* THE HALBERD — the spearwoman's other answer. Same two hands and the same
      reach as the boar spear, a little less damage, and its signature SHOVES
      instead of bracing. See the `push`/`pull` block in strike(). */
@@ -11723,7 +11779,12 @@ const wageOf=p=>{
    ⚠ #238 - AND THE ONE IN-RUN WRITER IS THE FRAME, through `wagonCap()` below:
    the village wheelwright row that wrote `LEGACY.yard` is gone; the field is
    still honoured at boot for the testers who paid for it. */
-const PARTYBASE=13;
+/* ⛔ #248 - 13 → 11, AT THE USER'S WORD (*"b8 do it, great"*). #238's own
+   remainder named this as the weak joint and not the wagon: a seat upgrade is
+   only candy when the cap BINDS, and four founders at 8 of 13 seats almost
+   never reach it before the first muster, so THE FRAME bought nothing you could
+   feel. At 11 the muster is a real choice about who rides. */
+const PARTYBASE=11;
 /* ═══ #238 · THE FRAME: the wagon's seats, bought on the road ═════════════
    Three tiers, paid in THIS run's salvage, gone with the run. Seats per tier
    are +1, +2, +2 (the user's ruling, 2026-08-22: "+1 seat first tier, +2
@@ -11736,7 +11797,12 @@ const PARTYBASE=13;
    ⚠ DECLARED HERE, beside PARTYBASE, and not beside FITTINGS 30,000 lines
    down: `wagonCap()` runs at load and at a purchase, and a const read above its
    own declaration is the temporal-dead-zone throw this file has shipped once. */
-const FRAME_COST=[6,12,24],FRAME_SEATS=[0,1,3,5];
+/* ⛔ #248 - RE-PRICED AGAINST #239'S CURVE (*"b6 - good, close"*). These were
+   authored before salvage was halved above 3, and a run holds **23-24** at the
+   last fire where it used to hold 42 - so 24 for the third frame was most of
+   everything a whole run earns and tier III was a greedy-run purchase rather
+   than a decision. 5/10/18 is the same SHAPE against the new total. */
+const FRAME_COST=[5,10,18],FRAME_SEATS=[0,1,3,5];
 function wagonCap(){return PARTYBASE+(LEGACY.yard||0)+FRAME_SEATS[(typeof G!=='undefined'&&G.wagon&&G.wagon.frame)||0];}
 let PARTYCAP=PARTYBASE+(LEGACY.yard||0);
 const G={ day:1, at:'hold', battleRounds:0, log:[], ambush:false, contact:false,
@@ -12403,8 +12469,18 @@ function sizeMismatch(p){
   return !!(a&&a.size&&a.size!=='any'&&a.size!==RACEMOD[p.race].size);
 }
 function armourValue(p){
-  const a=GEAR[p.eq.armour];if(!a)return 0;
-  return Math.round(a.armour*(sizeMismatch(p)?WRONGSIZE.mult:1));
+  /* ⛔ #248 - A MAIN-HAND PIECE MAY CARRY ARMOUR NOW, AND THIS IS ITS ONE
+     READER. The Fingerprint Stone Shield is a slab you hold, so its protection
+     is not on the body and `sizeMismatch` must not touch it: a suit of plate
+     fits badly on the wrong frame, and a rock does not care whose arms are
+     holding it. The multiplier therefore applies to the WORN row and to nothing
+     else, which is why the two are summed rather than added before it.
+     ⚠ THE BRIEF PREDICTED THIS EXACT OMISSION and said so in capitals
+     (`art/ITEM_PACK_01_TEXT.md` §3, *"armour off a main-hand piece"*), so the
+     shield would otherwise have shipped with a number that did not count. */
+  const a=GEAR[p.eq.armour],m=GEAR[p.eq.main];
+  const worn=a?Math.round(a.armour*(sizeMismatch(p)?WRONGSIZE.mult:1)):0;
+  return worn+((m&&m.armour)||0);
 }
 function sizeJoke(p){
   const a=GEAR[p.eq.armour];if(!a||!sizeMismatch(p))return '';
@@ -14580,6 +14656,14 @@ function unitFrom(p){
     moved:false,rallyBuff:0};
   if(off&&off.dodge)u.dodgeBase+=off.dodge;
   if(off&&off.hit)u.mskill+=off.hit;
+  /* ⛔ #248 - AND THE MAIN HAND'S, WHICH NOTHING READ UNTIL A SHIELD MOVED INTO
+     THAT SLOT. Every dodge in the game had come off the off hand or a trinket,
+     so `dodge:12` on the Stone Shield's row would have been a field the sheet
+     printed and the board ignored - the promise-versus-payment split this repo
+     has caught six times. ⚠ `main.hit` goes with it for the same reason: the
+     day a main-hand row wants one, it works. */
+  if(main&&main.dodge)u.dodgeBase+=main.dodge;
+  if(main&&main.hit)u.mskill+=main.hit;
   /* ⛔ #244 - THE OFF HAND'S MELEE-ONLY FIGURES, read here and nowhere else.
      `main.range` is the one question that decides which half of the off-hand
      dirk this body gets: a bow cannot stab with it, so it is a card instead
@@ -14685,7 +14769,12 @@ function unitFrom(p){
                 (main.pointBlank?' It does not care how close they are.'
                                 :' Badly hampered inside a scrum.')
               : 'Reach '+main.reach+'.')+
-        (main.push?' The bolt puts them a hex back.':'')+
+        /* ⛔ #248 - DERIVED, BECAUSE THERE ARE TWO OF THESE NOW. The line was
+           written when the crossbow was the only weapon carrying `push`, and a
+           stone shield does not fire a bolt. `main.range` is the fact that
+           already separates them and it is on the row. */
+        (main.push?(main.range?' The bolt puts them a hex back.'
+                             :' Every hit shoves them a hex back.'):'')+
         (main.reload?' One action to wind it again before it will shoot twice.':'')+
         (main.hands===2?' Two hands: nothing else fits.':'')};
     if(main.range)a.range=main.range+R;else a.reach=main.reach;
@@ -43227,10 +43316,24 @@ const EVENTS={
       'account.\n\nHe would like to know whether you have bread. Whether the war is over. '+
       'Then, after a long pause, which war you mean.',
     choices:[
+      /* ⛔ #248 - AND THE ROCK HE IS SITTING ON IS THE SHIELD. The Fingerprint
+         Stone Shield's brief names this card as where it comes from, and the
+         card's own first line has had him sitting on a rock since it was
+         written - so nothing had to be invented and no door had to be added.
+         ⛑ IT RIDES THE BREAD DOOR AND NOT A FIFTH ONE. Style rule 4 caps a
+         card at four options and this one is already at four; a race-gated host
+         would have been worse than unreachable rather than better, because
+         `raceDoorPick` shows the RATKIN door to a company holding both.
+         ⚠ The label says nothing: `gear:` renders as a strip on the outcome,
+         and a door that announces its own payout is the second receipt
+         `.claude/rules/event-cards.md` opens by forbidding. */
       {t:'Give him bread. Sit a while.',ico:['help'],c:'',
-       need:{food:2},fx:{food:-2,morale:12},rep:{ogre:+15},
+       need:{food:2},fx:{food:-2,morale:12},rep:{ogre:+15},gear:'stoneshield',
        after:'He eats slowly and tells you, eventually, what is on the road ahead. It is '+
-         'accurate. He has had time.'},
+         'accurate. He has had time.'+
+         '\n\nWhen he stands to let you pass he lifts the rock he '+
+         'has been sitting on and holds it out. There is a thumbprint in it, pressed deep. '+
+         'Not his.'},
       /* ═══ ⛔ #245 · A BODY FOR NOTHING WAS NOT A DECISION ═══════════════
          (User, 2026-08-25: *"Подія з присодиненням огра - ту ізі було
          присоединити. Це ж повинна бути серйозний вибір чи щось. Є тіки якщо
@@ -44279,7 +44382,8 @@ function wagonTile(k){
   if(isF){
     const t=G.wagon.frame;
     hover='The frame. Three tiers, each wider than the last, paid in salvage: '+
-      FRAME_COST.join(' / ')+'. Seats go 13, 14, 16, 18.';
+      FRAME_COST.join(' / ')+'. Seats go '+
+      FRAME_SEATS.map(n=>PARTYBASE+(LEGACY.yard||0)+n).join(', ')+'.';
     clause=done?'as wide as a cart bed gets':'seats '+PARTYCAP+' → '+(PARTYCAP-FRAME_SEATS[t]+FRAME_SEATS[t+1]);
     receipt=done?'':resGlyphs('−'+cost.salvage+' salvage')+(ok?'':' · '+needTag(cost));
   }else{
@@ -45095,8 +45199,25 @@ function gearPrice(k){
    this entry still reads. */
 function rollRack(){
   const out=[];
+  /* ⛔ #248 - THE RACK ROLLS ITS SLOT THE WAY A FIND ROLLS ITS SLOT, AND IT IS
+     THE SAME COMPLAINT #227 ALREADY ANSWERED ONCE (*"b7 - if it answere,
+     solved - close"*). #239's own remainder: a rare row leans to trinkets
+     *"because most rare rows are trinkets"* - which is exactly what `rollFind`
+     was built to stop, by rolling the SLOT first off `FIND_SLOT` and only then
+     picking inside it. This function was picking uniformly out of a pool whose
+     shape is an accident of how many rows somebody happened to author.
+     ⛑ IT IS A PREFERENCE AND NEVER A RULE, which is `slotOrder`'s own note: an
+     empty slot falls through to the next one rather than costing the shop a row.
+     ⚠ AND THE `noMain` GATE SURVIVES IT - the common row may still never be a
+     main-hand weapon, so the slot walk skips `main` on that call instead of
+     picking it and being refused. */
   const take=(tier,noMain)=>{
     const ok=k=>out.indexOf(k)<0&&(!noMain||GEAR[k].slot!=='main');
+    for(const sl of slotOrder()){
+      if(noMain&&sl==='main')continue;
+      const p=findPool(tier,sl).filter(ok);
+      if(p.length){out.push(pickOne(p));return;}
+    }
     let pool=findPool(tier).filter(ok);
     if(!pool.length)pool=findPool(tier,null,true).filter(ok);
     if(pool.length)out.push(pickOne(pool));
