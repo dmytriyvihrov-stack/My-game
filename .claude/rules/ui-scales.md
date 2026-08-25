@@ -174,6 +174,53 @@ either side. ⚠ **If the bust ever changes size this number moves with it.**
 `.bcchip`, `.rseg` and `.tchip` are drawn only inside `#wCompany` and `#wRes` **today**, and an
 unscoped height would follow the first one of them that is ever reused on another screen.
 
+## 3c. ⛔ #247 · A POOL IS A MARK AND A BAR WITH THE FIGURE IN IT, AND `--sbh` IS ITS HEIGHT
+
+*(2026-08-25. The user, red arrows down all three rows of the battle card: **"Both for health armor
+and mood make this bars a little bit higher, and write stats exactly in them. As BB. Also add 1 icon
+to each of these 3 stats"**, then **"Same change in the inventory"** and **"For mood use space"**.)*
+
+**A pool is one row: `.sbar` = a 17px mark column, then a bar with the figures inside it.** Armour,
+hitpoints and mood on the battle card (`#bPlq`) and on the company sheet (`.ibars`) are the same
+three rows off the same stylesheet block. A fourth surface that wants a pool copies `.sbar`; it does
+not write a second one.
+
+| | |
+|---|---|
+| the mark | ⛨ `SLOT_ICON.armour` · ♥ blood · `LADDER[].ic`, the rung's own face |
+| inside, left | the WORD that is a fact: the armour class, the mood rung. Nothing on hitpoints |
+| inside, right | the figure, `--fs6` on the card and `--fs4` on the sheet |
+| the height | `--sbh`, **22 on the card and 18 on the sheet** |
+
+⛔ **`--sbh` IS A BOX HEIGHT, WHICH §3b ALREADY ESTABLISHED IS NOT ON ANY OF THE THREE SCALES.**
+Unlike `--barChip` it is **not** in `:root`: there is no one right height, because the card is read
+mid-fight at arm's length and the sheet is read at a desk. It is declared on `.sbar` and each host
+overrides it, which is one number in two places rather than a literal in six.
+
+⛔ **AND 22 IS ARITHMETIC RATHER THAN TASTE: TWO FACES ON ONE BASELINE MAKE A LINE BOX TALLER THAN
+EITHER.** At 20 the §5 clip counter reported `.bar.sbb` **twice** on the battle screen - `scrollHeight`
+22 into `clientHeight` 20 - on the two rows carrying a figure and not on the row carrying only a word.
+The cause is the display numeral at `--fs6` beside the `/max` in mono at `--fs1`: **`line-height:1`
+cannot make two typefaces agree**, and the strut takes the union. This is §4's own rule ("a raised
+font breaks the box that was measured around the old one") arriving on a box measured around ONE
+face when it holds two.
+
+⛑ **TEXT ON A FILLED BAR TAKES AN OUTLINE, NOT A DROP SHADOW.** Two of the three fills are LIGHT -
+`--steel` #96a1a5 on the armour row, the top two rungs' greens on the mood row - so cream type with a
+soft shadow under it is legible on the red bar and a smudge on the other two. Four hard 1px offsets
+plus a blur is a stroke round the glyph and it reads on any fill this game can put behind it.
+
+⛔ **AND THE FIGURE IS NOT PAINTED IN THE FILL'S OWN COLOUR.** #105's *"a body that is bleeding says
+so in the number and in the bar at once"* was written when the number stood BESIDE the bar; standing
+ON it, `color:hc` is dark red on dark red. The bar carries the hue, the text is cream, and the fact
+is still said once.
+
+⚠ **THE SPECIFICITY TRAP THIS SHIPPED THROUGH, BECAUSE IT WILL HAPPEN AGAIN.** `.ibars .bar{height:7px}`
+is 0-2-0, exactly what `.sbar>.sbb` is, and it sits LATER in the stylesheet - so on the sheet alone
+the old 7px won and the three rows landed on top of each other, while the battle card (whose height
+comes off the bare `.bar` at 0-1-0) was correct. **A tie on specificity is decided by which entry
+wrote which block, which is not a design.** `.ibars .sbar .bar` is the row that settles it.
+
 ## 4. ⛔ What the floor breaks, and it is never the text
 
 **A raised font size does not break the text. It breaks the box that was measured around the old

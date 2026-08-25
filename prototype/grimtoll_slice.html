@@ -560,7 +560,9 @@ button:disabled{cursor:not-allowed}
    of "Ok", and it is the thing the player is reading. `--seg` is suppressed
    here for that reason: it is the blows-left rule, and nerve is not spent
    in blows. */
-#bState{display:flex;flex-direction:column;gap:2px;cursor:help}
+/* #247 - one row now (`.sbar` supplies the flex), so this rule carries the hover
+   and the flash and nothing else. */
+#bState{cursor:help}
 /* #244 - the MOOD row answers when a working is paid for. Short and once: this
    is a receipt landing, not a state, and the two standing rhythms on this screen
    are 1.1s loops. See `nerveFlash`. */
@@ -568,7 +570,7 @@ button:disabled{cursor:not-allowed}
 @keyframes mflash{0%{background:rgba(226,143,180,.34)}
                   100%{background:rgba(226,143,180,0)}}
 @media (prefers-reduced-motion:reduce){#bState.mflash{animation:none}}
-#bState .statLine>span:last-child{font-weight:600;letter-spacing:.04em}
+#bState .sbL{font-weight:600;letter-spacing:.08em}
 #bPlq .bar.nrv::after{display:none}
 #bPlq .bar.nrv::before{content:'';position:absolute;inset:0;pointer-events:none;
   background:linear-gradient(90deg,
@@ -593,6 +595,64 @@ button:disabled{cursor:not-allowed}
    report ("too many numbers everywhere"), so cutting them answers a
    complaint rather than merely making space. */
 .statLine{display:flex;justify-content:space-between;font-family:var(--mono);font-size:var(--fs1);color:var(--t3)}
+/* ═══ ⛔ #247 · A POOL IS A MARK AND A BAR WITH THE FIGURE INSIDE IT ═══
+   (User, red arrows down all three rows of the battle card: *"Both for health
+   armor and mood make this bars a little bit higher, and write stats exactly in
+   them. As BB. Also add 1 icon to each of these 3 stats"*, and then *"Same change
+   in the inventory"* and *"For mood use space"*.)
+
+   ⚑ THE LABEL ROW WAS THE WHOLE COST AND IT WAS SAYING WHAT A MARK SAYS. Each
+   pool was an 11px caption line ABOVE a 7px bar - two rows to state one thing -
+   and the caption's left half was the word ARMOUR / HITPOINTS / MOOD, which is
+   exactly the fact a drawn mark carries without being read. So the caption goes,
+   the bar takes the height the caption was spending, and the figures move inside
+   it. Battle Brothers' own character bars are this shape and the ask names them.
+
+   ⛔ THE THREE MARKS ARE THE BUILD'S OWN AND NOT ONE NEW GLYPH. ⛨ is
+   `SLOT_ICON.armour`, on the doll on this player's other screen; ♥ is BLOOD and
+   only blood (`.claude/rules/event-cards.md` in capitals: the MENDED row, the road
+   bar's health chip); and the mood mark is `nerveFlag()`, the same painted rung
+   face `#bStateN` was already printing beside the word. Nothing here invents a
+   vocabulary - the mood face simply moved out of the value and into the mark
+   column, which is what left the bar free for the word.
+
+   ⛑ WHAT GOES INSIDE IS WHAT THE MARK CANNOT SAY: on the left the WORD that is
+   a fact (the armour's class, the mood's rung - which is this ask's *"for mood use
+   space"*, the rung name spread across the bar it is measured on), on the right the
+   FIGURE. Hitpoints have no word because ♥ and `48/48` leave nothing to add.
+   ⚠ `--sbh` IS THE ONE HEIGHT AND EACH HOST SETS IT: the card is read mid-fight
+   at arm's length and the sheet is read at a desk, so 20 and 18. The type sizes are
+   `--fs` steps at both (ui-scales §1) and the mono is the same face every counter
+   in the game wears.
+   ⚠ `.sbt` IS `z-index:2` AND THAT IS NOT DECORATION: `#bPlq .bar::after` is the
+   blows-left hatch, a generated LAST child, so it paints over anything inside the
+   bar that is not lifted above it. Without this the digits wear the sections.
+   ⚠ AND `pointer-events` COMES BACK ON THE LEFT WORD ALONE. The band chip's
+   hover (ARMOUR_BANDS, #140) is the one live thing in this overlay; the rest must
+   let the surfaces underneath it through. */
+.sbar{--sbh:18px;display:flex;align-items:center;gap:var(--p2)}
+.sbar>.sbi{flex:none;width:17px;text-align:center;line-height:1;font-size:var(--fs3)}
+.sbar>.sbi img{display:block;margin:0 auto;image-rendering:pixelated}
+.sbar>.sbb{position:relative;flex:1;height:var(--sbh);overflow:hidden}
+.sbb>i{display:block;height:100%}
+.sbb>.sbt{position:absolute;left:0;top:0;right:0;bottom:0;z-index:2;display:flex;
+  align-items:center;justify-content:space-between;gap:var(--p2);
+  padding:0 var(--p3);pointer-events:none;
+  /* ⛔ #247 - AN OUTLINE AND NOT A DROP SHADOW, and the first cut got it wrong.
+     Two of the three fills are LIGHT - `--steel` #96a1a5 on the armour row and the
+     top two rungs' greens on the mood row - so cream type with a soft shadow under
+     it was legible on the red bar and a smudge on the other two. Four hard 1px
+     offsets plus a blur is a stroke round the glyph, which reads on any fill this
+     game can put behind it. Measured by looking, on all three rows, at full and at
+     a third. */
+  text-shadow:0 0 3px rgba(0,0,0,.95),0 1px 0 rgba(0,0,0,.9),0 -1px 0 rgba(0,0,0,.7),
+              1px 0 0 rgba(0,0,0,.7),-1px 0 0 rgba(0,0,0,.7)}
+.sbt .sbL{font-family:var(--mono);font-size:var(--fs1);letter-spacing:.1em;
+  color:#e6e1d4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;pointer-events:auto}
+.sbt .sbR{margin-left:auto;white-space:nowrap;font-family:var(--display);font-weight:700;
+  color:#f2ecdc;line-height:1;letter-spacing:.01em}
+.sbt .sbR .of{font-family:var(--mono);font-size:var(--fs1);font-weight:400;
+  color:rgba(242,236,220,.72);letter-spacing:0}
 /* ═══ #105 point 6 · WHAT IS LEFT, AT THE SIZE OF THE QUESTION ════════════
    (User: "Almost double size of ammount hitpoints and armor left - i want it
    visibilly easy readeble".) 10px mono to 19px display is the double asked
@@ -607,12 +667,24 @@ button:disabled{cursor:not-allowed}
    size: "◔ STEADY" at 19px is a headline where a measure was wanted, and it
    would set the third row two sizes away from the two above it. */
 #bPlq .statLine{align-items:baseline;line-height:1.1}
-#bPlq .pv{font-family:var(--display);font-size:var(--fs7);font-weight:700;color:var(--t4);
-  line-height:1;letter-spacing:.01em}
-#bPlq .pv .of{font-family:var(--mono);font-size:var(--fs1);font-weight:400;color:var(--t3);
-  letter-spacing:0}
-#bPlq .pv.word{font-size:var(--fs3);letter-spacing:.05em}
-#bPlq #bArmN{color:var(--steel)}
+/* ⛔ #247 - #105's *"almost double size"* SURVIVES THE MOVE, at 17 rather than 20.
+   That ask was for the count of what is LEFT to be readable across a room, and the
+   figure now stands on its own coloured bar instead of in a grey caption row, which
+   is the other half of the same want. 17 is `--fs6` and it is what a 20px bar can
+   carry at `line-height:1`; a 20px numeral wants a 24px bar, and this column does
+   not have 12 spare pixels. */
+/* ⛔ 22 AND NOT 20, AND THE COUNTER IS WHAT SAID SO. ui-scales §5's clip probe
+   reported `.bar.sbb` twice on the battle screen at 20: `scrollHeight` 22 into a
+   `clientHeight` of 20, on the two rows that carry a figure and not on the mood row
+   that carries only a word. The cause is two FACES on one baseline - the display
+   numeral at `--fs6` and the `/max` in mono at `--fs1` - whose combined line box is
+   taller than either, and `line-height:1` cannot make two fonts agree. So the bar
+   is as tall as the type standing in it, which is arithmetic rather than taste, and
+   the card has the 6px: it measured 198 before this entry and 188 after. */
+#bPlq .sbar{--sbh:22px;margin-bottom:3px}
+#bPlq .sbt .sbR{font-size:var(--fs6)}
+#bPlq .sbi{font-size:var(--fs4)}
+#bPlq #bArmK{color:#e6e1d4}
 /* ═══ #100 point 9 · WHAT KIND OF ARMOUR THAT IS ══════════════════════════
    (User: "near armor in the left bottom - right which class of armor is
    that (light, medium, heavy)".) The bar said how much was left and never
@@ -1315,9 +1387,24 @@ body:has(#battle.on) .whisp{bottom:138px}
    ⚠ 50 IS 74 MINUS ITS OWN HEIGHT AND THE GAP (20 + `--p2`), not a round
    number: change the button's size or the gap and this has to be re-derived,
    which is what the arithmetic is written here for. */
-body:has(#battle.on) #audioBox{top:50px;bottom:auto;right:10px;
-  flex-direction:column-reverse;align-items:flex-end}
-body:has(#battle.on) #audioBox button{font-size:var(--fs2);padding:var(--p1) var(--p4)}
+/* ⛔ #247 - AND ☰ MENU RIDES THE BATTLE LOG, UNDER ? RULES. (User: *"Add menu
+   button in battle screen"*.)
+
+   ⚑ THE BUTTON WAS DRAWN THERE THE WHOLE TIME AND THE PARAGRAPH THAT EXPLAINS WHY
+   NOBODY COULD FIND IT IS ALREADY IN THIS FILE, ABOUT THE OTHER BUTTON. `MENU_ON`
+   has carried `battle:1` since #130; the button sat at `left:100px;bottom:10px`,
+   which is inside `#bPlq` - z-index 40 against its 20 - so `elementFromPoint` at its
+   own centre returned `#bHitCell`. That is word for word what #223 found about
+   `#helpBtn`: *"It was covered, not moved, which is the worst kind of missing - the
+   control still exists, still works, and cannot be found."*
+   ⛑ SO IT TAKES THE SAME ANSWER RATHER THAN A NEW CORNER, and the first cut of this
+   entry proves the corner was wrong: at `right:10;top:50` it measured **2 playable
+   hexes underneath**, which is exactly the fault #240 spent an entry removing from
+   the audio box. Reparented into the log it covers none, it follows the log's height
+   for free (shut or 300px open), and the two doors off this screen stand together.
+   ⚠ THE `.inlog` RULES ARE `#helpBtn`'s, WORD FOR WORD, and they are written as one
+   selector list rather than copied - two buttons in one footer that drift apart is
+   the shape this build keeps merging back together. */
 /* ═══ #102 point 3 · ⏱ SPEED, UP HERE, WITH THE NUMBER ON ITS FACE ════════
    (User: "Speed also move more on top and it doesnt work properly now.")
    ⚑ IT WORKED. WHAT IT COULD NOT DO WAS SAY SO. It was a 28px icon button
@@ -1758,6 +1845,14 @@ body:has(#battle.on) #audioBox button{font-size:var(--fs2);padding:var(--p1) var
   background:rgba(240,230,192,.20);
   box-shadow:inset 0 0 0 2px rgba(240,230,192,.92);
   pointer-events:none}
+/* ⛔ #247 - THE SAME RING, QUIETER, ON GROUND THE SECOND ACTION PAYS FOR.
+   It is the same offer and it costs twice, so it is the same mark at less voice -
+   the treatment the two washes already have. Written AFTER the rule above and
+   overriding only the two colours, so a far hex cannot end up with a ring of a
+   different shape or in a different place from a near one. */
+#bGrid:not(.mirror) .hex.lit.lit2:hover .hedge::after{
+  background:rgba(240,230,192,.11);
+  box-shadow:inset 0 0 0 2px rgba(240,230,192,.52)}
 /* ═══ ⛔ #215 · THE MIRROR, AS THE BOARD DRAWS IT ══════════════
    (User, 2026-08-21: *"i want you design mirrored battle. When all of your
    actions mirrored. You chosing to move left - and moving right, etc. Put it
@@ -4315,7 +4410,20 @@ body:has(#battle.on) #audioBox button{font-size:var(--fs2);padding:var(--p1) var
    six 78px ability cards plus five 5px gaps plus 26 of padding and border is
    **519**, and it is 526. There are seven pixels in it, so the width the stash
    gains has to come from here or from nowhere. */
-#iRoster{width:176px;background:#161009;border-right:2px solid var(--e1);overflow:auto;flex:none}
+/* ⛔ #247 - 176 -> 148, AND 148 IS MEASURED. (User: *"this part could be even
+   smaller"*.) With the name off the tile the widest thing left is the wear clock,
+   and the worst body it can carry is mending AND a wound on the clock AND two scars.
+   Driven at four widths on exactly that body: 176 -> 69px tall, 156 -> 69, 140 -> 69,
+   **120 -> 109**, because the clock wraps past the portrait and the tile grows. So
+   the wall is between 120 and 140 and 148 stands clear of it with a chip to spare.
+   ⚠ THE HEIGHT DOES NOT MOVE AND CANNOT: the tile is 56px of portrait plus 12 of
+   padding, so 69 is the floor for as long as the face is the thing that says which
+   body this is - which is what the name coming off makes it. The lever, if this is
+   still not small enough, is the portrait, and it is one number.
+   ⚠ AND THE 28 GOES TO THE STASH, not to `#iChar`, which is #246's own pairing:
+   both flanks are `flex:none` with `#iChar` `flex:1` between them, so a flank that
+   narrows on its own hands the room to the middle column by default. */
+#iRoster{width:148px;background:#161009;border-right:2px solid var(--e1);overflow:auto;flex:none}
 /* the level, on the corner of the picture that is already drawing this person's
    progress. `--fs1` is the floor and the plate is what keeps it off the art. */
 .rmem .rlv{position:absolute;right:-2px;bottom:-2px;font-family:var(--mono);
@@ -4752,6 +4860,20 @@ body:has(#battle.on) #audioBox button{font-size:var(--fs2);padding:var(--p1) var
 .ibars .statLine .pv{color:#d8d5cc;font-size:var(--fs3)}
 .ibars .bar{height:7px;border:1px solid rgba(0,0,0,.5);margin-bottom:3px}
 .ibars .bar i{display:block;height:100%}
+/* #247 - the three pools are `.sbar` rows here too. The bar keeps `.ibars .bar`'s
+   own edge and bottom margin; only the height comes off `--sbh`. 18 and not the
+   card's 20: this screen is read at a desk, and `#iChar` has 3.8px of slack on its
+   worst body (ui-scales §5), so the column pays for what it takes. */
+.ibars .sbar{--sbh:18px}
+/* ⛔ AND THIS ROW IS NOT BELT AND BRACES. `.ibars .bar{height:7px}` two rules up
+   is 0-2-0, exactly what `.sbar>.sbb` is, and it comes LATER in the stylesheet -
+   so on this screen and this screen only the old 7px won and the three rows landed
+   on top of each other. Found by looking at the sheet, not at the rule: the battle
+   card, whose `.bar` height comes off the bare `.bar` at 0-1-0, was correct all
+   along. A tie on specificity is decided by source order, and source order here is
+   an accident of which entry wrote which block. */
+.ibars .sbar .bar{height:var(--sbh)}
+.ibars .sbt .sbR{font-size:var(--fs4)}
 /* ═══ #140 point 1 · WHAT THE SWING ACTUALLY DOES ═════════════════════════
    ("reorginise this block - probably a bit mor info about damage".)
    The line was six equal cells in one grey weight, so the weapon's damage -
@@ -5119,6 +5241,9 @@ body:has(#battle.on) #audioBox button{font-size:var(--fs2);padding:var(--p1) var
 .iacc .kills{font-size:var(--fs3);letter-spacing:0;cursor:pointer}
 .iacc .kn{font-family:var(--mono);font-size:var(--fs1);color:#a89468;letter-spacing:.06em}
 .iacc .none{color:#5c4a2c;font-style:italic;letter-spacing:0;font-size:var(--fs1)}
+/* #247 - the same row, at zero. Dimmer, and NOT `.none`: that one is italic
+   prose and this is still a count. */
+.iacc .kn.zero{color:#5c4a2c}
 #iFoot{display:flex;justify-content:flex-end;align-items:center;gap:9px;flex:none;padding-top:var(--p1)}
 #iDismiss{font-family:var(--mono);font-size:var(--fs1);letter-spacing:.1em;color:#8a5a4a;
   background:none;border:1px solid #4a3028;padding:var(--p2) var(--p4)}
@@ -5202,7 +5327,7 @@ body:has(#battle.on) #audioBox button{font-size:var(--fs2);padding:var(--p1) var
    its own would have handed all 48 pixels to the CHARACTER column - the one part
    of this screen the ask was not about. The pair moves together or it does
    nothing. `#iChar` is unchanged at 526 by arithmetic: 1280 - 176 - 578. */
-#iStash{width:578px;background:#161009;border-left:2px solid var(--e1);flex:none;
+#iStash{width:606px;background:#161009;border-left:2px solid var(--e1);flex:none;
         display:flex;flex-direction:column;min-height:0;padding:0;overflow:hidden}
 #iTabs{display:flex;flex:none;border-bottom:2px solid var(--e1)}
 .itab{flex:1;position:relative;font-family:var(--mono);font-size:var(--fs1);letter-spacing:.12em;
@@ -5331,8 +5456,12 @@ body:has(#battle.on) #audioBox button{font-size:var(--fs2);padding:var(--p1) var
 
 /* every full-screen card sits centred on the ink. `#sim` and `#help` MUST be
    on this list — a `.screen` is a bare flex row, so a pcard left off it renders
-   top-left on a transparent background with the map showing through. */
-#promo,#spoils,#epilogue,#camp,#sim,#help,#menu{background:var(--g-ink);
+   top-left on a transparent background with the map showing through.
+   ⚑ #247 - AND `#options` PROVED IT AGAIN THE HOUR IT WAS ADDED. The new screen
+   was written to the same shape as `#help` and left off this line, and it drew
+   exactly what the sentence above says: a card hard left, full height, on a
+   see-through ground. Caught by the screenshot, not by reading. */
+#promo,#spoils,#epilogue,#camp,#sim,#help,#menu,#options{background:var(--g-ink);
   align-items:center;justify-content:center}
 /* The Old Camp */
 .station{background:#221a10;border:1px solid var(--e2);padding:var(--p4) var(--p5);display:flex;
@@ -5514,14 +5643,31 @@ body:has(#battle.on) #audioBox button{font-size:var(--fs2);padding:var(--p1) var
    Lifted to bottom:44 to leave the bottom-right corner to the reaction bar. */
 /* ⛔ #240 - THE BOX MOVES AND THE BUTTONS DO NOT, which is what keeps three
    position rules working for two switches. Every rule that used to place
-   `#audioBtn` now places `#audioBox`, and the pair inside it lay themselves
-   out - so the ♪ at 74 on the battle screen and the tester stack starting at
-   134 are both still the numbers their own comments record. A second absolute
-   box would have been a second set of three rules to keep in step. */
-#audioBox{position:absolute;right:10px;bottom:44px;z-index:20;display:flex;gap:var(--p2)}
+   `#audioBtn` now places `#audioBox`, and the pair inside it lay themselves out.
+   ⛔ #247 - AND NOW IT IS NOT IN A CORNER AT ALL. (User: *"In the menu we need to
+   add Options and music and sound toggles put there"*.) The three position rules
+   #240 was keeping in step are DELETED with the corner they placed, which is the
+   cheapest possible answer to that entry's own open worry - and it hands back the
+   two playable hexes #240 measured the wide box sitting over on the battle screen.
+   ⚠ THE ELEMENT IS MOVED INTO THE CARD, NEVER COPIED. Both buttons are wired ONCE
+   at boot, by id, with `AU.on`/`MUS.on` closed over; a second pair built by
+   `drawOptions` would be dead controls that look live - which is exactly the
+   reparent #239 did with `#wCompany` and `show()` does with `#helpBtn`.
+   ⚠ SO IT IS `display:none` UNTIL IT IS MOVED. Until the first OPTIONS press it is
+   still a direct child of the stage, and a static box there would print two buttons
+   in the middle of whatever screen is up. */
+#audioBox{display:none;gap:var(--p2)}
+#optAudio>#audioBox{display:flex}
 #audioBox button{font-family:var(--mono);
           font-size:var(--fs4);color:#8a7449;background:rgba(16,12,6,.8);border:1px solid var(--e1);
           padding:var(--p1) var(--p4)}
+/* #247 - one setting per row: what it is, what it covers, and the switches. The
+   type and the spacing are `--fs` and `--p` steps (ui-scales §1 and §3). */
+.optrow{display:flex;align-items:center;gap:var(--p4);flex-wrap:wrap;
+  border:1px solid var(--e1);background:#171208;padding:var(--p4) var(--p5);margin-bottom:var(--p4)}
+.optrow>b{font-family:var(--display);font-size:var(--fs5);color:var(--g4);font-weight:400;
+  letter-spacing:.06em}
+.optrow>i{flex:1;font-size:var(--fs2);color:#8a7449;font-style:italic}
 #audioBox button:hover{color:var(--g4)}
 #audioBox button.off{color:#6b5836;border-color:#2c2214}
 /* #103 point 5: on the road the music toggle is part of the top bar, far
@@ -5536,8 +5682,8 @@ body:has(#battle.on) #audioBox button{font-size:var(--fs2);padding:var(--p1) var
    the only two rules that write this corner on the world screen, and each is
    scoped `body:has(#world.on)` so neither follows the other onto the battle,
    where ♪ still owns `top:74` and the tester's stack starts at 134. */
-body:has(#world.on) #audioBox{top:82px;right:10px;bottom:auto;z-index:30}
-body:has(#world.on) #audioBox button{font-size:var(--fs2);padding:var(--p1) var(--p4)}
+/* #247 - the world's own placement of this box is deleted with the corner. The
+   MENU button keeps `top:8` on that screen and is now the only thing up there. */
 /* tester tools — top right, and unmistakably not part of the game.
    ── #100 points 3 and 4 · IT COMES DOWN A ROW AND IT SAYS WHAT IT IS ────
    (User: "Move Test a bit lower (as on screenshot). Call it dev.mode.")
@@ -6420,10 +6566,11 @@ a.popt.sendit{display:block;text-decoration:none}
 #helpBtn:hover{color:var(--g4)}
 /* #95 point 9 - the same button, sitting as the log's footer on the battle
    screen. Static, not absolute, so it rides the box whatever height it is. */
-#helpBtn.inlog{position:static;left:auto;bottom:auto;background:none;border:none;
+#helpBtn.inlog,#menuBtn.inlog{position:static;left:auto;right:auto;top:auto;bottom:auto;
+  background:none;border:none;
   border-top:1px solid #223335;font-size:var(--fs1);letter-spacing:.1em;color:#7d8f8c;
   padding:var(--p2) var(--p4);text-align:left;width:100%;box-sizing:border-box}
-#helpBtn.inlog:hover{color:var(--t4);background:#1a2729}
+#helpBtn.inlog:hover,#menuBtn.inlog:hover{color:var(--t4);background:#1a2729}
 /* only on the world screen: a menu you can only reach by reloading the page is
    half a menu, and mid-battle is not a coherent moment to save at */
 #menuBtn{position:absolute;left:100px;bottom:10px;z-index:20;display:none;
@@ -6765,16 +6912,27 @@ body:has(#world.on) #menuBtn{left:auto;right:10px;top:8px;bottom:auto;z-index:30
          no height. -->
     <div class="pbars">
       <div class="pbwrap">
-        <!-- #100 point 9: what CLASS of armour that is, beside the count -->
-        <div class="statLine"><span>ARMOUR <b id="bArmK"></b></span><span class="pv" id="bArmN"></span></div>
-        <div class="bar" style="background:#243133"><i id="bArm" style="background:var(--steel)"></i></div>
-        <div class="statLine"><span>HITPOINTS</span><span class="pv" id="bHpN"></span></div>
-        <div class="bar" style="background:#3b2126"><i id="bHp" style="background:var(--blood)"></i></div>
+        <!-- ⛔ #247 - three rows, not six. The mark says which pool, the bar says
+             how much is left, and the figures are inside it. See the .sbar block in
+             the stylesheet for why the caption rows went.
+             #100 point 9: what CLASS of armour that is - it is the word inside the
+             bar now, and it keeps its own hover. -->
+        <div class="sbar">
+          <span class="sbi" title="ARMOUR - it takes the hit first">⛨</span>
+          <div class="bar sbb" style="background:#243133"><i id="bArm" style="background:var(--steel)"></i>
+            <span class="sbt"><b class="sbL" id="bArmK"></b><span class="sbR" id="bArmN"></span></span></div>
+        </div>
+        <div class="sbar">
+          <span class="sbi" title="HITPOINTS - what is left of the body">♥</span>
+          <div class="bar sbb" style="background:#3b2126"><i id="bHp" style="background:var(--blood)"></i>
+            <span class="sbt"><span class="sbR" id="bHpN"></span></span></div>
+        </div>
         <!-- #102 point 1: nerve is the third measure, in the same idiom as
              the two above it. The chip it replaces is described in the CSS. -->
-        <div id="bState" tabindex="0">
-          <div class="statLine"><span>MOOD</span><span class="pv word" id="bStateN">–</span></div>
-          <div class="bar nrv" style="background:#20272a"><i id="bNerve"></i></div>
+        <div id="bState" class="sbar" tabindex="0">
+          <span class="sbi" id="bStateI" title="MOOD"></span>
+          <div class="bar nrv sbb" style="background:#20272a"><i id="bNerve"></i>
+            <span class="sbt"><b class="sbL" id="bStateN">–</b></span></div>
         </div>
       </div>
     </div><!-- /.pbars -->
@@ -6855,6 +7013,11 @@ body:has(#world.on) #menuBtn{left:auto;right:10px;top:8px;bottom:auto;z-index:30
 </section>
 <section class="screen" id="sim"><div class="pcard" id="simCard"></div></section>
 <section class="screen" id="help"><div class="pcard" id="helpCard"></div></section>
+<!-- ⛔ #247 - OPTIONS. (User: *"In the menu we need to add Options and music and
+     sound toggles put there"*.) Same shape as ? RULES and the practice field: a
+     screen with a `.pcard` on it and its own Back. What goes IN the card is the
+     `#audioBox` element itself, moved rather than copied - see `drawOptions`. -->
+<section class="screen" id="options"><div class="pcard" id="optCard"></div></section>
 <section class="screen" id="notes"><div class="pcard" id="notesCard"></div></section>
 <!-- #76 — the questionnaire. Its own screen rather than a panel on the notes
      card, because the notes card is a REPORT you read and this is a form you
@@ -7171,12 +7334,17 @@ const show=i=>{
      other. Inside the box it is a footer and follows it for free.
      ⚠ It goes home to #stage on every other screen, because bottom-left is
      right everywhere the plaque does not exist. */
-  if(hb){
-    const inLog=(i==='battle');
-    const home=$('stage'),box=$('bLogWrap');
-    if(inLog&&box&&hb.parentNode!==box){box.appendChild(hb);hb.classList.add('inlog');}
-    else if(!inLog&&home&&hb.parentNode!==home){home.appendChild(hb);hb.classList.remove('inlog');}
-  }
+  /* #247 - and ☰ MENU goes with it, for the reason its own CSS note gives: the
+     plaque covers the bottom-left corner of this screen, and the log's footer is
+     where a door on the battle screen can actually be found. Same two lines, over
+     both buttons, so neither can be reparented without the other. */
+  {const inLog=(i==='battle');
+   const home=$('stage'),box=$('bLogWrap');
+   [hb,$('menuBtn')].forEach(el=>{
+     if(!el)return;
+     if(inLog&&box&&el.parentNode!==box){box.appendChild(el);el.classList.add('inlog');}
+     else if(!inLog&&home&&el.parentNode!==home){home.appendChild(el);el.classList.remove('inlog');}
+   });}
   /* #130 - the way back to the menu, on every screen that has a coherent out.
      See MENU_ON above for which and why. */
   const mb=$('menuBtn');if(mb)mb.classList.toggle('on',!!MENU_ON[i]);
@@ -9901,6 +10069,7 @@ const GEAR={
      ⚠ It costs nothing at all, which every other strange trinket here does
      not, and nothing in the slice ever explains it. That is the hook. */
   oddcoin:{rarity:'epic',unique:true,n:'An Unusual Coin',   slot:'trinket',g:'⊚',hit:+7,dodge:+7,hush:true,
+    scrap:{crowns:1},                       /* #247 - break a coin, get a coin */
            d:'It feels good to keep in the hand. Nobody can say why.'},
   /* ═══ #160 · WHAT A CLEAN ROAD IS WORTH, AND IT ARRIVES ON THE LAST DAY ════
      The only trinket in the game with no clause and no cost, and that is the
@@ -23246,7 +23415,22 @@ function clickHex(c,r){
       if(near2)faceToward(u,near2.col,near2.row);
     }
     B.sel=null;B.reach=null;B.reach2=null;render();
-    if(!checkEnd())autoEnd(u);
+    /* ⛔ #247 - AND THE TURN WAITS WHILE THE STEP CAN STILL BE TAKEN BACK.
+       (User: *"on a double move keep the undo to go back - even when the second
+       character is moving"*.)
+       ⚑ THE OFFER WAS REAL AND IT LASTED 140ms. `autoEnd` fires the moment a body
+       has nothing left to spend, `nextTurn` hands over, and `beginTurn` clears
+       `B.undo` - so a two-action stride, which by definition empties the body, put
+       the button up and took it away before a hand could reach it. Every OTHER way
+       to spend the last action leaves nothing to undo, so this is the one case.
+       ⛔ THE TURN IS NOT REWOUND AND MUST NOT BE. Order is initiative here, so the
+       next body may be a foe; giving the turn back after `beginTurn` has run would
+       mean running it twice on somebody - two morale ticks, two poison ticks, two
+       banked actions. Holding the hand-over costs one press of END TURN and cannot
+       double anything.
+       ⚠ `B.undo` IS THE WHOLE TEST because `spend` clears it on every other paid
+       act and `partingShots` above has already refused it if blood was drawn. */
+    if(!checkEnd()&&!B.undo)autoEnd(u);
     return;
   }
   if(a&&a.move&&B.reach&&B.reach.dist[K(c,r)]!==undefined&&!tgt){
@@ -23275,7 +23459,10 @@ function clickHex(c,r){
       if(near)faceToward(u,near.col,near.row);
     }
     B.sel=null;B.reach=null;render();
-    if(!checkEnd())autoEnd(u);}
+    /* #247 - the same hold, and it is the same case: a body whose LAST action was
+       a single step is emptied exactly as a two-action stride empties it. See the
+       long note in the branch above. */
+    if(!checkEnd()&&!B.undo)autoEnd(u);}
 }
 /* ═══ #91 point 12 - the step, taken back. Restores exactly what the move
    branch wrote: hex, facing, the action, the move counters. Once per move,
@@ -27409,11 +27596,21 @@ function paintObjects(g,P,rnd){
    action of movment and that area lighter"*.)
    The two faint entries are the same two hues at roughly half alpha, so the board
    reads as ONE stride with a near half and a far half rather than as two different
-   offers. ⚠ A far hex is NOT `.hex.lit` and must never become one: one click
-   cannot reach it, and #206's own rule here is that a ring on a hex the click will
-   not take is worse than no ring. */
+   offers.
+   ⛔ #247 - AND THE TWO SENTENCES THAT STOOD HERE ARE BOTH OVERRULED, BY A CHANGE
+   RATHER THAN BY TASTE. (User: *"if you move on both actions - highlight the second
+   movement too"* and *"the second movement zone - a tiny, a very tiny bit darker
+   (closer to the first zone) - right now it is not fully clear"*.)
+   ⚑ THE SECOND SENTENCE WAS TRUE WHEN IT WAS WRITTEN AND #246 ENDED IT. `.hex.lit`
+   is refused here on the grounds that *"one click cannot reach it"*; #246 made the
+   two-action stride a SINGLE click (`walkTo` runs the whole path, `reachMap` refuses
+   an occupied end), so a far hex is now exactly what `.lit` is for. Measured on the
+   Snare's opening before this edit: 57 hexes lit, 59 reachable-and-not-lit.
+   ⚠ HALF ALPHA WAS THE OTHER HALF OF THE SAME MISS: at .11 over painted ground the
+   far wash is a hue nobody reported seeing. .17 / .22 is ~70% of the near half, so
+   the two are still told apart and the far one is legible on its own. */
 const REACH_WASH={wet:'rgba(70,130,130,.32)',dry:'rgba(110,180,160,.24)',
-                  wet2:'rgba(70,130,130,.15)',dry2:'rgba(110,180,160,.11)',
+                  wet2:'rgba(70,130,130,.22)',dry2:'rgba(110,180,160,.17)',
                   act:'rgba(201,162,39,.15)'};
 function render(){
   const u=cur();
@@ -27633,8 +27830,24 @@ function render(){
        #105 point 6 - and so does the numeral now that it is the loud half of
        the row. Same call, so a body who is bleeding says so in the number and
        in the bar at once rather than in the bar alone. */
-    {const hc=hpCol(u,Math.max(0,u.hp)/u.hpMax);
-     $('bHp').style.background=hc;$('bHpN').style.color=hc;}
+    /* ⛔ #247 - THE CARD'S HEALTH IS RED ON EVERYBODY. (User: *"Specifically in
+       the battle screen - health red (but on the battlfield still blue)"*.)
+       ⚑ THE HUE IS THE SIDE ON THE BOARD AND IT BUYS NOTHING HERE. #96 made the
+       plaque read the token's own helper *"or the two readings of one body would
+       disagree"*, and that was right about the LIGHTNESS, which is the wound - it is
+       still the same three-step ramp and it still brightens as the pool drops. What
+       it was wrong about is the hue: this card is about ONE body whose side the
+       player has already been told (the name is `--t4` for yours and #e0b0a8 for
+       theirs, two lines up), so a blue health bar here spends the one colour every
+       game on earth uses for health saying something that is already said.
+       ⚠ ONE FUNCTION, ONE RAMP. `card` is a flag on `hpCol` rather than a second
+       table, or the day somebody tunes the wound steps they tune one of two. */
+    /* ⚠ THE BAR TAKES THE COLOUR AND THE FIGURE DOES NOT, which is #105's own line
+       (*"a body that is bleeding says so in the number and in the bar at once"*)
+       arriving where the number STANDS ON the bar: painted `hc` it was dark red on
+       dark red. The hue is still said once, by the thing it is measuring. */
+    {const hc=hpCol(u,Math.max(0,u.hp)/u.hpMax,true);
+     $('bHp').style.background=hc;}
     /* #91 point 10 - nerve is the plaque's constant readout, because the token
        face only appears on rungs that change numbers.
        ── #102 point 1 - AND IT IS A MEASURE NOW, NOT A CHIP. The word says
@@ -27644,9 +27857,21 @@ function render(){
        distance to the next one is finally on the panel. The five-rung ladder
        stays in the hover, which is now the whole row. */
     const lb=LADDER[ladderAt(u)];
-    /* #228 - innerHTML, not textContent: the mark is a picture now. */
-    $('bStateN').innerHTML=nerveFlag(ladderAt(u),13)+' '+lb.n.toUpperCase();
-    $('bStateN').style.color=lb.col;
+    /* #228 - innerHTML, not textContent: the mark is a picture now.
+       ⛔ #247 - AND THE MARK IS THE RUNG'S OWN FACE. It sits in the mark column with
+       ⛨ and ♥, the word takes the bar (the ask's *"for mood use space"*), and both
+       come off one `ladderAt` so they cannot come apart.
+       ⚠ `lb.ic` AND NOT `nerveFlag`, WHICH THE FIRST CUT USED AND WHICH LEFT A HOLE.
+       The banner is drawn on the two ENDS of the ladder only (`FLAG_SHOWN`, #227's
+       *"show only when mood is maximum or breacking"*) and returns '' for the three
+       rungs in between - correct on a body standing on a hex, wrong in a column of
+       three marks where the other two are always there. The five faces 😄🙂😕😟💀
+       are `LADDER[].ic`, the same ladder, and they are the mood vocabulary
+       `.claude/rules/event-cards.md` already names in capitals.
+       ⚠ AND THE WORD IS NOT PAINTED IN THE RUNG'S COLOUR ANY MORE: the BAR is,
+       and cream-on-#a3bd6c was one colour written over itself. */
+    $('bStateI').textContent=lb.ic;
+    $('bStateN').textContent=lb.n.toUpperCase();
     $('bNerve').style.width=(nerveFrac(u)*100)+'%';
     $('bNerve').style.background=lb.col;
     $('bState').onmouseenter=e=>{
@@ -28129,6 +28354,12 @@ function render(){
          below would already contain it, and the base this hex records would
          be the peek rather than the board underneath it. */
       const d=B.reach?B.reach.dist[K(c,r)]:undefined;
+      /* ⛔ #247 - AND THE FAR HALF, ONCE. The wash, the ring and the cursor are
+         three readouts of one fact, and the fact was being re-asked inline at each
+         of them. `B.sel.move` is in the test for the reason the old comment below
+         gives: `pick()` writes the pair in one statement, so a move in hand is the
+         only condition under which `B.reach2` can be this body's. */
+      const d2=(B.sel&&B.sel.move&&B.reach2)?B.reach2.dist[K(c,r)]:undefined;
       /* ═══ #156 - THE STEP COUNT IS OFF THE HEXES ══════════════════════════
          (User, after a playtest: "Не показывать на гексах номера ходов".)
          The wash says WHERE, which is the question a move asks; the digit in
@@ -28183,8 +28414,7 @@ function render(){
          read this line. `pick()` writes the pair in ONE statement, so "a move is in
          hand" is the only condition under which `B.reach2` can be this body's, and
          asking it here is one test instead of nine sites to keep in step. */
-      else if(d===undefined&&u&&u.side==='you'&&!occ&&!rngA&&
-              B.sel&&B.sel.move&&B.reach2&&B.reach2.dist[K(c,r)]!==undefined){
+      else if(d===undefined&&d2!==undefined&&u&&u.side==='you'&&!occ&&!rngA){
         fill=t==='marsh'?REACH_WASH.wet2:REACH_WASH.dry2;}
       /* ═══ #94 point 10 - THE FOOTPRINT, AND IT OUTRANKS THE MOVE REACH ═══
          It has to be written AFTER the block above and not before it, and
@@ -28352,6 +28582,18 @@ function render(){
            rule for why a ring on a dead hex is worse than no ring. */
         (d!==undefined&&!occ&&!tailHere&&u&&u.side==='you'&&!u.ally&&!u.pet&&
          B.won===null&&B.sel&&(B.sel.move||B.sel.sink)?' lit':'')+
+        /* ⛔ #247 - AND `lit lit2` ON THE FAR HALF, WHICH IS BOTH CLASSES AND NOT
+           A THIRD ONE. Every rule that already knows what a walkable hex is - the
+           ivory ring, `--curWalk`, the zone-of-control boots - is keyed on `.lit`,
+           and a separate class would have been one more list to keep in step (the
+           mistake the `B.sel.move` note above this block was written about). `.lit2`
+           only DIMS what `.lit` draws, so the second half of the stride reads as
+           the quieter half of one offer rather than as a different one.
+           ⚠ `u.actions>=2` IS NOT ASKED HERE and does not need to be: `B.reach2` is
+           only ever built when a second action can be paid for, which is the same
+           test `clickHex` makes before it will take the step. */
+        (d===undefined&&d2!==undefined&&!occ&&!tailHere&&u&&u.side==='you'&&
+         !u.ally&&!u.pet&&B.won===null?' lit lit2':'')+
         /* #109 - a blade over a body, 8f.137 - only where the click would swing,
            #155 - and an ARROW where that click looses one instead */
         (occ&&occ.side==='foe'&&w0&&offerAtk(uCur,w0,occ)
@@ -28587,8 +28829,16 @@ function render(){
           '<div class="arm'+(arF<=.35?' thin':'')+'" style="--seg:'+aSec+
             '"><i style="width:'+(100*arF)+'%"></i></div>':'')+
           /* #96 point 2 - the hue says whose it is, the lightness says how
-             badly hurt. One helper, so the token and the plaque cannot
-             disagree about either half. */
+             badly hurt. One helper, so the token and the plaque cannot disagree
+             about either half.
+             ⛔ #247 - AND THE HUE IS NOW THE HALF THEY DO DISAGREE ON, deliberately.
+             The board says WHOSE with colour because it is showing you eight bodies
+             at once; the card is about one body it has already named in words, so it
+             wears red (`hpCol(.,.,true)`). The LIGHTNESS is still the one ramp and
+             still the one helper, which is the half of #96 that was load-bearing.
+             ⚠ THIS LINE IS THE BATTLEFIELD AND IT DOES NOT CHANGE. The user's own
+             words on the day: *"but don`t touch bars on the batlfield itself on the
+             heads of your units"*. */
           '<div style="--seg:'+hSec+'"><i style="width:'+(100*hpF)+'%;background:'+
           hpCol(occ,hpF)+'"></i></div>';
         inn.appendChild(img);inn.appendChild(mf);inn.appendChild(bars);
@@ -29261,6 +29511,10 @@ function paintPeek(){
     const h=list[i];
     const bare=h.base==='rgba(0,0,0,0)'||
       (overWalk&&(h.base===REACH_WASH.wet||h.base===REACH_WASH.dry||
+                  /* #247 - the far half is a walk preview like the near half, so
+                     it yields to somebody else's envelope on the same terms. It
+                     was omitted here because it was too faint to notice. */
+                  h.base===REACH_WASH.wet2||h.base===REACH_WASH.dry2||
                   h.base===REACH_WASH.act));
     let want=h.base;
     /* #206 - the order's radius wins over everything, including your own walk
@@ -29419,7 +29673,13 @@ const HPCOL={
 /* an ally is anybody on your side who is not on your roster - the NPC who
    took your part, and the pet, which is the company's but not commandable */
 const hpSide=u=>u.side!=='you'?'foe':(u.ally||u.pet)?'ally':'you';
-const hpCol=(u,f)=>{const r=HPCOL[hpSide(u)];return f>.6?r[0]:f>.3?r[1]:r[2];};
+/* ⛔ #247 - AND `card` IS THE FOURTH ROW: what a pool bar on a CARD wears, where
+   the side is already named in words and red is what health means everywhere. The
+   three steps are the foe row's, and that is the point rather than a copy - red at
+   three lightnesses is one fact, and the board and the card read it off one table. */
+HPCOL.card=HPCOL.foe;
+const hpCol=(u,f,card)=>{const r=HPCOL[card?'card':hpSide(u)];
+  return f>.6?r[0]:f>.3?r[1]:r[2];};
 const SEG_HP=15, SEG_ARM=10;
 const SEG=(max,per)=>Math.max(1,Math.round((max||1)/(per||SEG_HP)));
 /* the token bar widens only once a section would go under ~3px */
@@ -31536,7 +31796,7 @@ document.addEventListener('keydown',e=>{
       return;
     }
     /* 4. a screen that owns a Back: press the one it already has. */
-    const back={help:'hBack',notes:'nBack',poll:'qBack'}[on];
+    const back={help:'hBack',notes:'nBack',poll:'qBack',options:'optBack'}[on];
     if(back){const b=$(back);if(b)b.click();}
     return;
   }
@@ -35004,7 +35264,14 @@ function equipFromStash(p,idx){
    exactly why this asks first and the row is `danger`. */
 const SCRAP={common:{crowns:10},rare:{crowns:25,salvage:2},
              epic:{crowns:45,salvage:3,gems:1}};
-const scrapPay=k=>SCRAP[rarityOf(k)]||SCRAP.common;
+/* ⛔ #247 - AND A ROW MAY ANSWER FOR ITSELF. (User: *"Price of break of 1 coin
+   = 1 coin :)"*.) THE TIER IS STILL THE RULE and this is the one exception the
+   rule cannot express: `oddcoin` IS a coin, so breaking it down for 45 crowns
+   and a gem is the table pricing a thing by its rarity when the thing's own
+   nature is the price. Authored on the GEAR row beside `rarity`, read here, so
+   the label (`fxNote(scrapPay)`), the confirm and the payment are still the one
+   figure - which is the whole reason this is a field and not a second table. */
+const scrapPay=k=>(GEAR[k]&&GEAR[k].scrap)||SCRAP[rarityOf(k)]||SCRAP.common;
 /* UI state, like ITAB: which face the stash column is showing. Reset by
    `openInv`, so it can never survive a trip to the road. */
 let SCRAPMODE=false;
@@ -35095,7 +35362,13 @@ function drawInv(){
        point is invisible until you happen to click the right body. */
     const owed=(p.perkPoints||0)+(p.statPoints||0)+(tradeOwed(p)?1:0);
     const wear=[];
-    if(p.hpLoss)wear.push('<span style="color:#c15d55">mending '+p.hpLoss+'</span>');
+    /* ⛔ #247 - THE MARK AND THE FIGURE, NOT THE WORD. (User: *"class only and
+       mending (with symbol of health from above and number)"*.) ♥ is the same heart
+       the pools column two panes over now carries, and the road bar's health chip
+       before that; `−9` and not `9` because this is what is MISSING, which is what
+       `mending` was saying in seven letters. */
+    if(p.hpLoss)wear.push('<span style="color:#c15d55" title="mending '+p.hpLoss+
+      ' hitpoints">♥ −'+p.hpLoss+'</span>');
     /* #225 - the one thing on this row that is on a clock, so it goes first
        and it carries the clock. The colour is the badge's own amber, and it
        turns red on the last rung: this list is read at a glance and the whole
@@ -35106,13 +35379,35 @@ function drawInv(){
       wear.push('<span style="color:#c9a227">'+p.injuries.length+' scar'+
         (p.injuries.length>1?'s':'')+'</span>');
     if(sizeMismatch(p))wear.push('<span style="color:#c07a2c">ill-fit</span>');
-    box.innerHTML='<div class="rn">'+(owed?'<span class="star" title="'+owed+
-        ' unspent">★</span> ':'')+p.name+' “'+p.nick+'”'+(p.sur?' '+p.sur:'')+'</div>'+
+    /* ⛔ #247 - AND THE NAME COMES OFF THE TILE. (User, arrow at this column:
+       *"this part could be even smaller - class only and mending ... We don`t need
+       here no name no race (both clear from the image)"*.)
+
+       ⛑ THIS IS #200's AND #246's OWN ARGUMENT REACHING ITS END. Both cut a row off
+       this tile with the same sentence - *"a LIST of four to six bodies read at a
+       glance"* - and each time what survived was the row above. The portrait is a
+       painted face per body and the level rides its corner, so the name is the third
+       way of saying which of six this is.
+       ⚠ IT IS NOT LOST: the whole button carries it as a plain `title`, which is
+       what #200 already established is safe here (a `#gtTip` on a row `drawInv`
+       destroys under the pointer hangs forever - the 2026-08-02 map-node bug).
+       ⚠ AND THE ★ MOVES DOWN A ROW RATHER THAN GOING WITH IT. It is the only one of
+       the four spend-signals visible without opening a body (#136 point 11), and a
+       roster that stops showing an unspent level is a roster that hides the one
+       thing a player has to act on.
+       ⚠ THE RACE MARK GOES AND THE RACE COLOUR STAYS: `.rmem .race.<race>` is a 2px
+       left rail in that race's own hue, it costs no width and no height, and the ask
+       is about what is written on the tile. */
+    b.title=p.name+' “'+p.nick+'”'+(p.sur?' '+p.sur:'');
+    box.innerHTML=
       /* #196 - the roster IS the list this change is for: four to six bodies
          read at a glance, and "RATKIN · ARCHER" was 13 of the row's characters
          saying what 🐀 🏹 says without being read. The colour and the border
-         still carry the race on the line itself. */
-      '<div class="race '+p.race+'">'+rcMarks(p)+'</div>'+
+         still carry the race on the line itself.
+         #247 - so the RACE mark goes too and the rail keeps saying it. `cMark` and
+         not `rcMarks`: one is the class alone, which is what was asked for. */
+      '<div class="race '+p.race+'">'+(owed?'<span class="star" title="'+owed+
+        ' unspent">★</span> ':'')+cMark(p.cls)+'</div>'+
       /* ⛔ #200 - THE NAME OF THE PERSONALITY, AND NOT WHAT IT DOES. (User,
          marking this line: "Write here only trait - not full description".)
          Same argument #196 made about "RATKIN · ARCHER" one line above it, and
@@ -35415,9 +35710,14 @@ function drawInv(){
          whole job is to say whether the thing below it is worth opening. ⚠ AND THE
          WORD IS `KILLED`, NOT `DEAD`: on a sheet that also carries `mending` and a
          scar count, `1 DEAD` is one glance away from meaning this body. */
-      (killN?(G.showMem?'<span class="kills" title="what this one has put in the ground">'+
-          heads+'</span>':'')+'<span class="kn">'+killN+' KILLED</span>'
-        :'<span class="none">nothing killed yet</span>')+
+      /* ⛔ #247 - ONE RENDERER, AND ZERO IS A COUNT. (User: *"nothing killed
+         yer = 0 kills"*.) The empty case was a SENTENCE where the full case is a
+         figure, so the one row on this sheet whose job is a number read as prose
+         until the first kill. Same span, same word (#244's `KILLED`, not `kills`,
+         because `mending` and a scar count are on this same sheet), dimmed. */
+      ((killN&&G.showMem)?'<span class="kills" title="what this one has put in the ground">'+
+          heads+'</span>':'')+
+      '<span class="kn'+(killN?'':' zero')+'">'+killN+' KILLED</span>'+
     '</button>'+
     '<div id="iStoryBody" class="memlist">'+inner+'</div>';
 
@@ -35473,27 +35773,40 @@ function drawInv(){
          with `row-reverse`, so what the screen shows is the order the DOM has. */
       '<div id="iStatTop">'+
         '<div class="ibars">'+
-          /* #140 point 2 - the band carries the absorb rule on hover */
-          '<div class="statLine"><span>ARMOUR <b class="band" id="iBand" style="color:'+bd.col+
-            '">'+bd.n+'</b></span><span class="pv">'+arm+'</span></div>'+
-          '<div class="bar" style="background:#243133"><i style="width:'+(arm?100:0)+
-            '%;background:var(--steel)"></i></div>'+
-          '<div class="statLine"><span>HITPOINTS</span><span class="pv"'+
-            (p.hpLoss?' style="color:#c15d55"':'')+'>'+hpNow+'/'+hpMax+'</span></div>'+
-          '<div class="bar" style="background:#3b2126"><i style="width:'+(100*hpF)+
-            '%;background:'+(hpF>.6?'var(--blood)':hpF>.3?'#c07a2c':'#e0544c')+'"></i></div>'+
-          '<div class="statLine" id="iNerve" style="cursor:help"><span>MOOD</span>'+
-            '<span class="pv" style="color:'+nl.col+'">'+
-              nerveFlag(LADDER.indexOf(nl),12)+' '+nl.n+'</span></div>'+
+          /* ⛔ #247 - THE SAME THREE ROWS AS THE BATTLE CARD, off the same `.sbar`
+             (user: *"Same change in the inventory with this"*). One stylesheet block
+             draws both, so the pools cannot mean one thing at a desk and another
+             mid-fight - which is what two markups for one readout always comes to.
+             #140 point 2 - the band carries the absorb rule on hover, and it is the
+             word inside the bar now. */
+          '<div class="sbar"><span class="sbi" title="ARMOUR - it takes the hit first">⛨</span>'+
+            '<div class="bar sbb" style="background:#243133"><i style="width:'+(arm?100:0)+
+              '%;background:var(--steel)"></i>'+
+            '<span class="sbt"><b class="sbL band" id="iBand" style="color:'+bd.col+'">'+bd.n+
+              '</b><span class="sbR">'+arm+'</span></span></div></div>'+
+          /* ⛔ #247 - AND THE THIRD HP RAMP GOES WITH IT. This row carried its own
+             `blood / #c07a2c / #e0544c`, the token carries `HPCOL` and the plaque
+             carried a third reading of the second - so a body at 40% was amber here
+             and light red there. `hpCol(.,.,card)` is the one ramp now. */
+          '<div class="sbar"><span class="sbi" title="HITPOINTS - what is left of the body">♥</span>'+
+            '<div class="bar sbb" style="background:#3b2126"><i style="width:'+(100*hpF)+
+              '%;background:'+hpCol(p,hpF,true)+'"></i>'+
+            '<span class="sbt"><span class="sbR">'+
+              hpNow+'<span class="of">/'+hpMax+'</span></span></span></div></div>'+
+          '<div class="sbar" id="iNerve" style="cursor:help">'+
+            '<span class="sbi" title="MOOD">'+nl.ic+'</span>'+
           /* ⛔ #243 - THE BAR WAS THE LITERAL `78%`, WHICH IS `START_NERVE` TYPED
              OUT. It was the same picture on every body in the game whatever their
              nerve, their company's mood, their banner or their wages - a readout
              printing a constant, which is #102's rule at its bluntest. The rung name
              beside it moved with `nl` and the bar under it did not, so the two halves
              of one line disagreed on any body who was not exactly neutral. */
-          '<div class="bar" style="background:#20272a"><i style="width:'+
-            Math.round(100*nu.morale/(nu.moraleMax||1))+'%;background:'+nl.col+
-            '"></i></div>'+
+            '<div class="bar sbb" style="background:#20272a"><i style="width:'+
+              Math.round(100*nu.morale/(nu.moraleMax||1))+'%;background:'+nl.col+'"></i>'+
+            /* #247 - the rung name takes the bar it is measured on: this ask's *"for
+               mood use space"*, and the one row of the three with no figure. */
+            '<span class="sbt"><b class="sbL">'+nl.n.toUpperCase()+
+              '</b></span></div></div>'+
         /* ⛔ #232 · WHAT THEY DO WITH ALL THAT, IN THE HOLE UNDER THE BARS ═══
            (User: *"Action can go under nurve - there is some space"*.)
            ⚑ AND THERE WAS EXACTLY THAT MUCH SPACE, MEASURED: the three pools
@@ -35690,7 +36003,13 @@ function drawInv(){
         :g?((slotArt?'':'<span class="gg">'+gGlyph(g)+'</span> ')+rarityName(p.eq[slot]))
           :slot==='bag'?'- nothing to carry -':'- empty -')+'</div>'+
       '<div class="sd">'+(twoH
-        ? (g?g.n+' is in the pack, doing nothing.':'Carry something one-handed and this opens up.')
+        /* ⛔ #247 - AND THE SECOND SENTENCE GOES. (User, red cross through it:
+           *"unnesesery overexplanation - delete"*.) The line above already says
+           BOTH HANDS ARE ON THE BOAR SPEAR, and TAKEN is on the label beside it:
+           what freed the slot would be is a rule about a weapon the body is not
+           holding, explained on the sheet of a body holding the other kind. It is
+           the same cut #223 made two lines down, for the same reason. */
+        ? (g?g.n+' is in the pack, doing nothing.':'')
         /* ⛔ #223 - AND AN EMPTY SLOT SAYS NOTHING ON THE FACE OF IT.
            (User: *"Delete additional wording from bag in the inventory
            'throwables and potions, later' and similar from 'pet'"*.) #140 put
@@ -35799,7 +36118,9 @@ function drawInv(){
      says which. Red, because in this one everything is one click from gone. */
   st.innerHTML='<div class="lbl" style="color:'+(SCRAPMODE?'#c15d55':'#8a7449')+'">'+
     (SCRAPMODE?'CLICK A THING TO BREAK IT DOWN. IT DOES NOT COME BACK'
-              :'CLICK A THING TO PUT IT ON '+p.name.toUpperCase())+'</div>';
+              /* #247 - four words, and the name is on the card this column is
+                 already pointed at (user: *"CLICK TO WEAR"*). */
+              :'CLICK TO WEAR')+'</div>';
   if(!G.stash.length)st.innerHTML+='<div style="font-family:var(--mono);font-size:var(--fs1);'+
     'color:#5c4a2c">Empty. Everything is on somebody.</div>';
   G.stash.forEach((k,idx)=>{
@@ -46277,6 +46598,40 @@ const HELP=[
      'merchant names his price, but nothing scores you.'}
 ];
 let HELP_BACK=null;
+/* ═══ ⛔ #247 · OPTIONS ════════════════════════════════════════════════════
+   Two switches today. It is a SCREEN and not a modal for the reason ? RULES is:
+   the menu is a full-bleed painting and a card on top of it is what every other
+   door off this screen already looks like.
+   ⚠ IT REMEMBERS WHERE IT WAS OPENED FROM, the same way `openHelp` does, so a
+   player who reached it mid-fight is put back on the fight and not on the front
+   door. `HELP_BACK`'s own pattern, one screen along. */
+let OPT_BACK=null;
+function openOptions(){
+  if($('options').classList.contains('on'))return;
+  OPT_BACK=[].slice.call(document.querySelectorAll('.screen'))
+    .filter(s=>s.classList.contains('on')).map(s=>s.id)[0]||'menu';
+  /* ⛔ THE BOX COMES OUT BEFORE THE CARD IS REBUILT, AND THAT LINE IS THE WHOLE
+     BUG THIS SCREEN SHIPPED FOR AN HOUR. A moved element is a child of the card,
+     and the next `innerHTML=` on the card DELETES it - so OPTIONS worked perfectly
+     the first time it was opened and had no switches in it ever again, with nothing
+     in the console and the two `onclick`s still bound to a node that is no longer in
+     the document. ⚠ It was found by a SCREENSHOT disagreeing with a probe that had
+     read `visible / 51x23 / opacity 1` one call earlier - i.e. by measuring the
+     second visit rather than the first. Anything reparented into a rebuilt box needs
+     this pair of lines, which is why they are written as a pair. */
+  const box=$('audioBox'),home=$('stage');
+  if(box&&home&&box.parentNode!==home)home.appendChild(box);
+  $('optCard').innerHTML='<h1>OPTIONS</h1>'+
+    '<div class="optrow"><b>SOUND</b><i>every blow, every door, the fire</i>'+
+      '<div id="optAudio"></div></div>'+
+    '<div class="popts" style="grid-template-columns:1fr"><button class="popt" id="optBack">'+
+    '<b>Back</b></button></div>';
+  /* the ONE pair of switches, moved in. See the #audioBox note in the stylesheet. */
+  if(box)$('optAudio').appendChild(box);
+  show('options');
+  $('optBack').onclick=()=>{const b=OPT_BACK||'menu';OPT_BACK=null;
+    show(b);if(b==='world')worldTick();};
+}
 function openHelp(){
   if($('help').classList.contains('on'))return;
   HELP_BACK=[].slice.call(document.querySelectorAll('.screen'))
@@ -48083,6 +48438,8 @@ function openMenu(){
     }});
   opts.push({t:'The practice field',
     c:'any fight in the act, any company, nothing riding on it',go:openSim});
+  /* #247 - and the switches live behind a door now rather than in a corner */
+  opts.push({t:'Options',c:'sound and music',go:openOptions});
   /* ═══ #119 - THE TUTORIAL FIGHT ON THE FRONT DOOR ═══════════════════════
      (User, 2026-08-12: "Опция туториал файт в меню - вместо хов ту плей.")
      The row that was here ("How any of this works") duplicated a door that
