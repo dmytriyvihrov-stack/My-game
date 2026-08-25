@@ -167,6 +167,71 @@ takes four nodes off the ground #190 painted for them.
 `NAME_DY_SIGHT` already does. Both are functions of the node, and both are why `plateBox` is a
 function rather than a rectangle.
 
+## ⛔ #245 · A KEY WITH A PICTURE IS NOT A KEY A NODE CAN HOLD
+
+*(2026-08-25. The user: **"Where is rabits battle/event. Haven`t seen it in last 3 platesters
+runs"**.)*
+
+⛔ **THE ORPHAN CHECK ABOVE ASKS WHETHER A KEY HAS ART. NOTHING ASKED WHETHER A NODE CAN EVER
+CARRY IT.** `MAP_SIGHT.mirehares` pointed at a real painting for four days and the encounter was
+unreachable the whole time: `f2` was authored `ev:'mirehares'` and was ALSO listed in
+`SLOTS_ON_MAP`, so `dealEvents()` - which runs once at the top of every run - overwrote the authored
+key before the player took a step. Measured on the shipped build: **0 survivals in 20 deals**, and
+`Object.keys(NODES).filter(k=>NODES[k].ev==='mirehares')` came back **empty on a booted game**. The
+card, the fight, the arena field, the wide stage and the map sight were all built. Nobody could
+reach any of it, and every counter in this file read 0.
+
+⛑ **`MAP_SIGHT` IS THE RIGHT TABLE TO ASK THE QUESTION IN, because its whole contract is a picture
+on a map NODE.** A key no node can hold is a picture that can never be drawn, so the row is a
+promise the table cannot keep. **LINT 8h** asks it, in three parts:
+
+- authored on a node, **or** in `FLOATING` (dealt to a slot) - otherwise dead;
+- and the shape that actually shipped: **authored on a node that is ALSO in `SLOTS_ON_MAP`**, i.e.
+  overwritten before the run starts.
+
+⛑ **IT CAUGHT A SECOND ONE ON ITS FIRST RUN.** `wynn` is painted and THE WOMAN IN THE CAGE is
+opened by `afterBattle` from inside the Snare, so no node has ever carried `ev:'wynn'` and none can.
+The row came out of the table and into the paragraph above it, beside `cache` and `armour`, and
+`MAPEV28` stays embedded exactly as `EVJ8` does. ⚠ **A dead row here is not harmless**: it is what
+makes this file's own gate read 0 while an encounter is unreachable.
+
+⛑ **PROVED BY MAKING IT FIRE**, which is this file's standing condition for a new check: putting
+`'f2'` back into `SLOTS_ON_MAP` reported *`mirehares` is authored on "f2", which is a dealt slot*,
+and taking it out returned the linter to silence.
+
+⚠ **AND A FIXED NODE THAT GAINS A PAINTING MOVES ITS OWN PLATE 33px DOWN** (`NAME_DY_SIGHT`), so
+the three counters are part of that edit and not a follow-up. Measured after: spacing 0, labels 0,
+orphans 0, and `Object.keys(NODES).filter(k=>!sightFor(NODES[k])&&!placeFor(NODES[k]))` empty.
+
+## ⛔ #245 · THE PRICE LABEL AND THE ROAD ARE ONE CURVE NOW
+
+*(2026-08-25. The user: **"Дні, маршруту можна якось показувати прямо на дорозі біля
+лінії"**.)*
+
+⛔ **`drawMap` DREW A QUADRATIC AND `labelSpot` PLACED AGAINST THE STRAIGHT CHORD**, with a
+hand-copied `-dy*0.07` standing in for the bend - two descriptions of one line, which is the HEXOFF
+shape the prototype spent two hundred entries paying for. `edgeCtl` is the control point, written
+once; `edgePt` and `edgeTan` read it and so does the road-crossing probe above.
+
+⛑ **A NEARER FAMILY IS TRIED FIRST AND NOTHING WAS DELETED.** #117's note says a perpendicular
+nudge *"made things WORSE - 10 collisions became 15"* and it is right, because that attempt REPLACED
+the search. Pass ZERO offsets along the curve's own normal; pass one's vertical lifts and #121's
+sideways family survive underneath, so a normal that lands on a plate simply loses to the next
+candidate and `labelViolations()` is still 0.
+
+⚡ **THE OFFSET IS THE OUTER LOOP AND THE FIRST CUT HAD IT THE OTHER WAY UP.** Nested t-outer, the
+search took the first clean box at the road's midpoint - including one 44px out - over a 15px one
+four rungs along the same road, and **adding two far rungs made the map worse: 13 chips over 30px
+became 18.** Offset-outer asks the right question: how close to this road can a chip stand ANYWHERE
+along it.
+
+⚡ **MEASURED, BEFORE AND AFTER, ACROSS EVERY NODE AS A STAND**: mean **62 → 37** design px,
+**29 of 30 chips over 30px → 12**, `labelViolations()` 0 both ways. ⚠ **The twelve are not a
+shortfall and a second probe had to say so rather than an opinion**: sweeping 41 rungs × 5 offsets
+× both normals, **eight of them have no clean box within 44px of their line anywhere along it**.
+#197 already closed every other door on that - the map cannot grow, `--fs1` is a floor, `vy()`
+cannot re-map, four authored positions do not slide.
+
 ## The picture that pays the gate
 
 The eye check is a page under `shots/`, because the preview pane composites nothing. Draw the new
