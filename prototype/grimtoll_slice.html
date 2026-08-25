@@ -5561,8 +5561,16 @@ body:has(#world.on) #audioBox button{font-size:var(--fs2);padding:var(--p1) var(
    underneath it moves; `bottom` rather than `top` because the list above it grows
    downward as the brush gains words and this one has to stay off the FEEDBACK
    chip in the corner. */
+/* ⛔ #244 - 112 AND NOT 170, AND IT IS A MEASUREMENT (`ui-scales.md` §4d).
+   At 170 the panel reached to x1100 and sat over **one playable hex at every
+   camera stop, on both of the widest fields** - the same class of fault #240 found
+   when the audio box grew sideways over two of them. The brush directly above it is
+   112 and covers none, so the rail's own width is the answer.
+   ⚠ THE COST IS THAT A LONG OPTION TRUNCATES WHEN THE LIST IS SHUT, and that is
+   the right trade for a dev tool: the open dropdown is drawn by the browser at
+   whatever width it needs, so nothing is unreadable at the moment of choosing. */
 #kitBox{position:absolute;right:10px;top:500px;z-index:22;display:none;
-  flex-direction:column;gap:3px;width:170px}
+  flex-direction:column;gap:3px;width:112px}
 #kitBox.on{display:flex}
 #kitBox .bttl{font-family:var(--mono);font-size:var(--fs1);letter-spacing:.12em;color:#7d8a54}
 #kitBox button,#kitBox select{background:rgba(20,26,18,.92);border:1px dashed #3d5a3d;
