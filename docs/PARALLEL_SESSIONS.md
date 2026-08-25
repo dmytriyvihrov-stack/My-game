@@ -129,8 +129,9 @@ python tools/record.py fix       # resolve conflicts, dedupe, sort. Then check
 python tools/record.py prove     # make all eight checks fire, then go quiet
 ```
 
-It counts **the four writes** that `SHIPPED.md`'s own header has always demanded (changelog row ·
-registry row · struck from the backlog · a test-bench section), and it catches what a human cannot
+It counts **the five writes** that `SHIPPED.md`'s own header demands (changelog row · registry
+row · struck from the backlog · a test-bench section · **and any ruling it raised, in
+[`OPEN_QUESTIONS.md`](OPEN_QUESTIONS.md)**, added by #248), and it catches what a human cannot
 catch by reading: conflict markers, a row spliced into another row, a fragment orphaned under a
 row, the same number twice, rows out of order, and a claim holding a number that is written in no
 doc. ⚡ **The contract is not new and neither is the failure**: `SHIPPED.md` records that #117,
@@ -153,8 +154,8 @@ checkout --` and watches it go quiet. It refuses to run on a dirty tree, having 
 uncommitted fix the first time it was used.
 
 ⚠ **The pre-commit hook runs `check --faults-only`, and only when a `docs/*.md` is staged.** The
-four writes finish at DIFFERENT TIMES - code and the changelog row in one commit, the registry row
-often in the next - so a hook that demanded all four would refuse the ordinary commit on its way to
+five writes finish at DIFFERENT TIMES - code and the changelog row in one commit, the registry row
+often in the next - so a hook that demanded all five would refuse the ordinary commit on its way to
 making them, and a guard that refuses correct work is bypassed within a day. A spliced row is never
 a stage on the way to anything. ⚠ **The hook lives in `.git/hooks/` and is therefore NOT tracked**,
 the same standing weakness the claim guard has; `branch.ps1 land` runs the full check regardless,
@@ -209,7 +210,7 @@ because of them. Nothing was broken, nothing said anything, and `branch.ps1 list
 
 | | |
 |---|---|
-| the **main desk's own tree** | uncommitted files, and which entry numbers look finished there. A **new registry row** in `SHIPPED.md`/`CHANGELOG.md` is the signal, because the four writes put one there and `git log` does not have it yet |
+| the **main desk's own tree** | uncommitted files, and which entry numbers look finished there. A **new registry row** in `SHIPPED.md`/`CHANGELOG.md` is the signal, because the five writes put one there and `git log` does not have it yet |
 | **claims in the way** | numbers held by a session that has closed, whose work is in that tree |
 | **desks with work waiting** | commits not on main, and anything still uncommitted in the desk |
 

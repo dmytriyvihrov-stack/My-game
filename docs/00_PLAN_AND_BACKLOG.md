@@ -646,9 +646,19 @@ disturb.
 > Applies to any new ability, resource, screen, panel, overlay or player-facing rule. Does not apply
 > to bug fixes, wording, or balance numbers on something that already exists.
 
-**When an entry ships, four writes:** full text and a build-log row → [`CHANGELOG.md`](CHANGELOG.md)
+**When an entry ships, FIVE writes:** full text and a build-log row → [`CHANGELOG.md`](CHANGELOG.md)
 · a one-line row → [`SHIPPED.md`](SHIPPED.md) · **strike it from this file entirely** · a section →
-[`WHAT_TO_TEST.md`](WHAT_TO_TEST.md).
+[`WHAT_TO_TEST.md`](WHAT_TO_TEST.md) · **and every ruling it raised → [`OPEN_QUESTIONS.md`](OPEN_QUESTIONS.md)**.
+
+> ## ⛔ THE FIFTH WRITE, AND IT IS THE ONE YOU ONLY OWE SOMETIMES *(#248, 2026-08-25)*
+>
+> The user: *"make a rule to put all questions in only 1 file"*. Full rule: [`.claude/rules/open-questions.md`](../.claude/rules/open-questions.md).
+>
+> ⛔ **When that was asked there were 39 open questions in FOUR places, and TWENTY of them were marked `👤` inside `SHIPPED.md` rows** - a real convention, used correctly, in twenty entries over five months, **that nothing ever collected**. Some had waited since #90. ⚑ **Ten came back answered by work that was not about them**, which is the cost: a question nobody can find does not wait, it rots, and it hides the twenty-nine beside it.
+>
+> ⛑ **RAISE IT WHERE THE REASONING IS, FILE IT WHERE HE READS.** A `👤` beside the measurement and the rejected alternative is still right and should keep being written - that is the raising. **The row in `OPEN_QUESTIONS.md` in the same session is the filing**, and the answer strikes that row in the session that acts on it.
+>
+> ⚠ **Unlike the other four this write is CONDITIONAL** - most entries raise nothing - **which is exactly why it is checked rather than remembered.** `record.py check` names a `👤` whose entry has no row there.
 
 > ## ⛔ DO NOT PICK A NUMBER. ASK FOR ONE.
 >

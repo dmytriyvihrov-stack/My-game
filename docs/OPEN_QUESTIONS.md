@@ -84,20 +84,20 @@ one-line change.*
 
 | # | the question | ⭑ |
 |---|---|---|
-| **247** | **Two heart-ish marks are on one screen.** The mood row's mark is an emoji face (😄🙂😕😟💀) sitting beside two drawn glyphs (⛨ ♥), and the sheet's **MOR** stat tell is a painted heart two columns from the **♥** that means blood. Neither is wrong alone. #102's wrong-unit rule is what would decide it | leave the faces, redraw the MOR tell as something that is not a heart |
-| **246** | **`wear` was kept on the roster tile** against a literal reading of *"other things"*. It is a clock (how long until the injury clears), not a description. Should it go? | keep it - it is the one thing on that tile that changes |
-| **244** | **The dogs' pack aura is live and could not be reproduced as a bug.** Her radius is 3 against a 2-hex bounce, which is probably the impression you had. It is a dial | drop the radius to 2 so it matches the bounce |
-| **243** | **The glass-cannon mage is off the wall**, behind `MAGE_GLASS=false`. Two identical buttons, same word, same globe, different perks - the price is what makes it a choice | leave it off until the perk tree is real |
-| **241** | **`APRON_LATTICE=0`.** The apron round the board is bare painted ground. If *"чуть выходящие квадратики"* meant you wanted to SEE tiles out there, this draws them as outlines | leave it bare - marked tiles you cannot stand on is a promise the board breaks |
-| **239** | **The wagon is not re-priced** against the new salvage curve. 6 / 12 / 24 ▤ for the three frames, against a measured **23-24 salvage a run** now that #239 halved it. Tier III is currently a greedy-run purchase | re-price to about 5 / 10 / 18, or say you want tier III to stay a stretch |
-| **239** | **A rare-tier shop roll leans to trinkets**, because most rare rows are trinkets. If it reads as repetitive the fix is a slot preference in `rollRack` | fix it - it is the same complaint #227 already answered for road finds |
-| **238** | **The weak joint is `PARTYBASE`, not the wagon.** A seat upgrade is only candy when the cap binds, and four founders at 8 of 13 rarely hit it before the first muster. **13 → 11 is the lever** | take it to 11 |
-| **240** | **`PUNCH THROUGH` is priced and never fielded** - an archer perk nobody has met | leave it for the perk tree |
-| **232** | **Two ★ meet on one roster row** - the gold unspent-level star on the name line and the Captain's class mark below it. Different lines, different colours | dim the class mark |
-| **230** | **Two states scroll the company sheet** (a banked point, 8px; THE CIRCLE, 21px), against #133's promise of one screen and no scroll | accept it - the alternative is a smaller stat icon |
-| **219** | **The opening card carries a title again**, `THE THREE BELLS · before the road`. You deleted the old card's title, but that was a narrow column card; on the painted stage a title costs nothing and every other card has one | keep it |
-| **218** | **Three rail colours and a pace.** `honor` sits on grave-stone grey (the coldest thing on a warm card), `rest` on blue (a campfire, in blue), and the card unfold is **470ms**, which you meet 34 times a run | shorten the unfold to ~380ms; leave the colours |
-| **215** | **The mirror's landing ring.** An ivory ring marks the hex your click will actually land on. Hiding it makes you do the flip in your head | keep it |
+| **#247** | **Two heart-ish marks are on one screen.** The mood row's mark is an emoji face (😄🙂😕😟💀) sitting beside two drawn glyphs (⛨ ♥), and the sheet's **MOR** stat tell is a painted heart two columns from the **♥** that means blood. Neither is wrong alone. #102's wrong-unit rule is what would decide it | leave the faces, redraw the MOR tell as something that is not a heart |
+| **#246** | **`wear` was kept on the roster tile** against a literal reading of *"other things"*. It is a clock (how long until the injury clears), not a description. Should it go? | keep it - it is the one thing on that tile that changes |
+| **#244** | **The dogs' pack aura is live and could not be reproduced as a bug.** Her radius is 3 against a 2-hex bounce, which is probably the impression you had. It is a dial | drop the radius to 2 so it matches the bounce |
+| **#243** | **The glass-cannon mage is off the wall**, behind `MAGE_GLASS=false`. Two identical buttons, same word, same globe, different perks - the price is what makes it a choice | leave it off until the perk tree is real |
+| **#241** | **`APRON_LATTICE=0`.** The apron round the board is bare painted ground. If *"чуть выходящие квадратики"* meant you wanted to SEE tiles out there, this draws them as outlines | leave it bare - marked tiles you cannot stand on is a promise the board breaks |
+| **#239** | **The wagon is not re-priced** against the new salvage curve. 6 / 12 / 24 ▤ for the three frames, against a measured **23-24 salvage a run** now that #239 halved it. Tier III is currently a greedy-run purchase | re-price to about 5 / 10 / 18, or say you want tier III to stay a stretch |
+| **#239** | **A rare-tier shop roll leans to trinkets**, because most rare rows are trinkets. If it reads as repetitive the fix is a slot preference in `rollRack` | fix it - it is the same complaint #227 already answered for road finds |
+| **#238** | **The weak joint is `PARTYBASE`, not the wagon.** A seat upgrade is only candy when the cap binds, and four founders at 8 of 13 rarely hit it before the first muster. **13 → 11 is the lever** | take it to 11 |
+| **#240** | **`PUNCH THROUGH` is priced and never fielded** - an archer perk nobody has met | leave it for the perk tree |
+| **#232** | **Two ★ meet on one roster row** - the gold unspent-level star on the name line and the Captain's class mark below it. Different lines, different colours | dim the class mark |
+| **#230** | **Two states scroll the company sheet** (a banked point, 8px; THE CIRCLE, 21px), against #133's promise of one screen and no scroll | accept it - the alternative is a smaller stat icon |
+| **#219** | **The opening card carries a title again**, `THE THREE BELLS · before the road`. You deleted the old card's title, but that was a narrow column card; on the painted stage a title costs nothing and every other card has one | keep it |
+| **#218** | **Three rail colours and a pace.** `honor` sits on grave-stone grey (the coldest thing on a warm card), `rest` on blue (a campfire, in blue), and the card unfold is **470ms**, which you meet 34 times a run | shorten the unfold to ~380ms; leave the colours |
+| **#215** | **The mirror's landing ring.** An ivory ring marks the hex your click will actually land on. Hiding it makes you do the flip in your head | keep it |
 
 ---
 
@@ -108,12 +108,12 @@ current build; the ones below are the ones that still describe something that ex
 
 | # | the question | ⭑ |
 |---|---|---|
-| **96** | **The armour bar is steel on everybody**, yours and theirs, while #247 just made the health bar red on everybody. It is a shell, not a person | leave steel - it is the one bar that is about the kit and not the body |
-| **96** | **Your pet scores as an ALLY, not as yours** (gold, not blue) | make it blue - it is yours in every other sense |
-| **157** | **The muster's `tellLine` may not be distinguishing anybody.** Measured live, all three candidates read *"Steady enough"* and *"Easily frightened"*, so four sentences a head are spent on something that often says the same thing about all of them | widen the bands so a candidate can read as unusual |
-| **147** | **The finale is one row from softer** if you want it. `plains` and `outpost` are two arenas that stay unused, with the reason recorded | leave it - #245 already moved this fight to 40% |
-| **134** | **The joke door needs a reason the player can read before it comes back** - a stat, a trait, a personality - or it returns as the same dice roll it was cut for | it comes back when there is a CHARM-ish stat to hang it on, not before |
-| **93 / 90** | **The Fen-Mother sits on an authored board, not a rolled one.** The finding underneath is real either way: *a centred mass taxes whoever needs range*, so her 12-14 round band is partly an accident of the seed | leave her - she is a boss, and an authored board is allowed to be authored |
+| **#96** | **The armour bar is steel on everybody**, yours and theirs, while #247 just made the health bar red on everybody. It is a shell, not a person | leave steel - it is the one bar that is about the kit and not the body |
+| **#96** | **Your pet scores as an ALLY, not as yours** (gold, not blue) | make it blue - it is yours in every other sense |
+| **#157** | **The muster's `tellLine` may not be distinguishing anybody.** Measured live, all three candidates read *"Steady enough"* and *"Easily frightened"*, so four sentences a head are spent on something that often says the same thing about all of them | widen the bands so a candidate can read as unusual |
+| **#147** | **The finale is one row from softer** if you want it. `plains` and `outpost` are two arenas that stay unused, with the reason recorded | leave it - #245 already moved this fight to 40% |
+| **#134** | **The joke door needs a reason the player can read before it comes back** - a stat, a trait, a personality - or it returns as the same dice roll it was cut for | it comes back when there is a CHARM-ish stat to hang it on, not before |
+| **#93 / #90 / #146** | **The Fen-Mother sits on an authored board, not a rolled one.** The finding underneath is real either way: *a centred mass taxes whoever needs range*, so her 12-14 round band is partly an accident of the seed. ⚠ #146 then made her **12 points easier to hit** and recorded that as *"the closest this pass comes to her reserved re-tune"*, so the reserved re-tune is still owed | leave her - she is a boss, and an authored board is allowed to be authored |
 
 ---
 
@@ -164,16 +164,16 @@ them beside the rest.*
 
 | # | why I read it as dead |
 |---|---|
-| **94** | *"the rail's placement is yours - maybe place under the skills?"* The battle screen has been rebuilt in #231, #234, #236, #243, #244, #246 and #247 since. The rail it names is not the rail that is there |
-| **95** | *"everything at FULL is 9% smaller; one constant if that is too much."* #241 and #243 rewrote the camera, its clamping and its stops |
-| **122** | *"the prose paragraph above the grid; if he wants the pure BB ledger it goes."* #187 rebuilt the aftermath around that paragraph, deliberately, as a tray |
-| **135** | *"if the fights now read as too soft, that is a separate call."* You have just called the balance done |
-| **155** | *"whether the opening is now too FAST is a playtest question."* Ten people played it |
-| **108** | the two interpretation calls (the *"correct king"* read as the ratkin; Vesna as the second arrival). Both have been in the shipped opening for two weeks and nobody has objected |
-| **141** | *"the two mood numbers are a guess (−4 / +8)."* The card now has one door and one figure, `morale:8` |
-| **143** | the coin's one door overruling #141's two-door decision. Same card, same answer |
-| **152** | *"the 4-vs-5 number itself is his to feel out in play."* Ten runs of play, and the payday cycle has not been raised once |
-| **156** | *"whether the enemy's reach should show his weapon's REACH on top of his stride."* #244 and #246 rebuilt what a hex shows about reach twice |
+| **#94** | *"the rail's placement is yours - maybe place under the skills?"* The battle screen has been rebuilt in #231, #234, #236, #243, #244, #246 and #247 since. The rail it names is not the rail that is there |
+| **#95** | *"everything at FULL is 9% smaller; one constant if that is too much."* #241 and #243 rewrote the camera, its clamping and its stops |
+| **#122** | *"the prose paragraph above the grid; if he wants the pure BB ledger it goes."* #187 rebuilt the aftermath around that paragraph, deliberately, as a tray |
+| **#135** | *"if the fights now read as too soft, that is a separate call."* You have just called the balance done |
+| **#155** | *"whether the opening is now too FAST is a playtest question."* Ten people played it |
+| **#108** | the two interpretation calls (the *"correct king"* read as the ratkin; Vesna as the second arrival). Both have been in the shipped opening for two weeks and nobody has objected |
+| **#141** | *"the two mood numbers are a guess (−4 / +8)."* The card now has one door and one figure, `morale:8` |
+| **#143** | the coin's one door overruling #141's two-door decision. Same card, same answer |
+| **#152** | *"the 4-vs-5 number itself is his to feel out in play."* Ten runs of play, and the payday cycle has not been raised once |
+| **#156** | *"whether the enemy's reach should show his weapon's REACH on top of his stride."* #244 and #246 rebuilt what a hex shows about reach twice |
 
 ---
 

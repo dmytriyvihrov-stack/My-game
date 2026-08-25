@@ -493,6 +493,70 @@ def fix_order(log):
     return moved
 
 
+# ══ the fifth write: a question lives in ONE file ════════════════════════════
+QUESTIONS = os.path.join(ROOT, "docs", "OPEN_QUESTIONS.md")
+ASKS = "\U0001f464"                       # the person glyph a row marks a ruling with
+
+
+def questions(rep):
+    """⛔ #248 - A RULING RAISED IN A ROW IS FILED WHERE NOBODY LOOKS.
+
+    `.claude/rules/open-questions.md` is the rule; this is the counter under it.
+    `ASKS` in a CHANGELOG or SHIPPED row means *this entry wants the user to
+    decide something*, and it was used correctly in twenty entries over five
+    months while **nothing ever collected them** - so the user had never seen
+    them as a list, and ten had been silently answered by unrelated work by the
+    time anybody did.
+
+    ⛑ RAISE IT WHERE THE REASONING IS, FILE IT WHERE HE READS. The glyph stays;
+    what this asks is whether the entry that wrote one also put a row in
+    `OPEN_QUESTIONS.md`.
+
+    ⚠ A NOTE AND NOT A FAULT, for `--faults-only`'s own reason: the writes
+    finish at different times and a hook that refuses the commit on its way to
+    being correct gets bypassed within a day.
+    ⚠ AND IT LOOKS FOR `#NN` ANYWHERE IN THE FILE, not for a row shape. That
+    file is prose with tables in it and its layout is the user's to change; a
+    check that pins its FORMAT would break the first time he reorganised it."""
+    if not os.path.exists(QUESTIONS):
+        rep.note("docs/OPEN_QUESTIONS.md is missing, and it is the fifth write "
+                 "(.claude/rules/open-questions.md)")
+        return
+    q = "".join(read(QUESTIONS))
+    for name, path, rx in (("CHANGELOG.md", CHANGELOG, RE_CL),
+                           ("SHIPPED.md", SHIPPED, RE_SH)):
+        for line in read(path):
+            if ASKS not in line:
+                continue
+            m = rx.match(line)
+            if not m:
+                continue
+            n = entry_of(line, name)
+            # ⛔ NO ENTRY_FLOOR HERE, AND THAT IS DELIBERATE. The floor exists
+            # because entries below it predate the registry and their rows were
+            # never going to be written. **These were.** #248 swept all twenty
+            # marked rows into OPEN_QUESTIONS.md, from #90 up, so the legacy set
+            # is filed and the check passes on it today - which is the only
+            # thing that makes it a guard rather than a decoration.
+            if n is None:
+                continue
+            if ("#%d" % n) not in q:
+                rep.note("#%d marks a ruling with the person glyph in %s and has no row in "
+                         "OPEN_QUESTIONS.md (the fifth write)" % (n, name))
+
+
+def entry_of(line, name):
+    """the ENTRY number a row is about, whichever table it is in."""
+    m = re.search(r"\*\*#?(\d+)\*\*", line)
+    if m:
+        try:
+            return int(m.group(1))
+        except ValueError:
+            return None
+    m = re.search(r"#(\d+)", line)
+    return int(m.group(1)) if m else None
+
+
 # ══ the em dash, which is a rule the repo states ═════════════════════════════
 def emdashes(rep):
     """⛔ #248 - A HARD RULE WITH NO COUNTER IS AN INTENTION.
@@ -540,6 +604,7 @@ def do_check(strict, faults_only=False):
         four_writes(rep)
         claims(rep)
         ordering(rep)
+        questions(rep)
         emdashes(rep)
 
     if rep.faults:
