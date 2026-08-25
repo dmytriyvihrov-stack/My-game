@@ -20198,7 +20198,16 @@ function strike(a,d,act,mult){
      can be answered. It eats parting swings when it finally goes, it can be hit
      back on your turn, and clumping up - which is the whole lesson of THE PACK -
      is now what turns their teeth on rather than what turns them off. */
-  const ringed=(function(){try{return surroundOn(d)>0;}catch(e){return false;}})();
+  /* ⚠ #245 - COMPUTED INSIDE THE GUARD AND NOT ABOVE IT, WHICH IS A PERFORMANCE
+     FACT AND NOT A TIDY-UP. The first cut evaluated `surroundOn(d)` on EVERY blow
+     in the game rather than on the four dogs' bounce, and `surroundOn` reaches
+     `engagers`, which rebuilds `alive()`. Measured, 24 brigand fights end to end:
+     **4,558 ms before, 50,422 ms after** - the same 11x this file already records
+     against putting `losState` in `hitBreakdown`. Moved inside the branch it
+     belongs to: **4,449 ms**. `strike` is not the AI's inner loop, but it is called
+     for every swing of every body of both sides, which is close enough to one. */
+  const ringed=act.bounce?(function(){try{return surroundOn(d)>0;}
+    catch(e){return false;}})():false;
   if(act.bounce&&ringed&&!a.dead&&!d.dead){
     fx(a,'STAYS IN','#e2604f',true);
     say(a.name+' does not go this time. There are enough of them on '+d.name+
