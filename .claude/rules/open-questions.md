@@ -77,9 +77,14 @@ has no row in `OPEN_QUESTIONS.md`. ⚠ **A NOTE AND NOT A FAULT**, for the reaso
 already gives about the other four writes: the writes finish at different times, and a guard that
 refuses the commit on its way to being correct gets bypassed within a day.
 
-⛑ **PROVED BY MAKING IT FIRE**, which is this repo's standing condition for a new check: the row
-for an entry already in `OPEN_QUESTIONS.md` was removed by hand, the check named that entry, and
-putting it back returned the linter to silence.
+⛑ **PROVED BY MAKING IT FIRE**, which is this repo's standing condition for a new check - and the
+FIRST attempt at proving it is the reason the paragraph on glyphs below exists. Deleting a row from
+`OPEN_QUESTIONS.md` reported **nothing**, because the entry it belonged to (#247) carries no `👤`
+at all: the recent entries write every ruling as a `⏳`. The honest test is to seed the glyph itself -
+a `👤` added to #235's row, which raises no ruling and has no row in the file, reported
+*`#235 marks a ruling with the person glyph in SHIPPED.md and has no row in OPEN_QUESTIONS.md`*, and
+removing it returned the linter to silence. ⚠ **A check that agrees with you on the first try has
+told you nothing**, and this one was wrong about which half it was testing.
 
 ```bash
 python tools/record.py check     # a 👤 with no row in OPEN_QUESTIONS.md is named
@@ -103,12 +108,10 @@ finding, not a pass.**
 | `👤` | **a decision only he can take.** Goes in `OPEN_QUESTIONS.md` the same session. The counter reads this glyph and no other |
 | `⏳` | **work nobody has done yet.** Stays in `SHIPPED.md`'s own remainder column, where it is already collected per entry |
 
-⚠ **A row may carry both**, and several should: *"the 19 camp cards still letterbox"* is `⏳`, and
-*"should the mood mark stay an emoji beside two drawn glyphs"* is `👤`, and #247 raised both. *"the 19 camp cards
-still letterbox"* is a job somebody does; *"should the mood mark stay an emoji beside two drawn
-glyphs"* is a decision only he can take. Remainders stay in `SHIPPED.md`'s own column, where they
-are already collected per entry. **If this file fills up with work, it stops being answerable in one
-sitting, which is the whole thing it was built to be.**
+⚠ **A row may carry both, and #247's should.** *"The 19 camp cards still letterbox"* is a job
+somebody does, so it is `⏳`; *"should the mood mark stay an emoji beside two drawn glyphs"* is a
+decision only he can take, so it is `👤`. **If this file fills up with work it stops being
+answerable in one sitting, which is the whole thing it was built to be.**
 
 ⚠ **And a question a SESSION can answer is not a question for him.** #248 checked six of the twenty
 against the running build before asking, and four of them turned out to describe something that no
