@@ -74,7 +74,7 @@ dynamic" asked for. Update it in the same edit that changes a status, and never 
 | **G1-8** | **Finish the event art** (ChatGPT) | no event card falls back to a placeholder | art pipeline, not an entry | ? | - |
 | **G1-9** | **Update the unit sprites** (ChatGPT) | a body still reads at **x2.50**, the closest camera stop | **unblocked** by #66 - the size target is now a number, not a guess | ? | 2026-08-01 |
 | **G1-10** | **Music and sound** | the user has *listened* to what #8 shipped and ruled on it | #8 remainder · #43's ranking | ? | - |
-| **G1-11** | **The GPT run** - a model plays it all and reports | a written report exists, with the reaction bar on and the journal blob exported | #53 · #54 (already built for exactly this) | ☑ **done 2026-08-02, by Claude through the real UI**: five campaign runs, twelve fights, every ending shape reached, reactions pressed, journal recorded. Report: [`QA_PLAYTEST_2026-08-02.md`](QA_PLAYTEST_2026-08-02.md) | 2026-08-02 |
+| **G1-11** | **The GPT run** - a model plays it all and reports | a written report exists, with the reaction bar on and the journal blob exported | #53 · #54 (already built for exactly this) | ☑ **done 2026-08-02, by Claude through the real UI**: five campaign runs, twelve fights, every ending shape reached, reactions pressed, journal recorded. Report: [`QA_PLAYTEST_2026-08-02.md`](../QA_PLAYTEST_2026-08-02.md) | 2026-08-02 |
 | **G1-12** | **Fix what the GPT run found** | every finding triaged *blocks / annoys / neither*, and the first two are closed | whatever it names | ☑ **27 findings triaged**: *blocks* - none found (no soft locks, zero uncaught errors) · *annoys* - closed across twin fix passes 8f.88-8f.91, including three real ones found while fixing (a near soft lock at Bonepicker's among them) · *neither* - ruled by the user same day: tunnel stays secret, dogs stay a skill check, provisions stay heal-only, the noble pays a third more | 2026-08-02 |
 | **G1-13** | **The human run** (the user), feedback, fixes | the user finishes a run and nothing on their list would block a stranger | precedent: the 2026-08-01 run produced #55 and #54 same day | ☐ | - |
 | **🚪** | **THE GATE: hand it to ten friends** | ten journals come home | #53/#54's copy-paste blob **is** this instrument, and it already exists | ☐ | - |
@@ -191,14 +191,14 @@ defect (road labels sitting inside the plate of the node you were standing on, 1
 
 **The single biggest readability win here already SHIPPED, on the day this section was written:
 #66, three camera stops** (FULL x1.30 · FIELD x1.80 · CLOSE x2.50, build log 8f.65, row in
-[`SHIPPED.md`](SHIPPED.md)). The measurement was the design: the field is 980x544 and the board
+[`SHIPPED.md`](../SHIPPED.md)). The measurement was the design: the field is 980x544 and the board
 596x416, so **41% of the battle screen was empty gradient** and the people looked small because the
 board had never grown into the room it had. **That is why the lowest stop is x1.30 and not x1.00.**
 It closes the user's own *"units and action looks a bit bigger. Like in battle brothers."*
 
 **⚔ THE BATTLE BOARD IS THEREFORE THE ONE SURFACE THIS STEP HAS ALREADY PASSED, and it did not come
 back with nothing.** It came back with **four questions that are gate-1 work and are already written
-into [`WHAT_TO_TEST.md`](WHAT_TO_TEST.md)**, and they are answered by playing, not by another pass:
+into [`WHAT_TO_TEST.md`](../WHAT_TO_TEST.md)**, and they are answered by playing, not by another pass:
 
 1. **Are the three distances right**, CLOSE especially. One line to change.
 2. **Is FIELD the right default**, or should it open on FULL and step in.
@@ -367,7 +367,7 @@ collision and it is the user's call, not a session's.
   which is already in that list *and* is gate 1's first step, so it is next either way.
 
 **Two small rulings joined this list on 2026-08-02, out of the QA report** (details in
-[`QA_PLAYTEST_2026-08-02.md`](QA_PLAYTEST_2026-08-02.md), section QA-7 and QA-27; both are one-line
+[`QA_PLAYTEST_2026-08-02.md`](../QA_PLAYTEST_2026-08-02.md), section QA-7 and QA-27; both are one-line
 answers and neither blocks the playtest):
 
 - **QA-7 - fleeing the Thing in Armour deletes the Dead Company beat.** Deliberate in code
@@ -406,7 +406,7 @@ answers and neither blocks the playtest):
 >
 > **User, 2026-08-01: *"Done — the game is good — I gave feedback already."*** The item that sat at
 > the top of this list for weeks is closed. **#52, the reported Coldharrow hard-lock, is closed with
-> it — *"it works"*** — and its diagnosis is kept in [`SHIPPED.md`](SHIPPED.md), because the hidden
+> it — *"it works"*** — and its diagnosis is kept in [`SHIPPED.md`](../SHIPPED.md), because the hidden
 > preview pane produces a stuck `G.moving` that looks exactly like that report and will fool the
 > next person too.
 >
@@ -416,7 +416,7 @@ answers and neither blocks the playtest):
 > about the *shape of a run* rather than about a screen, and they are why the order now puts a
 > foundation and a loop change ahead of more content.
 
-**1. Settlements & Legacy MVP** — [`09_SETTLEMENTS_AND_LEGACY.md`](09_SETTLEMENTS_AND_LEGACY.md).
+**1. Settlements & Legacy MVP** — [`09_SETTLEMENTS_AND_LEGACY.md`](../09_SETTLEMENTS_AND_LEGACY.md).
 Build the **inheritance screen first**: it is the piece that makes a lost run mean something, and
 **that matters more now than it did yesterday** — [#34's mortality ruling](#34--the-mortality-chain--scarred--maimed--dead)
 means a company can genuinely end, so what a dead company leaves behind stops being a nicety.
@@ -454,8 +454,8 @@ it"); **#13 was not named either way and keeps its place** between them until it
 
 > *There were four steps. **The two rulings from the playthrough — #55 the automatic reward and #54
 > continuous reactions — shipped 2026-08-01** (build log 8f.54), at the user's request: "take backlog
-> 2-3 thing to work and do." Rows in [`SHIPPED.md`](SHIPPED.md), full text in
-> [`CHANGELOG.md`](CHANGELOG.md).*
+> 2-3 thing to work and do." Rows in [`SHIPPED.md`](../SHIPPED.md), full text in
+> [`CHANGELOG.md`](../CHANGELOG.md).*
 
 > **⚑ What #55 leaves behind for #34, and it is the reason #55 went first.** The after-battle screen
 > now has a settled shape: **a receipt · sometimes one question about what is left on the field ·
@@ -469,7 +469,7 @@ it"); **#13 was not named either way and keeps its place** between them until it
 **3. Then Tier 2 and the combat batch** — #4+#17 the body painter API *(now load-bearing — **#34's
 maiming is what it draws**, and #35's grafts wait on the same API)* · #2 personalities that command
 the AI · then **#47 the spear**, which is now the only half of the verb batch still open.
-*(#36, #48, #46 and #40 were in this list and have shipped — see [`SHIPPED.md`](SHIPPED.md).)*
+*(#36, #48, #46 and #40 were in this list and have shipped — see [`SHIPPED.md`](../SHIPPED.md).)*
 
 > **#47 is the natural next combat session.** It was designed alongside #46 as one batch, it needs
 > nothing #46 did not already put in place, and #50's entry condition now wants only **#13 #47 #16
@@ -478,7 +478,7 @@ the AI · then **#47 the spear**, which is now the only half of the verb batch s
 > **~~#82~~ SHIPPED 2026-08-04** (8f.108) and it is worth reading before #47, because it gave the
 > spearwoman her first *cannot*: an oak or a group of rocks in the hex she thrusts over refuses the
 > blow. Obstacles carry a HEIGHT now, and it is a register of its own that never merges with
-> `BLOCKED`. See [`SHIPPED.md`](SHIPPED.md).
+> `BLOCKED`. See [`SHIPPED.md`](../SHIPPED.md).
 
 > **On "give me a few small steps" sessions**, which this project has now had twice. Take them from
 > **Tier 4**, which is the tier this file marks safe in any order, and **spread them across systems
@@ -552,7 +552,7 @@ of them are now ruled**, and each ruling turned into a live entry rather than a 
 | **Grafts** | *"rare authored consequences of specific injuries **or events on the road**"* | **[#35](#35--grafts--rare-authored-consequences)** — authored, never a shop, and the road half is new |
 | **Forest** | *"it is a lot of scattered trees. Check as Battle Brothers do"* | **#56 — SHIPPED 2026-08-01** (8f.64) inside the terrain cluster. It turned out to be one dial on #62's tree, which is the version the ruling was actually asking for |
 
-**Five are still open** and still live in [`README.md`](README.md) §6 — the name (*RabbleBound* or
+**Five are still open** and still live in [`README.md`](../README.md) §6 — the name (*RabbleBound* or
 *Rabblebound*), AUTO doctrine (one order or per person), numbers in the chronicle, the run contract,
 and generated voice. Nothing in the plan is blocked on any of them.
 

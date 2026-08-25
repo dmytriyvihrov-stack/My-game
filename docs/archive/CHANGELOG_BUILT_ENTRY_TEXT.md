@@ -7,7 +7,7 @@
 ## Built backlog entries - the full text
 
 *Moved here when they shipped. Their one-line rows stay in the Done table of
-[`00_PLAN_AND_BACKLOG.md`](00_PLAN_AND_BACKLOG.md); open remainders are noted there too.
+[`00_PLAN_AND_BACKLOG.md`](../00_PLAN_AND_BACKLOG.md); open remainders are noted there too.
 **#32 (the Fen-Mother defect, closed) stays in the working file** — its details block holds
 the rally-rule spec that Tier 1 still points at.*
 
@@ -666,7 +666,7 @@ resolves, not to a multiplier, and it wants its own entry and its own verificati
 > to you. It is free tonight and it is a tax on every fight for the rest of the run.
 
 **The canon hook, and it is the reason this card is worth a number.**
-[`03_WORLD_LORE.md`](03_WORLD_LORE.md) §2 already says it: *"passage is never free; when it looks
+[`03_WORLD_LORE.md`](../03_WORLD_LORE.md) §2 already says it: *"passage is never free; when it looks
 free, the price has simply not been named yet."* This card **is** that sentence played as a scene -
 you sat down, you ate, it looked free, and now the price is being named. A clan cuts its mark on a
 milestone; these people own no road, so they cut it into faces.
@@ -884,7 +884,7 @@ the user wrote: *free today, remembered forever.*
 > the back half of the act that people built themselves, out of nothing, on purpose, for a night
 > that feeds nobody tomorrow.
 >
-> **It belongs in the "before an event ships" checklist in [`README.md`](README.md) §5** as a
+> **It belongs in the "before an event ships" checklist in [`README.md`](../README.md) §5** as a
 > seventh question, and it is worth one added line in the Thing in Armour's own aftermath. Neither is
 > part of building this entry; both are cheap and should be done while the reason is fresh.
 
@@ -2506,7 +2506,7 @@ number* is not suspended because a person is saying it.
 > them. What does *not* grow is the budget — thirty triggers would still speak five times a
 > battle, each one just more rarely, which is a quieter game rather than a busier one. There is a
 > **HOW TO ADD ONE** block above the register, and the six cut lines are kept paste-ready in
-> [`WHAT_TO_TEST.md`](WHAT_TO_TEST.md) in case a real playthrough finds the field too silent.
+> [`WHAT_TO_TEST.md`](../WHAT_TO_TEST.md) in case a real playthrough finds the field too silent.
 
 **The budget is the design, and it is what separates a voice from a nag.**
 One balloon per round · five per battle · **HEART > CALL > TEACH**, and the loser is **dropped,
@@ -2582,7 +2582,7 @@ build.)*
 nothing below `capSay` knows the Captain exists — face, label and anchor all come off whichever
 unit is handed in. Verified against somebody who is *not on the roster at all*: they get a name and
 a procedural bust with no painting and no roster entry, which is precisely what a second speaker
-will be. **That is [#40](00_PLAN_AND_BACKLOG.md) — the company reacting toward the player — already
+will be. **That is [#40](../00_PLAN_AND_BACKLOG.md) — the company reacting toward the player — already
 holding its half of the machinery**, without a line of speculative code being written for it.
 
 ### What it absorbed and what it did not

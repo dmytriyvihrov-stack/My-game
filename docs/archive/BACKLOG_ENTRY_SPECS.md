@@ -6,8 +6,13 @@
 >
 > Split out on **2026-08-10**, when the backlog was cut down after the playtest feedback
 > (*"lack of clarity and too many options/systems from the start"*). Nothing was edited on the way
-> across: every entry below is exactly as it was written. The pre-split file is
-> [`2026-08-10_BACKLOG_before_cleanup.md`](2026-08-10_BACKLOG_before_cleanup.md).
+> across: every entry below is exactly as it was written. ⚠ **The pre-split file was DELETED by
+> the 2026-08-13 doc clean-out** (`d54e90f`) and this line pointed at it for twelve days; it is one
+> command away and never needs to be in the tree:
+>
+> ```bash
+> git show d54e90f^:docs/archive/2026-08-10_BACKLOG_before_cleanup.md
+> ```
 >
 > ⛔ **Nothing here gets built straight from the entry.** Rules first, then a picture, then code,
 > then a `WHAT_TO_TEST.md` section. See the gate in [`README.md`](../README.md).
@@ -318,7 +323,7 @@ timed one and marked as measured; and the mop-up number for `brigand` is compare
 > than breaking (the user's own ruling - she is over a child), every fight gets hungry from round 11
 > (**#31**, built with it), and the orbiting cub became `passive`. Measured 21–30 rounds with a
 > 1-in-40 tail → **12–14 with a max of 25, zero stalls in 24 games.** Full history and numbers in
-> [`CHANGELOG.md`](CHANGELOG.md) and [`SHIPPED.md`](SHIPPED.md).
+> [`CHANGELOG.md`](../CHANGELOG.md) and [`SHIPPED.md`](../SHIPPED.md).
 >
 > **What is left is the rule the investigation *found*, not the fix it needed.** The oscillation was
 > never fixed and did not need to be - a body crossing the rout line repeatedly is now just a thing
@@ -356,7 +361,7 @@ a fight getting *shorter* is the expected direction; `LINT()` clean.
 > **RELATED** #17 ⇠ this is what #17 draws · #3 (seeds the first one in the first hour) · #4 (same
 > limb vocabulary) · #35 · #50 (every new body rule is a balance input)
 
-**The idea (user).** More mutations. [08_MUTATIONS.md](08_MUTATIONS.md) has **16 authored and 2
+**The idea (user).** More mutations. [08_MUTATIONS.md](../08_MUTATIONS.md) has **16 authored and 2
 built** (Gills of the Fen, Blooming Hand) plus 15 conditions with 2 built.
 
 **Why now.** Two chains proved the pipeline works - condition → clock → decision → mutation or
@@ -480,7 +485,7 @@ everyone treats as rabble.)*
 
 > **✅ The identity half was ruled on by the user, 2026-08-01:** *"heroes not merceneries, they
 > just start with a contract. But rather forced together random crew."* Canon and prose now follow
-> [`03_WORLD_LORE.md`](03_WORLD_LORE.md) §7: the crew are strangers with one contract, the island
+> [`03_WORLD_LORE.md`](../03_WORLD_LORE.md) §7: the crew are strangers with one contract, the island
 > supplies the word "mercenary", and wages and contracts stay as built. **The title question
 > (RabbleBound vs Rabblebound) is still open** and still the user's.
 
@@ -548,7 +553,7 @@ person who is owed something should say so when you look at them.
 
 > ### ⚠ *"The equipment is mine"* HAS NO PICKER TO POINT AT ANY MORE - re-expressed 2026-08-01
 >
-> The term was written as *they take the first loot pick, before you*. **[#55](CHANGELOG.md) removed
+> The term was written as *they take the first loot pick, before you*. **[#55](../CHANGELOG.md) removed
 > the loot pick** - the haul now arrives automatically and the after-battle screen reports it.
 >
 > **Re-expressed as a share of the haul, and it is the better version anyway.** *"The equipment is
@@ -1538,8 +1543,8 @@ regression is clean.
 | **I07** persistent escaping boss | Directly contradicts B03's ruling: a set-piece ends when it is down. Would need the outcome taxonomy rebuilt first. |
 | **F26** Battle Lab · **F25** dev menu · ScenarioSpec | Real systems, and genuinely useful - but they are **tools for the builder, not the game.** They sit behind the human playthrough and the settlements MVP. Test mode (`⚙ TEST`) and the linter already cover the immediate need. *Their contents were still harvested:* the faction doctrines and terrain identities went into #33, the point-budget-vs-wages separation into #13, the AI scoring explanation into #49. |
 | **F14** the *Rabblebound* rename | A title decision is the user's, not mine - but the packet's resolution of the "not mercenaries, but rabble" conflict is worth keeping whatever the name: **layered language, not deletion.** Legally a company (the Captain signs contracts and owes wages); to employers, sellswords; to enemies, rabble; to themselves, eventually, the Rabble. And their honesty test - *"every rabble is different"* is a lie unless variation shows up in composition, scars, remembered ties and survivors, **not mainly in randomised item rolls.** *(Ruled 2026-08-01: the layering is now canon, lore book §7; the rename itself stays open.)* |
-| **F22** archiving old builds · **F28** the screenshot-first gate · **F24** an architecture map | Process, not backlog. F28 is **already how we work** - the batched review sheets are that gate. F24's job is done by [README.md](docs/README.md) §5 and its ten invariants. F22 does not apply: there is one build. |
-| **F03** the event audit · **F12** per-class balance cards · **F07** the chronicle | Folded into existing work rather than listed separately - F03 is what `LINT()` does (and its human half is the checklist in the README), F12's eight-field card is now the class contract in [01_GAME_CONCEPT.md](docs/01_GAME_CONCEPT.md), F07's *"evidence, not a verdict"* rule is why the aftermath has no power score. |
+| **F22** archiving old builds · **F28** the screenshot-first gate · **F24** an architecture map | Process, not backlog. F28 is **already how we work** - the batched review sheets are that gate. F24's job is done by [README.md](../README.md) §5 and its ten invariants. F22 does not apply: there is one build. |
+| **F03** the event audit · **F12** per-class balance cards · **F07** the chronicle | Folded into existing work rather than listed separately - F03 is what `LINT()` does (and its human half is the checklist in the README), F12's eight-field card is now the class contract in [01_GAME_CONCEPT.md](../01_GAME_CONCEPT.md), F07's *"evidence, not a verdict"* rule is why the aftermath has no power score. |
 
 ## 57 - 🚧 Event analytics - NOT SPECIFIED HERE
 
@@ -1878,7 +1883,7 @@ reaching somebody one round earlier is that they stand there and take it the rou
 **Where it is a mistake:** a company that is winning. If there is no crisis to spend it on, it is a
 trinket slot with nothing in it, and the Fingerbone would have been +3 MOR and +4 HP all fight.
 
-> ### 📖 LORE. ✅ DONE 2026-08-02, the beast is canon: [`03_WORLD_LORE.md`](03_WORLD_LORE.md) §6
+> ### 📖 LORE. ✅ DONE 2026-08-02, the beast is canon: [`03_WORLD_LORE.md`](../03_WORLD_LORE.md) §6
 > **"Warg" appeared nowhere in the world, the lore book or the prototype**, and per the canon rule
 > *(when an event and the book disagree, one of them is a bug)* it needed writing before an item
 > could name it. The user's name was kept and the animal written, on the user's call: *"keep your
@@ -2203,11 +2208,11 @@ exactly the four modifier rungs · a routed body flies the flag on token and rai
 > **Every entry here is a specification, not an instruction.** Before writing code for any of them:
 > **(1) write out the actual rules** - costs, targets, cooldowns, limits, what it takes away -
 > and **(2) show a picture of where it lives on screen. The picture is mandatory.** Then build,
-> and **(4) write its section in [`WHAT_TO_TEST.md`](WHAT_TO_TEST.md).**
+> and **(4) write its section in [`WHAT_TO_TEST.md`](../WHAT_TO_TEST.md).**
 > Set by the user 2026-07-31: *"That way we keep it clean and don't do extra job."*
 > **⚑ Make the picture in the game** (`shotBoard()` a real practice-field board) when the thing has
 > a screen already; hand-draw only when there is nothing to photograph; **two or three panels, not
-> seven.** Full version in [README.md](README.md) §5.
+> seven.** Full version in [README.md](../README.md) §5.
 
 - **Two AI brains.** `aiTurn` and `autoStep` are separate. Every behaviour change goes in both.
 - **A shipped feature is not finished until it has a `WHAT_TO_TEST.md` section** - how to reach it

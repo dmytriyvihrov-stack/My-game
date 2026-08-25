@@ -12,6 +12,13 @@ eight months and failed quietly.
 nowhere else is a place it LIVES.** Raise it wherever the reasoning is; file it there in the same
 session.
 
+⚡ **AND IT IS TWO FILES, WHICH IS ONE LEDGER** *(2026-08-25, *"put open question in diffrent file
+and clean else"*)*. The live file holds only what is still waiting on him;
+[`docs/archive/QUESTIONS_ANSWERED.md`](../../docs/archive/QUESTIONS_ANSWERED.md) takes everything
+answered, parked or overtaken. ⛔ **A CODE IS NEVER REISSUED** - the codes are how he answers, and an
+answer landing on a recycled code is worse than no record. ⚠ `record.py check` reads BOTH, or every
+ruling that gets CLOSED would start reporting as an unfiled one.
+
 ## ⛔ Why, and the number is the argument
 
 *(2026-08-25. The user: **"what questions? can you please gather all questions and send to me in one

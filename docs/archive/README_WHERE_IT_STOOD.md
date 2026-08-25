@@ -181,7 +181,7 @@ labels, with NERVE moved up beside ARMOUR/HITPOINTS.
 
 > **✅ #52 — the reported Coldharrow hard-lock — is CLOSED**, by the user on 2026-08-01: *"it
 > works."* It was investigated across three sessions and never reproduced. **Its diagnosis is the
-> part worth keeping and it lives in [`SHIPPED.md`](SHIPPED.md):** the hidden preview pane's
+> part worth keeping and it lives in [`SHIPPED.md`](../SHIPPED.md):** the hidden preview pane's
 > `requestAnimationFrame` never fires, and a preview restart mid-session drops the harness's
 > `MessageChannel` shim, producing a stuck `G.moving` with no dialog and no error — which looks
 > *exactly* like the bug that was reported. **Check `window.__mcShim` before trusting any future
@@ -411,7 +411,7 @@ down correctly somewhere and implemented as a special case somewhere else.**
 to 8f.91). One session played five campaign runs end to end through the real UI - twelve fights,
 three full wipes, two withdrawals, a skipped boss, a fled road ambush - and **found no soft lock
 and no uncaught error anywhere**; the report with all 27 findings is
-[`QA_PLAYTEST_2026-08-02.md`](QA_PLAYTEST_2026-08-02.md). A second session fixed in parallel while
+[`QA_PLAYTEST_2026-08-02.md`](../QA_PLAYTEST_2026-08-02.md). A second session fixed in parallel while
 the first kept playing, and the two passes closed every bug-class finding the same day: the mercy
 card's dead salvage receipt, the Captain-pronoun grammar fixed at the one right place
 (`unitName`), reason text on every gated choice, a walk-away exit appended to any card with
@@ -435,7 +435,7 @@ the act keep ending at the Snare, and the victory card now says the standard tha
 is the one that has been flying over Skelbrook. The three opening texts (the map card plus both
 `COACH` pop-ups) are **one card**, the register is empty and its rows are deleted rather than left
 dark, and the ground everything happens in is labelled **THE GRAUSEN VALLEY** on the map. See
-[`03_WORLD_LORE.md`](03_WORLD_LORE.md) §9, which is canon and was rewritten with it.
+[`03_WORLD_LORE.md`](../03_WORLD_LORE.md) §9, which is canon and was rewritten with it.
 
 **Then the pass reached the rest of the events, and one of them grew a system** (build log
 **8f.92 to 8f.93**). **All 31 events and the camp cards are re-cut** on three rules: one idea per
@@ -504,7 +504,7 @@ grep the headers of all three files AND the prototype.** *(That collision resolv
 day: #67's row is written, the session that arrived second renumbered itself, and the two sessions
 shipped four entries between them without touching each other's code. **The rule that made it
 survivable is small edits with unique anchors** - neither session ever rewrote a region wholesale,
-so nothing was clobbered.)* The next free number is **#74**, and [`SHIPPED.md`](SHIPPED.md) is the
+so nothing was clobbered.)* The next free number is **#74**, and [`SHIPPED.md`](../SHIPPED.md) is the
 registry that owns that answer. *(2026-08-01, once more, and this time it cost nothing: the build-log
 row was written as 8f.72 and the number was already taken by the other session's morale re-tune while
 this one was mid-edit. **Read the last row of the build log immediately before writing yours, not at

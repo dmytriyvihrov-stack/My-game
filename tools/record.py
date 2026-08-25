@@ -495,6 +495,11 @@ def fix_order(log):
 
 # ══ the fifth write: a question lives in ONE file ════════════════════════════
 QUESTIONS = os.path.join(ROOT, "docs", "OPEN_QUESTIONS.md")
+# ⚠ #248 - AND THE ANSWERED HALF, or every ruling that gets CLOSED starts
+# reporting as an unfiled one. The split (2026-08-25, *"put open question in
+# diffrent file"*) keeps the live file answerable in one sitting; the check
+# has to know both halves are the same ledger.
+ANSWERED = os.path.join(ROOT, "docs", "archive", "QUESTIONS_ANSWERED.md")
 ASKS = "\U0001f464"                       # the person glyph a row marks a ruling with
 
 
@@ -523,6 +528,8 @@ def questions(rep):
                  "(.claude/rules/open-questions.md)")
         return
     q = "".join(read(QUESTIONS))
+    if os.path.exists(ANSWERED):
+        q += "".join(read(ANSWERED))
     for name, path, rx in (("CHANGELOG.md", CHANGELOG, RE_CL),
                            ("SHIPPED.md", SHIPPED, RE_SH)):
         for line in read(path):

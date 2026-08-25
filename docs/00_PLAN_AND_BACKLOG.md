@@ -700,5 +700,5 @@ cheap model cannot escalate judgment it does not know it is missing.
 | [`SHIPPED.md`](SHIPPED.md) | one line per shipped entry, and **every open remainder named** |
 | [`CHANGELOG.md`](CHANGELOG.md) | the build log with the reasoning, and every shipped entry in full |
 | [`WHAT_TO_TEST.md`](WHAT_TO_TEST.md) | **the user's file.** How to reach each new thing in three steps and what it should do |
-| [`OPEN_QUESTIONS.md`](OPEN_QUESTIONS.md) | **the user's other file.** Every ruling waiting on him, gathered from four places into one. A new one lands here the session it is raised |
+| [`OPEN_QUESTIONS.md`](OPEN_QUESTIONS.md) | **the user's other file.** Every ruling waiting on him and nothing else. A new one lands here the session it is raised; [`archive/QUESTIONS_ANSWERED.md`](archive/QUESTIONS_ANSWERED.md) takes them once they are closed, parked or overtaken |
 | the running build | **what is actually true. It wins over every document.** |
