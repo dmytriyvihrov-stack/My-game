@@ -104,6 +104,37 @@ carries the setup that keeps being rewritten - `GT.playerTurn()`, `GT.standNextT
 | `gates.js` | `LINT()`, the two ui-scales counters on two screens, the #230 overlap probe, the three map counters, the event-card checks |
 | `sheet.js` | the company sheet's height budget, every body x every state |
 | `board.js` | every readout the battle screen carries about a swing, plus what must NOT survive a foe's turn |
+| `sights.js` | the three map counters on their own |
+| `smoke.js` | a screen-by-screen walk: every road card, every camp, every gear hover, reporting anything that THREW |
+| `regress.js` | the eight fights, both AI brains, one line each |
+| `fightn.js` | ONE fight n times, for a RATE. `regress` runs each fight once and can only say *something went wrong here* |
+| `reach.js` | the built-but-unreachable census: art keys pointing at nothing, cards no node can deal, gear with no painting |
+| `tutorial.js` | the world tour still runs and a battle lesson still stops and restarts the clock |
+| `locktrace.js` | who WROTE a flag, with a stack, by trapping it with `defineProperty` after every `startBattle` |
+| `align243.js` · `apron241e.js` · `diff243.js` · `road243i.js` | the four one-offs a changelog row names as the instrument that measured it |
+
+## ⛔ A PROBE IS EITHER AN INSTRUMENT OR IT IS SCRATCH, AND SCRATCH DOES NOT STAY
+
+*(#248, 2026-08-25, after deleting **61** of them in one command.)*
+
+This directory had grown to **76 files**, of which fifteen were the ones above and the other
+sixty-one were session scratch - `ask240c.js`, `ask247_wash.js`, `setup244blood.js`, four `ver243`
+variants, five `apron241` variants. Each was right on the day it was written and none was ever
+opened again. ⛔ **The cost is not disk, it is that a session reading this directory to find out
+what already exists has to read sixty-one filenames to find the fifteen answers**, which is the
+exact complaint this toolkit was created to end (*"stop rebuilding safeedit/drive/jscheck"*).
+
+⛑ **THE TEST IS ONE QUESTION AND IT IS NOT ABOUT QUALITY: WILL SOMEBODY RUN THIS AGAIN?** A probe
+that answers a question the build will keep having (a gate, a census, a rate, a trap) is an
+instrument and gets a row in the table above. A probe that measured one pixel on one afternoon is
+scratch, however careful it was. ⚠ **A one-off earns a place by being CITED** - `align243.js` stays
+because a changelog row names it as the thing that measures the apron's paint against its tiles,
+which makes it the only copy of a check the record claims exists.
+
+⚠ **AND NOTHING IS LOST BY DELETING ONE.** Every file is in git, and the way back is
+`git log --diff-filter=D --name-only -- tools/dev/probes/`. **Write the throwaway** - the alternative
+is people not measuring - and delete it in the same session, or name it in the record and give it a
+row here.
 
 **Write a new probe as a file, never as a command-line string.** PowerShell eats `$`, quotes and
 parentheses in an inline JS argument and the page comes back with `SyntaxError: Unexpected end of

@@ -1,11 +1,11 @@
-# Budget & Timeline — art spend and the road to a first playable
+# Budget & Timeline - art spend and the road to a first playable
 
 > Written 2026-07-29, at the user's request. Estimates, not quotes. Rates are 2026 freelance
 > market ranges in USD; the low end of each band is realistic for Eastern European, LATAM and
 > SEA artists, which is where most indies in this genre actually hire.
 >
 > Two things this document assumes and states plainly: **music is free** (the user's brother is
-> doing it — that is a $3–8k line item already off the board), and **the design is not locked
+> doing it - that is a $3–8k line item already off the board), and **the design is not locked
 > yet**, which is the single biggest factor in when art money should be spent.
 
 ---
@@ -26,11 +26,11 @@ The things that will make RabbleBound memorable are already written down in
 - A broom has reach 2 and is humiliating for everyone involved.
 - A ratkin in human mail *"is entirely inside it. When he stops moving it stands up on its own
   and he has to be found."*
-- Humans are deliberately a bit ugly — bad teeth, broken noses. Beauty is suspicious here.
+- Humans are deliberately a bit ugly - bad teeth, broken noses. Beauty is suspicious here.
 
 **That is the differentiator, and it is free.** A competent mid-tier artist rendering *those
 ideas* beats a top-tier artist rendering generic dark-fantasy mercenaries. What reads as "AI
-slop" to an audience is almost never brushwork quality — it is **absence of specific ideas**:
+slop" to an audience is almost never brushwork quality - it is **absence of specific ideas**:
 symmetrical pretty faces, generic armour, no jokes, no wear, nothing that could only exist in
 this one world.
 
@@ -46,13 +46,13 @@ around buying volume.
 
 ---
 
-## 2. Asset inventory — what MVP Act 1 actually needs
+## 2. Asset inventory - what MVP Act 1 actually needs
 
 Derived from the MVP definition in `01_GAME_CONCEPT.md` §12 and the current prototype contents.
 
 | Family | Count | Notes |
 |---|---|---|
-| **Named-cast portraits** | 6–8 | Captain, Vesna, Marrow, Skree, Bruht, Pell (+ spares). Highest visibility — seen every run. |
+| **Named-cast portraits** | 6–8 | Captain, Vesna, Marrow, Skree, Bruht, Pell (+ spares). Highest visibility - seen every run. |
 | **Generic roster portraits** | 15–25 | Randomly-rolled recruits across 3 races. Needs variety or the roster feels repetitive. |
 | **Battle sprites / tokens** | ~30 | 10–12 player-side, 12–15 enemy types, Fen-Mother (two-hex), cub, pet. |
 | **Event illustrations** | ~25 | 17 floating + fixed events. **These are what people screenshot and post.** |
@@ -72,8 +72,8 @@ built around it.
 
 ## 3. Three budget tiers
 
-### Tier 0 — "Enough to not embarrass yourself sharing on Discord"
-### **$0 — and this is the correct answer right now**
+### Tier 0 - "Enough to not embarrass yourself sharing on Discord"
+### **$0 - and this is the correct answer right now**
 
 The user's stated concern was needing human touch *"even before sharing stuff with Discord."*
 Push back on this, gently but firmly:
@@ -85,14 +85,14 @@ is *polished-looking AI art presented as final art*, especially on a storefront.
 
 So: label it honestly ("placeholder art, hiring an artist once the design settles"), and share
 now, for free. The feedback you need at this stage is about **the fights and the events**, not
-the pictures. Spending art money before playtest validation is the classic solo-dev mistake —
+the pictures. Spending art money before playtest validation is the classic solo-dev mistake -
 if the roster, races or classes change after playtesting, every portrait you commissioned is
 thrown away.
 
-### Tier 1 — "Style lock + hero assets" (the first money you should spend)
+### Tier 1 - "Style lock + hero assets" (the first money you should spend)
 ### **$2,500 – $5,800**
 
-Hire **one** artist. The goal is not volume — it is a **locked, reproducible target** that you
+Hire **one** artist. The goal is not volume - it is a **locked, reproducible target** that you
 (or AI-assist, or a cheaper artist later) can match.
 
 | Item | Range | Why |
@@ -102,7 +102,7 @@ Hire **one** artist. The goal is not volume — it is a **locked, reproducible t
 | 6–8 named-cast portraits | $150–250 ea → $900 – $2,000 | Seen every single run. |
 | 3–4 signature event scenes | $200–350 ea → $600 – $1,400 | Fen-Mother, the tavern, the clash, the snare. |
 
-### Tier 2 — "Steam-page ready Act 1 demo"
+### Tier 2 - "Steam-page ready Act 1 demo"
 ### **$6,500 – $14,000** (includes Tier 1)
 
 Adds the volume layer, using AI-assist + human paintover at **$30–70 per asset**:
@@ -118,7 +118,7 @@ Adds the volume layer, using AI-assist + human paintover at **$30–70 per asset
 
 **This is the realistic target number for a credible Steam demo.**
 
-### Tier 3 — "Distinctive enough that people recognise a screenshot"
+### Tier 3 - "Distinctive enough that people recognise a screenshot"
 ### **$25,000 – $45,000**
 
 One dedicated artist, part-time, 6–9 months, everything hand-made, some animation. Only justify
@@ -126,18 +126,18 @@ this **after** wishlist data proves the game has an audience. Do not start here.
 
 ---
 
-## 4. The AI disclosure reality — plan for this now
+## 4. The AI disclosure reality - plan for this now
 
 Valve requires developers to disclose AI-generated content in the Steam content survey, and
 store pages display an **AI Generated Content Disclosure** section publicly. (Introduced Jan
-2024 — verify current wording before you submit, storefront policies move.)
+2024 - verify current wording before you submit, storefront policies move.)
 
 This is a real strategic constraint, not a footnote:
 
 - The disclosure is **public-facing**. Some portion of your audience filters on it.
 - Many indies now use AI **only for internal concepting and placeholders**, and ship fully
   human-made final art specifically to avoid both the disclosure and the reputational drag.
-- **Practical implication:** AI-assist is excellent for *pre-production* — mood, composition,
+- **Practical implication:** AI-assist is excellent for *pre-production* - mood, composition,
   iterating on "what does a ratkin actually look like" for free, at speed, before you pay
   anyone. Treat AI output as **direction for the artist**, not as shippable pixels. That way
   you get most of the cost saving with none of the disclosure problem.
@@ -149,11 +149,11 @@ artist is *iteration on direction*, and AI-generated reference kills that cost.
 
 ## 5. Timeline to a first playable version
 
-**You already have a playable version** — `prototype/grimtoll_slice.html` is a working game with
+**You already have a playable version** - `prototype/grimtoll_slice.html` is a working game with
 hex combat, a world map, events, inventory, morale, perks and metaprogression. So the real
 question is *first playable version of what*.
 
-### Scenario A — shareable browser demo (friends, Discord, Reddit)
+### Scenario A - shareable browser demo (friends, Discord, Reddit)
 
 Remaining work: finish the tavern prologue + village node (in progress), an onboarding/tutorial
 pass, a bug pass, a balance pass.
@@ -164,7 +164,7 @@ pass, a bug pass, a balance pass.
 | ~10 | **4–8 weeks** |
 | ~25 | 2–3 weeks |
 
-### Scenario B — Godot 4 port to feature parity
+### Scenario B - Godot 4 port to feature parity
 
 Re-implementing the hex grid, pathfinding, turn system, all UI, and save/load. ~4,200 lines of
 dense JS. Includes learning GDScript.
@@ -177,7 +177,7 @@ dense JS. Includes learning GDScript.
 
 **Critically: this produces zero new design value.** It is pure translation.
 
-### Scenario C — full MVP Act 1, Steam-demo quality
+### Scenario C - full MVP Act 1, Steam-demo quality
 
 Scenario B **plus** content build-out (30–40 nodes, 12–15 enemy types, 2 quest-lines, act boss
 tuning, art integration, audio integration, save system, settings, localisation hooks).
@@ -192,7 +192,7 @@ Solo part-time timelines slip. Assume the upper end of each band.
 
 ---
 
-## 6. The port question — a real recommendation
+## 6. The port question - a real recommendation
 
 **Do not port to Godot yet.** Possibly do not port at all.
 
@@ -200,7 +200,7 @@ Reasons:
 
 1. **The design is not locked.** Session 4 alone cut the entire faction system, restructured the
    starting roster, added a pet system and reframed metaprogression. Porting a moving target is
-   how solo projects die — you pay the translation cost repeatedly.
+   how solo projects die - you pay the translation cost repeatedly.
 2. **This game is not performance-bound.** It is a turn-based 2D game on a 13×8 hex grid. There
    is no technical reason it needs a game engine.
 3. **Web builds ship commercially.** itch.io runs them natively; Steam accepts them wrapped
@@ -209,7 +209,7 @@ Reasons:
 **Trade-offs of staying on HTML/JS, honestly stated:** a Steam wrapper adds ~100 MB, controller
 support takes deliberate work, Steamworks integration (achievements, cloud saves) needs a
 bridge library, and modding/localisation tooling is slightly more DIY. None of these are
-blocking for this game. Godot's real advantages — physics, 3D, mobile export, asset pipeline —
+blocking for this game. Godot's real advantages - physics, 3D, mobile export, asset pipeline -
 are advantages this specific game does not use.
 
 **Suggested decision point:** revisit the port question *after* external playtesting. If the
@@ -221,16 +221,16 @@ a working prototype. It was reasonable then. It is worth re-examining now, on th
 
 ---
 
-## 7. Recommended sequence — what I would actually do, in order
+## 7. Recommended sequence - what I would actually do, in order
 
 1. **Finish the browser slice.** Prologue + village + onboarding + balance pass. *(4–8 weeks at
    10 hrs/wk, $0)*
 2. **Playtest with 10–20 external people.** Discord, r/playmygame, indie servers. Placeholder
-   art, labelled honestly. *($0)* — **this is the highest-value step in this entire document.**
+   art, labelled honestly. *($0)* - **this is the highest-value step in this entire document.**
 3. **Lock the design** based on what that playtesting says. Expect real cuts.
 4. **Only now: spend $500–1,000** on a style bible + one piece of key art from a human artist.
 5. **Build the Steam page** around that key art. Start collecting wishlists. This is the actual
-   commercial milestone — everything before it is preparation.
+   commercial milestone - everything before it is preparation.
 6. **Scale art spend against wishlist velocity.** If wishlists move, fund Tier 2. If they do
    not, you have spent under $1,000 finding that out instead of $14,000.
 
@@ -243,7 +243,7 @@ That is the whole point of ordering it this way.
 ## 8. Where to find artists
 
 ArtStation (filter by "available for work"), Reddit `r/gameDevClassifieds` and `r/HungryArtists`,
-Behance, and genre-specific Discord servers — the Battle Brothers, Wartales and Darkest Dungeon
+Behance, and genre-specific Discord servers - the Battle Brothers, Wartales and Darkest Dungeon
 communities all have artists who already understand this aesthetic and will need far less
 direction, which is where the real cost saving is.
 

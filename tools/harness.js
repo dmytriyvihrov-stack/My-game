@@ -57,8 +57,32 @@ window.runFight=function(kind,opts){
      ⚠ Stubbed rather than solved with `SIM.on=true`: that flag also reroutes
      checkEnd into simResult and would change the fight this measures. */
   const _jp=(typeof JOURNAL!=='undefined'&&JOURNAL)?JOURNAL.put:null;
+  /* ⛔ #248 - AND THE TUTORIAL, WHICH IS WHY THE RIG HAS BEEN HITTING ITS
+     OWN GUARD SINCE #236. `tutFlush` opens with `if(window.TUT_SILENT)return`
+     and its comment says *"the harness switches this on"* - and this file
+     never did. So a spotlight step fires mid-fight, `nextTurn` takes its
+     `if(B.tutLock){B.tutHold=true;return;}` door, and the loop below spins to
+     3000 and reports `DRAW/STALL HIT GUARD`. **Nothing is wrong with the
+     game**: a player clicks the card and `tutNext` resumes the turn through
+     `later()`, which a synchronous loop can never let fire.
+     ⚠ IT IS NOT REPRODUCIBLE FROM A FRESH PAGE, which is what cost #239 an
+     afternoon and a row in the record. Measured: fresh page then `regress.js` is
+     clean; fresh page then `gates.js` then `smoke.js` then `regress.js` stalled
+     4 of 4 before this line and 0 of 6 after it. **The lessons are one-shot on
+     `LEGACY.seen`, which is READ OFF localStorage**, so whether a card is still
+     owed depends on what the page has already been driven through - and that is
+     the whole of the intermittency the record could not pin down.
+     ⛑ AND THE CARD DOES NOT ONLY COME FROM THE TUTORIAL. The trapped write
+     reads `capSay -> capTick -> nextTurn`: the CAPTAIN'S line reaches the same
+     dim sheet through `capCard`, which is a path no flag covered until the gate
+     moved down onto `tutPaint`, the one function both of them end in.
+     ⛑ THREE SITES READ THE FLAG (`tutFlush`, `hurtWarn`, `hurtTeach`) and one
+     write covers all three, which is why it is set here rather than stubbed
+     per function. */
+  const _tut=window.TUT_SILENT;
   const errs=[],notes=[],tally={};
   render=()=>{};fx=()=>{};sfx=()=>{};paintTerrain=()=>{};say=t=>{G.log.push(t);};
+  window.TUT_SILENT=true;
   if(_jp)JOURNAL.put=()=>{};
   strike=function(a,d,act,mul){
     try{if(opts.probe)opts.probe(a,d,act,tally,notes);}catch(e){errs.push('probe: '+e.message);}
@@ -86,8 +110,23 @@ window.runFight=function(kind,opts){
         if(!B||B.won!==null||cur()!==u||u.actions===a0)break;}
       if(B&&B.won===null&&cur()===u){B.busy=false;nextTurn();}
     }
+    /* ⛔ #248 - AND WHEN IT DOES SPIN, SAY WHAT IT WAS SPINNING ON. `HIT
+       GUARD` alone cost #236 and #239 two sessions between them and closed
+       neither: the record's own note asks for exactly this dump and says the
+       instrument exists, and it did not. It is read HERE, inside the try,
+       because the `finally` nulls B and the whole question is what B held. */
+    const stuck=(g>=3000&&B)?(()=>{const u=cur();return{
+      round:B.round,idx:B.idx,order:B.order.length,seq:B.seq,
+      tutLock:!!B.tutLock,tutHold:!!B.tutHold,busy:!!B.busy,auto:!!B.auto,
+      checkEnd:(()=>{try{return !!checkEnd();}catch(e){return 'threw '+e.message;}})(),
+      unit:u?{id:u.id,side:u.side,actions:u.actions,dead:!!u.dead,
+              downed:!!u.downed,fled:!!u.fled,hp:u.hp,ally:!!u.ally}:null,
+      alive:{you:B.units.filter(x=>x.side==='you'&&!x.dead&&!x.downed&&!x.fled).length,
+             foe:B.units.filter(x=>x.side==='foe'&&!x.dead&&!x.downed&&!x.fled).length},
+      tutQ:(B.tut&&B.tut.q)?B.tut.q.slice():null,
+      silent:!!window.TUT_SILENT};})():null;
     res={kind,won:B?(B.won===null?'DRAW/STALL':B.won):'-',rounds:B?B.round:0,
-         guard:g>=3000?'HIT GUARD':'ok',
+         guard:g>=3000?'HIT GUARD':'ok',stuck,
          down:B?B.units.filter(x=>x.side==='you'&&(x.dead||x.downed)).length:0,
          tally,notes,errs};
     /* #174 - a hook that runs while B is still alive, for anything read off
@@ -97,6 +136,7 @@ window.runFight=function(kind,opts){
   }catch(e){res={kind,fatal:e.message,stack:(e.stack||'').split('\n')[1]};}
   finally{render=_r;fx=_f;say=_s;sfx=_x;paintTerrain=_p;strike=_strike;
     if(_jp)JOURNAL.put=_jp;
+    window.TUT_SILENT=_tut;
     B=null;}
   return res;
 };
@@ -105,6 +145,7 @@ window.regress=function(opts,only){
   return (only||FIGHTS).map(k=>{
     const r=runFight(k,opts);
     return r.kind+': '+r.rounds+'rd '+r.won+' '+r.guard+
+      (r.stuck?' '+JSON.stringify(r.stuck):'')+
       (Object.keys(r.tally).length?' '+JSON.stringify(r.tally):'')+
       (r.notes&&r.notes.length?' ⚠'+r.notes.length:'')+
       (r.errs&&r.errs.length?' ERR '+r.errs.join('; '):'')+

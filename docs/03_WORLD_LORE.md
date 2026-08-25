@@ -132,7 +132,7 @@ Events should hang numbers on this spine and not invent new ones.
 - **Learning it takes years and pays badly**, so almost every wizard also keeps a trade: a sword,
   book-keeping, medicine. A caster who can do nothing else is a caster who starves in a dry
   season.
-- **Mechanically (built): casting costs the caster's own nerve.** The limit on magic is the
+- **Mechanically (built): casting costs the caster's own mood.** The limit on magic is the
   person doing it. A battle-mage swings a short sword half his rounds because the working takes
   more out of him than the sword does. The big workings are slow and can be stopped; the small
   ones are small. That is the whole of "a tiny bit of magic": real, priced, never the answer to

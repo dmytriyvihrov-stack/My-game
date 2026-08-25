@@ -126,6 +126,19 @@ carry the comment this paragraph asks for:
 the plate existed because the chip had to survive a body standing on its hex. #231 moved that
 readout under the body that pays it and made it text with a halo, so the geometry it was reserving
 stopped existing and the literal went with it. **The file's own grep now returns `86px` alone.**
+
+⚡ **AND IT DRIFTED BACK WITHIN FOUR DAYS, WHICH IS THE ARGUMENT FOR THE COUNTER RATHER THAN AGAINST
+IT** *(#248, 2026-08-25)*. The grep returned `0px 1px 3px 86px`. Two arrivals, and neither was a
+decision anybody defends: `.rmem .rlv` - the roster tile's level plate, shipped by #246 - carried a
+hand-typed `padding:1px 3px`, and `#bGround` wrote its apron fallbacks as `var(--aprT,0px)`, where
+`0` is the identical length and `0px` is only a habit. **Both were written by sessions that had this
+file open**, which is exactly §2's own Discord finding (*"I stopped noticing them because I stared at
+them for so long"*) arriving on the person who wrote the rule.
+⛑ **THE PLATE WENT ON THE SCALE AND NOTHING MOVED**, which is the usual answer: `var(--p1)
+var(--p2)` measured on all four roster rows leaves the tile **69px tall and the column 148 wide,
+both unchanged**, the plate 21.2x14 -> 23.2x16 with its bottom at 142 in a row that ends at 151.
+⚠ **A `0` FALLBACK IS NOT A GEOMETRY LITERAL AND MUST NOT BE ADDED TO THE TABLE ABOVE.** The two rows
+here are lengths somebody has to justify; a zero is the absence of one.
 ⛑ A geometry literal that outlives the geometry is the thing this table is really guarding
 against: it is not a licence, it is a list of things somebody has to justify again.
 

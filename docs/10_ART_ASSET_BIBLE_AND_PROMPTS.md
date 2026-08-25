@@ -1,4 +1,4 @@
-# RabbleBound — complete art asset bible and prompt pack
+# RabbleBound - complete art asset bible and prompt pack
 
 > Standalone production document. Audited against the live vertical slice in
 > `prototype/grimtoll_slice.html`, the game concept, world lore, mutation design, settlement and
@@ -15,20 +15,20 @@ This is the single manifest for **painted visual assets** in RabbleBound. It inc
 - rules for format, crop, palette, naming and review.
 
 It does **not** treat every idea in the backlog as ready for illustration. Items whose fiction or
-mechanics are still open are marked **BLOCKED — DO NOT GENERATE**. Painting them early would turn an
+mechanics are still open are marked **BLOCKED - DO NOT GENERATE**. Painting them early would turn an
 unsettled design into accidental canon.
 
 ### Status legend
 
 | Status | Meaning |
 |---|---|
-| **EXISTING — KEEP** | A source painting exists and is suitable as a current reference or production asset. |
-| **EXISTING — LEGACY** | A source exists, but a newer painting supersedes it. Preserve it; do not integrate it again. |
-| **GENERATED — STAGE 1** | A new source has been generated and packaged for review, but is not yet wired into the prototype. |
-| **STAND-IN — REPLACE** | The live prototype deliberately reuses an unrelated painting or a labelled concept sheet. |
-| **MISSING — CREATE** | The subject and use are defined well enough to generate now. |
-| **FUTURE — CREATE LATER** | Accepted concept, not required for the current slice. The prompt is ready. |
-| **BLOCKED — DO NOT GENERATE** | The design must be settled before art production. |
+| **EXISTING - KEEP** | A source painting exists and is suitable as a current reference or production asset. |
+| **EXISTING - LEGACY** | A source exists, but a newer painting supersedes it. Preserve it; do not integrate it again. |
+| **GENERATED - STAGE 1** | A new source has been generated and packaged for review, but is not yet wired into the prototype. |
+| **STAND-IN - REPLACE** | The live prototype deliberately reuses an unrelated painting or a labelled concept sheet. |
+| **MISSING - CREATE** | The subject and use are defined well enough to generate now. |
+| **FUTURE - CREATE LATER** | Accepted concept, not required for the current slice. The prompt is ready. |
+| **BLOCKED - DO NOT GENERATE** | The design must be settled before art production. |
 
 ### Audit result before stage 1
 
@@ -43,7 +43,7 @@ unsettled design into accidental canon.
 - The menu, world map, inventory, battlefield grounds, aftermath, wagon, victory/defeat and planned
   inheritance screens have no dedicated source paintings.
 
-### Stage-1 production result — 2026-07-31
+### Stage-1 production result - 2026-07-31
 
 Stage 1 is now frozen for review in `art/src/stage-1/`. It contains three full-size key/menu PNGs,
 fourteen 640×360 event JPGs and a colocated Claude integration guide. These files are generated but
@@ -79,7 +79,7 @@ Exact runtime keys and the integration sequence are documented beside the art in
 **Expressive painterly low fantasy with tired faces and lived-in equipment; believable materials,
 clear silhouettes and a deliberate rhythm between grim roads, bright human moments and vivid Bloom.**
 
-The current large paintings — especially `E11`, `E12`, `E13`, `E14`, `E15` and `E16` — are the
+The current large paintings - especially `E11`, `E12`, `E13`, `E14`, `E15` and `E16` - are the
 closest repository references. `P1` is the character rendering reference. Future work should retain
 their material weight while pulling slightly away from photographic smoothness: visible brush
 texture, simplified secondary detail, strong value grouping and readable silhouettes.
@@ -186,10 +186,10 @@ accent in the prompt. Do not let the model add unrelated blue spells, orange rim
 
 | Key | Use | Colour and light |
 |---|---|---|
-| **A — Fogbound Teal** | Marsh, ambush, aftermath, outnumbered fights | Wet slate and grey-teal ground, cold fog, very weak sun, almost no warm colour. |
-| **B — Dust & Gold** | Road, trade, contracts, holdings, most human comedy | Muted dry ochre and old gold against cold grey; low lateral light, never sunny postcard warmth. |
-| **C — The Bloom** | Corruption and its mutations only | Near-black greens and greys; restrained hot magenta is the only saturated colour and has no obvious source. |
-| **D — Stolen Daylight** | Two or three emotionally exceptional frames per act | Clean pale daylight, cool sky and soft straw gold; precious because the rest of the act denies it. |
+| **A - Fogbound Teal** | Marsh, ambush, aftermath, outnumbered fights | Wet slate and grey-teal ground, cold fog, very weak sun, almost no warm colour. |
+| **B - Dust & Gold** | Road, trade, contracts, holdings, most human comedy | Muted dry ochre and old gold against cold grey; low lateral light, never sunny postcard warmth. |
+| **C - The Bloom** | Corruption and its mutations only | Near-black greens and greys; restrained hot magenta is the only saturated colour and has no obvious source. |
+| **D - Stolen Daylight** | Two or three emotionally exceptional frames per act | Clean pale daylight, cool sky and soft straw gold; precious because the rest of the act denies it. |
 
 ### People and species
 
@@ -202,17 +202,17 @@ accent in the prompt. Do not let the model add unrelated blue spells, orange rim
   mascots and never an inherently evil species.
 - **Ogres:** wide, top-heavy, small head, mottled grey-green skin, heavy joints, slow physical
   confidence. They are people, not fantasy brutes waiting to be killed.
-- **The company — hard rule:** whenever the recurring mercenary company is visible as a group, make
+- **The company - hard rule:** whenever the recurring mercenary company is visible as a group, make
   it species-diverse. Show a readable combination of humans, at least one ratkin/ratling and at least
   one ogre unless the story explicitly isolates a character. Give every species practical company
   roles and shared wear; do not stage the non-humans as pets, mascots or automatic enemies. Nobody
   poses. They look at the problem, the road, or each other; rarely at camera.
-- **Travel — hard rule:** the company, wagon and pack animals use the established road, causeway,
+- **Travel - hard rule:** the company, wagon and pack animals use the established road, causeway,
   bridge or firm track. They do not walk into marsh water or abandon a passable road unless the event
   text explicitly requires wading. Make the intended direction of travel consistent in every body,
   animal, wheel and wagon shaft.
-- **Magic:** physical and specific — a changed nail, a gland, a colour under skin, a light inside a
-  body — rather than spell effects filling the frame.
+- **Magic:** physical and specific - a changed nail, a gland, a colour under skin, a light inside a
+  body - rather than spell effects filling the frame.
 
 ## 3. Production formats and prompt assembly
 
@@ -322,45 +322,45 @@ name one small story-bearing bright accent. Never ask for blanket oversaturation
 
 | ID | Source | Status | Production note |
 |---|---|---|---|
-| `P1` | `art/src/P1_The_Captain.png` | **EXISTING — KEEP** | Canon face and rendering reference for the Captain. |
-| `P2` | `art/src/P2_Vesna_Kolb.png` | **EXISTING — KEEP** | Canon Vesna. |
-| `P3` | `art/src/P3_Skree.png` | **EXISTING — KEEP** | Canon Skree. |
-| `P4` | `art/src/P4_Bruht.png` | **EXISTING — KEEP** | Canon Bruht. |
-| `P5` | `art/src/P5_Marrow.png` | **EXISTING — KEEP** | Canon Marrow. |
-| `P6` | `art/src/P6_Generic_Human_Recruits.png` | **STAND-IN — REPLACE** | Useful three-face human reference sheet, but labels and multiple faces make it unsuitable as one recruit portrait. Split by regeneration, not by cropping the labels. |
-| `P7` | `art/src/P7_Generic_Ratkin_Recruits.png` | **STAND-IN — REPLACE** | Same issue for ratkin. |
-| `P8` | `art/src/P8_Generic_Ogre_Recruits.png` | **STAND-IN — REPLACE** | Same issue for ogres. |
+| `P1` | `art/src/P1_The_Captain.png` | **EXISTING - KEEP** | Canon face and rendering reference for the Captain. |
+| `P2` | `art/src/P2_Vesna_Kolb.png` | **EXISTING - KEEP** | Canon Vesna. |
+| `P3` | `art/src/P3_Skree.png` | **EXISTING - KEEP** | Canon Skree. |
+| `P4` | `art/src/P4_Bruht.png` | **EXISTING - KEEP** | Canon Bruht. |
+| `P5` | `art/src/P5_Marrow.png` | **EXISTING - KEEP** | Canon Marrow. |
+| `P6` | `art/src/P6_Generic_Human_Recruits.png` | **STAND-IN - REPLACE** | Useful three-face human reference sheet, but labels and multiple faces make it unsuitable as one recruit portrait. Split by regeneration, not by cropping the labels. |
+| `P7` | `art/src/P7_Generic_Ratkin_Recruits.png` | **STAND-IN - REPLACE** | Same issue for ratkin. |
+| `P8` | `art/src/P8_Generic_Ogre_Recruits.png` | **STAND-IN - REPLACE** | Same issue for ogres. |
 
 ### Event and place paintings
 
 | ID | Source | Status | Live use |
 |---|---|---|---|
-| `E1` | `art/src/E1_The_Hanged_Toll_Man.png` | **EXISTING — LEGACY** | Superseded by `E13`. |
-| `E2` | `art/src/E2_The_Fen_Mother.png` | **EXISTING — KEEP** | The Fen-Mother. Small source, but the design is canon. Regenerate at production resolution only when the boss pass begins. |
-| `E3` | `art/src/E3_The_Dead_Company.png` | **EXISTING — KEEP** | The Dead Company. Also misused as a bog-body and sinkhole stand-in. |
-| `E4` | `art/src/E4_The_Muster_Field.png` | **EXISTING — KEEP** | Muster Field. Also misused for Bonepicker’s Camp and the Salt-Wives. |
-| `E5` | `art/src/E5_The_Ratkin_Snare.png` | **EXISTING — KEEP** | Ratkin Snare. Also reused for Wynn and, incorrectly, Coldharrow. |
-| `E6` | `art/src/E6_Under_the_Bloom.png` | **EXISTING — LEGACY** | Superseded by `E16`. |
-| `E7` | `art/src/E7_The_Last_Ship.png` | **EXISTING — KEEP** | The Last Ship. Also misused for the Hollow Tree. |
-| `E8` | `art/src/E8_The_Clan_Cart.png` | **EXISTING — KEEP** | Clan Cart. Also misused for pedlar, wain and wedding. |
-| `E9` | `art/src/E9_The_Sitting_Stone.png` | **EXISTING — KEEP** | Sitting Stone. Also misused for milestone and aqueduct. |
-| `E10` | `art/src/E10_The_Collector.png` | **EXISTING — LEGACY** | Superseded by `E15`. |
-| `E11` | `art/src/E11_The_Sign_of_the_Three_Bells.png` | **EXISTING — KEEP** | Tavern prologue; large current reference. |
-| `E12` | `art/src/E12_Blood_on_the_Road.png` | **EXISTING — KEEP** | First road battle; large current reference. |
-| `E13` | `art/src/E13_The_Hanged_Toll_Man.png` | **EXISTING — KEEP** | Current Toll-Man. |
-| `E14` | `art/src/E14_The_Drowned_Chapel.png` | **EXISTING — KEEP** | Current Drowned Chapel. |
-| `E15` | `art/src/E15_The_Collector.png` | **EXISTING — KEEP** | Current Collector. |
-| `E16` | `art/src/E16_Under_the_Bloom.png` | **EXISTING — KEEP** | Current Bloom environment reference. |
+| `E1` | `art/src/E1_The_Hanged_Toll_Man.png` | **EXISTING - LEGACY** | Superseded by `E13`. |
+| `E2` | `art/src/E2_The_Fen_Mother.png` | **EXISTING - KEEP** | The Fen-Mother. Small source, but the design is canon. Regenerate at production resolution only when the boss pass begins. |
+| `E3` | `art/src/E3_The_Dead_Company.png` | **EXISTING - KEEP** | The Dead Company. Also misused as a bog-body and sinkhole stand-in. |
+| `E4` | `art/src/E4_The_Muster_Field.png` | **EXISTING - KEEP** | Muster Field. Also misused for Bonepicker’s Camp and the Salt-Wives. |
+| `E5` | `art/src/E5_The_Ratkin_Snare.png` | **EXISTING - KEEP** | Ratkin Snare. Also reused for Wynn and, incorrectly, Coldharrow. |
+| `E6` | `art/src/E6_Under_the_Bloom.png` | **EXISTING - LEGACY** | Superseded by `E16`. |
+| `E7` | `art/src/E7_The_Last_Ship.png` | **EXISTING - KEEP** | The Last Ship. Also misused for the Hollow Tree. |
+| `E8` | `art/src/E8_The_Clan_Cart.png` | **EXISTING - KEEP** | Clan Cart. Also misused for pedlar, wain and wedding. |
+| `E9` | `art/src/E9_The_Sitting_Stone.png` | **EXISTING - KEEP** | Sitting Stone. Also misused for milestone and aqueduct. |
+| `E10` | `art/src/E10_The_Collector.png` | **EXISTING - LEGACY** | Superseded by `E15`. |
+| `E11` | `art/src/E11_The_Sign_of_the_Three_Bells.png` | **EXISTING - KEEP** | Tavern prologue; large current reference. |
+| `E12` | `art/src/E12_Blood_on_the_Road.png` | **EXISTING - KEEP** | First road battle; large current reference. |
+| `E13` | `art/src/E13_The_Hanged_Toll_Man.png` | **EXISTING - KEEP** | Current Toll-Man. |
+| `E14` | `art/src/E14_The_Drowned_Chapel.png` | **EXISTING - KEEP** | Current Drowned Chapel. |
+| `E15` | `art/src/E15_The_Collector.png` | **EXISTING - KEEP** | Current Collector. |
+| `E16` | `art/src/E16_Under_the_Bloom.png` | **EXISTING - KEEP** | Current Bloom environment reference. |
 
 ### Creature and faction reference sheets
 
 | ID | Source | Status | Production note |
 |---|---|---|---|
-| `C1` | `art/src/C1_Ratkin_Rank_and_File.png` | **EXISTING — KEEP** | Canon design sheet for spear, cleaver and slinger; not a transparent token. |
-| `C2` | `art/src/C2_Ratkin_Chieftain.png` | **EXISTING — KEEP** | Canon chieftain concept; not a token. |
-| `C3` | `art/src/C3_Ratkin_Warp_Sniffer.png` | **EXISTING — KEEP** | Canon warp-sniffer concept. |
-| `C4` | `art/src/C4_The_Broken_Men.png` | **EXISTING — KEEP** | Canon faction sheet; currently a stand-in for the event scene. |
-| `C5` | `art/src/C5_The_Cub.png` | **EXISTING — KEEP** | Canon cub concept; not a token. |
+| `C1` | `art/src/C1_Ratkin_Rank_and_File.png` | **EXISTING - KEEP** | Canon design sheet for spear, cleaver and slinger; not a transparent token. |
+| `C2` | `art/src/C2_Ratkin_Chieftain.png` | **EXISTING - KEEP** | Canon chieftain concept; not a token. |
+| `C3` | `art/src/C3_Ratkin_Warp_Sniffer.png` | **EXISTING - KEEP** | Canon warp-sniffer concept. |
+| `C4` | `art/src/C4_The_Broken_Men.png` | **EXISTING - KEEP** | Canon faction sheet; currently a stand-in for the event scene. |
+| `C5` | `art/src/C5_The_Cub.png` | **EXISTING - KEEP** | Canon cub concept; not a token. |
 
 ## 5. Key art and major screen paintings
 
@@ -368,7 +368,7 @@ These pictures establish screens rather than individual narrative events. Interf
 icons and the `RABBLEBOUND` wordmark must be laid out separately and must never be generated inside the
 painting.
 
-### `KEY-01` Bloom main menu — **GENERATED — STAGE 1**
+### `KEY-01` Bloom main menu - **GENERATED - STAGE 1**
 
 **Subject prompt:**
 
@@ -385,7 +385,7 @@ logo, panel or interface in the art.
 Use **MENU FORMAT**. Selected file:
 `art/src/stage-1/key/KEY-01_main-menu-bloom.png`.
 
-### `KEY-01A` Opening road alternate — **GENERATED — STAGE 1**
+### `KEY-01A` Opening road alternate - **GENERATED - STAGE 1**
 
 ```text
 A long muddy road leaving a dark timber town and crossing dead marsh toward a crooked ridge under
@@ -400,7 +400,7 @@ Atmosphere key B, Dust & Gold, but cold and restrained. Leave calm dark sky and 
 Use **MENU FORMAT**. Preserve as a prologue/loading/Act One travel alternate:
 `art/src/stage-1/key/KEY-01_ALT_opening-road.png`.
 
-### `KEY-02` World mood key — **GENERATED — STAGE 1**
+### `KEY-02` World mood key - **GENERATED - STAGE 1**
 
 **Subject prompt:**
 
@@ -417,7 +417,7 @@ game: Fogbound Teal, no saturated colour, cold low cloud, distance dissolving in
 Use **EVENT FORMAT**, but archive the full frame as the master grading reference. Selected file:
 `art/src/stage-1/key/KEY-02_world-mood-key.png`.
 
-### `UI-01` Act One road map plate — **MISSING — CREATE**
+### `UI-01` Act One road map plate - **MISSING - CREATE**
 
 **Subject prompt:**
 
@@ -433,7 +433,7 @@ small C-coloured stain only in the Bloom region.
 
 Use **MENU FORMAT**, with usable negative space across the route layer.
 
-### `UI-02` Company / inventory backdrop — **MISSING — CREATE**
+### `UI-02` Company / inventory backdrop - **MISSING - CREATE**
 
 **Subject prompt:**
 
@@ -446,7 +446,7 @@ stash panels. A little grey daylight leaks through canvas; nothing glows.
 
 Use **MENU FORMAT**.
 
-### `UI-03` Post-battle consequences backdrop — **MISSING — CREATE**
+### `UI-03` Post-battle consequences backdrop - **MISSING - CREATE**
 
 **Subject prompt:**
 
@@ -459,7 +459,7 @@ central foreground is dark and simple for the consequences card. Fogbound Teal.
 
 Use **MENU FORMAT**.
 
-### `UI-04` Practice field backdrop — **MISSING — CREATE**
+### `UI-04` Practice field backdrop - **MISSING - CREATE**
 
 **Subject prompt:**
 
@@ -472,7 +472,7 @@ calm areas for fight and company selectors.
 
 Use **MENU FORMAT**.
 
-### `UI-05` Rules / field manual backdrop — **MISSING — CREATE**
+### `UI-05` Rules / field manual backdrop - **MISSING - CREATE**
 
 **Subject prompt:**
 
@@ -485,7 +485,7 @@ Dust & Gold, broad blank page areas reserved for real typeset rules.
 
 Use **MENU FORMAT**. UI typography is added separately.
 
-### `UI-06` The Wagon — **MISSING — CREATE**
+### `UI-06` The Wagon - **MISSING - CREATE**
 
 **Subject prompt:**
 
@@ -499,7 +499,7 @@ quiet dusk, enough empty dark around it for crafting controls. Dust & Gold.
 
 Use **MENU FORMAT**.
 
-### `UI-07` Travel-forge close view — **MISSING — CREATE**
+### `UI-07` Travel-forge close view - **MISSING - CREATE**
 
 **Subject prompt:**
 
@@ -512,7 +512,7 @@ machinery. Central still-life composition with dark margins for recipe choices.
 
 Use **EVENT FORMAT**.
 
-### `UI-08` Defeat — **MISSING — CREATE**
+### `UI-08` Defeat - **MISSING - CREATE**
 
 **Subject prompt:**
 
@@ -525,7 +525,7 @@ defeat heading.
 
 Use **MENU FORMAT**.
 
-### `UI-09` Victory / end-of-slice walk home — **MISSING — CREATE**
+### `UI-09` Victory / end-of-slice walk home - **MISSING - CREATE**
 
 **Subject prompt:**
 
@@ -538,7 +538,7 @@ triumphant. Atmosphere D, Stolen Daylight, one of the act's rare clean-lit frame
 
 Use **MENU FORMAT**.
 
-### `UI-10` Inheritance screen — **FUTURE — CREATE LATER**
+### `UI-10` Inheritance screen - **FUTURE - CREATE LATER**
 
 **Subject prompt:**
 
@@ -552,7 +552,7 @@ still-life with human hands at the edges, Dust & Gold with fire kept distant.
 
 Use **EVENT FORMAT**.
 
-### `UI-11` Codex / bestiary backdrop — **FUTURE — CREATE LATER**
+### `UI-11` Codex / bestiary backdrop - **FUTURE - CREATE LATER**
 
 **Subject prompt:**
 
@@ -571,7 +571,7 @@ Every subject prompt in this section uses **EVENT FORMAT**. An existing image st
 it can be regenerated consistently at a larger production master or revised without inventing the
 scene again.
 
-### `EV-00` The Sign of the Three Bells — **EXISTING — KEEP** (`E11`)
+### `EV-00` The Sign of the Three Bells - **EXISTING - KEEP** (`E11`)
 
 ```text
 Inside a poor, crowded timber tavern, a well-fed human contract-giver in a very good dark coat leans
@@ -632,7 +632,7 @@ it anyway; forty crowns still counted out on the table because the job stands. T
 procedural, not dramatic. Brown-black room, candle warmth pulled back. Dust & Gold.
 ```
 
-### `EV-01` Blood on the Road — **EXISTING — KEEP** (`E12`)
+### `EV-01` Blood on the Road - **EXISTING - KEEP** (`E12`)
 
 ```text
 On a broad muddy road over open high country, a ratkin foraging party and an ogre steading-line face
@@ -642,7 +642,7 @@ the settled patience of things that do not expect to lose. Make both sides reada
 good and evil armies. The instant before the humans choose a side. Cold Dust & Gold, no magic.
 ```
 
-### `EV-02` The Hanged Toll-Man — **EXISTING — KEEP** (`E13`)
+### `EV-02` The Hanged Toll-Man - **EXISTING - KEEP** (`E13`)
 
 ```text
 A muddy bridge-head and heavy timber toll frame under a flat grey sky. One hanged toll-man turns
@@ -651,7 +651,7 @@ company and wagon have stopped at a cautious distance. A small bell, crows, wet 
 ruin on the horizon. Melancholy, not gruesome. Dust & Gold with almost all warmth gone.
 ```
 
-### `EV-03` Pedlar on the Ridge — **GENERATED — STAGE 1**
+### `EV-03` Pedlar on the Ridge - **GENERATED - STAGE 1**
 
 ```text
 A one-mule pedlar alone on an exposed stony ridge, a folding table between him and the approaching
@@ -661,7 +661,7 @@ several mercenaries have separately noticed that he is alone. Wide empty country
 arithmetic visible. Dust & Gold, hard low wind, no magic.
 ```
 
-### `EV-04` The Drowned Chapel — **EXISTING — KEEP** (`E14`)
+### `EV-04` The Drowned Chapel - **EXISTING - KEEP** (`E14`)
 
 ```text
 A small ruined stone chapel standing in brown fen-water, roof partly collapsed and drowned pews
@@ -670,7 +670,7 @@ the altar one dry dark gap suggests a flooded crypt. Cold marsh stretches behind
 with weak candle stubs as tiny unsaturated points, no supernatural glow.
 ```
 
-### `EV-05` Bonepicker’s Camp — **GENERATED — STAGE 1**
+### `EV-05` Bonepicker’s Camp - **GENERATED - STAGE 1**
 
 ```text
 Six patched tents around a cook-fire at a roadside camp run by a friendly man who buys teeth. Racks
@@ -680,7 +680,7 @@ relaxed way of somebody who has decided they are not worth robbing. Dry deadpan 
 one modest fire as the only warm colour.
 ```
 
-### `EV-06` The Sunken Wain — **GENERATED — STAGE 1**
+### `EV-06` The Sunken Wain - **GENERATED - STAGE 1**
 
 ```text
 An abandoned merchant wagon sunk to its axles in dark fen mud, one wheel twisted, ox traces empty.
@@ -690,7 +690,7 @@ they helped. The missing merchant is implied by a wet cloak snagged on reeds, ne
 Teal with two wrong-coloured stones barely visible through the box's cracked lid.
 ```
 
-### `EV-07` Under the Bloom — **GENERATED — STAGE 1 / REFRESHES `E16`**
+### `EV-07` Under the Bloom - **GENERATED - STAGE 1 / REFRESHES `E16`**
 
 ```text
 The company enters a forest where the air itself is the wrong colour. Crooked bare trees, black moss
@@ -700,7 +700,7 @@ guarded and looking upward. Nothing casts a conventional glow: the atmosphere is
 Bloom, hot magenta the only saturated colour.
 ```
 
-### `EV-08` The Fen-Mother — **GENERATED — STAGE 1 / REFRESHES `E2`**
+### `EV-08` The Fen-Mother - **GENERATED - STAGE 1 / REFRESHES `E2`**
 
 ```text
 A vast six-legged lindwurm the size of a hay-wain lies dead-still in bloom-lit fen, initially
@@ -710,7 +710,7 @@ The beast watches the cub, not the distant company. Quiet, maternal and frighten
 attack pose. The Bloom; hot magenta is the only saturated colour.
 ```
 
-### `EV-09` The Dead Company — **EXISTING — KEEP** (`E3`)
+### `EV-09` The Dead Company - **EXISTING - KEEP** (`E3`)
 
 ```text
 Nine dead mercenaries lie in a roadside ditch four or five days after an ambush, viewed from the
@@ -720,7 +720,7 @@ ditch edge, comparing that good armour with its own rags. No gore in focus. Fogb
 mist; the wrongness is that their gear is better than yours.
 ```
 
-### `EV-10` Something in Armour — **GENERATED — STAGE 1**
+### `EV-10` Something in Armour - **GENERATED - STAGE 1**
 
 ```text
 Late afternoon on a broken road: a towering figure has followed the company for miles at an
@@ -731,7 +731,7 @@ head. Give it no supernatural glow and no readable emblem. Fogbound Teal; dread 
 scale alone.
 ```
 
-### `EV-11` They Come Over the Wall — **GENERATED — STAGE 1**
+### `EV-11` They Come Over the Wall - **GENERATED - STAGE 1**
 
 ```text
 Night inside a ruined steading's broken palisade. The company's small fire burns at centre while
@@ -742,7 +742,7 @@ Fogbound Teal, with the central fire the only warm saturated colour; tense, read
 geometry rather than chaotic monster horror.
 ```
 
-### `EV-12` The Door-Shrine — **GENERATED — STAGE 1**
+### `EV-12` The Door-Shrine - **GENERATED - STAGE 1**
 
 ```text
 An ordinary closed weathered wooden door stands upright alone in the middle of a wet field, with no
@@ -756,7 +756,7 @@ bright Stolen Daylight after rain: pale clean sky, soft straw sun, luminous wet 
 shadows. The colour comes from daylight, paint and cloth, never glow; no portal is visible.
 ```
 
-### `EV-13` The Sling-Line — **GENERATED — STAGE 1**
+### `EV-13` The Sling-Line - **GENERATED - STAGE 1**
 
 ```text
 An exposed stony ridge seen from the company at the bottom: ratkin slingers hold high ground behind
@@ -766,7 +766,7 @@ is disciplined improvised warfare, not a swarm, and the open ground between forc
 Dust & Gold; the staff tip is the only saturated colour.
 ```
 
-### `EV-14` The Steading-Line — **GENERATED — STAGE 1**
+### `EV-14` The Steading-Line - **GENERATED - STAGE 1**
 
 ```text
 Four ogres have settled across a mountain road for the day: a small fire, a pot and ground packed
@@ -776,7 +776,7 @@ toll feels patient and almost reasonable. Open hard country, large negative sky,
 them as a household defending a place, not raiders posing for battle.
 ```
 
-### `EV-15` The Milestone — **GENERATED — STAGE 1**
+### `EV-15` The Milestone - **GENERATED - STAGE 1**
 
 ```text
 A squat ratkin milestone at a lonely fork, carved with an old distance and clan mark, while fresh
@@ -786,7 +786,7 @@ the sabotage recent. Dust & Gold, dry wind, one simple subject; no legible writi
 clearly old marks altered by new ones.
 ```
 
-### `EV-16` The Salt-Wives — **GENERATED — STAGE 1**
+### `EV-16` The Salt-Wives - **GENERATED - STAGE 1**
 
 ```text
 Four human women boil brine in black iron pans on a grey shingle shore with no village behind them.
@@ -796,7 +796,7 @@ the salt. Stolen Daylight used lightly: pale clean sky and soft straw light, pra
 sentimentality.
 ```
 
-### `EV-17` The Clan Cart — **EXISTING — KEEP** (`E8`)
+### `EV-17` The Clan Cart - **EXISTING - KEEP** (`E8`)
 
 ```text
 A ratkin trade-cart sits with one broken wheel while four ratkin wait on it with complete exhausted
@@ -805,7 +805,7 @@ bundled and hanging from every rail; one has already come apart in somebody's ha
 scale of shoddy manufacture and the traders' dignity, not slapstick. Dust & Gold, no magic.
 ```
 
-### `EV-18` The Hollow Tree — **GENERATED — STAGE 1**
+### `EV-18` The Hollow Tree - **GENERATED - STAGE 1**
 
 ```text
 A vast dead hollow tree beside the road, split open enough to reveal that someone once lived inside.
@@ -814,7 +814,7 @@ abruptly after a gap. The company looks in from outside without entering. Fogbou
 grey daylight; the stopped tally is the story-bearing detail, but no readable number is painted.
 ```
 
-### `EV-19` The Sitting Stone — **EXISTING — KEEP** (`E9`)
+### `EV-19` The Sitting Stone - **EXISTING - KEEP** (`E9`)
 
 ```text
 An enormous ogre sits on a modest roadside rock as if he has been there for two winters. Moss and
@@ -823,7 +823,7 @@ of bread while the company speaks with him from a respectful distance. A war mar
 rotted through several old banners. Dry deadpan melancholy, Dust & Gold; never a comic giant.
 ```
 
-### `EV-20` The Collector — **EXISTING — KEEP** (`E15`)
+### `EV-20` The Collector - **EXISTING - KEEP** (`E15`)
 
 ```text
 A solitary human toll collector in an unexpectedly good coat has set a small desk across a ruined
@@ -833,7 +833,7 @@ company and wagon wait in disbelief. Dust & Gold; the ledger, seal and coat carr
 readable writing.
 ```
 
-### `EV-21` What the Peat Kept — **GENERATED — STAGE 1**
+### `EV-21` What the Peat Kept - **GENERATED - STAGE 1**
 
 ```text
 A peat cutting has opened the perfectly preserved dark-brown face of an ancient ratkin body. A
@@ -843,7 +843,7 @@ recognises what it means. Archaeological, solemn and materially specific, not a 
 Fogbound Teal, no saturated colour.
 ```
 
-### `EV-22` A Wedding on the Road — **STAND-IN — REPLACE**
+### `EV-22` A Wedding on the Road - **STAND-IN - REPLACE**
 
 ```text
 A ratkin clan wedding has completely occupied a muddy road: patched awnings, shared pots, drums,
@@ -853,7 +853,7 @@ verminous, poor and recognisably familial, never cute or carnival-bright. Dust &
 madder and mustard cloth only.
 ```
 
-### `EV-23` The Ratkin Waterworks — **STAND-IN — REPLACE**
+### `EV-23` The Ratkin Waterworks - **STAND-IN - REPLACE**
 
 ```text
 A beautiful stone aqueduct crosses forty feet above a road and is catastrophically assembled:
@@ -863,7 +863,7 @@ examines the lead joints. The engineering is impressive and shoddy at once. Dust
 sky, no readable inscription.
 ```
 
-### `EV-24` The Last Ship — **EXISTING — KEEP** (`E7`)
+### `EV-24` The Last Ship - **EXISTING - KEEP** (`E7`)
 
 ```text
 A sixty-year-old human sailing vessel rests far up a grey shingle beach, impossibly distant from
@@ -873,7 +873,7 @@ of the ships that brought humans here. Atmosphere D, Stolen Daylight: real pale 
 used here because this is memory rather than danger.
 ```
 
-### `EV-25` The Ground Opens — **STAND-IN — REPLACE**
+### `EV-25` The Ground Opens - **STAND-IN - REPLACE**
 
 ```text
 A silent peat sinkhole has opened beneath one mercenary, revealing a deep black slot and the mouth
@@ -882,7 +882,7 @@ person, alive and furious, braces on a ledge. The wagon and company recoil from 
 solid a moment ago. Fogbound Teal, strong readable depth, no monsters and no glowing cavern.
 ```
 
-### `EV-26` The Broken Men — **STAND-IN — REPLACE EVENT SCENE** (`C4` remains the design sheet)
+### `EV-26` The Broken Men - **STAND-IN - REPLACE EVENT SCENE** (`C4` remains the design sheet)
 
 ```text
 Five human deserters step from a wet treeline to block the company road. Each wears half a uniform,
@@ -892,7 +892,7 @@ monstrous or eager. Fogbound Teal, eye-level human distance, the cart and provis
 the two groups as the actual stakes.
 ```
 
-### `EV-27` The Ratkin Snare — **EXISTING — KEEP** (`E5`)
+### `EV-27` The Ratkin Snare - **EXISTING - KEEP** (`E5`)
 
 ```text
 A dead-marsh road at dusk is strung with small bells on cords. At the far end stands a boar-hauling
@@ -902,7 +902,7 @@ all three facts. Fogbound Teal, tense and outnumbered; one tiny magenta staff li
 saturated colour.
 ```
 
-### `EV-28` The Woman in the Cage — **STAND-IN — REPLACE**
+### `EV-28` The Woman in the Cage - **STAND-IN - REPLACE**
 
 ```text
 After the fight, Vesna cuts the withies of a boar cage while Wynn Aldreth unfolds herself from
@@ -912,7 +912,7 @@ out of focus and make this a meeting, not a rescue pose. Cold dawn Fogbound Teal
 expression the focal point.
 ```
 
-### `PLACE-01` Coldharrow — **STAND-IN — REPLACE**
+### `PLACE-01` Coldharrow - **STAND-IN - REPLACE**
 
 ```text
 Forty cramped houses behind a wall that would not stop a determined cow, a church with lead stripped
@@ -922,7 +922,7 @@ politely, to wait by the gate. Civil, safe by local standards and visibly expens
 smoke held low, no welcoming fantasy glow.
 ```
 
-### `PLACE-02` The Muster Field — **EXISTING — KEEP** (`E4`)
+### `PLACE-02` The Muster Field - **EXISTING - KEEP** (`E4`)
 
 ```text
 A low stone wall at a crossroads beneath a wide pale sky. Three strangers of different races sit on
@@ -931,7 +931,7 @@ of the wall. A faded empty banner-pole marks the place. Hopeful but unsentimenta
 of the act's few frames where the open road feels like opportunity.
 ```
 
-### `PLACE-03` The Last Muster — **MISSING — CREATE**
+### `PLACE-03` The Last Muster - **MISSING - CREATE**
 
 ```text
 Three worn recruits wait at a crossroads one day short of the bells. Evening is closing, the road
@@ -940,7 +940,7 @@ is slightly better and their expressions less hopeful than at the first Muster F
 refugees passes in the opposite direction. Dust & Gold fading toward Fogbound Teal.
 ```
 
-### `PLACE-04` Somebody at the Fire — dismissed veteran returns — **MISSING — CREATE**
+### `PLACE-04` Somebody at the Fire - dismissed veteran returns - **MISSING - CREATE**
 
 ```text
 A former company member stands at the edge of a roadside firelight with a bundle and a week of road
@@ -951,7 +951,7 @@ portrait can be overlaid separately. Fogbound Teal with one small warm fire, qui
 
 ## 7. Camp-incident paintings
 
-All 17 live camp incidents are **MISSING — CREATE**. Use **CAMP FORMAT**. Because the incident text
+All 17 live camp incidents are **MISSING - CREATE**. Use **CAMP FORMAT**. Because the incident text
 casts current party members dynamically, the paintings should emphasise hands, posture, objects and
 fire arrangement rather than lock in named faces. Specific racial requirements are stated where the
 event has them.
@@ -1112,7 +1112,7 @@ embarrassment and aggressive ratkin definitions of family; Stolen Daylight, neve
 
 ## 8. Road-vignette spot paintings
 
-These 14 live vignettes are **MISSING — CREATE**. They are deliberately smaller than full events.
+These 14 live vignettes are **MISSING - CREATE**. They are deliberately smaller than full events.
 Use **EVENT FORMAT** at the vignette master size, one clear incident per picture and no named face.
 If production scope must be reduced, these may ship after the dedicated event paintings, but they
 remain in the manifest so no live content is forgotten.
@@ -1226,7 +1226,7 @@ labelled contact sheet.
 
 ### Named company portraits
 
-#### `POR-01` The Captain — **EXISTING — KEEP** (`P1`)
+#### `POR-01` The Captain - **EXISTING - KEEP** (`P1`)
 
 ```text
 Human mercenary captain, late thirties, tired and competent, ordinary ugly face, broken nose, bad
@@ -1235,7 +1235,7 @@ repaired badly, mismatched rusted pauldron and a small faded banner crest at the
 posing and does not look pleased to be in charge. Dust & Gold grading.
 ```
 
-#### `POR-02` Vesna Kolb — **EXISTING — KEEP** (`P2`)
+#### `POR-02` Vesna Kolb - **EXISTING - KEEP** (`P2`)
 
 ```text
 Human spearwoman in her forties, weathered, thin-lipped and entirely unbothered, grey beginning at
@@ -1243,7 +1243,7 @@ the temples, a face that has buried three husbands and does not discuss it. Patc
 gambeson and the haft of a boar spear behind one shoulder. Fogbound Teal grading.
 ```
 
-#### `POR-03` Skree — **EXISTING — KEEP** (`P3`)
+#### `POR-03` Skree - **EXISTING - KEEP** (`P3`)
 
 ```text
 Small ratkin cutter with grey-pink patchy fur, long naked snout, yellowed incisors, one notched ear
@@ -1251,7 +1251,7 @@ and wet black darting eyes. Scavenged leather hood, scrap harness, cord-bound ra
 stolen trinkets sewn into the cloth. Twitchy, clever, verminous and oddly sympathetic; never cute.
 ```
 
-#### `POR-04` Bruht — **EXISTING — KEEP** (`P4`)
+#### `POR-04` Bruht - **EXISTING - KEEP** (`P4`)
 
 ```text
 Enormous ogre brute, shoulders overflowing the frame so the head looks small above them, mottled
@@ -1259,7 +1259,7 @@ grey-green hide, heavy brow, deep-set dull eyes, blunt tusks and old rope scars 
 skin with scavenged straps and a warclub haft. Slow, sad and dangerous; a person, not a monster.
 ```
 
-#### `POR-05` Marrow — **EXISTING — KEEP** (`P5`)
+#### `POR-05` Marrow - **EXISTING - KEEP** (`P5`)
 
 ```text
 Thin human battle-mage in his mid-fifties, sunken eyes, ink-stained fingers, patched clothes, short
@@ -1268,7 +1268,7 @@ and also reads things other people leave alone. One faint magenta reflection cat
 and nowhere else.
 ```
 
-#### `POR-06` Ilka Renn — **MISSING — CREATE**
+#### `POR-06` Ilka Renn - **MISSING - CREATE**
 
 ```text
 Human archer in her early thirties, long narrow asymmetric face, wind-burned cheeks, one front tooth
@@ -1277,7 +1277,7 @@ already counted every exit. Worn rags reinforced at the drawing shoulder, huntin
 quiver visible, fingers callused and stained with wax. No idealised huntress beauty.
 ```
 
-#### `POR-07` Nib — **MISSING — CREATE**
+#### `POR-07` Nib - **MISSING - CREATE**
 
 ```text
 Ratkin archer and Skree's cousin, small even for a ratkin, grey-brown fur, narrow alert muzzle and
@@ -1285,7 +1285,7 @@ one ear pierced with a bent copper loop. Scrap harness, short hunting bow and ov
 Unexpectedly steady eyes and relaxed posture: the ratkin who does not run when everyone expects it.
 ```
 
-#### `POR-08` Gell — **MISSING — CREATE**
+#### `POR-08` Gell - **MISSING - CREATE**
 
 ```text
 Half-dead ratkin cutter found in the ditch after Blood on the Road, pale grey-pink fur matted with
@@ -1293,7 +1293,7 @@ mud, one eye swollen, rags and a small gut-knife still present. A pacifist carry
 world requires, exhausted rather than cowardly. Show survival and reluctance, not gore.
 ```
 
-#### `POR-09` Wynn Aldreth — **MISSING — CREATE**
+#### `POR-09` Wynn Aldreth - **MISSING - CREATE**
 
 ```text
 Human foundry widow in her late thirties, recently freed from a boar cage, folded posture not yet
@@ -1302,7 +1302,7 @@ rope bruises, torn work coat with old soot at the cuffs. Dry intelligence and no
 she is deciding what the banner is worth.
 ```
 
-### Generic recruit portrait pool — **MISSING — CREATE**
+### Generic recruit portrait pool - **MISSING - CREATE**
 
 These replace composite `P6–P8`. Generate each entry as a separate portrait. Do not make any one
 look like a protagonist.
@@ -1322,7 +1322,7 @@ look like a protagonist.
 | `POR-O03` | `Female ogre recruit with heavy jaw, rope-braided hair, scrap harness and long pike, immense without glamour or monstrous exaggeration.` |
 | `POR-O04` | `Thin-for-an-ogre recruit in an absurd human wardrobe used as armour, embarrassed dignity, bucket hanging from one strap.` |
 
-### Supporting NPC portraits — **FUTURE — CREATE LATER**
+### Supporting NPC portraits - **FUTURE - CREATE LATER**
 
 These become necessary if settlement and event dialogue gains visible speakers. Event scenes are
 enough for the present slice.
@@ -1349,7 +1349,7 @@ Use **TURNAROUND FORMAT** for every sheet below. First generate neutral body sil
 armour and weapon overlays against the approved body proportions. Test every result at actual board
 scale before authoring more.
 
-### Playable body bases — **MISSING — CREATE**
+### Playable body bases - **MISSING - CREATE**
 
 | ID | Subject prompt |
 |---|---|
@@ -1357,7 +1357,7 @@ scale before authoring more.
 | `TOK-R01` | `Ratkin mercenary base body, small hunched silhouette, long naked tail, narrow shoulders, digitigrade feet and clever hands, empty-handed, grey-pink patchy fur.` |
 | `TOK-O01` | `Ogre mercenary base body, very wide top-heavy silhouette, tiny head, long heavy arms and slow planted feet, mottled grey-green skin, empty-handed.` |
 
-### Player armour overlay sheets — **MISSING — CREATE**
+### Player armour overlay sheets - **MISSING - CREATE**
 
 Use the appropriate approved body base as a hard visual reference. Overlays contain no face or body.
 
@@ -1367,7 +1367,7 @@ Use the appropriate approved body base as a hard visual reference. Overlays cont
 | `ARM-R01` | `Ratkin-size armour overlay turnaround set: rags, cook-pot straps, scrap harness, rat-silk shroud; improvised fit around tail and hunched shoulders.` |
 | `ARM-O01` | `Ogre-size armour overlay turnaround set: bare straps, door-plank harness, stitched hides, lashed plates, ogre scale and an absurd wardrobe; every layer tied on rather than tailored.` |
 
-### Weapon and off-hand overlay sheets — **MISSING — CREATE**
+### Weapon and off-hand overlay sheets - **MISSING - CREATE**
 
 | ID | Subject prompt |
 |---|---|
@@ -1379,49 +1379,49 @@ Use the appropriate approved body base as a hard visual reference. Overlays cont
 
 | ID | Status | Subject prompt |
 |---|---|---|
-| `TOK-RAT-SPEAR` | **MISSING — CREATE**, refer to `C1` | `Mangy ratkin rank-and-file with rusty spear and small scavenged shield, cheap scrap harness, alert swarm posture.` |
-| `TOK-RAT-SLINGER` | **MISSING — CREATE**, refer to `C1` | `Small ratkin slinger with stone pouch, sling extended, almost no armour and evasive low stance.` |
-| `TOK-RAT-CUTTER` | **MISSING — CREATE**, refer to `C1` | `Ratkin cutter with gut-knife, cord-bound rags and posture built around stepping behind a distracted target.` |
-| `TOK-RAT-CHIEF` | **MISSING — CREATE**, refer to `C2` | `Larger ratkin chieftain in the best scavenged armour of the clan, crude standard fixed to the back, visibly in command without becoming a giant rat.` |
-| `TOK-RAT-SNIFFER` | **MISSING — CREATE**, refer to `C3` | `Small unarmed ratkin warp-sniffer, staff with one restrained hot-magenta tip, ritual scraps and cautious posture behind the line.` |
-| `TOK-RAT-SLINGMASTER` | **MISSING — CREATE** | `Veteran ratkin sling-master with heavier sling, layered scrap coat and a compact command standard; ranged captain who holds the ridge rather than charges.` |
-| `TOK-RAT-LONGSPEAR` | **MISSING — CREATE** | `Ratkin screen fighter braced behind an overlong spear, scrap helmet and narrow shield, silhouette devoted to keeping enemies away from slingers.` |
+| `TOK-RAT-SPEAR` | **MISSING - CREATE**, refer to `C1` | `Mangy ratkin rank-and-file with rusty spear and small scavenged shield, cheap scrap harness, alert swarm posture.` |
+| `TOK-RAT-SLINGER` | **MISSING - CREATE**, refer to `C1` | `Small ratkin slinger with stone pouch, sling extended, almost no armour and evasive low stance.` |
+| `TOK-RAT-CUTTER` | **MISSING - CREATE**, refer to `C1` | `Ratkin cutter with gut-knife, cord-bound rags and posture built around stepping behind a distracted target.` |
+| `TOK-RAT-CHIEF` | **MISSING - CREATE**, refer to `C2` | `Larger ratkin chieftain in the best scavenged armour of the clan, crude standard fixed to the back, visibly in command without becoming a giant rat.` |
+| `TOK-RAT-SNIFFER` | **MISSING - CREATE**, refer to `C3` | `Small unarmed ratkin warp-sniffer, staff with one restrained hot-magenta tip, ritual scraps and cautious posture behind the line.` |
+| `TOK-RAT-SLINGMASTER` | **MISSING - CREATE** | `Veteran ratkin sling-master with heavier sling, layered scrap coat and a compact command standard; ranged captain who holds the ridge rather than charges.` |
+| `TOK-RAT-LONGSPEAR` | **MISSING - CREATE** | `Ratkin screen fighter braced behind an overlong spear, scrap helmet and narrow shield, silhouette devoted to keeping enemies away from slingers.` |
 
 ### Ogre hostile formations
 
 | ID | Status | Subject prompt |
 |---|---|---|
-| `TOK-OGR-CLUB` | **MISSING — CREATE** | `Steading ogre with warclub, stitched hides and settled wide stance, slow confidence rather than rage.` |
-| `TOK-OGR-PIKE` | **MISSING — CREATE** | `Ogre with extremely long crude pike, rope hand-spacing and light hide armour, designed to hold a road from two hexes away.` |
-| `TOK-OGR-MAUL` | **MISSING — CREATE** | `Ogre with two-handed stone maul and heavy scrap shoulder protection, low deliberate centre of mass.` |
-| `TOK-OGR-THROWER` | **MISSING — CREATE** | `Ogre stone-thrower with sling-basket of fist-sized rocks and one rock ready in a huge hand, lighter armour, patient aim.` |
-| `TOK-OGR-ELDER` | **MISSING — CREATE** | `Old steading-elder, broad grey hide, best repaired plate, walking staff that is also a club, calm seated authority translated into a standing combat silhouette.` |
+| `TOK-OGR-CLUB` | **MISSING - CREATE** | `Steading ogre with warclub, stitched hides and settled wide stance, slow confidence rather than rage.` |
+| `TOK-OGR-PIKE` | **MISSING - CREATE** | `Ogre with extremely long crude pike, rope hand-spacing and light hide armour, designed to hold a road from two hexes away.` |
+| `TOK-OGR-MAUL` | **MISSING - CREATE** | `Ogre with two-handed stone maul and heavy scrap shoulder protection, low deliberate centre of mass.` |
+| `TOK-OGR-THROWER` | **MISSING - CREATE** | `Ogre stone-thrower with sling-basket of fist-sized rocks and one rock ready in a huge hand, lighter armour, patient aim.` |
+| `TOK-OGR-ELDER` | **MISSING - CREATE** | `Old steading-elder, broad grey hide, best repaired plate, walking staff that is also a club, calm seated authority translated into a standing combat silhouette.` |
 
 ### Human hostile formation
 
 | ID | Status | Subject prompt |
 |---|---|---|
-| `TOK-BROKEN-RABBLE` | **MISSING — CREATE**, refer to `C4` | `Three compatible Broken Men variants on one turnaround sheet: starving deserter with spear, deserter with sword and half-shield, deserter archer; each wears half a faded human uniform.` |
-| `TOK-BROKEN-CAPTAIN` | **MISSING — CREATE**, refer to `C4` | `Broken Men's captain, hungry and patched but still standing like an officer, faded half-uniform, serviceable sword and no villainous flourish.` |
+| `TOK-BROKEN-RABBLE` | **MISSING - CREATE**, refer to `C4` | `Three compatible Broken Men variants on one turnaround sheet: starving deserter with spear, deserter with sword and half-shield, deserter archer; each wears half a faded human uniform.` |
+| `TOK-BROKEN-CAPTAIN` | **MISSING - CREATE**, refer to `C4` | `Broken Men's captain, hungry and patched but still standing like an officer, faded half-uniform, serviceable sword and no villainous flourish.` |
 
 ### Beasts and the unidentified
 
 | ID | Status | Subject prompt |
 |---|---|---|
-| `TOK-FEN-MOTHER` | **MISSING — CREATE**, refer to `E2` | `Six-legged lindwurm great beast occupying two connected hexes, head like a split anvil, long body and tail, near-black hide with slow restrained magenta under-skin bands; separate head and following-body registration.` |
-| `TOK-CUB` | **MISSING — CREATE**, refer to `C5` | `Dog-sized Fen-Mother whelp with outsized split-anvil head, clumsy six legs and no useful sense, skittish rather than aggressive.` |
-| `TOK-BITCH` | **MISSING — CREATE** | `Large starved pack-bitch, long-legged and scarred, lean frame, commanding stillness and a simple old collar; animal captain, not a wolf fantasy monster.` |
-| `TOK-LURCHER` | **MISSING — CREATE** | `Long-legged starved camp lurcher built to bite and leave, narrow chest, torn ears and no armour.` |
-| `TOK-RUNT` | **MISSING — CREATE** | `Smaller quicker pack runt, visible ribs, sharp silhouette and frightened aggression.` |
-| `TOK-FENLING` | **MISSING — CREATE** | `A person-sized thing made by fen-water, soaked hide or skin, one wrong watching eye motif and posture that does not react normally to pain; ambiguous origin, no bright glow.` |
-| `TOK-MIREHARE-DOE` | **LIVE — `BATTLE-doe-red-eyes-v4.png`** | `Female frog-rabbit mirehare: broad toad body, dense wet rabbit coat over crown, back and outer limbs, exposed slick throat and belly, long furred ears, webbed feet, vivid blood-red eye, exactly two broad chisel-edged ivory rabbit incisors and one restrained green saliva thread/drop; compact coiled landing silhouette, readable at 48×52.` |
-| `TOK-MIREHARE-BUCK` | **LIVE — `BATTLE-buck-red-eyes-v4.png`** | `Male of the same species: lean arrow-shaped body, dense wet rabbit coat, exposed frog throat and feet, vivid blood-red eye, exactly two broad chisel-edged ivory rabbit incisors and one restrained green saliva thread/drop; low straight-charge silhouette, readable at 54×40.` |
-| `EV-32` | **LIVE — THE RED LIGHTS** | `Wide traveller-view down a flooded road after dusk: the company and cart stop in the foreground while many paired red Mirehare eyes watch from reeds on both sides; bodies stay mostly concealed, with red eyes as the sharpest detail.` |
-| `TOK-ARMOUR` | **MISSING — CREATE** | `Something entirely sealed in oversized plate, no skin and no readable emblem, carrying a huge circular-sweeping sword in one hand; perfectly frontless silhouette, heavy enough to feel inevitable rather than fast.` |
+| `TOK-FEN-MOTHER` | **MISSING - CREATE**, refer to `E2` | `Six-legged lindwurm great beast occupying two connected hexes, head like a split anvil, long body and tail, near-black hide with slow restrained magenta under-skin bands; separate head and following-body registration.` |
+| `TOK-CUB` | **MISSING - CREATE**, refer to `C5` | `Dog-sized Fen-Mother whelp with outsized split-anvil head, clumsy six legs and no useful sense, skittish rather than aggressive.` |
+| `TOK-BITCH` | **MISSING - CREATE** | `Large starved pack-bitch, long-legged and scarred, lean frame, commanding stillness and a simple old collar; animal captain, not a wolf fantasy monster.` |
+| `TOK-LURCHER` | **MISSING - CREATE** | `Long-legged starved camp lurcher built to bite and leave, narrow chest, torn ears and no armour.` |
+| `TOK-RUNT` | **MISSING - CREATE** | `Smaller quicker pack runt, visible ribs, sharp silhouette and frightened aggression.` |
+| `TOK-FENLING` | **MISSING - CREATE** | `A person-sized thing made by fen-water, soaked hide or skin, one wrong watching eye motif and posture that does not react normally to pain; ambiguous origin, no bright glow.` |
+| `TOK-MIREHARE-DOE` | **LIVE - `BATTLE-doe-red-eyes-v4.png`** | `Female frog-rabbit mirehare: broad toad body, dense wet rabbit coat over crown, back and outer limbs, exposed slick throat and belly, long furred ears, webbed feet, vivid blood-red eye, exactly two broad chisel-edged ivory rabbit incisors and one restrained green saliva thread/drop; compact coiled landing silhouette, readable at 48×52.` |
+| `TOK-MIREHARE-BUCK` | **LIVE - `BATTLE-buck-red-eyes-v4.png`** | `Male of the same species: lean arrow-shaped body, dense wet rabbit coat, exposed frog throat and feet, vivid blood-red eye, exactly two broad chisel-edged ivory rabbit incisors and one restrained green saliva thread/drop; low straight-charge silhouette, readable at 54×40.` |
+| `EV-32` | **LIVE - THE RED LIGHTS** | `Wide traveller-view down a flooded road after dusk: the company and cart stop in the foreground while many paired red Mirehare eyes watch from reeds on both sides; bodies stay mostly concealed, with red eyes as the sharpest detail.` |
+| `TOK-ARMOUR` | **MISSING - CREATE** | `Something entirely sealed in oversized plate, no skin and no readable emblem, carrying a huge circular-sweeping sword in one hand; perfectly frontless silhouette, heavy enough to feel inevitable rather than fast.` |
 
 ### Non-fighting companion
 
-#### `TOK-PET-CUB` — **MISSING — CREATE**
+#### `TOK-PET-CUB` - **MISSING - CREATE**
 
 ```text
 The same Fen-Mother cub after joining the company, six awkward legs and outsized head, staying at the
@@ -1436,7 +1436,7 @@ painted Godot board and for art-direction tests. The hex grid and all tactical s
 separate UI layers; never bake reachable hexes, back arcs, selection colour or unit shadows into the
 ground painting.
 
-### `ENV-01` Fogbound Teal battlefield — **MISSING — CREATE**
+### `ENV-01` Fogbound Teal battlefield - **MISSING - CREATE**
 
 ```text
 Empty 15-by-13 pointy-top hex tactical battlefield viewed from a high three-quarter angle, but with
@@ -1448,7 +1448,7 @@ states remain legible, no units, buildings or interface.
 
 Deliver both a clean 16:9 ground plate and a tileable material atlas.
 
-### `ENV-02` Dust & Gold ridge battlefield — **MISSING — CREATE**
+### `ENV-02` Dust & Gold ridge battlefield - **MISSING - CREATE**
 
 ```text
 Empty 15-by-13 pointy-top hex tactical battlefield from a high three-quarter angle, no visible grid:
@@ -1457,7 +1457,7 @@ water or cover. Bright detail sits on darker ground so amber and red tactical ov
 readable. Dust & Gold, hard cold lateral light, no units or interface.
 ```
 
-### `ENV-03` The Bloom battlefield — **MISSING — CREATE**
+### `ENV-03` The Bloom battlefield - **MISSING - CREATE**
 
 ```text
 Empty 15-by-13 pointy-top hex tactical battlefield from a high three-quarter angle, no visible grid:
@@ -1467,7 +1467,7 @@ visible source; it is the only saturated colour. No units or interface. Keep the
 for state overlays and tokens.
 ```
 
-### `ENV-04` Ruined steading camp battlefield — **MISSING — CREATE**
+### `ENV-04` Ruined steading camp battlefield - **MISSING - CREATE**
 
 ```text
 Empty tactical camp inside a broken circular palisade, high three-quarter view: stacked timber and
@@ -1476,7 +1476,7 @@ the centre; three crude lean-tos inside; dead ground and open lanes between fire
 Fogbound Teal with the fire as the only warm saturated colour. No units, grid or interface.
 ```
 
-### `ENV-05` Terrain prop atlas — **MISSING — CREATE**
+### `ENV-05` Terrain prop atlas - **MISSING - CREATE**
 
 Use **ICON FORMAT**.
 
@@ -1487,7 +1487,7 @@ gap posts, crude lean-to, camp firepit, old bones, muddy rut, tree stump, Bloom 
 stone fragment. Consistent scale and light, no decorative symbols and no grid outline.
 ```
 
-### `ENV-06` Road and settlement prop atlas — **MISSING — CREATE**
+### `ENV-06` Road and settlement prop atlas - **MISSING - CREATE**
 
 Use **ICON FORMAT**.
 
@@ -1504,7 +1504,7 @@ The live build uses Unicode glyphs. Final icons should be hand-cleaned after gen
 at 32 px. If a generated sheet cannot keep an exact object count or clear silhouette, use it only as
 concept reference and redraw the final icon manually.
 
-### `ICON-RES` Resources — **MISSING — CREATE**
+### `ICON-RES` Resources - **MISSING - CREATE**
 
 Use **ICON FORMAT**.
 
@@ -1515,7 +1515,7 @@ banding, and one irregular translucent gem whose restrained sick-gold or magenta
 only saturated element. Practical objects, no treasure sparkle.
 ```
 
-### `ICON-ARMOUR` Armour and worn oddities — **MISSING — CREATE**
+### `ICON-ARMOUR` Armour and worn oddities - **MISSING - CREATE**
 
 Use **ICON FORMAT**.
 
@@ -1526,7 +1526,7 @@ lashed ogre plates; ogre scale armour; a wooden wardrobe worn as armour; and a d
 a helm. Each object is patched, readable and shown without a body.
 ```
 
-### `ICON-WEAPON` Weapons — **MISSING — CREATE**
+### `ICON-WEAPON` Weapons - **MISSING - CREATE**
 
 Use **ICON FORMAT**.
 
@@ -1538,7 +1538,7 @@ length, with clear silhouettes and no magical glow except a barely damp surface 
 Hammer.
 ```
 
-### `ICON-OFFHAND` Off-hands and tools — **MISSING — CREATE**
+### `ICON-OFFHAND` Off-hands and tools - **MISSING - CREATE**
 
 Use **ICON FORMAT**.
 
@@ -1547,7 +1547,7 @@ Five isolated equipment icons: full quiver, off-hand dirk, chalk-and-cord focus 
 and the company banner folded around its short pole. Patched, practical and readable at 32 pixels.
 ```
 
-### `ICON-RELIC` Trinkets and strange objects — **MISSING — CREATE**
+### `ICON-RELIC` Trinkets and strange objects - **MISSING - CREATE**
 
 Use **ICON FORMAT**.
 
@@ -1560,7 +1560,7 @@ only Bloom objects may carry hot magenta, the fingerbone may be faintly warm, an
 must not reveal what it is.
 ```
 
-### `ICON-NODE` World-node symbols — **MISSING — CREATE**
+### `ICON-NODE` World-node symbols - **MISSING - CREATE**
 
 Use **ICON FORMAT**.
 
@@ -1571,7 +1571,7 @@ medieval objects — wall, crossed weapons, road stone, scales, tent, wrong-colo
 banner and bells — on transparent background. Saturated magenta appears only on strange place.
 ```
 
-### `ICON-CLASS` Class and race symbols — **MISSING — CREATE**
+### `ICON-CLASS` Class and race symbols - **MISSING - CREATE**
 
 Use **ICON FORMAT**.
 
@@ -1581,7 +1581,7 @@ focus, cutter knife, ogre brute fist, human diamond, ratkin narrow tail mark and
 One-colour bone-grey shapes intended for UI tinting, transparent background, no words.
 ```
 
-### `ICON-STATUS` Battle states — **MISSING — CREATE**
+### `ICON-STATUS` Battle states - **MISSING - CREATE**
 
 Use **ICON FORMAT**.
 
@@ -1592,7 +1592,7 @@ disengaging. Simple readable shapes, mostly monochrome for later tinting; only t
 root may use restrained magenta.
 ```
 
-### `FX-01` Physical combat effects — **MISSING — CREATE**
+### `FX-01` Physical combat effects - **MISSING - CREATE**
 
 ```text
 Transparent effect atlas for a painted tactical game: small sword impact, spear thrust streak,
@@ -1601,7 +1601,7 @@ ground shove, kick dust and white surrender cloth. Compact, restrained, readable
 never screen-filling.
 ```
 
-### `FX-02` Low-magic spell effects — **MISSING — CREATE**
+### `FX-02` Low-magic spell effects - **MISSING - CREATE**
 
 ```text
 Transparent effect atlas with five distinct low-magic workings: Ember as a tiny dirty-orange coal
@@ -1619,7 +1619,7 @@ rest of the person remains in the base palette.
 
 ### Built chains that still lack finished body art
 
-#### `COND-01` Fen-Water in the Lungs — **MISSING — CREATE**
+#### `COND-01` Fen-Water in the Lungs - **MISSING - CREATE**
 
 ```text
 Neutral character reference showing a soaked mercenary with grey reed-like phlegm on a cloth,
@@ -1627,7 +1627,7 @@ shallow guarded breath and no visible mutation yet. Ordinary sick body, no glow;
 neck detail panel that remains unchanged.
 ```
 
-#### `MUT-01` Gills of the Fen — **MISSING — CREATE**
+#### `MUT-01` Gills of the Fen - **MISSING - CREATE**
 
 ```text
 Neutral three-quarter character body reference with thin functional gill folds along both sides of
@@ -1636,7 +1636,7 @@ small and fluttering; ogre version broad and heat-sensitive. Restrained teal #35
 gill folds, no fish-person redesign.
 ```
 
-#### `COND-02` Colour Beneath the Nail — **MISSING — CREATE**
+#### `COND-02` Colour Beneath the Nail - **MISSING - CREATE**
 
 ```text
 Close body-detail reference of one work-worn hand where a single fingernail has become glossy hot
@@ -1644,7 +1644,7 @@ magenta and the colour has just begun to creep beneath adjacent skin. The hand o
 dirty and ordinary; no glow beyond the nail.
 ```
 
-#### `MUT-02` Blooming Hand — **MISSING — CREATE**
+#### `MUT-02` Blooming Hand - **MISSING - CREATE**
 
 ```text
 Neutral character reference where one hand's fingers have become pale flowering tendrils with a
@@ -1655,7 +1655,7 @@ hand remain desaturated and human-scale.
 
 ### Authored future mutations
 
-These are **FUTURE — CREATE LATER**. Their concept prompt is ready, but final token/gear interaction
+These are **FUTURE - CREATE LATER**. Their concept prompt is ready, but final token/gear interaction
 must be checked when each mechanic enters production.
 
 | ID | Mutation | Subject prompt |
@@ -1675,7 +1675,7 @@ must be checked when each mechanic enters production.
 | `MUT-15` | The Backward Knee | `One leg's knee has reversed its working angle while remaining weight-bearing, giving a silhouette made for retreat and difficult approach; practical brace no longer fits.` |
 | `MUT-16` | Crown of Antennae | `A restrained crown of fine sensory antennae grows from the scalp and temples, each leaning toward a different approaching threat; the wearer is exhausted by feeling everything coming.` |
 
-### Future condition visuals — **BLOCKED — DO NOT GENERATE**
+### Future condition visuals - **BLOCKED - DO NOT GENERATE**
 
 Bloom Fever, Something in the Wound, Bell-Sick, Mirror Sleep, Reed Cough, Hollow Hunger, Glass
 Cracks, Rooted Blood, Watched from Inside, Wrong Voice, Skin Full of Light, Unfinished Drowning and
@@ -1684,7 +1684,7 @@ chain before commissioning their images.
 
 ## 14. Settlements and legacy paintings
 
-Coldharrow itself is `PLACE-01`. The following accepted settlement concepts are **FUTURE — CREATE
+Coldharrow itself is `PLACE-01`. The following accepted settlement concepts are **FUTURE - CREATE
 LATER**. Each building sheet is a three-panel progression from stage I to III, but contains no
 labels or numbers. Atmosphere B; the settlement remains poor at every tier.
 
@@ -1741,19 +1741,19 @@ possibility carried forward, not permanent power. Fogbound Teal with distant res
 
 | Concept | Status | Why no prompt is supplied |
 |---|---|---|
-| The Smaller One seven-card chain | **BLOCKED — DO NOT GENERATE** | Victim, hunter appearance and final encounter staging are not locked. |
-| Act One stinger | **BLOCKED — DO NOT GENERATE** | The enemy still needs a real name and final fiction. |
-| Act Two regions and map | **BLOCKED — DO NOT GENERATE** | Geography and node content are not authored. |
-| Hollow-men and later playable peoples | **BLOCKED — DO NOT GENERATE** | Only examples, not accepted visual canon. |
-| Iron Road mortality contract | **BLOCKED — DO NOT GENERATE** | The run-start presentation is still an open design question. |
-| Grafts, beginning with Shield-Skull | **BLOCKED — DO NOT GENERATE** | Anatomy API is planned, but the physical design and compensating rule are not locked. |
+| The Smaller One seven-card chain | **BLOCKED - DO NOT GENERATE** | Victim, hunter appearance and final encounter staging are not locked. |
+| Act One stinger | **BLOCKED - DO NOT GENERATE** | The enemy still needs a real name and final fiction. |
+| Act Two regions and map | **BLOCKED - DO NOT GENERATE** | Geography and node content are not authored. |
+| Hollow-men and later playable peoples | **BLOCKED - DO NOT GENERATE** | Only examples, not accepted visual canon. |
+| Iron Road mortality contract | **BLOCKED - DO NOT GENERATE** | The run-start presentation is still an open design question. |
+| Grafts, beginning with Shield-Skull | **BLOCKED - DO NOT GENERATE** | Anatomy API is planned, but the physical design and compensating rule are not locked. |
 | “Meet the Rabble” onboarding card | **NO UNIQUE ART NEEDED** | It reuses the current speaker's portrait and the current screen art. |
 | Personalities, bonds and provenance facts | **NO UNIQUE ART NEEDED** | These are shown through portraits, posture, text and existing screen art, not collectible badges. |
 | AI doctrines and balance tools | **NO PLAYER ART NEEDED** | Debug and simulation UI only. |
 
 ## 16. Recommended production order
 
-1. **Stage 1 generated — awaiting visual approval:** Bloom `KEY-01`, alternate road `KEY-01A`,
+1. **Stage 1 generated - awaiting visual approval:** Bloom `KEY-01`, alternate road `KEY-01A`,
    `KEY-02`, `EV-03`, `EV-05` through `EV-08`, `EV-10` through `EV-16`, `EV-18` and `EV-21`.
 2. **Integrate the approved stage-1 pack:** update `art/build_assets.ps1`, embed the menu, replace the
    fourteen `EVENTART` mappings and test every image at the live 398×104 crop. Follow

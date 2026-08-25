@@ -1,27 +1,27 @@
-# Step 2 — Art Direction & Visual Prompt Pack #1
+# Step 2 - Art Direction & Visual Prompt Pack #1
 
 > **⚠ DECISION (2026-07-29): the game is PAINTED, not pixel.** The user resolved the fork the
 > style bible raised: painted illustration throughout. What survives from this document: the
 > palette rules, the saturation rule, the lighting rules, the character design rules, and the
-> Style Bible's four atmosphere prompt keys (3a–3d) — those are the production prompts now.
+> Style Bible's four atmosphere prompt keys (3a–3d) - those are the production prompts now.
 > What is superseded: the pixel-art technical spec (resolutions, dithering, 32-colour cap).
 > New spec direction: painted bust portraits (Battle Brothers-style), painted event scenes in
 > the atmosphere keys, and units on the hex board as painted tokens/busts. Tile and sprite
 > sizes to be re-specced when the Godot port begins.
 
-## Part 1 — The Style Bible
+## Part 1 - The Style Bible
 
 ### Where to start (my recommendation)
 
-Don't start with characters. **Start with one mood piece that defines the world's light and palette**, then derive everything from it. Reason: palette and lighting are the hardest things to fix later — if every asset is authored against an agreed mood key, a hundred assets stay coherent. Characters made first tend to drag the whole game toward whatever colors happened to look nice that day.
+Don't start with characters. **Start with one mood piece that defines the world's light and palette**, then derive everything from it. Reason: palette and lighting are the hardest things to fix later - if every asset is authored against an agreed mood key, a hundred assets stay coherent. Characters made first tend to drag the whole game toward whatever colors happened to look nice that day.
 
 So the order in this pack is:
-1. **World mood key** (2 prompts) — the single image the whole game is graded against
-2. **Character busts** (3 prompts) — human, ratkin, ogre; this defines "ugly-charming"
-3. **Battle sprite test** (2 prompts) — the same characters at gameplay scale
-4. **Environment tile test** (1 prompt + 1 optional) — proves the mood key survives contact with a hex tileset
+1. **World mood key** (2 prompts) - the single image the whole game is graded against
+2. **Character busts** (3 prompts) - human, ratkin, ogre; this defines "ugly-charming"
+3. **Battle sprite test** (2 prompts) - the same characters at gameplay scale
+4. **Environment tile test** (1 prompt + 1 optional) - proves the mood key survives contact with a hex tileset
 
-**8 core prompts. That's the whole batch — we review before making more.**
+**8 core prompts. That's the whole batch - we review before making more.**
 
 ### The look in one sentence
 
@@ -50,23 +50,23 @@ through silhouette and placement.
 
 | Role | Colors | Where |
 |------|--------|-------|
-| **Base world** | Desaturated earth — mud brown, bone grey, wet slate, dead-grass ochre, bruised green | 85% of every frame |
-| **Cloth accents** | Faded madder red, woad blue, dull mustard — pigments a poor medieval dyer could actually make | Clothing, banners, tents |
+| **Base world** | Desaturated earth - mud brown, bone grey, wet slate, dead-grass ochre, bruised green | 85% of every frame |
+| **Cloth accents** | Faded madder red, woad blue, dull mustard - pigments a poor medieval dyer could actually make | Clothing, banners, tents |
 | **Metal** | Cold grey-blue, never chrome; rust orange on everything old | Weapons, armor |
 | **Skin** | Sallow, weathered, veined; ratkin grey-pink; ogre grey-green mottled | Faces, hands |
-| **THE WEIRD** | Saturated bile-green, hot magenta, sick gold — **the only saturated colors in the game** | Magic, artifacts, unnatural creatures |
+| **THE WEIRD** | Saturated bile-green, hot magenta, sick gold - **the only saturated colors in the game** | Magic, artifacts, unnatural creatures |
 
 **The rule that makes the game readable:** if it's saturated, it's dangerous or magical. A player should be able to spot the supernatural thing in any screenshot instantly, because it's the only thing with real color in it.
 
 ### Lighting
 
-Overcast, low sun, weather that has opinions. Light comes from one direction and is *cold*; fire and the weird are the only warm sources. Heavy atmospheric perspective — distance goes pale grey-blue like Banner Saga.
+Overcast, low sun, weather that has opinions. Light comes from one direction and is *cold*; fire and the weird are the only warm sources. Heavy atmospheric perspective - distance goes pale grey-blue like Banner Saga.
 
 ### Character design rules
 
-- **Humans are a bit ugly.** Asymmetric faces, broken noses, bad teeth, thinning hair, scars, squints, jowls. Nobody has a jawline. Beauty in this world is suspicious — save it for one or two NPCs and let it feel *wrong*.
+- **Humans are a bit ugly.** Asymmetric faces, broken noses, bad teeth, thinning hair, scars, squints, jowls. Nobody has a jawline. Beauty in this world is suspicious - save it for one or two NPCs and let it feel *wrong*.
 - **Silhouette first.** Every unit must be identifiable as a black shape: ratkin = small, hunched, long tail; human = upright, medium; ogre = wide, top-heavy, tiny head.
-- **Gear reads on the sprite.** Since armor is a separate mechanical layer, armor must be *visible* — a character in foundry-plate looks visibly different from one in rags.
+- **Gear reads on the sprite.** Since armor is a separate mechanical layer, armor must be *visible* - a character in foundry-plate looks visibly different from one in rags.
 - **Wear and damage.** Everything is repaired, patched, mismatched. Nobody's kit matches.
 - **Allegiance is a garment layer.** Blue or teal marks allies; rust or red marks enemies. Keep the
   colour mass broad enough to read at delivery size while varying which garment carries it.
@@ -82,26 +82,26 @@ Overcast, low sun, weather that has opinions. Light comes from one direction and
 |---|---|---|
 | Bust portrait (dialog/roster) | **160×160 px** | Painted-pixel, chest-up, 3/4 view, plain dark vignette background |
 | Battle sprite | **48×64 px** | Side-on 3/4, idle pose, transparent background, feet at bottom edge |
-| Terrain tile | **64×56 px hex** | **Hexagonal** (pointy-top), seamless against neighbors, top-down 3/4 to match battle sprites. Battle grid is hex — see concept §14. Sprite feet sit on the hex center. |
+| Terrain tile | **64×56 px hex** | **Hexagonal** (pointy-top), seamless against neighbors, top-down 3/4 to match battle sprites. Battle grid is hex - see concept §14. Sprite feet sit on the hex center. |
 | UI icon (item/resource) | **32×32 px** | Flat dark background or transparent |
 
 Palette target: **~32-48 colors globally**, shared across all assets. Limited palette is what will make AI-generated pieces feel like one game.
 
 ### What we are NOT
 
-Not clean fantasy. Not bright. Not anime. Not high-magic — no glowing swords, no floating runes, no wizards in pointy hats. Not chibi. Not 8-bit/NES-retro — this is *modern* pixel art with painterly shading.
+Not clean fantasy. Not bright. Not anime. Not high-magic - no glowing swords, no floating runes, no wizards in pointy hats. Not chibi. Not 8-bit/NES-retro - this is *modern* pixel art with painterly shading.
 
 ---
 
-## Part 2 — Prompt Pack #1 (copy-paste into Claude design)
+## Part 2 - Prompt Pack #1 (copy-paste into Claude design)
 
-> **Style block** — I've embedded this in every prompt below, but keep it handy; it's the thing that makes all future assets match:
+> **Style block** - I've embedded this in every prompt below, but keep it handy; it's the thing that makes all future assets match:
 >
 > *"Dark medieval low-fantasy, desaturated earth-tone palette (mud brown, bone grey, wet slate, dull ochre), cold overcast lighting from one direction, line-led painterly art built from readable silhouettes and large connected shapes, grounded and dirty, no pointillist noise, no bright saturated colors except where magic is present."*
 
-### 🎨 Group A — World mood key (do these first)
+### 🎨 Group A - World mood key (do these first)
 
-**Prompt A1 — The road (master mood key)**
+**Prompt A1 - The road (master mood key)**
 ```
 A wide painterly pixel-art landscape of a dark medieval world: a muddy road cutting
 through dead marshland under a heavy overcast sky. A ruined stone watchtower leans on
@@ -114,7 +114,7 @@ art with confident connected strokes and restrained texture, in the spirit of Ba
 No bright or saturated colors anywhere. Wide 16:9 composition.
 ```
 
-**Prompt A2 — The weird (proves the saturation rule)**
+**Prompt A2 - The weird (proves the saturation rule)**
 ```
 Same world, same painterly pixel-art style and desaturated earth-tone palette as
 before: a small forest shrine at dusk, mossy stones, mud, bare crooked trees, all in
@@ -126,9 +126,9 @@ weirdness inside a Battle Brothers world. Line-led painterly pixel art, large co
 cold overcast lighting. 16:9.
 ```
 
-### 👤 Group B — Character busts (160×160 target)
+### 👤 Group B - Character busts (160×160 target)
 
-**Prompt B1 — Human sellsword**
+**Prompt B1 - Human sellsword**
 ```
 A pixel-art character bust portrait for a dark medieval tactical RPG. A middle-aged
 human mercenary man, chest-up, three-quarter view. Deliberately ugly and ordinary:
@@ -142,7 +142,7 @@ grounded and dirty. In the spirit of Battle Brothers character portraits.
 No idealization, no heroism, no bright colors.
 ```
 
-**Prompt B2 — Ratkin scout**
+**Prompt B2 - Ratkin scout**
 ```
 A pixel-art character bust portrait for a dark medieval tactical RPG. A ratkin — a
 small humanoid rat person — chest-up, three-quarter view. Grey-pink patchy fur, long
@@ -156,7 +156,7 @@ verminous, sympathetic-but-unsettling — not cartoonish, not cute. In the spiri
 Battle Brothers portraits with Caves of Qud strangeness.
 ```
 
-**Prompt B3 — Ogre**
+**Prompt B3 - Ogre**
 ```
 A pixel-art character bust portrait for a dark medieval tactical RPG. A huge ogre,
 chest-up, three-quarter view, so massive the shoulders overflow the frame and the
@@ -170,9 +170,9 @@ Line-led painterly pixel art with large connected clusters, limited palette. Slo
 Not a monster — a person. No bright colors.
 ```
 
-### ⚔️ Group C — Battle sprite test (48×64 target)
+### ⚔️ Group C - Battle sprite test (48×64 target)
 
-**Prompt C1 — Sprite trio, same characters**
+**Prompt C1 - Sprite trio, same characters**
 ```
 Pixel-art battle sprites for a tactical turn-based RPG, three characters side by side
 on a transparent background, each in a neutral idle stance, side-on three-quarter view,
@@ -188,7 +188,7 @@ large connected pixel clusters, purposeful contour lines, clean edges. In the sp
 No outlines glowing, no bright colors, no background.
 ```
 
-**Prompt C2 — Enemy swarm test**
+**Prompt C2 - Enemy swarm test**
 ```
 Pixel-art battle sprites for a tactical turn-based RPG: five small ratkin vermin
 enemies on a transparent background, side-on three-quarter view, full body, idle
@@ -201,9 +201,9 @@ Cold directional lighting from upper left. Limited palette pixel art with heavy
 large connected pixel clusters, purposeful contour lines, clean edges. No background, no bright colors.
 ```
 
-### 🗺️ Group D — Environment test (hexagonal tiles, 64×56)
+### 🗺️ Group D - Environment test (hexagonal tiles, 64×56)
 
-**Prompt D1 — Hex terrain tile set**
+**Prompt D1 - Hex terrain tile set**
 ```
 A pixel-art HEXAGONAL terrain tile set for a tactical turn-based RPG battle map,
 top-down three-quarter perspective. Eight separate pointy-top hexagon tiles laid out
@@ -218,7 +218,7 @@ grounded and dirty. In the spirit of Battle Brothers hex battlefields. No bright
 saturated colors, no drawn grid outlines on the tiles themselves.
 ```
 
-**Prompt D2 — Hex battlefield in context (optional, do only if D1 lands)**
+**Prompt D2 - Hex battlefield in context (optional, do only if D1 lands)**
 ```
 A pixel-art tactical RPG battle scene viewed from a top-down three-quarter angle,
 showing a hexagonal grid battlefield of wet marshland — mud, dead grass, shallow
@@ -232,12 +232,12 @@ no bright colors, no text.
 
 ---
 
-## Part 3 — How to use this pack
+## Part 3 - How to use this pack
 
-1. Run **A1 first**. Iterate until the mood is right — this image is the reference for everything after it.
+1. Run **A1 first**. Iterate until the mood is right - this image is the reference for everything after it.
 2. Once A1 is approved, run **A2** to verify the saturation rule reads.
 3. Then **B1-B3**. Judge them on: *is this person plausibly ugly and tired? Would I recognize them in a roster of 20?*
-4. Then **C1-C2** for gameplay readability. Squint at them — if silhouettes are ambiguous at squint distance, the sprite fails.
+4. Then **C1-C2** for gameplay readability. Squint at them - if silhouettes are ambiguous at squint distance, the sprite fails.
 5. **D1** last, and hold it next to C1 to check the sprites don't disappear into the ground. Only run D2 if D1's hexes came out clean.
 
-**What to bring back for review:** the pieces you like, the pieces that missed, and *why* they missed. We'll refine the style bible from real results, then move to Step 3 (core combat design) or a second art batch — your call.
+**What to bring back for review:** the pieces you like, the pieces that missed, and *why* they missed. We'll refine the style bible from real results, then move to Step 3 (core combat design) or a second art batch - your call.

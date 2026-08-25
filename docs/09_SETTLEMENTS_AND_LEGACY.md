@@ -1,4 +1,4 @@
-# RabbleBound — Settlements & Legacy (metaprogression redesign)
+# RabbleBound - Settlements & Legacy (metaprogression redesign)
 
 *(Design proposal, not yet built. Supersedes the "three passive wagon fittings" model in
 [01_GAME_CONCEPT.md](01_GAME_CONCEPT.md) §wagon once implemented. Written up from the user's
@@ -15,7 +15,7 @@ runs rather than in the world. Three passive bonuses on a cart is a small tree w
 | Resource | What it decides |
 |---|---|
 | **Crowns** | people, trade, bribes, treatment |
-| **Provisions** | the good barrels — meals, double rations, the road's hungry moments |
+| **Provisions** | the good barrels - meals, double rations, the road's hungry moments |
 | **Materials** | the CURRENT expedition and the settlements in it |
 | **Gems** | rare decisions that break the normal rules |
 
@@ -26,20 +26,20 @@ the wagon, unlock a service, prepare for the boss.
 Finding an old mine stops being `+4 salvage` and becomes: *"that is either a new anvil in
 Coldharrow or two good plates for Gudd."* That is a decision.
 
-## Between acts — the village as a physical centre
+## Between acts - the village as a physical centre
 
 After each act the company arrives at a settlement and chooses what to put its materials into.
 **1–2 buildings per act break**, so the one you skip is the thing you decided to keep suffering.
 
-**Forge** — I: upgrade one character's weapon once. II: racial armour variants appear.
+**Forge** - I: upgrade one character's weapon once. II: racial armour variants appear.
 III: reforge a found strange artifact.
-**Infirmary** — I: heal ordinary wounds between acts. II: soften one scar. III: remove one scar
+**Infirmary** - I: heal ordinary wounds between acts. II: soften one scar. III: remove one scar
 permanently, but the surgeon wants something unpleasant.
-**Wheelwright / workshop** — I: more room for provisions. II: one more companion. III: a second
+**Wheelwright / workshop** - I: more room for provisions. II: one more companion. III: a second
 route option at the start of the next act.
-**Kitchen** — I: provisions last longer. II: the company starts the act's first fight in good
+**Kitchen** - I: provisions last longer. II: the company starts the act's first fight in good
 heart. III: camp incidents sometimes turn out better, or safer.
-**Wall / watchtower** — *not* "+10% defence." It changes what happens: the village is not sacked
+**Wall / watchtower** - *not* "+10% defence." It changes what happens: the village is not sacked
 between acts · some traders are still there · a new recruit appears · an event opens · the next act
 does not open with defending the settlement.
 
@@ -51,7 +51,7 @@ Not the buildings. Carrying full built power forward produces the standard metap
 the next run is easier because the base does the work, not because the player got better.
 
 **A building lives in its run and leaves a legacy.** You built a good forge; this run you get real
-reforging, new items, armour upgrades. When the company ends, the forge is burned or abandoned — but
+reforging, new items, armour upgrades. When the company ends, the forge is burned or abandoned - but
 one thing survives:
 
 - the smith is *known*
@@ -70,9 +70,9 @@ acquaintance · part of a building · a person · a company tradition · one gem
 new event.
 
 > The Coldharrow forge burned. The old master carried one crate out of it. What was inside?
-> — a set of tools: the first weapon upgrade is cheaper
-> — a mould for ogre armour: smiths may stock it
-> — a book of debts: somebody now owes the company a favour
+> - a set of tools: the first weapon upgrade is cheaper
+> - a mould for ogre armour: smiths may stock it
+> - a book of debts: somebody now owes the company a favour
 
 Metaprogression delivered as **the ending of a story**.
 
@@ -87,10 +87,10 @@ The axis: **spend it to survive now, or invest it in what outlasts the company.*
 
 ## One material, not two
 
-Do not split iron and ore — they are too close, and the player will ask which building wants which
+Do not split iron and ore - they are too close, and the player will ask which building wants which
 and where smelting happens. Keep **materials** (building and equipment) and **gems** (rare, decisive).
-Two physical materials are acceptable *only* if they generate genuinely different projects — wood
-for wagon/kitchen/walls/bridges, iron for forge/armour/tools — and only if the wood-vs-iron choice
+Two physical materials are acceptable *only* if they generate genuinely different projects - wood
+for wagon/kitchen/walls/bridges, iron for forge/armour/tools - and only if the wood-vs-iron choice
 comes up often enough to be real. RabbleBound merged wood and iron precisely because they bought the
 same things.
 
@@ -99,12 +99,12 @@ same things.
 **During an act:** collect materials, and decide between strengthening people now, repairing
 something on the map, or carrying it to the village.
 **Between acts:** choose 1–2 buildings; they change the next act and open new scenes.
-**After death or victory:** almost everything decays — but one legacy crosses over.
+**After death or victory:** almost everything decays - but one legacy crosses over.
 
 ## Why this is better
 
 Metaprogression stops being a layer on top of the game and becomes a continuation of its actual
 question: **what did this particular company manage to build before its story ended?**
 
-The wagon stays — as mobile inventory and as the thing that carries the legacy. The real development
+The wagon stays - as mobile inventory and as the thing that carries the legacy. The real development
 moves into the settlements.

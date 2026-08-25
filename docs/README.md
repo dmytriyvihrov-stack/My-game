@@ -115,10 +115,10 @@ Spring → the last fork → the shrine → the Last Muster → the Snare. **18 
 twelve beats no road can skip.**
 
 **Built:** hex combat on 15x13 with facing arcs, engagement and parting swings · two AI brains
-(`aiTurn`, `autoStep`) · a five-rung nerve ladder · cooldowns · one-hand/two-hand equipment · forced
+(`aiTurn`, `autoStep`) · a five-rung mood ladder · cooldowns · one-hand/two-hand equipment · forced
 movement · terrain as a register with eight grounds · obstacle height and the game's first cover ·
 three camera stops on the board and three more on the road · a board clock at x1.75 · scars, two mutation chains, personalities · race
-skills · provisions, wages and per-person grievance · chained camp incidents · typed bonds · a
+skills · supplies, wages and per-person grievance · chained camp incidents · typed bonds · a
 mid-run save · a content linter · a practice field · `? RULES` · the Captain's teaching balloon
 *(four of its lessons deleted by #137, once the intro brawl began teaching the same rules ten
 minutes earlier)* · ★▲▼ playtest reactions with an exportable journal · a run questionnaire ·
@@ -296,6 +296,13 @@ a thing just cost) stays exact; a forecast (what a road holds) carries its uncer
   steading · snare · mother · armour` (`gt.py arena regress.js`). The harness must call `checkEnd()`
   between turns. ⚠ The gate is **no ERR, no FATAL, no HIT GUARD** - the round counts differ run to
   run and a diff in them is only a finding at n>=20 a side.
+  ⛑ **AND `HIT GUARD` NAMES ITSELF NOW** *(#248)*. It used to say only that the loop gave up after
+  3000 turns, which is why the same stall was reported by #236, chased through ~155 runs by #239 and
+  closed by neither. `runFight` returns a `stuck` object beside it - the round, the body whose turn it
+  is, `tutLock`/`tutHold`/`busy`, `checkEnd`, both side counts - read inside the `try`, because the
+  `finally` nulls `B` and B is the whole question. ⚠ **The one it caught was the rig and not the
+  game**: a spotlight card goes up mid-fight and a synchronous loop can never let the click that
+  clears it happen. `runFight` sets `TUT_SILENT` now, so a stall here means something new.
 - Run `LINT()` after touching content. It checks every class of content bug this project has shipped.
   `gt.py eval gates.js` runs it beside the two ui-scales counters, the #230 column-overlap probe,
   the three map counters and the event-card checks, on three screens, in one round trip.

@@ -1451,7 +1451,7 @@ body:has(#battle.on) .whisp{bottom:138px}
    apron rather than a board that is mis-framed, because the camera READS the
    padding off this element (`apronOf`) instead of assuming the constant. */
 #bGround{position:absolute;left:0;top:0;transform-origin:0 0;
-         padding:var(--aprT,0px) var(--aprR,0px) var(--aprB,0px) var(--aprL,0px);
+         padding:var(--aprT,0) var(--aprR,0) var(--aprB,0) var(--aprL,0);
          transition:transform .22s cubic-bezier(.25,.6,.3,1)}
 /* ═══ #105 point 2 · THE BLACK LINE ACROSS THE TOP OF THE BOARD ══════════
    (User: "A big black line that covers part of the top tile - we don't need
@@ -4428,7 +4428,8 @@ body:has(#battle.on) .whisp{bottom:138px}
    progress. `--fs1` is the floor and the plate is what keeps it off the art. */
 .rmem .rlv{position:absolute;right:-2px;bottom:-2px;font-family:var(--mono);
   font-size:var(--fs1);line-height:1;letter-spacing:.06em;color:var(--g4);
-  background:rgba(10,7,3,.92);border:1px solid var(--e2);padding:1px 3px;
+  background:rgba(10,7,3,.92);border:1px solid var(--e2);
+  padding:var(--p1) var(--p2);
   pointer-events:none}
 /* ⚠ #246 - A CHIP WITH NOTHING BUT A MARK IN IT. #196's own note is that at
    `--fs1` a pictogram is a smudge, and with the word gone there is nothing beside
@@ -16249,6 +16250,18 @@ function tutShow(step){
    nothing in that case. Every caller treats that as "this card did not
    happen", which is the contract capSay has always had with capBalloon. */
 function tutPaint(head,text,anchor,tier,skip){
+  /* ⛔ #248 - AND THE FLAG BELONGS HERE, WHICH IS WHERE IT WAS NOT. `TUT_SILENT`
+     is read by `tutFlush`, `hurtWarn` and `hurtTeach` and its own comment says
+     *"the harness switches this on"* - and `capSay` reaches the same dim sheet
+     down a fourth path (`capCard` -> here), which no flag covered. This is the
+     ONE function that puts the sheet up and the ONE that writes `B.tutLock`, so
+     one gate on it is every caller. **The three checks above are left standing**:
+     they refuse EARLIER and cheaper, and one of them (`hurtTeach`) also guards a
+     `G.` one-shot that must not be spent.
+     ⛑ `false` IS THE DOCUMENTED WORD FOR "this card did not happen" (the
+     paragraph above), and every caller already honours it: `capSay` returns
+     without spending its line, `tutShow` steps to the next in the queue. */
+  if(window.TUT_SILENT)return false;
   const r=tutRect(anchor);
   if(!r||r.w<2||r.h<2)return false;        /* hidden pane, missing anchor */
   const d=tutEl(),pad=6;
@@ -16327,9 +16340,29 @@ function tutPaint(head,text,anchor,tier,skip){
 }
 function tutNext(){
   /* #120 - two queues, one reader: the battle's (on B.tut) wins when a
-     fight is up, the world tour's (WTUT) is drained everywhere else */
+     fight is up, the world tour's (WTUT) is drained everywhere else.
+     ⛔ #248 - AND "EVERYWHERE ELSE" HAD TO BECOME A CONDITION, BECAUSE THE
+     FALL-THROUGH CONTRADICTED THE SENTENCE ABOVE IT. `B.tut` exists on the
+     BRAWL and on nothing else, so on any other fight the first clause is
+     false and this line handed a WORLD-TOUR step to a battle - and `tutShow`
+     ends with an unconditional `if(B)B.tutLock=true`, i.e. a card about the
+     top bar stopping the clock of a fight it has nothing to do with. From
+     there `nextTurn` takes its `if(B.tutLock){B.tutHold=true;return;}` door
+     forever, because the only thing that reopens it is a click on a sheet
+     that is describing the wrong screen.
+     ⚠ IT IS NOT A LIVE SOFT LOCK AND THAT IS WHY IT SURVIVED: `worldTut`
+     fires once a run behind `G.wTutDone`, the dim sheet swallows every click
+     on the map underneath it, and a player therefore drains the three steps
+     before any road can be walked. **The harness is the one caller that can
+     leave the queue half-drained** - it starts fights without clicking
+     anything - and it has been reporting this as `DRAW/STALL HIT GUARD`
+     since #236, unresolved through #239.
+     ⛑ REFUSING THE QUEUE DOES NOT STRAND IT. The fall-through below still
+     takes the sheet down and drops `B.tutLock`, and the steps stay on `WTUT.q`
+     for the next `tutNext` outside a fight. A tour that waits is a tour; a
+     fight that waits is a soft lock. */
   const q=(B&&B.tut&&B.tut.q&&B.tut.q.length)?B.tut.q
-         :(typeof WTUT!=='undefined'&&WTUT.q.length)?WTUT.q:null;
+         :(!B&&typeof WTUT!=='undefined'&&WTUT.q.length)?WTUT.q:null;
   if(q&&q.length){tutShow(q.shift());return;}
   const d=$('tutDim');if(d)d.classList.remove('on');
   if(B){

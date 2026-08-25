@@ -26,6 +26,61 @@
 
 ---
 
+## 🧹 THE MAINTENANCE PASS - almost nothing to look at, and that is the point  *(#248 · 2026-08-25 · build log 8f.272)*
+
+**You asked whether the last ten batches were finished.** They are: the record has every row, every
+standing gate reads clean, and every leftover in those ten entries is a ⏳ somebody declared on
+purpose. What was NOT finished was one thing recorded as **UNRESOLVED** two entries ago, plus three
+small ways the build had drifted from its own written rules. **Three of the four changes are
+invisible to a player and the fourth is two pixels**, so this section is short by design.
+
+### 1. The one thing you can see: the roster tile's level plate
+
+Open the company sheet and look at the little **L1** box on the corner of each portrait. It is
+**2px taller and 2px wider** than yesterday. That is the whole visible change in this entry.
+
+⚡ **Why it moved at all**: it shipped with a hand-typed `padding:1px 3px`, and the spacing rule says
+in capitals that a new literal px is the bug rather than a decision - the file's own grep is supposed
+to return one number and was returning four. It is on the scale now.
+
+⚡ **A bug would be**: the plate hanging past the bottom of its row, sitting over a face it used to
+clear, or the roster column no longer measuring 148 wide. All three were measured on all four rows
+and none of them moved (row 69px, column 148px, both unchanged).
+
+### 2. The arena stopped lying about a soft lock that was never there
+
+Nothing to click. **If you have ever seen a session report say `DRAW/STALL HIT GUARD`, that is
+gone**, and it was never your game breaking: the test rig plays a fight by calling the engine in a
+loop, and when the game raised a **tutorial or Captain card mid-fight** the rig had nobody to click
+it, so it sat there until it gave up. A person clicks the card and the fight carries on - which is
+exactly what the card is for, and it has always worked.
+
+⚡ **What to watch for anyway, because this is the one change that touches something you DO see**:
+the spotlight cards. Start a **new** run and check the world tour still comes up (the dim screen with
+the arrow, three steps, one click each), and that a **lesson card in a fight** still freezes the
+board until you click it and then hands the turn back. Both were driven and both work; if either
+stops appearing, or a fight carries on *underneath* a card that is still up, that is this entry.
+
+### 3. The docs stopped saying words the game does not use
+
+`01_GAME_CONCEPT.md` still priced every spell in **nerve** and had a section called *Provisions are
+what the wounded eat*. The game has said **MOOD** since #232 and **SUPPLIES** since #245. Fixed
+there, in `README.md` and in the lore book.
+
+⚠ **The records deliberately keep the old words** - the changelog, the shipped registry, this file
+and the two benchmarks say what was true on the day they were written, and that is their job.
+⚠ And *"shoots worse up close - nerves"* stays: that is the feeling, not the pool.
+
+### 4. And 878 em dashes left the docs
+
+A standing hard rule the repo stated and did not keep. `python tools/dev/emdash.py` counts them,
+`--fix` rewrites prose only and never touches a code block. **Your playtest transcripts are
+deliberately excluded**: they are a record of what was on the screen in front of Dima, Sanya and
+Andrey, and a transcript that gets corrected is not a transcript.
+
+---
+
+
 ## 🚩 THREE POOLS, THREE MARKS, AND THREE THINGS THAT WERE ALREADY THERE  *(#247 · 2026-08-25 · build log 8f.271)*
 
 **Fourteen asks. Three of them were features that had shipped and could not be seen**, which is the

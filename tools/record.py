@@ -493,6 +493,37 @@ def fix_order(log):
     return moved
 
 
+# ══ the em dash, which is a rule the repo states ═════════════════════════════
+def emdashes(rep):
+    """⛔ #248 - A HARD RULE WITH NO COUNTER IS AN INTENTION.
+
+    `NEVER use an em dash` is stated in the repo's standing rules, #199 swept the
+    GAME for it, and the docs then carried 878 of them for four days because
+    nothing ever asked. This is the ask. `tools/dev/emdash.py` owns the reading
+    (and the two documented exclusions); this only reports it, so there is one
+    implementation and not two - which is the defect this whole file exists to
+    catch, arriving in the file itself if it were done any other way.
+
+    ⚠ A NOTE AND NOT A FAULT. A dash in a doc breaks nothing, and `do_check`
+    returns 1 only on structural faults; making it fatal would refuse the commit
+    that is on its way to fixing it, which is the same argument `--faults-only`
+    already makes about the four writes."""
+    try:
+        import subprocess
+        r = subprocess.run([sys.executable, os.path.join(ROOT, "tools", "dev", "emdash.py")],
+                           capture_output=True, text=True, cwd=ROOT)
+        tail = [l for l in r.stdout.splitlines() if l.startswith("total prose ")]
+        if not tail:
+            return
+        n = int(tail[0].split()[2])
+        if n:
+            rep.note("%d em dashes in docs prose, against a standing rule of none. "
+                     "`python tools/dev/emdash.py --fix` rewrites prose and never "
+                     "touches a code block." % n)
+    except Exception as e:                 # a missing tool is not a broken record
+        rep.note("em dash check did not run: %s" % e)
+
+
 # ══ main ═════════════════════════════════════════════════════════════════════
 def do_check(strict, faults_only=False):
     rep = Report()
@@ -509,6 +540,7 @@ def do_check(strict, faults_only=False):
         four_writes(rep)
         claims(rep)
         ordering(rep)
+        emdashes(rep)
 
     if rep.faults:
         print("")
