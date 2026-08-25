@@ -1614,6 +1614,22 @@ body:has(#battle.on) #audioBox button{font-size:var(--fs2);padding:var(--p1) var
    "and this one lands 41 times in a hundred" is an answer to a question only
    a destination asks. One of them is a state and the other is a quote. */
 #bGrid.aiming .hin>.zodds{display:block}
+/* ⛔ #243 - THE ZONE'S OWN EDGE. See `drawZoc`. Softer than the swing warning it
+   replaces and softer than anything of the player's own: `--blood-lit` at .5
+   against the gold `--g3` a chosen hex wears and the ivory `#c9c6bb` an offered
+   target wears, so the loudest thing on the board is still a decision and not a
+   rule. ⚠ `vector-effect:non-scaling-stroke` - the outline is inside the zoomed
+   layer, so without it a 1.5px hairline is 3.75px at CLOSE and the "not that
+   overwhelming" half of the ask comes back at the one stop that shows least. */
+#bZoc{position:absolute;left:0;top:0;z-index:0;pointer-events:none;overflow:visible}
+.zocline{fill:none;stroke:rgba(193,93,85,.5);stroke-width:1.5;
+  stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}
+/* while the pointer is standing on ground the step would be paid for, the same
+   edge IS the thing being paid, so it comes up. ⚠ A SIBLING COMBINATOR, and it
+   works because `drawZoc` appends into `#bGround` AFTER `#bGrid`: both are children
+   of the ground and the outline is the later one. If either ever moves, this rule
+   goes quiet with nothing to say so. */
+#bGrid.aiming ~ #bZoc .zocline{stroke:rgba(224,115,106,.85);stroke-width:2}
 /* the body that will take the swing, LIT rather than outlined: an edge on a
    hex somebody is standing on is mostly hidden by them, which is the whole
    reason the request asks for the unit and not the tile. */
@@ -5121,10 +5137,19 @@ body:has(#battle.on) #audioBox button{font-size:var(--fs2);padding:var(--p1) var
 /* #239 - the break-down door and what a row says in that mode. Bottom RIGHT,
    which is the ask; `align-self` rather than a float because the tab body is
    a flex column and a float in one is a rule that does nothing. */
+/* ⛔ #243 - RED AT REST, BECAUSE IT DESTROYS SOMETHING (user: *"in the
+   inventory 'break something down' red color"*). It wore the stash's own bone
+   and gold, which is the palette of every button on this screen that MOVES kit
+   about; this one ends it. Same two-step blood ladder the scrapping row below
+   already uses and the same red a `danger:true` door wears on a card, so the
+   button, the rows it lights and the warning all speak once.
+   ⚠ IT IS AN ACCENT EDGE AND IS DELIBERATELY NOT ON THE `--e` SCALE - see
+   `.claude/rules/ui-scales.md` §2: that scale is for the edge that DRAWS A BOX
+   and this one says something. */
 .iscrapbtn{align-self:flex-end;margin-top:var(--p3);font-family:var(--mono);
-  font-size:var(--fs1);letter-spacing:.12em;color:#8a7449;background:#1d160c;
-  border:1px solid var(--e2);padding:var(--p3) var(--p5);cursor:pointer;flex:none}
-.iscrapbtn:hover:not(:disabled){color:#c9b98f;border-color:var(--e3)}
+  font-size:var(--fs1);letter-spacing:.12em;color:#c15d55;background:#1d1210;
+  border:1px solid #6e2c26;padding:var(--p3) var(--p5);cursor:pointer;flex:none}
+.iscrapbtn:hover:not(:disabled){color:#e0a89c;border-color:#8c3a31}
 .iscrapbtn:disabled{opacity:.38;cursor:default}
 .iscrapbtn.on{color:#e0a89c;border-color:#8c3a31;background:#241210}
 /* the row wears the blood edge while it is a thing you are about to destroy,
@@ -6536,7 +6561,12 @@ body:has(#world.on) #menuBtn{left:auto;right:10px;top:8px;bottom:auto;z-index:30
        at the Three Bells. drawInv fills it; an old save with no name falls
        back to the generic. -->
   <div id="iBar"><h2 id="iCoName">THE COMPANY</h2>
-    <span id="iNag" class="lbl" style="color:#c9a227;display:none">NEW KIT IN THE STASH - PUT IT ON SOMEBODY</span>
+    <!-- ⛔ #243 - THE NAG IS GONE (user: *"in the inventory don't write 'NEW
+         KIT IN THE STASH - PUT IT ON SOMEBODY'"*). It was a sentence telling the
+         player to do the thing they had just opened this screen to do, on the one
+         screen where the stash is already in front of them with the new row in it.
+         ⚡ `G.mustKit` IS NOT DELETED: it is what lights the road bar's kit badge
+         (#240) and what `kitWanter()` opens the sheet on. Only the caption goes. -->
     <div class="sep"></div><button id="iWagon" title="the wagon: what is bolted in, what the next thing costs, and the seats">THE WAGON</button><button id="iBack">BACK TO THE ROAD</button></div>
   <div id="iMain"><div id="iRoster"></div><div id="iChar"></div><div id="iStash"></div></div>
 </section>
@@ -9424,7 +9454,13 @@ const GEAR={
      hexes further") is `spellRange` said in prose, and both renderers derive
      that field now. A fact printed beside its own chip is the second receipt
      this build keeps deleting, so the sentence goes and the joke stays. */
-  rod    :{rarity:'rare',n:'Working stave',   slot:'main',dmg:[6,10],am:.20,ft:.35,reach:1,spellRange:2,
+  /* #243 - reach 2 at the user's word (*"to working stave give +1 reach"*). It
+     is a long stick held in two hands and every other long stick in this table
+     (the boar spear, the halberd, the broom) already reaches two. ⚠ The figure
+     is read by `swingOf`/the sheet's own `reach N` clause and by `reachLane`, so
+     the mage now blocks a lane the way a spearwoman does; nothing is authored
+     twice. */
+  rod    :{rarity:'rare',n:'Working stave',   slot:'main',dmg:[6,10],am:.20,ft:.35,reach:2,spellRange:2,
            d:'A stripped ash pole, chalked its whole length and burnt black at the tip. '+
              'Hitting a man with it works about as well as you would expect. That is not '+
              'what it is for.'},
@@ -10273,7 +10309,20 @@ const CLASSES={
      #161: the sig names both hands he is allowed, because Marrow now starts
      on the stave and a sig that says SWORD while he holds a stick is a readout
      printing the wrong thing. */
-  warmage:{n:'BATTLE-MAGE',sig:'A BLADE OR A STAVE, AND ONE SCHOOL',
+  /* ⛔ #243 - THE NAME IS `MAGE` AND THE MARK IS THE GLOBE ALONE.
+     (User, 2026-08-25: *"Change battle mage for mage (and only globe) - same
+     skills (in inventory and other screens - class showing)"*.)
+     ⛑ ONE WORD CANNOT NAME TWO CLASSES, WHICH IS #102's RULE ARRIVING ON A
+     LABEL. The row below this one is ALSO called MAGE, and `CLS_BY_RACE.human`
+     offered both - so the stranger's class picker would have drawn two
+     identical buttons, same word, same globe, different perks. `MAGE_GLASS`
+     is the switch that decides whether the second one is dealt at all; it
+     ships off, and the row stays in the table because traits, `isCaster`, the
+     `elemental` gate and every save written before today still name it.
+     ⚠ THE SKILLS ARE UNTOUCHED, which is the half of the ask that is easy to
+     lose: this is a NAME and a GLYPH. One school, one casting a turn, a blade
+     in the other hand - all of it is where it was. */
+  warmage:{n:'MAGE',sig:'A BLADE OR A STAVE, AND ONE SCHOOL',
     perks:{2:['windeater','ironjaw'],4:['conduit','bulwark'],
            6:['stoneskin','inspire'],8:['heavyhand','footwork']}},
   /* The real one. Two schools, a second casting each turn at half strength,
@@ -10616,7 +10665,9 @@ function payFightXP(){
   line.forEach(x=>{
     const share=(half/line.length)+(sumC>0?half*c(x)/sumC:half/line.length);
     const from=x.p.level||0;
-    const got=grantXP(x.p,share*D.learn(x.p));
+    /* #243 - a company at HIGH SPIRITS learns 10% faster. Off MOODSTATES, so
+       the rung's own printed promise and this multiplication are one number. */
+    const got=grantXP(x.p,share*D.learn(x.p)*(1+(moodFx().xp||0)));
     out[x.p.id]={got:got,from:from,to:x.p.level||0};
   });
   return out;
@@ -10660,7 +10711,7 @@ function payFightXP(){
    signature is "A BLADE OR A STAVE, AND ONE SCHOOL", so 🗡🔮 is a composition
    and not a third meaning for 🗡 - the same way ⚔️🤝 on a door is fighting FOR
    somebody. The cap is two, here as there. */
-const CLASS_ICON={captain:'★',spear:'🔱',archer:'🏹',mage:'🔮',warmage:'🗡🔮',cutter:'🗡',brute:'🪓',
+const CLASS_ICON={captain:'★',spear:'🔱',archer:'🏹',mage:'🔮',warmage:'🔮',cutter:'🗡',brute:'🪓',
   /* #174 - the stranger with no trade wears an empty ring: not the ✦ fallback,
      which is experience now, and not the ? of a mystery door */
   none:'○'};
@@ -11222,19 +11273,86 @@ G.aidLeft=0;
    fight speak one visual language. The NAMES stay the road's: a company
    grumbles, a person breaks. If the ladder's faces ever change, change
    these with them. */
+/* ⛔ #243 · EVERY RUNG PAYS SOMETHING NOW, AND THE TABLE IS WHERE IT SAYS SO.
+   (User, 2026-08-25: *"On global map - show more clear what does mood do"*, with
+   the five rungs written out, and then *"And mood should really make influence to
+   a party mood"*.)
+
+   ⛔ THE SECOND SENTENCE WAS A BUG REPORT AND THE FIRST ONE COULD NOT BE ANSWERED
+   WITHOUT IT. `unitFrom` carried the company's mood onto the field as
+   `Math.min(0,G.morale)` - so a company at HIGH SPIRITS was worth EXACTLY the same
+   as a company at AT EASE, and the two top rungs of this ladder, their two green
+   faces, their two descriptions and the whole feast economy behind them paid
+   nothing at all. There was nothing to "show more clearly", which is why the ask
+   arrived as a display request.
+
+   ⛑ SO THE EFFECT IS A FIELD ON THE ROW, AND EVERY SURFACE READS IT. The map's
+   chip, the sheet's nerve tip and the fight itself all go through `moodFx()`; the
+   words under each rung are BUILT from the same object by `moodEffect()`. That is
+   #137's rule on this table: a rung cannot promise what the fight does not charge,
+   because there is one number and four readers.
+   ⚠ `start` IS FLATTER THAN WHAT IT REPLACES AT THE BOTTOM. The old line handed
+   a company at -60 morale a straight -60 on every body; the floor is -15 now. It
+   is the user's ladder and it is a deliberate softening of a penalty nobody could
+   see the shape of.
+   ⚠ `leave` IS NOT IN `moodEffect` AND MUST NOT LEARN TO BE (*"small chance that
+   some of your people leave party ... Like 5% in one day - this don't write"*). It
+   is read by `passDays` and by nothing that draws. */
 const MOODSTATES=[
   {max:-40,n:'ON THE BRINK',ic:'💀',col:'#c15d55',
-   d:'One bad day from walking off. Every fight starts with the company already rattled.'},
+   fx:{start:-15,leave:.05},
+   d:'One bad day from walking off.'},
   {max:-15,n:'GRUMBLING RANKS',ic:'😟',col:'#c9a227',
-   d:'Quiet complaints, slow to break camp in the mornings. It costs you at the start of every fight.'},
+   fx:{start:-10},
+   d:'Quiet complaints, slow to break camp in the mornings.'},
   {max:15, n:'AT EASE',ic:'😐',col:'#c9b98a',
-   d:'Neither glad nor sorry to be here. Nothing to report.'},
+   fx:{},
+   d:'Neither glad nor sorry to be here.'},
   {max:40, n:'STEADY MARCH',ic:'🙂',col:'#a3bd6c',
-   d:'The column moves well together. A little steadier walking into a fight.'},
+   fx:{start:10},
+   d:'The column moves well together.'},
   {max:999,n:'HIGH SPIRITS',ic:'😄',col:'#7fae4e',
+   fx:{start:15,xp:.10,hit:10,dodge:10},
    d:'They would follow you into the sea, and it shows on the field.'}
 ];
 const moodState=v=>MOODSTATES.find(s=>v<s.max)||MOODSTATES[MOODSTATES.length-1];
+/* what the company's mood is worth, today. The one door. */
+const moodFx=v=>moodState(v==null?(typeof G!=='undefined'?G.morale:0):v).fx||{};
+/* ⛔ THE WORDS UNDER A RUNG ARE BUILT FROM ITS OWN FIGURES, NEVER TYPED BESIDE
+   THEM. Five rungs x four effects is twenty numbers that would otherwise be
+   written twice, and this file has caught that family six times (see
+   `.claude/rules/event-cards.md`). Returns '' for AT EASE, which is the honest
+   thing a rung that does nothing has to say. */
+function moodEffect(s){
+  const f=(s&&s.fx)||{},out=[];
+  if(f.start)out.push((f.start>0?'+':'')+f.start+' mood at the start of a fight');
+  if(f.hit)out.push('+'+f.hit+' to hit');
+  /* ⚠ PRE-CAP, THE WAY EVERY OTHER +DODGE IN THIS GAME IS STATED. `softDodge`
+     compresses everything over 12 at .6, so a rung's +10 lands as about +6 on a
+     body already carrying a shield - which is exactly what the Round Shield's own
+     printed `+9` does, and stating this one post-cap would make the mood ladder the
+     single readout in the build speaking a different dodge. Measured on the
+     Captain: dodgeOf 13 at AT EASE, 19 at HIGH SPIRITS. */
+  if(f.dodge)out.push('+'+f.dodge+' dodge');
+  if(f.xp)out.push('+'+Math.round(f.xp*100)+'% experience');
+  return out.join(' · ');
+}
+/* the whole ladder, worst at the bottom the way MOODSTATES is written, with the
+   rung the company is standing on lit. Same furniture as the nerve ladder
+   (`ladderHTML`), because it is the same kind of readout about the same kind of
+   thing and two vocabularies for that would be #102's rule broken. */
+function moodLadderHTML(v){
+  const now=moodState(v==null?G.morale:v);
+  return '<div class="ladfull">'+MOODSTATES.slice().reverse().map(s=>{
+    const on=s===now,e=moodEffect(s);
+    return '<div class="lrung'+(on?' on':'')+'" style="border-color:'+
+      (on?s.col:'transparent')+';opacity:'+(on?1:.55)+
+      (on?';background:rgba(255,255,255,.06)':'')+'">'+
+      '<span class="lic">'+s.ic+'</span>'+
+      '<span class="lnm" style="color:'+s.col+'">'+s.n+'</span>'+
+      '<span class="lds">'+(e||'nothing either way')+'</span></div>';
+  }).join('')+'</div>';
+}
 /* ═══ #161 · WHICH RUNG IS "NORMAL", AND IT IS DERIVED ════════════════════
    The band that contains zero. Not an index, not a name: both of those are
    constants that rot the day somebody adds a rung, and this file has shipped
@@ -11524,7 +11642,14 @@ const SCARS=[
 /* ---------- recruits: rolled fresh, and mostly affordable ---------- */
 /* A true mage is rare — one school more than a battle-mage and no way to
    defend himself, so the road does not hand them out often. */
-const CLS_BY_RACE={human:['spear','archer','warmage','cutter','spear','archer','mage'],
+/* ⛔ #243 - THE SECOND MAGE IS OFF THE WALL, AND IT IS ONE `const`.
+   `warmage` is called MAGE now (see CLASSES), and this list is what decides
+   which trades a wall or a stranger's class picker may offer. Two rows wearing
+   one word is the thing being fixed; flipping this back to `true` puts the
+   glass cannon in the pool again and re-opens it. */
+const MAGE_GLASS=false;
+const CLS_BY_RACE={human:['spear','archer','warmage','cutter','spear','archer']
+    .concat(MAGE_GLASS?['mage']:[]),
   ratkin:['cutter','archer','spear','warmage'],
   ogre:['brute','spear']};
 const KIND_BY_CLS={spear:'human',archer:'archer',mage:'mage',warmage:'mage',
@@ -13756,8 +13881,13 @@ function unitFrom(p){
     /* #146 - the roster's ease knob, at the one door a roster body comes
        through. See HIT_EASE. */
     /* #239 - and the flat half of every promotion above the first */
-    mskill:D.hit({st:s})+HIT_EASE.you+LVL_HIT*levelSteps(p),
-    dodgeBase:D.dodge({st:s})+LVL_DODGE*levelSteps(p),speed:RACESTEP[p.race]||4,
+    /* #243 - and the top rung of the company's mood is worth +10 on both of
+       these (user: *"Maximum mood on the battlfield: +10 to hit and +10 to
+       dodge"*, then *"for morale one - i meant morale on global map"*). Derived
+       off MOODSTATES, so the sheet's own TO HIT / DODGE figures carry it too and
+       the player can see what the feast bought without opening a fight. */
+    mskill:D.hit({st:s})+HIT_EASE.you+LVL_HIT*levelSteps(p)+(moodFx().hit||0),
+    dodgeBase:D.dodge({st:s})+LVL_DODGE*levelSteps(p)+(moodFx().dodge||0),speed:RACESTEP[p.race]||4,
     flankPow:D.flank({st:s})+(p.perks.indexOf('opportune')>=0?10:0),
     spellPow:D.spell({st:s})*(p.perks.indexOf('conduit')>=0?1.2:1),
     dmgBonus:D.dmg({st:s}),morBonus:D.bonus({st:s}),
@@ -13842,7 +13972,10 @@ function unitFrom(p){
      by standing still: since the magnet went in, no per-turn lift climbs past
      this line. The company's mood, the banner and their own nature still move
      it, and where it lands is this body's neutral for the whole fight. */
-  u.morale=clamp(Math.round(u.moraleMax*START_NERVE)+Math.min(0,G.morale)+
+  /* ⛔ #243 - `moodFx().start` AND NOT `Math.min(0,G.morale)`. The old line
+     could only ever SUBTRACT, so the two happy rungs of MOODSTATES were
+     decoration: read the note on that table. */
+  u.morale=clamp(Math.round(u.moraleMax*START_NERVE)+(moodFx().start||0)+
       (tr(u,'startMor')||0)+relicSum('coMor')-(u.owedBite||0),
     u.moraleMax*.3,u.moraleMax);
   u.morale0=u.morale;      /* the magnet. See morBase(). */
@@ -15834,7 +15967,19 @@ function tavernReceipt(){
     '<div class="tvrrow">'+
       '<div class="abfx">'+
         chip(RES_ICON.crowns,'+'+crowns,'CROWNS','var(--gold)')+
-        chip('⛊',heads,heads===1?'HEAD':'HEADS','var(--g4)')+
+        /* ⛔ #243 - IT IS A GAIN, SO IT IS SIGNED, AND IT COUNTS THE NEW ONES.
+           (User, 2026-08-25, red box on this chip: *"+ 3 heads (as humans on the
+           global map showing size)"*.) The chip said `4` beside `+88 CROWNS`, and
+           the two figures were answering different questions: the purse is what
+           this room GAVE you and the headcount was the roster's total, which
+           includes the man who walked in. Three people sat down; the Captain was
+           already here. `joined` is the same list the faces below are drawn from,
+           so the number and the portraits cannot disagree.
+           ⚠ AND THE GLYPH IS `rIcon('human')`, THE ROAD BAR'S OWN BODY MARK
+           (#220), not ☊. ☊ is the battle capsule's "standing bodies on your
+           side"; the picture the player is about to meet on the map for a
+           headcount is the painted human bust, and one fact wants one mark. */
+        chip(rIcon('human'),'+'+joined.length,joined.length===1?'HEAD':'HEADS','var(--g4)')+
       '</div>'+
       (joined.length?'<div class="tvrsep"></div><div class="tvrwho">'+
         joined.map(p=>'<div class="tvrp"><div class="tvrf">'+
@@ -17059,7 +17204,7 @@ function startBattle(kind){
   /* #66 — a new fight snaps the camera rather than gliding across the board
      from wherever the last one ended. camBar() is here too so the control is
      correct after a reload, whichever stop was remembered. */
-  camBar();camApply(true);
+  camBar();
   /* ⚠ THE BOARD HAS TO EXIST BEFORE ANYTHING CAN BE ANCHORED TO IT, and this
      one line is the whole fix for "the onboarding only works every other time"
      (user, 2026-08-02). #bGrid is built by render() and NOTHING had rendered
@@ -17076,6 +17221,15 @@ function startBattle(kind){
      camApply() for the same reason: the balloon is placed from live rects, so
      the camera has to have settled first. */
   render();
+  /* ⛔ #243 - AND THE CAMERA IS FRAMED HERE, ONE LINE LOWER THAN IT USED TO BE.
+     It ran above `render()` and therefore measured `#bGround` before anything had
+     put a grid in it: read the guard in `camApply`. `camBar()` stays where it was -
+     it draws three buttons and needs no board - and the snap still happens before
+     `learnSides()` and `beginTurn()` place anything off live rects, which is what
+     the note above was protecting. render()'s own `camApply()` two lines ago has
+     already done the arithmetic; this is the SNAP, so a new fight lands rather than
+     gliding in from wherever the last one ended. */
+  camApply(true);
   /* #60 lesson 1 — the first thing said in the first fight, before anybody
      has had a turn, because "which of these are mine" is the one question
      that has to be answered before any other lesson means anything. That
@@ -21751,6 +21905,86 @@ function paintHand(){
     }
   }
 }
+/* ⛔ #243 · THE ZONE OF CONTROL IS ITS OWN BORDER NOW, NOT A WASH ON EVERY
+   HEX IN IT.
+   (User, 2026-08-25: *"lets show zone of control and direction by highlightng it
+   the borders with red (just softer color, then mine), rather then showing partly
+   circle and 3 hexes red in front. It would take less space and will be more clear.
+   And still it should be lighter and not that overvelming"*.)
+
+   ⛑ #171 ALREADY ARGUED FOR THIS AND COULD NOT BUILD IT. Its note says in
+   capitals *"IT STAYS AN EDGE AND NEVER BECOMES A FILL ... a zone that is neither
+   would be competing with the move wash on every hex it touches"* - and then wrote
+   `edge='rgba(150,40,45,.44)'`, which `render()` hands to `hedge.style.background`,
+   i.e. THE GROUND OF THE HEXAGON. The variable was called `edge` and had been a
+   fill for two hundred entries. Three or four hexes of red in front of every enemy
+   is a lot of red for a rule whose whole content is *do not step off these*.
+
+   ⛔ SO WHAT IS DRAWN IS THE OUTSIDE OF THE SET AND NOTHING ELSE. For each hex in
+   the zone, each of its six sides is drawn only if the hex across that side is NOT
+   in the zone - so two enemies standing together produce one shape with no seam
+   down the middle, which is what makes this smaller than what it replaces rather
+   than merely different. The hexagon's own six vertices come off `.hedge`'s
+   clip-path, as fractions of the hex box.
+   ⚡ WHICH SIDE FACES WHICH NEIGHBOUR IS MEASURED, NOT TABULATED. `DIR` is indexed
+   by row parity and the polygon is not, so a hand-written map between them is two
+   facts that have to agree; the direction to the neighbour's centre against the
+   direction to each side's midpoint answers it for any grid, and cannot drift the
+   day the hex box changes shape.
+   ⚠ IT LIVES INSIDE `#bGround`, NOT IN `#bFx` LIKE THE LOS RAY. `#bFx` sits
+   outside the zoomed layer, so anything anchored there has to be re-measured every
+   time the camera moves - and `camApply`'s glide is 220ms long, so a stop change
+   would leave the outline behind the board for a fifth of a second. In the ground
+   the coordinates are the board's own and the camera is not a question.
+   ⚠ z-index 0, so `.hin>*` (which is 1) keeps every body and bar painting over
+   the line, and `.hedge` (auto) stays under it.
+   ⚡ THE GLOW ON THE BODIES THAT WILL SWING IS UNTOUCHED, and that is a decision
+   rather than an omission. #205 asked for *"highlight enemy who will hit"* and #234
+   for the red blink while a step is weighed; the outline says WHERE the price is
+   and cannot say WHO charges it. Two channels, two questions. */
+const ZOC_HEX=[[.5,0],[1,.25],[1,.75],[.5,1],[0,.75],[0,.25]];
+function clearZoc(){const e=$('bZoc');if(e)e.remove();}
+function drawZoc(keys){
+  clearZoc();
+  const gr=$('bGround'),g=$('bGrid');
+  if(!gr||!g||!keys||!keys.length)return;
+  const inSet={};keys.forEach(k=>{inSet[K(k[0],k[1])]=1;});
+  const box=el=>{const p=relPt(el,gr);
+    return {v:ZOC_HEX.map(t=>({x:p.x+t[0]*p.w,y:p.y+t[1]*p.h})),
+            c:{x:p.x+p.w/2,y:p.y+p.h/2}};};
+  const cen={};
+  let d='';
+  keys.forEach(k=>{
+    const el=g.querySelector('[data-k="'+K(k[0],k[1])+'"]');
+    if(!el)return;
+    const B0=box(el),skip={};
+    nbrs(k[0],k[1]).forEach(n=>{
+      if(!inSet[K(n[0],n[1])])return;
+      const ne=g.querySelector('[data-k="'+K(n[0],n[1])+'"]');
+      if(!ne)return;
+      if(!cen[K(n[0],n[1])])cen[K(n[0],n[1])]=box(ne).c;
+      const q=cen[K(n[0],n[1])],dx=q.x-B0.c.x,dy=q.y-B0.c.y;
+      let best=-1,bs=-2;
+      for(let i=0;i<6;i++){
+        const mx=(B0.v[i].x+B0.v[(i+1)%6].x)/2-B0.c.x,
+              my=(B0.v[i].y+B0.v[(i+1)%6].y)/2-B0.c.y;
+        const s=(mx*dx+my*dy)/((Math.hypot(mx,my)*Math.hypot(dx,dy))||1);
+        if(s>bs){bs=s;best=i;}}
+      if(best>=0)skip[best]=1;});
+    for(let i=0;i<6;i++){
+      if(skip[i])continue;
+      const a=B0.v[i],b=B0.v[(i+1)%6];
+      d+='M'+a.x.toFixed(1)+' '+a.y.toFixed(1)+'L'+b.x.toFixed(1)+' '+b.y.toFixed(1);}
+  });
+  if(!d)return;
+  const NS='http://www.w3.org/2000/svg';
+  const svg=document.createElementNS(NS,'svg');
+  svg.id='bZoc';
+  svg.setAttribute('width',gr.offsetWidth);svg.setAttribute('height',gr.offsetHeight);
+  const path=document.createElementNS(NS,'path');
+  path.setAttribute('d',d);path.setAttribute('class','zocline');
+  svg.appendChild(path);gr.appendChild(svg);
+}
 /* the axis itself, drawn so the rule needs no words: everything you click is
    folded across this line. In `#bFx` beside the LOS ray and the movement
    lanes, by its own id, so each drawer owns exactly one element. */
@@ -25118,12 +25352,50 @@ function camSubject(){
    drift this project has merged out four times. With no apron it is exactly
    the `(V-w)/2` it replaces. */
 function camRest(V,P,ap,z){return (V-P*z)/2-ap*z;}
+/* ⛔ #243 · HOW FAR THE HAND MAY MOVE THE CAMERA, ON ONE AXIS.
+   (User, 2026-08-25: *"on the battle map i lost option to move my camera freely on
+   the screen - now only move in - move out"* and *"make it impossible to scroll out
+   of the screen"*.)
+
+   ⛑ ONE INTERVAL ANSWERS BOTH HALVES OF THE ASK, AND IT REPLACES A BRANCH.
+   `camNudge` used to ask "does this axis pan?" and, if not, throw the drag away and
+   pin the board back to its resting spot - which is why FULL had no hand camera at
+   all. The honest question is not *does it pan* but *how much ground is there that
+   the view is not already showing*, and since #241 the answer at FULL is 91px
+   across and 120 down: the apron. So the band runs from the resting frame to the
+   ground's own far edge, and clamping into it is exactly the old pan clamp on the
+   two stops that pan (measured identical at FIELD and CLOSE) plus a little room at
+   the one that does not.
+
+   ⛔ AND IT IS WHY THE BOARD CANNOT BE SCROLLED OFF THE SCREEN. Both ends are
+   derived from the ground, so there is no drag, no rim push and no arithmetic that
+   puts the view anywhere the ground is not.
+   ⚠ A GROUND SMALLER THAN THE VIEW HAS NO BAND, and that is not a special case
+   being tidied away: if the ground does not fill the view there is nothing to look
+   around at and every pixel of movement would be showing emptiness. */
+function camBand(V,BW,PW,ap,z,bias){
+  const rest=camRest(V,PW,ap,z)+(bias||0);
+  if(BW*z<=V)return {lo:rest,hi:rest};
+  return {lo:Math.min(rest,V-BW*z),hi:Math.max(rest,0)};
+}
+/* the two bands for the board as it stands, or null when there is no board */
+function camBands(){
+  const el=$('bGround'),F=$('bField');
+  if(!el||!F)return null;
+  const VW=F.offsetWidth,VH=F.offsetHeight;
+  const BW=el.offsetWidth,BH=el.offsetHeight;
+  if(!VW||!VH||!BW||!BH)return null;
+  const z=CAMS[CAM.i].z,A=apronOf(el);
+  const PW=BW-A.l-A.r,PH=BH-A.t-A.b;
+  if(PW<=0||PH<=0)return null;          /* see the guard in camApply */
+  return {x:camBand(VW,BW,PW,A.l,z),y:camBand(VH,BH,PH,A.t,z,CAM_TOPBIAS)};
+}
 function camApply(snap){
   const el=$('bGround'),F=$('bField');
   if(!el||!F)return;
   const VW=F.offsetWidth,VH=F.offsetHeight;
   if(!VW||!VH)return;                    /* screen not up: AUTO, tests, boot */
-  const z=CAMS[CAM.i].z,BW=el.offsetWidth||596,BH=el.offsetHeight||416;
+  const z=CAMS[CAM.i].z,BW=el.offsetWidth,BH=el.offsetHeight;
   /* ⛔ #241 - TWO BOXES NOW, AND WHICH ONE ANSWERS WHICH QUESTION IS THE WHOLE
      OF THE CHANGE. `BW/BH` is the GROUND, apron and all, and it is what the
      view is CLAMPED to - that is what buys a body on the bottom rank the room
@@ -25132,6 +25404,27 @@ function camApply(snap){
      does not - so FULL still means "the whole 15x13 board, exactly where it
      was", to the pixel, and #206's arithmetic about that stop is untouched. */
   const A=apronOf(el),PW=BW-A.l-A.r,PH=BH-A.t-A.b;
+  /* ⛔ #243 · A BOARD THAT HAS NOT BEEN BUILT MAY NOT BE FRAMED, AND THIS WAS
+     THE BUG BEHIND *"proper centering at the start"*.
+     `startBattle` framed the camera and THEN called `render()`, which is what
+     actually puts `#bGrid` inside `#bGround` - so on the FIRST fight of a page
+     session this element was its own padding and nothing else: 228x96, i.e. an
+     apron round a PLAY BOX OF ZERO. `camRest` duly centred a board of no width and
+     the transform came out at tx 515.4 ty 319.5 against the correct 33.2 / -21.6,
+     which puts the whole field down and to the right with a screenful of nothing
+     above it. Then it STUCK: at FULL neither axis pans, so render()'s own
+     `camApply()` takes the `!snap` early return three lines up and never looks
+     again.
+     ⛑ IT LOOKED INTERMITTENT FOR THE SAME REASON THE #108 TUTORIAL BUG DID, AND
+     THE COMMENT SAYING SO IS TWENTY LINES FROM THE CALL: `#bGrid` still holds the
+     PREVIOUS fight's hexes at the same size, so the second and every later fight of
+     a page session measured correctly. In a campaign the first one is the fight the
+     player is looking at.
+     ⚠ THE OLD `||596` / `||416` FALLBACKS ARE GONE WITH IT. They were the
+     pre-apron ground size, left behind by #241, so they could only ever have framed
+     the wrong board quietly. A measurement that cannot be trusted is refused, not
+     defaulted. */
+  if(!BW||!BH||PW<=0||PH<=0)return;
   const w=BW*z,h=BH*z,panX=PW*z>VW,panY=PH*z>VH;
   let tx,ty;
   if(!panX&&!panY&&CAM.z===z&&!snap&&CAM.tx!==undefined)return;   /* FULL: nothing moves */
@@ -25231,11 +25524,10 @@ function camNudge(tx,ty){
      the same pair camApply uses and for the same reason: two writers of one
      transform that disagreed about which box they were moving would make a
      drag jump the moment the player let go. */
-  const z=CAMS[CAM.i].z,A=apronOf(el);
-  const BW=el.offsetWidth||596,BH=el.offsetHeight||416,w=BW*z,h=BH*z;
-  const PW=BW-A.l-A.r,PH=BH-A.t-A.b;
-  CAM.tx=PW*z>VW?Math.max(VW-w,Math.min(0,tx)):camRest(VW,PW,A.l,z);
-  CAM.ty=PH*z>VH?Math.max(VH-h,Math.min(0,ty)):camRest(VH,PH,A.t,z)+CAM_TOPBIAS;
+  const z=CAMS[CAM.i].z,bd=camBands();
+  if(!bd)return;
+  CAM.tx=Math.max(bd.x.lo,Math.min(bd.x.hi,tx));
+  CAM.ty=Math.max(bd.y.lo,Math.min(bd.y.hi,ty));
   CAM.z=z;CAM.free=true;
   /* the .22s glide is what makes a STOP CHANGE read as a camera move; on a
      drag it is 220ms of the board trailing the cursor, which reads as lag */
@@ -25245,12 +25537,22 @@ function camNudge(tx,ty){
 function panSettle(){const el=$('bGround');if(el)el.style.transition='';}
 const camPans=()=>{
   const el=$('bGround'),F=$('bField');
-  if(!el||!F||!F.offsetWidth)return false;
+  if(!el||!F||!F.offsetWidth||!el.offsetWidth)return false;
   /* the PLAY box, so FULL is still the stop with nothing to look around at */
   const z=CAMS[CAM.i].z,A=apronOf(el);
-  return ((el.offsetWidth||596)-A.l-A.r)*z>F.offsetWidth||
-         ((el.offsetHeight||416)-A.t-A.b)*z>F.offsetHeight;
+  return (el.offsetWidth-A.l-A.r)*z>F.offsetWidth||
+         (el.offsetHeight-A.t-A.b)*z>F.offsetHeight;
 };
+/* ⛔ #243 - WHETHER THERE IS ANYTHING TO LOOK AT BY HAND, WHICH IS A DIFFERENT
+   QUESTION FROM `camPans`. `camPans` is about the PLAY box and it decides what the
+   three stops PROMISE - FULL still means the whole board, exactly where it was.
+   This one is about the GROUND, apron and all, and it decides whether a drag or a
+   rim push does anything. Splitting them is what gives the hand the camera back at
+   FULL without moving one pixel of what FULL opens on. */
+function camGrab(){
+  const b=camBands();
+  return !!b&&(b.x.hi-b.x.lo>1||b.y.hi-b.y.lo>1);
+}
 /* ⚠ A CHAINED setTimeout AND NOT setInterval, for the reason README §5 gives
    about requestAnimationFrame: in the hidden preview pane an interval fires
    ZERO times (measured: 0 ticks in 1200ms at a 32ms period) while setTimeout
@@ -25258,7 +25560,7 @@ const camPans=()=>{
    and not the other. An unverifiable control is a control nobody checks. */
 function panTick(){
   PAN_T=0;
-  if(!PAN_V||!camPans()||!$('battle').classList.contains('on')){panStop();return;}
+  if(!PAN_V||!camGrab()||!$('battle').classList.contains('on')){panStop();return;}
   camNudge(CAM.tx+PAN_V.x,CAM.ty+PAN_V.y);
   PAN_T=setTimeout(panTick,PAN_TICK);
 }
@@ -25268,7 +25570,7 @@ function panInit(){
   F.addEventListener('pointerdown',e=>{
     if(e.button)return;                       /* left button and touch only */
     if(e.target.closest&&e.target.closest('#bZoom'))return;
-    if(!camPans())return;
+    if(!camGrab())return;
     panStop();
     PAN={x:e.clientX,y:e.clientY,tx:CAM.tx,ty:CAM.ty,s:panScale(F),
          grab:e.pointerType==='touch'?12:5};
@@ -25297,7 +25599,7 @@ function panInit(){
      cards or the plaque cost nothing. */
   F.addEventListener('pointermove',e=>{
     if(PAN||e.pointerType==='touch')return;
-    if(!camPans()||!$('battle').classList.contains('on')){panStop();return;}
+    if(!camGrab()||!$('battle').classList.contains('on')){panStop();return;}
     const b=F.getBoundingClientRect(),s=panScale(F);
     const x=ROT?(e.clientY-b.top)/s:(e.clientX-b.left)/s;
     const y=ROT?(b.right-e.clientX)/s:(e.clientY-b.top)/s;
@@ -26722,6 +27024,7 @@ function render(){
       if(S.los.at)inWay[K(S.los.at[0],S.los.at[1])]='TERR';});
   }
   clearLosRay();          /* a ray from the last board must not outlive it */
+  const zocHexes=[];      /* #243 - the parting-swing zone, drawn as one border */
   for(let r=0;r<ROWS;r++){
     const row=document.createElement('div');
     /* ⛔ #173 - HEXOFF, NEVER A LITERAL. This line and `hexCentre` describe the
@@ -26830,8 +27133,12 @@ function render(){
          ⚠ AND IT IS STILL ONLY DRAWN ON YOUR OWN TURN (`u.side==='you'`): it
          is a price on a decision, so it appears when there is one to make. */
       /* #173 - `heldAt` and not `threatsAt`: the front arc only, which is what
-         partingShots now charges for. The two are one fact and one picture. */
-      if(u&&u.side==='you'&&heldAt(c,r,'you')>0)edge='rgba(150,40,45,.44)';
+         partingShots now charges for. The two are one fact and one picture.
+         ⛔ #243 - AND IT IS COLLECTED RATHER THAN PAINTED. `edge` is the hex's
+         GROUND (`hedge.style.background`), so this line used to wash three or four
+         hexagons red in front of every enemy. `drawZoc` draws the outside of the
+         set once, after the grid is built. */
+      if(u&&u.side==='you'&&heldAt(c,r,'you')>0)zocHexes.push([c,r]);
       /* #205 - and the hex the step is about to be PAID FOR leaving is louder
          than the ring it sits in. Written HERE, in `edge`, and not as a CSS
          override: `hedge.style.background` is an inline style further down, so
@@ -27456,6 +27763,9 @@ function render(){
       hx.onclick=()=>handHex(c,r);         /* #215 - the pointer's door */
       hx.appendChild(inn);row.appendChild(hx);}
     g.appendChild(row);}
+  /* #243 - after the grid, because it measures the hexes it outlines, and BEFORE
+     the camera, because it is drawn in the board's own coordinates. */
+  drawZoc(zocHexes);
   /* #66 — ONE call site for the camera, and this is it. render() runs after
      every state change the player can see (a step of a walk, a push, a turn
      handing over), so the camera follows the fight without anything else in
@@ -30406,7 +30716,9 @@ function clashAfter(){
        the cart. Authoring `salvageCut(5)` on the row instead would have put
        the rule in a second place. */
     const paid={crowns:55,salvage:5,food:2};
-    pay('crowns',paid.crowns);pay('food',paid.food);
+    /* #243 - `paid` travels to `consequences()` as the receipt, so the barrels
+       it names are the ones `pay` put in the cart. */
+    pay('crowns',paid.crowns);paid.food=pay('food',paid.food);
     Object.assign(paid,payMat(paid));
     G.clashHaul=paid;
   }
@@ -33390,8 +33702,7 @@ function coach(key){
   document.getElementById('stage').appendChild(el);
   el.querySelector('.cok').onclick=()=>el.remove();
 }
-const openInv=()=>{SCRAPMODE=false;show('inv');drawInv();   /* #239 */
-  $('iNag').style.display=G.mustKit?'inline':'none';};
+const openInv=()=>{SCRAPMODE=false;show('inv');drawInv();};   /* #239, #243 */
 /* #133 - which tab the right pane is showing. It lives out here for the same
    reason the tree drawer's flag used to: buying a perk redraws the whole
    sheet, and a pane that snapped back to THE STASH under the hand that just
@@ -33608,7 +33919,15 @@ function drawInv(){
      shooter's 10% or an open wound. A sheet is a readout (#102). */
   const hpMax=u.hpMax,hpNow=Math.max(1,hpMax-(p.hpLoss||0)),hpF=hpNow/hpMax;
   const arm=armourValue(p),bd=bandOf(u),sw=swingOf(u);
-  const nu={morale:D.moral(uu)*0.78,moraleMax:D.moral(uu)},nl=LADDER[ladderAt(nu)];
+  /* ⛔ #243 - THE REAL FIGURE, NOT THE TEXTBOOK ONE. (User: *"in the inventory
+     in character sheet you see real influence on global moral (you see actual
+     morale with which character will start)"*.) `D.moral(uu)*0.78` is START_NERVE
+     against a raw stat - it knew nothing about the company's mood, the banner,
+     what this body is owed, the Reliquary or their own nature, and every one of
+     those moves the rung they open a fight on. `u` is the body that walks onto
+     the field and `u.morale0` is the number `morBase()` reads all fight, so the
+     sheet and the first turn now say the same thing. */
+  const nu={morale:u.morale0,moraleMax:u.moraleMax},nl=LADDER[ladderAt(nu)];
   const statPts=p.statPoints||0,perkPts=p.perkPoints||0;
   const mutActs=p.mut?u.acts.filter(a=>(MUTACT[p.mut]||[]).indexOf(a.k)>=0).map(a=>a.n):[];
   /* the figure that will stand on the field, at the size it stands there.
@@ -33874,7 +34193,14 @@ function drawInv(){
           '<div class="statLine" id="iNerve" style="cursor:help"><span>MOOD</span>'+
             '<span class="pv" style="color:'+nl.col+'">'+
               nerveFlag(LADDER.indexOf(nl),12)+' '+nl.n+'</span></div>'+
-          '<div class="bar" style="background:#20272a"><i style="width:78%;background:'+nl.col+
+          /* ⛔ #243 - THE BAR WAS THE LITERAL `78%`, WHICH IS `START_NERVE` TYPED
+             OUT. It was the same picture on every body in the game whatever their
+             nerve, their company's mood, their banner or their wages - a readout
+             printing a constant, which is #102's rule at its bluntest. The rung name
+             beside it moved with `nl` and the bar under it did not, so the two halves
+             of one line disagreed on any body who was not exactly neutral. */
+          '<div class="bar" style="background:#20272a"><i style="width:'+
+            Math.round(100*nu.morale/(nu.moraleMax||1))+'%;background:'+nl.col+
             '"></i></div>'+
         /* ⛔ #232 · WHAT THEY DO WITH ALL THAT, IN THE HOLE UNDER THE BARS ═══
            (User: *"Action can go under nurve - there is some space"*.)
@@ -33899,7 +34225,9 @@ function drawInv(){
                '</span>'
              :'<span>BLOW <b class="dmg">nothing much</b></span>')+
           '<span>TO HIT <b>'+u.mskill+'%</b></span>'+
-          '<span>DODGE <b>'+dodgeOf(u)+'</b></span>'+
+          /* #243 - the unit, at the user's word. TO HIT beside it has printed
+             `%` since #94 and this was the one figure on the row without it. */
+          '<span>DODGE <b>'+dodgeOf(u)+'%</b></span>'+
           '<span>STEP <b>'+(RACESTEP[p.race]||4)+' hex'+
             (p.cls==='cutter'?' (+1 first)':'')+'</b></span>'+
         '</div>'+
@@ -34351,10 +34679,18 @@ function drawInv(){
          and then explained the sort order of a list nobody had to sort. */
       TIP.innerHTML='<div style="font-family:var(--display);font-size:var(--fs5);color:var(--g4);'+
         'margin-bottom:5px">MOOD</div><div class="ladfull">'+
-        ladderHTML({morale:D.moral(uu)*0.78,moraleMax:D.moral(uu)},true)+'</div>'+
+        ladderHTML(nu,true)+'</div>'+
         '<div class="moodwhy">'+
         '<div class="mw0">Starts every battle on this rung, and each quiet turn '+
         'shifts back to it.</div>'+
+        /* #243 - and WHY it is that rung and not the neutral one. The company's
+           mood is the one input the player can change from the map, so it is the
+           one worth naming here; the rest (the banner, wages owed, their own
+           nature) is already on this screen. Derived, and silent at AT EASE. */
+        (moodFx().start?'<div class="mw0">The company is <b style="color:'+
+          moodState(G.morale).col+'">'+moodState(G.morale).n+'</b>, which is <b>'+
+          (moodFx().start>0?'+':'')+moodFx().start+'</b> on the nerve every body '+
+          'here starts a fight with.</div>':'')+
         '<div class="mwup"><b>UP</b> an enemy died somewhere <i>+'+MORALE.allyKill+
         '</i> · standing among allies · they killed somebody <i>+'+MORALE.ownKill+'</i></div>'+
         /* #240 - the figure is DERIVED, because it is not flat any more: a
@@ -36850,8 +37186,44 @@ function drawMap(){
       c.lineWidth=4;c.strokeStyle='#15100a';drawCurve();
       c.lineWidth=2;c.strokeStyle='#8a7d63';drawCurve();c.restore();
     }else{
-      c.save();c.setLineDash([4,8]);c.globalAlpha=.5;
-      c.lineWidth=1.4;c.strokeStyle='#4a3a22';drawCurve();c.restore();
+      /* ⛔ #243 · A ROAD YOU HAVE NOT WALKED YET IS STILL A ROAD.
+         (User, 2026-08-25: *"on the global map you can show aprox road for the future
+         tile (with very light colors)"*.)
+
+         ⛑ IT WAS DRAWN AND IT HAD STOPPED BEING VISIBLE, WHICH IS #226's OWN TABLE
+         GOING STALE UNDER IT. That entry measured the three roads against the painted
+         ground and wrote down live 3.93 / walked 1.79 / **this one 1.29**, fixed the
+         walked road and left the bottom row where it was. Then #233 repainted the
+         world map. Re-measured on the shipped build the day this was written, the
+         road ahead is **1.13 to 1.39, mean 1.27** - and on two of the four sampled
+         edges the line is the SAME LUMA AS THE GROUND OR DARKER THAN IT. There was
+         nothing there to see, which is why the ask arrived.
+         ⛔ THE FIX IS #226's OWN FIX: A CASING, NOT A BRIGHTER LINE. An alpha tuned
+         against a near-black procedural map has no answer to a painted valley floor.
+         The road ahead now gets the construction the other two have, one size down
+         again - 3 under 1.5 - and keeps its dashes.
+         ⚠ IT MAY NOT BECOME A SECOND KIND OF WALKED, which is #194's condition
+         arriving on the third road, and the measurement is what says it does not.
+         Same four edges, same probe, `tools/dev/probes/road243i.js`:
+
+             live road (gold on a casing) .... 2.20 - 2.92   mean 2.67
+             walked road (bone, solid) ....... 1.46 - 1.93   mean 1.77
+             the road ahead (pale, dashed) ... 1.35 - 1.59   mean 1.51
+             the road ahead, on HEAD ......... 1.13 - 1.39   mean 1.27
+
+         ⚠ AND THE SEPARATION IS COLOUR, WEIGHT AND PATTERN, NOT THE HALF-POINT OF
+         LUMA. `#cfc3a0` dashed at 1.5 against the walked `#8a7d63` solid at 2: on the
+         two brightest stretches of ground the two ratios are within .1 of each other
+         and the lines are still nothing alike.
+         ⚠ ⛔ AND A MEAN ALONG A DASHED CURVE MEASURES THE GAPS. The first cut of the
+         probe averaged the whole centre line and reported the new build and HEAD as
+         IDENTICAL, because two thirds of every sample is ground either way; a MAX
+         over the curve reports the brightest tree within two pixels of it. The figure
+         above is the top third of the samples - the dash duty cycle - against the
+         median of the two bands 16px either side. */
+      c.save();c.setLineDash([4,7]);c.globalAlpha=1;
+      c.lineWidth=3;c.strokeStyle='rgba(18,13,8,.78)';drawCurve();
+      c.globalAlpha=.48;c.lineWidth=1.5;c.strokeStyle='#cfc3a0';drawCurve();c.restore();
     }
   });
   const v=c.createRadialGradient(W/2,H/2,H*.34,W/2,H/2,W*.62);
@@ -37095,8 +37467,31 @@ const payBill=()=>(G.owed||0)+dailyUpkeep()*payIn();
 
    ⚠ It deliberately does NOT clamp `morale` — mood is signed by design and
    goes negative on purpose. Only the two counted resources have a floor. */
+/* ⛔ #243 · PROVISIONS COME IN 30% LIGHTER, AND THE CUT IS TAKEN AT THE DOOR.
+   (User, 2026-08-25: *"-30% of getting provision"*.)
+
+   ⛑ THIS IS #239's `salvageCut` ON THE OTHER RESOURCE, AND THE ARGUMENT IS THE
+   SAME ONE: a number on a card is an amount of STUFF, not an amount of pay. There
+   are 40-odd `food:` figures in the content plus the village market, the clash haul
+   and the shop; editing them is the rule in forty places and wrong on the
+   forty-first card somebody writes.
+   ⛔ AND IT IS TAKEN IN `pay`, WHICH IS THE ONE FOOD DOOR AND ALWAYS HAS BEEN.
+   `payFx`, `pickChoice`, `clashAfter` and the market all come through here, so
+   there is no fifth site to forget - which is exactly the fault #239 found when it
+   counted five copies of the materials loop and a cut applied at four of them.
+   ⚠ `evPaidOf` RUNS THE SAME CUT so a door's own sub-line promises what the
+   barrels will actually hold: `fxNote` reads it, and so do the camp, vignette and
+   one-door-pickup chip rows. Promise and payment, one number.
+   ⚠ A NEGATIVE PASSES THROUGH FLAT. What a card CHARGES is untouched; discounting
+   a cost while cutting a payout would be a buff wearing a nerf's clothes.
+   ⚠ AND THE FLOOR IS ONE. A card that hands over a single barrel still hands over
+   a single barrel - 0.7 rounding to 1 rather than to nothing is the difference
+   between a small find and a card that lies. */
+const FOOD_FIND=0.70;
+const foodCut=n=>n>0?Math.max(1,Math.round(n*FOOD_FIND)):n;
 function pay(key,delta){
   if(!G.run||!delta)return 0;
+  if(key==='food')delta=foodCut(delta);
   const was=G.run[key]||0;
   const now=Math.max(0,was+delta);
   G.run[key]=now;
@@ -37449,8 +37844,64 @@ function stashGain(k){if(!k)return;G.stash.push(k);G.mustKit=true;}
    ogre eating three seats, and the clash allies arriving before the muster.
    ═══════════════════════════════════════════════════════════════════════════ */
 const GOAL_PAY=10;
-function goalOpen(){
-  if(!G.goal)G.goal={k:'grow',need:G.party.length+1,done:false};
+/* ⛔ #243 · THERE IS A SECOND ONE NOW, SO THERE IS A TABLE.
+   (User, 2026-08-25: *"Add next secondary objective (after getting 1 event from the
+   fisrst) - improwe your wagon"*.)
+
+   ⛑ #161's *"no quest log, no chain, no second source of truth"* IS NOT
+   OVERTURNED - IT IS WHAT MAKES THIS SIX ROWS. There is still ONE objective live at
+   a time, one row on the plate, one card, one payment; what changed is that the
+   objective's own WORDS moved out of four functions and into one row, so the card,
+   the plate, the contract's hover and the cheer cannot come to disagree about what
+   is being asked for. That was already a risk with one objective: the card said
+   *"Recruit at least someone else"*, the plate said *"You are 4 of 5"* and the hover
+   said a third thing, all typed separately.
+   ⛔ THE ORDER IS A LIST AND THE STATE IS THE CURRENT KEY, so no save field is
+   added: `G.goal.k` plus `GOAL_ORDER` is the whole of "what comes next", and an old
+   save carrying `{k:'grow',need:5,done:true}` walks straight into the wagon on its
+   next road. A third objective is a row here and a string in `GOAL_ORDER`.
+   ⚠ `met` IS ASKED EVERY `worldTick` and must be cheap and side-effect free.
+   ⚠ THE WAGON ONE HAS NO `need`, and that is not an omission: "bolt in the first
+   thing" is a fact about the cart, not a count taken on the day. See the note on
+   `grow`'s own `need` directly below for why counting-on-the-day matters where a
+   target IS a count. */
+const GOALS={
+  grow:{
+    open:()=>({k:'grow',need:G.party.length+1,done:false}),
+    met:g=>G.party.length>=g.need,
+    row:g=>'Recruit at least one more. You are '+G.party.length+' of '+g.need+'.',
+    ask:'Recruit at least someone else to your party.',
+    cheer:'more of you at the fire.',
+    body:()=>'There are '+G.party.length+' of you, on a road none of you has walked, '+
+      'in a country that was not expecting you.\n\nThe wagon has room. Outside it, the '+
+      'country is dangerous.',
+    hover:'Nobody set this one. Recruit at least one more body and the whole company '+
+      'walks easier for it - the watch splits properly and the wagon stops being '+
+      'four people\'s work.'},
+  wagon:{
+    open:()=>({k:'wagon',done:false}),
+    met:()=>!!(G.wagon&&(G.wagon.frame>0||(G.wagon.built||[]).length>0)),
+    row:()=>'Bolt the first thing into the wagon. '+RES_ICON.salvage+' '+
+      (G.camp.salvage||0)+' salvage in the cart.',
+    ask:'Bolt something into the wagon.',
+    cheer:'the cart is better than it was.',
+    body:()=>'The axle has been talking to itself since the Bells and nobody has '+
+      'answered it. The bed is one plank short of honest.\n\nSalvage is what a wagon '+
+      'is rebuilt with, and the road keeps handing you salvage. Whatever goes in stays '+
+      'in for this run: seats, a cot, a fire, a chest of medicine.',
+    hover:'Nobody set this one either. Salvage had nowhere to go until the wagon; the '+
+      'first thing bolted into it is the run learning what it is for.'}
+};
+const GOAL_ORDER=['grow','wagon'];
+const goalDef=()=>(G.goal&&GOALS[G.goal.k])||GOALS.grow;
+/* the next objective in the list, or null when the run has run out of them */
+function goalNext(){
+  if(!G.goal||!G.goal.done)return null;
+  return GOAL_ORDER[GOAL_ORDER.indexOf(G.goal.k)+1]||null;
+}
+function goalOpen(k){
+  if(!k&&G.goal)return;
+  G.goal=GOALS[k||'grow'].open();
 }
 /* ⛔ ONE DOOR, AND IT IS DELIBERATELY NOT ONE OF THE SIX. Six places in this
    file push onto G.party - the muster wall, the returner at the fire, the
@@ -37465,7 +37916,7 @@ function goalOpen(){
    persistence. */
 function goalTick(){
   const g=G.goal;
-  if(!g||g.done||SIM.on||G.party.length<g.need)return;
+  if(!g||g.done||SIM.on||!GOALS[g.k]||!GOALS[g.k].met(g))return;
   g.done=true;
   G.morale+=GOAL_PAY;
   sfx('promote');
@@ -37477,7 +37928,7 @@ function goalTick(){
      news is good news. */
   /* #198 - SECONDARY, not SECOND, and on all four surfaces at once: this
      cheer, the plate row, the card and the contract hover. */
-  say2('✦ SECONDARY OBJECTIVE DONE · morale +'+GOAL_PAY+' · more of you at the fire.','cheer');
+  say2('✦ SECONDARY OBJECTIVE DONE · morale +'+GOAL_PAY+' · '+GOALS[g.k].cheer,'cheer');
 }
 /* the plate's second row. Nothing until the card has been dealt, and NOTHING
    AGAIN once it is paid.
@@ -37487,18 +37938,17 @@ function goalTick(){
    silent - `goalTick` says it out loud in `say2` and pays +10 the moment it
    lands - so the row can go without the player missing it. */
 function goalRow(){
-  const g=G.goal;if(!g||g.done)return '';
+  const g=G.goal;if(!g||g.done||!GOALS[g.k])return '';
   return '<span class="qsec">'+
     '<span class="qlab">SECONDARY OBJECTIVE</span>'+
-    '<span class="qtx">Recruit at least one more. You are '+G.party.length+
-      ' of '+g.need+'.</span></span>';
+    '<span class="qtx">'+GOALS[g.k].row(g)+'</span></span>';
 }
 /* ⚠ THE CARD IS A NOTICE, NOT A DECISION, so it is built on the vignette's
    shape (one button, closes to the road) rather than on ask(). It is the only
    thing that speaks on the first leg - see the clashDone gate in rollCampAt -
    and it is LIGHT by the length rule: 62 words of body, measured. */
 function openGoalCard(spot,next){
-  const g=G.goal,n=G.party.length;
+  const g=G.goal;
   G.pending='camp';mark('road: the second objective');
   const dlg=$('wDlg');
   /* ⚠ A PLAIN HYPHEN, and the neighbouring vignette headers are wrong rather
@@ -37522,12 +37972,11 @@ function openGoalCard(spot,next){
 
      ⚑ "And it is dangerous outside." is the ledger's line with its conjunction
      turned into a sentence. The thought is the user's; the grammar is mine. */
+  const D=GOALS[g.k]||GOALS.grow;
   dlg.innerHTML='<h3>SECONDARY OBJECTIVE</h3>'+
-    '<div class="bd">There are '+n+' of you, on a road none of you has walked, in a country '+
-      'that was not expecting you.\n\nThe wagon has room. Outside it, the country is '+
-      'dangerous.'+
+    '<div class="bd">'+D.body()+
       '<div class="qgoal">'+
-      '<span class="qt">Recruit at least someone else to your party.</span>'+
+      '<span class="qt">'+D.ask+'</span>'+
       '<span class="qp">morale +'+GOAL_PAY+' when it is done</span></div></div>'+
     '<button class="choice" id="wV"><b>Keep walking.</b></button>';   /* #198 label, #197 no sub-line */
   dlg.classList.add('on');
@@ -37994,8 +38443,15 @@ function worldTick(){
         'company\'s mood down hard, and costs mood on the field - the personalities '+
         'disagree about how loudly.',
       x:'Fill the chest and the wages catch up on their own at day\'s end.'},
-    mood:{t:ms.ic+' '+ms.n,col:ms.col,d:ms.d,
-      x:'Every fight starts closer to this mood than to steady.',
+    /* ⛔ #243 - THE HOVER IS THE LADDER (user: *"On global map - show more clear
+       what does mood do"*). It used to be one sentence about the rung the company
+       happened to be on, so the one thing a player wants from this chip - is it
+       worth three provisions to get to the next face - was the one thing it would
+       not say. Every row and every figure is derived: see `moodEffect`. */
+    mood:{t:ms.ic+' '+ms.n,col:ms.col,
+      d:ms.d+(moodEffect(ms)?'<br><b style="color:'+ms.col+'">'+moodEffect(ms)+'</b>':'')+
+        '<br><br>'+moodLadderHTML(),
+      x:'It settles back towards the middle on its own. Only a spent mood decays.',
       act:'CLICK: throw them a party - '+feastCost()+' provisions.'},
     /* #106 point 8: "when i hower on the health thing - you can show exactly
        how much health each unit has". Every body, one line, hp out of hpMax,
@@ -38014,8 +38470,10 @@ function worldTick(){
           ' <span style="color:#8a7449">'+p.race+' '+CLASSES[p.cls].n.toLowerCase()+
           '</span> <b>'+now+'/'+un.hpMax+'</b></span>';}).join('<br>'),
       x:'Days on the road are the only medicine in this game.',
-      act:'CLICK: double rations - '+RATION_COST+' provisions, and they mend twice '+
-        'as fast for '+num(RATION_DAYS)+' days.'},
+      /* #243 - and it says what it actually buys now: the injury clock was the
+         half nobody could see moving. */
+      act:'CLICK: double rations - '+RATION_COST+' provisions. Wounds AND injuries '+
+        'mend twice as fast for '+num(RATION_DAYS)+' days.'},
     crowns:{t:'CROWNS',col:'var(--g4)',
       d:'The purse of THIS run - wages, tolls, hires, bribes. It does not survive the '+
         'company. Spend it like somebody who knows that.',
@@ -38025,7 +38483,8 @@ function worldTick(){
         'bread</b>: salt meat, cheese, a jug.<br><br>'+
         '<b>Nothing eats them on its own</b> - not a day on the road, not a wound '+
         'mending. Every one you lose, you spent.<br>'+
-        '<b>Double rations</b> - wounds mend twice as fast for three days.<br>'+
+        '<b>Double rations</b> - wounds and temporary injuries mend twice as fast '+
+        'for three days.<br>'+
         '<b>Lay out a proper meal</b> - the mood lifts hard (once a day).<br>'+
         '<b>The road asks for it</b> - feeding a stranger, a wedding, a hungry ogre.',
       x:'#157 took the last automatic drain off them: the wounded used to eat one a '+
@@ -38063,10 +38522,10 @@ function worldTick(){
         /* #177 - the hover follows the row: it closes with the objective. A
            paragraph about a thing that is finished is the same defect as the
            row, one layer down. */
+        /* #243 - off the objective's own row, so the plate, the card and this
+           paragraph cannot describe three different jobs. */
         (G.goal&&!G.goal.done?'<br><br><b style="color:var(--g4)">SECONDARY OBJECTIVE</b><br>'+
-          'Nobody set this one. Recruit at least one more body and the whole company '+
-          'walks easier for it - the watch splits properly and the wagon stops being '+
-          'four people\'s work. <b>Morale +'+GOAL_PAY+'</b> the day it happens.':''),
+          goalDef().hover+' <b>Morale +'+GOAL_PAY+'</b> the day it happens.':''),
       x:'It pays on delivery, and not before.'}};
   /* ═══ #112 point 4 · A HOVER THAT SAYS WHETHER THE THING IS A DOOR ══════
      `x` is the aside: what is also true, in dim italic. Four of these chips
@@ -38171,6 +38630,7 @@ function worldTick(){
    spot, they double what a day of road gives back. On a one-day leg that is
    one day's worth, and the other two follow you onto the next road. */
 const RATION_COST=3, RATION_DAYS=3, MEND_BASE=6, MEND_DOUBLE=12;
+const VILL_FOOD=10;      /* #243 - the market's barrels, before `foodCut` */
 /* small counts in words, because "3 days" beside "3 provisions" beside "3
    crowns" is three different things wearing one glyph. Hoisted out of
    forkCard(), where it was a local and therefore invisible to every other
@@ -38228,6 +38688,33 @@ function passDays(n){
        What settles here is yesterday's. */
     const rung=moodRung(G.morale);
     if(rung!==MOOD_NORM)G.morale+=(rung<MOOD_NORM?1:-1)*(Math.abs(rung-MOOD_NORM)>1?2:1);
+    /* ⛔ #243 · ON THE BRINK MEANS SOMEBODY MAY ACTUALLY WALK OFF.
+       (User: *"-15 mood at the start of the fight, small chance that some of your
+       people leave party (actuall mechanic of leaving and all arts stayning. Like
+       5% in one day - this don't write)"*.)
+       ⛑ IT IS `dismiss()` AND NOT A SECOND WAY OUT OF THE COMPANY. That function
+       is the only thing in the game that takes a body off the roster and puts it in
+       `G.dismissed`, which is what lets the returner card bring them back at a fire
+       three fights later - so a deserter is a person who left, not a person deleted.
+       Everything they own goes back in the cart the way a dismissal already does.
+       ⚠ THE ROLL IS PER DAY AND PER COMPANY, not per body: five per cent is the
+       chance that ANYBODY goes, or a line of eight would be losing somebody every
+       other day. ⚠ The leader never goes and the last crew member never goes: a
+       company of one is a soft lock, not a consequence.
+       ⚠ SIM-GUARDED, invariant 8 - the arena stages fights by emptying G.party.
+       ⚠ AND IT IS LOUD WHEN IT FIRES. The odds are what the user asked to keep
+       off the hover; a body leaving in the night with no line about it is the
+       silent-failure shape, not a secret. */
+    const flee=(moodFx().leave||0);
+    if(flee&&!SIM.on&&Math.random()<flee){
+      const pool=G.party.filter(p=>!p.leader);
+      if(pool.length>1){
+        const gone=pickOne(pool);
+        dismiss(gone,true);
+        say2(shortWho(gone)+' was not at the fire in the morning, and neither was '+
+          'their bundle. Nobody pretends to be surprised.','warn');
+      }
+    }
     G.owed=(G.owed||0)+dailyUpkeep();
     const payday=G.day%PAY_EVERY===0;
     const behind=G.party.some(p=>(p.unpaid||0)>0);
@@ -38361,8 +38848,24 @@ function passDays(n){
        a wage nobody paid; here it prints "Weatherhead (human captain) is sound
        again" over a body the player has been watching limp for a week, and a
        list of two is unreadable. The name is the whole line. */
+    /* ⛔ #243 · AND DOUBLE RATIONS RUN THIS CLOCK AT DOUBLE SPEED.
+       (User, 2026-08-25: *"one of importent atributes when you heal your team with
+       provision - it heal all temp wounds twice as fast"*.)
+       ⛑ HALF THE SENTENCE WAS ALREADY TRUE AND THE OTHER HALF WAS NOT, which is
+       why this reads as a description rather than a request. `MEND_DOUBLE` has
+       halved the time a HITPOINT takes to come back since the rations were built;
+       the TEMPORARY INJURY - the cracked rib, the bad eye, the thing that is
+       actually keeping a body off the field - counted plain days and did not care
+       what anybody had eaten. Provisions are what you spend to get somebody back on
+       their feet before the next fight (see the note on the mending above), and the
+       injury is the part of "on their feet" that was not listening.
+       ⚠ ONE STEP OR TWO, NEVER A FRACTION: `days` is a whole number a card
+       authored and the road strip says the day it runs out.
+       ⚠ THE SCAR IS NOT TOUCHED, the same as the line it stands beside. A scar is
+       permanent and no amount of salt meat is going to argue with it. */
+    const heal=G.doubleRations>0?2:1;
     const mended=[];
-    G.party.forEach(p=>{if(p.hurt&&--p.hurt.days<=0){
+    G.party.forEach(p=>{if(p.hurt&&(p.hurt.days-=heal)<=0){
       mended.push({p:p,n:p.hurt.n});p.hurt=null;p.warned=null;}});
     if(mended.length===1)say2(shortWho(mended[0].p)+' is sound again. '+
       mended[0].n+', mended.','cheer');
@@ -39214,6 +39717,19 @@ function rollCampAt(a,b,t,next,later,had){
      of the reveal blunts it — the ambient world stays quiet until the
      scripted one has said its piece */
   if(!G.clashDone){next();return;}
+  /* ⛔ #243 - AND THE NEXT OBJECTIVE IS DEALT ON THE FIRST ROAD AFTER THE LAST ONE
+     PAID (user: *"after getting 1 event from the fisrst"*). Below the clash gate and
+     above the returner, because an objective is not ambient weather: it outranks the
+     small talk and it must never open on the leg the reveal owns.
+     ⚠ It cannot repeat: `goalNext` is the position of the CURRENT key in
+     `GOAL_ORDER` plus one, and opening the new one moves that position. */
+  const nxt=goalNext();
+  if(nxt){
+    goalOpen(nxt);
+    if(had)had.fired=true;
+    openGoalCard(bez(a,b,t),next);
+    return;
+  }
   /* a returner outranks everything else the road might do tonight — but not
      the same day you dismissed them; they need a leg or two to think it over */
   const back=later?null:(G.dismissed||[]).find(r=>r.fights>=3&&G.day-r.day>=2);
@@ -39334,7 +39850,7 @@ function evPaidOf(f,mulCrowns){
   if(f.days)p.days=f.days;
   if(f.morale)p.morale=f.morale;
   if(f.crowns)p.crowns=(mulCrowns&&f.crowns>0)?Math.round(f.crowns*lootMul()):f.crowns;
-  if(f.food)p.food=f.food;
+  if(f.food)p.food=foodCut(f.food);      /* #243 - the same cut `pay` takes */
   /* #239 - the same cut `payMat` takes, so a door's own sub-line promises
      what the cart will actually hold. `fxNote` reads this; so do the camp,
      vignette and one-door-pickup chip rows. */
@@ -39782,13 +40298,19 @@ function choiceNote(o,skipMorale){
      again, pay them off properly, or cut them down for their kit
      (which turns out to be not much, and everybody watched).
    ============================================================ */
-function dismiss(p){
+/* ⚠ #243 - `quiet` IS FOR THE ONE CALLER THAT HAS ITS OWN SENTENCE. A body
+   who walks off in the night at ON THE BRINK leaves the same way a dismissed one
+   does - same roster splice, same `G.dismissed` seat, same returner three fights
+   later - and only the line about it differs. Two lines about one departure is
+   the receipt rule (`.claude/rules/event-cards.md`) arriving on the road strip. */
+function dismiss(p,quiet){
   const i=G.party.indexOf(p);if(i<0||p.leader)return;
   G.party.splice(i,1);
   if(iSel===p.id)iSel='you';
   G.dismissed=G.dismissed||[];
   G.dismissed.push({p:p,fights:p.fights||0,day:G.day});
   sfx('coin');
+  if(quiet)return;
   say2(who(p)+' shoulders their bundle and does not look back. '+
     ((p.fights||0)>=3?'Three fights or more side by side: that does not just stop.'
       :'You barely knew them, and now you never will.'));
@@ -41611,8 +42133,10 @@ function drawVillage(note){
       (sick.length?' · she steams the fen out of '+sick[0].name:''),
     need:heal,done:v.healed,dis:!hurt.length&&!sick.length,
     disC:'nobody is carrying anything worth 45 crowns'});
+  /* #243 - the row's own figure is DERIVED through `foodCut`, or the market is
+     the one price list in the game that promises what it will not hand over. */
   rows.push({id:'feed',t:'Buy out the market. Salt, meal, and a barrel.',
-    c:'−55 crowns · +10 provisions',need:feed,done:v.fed});
+    c:'−55 crowns · +'+foodCut(VILL_FOOD)+' provisions',need:feed,done:v.fed});
   /* #179 - the armourer's pieces are the same card the cart draws. They are the
      most expensive things in the act and they were a name in lower case inside a
      sentence about how long he has been sitting on them.
@@ -41719,10 +42243,10 @@ function villageDo(id){
         steamed[0].name+', who coughs up something grey and alive-looking into a dish. She '+
         'burns it without comment, which is somehow the most expensive-looking thing she does.':''));
   }else if(id==='feed'){
-    pay('crowns',-55);pay('food',10);v.fed=true;sfx('coin');
+    pay('crowns',-55);const got=pay('food',VILL_FOOD);v.fed=true;sfx('coin');
     drawVillage('Salt, meal, a barrel of something that is legally beer, and a cheese that Marrow '+
       'is already suspicious of.\n\nTen days of food, bought at village prices from people who '+
-      'watched you count the purse. +10 provisions.');
+      'watched you count the purse. +'+got+' provisions.');
   }else if(/^arm\d+$/.test(id)){
     /* #239 - the row IS the purchase. See the note where the rows are built. */
     const s=v.stock[+id.slice(3)];
@@ -42735,7 +43259,9 @@ function pickChoice(k,i){
      −15 ruling on a nearly-empty chest producing a negative purse */
   const crownsPaid=f.crowns>0?Math.round(f.crowns*lootMul()):(f.crowns||0);
   pay('crowns',crownsPaid);addPaid('crowns',crownsPaid);
-  pay('food',f.food||0);addPaid('food',f.food||0);
+  /* #243 - the CHIP is what `pay` actually moved, never the authored figure.
+     Same shape as `payMat` on the line below and for the same reason. */
+  addPaid('food',pay('food',f.food||0));
   /* #239 - the materials go through `payMat`, and the CHIP is built off what
      came back out of it rather than off the authored figure. That is #137's
      rule surviving the cut: the door promises `fxNote`, which runs the same
@@ -43740,9 +44266,13 @@ function proArtSwap(artKey){
    which is the thing being complained about. The honest test is whether this
    player has ever finished it.
 
-   ⚑ AND IT IS STILL ONE CLICK AWAY, ALWAYS. `The tutorial fight` is a row on
-   the front door (#119), it launches through the practice field, and it is
-   `SIM.on` - so it teaches, costs nothing, and can never set this flag.
+   ⚑ AND IT IS STILL TWO CLICKS AWAY, ALWAYS. `The Three Bells` is the FIRST row
+   of the practice field (`SIM_FIGHTS`), which is itself a row on the front door, and
+   it is `SIM.on` - so it teaches, costs nothing, and can never set this flag.
+   ⚠ #243 CORRECTED THIS PARAGRAPH WHEN IT DELETED THE MENU ROW #119 ADDED. It said
+   "one click" and named a row that no longer exists; what it was actually asserting -
+   that a returning player can always replay the taught brawl - is still true, and now
+   points at the thing that is really there.
 
    ⚠ THE COMPANY IS NOT BUILT BY THE BRAWL, WHICH IS WHY THIS IS SAFE. All four
    of them - the Captain, Vesna, Marrow, Ilka - come out of makeParty() at boot
@@ -45939,10 +46469,18 @@ function openMenu(){
      starting a run to reach it. It is a practice-field launch (SIM borrows
      `G` and gives it back), so a live campaign is never touched, and losing
      it costs nothing. `B.tut` is set from `battleKind==='tavern'` alone, so
-     every spotlight fires here exactly as it does in a run. */
-  opts.push({t:'The tutorial fight',
-    c:'the tap-room brawl, taught step by step · nothing is spent, lose it freely',
-    go:()=>{SIM.fight='tavern';SIM.comp='start';SIM.ground='as';simStart();}});
+     every spotlight fires here exactly as it does in a run.
+     ⛔ #243 - AND THE ROW IS DELETED, WHICH IS THE PARAGRAPH ABOVE APPLIED TO
+     ITSELF (user, 2026-08-25: *"из меню можно убрать 'tutorial fight'"*). #119
+     deleted *"How any of this works"* on the grounds that it *"duplicated a door
+     that already exists on this screen"*, and what it put in its place was a
+     hard-wired launch of `SIM.fight='tavern'` - which is the FIRST ROW of the
+     practice field, i.e. the row immediately above this one on the same menu. Same
+     fight, same spotlight (`B.tut` comes off `battleKind==='tavern'` alone), same
+     SIM borrow of `G`, one click further in.
+     ⚠ `tavernSkip`'s note CITED THIS ROW as the reason a returning player is never
+     stranded without the taught brawl. That citation is corrected in the same edit
+     rather than left to rot; nothing else in the file reads it. */
   /* the reaction bar's other half. Offered only once there is something in
      it, so a first-time player is not shown an empty report before they
      have any impressions to record. */
