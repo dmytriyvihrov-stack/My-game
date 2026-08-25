@@ -26,6 +26,84 @@
 
 ---
 
+## 🚩 THE ZONE OF CONTROL IS THREE SHORT LINES  *(#244 · 2026-08-25 · build log 8f.268)*
+
+**Reach it in three steps:** any fight → stand next to an enemy → look at the ground under them.
+
+**What should happen.** Each hex an enemy holds is marked on the ONE side it shares with that
+enemy - a short arc hugging the body, pointing the way it faces. Not a filled hexagon, not an
+outline round the whole area. Two enemies holding the same hex mark two of its sides. Aim a step
+onto ground you would be charged for and the marks come up brighter.
+
+**And the pink part-circle on the sprites is gone.** It was the back arc. Where the back arc still
+matters - with a move in hand - a ✦ sits on every hex you can reach that lands behind somebody.
+
+## 👟 THE WHOLE STRIDE, AND WHAT A CARD COSTS  *(#244)*
+
+**Reach it in three steps:** any fight → pick MOVE → look at how far the wash goes.
+
+**What should happen.** The near half is what ONE move buys, as before. Beyond it, at half the
+strength, is what a SECOND move would add. The far half is not clickable (one click cannot reach
+it) and it disappears entirely when the body has only one action left.
+
+**Then pick any other card.** The ◆ pips on the plaque blink - slowly - showing exactly how many
+of this body's actions that card would take. A two-action card on a body with one left blinks one
+pip, which is the honest picture of a card that cannot be played.
+
+## 🩸 A HURT BODY WEARS IT  *(#244)*
+
+**Reach it in three steps:** any fight → hit something → keep hitting it.
+
+**What should happen.** Blood appears on the body itself, in three steps: a few marks under about
+85% hitpoints, more under 60%, and a lot under 30%. It stays inside the silhouette, and it moves
+with the body - it lunges, recoils and flips with it and turns over when the body routs.
+
+**What would be a bug.** Blood on the ground beside a body rather than on it · blood that sits
+still while the body swings · a clean body at low hitpoints that never catches up (the picture is
+built in the background: it should arrive within a blink, and one render late at worst).
+
+## ⚙ THE DEV KIT BENCH - any artifact, any skill, mid-fight  *(#244)*
+
+**Reach it in three steps:** front door → **The practice field** → any fight, with the ⚙ on.
+
+Under the BRUSH panel there is now a **⚙ KIT** panel with two lists: an artifact and a skill. Pick
+one, then click a body on the board.
+
+- **an artifact** goes onto your own roster bodies only (a foe has no kit to change). The body is
+  rebuilt: its cards, reach, damage and armour ceiling all change, and where it stands, what
+  hitpoints it has left and what mood it is in do not.
+- **a skill** goes onto ANYBODY, either side. The list is every working, every race skill and every
+  act any enemy in the game can carry - 54 of them, named with who normally has it.
+- **off · your hand plays** hands the board back, and so does switching the ⚙ off.
+
+**What would be a bug.** A skill landing on two bodies at once · a body that loses its hitpoints or
+its place when it takes an item · either panel sitting over a hex you wanted to click · anything at
+all happening outside a practice fight with the ⚙ on.
+
+## ⚖ THE SMALLER ONES  *(#244)*
+
+- **Your side starts a fight lower.** 71% of the ceiling instead of 78; the enemy is unchanged. A
+  company at HIGH SPIRITS now opens on **Happy** with `It rocks` still to be earned.
+- **The mood hover** says how fast the company's mood walks back to the middle: 1 a day from one
+  rung out, 2 from two. That rule has been in the game since #161 and had never been printed.
+- **A working's price** is said once, in full size, in the caster's pink, and the MOOD row on the
+  plaque flashes when it lands. It was being said twice, small, under the spell's own animation.
+- **The off-hand dirk** is now two different things: behind a blade it is **+5 to hit and +5
+  damage** on the weapon you were already swinging, and behind a **bow** it is the OFF-HAND DIRK
+  card. Never both.
+- **Inventory:** `ARMOUR NONE` when nothing is on · the kill row reads `3 KILLED` and shows the
+  race heads only when the accordion is open · a banked stat point says `+2 TO A STAT · PICK A ROW`
+  over the four rows · an empty off hand under a two-hander opens no hover at all.
+- **The rout card** says `Let them go.`
+
+⚠ **Two things I could not reproduce and want your eyes on.** The **dogs' pack bonus** is live: driven
+through a real SNAP-AND-AWAY the bonus recomputes on the spot. What makes it look stuck is that the
+Bitch's aura reaches **3** hexes and the bounce is **2**, so a dog that bites and runs is almost
+always still inside it. Say which of the two numbers should move. And the **crossbow was already
+two-handed** - if something in the game let you hold it with a shield, tell me where you saw it.
+
+---
+
 ## 😐 THE COMPANY'S MOOD DOES SOMETHING NOW  *(#243 · 2026-08-25 · build log 8f.267)*
 
 **Reach it in three steps:** world map → hover the mood face on the top bar.
