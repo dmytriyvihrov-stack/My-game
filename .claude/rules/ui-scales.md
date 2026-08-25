@@ -120,6 +120,7 @@ carry the comment this paragraph asks for:
 | | what it reserves |
 |---|---|
 | `#wBar{padding:0 86px 0 var(--p5)}` | the run of bar the top-right button group stands in |
+| `#iBar{padding:0 86px 0 var(--p6)}` | **the same run on the second bar that carries ☰ MENU** *(#249)*. The button is `right:10` and 71px wide, so 86 is one number and the file's grep still returns `86px` alone. ⚡ It was affordable because the wagon door became a picture in the same edit: 103px of button went to 34 |
 
 ⚡ **AND THE SECOND ROW WAS DELETED BY #231, WHICH IS THE HEALTHY DIRECTION FOR THIS TABLE.**
 `.hin>.zodds{padding:1px 2px}` reserved the one free band of a 37x42 hex for an opaque PLATE, and
@@ -200,23 +201,63 @@ not write a second one.
 
 | | |
 |---|---|
-| the mark | ⛨ `SLOT_ICON.armour` · ♥ blood · `LADDER[].ic`, the rung's own face |
+| the mark | ⛨ `SLOT_ICON.armour` · ♥ blood · **`MOOD_MARK`, one glyph, `U+263A\uFE0E`** *(#249)* |
 | inside, left | the WORD that is a fact: the armour class, the mood rung. Nothing on hitpoints |
-| inside, right | the figure, `--fs6` on the card and `--fs4` on the sheet |
-| the height | `--sbh`, **22 on the card and 18 on the sheet** |
+| inside, **the middle** | the figure, `--fs5` on the card and `--fs3` on the sheet *(#249)* |
+| the height | `--sbh`, **20 on the card and 16 on the sheet** *(#249)* |
+| the frame | a `box-shadow` on `.sbt`, never on `.sbb` *(#249, and see below)* |
 
 ⛔ **`--sbh` IS A BOX HEIGHT, WHICH §3b ALREADY ESTABLISHED IS NOT ON ANY OF THE THREE SCALES.**
 Unlike `--barChip` it is **not** in `:root`: there is no one right height, because the card is read
 mid-fight at arm's length and the sheet is read at a desk. It is declared on `.sbar` and each host
 overrides it, which is one number in two places rather than a literal in six.
 
-⛔ **AND 22 IS ARITHMETIC RATHER THAN TASTE: TWO FACES ON ONE BASELINE MAKE A LINE BOX TALLER THAN
-EITHER.** At 20 the §5 clip counter reported `.bar.sbb` **twice** on the battle screen - `scrollHeight`
-22 into `clientHeight` 20 - on the two rows carrying a figure and not on the row carrying only a word.
-The cause is the display numeral at `--fs6` beside the `/max` in mono at `--fs1`: **`line-height:1`
-cannot make two typefaces agree**, and the strut takes the union. This is §4's own rule ("a raised
-font breaks the box that was measured around the old one") arriving on a box measured around ONE
-face when it holds two.
+⛔ **THE HEIGHT IS DECIDED BY THE NUMERAL'S SIZE AND BY NOTHING ELSE, AND #247's REASON FOR IT WAS
+WRONG** *(#249, 2026-08-26)*. That entry read the floor as *"two FACES on one baseline - the display
+numeral at `--fs6` beside the `/max` in mono at `--fs1` - whose combined line box is taller than
+either"*. **Swept at every size from 11 to 17px with the `/max` at `line-height:0`, at
+`line-height:1`, and DELETED ENTIRELY: the three sweeps are identical.** The `/max` never voted.
+
+⛑ **What sets the floor is the DISPLAY face's own content area**, which is ~1.27em whatever
+`line-height` says and which Chrome counts as scrollable overflow. So a bar's height is a function of
+one number:
+
+| numeral | `--fs` | the smallest bar it fits in |
+|---|---|---|
+| 11px | - | 15 |
+| 12px | `--fs3` | 16 |
+| 13px | `--fs4` | 17 |
+| 14px | - | 18 |
+| 15px | `--fs5` | **21** |
+| 16px | - | 22 |
+| 17px | `--fs6` | 23 |
+
+⚠ **AND THE GATE IS `> 1`, WHICH IS THE ONLY REASON 22/17 EVER PASSED.** §5's clip counter ignores a
+single pixel of overflow; 22 under a 17px numeral is 1 over and always was. **The shipped pairs are
+20/15 on the card (1 over) and 16/12 on the sheet (0).** Two is a finding, one is the house state.
+⛔ **So a bar cannot be made shorter without taking the numeral down with it**, and that is a trade
+against #105's *"almost double size of amount hitpoints and armor left"*, not a free win.
+
+⛔ **THE FRAME IS AN `outline` OR A `box-shadow` AND NEVER A `border`.** A border on a border-box
+element eats the content box, so a 1px frame costs 2px of type room - measured, it took `--fs6` from a
+22px bar to a 24px one. `.claude/rules/static-event-art.md` records the same finding about the road
+card's canvas. ⚠ **And it has to be drawn on `.sbt`, not on `.sbb`**: an outline or an inset shadow on
+the trough paints in the trough's own layer and the `<i>` fill paints over it, so the first cut of
+#249 had a hairline round the EMPTY half of every bar and nowhere else.
+
+⛑ **THE FILL'S LIGHT IS A `::after` ON THE `<i>`, FOR A REASON THAT IS NOT STYLE** *(#249)*.
+`setBar` and `drawInv` write `background:` INLINE on that element - the armour steel, `hpCol`'s ramp,
+the rung's own colour - and an inline shorthand resets `background-image` to none and outranks the
+stylesheet. A pseudo over the fill is the one place a gradient can live **without touching the colour
+that is carrying the meaning**, which is the rule under it: the mood fill IS the rung and the health
+fill IS the ramp, so repainting either would be a readout printing something other than what it reads.
+
+⛑ **AND THE FIGURE STANDS ON THE BAR'S OWN MIDLINE, BY A GRID** *(#249, the user: "write the curent
+point of that in the midle of that bar")*. `1fr auto 1fr`, never `justify-content:center`: two of the
+three rows carry a WORD as well, so centring a flex row centres the PAIR and `45/45` alone would sit
+dead centre while `LIGHT 6/6` sat off to one side. The mood row has no figure - its value IS the word -
+so `.sbt:not(:has(.sbR)) .sbL` moves that word into the middle column. **One rule, asking about the
+row it is on, which cannot drift from the other two.**
 
 ⛑ **TEXT ON A FILLED BAR TAKES AN OUTLINE, NOT A DROP SHADOW.** Two of the three fills are LIGHT -
 `--steel` #96a1a5 on the armour row, the top two rungs' greens on the mood row - so cream type with a

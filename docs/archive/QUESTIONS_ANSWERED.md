@@ -14,6 +14,18 @@
 
 ---
 
+## ✅ Answered, 2026-08-26
+
+*Both of these were answered by an ask that was not about them, which is what this file exists to
+record. Built as #249, build log **8f.274**.*
+
+| | what it was | what happened |
+|---|---|---|
+| **B1** · #247 | The mood bar's mark was a colour emoji face beside two drawn glyphs | **The user ruled on the half of it that was his:** *"for happy diffrent glyph - more in the style of other 2"*. `MOOD_MARK` is `U+263A` plus the text variation selector, cream, in the card's own type, and it names the POOL rather than the rung - which ⛨ and ♥ already do. `LADDER[].ic` is untouched, so the five faces still draw the ladder hover, the road bar and the event chips. ⚠ **The second half of the row is NOT answered and is re-filed as `G2`**: the sheet's **MOR** stat tell is still a painted heart two columns from the ♥ that means blood |
+| **B10** · #232 | Two ★ met on one roster row, the unspent-level star and the Captain's class mark | **Answered by #249's roster rebuild, and it had to be**: the tile is 80px wide now and both marks ride the same 56px portrait, so leaving them would have put two identical stars 40px apart on one face. The unspent mark is **`▲`** in the approve green - not a new glyph, but the one `.itl.spend` has printed after a raisable stat row since #122 and the one #244's caption is written in |
+
+---
+
 ## ✅ Answered, 2026-08-25
 
 *The user, working down the gathered list: **"Stone shield - do"** · **"b6 - good, close"** ·

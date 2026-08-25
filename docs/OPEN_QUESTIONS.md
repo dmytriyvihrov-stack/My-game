@@ -25,6 +25,17 @@ back already answered by work that was not about them.
 
 ---
 
+## G · From #249
+
+| | the question | ⭑ mine |
+|---|---|---|
+| **G1** · #249 | **The drawn body is parked and the mark on the PART went with it.** The gear block is two rows of three slots now (196px -> 108, and the 88 is the room the perk panel needs, which is what you asked for) - so the figure that carried a scar, the change and a condition **on the place they happened** is not drawn any more. Every one of them is still a chip under the grid with its own hover; nothing says WHERE. `drawDoll` is untouched and one call away | bring the figure back INSIDE the perk panel, where it has a reason to be big, rather than beside the gear |
+| **G2** · #247 | **The sheet's MOR stat tell is a painted heart, two columns from the ♥ that means blood.** This is the half of B1 that #249 did not touch: the mood row's mark is fixed and this one is a second heart meaning a second thing on one screen (#102's wrong-unit rule) | redraw the MOR tell as something that is not a heart. The pack is `art/src/stat-icons/` and it is nine grades |
+| **G3** · #249 | **The undo window is 3.15 seconds** at the shipped board speed. Move with your last action and the turn now hands itself on after that hold, with a bar draining along ⟲. Too long and it is still the hang you reported; too short and UNDO is back to being a button nobody can reach | play three fights before ruling. It is one number (`UNDO_HOLD`) |
+| **G4** · #249 | **The near movement zone is 19 points of luminance louder than the far one**, against 8 before. Your own suggestion (*"maybe 1st a bit darker"*) measured as the direction that ERASES the difference, so it went the other way | if the board now reads as too washed, the far half is the one with room to come down, not the near one |
+
+---
+
 ## E · Broken rather than undecided
 
 **E1 · The Drowned Chapel has a door nobody can ever open.**
@@ -46,11 +57,9 @@ that nothing can reach.
 
 | | the question | ⭑ mine |
 |---|---|---|
-| **B1** · #247 | **Two heart-ish marks on one screen.** The mood bar's mark is an emoji face (😄🙂😕😟💀) beside two drawn glyphs (⛨ ♥), and the sheet's **MOR** stat tell is a painted heart two columns from the **♥** that means blood. Neither is wrong alone; #102's wrong-unit rule is what would decide it | leave the faces, redraw the MOR tell as something that is not a heart |
 | **B2** · #246 | **The injury clock stayed on the roster tile** against a literal reading of *"remove the other things"*. It is a clock, not a description: how long until this body is sound | keep it, it is the only thing on that tile that changes |
 | **B3** · #244 | **The dogs' pack aura is live and could not be reproduced as a bug.** Her radius is 3 against a 2-hex bounce, which is probably the impression you had. It is a dial | drop the radius to 2 so it matches the bounce |
 | **B5** · #241 | **The apron round the board is bare ground** (`APRON_LATTICE=0`). If *"чуть выходящие квадратики"* meant you wanted to SEE tiles out there, one value draws them as outlines | leave it bare: a marked tile you cannot stand on is a promise the board breaks |
-| **B10** · #232 | **Two ★ meet on one roster row** - the gold unspent-level star on the name line, and the Captain's class mark below it. Different lines and different colours | dim the class mark |
 | **B11** · #230 | **Two states scroll the company sheet** (a banked promotion point, 8px; THE CIRCLE, 21px) against #133's promise of one screen and no scroll | accept it: the alternative is shrinking the stat icons that were just painted |
 | **B12** · #219 | **The opening card carries a title again**, `THE THREE BELLS · before the road`. You deleted the old card's title, but that was a narrow column card where it cost real prose. On the painted stage it costs nothing and every other card has one | keep it |
 | **B13** · #218 | **Three rail colours and a pace.** `honor` sits on grave-stone grey, the coldest thing on a warm card; `rest` sits on blue, which is a campfire in blue; and the card unfold is **470ms**, which you meet thirty-four times a run | shorten the unfold to about 380ms, leave the colours |

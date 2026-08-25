@@ -630,14 +630,70 @@ button:disabled{cursor:not-allowed}
    ⚠ AND `pointer-events` COMES BACK ON THE LEFT WORD ALONE. The band chip's
    hover (ARMOUR_BANDS, #140) is the one live thing in this overlay; the rest must
    let the surfaces underneath it through. */
-.sbar{--sbh:18px;display:flex;align-items:center;gap:var(--p2)}
+/* ⛔ #249 - THE BAR IS A SOCKET CUT INTO THE PANEL, NOT A BLOCK LAID ON IT.
+   (User, on the battle card: *"make the bars more in style of the game - now they
+   partly look like something alien"*, and on the sheet: *"bars health, armor and
+   morale more in the style"*.)
+
+   ⛑ THREE THINGS MADE THEM READ AS A WEB WIDGET AND NONE OF THEM WAS THE HUE.
+   A flat fill with no frame, no depth and a hard black edge is a progress bar; the
+   rest of this build draws every box as a dim-gold hairline round a dark recess.
+   So the trough takes `--e1` - the DEFAULT panel edge, 29 other sites - and an
+   inset shadow, and the fill takes a lit crown fading to a shaded foot.
+   ⛔ THE VEIL IS A PSEUDO AND IT HAS TO BE. `setBar` and `drawInv` write
+   `background:` INLINE on the `<i>` (the armour steel, `hpCol`'s ramp, the rung's
+   own colour), and an inline shorthand resets `background-image` to none and
+   outranks the stylesheet besides. A `::after` over the fill is the one place a
+   gradient can live without touching the colour that is carrying the meaning.
+   ⚠ AND THE HUES ARE UNTOUCHED ON PURPOSE. The mood fill IS the rung
+   (`LADDER[].col`) and the health fill IS `hpCol`'s ramp: repainting either would
+   be a readout printing something other than what it reads. What changed is the
+   light on them. */
+.sbar{--sbh:18px;display:flex;align-items:center;gap:var(--p2);margin-bottom:var(--p3)}
 .sbar>.sbi{flex:none;width:17px;text-align:center;line-height:1;font-size:var(--fs3)}
 .sbar>.sbi img{display:block;margin:0 auto;image-rendering:pixelated}
+/* ⛔ #249 - AN `outline`, NEVER A `border`, AND THE PROJECT HAD ALREADY PAID FOR
+   THIS ONCE. `.claude/rules/static-event-art.md` records it about the road card's
+   canvas: *"a border on a border-box element eats into the content box"*. Here the
+   content box is what the FIGURE stands in, so a 1px frame costs 2px of type room -
+   measured, it took the numeral `--fs6` needs from a 22px bar to a 24px one, which
+   would have made *"a little bit less high"* impossible to grant.
+   `outline-offset:-1px` draws the same hairline in the same place and costs nothing. */
 .sbar>.sbb{position:relative;flex:1;height:var(--sbh);overflow:hidden}
-.sbb>i{display:block;height:100%}
-.sbb>.sbt{position:absolute;left:0;top:0;right:0;bottom:0;z-index:2;display:flex;
-  align-items:center;justify-content:space-between;gap:var(--p2);
+.sbb>i{display:block;height:100%;position:relative}
+/* ⛑ THE LIGHT ON THE FILL, AND IT IS A RAMP RATHER THAN A STEP. The first cut
+   broke it hard at the middle, which is how a GLASS button is drawn and read as one
+   more modern widget - the thing the ask was about. A slow crown fading into a slow
+   shade reads as a substance standing in a socket, and it works over the steel, the
+   blood ramp and all five rung greens without knowing which it is on. */
+.sbar .sbb>i::after{content:'';position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(180deg,rgba(255,246,224,.20) 0,rgba(255,246,224,.05) 38%,
+                                    rgba(0,0,0,.14) 64%,rgba(0,0,0,.34) 100%)}
+/* ⛔ #249 - THE FIGURE STANDS IN THE MIDDLE OF THE BAR IT MEASURES.
+   (User: *"write the curent point of that in the midle of that bar"*.)
+   ⛑ A GRID AND NOT `justify-content:center`, because two of the three rows carry
+   a WORD as well - the armour class, the mood rung - and centring a flex row would
+   centre the PAIR, so `LIGHT 6/6` would sit off to one side and `45/45` alone would
+   sit dead centre. Three columns `1fr auto 1fr` put the figure on the bar's own
+   midline whatever stands beside it, which is what makes the three rows line up.
+   ⚠ THE MOOD ROW HAS NO FIGURE - its value IS the word - so `:has()` moves that
+   word into the middle column instead. One rule, and it cannot drift from the other
+   two, because it is asking about the row it is on. */
+.sbb>.sbt{position:absolute;left:0;top:0;right:0;bottom:0;z-index:2;display:grid;
+  grid-template-columns:1fr auto 1fr;
+  align-items:center;gap:var(--p2);
   padding:0 var(--p3);pointer-events:none;
+  /* ⛔ #249 - THE FRAME AND THE RECESS ARE DRAWN HERE, ON THE OVERLAY, AND NOT ON
+     THE TROUGH. An `outline` or an inset `box-shadow` on `.sbb` paints in `.sbb`'s
+     own layer, which the `<i>` fill then paints straight over - so the hairline was
+     visible round the EMPTY half of a bar and nowhere else, i.e. a frame that
+     disappeared exactly as the pool filled. `.sbt` is already `inset:0`, already
+     `z-index:2` (over the section hatch) and already `pointer-events:none`, so it is
+     the one layer in this row that covers the whole bar and takes nothing.
+     ⚠ IT MUST STAY A `box-shadow` AND NOT A BORDER: a border here would push the
+     figure inwards by a pixel on every row, which is the trap the outline note two
+     rules up is about. */
+  box-shadow:inset 0 0 0 1px var(--e1),inset 0 2px 4px -2px rgba(0,0,0,.75);
   /* ⛔ #247 - AN OUTLINE AND NOT A DROP SHADOW, and the first cut got it wrong.
      Two of the three fills are LIGHT - `--steel` #96a1a5 on the armour row and the
      top two rungs' greens on the mood row - so cream type with a soft shadow under
@@ -647,10 +703,24 @@ button:disabled{cursor:not-allowed}
      a third. */
   text-shadow:0 0 3px rgba(0,0,0,.95),0 1px 0 rgba(0,0,0,.9),0 -1px 0 rgba(0,0,0,.7),
               1px 0 0 rgba(0,0,0,.7),-1px 0 0 rgba(0,0,0,.7)}
-.sbt .sbL{font-family:var(--mono);font-size:var(--fs1);letter-spacing:.1em;
+.sbt .sbL{grid-column:1;justify-self:start;min-width:0;
+  font-family:var(--mono);font-size:var(--fs1);letter-spacing:.1em;
   color:#e6e1d4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;pointer-events:auto}
-.sbt .sbR{margin-left:auto;white-space:nowrap;font-family:var(--display);font-weight:700;
+.sbt .sbR{grid-column:2;white-space:nowrap;font-family:var(--display);font-weight:700;
   color:#f2ecdc;line-height:1;letter-spacing:.01em}
+.sbt:not(:has(.sbR)) .sbL{grid-column:2;justify-self:center}
+/* ⛔ #249 - AND #247's REASON FOR THE 22px BAR IS WRONG, WHICH ONLY A SWEEP SAID.
+   That entry read the floor as *"two FACES on one baseline - the display numeral and
+   the `/max` in mono - whose combined line box is taller than either"*. Measured on
+   this row at every size from 11 to 17px, with the `/max` at `line-height:0`, at
+   `line-height:1`, and DELETED ENTIRELY: **the three sweeps are identical.** The
+   `/max` never voted. What sets the floor is the DISPLAY face's own content area,
+   which is ~1.27em whatever `line-height` says, and Chrome counts it as scrollable
+   overflow. So the bar's height is a function of ONE number - the numeral's size -
+   and the ladder is: 11->15 · 12->16 · 13->17 · 14->18 · 15->21 · 16->22 · 17->23.
+   ⚠ THE GATE IS `> 1` AND THAT IS WHY 22/17 EVER PASSED. ui-scales §5's counter
+   ignores a single pixel; 22px under a 17px numeral is 1 over and always was. The
+   shipped pair below is 20/15, which is also 1. Two is a finding. */
 .sbt .sbR .of{font-family:var(--mono);font-size:var(--fs1);font-weight:400;
   color:rgba(242,236,220,.72);letter-spacing:0}
 /* ═══ #105 point 6 · WHAT IS LEFT, AT THE SIZE OF THE QUESTION ════════════
@@ -681,8 +751,18 @@ button:disabled{cursor:not-allowed}
    taller than either, and `line-height:1` cannot make two fonts agree. So the bar
    is as tall as the type standing in it, which is arithmetic rather than taste, and
    the card has the 6px: it measured 198 before this entry and 188 after. */
-#bPlq .sbar{--sbh:22px;margin-bottom:3px}
-#bPlq .sbt .sbR{font-size:var(--fs6)}
+/* ⛔ #249 - 19 AND NOT 22, AND THE 3px GAP IS 6. (User: *"more space between
+   that bars. And make them a little bit less high"*.)
+   ⛑ THE PITCH IS UNCHANGED AND THAT IS THE WHOLE POINT: 22+3 and 19+6 are both
+   25, so the three rows occupy the band they were measured into and only the
+   PROPORTION of bar to air moves. Nothing below them shifts by a pixel.
+   ⚠ AND THE NUMERAL HAD TO COME DOWN A STEP WITH IT, which is #247's own
+   arithmetic run backwards: two faces on one baseline (the display figure and the
+   `/max` in mono) make a line box taller than either, and 22 was measured as what
+   `--fs6` needs. `--fs5` needs 19. Read the clip counter, never the picture -
+   `.bar.sbb` reports `scrollHeight` over `clientHeight` the moment this is wrong. */
+#bPlq .sbar{--sbh:20px;margin-bottom:var(--p3)}
+#bPlq .sbt .sbR{font-size:var(--fs5)}
 #bPlq .sbi{font-size:var(--fs4)}
 #bPlq #bArmK{color:#e6e1d4}
 /* ═══ #100 point 9 · WHAT KIND OF ARMOUR THAT IS ══════════════════════════
@@ -1329,6 +1409,20 @@ button:disabled{cursor:not-allowed}
   font-size:var(--fs1);letter-spacing:.12em;color:#9fb3ae}
 #bUndo.on{display:flex}
 #bUndo:hover{background:#294041;color:var(--t4)}
+/* ⛔ #249 - THE OFFER SHOWS HOW LONG IT HAS LEFT, or a button that vanishes on its
+   own is a control the player watched disappear and cannot explain. `--hold` is
+   written by `undoDrain()` off `paced(UNDO_HOLD)`, so the bar and the timer are one
+   number at every board speed.
+   ⚠ `position:relative` IS ALREADY THERE VIA `absolute`, and the bar is a `::after`
+   rather than a background so the hover's own background can still change under it.
+   ⚠ AND THE RESTING STATE IS EMPTY, not full: `.claude/rules/ui-scales.md` §5's rule
+   that a build which composites no frames has to come out merely STILL. A drain that
+   never runs shows nothing; it never shows a full bar that is lying. */
+#bUndo::after{content:'';position:absolute;left:0;bottom:0;height:2px;width:0;
+  background:#7fae9e;pointer-events:none}
+#bUndo.draining::after{animation:undodrain var(--hold,2600ms) linear 1 forwards}
+@keyframes undodrain{from{width:100%}to{width:0}}
+@media (prefers-reduced-motion:reduce){#bUndo.draining::after{animation:none}}
 /* ═══ #102 point 7 · THE ? MOVES ONTO THE CHARACTER PANEL ═════════════════
    (User: "Simple question mark move to char info screen - buttom left".)
    It was a chip on the battle log's header, and the log is the record of
@@ -1502,7 +1596,11 @@ body:has(#battle.on) .whisp{bottom:138px}
    it by 9. Anything else that wanted this corner had to move TEST, not
    squeeze past it.
    ⚑ #100 point 3 DID EXACTLY THAT, so the corner is the camera's again. */
-#bZoom{position:absolute;right:8px;top:8px;z-index:9;display:flex}
+/* ⚠ #249 - `right:94` AND IT IS ARITHMETIC. ☰ MENU is `right:10` and measures
+   71px wide, so its left edge is at 1199; this row ends at 1272 - 8 = 1264 today and
+   would sit under it. 10 + 71 + 13 of air = 94, which puts the row at 1027..1186 and
+   leaves the corner to the door. Measured on the running board, not counted here. */
+#bZoom{position:absolute;right:94px;top:8px;z-index:9;display:flex}
 /* #156 - the road grew the same control, so these five rules answer for both
    bars. Only the two positions differ, and each declares its own. */
 #bZoom b,#wZoom b{font-family:var(--mono);font-size:var(--fs1);letter-spacing:.12em;padding:var(--p2) var(--p4);
@@ -4383,14 +4481,23 @@ body:has(#battle.on) .whisp{bottom:138px}
 
 /* ================= INVENTORY ================= */
 #inv{background:var(--g-ink);flex-direction:column}
+/* ⚠ #249 - 86px OF RIGHT PADDING, WHICH IS `#wBar`'s OWN RESERVATION (ui-scales
+   §3's one surviving geometry literal) ARRIVING ON THE SECOND BAR THAT CARRIES THIS
+   BUTTON. Without it `BACK TO THE ROAD` runs to x1264 and ☰ MENU lands on top of it.
+   It is affordable because the wagon door became a picture in the same edit: 103px of
+   button went to 34, so the bar's own slack pays for the reservation. */
 #iBar{height:42px;background:var(--g0);border-bottom:2px solid var(--e1);display:flex;align-items:center;
-      padding:0 var(--p6);gap:12px;flex:none}
+      padding:0 86px 0 var(--p6);gap:12px;flex:none}
 #iBar h2{font-family:var(--display);font-size:var(--fs5);margin:0;color:#e0d3b4;font-weight:600;
          letter-spacing:.06em}
 #iBar .sep{flex:1}
 #iBar button{font-family:var(--display);font-size:var(--fs2);color:var(--g4);border:1px solid var(--e2);
              padding:var(--p2) var(--p5);background:#2a2114;letter-spacing:.08em}
 #iBar button:hover{background:#3a2b16}
+/* #249 - the wagon door is a picture on this bar, the same one the map draws. The
+   pad comes in because an 18px cart in a 24px-wide button is a target, not a chip. */
+#iBar button.ibico{padding:var(--p2) var(--p4);line-height:0}
+#iBar button.ibico svg{display:block}
 #iMain{flex:1;display:flex;min-height:0}
 /* ⛔ #246 - 224 → 176, AND THE 48 GOES TO THE STASH. (User: *"In general i want
    this thing less wide. And saved space you can gove to perks and artigacts
@@ -4423,7 +4530,28 @@ body:has(#battle.on) .whisp{bottom:138px}
    ⚠ AND THE 28 GOES TO THE STASH, not to `#iChar`, which is #246's own pairing:
    both flanks are `flex:none` with `#iChar` `flex:1` between them, so a flank that
    narrows on its own hands the room to the middle column by default. */
-#iRoster{width:148px;background:#161009;border-right:2px solid var(--e1);overflow:auto;flex:none}
+/* ⛔ #249 - 148 -> 80, AND THE WAY DOWN WAS THE ONE #247's NOTE NAMED.
+   (User: *"Even less space for the portraits. what if we put class also at the
+   bettom right of the portrait there - so that thing could be even smaller?"*.)
+
+   ⛔ THE CLASS MARK WAS NEVER THE WIDTH. #247 measured this column against the
+   worst body it can carry and found the wall between 120 and 140 - and what set it
+   was the WEAR CLOCK (`♥ -9 · ✚ 3d · 2 scars · ill-fit`) sitting in a text column
+   BESIDE a 56px portrait. Moving the class mark out of that column buys about
+   eighteen pixels and leaves the wall exactly where it was.
+   ⛑ SO THE TILE STOPS BEING A ROW. The portrait goes on top with all four of its
+   facts on its own corners, and the clock goes UNDERNEATH it at the full width of
+   the tile, where it wraps between chips instead of pushing the tile wider. That is
+   what makes 80 possible: 56 of portrait plus 18 of padding plus the border, and
+   nothing else is ever beside the picture.
+   ⚠ THE COST IS HEIGHT ON A CROWDED BODY, MEASURED, AND IT IS PAID BY THE
+   SCROLLER: a clean body is 68px (69 before), and the worst body this list can hold
+   - mending AND a wound on the clock AND two scars AND ill-fitting armour - stacks
+   its clock three lines deep. Six of those still stand inside the window; five
+   never come close. See `WHAT_TO_TEST.md` for the number this shipped at.
+   ⚠ AND THE 68 GOES TO `#iChar`, not to the stash: both flanks are `flex:none`
+   with `#iChar` `flex:1` between them, which is #246's own pairing. */
+#iRoster{width:80px;background:#161009;border-right:2px solid var(--e1);overflow:auto;flex:none}
 /* the level, on the corner of the picture that is already drawing this person's
    progress. `--fs1` is the floor and the plate is what keeps it off the art. */
 .rmem .rlv{position:absolute;right:-2px;bottom:-2px;font-family:var(--mono);
@@ -4435,9 +4563,51 @@ body:has(#battle.on) .whisp{bottom:138px}
    `--fs1` a pictogram is a smudge, and with the word gone there is nothing beside
    it to read the size against - so the mark takes `--fs3` and the box goes square
    instead of keeping a label's padding. */
-.ichip.bare{padding:var(--p1) var(--p2);line-height:1}
-.ichip.bare .bmk{font-size:var(--fs3)}
-.rmem{width:100%;display:flex;gap:7px;padding:var(--p3) var(--p4);border-bottom:1px solid #2a2114;align-items:center}
+/* ⛔ #249 - AND THE TWO CHIPS ARE ONE BOX, WHICH THE SIZE MATCH ALONE DID NOT BUY.
+   The race chip holds a 16px PICTURE and the class chip holds a GLYPH, and a glyph's
+   line box comes from whatever font the system fell back to - measured at `--fs7`,
+   the star's box was 26px tall against the picture's 22, so the two facts sat in two
+   different-sized frames. A fixed square settles it whatever is inside, which is the
+   only form of "same size" that survives the next glyph. */
+.ichip.bare{padding:0;line-height:1;display:inline-flex;align-items:center;
+  justify-content:center;width:26px;height:26px;overflow:hidden}
+/* ⛔ #249 - THE TWO MARKS ARE ONE SIZE ON THIS SCREEN. (User: *"and on this page
+   the class same size as race"*.) The race mark has been a painted 16px `.rart`
+   since #211; the class mark is still a GLYPH, and a glyph's ink is a fraction of
+   its em box - at `--fs3` the star measured 12px of type against a 16px picture and
+   read as the smaller of two facts that are not. `--fs7` puts the ink beside the
+   painting; the box is the same either way, so no row moves.
+   ⚠ THE HONEST FIX IS A PAINTED CLASS MARK and it does not exist yet: eight
+   classes, the same 128px treatment `RACE_ART` already has. Until then this is a
+   size match and not a medium match. */
+.ichip.bare .bmk{font-size:var(--fs7)}
+.rmem{width:100%;display:flex;flex-direction:column;gap:var(--p1);
+  padding:var(--p3) var(--p4);border-bottom:1px solid #2a2114;align-items:center}
+/* #249 - the clock, under the picture rather than beside it. Each chip is
+   `nowrap` so the LINE breaks between chips and never inside one: `✚ 3d` split
+   across two lines would be a countdown that has to be reassembled by eye. */
+.rmem .rwear{font-family:var(--mono);font-size:var(--fs1);letter-spacing:.04em;
+  color:#8a7449;line-height:1.3;text-align:center;display:flex;flex-wrap:wrap;
+  justify-content:center;gap:0 var(--p2)}
+.rmem .rwear>span{white-space:nowrap}
+/* #249 - the class, on the corner opposite the level. Same plate, so the two read
+   as one family of facts about this picture rather than as two decorations. */
+.rmem .rcls{position:absolute;left:-2px;bottom:-2px;line-height:1;
+  background:rgba(10,7,3,.92);border:1px solid var(--e2);
+  padding:0 var(--p1);pointer-events:none}
+.rmem .rcls .bmk{font-size:var(--fs2);cursor:default}
+/* ⛔ #249 - AND THE UNSPENT MARK STOPS BEING A ★, WHICH ANSWERS B10 RATHER THAN
+   SHARPENING IT. That open question is *"two ★ meet on one roster row - the gold
+   unspent-level star and the Captain's class mark"*; they were on two different
+   LINES, and putting both on the picture's corners would have put them 40px apart on
+   one 56px face. ⛑ `▲` is not a new glyph either: it is what `.itl.spend` has
+   printed after a stat row since #122 and what #244's `.statnag` caption is written
+   in, i.e. this build's own word for *there is something here to spend*. The colour
+   is that pair's approve green for the same reason.
+   ⚠ IT KEEPS THE GLOW. The mark's whole job (#136 point 11) is to be seen without
+   opening anybody, and it is 11px on a painted face. */
+.rmem .rup{position:absolute;right:-3px;top:-3px;font-size:var(--fs2);line-height:1;
+  color:#8ca35a;text-shadow:0 0 5px rgba(140,163,90,.7);pointer-events:none}
 .rmem:hover{background:#221a10}
 .rmem.on{background:#2a2114;border-left:3px solid var(--g4)}
 .rmem canvas{border:1px solid var(--e1);flex:none}
@@ -4481,9 +4651,15 @@ body:has(#battle.on) .whisp{bottom:138px}
 .race.human {color:#d8d5cc}                       /* bone — the baseline */
 .race.ratkin{color:#c98a4b}                       /* rust-orange, small and quick */
 .race.ogre  {color:#7fa8c9}                       /* cold slate-blue, large and slow */
-.rmem .race.human {border-left:2px solid #d8d5cc;padding-left:var(--p2)}
-.rmem .race.ratkin{border-left:2px solid #c98a4b;padding-left:var(--p2)}
-.rmem .race.ogre  {border-left:2px solid #7fa8c9;padding-left:var(--p2)}
+/* ⛔ #249 - THE RACE RAIL MOVES ONTO THE TILE, because the div it used to sit on
+   is gone with the text column. It is an INSET SHADOW and not a border for one
+   reason: `.rmem.on` writes `border-left:3px solid var(--g4)` and the two would be
+   the same edge arguing. A shadow is drawn inside the padding box, so on a selected
+   tile the gold says *this one* and the hue says *what they are*, in that order,
+   which is the reading #247 asked for when it kept the colour and cut the mark. */
+.rmem.human {box-shadow:inset 2px 0 0 #d8d5cc}
+.rmem.ratkin{box-shadow:inset 2px 0 0 #c98a4b}
+.rmem.ogre  {box-shadow:inset 2px 0 0 #7fa8c9}
 /* ═══ ⛔ #196 · A BODY'S MARK, WHEREVER A BODY IS LISTED ═══════════════════
    Built only by `cMark`/`rMark`, so every surface that names a class or a race
    without its word wears the same box. Three things it has to do and one it
@@ -4623,7 +4799,14 @@ body:has(#battle.on) .whisp{bottom:138px}
    `--fs7`) gets neither of the first two, because on her the tallest column was
    never the token. She is this sheet's worst case for height and the numbers in the
    changelog are hers. */
-#iChar{flex:1;padding:var(--p3) var(--p5);display:flex;flex-direction:column;gap:var(--p3);
+/* ⛔ #249 - 6 -> 12 BETWEEN THE BLOCKS. (User: *"10-15 px air between blcoks"*.)
+   Six gaps, so it costs 36px, and the equipment grid two rules up gave back 88.
+   ⚠ A CAPTION IS NOT A BLOCK, AND `#iChar>.lbl` IS THE ONE CHILD THAT PROVES IT:
+   SKILLS is a label FOR the list under it, so 12px of air on both sides would set it
+   floating between two things it only belongs to one of. It gives the gap back with
+   a negative margin, written as `calc(var(--p5) * -1 + ...)` so the two numbers
+   cannot drift - the pair `.claude/rules/ui-scales.md` §3 already blesses. */
+#iChar{flex:1;padding:var(--p3) var(--p5);display:flex;flex-direction:column;gap:var(--p5);
        min-width:0;overflow:auto}
 /* ── the head: three lines, and everything longer is a hover ─────────────
    (BB reference: the name and what somebody IS costs three lines there too.
@@ -4743,6 +4926,9 @@ body:has(#battle.on) .whisp{bottom:138px}
 /* ⚠ #230 - THE ROW GAP IS 0 AND IT IS SPENT, NOT SAVED. It paid for the
    last 9px of the 32px picture's row (see the .tico note); at that size the
    pictures separate the rows and each one still carries its dotted rule. */
+/* #249 - the column the caption and the rows share, so the caption is over them
+   rather than beside the bars. See the note at its call site. */
+.itellcol{flex:1;min-width:0;display:flex;flex-direction:column}
 .itells{flex:1;min-width:0;display:grid;grid-template-columns:1fr;gap:0 14px;
   align-content:start}
 /* ⚠ #230 - `padding-bottom` IS 0 AND IT WAS 2. It was air between the row and
@@ -4865,7 +5051,7 @@ body:has(#battle.on) .whisp{bottom:138px}
    own edge and bottom margin; only the height comes off `--sbh`. 18 and not the
    card's 20: this screen is read at a desk, and `#iChar` has 3.8px of slack on its
    worst body (ui-scales §5), so the column pays for what it takes. */
-.ibars .sbar{--sbh:18px}
+.ibars .sbar{--sbh:16px;margin-bottom:var(--p3)}
 /* ⛔ AND THIS ROW IS NOT BELT AND BRACES. `.ibars .bar{height:7px}` two rules up
    is 0-2-0, exactly what `.sbar>.sbb` is, and it comes LATER in the stylesheet -
    so on this screen and this screen only the old 7px won and the three rows landed
@@ -4873,8 +5059,10 @@ body:has(#battle.on) .whisp{bottom:138px}
    card, whose `.bar` height comes off the bare `.bar` at 0-1-0, was correct all
    along. A tie on specificity is decided by source order, and source order here is
    an accident of which entry wrote which block. */
-.ibars .sbar .bar{height:var(--sbh)}
-.ibars .sbt .sbR{font-size:var(--fs4)}
+/* #249 - and the sheet's own hard black edge yields to the socket above. The
+   bottom margin moves onto `.sbar` with it, or the row would carry two. */
+.ibars .sbar .bar{height:var(--sbh);margin-bottom:0;border:none}
+.ibars .sbt .sbR{font-size:var(--fs3)}
 /* ═══ #140 point 1 · WHAT THE SWING ACTUALLY DOES ═════════════════════════
    ("reorginise this block - probably a bit mor info about damage".)
    The line was six equal cells in one grey weight, so the weapon's damage -
@@ -4898,6 +5086,8 @@ body:has(#battle.on) .whisp{bottom:138px}
 .idrv .dmgw{cursor:help}
 /* the band chip in the armour row: it explains the whole absorb rule */
 .ibars .band{cursor:help;border-bottom:1px dotted currentColor}
+/* #249 - see `#iChar{gap}`: the caption hugs the list it names. */
+#iChar>.lbl{margin-bottom:calc(var(--p5) * -1 + var(--p2))}
 /* ── the body: the doll IS the gear map (Caves of Qud) ──────────────────── */
 /* ⚠ THE HEIGHT IS THE FOLD RULE AND IT IS LOAD-BEARING. Without it the
    ledger stretches this row instead of scrolling inside itself, and a body
@@ -4945,10 +5135,18 @@ body:has(#battle.on) .whisp{bottom:138px}
    measurement is the oldest trap in this file's own notes; reset the body at
    the TOP of every case, and re-run the case that surprised you on its own. */
 #iBody{display:flex;flex-direction:column;gap:6px;flex:0 0 auto}
-#iDollBox{width:100%;height:196px;flex:none;position:relative;background:#1c150c;
-  border:1px solid #3d3020}
-#iDollBox canvas.doll{position:absolute;background:none;border:none}
-#iDollBox svg.wire{position:absolute;inset:0;pointer-events:none}
+/* ⛔ #249 - THREE ACROSS AND TWO DOWN, AND THE HEIGHT IS THE ROWS' OWN NOW.
+   `height:196px` was the FIGURE's reservation; with the figure parked a fixed
+   height would be the free space this ask is about, kept for its own sake. The
+   grid measures 108 on a body wearing two pieces and never grows past 116.
+   ⚠ `1fr` AND NOT A WIDTH: `#iChar` changes width whenever either flank does -
+   it went 526 to 594 in this same entry when the roster narrowed - and a slot
+   pinned at 150px would have left three of them in a 570px row with 120px of gap.
+   ⚠ THE PANEL STAYS. With the figure gone the frame is what still says *this
+   block is what they are carrying*, which is the job the deleted caption used
+   to do (#232 cut the words on the grounds that the picture explained itself). */
+#iDollBox{width:100%;flex:none;background:#1c150c;border:1px solid #3d3020;
+  display:grid;grid-template-columns:repeat(3,1fr);gap:var(--p3);padding:var(--p3)}
 /* a slot is a BUTTON at a body part. 118px is the widest box two columns and a
    150px figure will take inside 400, and every gear name in the file clamps to
    two lines in it. ⚠ .slot is this sheet's own class and nothing else's. */
@@ -4957,15 +5155,23 @@ body:has(#battle.on) .whisp{bottom:138px}
    40px painting is the same height as those three lines stacked, so this
    arrangement adds no height at all. `align-items:center` and not `start`
    because a 40px square beside a 44px stack reads as hung otherwise. */
-.slot{position:absolute;width:150px;background:#221a10;border:1px solid var(--e2);
+/* #249 - `relative` and auto width: the grid places it now. `position` stays set
+   because the slot's own `.pop` is absolutely positioned against it. */
+.slot{position:relative;background:#221a10;border:1px solid var(--e2);
   padding:var(--p2) var(--p3);display:flex;flex-direction:row;align-items:center;
   gap:var(--p3);text-align:left;font-family:var(--body)}
 .slot .scol{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:1px}
 .slot .sart{flex:0 0 40px;height:40px;display:flex;align-items:center;justify-content:center}
 .slot:hover{border-color:var(--g3);background:#2a2114}
 .slot .sl{font-family:var(--mono);font-size:var(--fs1);letter-spacing:.13em;color:#8a7449;line-height:1.2}
-.slot .si{font-family:var(--display);font-size:var(--fs2);color:var(--g4);line-height:1.16}
-.slot .sd{font-family:var(--mono);font-size:var(--fs1);color:#a38652;line-height:1.3}
+/* ⛔ #249 - A STEP UP ON BOTH, AND THE GRID IS WHAT PAID FOR IT. (User: *"I feel
+   we need bigger font for art stats"*.) The old slot was 150px wide because two
+   columns had to stand either side of a 130px figure; three across a 594px column
+   are 184 each, so the name and the receipt each take the next `--fs` step without
+   a single line wrapping that did not wrap before. The LABEL stays on `--fs1`: it
+   is a caption, and the floor is where captions live. */
+.slot .si{font-family:var(--display);font-size:var(--fs3);color:var(--g4);line-height:1.16}
+.slot .sd{font-family:var(--mono);font-size:var(--fs2);color:#a38652;line-height:1.3}
 .slot.empty{border-style:dashed}
 .slot.empty .si{color:#5c4a2c;font-style:italic;font-size:var(--fs2)}
 .slot.bad{border-color:#8a4b2a;background:#2a1a10}
@@ -6572,9 +6778,27 @@ a.popt.sendit{display:block;text-decoration:none}
   border-top:1px solid #223335;font-size:var(--fs1);letter-spacing:.1em;color:#7d8f8c;
   padding:var(--p2) var(--p4);text-align:left;width:100%;box-sizing:border-box}
 #helpBtn.inlog:hover,#menuBtn.inlog:hover{color:var(--t4);background:#1a2729}
-/* only on the world screen: a menu you can only reach by reloading the page is
-   half a menu, and mid-battle is not a coherent moment to save at */
-#menuBtn{position:absolute;left:100px;bottom:10px;z-index:20;display:none;
+/* ═══ ⛔ #249 · ONE CORNER, EVERY SCREEN ════════════════════════
+   (User: *"in the battle menu in upper right corner - so it is in one space
+   everywhere"*.)
+
+   ⛔ IT WAS IN THREE PLACES AND EACH ONE HAD A GOOD REASON. #130 put it bottom
+   left; #220 moved the MAP's copy to the top right (*"Move a menu to the top
+   right"*) and scoped that to the world screen because *"the battle's top-right
+   corner is already spoken for"*; #247 then reparented the battle's copy into the
+   battle log's footer, because the plaque covers the bottom-left corner. Three
+   correct decisions, three positions, and a player who has learnt where the door is
+   on the map has to learn it again twice.
+
+   ⛑ SO THE TOP RIGHT IS THE DEFAULT AND THE OVERRIDE IS DELETED, which is one
+   rule instead of three - and it is the rule the map already taught. What the two
+   scoped notes were protecting is still true and is paid for where it belongs: the
+   battle's `#bZoom` steps 86px left (its own row is the only thing it shares) and
+   the sheet's `#iBar` reserves the same 86 that `#wBar` has reserved since #223.
+   ⚠ THE CORNER WAS MEASURED ON ALL FIVE SCREENS `MENU_ON` LISTS, not on the two
+   that were reported: `camp` and `sim` were already clear, `world` clears `wWagon`
+   by 5px, and the other two are the moves above. */
+#menuBtn{position:absolute;right:10px;top:8px;z-index:30;display:none;
   font-family:var(--mono);font-size:var(--fs4);color:#8a7449;background:rgba(16,12,6,.8);
   border:1px solid var(--e1);padding:var(--p1) var(--p4)}
 #menuBtn.on{display:block}
@@ -6598,7 +6822,7 @@ a.popt.sendit{display:block;text-decoration:none}
 /* #223 - and it takes the bar's own row, 8. `#wBar` reserves 64px of right
    padding for whatever sits here, and ☰ MENU is the wider of the two, so that
    reservation is now measured against the button actually in it. */
-body:has(#world.on) #menuBtn{left:auto;right:10px;top:8px;bottom:auto;z-index:30}
+/* #249 - the world's override IS the default now. The rule is deleted, not moved. */
 /* ═══ ⛔ #226 · THE BUILD STAMP, AND THE CORNER IS ALREADY TAKEN ═════════
    (User, 2026-08-21: *"add version build in the top right corner of the game -
    very light, but so i still can see it for bug fixes"*.)
@@ -6847,7 +7071,16 @@ body:has(#world.on) #menuBtn{left:auto;right:10px;top:8px;bottom:auto;z-index:30
          screen where the stash is already in front of them with the new row in it.
          ⚡ `G.mustKit` IS NOT DELETED: it is what lights the road bar's kit badge
          (#240) and what `kitWanter()` opens the sheet on. Only the caption goes. -->
-    <div class="sep"></div><button id="iWagon" title="the wagon: what is bolted in, what the next thing costs, and the seats">THE WAGON</button><button id="iBack">BACK TO THE ROAD</button></div>
+    <!-- ⛔ #249 - THE CART, NOT THE WORDS. (User: *"The wagon replace by icon of
+         wagon (as on global map menu)"*.) The map's own `#wWagon` chip has drawn
+         `CART_SVG` since #238 and this bar spelled the same door out in nine
+         letters, so one door wore two faces on two screens a player crosses in a
+         second - #102's wrong-unit rule with the DOOR as the unit. It is filled by
+         `drawInv` off the same constant the map uses, so neither can drift.
+         ⚠ THE WORD IS NOT LOST: it is the `title`, which this button already had.
+         ⚠ AND IT PAYS FOR THE MENU. 103px of button becomes 34, which is what
+         let ☰ MENU take this bar's top-right corner without anything else moving. -->
+    <div class="sep"></div><button id="iWagon" class="ibico" title="THE WAGON - what is bolted in, what the next thing costs, and the seats"></button><button id="iBack">BACK TO THE ROAD</button></div>
   <div id="iMain"><div id="iRoster"></div><div id="iChar"></div><div id="iStash"></div></div>
 </section>
 
@@ -7335,17 +7568,23 @@ const show=i=>{
      other. Inside the box it is a footer and follows it for free.
      ⚠ It goes home to #stage on every other screen, because bottom-left is
      right everywhere the plaque does not exist. */
-  /* #247 - and ☰ MENU goes with it, for the reason its own CSS note gives: the
-     plaque covers the bottom-left corner of this screen, and the log's footer is
-     where a door on the battle screen can actually be found. Same two lines, over
-     both buttons, so neither can be reparented without the other. */
+  /* ⛔ #249 - AND ☰ MENU DOES NOT GO WITH IT ANY MORE. #247 sent both buttons into
+     the log's footer because the plaque covers this screen's bottom-left corner;
+     that argument still holds for `? RULES`, which has no other home, and it is
+     answered for the menu by the menu no longer being a bottom-left control on ANY
+     screen (see `#menuBtn` in the stylesheet). One button moves here now. */
   {const inLog=(i==='battle');
    const home=$('stage'),box=$('bLogWrap');
-   [hb,$('menuBtn')].forEach(el=>{
+   [hb].forEach(el=>{
      if(!el)return;
      if(inLog&&box&&el.parentNode!==box){box.appendChild(el);el.classList.add('inlog');}
      else if(!inLog&&home&&el.parentNode!==home){home.appendChild(el);el.classList.remove('inlog');}
-   });}
+   });
+   /* ⚠ AND IT HAS TO BE SENT HOME, or a build that has already been in a battle
+      leaves it parented to `#bLogWrap` for the rest of the session - the box is
+      hidden with the screen, so the door would simply be gone on the map. */
+   {const mb=$('menuBtn');
+    if(mb&&home&&mb.parentNode!==home){home.appendChild(mb);mb.classList.remove('inlog');}}}
   /* #130 - the way back to the menu, on every screen that has a coherent out.
      See MENU_ON above for which and why. */
   const mb=$('menuBtn');if(mb)mb.classList.toggle('on',!!MENU_ON[i]);
@@ -9554,6 +9793,12 @@ const DOLLBODY={
   ratkin:{hy:32,hrx:12,hry:10.5,sy:52,sw:28,wy:84,ww:23,hpy:104,hw:26,ky:142,fy:178,aw:7,hn:7,tail:1,snout:1},
   ogre  :{hy:24,hrx:13,hry:14  ,sy:47,sw:52,wy:92,ww:44,hpy:120,hw:46,ky:162,fy:198,aw:12,hn:3,tail:0,snout:0}
 };
+/* ⚠ #249 - NO LIVE CALLER. The company sheet's gear block became two rows of
+   three slots (see `#iDollBox`), so nothing paints the figure today. It is KEPT for
+   the reason `proCard` was kept in #219: it is a complete, working drawing of a
+   body with every scar, mutation and condition marked on the part it happened to,
+   and the perk panel that is going into the 88px this freed is the obvious place
+   for it to come back. It hands back `cv._anchor`, a joint position per slot. */
 function drawDoll(cv,p){
   if(!cv)return;
   /* drawn at 2x and displayed at 1x: a silhouette outline goes to mush at
@@ -14059,6 +14304,28 @@ const STATES={
    which would (for one example) have sent it into the fall-back branch
    reserved for the shaken. #129 added a state BELOW steady instead, where
    every one of those tests wants to include it. See the note on STATES. */
+/* ═══ ⛔ #249 · THE MOOD ROW'S MARK, AND IT IS NOT A FACE ANY MORE ═════
+   (User, on the battle card: *"for happy diffrent glyph - more in the style of
+   other 2"*.)
+
+   ⛔ IT WAS THE ONLY COLOUR EMOJI IN A COLUMN OF TWO DRAWN GLYPHS. ⛨ and ♥ are
+   cream line marks in the card's own type; a colour smiley is an orange disc the font paints
+   itself, so the third row of a three-row readout was in a different medium from
+   the two above it. That is #102's wrong-unit rule with the GLYPHS as the units,
+   and #247's own entry raised it as a question rather than answering it.
+
+   ⛑ AND IT IS ONE MARK NOW, WHICH IS THE REST OF *"the style of other 2"*. ⛨
+   does not say which armour class and ♥ does not say how many hitpoints: each
+   names its POOL and the bar says where the pool stands. The rung was being said
+   three times on one row - by the face, by the word inside the bar, and by the
+   colour of the fill - so the face was the copy that could go.
+   ⚠ `\uFE0E` IS LOAD-BEARING. U+263A on its own is rendered as a colour emoji by
+   some font stacks, which would have swapped one emoji for another; the text
+   variation selector pins it to the monochrome glyph the two rows above it wear.
+   ⚠ `LADDER[].ic` IS UNTOUCHED and still draws the five faces on the ladder
+   hover, the road bar and the event chips. This is the pool's mark, not the rung's,
+   and the two are different questions. */
+const MOOD_MARK='\u263A\uFE0E';
 const LADDER=[
   {at:.90,n:'It rocks',    ic:'😄',col:'#7fae4e',bg:'rgba(127,174,78,.30)',
    d:'<b>+5 to hit and +5% damage.</b>'},
@@ -22643,7 +22910,56 @@ function selectAct(i){
 /* #186 - and a body that fell on its own turn (a parting swing on the way,
    the fire it walked through) hands the turn on: a downed unit with two
    actions left is a turn nothing can spend. */
-function autoEnd(u){if(u.actions<=0||u.dead||u.downed||u.fled)later(nextTurn,140);}
+/* ═══ ⛔ #249 · THE TURN ENDS ITSELF AGAIN, AND THE UNDO GETS A WINDOW ════
+   (User: *"Stuck on my unit, when it is out of movement (automatically end turn)"*.)
+
+   ⛑ THIS IS #247's OWN TRADE, REPORTED FROM THE OTHER SIDE, AND THE USER HAS NOW
+   SEEN BOTH. That entry found the UNDO offer *"was real and it lasted 140ms"* on a
+   two-action stride - `autoEnd` fired, `nextTurn` handed over, `beginTurn` cleared
+   `B.undo` - and fixed it by refusing to auto-end at all while an undo stood, with
+   the note *"holding the hand-over costs one press of END TURN"*. **That press is
+   what is being reported.** Every other way to spend a last action still ended the
+   turn, so the one case that hung was the one that felt most finished: you walked,
+   you are empty, and the board sits there.
+
+   ⛔ SO IT IS A HOLD AND NOT A REFUSAL, WHICH KEEPS BOTH ASKS. The offer lives
+   `UNDO_HOLD` and then the turn goes; press ⟲ inside the window and `undoMove`
+   puts the actions back, so the guard below refuses to hand over at all.
+   ⚠ THREE GUARDS AND EACH ONE IS A REAL CASE. `B.undoT` is bumped by every new
+   hold AND by `undoMove`, so a stale timer cannot end a turn that has moved on;
+   `cur().id` catches the turn having been ended by hand in the meantime; and
+   `u.actions>0` is the undo itself, which is the common one. `later` is already
+   `B.seq`-guarded on top of all three.
+   ⚠ IT IS PACED. `later` runs its delay through `paced()`, so the window is as
+   long as the player's own board speed says - and `#bUndo`'s drain reads the same
+   number off `paced(UNDO_HOLD)` rather than hardcoding it, or the bar would empty
+   at x1 while the timer ran at x1.75. */
+/* ⚠ 1800 IS THE BASE AND `paced()` MAKES IT 3.15s AT THE SHIPPED ×1.75 BOARD
+   CLOCK, MEASURED. 2600 was the first cut and it ran 4.55s, which is long enough
+   to feel like the hang this entry exists to delete. */
+const UNDO_HOLD=1800;
+function autoEnd(u){
+  if(!(u.actions<=0||u.dead||u.downed||u.fled))return;
+  if(B.undo&&B.undo.id===u.id&&!u.dead&&!u.downed&&!u.fled){
+    const t=B.undoT=(B.undoT||0)+1;
+    undoDrain();
+    later(()=>{
+      if(B.undoT!==t)return;                     /* another hold, or an undo */
+      const c=cur();
+      if(!c||c.id!==u.id||u.actions>0)return;    /* ended by hand, or taken back */
+      nextTurn();
+    },UNDO_HOLD);
+    return;
+  }
+  later(nextTurn,140);
+}
+/* the window, drawn. Restarted by hand because the element is not rebuilt: an
+   animation on a live node does not re-run until it is removed and re-added. */
+function undoDrain(){
+  const b=$('bUndo');if(!b)return;
+  b.style.setProperty('--hold',paced(UNDO_HOLD)+'ms');
+  b.classList.remove('draining');void b.offsetWidth;b.classList.add('draining');
+}
 /* one glyph per kind of thing you can do */
 const ICON={move:'⇢',dis:'⇤',main:'⚔',fists:'✊',sword:'⚔',spear:'⌇',club:'⬤',knife:'†',
   bow:'➹',aimed:'◎',wither:'✷',willkick:'✸',blight:'❋',oath:'⛨',unpick:'❈',
@@ -23552,7 +23868,7 @@ function clickHex(c,r){
        double anything.
        ⚠ `B.undo` IS THE WHOLE TEST because `spend` clears it on every other paid
        act and `partingShots` above has already refused it if blood was drawn. */
-    if(!checkEnd()&&!B.undo)autoEnd(u);
+    if(!checkEnd())autoEnd(u);     /* #249 - autoEnd holds for the undo itself now */
     return;
   }
   if(a&&a.move&&B.reach&&B.reach.dist[K(c,r)]!==undefined&&!tgt){
@@ -23584,7 +23900,7 @@ function clickHex(c,r){
     /* #247 - the same hold, and it is the same case: a body whose LAST action was
        a single step is emptied exactly as a two-action stride empties it. See the
        long note in the branch above. */
-    if(!checkEnd()&&!B.undo)autoEnd(u);}
+    if(!checkEnd())autoEnd(u);}    /* #249 - as above: the hold lives in autoEnd */
 }
 /* ═══ #91 point 12 - the step, taken back. Restores exactly what the move
    branch wrote: hex, facing, the action, the move counters. Once per move,
@@ -23595,6 +23911,9 @@ function undoMove(){
   const s=B.undo;if(!s||B.busy)return;
   const u=cur();if(!u||u.side!=='you'||u.id!==s.id)return;
   B.undo=null;
+  /* #249 - and the hold that was counting this offer down is void with it */
+  B.undoT=(B.undoT||0)+1;
+  {const b=$('bUndo');if(b)b.classList.remove('draining');}
   u.col=s.col;u.row=s.row;u.facing=s.facing;
   u.actions=s.actions;u.used.move=s.usedMove;u.movesUsed=s.movesUsed;u.moved=s.moved;
   say(u.name+' steps back. The ground keeps no record of it.');
@@ -27731,7 +28050,32 @@ function paintObjects(g,P,rnd){
    ⚠ HALF ALPHA WAS THE OTHER HALF OF THE SAME MISS: at .11 over painted ground the
    far wash is a hue nobody reported seeing. .17 / .22 is ~70% of the near half, so
    the two are still told apart and the far one is legible on its own. */
-const REACH_WASH={wet:'rgba(70,130,130,.32)',dry:'rgba(110,180,160,.24)',
+/* ⛔ #249 - THE NEAR HALF GOES UP, AND THE USER'S OWN GUESS WAS THE WRONG WAY.
+   (User: *"make more clear 1st and 2nd zone of movment (maybe 1st a bit darker)"*.)
+
+   ⛑ MEASURED, BECAUSE ON THIS BOARD "darker" AND "clearer" ARE OPPOSITE
+   DIRECTIONS. The wash is a teal laid over a dark green field, so alpha buys
+   LUMINANCE and nothing else. Sampled off `#bGround`'s own canvas under a field
+   hex and composited src-over (`probes/ask249k.js`, this entry's instrument):
+
+       bare ground                55
+       far half   .17            *72*   <- #247's floor, untouched
+       near half  .24             80    <- eight points. This is the complaint.
+       near half  .34            *91*   <- shipped
+       near half  .38             95
+       "a bit darker"  rgba(46,112,104,.46)   74   <- the two halves MEET
+       darker still    rgba(28,74,70,.55)     59   <- the near half INVERTS
+
+   So a darker near wash does not separate the zones, it collapses them: at .46
+   the first zone and the second are two points apart, and one step further the
+   near half is dimmer than the far one and reads as ground you cannot reach.
+   ⛔ SO THE GAP IS 19 POINTS NOW AND IT IS SPENT ON THE NEAR HALF ALONE. #247
+   raised the far half from .11 to .17 because *"at .11 the far wash is a hue nobody
+   reported seeing"*, and that is a floor rather than a preference - moving it back
+   down would buy the same contrast by breaking the thing that entry fixed.
+   ⚠ `wet` KEEPS ITS RATIO TO `dry` (marsh ground is darker and always took more),
+   and `wet2`/`dry2`/`act` are not touched. */
+const REACH_WASH={wet:'rgba(70,130,130,.44)',dry:'rgba(110,180,160,.34)',
                   wet2:'rgba(70,130,130,.22)',dry2:'rgba(110,180,160,.17)',
                   act:'rgba(201,162,39,.15)'};
 function render(){
@@ -27992,7 +28336,7 @@ function render(){
        `.claude/rules/event-cards.md` already names in capitals.
        ⚠ AND THE WORD IS NOT PAINTED IN THE RUNG'S COLOUR ANY MORE: the BAR is,
        and cream-on-#a3bd6c was one colour written over itself. */
-    $('bStateI').textContent=lb.ic;
+    $('bStateI').textContent=MOOD_MARK;   /* #249 - the pool's mark, not the rung's */
     $('bStateN').textContent=lb.n.toUpperCase();
     $('bNerve').style.width=(nerveFrac(u)*100)+'%';
     $('bNerve').style.background=lb.col;
@@ -35444,6 +35788,9 @@ function gearDelta(g,cur){
   return out.slice(0,4);
 }
 function drawInv(){
+  /* #249 - the wagon door wears the map's cart. Written here rather than in the
+     markup so it cannot drift from `worldTick`'s copy: one constant, two bars. */
+  {const wb=$('iWagon');if(wb&&!wb.firstChild)wb.innerHTML=CART_SVG;}
   /* ⛔ #223 - THE SHEET REBUILDS ITSELF UNDER THE CURSOR, AND A TOOLTIP WHOSE
      ELEMENT IS DESTROYED NEVER FIRES `mouseleave`. `bindTip`'s own header has
      carried that warning since #105 and nothing acted on it: every equip and
@@ -35454,7 +35801,7 @@ function drawInv(){
   const rost=$('iRoster');rost.innerHTML='';
   G.party.forEach(p=>{
     const b=document.createElement('button');
-    b.className='rmem'+(p.id===iSel?' on':'');
+    b.className='rmem '+p.race+(p.id===iSel?' on':'');
     /* #200 - 2x the 48px box it lands in, for the reason `#iFace` is 2x its
        own: `drawArt` cover-fits into the BACKING STORE, so a 40px store
        stretched across 48 display pixels is the prologue card's bug again. */
@@ -35473,6 +35820,13 @@ function drawInv(){
        the number belongs on the thing that is drawing it. */
     const lv=document.createElement('span');lv.className='rlv';
     lv.textContent='L'+p.level;wrap.appendChild(lv);
+    /* ⛔ #249 - THE CLASS RIDES THE OTHER BOTTOM CORNER. (User: *"what if we put
+       class also at the bettom right of the portrait there - so that thing could be
+       even smaller?"*.) The level already had the right corner, so the class takes
+       the left and the picture carries both. `cMark` is the one builder for a class
+       mark anywhere in the game (#196), so the hover box comes with it. */
+    {const cm=document.createElement('span');cm.className='rcls';
+     cm.innerHTML=cMark(p.cls);wrap.appendChild(cm);}
     b.appendChild(wrap);
     const box=document.createElement('div');
     /* the roster is a list of PEOPLE: the nickname, the personality clause
@@ -35521,6 +35875,10 @@ function drawInv(){
        left rail in that race's own hue, it costs no width and no height, and the ask
        is about what is written on the tile. */
     b.title=p.name+' “'+p.nick+'”'+(p.sur?' '+p.sur:'');
+    /* #249 - the ★ is a corner badge on the picture too, for the reason the class
+       is: this tile is 80px wide now and nothing stands beside the portrait. */
+    if(owed){const up=document.createElement('span');up.className='rup';
+      up.textContent='▲';up.title=owed+' unspent';wrap.appendChild(up);}
     box.innerHTML=
       /* #196 - the roster IS the list this change is for: four to six bodies
          read at a glance, and "RATKIN · ARCHER" was 13 of the row's characters
@@ -35528,8 +35886,8 @@ function drawInv(){
          still carry the race on the line itself.
          #247 - so the RACE mark goes too and the rail keeps saying it. `cMark` and
          not `rcMarks`: one is the class alone, which is what was asked for. */
-      '<div class="race '+p.race+'">'+(owed?'<span class="star" title="'+owed+
-        ' unspent">★</span> ':'')+cMark(p.cls)+'</div>'+
+      /* #249 - the class mark and the ★ are on the portrait's corners now, so this
+         div holds the clock and nothing else. */
       /* ⛔ #200 - THE NAME OF THE PERSONALITY, AND NOT WHAT IT DOES. (User,
          marking this line: "Write here only trait - not full description".)
          Same argument #196 made about "RATKIN · ARCHER" one line above it, and
@@ -35567,8 +35925,12 @@ function drawInv(){
          permanent scar is exactly what a glance is for. Deleting it would hide the
          one thing on the tile that is running out. It is flagged rather than
          quietly kept: if it should go, it is this line. */
-      (wear.length?'<div class="rc">'+wear.join(' · ')+'</div>':'');
-    b.appendChild(box);
+      (wear.length?'<div class="rwear">'+
+        wear.map(w=>'<span>'+w+'</span>').join('')+'</div>':'');
+    /* #249 - and a body with nothing wrong with it appends NO box: `.rmem` is a
+       column with a `gap` now, so an empty div is 2px of air under every clean
+       portrait in the list. Measured: 71px a tile against 69. */
+    if(box.innerHTML.trim())b.appendChild(box);
     b.onclick=()=>{iSel=p.id;drawInv();};
     rost.appendChild(b);});
 
@@ -35916,7 +36278,7 @@ function drawInv(){
             '<span class="sbt"><span class="sbR">'+
               hpNow+'<span class="of">/'+hpMax+'</span></span></span></div></div>'+
           '<div class="sbar" id="iNerve" style="cursor:help">'+
-            '<span class="sbi" title="MOOD">'+nl.ic+'</span>'+
+            '<span class="sbi" title="MOOD">'+MOOD_MARK+'</span>'+
           /* ⛔ #243 - THE BAR WAS THE LITERAL `78%`, WHICH IS `START_NERVE` TYPED
              OUT. It was the same picture on every body in the game whatever their
              nerve, their company's mood, their banner or their wages - a readout
@@ -35971,8 +36333,22 @@ function drawInv(){
            ⚠ IT IS ONE LINE AND IT IS GONE THE MOMENT THE POINT IS SPENT, which is
            #177's rule about a finished objective: a row that is always there has
            stopped being information. */
-        (statPts>0?'<div class="lbl statnag">+'+statPts+' TO A STAT · PICK A ROW</div>':'')+
-        '<div class="itells">'+['str','agi','int','mor'].map(tellCell).join('')+'</div>'+
+        /* ⛔ #249 - THE CAPTION IS ABOVE THE ROWS AND IT USED TO BE BESIDE THEM.
+           `#iStatTop` is a flex ROW, and #244 appended this line into it as a third
+           CHILD - so the moment a stat point was banked the caption took its own
+           max-content width out of the middle of the sheet and the four tells were
+           squeezed to fit what was left. Measured on `git show HEAD:`, with a point
+           banked: the value box goes to **0px wide on all four rows**, scrollWidth
+           51/96/50/50, i.e. every stat READING on the sheet disappears at exactly
+           the moment the player is being invited to raise one.
+           ⚠ IT IS A SHIPPED DEFECT AND NOT A REGRESSION OF THIS ENTRY - #249's own
+           wider column had already improved it from 0 to 30 - and it was found by
+           the clip counter, driven in the `+point` state that `gates.js` does not
+           reach. **A gate that only ever runs one state is a gate over one state.** */
+        '<div class="itellcol">'+
+          (statPts>0?'<div class="lbl statnag">+'+statPts+' TO A STAT · PICK A ROW</div>':'')+
+          '<div class="itells">'+['str','agi','int','mor'].map(tellCell).join('')+'</div>'+
+        '</div>'+
       '</div>'+
     '</div>'+
 
@@ -35982,8 +36358,21 @@ function drawInv(){
        caption over a drawing of a man wearing his gear was the last piece of
        furniture on this column. The 17px it cost paid for the type raise above. */
     '<div id="iBody">'+
-      '<div id="iDollBox"><canvas id="iDoll" class="doll"></canvas>'+
-      '<svg class="wire" id="iWire"></svg></div>'+
+      /* ⛔ #249 - THE FIGURE IS PARKED AND THE SIX SLOTS ARE A GRID.
+         (User: *"Articaftcs lets do in 2-3 raws - now it too much free space (but
+         with perks we will need a lot of that space)"*.)
+         ⛑ THE FREE SPACE WAS THE POINT OF THE OLD BOX AND THAT IS WHY IT COULD GO.
+         #140 put the slots in two fixed columns with the drawn body between them and
+         the wires carrying the meaning; the middle 200px was the picture. Two rows of
+         three costs **108px against 196**, and the 88 is what the perk panel is
+         going to be built in. `drawDoll` is untouched and still hands back its
+         anchors - the way `proCard` was kept in #219 - so the figure is one call
+         away if the perk screen wants a body to hang marks on.
+         ⚠ WHAT IS LOST IS THE MARK ON THE PART: scars, a mutation and a condition
+         were drawn ON the figure and named in the ledger beside it. The LEDGER is
+         untouched, so every one of them is still on this screen with its own hover;
+         what has gone is WHERE on the body it happened. Raised in OPEN_QUESTIONS. */
+      '<div id="iDollBox"></div>'+
       (led.length?'<div id="iLedger">'+led.join('')+'</div>':'')+
     '</div>'+
 
@@ -36009,47 +36398,27 @@ function drawInv(){
         WAGE[p.race]+' crowns a day.">LET THEM GO</button>':'')+
     '</div>';
 
-  /* ═══ THE DOLL, AND THE GEAR WIRED TO IT (Caves of Qud) ══════════════════
-     drawDoll hands back the joint positions it actually drew, so a slot's
-     leader lands on the shoulder it is naming for a ratkin and for an ogre
-     without a second table. The BOXES sit in two fixed columns (a slot that
-     floated with the anatomy would overlap its neighbour on a wide body);
-     the WIRE is what carries the meaning. */
-  const dollCv=$('iDoll');
-  drawDoll(dollCv,p);
-  /* the box shrank with #136 point 1, so every number here did. The canvas
-     is centred in it and the anchors come back already in display pixels. */
-  const dbox=$('iDollBox'),wires=[];
-  /* the box is the column's full width now (#140 point 4), so it is MEASURED
-     rather than assumed: the character column changes width whenever the
-     right pane does, and a hardcoded 362 would put the figure off centre the
-     next time it moves. */
-  const AX=dollCv._anchor||{},BOXW=dbox.clientWidth||578,BOXH=196,SLOTW=150;
-  const DOLL_X=Math.round((BOXW-DOLL_DW)/2),DOLL_Y=6;
-  dollCv.style.left=DOLL_X+'px';dollCv.style.top=DOLL_Y+'px';
-  /* ⚑ #140 point 8 ("Main hand = right hand. Right now is left"): the figure
-     faces the player, so its RIGHT hand is on the viewer's LEFT. The weapon,
-     its slot and its leader all moved to that side together, and the off hand
-     took the other. Three things had to agree or the wire would point across
-     the body. The BAG hangs at the hip on the shield side. */
-  const SLOTPOS={armour:['l',3],main:['l',70],bag:['l',137],
-                 trinket:['r',3],off:['r',70],pet:['r',137]};
-  const placeSlot=(key,el)=>{
-    const pos=SLOTPOS[key]||['l',4];
-    el.style.top=pos[1]+'px';
-    el.style.left=(pos[0]==='l'?3:BOXW-SLOTW-3)+'px';
-    /* #223 - the `lowpop` class was written here; `popPlace` measures instead. */
-    dbox.appendChild(el);
-    const a=AX[key];
-    if(!a)return;
-    const h=el.offsetHeight||46;
-    wires.push([pos[0]==='l'?3+SLOTW:BOXW-SLOTW-3, pos[1]+h/2, DOLL_X+a.x, DOLL_Y+a.y]);
-  };
+  /* ⛔ #249 - THE GRID PLACES THE SLOTS, SO THERE IS NOTHING TO PLACE THEM AT.
+     What stood here was #140's wiring: `drawDoll` painted the body, handed back a
+     joint per slot, and every box was pinned to a pixel with a leader drawn to its
+     shoulder. All of it was correct and all of it was about the figure.
+     ⚠ THE ORDER IN `SLOTS` IS THE READING ORDER NOW, which is the one thing the
+     grid cannot decide for itself: worn, then wielded, then carried. */
+  const dbox=$('iDollBox');
+  const placeSlot=(key,el)=>{dbox.appendChild(el);};
   /* what a slot says on its face: the receipt is one short line, because the
      full one is already the tooltip bindTip() puts on it. */
+  /* ⛔ #249 - `· both hands` COMES OFF THE MAIN HAND. (User: *"on the main hand
+     don`t write 'both hand' - it is obvious from secondart"*.) The OFF HAND slot
+     directly beside it reads `✋ OFF HAND · TAKEN` over `Both hands are on the boar
+     spear.` - so the fact was on the screen twice, once as a price on the weapon and
+     once as a state of the slot it costs. That is the receipt rule at the top of
+     `.claude/rules/event-cards.md` arriving on the company sheet, and the copy that
+     survives is the one standing where the cost is PAID.
+     ⚠ IT IS STILL IN THE HOVER: `gearLine` prints the full row on the item's own
+     tip, and the stash and the shop both read that. This cut is the slot's FACE. */
   const shortGear=g=>g.dmg?(g.dmg[0]+'-'+g.dmg[1]+
-      (g.reach>1?' · reach '+g.reach:'')+(g.range?' · range '+g.range:'')+
-      (g.hands===2?' · both hands':''))
+      (g.reach>1?' · reach '+g.reach:'')+(g.range?' · range '+g.range:''))
     :(g.armour!=null?'stops '+g.armour+(g.agi?' · '+(g.agi>0?'+':'')+g.agi+' hands':''):'');
   SLOTS.forEach(([slot,label])=>{
     const g=GEAR[p.eq[slot]];
@@ -36183,26 +36552,9 @@ function drawInv(){
   }
   /* the leaders. An elbow, not a straight line: a diagonal across the whole
      box reads as a slash through the picture at this size. */
-  const wireSvg=$('iWire');
-  wireSvg.setAttribute('width',BOXW);wireSvg.setAttribute('height',BOXH);
-  wireSvg.innerHTML=wires.map(w=>{
-    const mid=w[0]+(w[2]-w[0])*0.45;
-    return '<path d="M'+w[0]+' '+w[1]+' L'+mid+' '+w[1]+' L'+w[2]+' '+w[3]+'" fill="none" '+
-      'stroke="#4d3c22" stroke-width="1"/><circle cx="'+w[2]+'" cy="'+w[3]+
-      '" r="2.4" fill="#6b5330"/>';}).join('');
-  /* the body's own summary, on the picture */
-  if(dollCv){
-    const bits=['Head, body, two arms, two legs. Every mark is on the part it happened to.'];
-    (p.injuries||[]).forEach(sc=>bits.push('<b style="color:#c15d55">'+sc.n+'</b> · '+sc.d));
-    if(p.mut)bits.push('<b style="color:#35e0c8">'+MUTS[p.mut].n+'</b> · '+MUTS[p.mut].short);
-    if(p.cond)bits.push('<b style="color:#5ec8b8">'+CONDS[p.cond.k].n+'</b> · '+
-      CONDS[p.cond.k].short);
-    if(bits.length===1)bits.push('<i>Nothing has happened to this one yet.</i>');
-    dollCv.onmouseenter=e=>{TIP.innerHTML='<div style="font-family:var(--display);font-size:var(--fs5);'+
-      'color:var(--g4);margin-bottom:4px">THE BODY</div>'+bits.join('<br>');
-      TIP.style.display='block';moveTip(e);};
-    dollCv.onmousemove=moveTip;dollCv.onmouseleave=()=>{TIP.style.display='none';};
-  }
+  /* #249 - the wires and THE BODY's hover went with the figure. Every fact that
+     hover carried - each scar with its sentence, the mutation, the condition - is a
+     chip in `#iLedger` two lines below this block, with its own popover. */
 
   /* ═══ THE RIGHT PANE: TWO TABS ══════════════════════════════════════════
      ⚠ ITAB lives outside this function on purpose. Buying a perk redraws the

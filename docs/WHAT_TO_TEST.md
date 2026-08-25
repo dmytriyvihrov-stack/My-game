@@ -26,6 +26,126 @@
 
 ---
 
+## 🧪 FOURTEEN ASKS: THE BATTLE CARD, THE MOVEMENT ZONES AND THE COMPANY SHEET  *(#249 · 2026-08-26 · build log 8f.274)*
+
+### 1. The three pools are sockets now, on both screens
+
+**Start any fight and look at the bottom-left card**, then open the company sheet and look at the same
+three rows. They should read as three recesses cut into the panel with something standing in them,
+not as three coloured blocks laid on top: a dim-gold hairline all the way round, a shadow inside the
+top edge, and a fill that is lit at the crown and shaded at the foot.
+
+⚡ **The bar is shorter and the air under it is doubled** (22 -> 20 on the card, 18 -> 16 on the
+sheet, gap 3 -> 6). **The block sits in exactly the same band it did**, so nothing under the plaque
+moved: what changed is the proportion of bar to air.
+
+⚡ **The figure stands in the middle of the bar** rather than at its right end - and on the MOOD row,
+which has no figure, the WORD is what is centred.
+
+⚡ **A bug would be**: a bar whose hairline disappears where the fill covers it, a digit cut off at
+the top or bottom, an armour class (LIGHT) sitting on top of its own figure, or the three bars
+reading at three different heights.
+
+### 2. The mood mark is not an emoji any more
+
+Same two screens. ⛨ and ♥ are cream line marks in the card's own type and the third row was an
+orange emoji face, i.e. the same column drawn in two different mediums. It is `☺` now, in the same
+cream, and it names the POOL the way the other two do rather than the rung.
+
+⚡ **The rung is still said three ways** - the word inside the bar, the colour of the fill, and the
+five faces on the hover ladder, which are untouched. ⚡ **A bug would be**: an orange disc still
+showing (a font falling back to the emoji), or the ladder hover losing its faces.
+
+### 3. The two movement zones, and this one did NOT go the way you suggested
+
+**Start a fight, pick anybody, and look at the ground.** The hexes one action away should now be a
+clearly stronger teal than the ones that cost two.
+
+⛔ **You asked for the first zone to be a bit DARKER and measured, that is the direction that
+erases the difference.** Sampled off the board's own painted ground: bare ground reads 55 of
+luminance, the far half 72, the near half was 80 - eight points, which is the complaint. A darker
+near wash reads **74**, two points from the far half, and one step further it reads **59** and the
+near half is DIMMER than the far one, i.e. the ground you can reach this action looks like ground you
+cannot reach at all.
+
+⚡ **So the near half went UP instead** (to 91, a 19-point gap), and the far half is untouched
+because #247 raised it off a floor of its own. **If it now reads as too loud, that is the honest
+complaint to make and the number is one line.**
+
+### 4. The turn ends itself when a body is empty, and ⟲ has a window
+
+**Move somebody with their LAST action.** The turn should hand itself on after about three seconds
+rather than sitting there waiting for END TURN.
+
+⛑ **This is #247's own trade seen from the other side.** That entry found UNDO was real for 140ms
+and fixed it by refusing to end the turn at all while an undo stood; the press that cost you is what
+you reported. It is a HOLD now: ⟲ UNDO MOVE stands for about 3.15 seconds with a **bar draining
+along its bottom edge**, and then the turn goes.
+
+⚡ **Press ⟲ inside the window** and the body should walk back to where it was with its action
+returned, and it should STILL be its turn afterwards - nothing should end the turn a second later.
+⚡ **A bug would be**: the turn ending while you are pressing UNDO, the turn NOT ending after the bar
+empties, or the bar showing full on a body that has actions left.
+
+⚡ **Three seconds is a guess and it is one number.** Too long and it feels like the hang this
+deletes; too short and the undo is back to being unreachable.
+
+### 5. ☰ MENU is in the same corner everywhere
+
+**Open the map, then a battle, then the company sheet.** The door should be top right, at the same
+pixel, on all three (and on the fire and the practice field). The battle's FULL / FIELD / CLOSE row
+stepped left to make room; `? RULES` stays in the battle log's footer, which is the one place on
+that screen it can be found.
+
+⚡ **A bug would be**: the menu landing on the zoom row, on BACK TO THE ROAD, or disappearing on the
+map after you have been in a fight.
+
+### 6. The roster column is 80px wide
+
+**Open the company sheet.** The left-hand list should now be portraits and nothing else, with four
+facts on the corners of each picture: the class mark bottom left, the level bottom right, a green
+▲ top right if that body has something unspent, and the race colour as a rail down the tile's left
+edge. **The wear clock** (mending, an injury countdown, scars, ill-fitting armour) **has moved
+underneath the portrait** instead of standing beside it, which is what let the column halve.
+
+⚡ **The ▲ is deliberate and it answers an open question**: the unspent mark used to be a ★ and so
+is the Captain's class mark, so on his tile they would have been two stars 40px apart. ▲ is the mark
+the sheet already prints after a stat row you can raise.
+
+⚡ **A bug would be**: a tile whose clock wraps into four lines, a portrait with a badge sitting on
+its face, or the list scrolling with fewer than six bodies in it.
+
+### 7. The gear is two rows of three, and the figure is gone
+
+Same screen. The six slots are a grid now: **ARMOUR / MAIN HAND / OFF HAND** over **TRINKET / BAG /
+PET**, with the name and the stat line each a size larger, and the main hand no longer says
+`· both hands` because the off hand beside it already says TAKEN.
+
+⛔ **The drawn body and its wires are parked, not deleted.** That block was 196px and is 108, and
+the 88 is the room the perk panel is going to need - which is what you asked for. **What went with
+the figure is the mark on the PART**: a scar, the change and a condition used to be drawn on the
+place they happened. Every one of them is still on this screen as a chip under the grid with its own
+hover; nothing says WHERE any more. **That is a real loss and it is the one thing on this list worth
+ruling on** (filed in `OPEN_QUESTIONS.md`).
+
+⚡ **A bug would be**: a gear name wrapping to three lines, a slot's hover box opening off the edge
+of the screen, or the two rows sitting at different heights.
+
+### 8. The small ones
+
+- **The wagon door on the sheet's top bar is the map's own cart picture**, not the words THE WAGON.
+  The word is on the hover. ⚡ It is also what paid for the menu's corner: 103px of button became 34.
+- **The class mark beside the race face in the sheet's header is the same size as it**, in the same
+  square box. ⚠ It is still a GLYPH beside a PAINTING; eight painted class marks would be the honest
+  fix and they do not exist yet.
+- **12px of air between the blocks** of the character column, and SKILLS still hugs the list it names.
+- ⚡ **And one thing you did not ask for, found while measuring**: with a stat point banked, the
+  caption *+1 TO A STAT · PICK A ROW* was squeezing all four stat readings to **nothing** - on the
+  shipped build, right now, every value box measures 0px wide the moment a point is bankable. Fixed.
+  Bank a point and check all four still read (*Strong enough*, *Steady enough*, and so on).
+
+---
+
 ## 🧪 FIVE THINGS YOU RULED ON, AND ONE OF THEM WAS NOT WHAT IT LOOKED LIKE  *(#248 · 2026-08-25 · build log 8f.273)*
 
 ### 1. The muster reads differently now, and the reason is worth thirty seconds
