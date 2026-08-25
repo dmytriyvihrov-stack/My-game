@@ -499,8 +499,14 @@ button:disabled{cursor:not-allowed}
 /* #244 - the actions the picked card would take. SLOW on purpose (the user's own
    word): the two other rhythms on this screen are 1.1s - the acting body's breath
    and the parting-swing warning - and a third at the same tempo would read as part
-   of them. 1.9s is a different kind of clock. */
-#bStats .pip.pay{animation:appay 1.9s ease-in-out infinite}
+   of them. 1.9s is a different kind of clock.
+   ⚡ #246 - 1.9 → 2.8, ON THE SAME ASK ASKED AGAIN (*"more flickering ... just
+   slower going brither adn darker"*). The gap to the other two rhythms is what
+   makes this one legible as a different fact, and at 1.9 it was 0.8s clear of
+   them; at 2.8 it is 1.7s clear, i.e. the separation this was built for, doubled.
+   ⚠ The curve is unchanged - `ease-in-out` is what makes it breathe rather than
+   strobe, and the ask is about the PERIOD. */
+#bStats .pip.pay{animation:appay 2.8s ease-in-out infinite}
 @keyframes appay{0%,100%{color:var(--gold);text-shadow:0 0 6px rgba(217,189,126,.45)}
                  50%{color:#6b5330;text-shadow:none}}
 @media (prefers-reduced-motion:reduce){
@@ -4291,7 +4297,37 @@ body:has(#battle.on) #audioBox button{font-size:var(--fs2);padding:var(--p1) var
              padding:var(--p2) var(--p5);background:#2a2114;letter-spacing:.08em}
 #iBar button:hover{background:#3a2b16}
 #iMain{flex:1;display:flex;min-height:0}
-#iRoster{width:224px;background:#161009;border-right:2px solid var(--e1);overflow:auto;flex:none}
+/* ⛔ #246 - 224 → 176, AND THE 48 GOES TO THE STASH. (User: *"In general i want
+   this thing less wide. And saved space you can gove to perks and artigacts
+   part"*.) The tile lost its third line and its level word in the same edit, so
+   what sets this width now is the NAME - and a name wraps rather than clipping,
+   which is why the row got shorter even as the column got narrower.
+   ⚡ 176 IS MEASURED AND NOT PICKED, AND THE MEASUREMENT IS THAT THE TILE DID
+   NOT GROW. Driven over the whole starting six with the longest names the
+   generator produces: the tile is **174x69**, against **222x69** before. The name
+   now wraps to two or three lines where it used to take one, and the row is
+   exactly as tall as it was, because the line the trait was on is the line the
+   name borrowed. ⚠ THAT IS THE WHOLE OF WHY THIS WIDTH IS SAFE: a name WRAPS and
+   the tile is not a fixed height, so the failure mode here is a taller list and
+   never a clipped one - and it did not get taller. If a future name does push a
+   fourth line, the column grows by one row and scrolls, which it already does.
+   ⚠ `#iChar` IS UNTOUCHED AND THAT IS ARITHMETIC. #200 measured its floor:
+   six 78px ability cards plus five 5px gaps plus 26 of padding and border is
+   **519**, and it is 526. There are seven pixels in it, so the width the stash
+   gains has to come from here or from nowhere. */
+#iRoster{width:176px;background:#161009;border-right:2px solid var(--e1);overflow:auto;flex:none}
+/* the level, on the corner of the picture that is already drawing this person's
+   progress. `--fs1` is the floor and the plate is what keeps it off the art. */
+.rmem .rlv{position:absolute;right:-2px;bottom:-2px;font-family:var(--mono);
+  font-size:var(--fs1);line-height:1;letter-spacing:.06em;color:var(--g4);
+  background:rgba(10,7,3,.92);border:1px solid var(--e2);padding:1px 3px;
+  pointer-events:none}
+/* ⚠ #246 - A CHIP WITH NOTHING BUT A MARK IN IT. #196's own note is that at
+   `--fs1` a pictogram is a smudge, and with the word gone there is nothing beside
+   it to read the size against - so the mark takes `--fs3` and the box goes square
+   instead of keeping a label's padding. */
+.ichip.bare{padding:var(--p1) var(--p2);line-height:1}
+.ichip.bare .bmk{font-size:var(--fs3)}
 .rmem{width:100%;display:flex;gap:7px;padding:var(--p3) var(--p4);border-bottom:1px solid #2a2114;align-items:center}
 .rmem:hover{background:#221a10}
 .rmem.on{background:#2a2114;border-left:3px solid var(--g4)}
@@ -5161,7 +5197,12 @@ body:has(#battle.on) #audioBox button{font-size:var(--fs2);padding:var(--p1) var
    have bought the other 30px and it was refused: `GUARDS ALLIES` already
    overruns its 76px role line by 5px, and #164's whole table of regressions
    is measured cards being asked to hold text that no longer fits. */
-#iStash{width:530px;background:#161009;border-left:2px solid var(--e1);flex:none;
+/* ⛔ #246 - 530 → 578, WHICH IS EXACTLY WHAT `#iRoster` GAVE UP. Both are
+   `flex:none` and `#iChar` between them is `flex:1`, so narrowing the roster on
+   its own would have handed all 48 pixels to the CHARACTER column - the one part
+   of this screen the ask was not about. The pair moves together or it does
+   nothing. `#iChar` is unchanged at 526 by arithmetic: 1280 - 176 - 578. */
+#iStash{width:578px;background:#161009;border-left:2px solid var(--e1);flex:none;
         display:flex;flex-direction:column;min-height:0;padding:0;overflow:hidden}
 #iTabs{display:flex;flex:none;border-bottom:2px solid var(--e1)}
 .itab{flex:1;position:relative;font-family:var(--mono);font-size:var(--fs1);letter-spacing:.12em;
@@ -5208,10 +5249,17 @@ body:has(#battle.on) #audioBox button{font-size:var(--fs2);padding:var(--p1) var
    ⚠ IT IS AN ACCENT EDGE AND IS DELIBERATELY NOT ON THE `--e` SCALE - see
    `.claude/rules/ui-scales.md` §2: that scale is for the edge that DRAWS A BOX
    and this one says something. */
+/* ⛑ #246 - AND IT WEARS `#iDismiss`'s EXACT COLOURS NOW (user: *"make same
+   color as let them go"*). The two are the only buttons on this screen that
+   END something - one lets a person go, one takes a thing apart - and they were
+   two different reds, which is #102's rule with the units being the buttons
+   themselves. ⚠ THE HOVER MOVED WITH THE REST: matching the resting state and
+   leaving `#e0a89c` on the pointer would have made them one colour at rest and
+   two under the hand, which is the same disagreement one interaction later. */
 .iscrapbtn{align-self:flex-end;margin-top:var(--p3);font-family:var(--mono);
-  font-size:var(--fs1);letter-spacing:.12em;color:#c15d55;background:#1d1210;
-  border:1px solid #6e2c26;padding:var(--p3) var(--p5);cursor:pointer;flex:none}
-.iscrapbtn:hover:not(:disabled){color:#e0a89c;border-color:#8c3a31}
+  font-size:var(--fs1);letter-spacing:.1em;color:#8a5a4a;background:none;
+  border:1px solid #4a3028;padding:var(--p2) var(--p4);cursor:pointer;flex:none}
+.iscrapbtn:hover:not(:disabled){color:#c07a6a;border-color:#6a3a30;background:#241310}
 .iscrapbtn:disabled{opacity:.38;cursor:default}
 .iscrapbtn.on{color:#e0a89c;border-color:#8c3a31;background:#241210}
 /* the row wears the blood edge while it is a thing you are about to destroy,
@@ -22721,17 +22769,54 @@ function actHoverOn(u,a){
   if(!B||B.actHover===want)return;
   B.actHover=want;render();
 }
-function paintHand(){
-  const g=$('bGrid');if(!g||!B)return;
-  g.querySelectorAll('.hex.mland').forEach(h=>h.classList.remove('mland'));
-  let land=B.hand;
+/* ═══ ⛔ #246 · WHAT THE NEXT CLICK WOULD SPEND, AS ONE FUNCTION ════════
+   Read by `render` (state changed) and by `paintHand` (the pointer moved and
+   nothing else did). A move's price is not a property of the card any more - it is
+   a property of the HEX - so it has to be recomputed on a pointer move, and that
+   is exactly the path that does not re-render.
+   ⚠ THE MIRROR IS ASKED THE SAME QUESTION `paintHand` ASKS: under `#bGrid.mirror`
+   the click lands on the folded hex, so pricing the hex the pointer is over would
+   price a step nothing is going to take. `landHex()` is that fold, said once.
+   ⚠ AND A HEX IN NEITHER MAP COSTS NOTHING, which is what makes the pips go quiet
+   the moment the pointer leaves the board rather than freezing on the last figure. */
+function landHex(){
+  let land=B&&B.hand;
   if(land&&mirrorOn()){
     const u=cur(),p=land.split(',').map(Number);
     const m=(u&&u.side==='you')?mirrorOf(u,p[0],p[1]):null;
     land=m?K(m[0],m[1]):null;
   }
+  return land;
+}
+function moveCostAt(k){
+  if(!k||!B)return 0;
+  if(B.reach&&B.reach.dist[k]!==undefined)return 1;
+  if(B.reach2&&B.reach2.dist[k]!==undefined)return 2;
+  return 0;
+}
+function payPips(u,payA){
+  const el=$('bAPnum');if(!el||!u)return;
+  let n=payA?(payA.cost||1):0,what=payA?payA.n:null;
+  if(!payA&&B.sel&&B.sel.move){
+    n=moveCostAt(landHex());
+    what=n?(n>1?'a stride of two':'a step'):null;
+  }
+  el.innerHTML=apPips(u.actions,u.actionsMax,n);
+  el.title=u.actions+' of '+u.actionsMax+' actions left this turn'+
+    (n&&what?' · '+n+' of them goes on '+what:'');
+}
+function paintHand(){
+  const g=$('bGrid');if(!g||!B)return;
+  g.querySelectorAll('.hex.mland').forEach(h=>h.classList.remove('mland'));
+  /* #246 - the fold moved into `landHex()` above, because `payPips` has to ask
+     the same question and two copies of the mirror rule is one copy too many. */
+  const land=landHex();
   const el=land?g.querySelector('[data-k="'+land+'"]'):null;
   if(el&&mirrorOn())el.classList.add('mland');
+  /* #246 - the pointer moved, so what the next click would spend may have
+     changed. See payPips: this is the path that does not re-render. */
+  {const cu=cur();if(cu&&cu.side==='you')
+    payPips(cu,(B.sel&&!B.sel.move)?B.sel:(B.actHover||null));}
   /* #213/#215 - the parting-swing figure speaks while a step is being AIMED,
      and the hex that decides that is the one the click lands on. */
   const aiming=!!(el&&el.classList.contains('lit'));
@@ -22818,6 +22903,17 @@ function paintHand(){
    rather than an omission. #205 asked for *"highlight enemy who will hit"* and #234
    for the red blink while a step is weighed; the outline says WHERE the price is
    and cannot say WHO charges it. Two channels, two questions. */
+/* #246 - which held hexes are worth drawing, given what is in hand. See the
+   call site in render() for the measurement this came out of. */
+function zocLive(u,c,r){
+  if(!u)return true;
+  if(u.col===c&&u.row===r)return true;          /* what leaving costs */
+  const walking=B&&B.sel&&B.sel.move&&(B.reach||B.reach2);
+  if(!walking)return true;                      /* nothing to narrow to */
+  const k=K(c,r);
+  return (B.reach&&B.reach.dist[k]!==undefined)||
+         (B.reach2&&B.reach2.dist[k]!==undefined);
+}
 const ZOC_HEX=[[.5,0],[1,.25],[1,.75],[.5,1],[0,.75],[0,.25]];
 function clearZoc(){const e=$('bZoc');if(e)e.remove();}
 function drawZoc(keys){
@@ -23116,6 +23212,43 @@ function clickHex(c,r){
   /* #72's disengage STEP lived here; #111 removed it - DISENGAGE resolves in
      selectAct now (clean movement this turn + one extra hex next turn) and
      never owns a hex click. */
+  /* ⛔ #246 - AND THE FAR HALF IS CLICKABLE, WHICH IS THE OTHER HALF OF THE ASK.
+     (*"So you can use both of your action points in one click on the map - you
+     just need to see it"*.) #244 drew it and left it dead, with a note saying so;
+     what that note was protecting against is the one-pass budget map showing a hex
+     whose only route needs an illegal mid-step. ⛑ THAT CONCERN DOES NOT SURVIVE
+     THE CLICK BEING A **SINGLE WALK**: `walkTo` runs the whole path in one go and
+     the only hex whose occupancy matters is the END, which `reachMap` already
+     refuses. There is no rule that a body must stop after its first move, so a
+     two-action stride has no mid-point to be illegal at.
+     ⚠ IT COSTS TWO ACTIONS AND `spend` IS CALLED TWICE, never `actions-=2`: spend
+     is the one door that also clears the undo offer, counts `used[k]` and pays the
+     per-act bookkeeping, and the twice-a-turn ceiling on `used.move` is exactly 2,
+     so a two-action stride is the whole allowance and a third step is refused by
+     the door that already refuses it.
+     ⚠ `movesUsed` GOES UP BY TWO for the same reason - `moveBudget` reads it, and
+     a body that had walked twice but counted once would be handed a cutter's
+     first-move bonus it has already spent. */
+  const farK=(a&&a.move&&!tgt&&B.reach&&B.reach.dist[K(c,r)]===undefined&&
+              B.reach2&&B.reach2.dist[K(c,r)]!==undefined&&u.actions>=2)?K(c,r):null;
+  if(farK){
+    const clean=!partingRisk(u).length;
+    const snap={id:u.id,col:u.col,row:u.row,facing:u.facing,actions:u.actions,
+      usedMove:u.used[a.k]||0,movesUsed:u.movesUsed||0,moved:!!u.moved};
+    spend(u,a);spend(u,a);
+    u.moved=true;u.movesUsed=(u.movesUsed||0)+2;partingShots(u);
+    B.undo=(clean&&!u.dead)?snap:null;
+    if(!u.dead){
+      faceToward(u,c,r);
+      walkTo(u,c,r,B.reach2);
+      const near2=alive().filter(x=>x.side!==u.side)
+        .sort((p,q)=>hdist([u.col,u.row],[p.col,p.row])-hdist([u.col,u.row],[q.col,q.row]))[0];
+      if(near2)faceToward(u,near2.col,near2.row);
+    }
+    B.sel=null;B.reach=null;B.reach2=null;render();
+    if(!checkEnd())autoEnd(u);
+    return;
+  }
   if(a&&a.move&&B.reach&&B.reach.dist[K(c,r)]!==undefined&&!tgt){
     /* ═══ #91 point 12 - UNDO, decided BEFORE the step is taken. A move is
        takeable-back only if it will change nothing but position: no
@@ -27297,6 +27430,16 @@ function render(){
     const mv=u.acts.find(a=>a.move);
     if(mv&&canUse(u,mv)){
       B.sel=mv;B.reach=reachMap(u,moveBudget(u));
+      /* ⛔ #246 - AND THE FAR HALF IS STANDING TOO. (User: *"full movment (when
+         i use two action in one turn) - should be shown from the begining for my
+         units"*.) #244 built `B.reach2` and only `selectAct` ever wrote it, i.e.
+         the far wash appeared only if you CLICKED the MOVE card - and #91's whole
+         point is that nobody clicks the MOVE card, because it is standing. So the
+         feature existed and the path most players take never reached it.
+         ⚠ THE SAME EXPRESSION AS `selectAct`'s, and it has to be: the two are one
+         fact about one body and a second copy is a second thing to keep in step. */
+      B.reach2=(u.actions>(mv.cost||1))
+        ?reachMap(u,moveBudget(u)+moveBudget2(u)):null;
       /* #60 lesson 8's second call site. Deleted with the lesson in #137. */
     }
   }
@@ -27442,9 +27585,18 @@ function render(){
        for the same reason it is excluded from `rngA` - its own reach preview is
        the answer to what it costs, and every move costs one. */
     const payA=(B.sel&&!B.sel.move)?B.sel:(B.actHover||null);
-    $('bAPnum').innerHTML=apPips(u.actions,u.actionsMax,payA?(payA.cost||1):0);
-    $('bAPnum').title=u.actions+' of '+u.actionsMax+' actions left this turn'+
-      (payA?' · '+(payA.cost||1)+' of them goes on '+payA.n:'');
+    /* ⛔ #246 - AND A MOVE BLINKS TOO, WHICH IS THE HALF #244 LEFT OUT.
+       (User: *"при виборі дії коректно екшн мигає. Теж саме при використанні
+       ходьби - бо зараз не мигає так"*.) #244 excluded it deliberately -
+       *"its own reach preview is the answer to what it costs, and every move costs
+       one"* - and the second half of that sentence stopped being true in this same
+       batch: a step into the FAR wash costs two. So the one card whose price was
+       constant is now the only one whose price depends on where you point.
+       ⚠ IT IS WRITTEN BY `payPips`, NOT HERE, because the pointer moving does not
+       re-render: `handOn` is a delegated tracker that repaints and returns (#215).
+       Two writers for one readout is the shape this file keeps merging out, so
+       render calls the same function the tracker does. */
+    payPips(u,payA);
     $('bAPtxt').textContent='ACTIONS';
     /* ⚑ THE OTHER HALF OF THE TURN, AND IT IS `moveBudget` - the SAME call
        the MOVE button, the reach preview, aiTurn and autoStep all make. So
@@ -28079,8 +28231,29 @@ function render(){
       /* #244 - the CONTROLLERS travel with the hex, because the mark is now the
          side facing them. `controllers` is what `heldAt` counts, so this is the
          same call the line used to make and not a second walk of the roster. */
+      /* ═══ ⛔ #246 · NOT EVERY ZONE ON THE FIELD, ONLY THE ONES THIS STEP
+         COULD WALK INTO ════════════════════════════════════════════
+         (User: *"don`t highlight all enemies zones of contacts simultaniosly when
+         i am picking to move"*.)
+
+         ⛔ MEASURED AT THE TOP OF THE SNARE: **27 segments across 16 held hexes
+         for 9 foes, and NOT ONE of them inside the acting body's own reach.** Every
+         red arc on that board was pricing a step this body could not take this turn.
+         The rule the outline exists for is *what leaving costs* and *what stepping
+         in costs*, and both of those are questions about hexes you can actually
+         reach - so the answer is not to draw it more faintly, it is to stop
+         answering questions nobody asked.
+         ⛑ TWO SETS, AND THEY ARE THE TWO HALVES OF THE RULE: the hexes this body
+         can step INTO (`B.reach`, and `B.reach2` now that a two-action stride is a
+         click), and the hex it is standing ON, which is what a parting swing is
+         charged for. Nothing else.
+         ⚠ IT FALLS BACK TO THE WHOLE BOARD WHEN THERE IS NO MOVE IN HAND, which is
+         a body that has run out of steps or a card that is not a move: with no step
+         to price there is no set to narrow to, and the outline goes back to being a
+         map of where the fronts are. ⚠ The ⚔ chip under a body (#231) is untouched
+         and still prices the exact step being aimed at. */
       if(u&&u.side==='you'){const zc=controllers(c,r,'you');
-        if(zc.length)zocHexes.push([c,r,zc]);}
+        if(zc.length&&zocLive(u,c,r))zocHexes.push([c,r,zc]);}
       /* #205 - and the hex the step is about to be PAID FOR leaving is louder
          than the ring it sits in. Written HERE, in `edge`, and not as a CSS
          override: `hedge.style.background` is an inline style further down, so
@@ -29553,7 +29726,18 @@ const awayFrom=(u,t)=>(u&&t&&u.col>t.col)?'left':'right';
    and the card the player now waits for has six. Waiting longer for less is
    the trade, and the GRACE below is what keeps it cheap: the second body you
    rest on still opens at once. */
-const READ_DWELL=2200, READ_GRACE=450;
+/* ⚡ #246 - 2200 → 1400 (user: *"трішки менша затримка при ховері на
+   ворогі при мувменті ... ЛЮдям важливо мати змогу читати"*).
+   ⛑ THE ENTRY ABOVE ALREADY NAMED THIS NUMBER AS THE ONE LEVER (*"If it still
+   reads as eager, READ_DWELL is one number"*) and it also carries the reason 2200
+   was chosen and why that reason expired: #163 raised 1200 to 2200 against a card
+   with ELEVEN rows on it, and then said in the same breath that the card the
+   player now waits for has six. #246 takes one more row off it (the act's own
+   sentence, see `rNote`), so the box is five rows and the wait was sized for
+   eleven. 1400 is between #163's two numbers and above the 1200 that entry judged
+   eager. ⚠ `READ_GRACE` IS UNTOUCHED: the second body you rest on still opens at
+   once, and that is what keeps a long look cheap whatever this number is. */
+const READ_DWELL=1400, READ_GRACE=450;
 /* the card's own width, declared once in the stylesheet - see the note on
    #bRead. The literal is a crash guard for a missing property, never the
    width: change the number in the CSS. */
@@ -29732,8 +29916,26 @@ function readout(t,e){
      back to the job it had before #146: the ACT'S own sentence. The one
      clause worth rescuing out of the deleted skill caption is the arcane
      one, because it says the card is not describing the weapon hand at all. */
-  $('rNote').textContent=(a.arcane?'Aimed with their wits, not their hand. ':'')+
-    actNote(a);       /* #245 - see actNote: `bounce` carries a condition now */
+  /* ⛔ #246 - THE ACT'S OWN SENTENCE IS OFF THIS CARD. (User, a red box round
+     *"Range 5. Badly hampered inside a scrum."*: **"оце не зрозуміло що
+     значить - видалити"**.)
+
+     ⛔ HE IS RIGHT AND THE REASON IS THAT THE CARD IS ABOUT THE TARGET AND THE
+     SENTENCE IS ABOUT THE WEAPON. Every other row here answers *what will happen
+     to THAT body* - the odds, the two damage figures, the arc, the statuses on
+     it - and then one italic line described the bow in your own hands, in the
+     same box, with nothing saying which of the two it was about. *"Badly hampered
+     inside a scrum"* reads as a fact about the ogre.
+     ⛑ NOTHING IS LOST AND THAT IS WHY THIS IS A DELETION RATHER THAN A REWRITE:
+     the act's sentence is on the act's OWN card (`noteLine`, the popover under the
+     row of skills), which is where a player is choosing between weapons, and the
+     figure it was explaining - the scrum penalty - is already broken out by
+     `hitBreakdown` in the rows directly above. ⚠ THE ARCANE CLAUSE GOES WITH IT:
+     it was a rider on this line, and the caster's own card carries it.
+     ⚠ The element stays in the markup, empty, because `inspect` writes it by id
+     and `placeRead` measures the card AFTER it is filled - an element removed from
+     one of two writers is the shape that throws on the other. */
+  $('rNote').textContent='';
   placeRead($('bRead'),e,awayFrom(u,t));
 }
 $('bEnd').onclick=()=>{if(!B.busy&&cur()&&cur().side==='you'&&!cur().ally)nextTurn();};
@@ -34874,6 +35076,14 @@ function drawInv(){
        #200 - and it is a FRAME now, because the picture went back to square. */
     const wrap=document.createElement('span');wrap.className='rbust';
     wrap.innerHTML=xpFrame(p,56,2.6);wrap.appendChild(cv);
+    /* ⛔ #246 - THE LEVEL RIDES THE PORTRAIT'S CORNER NOW. (User, arrow on the
+       roster: *"Lvl you can right on the buttom right of the portrait"*.) It was
+       a word on the race line, which made that line two facts wide - marks AND a
+       number - on a list whose whole job is to be read at a glance. The frame
+       round the bust is ALREADY this person's progress (`xpFrame`, #174/#200), so
+       the number belongs on the thing that is drawing it. */
+    const lv=document.createElement('span');lv.className='rlv';
+    lv.textContent='L'+p.level;wrap.appendChild(lv);
     b.appendChild(wrap);
     const box=document.createElement('div');
     /* the roster is a list of PEOPLE: the nickname, the personality clause
@@ -34902,7 +35112,7 @@ function drawInv(){
          read at a glance, and "RATKIN · ARCHER" was 13 of the row's characters
          saying what 🐀 🏹 says without being read. The colour and the border
          still carry the race on the line itself. */
-      '<div class="race '+p.race+'">'+rcMarks(p)+' L'+p.level+'</div>'+
+      '<div class="race '+p.race+'">'+rcMarks(p)+'</div>'+
       /* ⛔ #200 - THE NAME OF THE PERSONALITY, AND NOT WHAT IT DOES. (User,
          marking this line: "Write here only trait - not full description".)
          Same argument #196 made about "RATKIN · ARCHER" one line above it, and
@@ -34919,8 +35129,27 @@ function drawInv(){
          ⚠ `esc` is declared ~8,800 lines below this one and that is safe HERE
          because `drawInv` only ever runs from a click, i.e. long after the
          script has finished. Nothing in this function may be called at boot. */
-      '<div class="rc rt" title="'+esc(traitShort(p))+'">'+
-        (TRAITS[p.trait]?TRAITS[p.trait].n:'')+'</div>'+
+      /* ⛔ #246 - THE PERSONALITY IS OFF THE ROSTER. (User: *"Write only name,
+         race, class ... don`t need a trait and other things there"*.)
+
+         ⛑ #200 CUT THIS ROW FROM A DESCRIPTION TO A NAME AND THE ARGUMENT IT
+         USED IS THE ONE THAT FINISHES IT. That entry's own words: *"this is a LIST
+         of four to six bodies read at a glance, and 47 characters ... is the
+         sheet's job, not the roster's"*. `Widowed thrice` is nine characters
+         rather than forty-seven, but it is still a third line on a tile that
+         exists to answer *which of these do I want to open*, and the sheet beside
+         it prints the whole clause the moment the row is clicked.
+         ⚠ THE `title` GOES WITH IT AND THAT COSTS ONE HOVER: the clause used to
+         be reachable from this list without opening anybody. It is on the sheet,
+         one click away, and the trait NAME is the first thing on it.
+         ⚠ AND `wear` STAYS, WHICH IS THE ONE PLACE THIS DOES NOT FOLLOW THE ASK
+         LITERALLY. *"other things"* would read as this line too, and it is not a
+         description - it is a CLOCK. #225 put the injury countdown here in so many
+         words: *"this list is read at a glance and the whole point of the rung is
+         that it can be seen without opening anybody"*, and a body two days from a
+         permanent scar is exactly what a glance is for. Deleting it would hide the
+         one thing on the tile that is running out. It is flagged rather than
+         quietly kept: if it should go, it is this line. */
       (wear.length?'<div class="rc">'+wear.join(' · ')+'</div>':'');
     b.appendChild(box);
     b.onclick=()=>{iSel=p.id;drawInv();};
@@ -34980,13 +35209,31 @@ function drawInv(){
      the sheet is open on, not a list to sort: the roster beside it is the list
      and that is where the words came off. Only the glyph grew, because at
      `--fs1` a pictogram is a smudge. */
-  const chips='<span class="ichip race '+p.race+'" data-race="'+p.race+'">'+bmk(rIcon(p.race))+
-      ' <b>'+p.race.toUpperCase()+'</b></span>'+
+  /* ⛔ #246 - THE MARKS ALONE, AND THIS OVERRULES #196 ON THIS ONE SURFACE.
+     (User, arrows at both chips: *"If we have icon, we don`t need a word"*.)
+
+     ⛑ #196's RULE IS THAT A SYMBOL EARNS ITS PLACE BY SORTING TWELVE ROWS AND
+     EARNS NOTHING ON THE ONE ROW YOU ARE ALREADY READING - which is why the words
+     were kept HERE and cut from the roster. The ask overrules it, and the reason
+     it is not simply taste is that the two words were **156px of the header's
+     305px column**, measured, on a sheet whose left column is being narrowed in
+     this same batch. The lore box is still one hover away on both chips
+     (`data-race` / `data-cls`, wired by `bindLoreTips`), so the word is not gone,
+     it is behind the picture of itself.
+     ⚠ THE MARK GREW A STEP. At `--fs1` a pictogram beside nothing is a smudge -
+     #196's own note - and with the word gone there is nothing beside it to read
+     the size against. See `.ichip.bare` in the stylesheet.
+     ⚠ `CLASSES.none` KEEPS ITS WORDS. There is no picture of *not having a
+     trade yet* - `cIcon('none')` is an empty ring - so a bare chip there would say
+     nothing at all, which is the one case the ask cannot mean. */
+  const chips='<span class="ichip bare race '+p.race+'" data-race="'+p.race+'" title="'+
+      esc(p.race.toUpperCase())+'">'+bmk(rIcon(p.race))+'</span>'+
     /* #174 - no lore tip on a trade he has not got: the chip says NO TRADE
        YET (CLASSES.none) in the muted colour and carries no data-cls */
     (p.cls==='none'
       ?'<span class="ichip" style="color:#a08a5e">'+bmk(cIcon('none'))+' <b>'+CLASSES.none.n+'</b></span>'
-      :'<span class="ichip" data-cls="'+p.cls+'">'+bmk(cIcon(p.cls))+' <b>'+CLASSES[p.cls].n+'</b></span>')+
+      :'<span class="ichip bare" data-cls="'+p.cls+'" title="'+esc(CLASSES[p.cls].n)+'">'+
+        bmk(cIcon(p.cls))+'</span>')+
     /* #174 - the LEVEL chip is a RING now (user: "bar progression could be
        shown circle as in total war"): the level inside it, the arc is how far
        to the next, the exact figures on hover. It is progress and never a
@@ -35154,7 +35401,13 @@ function drawInv(){
   const storyHTML=
     '<button class="iacc" id="iMemBtn">'+
       '<span>'+(G.showMem?'▾':'▸')+'</span>'+
-      '<span class="ah">WHAT HAPPENED TO THEM</span>'+
+      /* #246 - one word (*"in invetrot 'what happened to them' raname to
+         'journal'"*). What is behind it is a life in dated lines, which is what
+         a journal is; the sentence was describing the contents rather than
+         naming them. ⚠ It does not collide with the run's own JOURNAL (the
+         notes screen): that one is never on this sheet, and this accordion is
+         inside a named person's card. */
+      '<span class="ah">JOURNAL</span>'+
       /* ⛔ #244 - THE HEADS ARE INSIDE THE ACCORDION NOW, AND THE SHUT ROW IS A
          COUNT. (User: *"show type of creatures killed only when whats happened open
          (otherwise just number with dead - and call it - killed)"*.) A row of five
@@ -35308,9 +35561,17 @@ function drawInv(){
     '<div id="iStory" class="'+(G.showMem?'open':'')+'">'+storyHTML+'</div>'+
 
     '<div id="iFoot">'+
+      /* ⛔ #246 - THREE WORDS, AND THE RECEIPT IS ON THE DOOR IT BELONGS TO.
+         (User, 2026-08-25: *"Pharse 'Let the go' - write just it, withot second
+         part in this function"*.) The seats and the wage were printed on the
+         BUTTON and then again in the confirm's own second paragraph - two
+         receipts for one payment, which is `.claude/rules/event-cards.md`'s rule
+         at the top arriving on the company sheet. The button is the question and
+         the card is where the arithmetic goes. ⚠ The `title` keeps both figures,
+         so nothing is lost for somebody who wants them before pressing. */
       (!p.leader?'<button id="iDismiss" title="They walk out with whatever they are wearing. '+
-        'Strip them first if you want it back.">LET THEM GO · frees '+COST[p.race]+
-        ' of room and '+WAGE[p.race]+'/day</button>':'')+
+        'Strip them first if you want it back. It frees '+COST[p.race]+' of room and '+
+        WAGE[p.race]+' crowns a day.">LET THEM GO</button>':'')+
     '</div>';
 
   /* ═══ THE DOLL, AND THE GEAR WIRED TO IT (Caves of Qud) ══════════════════
@@ -35552,8 +35813,20 @@ function drawInv(){
     const rowArt=itemImg(k,40);
     b.innerHTML=(rowArt?'<div class="sart">'+rowArt+'</div>':'')+'<div class="scol">'+
       '<div class="in">'+(rowArt?'':'<span class="gg">'+gGlyph(g)+'</span> ')+rarityName(k)+'</div>'+
+      /* ⛔ #246 - AND THE TIER IS ON THE ROW. (User, arrow at a stash row:
+         *"write rarity here"*.) `rarityName` has coloured the NAME since #234 and
+         the colour was the whole readout - which #197 already wrote down as not
+         enough: *"the word stays beside the colour ... a colour alone is not a
+         readout for a fifth of the players"*. It was true of the shop rack and of
+         the found row from the day that was written, and the stash was the one
+         surface still saying it in colour alone.
+         ⚠ `rarityTag`, THE ONE RENDERER (#197), never a second lookup - so the
+         word and the hue on this row cannot come apart from the shop's.
+         ⚠ A COMPANY RELIC KEEPS ITS OWN LINE: it is not on the three-tier ladder
+         and printing EPIC beside "works from the baggage" would be a tier on a
+         thing the ladder does not rank. */
       '<div class="id">'+(g.company?'COMPANY RELIC · works from the baggage, no wearer needed'
-        :g.slot.toUpperCase()+' · '+shortGear(g))+'</div>'+
+        :rarityTag(k)+' · '+g.slot.toUpperCase()+' · '+shortGear(g))+'</div>'+
       (dl.length?'<div class="idelta">'+dl.map(d=>'<span class="'+(d[1]>0?'up':'dn')+'">'+
         (d[1]>0?'▲':'▼')+' '+d[0]+' '+(d[1]>0?'+':'')+d[1]+'</span>').join('')+'</div>':'')+
       (wrong?'<div class="iw">'+g.size+'-sized · wrong for a '+RACEMOD[p.race].size+'</div>':'')+
@@ -35580,7 +35853,10 @@ function drawInv(){
   const sb=document.createElement('button');
   sb.id='iScrapBtn';sb.className='iscrapbtn'+(SCRAPMODE?' on':'');
   sb.disabled=!G.stash.length&&!SCRAPMODE;
-  sb.textContent=SCRAPMODE?'\u2715 DONE BREAKING':'\u2702 BREAK SOMETHING DOWN';
+  /* #246 - one word (*"break something something rename 'breack' - leace the
+     csisors"*). The scissors already say what kind of act it is; three more
+     words were the glyph's own caption. */
+  sb.textContent=SCRAPMODE?'\u2715 DONE':'\u2702 BREAK';
   sb.title=SCRAPMODE?'back to putting things on people'
     :'turn something in the stash into crowns, salvage and, for the best of it, '+
      'a gem. You will never get near what it is worth.';
@@ -35782,9 +36058,13 @@ function drawInv(){
           'may well bring them back to your fire.'
         : 'You barely know them. Out there they owe you nothing, and the road keeps whoever '+
           'it finds.'),
-      [{t:'Pay them off. Let them go.',c:'they walk',danger:true,
+      /* #246 - and no sub-line on either door (*"Delete small text on the
+         bettons when you click it"*). "they walk" and "nothing changes" are the
+         two door LABELS said a second time in smaller type; the paragraph above
+         them is the whole of what this decision costs. */
+      [{t:'Pay them off. Let them go.',danger:true,
         go:()=>{dismiss(p);drawInv();}},
-       {t:'No. They stay.',c:'nothing changes'}]);
+       {t:'No. They stay.'}]);
   };
   /* #200 - the sub-line each door used to print is its hover now, through the
      one door onto #gtTip. ⚠ `doors` still holds it: the label was cut, the
@@ -39702,9 +39982,18 @@ function worldTick(){
        happened to be on, so the one thing a player wants from this chip - is it
        worth three provisions to get to the next face - was the one thing it would
        not say. Every row and every figure is derived: see `moodEffect`. */
+    /* ⛔ #246 - THE FLAVOUR LINE IS DELETED AND THE LADDER LEADS. (User, with
+       *"The column moves well together."* crossed through.) `ms.d` is one
+       sentence of atmosphere at the head of a box whose whole job is *is it worth
+       three supplies to get to the next face* - and the ladder underneath it
+       already names this rung, in its own colour, with its own figures. The
+       heading says which rung; the sentence said it again in prose.
+       ⚠ `ms.d` IS NOT DELETED FROM `MOODSTATES`: the five rungs' sentences are
+       still what `moodLadderHTML` and the road cards read. What went is printing
+       this one twice on one screen. */
     mood:{t:ms.ic+' '+ms.n,col:ms.col,
-      d:ms.d+(moodEffect(ms)?'<br><b style="color:'+ms.col+'">'+moodEffect(ms)+'</b>':'')+
-        '<br><br>'+moodLadderHTML(),
+      d:(moodEffect(ms)?'<b style="color:'+ms.col+'">'+moodEffect(ms)+'</b><br><br>':'')+
+        moodLadderHTML(),
       /* ⛔ #244 - AND IT SAYS THE RATE, BECAUSE THE RULE WAS INVISIBLE.
          (User, 2026-08-25: *"Mood has option to normailise on global map too ...
          I think 1 per day for first distance, and 2 per day second distance"*.)
@@ -39713,10 +40002,23 @@ function worldTick(){
          one rung out and TWO a day from two, and the only place that was written
          down was a comment in the source. Derived off the same arithmetic, so the
          sentence and the drift cannot come apart. */
+      /* ⛔ #246 - THE RATE, AS ONE SENTENCE WITH THE NUMBER AND THE DESTINATION
+         IN IT. (User: *"replace second: Shifts toward 'Steady' by X (dynimac) per
+         day (fix grammar and add number from curent status)"*.)
+
+         ⛑ THE DESTINATION IS DERIVED AND IS NOT THE WORD "STEADY". `MOOD_NORM` is
+         `moodRung(0)`, i.e. whichever rung the neutral band is - today AT EASE, and
+         STEADY MARCH is the rung ABOVE it. Typing the user's own word would have
+         been a readout naming a place the drift does not go to, which is #102's
+         rule; naming the rung `MOOD_NORM` actually points at cannot come apart from
+         `passDays` however the ladder is re-cut.
+         ⚠ AND THE NUMBER IS THE ONE THIS COMPANY IS PAYING, not the rule in the
+         abstract: two rungs out drifts 2 a day and one rung out drifts 1, off the
+         same `Math.abs(rung - MOOD_NORM)` the tick itself uses. */
       x:(()=>{const d=Math.abs(moodRung(G.morale)-MOOD_NORM);
-        return d?'It walks back towards the middle by '+(d>1?'2':'1')+' a day from here. '+
-          'Only a spent mood decays.'
-        :'It is in the middle band and stays there until something moves it.';})(),
+        const home=(MOODSTATES[MOOD_NORM]||{}).n||'the middle';
+        return d?'Shifts toward '+home+' by '+(d>1?2:1)+' a day. Only a spent mood decays.'
+        :'It is in the '+home+' band and stays there until something moves it.';})(),
       act:'CLICK: throw them a party - '+feastCost()+' '+resName('food',feastCost())+'.'},
     /* #106 point 8: "when i hower on the health thing - you can show exactly
        how much health each unit has". Every body, one line, hp out of hpMax,
@@ -39805,8 +40107,15 @@ function worldTick(){
      clicking, so the two are wired in the same pass below. */
   const bindW=(el,inf)=>{
     el.onmouseenter=e=>{
+      /* ⚠ #246 - `nowrap` ON THE TITLE (*"If possible write the name of the
+         status in 1 line"*). `GRUMBLING RANKS` and `STEADY MARCH` are the two
+         longest rung names and both broke over two lines in a 290px tip, which
+         put the face on one row and half the name on the next. The box widens to
+         the longest title instead; `moveTip` measures the box rather than assuming
+         a width, so it still cannot run off the window. */
       TIP.innerHTML='<div style="font-family:var(--display);font-size:var(--fs5);color:'+inf.col+
-        ';margin-bottom:4px">'+inf.t+'</div><div style="margin-bottom:5px">'+inf.d+'</div>'+
+        ';margin-bottom:4px;white-space:nowrap">'+inf.t+'</div>'+
+        '<div style="margin-bottom:5px">'+inf.d+'</div>'+
         (inf.x?'<div style="font-style:italic;color:#a38652">'+inf.x+'</div>':'')+
         (inf.act?'<div style="margin-top:7px;padding-top:var(--p3);border-top:1px solid var(--e1);'+
           'font-family:var(--mono);font-size:var(--fs1);color:var(--g4);letter-spacing:.04em">'+

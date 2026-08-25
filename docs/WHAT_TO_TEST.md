@@ -26,6 +26,50 @@
 
 ---
 
+## 🚩 THE WHOLE STRIDE IS ONE CLICK  *(#246 · 2026-08-25 · build log 8f.270)*
+
+**Twelve asks. Two of them were things that were built and unreachable by the path you actually
+take.**
+
+### 1. Both action points, in one click on the map
+
+Pick anybody. **Without touching the MOVE card**, the board should show two washes: the near one you
+always had, and a lighter one beyond it. **Clicking a hex in the lighter wash walks the whole way and
+spends both actions.** The pips on the plaque blink **one** while you point at a near hex and **two**
+while you point at a far one.
+
+⚡ **A bug would be**: the far wash only appearing after you click MOVE, a far click that moves you
+but leaves an action, or the pips blinking two on a hex one step away.
+
+### 2. The red arcs only price steps you can take
+
+Standing at the top of a fight, far from the enemy, **there should be no red at all**. Walk into the
+line and the arcs appear on the hexes you could step into. *(Measured: 27 arcs at the Snare's opening,
+none of them on ground that body could reach this turn.)*
+
+### 3. The crew list is a name and two marks
+
+Narrower, no personality line, and **the level sits on the corner of the portrait**. The stash on the
+right got the width. ⚠ The mending / scar / injury-clock line is **still there on purpose** - it is a
+countdown rather than a description, and it is the only thing on that list that is running out. Say so
+if you want it gone too.
+
+### 4. Everything else, quickly
+
+- the action pips blink **slower** (2.8s), and MOVE blinks now where it did not;
+- hovering an enemy opens their card **sooner** (1400ms, was 2200);
+- the italic line on the target card (*"Range 5. Badly hampered inside a scrum."*) is **gone** - it
+  described your own weapon on a card about them. The same sentence is on the skill's own card;
+- the sheet's race and class chips are **marks with no words** (hover still opens the full lore);
+- a stash row says its **tier**: `COMMON · BAG`, `RARE · ARMOUR`;
+- **LET THEM GO** says only that, and its confirm has no small print;
+- **✂ BREAK**, in the same colour as LET THEM GO;
+- **JOURNAL** replaces "what happened to them";
+- the mood hover drops the flavour line and says **"Shifts toward AT EASE by 2 a day."** ⚠ It names
+  AT EASE and not *Steady* deliberately: AT EASE is where the drift actually goes.
+
+---
+
 ## 🚩 THE MIREHARES EXIST NOW, AND SO DOES THE BAG  *(#245 · 2026-08-25 · build log 8f.269)*
 
 **Eleven asks. Three of them turned out to be things that were BUILT AND UNREACHABLE**, which is why
