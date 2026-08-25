@@ -26,6 +26,57 @@
 
 ---
 
+## 🚩 THREE POOLS, THREE MARKS, AND THREE THINGS THAT WERE ALREADY THERE  *(#247 · 2026-08-25 · build log 8f.271)*
+
+**Fourteen asks. Three of them were features that had shipped and could not be seen**, which is the
+same finding as #245's and it is the second batch running.
+
+### 1. The bars, on the battle card and on the sheet
+
+Open a fight and look bottom left; then open the company sheet. Each pool is now **one row**: a mark
+(⛨ armour · ♥ hitpoints · the mood's own face), a taller bar, and **the figures written inside it**.
+The armour class (LIGHT / MEDIUM / HEAVY) and the mood rung (HAPPY / SHAKEN / ...) are the words
+inside their own bars, and they keep their hovers.
+
+⚡ **On the battle card the health bar is RED on everybody now**, yours included. ⚠ **The bars over
+the heads on the field are untouched** - yours are still blue, theirs red, allies gold - which is
+what you asked for in the same breath.
+
+⚡ **A bug would be**: a figure you cannot read against its own fill, a bar that clips a letter, or a
+blue health bar on the card.
+
+### 2. The far half of the stride is an offer, not a hint
+
+Pick anybody without clicking MOVE. Point at a hex in the **lighter** wash: it should light up with
+the same ivory ring a near hex does, only dimmer. **It was not doing that** - `.lit` was refused on far
+ground by a rule written when a far hex needed two clicks, and #246 made it one. The wash itself is
+also **less faint** than it was (.11 → .17 dry, .15 → .22 wet).
+
+### 3. UNDO after a full move
+
+Spend **both** actions walking. The turn **waits** now, with ✋ UNDO lit, until you press END TURN or
+take the step back. Before this it handed over after 140ms and the offer went with it, so a two-action
+move could never be undone at all.
+
+### 4. OPTIONS, and a menu you can find in a fight
+
+The menu has an **Options** row and the two sound switches live there. They are gone from the corner
+of every screen - including the battle board, where the pair was standing on two playable hexes.
+**☰ MENU is under ? RULES on the battle log** (it existed before, at the bottom left, underneath the
+character card, where nothing could be clicked).
+
+### 5. Everything else, quickly
+
+- the roster tile is a **portrait, a class mark and a clock**: no name, no race mark (the coloured
+  rail still says the race). The name is on the tile's hover. **176 → 148**, the 28 to the stash;
+- mending reads **♥ −9** instead of *mending 9*;
+- **CLICK TO WEAR** over the stash;
+- **0 KILLED** instead of *nothing killed yet*;
+- the off-hand slot no longer explains what a one-handed weapon would buy you;
+- **An Unusual Coin breaks down for one crown.** It is a coin.
+
+---
+
 ## 🚩 THE WHOLE STRIDE IS ONE CLICK  *(#246 · 2026-08-25 · build log 8f.270)*
 
 **Twelve asks. Two of them were things that were built and unreachable by the path you actually
