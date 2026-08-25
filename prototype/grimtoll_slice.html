@@ -496,6 +496,15 @@ button:disabled{cursor:not-allowed}
   height:15px;line-height:1}
 #bStats .pip{font-size:var(--fs5);line-height:1;color:#2c3b3d}
 #bStats .pip.on{color:var(--gold);text-shadow:0 0 6px rgba(217,189,126,.45)}
+/* #244 - the actions the picked card would take. SLOW on purpose (the user's own
+   word): the two other rhythms on this screen are 1.1s - the acting body's breath
+   and the parting-swing warning - and a third at the same tempo would read as part
+   of them. 1.9s is a different kind of clock. */
+#bStats .pip.pay{animation:appay 1.9s ease-in-out infinite}
+@keyframes appay{0%,100%{color:var(--gold);text-shadow:0 0 6px rgba(217,189,126,.45)}
+                 50%{color:#6b5330;text-shadow:none}}
+@media (prefers-reduced-motion:reduce){
+  #bStats .pip.pay{animation:none;color:#c07a2c;text-shadow:0 0 6px rgba(192,122,44,.5)}}
 /* #102 point 1 - nerve joined the column, so there is nothing beside the
    bars any more and this row is the column. Kept as its own box because
    the plaque's flex gap is 6px and the three measures want 2px. */
@@ -546,6 +555,13 @@ button:disabled{cursor:not-allowed}
    here for that reason: it is the blows-left rule, and nerve is not spent
    in blows. */
 #bState{display:flex;flex-direction:column;gap:2px;cursor:help}
+/* #244 - the MOOD row answers when a working is paid for. Short and once: this
+   is a receipt landing, not a state, and the two standing rhythms on this screen
+   are 1.1s loops. See `nerveFlash`. */
+#bState.mflash{animation:mflash .62s ease-out 1}
+@keyframes mflash{0%{background:rgba(226,143,180,.34)}
+                  100%{background:rgba(226,143,180,0)}}
+@media (prefers-reduced-motion:reduce){#bState.mflash{animation:none}}
 #bState .statLine>span:last-child{font-weight:600;letter-spacing:.04em}
 #bPlq .bar.nrv::after{display:none}
 #bPlq .bar.nrv::before{content:'';position:absolute;inset:0;pointer-events:none;
@@ -781,10 +797,24 @@ button:disabled{cursor:not-allowed}
    the hex, not on the sprite, so they read at a glance across the board. */
 /* `.facer` (the direction wedge) was removed — the back-arc ring below already
    shows which way they are looking, and two marks per token was clutter. */
-.backer{position:absolute;left:50%;top:50%;width:22px;height:22px;margin:-11px 0 0 -11px;
-  border-radius:50%;border:2.5px solid transparent;
-  border-bottom-color:rgba(224,132,120,.85);
-  filter:drop-shadow(0 0 2px #000);pointer-events:none}
+/* ⛔ #244 - `.backer` IS DELETED, AND IT IS #244's OWN ASK 3 PAYING FOR ASK 16.
+   (User, arrows at the pink crescent on three ogres: *"and if we are doing proper
+   hex border in front, we can delete this thing (i feel it is hardly readible for
+   a new players)"*.)
+   ⛑ HE IS RIGHT ABOUT WHY IT WAS HARD TO READ: a 22px circle with ONE side of
+   its border painted, rotated to the body's facing, sitting UNDER a 33px sprite -
+   so what a new player sees is a pink smear on a leg, and the thing it is trying
+   to say (which three hexes are the back) has to be inferred from the arc's
+   opening. The front border `drawZoc` now draws says the same fact on the GROUND,
+   at hex size, in the place the decision is made.
+   ⚠ NOTHING ELSE IS LOST. The back arc's PAYOFF still has its own mark: while a
+   move is in hand, `.hex.stabhere` puts a ✦ on every reachable hex that lands in
+   somebody's back, which is the answer to *where do I stand* rather than a picture
+   to work it out from. See the `back` whisper, rewritten in the same edit.
+   ⚠ `backRing` IS KEPT AND RETURNS null. It is the one place that knew how the
+   arc was built (rotate 60deg a facing, minus 90 for the border side, and drawn on
+   the TAIL hex of a great beast) and that is worth more standing than as a line in
+   a diff. */
 /* when a positional attack is selected, the hexes that would land in a back
    arc say so out loud */
 .hex.stabhere .hin::after{content:'✦';position:absolute;left:0;right:0;top:2px;text-align:center;
@@ -4637,6 +4667,9 @@ body:has(#battle.on) #audioBox button{font-size:var(--fs2);padding:var(--p1) var
 .moodwhy .mwup b,.moodwhy .mwup i{color:#8ca35a}
 .moodwhy .mwdn{color:#8fa5a2}
 .moodwhy .mwdn b,.moodwhy .mwdn i{color:#c15d55}
+/* #244 - the sentence over the four rows, in the approve green the ▲ and the
+   underline already use, so the caption and the rows are visibly one offer. */
+.statnag{color:#8ca35a;margin-bottom:var(--p2);display:block}
 .itl.spend{cursor:pointer;border-bottom-color:#8ca35a}
 .itl.spend .tv:after{content:' ▲';color:#8ca35a;font-size:var(--fs1)}
 .itl.spend:hover{background:#1e1810}
@@ -5523,6 +5556,20 @@ body:has(#world.on) #audioBox button{font-size:var(--fs2);padding:var(--p1) var(
 #brushBox{position:absolute;right:10px;top:254px;z-index:22;display:none;
   flex-direction:column;gap:2px;width:112px}
 #brushBox.on{display:flex}
+/* #244 - the kit bench sits under the brush. It is TALLER than the brush by two
+   rows and no wider, so the stack's own 10px right rail is unchanged and nothing
+   underneath it moves; `bottom` rather than `top` because the list above it grows
+   downward as the brush gains words and this one has to stay off the FEEDBACK
+   chip in the corner. */
+#kitBox{position:absolute;right:10px;top:500px;z-index:22;display:none;
+  flex-direction:column;gap:3px;width:170px}
+#kitBox.on{display:flex}
+#kitBox .bttl{font-family:var(--mono);font-size:var(--fs1);letter-spacing:.12em;color:#7d8a54}
+#kitBox button,#kitBox select{background:rgba(20,26,18,.92);border:1px dashed #3d5a3d;
+  color:#8a9a74;font-family:var(--mono);font-size:var(--fs1);letter-spacing:.06em;
+  padding:var(--p1) var(--p2);cursor:pointer;text-align:left;width:100%}
+#kitBox button.on,#kitBox select.on{border-style:solid;border-color:#8ca35a;color:#c3d18a}
+#kitBox button:hover,#kitBox select:hover{background:#2c4a3a;color:#c3d18a}
 #brushBox .bttl{font-family:var(--mono);font-size:var(--fs1);letter-spacing:.12em;color:#7d8a54}
 #brushBox button{background:rgba(20,26,18,.92);border:1px dashed #3d5a3d;color:#8a9a74;
   font-family:var(--mono);font-size:var(--fs1);padding:var(--p1) var(--p2);text-align:left;
@@ -6763,6 +6810,9 @@ body:has(#world.on) #menuBtn{left:auto;right:10px;top:8px;bottom:auto;z-index:30
      boot, shown by syncTest. An armed brush eats the hex click before the
      hand does - see handHex. -->
 <div id="brushBox"></div>
+<!-- #244 · the dev kit bench: an artifact or a skill, armed, then clicked onto a
+     body. Practice fights only; filled and wired at boot, shown by syncBrush. -->
+<div id="kitBox"></div>
 <!-- #226 · which build this is. Filled from BUILD_ID in the script; the
      working file reads "dev" and tools\build_site.ps1 stamps a real one. -->
 <div id="buildTag" title="which build this is - name it in a bug report"></div>
@@ -7978,7 +8028,7 @@ function setPace(v,save){
    simRestore and by the ⚙ going off. None of the four can reach a run:
    every reader asks SIM.on or TEST.on first. */
 const SIM={on:false,snap:null,cap:null,fight:'clash',comp:'start',ground:'as',rule:'straight',
-  foes:'as',ordYou:'hand',ordFoe:'own',pkOpen:null,brush:null};
+  foes:'as',ordYou:'hand',ordFoe:'own',pkOpen:null,brush:null,kit:null};
 function winNow(){
   if(!B||B.won!==null)return;
   autoStop();
@@ -8014,6 +8064,116 @@ function devPaint(c,r){
   B.terr[k]=SIM.brush;
   paintTerrain();render();
 }
+/* ═══ ⛔ #244 · THE DEV KIT BENCH ═══════════════════════════════════════════
+   (User, 2026-08-25, on the board brush: *"In dev mod cool - i can add terrain
+   objects. But i also want to add artifacts and skills to the units. Can you add
+   it"*.)
+
+   ⛑ IT IS THE BRUSH'S OWN SHAPE, POINTED AT BODIES INSTEAD OF GROUND. Arm a
+   thing, click a body, it lands - same panel, same `handHex` interception, same
+   authority-hands-back rule when the ⚙ goes off. #242 already put any artifact on
+   any body from the practice-field CREW BENCH; what it could not do is any of it
+   MID-FIGHT, which is where a thing is actually judged.
+
+   ⛔ THE SKILL LIST IS DERIVED, WHICH IS #137's RULE AND ALSO THE ONLY WAY IT
+   STAYS TRUE. Every working in `SPELLS`, every race skill in `RACESKILL`, and every
+   act carried by every body every `FOE_BUILD` builder can field - so the day
+   somebody writes a new monster with a new verb it is on this list without being
+   told. ⚠ Built through `seededly` and `devFoeUnits`, the same pair #242's foe
+   catalogue uses, so building the list cannot move a rolled wall or a rolled
+   personality in the fight standing behind it.
+   ⚠ AND AN ACT IS COPIED, NEVER SHARED. `u.acts` rows carry per-body state
+   (`cool` counts down on the object), so handing two bodies the same row would tick
+   one cooldown for both. Acts are plain data - the same fact `simStart`'s JSON
+   snapshot of `G` relies on - so a JSON round trip is a faithful copy.
+
+   ⛔ GEAR GOES THROUGH THE ROSTER AND THEN THROUGH `unitFrom`, BECAUSE A WEAPON
+   IS NOT A NUMBER. Putting a sword on a body has to rewrite its CARDS, its reach,
+   its damage bonus, its armour ceiling and whether it counts as a shooter, and
+   `unitFrom` is the one place that knows all of it. So the item is written onto the
+   roster row and the body is rebuilt - and then the DERIVED half is copied back
+   over the live one while the VOLATILE half (where it stands, what it has left,
+   what it is carrying) stays where it is.
+   ⚠ THE LIST BELOW IS THE CONTRACT AND IT IS EXPLICIT ON PURPOSE. A blanket copy
+   would put a fresh body's full hitpoints and untouched morale onto somebody
+   halfway through a fight; the inverse - listing what to KEEP - is three times as
+   long and goes stale silently. This is a dev tool: if a field is missing here it
+   is one line, and nothing in a run can reach it.
+   ⚠ ONLY YOUR OWN ROSTER TAKES GEAR. A foe has no `member()` row to write to and
+   no `eq` to write into; skills go to either side. */
+const KIT_KEEP=['acts','mskill','dodgeBase','dmgBonus','morBonus','spellPow','flankPow',
+  'speed','armourMax','hpMax','moraleMax','spellRange','caster','bow','kind','actionsMax'];
+let DEVKIT_ACTS=null;
+function devActCatalog(){
+  if(DEVKIT_ACTS)return DEVKIT_ACTS;
+  const out=[],seen={};
+  const add=(a,from)=>{if(!a||!a.n||a.move||seen[a.n])return;seen[a.n]=1;
+    out.push({n:a.n,from:from,src:a});};
+  Object.keys(SPELLS).forEach(k=>add(SPELLS[k],'a working'));
+  Object.keys(RACESKILL).forEach(k=>add(RACESKILL[k],k));
+  try{Object.keys(FOE_BUILD).forEach(k=>{
+    devFoeUnits(k).forEach(u=>(u.acts||[]).forEach(a=>add(a,u.name)));});}catch(e){}
+  out.sort((a,b)=>a.n<b.n?-1:a.n>b.n?1:0);
+  return DEVKIT_ACTS=out;
+}
+function devKitAt(c,r){
+  const kit=SIM.kit;if(!kit||!B)return;
+  const u=B.units.find(x=>!x.dead&&!x.fled&&x.col===c&&x.row===r);
+  if(!u){say('[KIT] Nobody is standing there.');return;}
+  if(kit.t==='act'){
+    const row=devActCatalog().find(x=>x.n===kit.k);
+    if(!row)return;
+    if((u.acts||[]).some(a=>a.n===row.n)){say('[KIT] '+u.name+' already has '+row.n+'.');return;}
+    u.acts=(u.acts||[]).concat([JSON.parse(JSON.stringify(row.src))]);
+    say('[KIT] '+u.name+' now has '+row.n+'.');
+  }else{
+    const g=GEAR[kit.k];if(!g)return;
+    const p=(u.side==='you'&&typeof member==='function')?member(u.id):null;
+    if(!p||!p.eq){say('[KIT] '+u.name+' has no kit to change. Skills work on anybody.');return;}
+    p.eq[g.slot]=kit.k;
+    const fresh=unitFrom(p);
+    KIT_KEEP.forEach(k=>{if(fresh[k]!==undefined)u[k]=fresh[k];});
+    /* a smaller harness cannot hold more than it is, and a shorter body cannot
+       hold more blood than it has: clamp the live pools onto the new ceilings. */
+    u.armour=Math.min(u.armour,u.armourMax);
+    u.hp=Math.min(u.hp,u.hpMax);
+    u.morale=Math.min(u.morale,u.moraleMax);
+    u.actions=Math.min(u.actions,u.actionsMax);
+    say('[KIT] '+u.name+' takes the '+g.n.toLowerCase()+'.');
+  }
+  render();
+}
+function syncKit(){
+  const bx=$('kitBox');if(!bx)return;
+  if(!bx.childElementCount){
+    const gear=Object.keys(GEAR).filter(k=>GEAR[k].slot)
+      .sort((a,b)=>GEAR[a].slot<GEAR[b].slot?-1:GEAR[a].slot>GEAR[b].slot?1:
+                   (GEAR[a].n<GEAR[b].n?-1:1));
+    bx.innerHTML='<span class="bttl">⚙ KIT</span>'+
+      '<button data-kt="off">off · your hand plays</button>'+
+      '<select data-kt="gear"><option value="">an artifact...</option>'+
+        gear.map(k=>'<option value="'+k+'">'+GEAR[k].slot+' · '+GEAR[k].n+'</option>').join('')+
+      '</select>'+
+      '<select data-kt="act"><option value="">a skill...</option>'+
+        devActCatalog().map(a=>'<option value="'+a.n.replace(/"/g,'')+'">'+a.n+
+          ' · '+a.from+'</option>').join('')+
+      '</select>';
+    bx.querySelector('[data-kt="off"]').onclick=e=>{e.stopPropagation();
+      SIM.kit=null;syncKit();};
+    bx.querySelectorAll('select').forEach(sel=>{
+      sel.onclick=e=>e.stopPropagation();
+      sel.onchange=e=>{e.stopPropagation();
+        SIM.kit=sel.value?{t:sel.dataset.kt,k:sel.value}:null;
+        syncKit();};});
+  }
+  const on=TEST.on&&SIM.on&&$('battle').classList.contains('on');
+  bx.classList.toggle('on',on);
+  bx.querySelector('[data-kt="off"]').classList.toggle('on',!SIM.kit);
+  bx.querySelectorAll('select').forEach(sel=>{
+    if(!SIM.kit||SIM.kit.t!==sel.dataset.kt)sel.value='';
+    sel.classList.toggle('on',!!SIM.kit&&SIM.kit.t===sel.dataset.kt);});
+  if(!TEST.on)SIM.kit=null;                /* authority hands back, like the brush */
+}
 function syncBrush(){
   const bx=$('brushBox');if(!bx)return;
   if(!bx.childElementCount)
@@ -8024,6 +8184,7 @@ function syncBrush(){
     bt.classList.toggle('on',(bt.dataset.br||null)===SIM.brush);});
   bx.classList.toggle('on',TEST.on&&SIM.on&&$('battle').classList.contains('on'));
   if(!TEST.on)SIM.brush=null;              /* authority hands back, like AUTO */
+  syncKit();                               /* #244 - the two panels rise together */
 }
 function syncTest(){
   const t=$('testBtn'),w=$('winBtn'),l=$('lintBtn'),wp=$('wipeBtn');
@@ -9534,9 +9695,23 @@ const GEAR={
            d:'Twenty more, fletched properly. Needs a hand to hang from, which a bow does not spare.'},
   /* the emergency answer: a blade you can get to when something is already
      inside your reach and the bow is useless */
-  offhand:{rarity:'common',n:'Off-hand dirk',   slot:'off',hit:+6,emergency:true,
-           d:'Short, ugly, and drawn with the wrong hand. When something is already on top of '+
-             'you it is the only thing you own that still works.'},
+  /* ⛔ #244 - IT DOES TWO DIFFERENT THINGS AND WHICH ONE DEPENDS ON THE OTHER HAND.
+     (User, 2026-08-25: *"of hand dirk increse chance to hit with you main weopon by 5
+     and ads 5 damage (if you are melee). And adds option to hit melee (for smaller
+     then tipical normal weapon) if you are range"*.)
+     ⛑ THAT IS ONE ITEM WITH ONE IDEA - *a second blade you can get to* - and the
+     hand it is beside decides what that is worth. On a swordsman it is the hand that
+     finishes what the first one started: +5 to hit and +5 damage, on the MAIN weapon,
+     and no separate card. On a bow it is the only thing that works at reach 1, so it
+     is a card (see `OFF-HAND DIRK` in the act builder), and the flat bonuses do not
+     apply because a bow does not stab with it.
+     ⚠ `meleeHit`/`meleeDmg` AND NOT `hit`/`dmg`. The plain fields are read by every
+     body that wears the piece; these two are read in `unitFrom` only where the main
+     weapon has no `range`, which is the one place that question is answered. */
+  offhand:{rarity:'common',n:'Off-hand dirk',   slot:'off',meleeHit:+5,meleeDmg:+5,emergency:true,
+           d:'Short, ugly, and drawn with the wrong hand. In the other hand it is the '+
+             'second half of a blow; behind a bow it is the only thing you own that still '+
+             'works when something is already on top of you.'},
   focus  :{rarity:'common',n:'Chalk-and-cord rod',slot:'off',windsCut:4,d:'Something to hold onto while you do it. Spells cost 4 less of your own mood.'},
 
   /* Trinkets carry a small flat bonus, some hitpoints, and often a clause
@@ -12446,6 +12621,83 @@ function paintedSpriteKey(kind,side,opt){
   }
   return k&&BATTLE_ART[k]?k:null;
 }
+/* ═══ ⛔ #244 · A HURT BODY WEARS IT ════════════════════════════════════════
+   (User, 2026-08-25: *"I want some blood to stay on unit icons, when they got
+   damage. The more damage they get - the more blood"*.)
+
+   ⛑ IT GOES INTO THE PICTURE AND NOT ON TOP OF IT, WHICH IS THE WHOLE DESIGN
+   DECISION HERE. The obvious build is an overlay element masked to the sprite,
+   and it comes apart the first time anything moves: `.usp` lunges, recoils,
+   sways, shudders, flips on `--flip` and rotates when it routs, and a sibling
+   layer would sit still through all six. One `<img>` means the blood is turned,
+   thrown and knocked about with the body for free, and nothing downstream has to
+   be taught it exists.
+
+   ⛑ `source-atop` IS THE MASK, AND IT IS FREE. Drawing the specks with that
+   composite keeps only the pixels that land on something already painted, so the
+   blood cannot spill past the silhouette - no mask image, no second decode, no
+   alpha maths. Same trick the item icons would need and do not have.
+
+   ⚠ IT IS ASYNCHRONOUS AND THE CLEAN PICTURE IS WHAT SHOWS UNTIL IT IS NOT. A
+   painted sprite is a data URI, so it has to go through an `Image` before a canvas
+   can read it; the first render after a body crosses a tier returns the unhurt
+   sprite and the `onload` calls `render()` once. That is the same shape as the
+   terrain's trees, whose own `onload` repaints the ground.
+   ⚠ SEEDED OFF THE KEY, so the specks do not crawl about between renders - and
+   the key carries the TIER, so a body that takes another wound gets a new pattern
+   rather than the old one with more added.
+   ⚠ AND IT IS CACHED PER PICTURE, NOT PER BODY: two lurchers at the same tier
+   share one bitmap. Three tiers times the sprite keys in a fight is a few dozen
+   entries, which is why this can be a plain object with no eviction. */
+const SPRHURT={};
+/* how badly this one is carrying it, as a tier rather than a fraction: three
+   steps is what reads at 33px, and a continuous value would rebuild the picture
+   on every hitpoint. */
+function woundTier(u){
+  if(!u||!u.hpMax||u.hp===undefined)return 0;
+  const lost=1-Math.max(0,u.hp)/u.hpMax;
+  return lost<=0.15?0:lost<=0.40?1:lost<=0.70?2:3;
+}
+const BLOOD_COATS=[[],
+  [[4,'rgba(122,31,34,.72)',1.6]],
+  [[9,'rgba(122,31,34,.80)',2.0],[3,'rgba(61,16,18,.75)',2.6]],
+  [[15,'rgba(140,36,38,.86)',2.4],[7,'rgba(61,16,18,.85)',3.2]]];
+function spriteHurt(sp,tier){
+  if(!tier||!sp||!sp.src||!sp.key)return sp;
+  const k=sp.key+'|w'+tier;
+  const got=SPRHURT[k];
+  if(got)return got==='pending'?sp:got;
+  SPRHURT[k]='pending';
+  const im=new Image();
+  im.onerror=()=>{SPRHURT[k]=sp;};
+  im.onload=()=>{
+    try{
+      const cv=document.createElement('canvas');
+      cv.width=im.naturalWidth||sp.w;cv.height=im.naturalHeight||sp.h;
+      const c=cv.getContext('2d');
+      c.drawImage(im,0,0);
+      /* the mask: everything below this line lands on painted pixels only */
+      c.globalCompositeOperation='source-atop';
+      let s=0;for(let i=0;i<k.length;i++)s=(s*31+k.charCodeAt(i))>>>0;
+      const rnd=()=>((s=(s*1103515245+12345)>>>0)/4294967296);
+      const scale=cv.width/(sp.w||cv.width);
+      BLOOD_COATS[tier].forEach(coat=>{
+        c.fillStyle=coat[1];
+        for(let i=0;i<coat[0];i++){
+          /* the upper two thirds: a body bleeds from where it was hit, and a
+             speck on the boots reads as mud */
+          const x=rnd()*cv.width, y=rnd()*cv.height*0.78;
+          const r=(coat[2]*(0.55+rnd()*0.9))*scale;
+          c.beginPath();c.ellipse(x,y,r,r*(0.7+rnd()*0.7),rnd()*3.1,0,7);c.fill();
+        }
+      });
+      SPRHURT[k]={src:cv.toDataURL(),w:sp.w,h:sp.h,key:k};
+      if(typeof B!=='undefined'&&B&&typeof render==='function')render();
+    }catch(e){SPRHURT[k]=sp;}
+  };
+  im.src=sp.src;
+  return sp;
+}
 function sprite(kind,side,opt){
   opt=opt||{};
   const artKey=paintedSpriteKey(kind,side,opt);
@@ -12453,7 +12705,10 @@ function sprite(kind,side,opt){
     kind+'|'+side+'|'+(opt.leader?'L':'')+(opt.caster?'C':'')+(opt.bow?'B':'')+
       (opt.gills?'W':'');
   if(SPR[key])return SPR[key];
-  if(artKey){SPR[key]=BATTLE_ART[artKey];return SPR[key];}
+  /* #244 - a COPY, and it carries its own key. `spriteHurt` needs a stable name
+     for the picture it is making a bloodied variant of, and writing `.key` onto
+     the shared `BATTLE_ART` row would put a rendering detail into the art table. */
+  if(artKey){SPR[key]=Object.assign({},BATTLE_ART[artKey],{key:key});return SPR[key];}
   const DIM={human:[26,38],archer:[25,37],mage:[26,38],ratkin:[21,29],bruiser:[26,33],
     ogre:[36,42],wyrm:[42,40],wyrmbody:[40,30],cub:[26,24],dog:[28,22],
     mirehare_f:[30,31],mirehare_m:[34,25],
@@ -12654,7 +12909,7 @@ function sprite(kind,side,opt){
     c.fillStyle='#35e0c8';
     c.fillRect(nx,ny,4,1);c.fillRect(nx,ny+2,4,1);c.fillRect(nx+1,ny+4,3,1);
   }
-  const out={src:cv.toDataURL(),w:Math.round(W*S),h:Math.round(H*S)};
+  const out={src:cv.toDataURL(),w:Math.round(W*S),h:Math.round(H*S),key:key};
   SPR[key]=out;return out;
 }
 
@@ -12820,11 +13075,15 @@ function arcOn(attacker,target){
    hex the ring has to sit on for the opening to point at ground you can
    actually walk to. */
 function backRing(u){
-  if(!u||u.facing===undefined||u.noArc)return null;
-  const bk=document.createElement('span');bk.className='backer';
-  bk.style.transform='rotate('+(u.facing*60-90)+'deg)';
-  if(u.side==='you')bk.style.borderBottomColor='rgba(160,140,120,.5)';
-  return bk;
+  /* ⛔ #244 - IT DRAWS NOTHING. See the deleted `.backer` rule in the stylesheet
+     for why, and for what says this instead. The body is kept because it is the
+     only written record of how the arc was constructed:
+       `rotate(u.facing*60 - 90)` on a circle with `border-bottom-color` set,
+       drawn on the TAIL hex of a great beast rather than her head,
+       and dimmed to `rgba(160,140,120,.5)` on your own side, where it was a
+       warning rather than an offer.
+     Two lines bring it back. */
+  return null;
 }
 /* WHICH WAY TO TURN THE PAINTING. Both of the Fen-Mother's pictures are drawn
    for a body lying head-west, hindquarters-east: the head piece faces west
@@ -13224,6 +13483,24 @@ function shotState(a,d,act){
    with it (user: "less plus every turn, and trim the penalties too").
    tookHit −11 → −5, allyDied −18 → −14, nearDeath −26 → −15. */
 const START_NERVE=0.78;   /* the neutral, as a fraction of the ceiling */
+/* ⛔ #244 · AND YOUR OWN SIDE OPENS LOWER THAN THAT.
+   (User, 2026-08-25: *"a bit lower start of mood for your party (now it is two
+   hiugh) - maybe 5-10% lower"*.)
+
+   ⛑ IT IS A SEPARATE CONSTANT BECAUSE `START_NERVE` IS ALSO THE FOES'. The foe
+   templates build their opening nerve off the same figure (`t.mor*START_NERVE`),
+   so moving the one number would have taken 7% off both lines and changed nothing
+   about the thing being complained about. The ask names your party.
+   ⚡ AND WHAT MADE IT TOO HIGH IS #243, ONE ENTRY AGO. Before it, a company's
+   mood could only ever SUBTRACT; now HIGH SPIRITS adds 15 on top of the neutral,
+   so a well-fed company was opening every fight on `It rocks` - the top rung, the
+   one the ladder's own note says is *"reachable by killing, by COMMAND or by a
+   rally, and NOT by standing still"*. At .71 the same company opens one rung
+   down with the top still 6 points away.
+   ⚠ 7% AND NOT 10: the band he named is 5-10, and the clamp under this figure
+   is `moraleMax*.3`, so a body that is owed wages and standing in a bad company
+   is already near a floor. Measured on the shipped Captain, AT EASE: 75 -> 68. */
+const START_NERVE_YOU=0.71;
 const MORALE={ownKill:30,allyKill:10,tookHit:-5,allyDied:-14,nearDeath:-15,
   recover:8,   /* MOST it may climb back toward the start in one quiet turn */
   settle:4};   /* MOST it may sink back toward the start in one quiet turn */
@@ -13722,7 +13999,11 @@ const moodFace=amt=>{
   const bars=a>=22?'▲▲▲':a>=12?'▲▲':'▲';
   return (amt>0?'◡ ':'◠ ')+(amt>0?bars:bars.replace(/▲/g,'▼'));
 };
-function mor(u,amt,why){
+/* ⚠ #244 - `quiet` SKIPS THE GENERIC FLOAT AND NOTHING ELSE. It has exactly one
+   caller: `payStrain`, which prints its own figure in the caster's own colour.
+   Two marks rising off one body for one event is the receipt rule arriving on the
+   board, and it is why the price of a working could not be seen - see there. */
+function mor(u,amt,why,quiet){
   if(u.dead||u.fled)return;
   const was=u.state,wasRung=ladderAt(u);
   u.morale=clamp(u.morale+amt,0,u.moraleMax);restate(u);
@@ -13739,7 +14020,7 @@ function mor(u,amt,why){
     const t=AU.ctx?AU.ctx.currentTime:0;
     if(!AU.rungAt||t-AU.rungAt>.14){AU.rungAt=t;sfx(nowRung>wasRung?'rung_down':'rung_up');}
   }
-  morFloat(u,amt);
+  if(!quiet)morFloat(u,amt);
   if(u.state!==was){
     if(u.state==='routed'){say(u.name+' breaks. White flag, and gone.');sfx('rout');}
     else if(was==='routed')say(u.name+' steadies. Back in the line.');
@@ -13907,6 +14188,15 @@ function unitFrom(p){
     moved:false,rallyBuff:0};
   if(off&&off.dodge)u.dodgeBase+=off.dodge;
   if(off&&off.hit)u.mskill+=off.hit;
+  /* ⛔ #244 - THE OFF HAND'S MELEE-ONLY FIGURES, read here and nowhere else.
+     `main.range` is the one question that decides which half of the off-hand
+     dirk this body gets: a bow cannot stab with it, so it is a card instead
+     (see the act builder). `dmgBonus` is added to every non-arcane blow, which
+     is right - the second blade helps whatever the first hand is swinging. */
+  if(off&&!(main&&main.range)){
+    if(off.meleeHit)u.mskill+=off.meleeHit;
+    if(off.meleeDmg)u.dmgBonus+=off.meleeDmg;
+  }
   /* a trinket can sharpen the eye too — the ground-glass eyes are gear, not a stat */
   /* ⚠ #141 - AND `dodge` WAS THE HALF THAT WAS NEVER WIRED. `hit` has been
      read off a trinket since the ground-glass eyes went in; `dodge` was read
@@ -13975,7 +14265,7 @@ function unitFrom(p){
   /* ⛔ #243 - `moodFx().start` AND NOT `Math.min(0,G.morale)`. The old line
      could only ever SUBTRACT, so the two happy rungs of MOODSTATES were
      decoration: read the note on that table. */
-  u.morale=clamp(Math.round(u.moraleMax*START_NERVE)+(moodFx().start||0)+
+  u.morale=clamp(Math.round(u.moraleMax*START_NERVE_YOU)+(moodFx().start||0)+
       (tr(u,'startMor')||0)+relicSum('coMor')-(u.owedBite||0),
     u.moraleMax*.3,u.moraleMax);
   u.morale0=u.morale;      /* the magnet. See morBase(). */
@@ -14047,7 +14337,10 @@ function unitFrom(p){
     note:'He has no weapon. This is going about as well as you would think.'});
   /* THE EMERGENCY BLADE — the whole point of spending a shooter's second hand
      on a knife instead of arrows. A bow is useless at reach 1; this is not. */
-  if(off&&off.emergency)acts.push({k:'dirk',n:'OFF-HAND DIRK',cost:1,reach:1,
+  /* ⛔ #244 - ONLY BEHIND A WEAPON THAT CANNOT ANSWER AT REACH 1. On a melee main
+     the dirk is `meleeHit`/`meleeDmg` on the blow you were already swinging, not a
+     second, worse card nobody would ever pick. See the GEAR row. */
+  if(off&&off.emergency&&main&&main.range)acts.push({k:'dirk',n:'OFF-HAND DIRK',cost:1,reach:1,
     dmg:[10,15],am:.35,ft:.50,
     note:'Reach 1, and it does not care that your other weapon is a bow. For when '+
       'something is already on top of you.'});
@@ -18089,10 +18382,34 @@ function strainCost(u,a){
   if((u.castsThisTurn||0)>=1)w=Math.round(w*1.6);
   return Math.max(2,Math.round(w));
 }
+/* ⛔ #244 · AND IT IS SAID ONCE, LOUDLY, IN THE PLACE THE NUMBER LIVES.
+   (User, 2026-08-25: *"i still don't see, how mage morale decrease after magic
+   use"*.)
+
+   ⛑ IT WAS BEING SAID TWICE AND THAT IS WHY IT COULD NOT BE READ. `mor()` floats
+   its own `moodFace` for any drop of five or more - `◠ ▼▼` in orange - and this
+   function then floated `−5 mood` in purple beside it. Two marks, off one body, in
+   the same frame, both small, both under a spell's flight animation. Measured on
+   Marrow's WILL-KICK: morale 58 -> 53 and the plaque's nerve bar 71.6% -> 65.4%,
+   i.e. the game WAS charging him and the screen was saying so in the least legible
+   way it had.
+   ⛑ SO: ONE FLOAT, FULL SIZE, in the caster's own pink (`#e28fb4` is what
+   `gathering`, `marked` and a caster's sprite rim already speak), and the plaque's
+   MOOD row flashes - because that row is where the number the float is about
+   actually lives, and a figure that rises off a body says *something happened*
+   while the bar says *and this is where it landed*.
+   ⚠ THE FLASH IS RE-ARMED BY REMOVING THE CLASS AND FORCING A REFLOW. A CSS
+   animation on an element that is not rebuilt runs exactly once; casting twice in
+   a turn is the common case for the one class this is about. */
+function nerveFlash(){
+  const el=$('bState');if(!el)return;
+  el.classList.remove('mflash');void el.offsetWidth;el.classList.add('mflash');
+}
 function payStrain(u,a){
   const c=strainCost(u,a);
-  mor(u,-c,'the working took it out of them');
-  fx(u,'−'+c+' mood','#a35b8a',true);
+  mor(u,-c,'the working took it out of them',true);
+  fx(u,'−'+c+' MOOD','#e28fb4');
+  if(u===cur())nerveFlash();
 }
 /* ═══ MOVEMENT IS THE RACE'S, NOT A STAT'S (playtest #5) ═══════════════
    First move of the turn: ratkin 5 · human 4 · ogre 3 — the body sets the
@@ -18329,6 +18646,27 @@ function bloomTick(){
 
    GILLS ARE EXEMPT, exactly as they are exempt from the entry cost — a body
    that grew gills in the fen is not the one the fen slows down. */
+/* ⛔ #244 - WHAT A SECOND MOVE WOULD BUY, ASKED OF THE FUNCTION THAT DECIDES IT.
+   The rule is not `b - 1`: `moveBudget` takes the cutter's first-move hex away as
+   well, and it re-reads the ground the body is standing on. The only honest way to
+   ask *what would the next one be* is to tell it a move has been used - so this
+   sets the field, asks, and puts it back.
+   ⚠ IT MUTATES AND RESTORES, WHICH IS THE PRICE OF HAVING ONE DEFINITION. The
+   alternative is a second copy of five rules that would be right today and wrong
+   the first time somebody adds a sixth. Nothing between the two lines can yield.
+   ⚠ AND THE PREVIEW IS AN APPROXIMATION BY CONSTRUCTION: it maps the total budget
+   in one pass, so it will show a hex two moves away even where the only route needs
+   an illegal stop half-way. On this board that is a corner case (a stop is illegal
+   only on an occupied hex, and `reachMap` already refuses those as ENDS), and the
+   far wash is deliberately not clickable, so the worst it can do is promise a hex
+   that turns out to need a different route. */
+function moveBudget2(u){
+  const was=u.movesUsed||0;
+  u.movesUsed=was+1;
+  const b=moveBudget(u);
+  u.movesUsed=was;
+  return b;
+}
 function moveBudget(u){
   if(u.rooted>0)return 0;
   /* #111 - the hex DISENGAGE banked last turn. Declared here so the reach
@@ -18669,7 +19007,18 @@ const ARMOUR_BANDS={
   heavy :{n:'HEAVY', absorb:.75,through:.25,dodge:-10,col:'#7fa8c9',
           d:'Three-quarters of a blow stops in it, and it costs you 10 dodge.'}
 };
-const bandOf=u=>ARMOUR_BANDS[bandKey(u.armourMax||u.armour||0)];
+/* ⛔ #244 - AND NOTHING AT ALL IS ITS OWN ROW. (User, on a stripped Captain:
+   *"when there is no armor write 'none' insted of light"*.) `bandKey(0)` answers
+   `light`, which is arithmetically true - zero armour absorbs half of zero and
+   costs no footwork - and reads as a claim that the man is wearing something.
+   ⚠ IT IS A NAME AND NOT A FOURTH BAND: `absorb`/`through`/`dodge` are LIGHT's,
+   because that is what the arithmetic has always been and no rule changes here.
+   Anything that wants the band's numbers gets the numbers it always got; anything
+   that prints `.n` prints the truth. */
+const ARMOUR_NONE=Object.assign({},ARMOUR_BANDS.light,{n:'NONE',col:'#8a7449',
+  d:'Nothing on but cloth. Every blow lands on the body.'});
+const bandOf=u=>((u.armourMax||u.armour||0)>0
+  ?ARMOUR_BANDS[bandKey(u.armourMax||u.armour||0)]:ARMOUR_NONE);
 /* the band of a PIECE, for the inventory hover, where there is no unit yet */
 const bandOfGear=(g,p)=>!g||!g.armour?null
   :ARMOUR_BANDS[bandKey(p&&g.size&&g.size!=='any'&&g.size!==RACEMOD[p.race].size
@@ -19793,7 +20142,7 @@ const uspOf=u=>{
    it started:
 
        else strike(u,tgt,a);            // animClash adds .lunge to the sprite
-       B.sel=null;B.reach=null;render(); // render does g.innerHTML=''
+       B.sel=null;B.reach=null;B.reach2=null;render(); // render does g.innerHTML=''
 
    render() destroys all 195 hexes and builds new <img> elements. The class is
    on a node that is no longer in the document by the time the first frame
@@ -20557,7 +20906,7 @@ function beginTurn(){
     mor(u,FORM.weightMor,'there are that many ogres and they are that close');
     if(u.side==='you')fx(u,'OUTWEIGHED','#c07a2c',true);
   }
-  B.sel=null;B.reach=null;
+  B.sel=null;B.reach=null;B.reach2=null;
   B.aura=null;               /* #206 - and no order's ring outlives its card */
   B.undo=null;               /* #91 - a new turn owes nobody last turn's step */
   /* the people you sided with fight their own fight. They are on your side of
@@ -21019,7 +21368,10 @@ function checkEnd(){
       ask('THEY ARE ALL RUNNING',
         num(foe.length)+' still on the field, and not one of them is still fighting. '+
         'They will keep going until somebody stops them.',
-        [{t:'Let them go. The field is ours.',
+        /* #244 - four words, at the user's own instruction. The sub-line below it
+           already says the field is ours, in the two things a player wants: the
+           fight ends, and the haul does not change. */
+        [{t:'Let them go.',
           c:'the fight ends here · the haul is the same',
           go:()=>{if(!B||B.won!==null)return;B.won=true;
             say('The last of them goes over the rise without looking back.');
@@ -21321,7 +21673,11 @@ function selectAct(i){
     /* #60 lesson 8 (learn_step) fired here. #137 deleted it: TUTSTEPS.circled
        spotlights the DISENGAGE card itself the moment two of them have a hand
        on you, and whisper('parting') is still the receipt. */
-    B.sel=a;B.reach=reachMap(u,moveBudget(u));render();return;}
+    B.sel=a;B.reach=reachMap(u,moveBudget(u));
+    /* #244 - and the far half, only when there is a second action to spend on it */
+    B.reach2=(u.actions>(a.cost||1))
+      ?reachMap(u,moveBudget(u)+moveBudget2(u)):null;
+    render();return;}
   /* #46 THROW — two clicks: the thing, then where it goes. `B.hurlFrom` holds
      the bodies it could lift and `B.hurlRocks` the lone boulders; `B.hurl` /
      `B.hurlRock` hold whichever one was chosen. */
@@ -21350,7 +21706,7 @@ function selectAct(i){
       if(at(p[0],p[1]))return;
       if(hdist([u.col,u.row],p)<=5)dist[k]=1;});
     if(!Object.keys(dist).length){say('Nowhere to come back up.');return;}
-    B.sel=a;B.reach={dist:dist,prev:{}};render();return;
+    B.sel=a;B.reach={dist:dist,prev:{}};B.reach2=null;render();return;
   }
   /* ═══ #72 - DISENGAGE IS THE STEP, NOT A PERMISSION SLIP FOR ONE ════════
      (User: "when you disengage you step one hex out of the zone of control
@@ -21802,6 +22158,8 @@ function handHex(c,r){
      the mirror: paint lands where you point, because the fold is for the HAND
      and a folded brush would paint the wrong half of the board. */
   if(SIM.on&&TEST.on&&SIM.brush){devPaint(c,r);return;}
+  /* #244 - and an armed KIT eats it the same way, for the same reason */
+  if(SIM.on&&TEST.on&&SIM.kit){devKitAt(c,r);return;}
   if(!mirrorOn()){clickHex(c,r);return;}
   const u=cur();
   if(!u||u.side!=='you'){clickHex(c,r);return;}   /* clickHex refuses it anyway */
@@ -21948,7 +22306,27 @@ function drawZoc(keys){
   clearZoc();
   const gr=$('bGround'),g=$('bGrid');
   if(!gr||!g||!keys||!keys.length)return;
-  const inSet={};keys.forEach(k=>{inSet[K(k[0],k[1])]=1;});
+  /* ⛔ #244 - THE MARK IS THE SIDE THE HEX SHARES WITH THE BODY HOLDING IT, AND
+     NOT THE OUTLINE OF THE WHOLE ZONE.
+     (User, 2026-08-25: *"on the battlfield - highlifht not full hext infront of
+     enemy, but only first border of that hex connected to the enemy"*.)
+
+     ⛑ #243 REPLACED A WASH WITH A REGION OUTLINE AND THAT WAS HALF THE ANSWER.
+     An outline round the set is smaller than three filled hexagons, and on two
+     enemies standing together it is still a shape the size of six - the eye reads
+     an AREA, and the rule is not about an area. What the player actually needs is
+     *which way is this one facing*, and the honest picture of that is the three
+     sides of its own hex that it holds: a short arc hugging the body, pointing
+     where it looks.
+     ⚡ SO THE SIDE IS PICKED TOWARDS THE CONTROLLER, NOT AWAY FROM THE SET. The
+     old pass asked *is the hex across this side also in the zone* and drew what was
+     left; this one asks *which side faces the body that charges me for leaving* and
+     draws only that. Two enemies holding the same hex draw two of its sides, which
+     is correct and is what a corner between two of them looks like.
+     ⚠ IT IS STILL MEASURED AND NOT TABULATED. `DIR` is indexed by row parity and
+     the polygon is not, so the direction to the controller's centre against the
+     direction to each side's midpoint is the one comparison that cannot drift - and
+     it stays right for a great beast, whose holding hex is not always adjacent. */
   const box=el=>{const p=relPt(el,gr);
     return {v:ZOC_HEX.map(t=>({x:p.x+t[0]*p.w,y:p.y+t[1]*p.h})),
             c:{x:p.x+p.w/2,y:p.y+p.h/2}};};
@@ -21957,24 +22335,22 @@ function drawZoc(keys){
   keys.forEach(k=>{
     const el=g.querySelector('[data-k="'+K(k[0],k[1])+'"]');
     if(!el)return;
-    const B0=box(el),skip={};
-    nbrs(k[0],k[1]).forEach(n=>{
-      if(!inSet[K(n[0],n[1])])return;
-      const ne=g.querySelector('[data-k="'+K(n[0],n[1])+'"]');
-      if(!ne)return;
-      if(!cen[K(n[0],n[1])])cen[K(n[0],n[1])]=box(ne).c;
-      const q=cen[K(n[0],n[1])],dx=q.x-B0.c.x,dy=q.y-B0.c.y;
+    const B0=box(el),draw={};
+    (k[2]||[]).forEach(src=>{
+      const sk=K(src.col,src.row);
+      if(!cen[sk]){const se=g.querySelector('[data-k="'+sk+'"]');
+        if(!se)return;cen[sk]=box(se).c;}
+      const q=cen[sk],dx=q.x-B0.c.x,dy=q.y-B0.c.y;
       let best=-1,bs=-2;
       for(let i=0;i<6;i++){
         const mx=(B0.v[i].x+B0.v[(i+1)%6].x)/2-B0.c.x,
               my=(B0.v[i].y+B0.v[(i+1)%6].y)/2-B0.c.y;
         const s=(mx*dx+my*dy)/((Math.hypot(mx,my)*Math.hypot(dx,dy))||1);
         if(s>bs){bs=s;best=i;}}
-      if(best>=0)skip[best]=1;});
-    for(let i=0;i<6;i++){
-      if(skip[i])continue;
-      const a=B0.v[i],b=B0.v[(i+1)%6];
-      d+='M'+a.x.toFixed(1)+' '+a.y.toFixed(1)+'L'+b.x.toFixed(1)+' '+b.y.toFixed(1);}
+      if(best>=0)draw[best]=1;});
+    Object.keys(draw).forEach(i=>{
+      const a=B0.v[+i],b=B0.v[(+i+1)%6];
+      d+='M'+a.x.toFixed(1)+' '+a.y.toFixed(1)+'L'+b.x.toFixed(1)+' '+b.y.toFixed(1);});
   });
   if(!d)return;
   const NS='http://www.w3.org/2000/svg';
@@ -22032,14 +22408,14 @@ function clickHex(c,r){
       B.hurl=tgt;
       /* #240 - `true`, the boulder's own flag: a body may be aimed at somebody
          now, and `clickHex` below decides which occupied hexes are legal. */
-      B.reach={dist:throwSpots(u,a.range,true),prev:{}};render();
+      B.reach={dist:throwSpots(u,a.range,true),prev:{}};B.reach2=null;render();
       say(tgt.name+' is off the ground and does not appear to have been consulted. '+
         'Click where they land - open ground, or one of theirs.');
     }else if(B.hurlRocks&&B.hurlRocks.indexOf(K(c,r))>=0){
       B.hurlRock=[c,r];
       /* a stone flies three hexes, a body four — and the stone may be aimed
          AT somebody, so occupied hexes stay on the table here */
-      B.reach={dist:throwSpots(u,a.rockRange||3,true),prev:{}};render();
+      B.reach={dist:throwSpots(u,a.rockRange||3,true),prev:{}};B.reach2=null;render();
       say('The boulder comes up out of the ground with a sound nobody enjoys. '+
         'Click where it goes: at somebody, or just somewhere else.');
     }else say('Click something on the next tile: one of yours, one of theirs, '+
@@ -22051,18 +22427,18 @@ function clickHex(c,r){
   if(a&&a.thrower&&B.hurl&&B.reach&&B.reach.dist[K(c,r)]!==undefined&&tgt&&
      throwAimOK(u,B.hurl,tgt)){
     const pas=B.hurl;
-    B.sel=null;B.reach=null;B.hurl=null;B.hurlFrom=null;B.hurlRocks=null;
+    B.sel=null;B.reach=null;B.reach2=null;B.hurl=null;B.hurlFrom=null;B.hurlRocks=null;
     throwBodyAt(u,a,pas,tgt);render();
     if(!checkEnd())autoEnd(u);
     return;}
   if(a&&a.thrower&&B.hurl&&B.reach&&B.reach.dist[K(c,r)]!==undefined&&!tgt){
     throwBody(u,a,B.hurl,c,r);
-    B.sel=null;B.reach=null;B.hurl=null;B.hurlFrom=null;B.hurlRocks=null;render();
+    B.sel=null;B.reach=null;B.reach2=null;B.hurl=null;B.hurlFrom=null;B.hurlRocks=null;render();
     if(!checkEnd())autoEnd(u);
     return;}
   if(a&&a.thrower&&B.hurlRock&&B.reach&&B.reach.dist[K(c,r)]!==undefined){
     throwRock(u,a,B.hurlRock,c,r);
-    B.sel=null;B.reach=null;B.hurlRock=null;B.hurlFrom=null;B.hurlRocks=null;render();
+    B.sel=null;B.reach=null;B.reach2=null;B.hurlRock=null;B.hurlFrom=null;B.hurlRocks=null;render();
     if(!checkEnd())autoEnd(u);
     return;}
   /* IRON-OATH is thrown at your own line, not at theirs */
@@ -22080,7 +22456,7 @@ function clickHex(c,r){
       setTimeout(((y,i)=>()=>plateFx(y,'#8fd0a8'))(x,n),hitPaced(n*90));
       n++;});
     say(u.name+' speaks the iron-oath. '+n+' of yours stand a little harder.');
-    B.sel=null;B.reach=null;render();autoEnd(u);
+    B.sel=null;B.reach=null;B.reach2=null;render();autoEnd(u);
     return;
   }
   if(a&&!a.move&&tgt&&tgt.side==='foe'){
@@ -22161,7 +22537,7 @@ function clickHex(c,r){
         arcOn(x,tgt).n==='BACK').length;
       say(u.name+' gets '+tgt.name+' to look the wrong way. Its back is open'+
         (openings>1?': '+openings+' of yours can see it.':'.'));
-      B.sel=null;B.reach=null;render();autoEnd(u);
+      B.sel=null;B.reach=null;B.reach2=null;render();autoEnd(u);
       return;}
     if(a.strain){payStrain(u,a);sfx('cast');}
     /* ═══ #67 · a damaging school is begun here and lands next turn ══════
@@ -22170,7 +22546,7 @@ function clickHex(c,r){
        again, which is why it can sit behind the ordinary target flow. */
     if(gathers(a)){
       beginGather(u,a,tgt);
-      B.sel=null;B.reach=null;render();autoEnd(u);
+      B.sel=null;B.reach=null;B.reach2=null;render();autoEnd(u);
       return;}
     if(a.hex){                                  /* UNPICK: armour off, nerve with it */
       sfx('cast');
@@ -26361,7 +26737,16 @@ function paintObjects(g,P,rnd){
    that drifts. ⛔ Change one here, never at the call site.
    ⚠ These three and no others. Everything louder - a lit target, a lane, a
    lift, a landing - is an OFFER, and an offer is never overpainted. */
+/* ⛔ #244 - AND THE HALF A SECOND ACTION WOULD BUY, AT HALF THE VOICE.
+   (User, 2026-08-25: *"show maximum range of movement of your units. But second
+   action of movment and that area lighter"*.)
+   The two faint entries are the same two hues at roughly half alpha, so the board
+   reads as ONE stride with a near half and a far half rather than as two different
+   offers. ⚠ A far hex is NOT `.hex.lit` and must never become one: one click
+   cannot reach it, and #206's own rule here is that a ring on a hex the click will
+   not take is worse than no ring. */
 const REACH_WASH={wet:'rgba(70,130,130,.32)',dry:'rgba(110,180,160,.24)',
+                  wet2:'rgba(70,130,130,.15)',dry2:'rgba(110,180,160,.11)',
                   act:'rgba(201,162,39,.15)'};
 function render(){
   const u=cur();
@@ -26518,8 +26903,14 @@ function render(){
     /* #94 point 4 - the crystals. Spent ones stay on the panel, dark, so the
        price of what was just done is still readable for the rest of the turn;
        the numeral and the "OF n" both left, because the row already says both. */
-    $('bAPnum').innerHTML=apPips(u.actions,u.actionsMax);
-    $('bAPnum').title=u.actions+' of '+u.actionsMax+' actions left this turn';
+    /* #244 - the card in hand, or the one under the pointer if none is picked:
+       the same pair `render` already reads for the footprint. A move is excluded
+       for the same reason it is excluded from `rngA` - its own reach preview is
+       the answer to what it costs, and every move costs one. */
+    const payA=(B.sel&&!B.sel.move)?B.sel:(B.actHover||null);
+    $('bAPnum').innerHTML=apPips(u.actions,u.actionsMax,payA?(payA.cost||1):0);
+    $('bAPnum').title=u.actions+' of '+u.actionsMax+' actions left this turn'+
+      (payA?' · '+(payA.cost||1)+' of them goes on '+payA.n:'');
     $('bAPtxt').textContent='ACTIONS';
     /* ⚑ THE OTHER HALF OF THE TURN, AND IT IS `moveBudget` - the SAME call
        the MOVE button, the reach preview, aiTurn and autoStep all make. So
@@ -27096,6 +27487,19 @@ function render(){
          what is actually in hand. */
       if(d!==undefined&&u&&u.side==='you'&&!occ&&!rngA){
         fill=t==='marsh'?REACH_WASH.wet:REACH_WASH.dry;}
+      /* #244 - the far half: reachable on a SECOND move and not on this one.
+         Written after the near wash and gated on `d===undefined`, so the near
+         half always wins its own hexes and this can only ever paint ground the
+         line above left alone. */
+      /* ⚠ `B.sel.move` IS IN THE GATE AND IT IS NOT BELT AND BRACES. Eight places
+         in this file clear `B.reach` and only the four that matter were taught to
+         clear `B.reach2` with it; a ninth will be written by somebody who has never
+         read this line. `pick()` writes the pair in ONE statement, so "a move is in
+         hand" is the only condition under which `B.reach2` can be this body's, and
+         asking it here is one test instead of nine sites to keep in step. */
+      else if(d===undefined&&u&&u.side==='you'&&!occ&&!rngA&&
+              B.sel&&B.sel.move&&B.reach2&&B.reach2.dist[K(c,r)]!==undefined){
+        fill=t==='marsh'?REACH_WASH.wet2:REACH_WASH.dry2;}
       /* ═══ #94 point 10 - THE FOOTPRINT, AND IT OUTRANKS THE MOVE REACH ═══
          It has to be written AFTER the block above and not before it, and
          that ordering is the whole of what makes the feature exist. `B.sel`
@@ -27138,7 +27542,11 @@ function render(){
          GROUND (`hedge.style.background`), so this line used to wash three or four
          hexagons red in front of every enemy. `drawZoc` draws the outside of the
          set once, after the grid is built. */
-      if(u&&u.side==='you'&&heldAt(c,r,'you')>0)zocHexes.push([c,r]);
+      /* #244 - the CONTROLLERS travel with the hex, because the mark is now the
+         side facing them. `controllers` is what `heldAt` counts, so this is the
+         same call the line used to make and not a second walk of the roster. */
+      if(u&&u.side==='you'){const zc=controllers(c,r,'you');
+        if(zc.length)zocHexes.push([c,r,zc]);}
       /* #205 - and the hex the step is about to be PAID FOR leaving is louder
          than the ring it sits in. Written HERE, in `edge`, and not as a CSS
          override: `hedge.style.background` is an inline style further down, so
@@ -27393,8 +27801,8 @@ function render(){
         inn.appendChild(bm);
       }
       if(occ){
-        const sp=sprite(occ.kind,occ.side,{unit:occ,leader:occ.leader||occ.captain,caster:occ.caster,
-          bow:occ.bow,gills:occ.mut==='gills'});
+        const sp=spriteHurt(sprite(occ.kind,occ.side,{unit:occ,leader:occ.leader||occ.captain,
+          caster:occ.caster,bow:occ.bow,gills:occ.mut==='gills'}),woundTier(occ));
         const img=document.createElement('img');
         img.className='usp'+(occ.state==='routed'?' routed':'')+(occ===u?' now':'');
         img.src=sp.src;img.width=sp.w;img.height=sp.h;img.alt=occ.name;
@@ -27554,7 +27962,7 @@ function render(){
            A great beast gets hers on the TAIL hex instead of here, because
            that is where her back is; see backRing() and the tailHere branch
            below. Everything else is drawn on its own hex, as before. */
-        if(!occ.big){const bk=backRing(occ);if(bk)inn.appendChild(bk);}
+        if(!occ.big){const bk=backRing(occ);if(bk)inn.appendChild(bk);}   /* #244 - null now */
         /* every status and aura currently on this body, drawn from the one
            register. #96 point 3: a ROW ABOVE THE HEAD instead of a column
            down the left edge - see the .stbar note in the CSS. Four is still
@@ -28296,8 +28704,21 @@ const SEG=(max,per)=>Math.max(1,Math.round((max||1)/(per||SEG_HP)));
 /* the token bar widens only once a section would go under ~3px */
 const barW=secs=>Math.round(Math.max(26,Math.min(54,secs*3.4)));
 /* #94 point 4 - the action crystals, filled then spent */
-const apPips=(n,max)=>{let s='';
-  for(let i=0;i<(max||0);i++)s+='<span class="pip'+(i<n?' on':'')+'">◆</span>';
+/* ⛔ #244 - AND THE ONES A PICKED CARD IS ABOUT TO TAKE, BLINKING.
+   (User: *"when ability pick - show how many action points it would actioally take
+   from your stush (slow blinking)"*.)
+   ⛑ THE CARD ALREADY CARRIED ITS COST AND THE PLAYER STILL HAD TO DO THE SUM. A
+   card's face shows ◆ or ◆◆, the plaque shows how many are left, and *can I afford
+   this and still act* was the subtraction between them. Blinking the pips that
+   would go answers it in the place the answer is stored.
+   ⚠ THE LAST LIT ONES, not the first: pips fill left to right, so what a spend
+   takes is the right-hand end of the run. ⚠ And it is capped at what is actually
+   there - a two-action card on a body with one action left blinks one pip, which is
+   the honest picture of a card that cannot be played. */
+const apPips=(n,max,pay)=>{let s='';
+  const from=Math.max(0,n-Math.min(n,pay||0));
+  for(let i=0;i<(max||0);i++)
+    s+='<span class="pip'+(i<n?' on':'')+((i<n&&i>=from)?' pay':'')+'">◆</span>';
   return s;};
 /* ⚠ the width and the section count go through the SAME door, so a bar can
    never be drawn at one scale and sectioned at another. */
@@ -30295,7 +30716,7 @@ document.addEventListener('keydown',e=>{
     /* 2. mid-fight with something picked: put it down. */
     if($('battle').classList.contains('on')&&B&&!B.busy&&!B.tutLock&&B.won===null&&
        (B.sel||B.reach||B.hurl)){
-      B.sel=null;B.reach=null;
+      B.sel=null;B.reach=null;B.reach2=null;
       B.hurl=null;B.hurlFrom=null;B.hurlRock=null;B.hurlRocks=null;render();
       return;
     }
@@ -32756,8 +33177,9 @@ const WHISPER={
     'keep standing there at all, and a body alone in a crowd loses it fastest.',
   prov:'Provisions are not eaten on the road, and not by a wound mending. Wages cover the '+
     'bread. These are for double rations, a proper meal, and the moments the road asks.',
-  back:'That landed in his back. The red arc under a body is the side to stand on: +30 to '+
-    'hit and a quarter more damage.',
+  /* #244 - the arc it named is gone; the ✦ is what marks the ground now */
+  back:'That landed in his back. With a move in hand, a ✦ marks every hex you can '+
+    'reach that lands behind somebody: +30 to hit and a quarter more damage.',
   parting:'Walking out of somebody\'s reach lets them swing at you for free, for half a blow. '+
     'DISENGAGE costs an action and IS the step - one hex, and nobody swings.',
   /* #46 - the throw stopped being about ratkin, so the lesson had to as well.
@@ -33927,7 +34349,7 @@ function drawInv(){
      those moves the rung they open a fight on. `u` is the body that walks onto
      the field and `u.morale0` is the number `morBase()` reads all fight, so the
      sheet and the first turn now say the same thing. */
-  const nu={morale:u.morale0,moraleMax:u.moraleMax},nl=LADDER[ladderAt(nu)];
+  const nu={morale:u.morale0,moraleMax:u.moraleMax},nl=LADDER[ladderAt(nu)];   /* #243, #244 */
   const statPts=p.statPoints||0,perkPts=p.perkPoints||0;
   const mutActs=p.mut?u.acts.filter(a=>(MUTACT[p.mut]||[]).indexOf(a.k)>=0).map(a=>a.n):[];
   /* the figure that will stand on the field, at the size it stands there.
@@ -34123,8 +34545,15 @@ function drawInv(){
     '<button class="iacc" id="iMemBtn">'+
       '<span>'+(G.showMem?'▾':'▸')+'</span>'+
       '<span class="ah">WHAT HAPPENED TO THEM</span>'+
-      (heads?'<span class="kills" title="what this one has put in the ground">'+heads+
-        '</span><span class="kn">'+killN+' DEAD</span>'
+      /* ⛔ #244 - THE HEADS ARE INSIDE THE ACCORDION NOW, AND THE SHUT ROW IS A
+         COUNT. (User: *"show type of creatures killed only when whats happened open
+         (otherwise just number with dead - and call it - killed)"*.) A row of five
+         race marks on a closed accordion is a second thing to read on the line whose
+         whole job is to say whether the thing below it is worth opening. ⚠ AND THE
+         WORD IS `KILLED`, NOT `DEAD`: on a sheet that also carries `mending` and a
+         scar count, `1 DEAD` is one glance away from meaning this body. */
+      (killN?(G.showMem?'<span class="kills" title="what this one has put in the ground">'+
+          heads+'</span>':'')+'<span class="kn">'+killN+' KILLED</span>'
         :'<span class="none">nothing killed yet</span>')+
     '</button>'+
     '<div id="iStoryBody" class="memlist">'+inner+'</div>';
@@ -34232,6 +34661,19 @@ function drawInv(){
             (p.cls==='cutter'?' (+1 first)':'')+'</b></span>'+
         '</div>'+
         '</div>'+
+        /* ⛔ #244 - AND A BANKED STAT POINT SAYS SO IN WORDS, HERE.
+           (User, arrow at the four tell rows: *"when you can increase stats (have
+           perk availble) - show it here"*.)
+           ⛑ THE MECHANISM WAS ALREADY BUILT AND WAS TOO QUIET TO FIND. #122 made
+           the tell itself the button and marked it with `.itl.spend` - a green
+           underline and a small ▲ after the value - which tells you what to do
+           only if you already know there is something to do. The two other banks on
+           this sheet both announce themselves in a full line of type (`A CLASS TO
+           PICK`, the promotion card); this one had no sentence anywhere.
+           ⚠ IT IS ONE LINE AND IT IS GONE THE MOMENT THE POINT IS SPENT, which is
+           #177's rule about a finished objective: a row that is always there has
+           stopped being information. */
+        (statPts>0?'<div class="lbl statnag">+'+statPts+' TO A STAT · PICK A ROW</div>':'')+
         '<div class="itells">'+['str','agi','int','mor'].map(tellCell).join('')+'</div>'+
       '</div>'+
     '</div>'+
@@ -34342,9 +34784,18 @@ function drawInv(){
        neither of which `tipFor` can speak for. The dead branch above is gone
        rather than left to be found again. */
     const useTip=!!g&&!twoH;
+    /* ⛔ #244 - AN EMPTY OFF HAND UNDER A TWO-HANDER SAYS NOTHING EXTRA.
+       (User: *"when two handed thngs - don't write in off hand 'carry something
+       one-...'"*.) The slot's own label already reads `✋ OFF HAND · TAKEN` in
+       amber, which is the fact; a hover repeating it in a sentence is the second
+       receipt `.claude/rules/event-cards.md` spends its length deleting.
+       ⚠ THE FILLED CASE KEEPS ITS LINE, and that is not an inconsistency: a
+       shield sitting in a slot that is doing nothing is a thing the player cannot
+       see from the label, and naming the weapon that took the hand is the only way
+       to say which one to put down. */
     const popBody=twoH
       ? (g?g.n+' is in the pack, doing nothing. Put the '+mainG.n.toLowerCase()+
-         ' down to use it.':'Carry something one-handed and this opens up.')
+         ' down to use it.':'')
       : emptyLine;
     /* ⚑ #192 - THE PICTURE IS A COLUMN, NOT A CHARACTER ON THE NAME LINE.
        Inline at 24px it was unreadable (a 128px painting of a dark object in
@@ -34381,7 +34832,12 @@ function drawInv(){
            column as well as quieting it. */
         : g?shortGear(g):'')+'</div>'+
       '</div>'+
-      (useTip?'':'<span class="pop"><span class="pt">'+(g?g.n:label)+'</span>'+
+      /* ⚠ #244 - AND NO BOX AT ALL WHEN THERE IS NOTHING TO PUT IN IT. Ask 13
+         emptied `popBody` for an empty off hand under a two-hander, and the box
+         still opened - on the slot's own NAME, which is printed on the slot two
+         lines above. A hover that repeats the label is the furniture this sheet
+         keeps deleting. */
+      ((useTip||!popBody)?'':'<span class="pop"><span class="pt">'+(g?g.n:label)+'</span>'+
         '<span class="pd">'+popBody+'</span></span>');
     /* ⚠ THE CLICK STAYS ON EVERY FILLED SLOT, including a blocked one: taking
        the shield out of a hand that cannot use it is exactly what you want to
@@ -35005,6 +35461,9 @@ function gearLine(g,p){
   const small=[];
   if(!g.hush){
     if(g.hit)small.push((g.hit>0?'+':'')+g.hit+' to hit');
+    /* #244 - the dirk's pair, said as the condition it actually carries */
+    if(g.meleeHit)small.push((g.meleeHit>0?'+':'')+g.meleeHit+' to hit in melee');
+    if(g.meleeDmg)small.push((g.meleeDmg>0?'+':'')+g.meleeDmg+' melee damage');
     if(g.dodge)small.push((g.dodge>0?'+':'')+g.dodge+' dodge');
     if(g.rangedDmg)small.push('+'+g.rangedDmg+' damage with a bow');
     if(g.hp)small.push((g.hp>0?'+':'')+g.hp+' hitpoints');
@@ -38451,7 +38910,18 @@ function worldTick(){
     mood:{t:ms.ic+' '+ms.n,col:ms.col,
       d:ms.d+(moodEffect(ms)?'<br><b style="color:'+ms.col+'">'+moodEffect(ms)+'</b>':'')+
         '<br><br>'+moodLadderHTML(),
-      x:'It settles back towards the middle on its own. Only a spent mood decays.',
+      /* ⛔ #244 - AND IT SAYS THE RATE, BECAUSE THE RULE WAS INVISIBLE.
+         (User, 2026-08-25: *"Mood has option to normailise on global map too ...
+         I think 1 per day for first distance, and 2 per day second distance"*.)
+         ⛑ THAT IS EXACTLY WHAT #161 BUILT AND NOTHING ON SCREEN HAS EVER SAID SO.
+         `passDays` walks the mood back towards the AT EASE band by ONE a day from
+         one rung out and TWO a day from two, and the only place that was written
+         down was a comment in the source. Derived off the same arithmetic, so the
+         sentence and the drift cannot come apart. */
+      x:(()=>{const d=Math.abs(moodRung(G.morale)-MOOD_NORM);
+        return d?'It walks back towards the middle by '+(d>1?'2':'1')+' a day from here. '+
+          'Only a spent mood decays.'
+        :'It is in the middle band and stays there until something moves it.';})(),
       act:'CLICK: throw them a party - '+feastCost()+' provisions.'},
     /* #106 point 8: "when i hower on the health thing - you can show exactly
        how much health each unit has". Every body, one line, hp out of hpMax,
@@ -46344,7 +46814,7 @@ function simRestore(){
      PICKS survive for the next visit to the picker; the applied profiles and
      the armed brush do not. */
   Object.assign(AIP.you,AIP_FULL);Object.assign(AIP.foe,AIP_FULL);
-  SIM.brush=null;
+  SIM.brush=null;SIM.kit=null;             /* #244 */
   SIM.on=false;B=null;
 }
 function simResult(how){
