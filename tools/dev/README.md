@@ -53,6 +53,17 @@ desk finds its own browser again; and **every connection asserts `location.href`
 prototype** and refuses otherwise. ⚑ It is still worth confirming the build holds YOUR edit before
 believing a number: `typeof <a symbol only your edit has>`.
 
+⛔ **AND `--port` GOES AFTER THE VERB, NOT BEFORE IT** *(#243, and it cost an hour)*. The parser
+declares `--port`/`--url` on the top level AND on each sub-parser, so `gt.py --port 9999 eval x.js`
+parses without complaint and the sub-parser's own `None` wins - the call lands on **this worktree's
+own browser** instead of the one named. The baseline-diff recipe in the `/drive` skill is the whole
+reason that flag exists, and it silently compared the new build with itself: two runs, byte-identical
+numbers, read as *"the change had no effect"*, and a correct edit was nearly reverted on the strength
+of it. Write it `gt.py eval --port 9999 --url prototype/_head_baseline.html x.js`.
+⚡ The tell is free and it is the one this section already recommends, pointed at both ports:
+`{hasNew: someFn.toString().indexOf('<a string only the new build has>')>=0, href: location.href}`.
+Read it off each browser before believing any comparison between them.
+
 ## ⛔ Why edits go through `safeedit.py`
 
 `prototype/grimtoll_slice.html` is **30 MB, 91% of it 337 lines of embedded base64**, and there is

@@ -26,6 +26,81 @@
 
 ---
 
+## 😐 THE COMPANY'S MOOD DOES SOMETHING NOW  *(#243 · 2026-08-25 · build log 8f.267)*
+
+**Reach it in three steps:** world map → hover the mood face on the top bar.
+
+**What should happen.** The hover is the whole ladder, worst at the bottom, with the rung you are on
+lit, and every row says what it is worth:
+
+| | |
+|---|---|
+| 😄 HIGH SPIRITS | +15 mood at the start of a fight · +10 to hit · +10 dodge · +10% experience |
+| 🙂 STEADY MARCH | +10 mood at the start of a fight |
+| 😐 AT EASE | nothing either way |
+| 😟 GRUMBLING RANKS | -10 mood at the start of a fight |
+| 💀 ON THE BRINK | -15 mood at the start of a fight |
+
+**The one thing not written on it:** at ON THE BRINK there is a small chance each day that somebody
+is simply not at the fire in the morning. They leave the way a dismissed body leaves, so they can
+walk back in at a fire later. The road strip says so when it happens.
+
+**What would be a bug.** The rung lit is not the face on the chip · the effect line disagrees with
+what the fight charges (open the company sheet and hover MOOD: the rung there is the one this body
+will actually start a fight on, and the line under it names the company's contribution) · the leader
+or the last crew member walks off · the hover runs off the screen.
+
+**Where to see it land.** Company sheet → MOOD. The bar and the rung name move with the company's
+mood now; they were the literal 78% on every body in the game before this. TO HIT and DODGE on the
+same column carry the top rung's +10 as well. ⚠ **DODGE is stated pre-cap**, the way a shield's
+printed `+9` is: `softDodge` turns +10 into about +6 on a body already carrying one.
+
+## 🎯 THE BOARD OPENS WHERE IT SHOULD, AND THE CAMERA MOVES AGAIN  *(#243)*
+
+**Reach it in three steps:** reload the page → start any fight → look at where the board is.
+
+**What should happen.** The board is centred, at every stop, on the FIRST fight after a reload -
+which is the one that was wrong. Then drag the ground, or push the pointer against the rim: the view
+moves at **all three stops**, FULL included, and stops the moment the ground's edge reaches the edge
+of the screen. There is no way to push the field off the screen.
+
+**What would be a bug.** The board opens down and to the right with empty ground above it (that was
+the fault) · a drag shows anything outside the painted ground · the board jumps when you let go ·
+FULL frames anything other than the whole board.
+
+## 🚩 THE ZONE OF CONTROL IS A BORDER  *(#243)*
+
+**Reach it in three steps:** any fight → stand next to an enemy → look at the ground around them.
+
+**What should happen.** One soft red outline round the whole zone, not a red wash on each hex inside
+it. Two enemies standing together make ONE shape with no line down the middle. Aim a step onto ground
+you would be charged for and the outline comes up brighter.
+
+**What would be a bug.** Red hexagons filled in again · a seam between two enemies' zones · the
+outline lagging the board after a zoom change · the line so loud it competes with the gold of a
+selected hex.
+
+## ⚖ THE SMALLER ONES  *(#243)*
+
+- **MAGE.** Marrow's class is MAGE with the globe alone, same skills. A stranger picking a class is
+  offered one MAGE, not two.
+- **The contract card.** The receipt says **+3 HEADS** with the map's own body mark: three people sat
+  down, and the Captain was already there.
+- **Inventory.** DODGE has its `%` · the *NEW KIT IN THE STASH* line is gone (the badge on the road
+  bar still lights) · BREAK SOMETHING DOWN is red at rest.
+- **The working stave** reaches 2 hexes, so a mage holds a lane like a spearwoman.
+- **Provisions** found on the road are 30% lighter, and every card's own sub-line already says the
+  cut figure: a card that used to hand over 10 hands over 7, and one that hands over 1 still does.
+- **Double rations** now mend the temporary injuries at double speed too, not only hitpoints.
+- **A second secondary objective**: one road after the first one pays, the wagon asks to be improved.
+  It closes the moment anything is bolted in.
+- **The world map** draws the roads you have not walked yet, pale and dashed. They were there before
+  and had become the same brightness as the ground.
+- **The front door** no longer carries *The tutorial fight*: it is the first row of the practice
+  field, which is the row above it.
+
+---
+
 ## 🗺 THE GROUND GOES ON PAST THE FIELD  *(#241 · 2026-08-24 · build log 8f.264)*
 
 **Three steps:** start any fight (the road, or ⚙ TEST > a battle) · press **CLOSE** top right ·
