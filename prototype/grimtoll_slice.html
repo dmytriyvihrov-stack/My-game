@@ -2585,6 +2585,23 @@ body:has(#battle.on) .whisp{bottom:138px}
     animation:rise calc(1s * var(--pace) * var(--fxp)) ease-out both;
     transform:translateX(-50%);white-space:nowrap}
 .fx.small{font-size:var(--fs3);font-family:var(--mono);font-weight:500}
+/* ⛔ #250 - THE MOOD FLOAT IS ONE MARK AT THREE SIZES, AND THE SIZE IS THE
+   FIGURE. (User, 2026-08-26: *"Moral boost - one medium triangle. Or one big.
+   All (now there are 1, 2, 3 triangles, and some circle under them. Simplify).
+   One symbol slightly different sizes - and the direction is clear."*)
+   The arc and the repeated glyph were both COUNTING, which is a number wearing
+   a picture: the player had to read three shapes to learn one figure. One
+   triangle says the direction, its size says how much, and neither has to be
+   counted.
+   ⚠ THE LADDER STOPS AT `--fs6`, AND `FX_ROW` IS WHY. Lines on one hex step
+   18px apart with `line-height:1`, so a box over 17 eats its neighbour's row.
+   `--fs7` (20) was the first pick and it is arithmetically closed.
+   ⚠ AND `--fs1` IS THE FLOOR AND NOT UNDER IT (.claude/rules/ui-scales.md §1).
+   The smallest tick was `--fs3` before this; it comes down because the size is
+   carrying meaning now and the quiet end has to be quiet. */
+.fx.fxmood.sm {font-size:var(--fs1)}
+.fx.fxmood.mid{font-size:var(--fs4)}
+.fx.fxmood.big{font-size:var(--fs6)}
 /* ═══ #173 · THE WORD HOLDS, IT DOES NOT MERELY TRAVEL SLOWER ═════════════
    (User: "Дольше оставлять надпись после удара".)
    ⛔ STRETCHING THE OLD KEYFRAME WOULD HAVE MADE IT WORSE, NOT BETTER. It rose
@@ -6165,6 +6182,10 @@ body:has(#battle.on) .whisp{bottom:138px}
 .popt.notpicked{opacity:.34}
 .popt.notpicked:hover{background:#2a2114;border-color:var(--e2)}
 .popt:disabled{cursor:default}
+/* #250 - shut, and saying so. Dimmer than `.notpicked` is deliberate: that one
+   is a road not taken and this one is a door that is not open yet. */
+.popt.locked{opacity:.42;border-color:var(--e1);background:#241d13}
+.popt.locked:hover{background:#241d13;border-color:var(--e1)}
 .settledmark{font-family:var(--mono);font-size:var(--fs1);letter-spacing:.06em}
 .popt.danger{border-color:#6b2a24}.popt.danger:hover{background:#3a1d18}
 /* ═══ #122 - THE AFTER-BATTLE CARD, ON THE BATTLE BROTHERS SHAPE ═══════════
@@ -8547,7 +8568,8 @@ function winNow(){
    all react at once with no new rule anywhere. Painting is free, takes no
    action, and exists only in a practice fight with the ⚙ on. */
 const BRUSHES=[['','off · your hand plays'],['field','field'],['marsh','marsh · water'],
-  ['rock','rock · boulder'],['tree','tree'],['wall','wall'],['fire','fire']];
+  ['rock','rock · boulder'],['tree','tree'],['wall','wall'],['fire','fire'],
+  ['pit','pit · a hole']];                 /* #250 */
 function devPaint(c,r){
   if(!B||!B.terr)return;
   const k=K(c,r);
@@ -8555,6 +8577,9 @@ function devPaint(c,r){
   if(B.units&&B.units.some(u=>!u.dead&&u.col===c&&u.row===r)){
     say('[BRUSH] Somebody is standing there.');return;}
   B.terr[k]=SIM.brush;
+  /* #250 - `B.hasPits` is a held read of the ground, so the one thing on this
+     board that can change the ground has to keep it honest. */
+  B.hasPits=Object.keys(B.terr).some(x=>B.terr[x]==='pit');
   paintTerrain();render();
 }
 /* ═══ ⛔ #244 · THE DEV KIT BENCH ═══════════════════════════════════════════
@@ -14718,8 +14743,8 @@ function flushMorFloats(){
   while(MORFLUSH.length){
     const u=MORFLUSH.shift(),n=Math.round(u._morPend||0);
     u._morPend=0;u._morQ=false;
-    if(n<=-5)fx(u,moodFace(n),'#d98a58',true);
-    else if(n>=6)fx(u,moodFace(n),'#8ca35a',true);
+    if(n<=-5)fx(u,moodMark(n),'#d98a58',moodSize(n));
+    else if(n>=6)fx(u,moodMark(n),'#8ca35a',moodSize(n));
   }
 }
 function morFloat(u,amt){
@@ -14729,11 +14754,16 @@ function morFloat(u,amt){
   u._morQ=true;MORFLUSH.push(u);
   Promise.resolve().then(flushMorFloats);
 }
-const moodFace=amt=>{
-  const a=Math.abs(amt);
-  const bars=a>=22?'▲▲▲':a>=12?'▲▲':'▲';
-  return (amt>0?'◡ ':'◠ ')+(amt>0?bars:bars.replace(/▲/g,'▼'));
-};
+/* ⛔ #250 - ONE MARK, AND THE SIZE IS THE FIGURE. The three thresholds are
+   the ones this function has always used; what changed is that they now pick a
+   SIZE instead of a count of glyphs, and the arc under them is deleted.
+   ⛑ THE DIRECTION IS THE GLYPH AND NEVER THE COLOUR ALONE, which is why the
+   triangle flips rather than merely reddening: the two callers already pass a
+   colour, and a readout whose only channel is hue says nothing to a screenshot,
+   to a colour-blind eye, or on a hex that is already orange with fire. */
+const moodMark=amt=>amt>0?'▲':'▼';
+const moodSize=amt=>{const a=Math.abs(amt);
+  return 'fxmood '+(a>=22?'big':a>=12?'mid':'sm');};
 /* ⚠ #244 - `quiet` SKIPS THE GENERIC FLOAT AND NOTHING ELSE. It has exactly one
    caller: `payStrain`, which prints its own figure in the caster's own colour.
    Two marks rising off one body for one event is the receipt rule arriving on the
@@ -18247,6 +18277,7 @@ function startBattle(kind){
   if(TF.trees)  plantTrees(terr,TF,rnd);
   if(TF.flowers)sowFlowers(terr,TF,rnd);
   if(TF.blaze)  lightEmbers(terr,TF,rnd);      /* #186 - the burning scrub */
+  if(TF.pits)   digPits(terr,TF,rnd);         /* #250 - the holes in the ridge */
   /* everyone looks at whoever they came to fight. In the camp that is
      reversed with the deployment — the pack is west of you, not east. */
   /* ⚠ THE DEPLOYMENT FOLLOWS THE GROUND, NOT THE FIGHT (#61). This read
@@ -18305,6 +18336,11 @@ function startBattle(kind){
      beside it: regenerated with the fight, never restored from a save. */
   B.ground=TF.paint||'teal';
   B.terrain=TF.t;
+  /* #250 - asked once and held, because `acrossRim` is read inside `mayAim`
+     and `mayAim` is in both brains' inner loop. Computed HERE, after the
+     "nobody starts inside a boulder" pass has cleared the ground under every
+     body, so a hole can never be under somebody's feet at deployment. */
+  B.hasPits=Object.keys(terr).some(k=>terr[k]==='pit');
   B.disp={you:disposition('you'),foe:disposition('foe')};
   $('bAuto').classList.remove('live');$('bAuto').textContent='▶ AUTO';
   B.order=B.units.slice().sort((a,b)=>b.init-a.init);
@@ -18686,6 +18722,86 @@ function burnTick(u){
     return fell;
   }
   return false;
+}
+/* ═══ ⛔ #250 · THE PIT - GROUND THAT IS BELOW THE GROUND ═══════════════
+   (User, 2026-08-26: *"I want to add a pit to the surfaces. Sometimes one,
+   sometimes two. If you shove somebody into it, 10 damage. And the enemy needs
+   1 turn to get out. ... There are some number of them, they can be next to
+   each other. A decent hazard. Especially where there is a rocky ravine and a
+   lot of stones. You cannot melee an enemy out of or into a pit. When somebody
+   is in one you can shoot at them and cast at them, but they cannot cast
+   back."*)
+
+   `pit` is a WALKABLE kind, like `ember` and unlike `fire`, and it earns a word
+   by #61's own test: it is a place with its own rule. Five rules, and they are
+   all one idea - THE RIM IS A FLOOR YOU ARE STANDING UNDER:
+
+     · a body SHOVED, hooked, dragged or thrown over the edge takes PIT_FALL
+       at once, through any armour. A body that WALKS in takes nothing: it
+       climbed down, which is a decision and not an accident. The fall is what
+       the shove buys, and that is the whole of what makes the hole a tool;
+     · getting out is a turn. `moveBudget` is 1 while you are in one, and a
+       step over the rim spends whatever the turn had left (`pitClimb`);
+     · nothing physical crosses the rim in either direction. No swing, no
+       spear, no kick, no hook;
+     · nothing is worked from the bottom of a hole either, so a caster down
+       there is a caster with nothing to say;
+     · an arrow does not care. You can shoot into a pit and out of one.
+
+   ⛑ THE RIM IS A DIFFERENCE AND NOT A PLACE, which is what `acrossRim` says
+   and it is the load-bearing decision in this block. Two bodies down in the
+   same hole are on one ground and fight normally - the user's sentence is about
+   the pit against the FIELD and does not consider pit-to-pit, and a rule that
+   refused it would need explaining every time two people fell in together.
+   Pits are allowed to be adjacent (his words), so this case is not theoretical.
+
+   ⚠ A PIT DOES NOT HOLD AN OGRE, and that is arithmetic as much as fiction.
+   `sizeOf>=2` is exempt, which (a) matches #46's *"an ogre does not get moved"*
+   - no `push` act in the game can put one in anyway - and (b) means a two-hex
+   body can never be half in and half out, which is the case `inPit` would
+   otherwise have to answer by reading a tail.
+
+   ⚠ AND `B.hasPits` GATES THE WHOLE THING, so every fight in the game that
+   has no hole in it pays one boolean read per aim and nothing else. */
+const PIT_FALL=10;      /* what going over the edge costs, through any armour */
+/* what both brains charge a hex for being a hole, in the movement scorers'
+   own unit (six a hex of walking). ⛑ IT IS DELIBERATELY SMALLER THAN
+   `EMBER_AI`: the fire hurts you for standing in it and the pit does not, so
+   this has to read as *walk round it* and never as *never*. A line that
+   refused to cross a hole would simply stop, and a hazard the enemy will not
+   enter under any circumstances is a wall wearing a hazard's paint. */
+const PIT_AI=26;
+const pitAt=(c,r)=>!!(B&&B.terr&&B.terr[K(c,r)]==='pit');
+const inPit=u=>!!(u&&u.col!==undefined&&sizeOf(u)<2&&pitAt(u.col,u.row));
+const pitPen=p=>pitAt(p[0],p[1])?PIT_AI:0;
+/* one of them is under the floor and the other is on it */
+const acrossRim=(a,d)=>!!(B&&B.hasPits)&&inPit(a)!==inPit(d);
+/* a HANDS-ON act: anything done by reaching the body. Not a shot, not a
+   working. ⚠ Tested by what it IS rather than by `a.dmg`, because a kick, a
+   hook and a drag all cross the rim physically and none of them is chiefly
+   damage. */
+const handsOn=a=>!!(a&&!a.range&&!a.arcane);
+/* over the edge. Same door as `ignite`: no attacker, no arc, no armour, and
+   `defer` for the callers that are inside strike() and will credit the kill
+   themselves. */
+function fallIn(u,why,defer){
+  if(!u||u.dead||u.downed||u.fled||!inPit(u))return false;
+  fx(u,'INTO THE PIT','#8c6f4a');sfx('rout');
+  say(u.name+(why||' goes over the edge')+' and lands hard at the bottom of it.');
+  return envHurt(u,PIT_FALL,'the fall',defer);
+}
+/* out of the hole, and that is the turn. Called by `walkTo`, which is the one
+   door every mover in the game goes through - so the player's click, both
+   brains, the pet and the kite all pay it without being told about pits.
+   ⚠ `spend()` HAS ALREADY RUN BY THE TIME THIS DOES at every call site, so
+   zeroing what is left cannot go negative and cannot skip the bookkeeping. */
+function pitClimb(u,from){
+  if(!B||!B.hasPits||!u||sizeOf(u)>=2)return;
+  if(!pitAt(from[0],from[1])||inPit(u))return;
+  u.actions=0;
+  fx(u,'CLIMBS OUT','#c9a227',true);
+  say(u.name+' gets an elbow over the rim and hauls out of the pit. '+
+    'That is the whole of the turn.');
 }
 /* GROUND NOBODY STANDS ON. `rock` is a boulder or a palisade; `fire` is the
    camp's fire-pit.
@@ -19268,7 +19384,15 @@ const mayAim=(u,a,t)=>
      before they pick. Put it only in clickHex and the enemy line keeps
      spearing through trees while the player's cannot, which is the two-brain
      divergence this file has been bitten by four times. */
-  !reachBlocked(u,t,a);
+  !reachBlocked(u,t,a)&&
+  /* ⛔ #250 - AND THE RIM, WHICH IS THE SAME KIND OF REFUSAL AS THE OAK ABOVE
+     and belongs in the same sentence for the same reason: a rule stated in
+     `clickHex` alone is a rule the enemy line does not have. Both halves of the
+     user's sentence are here - nothing physical crosses the rim in either
+     direction, and nothing is worked from the bottom of a hole. Shooting is
+     untouched, in both directions, which is the third half of it. */
+  !(handsOn(a)&&acrossRim(u,t))&&
+  !(a.arcane&&inPit(u));
 /* ogres do not need to touch you — there just have to be enough of them near */
 function weightNear(u){
   if(!B)return 0;
@@ -19431,6 +19555,15 @@ function groundNote(c,r,u){
     'and you are alight: '+EMBER_HIT+' at once, through any armour, then '+BURN_TICK+' at the '+
     'top of each of your turns. Standing in it when your turn comes round is the first hit '+
     'again. Water puts it out.'};
+  /* #250 - and the figures here are the rules of the world, like the water's
+     and the fire's above, so they print whatever SHOW_HIT_ODDS is set to. */
+  if(t==='pit')return {n:'A PIT',d:big
+    ?'There is too much of you to lose in it. You step down and your head is still over '+
+     'the rim, so nothing here applies to you.'
+    :'Shove somebody in and the fall alone is '+PIT_FALL+', through any armour. Getting '+
+     'out is a whole turn: one hex, over the rim, and nothing left after it. Nothing '+
+     'swings across the rim either way, and nobody works a spell from down there. '+
+     'Arrows do not care.'};
   if(t==='rock')return loneRock(c,r)
     ?{n:'A BOULDER',d:'Nobody walks over it. A shot goes over it and is a worse shot for it '+
       '(COVER, −14); a reach-2 thrust goes over it for nothing. An ogre can pick this one up, '+
@@ -19644,6 +19777,11 @@ function moveBudget2(u){
 }
 function moveBudget(u){
   if(u.rooted>0)return 0;
+  /* #250 - in a hole. One hex, and that hex is the whole of the move, whether
+     it is spent climbing out or shuffling along the bottom. It sits ABOVE
+     every other rule here on purpose: nothing a body carries makes a rim
+     shorter, and a cutter's spare hex out of a pit would be nonsense. */
+  if(inPit(u))return 1;
   /* #111 - the hex DISENGAGE banked last turn. Declared here so the reach
      preview, the MOVE card, the sheet and both AI brains all read it. */
   const disB=u.disBonus||0;
@@ -19751,6 +19889,8 @@ function walkTo(u,c,r,rm){
   }catch(e){path=[];}
   u.col=c;u.row=r;
   walkMark(u,from,path.length?path:[[c,r]]);
+  /* #250 - the rim, at the same door and for the same reason as the fire below */
+  pitClimb(u,from);
   /* #186 - the ground crossed can be on fire. Same door every mover uses, so
      the player's click, both brains, the pet and the kite all pay it. */
   emberCross(u,path.length?path:[[c,r]]);
@@ -20686,6 +20826,7 @@ function strike(a,d,act,mult){
       faceToward(d,a.col,a.row);
       fx(d,'DRAGGED','#c15d55');sfx('rout');
       if(onEmber(d))ignite(d,' is dragged through the fire',true);   /* #186 */
+      fallIn(d,' is hauled over the edge',true);                     /* #250 */
       say(a.name+' takes '+d.name+' with her, hauled out of the line and dropped '+
         'against her flank.');
       /* held under long enough to breathe some of it — the ORIGIN of the
@@ -20760,6 +20901,9 @@ function strike(a,d,act,mult){
          the fire is the whole reason the ground can be stood on. Forced
          movement does not go through walkTo, so it asks here. */
       if(onEmber(d))ignite(d,' is shoved into the fire',true);
+      /* ⛔ #250 - AND THIS LINE IS THE ASK. Every other rule the pit carries
+         exists so that this one is worth doing. */
+      fallIn(d,force>0?' is shoved over the edge':' is hooked over the edge',true);
     }
     if(hitWall&&stepped<want){
       /* stopped by something solid: the rest of the shove goes into them */
@@ -21137,7 +21281,12 @@ function fx(u,txt,col,small){
   if(!hx)return;
   const p=relPt(hx,$('bField'));            /* #83 - relPt, not the raw rects */
   const el=document.createElement('div');
-  el.className='fx'+(small?' small':'');el.textContent=txt;el.style.color=col;
+  /* ⛔ #250 - `small` TAKES A CLASS NAME AS WELL AS `true`, and every existing
+     caller is untouched. The note above says the class decides only the SIZE and
+     the slot decides the line; a second size band therefore needs a class and
+     nothing else. `true` still means the mono caption it always did. */
+  el.className='fx'+(small===true?' small':small?' '+small:'');
+  el.textContent=txt;el.style.color=col;
   const slot=fxSlot(K(u.col,u.row));
   const wait=paced(slot*70);
   el.style.left=(p.x+26)+'px';
@@ -21997,6 +22146,10 @@ function learnTurn(u){
      because the whole point of this one is to arrive while the line can
      still be put somewhere else. */
   if(B.flowers&&Object.keys(B.flowers).length)learn('learn_bloom');
+  /* #250 - the same shape and the same reason as the bloom above it: the one
+     thing about this ground worth knowing while the line can still be put
+     somewhere else. `B.hasPits` is the held read, so this costs a boolean. */
+  if(B.hasPits)learn('learn_pit');
   /* nothing this body carries can touch anything from where it is standing.
      Reach rather than distance, so it does not lie to a spear, and the bow is
      included, so it does not lie to the archer either. */
@@ -23140,6 +23293,10 @@ function throwBody(u,act,pas,c,r){
   pas.hp=Math.max(1,pas.hp-knock);
   mor(pas,foe?-12:-6,'it was thrown');
   fx(pas,'THROWN','#d9bd7e');sfx('hurl');
+  /* #250 - an ogre can throw somebody into a hole, and the landing is the
+     landing plus the fall. It is the one forced move that does not come through
+     the shove block, so it asks here, the way the fire already does. */
+  fallIn(pas,' comes down over the edge');
   const near=alive().filter(x=>x.side!==pas.side)
     .sort((x,y)=>hdist([c,r],[x.col,x.row])-hdist([c,r],[y.col,y.row]))[0];
   if(near)faceToward(pas,near.col,near.row);
@@ -23704,6 +23861,18 @@ function clickHex(c,r){
     if(reachBlocked(u,tgt,a)){
       say('There is a tree between you and it. A spear is long, and it is not that long.');
       return;}
+    /* #250 - the rim. Same contract as the tree and the size gate above it: the
+       offer is withdrawn, nothing is spent, and the board says which of the two
+       of them is standing in the wrong place. */
+    if(handsOn(a)&&acrossRim(u,tgt)){
+      say(inPit(u)?'You are under the floor of this fight. Nothing you can reach from down '+
+            'here is up there.'
+        :'It is down in the pit. You would have to go in after it, and then you would '+
+         'both be down there.');
+      return;}
+    if(a.arcane&&inPit(u)){
+      say('Not from down here. Whatever this needs, it needs sky and room to do it in.');
+      return;}
     /* ═══ #46 — THE SIZE GATE, AND IT COSTS NOTHING TO LEARN ══════════════
        The offer is withdrawn, never the action wasted: the click does nothing
        and spends nothing, exactly the contract a BLOCKED lane has. Making a
@@ -24222,6 +24391,16 @@ const STATUS={
     d:'−'+BURN_TICK+' at the start of each of its turns. Water puts it out; the fire under it '+
       'starts it again.'},
   rooted:  {n:'Transfixed', g:'👁',col:'#e0b84a',d:'Cannot move or disengage. It can still swing.'},
+  /* ⛔ #250 - COMPUTED, LIKE `chilled` AND `nearring`, BECAUSE IT IS A FACT
+     ABOUT THE GROUND AND NOT ABOUT THE BODY. A copied-on flag would follow a
+     body that had been shoved back out of the hole. Without this badge the
+     player is refused a swing by a rule with nothing on screen behind it -
+     which is #156's own finding, and the reason it is here rather than only in
+     the log. ⚠ Grepped this register for the key first; a duplicate is not an
+     error and the later one silently wins. */
+  inpit:   {n:'In the pit',  g:'▽',col:'#8c6f4a',on:inPit,
+    d:'Getting out is a whole turn. Nothing swings across the rim either way and it '+
+      'cannot work a spell from down there. It can still shoot, and be shot at.'},
   /* #72 - TWO ENTRIES, ONE STATE, AND ONLY EVER ONE OF THEM SHOWING. The
      wall is now a fact about the ground rather than a flag she carries
      (wallLive), so the board has to be able to say "braced, and doing
@@ -25474,7 +25653,7 @@ function aiTurn(u){
           nbrs(p[0],p[1]).some(q2=>B.terr[K(q2[0],q2[1])]==='fire'))?14:0;
         /* #186 - and nothing ends its move standing IN the burning ground.
            The same line exists in autoStep, three times (both brains). */
-        const emberP=emberPen(p);
+        const emberP=emberPen(p)+pitPen(p);          /* #250 - and the hole */
         /* the human trick: a hex that completes a row of three is worth
            walking to — the line is the only formation anybody can learn */
         const lineB=(doc.lineSeek&&!at(p[0],p[1])&&inLineAt(p,u.side))?doc.lineSeek:0;
@@ -25528,7 +25707,7 @@ function aiTurn(u){
         Object.keys(rm.dist).forEach(k=>{const p=k.split(',').map(Number);
           /* closing on the target, but not so far ahead that nobody is with me */
           const dd=hdist(p,[goal.col,goal.row])+
-            (anchor?hdist(p,anchor)*(cohere?0.7:0):0)+emberPen(p)/6;   /* #186 */
+            (anchor?hdist(p,anchor)*(cohere?0.7:0):0)+(emberPen(p)+pitPen(p))/6;   /* #186, #250 */
           if(dd<bd){bd=dd;best=p;}});
         /* ...and if that pick does not actually get us any closer, we are in a
            pocket and it will oscillate there forever. Walk the real path. See
@@ -25676,7 +25855,20 @@ const TERRAIN={
      the forest below is the "where else", at lower odds, because a wood on
      fire is a wood you notice. See lightEmbers() for the shape of a patch and
      the EMBER block near mcost for what standing in one costs. */
+  /* ═══ ⛔ #250 - AND THE RIDGE IS WHERE THE GROUND HAS HOLES IN IT ════════
+     (User, 2026-08-26: *"Especially relevant where there is a rocky ravine and
+     a lot of stones."*)
+     `pits` is the ceiling on how many a board of this ground may carry and
+     `pitOdds` is how often it carries any - the same pair as `blaze`, for the
+     same reason. ⛔ THIS IS THE ONLY GROUND WITH THE DIAL AND THAT IS A
+     DECISION, not an oversight: every fight on it (the Sling-Line, the
+     Steading-Line, Something in Armour) is in the back half of the road, which
+     is where `pitDue` lets a hole exist at all, so the dial and the gate agree
+     without either being told about the other. Widening it is one field per
+     row - and see the note on `pitDue` for what a wider one would cost the
+     three hand-tuned fights that own the other grounds. */
   rocky  :{paint:'dust',  marsh:.93, rock:.975, trees:2, blaze:2, blazeOdds:.5,
+           pits:2, pitOdds:.65,
            pool:['broken','spine','anvil','flanks','strewn','open']},
   /* the ogres' own camp — a ring of stacked timber with two gaps in it */
   camp   :{paint:'teal',  marsh:.99, rock:.99,  layout:'camp'},
@@ -26029,6 +26221,41 @@ FIELDS.snarejoin=Object.assign({},FIELDS.snare);
    consequence rather than a feature, and it is a good one: the old build let
    you learn a board by heart and reload onto it.
    ═══════════════════════════════════════════════════════════════════════ */
+/* ═══ ⛔ #250 · NOT BEFORE THE MIDDLE OF THE MAP ═══════════════════════════
+   (User, 2026-08-26: *"Let's introduce it as a condition for now, and it may
+   turn up on the map somewhere from the middle of the map onward."*)
+
+   ⛔ ANCHORED TO THE SHAPE OF THE MAP AND NEVER TO A NODE ID OR A DAY COUNT.
+   That is `armourWhere`'s rule and #160's, written out in full at both: a rule
+   phrased against a node's PROGRESS breaks silently the day somebody reorders
+   the map, and #71 proved it by moving the Muster Field and nearly firing the
+   Thing in Armour on top of the Fen-Mother. `stepsToGoal()` counts roads
+   BACKWARDS from the bells, so what it says about the START is the depth of
+   the whole map and the middle of it is half of that. Measured on the map as
+   it stands: `hold` is 20 roads out, so 10 or fewer is the back half, i.e.
+   the Clan Wedding onward.
+
+   ⛑ AND THE DIAL AND THE GATE WERE PICKED AGAINST EACH OTHER. The three
+   fights fought on `rocky` sit at 8, 4 and wherever `armourWhere` lands, so
+   all three are inside this gate; every fight in the front half is fought on
+   `fen`, `forest`, `camp` or `swamp`, none of which carries the dial. That is
+   why nothing had to be excluded by hand.
+
+   ⚠ THE PRACTICE FIELD IS EXEMPT, and that is what the practice field is for:
+   #61's own note calls it *"where a terrain gets played before it gets to the
+   act"*, and a ground whose one new object cannot be looked at fails that.
+   ⚠ IT FAILS CLOSED. No map, no node, no run, no holes. A feature that
+   silently stops appearing is better than one that appears where the balance
+   was not written for it - and LINT 8i is what says so out loud.
+   ⚠ `'hold'` IS THE START, and it is the same literal `allRoads()` defaults
+   to twelve lines below. LINT 8i asserts the node exists and is deep. */
+function pitDue(){
+  if(typeof SIM!=='undefined'&&SIM.on)return true;
+  try{
+    const d=stepsToGoal(),here=d[G.at],deep=d.hold;
+    return here!==undefined&&deep>1&&here<=deep/2;
+  }catch(e){return false;}
+}
 function fieldFor(kind,pin){
   const place=FIELDS[kind]||FIELDS.snare;
   const pick=(typeof SIM!=='undefined'&&SIM.on&&SIM.ground&&SIM.ground!=='as')?SIM.ground:null;
@@ -26040,6 +26267,13 @@ function fieldFor(kind,pin){
   out.trees=out.trees||0;out.huge=out.huge||0;
   out.deep=out.deep||0;out.flowers=out.flowers||0;
   out.blaze=out.blaze||0;out.blazeOdds=out.blazeOdds||0;      /* #186 */
+  out.pits=out.pits||0;out.pitOdds=out.pitOdds||0;            /* #250 */
+  /* ⛔ #250 - and the whole dial goes off in the front half of the run. The
+     gate is HERE and not inside `digPits`, so the board build's `if(TF.pits)`
+     guard keeps its one meaning - *this ground has no holes, so consume no
+     randomness* - which is the only thing that makes "no shipped fight may
+     look different" a checkable claim. */
+  if(!pitDue())out.pits=0;
   /* THE ARRANGEMENT. A place with no pool at all is OPEN, never "whatever
      the base roll left there" - the old default was three random clumps and
      deleting it is what #90 was for. */
@@ -26209,6 +26443,47 @@ function lightEmbers(terr,T,rnd){
     if(cells.length<2)continue;
     cells.forEach(p=>{terr[K(p[0],p[1])]='ember';});
     i++;
+  }
+}
+/* ═══ ⛔ #250 · WHERE THE HOLES GO ═════════════════════════════════════════
+   Deliberately the same shape as `lightEmbers` above, and the same three
+   guards, because a generator that invented its own placement rules would be
+   the fourth answer on this board to *where may a thing be put*:
+     · never in either deployment band, never on a reserved hex, and only on
+       `field`, so nothing generated stands in a hand-built layout's way;
+     · THE ODDS ROLL IS TAKEN EVEN WHEN IT FAILS, so a ridge with no hole in it
+       consumes exactly one number and the rest of its ground is identical for
+       a given seed whichever way the coin fell;
+     · guarded upstream on `TF.pits`, so every ground without the dial consumes
+       nothing at all and not one shipped fight moves.
+
+   ⛑ AND PITS MAY TOUCH, WHICH IS THE ONE PLACE THIS DIFFERS FROM THE FIRE.
+   The user asked for it in as many words (*"there are some number of them,
+   they can be next to each other"*), and it is the right shape for a hole: two
+   touching embers read as one wide FIRE, which `lightEmbers` refuses because a
+   wall of fire is a wall; two touching pits read as one wide HOLE, which is
+   exactly what a hole is. So the second one is dug beside the first about half
+   the time rather than being forbidden from it, which is what turns *"sometimes
+   one, sometimes two"* into a picture instead of two specks. */
+function digPits(terr,T,rnd){
+  if(rnd()>=T.pitOdds)return;
+  const open=(c,r)=>{
+    if(c<DEPLOY_EDGE||c>=COLS-DEPLOY_EDGE)return false;
+    if(reserved(c,r))return false;
+    return terr[K(c,r)]==='field';};
+  const want=Math.min(T.pits,1+(rnd()<.5?1:0));
+  const dug=[];
+  for(let i=0,tries=0;i<want&&tries<240;tries++){
+    let c,r;
+    if(dug.length&&rnd()<.5){
+      const near=nbrs(dug[0][0],dug[0][1]).filter(q=>open(q[0],q[1]));
+      if(!near.length)continue;
+      const q=near[(rnd()*near.length)|0];c=q[0];r=q[1];
+    }else{
+      c=DEPLOY_EDGE+((rnd()*(COLS-DEPLOY_EDGE*2))|0);r=(rnd()*ROWS)|0;
+    }
+    if(!open(c,r))continue;
+    terr[K(c,r)]='pit';dug.push([c,r]);i++;
   }
 }
 /* read the placed flowers off the finished board, all asleep. Runs AFTER
@@ -27759,6 +28034,46 @@ function paintTerrain(){
       g.globalAlpha=1;g.fillStyle='#ffd27a';
       for(let i=0;i<4;i++){g.fillRect(p.x-14+rnd()*28,p.y-2+rnd()*8,1.5,1.5);}
       g.restore();
+    }else if(t==='pit'){
+      /* ═══ ⛔ #250 - A HOLE, AND IT IS PAINTED FLAT LIKE THE EMBER ABOVE AND
+         NOT AS A MODEL LIKE THE FIRE-PIT. A body STANDS IN this, so nothing
+         here may rise above the hex or a token would be drawn behind its own
+         ground. The only thing that makes it read as *down* rather than as a
+         black patch is that the FAR wall catches light and the near lip does
+         not, which is the same trick the boulder's shadow uses one branch
+         below and costs two strokes. */
+      g.save();
+      /* the spoil the digging left round the mouth. Brighter than the ground
+         on purpose: it is the only part of this that is ABOVE the surface, and
+         it is what separates a dug hole from the shadow under a boulder. */
+      g.globalAlpha=.72;
+      for(let i=0;i<9;i++){const a=i/9*6.283+rnd()*.7;
+        g.fillStyle=i%2?'#8a7550':'#6b5a3e';
+        g.beginPath();g.ellipse(p.x+Math.cos(a)*(22+rnd()*4),p.y+Math.sin(a)*(14+rnd()*3),
+          3.2+rnd()*2.2,2.2+rnd()*1.6,a,0,7);g.fill();}
+      g.globalAlpha=1;
+      /* the mouth. The gradient's centre sits ABOVE the middle so the black
+         pools at the near lip, which is where a hole is deepest to an eye
+         looking into it from this angle. */
+      const gp=g.createRadialGradient(p.x,p.y-5,1,p.x,p.y+4,23);
+      /* WARM black and not blue black, which is not a taste: the hex layer
+         paints a teal wash over the ground canvas, so a blue-black mouth
+         composites to the same colour `marsh` and `deep` wear and the hole
+         reads as a POND. Measured on the shot, which is the only way to see
+         it - the paint on its own looks right in both. */
+      gp.addColorStop(0,'#100b06');gp.addColorStop(.5,'#080502');
+      gp.addColorStop(1,'#030201');
+      g.fillStyle=gp;g.beginPath();g.ellipse(p.x,p.y,22,14,0,0,7);g.fill();
+      /* the FAR wall, lit: a crescent rather than a line, because a hairline
+         reads as an outline and an outline reads as a puddle */
+      g.globalAlpha=.9;g.fillStyle='#7d6845';
+      g.beginPath();g.ellipse(p.x,p.y,22,14,0,3.30,6.12);
+      g.ellipse(p.x,p.y+3.5,18.5,10.5,0,6.12,3.30,true);g.fill();
+      g.globalAlpha=1;
+      /* and the near lip, which is the only edge with light on the OUTSIDE */
+      g.strokeStyle='#9c8560';g.lineWidth=1.6;
+      g.beginPath();g.ellipse(p.x,p.y+.6,22,14,0,.35,2.79);g.stroke();
+      g.restore();
     }else if(t==='rock'){
       /* a broken outcrop: three stones and a shadow. In the camp the same
          terrain is a stacked palisade — see makeObstacles — and the timber
@@ -28454,7 +28769,11 @@ function render(){
              #94 point 8: and MOVE puts its hex count in the same slot, off
              the same moveBudget() call the plaque and the reach preview use. */
           (a.dmg?'<span class="adm">'+a.dmg[0]+'-'+a.dmg[1]+'</span>':'')+
-          (a.move?'<span class="adm stride">'+moveBudget(u)+' HEXES</span>':'')+
+          /* ⚠ #250 - `1 HEXES`. It has been reachable since crippled-in-the-marsh
+             and nobody had ever seen it, because nothing put a body on a budget
+             of one often enough to notice. A pit does: `moveBudget` is 1 for
+             every body in a hole, so the card reads it on every climb. */
+          (a.move?(b=>'<span class="adm stride">'+b+(b===1?' HEX':' HEXES')+'</span>')(moveBudget(u)):'')+
           /* #102 point 4 - what it is FOR, on the acts whose numbers do not
              say it. Empty for a plain swing, on purpose: see ROLE{}. */
           (roleOf(a)?'<span class="role">'+roleOf(a)+'</span>':'')+
@@ -28971,6 +29290,22 @@ function render(){
             and then refused. Read the note directly above - it is the same
             rule and this is its second customer. */
          !reachBlocked(u,occ,offA)&&
+         /* ⛔ #250 - AND THE RIM, WHICH IS `mayAim`'s CLAUSE REPEATED, AND THIS
+            SITE IS #148's OWN WARNING ARRIVING FOR THE FIFTH TIME. The branch
+            above is a HAND-COPY of `mayAim`'s size gate and its oak, so a rule
+            added to one and not the other lights half a hex. Measured before
+            this line went in: a foe standing in a pit had NO offer ring (that
+            comes off `offerAtk`, which asks `mayAim`) and had `81%` printed
+            over its head, because the FIGURE comes off here and the RING comes
+            off there. A percentage on a swing that will be refused is the
+            promise-versus-payment split this project has caught six times.
+            ⏳ THE HONEST FIX IS FOR THIS BRANCH TO ASK `mayAim`, and it is not
+            a one-line change: `mayAim` refuses a BLOCKED lane outright while
+            this site deliberately draws one as refused-red six lines down, and
+            it refuses `rear`/`distract` acts that this site lights on every
+            body. Doing it properly is its own entry. */
+         !(handsOn(offA)&&acrossRim(u,occ))&&
+         !(offA.arcane&&inPit(u))&&
          udist(u,occ)<=(offA.range||offA.reach||0)){
         edge='#c9c6bb';fill='rgba(150,190,180,.26)';
         if(offA.dmg)odds=hitBreakdown(u,occ,offA).total;
@@ -30851,7 +31186,7 @@ function autoStep(){
         if(at(p[0],p[1]))return;
         const exp=exposureAt(p,u.side),step=B.reach.dist[k]*0.2;
         const knot=anchor?hdist(p,anchor):0;
-        const emberP=emberPen(p);               /* #186 - see aiTurn's twin */
+        const emberP=emberPen(p)+pitPen(p);     /* #186, #250 - see aiTurn's twin */
         aim.forEach((t,i)=>{
           const dd=udist(p,t);
           if(dd>rng)return;
@@ -30891,7 +31226,7 @@ function autoStep(){
           const p=k.split(',').map(Number);
           if(at(p[0],p[1]))return;
           const d=hdist(p,[want[0].col,want[0].row])*4+exposureAt(p,u.side)*soft*0.6+
-            (anchor?hdist(p,anchor)*1.5:0)+emberPen(p);      /* #186 */
+            (anchor?hdist(p,anchor)*1.5:0)+emberPen(p)+pitPen(p);      /* #186, #250 */
           if(d<bd){bd=d;best=p;}});
         /* the same pocket fix as aiTurn's — both brains or neither */
         const now=hdist([u.col,u.row],[want[0].col,want[0].row]);
@@ -31249,6 +31584,40 @@ window.LINT=function(){
       if(at&&!dealt[ev]&&SLOTS_ON_MAP.indexOf(at)>=0)
         hit('map',ev,'is authored on "'+at+'", which is a dealt slot - '+
           'dealEvents() overwrites it at the top of every run');
+    });
+  })();
+  /* ═══ ⛔ 8i (#250) - A HAZARD THAT CAN NEVER APPEAR ══════════════════════
+     The pit is gated twice - by a dial on a TERRAIN and by `pitDue`, which
+     asks the shape of the map - and either of them can be switched off in
+     silence. That is 8h's own finding on a second surface: the failure is an
+     ABSENCE, and nothing in a run will ever report it.
+     ⛑ PROVED BY MAKING EACH BRANCH FIRE: taking `pitOdds` off `rocky` reported
+     the half-dial; pointing `pitDue`'s depth read at a node that is not on the
+     map reported the anchor; and taking `pits` off `rocky` altogether reported
+     that no ground in the register can carry one. */
+  (function pitsReachable(){
+    const dialled=Object.keys(TERRAIN).filter(k=>TERRAIN[k].pits||TERRAIN[k].pitOdds);
+    dialled.forEach(k=>{
+      const T=TERRAIN[k];
+      if(!T.pits||!T.pitOdds)
+        hit('structure','TERRAIN.'+k,'carries half the pit dial ('+
+          (T.pits?'pits with no pitOdds':'pitOdds with no pits')+
+          '), so digPits either never fires or is guarded off');
+    });
+    if(!dialled.length){
+      hit('structure','TERRAIN','no ground carries `pits`, so the pit can never be dug');
+      return;}
+    /* the gate's own anchor. `pitDue` reads `stepsToGoal().hold` and FAILS
+       CLOSED, so a renamed start node deletes the feature and says nothing. */
+    const deep=stepsToGoal().hold;
+    if(!(deep>1))
+      hit('structure','pitDue','the depth anchor `stepsToGoal().hold` is '+deep+
+        ', so pitDue can never be true and no fight will ever have a pit in it');
+    /* and a dialled ground nothing is fought on is a hazard with no fight */
+    dialled.forEach(k=>{
+      if(!Object.keys(FIELDS).some(f=>FIELDS[f].t===k))
+        hit('structure','TERRAIN.'+k,'carries the pit dial and no FIELDS row is '+
+          'fought on it, so nothing in the act can ever have a hole in it');
     });
   })();
   /* ═══ 8b — THE GRAPH ITSELF (backlog #6) ═══════════════════════════════
@@ -35066,6 +35435,17 @@ const CAPLINES={
     'Do not let the line settle beside one.',
     'Those flowers are shut. They open for company, and what comes off them '+
     'is not good for us. Keep off them.']},
+  /* ⛔ #250 - THE GROUND'S OWN RULE, SAID BEFORE THE GROUND HAS DONE ANYTHING,
+     which is the one thing this tier exists for (#64's split) and which the
+     user asked for in the same breath as the pit itself: *"and when there is
+     one, the captain's tooltip: this is a pit, we can shove."* LEARN voice, so
+     it names the mechanic and says what to do about it. ⚠ NO DIGITS: the fall
+     is a figure and the figure lives on the hex, where `groundNote` prints it. */
+  learn_pit:{tier:'learn',l:[
+    'There are holes in this ground. Put one of theirs in one and the fall alone hurts '+
+    'them, and climbing out is their whole next turn. A boot or a hook will do it.',
+    'Mind the pits. Nothing swings across the rim either way, so a body down there '+
+    'cannot reach you and cannot work a spell. Shove them in, then shoot them.']},
   /* ── HEART · it cost us somebody ───────────────────────────────────── */
   weFell   :{tier:'heart',l:['{N} is down. Get to them before they do.',
                              'That is {N}. Close over them. Now.',
@@ -48553,7 +48933,11 @@ const SIM_GROUNDS=[
   {k:'as',     n:'As the place is', d:'Whatever ground this fight is fought on in the run.'},
   {k:'fen',    n:'The fen',         d:'Wet teal country, standing water in the low ground. Most of the act.'},
   {k:'plains', n:'Plains',          d:'Dry and open, a few scattered trees. Almost nothing to get behind.'},
-  {k:'rocky',  n:'Rocky',           d:'Outcrops and a boulder field. The only real cover in the game.'},
+  /* #250 - and the one ground with holes in it. Named here because the practice
+     field is where a ground gets looked at before it gets to the act, and because
+     `pitDue` is exempt on this screen: in a run the ridge only carries them in the
+     back half of the road. */
+  {k:'rocky',  n:'Rocky',           d:'Outcrops, a boulder field, and pits dug into it. The only real cover in the game.'},
   {k:'forest', n:'Forest',          d:'A great many trees. Firing lanes are rare and you have to walk for them.'},
   {k:'swamp',  n:'Swamp',           d:'Water everywhere, deep channels through it, and a few dry islands.'},
   {k:'bloom',  n:'Blooming field',  d:'Under the corruption. The flowers open when you stand beside them.'},
@@ -48896,6 +49280,23 @@ const BOOT_NEW={
   }
 };
 
+/* ⛔ #250 · HAS THIS PERSON EVER TAKEN THE ROAD? ════════════════════
+   (User, 2026-08-26: *"disable 'practive fight' before person tried 'the road'
+   (icon locked)"*.)
+
+   ⛑ DERIVED FROM THREE FACTS THAT ALREADY EXIST, NEVER A FOURTH FLAG. A new
+   `LEGACY.roadTaken` would have been a second source of truth for a question
+   the save can already answer three ways, and it would have read FALSE for
+   every player who has already played - i.e. it would have locked the practice
+   field for the ten people whose feedback this build is being written from.
+     · `LEGACY.brawlDone`  the opening brawl has been played through (#156)
+     · `LEGACY.runs`       a company has finished a road
+     · `hasSavedRun()`     there is one out there right now
+   ⚠ AND `TEST.on` OPENS IT, because the practice field is also the developer's
+   bench (SIM_FIGHTS is how every fight in the act is driven) and a bench you
+   have to play a run to reach is a bench nobody uses. */
+const roadTried=()=>!!(TEST.on||LEGACY.brawlDone||LEGACY.runs||hasSavedRun());
+
 /* ---------- the menu ---------- */
 function openMenu(){
   SIM.on=false;
@@ -48942,8 +49343,20 @@ function openMenu(){
           go:()=>{clearRun();BOOT_NEW.arm();location.reload();}},
          {t:'No. Go back.',c:'they are still out there',go:openMenu}]);
     }});
-  opts.push({t:'The practice field',
-    c:'any fight in the act, any company, nothing riding on it',go:openSim});
+  /* ⛔ #250 - AND IT IS SHUT UNTIL THE ROAD HAS BEEN WALKED. The front door
+     offered a menu of twelve fights beside the button that starts the game, to
+     a person who has not yet seen one of them - which is the 2026-08-10 report
+     (*"too many options/systems from the start"*) on the very first screen.
+     ⛑ LOCKED AND NOT HIDDEN. A row that is missing teaches nothing and comes
+     back one day as a surprise; a row that is visibly shut says both what is
+     here and what buys it. Same reading as `.slot.blockedslot` on the sheet. */
+  const tried=roadTried();
+  opts.push({t:'The practice field',lock:!tried,
+    state:tried?null:'TAKE THE ROAD FIRST',
+    c:tried?'any fight in the act, any company, nothing riding on it'
+           :'every fight in the act, on any ground, with nothing riding on it. '+
+            'It opens once you have been out there once.',
+    go:openSim});
   /* #247 - and the switches live behind a door now rather than in a corner */
   opts.push({t:'Options',c:'sound and music',go:openOptions});
   /* ═══ #119 - THE TUTORIAL FIGHT ON THE FRONT DOOR ═══════════════════════
@@ -49024,10 +49437,14 @@ function openMenu(){
      documentation, several of them are quoted in the entries that added the
      rows, and the day this screen wants a hover they are already here. Only
      `o.state` reaches the screen, and only one row has one. */
+  /* ⚠ #250 - A `disabled` BUTTON SHOWS NO `title`, so a locked row's reason has
+     to be ON it. That is what `o.state` is for and why the lock writes one. */
   $('mOpts').innerHTML=opts.map((o,i)=>'<button class="popt'+(o.danger?' danger':'')+
-    '" data-i="'+i+'" title="'+esc(o.c||'')+'"><b>'+o.t+
+    (o.lock?' locked':'')+'" '+(o.lock?'disabled ':'')+'data-i="'+i+
+    '" title="'+esc(o.c||'')+'"><b>'+(o.lock?'🔒 ':'')+o.t+
     (o.state?'<span class="mstate">'+o.state+'</span>':'')+'</b></button>').join('');
-  $('mOpts').querySelectorAll('.popt').forEach(b=>b.onclick=()=>opts[+b.dataset.i].go());
+  $('mOpts').querySelectorAll('.popt').forEach(b=>b.onclick=()=>{
+    const o=opts[+b.dataset.i];if(o&&!o.lock)o.go();});
   /* #203 - and when the browser is blocking storage, the foot says so. This is
      the one sentence the shim at the top of the script buys: the game runs, and
      the player is told BEFORE they spend an hour that closing the tab ends the

@@ -25,6 +25,17 @@ back already answered by work that was not about them.
 
 ---
 
+## H · From #250
+
+| | the question | ⭑ mine |
+|---|---|---|
+| **H1** · #250 | **The pit is on the ridge and nowhere else.** `rocky` alone carries the dial, which covers the Sling-Line, the Steading-Line and Something in Armour - every other fight in the back half of the road is fought on `bloom` (the Fen-Mother) or `swamp` (the Snare), and both are hand-tuned bosses. Your words were *"especially where there is a rocky ravine and a lot of stones"*, so this is the literal reading | leave it on `rocky` for one played run and then decide. Widening it is one field per row; the two it would reach are the two fights whose round bands cost real work to set |
+| **H2** · #250 | **Only YOU aim a shove at a hole.** The enemy brain walks round pits (it prices one at 26, less than the fire's 60, so it crosses when it must) and it can drop one of yours in by accident with its own kick, but nothing in it goes looking for the hole. That is why the measurement says the hazard costs 0.85 of a round and changes no outcome: it is a tool, and one side has it | teach the brain to aim it, or leave the pit as the player's own trick. **It is a real balance change either way** and it wants its own entry |
+| **H3** · #250 | **Two bodies down in the same hole fight each other normally.** Your sentence is about the pit against the field and does not cover pit-to-pit; a rule that refused it would need explaining every time two people fall in together, and pits touch on 6 of every 10 two-pit boards | keep it. The alternative is *nothing swings in a pit at all*, which makes a shared hole a place where two people stand and look at each other |
+| **H4** · #250 | **A body in a pit can still SHOOT out of it.** You banned casting back and said nothing about a bow, so the bow stayed. It is the one thing that stops a pit being a death sentence for an archer who gets kicked into one | confirm, or ban the shot too and accept that a shoved archer loses two turns rather than one |
+
+---
+
 ## G · From #249
 
 | | the question | ⭑ mine |

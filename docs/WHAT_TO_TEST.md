@@ -26,6 +26,60 @@
 
 ---
 
+## 🕳 THE PIT, A LOCKED DOOR ON THE FRONT SCREEN, AND ONE TRIANGLE  *(#250 · 2026-08-26 · build log 8f.275)*
+
+### 1 · The pit
+
+**Where to find one.** Front menu → **The practice field** → fight **The Sling-Line** or **The
+Steading-Line**, ground **Rocky**. About two boards in three have a hole in them; sometimes one,
+sometimes two, and the two are often side by side. In a RUN they only appear from the **Clan Wedding
+onward** - the back half of the road - so the fights that can carry one are the Sling-Line, the
+Steading-Line and Something in Armour.
+
+**What it looks like.** A dark mouth with a lit far wall and a ring of spoil round it, painted flat
+into the ground the way the burning scrub is. Hovering the hex says **A PIT** and prints the rules.
+
+**What is supposed to happen.**
+
+| | |
+|---|---|
+| you **shove** somebody in (KICK, a hook-pole, a crossbow bolt, an ogre's throw) | **10 hitpoints, straight through their armour.** The log says so and an `INTO THE PIT` mark comes off them |
+| you **walk** into one | nothing. You climbed down; that was a decision |
+| a body is **in** one | it has a `▽` **In the pit** badge, and its MOVE card reads **1 HEX** |
+| it **steps out** | that is the whole turn. `CLIMBS OUT` comes off it and its actions are gone |
+| **melee across the rim** | not offered, either way. No ring on the hex, no percentage over its head. Click it anyway and the log says which of you is standing in the wrong place |
+| **a spell from down there** | refused, with a line |
+| **a spell INTO the pit** | fine |
+| **shooting** | fine, in both directions |
+| **two bodies in one hole** | they fight each other normally. The rim is what stops a swing, and they are both under it |
+| **an ogre** | the pit does not hold one. It steps down and nothing above applies |
+
+**The Captain says it once, ever**, the first time you take a turn on a board with a hole in it:
+*"There are holes in this ground..."*
+
+**What would be a bug:** a percentage printed over somebody you cannot reach; a body that cannot get
+out of a hole; a hole under somebody at the start of a fight; the hole reading as a puddle.
+
+### 2 · The practice field is shut until you have taken the road
+
+Front menu, on a machine that has never played: **🔒 The practice field · TAKE THE ROAD
+FIRST**, dimmed and dead. It opens the moment you have played the opening brawl, or have a run out
+there, or have finished one. **⚙ dev mode opens it too**, because it is also the bench.
+
+**What would be a bug:** it is locked on a machine that HAS played (it should never be), or the row
+is missing rather than shut.
+
+### 3 · The mood float is one triangle
+
+Any fight. When somebody's mood moves by enough to be worth a mark, one **▲** or **▼** comes
+off their head instead of the old arc-plus-one-to-three-triangles. **The size is the figure:** small,
+middle, large at the same three thresholds the old glyphs used.
+
+**What would be a bug:** two marks off one body for one blow; a triangle you cannot tell the
+direction of; the big one overlapping the line under it.
+
+---
+
 ## 🧪 FOURTEEN ASKS: THE BATTLE CARD, THE MOVEMENT ZONES AND THE COMPANY SHEET  *(#249 · 2026-08-26 · build log 8f.274)*
 
 ### 1. The three pools are sockets now, on both screens
