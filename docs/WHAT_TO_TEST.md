@@ -26,6 +26,104 @@
 
 ---
 
+## 🧾 SEVEN SMALL FIXES: A CARD, A SHEET, A DOLL, A STASH AND THE UNDO  *(#251 · 2026-08-26 · build log 8f.276)*
+
+### 1 · The contract card stops receipting its own sentence
+
+**Where.** New run → win or skip the tap-room brawl → **THE MAN IN THE CORNER**, the last beat.
+
+**What changed.** The two chips under the prose - `◉ +88 CROWNS` and `+3 HEADS` - are gone. The
+three faces with their names are not.
+
+**What to check.**
+
+- the paragraph above still reads *"He puts a purse on the wood ... It appears you are a company
+  now"*, which is what the chips were saying a second time;
+- **the purse still arrives.** Press the door and the world bar should open with the crowns on it.
+  If the number is wrong, that is a payment bug and not a layout one;
+- the card should scroll **less** than it used to. The fade at the top edge still fires, because it
+  is still 43px over - it was 99.
+
+### 2 · The one door wears a shoe
+
+Same card. The button reads **⚖️ 👣 Chalk THE … on the wagon, and go.** Two glyphs, and the left
+rail should be the same coin-yellow it has always been. If the rail has gone grey, `leave` has
+taken the cascade, which it must not.
+
+### 3 · The company sheet's header
+
+**Where.** INVENTORY → anybody.
+
+**What changed.** The small row of marks under the name - race, class, the level ring - is deleted.
+
+**What to check.**
+
+- **every fact on it is still on the roster tile to the left**: the class mark bottom-left of the
+  portrait, `L1` bottom-right, the race word on the row, and the progress arc round the picture;
+- **rest on that `L1`** - it should now carry the exact experience figures, which used to be on the
+  deleted ring;
+- nothing below the name moved. The header is 90px tall whatever is in it, because the portrait
+  tile sets its height.
+
+⚠ **The one case worth an eye:** a hire who has not picked a trade yet. His sheet no longer says
+NO TRADE YET in words; the green *A CLASS TO PICK · THE ★ PERKS TAB* line says it when a level is
+banked, and the roster's class mark is an empty ring. If that reads as a blank, say so - it is
+`SHEET_HEAD_MARKS` and one word puts the row back.
+
+### 4 · The three pools are the battle card's size now
+
+Armour, hitpoints and mood on the sheet are **20px tall with a 15px figure**, which is exactly what
+the battle plaque draws.
+
+**What to check, and it is a height check.** Open the sheet on a **crew member** (not the Captain -
+he has no dismiss button and is the easy case), **with a level banked and THE CIRCLE on him**. That
+is the worst body in the game for this column and it measured 29px of slack. Nothing should scroll,
+and the doll and the SKILLS caption below it must not touch.
+
+### 5 · The doll is a body
+
+**Where.** The same sheet, the gear panel.
+
+Top row **MAIN HAND · ARMOUR · OFF HAND**, with the armour box sitting about nine pixels higher
+than the two hands. Bottom row **TRINKET · BAG**, centred under the shoulders.
+
+**What to check.**
+
+- **on the Captain there is a third box in the bottom row (PET)** and the row fills the width
+  instead of centring. Both are correct;
+- the boxes in the top row are bottom-aligned, so a two-line box beside a three-line box lines up
+  along its foot;
+- click any filled slot: it still comes off into the stash.
+
+### 6 · The stash reads two up
+
+**Where.** INVENTORY → **THE STASH**, with a few things in it.
+
+Two columns. The caption, the *Empty. Everything is on somebody.* line and the **✂ BREAK** door all
+span the full width - if BREAK ever sits in one of two columns it reads as a third item.
+
+⚠ **Check the PERKS tab immediately afterwards.** It must still be a single column, and the stash
+must be invisible on it. That is the one thing this change could have broken invisibly.
+
+### 7 · The undo window stops being a wait
+
+**Where.** Any fight. Move a body until it has **no actions left, with the last one spent on a plain
+step** (not an attack, and not a disengage - neither is undoable). **⟲ UNDO MOVE** appears with a
+draining bar.
+
+**What to check.**
+
+- **click anywhere on the board.** The turn should hand over **at once** - the button gone, the next
+  body up. It used to swallow that click and make you watch the bar out;
+- **press ⟲ instead** and the body walks back onto its old hex with its action returned, and it is
+  still its turn;
+- **do nothing** and the bar empties in about three seconds and the turn passes, exactly as before;
+- ⚡ **the bar must never appear already empty.** Move a body that still has an action left: ⟲ comes
+  up with NO countdown drawn on it. Before this entry it wore a drained one, left over from the
+  previous body's window.
+
+---
+
 ## 🕳 THE PIT, A LOCKED DOOR ON THE FRONT SCREEN, AND ONE TRIANGLE  *(#250 · 2026-08-26 · build log 8f.275)*
 
 ### 1 · The pit

@@ -719,6 +719,59 @@ unlifted rule would have left THE THREE BELLS and THE MAN IN THE CORNER as the t
 game that do not unfold and whose doors have no rail, which nothing on screen would have
 explained. ⚠ The COMMENTS in the stylesheet still say `#wDlg` throughout and that is correct:
 they are explaining why the box is gated on `.on` rather than naming a selector.
+## ⛔ #251 · THE ONE CARD WHERE THE PROSE AND THE RECEIPT ARE THE SAME EVENT
+
+*(2026-08-26. The user, both chips struck through in red on the contract card: **"Delete heads and
+crowns"**.)*
+
+⛔ **THIS FILE'S FIRST SENTENCE CAUGHT ITSELF, AND ONLY A SCREENSHOT COULD HAVE FOUND IT.** *A card
+is prose plus a receipt, and they must never say the same thing.* Every enforcement of that rule
+until now has been about a FIGURE typed twice - the `c:` carrying what `fx` carries (#176), the mood
+echo (#150, #151), the ratkin waterworks promising 1 salvage and paying 2. **THE MAN IN THE CORNER
+had no figure in its prose at all and was still saying it twice**, because the two halves of the
+card are one event read a second apart: the last beat is *"He puts a purse on the wood ... It
+appears you are a company now"*, and the chips directly under it read **+88 CROWNS** and
+**+3 HEADS**.
+
+⛑ **SO THE TEST IS NOT "IS THIS NUMBER ALSO IN THE PROSE", IT IS "IS THIS CHIP THE SENTENCE ABOVE
+IT".** A road card's receipt is safe from this by construction: its prose was written before the
+door was pressed and its chips are drawn after. **The opening deck is the exception, because
+`prStage` hands in a `receipt` that sits INSIDE the flow, on the same beat as the sentence it is
+receipting.**
+
+⚠ **AND NOTHING WAS LOST, WHICH IS WHAT MADE IT SAFE TO CUT.** The purse is `CONTRACT_PURSE` and the
+door pays it; the world bar the next screen opens on carries the crowns and the headcount as live
+readouts. **A chip is a receipt for a payment the player is about to watch land anyway.**
+⚑ **The faces stay.** `.tvrwho` is three people with names, which is the card's own last sentence as
+a picture, not a receipt. The divider went with the chips because a rule between one thing and
+nothing is furniture.
+⚡ **It also paid the card 56 of its 99 overflowed pixels back.** #219 records the contract card as
+*"the first card in the game whose flow does not fit"* and spends three cuts on it; the strip went
+**82.6px to 28.9** and the flow now scrolls **43**. That is a fourth cut it did not have, and it
+came out of the same rule the other three did.
+
+⛑ **AND THE DOOR TOOK A SECOND VERB IN THE SAME EDIT** (*"put shoe on the go"*). The label is two
+acts - you take the purse AND you walk out of the tap-room - and it wore only `trade`.
+`['trade','leave']` is legal by the precedent this file already records: THE WARM SPRING's
+`['take','leave']` is two VERBS and is the door that broke #218's first rail cascade. ⚠ **The rail
+does not move, and that is derived rather than lucky**: `leave` is the one intent with no rail row,
+so the coin-yellow the door had as a `trade` door is what it keeps. Measured `rgb(201,162,39)` both
+ways.
+
+⛔ **AND ONE THING ABOUT MEASURING A CARD AT ALL, WHICH COST THIS ENTRY TWO WRONG FINDINGS.**
+`gates.js` has never opened a card, so neither `.claude/rules/ui-scales.md` §5 counter had ever run
+over the stage; `tools/dev/probes/cardfloor.js` is that reading now, and **it must be taken on a
+SETTLED card**. Run in the same tick it reports **twenty** elements under the 10px floor and
+`#prDlg` at `scale(0.965)` - which is #218's `evCardIn` pop-in caught 96.5% of the way through.
+⚠ **Waiting 800ms produces a SECOND artefact that reads exactly like a real defect**: one element
+left, `.evname` at 10px inside a `.evcast` reading `scale(0.97)`, i.e. *9.7px on every card in the
+game*. **There is no authored scale on `.evcast` either** - that is `evColIn`, the column's own
+delayed entry - and at 900ms it is 1.000 and the floor is `[]` on the road deck and the opening
+alike, on this build and on HEAD. ⛑ **So #218's rule wants applying twice: *a card is captured by
+PAUSING the timeline, not by racing it*, and a second reading that merely waited LONGER is not the
+same thing as pausing.** A number taken off a card that is still moving is not a finding; re-run it
+before it reaches a document.
+
 ## ⛔ #219 · THE OPENING IS THE FOURTH DECK, AND THE STAGE STOPPED ASSUMING ITS BOX
 
 *(2026-08-21. The user: **"make intro (before fight) and after picking name in the same event style

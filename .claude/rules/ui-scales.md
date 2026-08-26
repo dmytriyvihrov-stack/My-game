@@ -203,8 +203,8 @@ not write a second one.
 |---|---|
 | the mark | ⛨ `SLOT_ICON.armour` · ♥ blood · **`MOOD_MARK`, one glyph, `U+263A\uFE0E`** *(#249)* |
 | inside, left | the WORD that is a fact: the armour class, the mood rung. Nothing on hitpoints |
-| inside, **the middle** | the figure, `--fs5` on the card and `--fs3` on the sheet *(#249)* |
-| the height | `--sbh`, **20 on the card and 16 on the sheet** *(#249)* |
+| inside, **the middle** | the figure, **`--fs5` on both** *(#251)* |
+| the height | `--sbh`, **20 on both** *(#251)* |
 | the frame | a `box-shadow` on `.sbt`, never on `.sbb` *(#249, and see below)* |
 
 ⛔ **`--sbh` IS A BOX HEIGHT, WHICH §3b ALREADY ESTABLISHED IS NOT ON ANY OF THE THREE SCALES.**
@@ -233,8 +233,24 @@ one number:
 | 17px | `--fs6` | 23 |
 
 ⚠ **AND THE GATE IS `> 1`, WHICH IS THE ONLY REASON 22/17 EVER PASSED.** §5's clip counter ignores a
-single pixel of overflow; 22 under a 17px numeral is 1 over and always was. **The shipped pairs are
-20/15 on the card (1 over) and 16/12 on the sheet (0).** Two is a finding, one is the house state.
+single pixel of overflow; 22 under a 17px numeral is 1 over and always was. **The shipped pair is
+20/15, on BOTH hosts** *(#251)*, which is 1 over. Two is a finding, one is the house state.
+
+⛔ **AND #249's TWO PAIRS BECAME ONE, WHICH OVERRULES THE `--sbh` PARAGRAPH ABOVE WITHOUT
+CONTRADICTING IT** *(#251, 2026-08-26, the user, a red box round all three rows on the sheet:
+*"design better this bar with health, more like in the battle"*)*. #247 gave the sheet 16/`--fs3`
+on the argument that *"the card is read mid-fight at arm's length and the sheet is read at a
+desk"*. That is a reasonable guess and it is not a measurement, and the ask is: **the surface the
+player STUDIES was the one drawn smallest.** So the two hosts agree again and `--sbh` keeps its
+point - a host may still override it, and today neither needs to.
+⛑ **IT WAS GRANTABLE BECAUSE `#iStatTop` IS A FLEX ROW AND ITS HEIGHT IS THE TALLER OF TWO
+COLUMNS, WHICH IS THE ARITHMETIC TO RE-RUN BEFORE THE NEXT +4.** Measured over all 16 body x state
+cases: the three pools stack to **127** against the four tells' **124** on a clean crew member, and
+to **141** the moment a level is banked - and that banked state is the one that owns the worst
+slack in the game. So +12 costs 12 where there is 107px of slack and **0 where there is 38**. The
+sheet's worst body went 38 to 29, `scroll 0` and `overlap []` on every case. ⚠ **A column's cost is
+not its own height, it is its height MINUS its neighbour's**, and a change that reads as free on
+the state the screen opens in can be the whole bill on the state nobody drives.
 ⛔ **So a bar cannot be made shorter without taking the numeral down with it**, and that is a trade
 against #105's *"almost double size of amount hitpoints and armor left"*, not a free win.
 

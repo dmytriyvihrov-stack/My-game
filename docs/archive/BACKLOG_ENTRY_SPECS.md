@@ -4732,3 +4732,113 @@ thing the build does and the wording is the evidence.*
 19. **"На страничке наема рекрутов - показывать у них картинками эти статы - выйдет 4 картинки. Но
     они дадут больше инфы о рекруте"**
     The muster wall. `statIco(k,v)` already exists and is the same lookup as the word.
+
+### Round nine, 2026-08-21: the magic column was measured and it was wrong, and the top rung costs two points
+
+His asks: *"обновить этот док исходя из текущего билда с картинками"* · *"Workings переработай на
+магию"* · *"подсвети опции для макса морали и интелекта"* · *"5 положительный скил - требует двух
+очков. Тогда это выглядит оправдано. И тогда, для того чтобы показать эту динамику возле 5го уровня -
+два пустых квадратика"* · and mid-turn: *"це про магия имел ввиду - там что-то странное было."*
+`shots/204_ladders.html` is rebuilt; the prototype is untouched this round and the main build was
+never touched.
+
+⛔ **HE WAS RIGHT THAT SOMETHING WAS STRANGE, AND IT WAS NOT THE WORD. THE SKETCH HAD FLATTENED THE
+ONE THING INT ACTUALLY DOES.** Measured across the nine bands off the live formulas:
+
+| | today, in the engine | the sketch on the page |
+|---|---|---|
+| a spell LANDS | `38 + 3.4×INT` = **41 … 69 … 99, a 57-point spread** | ±5 on two rungs, i.e. **±10 total** |
+| a spell's DAMAGE | `×(1 + 0.05×INT)` = ×1.05 … ×1.90 (**−28% … +31%**) | −25% … +30% ✓ |
+| the opening | `8 + INT` = **9 … 26 a body** | 15 with ±5 at the edges |
+
+**The damage column was right and the AIM had been crushed to a rounding error** - which silently
+deleted the sentence the engine states in its own comment: *a spell is aimed with the INTELLECT, so a
+stupid caster is genuinely unreliable, and that is the entire point of the ogre battle-mage.*
+⛑ **So the aim becomes the THROUGH-LINE of Intellect, on every rung, the way to-hit and dodge are for
+Agility**: **±7 a rung**, reaching +28 / −28 against today's +31 / −27. Derived off the curve, not
+picked. Magic damage holds +30% / −25% against today's +31% / −28%. ⚠ **The opening is the one place
+this deliberately does NOT follow the engine**: a 17-point swing a body is exactly why nobody can see
+that Intellect drives it, so it flattens to 15 with ±5 at the edges on purpose.
+
+⚑ **THE TOP RUNG COSTS TWO POINTS, WHICH SETTLES WHAT THIS PAGE HAD BEEN CIRCLING SINCE ROUND THREE.**
+A capstone is not a bigger number, it is a rule of its own, so charging one point for it and one point
+for +10% hitpoints was the single dishonest step on the ladder. Two points also protects the pace the
+whole design rests on: at one to two stat points an act, +4 arrives late in act 3 and only for a body
+that spent everything on one stat. **The receipt is two small empty squares (6px) under the +4 digit,
+in the rung's own number column**, so the price reads before the rung does and never as a second stat;
+⚠ **no other rung shows squares** - one point is the default and only the exception needs a receipt.
+
+**THE CAPSTONE OPTIONS ARE LAID OUT AND HIGHLIGHTED, three each, one marked as the pick:**
+
+| | INTELLECT | MORALE |
+|---|---|---|
+| **pick** | **TWICE-TAUGHT** two perk points, now | **THE STANDARD** allies beside them gain +5 nerve at the start of their own turn |
+| | **THE LONG VIEW** +1 perk point and every tier opens a level early, for the rest of the run | **NOBODY RUNS** while this one stands, no ally within two hexes can fall below SHAKEN |
+| | **THE TEACHER** every other body earns +10% experience while this one lives | **THE RALLY** once a fight, a free action: one ally goes back to the nerve they started with |
+
+⚑ **THE PICTURES NOW COME OFF THE RUNNING BUILD.** All 32 v7 arms in the doc were replaced grade for
+grade with the v3 set the prototype embeds, **matched by data URI rather than by position** (the page
+carries them in four places in different orders: the ladder, the strip, the hover and the card
+mockups), and INTELLECT gained the nine brains. 41 images, none broken, no horizontal overflow.
+
+⚠ **THE WORD IS RENAMED IN THE DOC ONLY, AND THE BUILD SWEEP IS NOT THE GREP IT LOOKS LIKE.**
+"working" appears **31 times outside comments** in the prototype, and only about **22 are the game's
+word for a spell**. The other nine are ordinary English - *"the working file reads dev"*, *"stops
+working"*, *"Nobody enjoys it working"*, *"has been working on you since he sat down"* - and a blanket
+replace corrupts all of them. This is the file's own recurring trap (a field that looks like the thing
+you want is not the thing you want), so **the rename is a read-every-hit job, not a sed**, and it also
+touches `SPELLS`' act label, the `Working stave` item name, the two class descriptions, `STATHELP.INT`
+and six battle log lines. Not done; the count is here so nobody starts it blind.
+
+### Round ten, 2026-08-26: the baseline is raised, INT and MOR are rebuilt to his spec, and the doc is cut in half
+
+His asks: *"I like str and agi"* · *"basic hp of human is 60 ... basic chance to hit 70 - and dodge as
+now? (at least for my man)"* · Intellect: *"gives % to skill to land. There is no dodge for skill
+working (it is to land)"*, *"I don't like bonus for opening - lets stick with exp, magic damage and to
+skill"*, *"+1 reach - also, great"*, *"5 - instead of choose 1 of 3 - enemy can't hit you two times in
+one turn (but new enemy can)"* · Morale (*"now is a bullshit"*): *"I like nerve + 10 ... nurv recovery
+per turn ... heals from injuries twice as fast"*, *"+4 Gives good stat boost +2 perks"*, *"-4 it is
+too harsh, make it softer"* · *"clean unneded historical junk from the doc"*.
+`shots/204_ladders.html` is REGENERATED rather than patched; the prototype is untouched this round.
+
+**THE RAISED BASELINE, AND HIS "(at least for my man)" IS WHAT THE CODE ALREADY DOES.** Human hitpoints
+**56 → 60** (so ratkin 45 and ogre 75 at the same ×0.75 / ×1.25), to hit **68 → 70**, dodge unchanged
+at 14. ⚑ **The enemy cannot follow these and needs no exception written**: every foe takes hp, skill
+and dodge off its own template in `build()`, so a raised roster baseline is structurally
+roster-only. ⚠ It is a real buff on every body you own (+4 hitpoints, +2 to hit) and the harness has
+to price it before it ships.
+
+⛔ **INTELLECT: THREE THINGS AND NO FOURTH, AND A SPELL IS NO LONGER DODGED.** The stat is now landing
+a spell (±7 a rung, the through-line), magic damage, and experience, with **+1 reach at +3**. **The
+opening leaves the stat entirely** at his word and becomes a flat **15** for everybody, which also
+deletes the invisible 9-to-26 swing `flankPow = 8 + INT` has been paying since it was written.
+⛑ **And the dodge against a spell goes to ZERO**: today `hitBreakdown` charges `dodgeOf(d) × 0.35`
+against an arcane act at two sites, so a nimble body partly sidesteps a blight-wind. His rule is
+cleaner and it is the one the prose already implies: *a spell lands or it does not*.
+**The capstone is fixed rather than chosen: UNREPEATABLE** - no enemy may strike this body twice in
+the same turn, and a second enemy still can. ⚑ It is a per-turn flag on the DEFENDER, read where a
+target is chosen, so both AI brains obey it without being taught twice.
+
+⛔ **MORALE, REBUILT ON THE THREE THINGS HE KEPT.** +1 **+10 nerve** and climbs 12 · +2 loses nerve
+×0.75 · +3 **mends twice as fast on the road, 12 a day instead of 6** · +4 **+1 rung on a stat of
+your choice and two perk points**. ⚑ **The mend is not a new dial**: `MEND_BASE` 6 per day of travel
+is the number DOUBLE RATIONS already doubles, so the rung turns a knob the player has already met.
+⛑ **The softened bottom**, at his word: −4 was *never climbs back on its own*, which is a death
+sentence; it is now *starts the fight one rung lower*, and the whole negative half holds −10 nerve,
+climbs 5, loses ×1.2. ⛔ **AND THE CAPSTONE NEEDS THE ONE GUARD THE LADDER HAS**: "+1 rung on a stat
+of your choice" must not reach +4, or two points would buy a second capstone free. **It may raise a
+stat to +3 at most** - the only rule in the system that is not written on a rung.
+
+**THE COMPANY, RECOMPUTED:** Captain +1/+1 → 66 hp · 18-26 · 74 · 14 | Vesna 0/0 → 60 · 17-24 · 70 ·
+14 | Marrow −1/−1 → 51 · 8-12 · 67 · 14 | Ilka −1/+1 → 51 · 16-23 · 74 · 14 | Skree −3/+3 → 38 ·
+10-14 · 78 · 18 | Ash −3/+2 → 38 · 10-14 · 80 · 18 | **Bruht +2/−3 → 98** · 32-49 · 64 · 11.
+⚠ **Bruht at 98 is the row to watch**: the ogre body at 75, his +2 rung and `big`'s +16 all stack,
+which is 14 over what he carries today. If that reads as too much, **the trait is the part to cut,
+not the race row** - the race row is what makes an ogre an ogre.
+
+⚑ **AND THE DOC WENT 88KB TO 45KB BY DELETING ITS OWN HISTORY**, at his order. Out: the
+"decided this round" block, the nine-arm strip, the three-arrangements card comparison, every
+icon-sizing measurement, and the settled arguments. A decision page that keeps its own minutes stops
+being a decision page; the minutes are these entries. What stayed is the formula, the givens, the
+race table, four ladders, the two-point rule, the founders, what changes in the engine, and five open
+ideas.

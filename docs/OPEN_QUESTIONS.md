@@ -25,6 +25,14 @@ back already answered by work that was not about them.
 
 ---
 
+## I · From #251
+
+| | the question | ⭑ mine |
+|---|---|---|
+| **I1** · #251 | **A hire with no trade yet has lost his only WORDS.** Deleting the header's mark line took `NO TRADE YET` with it - it was the one chip on that row that kept its text, because `cIcon('none')` is an empty ring and there is no picture of *not having a trade*. The green *A CLASS TO PICK* line covers him the moment a level is banked, and before that the sheet says nothing | leave it. He is one line of green away from being told, and putting one chip back for one case is the conditional furniture this build keeps deleting. **One word (`SHEET_HEAD_MARKS`) restores the whole row** if the blank reads wrong in play |
+
+---
+
 ## H · From #250
 
 | | the question | ⭑ mine |

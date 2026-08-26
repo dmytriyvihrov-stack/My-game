@@ -5065,10 +5065,26 @@ body:has(#battle.on) .whisp{bottom:138px}
 .ibars .bar{height:7px;border:1px solid rgba(0,0,0,.5);margin-bottom:3px}
 .ibars .bar i{display:block;height:100%}
 /* #247 - the three pools are `.sbar` rows here too. The bar keeps `.ibars .bar`'s
-   own edge and bottom margin; only the height comes off `--sbh`. 18 and not the
-   card's 20: this screen is read at a desk, and `#iChar` has 3.8px of slack on its
-   worst body (ui-scales §5), so the column pays for what it takes. */
-.ibars .sbar{--sbh:16px;margin-bottom:var(--p3)}
+   own edge and bottom margin; only the height comes off `--sbh`. */
+/* ⛔ #251 - AND THE SHEET STOPS BEING THE SMALL VERSION. (User, a red box round
+   all three rows: *"design better this bar with health, more like in the
+   battle"*.) #247 gave this screen 16/`--fs3` against the card's 20/`--fs5` on
+   the argument that *"the card is read mid-fight at arm's length and the sheet is
+   read at a desk"*. That was a reasonable guess and the ask overrules it: the two
+   surfaces draw the same three pools off the same block, and the one the player
+   studies was the one drawn smallest.
+   ⛑ AND IT IS FREE ON THE BODY THAT HAS NO ROOM, WHICH IS WHY IT COULD BE
+   GRANTED. `#iStatTop` is a flex ROW and its height is the TALLER of the two
+   columns. Measured over all 16 body x state cases: the pools stack to 127 and
+   the four tells to 124 on a clean crew member (so +12 costs 12 out of 107px of
+   slack), and to 141 the moment a level is banked - which is the state that owns
+   the worst slack in the game, 38px. There the tells are still the taller column
+   at 141 against 139, so the worst case pays NOTHING.
+   ⚠ 20/`--fs5` IS THE CARD'S PAIR AND `ui-scales.md` §3c RECORDS IT AS *one
+   pixel over*, which the clip counter ignores by design. Copying the card means
+   copying that, not improving on it: 21 would be clean and would make the two
+   surfaces disagree about a shared block for one pixel nobody can see. */
+.ibars .sbar{--sbh:20px;margin-bottom:var(--p3)}
 /* ⛔ AND THIS ROW IS NOT BELT AND BRACES. `.ibars .bar{height:7px}` two rules up
    is 0-2-0, exactly what `.sbar>.sbb` is, and it comes LATER in the stylesheet -
    so on this screen and this screen only the old 7px won and the three rows landed
@@ -5079,7 +5095,10 @@ body:has(#battle.on) .whisp{bottom:138px}
 /* #249 - and the sheet's own hard black edge yields to the socket above. The
    bottom margin moves onto `.sbar` with it, or the row would carry two. */
 .ibars .sbar .bar{height:var(--sbh);margin-bottom:0;border:none}
-.ibars .sbt .sbR{font-size:var(--fs3)}
+/* #251 - the card's own two sizes: the figure a step up, and the mark with it.
+   `#bPlq` sets exactly these and the sheet was the outlier. */
+.ibars .sbt .sbR{font-size:var(--fs5)}
+.ibars .sbi{font-size:var(--fs4)}
 /* ═══ #140 point 1 · WHAT THE SWING ACTUALLY DOES ═════════════════════════
    ("reorginise this block - probably a bit mor info about damage".)
    The line was six equal cells in one grey weight, so the weapon's damage -
@@ -5162,8 +5181,34 @@ body:has(#battle.on) .whisp{bottom:138px}
    ⚠ THE PANEL STAYS. With the figure gone the frame is what still says *this
    block is what they are carrying*, which is the job the deleted caption used
    to do (#232 cut the words on the grounds that the picture explained itself). */
-#iDollBox{width:100%;flex:none;background:#1c150c;border:1px solid #3d3020;
-  display:grid;grid-template-columns:repeat(3,1fr);gap:var(--p3);padding:var(--p3)}
+/* ⛔ #251 - THREE ACROSS IS NOW A BODY AND NOT A LIST. (User: *"Make artifacts
+   shown as on real body (armor in the middle a bit up) - hands on the sides. Two
+   spots for trinket and bag centered under"*.)
+
+   ⛑ #249 PARKED THE FIGURE AND THE SLOTS BECAME A READING ORDER - *"worn, then
+   wielded, then carried"* - which is a correct thing for a LIST to be and is not
+   what a doll is. The ask puts the picture back without the picture: the chest in
+   the middle and raised, a hand either side of it, and what is merely carried
+   centred underneath. Nothing is drawn; the arrangement IS the figure.
+   ⛔ TWO FLEX ROWS AND NOT A GRID, AND THE PET IS THE REASON. The Captain has a
+   sixth slot and nobody else does, so the bottom row is two boxes on fifteen
+   sheets and three on his. A grid would need the placement re-authored per count;
+   `justify-content:center` over a fixed basis is one rule that is right at both,
+   and the basis is the top row's own third so the two rows line up.
+   ⚠ `align-items:flex-end` IS WHAT MAKES THE LIFT A LIFT. With the row aligned
+   to its foot, a bottom margin on the armour raises that box and nothing else,
+   and the row grows by exactly the margin - measured, the box goes 109 to 118 on
+   a worst-case slack of 38. A negative top margin would have done it for free and
+   would have hung the chest out of the panel it is drawn inside. */
+#iDollBox{--armlift:var(--p4);width:100%;flex:none;background:#1c150c;
+  border:1px solid #3d3020;display:flex;flex-direction:column;gap:var(--p3);
+  padding:var(--p3)}
+.drow{display:flex;gap:var(--p3);align-items:flex-end}
+/* a third of the row, gaps taken off first, so a centred bottom row of two sits
+   under the shoulders rather than sprawling to the panel's edges */
+.drow>.slot{flex:0 0 calc((100% - var(--p3) * 2) / 3)}
+.drow.dbot{justify-content:center}
+.drow.dtop .s-armour{margin-bottom:var(--armlift)}
 /* a slot is a BUTTON at a body part. 118px is the widest box two columns and a
    150px figure will take inside 400, and every gear name in the file clamps to
    two lines in it. ⚠ .slot is this sheet's own class and nothing else's. */
@@ -5586,6 +5631,29 @@ body:has(#battle.on) .whisp{bottom:138px}
 /* and on the rail, so it is visible without opening anybody */
 .rmem .star{font-size:var(--fs2);color:#d9bd7e;text-shadow:0 0 5px rgba(217,189,126,.6)}
 .itabbody{flex:1;overflow:auto;padding:var(--p4);display:none;flex-direction:column;gap:5px}
+/* ⛔ #251 - AND THE STASH READS IN TWO. (User: *"items in the inventory in two
+   raws - there is too much free space"*.)
+
+   ⛑ THE ROW WAS NEVER 586px WIDE, THE COLUMN WAS. A stash row is a 40px
+   painting beside three short lines - the longest of them is a mono receipt
+   like `COMMON · ARMOUR · stops 12` - and #246 widened this pane to 606 for
+   the PERK tree, which genuinely wants the width. So the widest thing in the
+   list has been sitting in about half the box since, with the other half
+   empty on every sheet in the game.
+   ⛔ `#iStashBody.on` AND NEVER `#iStashBody` BARE, which is one of this
+   file's oldest traps wearing a new coat: `.itabbody{display:none}` is 0-1-0
+   and an id is 1-0-0, so a rule written without the class would show the
+   stash on the PERKS tab as well, permanently, with nothing in the stylesheet
+   looking wrong.
+   ⚠ `align-content:start` IS NOT DECORATION EITHER. A grid's auto rows
+   stretch to fill their container unless told otherwise, and this container
+   is a 639px scroller - so a stash holding one thing would have drawn that
+   thing 639px tall.
+   ⚠ THE THREE THINGS THAT ARE NOT ITEMS SPAN BOTH COLUMNS: the caption, the
+   line that says the stash is empty, and the BREAK door. A door in one of two
+   columns reads as a third item. */
+#iStashBody.on{display:grid;grid-template-columns:1fr 1fr;align-content:start}
+#iStashBody>.lbl,#iStashBody>.iempty,#iStashBody>.iscrapbtn{grid-column:1/-1}
 /* #239 - the break-down door and what a row says in that mode. Bottom RIGHT,
    which is the ask; `align-self` rather than a float because the tab body is
    a flex column and a float in one is a rule that does nothing. */
@@ -9487,6 +9555,30 @@ const TELLS={
    fact written twice, which is what #137 is about.
    ⚠ `false` STILL WORKS and still means the picture alone. */
 const SHEET_STAT_WORDS=true;
+/* ═══ ⛔ #251 · AND THE HEADER'S MARK LINE IS THE SAME SHAPE, SWITCH AND ALL
+   (User, 2026-08-26, an arrow along the row under the name: *"Delete that
+   smaller line near human face"*.)
+
+   ⛑ EVERY FACT ON IT IS ON THE TILE 130px TO ITS LEFT, AND THAT IS THE WHOLE
+   ARGUMENT. #246 put the level on the roster portrait's bottom-right corner
+   and #249 put the class mark on its bottom-left; the race is the `.race` word
+   on the same row AND the face in the picture; and the progress arc round the
+   bust is `xpFrame`, the same reading `xpRing` was drawing here. So this line
+   was the roster tile said again, in a header that already carries the name,
+   the personality and two once-a-run doors.
+   ⚠ ONE FACT DID NOT SURVIVE THE MOVE ON ITS OWN AND IS HANDED OVER: the
+   EXACT xp figures were on this chip's `title` and the arc on the roster had no
+   hover at all. `xpHover` rides the roster's own level plate now, which is the
+   number the sentence is about.
+   ⚠ AND IT COSTS THE COLUMN NOTHING, MEASURED: `#iHead` is 90px on every body
+   in the game because `#iField`'s portrait tile is what sets it, and the text
+   column beside it was 71 to 86.6. The row is 26px out of a column that had
+   room for it - so this is a clarity cut and never a height one, and nobody
+   should come here looking for pixels.
+   ⚠ `true` PUTS IT BACK, exactly as #240's switch did the same day it was
+   written. The `#iChips` / `.ichip` block in the stylesheet is left standing
+   for that reason. */
+const SHEET_HEAD_MARKS=false;
 /* the sheet's own label. `k.toUpperCase()` and nothing else. */
 const statKey=k=>k.toUpperCase();
 const tell=(k,v)=>(TELLS[k].s[tellIdx(k,v)]||['','–'])[1];
@@ -16972,7 +17064,17 @@ function tavernContract(won,skipped){
          parked joke door's landing site (see the block below and #134's own
          promise that bringing that door back is a paste, not a rewrite). It
          calls nameStrip with the button, exactly as it did. */
-      {t:'Take the purse. Chalk the name on the wagon.',ico:['trade'],c:'',
+      /* ⛔ #251 - AND THE SHOE JOINS THE SCALES. (User: *"put shoe on the
+         go"*.) The label is two acts in one sentence - you take the purse AND
+         you walk out of the tap-room - and the door wore only the first of
+         them. ⛑ TWO VERBS IS LEGAL AND THE PRECEDENT IS NAMED: THE WARM
+         SPRING's second door is `['take','leave']`, and
+         `.claude/rules/event-cards.md` records it as the door that broke a
+         cascade written for verb-plus-moral-colour. The rail is unchanged
+         either way, because `leave` is the one intent with no rail row - the
+         quietest door has no colour - so the amber it had as a `trade` door
+         is what it keeps. */
+      {t:'Take the purse. Chalk the name on the wagon.',ico:['trade','leave'],c:'',
        go:()=>contractTake({crowns:CONTRACT_PURSE,scene:'coin'})}
       /* ═══ #134 - THE JOKE IS OUT OF THE OPENING, AND IT IS PARKED ═══════
          (User, 2026-08-13: "make a joke option put from the opning to our
@@ -17096,34 +17198,33 @@ function coTitle(a,b){return 'The '+cap1(a.toLowerCase())+' '+cap1(b.toLowerCase
    headcount is exactly the fault #150 fixed on the morale chips. ⛊ is already
    the battle capsule's glyph for "standing bodies on your side". */
 const CONTRACT_PURSE=80;
+/* ⛔ #251 - AND THE TWO CHIPS ARE GONE. (User, 2026-08-26, both struck
+   through in red on the contract card: *"Delete heads and crowns"*.)
+
+   ⛑ THE RECEIPT RULE IS WHY THIS COSTS NOTHING, AND IT IS THE RULE THAT PUT
+   THEM THERE. `.claude/rules/event-cards.md`: *the prose says what happened,
+   the chips say what it cost*. On every OTHER card in the game that split is
+   real, because the prose has been cut of its figures. This card is the one
+   place where the two halves are read a second apart and both are the SAME
+   event: the paragraph directly above the chips is *"He puts a purse on the
+   wood"* and *"It appears you are a company now"*, and the chips under it said
+   +88 CROWNS and +3 HEADS. That is the second receipt this file spends its
+   length deleting, arriving from the direction nobody checked - not a number
+   typed twice, but a number beside the sentence that already is it.
+   ⛔ AND NOTHING IS LOST, WHICH IS THE TEST. The purse is `CONTRACT_PURSE` and
+   it is paid by the door's own `contractTake`; the world bar the very next
+   screen opens on carries the crowns and the party count as live readouts. A
+   chip is a receipt for a payment the player is about to watch land anyway.
+   ⚠ THE FACES STAY. `.tvrwho` is not a receipt: it is three people with
+   names, which is the card's last sentence as a picture, and #219 put it on
+   this card for that reason. The divider went with the chips because a rule
+   between one thing and nothing is furniture. */
 function tavernReceipt(){
-  const L=(LOOT.tavern&&LOOT.tavern[0])||{fx:{}};
-  const crowns=((L.fx&&L.fx.crowns)||0)+CONTRACT_PURSE;
   const joined=G.party.filter(p=>!p.leader).slice(0,3);
-  const heads=G.party.length;
-  const chip=(ic,v,lab,col)=>'<div class="fxc"><span class="fxi" style="color:'+col+
-    '">'+ic+'</span><span><span class="fxn" style="color:'+col+'">'+v+
-    '</span><span class="fxl">'+lab+'</span></span></div>';
   return '<div class="tvr">'+
     '<span class="tvrt">THE ROOM SETTLES</span>'+
     '<div class="tvrrow">'+
-      '<div class="abfx">'+
-        chip(RES_ICON.crowns,'+'+crowns,'CROWNS','var(--gold)')+
-        /* ⛔ #243 - IT IS A GAIN, SO IT IS SIGNED, AND IT COUNTS THE NEW ONES.
-           (User, 2026-08-25, red box on this chip: *"+ 3 heads (as humans on the
-           global map showing size)"*.) The chip said `4` beside `+88 CROWNS`, and
-           the two figures were answering different questions: the purse is what
-           this room GAVE you and the headcount was the roster's total, which
-           includes the man who walked in. Three people sat down; the Captain was
-           already here. `joined` is the same list the faces below are drawn from,
-           so the number and the portraits cannot disagree.
-           ⚠ AND THE GLYPH IS `rIcon('human')`, THE ROAD BAR'S OWN BODY MARK
-           (#220), not ☊. ☊ is the battle capsule's "standing bodies on your
-           side"; the picture the player is about to meet on the map for a
-           headcount is the painted human bust, and one fact wants one mark. */
-        chip(rIcon('human'),'+'+joined.length,joined.length===1?'HEAD':'HEADS','var(--g4)')+
-      '</div>'+
-      (joined.length?'<div class="tvrsep"></div><div class="tvrwho">'+
+      (joined.length?'<div class="tvrwho">'+
         joined.map(p=>'<div class="tvrp"><div class="tvrf">'+
           '<canvas width="30" height="30" data-bust="'+p.id+'"></canvas>'+
           /* #196 - this strip never named the race at all and spelled the
@@ -23091,6 +23192,41 @@ function selectAct(i){
    CLOCK, MEASURED. 2600 was the first cut and it ran 4.55s, which is long enough
    to feel like the hang this entry exists to delete. */
 const UNDO_HOLD=1800;
+/* ═══ ⛔ #251 · THE WINDOW IS A MAXIMUM, NOT A PAUSE ══════════════════════
+   (User, 2026-08-26: *"When undo - it is 'undo with timer' - but you can make a
+   move with your next unit already"*, and, shown the measurement, *"stop making
+   me wait"*.)
+
+   ⛑ THE REPORT AS WRITTEN WAS NOT REPRODUCIBLE AND DRIVING IT IS WHAT FOUND
+   THE REAL ONE. You cannot act with another body while the bar runs: `cur()` is
+   still the mover, `clickHex` refuses anybody else, and the order rail carries no
+   click at all. Measured on the brigand field - at 0.06s and 0.96s the mover is
+   up, a click on Two Teeth leaves it on its own hex with both actions, and at
+   3.56s the turn has passed and the button is gone. So nothing was moving early.
+   ⛔ WHAT WAS ACTUALLY WRONG IS THAT THE CLICK WAS EATEN. A player who has
+   decided not to take the step back does what anybody does: clicks the next body.
+   That click fell through every branch of `clickHex` and did nothing, so the board
+   answered a deliberate act with silence and then made him watch 3.15 seconds of
+   bar. **A control that swallows input while showing a countdown reads as a
+   hang**, which is the same complaint #249 was answering and it fixed only the
+   half where the player pressed END TURN.
+   ⛑ SO THE OFFER LIVES AS LONG AS NOBODY WANTS THE BOARD, AND NOT ONE TICK
+   LONGER. `undoGo` is what the timer was going to do anyway, done now.
+   ⛔ AND THE TURN IS STILL NOT REWOUND. #247's paragraph holds and this does not
+   go near it: the handover happens exactly once, at a moment the player chose, and
+   `B.undo` is dead before `beginTurn` runs rather than after it. The reading that
+   would have kept ⟲ alive ACROSS the handover was put to the user and is not what
+   he asked for.
+   ⚠ IT IS ONLY EVER THE EMPTIED BODY. A body with actions left carries an undo
+   with NO hold - the offer stands until it does something else - and a click on
+   the board is that body's own next move. `u.actions<=0` is what tells the two
+   apart, and it is the same test `autoEnd` opened the window on. */
+function undoGo(u){
+  if(!(B.undo&&B.undo.id===u.id&&u.actions<=0))return false;
+  B.undoT=(B.undoT||0)+1;      /* the pending hold is void, not doubled */
+  B.undo=null;render();nextTurn();
+  return true;
+}
 function autoEnd(u){
   if(!(u.actions<=0||u.dead||u.downed||u.fled))return;
   if(B.undo&&B.undo.id===u.id&&!u.dead&&!u.downed&&!u.fled){
@@ -23766,6 +23902,10 @@ function drawMirrorAxis(){
 function clickHex(c,r){
   const u=cur();
   if(!u||u.side!=='you'||B.busy||B.tutLock||u.state==='routed')return;
+  /* #251 - the undo window is over the moment the hand goes back to the board.
+     Above every other branch on purpose: this body has nothing left to spend, so
+     there is no act underneath this click for it to steal. */
+  if(undoGo(u))return;
   let tgt=at(c,r),a=B.sel;
   /* ═══ #91 - THE DEFAULT ATTACK. MOVE is standing, so a click on an enemy
      the weapon can reach IS the swing - the same offerAtk gate that lit the
@@ -28819,8 +28959,17 @@ function render(){
     }else{$('bActions').innerHTML='';B.cards=null;B.actHover=null;
       $('bEnd').disabled=true;$('bFlee').disabled=true;}}
   /* #91 point 12 - the UNDO offer, shown exactly while it is real */
-  $('bUndo').classList.toggle('on',
-    !!(B.undo&&u&&u.side==='you'&&!u.ally&&!u.pet&&B.undo.id===u.id&&!B.busy));
+  {const ub=$('bUndo'),live=!!(B.undo&&u&&u.side==='you'&&!u.ally&&!u.pet&&
+      B.undo.id===u.id&&!B.busy);
+   ub.classList.toggle('on',live);
+   /* ⚠ #251 - AND THE BAR DIES WITH THE OFFER. `.draining` was added by
+      `undoDrain` and removed only by `undoMove`, so it survived a handover on the
+      hidden button - and the NEXT offer, which is the untimed kind a body with an
+      action left puts up, opened wearing a countdown that had already run out.
+      A timer drawn on an offer that has no timer is #102's wrong-unit rule with a
+      clock in it. Stripped whenever the offer is not up; `undoDrain` puts it back
+      for the one case that has a hold. */
+   if(!live)ub.classList.remove('draining');}
   /* ═══ #91 point 14 - the counts capsule. Standing bodies each side: the
      downed, the dead and the fled are out; the routed still count, they can
      rally. The foe's passives (the cub) are not a reason to keep fighting,
@@ -36199,6 +36348,13 @@ function drawInv(){
        round the bust is ALREADY this person's progress (`xpFrame`, #174/#200), so
        the number belongs on the thing that is drawing it. */
     const lv=document.createElement('span');lv.className='rlv';
+    /* ⛔ #251 - AND THE ARC ROUND IT GETS ITS SENTENCE. The frame has drawn
+       this person's progress since #174 and has never said what it was; the
+       exact figures were on the header chip #251 deleted, so they land on the
+       number they are about rather than being lost with the row.
+       ⚠ A PLAIN `title=`, not `bindLoreTips`: that one wires `data-cls` /
+       `data-race` and STRIPS the title as it goes, and this is neither. */
+    lv.title=xpHover(p);
     lv.textContent='L'+p.level;wrap.appendChild(lv);
     /* ⛔ #249 - THE CLASS RIDES THE OTHER BOTTOM CORNER. (User: *"what if we put
        class also at the bettom right of the portrait there - so that thing could be
@@ -36385,7 +36541,8 @@ function drawInv(){
      ⚠ `CLASSES.none` KEEPS ITS WORDS. There is no picture of *not having a
      trade yet* - `cIcon('none')` is an empty ring - so a bare chip there would say
      nothing at all, which is the one case the ask cannot mean. */
-  const chips='<span class="ichip bare race '+p.race+'" data-race="'+p.race+'" title="'+
+  const chips=!SHEET_HEAD_MARKS?'':
+    '<span class="ichip bare race '+p.race+'" data-race="'+p.race+'" title="'+
       esc(p.race.toUpperCase())+'">'+bmk(rIcon(p.race))+'</span>'+
     /* #174 - no lore tip on a trade he has not got: the chip says NO TRADE
        YET (CLASSES.none) in the muted colour and carries no data-cls */
@@ -36588,7 +36745,7 @@ function drawInv(){
   $('iChar').innerHTML=
     '<div id="iHead"><div id="iHeadCol">'+
       '<div id="iName">'+fullName(p)+'</div>'+
-      '<div id="iChips">'+chips+'</div>'+
+      (chips?'<div id="iChips">'+chips+'</div>':'')+
       /* the personality, one clause, the rest on hover. It is who they ARE
          and the sheet says so once. (#136 point 4: the " · hover for the rest"
          hint is gone. Everything on this sheet explains itself on hover, so a
@@ -36785,7 +36942,22 @@ function drawInv(){
      ⚠ THE ORDER IN `SLOTS` IS THE READING ORDER NOW, which is the one thing the
      grid cannot decide for itself: worn, then wielded, then carried. */
   const dbox=$('iDollBox');
-  const placeSlot=(key,el)=>{dbox.appendChild(el);};
+  /* ⛔ #251 - THE ROW A SLOT BELONGS IN IS DERIVED FROM THE SLOT, AND SO IS
+     WHERE IT STANDS IN IT. `SLOTS` is still the reading order #249 named and is
+     not re-sorted: a table of two facts keyed on the slot is what decides the
+     shape, so a seventh slot declares itself here in one row and nowhere else.
+     ⚠ `order` AND NOT A DOM SHUFFLE. Armour is authored first and stands second,
+     which as an insertion rule is a special case somebody has to remember; as a
+     flex order it is a number beside the slot's own name. */
+  const DOLL_AT={armour:['dtop',2],main:['dtop',1],off:['dtop',3],
+                 trinket:['dbot',1],bag:['dbot',2],pet:['dbot',3]};
+  const drow=k=>{const c='drow '+k;let r=dbox.querySelector('.'+k);
+    if(!r){r=document.createElement('div');r.className=c;dbox.appendChild(r);}
+    return r;};
+  const dTop=drow('dtop'),dBot=drow('dbot');
+  const placeSlot=(key,el)=>{const a=DOLL_AT[key]||['dbot',9];
+    el.classList.add('s-'+key);el.style.order=a[1];
+    (a[0]==='dtop'?dTop:dBot).appendChild(el);};
   /* what a slot says on its face: the receipt is one short line, because the
      full one is already the tooltip bindTip() puts on it. */
   /* ⛔ #249 - `· both hands` COMES OFF THE MAIN HAND. (User: *"on the main hand
@@ -36975,8 +37147,10 @@ function drawInv(){
               /* #247 - four words, and the name is on the card this column is
                  already pointed at (user: *"CLICK TO WEAR"*). */
               :'CLICK TO WEAR')+'</div>';
-  if(!G.stash.length)st.innerHTML+='<div style="font-family:var(--mono);font-size:var(--fs1);'+
-    'color:#5c4a2c">Empty. Everything is on somebody.</div>';
+  /* #251 - a class rather than a bare div: the two-column grid needs to know
+     which of its children are not items. */
+  if(!G.stash.length)st.innerHTML+='<div class="iempty" style="font-family:var(--mono);'+
+    'font-size:var(--fs1);color:#5c4a2c">Empty. Everything is on somebody.</div>';
   G.stash.forEach((k,idx)=>{
     const g=GEAR[k];if(!g)return;
     const wrong=g.slot==='armour'&&g.size&&g.size!=='any'&&g.size!==RACEMOD[p.race].size;

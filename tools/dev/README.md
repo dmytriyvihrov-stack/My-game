@@ -113,6 +113,7 @@ carries the setup that keeps being rewritten - `GT.playerTurn()`, `GT.standNextT
 | `locktrace.js` | who WROTE a flag, with a stack, by trapping it with `defineProperty` after every `startBattle` |
 | `reach.js` | … and its `deadGates` half: a door gated on something nothing in the build can grant |
 | `wash.js` | a hex tint COMPOSITED over the painted ground, by luminance. #249 |
+| `cardfloor.js` | the two ui-scales §5 counters over a CARD, which `gates.js` has never opened. ⚠ **Waits 900ms**: read in the same tick it reports twenty false findings off #218's unfold, and at 800ms it reports one. #251 |
 | `pit250.js` | every rule the PIT carries, driven on a live board: the budget in a hole, the rim in both directions and for all four kinds of act, the fall a shove buys, the turn a climb costs, the hex note, the badge, and the generation in situ. #250 |
 | `align243.js` · `apron241e.js` · `diff243.js` · `road243i.js` | the four one-offs a changelog row names as the instrument that measured it |
 
