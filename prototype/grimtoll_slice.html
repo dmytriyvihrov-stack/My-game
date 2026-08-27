@@ -11421,30 +11421,80 @@ const castAct=(sp,bonus)=>{
 
 /* 4 perks per class — two at level 2, two at level 3 — all stated in numbers */
 const PERKS={
-  /* ⛔ #261 · THE OLD TREE IS OUT. 25 working perks were retired here, not
-     because any of them was wrong but because the skill tree in
-     tools/skilltree_lab.html has no slot for them yet. Every one of them,
-     with its wording, its class tier and the engine line that paid for it,
-     is in docs/archive/RETIRED_SKILLS.md - generated from this table rather
-     than retyped, so it can be put back without guessing.
-     ⚠ THE ENGINE CODE THAT READ THEM IS LEFT STANDING. `has(u,'bracewall')`
-     and its family simply answer false forever, so nothing throws and no
-     mechanic changed shape; restoring one is usually a row and a tier.
+  /* ⛔ #262 · THE TREE FROM tools/skilltree_lab.html, IN THREE LANES.
+     Every row carries `kind`, which is what the card's mark is drawn from and
+     what `perkPool` gates on: a CLASS skill is offered by its own class, a
+     RACE skill by its own race, a GENERAL skill by everybody.
+     ⚑ ELEVEN OF THESE ARE RESTORED RATHER THAN WRITTEN. #261 retired their
+     rows but deliberately left the engine lines standing, so bringing them
+     back is a row and a tier and the mechanic behind them is the one that was
+     already tested. docs/archive/RETIRED_SKILLS.md is what made that cheap. */
 
-     ⛔ AND EVERY ROW CARRIES ITS `kind` NOW, which is what the card's little
-     mark is drawn from (user: "Near skill put kind of belongins icon (race,
-     class, or general)"). It is a FIELD and not a guess from which tier the
-     perk sits in, because a general skill is offered by every class and would
-     be indistinguishable from a class one by position alone. */
+  /* ── CLASS ─────────────────────────────────────────────────────────── */
+  duelist  :{kind:'class',n:'Duellist',
+             d:'+10 to hit and +5 dodge while exactly one enemy is adjacent to you.'},
+  inspire  :{kind:'class',n:'Steadying',
+             d:'+4 morale to every ally within 2 hexes at the start of your turn.'},
+  warleader:{kind:'class',n:'War-Leader',
+             d:'COMMAND also grants +6 dodge to everyone it reaches, for one round.'},
+  bracewall:{kind:'class',n:'Braced Wall',
+             d:'Your SPEAR WALL can be raised, and keeps working, with somebody already inside your reach.'},
+  killzone :{kind:'class',n:'Killing Zone',
+             d:'Your parting swings deal 100% damage instead of 50%.'},
+  sureshot :{kind:'class',n:'Sure Shot',
+             d:'Shooting while engaged: -15 to hit instead of -35.'},
+  eagle    :{kind:'class',n:'Eagle Eye',d:'+2 range on every ranged attack.'},
+  shadowstep:{kind:'class',n:'Shadow-Step',
+             d:'After you DISTRACT something, your next attack on it this turn costs no action.'},
+  butcher  :{kind:'class',n:'Butcher',
+             d:'+17% damage against anything under half hitpoints.'},
+  brawn    :{kind:'class',n:'Brawn',d:'+10% melee damage.'},
+  thickhide:{kind:'class',n:'Thick Hide',d:'+18 armour.'},
+
+  /* ── RACE ──────────────────────────────────────────────────────────── */
+  versatile :{kind:'race',n:'Versatile',
+              d:'+5 to hit and +5 dodge while both hands hold a different weapon.'},
+  strongrat :{kind:'race',n:'Strong',d:'+1 STRENGTH.'},
+  thickmuscle:{kind:'race',n:'Thick Muscles',
+              d:'A hit from behind lands as an ordinary hit: no bonus for the wrong side of you.'},
+  fearsome  :{kind:'race',n:'Fearsome',
+              d:'Every hit of yours that draws blood costs them 8 morale, however small the wound.'},
+  rage      :{kind:'race',n:'Rage',d:'+22% damage while you are below half your hitpoints.'},
+
+  /* ── GENERAL ───────────────────────────────────────────────────────── */
   luck     :{kind:'general',n:'Everchanging Luck',
              d:'+1 to your worst or your best stat, rolled fresh at the start of every battle.'},
   disengage:{kind:'general',n:'Disengage',
              d:'Break off from an enemy and move two hexes, free of parting swings. '+
                'Nobody can break off without it.'},
+  colossus :{kind:'general',n:'Colossus',d:'+20% hitpoints.'},
+  goodhand :{kind:'general',n:'Good Hand',
+             d:'+1 range and +10 to hit with every ranged attack.'},
+  twohand  :{kind:'general',n:'Two-Handed Weapons',d:'+50% damage against armour.'},
+  ninelives:{kind:'general',n:'Nine Lives',
+             d:'Once per battle, the blow that would drop you leaves you standing.'},
+  fortmind :{kind:'general',n:'Fortified Mind',d:'+20 maximum morale.'},
   shieldwork:{kind:'general',n:'Shieldwork',d:'Doubles your shield bonus.'},
-  duelist  :{kind:'class',  n:'Duellist',
-             d:'+10 to hit and +5 dodge while exactly one enemy is adjacent to you.'}
+  lonewolf :{kind:'general',n:'Lone Wolf',
+             d:'+8 to hit and +8 dodge with no ally within 3 hexes.'},
+  frenzy   :{kind:'general',n:'Frenzy',
+             d:'A kill gives +20% damage until the end of your next turn.'},
+  underdog :{kind:'general',n:'Underdog',
+             d:'Being surrounded gives them no bonus against you.'},
+  berserk  :{kind:'general',n:'Berserk',d:'Once a turn, a kill gives you an action back.'}
 };
+/* ⛔ #262 - WHO IS OFFERED WHAT. The class lanes are authored on the class
+   itself (below); these two tables are the other two lanes. A RACE lane is new:
+   `perkPool` had only ever asked about a class, so a race skill could not have
+   been reached at all before this. */
+const RACEPERKS={
+  human :{3:['versatile']},
+  ratkin:{4:['strongrat']},
+  ogre  :{3:['thickmuscle'],4:['fearsome'],6:['rage']}
+};
+const GENPERKS={2:['luck','disengage'],3:['colossus'],4:['goodhand','twohand'],
+                5:['ninelives','fortmind','shieldwork'],6:['lonewolf','frenzy'],
+                7:['underdog'],8:['berserk']};
 /* Four tiers, two choices each — eight perks a class. It used to stop at
    level 3 with four, which meant a veteran hit the ceiling in about two
    promotions and every perk point after that was granted and then silently
@@ -11554,21 +11604,23 @@ const CLASSES={
    rows by hand (and getting the seventh wrong), the tiers are joined here, once.
    ⚠ `none` is a class row with no perks of its own and must be skipped, or a
    body hired without a trade would be offered skills it has no tier to buy at. */
-({luck:2,disengage:2,shieldwork:4}); /* the general lane, by tier */
-Object.entries({luck:2,disengage:2,shieldwork:4}).forEach(([k,tier])=>{
-  Object.keys(CLASSES).forEach(c=>{
-    if(c==='none'||!CLASSES[c].perks)return;
-    (CLASSES[c].perks[tier]=CLASSES[c].perks[tier]||[]).push(k);});
-});
-/* the one CLASS perk still standing. Authored on its own class rather than
-   through the loop above, which is what `kind:'class'` is telling the card. */
-CLASSES.captain.perks[2]=(CLASSES.captain.perks[2]||[]).concat('duelist');
+/* #262 - the CLASS lane, authored on the class it belongs to. The general and
+   race lanes are joined in by `perkPool` instead, so a skill appears in exactly
+   one table and the card's `kind` can never disagree with where it came from. */
+CLASSES.captain.perks={2:['duelist'],4:['inspire'],7:['warleader']};
+CLASSES.spear.perks  ={4:['bracewall'],7:['killzone']};
+CLASSES.archer.perks ={4:['sureshot'],7:['eagle']};
+CLASSES.cutter.perks ={4:['shadowstep'],7:['butcher']};
+CLASSES.brute.perks  ={4:['brawn'],7:['thickhide']};
+CLASSES.warmage.perks={4:['inspire'],7:['warleader']};
+CLASSES.mage.perks   ={4:['inspire'],7:['warleader']};
 /* ⏳ TIERS 6 AND 8 ARE EMPTY FOR EVERY CLASS and that is a KNOWN, temporary
    state of the teardown, not an oversight: a body past level 5 banks perk
    points with nothing to spend them on until the tree's own skills land.
    `perksLeft` already answers 0 there and the sheet already prints "Nothing
    to learn", so it degrades honestly rather than silently. */
-const PERKTIERS=8;
+const PERKTIERS=8;   /* #262 - BERSERK sits at 8 */
+const _PERKTIERS_OLD=8;
 /* two classes cast; everything else in the game that asked "is this a mage?"
    asked `cls==='mage'` and would silently exclude the new one */
 const isCaster=cls=>cls==='mage'||cls==='warmage';
@@ -11678,8 +11730,33 @@ const MONSTERS={
     nature:'There is no wrong side of it. Standing behind it is standing in front of it, and '+
       'the sword goes all the way round.'}
 };
+/* ⛔ #262 - THREE LANES, ONE POOL. `perkPool` asked only about the class, so a
+   race skill was unreachable however many rows the table grew. It now walks the
+   class lane, the race lane and the general lane at each tier the body has
+   reached. ⚠ PERKTIERS is the ceiling, so it rises with the tree: a skill
+   authored at a tier above it is silently unbuyable, which is the dead-row trap
+   this file has paid for twice. */
+/* ⛔ #262 - THE ONE READER OF THE THREE LANES, and the reason it exists is a
+   bug this entry shipped for an hour. `perkPool` was taught about race and
+   general skills; the PERK CARD RENDERER was not, because it walks
+   `CLASSES[p.cls].perks` directly - so the pool was right, the sheet drew the
+   class lane only, and an ogre spearman was offered two skills out of
+   seventeen. Both callers ask this now, so the list a body is OFFERED and the
+   list it is SHOWN cannot come apart again.
+   ⚠ `tiersFor` is the levels to draw, and it is the union of the three lanes'
+   own keys rather than a literal 2/4/6/8, which is #174's rule about the table
+   going stale one lane wider. */
+const perksAt=(p,l)=>[].concat(
+  (CLASSES[p.cls]&&CLASSES[p.cls].perks&&CLASSES[p.cls].perks[l])||[],
+  (RACEPERKS[p.race]&&RACEPERKS[p.race][l])||[],
+  GENPERKS[l]||[]);
+const tiersFor=p=>[...new Set([].concat(
+  Object.keys((CLASSES[p.cls]&&CLASSES[p.cls].perks)||{}),
+  Object.keys(RACEPERKS[p.race]||{}),
+  Object.keys(GENPERKS)).map(Number))].sort((a,b)=>a-b);
 const perkPool=p=>{let a=[];for(let l=2;l<=Math.min(PERKTIERS,p.level);l++)
-  a=a.concat(CLASSES[p.cls].perks[l]||[]);return a;};
+  a=a.concat(perksAt(p,l));
+  return a;};
 /* is there anything at all left for this person to buy? */
 const perksLeft=p=>perkPool(p).filter(k=>p.perks.indexOf(k)<0).length;
 
@@ -13115,6 +13192,9 @@ function bodyHp(p){
   h=Math.round(h*(1+LVL_HP*levelSteps(p)));
   const m=GEAR[p.eq&&p.eq.main];
   if((m&&m.range)||isCaster(p.cls))h=Math.round(h*GIVEN.frail);   /* #254 */
+  /* #262 - COLOSSUS, before the wound is taken off: the perk grows the POOL,
+     it does not heal what is already missing from it. */
+  if(p.perks&&p.perks.indexOf('colossus')>=0)h=Math.round(h*1.20);
   if(p.hurt&&p.hurt.hp)h=Math.max(14,h+p.hurt.hp);
   return h;
 }
@@ -13214,6 +13294,9 @@ function effStats(p){
      frame and a roll inside it would shimmer. */
   if(p&&p.luckOn&&p.perks&&p.perks.indexOf('luck')>=0&&typeof s[p.luckOn]==='number')
     s[p.luckOn]+=1;
+  /* #262 - STRONG, at the same door and for the same reason: a stat changed
+     anywhere else pays the four derived figures and not the hitpoints. */
+  if(p&&p.perks&&p.perks.indexOf('strongrat')>=0&&typeof s.str==='number')s.str+=1;
   return s;
 }
 /* #260 - the roll itself, taken at the top of a fight. WORST or BEST, never a
@@ -14357,6 +14440,11 @@ function arcFrom(c,r,target){
   return ARC[(sectorOf(from,[c,r])-target.facing+6)%6];
 }
 function arcOn(attacker,target){
+  /* #262 - THICK MUSCLES: there is no wrong side of this body. It goes HERE and
+     not at the two call sites, because `hitBreakdown` prints the arc and
+     `strike` pays it - patching one of the two is exactly how a preview and a
+     blow come to disagree, which this file has already paid for once. */
+  if(has(target,'thickmuscle'))return {hit:0,n:''};
   return arcFrom(attacker.col,attacker.row,target);
 }
 /* THE RED RING IS THE PICTURE OF THE RULE ABOVE, so it lives beside it. The
@@ -15497,7 +15585,7 @@ function unitFrom(p){
     hpMax:bodyHp(p),                    /* #239 - one door; see bodyHp */
     armourMax:armourValue(p)+(p.perks.indexOf('thickhide')>=0?18:0)+
       (p.perks.indexOf('stoneskin')>=0?10:0),
-    moraleMax:D.moral({st:s})+(p.perks.indexOf('ironjaw')>=0?12:0),
+    moraleMax:D.moral({st:s})+(p.perks.indexOf('fortmind')>=0?20:0),
     /* the stride belongs to the race, not to agility — see RACESTEP */
     /* #146 - the roster's ease knob, at the one door a roster body comes
        through. See HIT_EASE. */
@@ -15523,7 +15611,10 @@ function unitFrom(p){
     /* ⛔ #254 - THE THREE CAPSTONES THAT REACH THE FIELD, carried onto the
        unit so the board never re-reads a roster body mid-fight. `holds()` asks
        the ladder, so the day a capstone moves rung nothing here changes. */
-    stands:holds({st:s},'str','STANDS'),stoodUp:false,
+    /* #262 - NINE LIVES is the STANDS capstone's rule bought as a skill. One
+       flag, one consumer (`d.stands&&!d.stoodUp` in strike), so the two can
+       never come to mean different things. */
+    stands:holds({st:s},'str','STANDS')||p.perks.indexOf('ninelives')>=0,stoodUp:false,
     fleet:holds({st:s},'agi','FLEET'),
     unrepeatable:holds({st:s},'int','UNREPEATABLE'),
     caster:isCaster(p.cls),bow:!!(main&&main.range),
@@ -15545,6 +15636,11 @@ function unitFrom(p){
      shield are each worth twice THEIR OWN value and the perk never becomes a
      reason to carry the cheaper one. */
   if(off&&off.dodge)u.dodgeBase+=off.dodge*(p.perks.indexOf('shieldwork')>=0?2:1);
+  /* #262 - VERSATILE wants two WEAPONS, not a weapon and a board: a shield in
+     the off hand carries no damage of its own, so it does not count. */
+  if(p.perks.indexOf('versatile')>=0&&main&&off&&
+     (off.meleeDmg||off.dmg||off.emergency)&&off.n!==main.n){
+    u.mskill+=5;u.dodgeBase+=5;u.hitWhy.push(['a weapon in either hand',5]);}
   if(off&&off.hit){u.mskill+=off.hit;u.hitWhy.push([off.n,off.hit]);}
   /* ⛔ #248 - AND THE MAIN HAND'S, WHICH NOTHING READ UNTIL A SHIELD MOVED INTO
      THAT SLOT. Every dodge in the game had come off the off hand or a trinket,
@@ -15650,7 +15746,9 @@ function unitFrom(p){
   }
   u.morale0=u.morale;      /* the magnet. See morBase(). */
   restate(u);
-  const R=p.perks.indexOf('eagle')>=0?2:0;
+  /* #262 - GOOD HAND stacks with EAGLE EYE on purpose: one is the archer's
+     trade and the other is anybody's steady arm. */
+  const R=(p.perks.indexOf('eagle')>=0?2:0)+(p.perks.indexOf('goodhand')>=0?1:0);
   /* ═══ #161 · HOW FAR THIS BODY CAN THROW A WORKING ════════════════════════
      Read off ALL THREE SLOTS, so the day a trinket or an off-hand piece
      carries `spellRange` it works without a second edit. Today exactly one
@@ -20863,6 +20961,8 @@ function dodgeOf(u,W,noNerve){
      missed here, and caught by driving the function rather than reading it. */
   if(B&&has(u,'duelist')&&threatsAt(u.col,u.row,u.side)===1){
     d+=5;w&&w('duellist, one on one',5);}
+  if(B&&has(u,'lonewolf')&&!alive().some(x=>x.side===u.side&&x!==u&&udist(u,x)<=3)){
+    d+=8;w&&w('lone wolf, nobody near',8);}
   if(tr(u,'vet')){d+=4;w&&w('old hand',4);}
   if(tr(u,'cautious')){const v=(u.hp<u.hpMax*.5?6:0);d+=v;w&&w('cautious, and hurt',v);}
   if(u.leader&&B&&B.units){
@@ -20999,7 +21099,10 @@ function hitBreakdown(a,d,act){
      a foe's authored act has no `GEAR` row behind it. An arcane act carries
      `range` too, and a working aimed with the INTELLECT is not helped by a
      scrum either. */
-  const around=(act.range||d.noArc)?0:Math.max(0,threatsAt(d.col,d.row,d.side)-1);
+  /* #262 - UNDERDOG: the crowd on a body stops being worth anything to the
+     attacker. Asked on the DEFENDER, which is what makes it a defence. */
+  const around=(act.range||d.noArc||has(d,'underdog'))
+    ?0:Math.max(0,threatsAt(d.col,d.row,d.side)-1);
   const fl=around*a.flankPow;
   if(around)parts.push(around+' on it +'+Math.round(fl));
   if(d.noArc)parts.push('no wrong side of it');
@@ -21090,6 +21193,11 @@ function hitBreakdown(a,d,act){
   if(ringOf(a,FORM.swarmRaces)>=FORM.swarmNeed){other+=FORM.swarmHit;
     po('swarmed '+FORM.swarmHit);}
   if(has(a,'deadeye')&&act.range){other+=6;po('dead eye +6');}
+  if(has(a,'goodhand')&&act.range){other+=10;po('good hand +10');}
+  /* #262 - LONE WOLF, both halves asking the same question. `B&&` because
+     `alive()` reads B.units and this function is scored outside a fight. */
+  if(B&&has(a,'lonewolf')&&!alive().some(x=>x.side===a.side&&x!==a&&udist(a,x)<=3)){
+    other+=8;po('lone wolf +8');}
   /* a pack-leader in earshot */
   const ah=auraSum(a,'hit');
   if(ah){other+=ah;po('the pack +'+ah);}
@@ -21234,6 +21342,11 @@ function dmgMul(a,d,act){
        never a list to maintain. */
     (tr(a,'grudge')&&a.grudgeOn&&a.grudgeOn===d.id?.20:0)+
     (has(a,'heavyhand')&&d.armour>0?.12:0)+
+    /* #262 - TWO-HANDED WEAPONS, RAGE and FRENZY, in the one bracket every
+       other multiplier lives in, so the damage PREVIEW carries them too. */
+    (has(a,'twohand')&&d.armour>0?.50:0)+
+    (has(a,'rage')&&a.hp<a.hpMax*.5?.22:0)+
+    (has(a,'frenzy')&&B&&a.frenzyTil>=B.round?.20:0)+
     /* #225 - a torn shoulder. It goes in the bracket with every other thing
        about the ARM, and in this function rather than in strike(), which is
        the note at the head of dmgMul: one site, and the damage preview can
@@ -21430,6 +21543,10 @@ function strike(a,d,act,mult){
      that it does nothing (the floor of 1 keeps an archer honest work rather
      than a spectator). */
   if(d.soak&&hpD>0)hpD=Math.max(1,hpD-d.soak);
+  /* #262 - FEARSOME. Here and not at the kill, because the promise is about
+     any wound: this is the one place in the file that knows blood was drawn
+     rather than armour dented. */
+  if(hpD>0&&has(a,'fearsome')&&!d.dead)mor(d,-8,'fearsome');
   d.hp-=hpD;
   /* who did it, for the after-battle roll (user: "show how much damage
      dealt"). BODY damage only, so the per-person figures add up to the
@@ -21776,6 +21893,13 @@ function strike(a,d,act,mult){
       say(d.name+' goes down and stays down.');fx(d,'KILLED','#c15d55');sfx('death');
     }
     a.kills=(a.kills||0)+1;
+    /* #262 - what a kill buys. FRENZY is a round stamp rather than a countdown
+       so nothing has to remember to tick it down; BERSERK spends `used`, which
+       the turn already clears, so "once a turn" needs no new state. */
+    if(has(a,'frenzy')&&B)a.frenzyTil=B.round+1;
+    if(has(a,'berserk')&&a.used&&!a.used.berserk){
+      a.actions=Math.min(a.actionsMax,(a.actions||0)+1);a.used.berserk=1;
+      fx(a,'BERSERK · +1 ACTION','#c9a45c',true);}
     /* people and beasts tallied apart — the split lands on the sheet later */
     const beastKill=(d.monster||['dog','wyrm','cub','beast'].indexOf(d.kind)>=0);
     /* `notally`: nothing in this company can say what it killed, so nothing
@@ -37930,8 +38054,8 @@ function drawInv(){
   let any=false;
   /* #174 - the tiers are whatever keys the class has (2/4/6/8 now), read
      off the table rather than a literal list that would go stale with it */
-  Object.keys(CLASSES[p.cls].perks).map(Number).sort((a,b)=>a-b).forEach(lv=>{
-    const list=CLASSES[p.cls].perks[lv]||[];
+  tiersFor(p).forEach(lv=>{
+    const list=perksAt(p,lv);
     if(!list.length)return;
     pkHTML+='<div class="pklv">LEVEL '+lv+'</div>';
     list.forEach(k=>{
@@ -38358,8 +38482,8 @@ function bindLoreTips(root,p,live){
         '<div style="font-family:var(--mono);font-size:var(--fs1);color:#8a7449;letter-spacing:.1em">'+
           'WHAT IS ON THEIR BAR RIGHT NOW</div>'+
         own.map(actLineHTML).join('');
-      const tree=Object.keys(C.perks||{}).map(lv=>{
-        const got=C.perks[lv].filter(x=>PERKS[x])
+      const tree=tiersFor(p).map(lv=>{
+        const got=perksAt(p,lv).filter(x=>PERKS[x])
           .map(x=>(p.perks&&p.perks.indexOf(x)>=0?'<b style="color:#8ca35a">✔ '+PERKS[x].n+'</b>'
                                                  :PERKS[x].n));
         return got.length?'<div style="line-height:1.3"><span style="font-family:var(--mono);'+

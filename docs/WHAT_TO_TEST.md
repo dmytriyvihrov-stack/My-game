@@ -2034,6 +2034,43 @@ itself the moment the file lands.
 
 ---
 
+## 🌳 THE SKILL TREE, THREE LANES  *(#262 · 2026-08-27 · build log 8f.287)*
+
+The tree from `tools/skilltree_lab.html` is in the game: **28 skills**, and which ones you
+are offered depends on your class, your race and your level.
+
+### 1. The list is full, and every card says where the skill comes from
+
+**Three steps:** company sheet → any body at level 5 or more → PERKS.
+**Should happen:** levels 2 through 8, with three kinds of card mixed together. 🔱 (or your
+class's own glyph) = CLASS · 🐀 / 👹 / 🧑 = RACE · 👥 = GENERAL. A level-9 ogre spear sees 17
+skills; a ratkin archer sees 15.
+**A bug:** only class skills showing, no race skills at all, or a mark that does not match the
+icon that class or race wears elsewhere.
+
+### 2. Your race changes the list
+
+**Three steps:** compare an ogre and a ratkin of the same class and level.
+**Should happen:** the ogre is offered THICK MUSCLES, FEARSOME and RAGE; the ratkin is offered
+STRONG. Neither can see the other's.
+**A bug:** a race skill offered to the wrong race, or to everybody.
+
+### 3. The ones that are easiest to check by eye
+
+**COLOSSUS** should take hitpoints up about a fifth. **FORTIFIED MIND** adds 20 to maximum
+morale. **THICK HIDE** adds 18 armour. **STRONG** adds a point of STRENGTH *and* the hitpoints
+that come with it. **GOOD HAND** and **EAGLE EYE** both add range and stack.
+**VERSATILE** should give +5 only with a real weapon in the off hand, and nothing with a shield.
+**A bug:** the sheet saying a number went up while the figure beside it does not move.
+
+### 4. Not here yet, on purpose
+
+ROTATION, TAUNT, MAGIC POTION, SECOND WIND, UNNOTICEABLE, TWO WEAPONS HANDLER and FAR HAND are
+in the lab but not the game: each needs a new action rather than a number on a line that already
+exists. They are deliberately absent rather than listed and dead.
+
+---
+
 ## 🧹 THE SKILL LIST IS FOUR SKILLS NOW  *(#261 · 2026-08-27 · build log 8f.286)*
 
 The old perk tree is out. The 25 skills that went are saved in
