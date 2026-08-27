@@ -11417,6 +11417,13 @@ const castAct=(sp,bonus)=>{
 
 /* 4 perks per class — two at level 2, two at level 3 — all stated in numbers */
 const PERKS={
+  /* ⛔ #260 · THE FIRST THREE GENERAL SKILLS, open to every class rather than
+     to one trade. They are the tree's own "general" lane arriving one skill at
+     a time; see tools/skilltree_lab.html for the shape they belong to. */
+  luck     :{n:'Everchanging Luck',
+             d:'+1 to your worst or your best stat, rolled fresh at the start of every battle.'},
+  breakaway:{n:'Break Away',    d:'DISENGAGE gives you two clean hexes instead of one.'},
+  shieldwork:{n:'Shieldwork',   d:'Doubles your shield bonus.'},
   ironjaw  :{n:'Iron Jaw',      d:'+12 maximum morale.'},
   duelist  :{n:'Duellist',      d:'+8 to hit while exactly one enemy is adjacent to you.'},
   standfast:{n:'Stand Fast',    d:'Morale can never fall below 15%: you cannot rout.'},
@@ -11497,13 +11504,27 @@ const CLASSES={
      `groundwise` to the three that move for a living, `elemental` to the mage
      alone (the user's own gate: *"6й уровень"*). A perk every class can buy at
      every tier is a stat increase with a name. */
-  captain:{n:'CAPTAIN',   sig:'COMMAND + RALLY THE LINE',
+  /* ⛔ #259 - A SIGNATURE IS A SALES PITCH AND THREE OF THEM WERE SELLING
+     ACTS THE GAME NO LONGER BUILDS. `sig` is printed on the class picker,
+     which is the ONE screen where a class is chosen, and it was authored by
+     hand while the acts beside it were replaced twice. The captain's card
+     said RALLY THE LINE and `unitFrom` pushes HOLD THE LINE; the archer's
+     said AIMED SHOT, which its own comment records as deleted in favour of
+     CRIPPLING SHOT; the cutter's said BACKSTAB, deleted in favour of
+     DISTRACT. Nothing lints this: see the note on PERKTIERS. */
+  captain:{n:'CAPTAIN',   sig:'HOLD THE LINE, AND COMMAND FROM LEVEL 4',
+    sigActs:['HOLD THE LINE','COMMAND'],
     perks:{2:['ironjaw','duelist'],4:['standfast','warleader','waiter'],
            6:['inspire','bulwark'],8:['heavyhand','stoneskin']}},
-  spear  :{n:'SPEARWOMAN',sig:'SPEAR WALL',
+  /* #259 - the class is SPEAR, not SPEARWOMAN: a class name is a trade and
+     the roster puts men, women and ogres in it. The word is 5 characters
+     narrower than the one every box here was measured around, so nothing can
+     overflow; the comments elsewhere in this file still say "spearwoman"
+     about the PERSON and that is correct English about a body. */
+  spear  :{n:'SPEAR',     sig:'SPEAR WALL',sigActs:['SPEAR WALL'],
     perks:{2:['bulwark','killzone'],4:['opportune','bracewall'],
            6:['stoneskin','ironjaw','waiter'],8:['heavyhand','footwork','groundwise']}},
-  archer :{n:'ARCHER',    sig:'AIMED SHOT',
+  archer :{n:'ARCHER',    sig:'CRIPPLING SHOT',sigActs:['CRIPPLING SHOT'],
     perks:{2:['sureshot','quickfoot'],4:['butcher','eagle'],
            6:['deadeye','footwork','waiter'],8:['killzone','ironjaw','groundwise']}},
   /* The one who can hold a line. One school, one casting a turn, and stats
@@ -11550,10 +11571,10 @@ const CLASSES={
        and moving it needs a reason that beats this one. */
     perks:{2:['windeater','fieldmedic'],4:['conduit','ironjaw'],
            6:['inspire','quickfoot','elemental'],8:['stoneskin','footwork']}},
-  cutter :{n:'CUTTER',    sig:'BACKSTAB',
+  cutter :{n:'CUTTER',    sig:'DISTRACT',sigActs:['DISTRACT'],
     perks:{2:['butcher','quickfoot'],4:['opportune','shadowstep','groundwise'],
            6:['deadeye','footwork'],8:['heavyhand','killzone']}},
-  brute  :{n:'BRUTE',     sig:'SWEEP + ROAR',
+  brute  :{n:'BRUTE',     sig:'SWEEP + ROAR',sigActs:['SWEEP','ROAR'],
     perks:{2:['brawn','ironjaw'],4:['standfast','thickhide'],
            6:['heavyhand','stoneskin','waiter'],8:['inspire','bulwark']}},
   /* ═══ #174 - THE STRANGER WITHOUT A TRADE ═════════════════════════════════
@@ -11570,6 +11591,18 @@ const CLASSES={
      would have put churn in a shared file for no visible gain. */
   none   :{n:'NO CLASS YET',sig:'',perks:{}}
 };
+/* ⛔ #260 - AND THEY ARE OPEN TO EVERY CLASS, which is the one thing the old
+   pool could not say. `perkPool` concatenates `CLASSES[cls].perks[tier]`, so a
+   perk no class lists is unreachable; rather than typing three keys into seven
+   rows by hand (and getting the seventh wrong), the tiers are joined here, once.
+   ⚠ `none` is a class row with no perks of its own and must be skipped, or a
+   body hired without a trade would be offered skills it has no tier to buy at. */
+['luck','breakaway','shieldwork'].forEach((k,i)=>{
+  const tier=[2,4,6][i];
+  Object.keys(CLASSES).forEach(c=>{
+    if(c==='none'||!CLASSES[c].perks)return;
+    (CLASSES[c].perks[tier]=CLASSES[c].perks[tier]||[]).push(k);});
+});
 const PERKTIERS=8;
 /* two classes cast; everything else in the game that asked "is this a mage?"
    asked `cls==='mage'` and would silently exclude the new one */
@@ -13188,7 +13221,30 @@ function statParts(p){
 function effStats(p){
   const q=statParts(p),s={};
   STATK.forEach(k=>{s[k]=q[k].reduce((n,r)=>n+r.v,0);});
+  /* ⛔ #260 - EVERCHANGING LUCK IS ADDED HERE AND NOWHERE ELSE. Every figure a
+     body has runs through this function - `bodyHp` calls it, `unitFrom` calls
+     it, the sheet calls it - so a rung added here is paid in hitpoints, to-hit,
+     dodge and the weight of the blow at once. Added at `unitFrom` instead it
+     would have moved the four derived numbers and NOT the hitpoints, because
+     `bodyHp(p)` re-derives from `p`: the promise-versus-payment split #259 spent
+     its whole audit on. ⚠ WHICH stat is rolled once per battle by `rollLuck`
+     and parked on the body, never rolled here: this is called many times a
+     frame and a roll inside it would shimmer. */
+  if(p&&p.luckOn&&p.perks&&p.perks.indexOf('luck')>=0&&typeof s[p.luckOn]==='number')
+    s[p.luckOn]+=1;
   return s;
+}
+/* #260 - the roll itself, taken at the top of a fight. WORST or BEST, never a
+   middle stat, and it reads the body BEFORE the bonus (statParts, not effStats)
+   or the stat it lifted last battle would look like the best one this battle. */
+function rollLuck(p){
+  if(!p)return;
+  if(!p.perks||p.perks.indexOf('luck')<0){p.luckOn=null;return;}
+  const q=statParts(p),base={};
+  STATK.forEach(k=>{base[k]=q[k].reduce((n,r)=>n+r.v,0);});
+  let lo=STATK[0],hi=STATK[0];
+  STATK.forEach(k=>{if(base[k]<base[lo])lo=k;if(base[k]>base[hi])hi=k;});
+  p.luckOn=Math.random()<0.5?lo:hi;
 }
 /* ═══ ⛔ #253 · WHAT A RUNG IS WORTH, ASKED OF THE ENGINE ════════════
    (User: *"Bonus you write here - on the left and total bonus from stat on the
@@ -15502,7 +15558,11 @@ function unitFrom(p){
     /* #74 - and so does what somebody cut into his face */
     mark:p.mark||null,
     moved:false,rallyBuff:0};
-  if(off&&off.dodge)u.dodgeBase+=off.dodge;
+  /* #260 - SHIELDWORK doubles what the off hand is worth. Applied to the
+     gear's own figure rather than as a flat number, so a buckler and a round
+     shield are each worth twice THEIR OWN value and the perk never becomes a
+     reason to carry the cheaper one. */
+  if(off&&off.dodge)u.dodgeBase+=off.dodge*(p.perks.indexOf('shieldwork')>=0?2:1);
   if(off&&off.hit){u.mskill+=off.hit;u.hitWhy.push([off.n,off.hit]);}
   /* ⛔ #248 - AND THE MAIN HAND'S, WHICH NOTHING READ UNTIL A SHIELD MOVED INTO
      THAT SLOT. Every dodge in the game had come off the off hand or a trinket,
@@ -15736,9 +15796,9 @@ function unitFrom(p){
        line with his hands first; the voice that steadies a company arrives at
        level 3, by itself, no perk point. Foes never pass through unitFrom(),
        so only the roster is gated; a preset without a level counts as 1. */
-    captain:(p.level||1)>=3
+    captain:(p.level||1)>=4
       ? {k:'command',n:'COMMAND',cost:1,self:true,cool:3,aura:3,
-         note:'+20 morale to you, +24 to everyone within 3 hexes. His from level 3: '+
+         note:'+20 morale to you, +24 to everyone within 3 hexes. His from level 4: '+
            'a new captain has the arm before he has the voice.'}
       : null,
     /* THE WEAPON DECIDES THE SIGNATURE — a pattern the game had not used.
@@ -18726,6 +18786,10 @@ function startBattle(kind){
      as the journal row: a practice fight may never mark anything. */
   if(!SIM.on)SEENF.mark(G.battleKind);
   $('bLegend').classList.toggle('open',!!LEGACY.legendOpen);
+  /* #260 - EVERCHANGING LUCK is re-rolled here, once, before any body is
+     built: `unitFrom` reads `p.luckOn` through effStats, so the roll has to
+     land first or the fight opens on last fight's stat. */
+  G.party.forEach(rollLuck);
   const you=G.party.map(unitFrom);
   /* #108 - the brawl opens with the Captain alone. The rest of the future
      crew is built now (so the fight and the roster stay one set of bodies)
@@ -23224,6 +23288,10 @@ function checkEnd(){
   }
   return false;
 }
+/* #260 - how many clean hexes DISENGAGE buys. One reader, because the number
+   is printed on the card, shouted by the float and spent by moveBudget, and
+   three hand-typed 1s is how a perk comes to promise what it does not pay. */
+const disHexes=u=>has(u,'breakaway')?2:1;
 function canUse(u,a){
   if(u.state==='routed')return false;
   /* the ambition has turned into something else and it is not stepping back */
@@ -23625,10 +23693,11 @@ function selectAct(i){
        brains and AUTO all have it before the next line of this function runs.
        The float is the receipt: the number on the MOVE card has already
        changed by the time it is read. */
-    spend(u,a);u.safeMove=true;u.disBonus=(u.disBonus||0)+1;
-    ghostFx(u);fx(u,'CLEAN · +1 HEX','#8ca35a',true);
-    say('You give ground without turning your back. One extra hex this turn, and '+
-      'your moving is clean for the rest of it.');
+    const dh=disHexes(u);
+    spend(u,a);u.safeMove=true;u.disBonus=(u.disBonus||0)+dh;
+    ghostFx(u);fx(u,'CLEAN · +'+dh+' HEX'+(dh>1?'ES':''),'#8ca35a',true);
+    say('You give ground without turning your back. '+(dh>1?'Two extra hexes':'One extra hex')+
+      ' this turn, and your moving is clean for the rest of it.');
     B.sel=null;render();autoEnd(u);
     return;}
   /* ═══ #224 · CAST A SHAPE ═══════════════════════════════════════════════
@@ -29402,7 +29471,7 @@ function render(){
         const sub=a.move?moveBudget(u)+' hexes · 1 act'
           /* #137 - the hex is THIS turn's now. The `a.cool` clause below
              appends the lockout to the same line for free. */
-          :a.k==='dis'?'1 act · +1 hex now · clean moving'
+          :a.k==='dis'?'1 act · +'+disHexes(u)+' hex now · clean moving'
           :a.range?a.cost+' act · range '+a.range
           :a.reach?a.cost+' act · reach '+a.reach
           /* #206 - the radius an order carries, off the same field the
@@ -32148,6 +32217,44 @@ window.LINT=function(){
   /* 3 and 6f again, for the mercy screen (#202): it is rendered by choiceNote
      too, and it is where the two-receipts row was found living */
   if(typeof MERCY!=='undefined')MERCY.opts.forEach((c,i)=>scanLabel(c,'MERCY.opts['+i+']'));
+  /* ⛔ 6h (#259) - A CLASS CARD MAY NOT ADVERTISE AN ACT THE ENGINE DOES NOT
+     BUILD. `CLASSES[k].sig` is printed on the class PICKER, the one screen
+     where a class is chosen, and it is the only player-facing string in the
+     build that describes a body's acts without being derived from them. It
+     drifted three times at once and nothing said so: the captain's card sold
+     RALLY THE LINE (the act is HOLD THE LINE), the archer's sold AIMED SHOT
+     and the cutter's BACKSTAB, both of which their own comments record as
+     deleted in favour of CRIPPLING SHOT and DISTRACT.
+     ⚑ THE CHECK IS THE ENGINE, NOT A SECOND TABLE: it builds a real body of
+     each class through unitFrom() and asks whether the acts the card claims
+     are actually in the row.
+     ⛔ AND THE CLAIM IS DECLARED (`sigActs`), NEVER PARSED OUT OF THE PROSE.
+     The first cut read capitalised runs out of `sig` and it was wrong within
+     the hour: "HOLD THE LINE, AND COMMAND FROM LEVEL 4" yields the fragment
+     "AND COMMAND FROM LEVEL", which is not an act and never was. A card is
+     free to say more than the acts (the mage's two sell a rule, not a verb),
+     so a regex can never tell a promise from a sentence. `sigActs` is the
+     list of act names the card is on the hook for, and a card with none is
+     making no checkable claim.
+     ⚠ Built at LEVEL 9 on purpose: COMMAND is level-gated, so a stub at level
+     1 would report the captain's own card as a lie. */
+  (function(){
+    if(typeof unitFrom!=='function'||!G.party||!G.party.length)return;
+    const body=G.party[0];
+    Object.keys(CLASSES).forEach(k=>{
+      const sig=CLASSES[k].sig;if(!sig)return;
+      let acts;
+      try{
+        const c=JSON.parse(JSON.stringify(body));
+        c.cls=k;c.level=9;c.perks=[];
+        if(k==='mage'||k==='warmage')c.spells=c.spells&&c.spells.length?c.spells:['blight'];
+        acts=unitFrom(c).acts.map(a=>a.n);
+      }catch(e){return;}                    /* a class that cannot be built is 8c's job */
+      (CLASSES[k].sigActs||[]).forEach(name=>{
+        if(acts.indexOf(name)<0)
+          hit('class',k,'sig advertises "'+name+'", which is not an act it gets');});
+    });
+  })();
   /* 7 — nicknames must not cross cultures */
   Object.keys(NICKS_BY_RACE).forEach(r=>{
     Object.keys(NICKS_BY_RACE).forEach(r2=>{

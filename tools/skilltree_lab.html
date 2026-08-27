@@ -7,12 +7,16 @@
   /* ------------------------------------------------------------------
      SKILL TREE LAB. A test bench, wired to nothing.
      Tab 1 collects the reference trees (BB, The Last Spell, Wildermyth,
-     Wartales, Banner Saga). Tab 2 is the Grimtoll draft: one character
-     on top, the full tree with every choice below.
-     Codes are AUTHORED, not derived: a deleted skill leaves a gap
-     (GEN3, GEN6 are gone on purpose) and a new one takes the next
-     unused number, so feedback like "GEN14" never goes stale.
-     Levels run DOWNWARD from 0: each grid row is a level.
+     Wartales, Banner Saga). Tab 2 is the Grimtoll draft.
+
+     LAYOUT: lane 1 (class doors + armor) is a BAND ABOVE the grid rather
+     than a column in it, and the two general lanes are ONE column. That
+     takes the sheet from five columns to three, which is what a real
+     character screen has room for.
+
+     Codes are AUTHORED, not derived: a deleted skill leaves a gap and a
+     new one takes the next unused number, so feedback never goes stale.
+     Skill text is MECHANICS ONLY: no design commentary on the card.
      ------------------------------------------------------------------ */
   :root{
     --bg:#161210; --panel:#1e1915; --line:#3a322a; --ink:#d8cfc0;
@@ -46,7 +50,7 @@
     max-width:260px;font-size:12px}
   .rchip b{display:block;color:var(--ink);font-size:12px;letter-spacing:.5px}
   .rchip span{color:var(--dim)}
-  .chips .sk{max-width:260px}
+  .chips .sk{max-width:250px}
 
   /* controls (tab 2) */
   .controls{display:flex;flex-wrap:wrap;gap:14px;align-items:center;
@@ -66,11 +70,17 @@
   .kitcard b{color:var(--gold);letter-spacing:.5px}
   .kitcard div{color:var(--dim)}
 
-  /* the tree grid, TRANSPOSED: one row per level, one column per lane */
+  /* the band above the grid: class doors, armor, the parked ideas */
+  .doorwrap{border:1px solid var(--line);background:var(--panel);padding:8px;margin:8px 0}
+  .doorgrp{margin-bottom:8px}
+  .doorgrp:last-child{margin-bottom:0}
+  .doorlbl{font-size:11px;letter-spacing:1px;color:var(--gold);margin-bottom:4px}
+
+  /* the tree grid: one row per level, THREE lanes */
   .treewrap{overflow-x:auto;border:1px solid var(--line);background:var(--panel);
     padding:8px;margin:8px 0}
-  .grid{display:grid;grid-template-columns:56px repeat(5,minmax(190px,1fr));gap:4px;
-    min-width:1050px}
+  .grid{display:grid;grid-template-columns:52px repeat(2,minmax(240px,1fr));gap:4px;
+    min-width:560px}
   .colhead{font-size:11px;letter-spacing:1px;color:var(--gold);text-align:center;
     padding:4px 2px;border-bottom:1px solid var(--line)}
   .colhead .dim{display:block;letter-spacing:0}
@@ -97,9 +107,7 @@
   .sk.locked b,.sk.locked .what{color:var(--lock)}
   .sk.far{opacity:.45;cursor:default}
   .sk.static{cursor:default}
-  /* usable-in-battle axis: owned or offered, but DEAD RIGHT NOW, with the
-     reason on hover (the user's grey mechanic: spear wall in a scrum, a
-     class skill with the wrong weapon in hand) */
+  /* owned or offered, but DEAD RIGHT NOW, reason on hover */
   .sk.dis,.kitcard.dis{opacity:.45;filter:grayscale(.8);cursor:help}
   .picklist{font-size:12px;color:var(--ink);margin:6px 2px}
   .picklist b{color:var(--green)}
@@ -108,10 +116,9 @@
 <body>
 
 <h1>GRIMTOLL · SKILL TREE LAB</h1>
-<div class="sub">A test bench. Nothing here touches the game. When the shape is agreed it moves
-into the character sheet as a SKILLS tab. Give feedback by skill code: codes never move.
-A deleted skill leaves a gap (GEN3 and GEN6 are gone on purpose), a new skill takes the
-next unused number. Hover any greyed thing to read why it is grey.</div>
+<div class="sub">A test bench. Nothing here touches the game. Give feedback by skill code: codes
+never move. A deleted skill leaves a gap, a new skill takes the next unused number.
+Hover any greyed thing to read why it is grey.</div>
 
 <div class="tabs">
   <button class="tabbtn" id="tb1" onclick="showTab(1)">1 · REFERENCE SHELF</button>
@@ -146,7 +153,7 @@ next unused number. Hover any greyed thing to read why it is grey.</div>
     The wild things (wolf limbs, crow wings, fire arms) never sit in the tree: EVENTS
     graft them on, and each theme brings its own upgrades (Fly, Howl, Meteor Strike ...).<br>
     <b>What to steal:</b> the dealt hand with one guaranteed class pick, and event-gated
-    transformations: that is exactly our BATTLE-MAGE door.
+    transformations: that is exactly our MAGE door.
     <span class="dim">(Source: wildermyth.com/wiki/Abilities, checked 2026-08-12.)</span></div>
   <div id="wmtree"></div>
 
@@ -186,25 +193,21 @@ next unused number. Hover any greyed thing to read why it is grey.</div>
 
   <div class="note">
     <b>Rules of the draft:</b><br>
-    1. LEVEL 0: one point, and the only thing on offer is a class door. Unspent, it banks:
-       you can pay it into anything later. Every level after grants one more point.
-       The race's faction skill is free at level 0.<br>
-    2. Five lanes: <b>1</b> class and armor · <b>2</b> class skills · <b>3</b> race ·
-       <b>4 and 5</b> general. Levels run DOWNWARD; level 9 tops out ordinary growth and
-       LEVEL 10 is the capstone. Some levels are empty on purpose.<br>
-    3. The weapon owns the attacks (spear: THRUST and SPEAR WALL). The tree buys passives,
-       stances and unlocks only. DISENGAGE is not a basic action any more: it is a general
-       skill (GEN18).<br>
-    4. The CLASS is the level 0 door, and the door IS the weapon mastery: the brute swings
-       club and axe alike. The door grants the class's starter active at once, its two class
-       skills free at levels 3 and 6, and only the level 9 class skill is bought, with a
-       real downside. One door per life (until the level 10 capstone).<br>
-    5. A CLASS SKILL WORKS ONLY WITH THE CLASS WEAPON IN HAND. Wrong weapon: the skill is
-       greyed, and hovering it says why. Same grey for a stance that cannot fire right now
-       (SPEAR WALL in a scrum).<br>
+    1. LEVEL 0: one point, and the only thing on offer is a class door. Unspent, it banks.
+       Every level after grants one more point. The race's faction skill is free at level 0.<br>
+    2. A CLASS DOOR gives <b>+1 to one stat</b> and opens two things: its skill lane, and the
+       special ability of its two trained weapons. No bare hit or dodge bonus: accuracy and
+       dodge are derived from stats, so the stat is the whole gift.<br>
+    3. THE CAPTAIN IS THE JACK OF ALL TRADES: he can use the special ability of every weapon.
+       Every other class trains exactly two.<br>
+    4. The weapon owns the attacks. The plain attack always works; the SPECIAL ability needs a
+       class that trains that weapon. Wrong class or wrong hand: greyed, reason on hover.<br>
+    5. Class skills are GRANTED FREE at levels 4 and 7. Nothing in the class lane is bought.<br>
     6. Level 5 offers ARMOR MASTERY: one of three, once.<br>
-    7. BATTLE-MAGE and BARD crown lane 1 at level 9. Battle-mage is never a pick
-       (the road gives it, events only); bard is parked for later.
+    7. THERE IS NO BASIC DISENGAGE. Breaking off is the GEN19 perk and nothing else: without
+       it you cannot leave an enemy without paying for it.<br>
+    8. The parked ideas (MAGE, BARD, the capstones) are drawn so the shape is visible and
+       cannot be picked.
   </div>
 
   <h2>ONE CHARACTER</h2>
@@ -216,6 +219,7 @@ next unused number. Hover any greyed thing to read why it is grey.</div>
     </select></label>
     <label>WEAPON <select id="selWeapon" onchange="onControls()">
       <option value="spear">SPEAR</option>
+      <option value="halberd">HALBERD</option>
       <option value="sword">SWORD</option>
       <option value="axe">AXE</option>
       <option value="club">CLUB</option>
@@ -234,24 +238,22 @@ next unused number. Hover any greyed thing to read why it is grey.</div>
   <h3>FROM THE WEAPON, NOT THE TREE</h3>
   <div class="kit" id="kit"></div>
 
-  <h3>THE TREE OF THIS CHARACTER <span class="dim small">(gold = can take now ·
-    green = taken · dashed = locked · faded = above your level · grey = dead
-    right now, hover it for the reason)</span></h3>
+  <h3>CLASS + ARMOR <span class="dim small">(one row, in level order: the door at 0, the
+    class skills it grants free at 4 and 7, the armor mastery at 5, and the parked ideas.
+    None of it is a per-level decision, so none of it needs the grid.)</span></h3>
+  <div class="doorwrap" id="charDoors"></div>
+
+  <h3>THE TREE · WHAT YOU ACTUALLY CHOOSE <span class="dim small">(gold = can take now ·
+    green = taken · dashed = an idea · faded = above your level · grey = dead right now,
+    hover for why)</span></h3>
   <div class="treewrap" id="charTree"></div>
   <div class="picklist" id="picks"></div>
 
-  <div class="note"><b>Three spearwomen, one class</b> (all legal at level 9, 10 points;
-    the door, BRACED WALL, KILLING ZONE and the starter stance are the shared carcase):<br>
-    <b>THE WALL</b> · SPR1 + ARM3 + SPR4 + GEN5 + GEN11 + GEN16 + GEN4 + GEN10 + GEN13 +
-    GEN12. She stands in the road and the road closes.<br>
-    <b>THE SKIRMISHER</b> · SPR1 + ARM1 + GEN14 + GEN18 + GEN7 + GEN15 + GEN10 + GEN1 +
-    GEN2 + GEN4. No level 9 class skill: she fights where the line is not.<br>
-    <b>THE THIRD RANK</b> · SPR1 + ARM2 + SPR4 + GEN13 + GEN12 + GEN2 + GEN11 + GEN10 +
-    GEN5 + GEN16. Long spear over a shield rim, never touched.</div>
-
   <h2>2.1 · THE FULL TREE, ALL CHOICES</h2>
   <div class="dim small" style="margin-bottom:6px">Everything at once, all races, all classes.
-    Read-only. This is the sheet to give feedback on.</div>
+    Read-only. The band holds every class and armor skill in the game; the grid below holds
+    the two lanes a player spends points in.</div>
+  <div class="doorwrap" id="fullDoors"></div>
   <div class="treewrap" id="fullTree"></div>
 
   <h2>2.2 · EACH BRANCH ON ITS OWN</h2>
@@ -261,20 +263,16 @@ next unused number. Hover any greyed thing to read why it is grey.</div>
 
   <div class="note qbox">
     <b>Open questions for you:</b><br>
-    Q1 · ROTATION stays with the CAPTAIN (now at level 6, behind COMMAND), TAUNT with the
-        BRUTE. Right homes?<br>
-    Q2 · "Throvble" in your list: I read it as throwing weapons and drafted GEN7 GOOD ARM.
-        If it meant something else, say the word and I redo it.<br>
-    Q3 · ANSWERED 2026-08-12: class skills are granted with the door, not bought.<br>
-    Q4 · ANSWERED 2026-08-12: the second door is the level 10 MULTICLASS capstone.<br>
-    Q5 · MAGIC POTION: I read "gets 15% damage" as the rat paying 15% of its own health
-        for the refill. If you meant +15% damage dealt, it changes the skill completely.<br>
-    Q6 · BATTLE-MAGE and BARD sit at level 9, still locked (events only / parked),
-        per the original ruling. If level 9 should make them a real PICK, say so.<br>
-    Q7 · The five level 9 class skills (THE BANNER, LONG REACH, OVERDRAW, THROAT WORK,
-        RECKLESS SWING) are my drafts. Each downside needs your yes or your better one.<br>
-    Q8 · TACTICIAN (GEN6) is deleted: it described how the old basic disengage worked, and
-        your new GEN18 DISENGAGE (a perk, 2 hexes) supersedes it. Veto if I read that wrong.
+    Q14 · <b>I read Q7 as "delete the level 9 class tier".</b> "Move current skills for 4 lvl
+        and close this one", with Q9 answered 4 and 7, leaves no room for a bought level 9
+        skill, so THE BANNER, LONG REACH, OVERDRAW, THROAT WORK and RECKLESS SWING are gone
+        and nothing in the class lane costs a point now. One word puts them back.<br>
+    Q15 · <b>Two classes share a stat.</b> With +1 to one stat each: spear and brute both take
+        STR, archer and cutter both take AGI. Four stats, five classes, so two must double up
+        unless a class takes INT (which in the build only feeds spell landing).<br>
+    Q16 · <b>The build now disagrees about COMMAND in two ways.</b> The game unlocks it at
+        level 3 and gives no class stat bonus at all. Both are one-line build changes when
+        you want them made.
   </div>
 </div>
 
@@ -286,7 +284,6 @@ function showTab(n){
   document.getElementById('tb1').classList.toggle('on',n===1);
   document.getElementById('tb2').classList.toggle('on',n===2);
 }
-/* shared renderer for reference bands: [bandName,[[name,desc],...]] */
 function refBands(hostId,bands){
   const host=document.getElementById(hostId);
   bands.forEach(([tier,perks])=>{
@@ -515,182 +512,167 @@ refBands('wttree',WT);
 refBands('bstree',BS);
 
 /* ═════════════════ TAB 2 DATA · THE GRIMTOLL DRAFT ═════════════════
-   num is AUTHORED and never reassigned: a deleted skill leaves a gap
-   (GEN3 PATHFINDER and GEN6 TACTICIAN are the gaps), a new skill takes
-   the next unused number in its branch. src marks where a skill came
-   from: 'user' = the brief · 'live' = in the game build now ·
-   'draft' = my template, argue with it freely.
-   The game has no fatigue and no terrain perks: nothing here uses them.
-   Synced against the build 2026-08-20: archer's signature is CRIPPLING
-   SHOT now, cutter's is DISTRACT, captain has COMMAND + HOLD THE LINE,
-   the spearwoman's signature is decided by her weapon.               */
+   num is AUTHORED and never reassigned. Gaps are deliberate deletions:
+     GEN1  STUDENT           · became GEN19 DISENGAGE
+     GEN3  PATHFINDER        · no terrain skills
+     GEN4  DODGE             · "it is boring"
+     GEN6  TACTICIAN         · folded into GEN19
+     GEN12 QUICK HANDS       · no weapon swapping in the game
+     GEN18 DISENGAGE         · renumbered into GEN19
+     OGR4  BOULDER SHOULDER  · deleted
+     CAP4 SPR4 ARC4 CUT4 BRU4 · the level 9 bought class tier, closed
+   src: 'user' = the brief · 'live' = in the game build now · 'draft' = mine.
+   SKILL TEXT IS MECHANICS ONLY.
+   Synced against the build 2026-08-27 (#258 / 8f.283): the battle-mage is
+   called MAGE, the archer's signature act is CRIPPLING SHOT, and the
+   halberd is a real 2-hand reach-2 weapon signing BRACE AND SHOVE.
+   STATS ARE STR / AGI / INT / MOR; accuracy and dodge are DERIVED from
+   them in the build, which is why a door gives a stat and never a to-hit. */
 const WEAPONS={
-  spear:{n:'SPEAR', kit:[['THRUST','Main attack. Reach 2.'],
-    ['SPEAR WALL','Stance, 1 action: anything stepping into your reach takes 75% of your '+
-     'spear. Cannot be raised while an enemy is already in reach.',true]]},
-  sword:{n:'SWORD', kit:[['SLASH','Main attack.'],
+  spear  :{n:'SPEAR',  kit:[['THRUST','Reach 2.'],
+    ['SPEAR WALL','1 action: anything stepping into your reach takes 75% of your spear. '+
+     'Cannot be raised with an enemy already in reach.',{adj:true}]]},
+  halberd:{n:'HALBERD',kit:[['CHOP','Reach 2, two hands.'],
+    ['BRACE AND SHOVE','Half damage, pushes them 2 hexes back. No parting swing against them.']]},
+  sword  :{n:'SWORD',  kit:[['SLASH','Reach 1.'],
     ['RIPOSTE','Stance: answer the next miss against you with a cut.']]},
-  axe:{n:'AXE', kit:[['HACK','Main attack.'],
-    ['SPLIT SHIELD','Chop the shield instead of the man.']]},
-  club:{n:'CLUB', kit:[['SWING','Main attack.'],
+  axe    :{n:'AXE',    kit:[['HACK','Reach 1.'],
+    ['SPLIT SHIELD','Chop the shield instead of the body.']]},
+  club   :{n:'CLUB',   kit:[['SWING','Reach 1.'],
     ['STAGGER','A hit that costs them an action.']]},
-  knife:{n:'KNIFE', kit:[['STAB','Main attack.'],
-    ['PUNCTURE','Slip the point under armor: less damage, none of it stopped.']]},
-  bow:{n:'BOW', kit:[['LOOSE','Main attack. Range 6.'],
-    ['CRIPPLING SHOT','Half damage; the target loses half its movement and 10 dodge '+
-     'until it next acts.']]}
+  knife  :{n:'KNIFE',  kit:[['STAB','Reach 1.'],
+    ['PUNCTURE','Less damage, none of it stopped by armour.']]},
+  bow    :{n:'BOW',    kit:[['LOOSE','Range 6.'],
+    ['CRIPPLING SHOT','Half damage; the target loses half its movement and 10 dodge.']]}
 };
-/* which class a weapon suggests (the door you would naturally take) */
-const OPENS={spear:'spear',sword:'captain',axe:'brute',club:'brute',
-  knife:'cutter',bow:'archer'};
-const CLASSNAME={captain:'CAPTAIN',spear:'SPEARWOMAN',archer:'ARCHER',
-  cutter:'CUTTER',brute:'BRUTE',warmage:'BATTLE-MAGE'};
-const CLASSWEAPON={captain:['sword'],spear:['spear'],archer:['bow'],
-  cutter:['knife'],brute:['club','axe']};
-/* one-of-N groups, named for the refusal message */
+const WEAPON_KEYS=Object.keys(WEAPONS);
+const CLASSNAME={captain:'CAPTAIN',spear:'SPEAR',archer:'ARCHER',
+  cutter:'CUTTER',brute:'BRUTE',warmage:'MAGE'};
+const CLASSWEAPON={captain:WEAPON_KEYS.slice(),spear:['spear','halberd'],
+  archer:['bow','knife'],cutter:['knife','sword'],brute:['club','axe']};
+const OPENS={spear:'spear',halberd:'spear',sword:'captain',axe:'brute',
+  club:'brute',knife:'cutter',bow:'archer'};
 const GROUPNAME={armor:'armor mastery',capstone:'capstone'};
 
-/* row: 1 class door + armor · 2 class skills · 3 race · 4/5 general
-   lvl: the level the cell sits at. auto: free at level 0.
-   door: picking it sets your class. free: granted by the door at its
-   level, never bought. group: the one-of-N rule. lock: never pickable. */
 const SKILLS=[
-/* ── LANE 1 · CLASS DOORS (level 0) + ARMOR ───────────────────── */
+/* ── LANE 1 · CLASS DOORS (level 0) + ARMOR. Drawn as the band ABOVE
+   the grid, not as a column in it.                                  */
  {num:'CAP1',row:1,lvl:0,door:true,cls:'captain',name:'CAPTAIN',src:'user',
-  what:'+5 to hit with swords. Opens the captain lane.'},
- {num:'SPR1',row:1,lvl:0,door:true,cls:'spear',name:'SPEARWOMAN',src:'user',
-  what:'+5 to hit with spears. Opens the spearwoman lane.'},
+  what:'+1 MOR. Trains every weapon: you may use any weapon’s special ability.'},
+ {num:'SPR1',row:1,lvl:0,door:true,cls:'spear',name:'SPEAR',src:'user',
+  what:'+1 STR. Trains spear and halberd.'},
  {num:'ARC1',row:1,lvl:0,door:true,cls:'archer',name:'ARCHER',src:'user',
-  what:'+5 to hit with bows and +1 range. Opens the archer lane.'},
+  what:'+1 AGI. Trains bow and knife.'},
  {num:'CUT1',row:1,lvl:0,door:true,cls:'cutter',name:'CUTTER',src:'user',
-  what:'+5 to hit with knives; PUNCTURE costs one action less. Opens the cutter lane.'},
+  what:'+1 AGI. Trains knife and sword.'},
  {num:'BRU1',row:1,lvl:0,door:true,cls:'brute',name:'BRUTE',src:'user',
-  what:'+5 to hit with clubs AND axes; STAGGER also drains one action. Opens the brute lane.'},
+  what:'+1 STR. Trains club and axe.'},
  {num:'ARM1',row:1,lvl:5,group:'armor',name:'ARMOR MASTERY · LIGHT',src:'draft',
-  what:'Light armor stops slowing your step at all. One armor mastery per life.'},
+  what:'+10 dodge in light armour or none. One armor mastery per life.'},
  {num:'ARM2',row:1,lvl:5,group:'armor',name:'ARMOR MASTERY · MEDIUM',src:'draft',
-  what:'+15% armor value from medium pieces. One armor mastery per life.'},
+  what:'+15% armour value from medium pieces. One armor mastery per life.'},
  {num:'ARM3',row:1,lvl:5,group:'armor',name:'ARMOR MASTERY · HEAVY',src:'draft',
-  what:'Heavy armor no longer costs you a hex of step. One armor mastery per life.'},
- {num:'MAG1',row:1,lvl:9,lock:'event',cls:'warmage',name:'BATTLE-MAGE AWAKENING',src:'user',
-  what:'Two schools and a sword. Never a pick: the road gives it in events, or nobody does.'},
- {num:'BRD1',row:1,lvl:9,lock:'later',cls:'bard',name:'BARD',src:'user',
-  what:'Songs for the line. Parked until the class exists.'},
- {num:'TOP1',row:1,lvl:10,group:'capstone',name:'CAPSTONE · MULTICLASS',src:'user',
-  what:'Walk through a second class door: its weapon bonus, its starter active and its two '+
-   'granted skills. Its level 9 stays closed.'},
- {num:'TOP2',row:1,lvl:10,group:'capstone',name:'CAPSTONE · MASTERY',src:'user',
+  what:'Heavy armour costs you no hex of step. One armor mastery per life.'},
+ {num:'MAG1',row:1,lvl:9,lock:'idea',cls:'warmage',name:'MAGE',src:'user',
+  what:'One school and a blade.'},
+ {num:'BRD1',row:1,lvl:9,lock:'idea',cls:'bard',name:'BARD',src:'user',
+  what:'Songs for the line.'},
+ {num:'TOP1',row:1,lvl:10,lock:'idea',group:'capstone',name:'CAPSTONE · MULTICLASS',src:'user',
+  what:'A second class door: its stat, its trained weapons and its two granted skills.'},
+ {num:'TOP2',row:1,lvl:10,lock:'idea',group:'capstone',name:'CAPSTONE · MASTERY',src:'user',
   what:'Your two granted class skills become their advanced versions.'},
 
-/* ── LANE 2 · CLASS SKILLS. The starter active comes WITH the door,
-   the two class skills are granted free at 3 and 6, the level 9 one
-   is bought and carries a real downside. A class skill works only
-   with the class weapon in hand (greyed otherwise, reason on hover). */
+/* ── LANE 2 · CLASS SKILLS, granted free at 4 and 7. Nothing here is
+   bought. A class skill needs a weapon the class trains.            */
  {num:'CAP5',row:2,lvl:0,cls:'captain',free:true,name:'HOLD THE LINE',src:'live',
-  what:'Active, 1 action: +10 dodge to every ally within 2 hexes until their next turn.'},
- {num:'CAP3',row:2,lvl:3,cls:'captain',free:true,name:'COMMAND',src:'live',
-  what:'Active: +20 morale to you, +24 to everyone within 3 hexes. Unlocks itself at level 3.'},
- {num:'CAP2',row:2,lvl:6,cls:'captain',free:true,name:'ROTATION',src:'user',
+  what:'1 action: +10 dodge to every ally within 2 hexes until their next turn.'},
+ {num:'CAP3',row:2,lvl:4,cls:'captain',free:true,name:'COMMAND',src:'live',
+  what:'1 action: +20 morale to you, +24 to everyone within 3 hexes.'},
+ {num:'CAP2',row:2,lvl:7,cls:'captain',free:true,name:'ROTATION',src:'user',
   what:'Swap places with an adjacent ally. Neither of you provokes a swing.'},
- {num:'CAP4',row:2,lvl:9,cls:'captain',name:'THE BANNER',src:'draft',
-  what:'Allies within 2 hexes cannot rout. DOWNSIDE: every enemy that can reach you prefers you.'},
 
- {num:'SPR2',row:2,lvl:3,cls:'spear',free:true,name:'BRACED WALL',src:'live',
-  what:'Your SPEAR WALL keeps working, and can be raised, with somebody already inside your reach.'},
- {num:'SPR3',row:2,lvl:6,cls:'spear',free:true,name:'KILLING ZONE',src:'live',
+ {num:'SPR2',row:2,lvl:4,cls:'spear',free:true,name:'BRACED WALL',src:'live',
+  what:'SPEAR WALL can be raised, and keeps working, with an enemy already in reach.'},
+ {num:'SPR3',row:2,lvl:7,cls:'spear',free:true,name:'KILLING ZONE',src:'live',
   what:'Your parting swings deal 100% damage instead of 50%.'},
- {num:'SPR4',row:2,lvl:9,cls:'spear',name:'LONG REACH',src:'draft',
-  what:'Your THRUST reaches 3 hexes. DOWNSIDE: anyone right next to you gets +10 to hit you.'},
 
- {num:'ARC2',row:2,lvl:3,cls:'archer',free:true,name:'SURE SHOT',src:'live',
+ {num:'ARC2',row:2,lvl:4,cls:'archer',free:true,name:'SURE SHOT',src:'live',
   what:'Shooting while engaged: -15 to hit instead of -35.'},
- {num:'ARC3',row:2,lvl:6,cls:'archer',free:true,name:'EAGLE EYE',src:'live',
+ {num:'ARC3',row:2,lvl:7,cls:'archer',free:true,name:'EAGLE EYE',src:'live',
   what:'+2 range on every ranged attack.'},
- {num:'ARC4',row:2,lvl:9,cls:'archer',name:'OVERDRAW',src:'draft',
-  what:'+30% damage on every shot. DOWNSIDE: each shot costs you 2 nerve.'},
 
- {num:'CUT2',row:2,lvl:3,cls:'cutter',free:true,name:'SHADOW-STEP',src:'live',
+ {num:'CUT2',row:2,lvl:4,cls:'cutter',free:true,name:'SHADOW-STEP',src:'live',
   what:'After you DISTRACT something, your next attack on it this turn costs no action.'},
- {num:'CUT3',row:2,lvl:6,cls:'cutter',free:true,name:'BUTCHER',src:'live',
+ {num:'CUT3',row:2,lvl:7,cls:'cutter',free:true,name:'BUTCHER',src:'live',
   what:'+17% damage against anything under half hitpoints.'},
- {num:'CUT4',row:2,lvl:9,cls:'cutter',name:'THROAT WORK',src:'draft',
-  what:'+30% damage against anything flanked. DOWNSIDE: you cannot wear medium or heavy armor.'},
 
- {num:'BRU2',row:2,lvl:3,cls:'brute',free:true,name:'TAUNT',src:'user',
+ {num:'BRU2',row:2,lvl:4,cls:'brute',free:true,name:'TAUNT',src:'user',
   what:'Enemies within 3 hexes come at you, not at the thin one behind you.'},
- {num:'BRU3',row:2,lvl:6,cls:'brute',free:true,name:'THICK HIDE',src:'live',
-  what:'+18 armor.'},
- {num:'BRU4',row:2,lvl:9,cls:'brute',name:'RECKLESS SWING',src:'draft',
-  what:'Your SWING also hits everything adjacent to your target. DOWNSIDE: including your own people.'},
+ {num:'BRU3',row:2,lvl:7,cls:'brute',free:true,name:'THICK HIDE',src:'live',
+  what:'+18 armour.'},
 
- {num:'MAG2',row:2,lvl:3,cls:'warmage',lock:'event',name:'COLD HANDS',src:'live',
-  what:'Casting costs you 5 less of your own nerve.'},
- {num:'MAG3',row:2,lvl:6,cls:'warmage',lock:'event',name:'CONDUIT',src:'live',
+ {num:'MAG2',row:2,lvl:4,cls:'warmage',lock:'idea',name:'COLD HANDS',src:'live',
+  what:'Casting costs you 5 less nerve.'},
+ {num:'MAG3',row:2,lvl:7,cls:'warmage',lock:'idea',name:'CONDUIT',src:'live',
   what:'+20% spell damage.'},
 
 /* ── LANE 3 · RACE (faction skill free at level 0) ────────────── */
  {num:'HUM1',row:3,lvl:0,race:'human',auto:true,name:'KICK',src:'live',
-  what:'Almost no damage. Puts them ONE HEX straight back, away from you. No aiming it: walk round first.'},
- {num:'HUM2',row:3,lvl:3,race:'human',name:'VERSATILE',src:'draft',
-  what:'General skills (lanes 4 and 5) open to you one level early.'},
+  what:'Almost no damage. Puts them one hex straight back, away from you.'},
+ {num:'HUM2',row:3,lvl:3,race:'human',name:'VERSATILE',src:'user',
+  what:'+5 to hit and +5 dodge while both hands hold a different weapon.'},
  {num:'HUM3',row:3,lvl:6,race:'human',name:'SECOND WIND',src:'draft',
   what:'Once per battle, your nerve climbs back to full.'},
 
- {num:'RAT1',row:3,lvl:0,race:'ratkin',auto:true,name:'POISON THE BLADE',src:'live',
+ {num:'RAT1',row:3,lvl:0,race:'ratkin',auto:true,name:'POISON',src:'live',
   what:'For two rounds everything that hits them takes 15% more. It stacks.'},
  {num:'RAT2',row:3,lvl:3,race:'ratkin',name:'UNNOTICEABLE',src:'user',
   what:'Enemies prefer any other target while an ally stands nearer than you.'},
  {num:'RAT3',row:3,lvl:4,race:'ratkin',name:'STRONG',src:'user',
-  what:'+1 strength.'},
+  what:'+1 STR.'},
  {num:'RAT4',row:3,lvl:6,race:'ratkin',name:'MAGIC POTION',src:'user',
-  what:'Drink: pay 15% of your own health, refill all action points this turn. Once per battle.'},
+  what:'Deal 15% of your own health to yourself: all action points back this turn. '+
+   'Once per battle.'},
 
  {num:'OGR1',row:3,lvl:0,race:'ogre',auto:true,name:'PICK UP AND THROW',src:'live',
   what:'Pick up anything on the next tile and throw it: one of yours, one of theirs, or a boulder.'},
- {num:'OGR2',row:3,lvl:3,race:'ogre',name:'THICK SKULL',src:'draft',
-  what:'Head hits deal you no bonus damage.'},
+ {num:'OGR2',row:3,lvl:3,race:'ogre',name:'THICK MUSCLES',src:'user',
+  what:'A hit from behind lands as an ordinary hit: no critical bonus against you.'},
  {num:'OGR3',row:3,lvl:4,race:'ogre',name:'FEARSOME',src:'user',
   what:'Every hit of yours that draws blood forces a nerve check, however small the wound.'},
- {num:'OGR4',row:3,lvl:6,race:'ogre',name:'BOULDER SHOULDER',src:'draft',
-  what:'PICK UP AND THROW recharges in one round instead of two, and boulders fly 4 hexes.'},
+ {num:'OGR5',row:3,lvl:6,race:'ogre',name:'RAGE',src:'user',
+  what:'Below half health: +22% damage, and you cannot disengage.'},
 
-/* ── LANE 4 · GENERAL, EARLY (opens level 2) ──────────────────── */
- {num:'GEN1',row:4,lvl:2,name:'STUDENT',src:'user',
-  what:'+20% experience from battle.'},
+/* ── LANE 4 · GENERAL. ONE lane now, not two. ─────────────────── */
  {num:'GEN2',row:4,lvl:2,name:'EVERCHANGING LUCK',src:'user',
-  what:'+1 to one stat in battle, rolled anew each battle. Never lands on a stat at its cap.'},
- /* GEN3 PATHFINDER deleted 2026-08-20: no terrain skills (user ruling) */
- {num:'GEN4',row:4,lvl:3,name:'DODGE',src:'draft',
-  what:'+8 dodge.'},
+  what:'+1 to one stat in battle, rolled anew each battle. Never a stat at its cap.'},
+ {num:'GEN19',row:4,lvl:2,name:'DISENGAGE',src:'user',
+  what:'1 action: break off from an enemy and move 2 hexes, free of parting swings. '+
+   'Without this you cannot break off at all.'},
  {num:'GEN5',row:4,lvl:3,name:'COLOSSUS',src:'draft',
-  what:'+25% health.'},
- /* GEN6 TACTICIAN deleted 2026-08-20: superseded by GEN18 DISENGAGE */
- {num:'GEN18',row:4,lvl:3,name:'DISENGAGE',src:'user',
-  what:'1 action: disengage from an enemy and step 2 hexes away, no parting swings. '+
-   'Not a basic action any more: only the trained know how to leave.'},
- {num:'GEN7',row:4,lvl:4,name:'GOOD ARM',src:'user',
-  what:'Unlocks throwing weapons: a knife or javelin from the pocket, range 3.'},
+  what:'+20% health.'},
+ {num:'GEN7',row:4,lvl:4,name:'GOOD HAND',src:'user',
+  what:'+1 range and +10 to hit with every ranged attack, and your shots pass through '+
+   'anyone standing in the way, friend or enemy.'},
  {num:'GEN8',row:4,lvl:4,name:'TWO-HANDED WEAPONS',src:'user',
-  what:'Two-handed weapons swing at full skill in your hands. Without this they are -10 to hit.'},
+  what:'+50% damage against armour.'},
  {num:'GEN9',row:4,lvl:4,name:'TWO WEAPONS HANDLER',src:'user',
   what:'Hold two one-handed weapons. The second strikes at 50% damage.'},
-
-/* ── LANE 5 · GENERAL, LATE (opens level 5) ───────────────────── */
- {num:'GEN10',row:5,lvl:5,name:'NINE LIVES',src:'user',
+ {num:'GEN10',row:4,lvl:5,name:'NINE LIVES',src:'user',
   what:'Once per battle, the blow that would drop you leaves you standing at 1 health.'},
- {num:'GEN11',row:5,lvl:5,name:'FORTIFIED MIND',src:'draft',
+ {num:'GEN11',row:4,lvl:5,name:'FORTIFIED MIND',src:'draft',
   what:'+20 nerve.'},
- {num:'GEN12',row:5,lvl:5,name:'QUICK HANDS',src:'draft',
-  what:'Once a turn, swapping what you hold costs nothing.'},
- {num:'GEN13',row:5,lvl:5,name:'SHIELD MASTERY',src:'draft',
+ {num:'GEN13',row:4,lvl:5,name:'SHIELD MASTERY',src:'draft',
   what:'+25% shield bonus. Your shield takes half damage from axes.'},
- {num:'GEN14',row:5,lvl:6,name:'LONE WOLF',src:'user',
+ {num:'GEN14',row:4,lvl:6,name:'LONE WOLF',src:'user',
   what:'No ally within 3 hexes: +15% to hit, dodge and nerve.'},
- {num:'GEN15',row:5,lvl:6,name:'FRENZY',src:'user',
+ {num:'GEN15',row:4,lvl:6,name:'FRENZY',src:'user',
   what:'A kill gives +20% damage until the end of your next turn.'},
- {num:'GEN16',row:5,lvl:7,name:'UNDERDOG',src:'draft',
+ {num:'GEN20',row:4,lvl:6,name:'FAR HAND',src:'user',
+  what:'+1 range on every skill and every spell you have.'},
+ {num:'GEN16',row:4,lvl:7,name:'UNDERDOG',src:'draft',
   what:'Being surrounded gives them no bonus against you.'},
- {num:'GEN17',row:5,lvl:8,name:'BERSERK',src:'draft',
+ {num:'GEN17',row:4,lvl:8,name:'BERSERK',src:'draft',
   what:'Once a turn, a kill refunds 1 action point.'}
 ];
 SKILLS.forEach((s,i)=>{s.id=i;});
@@ -701,28 +683,31 @@ const S={race:'human',weapon:'spear',level:0,adj:false,picks:[]};
 const byId=id=>SKILLS[id];
 const autoFor=race=>SKILLS.find(s=>s.auto&&s.race===race);
 const spent=()=>S.picks.filter(id=>{const s=byId(id);return !s.auto&&!s.free;}).length;
-/* one point at level 0, one more per level after (user ruling) */
 const budget=()=>S.level+1;
 const clsOf=()=>{const p=S.picks.map(byId).find(s=>s.door);return p?p.cls:null;};
-const hasVersatile=()=>S.picks.map(byId).some(s=>s.name==='VERSATILE');
-const effLvl=s=>(s.row>=4&&hasVersatile())?s.lvl-1:s.lvl;
-/* usable-in-battle: a class skill or door is DEAD with the wrong weapon
-   in hand (user ruling). Pickable, but grey, with the reason on hover. */
+const effLvl=s=>s.lvl;
+const trains=(cls,w)=>!!(cls&&CLASSWEAPON[cls]&&CLASSWEAPON[cls].includes(w));
 const deadNow=s=>{
   if(s.lock)return null;
-  if(s.cls&&CLASSWEAPON[s.cls]&&!CLASSWEAPON[s.cls].includes(S.weapon))
-    return 'works only with a '+CLASSWEAPON[s.cls].map(w=>WEAPONS[w].n.toLowerCase())
-      .join(' or ')+' in hand; you hold a '+WEAPONS[S.weapon].n.toLowerCase();
+  if(!s.cls||!CLASSWEAPON[s.cls])return null;
+  if(trains(s.cls,S.weapon))return null;
+  return CLASSNAME[s.cls]+' skills need '+
+    CLASSWEAPON[s.cls].map(w=>WEAPONS[w].n.toLowerCase()).join(' or ')+
+    ' in hand; you hold a '+WEAPONS[S.weapon].n.toLowerCase();
+};
+const specialDead=()=>{
+  const c=clsOf();
+  if(!c)return 'no class yet: a class door is what trains a weapon’s special ability';
+  if(!trains(c,S.weapon))return 'the '+CLASSNAME[c]+' does not train the '+
+    WEAPONS[S.weapon].n.toLowerCase()+', only '+
+    CLASSWEAPON[c].map(w=>WEAPONS[w].n.toLowerCase()).join(' or ');
   return null;
 };
 
-/* one gatekeeper. Returns null when pickable, else the reason. */
 function why(s){
   if(S.picks.includes(s.id))return null;
-  if(s.lock==='event')return 'never a pick: the road gives it, in events only';
-  if(s.lock==='later')return 'parked: this class does not exist yet';
+  if(s.lock==='idea')return 'an idea, not designed yet';
   if(s.free)return 'granted free with the '+CLASSNAME[s.cls]+' door at level '+s.lvl+', not bought';
-  if(s.group==='capstone'&&!clsOf())return 'no class to cap: walk through a door first';
   if(s.row===3&&s.race!==S.race)return 'wrong race';
   if(effLvl(s)>S.level)return 'needs level '+effLvl(s);
   if(spent()>=budget())return 'no points left at level '+S.level;
@@ -731,7 +716,7 @@ function why(s){
   if(s.door&&clsOf())return 'you are a '+CLASSNAME[clsOf()]+' already: one door per life';
   if(s.row===2){
     const c=clsOf();
-    if(!c)return 'walk through a class door first (level 0, lane 1)';
+    if(!c)return 'walk through a class door first (level 0)';
     if(c!==s.cls)return 'you are a '+CLASSNAME[c]+', not a '+CLASSNAME[s.cls];
   }
   return null;
@@ -739,7 +724,7 @@ function why(s){
 
 function pick(id){
   const s=byId(id);
-  if(S.picks.includes(id)){ // unpick, then replay so dependents fall out
+  if(S.picks.includes(id)){
     if(s.free){setStatus(s.num+' '+s.name+
       ': granted with the door, it cannot be given back.');return;}
     S.picks=S.picks.filter(x=>x!==id&&!byId(x).auto);
@@ -750,16 +735,12 @@ function pick(id){
   S.picks.push(id);grantFree();setStatus('');render();
 }
 
-/* the door GRANTS its class skills once each level is reached: no
-   point spent, and replay() re-derives them from the door alone */
 function grantFree(){
   const c=clsOf();if(!c)return;
   SKILLS.filter(s=>s.free&&s.cls===c&&!s.lock&&s.lvl<=S.level)
     .forEach(s=>{if(!S.picks.includes(s.id))S.picks.push(s.id);});
 }
 
-/* replay the pick order through the gatekeeper so a control change
-   (race, level down, an unpick) drops what no longer stands */
 function replay(){
   const want=S.picks.slice();
   S.picks=[autoFor(S.race).id];
@@ -780,7 +761,7 @@ function resetPicks(){S.picks=[autoFor(S.race).id];setStatus('');render();}
 function setStatus(t){document.getElementById('status').textContent=t;}
 
 /* ═════════════════════ RENDER ═════════════════════ */
-function chip(s,mode){ // mode: 'live' (interactive) | 'static'
+function chip(s,mode){
   const el=document.createElement('div');
   let cls='sk';
   if(mode==='live'){
@@ -794,11 +775,11 @@ function chip(s,mode){ // mode: 'live' (interactive) | 'static'
     el.onclick=()=>pick(s.id);
   }else{
     cls+=' static';
-    if(s.lock){cls+=' locked';
-      el.title=s.lock==='event'?'never a pick: events only':'parked for later';}
+    if(s.lock){cls+=' locked';el.title='an idea, not designed yet';}
   }
   el.className=cls;
-  const tag=s.src==='user'?'yours':(s.src==='live'?'in game now':'draft');
+  const tag=s.lock==='idea'?'idea'
+    :s.src==='user'?'yours':(s.src==='live'?'in game now':'draft');
   const who=(mode==='static'&&s.row===2)?CLASSNAME[s.cls]+' · '
     :(mode==='static'&&s.row===3)?s.race.toUpperCase()+' · ':'';
   el.innerHTML='<span class="num">'+s.num+' · L'+s.lvl+
@@ -808,7 +789,24 @@ function chip(s,mode){ // mode: 'live' (interactive) | 'static'
   return el;
 }
 
-/* the transposed grid: header of lanes, then one row per level 0..10 */
+/* THE BAND ABOVE THE GRID: everything class and armor, in ONE row, in
+   level order. The doors (level 0), the class skills the door GRANTS at
+   4 and 7 with no choice in them, the armor mastery at 5, and the parked
+   ideas. None of it is a per-level decision, so none of it needs a level
+   row - which is what takes the grid down to two lanes. */
+function doorBand(host,mode,cls){
+  host.innerHTML='';
+  const list=SKILLS.filter(s=>{
+    if(s.row===1)return true;
+    if(s.row!==2)return false;
+    return mode==='static'?true:(s.cls===cls||s.cls==='warmage');
+  }).slice().sort((a,b)=>a.lvl-b.lvl||a.row-b.row);
+  const c=document.createElement('div');c.className='chips';
+  list.forEach(s=>c.appendChild(chip(s,mode)));
+  host.appendChild(c);
+}
+
+/* the tree grid: one row per level, THREE lanes */
 function grid(host,lanes,mode){
   host.innerHTML='';
   const g=document.createElement('div');g.className='grid';
@@ -833,85 +831,69 @@ function grid(host,lanes,mode){
 
 function render(){
   document.getElementById('lvlOut').textContent=S.level;
-  /* hud */
   const c=clsOf();
   document.getElementById('hud').textContent=
     'LEVEL '+S.level+' · '+S.race.toUpperCase()+' · '+WEAPONS[S.weapon].n+
     (c?' · '+CLASSNAME[c]:' · no class yet')+
     ' · POINTS '+spent()+'/'+budget();
-  /* weapon kit; a stance that cannot fire right now greys with the
-     reason on hover (the ENEMY IN REACH toggle simulates the scrum) */
   const kit=document.getElementById('kit');kit.innerHTML='';
-  WEAPONS[S.weapon].kit.forEach(([n,d,adjGated])=>{
+  WEAPONS[S.weapon].kit.forEach(([n,d,gate],i)=>{
     const k=document.createElement('div');k.className='kitcard';
-    if(adjGated&&S.adj){k.className+=' dis';
-      k.title='cannot be raised with an enemy already inside your reach '+
-        '(BRACED WALL lifts this)';}
+    if(i>0){
+      const reason=specialDead()||((gate&&gate.adj&&S.adj)
+        ?'cannot be raised with an enemy already inside your reach (BRACED WALL lifts this)':null);
+      if(reason){k.className+=' dis';k.title=reason;}
+    }
     k.innerHTML='<b>'+n+'</b><div>'+d+'</div>';kit.appendChild(k);});
   const hint=document.createElement('div');hint.className='kitcard';
-  hint.innerHTML='<b>SWAP THE WEAPON, SWAP THE KIT</b><div>These are not tree picks. '+
-    'They come with the '+WEAPONS[S.weapon].n.toLowerCase()+' and leave with it.</div>';
+  hint.innerHTML='<b>THE CLASS TRAINS THE WEAPON</b><div>'+
+    (c?CLASSNAME[c]+' trains '+CLASSWEAPON[c].map(w=>WEAPONS[w].n.toLowerCase()).join(', ')+'.'
+      :'No class yet: no special abilities.')+'</div>';
   kit.appendChild(hint);
-  /* character tree: lane 2 shows your door's class, or the class your
-     weapon suggests until a door is taken (plus the event door) */
   const showCls=c||OPENS[S.weapon];
+  doorBand(document.getElementById('charDoors'),'live',showCls);
   grid(document.getElementById('charTree'),[
-    {label:'1 · CLASS + ARMOR',sub:'the doors, at level 0',
-     skills:SKILLS.filter(s=>s.row===1)},
-    {label:'2 · '+CLASSNAME[showCls]+' SKILLS',
-     sub:c?'your class':'suggested by your '+WEAPONS[S.weapon].n.toLowerCase(),
-     skills:SKILLS.filter(s=>s.row===2&&(s.cls===showCls||s.cls==='warmage'))},
-    {label:'3 · RACE',sub:S.race.toUpperCase(),
+    {label:'RACE',sub:S.race.toUpperCase(),
      skills:SKILLS.filter(s=>s.row===3&&s.race===S.race)},
-    {label:'4 · GENERAL',sub:'for everyone',
-     skills:SKILLS.filter(s=>s.row===4)},
-    {label:'5 · GENERAL, LATE',sub:'the build-definers',
-     skills:SKILLS.filter(s=>s.row===5)}
+    {label:'GENERAL',sub:'for everyone',
+     skills:SKILLS.filter(s=>s.row===4)}
   ],'live');
-  /* pick list */
   const pl=S.picks.map(byId);
   document.getElementById('picks').innerHTML='TAKEN: '+
     (pl.length?pl.map(s=>'<b>'+s.num+' '+s.name+'</b>').join(' · '):'nothing')+
     ' <span class="dim">(click a taken skill to give it back)</span>';
-  /* full tree, once (it never changes) */
   const f=document.getElementById('fullTree');
   if(!f.dataset.done){
+    doorBand(document.getElementById('fullDoors'),'static');
     grid(f,[
-      {label:'1 · CLASS + ARMOR',sub:'',skills:SKILLS.filter(s=>s.row===1)},
-      {label:'2 · CLASS SKILLS',sub:'all six classes',
-       skills:SKILLS.filter(s=>s.row===2)},
-      {label:'3 · RACE',sub:'all three races',
+      {label:'RACE',sub:'all three races',
        skills:SKILLS.filter(s=>s.row===3)},
-      {label:'4 · GENERAL',sub:'',skills:SKILLS.filter(s=>s.row===4)},
-      {label:'5 · GENERAL, LATE',sub:'',skills:SKILLS.filter(s=>s.row===5)}
+      {label:'GENERAL',sub:'',skills:SKILLS.filter(s=>s.row===4)}
     ],'static');
     f.dataset.done=1;
   }
 }
 
-/* 2.2: the same skills cut by branch, so one class or race can be
-   read and adjusted on its own. Built once; chips are read-only. */
+/* 2.2: the same skills cut by branch */
 function buildBranches(){
   const host=document.getElementById('branches');
   const blocks=[];
   ['captain','spear','archer','cutter','brute'].forEach(k=>{
-    blocks.push(['CLASS · '+CLASSNAME[k]+' (from '+
-      CLASSWEAPON[k].map(w=>WEAPONS[w].n.toLowerCase()).join(' or ')+')',
+    blocks.push(['CLASS · '+CLASSNAME[k]+' (trains '+
+      CLASSWEAPON[k].map(w=>WEAPONS[w].n.toLowerCase()).join(', ')+')',
       SKILLS.filter(s=>(s.door&&s.cls===k)||(s.row===2&&s.cls===k))]);
   });
-  blocks.push(['CLASS · BATTLE-MAGE (events only)',
-    SKILLS.filter(s=>s.cls==='warmage')]);
-  blocks.push(['CLASS · BARD (parked)',SKILLS.filter(s=>s.cls==='bard')]);
+  blocks.push(['CLASS · MAGE (idea)',SKILLS.filter(s=>s.cls==='warmage')]);
+  blocks.push(['CLASS · BARD (idea)',SKILLS.filter(s=>s.cls==='bard')]);
   blocks.push(['ARMOR MASTERY (one of three, at level 5)',
     SKILLS.filter(s=>s.group==='armor')]);
-  blocks.push(['CAPSTONE (one of two, at level 10)',
+  blocks.push(['CAPSTONE (idea, level 10)',
     SKILLS.filter(s=>s.group==='capstone')]);
   ['human','ratkin','ogre'].forEach(r=>{
     blocks.push(['RACE · '+r.toUpperCase(),
       SKILLS.filter(s=>s.row===3&&s.race===r)]);
   });
-  blocks.push(['GENERAL (lane 4)',SKILLS.filter(s=>s.row===4)]);
-  blocks.push(['GENERAL, LATE (lane 5)',SKILLS.filter(s=>s.row===5)]);
+  blocks.push(['GENERAL',SKILLS.filter(s=>s.row===4)]);
   blocks.forEach(([name,skills])=>{
     const band=document.createElement('div');band.className='tierband';
     band.innerHTML='<div class="tiername">'+name+'</div>';

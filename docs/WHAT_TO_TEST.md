@@ -2034,6 +2034,69 @@ itself the moment the file lands.
 
 ---
 
+## 🎲 THREE GENERAL SKILLS, OPEN TO EVERY CLASS  *(#260 · 2026-08-27 · build log 8f.285)*
+
+The first three skills out of the tree lab, in the game. Every class can buy them now.
+
+### 1. EVERCHANGING LUCK, at levels 2
+
+**Three steps:** level anybody to 2 → the perk list → take EVERCHANGING LUCK.
+**Should happen:** every battle, one stat is +1: either your WORST or your BEST, never a
+middle one, and it changes between fights. If it lands on STRENGTH your hitpoints go up
+with it; if it lands on AGILITY your dodge does.
+**A bug:** the same stat every fight, a middle stat ever being picked, or the sheet saying
+the stat rose while the hitpoints do not move.
+
+### 2. BREAK AWAY, at levels 4
+
+**Three steps:** take it → get engaged → press DISENGAGE.
+**Should happen:** the card says **+2 hex now**, the float says **CLEAN · +2 HEXES**, and
+the MOVE card's hex count goes up by two, not one.
+**A bug:** any of those three saying a different number from the other two.
+
+### 3. SHIELDWORK, at levels 6
+
+**Three steps:** take it → put a shield in the off hand → read DODGE on the sheet.
+**Should happen:** the shield is worth exactly double. Round shield +9 becomes +18, barrel
+lid +5 becomes +10, buckler +4 becomes +8.
+**A bug:** a flat bonus that makes the cheap shield as good as the round one.
+
+---
+
+## ⚖ WHAT THE CLASS CARD PROMISES, AND WHAT YOU GET  *(#259 · 2026-08-27 · build log 8f.284)*
+
+You asked me to double check that stats and skills give what they promise. The numbers were
+honest everywhere; the CLASS PICKER was not.
+
+### 1. The class card names the act you will actually get
+
+**Three steps:** any body at its first level → the class picker → read the line under each name.
+**Should happen:** ARCHER says CRIPPLING SHOT, CUTTER says DISTRACT, CAPTAIN says HOLD THE LINE
+and COMMAND from level 4. Take the class and that is the act on the row.
+**A bug:** any card naming AIMED SHOT, BACKSTAB or RALLY THE LINE. None of those three acts
+exists any more; the cards had been selling them for months.
+
+### 2. The captain's voice arrives at 4, not 3
+
+**Three steps:** a level-1 captain → fight → the act row. Then level him to 4.
+**Should happen:** HOLD THE LINE from the start, at one pip. COMMAND appears by itself at 4.
+**A bug:** COMMAND at level 3 (that was the old ruling) or a captain who never gets it.
+
+### 3. The class is SPEAR
+
+**Three steps:** the muster wall, the company sheet, the battle plaque.
+**Should happen:** the word is SPEAR everywhere. It is shorter than SPEARWOMAN, so nothing
+should clip or wrap differently than before.
+**A bug:** SPEARWOMAN surviving on any screen, or a box that now looks half empty.
+
+### 4. The check that holds it
+
+`LINT()` in the console must read `findings: 0`. It carries a new check 6h: every act a class
+card claims must be an act the engine builds for that class. It was proved by seeding each of
+the three real lies and watching it name them.
+
+---
+
 ## ⛨ THE CAPTAIN'S FIRST TOOL, AND THE WALL THAT REFUSES A SCRUM  *(#208 · 2026-08-20 · build log 8f.231)*
 
 Three rulings from the skill-tree session that the battle could already express. The tree itself
