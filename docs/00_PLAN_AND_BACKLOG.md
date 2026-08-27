@@ -91,6 +91,7 @@ section used to carry each entry in full, which made the work file a second chan
 
 | | the subtraction | log |
 |---|---|---|
+| **#257** *(08-27)* | **every promise on the four ladders pays**: the mood POOL reaches the sheet (110 vs 90 drew an identical bar) · a census that drives each rung found **five more printing and not paying** - MORALE's `loss` and `heal`, STANDS, UNREPEATABLE and TWO PERK POINTS · 18 of 18 now pay | 8f.282 |
 | **#256** *(08-27)* | **the three remainders of #253 and #254**: one weapon printed three damage ranges and labelled none (`landsFor` is the one reader) · INTELLECT +3’s reach and MORALE −4’s *one rung lower* both paid nothing and now pay | 8f.281 |
 | **#255** *(08-27)* | **six asks after playing the ladders**: the mood ladder moves the bar on every rung (80/90/100 → 50..130) · `RACESIZE` makes SMALL and BIG a fact about the race and retires the `big` personality · *to land a skill or magic* · seats 12 · born is not rolled · ⚡ **and two findings**: 24 stat modifiers were still on the old 1..20 scale, and #254's class lean had never reached a hired body | 8f.280 |
 | **#254** *(08-27)* | **the four ladders go in**: `STATLADDER` is the decision page made into the engine - nine authored rungs a stat, a two-point capstone, and STANDS / FLEET / UNREPEATABLE on the unit · the givens, the race's pool and weight of blow, and *to be hit* moved onto the attacker · the trade leans a rung (the fourth named line) · TO HIT and DODGE explain themselves · priced in the arena over 7 fights ×15 | 8f.279 |

@@ -11754,7 +11754,13 @@ function levelUp(p){
   let isPerk=p.nextIsPerk;
   if(isPerk&&!perksLeft(p))isPerk=false;
   p.nextIsPerk=!p.nextIsPerk;
-  if(isPerk)p.perkPoints=(p.perkPoints||0)+1;
+  /* ⛔ #257 - MORALE +4 BANKS TWO PERK POINTS INSTEAD OF ONE. Authored on
+     the capstone since #254 and never read. ⚠ It doubles the PERK level and
+     not the stat level: the rung says *two perk points*, and a capstone that
+     quietly doubled a body's stat climb as well would be the best rung in the
+     game by a distance nobody had priced. */
+  const two=holds({st:effStats(p)},'mor','TWO PERK POINTS')?2:1;
+  if(isPerk)p.perkPoints=(p.perkPoints||0)+two;
   else p.statPoints=(p.statPoints||0)+1;
 }
 /* how far along the current level, 0..1. Full at the cap. Clamped, because
@@ -15294,6 +15300,13 @@ const moodSize=amt=>{const a=Math.abs(amt);
    board, and it is why the price of a working could not be seen - see there. */
 function mor(u,amt,why,quiet){
   if(u.dead||u.fled)return;
+  /* ⛔ #257 - MORALE'S `loss` RUNG PAYS HERE, AND ONLY ON THE WAY DOWN.
+     *Brave: loses mood at ×0.75* has printed on the ladder since #254 and paid
+     nothing. It is the one site every knock in the game comes through, so it is
+     the only place it can be applied once. ⚠ IT MULTIPLIES A LOSS AND NEVER A
+     GAIN: a brave body does not get less back for being brave, and a coward
+     does not climb faster for being one. */
+  if(amt<0){const L=heldOf(u,'mor').loss||0;if(L)amt=Math.round(amt*(1+L));}
   const was=u.state,wasRung=ladderAt(u);
   u.morale=clamp(u.morale+amt,0,u.moraleMax);restate(u);
   const nowRung=ladderAt(u);
@@ -19930,6 +19943,17 @@ const sizeOK=(act,d)=>!act.maxSize||sizeOf(d)<=act.maxSize;
    reads is a rule being taught; a refusal a brain gets back is a stall.
    ⚑ ANY NEW no-op-and-return GATE IN `clickHex` MUST BE ADDED HERE TOO. */
 const mayAim=(u,a,t)=>
+  /* ⛔ #257 - UNREPEATABLE: *no enemy may strike this body twice in the same
+     turn. A second enemy still can.* The capstone flag has been on the unit
+     since #254 and NOTHING READ IT. It goes here for the reason the block
+     above spends twenty lines on: `mayAim` is the ONE gate both brains and the
+     offer ring ask, so a refusal stated here is stated everywhere and cannot
+     become a stall. ⚠ It is keyed on WHO struck, not on how many times: the
+     rung's second sentence is the whole rule, and a per-target counter would
+     refuse the second enemy too.
+     ⚠ IT DOES NOT REFUSE A MOVE OR A HELP - `a.dmg` is the test, so a shove, a
+     heal or a shout still reach a body that has already been hit. */
+  (!t.unrepeatable||!a||!a.dmg||!(t.hitBy&&t.hitBy[u.id||u.uid]))&&
   (!a.maxSize||sizeOK(a,t))&&
   (!a.rear||arcOn(u,t).n==='BACK')&&
   (!a.distract||!(t.big||t.noArc))&&
@@ -21648,9 +21672,23 @@ function strike(a,d,act,mult){
      `saidNearDeath` down there would answer "have they crossed it at any point
      in the fight", which is true for every blow after the first and is not the
      same question. */
+  /* #257 - UNREPEATABLE reads this. Recorded on the DEFENDER, keyed on the
+     attacker, and cleared at the top of every round by `nextTurn`. */
+  if(d.unrepeatable&&a){d.hitBy=d.hitBy||{};d.hitBy[a.id||a.uid]=1;}
   const nearNow=(d.hp>0&&d.hp<d.hpMax/3&&!d.saidNearDeath);
   if(nearNow){
     d.saidNearDeath=true;mor(d,MORALE.nearDeath,'it is nearly finished');}
+  /* ⛔ #257 - STANDS: *once a fight, the blow that would drop them leaves 1
+     hitpoint*. The capstone flag has been set on the unit since #254 and
+     NOTHING READ IT. It is caught here, at the one site a body reaches zero,
+     and it spends itself: `stoodUp` is per fight and is not copied back.
+     ⚠ It is checked BEFORE the zero is written, or the body is already down
+     and every rule downstream has run. */
+  if(d.hp<=0&&d.stands&&!d.stoodUp&&!d.dead){
+    d.stoodUp=true;d.hp=1;
+    say((d.name||'They')+' will not go down. Not yet.');
+    if(typeof fx==='function')try{fx(d,'\u26e8',true);}catch(e){}
+  }
   if(d.hp<=0){
     d.hp=0;
     /* ═══ NOBODY ON THE ROSTER DIES IN A FIGHT ═══════════════════════
@@ -22951,6 +22989,8 @@ function nextTurn(resumed){
      out.banked=out.actions>0?1:0;}
   B.idx++;
   if(B.idx>=B.order.length){B.idx=0;B.round++;G.battleRounds=B.round;
+    /* #257 - a new round, so UNREPEATABLE forgets who has already swung */
+    B.units.forEach(x=>{if(x.hitBy)x.hitBy=null;});
     logRound(B.round);
     B.ambushRound=false;
     /* each side re-reads the field once a round: am I ahead? do I hold? */
@@ -37331,8 +37371,23 @@ function drawInv(){
               Math.round(100*nu.morale/(nu.moraleMax||1))+'%;background:'+nl.col+'"></i>'+
             /* #247 - the rung name takes the bar it is measured on: this ask's *"for
                mood use space"*, and the one row of the three with no figure. */
-            '<span class="sbt"><b class="sbL">'+nl.n.toUpperCase()+
-              '</b></span></div></div>'+
+            /* ⛔ #257 - AND THE POOL ITSELF, WHICH IS WHAT MORALE ACTUALLY
+               BUYS AND WHICH THIS ROW HAS NEVER SHOWN. (User: *"does mood work?
+               For example for captain it kind of should be high (because higher
+               morale)"* - and he is right that it did not look it.) The bar is a
+               FRACTION, and every body in the game opens a fight at the same
+               71% of its own pool, so a Captain carrying 110 and a spearwoman
+               carrying 90 drew the identical 137px of fill and the identical
+               word. **The ladder's whole positive half was invisible.**
+               ⚠ #247 made this the one row of three with no figure, on the
+               argument that its value IS the word. That was true when the pool
+               was the same on everybody; it stopped being true the moment
+               MORALE's rungs started moving it. The word stays and the figure
+               joins it, which is exactly what the ARMOUR row above does. */
+            '<span class="sbt"><b class="sbL">'+nl.n.toUpperCase()+'</b>'+
+              '<span class="sbR">'+Math.round(nu.morale)+
+              '<span class="of">/'+nu.moraleMax+'</span></span>'+
+              '</span></div></div>'+
         /* ⛔ #232 · WHAT THEY DO WITH ALL THAT, IN THE HOLE UNDER THE BARS ═══
            (User: *"Action can go under nurve - there is some space"*.)
            ⚑ AND THERE WAS EXACTLY THAT MUCH SPACE, MEASURED: the three pools
@@ -42336,9 +42391,16 @@ function passDays(n){
        is the number DOUBLE RATIONS doubles; the rung doubles it too, per body,
        and the two stack. ⚠ IT TOUCHES INJURIES AND NEVER SCARS - a scar that
        healed itself would stop being the thing #197 made permanent. */
+    /* ⛔ #257 - AND IT IS PER BODY, WHICH IS WHAT MADE THE RUNG DEAD.
+       #254 wrote the comment above and left the arithmetic alone: `mend` was
+       one figure for the whole company, so *Fearless: mends 12 a day, not 6*
+       printed on the ladder and paid nothing for two entries. The rations are
+       the COMPANY's dial and the rung is the BODY's, and they stack. */
     const mend=(G.doubleRations>0?MEND_DOUBLE:MEND_BASE);
     if(G.doubleRations>0)G.doubleRations--;
-    G.party.forEach(p=>{if(p.hpLoss)p.hpLoss=Math.max(0,p.hpLoss-mend);});
+    G.party.forEach(p=>{if(!p.hpLoss)return;
+      const m=Math.round(mend*(1+(rungHeld('mor',effStats(p).mor).heal||0)));
+      p.hpLoss=Math.max(0,p.hpLoss-m);});
     /* ═══ #225 · THE INJURY CLOCK, ON THE ONE CLOCK THE GAME HAS ═════════
        A day at a time, beside the mending, and it says so OUT LOUD when it
        runs out. A debuff that lifts silently is a debuff the player never

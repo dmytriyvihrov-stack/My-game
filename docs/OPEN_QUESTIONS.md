@@ -25,6 +25,14 @@ back already answered by work that was not about them.
 
 ---
 
+## N · From #257
+
+| | the question | ⭑ mine |
+|---|---|---|
+| **N1** · #257 | **Three capstones went live today and not one of them has ever been fielded.** STANDS, UNREPEATABLE and TWO PERK POINTS were flags nothing read since #254, so `ARENA.match` has never once measured a fight containing them - and none of the eight authored fights puts a body on a +4 rung, so it still has not. They are priced on paper and nowhere else | **leave them and play one run that reaches a +4.** The arena cannot reach this: it fields the founders, and no founder is within two rungs of a capstone. If one reads as too strong, UNREPEATABLE is the one to watch - it is the only one that refuses the enemy an action rather than paying the player |
+
+---
+
 ## M · From #255
 
 | | the question | ⭑ mine |

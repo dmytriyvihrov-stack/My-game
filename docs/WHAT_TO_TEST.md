@@ -26,6 +26,28 @@
 
 ---
 
+## 🧾 EVERY RUNG PAYS  *(#257 · 2026-08-27 · build log 8f.282)*
+
+**Reach it in three steps:** the company sheet → look at the third pool row → click through all
+four founders.
+
+- **The mood row shows the pool now.** The Captain reads `☺ HAPPY 78/110` and everybody else
+  `64/90`. Before today all four drew the same bar and the same word, so MORALE's whole positive
+  half was invisible - which is what you spotted.
+- **Five rungs that printed and paid nothing now pay.** MORALE +2 takes a quarter off every knock;
+  MORALE +3 mends 12 a day instead of 6 and it stacks with double rations; STRENGTH +4 leaves the
+  body on 1 hitpoint once a fight; INTELLECT +4 refuses a second blow from the SAME enemy in one
+  turn (a second enemy still gets through); MORALE +4 banks two perk points at a perk level.
+
+**What would be a bug.**
+- A body whose mood figure disagrees with the battle plaque's.
+- STANDS firing twice in one fight, or on a body that is not at STRENGTH +4.
+- UNREPEATABLE refusing a SECOND enemy, or refusing a shove or a heal - it refuses a blow from the
+  body that already swung, and nothing else.
+- A perk level banking two points on a body that is not MORALE +4, or a STAT level banking two.
+
+---
+
 ## 🧾 THE THREE THAT PRINTED AND DID NOT PAY  *(#256 · 2026-08-27 · build log 8f.281)*
 
 **Reach it in three steps:** the company sheet → read the ACTIONS line and the SKILLS cards →
