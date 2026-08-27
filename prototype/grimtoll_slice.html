@@ -5782,6 +5782,10 @@ body:has(#battle.on) .whisp{bottom:138px}
 .pk b{font-family:var(--display);font-size:var(--fs2);color:var(--g4);display:block;line-height:1.15}
 .pk i{font-family:var(--mono);font-size:var(--fs1);color:#8a7449;font-style:normal;line-height:1.35}
 .pk .tag{font-family:var(--mono);font-size:var(--fs1);letter-spacing:.1em;color:#8ca35a;display:block}
+/* #261 - the belongs-to mark. Floated beside the name rather than above it, so
+   it costs the card no height: the perk list is already the tallest column on
+   the sheet. */
+.pk .kind{float:right;font-size:var(--fs2);line-height:1;opacity:.85;margin-left:var(--p2)}
 .pk.locked .tag{color:#7a6238}
 .pknone{font-family:var(--mono);font-size:var(--fs1);color:#7a6238;font-style:italic}
 .pkfoot{font-family:var(--mono);font-size:var(--fs1);color:#5c4a2c;line-height:1.5;
@@ -11417,69 +11421,29 @@ const castAct=(sp,bonus)=>{
 
 /* 4 perks per class — two at level 2, two at level 3 — all stated in numbers */
 const PERKS={
-  /* ⛔ #260 · THE FIRST THREE GENERAL SKILLS, open to every class rather than
-     to one trade. They are the tree's own "general" lane arriving one skill at
-     a time; see tools/skilltree_lab.html for the shape they belong to. */
-  luck     :{n:'Everchanging Luck',
-             d:'+1 to your worst or your best stat, rolled fresh at the start of every battle.'},
-  breakaway:{n:'Break Away',    d:'DISENGAGE gives you two clean hexes instead of one.'},
-  shieldwork:{n:'Shieldwork',   d:'Doubles your shield bonus.'},
-  ironjaw  :{n:'Iron Jaw',      d:'+12 maximum morale.'},
-  duelist  :{n:'Duellist',      d:'+8 to hit while exactly one enemy is adjacent to you.'},
-  standfast:{n:'Stand Fast',    d:'Morale can never fall below 15%: you cannot rout.'},
-  warleader:{n:'War-Leader',    d:'COMMAND also grants +6 dodge to everyone it reaches, for one round.'},
-  bulwark  :{n:'Bulwark',       d:'+8 dodge on any turn you have not moved.'},
-  killzone :{n:'Killing Zone',  d:'Your parting swings deal 100% damage instead of 50%.'},
-  opportune:{n:'Opportunist',   d:'+10 flanking bonus (per extra body on the target).'},
-  bracewall:{n:'Braced Wall',   d:'Your SPEAR WALL keeps working even when somebody is '+
-                                  'already inside your reach.'},
-  sureshot  :{n:'Sure Shot',    d:'Shooting while engaged: −15 to hit instead of −35.'},
-  quickfoot :{n:'Quick Foot',   d:'+1 hex of movement.'},
-  butcher   :{n:'Butcher',      d:'+17% damage against anything under half hitpoints.'},
-  eagle     :{n:'Eagle Eye',    d:'+2 range on every ranged attack.'},
-  windeater :{n:'Cold Hands',    d:'Casting costs you 5 less of your own mood.'},
-  fieldmedic:{n:'Field Dressing',d:'+8 morale at the start of every turn.'},
-  conduit   :{n:'Conduit',      d:'+20% spell damage.'},
-  shadowstep:{n:'Shadow-Step',  d:'After you DISTRACT something, your next attack on it this turn costs no action.'},
-  thickhide :{n:'Thick Hide',   d:'+18 armour.'},
-  brawn     :{n:'Brawn',        d:'+10% melee damage.'},
-  /* --- added because the tree ran out at level 3 and perk points piled up
-         with nothing left to buy. Four perks a class was not a tree. --- */
-  deadeye   :{n:'Dead Eye',     d:'+6 to hit with any ranged attack.'},
-  stoneskin :{n:'Stone Skin',   d:'+10 armour.'},
-  heavyhand :{n:'Heavy Hand',   d:'+12% damage against anything still wearing armour.'},
-  footwork  :{n:'Footwork',     d:'You never provoke a parting swing. Walking away is simply free.'},
-  inspire   :{n:'Steadying',    d:'+4 morale to every ally within 2 hexes at the start of your turn.'},
-  /* ═══ #191 · THREE MORE, AND ALL THREE ARE BUILT OUT OF RULES THAT EXIST ═══
-     (User, 2026-08-18: *"Add perks (to a general tree so far - the one that is
-     in development)"*, and the three below in his own words.)
+  /* ⛔ #261 · THE OLD TREE IS OUT. 25 working perks were retired here, not
+     because any of them was wrong but because the skill tree in
+     tools/skilltree_lab.html has no slot for them yet. Every one of them,
+     with its wording, its class tier and the engine line that paid for it,
+     is in docs/archive/RETIRED_SKILLS.md - generated from this table rather
+     than retyped, so it can be put back without guessing.
+     ⚠ THE ENGINE CODE THAT READ THEM IS LEFT STANDING. `has(u,'bracewall')`
+     and its family simply answer false forever, so nothing throws and no
+     mechanic changed shape; restoring one is usually a row and a tier.
 
-     ⚑ NOT ONE OF THEM ADDS A SYSTEM. `waiter` reads the action counter the turn
-     already keeps; `groundwise` joins `wetproof`, which is the ONE door the file
-     already opened for "this body is not slowed by ground"; `elemental` stamps
-     `cripple` / `venom` / a `burn` onto the bearer's weapon and lets strike()'s
-     existing on-hit block do the work. That is #61's test for earning a word,
-     applied to a perk: a dial is not a system.
-     ⚠ AND ALL THREE ARE STATED IN NUMBERS, like every line above them. A perk
-     whose description is an adjective cannot be compared with the one beside it,
-     which is the whole reason this table reads the way it does. */
-  waiter    :{n:'Patient',      d:'End a turn with an action unspent and you start the next '+
-                                  'one with an extra action. One, never more.'},
-  /* ⚠ THE BLOOM IS DELIBERATELY NOT IN THIS. Its −2 stride is an AURA, not the
-     ground: it is a thing being done to you by something standing nearby, and it
-     is the strongest effect in the game. A perk that switched it off would be
-     buying an answer to one whole fight for one point. Terrain only. */
-  groundwise:{n:'Ground-Wise',  d:'No ground slows you: water, fire and mud all cost one hex '+
-                                  'to enter and take nothing off your stride. Anything the '+
-                                  'ground itself does to you takes half.'},
-  /* ⚠ ROLLED IN unitFrom, SO IT IS A NEW ELEMENT EVERY FIGHT AND THE PLAYER
-     NEVER CHOOSES IT. That is the user's own framing ("на каждую битву разный -
-     пассивка, ты начинаешь с ним") and it is what keeps it from being a fourth
-     weapon slot: you find out what you are carrying when the fight starts, and
-     you play the fight it gave you. See ELEM. */
-  elemental :{n:'Elemental Weapon',
-              d:'Your weapon comes to the field carrying FIRE, FROST or VENOM. Which one is '+
-                'rolled fresh for every battle, and every blow that lands delivers it.'}
+     ⛔ AND EVERY ROW CARRIES ITS `kind` NOW, which is what the card's little
+     mark is drawn from (user: "Near skill put kind of belongins icon (race,
+     class, or general)"). It is a FIELD and not a guess from which tier the
+     perk sits in, because a general skill is offered by every class and would
+     be indistinguishable from a class one by position alone. */
+  luck     :{kind:'general',n:'Everchanging Luck',
+             d:'+1 to your worst or your best stat, rolled fresh at the start of every battle.'},
+  disengage:{kind:'general',n:'Disengage',
+             d:'Break off from an enemy and move two hexes, free of parting swings. '+
+               'Nobody can break off without it.'},
+  shieldwork:{kind:'general',n:'Shieldwork',d:'Doubles your shield bonus.'},
+  duelist  :{kind:'class',  n:'Duellist',
+             d:'+10 to hit and +5 dodge while exactly one enemy is adjacent to you.'}
 };
 /* Four tiers, two choices each — eight perks a class. It used to stop at
    level 3 with four, which meant a veteran hit the ceiling in about two
@@ -11514,19 +11478,16 @@ const CLASSES={
      DISTRACT. Nothing lints this: see the note on PERKTIERS. */
   captain:{n:'CAPTAIN',   sig:'HOLD THE LINE, AND COMMAND FROM LEVEL 4',
     sigActs:['HOLD THE LINE','COMMAND'],
-    perks:{2:['ironjaw','duelist'],4:['standfast','warleader','waiter'],
-           6:['inspire','bulwark'],8:['heavyhand','stoneskin']}},
+    perks:{}},
   /* #259 - the class is SPEAR, not SPEARWOMAN: a class name is a trade and
      the roster puts men, women and ogres in it. The word is 5 characters
      narrower than the one every box here was measured around, so nothing can
      overflow; the comments elsewhere in this file still say "spearwoman"
      about the PERSON and that is correct English about a body. */
   spear  :{n:'SPEAR',     sig:'SPEAR WALL',sigActs:['SPEAR WALL'],
-    perks:{2:['bulwark','killzone'],4:['opportune','bracewall'],
-           6:['stoneskin','ironjaw','waiter'],8:['heavyhand','footwork','groundwise']}},
+    perks:{}},
   archer :{n:'ARCHER',    sig:'CRIPPLING SHOT',sigActs:['CRIPPLING SHOT'],
-    perks:{2:['sureshot','quickfoot'],4:['butcher','eagle'],
-           6:['deadeye','footwork','waiter'],8:['killzone','ironjaw','groundwise']}},
+    perks:{}},
   /* The one who can hold a line. One school, one casting a turn, and stats
      that let him stand in it: the low-magic setting expressed as a class.
      #161: the sig names both hands he is allowed, because Marrow now starts
@@ -11546,8 +11507,7 @@ const CLASSES={
      lose: this is a NAME and a GLYPH. One school, one casting a turn, a blade
      in the other hand - all of it is where it was. */
   warmage:{n:'MAGE',sig:'A BLADE OR A STAVE, AND ONE SCHOOL',
-    perks:{2:['windeater','ironjaw'],4:['conduit','bulwark'],
-           6:['stoneskin','inspire'],8:['heavyhand','footwork']}},
+    perks:{}},
   /* The real one. Two schools, a second casting each turn at half strength,
      and almost nothing else — bad with a blade, thin, slow to dodge. */
   mage   :{n:'MAGE',sig:'TWO SCHOOLS · A SECOND CASTING AT HALF',
@@ -11569,14 +11529,11 @@ const CLASSES={
        use is a stat increase with a name (the note at the head of this table).
        ⛔ SO IT STAYS OFF warmage. That is a design ruling now, not an omission,
        and moving it needs a reason that beats this one. */
-    perks:{2:['windeater','fieldmedic'],4:['conduit','ironjaw'],
-           6:['inspire','quickfoot','elemental'],8:['stoneskin','footwork']}},
+    perks:{}},
   cutter :{n:'CUTTER',    sig:'DISTRACT',sigActs:['DISTRACT'],
-    perks:{2:['butcher','quickfoot'],4:['opportune','shadowstep','groundwise'],
-           6:['deadeye','footwork'],8:['heavyhand','killzone']}},
+    perks:{}},
   brute  :{n:'BRUTE',     sig:'SWEEP + ROAR',sigActs:['SWEEP','ROAR'],
-    perks:{2:['brawn','ironjaw'],4:['standfast','thickhide'],
-           6:['heavyhand','stoneskin','waiter'],8:['inspire','bulwark']}},
+    perks:{}},
   /* ═══ #174 - THE STRANGER WITHOUT A TRADE ═════════════════════════════════
      (User: "When you hire someone, 1 our of 3 has lvl 0 and a bit cheaper
      price. So you can choose his class later.") A trade is a key in this
@@ -11597,12 +11554,20 @@ const CLASSES={
    rows by hand (and getting the seventh wrong), the tiers are joined here, once.
    ⚠ `none` is a class row with no perks of its own and must be skipped, or a
    body hired without a trade would be offered skills it has no tier to buy at. */
-['luck','breakaway','shieldwork'].forEach((k,i)=>{
-  const tier=[2,4,6][i];
+({luck:2,disengage:2,shieldwork:4}); /* the general lane, by tier */
+Object.entries({luck:2,disengage:2,shieldwork:4}).forEach(([k,tier])=>{
   Object.keys(CLASSES).forEach(c=>{
     if(c==='none'||!CLASSES[c].perks)return;
     (CLASSES[c].perks[tier]=CLASSES[c].perks[tier]||[]).push(k);});
 });
+/* the one CLASS perk still standing. Authored on its own class rather than
+   through the loop above, which is what `kind:'class'` is telling the card. */
+CLASSES.captain.perks[2]=(CLASSES.captain.perks[2]||[]).concat('duelist');
+/* ⏳ TIERS 6 AND 8 ARE EMPTY FOR EVERY CLASS and that is a KNOWN, temporary
+   state of the teardown, not an oversight: a body past level 5 banks perk
+   points with nothing to spend them on until the tree's own skills land.
+   `perksLeft` already answers 0 there and the sheet already prints "Nothing
+   to learn", so it degrades honestly rather than silently. */
 const PERKTIERS=8;
 /* two classes cast; everything else in the game that asked "is this a mage?"
    asked `cls==='mage'` and would silently exclude the new one */
@@ -12087,6 +12052,23 @@ function materialPool(o){
 materialPool(LEGACY.bank);
 const SLOT_ICON={armour:'⛨',main:'✊',off:'🤚',trinket:'✧',bag:'▣'};
 const cIcon=k=>CLASS_ICON[k]||'✦';
+/* ⛔ #261 - WHERE A SKILL BELONGS, as a mark on its own card. DERIVED from the
+   perk's `kind` and, for a class or a race skill, from the body reading it, so
+   the class mark is the class's OWN tool glyph and the race mark the race's own
+   face rather than a third vocabulary invented here (#102's wrong-unit rule:
+   one thing, one symbol, everywhere). 👥 is the only authored glyph and it is
+   free in this file - a crowd, for the skills anybody may take. */
+const PERKKIND={general:{g:'\uD83D\uDC65',n:'GENERAL'},
+                class  :{g:'',n:'CLASS'},
+                race   :{g:'',n:'RACE'}};
+function perkKind(k,p){
+  const r=PERKS[k]&&PERKS[k].kind;if(!r||!PERKKIND[r])return '';
+  const g=r==='class'?cIcon(p&&p.cls)
+         :r==='race' ?((RACE_ICON&&RACE_ICON[p&&p.race])||'')
+         :PERKKIND[r].g;
+  if(!g)return '';
+  return '<span class="kind" title="'+PERKKIND[r].n+' SKILL">'+g+'</span>';
+}
 /* ⚠ THE FALLBACK IS DELIBERATELY OFF THE FAMILY. It used to be ◆, which WAS
    the human's mark, so anything with an unknown race silently printed as a
    human. A shape among three faces reads as "not one of these three". */
@@ -16015,7 +15997,14 @@ function unitFrom(p){
      paints READY IN N TURNS over itself. Used on turn N it is blocked on N
      (already spent) and on N+1 (cd 1), and free on N+2 - which is his "not
      again for this and next turn", exactly. */
-  if(!tr(u,'courage'))acts.push({k:'dis',n:'DISENGAGE',cost:1,self:true,cool:2,
+  /* ⛔ #261 - DISENGAGE IS NOT A BASIC OPTION ANY MORE (user: "Hide from basic
+     options"). It is the `disengage` perk and nothing else, which is what makes
+     it worth a level-2 pick. ⚠ THIS IS NOT A SOFT LOCK: an engaged body can
+     still walk, it simply pays the parting swing, so the act being absent costs
+     blood rather than the turn. ⚠ And it is roster-only, because this is the
+     single `k:'dis'` push in the file - no foe ever had it to lose. */
+  if(!tr(u,'courage')&&p.perks.indexOf('disengage')>=0)
+    acts.push({k:'dis',n:'DISENGAGE',cost:1,self:true,cool:2,
     note:'One action, and it pays for itself at once: one extra hex of movement '+
       'right now, and every step you take for the rest of THIS turn is clean - no '+
       'parting swings, no zone of control. Disengage first, then move. Your legs '+
@@ -20863,7 +20852,17 @@ function dodgeOf(u,W,noNerve){
   /* #146 - the personality the user asked for by name. See TRAITS.nimble. */
   const nb=tr(u,'nimble');
   if(nb){d+=nb;w&&w('very nimble',nb);}
-  if(has(u,'bulwark')&&!u.moved){d+=8;w&&w('bulwark, stood still',8);}
+  /* #261 - the dodge half of DUELLIST. Same question the to-hit half asks
+     (`threatsAt(...)===1`), asked at the other site, because a perk that reads
+     one number in two places is how the two come to disagree. */
+  /* ⚠ `B&&` IS LOAD-BEARING AND COST A CRASH TO FIND. `threatsAt` walks
+     `alive()`, which reads `B.units`, and B is NULL between fights - while
+     `dodgeOf` is called by the COMPANY SHEET (the DODGE row and its hover)
+     on every body, outside any battle. Without this guard the sheet throws
+     the moment it is opened. Same trap #259 guarded `wallBlocked` against,
+     missed here, and caught by driving the function rather than reading it. */
+  if(B&&has(u,'duelist')&&threatsAt(u.col,u.row,u.side)===1){
+    d+=5;w&&w('duellist, one on one',5);}
   if(tr(u,'vet')){d+=4;w&&w('old hand',4);}
   if(tr(u,'cautious')){const v=(u.hp<u.hpMax*.5?6:0);d+=v;w&&w('cautious, and hurt',v);}
   if(u.leader&&B&&B.units){
@@ -21060,7 +21059,7 @@ function hitBreakdown(a,d,act){
     const b=SHOTBAND(a,act,udist(a,d));
     if(b){other+=b.hit;po(b.why+' −'+Math.abs(b.hit));}
   }
-  if(has(a,'duelist')&&threatsAt(a.col,a.row,a.side)===1){other+=8;po('duellist +8');}
+  if(has(a,'duelist')&&threatsAt(a.col,a.row,a.side)===1){other+=10;po('duellist +10');}
   if(a.trait==='counter'&&!a.moved){other+=8;po('stood still +8');}
   /* ...and the half it never paid for. Walking loses the count. */
   if(a.trait==='counter'&&a.moved){other-=8;po('lost the count −8');}
@@ -23291,7 +23290,7 @@ function checkEnd(){
 /* #260 - how many clean hexes DISENGAGE buys. One reader, because the number
    is printed on the card, shouted by the float and spent by moveBudget, and
    three hand-typed 1s is how a perk comes to promise what it does not pay. */
-const disHexes=u=>has(u,'breakaway')?2:1;
+const disHexes=u=>2;   /* #261 - the act only exists behind the perk now */
 function canUse(u,a){
   if(u.state==='routed')return false;
   /* the ambition has turned into something else and it is not stepping back */
@@ -37942,7 +37941,8 @@ function drawInv(){
       pkHTML+='<'+(canBuy?'button':'div')+' class="pk'+(have?' have':open?'':' locked')+
         (canBuy?' buy':'')+'"'+(canBuy?' data-perk="'+k+'"':'')+'><span class="tag">'+
         (have?'TAKEN':canBuy?'★ CLICK TO TAKE':open?'NEEDS A PERK POINT':'NEEDS LEVEL '+lv)+
-        '</span><b>'+PERKS[k].n+'</b><i>'+PERKS[k].d+'</i></'+(canBuy?'button':'div')+'>';
+        '</span>'+perkKind(k,p)+'<b>'+PERKS[k].n+'</b><i>'+PERKS[k].d+
+        '</i></'+(canBuy?'button':'div')+'>';
     });
   });
   if(!any)pkHTML+='<div class="pknone">Nothing to learn. This one is finished.</div>';
@@ -47613,7 +47613,7 @@ function openCampScreen(bankIt){
   const bank=LEGACY.bank;
   const roster=G.party.map(p=>
     '<div style="color:#a38652">'+who(p)+' - L'+p.level+
-    (p.perks.length?' · '+p.perks.map(k=>PERKS[k].n).join(', '):'')+
+    (p.perks.length?' · '+p.perks.filter(k=>PERKS[k]).map(k=>PERKS[k].n).join(', '):'')+
     ((p.injuries&&p.injuries.length)?' · <span style="color:#c9a227">'+
       p.injuries.map(i=>i.n).join(', ')+'</span>':'')+
     (p.hpLoss?' · <span style="color:#c15d55">mending ('+p.hpLoss+' hp short)</span>':'')+
@@ -47695,7 +47695,7 @@ function toEpilogue(txt){
   show('epilogue');
   const route=G.path.map(k=>NODES[k].n).join(' → ')+' - '+(G.day-1)+' days on the road.';
   const lv=G.party.map(p=>fullName(p)+' L'+p.level+
-    (p.perks.length?' ('+p.perks.map(k=>PERKS[k].n).join(', ')+')':'')+
+    (p.perks.length?' ('+p.perks.filter(k=>PERKS[k]).map(k=>PERKS[k].n).join(', ')+')':'')+
     ((p.injuries&&p.injuries.length)?' - '+p.injuries.map(i=>i.n).join(', '):'')).join('<br>');
   /* ═══ ASHMOOR — the one promise the game made and never kept ═══════════
      Free Wynn Aldreth without a fee and the game says "at Ashmoor they will

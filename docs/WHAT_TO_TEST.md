@@ -2034,6 +2034,45 @@ itself the moment the file lands.
 
 ---
 
+## 🧹 THE SKILL LIST IS FOUR SKILLS NOW  *(#261 · 2026-08-27 · build log 8f.286)*
+
+The old perk tree is out. The 25 skills that went are saved in
+`docs/archive/RETIRED_SKILLS.md` with what each one did and where it sat, so any of them
+can come back when the tree has a slot for it.
+
+### 1. The list, and the little mark beside each name
+
+**Three steps:** company sheet → pick anybody → the perk list.
+**Should happen:** four skills only. EVERCHANGING LUCK, DISENGAGE and SHIELDWORK each wear
+👥 (hover: GENERAL SKILL). DUELLIST wears that body's own class glyph (hover: CLASS SKILL),
+and only the Captain is offered it.
+**A bug:** any retired skill still listed, or a mark that does not match the class icon the
+same body wears elsewhere.
+
+### 2. DISENGAGE is a skill you buy
+
+**Three steps:** any fight → a body WITHOUT the perk, engaged → look at the act row.
+**Should happen:** no DISENGAGE card at all. Buy the perk at level 2 and it appears, worth
+two clean hexes.
+**Not a bug:** being unable to break off. You can still walk away, you just take the parting
+swing. That is the point of the skill.
+
+### 3. DUELLIST, one on one
+
+**Three steps:** take it on the Captain → get exactly ONE enemy adjacent → open the DODGE
+hover on the sheet or read the odds.
+**Should happen:** +10 to hit and a *duellist, one on one +5* row in the dodge breakdown.
+A second adjacent enemy removes both.
+**A bug:** the bonus surviving with two enemies on you, or the two halves disagreeing.
+
+### 4. The sheet still opens
+
+**Three steps:** open the company sheet on every body.
+**Should happen:** nothing at all. This is here because the dodge change above reads a
+battlefield function, and an unguarded version of it crashed this screen outside combat.
+
+---
+
 ## 🎲 THREE GENERAL SKILLS, OPEN TO EVERY CLASS  *(#260 · 2026-08-27 · build log 8f.285)*
 
 The first three skills out of the tree lab, in the game. Every class can buy them now.
