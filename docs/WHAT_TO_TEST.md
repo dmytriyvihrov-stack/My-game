@@ -26,6 +26,39 @@
 
 ---
 
+## 🧪 THE GAUNTLET, UPDATED: FOUR ORDERS, ITS OWN CALIBRATION, AND A SECOND BUILD  *(#258 · 2026-08-27 · build log 8f.283)*
+
+**It was already alive** - it live-loads the game, so all the ladder work was in it. What changed is
+that it stops carrying copies of things the build owns.
+
+**How to reach it, three steps:**
+1. `powershell -NoProfile -ExecutionPolicy Bypass -File tools\serve.ps1`
+2. open `http://localhost:8777/tools/gauntlet.html`
+3. press **RUN THE GAUNTLET**
+
+**What is new:**
+- **Four strategies, not three.** They are read from the build's `ORDER_PROF` - the same table the
+  practice field's dev orders use - so **DEFENSIVE** appeared without being typed, and each chip is
+  labelled with the knobs it actually moves (`cohere 3.5 · flank 0 · pile 0.6`). Add a row to
+  `ORDER_PROF` and it gets a column here with no edit to the tool.
+- **The founders' price is measured.** The status line used to *say* "founders price at 100 by
+  calibration". It now takes the reading: **108**, and says the scale has drifted +8. Every BAND on
+  the page is read against that number.
+- **A BUILD FILE field.** Point it at any prototype and press LOAD IT. To ask what a change did:
+  `git show HEAD~20:prototype/grimtoll_slice.html > prototype/_base.html`, point at
+  `../prototype/_base.html`, run, then point back at the working file and run again. The Δ column
+  compares them, the build tag names which file is loaded, and the status line warns in words when
+  the Δ came from a different build. **Delete the scratch file when you are done.**
+
+**What would be a bug:** a strategy chip that is not in the build's `ORDER_PROF` · the founders'
+price disagreeing with the practice field's own figure for the same company · a Δ shown without the
+status line naming which build it came from · any FATAL/∞ mark in a cell.
+
+**⚠ Worth knowing before you read the table - the balance moved under it.** Founders, the shipped
+brain, n=10, measured against the 8f.252 build: **THE SNARE went 30% → 100%** (and `ARENA` agrees,
+1/6 → 6/6, on a fight its own note says was tuned to ~3 of 10), while the **SLING-LINE went 100% →
+60%**. Three rulings are waiting for you in [`OPEN_QUESTIONS.md`](OPEN_QUESTIONS.md) §O.
+
 ## 🧾 EVERY RUNG PAYS  *(#257 · 2026-08-27 · build log 8f.282)*
 
 **Reach it in three steps:** the company sheet → look at the third pool row → click through all

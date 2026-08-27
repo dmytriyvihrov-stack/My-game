@@ -25,6 +25,16 @@ back already answered by work that was not about them.
 
 ---
 
+## O · From #258
+
+| | the question | ⭑ mine |
+|---|---|---|
+| **O1** · #258 | **The act finale is no longer a threat to the company you start with.** Founders, the shipped brain, n=10, seed 1234: **THE SNARE wins 100% with 0.2 bodies down**, where the same grid on the 8f.252 build reads **30% and 3.1 down**. Not the tool's opinion - `ARENA.match('four','snare')` reads **1/6 → 6/6**, and the arena's own header comment records the fight as tuned to *"~3 of 10 in mirror-AI"*. The road moved both ways in the same six days: **Sling-Line 100% → 60%**, **Broken Men 60% → 90%**, Blood on the Road still 100% but **5 rounds and 0.4 down → 8 and 1.4** | **re-tune the Snare, and treat the Sling-Line as the new act gate rather than fixing it.** The ladders made your people better at the thing the finale tested; the fight it replaced as the hardest on the road is the one your own walk already flags. ⚠ Mirror-AI caveat stands (a mirror loss can be a hard human win), but a fight going **1/6 → 6/6 on the instrument it was tuned with** is the one reading that caveat does not cover |
+| **O2** · #258 | **`defensive` is indistinguishable from `steady`.** #242 shipped it FIRST-CUT with *"the numbers get measured in the gauntlet before they are trusted"*, and this is that measurement: **byte-identical on 6 of the 12 fights** and within one body on the rest. The two rows are `{cohere:3.5, flank:0, pile:0.6}` against `{cohere:3, flank:0.4, pile:1.3}`, so the knobs barely part | **move its numbers or cut the row.** A third order the player picks and cannot see the effect of is the ⏱ SPEED fault (#102) in a dev tool. If it stays, `cohere` is not the dial that separates them - the honest defensive lever is `hold`, which no order touches and which is the one knob that means *make them come to you* |
+| **O3** · #258 | **`PTS_SCALE` no longer means what its own comment says.** It is *"calibrated so THE FOUR FOUNDERS SUM TO ~100"*, i.e. "bring 100 points" = "bring the starting company - and after the ladders **they price at 108**. Every band on the practice field and in the gauntlet is read against that number | **leave it until O1 is answered, then recalibrate once.** 0.39 puts the founders back on 100, but it moves every points figure on two screens, and re-tuning a fight would move them again. One recalibration after the balance settles, not two |
+
+---
+
 ## N · From #257
 
 | | the question | ⭑ mine |

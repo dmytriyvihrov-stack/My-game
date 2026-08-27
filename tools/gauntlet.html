@@ -84,9 +84,11 @@
 <body>
 
 <h1>THE GAUNTLET <small>· every fight on the road, measured · the game file is the only source</small></h1>
-<div class="sub">Each cell is n seeded fights driven by the game's own brains. The ally side plays one of
-three strategies; the enemy always plays its real game. Points come off the same <b>unitPts</b> scale the
-practice field prices with (founders = 100), so the BAND column is the game's recommendation and the WIN
+<div class="sub">Each cell is n seeded fights driven by the game's own brains. The ally side plays one of the
+build's own orders (<b>ORDER_PROF</b>, the same table the practice field's dev orders read); the enemy
+always plays its real game. Points come off the same <b>unitPts</b> scale the
+practice field prices with (calibrated so the founders sum to 100 - the status line takes that reading
+rather than repeating it), so the BAND column is the game's recommendation and the WIN
 column is what actually happens: where they disagree, the band multipliers are wrong, which is exactly
 what #216 left open to measure.</div>
 
@@ -94,6 +96,18 @@ what #216 left open to measure.</div>
   <span id="buildTag" class="lbl">build: loading…</span>
   <button id="reload">⟳ RELOAD BUILD</button>
   <span class="lbl">after a balance or perk edit in the prototype, press it and re-run: same tool, new game.</span>
+</div>
+<!-- ⛑ #258 - WHICH build is a field, because "what did my change do" is
+     answered by running the SAME grid against a baseline. This repo's own
+     technique, from `.claude/rules/ui-scales.md` §5: git show an old
+     prototype into a scratch file, point this at it, run, then point back.
+     A path relative to this page; the default is the working prototype. -->
+<div class="bar">
+  <span class="lbl">Build file</span>
+  <input id="buildPath" style="width:430px" value="../prototype/grimtoll_slice.html">
+  <button id="loadPath">LOAD IT</button>
+  <span class="lbl">a baseline: <code>git show HEAD~20:prototype/grimtoll_slice.html &gt; prototype/_base.html</code>
+    then point here at <code>../prototype/_base.html</code></span>
 </div>
 
 <div class="card">
@@ -113,13 +127,16 @@ what #216 left open to measure.</div>
     <span class="lbl">Skree + Bruht join before</span><select id="joinClan"></select>
     <span class="lbl">armour refit before</span><select id="refit"></select>
   </div>
+  <!-- ⛔ #258 - the strategy chips are BUILT from what the build carries, not
+       listed here. A row typed into this markup is a fourth copy of a table
+       that already exists twice, and it would silently omit whatever the next
+       ORDER_PROF row is called. -->
   <div class="bar">
     <span class="lbl">Strategies</span>
-    <label class="chip on"><input type="checkbox" id="sCurrent" checked> THE BRAIN · the shipped AI</label>
-    <label class="chip on"><input type="checkbox" id="sAggressive" checked> AGGRESSIVE · everyone straight in</label>
-    <label class="chip on"><input type="checkbox" id="sSteady" checked> STEADY · the line advances together</label>
+    <span id="stratChips"></span>
     <span class="lbl" style="margin-left:14px">seed</span><input type="number" id="seed" value="1234">
   </div>
+  <div class="bar"><span class="lbl" id="profSrc"></span></div>
   <div class="bar" id="fightChips"></div>
   <div class="bar">
     <button id="run" class="primary">RUN THE GAUNTLET</button>
@@ -158,25 +175,56 @@ first and measure from a clean room.
 window.GT=(function(){
   window.__gterrs=[];
   window.onerror=(m,s,l)=>{window.__gterrs.push(m+' @'+l);};
-  const FULL={ev:1,flank:1,pile:1,kite:1,fallback:1,cohere:1,hold:1,doct:1};
-  /* The three strategies are AIP profiles on the ally side and nothing else.
-     The game's own comment on AIP is the contract: "All 1 = the real AI.
-     All 0 = the pre-rework rush."
-       aggressive - the rush with its aim kept: nobody kites, falls back,
-                    holds or keeps formation; ev stays 1 so a body still
-                    swings at the best expected damage once it arrives.
-       steady     - the same brain with the formation knot weighted x3, less
-                    lone arc-hunting, more piling onto started fights. The
-                    anchor it coheres to is disposition()'s own centroid.
-     ⚠ #242 - the prototype's ORDER_PROF (the practice field's dev orders)
-     mirrors these two rows verbatim and adds `defensive`. This tool runs
-     against ANY build the iframe loads, so it keeps its own literals; a
-     change to either copy is a change to both, by hand. */
-  const STRATS={
-    current:   {n:'THE BRAIN', prof:{}},
-    aggressive:{n:'AGGRESSIVE',prof:{flank:0,kite:0,fallback:0,cohere:0,hold:0,doct:0}},
-    steady:    {n:'STEADY',    prof:{cohere:3,flank:0.4,pile:1.3}}
+  /* ⛔ #258 - THE PROFILES ARE READ OFF THE BUILD, NOT CARRIED.
+     A strategy is an `AIP.you` profile and nothing else; the game's own
+     comment on AIP is the contract ("All 1 = the real AI. All 0 = the
+     pre-rework rush"). #229 wrote its own literals because nothing in the
+     build held them, and #242 then put the identical rows in `ORDER_PROF`
+     for the practice field's dev orders and noted in BOTH files that a
+     change to either copy was now a change to both, by hand. That is the
+     shape this project has merged out five times (`choiceNote` #150,
+     `raceDoorPick` #159, the mood echo #176, `applyHurt` #197, `payMat`
+     #239) and every one of them had drifted by the time somebody looked.
+     ⚑ Reading it is also what the build ASKED FOR: `defensive` ships marked
+     FIRST-CUT, with "the numbers get measured in the gauntlet before they
+     are trusted" written beside it. Derived, it arrived here untouched.
+     ⚠ THE FALLBACK IS NOT DECORATION. This tool must open ANY build the
+     iframe loads, including one older than #242 and any future one that
+     renames the table; without ORDER_PROF it uses the #229 literals and
+     says so on screen, rather than showing an empty strategy row. */
+  const FALLBACK_PROF={
+    brain:{},
+    aggressive:{flank:0,kite:0,fallback:0,cohere:0,hold:0,doct:0},
+    steady:{cohere:3,flank:0.4,pile:1.3}
   };
+  /* the label is ours: `ORDER_PROF` holds behaviour, not display. An unknown
+     key coming out of a future build still gets a heading, uppercased. */
+  const LBL={brain:'THE BRAIN',aggressive:'AGGRESSIVE',steady:'STEADY',
+             defensive:'DEFENSIVE',current:'THE BRAIN'};
+  let PROF_SRC='the #229 literals (this build has no ORDER_PROF)';
+  const STRATS=(()=>{
+    let rows=FALLBACK_PROF;
+    try{
+      if(typeof ORDER_PROF!=='undefined'&&ORDER_PROF&&Object.keys(ORDER_PROF).length){
+        rows=ORDER_PROF;PROF_SRC="the build's own ORDER_PROF";}
+    }catch(e){}
+    const out={};
+    Object.keys(rows).forEach(k=>{
+      out[k]={n:LBL[k]||k.toUpperCase(),prof:rows[k],
+        /* the description IS the profile, so it can never describe the wrong
+           one: every knob this row moves off the full AI, in its own words */
+        d:Object.keys(rows[k]).length
+            ? Object.keys(rows[k]).map(x=>x+' '+rows[k][x]).join(' · ')
+            : 'every instinct on: the shipped AI, unchanged'};
+    });
+    return out;})();
+  /* ⚠ AND THE RESTORE ROW IS READ THE SAME WAY, for the reason #242 records:
+     ARENA's old reset omitted `doct`, so a profile that set `doct:0` survived
+     its own finally. #229 got that right by copying `AIP` rather than the
+     harness, and this keeps it right the day a ninth knob is added. */
+  const FULL=(()=>{
+    try{if(typeof AIP_FULL!=='undefined'&&AIP_FULL)return AIP_FULL;}catch(e){}
+    return {ev:1,flank:1,pile:1,kite:1,fallback:1,cohere:1,hold:1,doct:1};})();
   const mkRand=seed=>{let s=(seed>>>0)||1;
     return()=>{s=(s*1103515245+12345)%2147483648;return s/2147483648;};};
   const hashK=k=>{let h=0;for(let i=0;i<k.length;i++)h=(h*31+k.charCodeAt(i))>>>0;return h;};
@@ -312,6 +360,9 @@ window.GT=(function(){
   }
 
   return {ok:true,STRATS:Object.keys(STRATS).reduce((o,k)=>(o[k]=STRATS[k].n,o),{}),
+    /* the full rows, so the page can label a strategy and show what it moves */
+    strats:()=>Object.keys(STRATS).map(k=>({k:k,n:STRATS[k].n,d:STRATS[k].d})),
+    profSrc:()=>PROF_SRC,
     fights:fights,comps:comps,setParty:setParty,price:price,
     runCell:runCell,walkStart:walkStart,walkJoin:walkJoin,walkRefit:walkRefit,
     walkFight:walkFight,errs:()=>window.__gterrs.slice(-12),
@@ -343,7 +394,7 @@ async function boot(){
   $('buildTag').textContent='build: loading…';GT=null;
   $('frameWrap').innerHTML='';
   FR=document.createElement('iframe');
-  FR.src='../prototype/grimtoll_slice.html';
+  FR.src=($('buildPath').value||'').trim()||'../prototype/grimtoll_slice.html';
   $('frameWrap').appendChild(FR);
   /* ⚠ NO DEADLINE ON THE BOOT. The game file is 14 MB, and in a hidden or
      backgrounded tab the browser parses it at background priority - measured
@@ -375,10 +426,41 @@ async function boot(){
       ' - serve the repo first (tools\\serve.ps1) and open this page through http, not file://';
     return;
   }
-  $('buildTag').textContent='build: live · loaded '+new Date().toLocaleTimeString();
+  /* ⚠ #258 - the tag NAMES the file, because the whole point of the picker is
+     running the same grid against two of them; a tag that said only "live"
+     would let a baseline reading be filed as a current one. */
+  $('buildTag').textContent='build: '+FR.src.split('/').pop()+
+    ' · loaded '+new Date().toLocaleTimeString();
   fillControls();
+  CAL=null;
   $('status').textContent='ready. '+GT.fights().filter(f=>f.sim).length+
-    ' fights simulable, founders price at 100 by calibration.';
+    /* ⛔ #258 - MEASURED, NEVER ASSERTED. This line read "founders price at
+       100 by calibration" as a hardcoded string, and `PTS_SCALE`'s own
+       comment says 100 is what it is calibrated to - so the one number on
+       this page that certifies the whole points column was the one number
+       nobody was reading off the build. It measures 108 today. A tool that
+       states its own calibration without taking it is the second-receipt
+       fault this project deletes from the game's cards, on the instrument. */
+    ' fights simulable, '+foundersLine()+'.';
+}
+
+/* ─── the calibration, taken rather than claimed ────────────────────────── */
+/* `PTS_SCALE`'s comment in the build is "calibrated so THE FOUR FOUNDERS SUM
+   TO ~100", i.e. bring-100-points means bring-the-starting-company. That is a
+   claim about the build, and it goes stale the day a stat, a ladder or a
+   starting weapon moves - which is what happened between 8f.252 and 8f.280.
+   Taken here, once per RELOAD BUILD, off the same `compPts` the table uses. */
+let CAL=null;
+function foundersLine(){
+  if(CAL===null){
+    try{CAL=GT.setParty('start',1).pts;}catch(e){CAL=0;}
+  }
+  if(!CAL)return 'the founders could not be priced';
+  const off=CAL-100;
+  return 'the four founders price at '+CAL+
+    (Math.abs(off)<=2?' (PTS_SCALE still calibrated)'
+      :' - PTS_SCALE says 100, so the scale has drifted '+(off>0?'+':'')+off+
+        '; every band on this page is read against it');
 }
 
 /* ─── controls ──────────────────────────────────────────────────────────── */
@@ -391,6 +473,16 @@ function fillControls(){
   $('joinAsh').innerHTML=optsFor('brigand');
   $('joinClan').innerHTML=optsFor('snare');
   $('refit').innerHTML=optsFor('snare');
+  /* #258 - the strategies, off the build. Every row the build carries gets a
+     chip; the first three are on by default, so a build that grows a fifth
+     order does not silently quintuple the run time of the default press. */
+  const ss=GT.strats();
+  $('stratChips').innerHTML=ss.map((s,i)=>
+    '<label class="chip'+(i<3?' on':'')+'" title="'+s.d+'">'+
+    '<input type="checkbox" data-s="'+s.k+'"'+(i<3?' checked':'')+'> '+
+    s.n+' <span style="color:#5a6a64">· '+s.d+'</span></label>').join(' ');
+  $('profSrc').textContent='strategies read from '+GT.profSrc()+
+    ' · '+ss.length+' orders · the enemy always plays the full AI';
   $('fightChips').innerHTML='<span class="lbl">Fights</span>'+fs.map(f=>{
     const on=f.sim&&!f.opt;
     return '<label class="chip'+(on?' on':'')+'" title="'+(f.d||'')+'">'+
@@ -408,10 +500,8 @@ function fillControls(){
     i.addEventListener('change',()=>i.closest('.chip').classList.toggle('on',i.checked)));
 }
 function cfgNow(){
-  const strats=[];
-  if($('sCurrent').checked)strats.push('current');
-  if($('sAggressive').checked)strats.push('aggressive');
-  if($('sSteady').checked)strats.push('steady');
+  const strats=[...document.querySelectorAll('#stratChips input')]
+    .filter(i=>i.checked).map(i=>i.dataset.s);
   const fights=[...document.querySelectorAll('#fightChips input')]
     .filter(i=>i.checked).map(i=>i.dataset.k);
   return {mode:document.querySelector('input[name=mode]:checked').value,
@@ -487,6 +577,10 @@ async function runAll(){
 }
 
 /* ─── rendering ─────────────────────────────────────────────────────────── */
+/* #258 - a column heading is the build's own name for that order. `GT.STRATS`
+   is keyed by whatever ORDER_PROF carries, so a renamed or added row heads its
+   own column with no edit here. */
+const sName=s=>(GT&&GT.STRATS&&GT.STRATS[s])||s.toUpperCase();
 const wc=w=>w>=85?'w85':w>=60?'w60':w>=40?'w40':w>=20?'w20':'w0';
 const aggOf=list=>{
   const wins=list.filter(r=>r.won===true||r.won==='mercy').length;
@@ -528,7 +622,7 @@ function renderBench(rows,cfg,meta){
   let h='<table><tr><th rowspan="2" style="text-align:left">FIGHT</th>'+
     '<th rowspan="2">THEIRS<br>net pts</th><th rowspan="2">YOURS<br>'+meta.pts+' pts</th>'+
     '<th rowspan="2">BAND<br>SAYS</th>'+
-    cfg.strats.map(s=>'<th class="grp" colspan="4">'+({current:'THE BRAIN',aggressive:'AGGRESSIVE',steady:'STEADY'})[s]+'</th>').join('')+
+    cfg.strats.map(s=>'<th class="grp" colspan="4">'+sName(s)+'</th>').join('')+
     '</tr><tr>'+cfg.strats.map(()=>HEAD4).join('')+'</tr>';
   rows.forEach(row=>{
     const bestWin=Math.max(...cfg.strats.map(s=>row.cells[s]?row.cells[s].win:-1));
@@ -547,7 +641,7 @@ function renderWalk(acc,cfg,fightsAll){
   let h='<table><tr><th rowspan="2" style="text-align:left">FIGHT · in march order</th>'+
     '<th rowspan="2">LVL at<br>arrival</th><th rowspan="2">YOURS<br>pts</th>'+
     '<th rowspan="2">THEIRS<br>net pts</th><th rowspan="2">BAND<br>SAYS</th>'+
-    cfg.strats.map(s=>'<th class="grp" colspan="4">'+({current:'THE BRAIN',aggressive:'AGGRESSIVE',steady:'STEADY'})[s]+'</th>').join('')+
+    cfg.strats.map(s=>'<th class="grp" colspan="4">'+sName(s)+'</th>').join('')+
     '</tr><tr>'+cfg.strats.map(()=>HEAD4).join('')+'</tr>';
   cfg.fights.forEach(k=>{
     const f=fightsAll.find(x=>x.k===k);if(!f)return;
@@ -571,12 +665,24 @@ function renderWalk(acc,cfg,fightsAll){
   LASTMD=walkMD(acc,cfg,fightsAll);
 }
 
-/* ─── the delta store: last completed run with the same setup ───────────── */
+/* ─── the delta store: last completed run with the same setup ─────────────
+   ⛑ #258 - THE BUILD FILE IS DELIBERATELY NOT IN THE KEY. Comparing a run on
+   `_base.html` against one on the working prototype is the comparison the
+   build picker exists for, and keying on the path would silently refuse it.
+   What that costs is the risk of reading a cross-build delta as a same-build
+   one, so the store carries the build it was taken on and the status line
+   says so in words. Ambiguity answered by a sentence, not by a lost feature. */
 const prevKey=cfg=>'gauntlet_prev_'+cfg.mode+'_'+(cfg.mode==='bench'?cfg.comp+'_L'+cfg.level:'walk')+
   '_'+cfg.seed;
 function loadPrev(cfg){
-  try{return JSON.parse(localStorage.getItem(prevKey(cfg)))||null;}catch(e){return null;}
+  try{const r=JSON.parse(localStorage.getItem(prevKey(cfg)));
+    return r&&r.cells?r.cells:r;}catch(e){return null;}
 }
+function prevBuild(cfg){
+  try{const r=JSON.parse(localStorage.getItem(prevKey(cfg)));return (r&&r.build)||null;}
+  catch(e){return null;}
+}
+const buildName=()=>(FR&&FR.src?FR.src.split('/').pop():'?');
 function finishRun(cfg,rows,meta,acc,fightsAll){
   const flat={};
   if(cfg.mode==='bench'&&rows)
@@ -585,9 +691,12 @@ function finishRun(cfg,rows,meta,acc,fightsAll){
   if(cfg.mode==='walk'&&acc)
     cfg.fights.forEach(k=>cfg.strats.forEach(s=>{const c=acc[k]&&acc[k][s];
       if(c&&c.runs.length){const a=aggOf(c.runs);flat[k+'|'+s]={win:a.win,rd:a.rdMed};}}));
-  try{localStorage.setItem(prevKey(cfg),JSON.stringify(flat));}catch(e){}
+  const was=prevBuild(cfg),now=buildName();
+  try{localStorage.setItem(prevKey(cfg),JSON.stringify({build:now,cells:flat}));}catch(e){}
   const errs=GT.errs();
-  $('status').textContent='done. this run is now the Δ baseline for the next one.'+
+  $('status').textContent='done, on '+now+
+    (was&&was!==now?' · the Δ above compared it against '+was+', which is a DIFFERENT build'
+                   :' · this run is now the Δ baseline for the next one.')+
     (errs.length?' engine errors: '+errs.join(' | '):'');
   $('copy').disabled=false;
 }
@@ -622,6 +731,10 @@ function walkMD(acc,cfg,fightsAll){
 $('run').onclick=runAll;
 $('cancel').onclick=()=>{if(RUN)RUN.cancel=true;};
 $('reload').onclick=boot;
+$('loadPath').onclick=boot;
+/* the Δ baseline is per build file as well as per setup: comparing a run on
+   _base.html against one on the working prototype is the ONE comparison this
+   picker exists for, and it must not be mistaken for a same-build delta. */
 $('copy').onclick=async()=>{
   try{await navigator.clipboard.writeText(LASTMD);$('status').textContent='table copied as markdown.';}
   catch(e){const t=document.createElement('textarea');t.value=LASTMD;
