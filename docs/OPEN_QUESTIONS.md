@@ -25,6 +25,39 @@ back already answered by work that was not about them.
 
 ---
 
+## M · From #255
+
+| | the question | ⭑ mine |
+|---|---|---|
+| **M1** · #255 | **±10 mood a rung is the one figure of yours I changed.** Your page put nerve on the +1 and −1 rungs alone, which is why the whole ladder only moved the bar from 80 to 100 and Marrow read the same as everybody. Every rung pays it now, so the pool runs **50 to 130** and the other effects are untouched | **keep it.** A stat whose ladder does not move its own readout is a stat the player cannot feel. If 130 is too much on the top rung the honest dial is ±8 a rung (58..122), not putting the steps back on two |
+| **M2** · #255 | **The `Big` personality is retired, not deleted.** The row is kept so a save carrying `trait:'big'` still resolves to a name; it costs nothing, says so, and no race or class can roll it. There are now **two** dead-but-kept rows in `TRAITS` | leave it for one run and then cut it, once no save in play can be carrying it |
+
+---
+
+## L · From #254
+
+| | the question | ⭑ mine |
+|---|---|---|
+| **L1** · #254 | **The raised baseline moved exactly one fight and it is the brigand road**: 13/15 wins in 10.8 rounds became 15/15 in 6.2 over 15 runs a side. Every other fight, including both set-pieces, is inside the noise. 70 to hit against the old 58 is the cause, and it is your number out of the file | **play it once before touching anything.** A fight that used to grind for eleven rounds and now ends in six is not obviously worse; if it reads as too easy the dial is `HIT_EASE.you` (10), not the ladder |
+
+---
+
+## K · From #253
+
+| | the question | ⭑ mine |
+|---|---|---|
+| **K2** · #253 | **MORALE's ladder steps by 2 where the other three step by 1**, so with the origin at 0 the ordinary rolled human sits one rung under its middle band and reads *Nervous* rather than *Fairly brave*. #248 left `mor` alone on the grounds that it already used all nine grades, and that is still true - but it is the one axis where "the human is in the middle" is not quite honest | **leave it for a played run.** Re-banding it is four numbers, and it moves what every body in the game is called on that axis; the other three are worth judging first |
+
+---
+
+## J · From #252
+
+| | the question | ⭑ mine |
+|---|---|---|
+| **J1** · #252 | **The INTELLECT ladder is asymmetric on magic, and only deriving it showed that.** The positive side pays magic **+15%** (at +2, and nothing above it); the negative side pays **−12%** at −2 and **−13%** at −4, so *held at the bottom* is **−25%**. The doc had been claiming **+30%** at the top, which is not reachable from any rung. Every other channel on that ladder is symmetric: ±28 to land, ±10% experience | **give +4 `magic +15%` on top of its `+7 to land`.** It makes the top ↔ bottom pair ±25% like the rest of the ladder, and the capstone is already the one rung that is a rule plus a number. The alternative is to soften the bottom to −15%, which makes a stupid caster cheap rather than making a brilliant one good |
+
+---
+
 ## I · From #251
 
 | | the question | ⭑ mine |

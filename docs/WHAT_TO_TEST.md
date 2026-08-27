@@ -26,6 +26,153 @@
 
 ---
 
+## 🧾 THE THREE THAT PRINTED AND DID NOT PAY  *(#256 · 2026-08-27 · build log 8f.281)*
+
+**Reach it in three steps:** the company sheet → read the ACTIONS line and the SKILLS cards →
+hover MAIN HAND.
+
+- **One weapon, one number.** ACTIONS and the SKILLS card now print the same figure and it is what
+  the blow LANDS for; the gear slot keeps the weapon’s own dice, and its hover still walks the
+  chain from one to the other. The battle’s own cards changed with them.
+- **INTELLECT +3 pays its reach.** A caster at that rung throws a working one hex further and his
+  weapon reaches one further. Nothing at +2.
+- **MORALE −4 opens one rung lower.** That body starts a fight SHAKEN where everybody else starts
+  STEADY, and climbs out of it normally.
+
+**What would be a bug:** the two cards disagreeing again; a reach bonus at any rung but +3; or a
+body at MOR −3 opening shaken (it should not - only −4 does).
+
+---
+
+## 🧾 SIX ASKS AFTER THE LADDERS  *(#255 · 2026-08-27 · build log 8f.280)*
+
+**Reach it in three steps:** BACK TO THE ROAD → the company sheet → hover MORALE, then the race
+mark under the name. Then THE MUSTER, and hire somebody.
+
+**What should happen.**
+
+- **MORALE now spreads.** The pool runs **50 to 130** across the nine rungs instead of 80/90/100.
+  Marrow and the Captain should no longer read as the same body.
+- **The race hover says SMALL / MIDDLING / BIG** beside the pool, the weight of blow, and what
+  anybody swinging at that body adds. An ogre is 91 hitpoints because BIG carries the +16 that used
+  to be a personality.
+- **Nobody rolls the `Big` personality any more.** If you see it on a hire, that is a bug.
+- **The muster wall's hires carry their trade's lean.** An archer off the wall should read
+  *Handy* rather than *Steady enough* on AGILITY - before today they did not, and that is the fix
+  worth checking hardest.
+- **Twelve seats**, and the stat hover's right column has no `born` row unless a backstory paid for
+  one (only the Captain's has).
+
+**What would be a bug.**
+- A trait or a piece of gear moving a stat by more than **2 rungs**. Nothing may: 24 of them were
+  rescaled and the cap is two.
+- A hired body whose four lines do not add up to what the sheet shows.
+- A fight that reads as much easier or much harder than it did. The arena was re-priced after every
+  one of these; if play disagrees with it, play wins.
+
+---
+
+## 🧾 THE FOUR LADDERS  *(#254 · 2026-08-27 · build log 8f.279)*
+
+**Reach it in three steps:** BACK TO THE ROAD → the company sheet → hover a stat, then TO HIT, then
+DODGE, then the race and trade marks under the name.
+
+**What should happen.**
+
+- **Every rung says what it pays, and they are your numbers.** STRENGTH alternates: +1 is
+  *+10% hitpoints*, +2 is *+20% melee · +10% bow*, +3 hitpoints again, +4 melee again **and STANDS**
+  behind a `2 PTS` badge. Same shape on the other three.
+- **The top rung costs two points and says so** on the rung itself.
+- **TO HIT and DODGE now open a ledger** of what built them, with the total at the foot. On DODGE,
+  a body over the soft cap gets a *hard to stack past 12* line, so the column always adds up.
+- **The race hover names the body**: its hitpoint pool, its weight of blow, and what anybody
+  swinging at it adds. **The trade hover names its lean.**
+- A body's four lines read `born · race · trade · personality` in the stat hover's right column.
+
+**What would be a bug.**
+- A rung whose text does not match what the fight pays. The hover and the engine read one table, so
+  a disagreement is real.
+- A ledger that does not add to the figure at its foot - on any of the six hovers.
+- **A fight that feels wrong.** This is a real balance change and the arena priced it: six of seven
+  fights are inside the noise, and **the brigand road went from 13/15 wins in 10.8 rounds to 15/15
+  in 6.2**. That one is worth playing before it is called tuned.
+- A capstone that does not fire: STANDS should leave a body on 1 hitpoint once a fight, FLEET should
+  show as *step 5 (fleet)* on the sheet, UNREPEATABLE should stop a second blow from the same enemy
+  in one turn.
+
+⚠ **Two rungs are authored and not yet read**: INTELLECT +3's *+1 reach* and MORALE −4's *starts a
+fight one rung lower*. They are in the table and print on the hover; nothing applies them yet.
+
+---
+
+## 🧾 THE ORDINARY HUMAN IS 0  *(#253 · 2026-08-27 · build log 8f.278)*
+
+**Reach it in three steps:** BACK TO THE ROAD → the company sheet → hover any of the four stats.
+
+**What should happen.**
+
+- The right column now reads in **rungs**, from 0. The Captain's STRENGTH is `born +1 · Experienced
+  +1 → +2`. A body with nothing on it reads `born 0 → 0`, which is what an ordinary human is.
+- The left ladder carries **what each rung is worth**: *STRONG · +7 hitpoints · +11% melee*. Those
+  figures are computed by running the fight's own formulas at that rung, so they cannot drift.
+- Under the total, the **whole stat's** worth, with every effect rather than the two headline ones.
+- The **race and the class marks are back** under the name on the sheet. The level ring is not: it
+  is on the roster tile with its hover.
+
+**What would be a bug.**
+- **Any number in the game changing.** Nothing about any body moved: hitpoints, to hit, dodge, mood,
+  damage, the word each stat is called by and every muster price are byte-identical to the previous
+  build. If a body feels different, that is a real finding.
+- A rung on the ladder whose figure disagrees with what the sheet actually shows.
+- The tip hanging off the board. It measures 555-580 x 424-440 and sits inside the stage on all four
+  stats, on the worst body the game can build.
+- **A saved run loading with wrong stats.** A save written before today carries the old 1..20 numbers
+  and is shifted once on load; a body that reads as monstrously strong on everything is that
+  migration having missed.
+
+⚠ **This is not the #204 ladder rework.** It re-bases the scale the build already had so that 0 is
+the ordinary human. The nine-rung design with its own authored bonuses is still parked.
+
+---
+
+## 🧾 A STAT SAYS WHERE IT CAME FROM  *(#252 · 2026-08-27 · build log 8f.277)*
+
+### 1 · The stat hover in the inventory
+
+**Reach it in three steps:** BACK TO THE ROAD → the company sheet (the portrait, top left)
+→ hover STRENGTH, AGILITY, INTELLECT or MORALE.
+
+**What should happen.** The box is two columns now. On the left, the nine-rung ladder it always
+had, with the current rung lit. On the right, a **ledger**: one line per thing that moved the
+number, its own figure in green or red, and the total on a rule underneath.
+
+On the Captain, STRENGTH reads `born +9 · Experienced +1 → STRENGTH 10`. Put a scar on somebody
+and it appears by name. Bank a level and spend it and a `levels` line appears. Put ogre plate on a
+ratkin and `the harness does not fit −1` shows up on AGILITY and `−3` on MORALE.
+
+**What would be a bug.**
+- **The lines do not add up to the total.** They are the same arithmetic the sheet uses, so a
+  disagreement is a real fault and not a rounding one.
+- **The box hangs off the bottom or the right of the board** on any of the four stats. It measures
+  440x440 and sits inside the stage on all four, including MORALE, which is the lowest row - and
+  which was hanging 3px off the board *before* this change.
+- A rung name in the left column **wrapping onto two lines**, or a long trait name in the right
+  column being **cut off**. Measured 0 of both on the worst body the game can build.
+- A stat whose figure on the sheet **changed**. Nothing about any body moved: this shows the sum,
+  it does not compute a new one.
+
+⚠ **A body you promoted before today reads those levels as part of `born`.** There was no record
+of them until now, so it is one line that is less specific rather than a wrong one; a level banked
+from here on gets its own line.
+
+### 2 · The ladder doc, if you want to poke at it
+
+`shots/204_ladders.html` computes itself now. The **born** column in *WHERE EACH RUNG COMES FROM*
+has arrows: move one and the whole company table underneath recomputes - hitpoints, swing, to hit,
+dodge, nerve, step and what the attacker adds. Nothing else on a body is typed.
+
+---
+
 ## 🧾 SEVEN SMALL FIXES: A CARD, A SHEET, A DOLL, A STASH AND THE UNDO  *(#251 · 2026-08-26 · build log 8f.276)*
 
 ### 1 · The contract card stops receipting its own sentence

@@ -4842,3 +4842,122 @@ icon-sizing measurement, and the settled arguments. A decision page that keeps i
 being a decision page; the minutes are these entries. What stayed is the formula, the givens, the
 race table, four ladders, the two-point rule, the founders, what changes in the engine, and five open
 ideas.
+
+### Round eleven, 2026-08-26: his AGI negatives, the Morale trim, and the race that was missing from the table
+
+His asks: MORALE *"+4 Just two perks"*, *"+3 Heals not mends twice as fast"*, and the ladder has *"incorrect
+icon (it doesnt have any)"* · INT *"+1 reach on spells and skills"* · AGI negatives written out ·
+*"Somehow in final calculation you didn't calculate race properly"* · then two corrections in a row:
+*"є травми а є рани - не плутай"* and *"there is: injuries / scars. twice fast heal injuries."*
+
+⛔ **HE WAS RIGHT ABOUT THE RACE AND THE FAULT WAS A CAPTION, WHICH IS THE WORST KIND.** The founders'
+table printed dodge as `14 + Σ AGI` with **no race in it at all**, and the note under it said *"dodge
+includes the race"*. Both halves of that are defensible on their own and together they are a lie: in
+this model **the race's body is a modifier on the ATTACKER's roll, not on the defender's dodge**, so
+Skree dodges at 18 *and* everybody rolling at him takes −5, where the old build folded the +5 straight
+into his dodge and printed 27. ⛑ **The table has an eighth column now, `the attacker adds`** (0 / −5 /
++10), and the note says which of the four columns the race is in and which it is not. Same arithmetic,
+said in the honest place: a small body is hard to hit because it is small, not because it is nimble.
+
+⚑ **AND THE VOCABULARY WAS THE OTHER HALF OF THE SAME CARELESSNESS.** I wrote "mend", "wound" and
+"injury" as if they were one thing across two rounds. **The build already carries the distinction and
+prints it on road doors** (`hurt.lasting` → *permanent injury* / *temporary injury*, #197):
+
+| | in the build | what happens to it |
+|---|---|---|
+| **injury** | `hpLoss` | heals on the road at `MEND_BASE` **6 a day**, the number DOUBLE RATIONS doubles |
+| **scar** | `p.injuries[]`, and the sheet labels each one with the word *scar* | **never heals**; the medicine chest takes one off, **once a run** |
+
+So **MOR +3 heals INJURIES twice as fast (12 a day) and does not touch scars** - a dial that already
+exists, nothing new built. ⚑ **The first two readings of this ask each proposed building something**
+(a second chest use, then a clock on scars) **and both were answered by getting his two words right.**
+⛔ A scar that healed itself would stop being what #197 deliberately made permanent, and the run would
+stop writing anything on a body.
+
+**MORALE, trimmed to what he kept:** +4 **just two perk points** (the "+1 rung on a chosen stat" is
+gone, and the guard it needed goes with it - the ladder is back to having no rule that is not on a
+rung) · +3 injuries heal twice as fast · +2 loses nerve ×0.75 · +1 +10 nerve and climbs 12 · −1 −10
+nerve · −2 climbs 5 · −3 loses ×1.2 · −4 starts one rung lower.
+⚠ **MORALE and AGILITY have no drawn set**, which is what he was pointing at: only STRENGTH (arms) and
+INTELLECT (brains) have art. A heart or a banner, and a hand, in the same pixel language and the same
+climb, are the two that are missing.
+
+**AGILITY's negatives, his own numbers:** −1 **−3 dodge** · −2 **−3 to hit** · −3 **−4 dodge** · −4
+**−3 to hit and −3 dodge**. Held at the bottom: **−6 to hit and −10 dodge**, against the positives'
++8 / +8. ⚑ **That is deliberately asymmetric downward on dodge** and it is his call; it also means a
+clumsy body is now easier to hit than a quick body is hard to hit, which suits a game where the
+player's line is supposed to want position rather than evasion.
+
+**INTELLECT:** reach is *"+1 on spells and skills"*, not shots.
+
+**THE FOUNDERS, RECOMPUTED** (the AGI change moves three of them): Captain 66 hp · 18-26 · 74 · 14 · 0 |
+Vesna 60 · 17-24 · 70 · 14 · 0 | Marrow 51 · 8-12 · **70 · 11** · 0 | Ilka 51 · 16-23 · 74 · 14 · 0 |
+Skree 38 · 10-14 · 78 · 18 · **−5** | Ash 38 · 10-14 · 80 · 18 · **−5** | Bruht 98 · 32-49 · **67 · 7**
+· **+10**. ⚠ **Bruht is the row to read twice**: 98 hitpoints (race 75, his +2 rung, `big`'s +16) with
+a dodge of 7 and +10 for anyone swinging at him. That is an ogre said out loud in both directions, and
+if the hitpoints are too much **the trait is the part to cut, not the race row**.
+
+### Round twelve, 2026-08-27: the doc computes itself, and the game's own stat hover shows its sum
+
+His asks: *"Перероби ... Щоб кожен з моїх статів рахувався динамічно з зазначених тут статів і раси.
+А не був фактично захардкоджений"* · *"цей док має історичну фігню ... А десь зайві питання пише"* ·
+*"Число біля стата не треба додавати. Ці подписи з'являються при ховері в інвенторі на стат"* · *"feel free to also check
+sanity"* · *"i want to see when i hover stats in inventory - how it was calculated"* · *"Things
+should be connected, not just hardcoded stats"* · *"and of course, build it in the main build of
+the game"*.
+
+⛔ **THE DOC WAS A PICTURE OF A DERIVATION RATHER THAN ONE, AND ELEVEN ROUNDS HAD NOT NOTICED.**
+Every round since #204 has typed the founders' table by hand from the ladders above it, and the
+ladders' *held at the end* lines by hand from the rungs above THEM. That is the exact shape this
+project's own #137 rule exists to delete, sitting inside the document that argues for it. The page
+is a **model** now - `G`, `RACE`, `CLASS`, `TRAIT`, `WEAP`, `LAD`, `BODIES` - and the givens, the
+race table, **every rung's own sentence**, both *held* lines and the whole company table are
+rendered from it. The only thing authored on a body is its four lines and its weapon.
+
+⚡ **AND IT CAUGHT THREE TYPED NUMBERS INSIDE THE HOUR, WHICH IS THE ARGUMENT FOR THE WHOLE
+CHANGE:**
+
+- **Ash's `to hit 80` is not reachable from AGI +2.** `held(agi,+2)` is `+4 to hit`, so he is 74;
+  Skree at +3 is the 78 that was probably being read across. It had survived rounds ten and eleven.
+- **The INT ladder's *held at the top* said `magic +30%` and the rungs sum to `+15%`** (+2 is the
+  only positive magic rung). The negative side sums to −25%, so the ladder is genuinely asymmetric
+  on that one channel - filed as **J1**, because which end moves is his call.
+- **The race was described as being in four columns and was in three**, which round eleven fixed by
+  adding *the attacker adds* and then did not re-derive the other three.
+
+⚡ **AND THE COMPANY MOVED WHERE THE FOUR LINES HAD NEVER ACTUALLY BEEN APPLIED.** Born is 0
+unless a backstory has paid for it and today only the Captain's has, so everything else is race +
+class + trait: Vesna takes the spear class's own STR lean (60 → 66), Marrow and Ilka lose an
+invented −1/−1 (51 → 54, dodge 11 → 14), Skree and Ash take the ratkin's −1 STR rather than −3
+(38 → 43, swing 10-14 → 12-16), and Bruht's AGI is the race's −1 plus Big's −1 rather than −3
+(dodge 7 → 11). ⛑ **Nothing was chosen: those are what the tables say.** The born column has
+arrows on the page, so any of it is one click to overrule.
+
+⛑ **THE SANITY PASS IS EIGHT CHECKS AND IT RUNS OVER THE MODEL, NOT OVER THE MARKUP** (*"feel
+free to also check sanity"*): nine rungs a ladder · exactly one capstone and it is +4 · no rung
+that says nothing · no rung paying the wrong way for its sign · no body off the ladder and its four
+lines really adding · the race pool derived from the given rather than typed · no crossed swing ·
+`held()` monotone on every channel. All clean. ⚠ **Two of them found nothing because the rule they
+test is what the model is FOR** - and they stay, because a check that cannot fire today is what
+catches the twelfth round's edit.
+
+⛔ **THE HISTORY CAME OUT AT HIS WORD, INCLUDING THE HALF THIS FILE HAD ASKED FOR.** Out: *was 56*
+/ *was 68*, *the bottom is softer than it was*, *at your word*, *the opening is gone from this
+stat*, the note that MORALE and AGILITY have no drawn set, and every question posed back at him
+inside the doc (*"if it reads as too much, the trait is the part to cut"*, *"the harness has to
+price it"*). ⛑ **A ruling does not vanish when it leaves the doc - it moves to
+`OPEN_QUESTIONS.md`**, which is `.claude/rules/open-questions.md`'s whole point, and it is why
+deleting the questions costs nothing.
+
+⛔ **AND THE DIGIT BESIDE A STAT IS REFUSED, WHICH IS A DESIGN RULING AND NOT A TRIM.** *"Число
+біля стата не треба додавати. Ці подписи з'являються при ховері в інвенторі на стат"*. Pass one's build
+order had *"the sheet's digit and hover"* since round five; the sheet prints ONE WORD per stat and
+opens the whole ladder on the stat's hover, and that hover is where the rung belongs. **The digit
+on the page is the designer's view and it does not follow the rung into the game.**
+
+⛑ **AND THE ASK THAT TURNED THIS ROUND INTO A BUILD ENTRY (#252) IS THE SAME SENTENCE FROM THE
+OTHER END.** *"Things should be connected, not just hardcoded stats"*, applied to the game rather
+than the doc, is the stat hover carrying **a ledger of where the number came from** - and the honest
+way to build it is that `statParts` becomes the walk `effStats` used to do, so the hover and the
+sheet cannot disagree. ⚠ **That is not #204.** The ladder rework is still parked; what shipped is
+the connective tissue for the stat system the build HAS.

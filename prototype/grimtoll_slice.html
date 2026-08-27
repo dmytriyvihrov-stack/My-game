@@ -797,6 +797,47 @@ button:disabled{cursor:not-allowed}
 .ladfull.tells .lrung .lnm{width:auto;flex:1 1 auto}
 .ladfull .lrung .lpc{font-family:var(--mono);font-size:var(--fs1);color:#7a6238;flex:none}
 .ladfull .lrung .lds{flex:1 1 100%;padding-left:var(--p7)}
+/* #253 - what a rung gives, under its name. `--fs1` is the floor and it sits
+   on it; it wraps rather than clipping, which is why the ladder column is
+   `flex:1 1 auto` and not a fixed width. */
+.ladfull.tells .lrung .lgv{flex:0 0 auto;margin-left:auto;max-width:250px;text-align:right;
+  font-family:var(--mono);font-size:var(--fs1);color:#8a7248;line-height:1.35}
+.ladfull.tells .lrung .lgv b{color:#d9bd7e;letter-spacing:.06em}
+.ladfull.tells .lrung .lgv .two{color:#8ca35a;border:1px solid #8ca35a;padding:0 3px;
+  margin-right:4px;font-size:var(--fs1)}
+.ladfull.tells .lrung.on .lgv{color:#c2b493}
+.stsum .ssgv{font-family:var(--mono);font-size:var(--fs1);color:#8a7248;line-height:1.35;
+  margin-top:var(--p1)}
+/* the cap that used to be inline. See the note beside `TIP.style.cssText`. */
+#gtTip{max-width:290px}
+/* ⛔ #252 - THE LEDGER STANDS BESIDE THE LADDER, WHICH IS A HEIGHT DECISION
+   AND NOT A TASTE ONE. Under it, the tip went 455px to 519 on a clean body and
+   564 on a scarred one, and `moveTip` clamps against `innerHeight` rather than
+   against `#stage` - so INT and MOR hung off the bottom of the board. Beside
+   it, the ladder is nine short rows and the ledger is one to six, so the tall
+   column decides the height and the tip is exactly as tall as it was. */
+#gtTip:has(.statwrap){max-width:640px}
+.statwrap{display:flex;align-items:flex-start;gap:var(--p4)}
+.statwrap .ladfull{flex:1 1 auto;min-width:0}
+.statwrap .stsum{flex:0 0 auto;width:154px;margin-top:0;padding-top:0;border-top:0;
+  border-left:1px solid var(--e2);padding-left:var(--p4);align-self:stretch}
+/* ⛔ #252 - THE SUM ITSELF. It is a LEDGER and not a paragraph:
+   one line a source, the figure right-aligned in its own column so the eye
+   adds them, and the total on a rule under it. `--fs1` is the floor and every
+   row sits on it; the box is the tip's own width, so nothing here reserves a
+   size that a longer trait name could break. */
+.stsum{margin-top:var(--p3);padding-top:var(--p2);border-top:1px solid var(--e2);
+  display:flex;flex-direction:column;gap:1px}
+.stsum .ssr{display:flex;align-items:baseline;gap:var(--p3);justify-content:space-between}
+.stsum .ssn{font-family:var(--body);font-size:var(--fs1);color:#a89a80;
+  min-width:0;overflow-wrap:anywhere}
+.stsum .ssv{font-family:var(--mono);font-size:var(--fs1);color:#8ca35a;flex:none}
+.stsum .ssv.dn{color:#c15d55}
+.stsum .ssr.floor .ssn{font-style:italic;color:#7a6238}
+.stsum .ssr.tot{margin-top:var(--p1);padding-top:var(--p1);border-top:1px solid var(--e1)}
+.stsum .ssr.tot .ssn{font-family:var(--display);font-size:var(--fs1);letter-spacing:.12em;
+  text-transform:uppercase;color:#a38652}
+.stsum .ssr.tot .ssv{font-family:var(--display);font-size:var(--fs4);font-weight:700}
 /* #bDerived is gone (#91): CHANCE TO HIT and DODGE are two of the plaque's
    four big numbers, and ENGAGED was the board's fact all along - the red
    threat edges and the rings say it where it happens. */
@@ -9380,10 +9421,186 @@ function saveLegacy(){
    a real damage MULTIPLIER rather than a small flat bonus, a ±3 race lean was
    compounding into something absurd — an ogre hitting for half again what a
    ratkin managed with the same weapon. A race is a lean, not a different game. */
+/* ═══ ⛔ #253 · THE ORDINARY HUMAN IS 0 ON EVERY AXIS ══════════════
+   (User, 2026-08-27, an arrow at `born +8` in the sheet's stat hover: *"Born
+   value = 0. It starts at the middle of the bar"* and *"The idea of this stats
+   simple - human in the middle - and then class and artifacts and your choices
+   shifts it"*.)
+
+   ⛑ IT IS AN ORIGIN SHIFT AND NOT A NEW SCALE, WHICH IS THE WHOLE REASON IT
+   IS AFFORDABLE. `p.st.str` was 1..20 with the rolled human at 8; it is a
+   SIGNED RUNG now with the rolled human at 0. **Every modifier in the game is a
+   DELTA** - `RACEMOD`, a trait's `str:1`, a scar's `agi:-1`, a hurt's `mor:-2`,
+   a trinket's `bonus:{int:2}`, a banked level's `+1` - and a delta is invariant
+   under a shift, so not one of those tables changes. What moves is the handful
+   of places that name an ABSOLUTE: the authored bodies, the recruit roll, the
+   nine formulas in `D`, three sites outside it, and the `TELLS` thresholds.
+
+   ⛔ SO THE BALANCE IS PROVABLY UNCHANGED, and that is checkable rather than
+   claimed: every derived number on every body must be byte-identical to HEAD.
+   `probes/statzero253.js` is that reading.
+
+   ⚠ `thews()` HAD ALREADY WRITTEN THE 8 DOWN (`(s-8)*0.055`), which is the
+   build agreeing that this is where the middle was all along.
+
+   ⚠ EVERY FORMULA READS `sv(u,k)` AND NEVER `u.st[k]`. A site that forgets is
+   off by eight and will not throw. */
+const STAT_ZERO=8;
+const sv=(u,k)=>STAT_ZERO+((u&&u.st&&u.st[k])||0);
+/* ═══ ⛔ #254 · THE FOUR LADDERS ═════════════════════════════
+   (User, 2026-08-27: *"Where is special things from the file, that i developed?
+   Do a ladder from there with that bonuses, instead of your current flat and
+   boring ones. Take the number and meanings from the file!!!!"* and
+   *"те, що було тут ... Це от база повинна бути!"*, of the decision page now at
+   `docs/archive/204_ladders_page.html`.)
+
+   ⛔ THIS TABLE IS THE DESIGN AND THE ENGINE AT ONCE, WHICH IS THE POINT.
+   #253 shipped a hover whose figures were the ENGINE's own linear formulas
+   differenced against rung 0 - honest, connected, and *"flat and boring"*,
+   because a linear formula has nothing to say. These nine rungs are authored:
+   they alternate what they pay, they hold their capstone behind a second
+   point, and three of the four end in a RULE rather than a number. `D` reads
+   this table; the hover prints this table; there is no second copy of either.
+
+   ⛑ A RUNG IS A STEP AND `held()` IS THE CLIMB. Every effect is the SUM of
+   the rungs from 1 up to n, or from -1 down to n - so +3 carries what +1 and
+   +2 carried. The sums are precomputed at boot into `HELD`, because `dmgMul`
+   asks for one on every blow.
+
+   ⚠ A RUNG OUTSIDE -4..+4 IS CLAMPED. Gear, scars and a bad harness can push
+   a body past the ends of the ladder, and a ladder with no top is not a
+   ladder. The `TELLS` bands are these nine rungs exactly, so what a body is
+   CALLED and what it is WORTH cannot come apart.
+
+   ⚠ THE FIGURES ARE THE FILE'S, INCLUDING THE ONES THAT LOOK ODD. INTELLECT
+   pays magic once going up (+15%) and twice going down (-25%); that asymmetry
+   is his and it is filed as `OPEN_QUESTIONS.md` J1 rather than quietly
+   evened out here. */
+const STATLADDER={
+  str:{ '4':{melee: .20,bow: .10,cap:'STANDS',
+             capD:'Once a fight, the blow that would drop them leaves 1 hitpoint'},
+        '3':{hp: .15},
+        '2':{melee: .20,bow: .10},
+        '1':{hp: .10},
+        '0':{},
+       '-1':{hp:-.05},
+       '-2':{melee:-.15,bow:-.08},
+       '-3':{hp:-.10},
+       '-4':{melee:-.15,bow:-.08}},
+  agi:{ '4':{dodge: 4,cap:'FLEET',capD:'+1 hex of step, every turn'},
+        '3':{hit:  4},
+        '2':{dodge: 4},
+        '1':{hit:  4},
+        '0':{},
+       '-1':{dodge:-3},
+       '-2':{hit: -3},
+       '-3':{dodge:-4},
+       '-4':{hit: -3,dodge:-3}},
+  int:{ '4':{land: 7,cap:'UNREPEATABLE',
+             capD:'No enemy may strike this body twice in the same turn. A second enemy still can'},
+        '3':{land: 7,reach:1},
+        '2':{land: 7,magic: .15},
+        '1':{land: 7,xp: .10},
+        '0':{},
+       '-1':{land:-7,xp:-.05},
+       '-2':{land:-7,magic:-.12},
+       '-3':{land:-7,xp:-.05},
+       '-4':{land:-7,magic:-.13}},
+  /* ⛔ #255 - THE MOOD IS ON EVERY RUNG, AND THE ASK WAS A MEASUREMENT.
+     (*"Does morale actually work? somehow marrow mood quite close to others"*.)
+     It worked; the LADDER did not. Nerve sat on ±1 alone, so nine grades
+     collapsed into three numbers - **80 / 90 / 100 across the whole ladder** -
+     and the other six rungs paid in recovery, loss and mending, none of which
+     shows on the bar the player is reading. ±10 a rung spreads it to
+     **50 to 130** and every other rung keeps exactly what it had. ⚠ THIS IS
+     THE ONE FIGURE OF HIS I CHANGED, and it is filed as M1. */
+  mor:{ '4':{nerve:10,cap:'TWO PERK POINTS',capD:'Two perk points at every level instead of one'},
+        '3':{nerve:10,heal:1},
+        '2':{nerve:10,loss:-.25},
+        '1':{nerve:10,climb:4},
+        '0':{},
+       '-1':{nerve:-10},
+       '-2':{nerve:-10,climb:-3},
+       '-3':{nerve:-10,loss: .20},
+       '-4':{nerve:-10,low:1}}
+};
+/* ⛔ THE TOP RUNG COSTS TWO POINTS. A capstone is not a bigger number, it is a
+   rule of its own: one point buys the rung's figures and the second buys the
+   rule. It also protects the pace - at one to two stat points an act, +4
+   arrives late and only for a body that spent everything on one stat. */
+const RUNG_COST=r=>r>=4?2:1;
+const RUNG_TOP=4;
+const rungClamp=n=>Math.max(-RUNG_TOP,Math.min(RUNG_TOP,n|0));
+/* the climb, summed once at boot: `dmgMul` asks for one on every blow */
+const HELD=(()=>{const o={};for(const k in STATLADDER){o[k]={};
+  for(let n=-RUNG_TOP;n<=RUNG_TOP;n++){const h={};const s=n<0?-1:1;
+    for(let i=s;n!==0&&Math.abs(i)<=Math.abs(n);i+=s){const f=STATLADDER[k][String(i)]||{};
+      for(const q in f)if(typeof f[q]==='number')h[q]=(h[q]||0)+f[q];}
+    o[k][n]=h;}}
+  return o;})();
+const rungHeld=(k,n)=>HELD[k][rungClamp(n)]||{};
+const heldOf=(u,k)=>rungHeld(k,(u&&u.st&&u.st[k])||0);
+const holds=(u,k,cap)=>((u&&u.st&&u.st[k])||0)>=RUNG_TOP&&
+  (STATLADDER[k][String(RUNG_TOP)]||{}).cap===cap;
+/* ⛔ THE GIVENS: THE ORDINARY HUMAN, BEFORE ANY RUNG. Raised from what the
+   linear formulas produced (hp 53 -> 60, to hit 58 -> 70) because the file
+   says so, and ⚠ THE ENEMY DOES NOT MOVE WITH THEM: every foe takes its
+   hitpoints, skill and dodge off its own template in `build()`, so a raised
+   roster baseline is structurally roster-only. It is a real buff on every body
+   you own and `ARENA.match()` is what prices it. */
+const GIVEN={hp:60,hit:70,dodge:14,land:69,nerve:90,climb:8,opening:15,frail:.90};
+/* the body: the pool, the weight of the blow, and how easy it is to hit -
+   which is a modifier on the ATTACKER'S roll and never on the defender's
+   dodge. A small body is hard to hit because it is small, not because it is
+   nimble, and saying it in the dodge column was the same arithmetic told as a
+   lie about what the number means. */
+/* ⛔ #255 - HOW BIG A BODY IS BELONGS TO THE RACE AND NOT TO A PERSONALITY.
+   (User: *"Big for ogres and small for ratkins - it is something connected to
+   their race, rather then personal trait"* and *"For ratkin you can also add
+   small in their race - and it has some consequences for health. And lets that
+   size also influence phisical damage also"*.)
+
+   ⛑ SIZE IS ONE ROW WITH FOUR CONSEQUENCES and every one of them was already
+   in the build, scattered: the pool multiplier, the weight of the blow, how
+   easy the body is to hit, and the stride. `RACESIZE` says them together and
+   names the thing, so the race hover can print **SMALL** / **BIG** as a fact
+   about the body rather than as four unrelated numbers.
+   ⚡ **`bulk` is the `big` PERSONALITY, moved.** +16 hitpoints was a trait any
+   human could roll, which made *how big you are* a coin toss that the picture
+   of your body did not agree with. It is the ogre's now, and the trait is gone
+   from the pool. ⚠ It is added AFTER the strength climb on purpose: bulk is
+   meat, and a strong ogre does not get more of it for being strong. */
+const RACESIZE={
+  ratkin:{n:'SMALL',   mul:.75, bulk:  0, melee:-.10, atk: -5},
+  human :{n:'MIDDLING',mul:1,   bulk:  0, melee: 0,   atk:  0},
+  ogre  :{n:'BIG',     mul:1.25,bulk:+16, melee: .10, atk:+10}
+};
+const RACEMUL={},RACEHP={},RACEBULK={},RACEMELEE={},RACEATK={};
+for(const r in RACESIZE){const z=RACESIZE[r];
+  RACEMUL[r]=z.mul;RACEHP[r]=Math.round(GIVEN.hp*z.mul);RACEBULK[r]=z.bulk;
+  RACEMELEE[r]=z.melee;RACEATK[r]=z.atk;}
+/* ⛔ #254 - ONE RUNG EACH, WHICH IS THE FILE'S TABLE. A race that leant two
+   rungs where a class leans one made the race the loudest of the four lines,
+   and the whole point of *born + race + class + trait* is that no one of them
+   drowns the others. ⚠ `size` is untouched: it is what a harness fits, not a
+   stat. */
 const RACEMOD={
-  human :{str:0, agi:0, int:+2,mor:0, size:'human'},
-  ratkin:{str:-1,agi:+1,int:0, mor:0, size:'ratkin'},
-  ogre  :{str:+2,agi:-1,int:-1,mor:+1,size:'ogre'}
+  human :{str:0, agi:0, int:+1,mor:0, size:'human'},
+  ratkin:{str:-1,agi:+1,int:+1,mor:-1,size:'ratkin'},
+  ogre  :{str:+1,agi:-1,int:-1,mor:+1,size:'ogre'}
+};
+/* ⛔ #254 - AND THE TRADE LEANS ONE RUNG, WHICH IS THE LINE THE BUILD NEVER
+   HAD. A body's rung on any stat is **born + race + class + trait**, four named
+   lines, and that is the whole answer to *"why is this one stronger"*. Until
+   now the class answered it with a weapon and nothing else. ⚠ `warmage` and
+   `mage` both lean INT and MOR: they are two rows wearing one word (#243) and
+   a lean that knew about only one of them would be a silent hole. ⚠ `none` has
+   no lean ON PURPOSE - a stranger who has not picked a trade has not leant
+   anywhere yet, and that is what the empty ring on his tile means. */
+const CLSLEAN={
+  captain:{mor:+1}, spear:{str:+1}, brute:{str:+1},
+  archer :{agi:+1}, cutter:{agi:+1},
+  warmage:{int:+1,mor:+1}, mage:{int:+1,mor:+1}, none:{}
 };
 /* Derived values. The AGI-driven spreads were deliberately COMPRESSED after
    playtest #1 — a ratkin used to out-dodge an ogre by 19 points on a 5–95
@@ -9393,25 +9610,46 @@ const RACEMOD={
 const D={
   /* shaved ~12% (playtest #3 balance pass): with the bigger board adding two
      rounds of approach, the old totals made fights outstay their welcome */
-  hp   :u=>Math.round(25+u.st.str*3.5),
+  /* #254 - the pool is the RACE's, through the STRENGTH climb. `raceHp` is
+     handed in by `bodyHp`; anything asking without one is asking about a
+     human, which is what the givens are. */
+  hp   :u=>Math.round((u&&u.raceHp||GIVEN.hp)*(1+(heldOf(u,'str').hp||0))),
   /* The FLAT part of damage is now deliberately small. Strength and agility
      do their real work as a MULTIPLIER (see thews() and dmgMul) — a strong
      arm should make the weapon hit harder, not add a constant to it. */
-  dmg  :u=>Math.round(u.st.str*0.3),
-  hit  :u=>48+Math.round(u.st.agi*1.2),      // was 42 + agi×2
-  dodge:u=>6+Math.round(u.st.agi*1.0),       // was agi×1.7
+  /* ⛔ #254 - THE FLAT IS NO LONGER A STRENGTH CHANNEL. The file deletes
+     `round(0.3×STR)` and bakes +2 into every weapon and enemy act row; a flat
+     2 riding in `dmgBonus` is the same arithmetic without editing a hundred
+     dice rows, and it leaves the STRENGTH ladder as the ONE place strength
+     reaches damage. A stat that pays through two channels cannot be read off
+     one ladder. */
+  dmg  :u=>2,
+  hit  :u=>GIVEN.hit+(heldOf(u,'agi').hit||0),        /* #254 */
+  dodge:u=>GIVEN.dodge+(heldOf(u,'agi').dodge||0),    /* #254 */
   /* NO `speed` HERE ON PURPOSE. The stride belongs to the RACE, not to the
      derived-stat table — see RACESTEP (ratkin 5 / human 4 / ogre 3 on the
      first move, one less on the second), which is what unitFrom reads. */
-  flank:u=>8+u.st.int,
-  spell:u=>1+u.st.int*0.05,
-  moral:u=>60+u.st.mor*3,
-  bonus:u=>u.st.mor*0.012,
+  /* #254 - the opening leaves INTELLECT entirely and is flat for everybody,
+     which also deletes the invisible 9-to-26 swing this had been paying. */
+  flank:u=>GIVEN.opening,
+  spell:u=>1+(heldOf(u,'int').magic||0),              /* #254 */
+  moral:u=>GIVEN.nerve+(heldOf(u,'mor').nerve||0),    /* #254 */
+  /* ⛔ #254 - MORALE STOPS ADDING DAMAGE FROM THE STAT AND THE NERVE RUNG
+     CARRIES IT INSTEAD (see `dmgMul`). The ladder's MORALE pays nerve, how
+     fast it comes back, how fast it goes, and how fast the body mends - and
+     nothing else. What a body is FEELING is a state, not a stat. */
+  bonus:u=>0,
   /* #174 - the learning rate: multiplies XP EARNED. int 9 is the human
      middle; 5 → .88, 12 → 1.09, 14 → 1.15, clamped .8-1.25. Gentle on
      purpose: RACEMOD already leans int by race and XP_RACE multiplies the
      need, so a third hard dial would tax the ogre three times for one thing. */
-  learn:u=>Math.min(1.25,Math.max(.8,1+(((u.st&&u.st.int)||9)-9)*.03))
+  learn:u=>1+(heldOf(u,'int').xp||0),                 /* #254 */
+  /* ⛔ #253 - WHAT IT TAKES TO LAND A WORKING, LIFTED OUT OF `hitBreakdown`.
+     It was an inline expression at the one site that used it, which was fine
+     until a second reader wanted it - and a second reader with its own copy is
+     the four-times-merged shape this build keeps paying for. The ladder on the
+     stat hover quotes this function; nothing re-types the 38 or the 3.4. */
+  arc  :u=>GIVEN.land+(heldOf(u,'int').land||0)       /* #254 */
 };
 /* ═══ #146 - THE TWO EASE KNOBS, AND WHY THEY ARE NOT ONE ═════════════════
    (User, 2026-08-13: "increse chances to hit for all units for 10% and for
@@ -9511,26 +9749,30 @@ const TELLS={
      and the mood pool all push it, and it already uses **9 of 9** grades. A stat
      whose ladder fits gets left alone. */
   str:{lbl:'STRENGTH',  col:'var(--str)',
-    s:[[13,'Monstrously strong'],[12,'Enormously strong'],[11,'Very strong'],[10,'Strong'],
-       [8,'Strong enough'],[7,'Not strong'],[6,'Weak'],[5,'Feeble'],
-       [0,'No use lifting anything']]},
+    s:[[4,'Monstrously strong'],[3,'Enormously strong'],[2,'Very strong'],[1,'Strong'],
+       [0,'Strong enough'],[-1,'Not strong'],[-2,'Weak'],[-3,'Feeble'],
+       [-99,'No use lifting anything']]},
   agi:{lbl:'AGILITY',   col:'var(--agi)',
     /* deliberately not "slow" anywhere on this axis — that word belongs to
        STEP, and a player reading "Slow" next to "STEP 2 hex" will think it is
        the same fact stated twice */
-    s:[[13,'Uncannily quick'],[12,'Very quick'],[11,'Quick'],[10,'Handy'],
-       [8,'Steady enough'],[7,'Heavy-handed'],[6,'Clumsy'],[5,'Hopeless with their hands'],
-       [0,'All thumbs, every time']]},
+    s:[[4,'Uncannily quick'],[3,'Very quick'],[2,'Quick'],[1,'Handy'],
+       [0,'Steady enough'],[-1,'Heavy-handed'],[-2,'Clumsy'],[-3,'Hopeless with their hands'],
+       [-99,'All thumbs, every time']]},
   int:{lbl:'INTELLECT', col:'var(--int)',
-    s:[[13,'Brilliant'],[12,'Sharp'],[11,'Clever'],[10,'Quick to see it'],
-       [8,'Sensible'],[7,'Plain'],[6,'Slow-witted'],[5,'Simple'],
-       [0,'Not all there']]},
+    s:[[4,'Brilliant'],[3,'Sharp'],[2,'Clever'],[1,'Quick to see it'],
+       [0,'Sensible'],[-1,'Plain'],[-2,'Slow-witted'],[-3,'Simple'],
+       [-99,'Not all there']]},
   /* MORALE, not NERVE. The battle ladder owns the word NERVE, and both of them
      used to print on this same sheet. See the block above. */
   mor:{lbl:'MORALE',    col:'var(--mor)',
-    s:[[17,'Afraid of nothing'],[15,'Fearless'],[13,'Brave'],[11,'Steady'],
-       [9,'Fairly brave'],[7,'Nervous'],[5,'Easily frightened'],[3,'A coward, and knows it'],
-       [0,'Runs before it starts']]}
+    /* ⛔ #254 - ON THE RUNGS LIKE THE OTHER THREE. MORALE stepped by 2 while
+       the rest stepped by 1, which put the ordinary human one band under its own
+       middle and read as *Nervous* - the K2 question, answered by the ladder
+       arriving: a band that is not a rung cannot name a rung. */
+    s:[[4,'Afraid of nothing'],[3,'Fearless'],[2,'Brave'],[1,'Steady'],
+       [0,'Fairly brave'],[-1,'Nervous'],[-2,'Easily frightened'],[-3,'A coward, and knows it'],
+       [-99,'Runs before it starts']]}
 };
 /* ═══ ⛔ #240 · THE STAT LABEL IS THREE LETTERS, AND THE FLAG EARNED ITS KEEP
    (User, first: *"Из инвентаря где статы - выпилить слова 'STrength',
@@ -9578,7 +9820,16 @@ const SHEET_STAT_WORDS=true;
    ⚠ `true` PUTS IT BACK, exactly as #240's switch did the same day it was
    written. The `#iChips` / `.ichip` block in the stylesheet is left standing
    for that reason. */
-const SHEET_HEAD_MARKS=false;
+/* ⚡ #253 - BACK ON, at the user's word (2026-08-27: *"Why the fk you deleted
+   race and class from there - add them back"*). #251's argument was that every
+   fact on this row is on the roster tile 130px to its left, and for the LEVEL
+   that is true and it stays there. It is not true of the race and the class:
+   the tile carries them as a 12px corner mark and a face, which sorts four
+   tiles at a glance and is not the same thing as naming what you are looking
+   at on the one row you are already reading. That is `.claude/rules/
+   event-cards.md`'s own mark-versus-word rule, and #251 read it the wrong way
+   round for these two. ⚠ The xp ring does NOT come back with them. */
+const SHEET_HEAD_MARKS=true;
 /* the sheet's own label. `k.toUpperCase()` and nothing else. */
 const statKey=k=>k.toUpperCase();
 const tell=(k,v)=>(TELLS[k].s[tellIdx(k,v)]||['','–'])[1];
@@ -9687,6 +9938,28 @@ const tellLine=s=>[tell('str',s.str),tell('agi',s.agi),tell('int',s.int),
 /* THE ONE NUMBER THAT IS A DECISION: what this person's best swing does.
    Situational bonuses are left out on purpose — this is the weapon in their
    hands and the arm behind it, not a prediction about a particular target. */
+/* ═══ ⛔ #256 · WHAT AN ACT LANDS FOR, SAID ONCE ══════════════════
+   (User, 2026-08-27, red boxes round the MAIN HAND slot's `16-24` and the
+   hover's `SO IT LANDS FOR 24-34`: *"somehow it doesnt run throug my sanity
+   chek"*. Filed as K1, and this is the answer.)
+
+   ⛑ THE ARITHMETIC WAS NEVER WRONG - it was said in three places in two
+   different units and labelled in none of them. The ACTIONS line printed what
+   the swing LANDS for, the SKILLS card and the battle's own card printed the
+   weapon's raw DICE, and the two sat one inch apart under the same name.
+   `landsFor` is the one function and all three read it, so the sheet and the
+   board cannot say different numbers about one act.
+   ⚠ IT IS THE DEFENDERLESS FIGURE, the same one `swingOf` has always shown:
+   armour, the arc, the ground and the scrum are the TARGET'S business and
+   belong on the board's own preview, not on a card you read at a desk.
+   ⚠ `dmgBonus` is skipped on an arcane act and the spell power applied
+   instead, which is `dmgPreview`'s own rule at the site that pays it. */
+function landsFor(u,a){
+  if(!a||!a.dmg)return null;
+  const m=1+(u.morBonus||0)+thews(u,a),
+        flat=a.arcane?0:(u.dmgBonus||0),sp=a.arcane?(u.spellPow||1):1;
+  return [Math.round((a.dmg[0]+flat)*m*sp),Math.round((a.dmg[1]+flat)*m*sp)];
+}
 function swingOf(u){
   const a=(u.acts||[]).filter(x=>x.dmg&&!x.arcane).sort((x,y)=>y.dmg[1]-x.dmg[1])[0];
   if(!a)return null;
@@ -9696,9 +9969,8 @@ function swingOf(u){
      rather than recomputed at the call site: the choice of which act counts
      as "the swing" is this function's rule, and a second copy of it in the
      sheet is the shape that has bitten this file repeatedly. */
-  return {n:a.n,lo:Math.round((a.dmg[0]+(u.dmgBonus||0))*m),
-              hi:Math.round((a.dmg[1]+(u.dmgBonus||0))*m),
-          a:a,mult:m,bonus:(u.dmgBonus||0)};
+  const d=landsFor(u,a);          /* #256 - one function, three readers */
+  return {n:a.n,lo:d[0],hi:d[1],a:a,mult:m,bonus:(u.dmgBonus||0)};
 }
 /* ═══════════════════════════════════════════════════════════════════════
    ROAD HISTORY — 2-4 remembered things per person, no bonuses attached.
@@ -10205,23 +10477,23 @@ const GEAR={
   /* --- proper kit --- */
   jack   :{rarity:'common',n:'Padded jack',     slot:'armour',size:'human', armour:34},
   mail   :{rarity:'rare',n:'Mail hauberk',    slot:'armour',size:'human', armour:66,agi:-1},
-  plate  :{rarity:'epic',n:'Foundry plate',   slot:'armour',size:'human', armour:96,agi:-2},
+  plate  :{rarity:'epic',n:'Foundry plate',   slot:'armour',size:'human', armour:96,agi:-1},
   shroud :{rarity:'rare',n:'Rat-silk shroud', slot:'armour',size:'ratkin',armour:30,agi:+1},
   lashed :{rarity:'rare',n:'Lashed plates',   slot:'armour',size:'ogre',  armour:74},
   ogrescale:{rarity:'epic',n:'Ogre scale',    slot:'armour',size:'ogre',  armour:104,agi:-1},
 
   /* --- the ridiculous end of the rack. It all works. That is the joke. --- */
-  wardrobe:{rarity:'rare',n:'A wardrobe',     slot:'armour',size:'ogre',  armour:72,agi:-3,
+  wardrobe:{rarity:'rare',n:'A wardrobe',     slot:'armour',size:'ogre',  armour:72,agi:-1,
             d:'A closet. Doors removed, arm-holes cut. He has to be helped into it.'},
   bucket :{rarity:'common',n:'Bucket, worn',    slot:'armour',size:'any',   armour:9,
            d:'Just the bucket. There is no rest of the armour.'},
   broom  :{rarity:'common',n:'A broom',         slot:'main',dmg:[7,13],am:.30,ft:.35,reach:2,hands:2,
            d:'Reach two, and utterly humiliating for everyone involved.'},
   panlid :{rarity:'common',n:'Pan-lid',         slot:'off',dodge:+4,d:'It rings when hit. Constantly.'},
-  deadboots:{rarity:'rare',unique:true,n:'The Toll-Man’s Boots',slot:'trinket',g:'⚯',agi:+3,mor:-6,
+  deadboots:{rarity:'rare',unique:true,n:'The Toll-Man’s Boots',slot:'trinket',g:'⚯',agi:+1,mor:-2,
            d:'Good boots. Warm, dry, barely worn, and they were on a hanged man this morning. '+
              'Whoever has them walks better and sleeps worse.'},
-  discoball:{rarity:'rare',unique:true,n:'The Mirrored Sphere',slot:'trinket',g:'☼',agi:+2,mor:+3,
+  discoball:{rarity:'rare',unique:true,n:'The Mirrored Sphere',slot:'trinket',g:'☼',agi:+1,mor:+1,
            d:'A hanging ball of a thousand mirror-shards, found in a ruin nobody can explain. '+
              'It throws light in every direction and answers no questions.'},
   /* A gun, two generations early and on the wrong island. Nobody here has
@@ -10348,7 +10620,7 @@ const GEAR={
      instead of bracing. See the `push`/`pull` block in strike(). */
   halberd:{rarity:'common',n:'Halberd',         slot:'main',dmg:[14,20],am:.95,ft:.26,reach:2,hands:2,
            d:'A spear that lost an argument with an axe. The hook on the back is the point of it.'},
-  weeper :{rarity:'epic',n:'The Weeping Hammer',slot:'main',dmg:[27,40],am:1.55,ft:.22,reach:1,mor:+2,hands:2,
+  weeper :{rarity:'epic',n:'The Weeping Hammer',slot:'main',dmg:[27,40],am:1.55,ft:.22,reach:1,mor:+1,hands:2,
            d:'Forged at the Old Camp. The head sweats in cold weather. Nobody asks why.'},
 
   /* ═══ THE SECOND HAND ═══════════════════════════════════════════════════
@@ -10388,7 +10660,7 @@ const GEAR={
 
   /* Trinkets carry a small flat bonus, some hitpoints, and often a clause
      that only fires for the right race or the right class. */
-  bone   :{rarity:'common',n:'Saint’s Fingerbone',slot:'trinket',g:'✦',mor:+3,hp:+4,
+  bone   :{rarity:'common',n:'Saint’s Fingerbone',slot:'trinket',g:'✦',mor:+1,hp:+4,
            d:'Faintly warm. Always.'},
   /* ⛔ #240 - THESE THREE ARE `unique` NOW, AND THE ASK WAS PHRASED AS A
      DESCRIPTION OF THE BUILD. (User: *"Некоторіе арті - токо под ивенты.
@@ -10407,10 +10679,10 @@ const GEAR={
      ⚠ `unique` KEEPS A ROW OUT OF `findPool`, which is the ONE pool the road
      finds, the aftermath and (since #239) both shop racks all roll from - so
      this is one flag and not a rule written at four counters. */
-  stem   :{rarity:'rare',unique:true,n:'Bloom-Stem', slot:'trinket',g:'❋',int:+2,mor:-1,
-           forCls:'mage',bonus:{int:2},bonusD:'+2 INT more on a battle-mage',
+  stem   :{rarity:'rare',unique:true,n:'Bloom-Stem', slot:'trinket',g:'❋',int:+1,mor:-1,
+           forCls:'mage',bonus:{int:+1},bonusD:'+2 INT more on a battle-mage',
            d:'Hums at a pitch you feel in your teeth.'},
-  apple  :{rarity:'common',n:'Glass Apple',       slot:'trinket',g:'◆',int:+2,hp:+3,
+  apple  :{rarity:'common',n:'Glass Apple',       slot:'trinket',g:'◆',int:+1,hp:+3,
            d:'A fruit that died standing.'},
   /* ═══ ⛔ #224 · THE FIRST PIECE OF GEAR IN THE GAME THAT IS A VERB ════════
      Every other row here is a modifier: a number on a stat, a clause for the
@@ -10435,19 +10707,19 @@ const GEAR={
            d:'Stitched from three different dead companies. Everyone walks a little straighter.'},
   drum   :{rarity:'rare',n:'Marching Drum',     slot:'trinket',g:'◍',company:true,coFood:1,
            d:'Keeps the pace. The column arrives in better heart than it left: +2 mood every leg.'},
-  tooth  :{rarity:'rare',unique:true,n:'Fen-Mother’s Tooth',slot:'trinket',g:'❥',str:+2,hp:+6,
-           forRace:'ogre',bonus:{str:2,hp:8},bonusD:'+2 STR and +8 HP more on an ogre',
+  tooth  :{rarity:'rare',unique:true,n:'Fen-Mother’s Tooth',slot:'trinket',g:'❥',str:+1,hp:+6,
+           forRace:'ogre',bonus:{str:+1,hp:8},bonusD:'+2 STR and +8 HP more on an ogre',
            d:'Longer than your hand. Still warm at the root.'},
-  charm  :{rarity:'rare',unique:true,n:'Pedlar’s Charm',slot:'trinket',g:'✧',agi:+2,
-           forRace:'human',bonus:{mor:2},bonusD:'+2 MOR more on a human',
+  charm  :{rarity:'rare',unique:true,n:'Pedlar’s Charm',slot:'trinket',g:'✧',agi:+1,
+           forRace:'human',bonus:{mor:+1},bonusD:'+2 MOR more on a human',
            d:'He swore it was lucky. He would.'},
   ratking:{rarity:'rare',unique:true,n:'Rat-King’s Knuckle',slot:'trinket',g:'✜',agi:+1,hp:+4,
-           forRace:'ratkin',bonus:{agi:3,hp:6},bonusD:'+3 AGI and +6 HP more on a ratkin',
+           forRace:'ratkin',bonus:{agi:+1,hp:6},bonusD:'+3 AGI and +6 HP more on a ratkin',
            d:'Small, yellow, and far too clean.'},
-  fiddle :{rarity:'rare',unique:true,n:'Rosined String',slot:'trinket',g:'♪',mor:+4,
+  fiddle :{rarity:'rare',unique:true,n:'Rosined String',slot:'trinket',g:'♪',mor:+1,
            d:'From a fiddler who ate your salt and left this behind.'},
-  quillpen:{rarity:'rare',unique:true,n:'Foundry Ledger-Pin',slot:'trinket',g:'✎',int:+3,
-           forCls:'captain',bonus:{mor:3},bonusD:'+3 MOR more on the Captain',
+  quillpen:{rarity:'rare',unique:true,n:'Foundry Ledger-Pin',slot:'trinket',g:'✎',int:+1,
+           forCls:'captain',bonus:{mor:+1},bonusD:'+3 MOR more on the Captain',
            d:'A pin for holding accounts together. Wynn’s.'},
   cubtooth:{rarity:'rare',unique:true,n:'Cub’s Milk-Tooth', slot:'trinket',g:'☙',str:+1,agi:+1,mor:+1,hp:+4,
            d:'Small enough to lose. Nobody has lost it.'},
@@ -10455,13 +10727,13 @@ const GEAR={
      meant to stay a hook — nothing anywhere in the slice explains it, and
      nothing should. Two-sided like the boots: it pays, and somebody carries
      the cost of it every night. */
-  coldthing:{rarity:'epic',unique:true,n:'The Cold Thing',   slot:'trinket',g:'✛',hit:+7,mor:-4,
+  coldthing:{rarity:'epic',unique:true,n:'The Cold Thing',   slot:'trinket',g:'✛',hit:+7,mor:-1,
            d:'A hand-length of black metal that was inside the armour and did not go with the '+
              'rest of it. It is cold, and it is exactly as cold in the sun as it is at night, '+
              'which is the part nobody likes. Whoever carries it hits what they are looking at, '+
              'and sleeps badly, and will not say what about.'},
-  glasses:{rarity:'epic',unique:true,n:'The Ground-Glass Eyes',slot:'trinket',g:'◎',hit:+9,mor:-2,
-           forCls:'archer',bonus:{agi:2},bonusD:'+2 AGI more on an archer',
+  glasses:{rarity:'epic',unique:true,n:'The Ground-Glass Eyes',slot:'trinket',g:'◎',hit:+9,mor:-1,
+           forCls:'archer',bonus:{agi:+1},bonusD:'+2 AGI more on an archer',
            d:'Two discs of ground glass in a bent wire frame. Whoever wears them can suddenly '+
              'count the rivets on a man at forty paces and cannot find their own feet. The '+
              'company has decided this is witchcraft and has stopped short of saying so.'},
@@ -10602,7 +10874,7 @@ const GEAR={
               'sure about something. Turn it over once and everyone who is not with you moves '+
               'as if through cold water, for two rounds, and then it is not in your hand any '+
               'more.'},
-  roll   :{rarity:'epic',unique:true,n:'The Roll of Names', slot:'trinket',g:'❧',mor:+4,hp:+8,hit:+4,
+  roll   :{rarity:'epic',unique:true,n:'The Roll of Names', slot:'trinket',g:'❧',mor:+1,hp:+8,hit:+4,
            d:'A strip of linen folded eight times, written down the inside in eight different '+
              'hands. Some of the names are people you remember. Most of them are not, which '+
              'means the road has been talking about you for longer than you knew.'}
@@ -10753,7 +11025,7 @@ const itemImg=(k,px,cls)=>{const s=itemArt(k);return s
    ⛔ `up` AND `cost` STATE NUMBERS, NEVER MOOD. The paragraph is where the
    character lives; these two are where the decision lives. */
 const TRAITS={
-  stubborn  :{n:'Stubborn',mrec:8,mor:-5,
+  stubborn  :{n:'Stubborn',mrec:8,mor:-2,
               up:'Mood back twice as fast on a quiet turn',
               cost:'−5 MOR',
               d:'Gets their mood back twice as fast on a quiet turn, and starts from '+
@@ -10775,11 +11047,11 @@ const TRAITS={
               cost:'−2 MOR',
               d:'Casting costs them 4 less of their own mood than it costs anybody else. '+
                 'Whatever it is, it does not seem to mind them. −2 MOR the rest of the time.',
-              mor:-2,cls:['mage','warmage']},
+              mor:-1,cls:['mage','warmage']},
   twitchy   :{n:'Twitchy',up:'+2 AGI',cost:'−3 MOR',
-              d:'+2 AGI, −3 MOR.',agi:2,mor:-3,notRace:['ogre']},
+              d:'+2 AGI, −3 MOR.',agi:+1,mor:-1,notRace:['ogre']},
   vegetarian:{n:'Insists he is a vegetarian',up:'+6 MOR',cost:'−10% damage',
-              d:'−10% damage dealt, +6 MOR.',mor:6,race:['ogre']},
+              d:'−10% damage dealt, +6 MOR.',mor:+2,race:['ogre']},
   /* unpaidMod: how much a missed payday actually costs THIS person. The
      light-fingered were taking a cut off the top anyway, so an empty chest
      is barely news to them — the one personality that is better off when the
@@ -10789,7 +11061,7 @@ const TRAITS={
               cost:'−4 MOR',
               d:'+15% crowns from every event. −4 MOR: nobody trusts them. '+
               'Minds an empty pay-chest less than anybody, for reasons nobody investigates.',
-              mor:-4,loot:.15,unpaidMod:.4},
+              mor:-1,loot:.15,unpaidMod:.4},
   /* the aura does NOT check sides. Standing near them steadies the people
      trying to kill you too, and that is the whole character. */
   kind      :{n:'Kind',
@@ -10812,7 +11084,7 @@ const TRAITS={
               agi:-1,hp:-8,vet:true},
   feral     :{n:'Feral',up:'+12% damage while Shaken or worse',cost:'−3 MOR, breaks sooner',
               d:'+12% damage while their own mood is Shaken or worse. Breaks sooner.',
-              mor:-3,feral:true,notCls:['mage','warmage']},
+              mor:-1,feral:true,notCls:['mage','warmage']},
   dutiful   :{n:'Dutiful',up:'+8 dodge beside the Captain',cost:'−4 dodge away from him',
               d:'+8 dodge beside the Captain, −4 dodge away from them.',dutiful:true},
 
@@ -10881,12 +11153,12 @@ const TRAITS={
               up:'+1 STR and +1 MOR',
               d:'+1 STR and +1 MOR. They have done this before, in places nobody here '+
                 'has heard of, and it is the reason anybody is following them at all.',
-              str:1,mor:1},
+              str:+1,mor:+1},
   /* the one nobody expects: the one that does not go */
   nofear    :{n:'Does not run',up:'Cannot rout, ever',cost:'−2 STR',
               d:'Cannot rout. Whatever the rest of the line does, they are '+
               'still standing there when it is over. −2 STR: there is not much of them.',
-              str:-2,nofear:true,notRace:['ogre'],
+              str:-1,nofear:true,notRace:['ogre'],
               byRace:{ratkin:{d:'Cannot rout. A ratkin who does not run is a thing the other '+
                 'clans tell stories about, mostly to explain why they are dead. −2 STR.'}}},
   /* kills, and is not able to put it down afterwards */
@@ -10894,14 +11166,17 @@ const TRAITS={
               up:'+8 MOR',cost:'−18 morale and −7% damage per kill they make',
               d:'Takes 18 morale of their OWN every time they kill somebody instead of the usual '+
               'lift, and −7% damage for the rest of the battle per kill. +8 MOR to start: they '+
-              'are calm right up until it matters.',mor:8,pacifist:true},
+              'are calm right up until it matters.',mor:+2,pacifist:true},
   /* there is simply a great deal of them */
-  big       :{n:'Big',race:['human','ogre'],up:'+16 hitpoints',cost:'−2 AGI',
-              d:'+16 hitpoints and there is more of them to hit: −2 AGI. Doorways are a '+
-              'negotiation and nobody has ever moved them who did not want to be moved.',
-              agi:-2,bigly:true,
-              byRace:{ogre:{d:'+16 hitpoints and −2 AGI, and this is an ogre, so the sentence '+
-                '"there is a great deal of him" is doing a lot of work.'}}},
+  /* ⛔ #255 - `big` IS GONE AND ITS WEIGHT IS THE OGRE'S RACE ROW (`RACESIZE`).
+     A personality that decided how big your body is could be rolled onto a
+     human, which made the one fact the PORTRAIT already states a coin toss.
+     ⚠ The key is kept as a dead row rather than deleted, because a save may
+     carry `trait:'big'` on a body hired before today; it now costs nothing and
+     says so, and `bigly` is gone so it cannot pay twice. */
+  big       :{n:'Big-boned',race:['__none__'],never:true,up:'Nothing any more',
+              d:'How big a body is belongs to its race now. This is what is left '+
+              'of an old personality and it does nothing.'},
   /* will not step back, and is better for it, and that is the trap */
   courage   :{n:'Courageous',cls:['captain','spear','cutter','brute'],
               up:'+14% melee damage',cost:'CANNOT DISENGAGE',
@@ -10947,7 +11222,7 @@ const TRAITS={
   /* the mirror of `kind`, on the same aura pass and with the same refusal to
      check sides. Where the kind one steadies the men about to kill you, this
      one frightens your own line as thoroughly as it frightens theirs. */
-  frightening:{n:'Frightening',aura:-6,auraAll:true,mor:5,notCls:['mage','warmage'],
+  frightening:{n:'Frightening',aura:-6,auraAll:true,mor:+2,notCls:['mage','warmage'],
               up:'+5 MOR: it has never once been their problem',
               cost:'−6 morale to EVERYONE within 2 hexes, yours included',
               d:'Everybody within 2 hexes starts the fight 6 morale down, yours and theirs '+
@@ -12146,7 +12421,10 @@ const wageOf=p=>{
    only candy when the cap BINDS, and four founders at 8 of 13 seats almost
    never reach it before the first muster, so THE FRAME bought nothing you could
    feel. At 11 the muster is a real choice about who rides. */
-const PARTYBASE=11;
+/* ⚡ #255 - 12, at the user's word. #248 took it 13 -> 11 to make the cap
+   BIND before the first muster, which it now does; one seat back is his call
+   on how tight that should feel. */
+const PARTYBASE=12;
 /* ═══ #238 · THE FRAME: the wagon's seats, bought on the road ═════════════
    Three tiers, paid in THIS run's salvage, gone with the run. Seats per tier
    are +1, +2, +2 (the user's ruling, 2026-08-22: "+1 seat first tier, +2
@@ -12380,7 +12658,7 @@ const MOOD_NORM=moodRung(0);
    gut-knife; `twitchy` is +2 AGI on top and carries no class gate. The statline is
    untouched - only what is in his hands and what the sheet calls him. */
 const PRESET_SKREE={id:'skree',name:'Skree',sur:'',race:'ratkin',cls:'archer',kind:'ratkin',
-  st:{str:5,agi:13,int:8,mor:6},trait:'twitchy',
+  st:{str:0,agi:0,int:0,mor:0},trait:'twitchy',
   eq:{armour:'scrap',main:'bow',off:null,trinket:null}};
 /* ═══ #201 · THE ALBINO HALF-RATKIN, AND SHE IS BOTH RATKIN OUTCOMES ════
    (User, 2026-08-19: *"You meet her if 1 or 2 ratkins joins (she is one of
@@ -12423,7 +12701,7 @@ const PRESET_SKREE={id:'skree',name:'Skree',sur:'',race:'ratkin',cls:'archer',ki
    it is the field that changed. */
 const PRESET_ASH={id:'ash',name:'Asha',nick:'Nobody’s',sur:'',race:'ratkin',
   cls:'cutter',kind:'ratkin',
-  st:{str:5,agi:12,int:9,mor:9},trait:'dutiful',
+  st:{str:0,agi:0,int:0,mor:0},trait:'dutiful',
   eq:{armour:'scrap',main:'knife',off:'offhand',trinket:null}};
 /* str 15 → 11. With strength now driving a damage MULTIPLIER and `big` adding
    16 hitpoints on top, an ogre at 17 STR read as a different game rather than
@@ -12431,10 +12709,25 @@ const PRESET_ASH={id:'ash',name:'Asha',nick:'Nobody’s',sur:'',race:'ratkin',
    ×1.10. He is still the biggest thing in the company. He is no longer two
    of everybody else. */
 const PRESET_BRUHT={id:'bruht',name:'Bruht',sur:'',race:'ogre',cls:'brute',kind:'ogre',
-  st:{str:11,agi:6,int:5,mor:11},trait:'big',
+  st:{str:0,agi:0,int:0,mor:0},trait:'big',
   eq:{armour:null,main:'club',off:null,trinket:null}};
 /* fills in the bookkeeping fields any playable character needs — shared by
    the boot roster and anyone recruited later on the road */
+/* ⛔ #255 - THE RACE AND THE TRADE ARE FOLDED IN AT ONE PLACE, AND IT IS NOT
+   `finishRecruit`. A body off the muster wall is `G.party.push(r)` straight
+   from `rollRecruit` and has never passed through `finishRecruit` at all - so
+   #254's class lean reached the four founders and the three presets and **not
+   one body the player has ever hired**. Two callers, one function.
+   ⚠ THE FOUR KEYS ARE A LITERAL AND NOT `STATK`. This runs at
+   `G.party=makeParty()`, ~330 lines above `const STATK`, and a const read from
+   its temporal dead zone throws and aborts the whole script - the crash
+   `.claude/rules/world-map-sights.md` says this project has shipped once, and
+   #254 shipped it again for four minutes. */
+function applyLeans(p){
+  const m=RACEMOD[p.race]||{},c=CLSLEAN[p.cls]||{};
+  ['str','agi','int','mor'].forEach(k=>{p.st[k]=(p.st[k]||0)+(m[k]||0)+(c[k]||0);});
+  return p;
+}
 function finishRecruit(p){
   /* nextIsPerk STARTS TRUE: the first promotion — the one that takes them to
      level 2 — is the perk. It used to be the stat, which meant a level-2
@@ -12453,8 +12746,10 @@ function finishRecruit(p){
      would delete her in the one field the roster prints her by. */
   p.nick=p.nick||rollNick(p.race);
   if(p.leader)p.pet=null;
-  const m=RACEMOD[p.race];
-  p.st.str+=m.str;p.st.agi+=m.agi;p.st.int+=m.int;p.st.mor+=m.mor;
+  p.statZero=1;                 /* #253 - this body's stats are signed rungs */
+  /* #254 - two of the four named lines, folded in once. `born` is what is
+     left when these come back out, which is how `statParts` reads them. */
+  applyLeans(p);
   return p;
 }
 function makeParty(){
@@ -12464,10 +12759,10 @@ function makeParty(){
      fight can actually demonstrate them. */
   const P=[
     {id:'you',name:'You',sur:'',race:'human',cls:'captain',kind:'human',leader:true,
-     st:{str:9,agi:8,int:9,mor:11},trait:'harness',
+     st:{str:1,agi:1,int:0,mor:0},trait:'harness',
      eq:{armour:'jack',main:'sword',off:null,trinket:null}},
     {id:'vesna',name:'Vesna',sur:'Kolb',race:'human',cls:'spear',kind:'human',
-     st:{str:9,agi:9,int:7,mor:10},trait:'thrice',
+     st:{str:0,agi:0,int:0,mor:0},trait:'thrice',
      eq:{armour:'rags',main:'spear',off:null,trinket:null}},
     /* Marrow is the BATTLE-mage: one school, and stats that let him stand in a
        line. The company's first caster should be the one that survives being
@@ -12488,13 +12783,13 @@ function makeParty(){
        still the obvious first purchase for a caster. What changed is that the
        company is not holding it before anybody has asked what it is for. */
     {id:'marrow',name:'Marrow',sur:'',race:'human',cls:'warmage',kind:'mage',
-     st:{str:8,agi:8,int:12,mor:9},trait:'windtouched',
+     st:{str:0,agi:0,int:0,mor:0},trait:'windtouched',
      eq:{armour:'rags',main:'rod',off:null,trinket:null}},
     /* the fourth: a human archer carrying AMBITION, so the personality that
        reads differently on every race is in the party from the first minute
        — and the human version is the quiet one, which is the joke */
     {id:'ilka',name:'Ilka',sur:'Renn',race:'human',cls:'archer',kind:'archer',
-     st:{str:7,agi:11,int:8,mor:9},trait:'ambition',
+     st:{str:0,agi:0,int:0,mor:0},trait:'ambition',
      eq:{armour:'rags',main:'bow',off:null,trinket:null}}
   ];
   P.forEach(finishRecruit);
@@ -12676,12 +12971,19 @@ function rollRecruit(taken){
   const held=(G.party||[]).map(p=>p.name).concat((taken||[]).map(r=>r.name));
   const freeN=pool.first.filter(n=>held.indexOf(n)<0);
   const nm=pickOne(freeN.length?freeN:pool.first), sn=pickOne(pool.sur);
-  const base={str:6+(Math.random()*5|0),agi:6+(Math.random()*5|0),
-    int:5+(Math.random()*5|0),mor:6+(Math.random()*5|0)};
-  const m=RACEMOD[race];
-  const st={str:base.str+m.str,agi:base.agi+m.agi,int:base.int+m.int,mor:base.mor+m.mor};
+  /* ⛔ #255 - BORN IS NOT ROLLED AT ALL. (*"don't calculate this born - it is
+     useless"*.) A random ±1 on four axes is noise with a name on it: it is the
+     one line of the four that explains nothing, it moved a hire's numbers for
+     no reason anybody could read, and it put a `born -1` row on a hover whose
+     whole job is to say WHY. What a body is now comes from its race, its trade
+     and its personality, all three of which the player can see.
+     ⚠ AUTHORED born survives - the Captain's backstory paid for +1 STR and
+     +1 AGI and that row still prints. What is gone is the dice. */
+  const base={str:0,agi:0,int:0,mor:0};
+  /* #255 - the same two leans the founders get, through the same function */
+  const st=applyLeans({race:race,cls:cls,st:base}).st;
   const g=START_GEAR[cls]||['rags','cudgel'];
-  const q=st.str+st.agi+st.int+st.mor;
+  const q=st.str+st.agi+st.int+st.mor+4*STAT_ZERO;   /* #253 - price off the raw scale */
   /* priced to sit inside the purse most of the time — CUT ÷2.5 (playtest #5:
      every candidate read "cannot afford" against a ~100-crown act, which
      makes the Muster Field a museum). ~55 human / ~38 ratkin / ~75 ogre. */
@@ -12739,7 +13041,7 @@ function trinketFires(g,p){
    the old hand had to start paying for +4 and +4. Both, so a trait can carry
    either without a second rule about which one wins. */
 const traitHp=p=>{const t=TRAITS[p.trait];if(!t)return 0;
-  return (t.bigly?16:0)+(t.hp||0);};
+  return (t.hp||0);};    /* #255 - `bigly` moved to RACESIZE */
 function bonusHp(p){
   let h=0;
   SLOTS.forEach(sl=>{const g=GEAR[p.eq[sl[0]]];if(!g)return;
@@ -12784,10 +13086,14 @@ const levelSteps=p=>Math.max(0,(p&&p.level||0)-1);
    wound as well as on the body. The old code's own note says so. */
 function bodyHp(p){
   const s=effStats(p);
-  let h=D.hp({st:s})+bonusHp(p)+traitHp(p);
+  /* #254 - the race's own pool through the STRENGTH climb */
+  /* #255 - the race's pool through the climb, then its BULK on top: meat is
+     not multiplied by how strong the body is. */
+  let h=D.hp({st:s,raceHp:RACEHP[p.race]||GIVEN.hp})+(RACEBULK[p.race]||0)+
+        bonusHp(p)+traitHp(p);
   h=Math.round(h*(1+LVL_HP*levelSteps(p)));
   const m=GEAR[p.eq&&p.eq.main];
-  if((m&&m.range)||isCaster(p.cls))h=Math.round(h*0.9);
+  if((m&&m.range)||isCaster(p.cls))h=Math.round(h*GIVEN.frail);   /* #254 */
   if(p.hurt&&p.hurt.hp)h=Math.max(14,h+p.hurt.hp);
   return h;
 }
@@ -12799,32 +13105,145 @@ function bodyHp(p){
    where it is - only the two numbers and the lookup moved. */
 const BAND_MEDIUM=36,BAND_HEAVY=71;
 const bandKey=v=>v>=BAND_HEAVY?'heavy':v>=BAND_MEDIUM?'medium':'light';
-function effStats(p){
-  const s={str:p.st.str,agi:p.st.agi,int:p.st.int,mor:p.st.mor};
+/* ═══ ⛔ #252 · A STAT IS A SUM, AND THE SHEET SHOWS THE SUM ════════
+   (User, 2026-08-26: *"i want to see when i hover stats in inventory - how it
+   was calculated"* and *"Things should be connected, not just hardcoded
+   stats"*.)
+
+   ⛔ THE ARITHMETIC IS NOT COPIED, AND THAT IS THE WHOLE DESIGN. `effStats`
+   walked the gear, the trinket, the personality, the scars, the temporary
+   injury, the wrong-size harness and the heavy-only clause adding into one
+   number, and a hover that re-walked them would be a SECOND implementation of
+   one sum - the shape this build has merged out four times (`choiceNote` #150,
+   `raceDoorPick` #159, the mood echo #176, `applyHurt` #197) and every one of
+   them had drifted by the time somebody looked. **`statParts` IS the walk now
+   and `effStats` is its total.** A new modifier is one `add()` call and it
+   appears on the hover for free; there is no second place to remember.
+
+   ⚠ THE RESIDUAL IS `p.st` MINUS THE RACE AND THE LEVELS, AND IT IS CALLED
+   `born` BECAUSE THAT IS WHAT IS LEFT. `finishRecruit` folds `RACEMOD` into
+   `p.st` once and a promotion banks into the same field, so neither can be
+   read back out of anything except by subtracting it. `p.lvUp` counts the
+   banked ones from here on; a body promoted before this update reads those
+   levels as part of `born`, which is a line that is merely less specific
+   rather than a line that is wrong.
+
+   ⛑ THE FLOOR IS A LINE OF ITS OWN. `Math.max(1,…)` can be the reason a
+   number is what it is - a ratkin in ogre plate carrying two scars can add to
+   less than 1 - and a breakdown whose parts do not reach its total is worse
+   than no breakdown. It is pushed as a part, so the column always adds up. */
+const STATK=['str','agi','int','mor'];
+function statParts(p){
+  const out={str:[],agi:[],int:[],mor:[]};
+  const add=(n,o,sign)=>{if(!o)return;STATK.forEach(k=>{const v=(o[k]||0)*(sign||1);
+    if(v)out[k].push({n:n,v:v});});};
+  /* #254 - the TRADE is the fourth named line and it folds into `p.st` the
+     same way the race does, so it comes back out the same way. Without this
+     row a spearwoman's +1 STR would read as something she was born with. */
+  const m=RACEMOD[p.race]||{},lv=p.lvUp||{},cl=CLSLEAN[p.cls]||{};
+  /* #253 - the born line is ALWAYS drawn, at 0 as much as at +2: it is the
+     origin the whole ledger is read from, and a column that starts blank on an
+     ordinary body reads as a broken box rather than as an ordinary body. */
+  /* #255 - and the row is drawn only when a backstory actually paid for it */
+  STATK.forEach(k=>{const b=(p.st[k]||0)-(m[k]||0)-(cl[k]||0)-(lv[k]||0);
+    if(b)out[k].push({n:'born',v:b});});
+  add('levels',lv);
+  add(p.race,m);            /* the word IS the key: human / ratkin / ogre */
+  add((CLASSES[p.cls]&&CLASSES[p.cls].n||p.cls).toLowerCase(),cl);   /* #254 */
   SLOTS.forEach(sl=>{
     /* a two-handed weapon means whatever is in the off-hand slot is not
        actually in a hand — it contributes nothing until they put the big
        thing down. Slot stays filled so the player can see the conflict. */
     if(sl[0]==='off'&&!handsFree(p))return;
     const g=GEAR[p.eq[sl[0]]];if(!g)return;
-    ['str','agi','int','mor'].forEach(k=>{if(g[k])s[k]+=g[k];});
-    const b=trinketFires(g,p);
-    if(b)['str','agi','int','mor'].forEach(k=>{if(b[k])s[k]+=b[k];});});
+    add(g.n,g);
+    add(g.n,trinketFires(g,p));});
   const t=TRAITS[p.trait];
-  if(t)['str','agi','int','mor'].forEach(k=>{if(t[k])s[k]+=t[k];});
-  (p.injuries||[]).forEach(i=>['str','agi','int','mor'].forEach(k=>{if(i[k])s[k]+=i[k];}));
+  add(t&&t.n,t);
+  (p.injuries||[]).forEach(i=>add(i.n||'a scar',i));
   /* #225 - and the temporary one, on the same four channels and through the
      same door. A scar and an injury are the same arithmetic; only the clock
      on one of them is different. */
-  if(p.hurt)['str','agi','int','mor'].forEach(k=>{if(p.hurt[k])s[k]+=p.hurt[k];});
-  if(sizeMismatch(p)){s.agi+=WRONGSIZE.agi;s.mor+=WRONGSIZE.mor;}
+  add(p.hurt&&(p.hurt.n||'an injury'),p.hurt);
+  if(sizeMismatch(p))add('the harness does not fit',WRONGSIZE);
   /* #232 - a personality whose cost is a CONDITION rather than a number.
      `heavyOnly` is what comes off a body that is not in HEAVY, read off the
      same `bandKey` the battle reads, so the sheet and the field cannot
      disagree about which harness counts. */
-  if(t&&t.heavyOnly&&bandKey(armourValue(p))!=='heavy')s.mor-=t.heavyOnly;
-  ['str','agi','int','mor'].forEach(k=>{s[k]=Math.max(1,s[k]);});
+  if(t&&t.heavyOnly&&bandKey(armourValue(p))!=='heavy')
+    add((t.n||'')+', out of heavy',{mor:t.heavyOnly},-1);
+  /* #253 - the floor was `Math.max(1,…)` on a scale whose human was 8, so on
+     the signed one it is 1-STAT_ZERO. Same body, same number, said in rungs. */
+  const FLOOR=1-STAT_ZERO;
+  STATK.forEach(k=>{const raw=out[k].reduce((n,r)=>n+r.v,0);
+    if(raw<FLOOR)out[k].push({n:'it does not go lower than this',v:FLOOR-raw,floor:true});});
+  return out;
+}
+function effStats(p){
+  const q=statParts(p),s={};
+  STATK.forEach(k=>{s[k]=q[k].reduce((n,r)=>n+r.v,0);});
   return s;
+}
+/* ═══ ⛔ #253 · WHAT A RUNG IS WORTH, ASKED OF THE ENGINE ════════════
+   (User: *"Bonus you write here - on the left and total bonus from stat on the
+   right"* and *"sheets should show info similar as in the file"*.)
+
+   ⛑ IT IS A DIFFERENCE AND NOT A TABLE. Every line below is the same function
+   the fight calls, run on a body at rung `r` and on the ordinary human at 0,
+   and subtracted. **There is no ladder of authored bonuses anywhere in the
+   build and there must not be one** - the day `D.hp` is retuned this text is
+   retuned with it, which is the whole reason the doc's version of this was
+   worth nothing until it was connected.
+   ⚠ A stub unit and not a real body, on purpose: a real one carries gear and a
+   personality, and the question here is what the RUNG is worth. */
+function fxWords(f,cap){
+  const o=[],sg=v=>(v>0?'+':'\u2212')+Math.abs(v),
+        pc=v=>(v>0?'+':'\u2212')+Math.round(Math.abs(v)*100)+'%';
+  if(f.hp)   o.push(pc(f.hp)+' hitpoints');
+  if(f.melee)o.push(pc(f.melee)+' melee');
+  if(f.bow)  o.push(pc(f.bow)+' bow');
+  if(f.hit)  o.push(sg(f.hit)+' to hit');
+  if(f.dodge)o.push(sg(f.dodge)+' dodge');
+  if(f.land) o.push(sg(f.land)+' to land a skill or magic');   /* #255 */
+  if(f.magic)o.push('magic '+pc(f.magic));
+  if(f.xp)   o.push(pc(f.xp)+' experience');
+  if(f.reach)o.push('+'+f.reach+' reach on skills and magic');
+  if(f.nerve)o.push(sg(f.nerve)+' mood');
+  if(f.climb)o.push((MORALE.recover+f.climb)+' back a quiet turn');
+  if(f.loss) o.push('loses mood at \u00d7'+String(+(1+f.loss).toFixed(2)));
+  if(f.heal) o.push('mends '+(MEND_BASE*(1+f.heal))+' a day, not '+MEND_BASE);
+  if(f.low)  o.push('starts a fight one rung lower');
+  if(cap)    o.push('<b>'+cap+'</b>');
+  return o.join(' \u00b7 ');
+}
+/* \u26d4 #254 - WHAT A RUNG SAYS IS THE LADDER, READ. `statGive` used to
+   difference `D` against rung 0, which was honest and said nothing, because a
+   straight line has nothing to say. These are the authored figures, and the
+   SAME table the engine reads - so the hover cannot describe a rung the fight
+   does not pay. */
+const rungText=(k,n)=>{const R=STATLADDER[k][String(rungClamp(n))]||{};
+  return (RUNG_COST(rungClamp(n))>1?'<b class="two">2 PTS</b>':'')+fxWords(R,R.cap);};
+const heldText=(k,n)=>{const h=rungHeld(k,n),c=STATLADDER[k][String(rungClamp(n))]||{};
+  return fxWords(h,rungClamp(n)>=RUNG_TOP?c.cap:'');};
+/* the same list, as the tip prints it. It reads `statParts` and adds nothing. */
+function statSumHTML(p,k){
+  const rows=statParts(p)[k];if(!rows)return '';   /* not one of the four */
+  const tot=rows.reduce((n,r)=>n+r.v,0);
+  /* #255 - a body with no lean on an axis is an ordinary body, and the column
+     says so rather than opening on nothing. */
+  if(!rows.length)return '<div class="stsum"><div class="ssr floor">'+
+    '<span class="ssn">nothing leans this one either way</span></div>'+
+    '<div class="ssr tot"><span class="ssn">'+TELLS[k].lbl+'</span>'+
+    '<span class="ssv" style="color:'+TELLS[k].col+'">0</span></div></div>';
+  return '<div class="stsum">'+rows.map(r=>
+      '<div class="ssr'+(r.floor?' floor':'')+'"><span class="ssn">'+esc(r.n)+'</span>'+
+      /* #254 - zero is `0` and never `−0`: the born line is always drawn now
+         (#253) and on an ordinary body it is exactly this row. */
+      '<span class="ssv'+(r.v<0?' dn':'')+'">'+(r.v>0?'+':r.v<0?'−':'')+Math.abs(r.v)+'</span></div>').join('')+
+    '<div class="ssr tot"><span class="ssn">'+TELLS[k].lbl+'</span>'+
+    '<span class="ssv" style="color:'+TELLS[k].col+'">'+(tot>0?'+':'')+tot+'</span></div>'+
+    /* #253 - and what the whole stat is worth, in the same words a rung uses */
+    (heldText(k,tot)?'<div class="ssgv">'+heldText(k,tot)+'</div>':'')+'</div>';
 }
 function sizeMismatch(p){
   const a=GEAR[p.eq.armour];
@@ -12904,13 +13323,13 @@ const HURT_DAYS=[7,14];
    side on the sheet, and "Bad knee" appearing as both the thing that mends
    and the thing that does not would make the ladder unreadable. */
 const HURTS=[
-  {k:'ribs', n:'Cracked ribs',     hp:-10,str:-2,      band:[9,14],
+  {k:'ribs', n:'Cracked ribs',     hp:-10,str:-1,      band:[9,14],
    d:'Every swing has to be paid for twice.'},
-  {k:'ankle',n:'Turned ankle',     hp:-6, agi:-2,      band:[7,11],
+  {k:'ankle',n:'Turned ankle',     hp:-6, agi:-1,      band:[7,11],
    d:'It takes their weight. It will not take it quickly.'},
-  {k:'rung', n:'Head still ringing',hp:-6,int:-2,      band:[7,11],
+  {k:'rung', n:'Head still ringing',hp:-6,int:-1,      band:[7,11],
    d:'They answer you, and then they answer you again, the same way.'},
-  {k:'rattl',n:'Rattled',          hp:-6, mor:-2,      band:[7,10],
+  {k:'rattl',n:'Rattled',          hp:-6, mor:-1,      band:[7,10],
    d:'They came round on the ground and have not entirely come back.'},
   {k:'arm',  n:'Dead arm',         hp:-8, oneAct:true, band:[7,9],
    d:'The shoulder went back in. It has not agreed to it. One swing a turn is all it gives.'},
@@ -14312,6 +14731,10 @@ function shotState(a,d,act){
    is now a proportional drift with a cap of 8, and the numbers below came down
    with it (user: "less plus every turn, and trim the penalties too").
    tookHit −11 → −5, allyDied −18 → −14, nearDeath −26 → −15. */
+/* ⛔ #256 - the four rungs `restate` reads, worst last. It was a chain of
+   ternaries and it is a table because MORALE -4 has to ask for the rung BELOW
+   the one a body would have opened in, and you cannot index a ternary. */
+const NERVE_RUNGS=[['steady',.52],['shaken',.34],['breaking',.15],['routed',0]];
 const START_NERVE=0.78;   /* the neutral, as a fraction of the ceiling */
 /* ⛔ #244 · AND YOUR OWN SIDE OPENS LOWER THAN THAT.
    (User, 2026-08-25: *"a bit lower start of mood for your party (now it is two
@@ -14623,10 +15046,15 @@ function tellLadderHTML(k,v){
        native 32 - the tip is a floating box and is the one surface with the
        room to show a 32px painting at 1:1. */
     const ic=statIcoAt(k,i,32);
+    /* ⛔ #253 - and what that rung is worth, off `statGive`, which asks the
+       engine. `r[0]` is the band's own threshold, so the figure shown is the
+       one a body standing on this rung actually gets. */
+    const give=rungText(k,r[0]<=-99?-RUNG_TOP:r[0]);
     return '<div class="lrung'+(on?' on':'')+'" style="border-color:'+
       (on?TELLS[k].col:'transparent')+';opacity:'+(on?1:.55)+
       (on?';background:rgba(255,255,255,.06)':'')+'">'+ic+
       '<span class="lnm" style="color:'+(on?TELLS[k].col:'#a89a80')+'">'+r[1]+'</span>'+
+      (give?'<span class="lgv">'+give+'</span>':'')+
       '</div>';}).join('')+'</div>';
 }
 function restate(u){
@@ -14684,7 +15112,11 @@ function restate(u){
      AND `LADDER` ARE ONE FACT IN TWO PLACES and always have been; if one moves
      the other has to move in the same edit, or the word on the plaque and the
      penalty on the roll stop agreeing. */
-  u.state=p>=.52?'steady':p>=.34?'shaken':p>=.15?'breaking':'routed';
+  /* ⛔ #256 - THE FOUR RUNGS ARE A TABLE NOW, because MORALE -4 needs to
+     name the one BELOW where a body would have opened and a chain of ternaries
+     cannot be asked that. The cut-offs are unchanged and still match `LADDER`'s
+     own `at` values, which is the standing rule two comments up. */
+  u.state=(NERVE_RUNGS.find(r=>p>=r[1])||NERVE_RUNGS[NERVE_RUNGS.length-1])[0];
 }
 /* ═══ WHAT FRACTION OF ITS NERVE A BODY IS READING AT (#64) ══════════════
    ⚑ THE FLOWER'S LIFT IS A MODIFIER AND IS NEVER WRITTEN INTO `u.morale`.
@@ -15025,10 +15457,24 @@ function unitFrom(p){
        off MOODSTATES, so the sheet's own TO HIT / DODGE figures carry it too and
        the player can see what the feast bought without opening a fight. */
     mskill:D.hit({st:s})+HIT_EASE.you+LVL_HIT*levelSteps(p)+(moodFx().hit||0),
-    dodgeBase:D.dodge({st:s})+LVL_DODGE*levelSteps(p)+(moodFx().dodge||0),speed:RACESTEP[p.race]||4,
+    /* #254 - the same four rows, named, for the sheet's TO HIT hover. Built
+       BESIDE the sum rather than re-derived from it: #252's rule, one surface
+       across. The gear rows below push onto this list at the site that adds. */
+    hitWhy:[['their hand and eye',D.hit({st:s})],['a company you trained',HIT_EASE.you],
+            ['what the levels bought',LVL_HIT*levelSteps(p)],
+            ['the company\u2019s mood',moodFx().hit||0]].filter(r=>r[1]),
+    dodgeBase:D.dodge({st:s})+LVL_DODGE*levelSteps(p)+(moodFx().dodge||0),
+    /* #254 - FLEET is +1 hex of step, every turn */
+    speed:(RACESTEP[p.race]||4)+(holds({st:s},'agi','FLEET')?1:0),
     flankPow:D.flank({st:s})+(p.perks.indexOf('opportune')>=0?10:0),
     spellPow:D.spell({st:s})*(p.perks.indexOf('conduit')>=0?1.2:1),
     dmgBonus:D.dmg({st:s}),morBonus:D.bonus({st:s}),
+    /* ⛔ #254 - THE THREE CAPSTONES THAT REACH THE FIELD, carried onto the
+       unit so the board never re-reads a roster body mid-fight. `holds()` asks
+       the ladder, so the day a capstone moves rung nothing here changes. */
+    stands:holds({st:s},'str','STANDS'),stoodUp:false,
+    fleet:holds({st:s},'agi','FLEET'),
+    unrepeatable:holds({st:s},'int','UNREPEATABLE'),
     caster:isCaster(p.cls),bow:!!(main&&main.range),
     /* #239 - and what is actually in the hand, for the sprite. See wepShape. */
     wep:wepShape(main),
@@ -15044,7 +15490,7 @@ function unitFrom(p){
     mark:p.mark||null,
     moved:false,rallyBuff:0};
   if(off&&off.dodge)u.dodgeBase+=off.dodge;
-  if(off&&off.hit)u.mskill+=off.hit;
+  if(off&&off.hit){u.mskill+=off.hit;u.hitWhy.push([off.n,off.hit]);}
   /* ⛔ #248 - AND THE MAIN HAND'S, WHICH NOTHING READ UNTIL A SHIELD MOVED INTO
      THAT SLOT. Every dodge in the game had come off the off hand or a trinket,
      so `dodge:12` on the Stone Shield's row would have been a field the sheet
@@ -15052,14 +15498,14 @@ function unitFrom(p){
      has caught six times. ⚠ `main.hit` goes with it for the same reason: the
      day a main-hand row wants one, it works. */
   if(main&&main.dodge)u.dodgeBase+=main.dodge;
-  if(main&&main.hit)u.mskill+=main.hit;
+  if(main&&main.hit){u.mskill+=main.hit;u.hitWhy.push([main.n,main.hit]);}
   /* ⛔ #244 - THE OFF HAND'S MELEE-ONLY FIGURES, read here and nowhere else.
      `main.range` is the one question that decides which half of the off-hand
      dirk this body gets: a bow cannot stab with it, so it is a card instead
      (see the act builder). `dmgBonus` is added to every non-arcane blow, which
      is right - the second blade helps whatever the first hand is swinging. */
   if(off&&!(main&&main.range)){
-    if(off.meleeHit)u.mskill+=off.meleeHit;
+    if(off.meleeHit){u.mskill+=off.meleeHit;u.hitWhy.push([off.n,off.meleeHit]);}
     if(off.meleeDmg)u.dmgBonus+=off.meleeDmg;
   }
   /* a trinket can sharpen the eye too — the ground-glass eyes are gear, not a stat */
@@ -15136,6 +15582,17 @@ function unitFrom(p){
   u.morale=clamp(Math.round(u.moraleMax*START_NERVE_YOU)+(moodFx().start||0)+
       (tr(u,'startMor')||0)+relicSum('coMor')-(u.owedBite||0),
     u.moraleMax*.3,u.moraleMax);
+  /* ⛔ #256 - MORALE -4: *starts the fight one rung lower*. Authored since
+     #254 and paid nothing until now. It is expressed as the THRESHOLD of the
+     next rung down rather than as a subtraction, so it lands the body exactly
+     one band lower whatever its pool is - a flat -20 would be two rungs on a
+     small pool and none on a big one. ⚠ It moves the OPENING nerve only; the
+     body climbs out of it on a quiet turn like anybody else. */
+  if(heldOf(u,'mor').low){
+    const i=NERVE_RUNGS.findIndex(r=>nerveFrac(u)>=r[1]);
+    const nx=NERVE_RUNGS[Math.min(i+1,NERVE_RUNGS.length-1)];
+    if(nx)u.morale=Math.min(u.morale,Math.round(u.moraleMax*(nx[1]+.01)));
+  }
   u.morale0=u.morale;      /* the magnet. See morBase(). */
   restate(u);
   const R=p.perks.indexOf('eagle')>=0?2:0;
@@ -15147,8 +15604,17 @@ function unitFrom(p){
      personality re-rolls a caster's whole school list mid-fight (see capTick)
      and has to hand the same hexes to the new cards. A bonus that lives only
      in this function is a bonus that evaporates on the magpie's first round. */
+  /* ⛔ #256 - AND THE INTELLECT RUNG PAYS ITS REACH. `+1 reach on skills and
+     magic` has printed on the ladder since #254 and paid nothing, which is the
+     promise-versus-payment split this build has caught seven times. It lands on
+     BOTH halves the rung names: `spellRange` here, and every reaching or
+     ranging act below. ⚠ A body with no working has no `spellRange` to add to,
+     so the guard is on the SUM rather than on the rung. */
+  const IREACH=(heldOf({st:s},'int').reach||0);
   u.spellRange=((main&&main.spellRange)||0)+((off&&off.spellRange)||0)+
     ((trk&&trk.spellRange)||0);
+  if(u.spellRange)u.spellRange+=IREACH;
+  u.intReach=IREACH;
   const acts=[{k:'move',n:'MOVE',cost:1,move:true,
     note:'Ground is cheap. Walking out of a fight lets them swing at you.'}];
   if(main){
@@ -15166,7 +15632,8 @@ function unitFrom(p){
                              :' Every hit shoves them a hex back.'):'')+
         (main.reload?' One action to wind it again before it will shoot twice.':'')+
         (main.hands===2?' Two hands: nothing else fits.':'')};
-    if(main.range)a.range=main.range+R;else a.reach=main.reach;
+    /* #256 - the same rung on the weapon's own act */
+    if(main.range)a.range=main.range+R+IREACH;else a.reach=main.reach+IREACH;
     /* ═══ #224 · THREE FIELDS THE WEAPON HANDS TO ITS OWN BLOW ══════════════
        Copied ACROSS rather than read off `main` at each site, because the
        enemy side never passes through unitFrom: a foe act is authored whole in
@@ -15563,7 +16030,7 @@ function foes(){
        which is exactly the ratio that makes people talk about him. He also
        carries the fists, because he is still an ogre and that always works. */
     ogremage:{kind:'ogre',name:'Ogre, one-word',hp:96,armour:60,mor:78,skill:48,dodge:7,speed:3,
-      caster:true,int:3,acts:[
+      caster:true,int:-5,acts:[
         {k:'warp',n:'THE WORD',cost:2,strain:16,range:4,dmg:[30,46],am:0,ft:1,arcane:true,
          note:'He learned one working and he has never learned another. When it lands it '+
            'takes a person apart. It does not often land.'},
@@ -18138,7 +18605,7 @@ function build(plan,T){
          with the INTELLECT now (see hitBreakdown) and a stupid caster has to be
          genuinely unreliable rather than merely flavoured that way */
       spearwall:false,moved:false,rallyBuff:0,
-      st:{str:6,agi:6,int:(t.int===undefined?7:t.int),mor:6}};
+      st:{str:-2,agi:-2,int:(t.int===undefined?-1:t.int),mor:-2}};
     /* COPY the act objects before trimming the dice — units of one template
        share them, and trimming in place would compound per unit built */
     /* ⚠ #245 - the champion's damage rides in HERE and nowhere else, on the same
@@ -18179,7 +18646,7 @@ function petUnit(){
   const cap=member('you'),def=cap&&PETS[cap.pet];
   if(!def)return null;
   return {id:'pet',side:'you',name:def.n,kind:def.kind,race:'beast',leader:false,
-    pet:true,passive:true,petFollow:true,perks:[],st:{str:1,agi:12,int:1,mor:1},
+    pet:true,passive:true,petFollow:true,perks:[],st:{str:-7,agi:4,int:-7,mor:-7},
     hp:30,hpMax:30,armour:8,armourMax:8,morale:100,moraleMax:100,
     mskill:1,dodgeBase:def.dodge||24,speed:5,flankPow:0,spellPow:1,dmgBonus:0,morBonus:0,
     caster:false,bow:false,used:{},actions:0,actionsMax:0,acts:[],state:'steady',
@@ -18311,7 +18778,7 @@ function startBattle(kind){
     : [[2,CY-2],[2,CY],[1,CY-1],[1,CY+1],[2,CY+2],[3,CY-1],[1,CY-3],[3,CY+1],
        [1,CY+3],[3,CY-3],[0,CY],[0,CY-2]];
   you.forEach((u,i)=>{const p=slots[i%slots.length];
-    u.col=p[0];u.row=p[1];u.init=u.pet?15:Math.round(28+u.st.agi*1.4);});
+    u.col=p[0];u.row=p[1];u.init=u.pet?15:Math.round(28+sv(u,'agi')*1.4);});
   /* nudge anybody sharing a hex */
   you.forEach((u,i)=>{
     while(you.some((o,j)=>j<i&&o.col===u.col&&o.row===u.row)){
@@ -20284,13 +20751,20 @@ function dodgeOf(u,W,noNerve){
   /* ⚠ U+2212, not a hyphen-minus. Every other signed number on this card is
      written with the real minus sign, and a caption mixing the two reads as
      a different kind of value rather than as the same arithmetic. */
-  const w=W?(n,v)=>{if(v)W.push(n+' '+(v>0?'+'+Math.round(v):'−'+Math.abs(Math.round(v))));}:null;
+  /* #254 - a PAIR and not a sentence: the sheet's DODGE hover lays these out
+     as a two-column ledger, and a string that has already chosen its own
+     formatting cannot be put in a column. This writer's only caller is that
+     hover. */
+  const w=W?(n,v)=>{if(v)W.push([n,Math.round(v)]);}:null;
   let d=u.dodgeBase+(noNerve?0:STATES[u.state].dodge)+(u.rallyBuff||0);
   if(w){w('their footwork',u.dodgeBase);
     w('mood, '+STATES[u.state].n.toLowerCase(),STATES[u.state].dodge);
     w('rallied',u.rallyBuff||0);}
-  const rk=raceKey(u);
-  if(rk&&RACEDODGE[rk]){d+=RACEDODGE[rk];w&&w(rk,RACEDODGE[rk]);}
+  /* ⛔ #254 - THE RACE IS NOT IN THIS COLUMN ANY MORE. It is a modifier on
+     the ATTACKER's roll (`RACEATK`, read in `hitBreakdown`), because a small
+     body is hard to hit because it is SMALL and not because it is nimble.
+     Folding it into dodge printed one arithmetic as a claim about the other,
+     which is #102's wrong-unit rule with a race in it. */
   /* #79 - what you are wearing, before the cap, exactly like the racial ±5
      above it. Pre-cap means a nimble body in plate loses a little less than
      the stated ten, for the same reason the ratkin's +5 pays for part of
@@ -20324,7 +20798,8 @@ function dodgeOf(u,W,noNerve){
      design (see softDodge); printing the raw sum beside a capped total would
      be a receipt that does not match the till. */
   const raw=d,out=Math.max(0,Math.round(softDodge(d)));
-  if(w&&raw>DODGE_SOFT)W.push('hard to stack past '+DODGE_SOFT+' −'+Math.round(raw-softDodge(raw)));
+  if(w&&raw>DODGE_SOFT)W.push(['hard to stack past '+DODGE_SOFT,       /* #254 */
+    -Math.round(raw-softDodge(raw))]);
   return out;
 }
 /* #186 - misses in a row before the next swing is sure. 0 switches it off.
@@ -20396,7 +20871,7 @@ function hitBreakdown(a,d,act){
      dodge counts for much less (you do not sidestep a blight-wind, you just
      fail to be where it lands). That makes a stupid caster genuinely
      unreliable — which is the entire point of the ogre battle-mage below. */
-  const arcSkill=act.arcane?38+Math.round((a.st?a.st.int:8)*3.4):null;
+  const arcSkill=act.arcane?(a.st?D.arc(a):38+Math.round(8*3.4)):null;   /* #253 */
   /* ═══ #146 - `other` HAS ITS OWN LIST NOW ════════════════════════════════
      (User: "For chances to hit and dodge show what is others".) `parts` is
      everything, and it has always been printed as one italic run at the foot
@@ -20409,7 +20884,11 @@ function hitBreakdown(a,d,act){
      only way to add a contributor without being able to forget one. */
   const parts=[],oth=[],po=s=>{parts.push(s);oth.push(s);},
         skill=(arcSkill!==null?arcSkill:a.mskill)+(act.aim||0),
-        dodge=act.arcane?Math.round(dodgeOf(d)*0.35):dodgeOf(d);
+        /* ⛔ #254 - A SPELL LANDS OR IT DOES NOT. The file: *"Nothing
+           subtracts. A spell is not dodged."* A nimble body partly sidestepping
+           a blight-wind was the one place the arcane roll had a defender in it
+           at all, and the prose has never implied one. */
+        dodge=act.arcane?0:dodgeOf(d);
   let other=0;
   if(arcSkill!==null)parts.push('working it out '+arcSkill);
   /* surrounded: every extra body on it makes it easier for everyone.
@@ -20444,8 +20923,13 @@ function hitBreakdown(a,d,act){
      nothing. `noArc` does NOT cancel it: this is not a flanking bonus, it is
      the size of the target, and a thing with no wrong side is still a thing
      you can see from across the room. */
-  const szh=SIZEHIT[sizeOf(d)]||0;
-  if(szh){other+=szh;po((sizeOf(d)===3?'a great deal of it':'a big body')+' +'+szh);}
+  /* ⛔ #254 - THE RACE'S OWN COLUMN, AND SIZEHIT IS THE FALLBACK FOR
+     EVERYTHING THAT HAS NO RACE. The file collapses `RACEDODGE` and `SIZEHIT`
+     into one *to be hit* figure; a bear and a dog still have a size and no
+     race row, so the size rule stays underneath rather than being deleted. */
+  const drk=raceKey(d),szh=(drk&&RACEATK[drk]!==undefined)?RACEATK[drk]:(SIZEHIT[sizeOf(d)]||0);
+  if(szh){other+=szh;po((drk?(drk==='ratkin'?'a small body':'a great deal of it')
+    :(sizeOf(d)===3?'a great deal of it':'a big body'))+' '+(szh>0?'+':'\u2212')+Math.abs(szh));}
   /* wetproof(): the same exemption the stride gets. Aiming out of the water
      is only awkward for somebody the water is fighting. */
   if(B.terr[K(a.col,a.row)]==='marsh'&&!wetproof(a)){other-=10;po('water −10');}
@@ -20595,8 +21079,14 @@ function ambitionDmg(a){
    one is felt on every single blow instead of being lost inside a +6. */
 function thews(a,act){
   if(act.arcane)return 0;                      // spells run on INT, not muscle
-  const s=act.range?a.st.agi:a.st.str;
-  return clamp((s-8)*0.055,-0.30,0.55);
+  /* ⛔ #254 - THE LADDER IS THE ARM NOW, and the race is beside it. `thews`
+     was a straight line through the old scale; it is the STRENGTH climb's own
+     `melee`/`bow` figure plus the race's weight of blow, which is the file's
+     damage bracket said in one place. ⚠ A bow reads the STRENGTH ladder's
+     `bow` column and NOT agility: agility pays in hitting, not in hitting
+     hard, which is what the two ladders are for. */
+  const h=heldOf(a,'str'),r=RACEMELEE[raceKey(a)]||0;
+  return clamp((act.range?(h.bow||0):(h.melee||0))+r,-0.40,0.65);
 }
 /* ═══ #46 — POISON, AND WHY IT IS COUNTED HERE AND NOWHERE ELSE ══════════
    The stack is a multiplier on what is done TO a body, so it belongs on the
@@ -20640,8 +21130,11 @@ function dmgMul(a,d,act){
      contributions from the attacker's arm. Now the readout and the sentence
      say the same number, which is the standing rule in this file. */
   return (1+a.morBonus+thews(a,act)+
-    /* IT ROCKS: +5% on top of everything. See ROCKING. */
-    (rocking(a)?.05:0)+
+    /* ⛔ #254 - THE NERVE RUNG CARRIES WHAT THE STAT USED TO. `D.bonus` is 0
+       now, so a body's mood pays here or nowhere: STEADY +5%, IT ROCKS +10%.
+       It is a fact about how this body is feeling RIGHT NOW, which is exactly
+       what a state is for and exactly what a stat is not. */
+    (rocking(a)?.10:(a.state==='steady'?.05:0))+
     (has(a,'brawn')&&!act.range?.10:0)+(a.trait==='vegetarian'?-.10:0)+
     ((a.trait==='thrice'||has(a,'butcher'))&&d.hp<d.hpMax*.5?.17:0)+
     /* ⚠ THE PENALTY IS THE TRAIT'S AND NEVER THE PERK'S. The line above is
@@ -22152,7 +22645,9 @@ function beginTurn(){
        is not a thing anybody is good at. */
     if(!on){
       const gap=morBase(u)-u.morale;
-      const climb=MORALE.recover+(tr(u,'mrec')||0)+(has(u,'fieldmedic')?8:0);
+      /* #254 - MORALE's ladder decides how fast nerve comes back */
+      const climb=MORALE.recover+(heldOf(u,'mor').climb||0)+
+        (tr(u,'mrec')||0)+(has(u,'fieldmedic')?8:0);
       let d=0;
       if(gap>0)d=Math.min(climb,Math.ceil(gap/2));
       else if(gap<0)d=-Math.min(MORALE.settle,Math.ceil(-gap/3));
@@ -28908,7 +29403,9 @@ function render(){
           /* B's on-card damage (#91 point 1): the range, on the face.
              #94 point 8: and MOVE puts its hex count in the same slot, off
              the same moveBudget() call the plaque and the reach preview use. */
-          (a.dmg?'<span class="adm">'+a.dmg[0]+'-'+a.dmg[1]+'</span>':'')+
+          /* #256 - what it LANDS for, the same figure the plaque's swing row
+             prints. The raw dice are the WEAPON's and live on its gear row. */
+          (a.dmg?(d=>'<span class="adm">'+d[0]+'-'+d[1]+'</span>')(landsFor(u,a)):'')+
           /* ⚠ #250 - `1 HEXES`. It has been reachable since crippled-in-the-marsh
              and nobody had ever seen it, because nothing put a body on a budget
              of one often enough to notice. A pit does: `moveBudget` is 1 for
@@ -32095,7 +32592,10 @@ window.LINT=function(){
        pure upside on purpose and is kept out of the roll instead of priced. */
     /* #234 - `authored` joins `foeOnly` as the sanctioned exception, and for the
        same arithmetic: neither is in the pool, so neither can be the best roll in it. */
-    if(!t.cost&&!t.foeOnly&&!t.authored)
+    /* #255 - and `never` joins them: `big` was retired when size became a
+       fact about the RACE, and the row is kept only so a save that carries it
+       still resolves to a name. A retired row is not in the pool either. */
+    if(!t.cost&&!t.foeOnly&&!t.authored&&!t.never)
       hit('trait',w,'is a personality with nothing paid for it. Every rollable trait '+
         'states a `cost`, or it is simply the best one and the register is stat lines '+
         'with names on again');
@@ -32120,7 +32620,11 @@ window.LINT=function(){
     });
     /* a personality nobody can ever roll and that is not marked foeOnly is a
        dead row: it will never appear, and nothing says so */
-    if(!t.foeOnly&&!t.authored&&!['human','ratkin','ogre'].some(r=>
+    /* #255 - `never` is a THIRD sanctioned exception and it is the honest one:
+       a retired row is deliberately unrollable, and the linter saying so is the
+       linter working. `big` is kept only so a save that carries the key still
+       resolves to a name. */
+    if(!t.foeOnly&&!t.authored&&!t.never&&!['human','ratkin','ogre'].some(r=>
         ['captain','spear','cutter','brute','archer','mage','warmage'].some(c=>traitFits(k,r,c))))
       hit('trait',w,'no race and class combination can ever roll this');
   });
@@ -36550,11 +37054,11 @@ function drawInv(){
       ?'<span class="ichip" style="color:#a08a5e">'+bmk(cIcon('none'))+' <b>'+CLASSES.none.n+'</b></span>'
       :'<span class="ichip bare" data-cls="'+p.cls+'" title="'+esc(CLASSES[p.cls].n)+'">'+
         bmk(cIcon(p.cls))+'</span>')+
-    /* #174 - the LEVEL chip is a RING now (user: "bar progression could be
-       shown circle as in total war"): the level inside it, the arc is how far
-       to the next, the exact figures on hover. It is progress and never a
-       receipt: what the last fight paid is on the crew card, not here. */
-    '<span class="ichip xplv" title="'+xpHover(p)+'">'+xpRing(p,26,true)+'</span>';
+    /* ⚠ #253 - AND THE LEVEL RING STAYS DELETED. #246 put the level on the
+       roster portrait's corner and #251 moved `xpHover` onto that plate with
+       it, so this would be the one fact on the row that IS said twice. The
+       race and the class are back because a mark on a tile is not a name. */
+    '';
   /* ⛔ #224 · AND THE TALLY IS NOT UP HERE ANY MORE ═══════════════════════
      (User: *"В инвенторе показывать кол-во убийств только внизу. (не
      вверху)"*.) It was on this chip row AND on the accordion at the foot, and
@@ -36676,7 +37180,8 @@ function drawInv(){
     const line=noteLine(a);
     return '<div class="iact'+(a.arcane?' arc':'')+(isMut?' chg':'')+'">'+
       '<span class="gi">'+iconFor(a)+'</span><b>'+a.n+'</b>'+
-      (a.dmg?'<span class="adm">'+a.dmg[0]+'-'+a.dmg[1]+'</span>':'')+
+      /* #256 - the sheet's card lands the same figure the battle's card does */
+      (a.dmg?(d=>'<span class="adm">'+d[0]+'-'+d[1]+'</span>')(landsFor(u,a)):'')+
       (roleOf(a)?'<span class="role">'+roleOf(a)+'</span>':'')+
       '<span class="cost">'+'◆'.repeat(a.cost)+'</span>'+
       '<span class="pop"><span class="pt">'+a.n+'</span>'+
@@ -36846,16 +37351,21 @@ function drawInv(){
           '<span title="what one turn buys this body">ACTIONS <b class="apips">'+
             apPips(u.actionsMax,u.actionsMax)+'</b></span>'+
           (sw?'<span class="dmgw" id="iDmg">'+sw.n+' <b class="dmg">'+sw.lo+'-'+sw.hi+'</b>'+
+               /* #256 - three figures agreed and none of them said which it was */
+               '<span style="color:#8a7449"> lands</span>'+
                (sw.a&&sw.a.reach>1?' <span style="color:#8a7449">reach '+sw.a.reach+'</span>':'')+
                (sw.a&&sw.a.range?' <span style="color:#8a7449">range '+sw.a.range+'</span>':'')+
                '</span>'
              :'<span>BLOW <b class="dmg">nothing much</b></span>')+
-          '<span>TO HIT <b>'+u.mskill+'%</b></span>'+
+          '<span data-drv="hit">TO HIT <b>'+u.mskill+'%</b></span>'+
           /* #243 - the unit, at the user's word. TO HIT beside it has printed
              `%` since #94 and this was the one figure on the row without it. */
-          '<span>DODGE <b>'+dodgeOf(u)+'%</b></span>'+
-          '<span>STEP <b>'+(RACESTEP[p.race]||4)+' hex'+
-            (p.cls==='cutter'?' (+1 first)':'')+'</b></span>'+
+          '<span data-drv="dodge">DODGE <b>'+dodgeOf(u)+'%</b></span>'+
+          /* #254 - FLEET is on the unit, so the sheet reads `u.speed` rather
+             than the race table it used to name. Same number on a body with no
+             capstone, one more on a body that bought one. */
+          '<span>STEP <b>'+u.speed+' hex'+
+            (u.fleet?' (fleet)':'')+(p.cls==='cutter'?' (+1 first)':'')+'</b></span>'+
         '</div>'+
         '</div>'+
         /* ⛔ #244 - AND A BANKED STAT POINT SAYS SO IN WORDS, HERE.
@@ -37285,11 +37795,48 @@ function drawInv(){
   /* ═══ THE HOVERS AND THE DOORS, ALL OF WHICH ONLY CHANGED ADDRESS ══════ */
   /* the four stats and the nerve rung explain themselves the same way: one
      word on the sheet, the whole scale on hover */
+  /* ═══ ⛔ #254 · THE TWO DERIVED FIGURES EXPLAIN THEMSELVES TOO ════════
+     (User: *"add a hover to chance to hit and to dodge"*.)
+
+     ⛑ BOTH READ THE FUNCTION THAT COMPUTES THEM AND NEITHER RE-ADDS ANYTHING.
+     `dodgeOf(u,W)` has taken a writer since #146 and nothing on the sheet had
+     ever asked for one; TO HIT had no writer at all, so `unitFrom` keeps the
+     rows it built as `u.hitWhy` - beside the `+=` that makes them, which is the
+     only place they cannot drift from. ⚠ The cap is a LINE and not a footnote:
+     `dodgeOf` clamps the sum, so a body whose parts add to more than it prints
+     needs to be told why, or the column does not add up. */
+  $('iChar').querySelectorAll('[data-drv]').forEach(el=>{
+    const which=el.dataset.drv;
+    el.onmouseenter=e=>{
+      const W=[],val=which==='dodge'?dodgeOf(u,W):u.mskill;
+      const rows=which==='dodge'?W:(u.hitWhy||[]);
+      const sum=rows.reduce((n,r)=>n+r[1],0);
+      const line=(n,v,cls)=>'<div class="ssr'+(cls||'')+'"><span class="ssn">'+esc(n)+'</span>'+
+        '<span class="ssv'+(v<0?' dn':'')+'">'+(v>0?'+':'\u2212')+Math.abs(Math.round(v))+'</span></div>';
+      TIP.innerHTML='<div style="font-family:var(--display);font-size:var(--fs5);color:var(--g4);'+
+          'margin-bottom:5px">'+(which==='dodge'?'DODGE':'TO HIT')+'</div>'+
+        '<div class="stsum" style="border-top:0;margin-top:0;padding-top:0">'+
+        rows.map(r=>line(r[0],r[1])).join('')+
+        (Math.round(sum)!==Math.round(val)
+          ? line('as far as it goes',val-sum,' floor'):'')+
+        '<div class="ssr tot"><span class="ssn">'+(which==='dodge'?'DODGE':'TO HIT')+'</span>'+
+        '<span class="ssv" style="color:var(--g4)">'+Math.round(val)+'%</span></div></div>'+
+        '<div style="font-style:italic;color:#a38652;margin-top:5px;font-size:var(--fs2)">'+
+        (which==='dodge'
+          ?'How hard this body is to land a blow on. How BIG they are is not in here: it is a modifier on whoever is swinging.'
+          :'What this body brings to a swing, before the target, the ground and the arc are counted.')+
+        '</div>';
+      TIP.style.display='block';moveTip(e);};
+    el.onmousemove=moveTip;el.onmouseleave=()=>{TIP.style.display='none';};});
+
   $('iChar').querySelectorAll('[data-tell]').forEach(el=>{
     const k=el.dataset.tell,T=TELLS[k];
     el.onmouseenter=e=>{
       TIP.innerHTML='<div style="font-family:var(--display);font-size:var(--fs5);color:'+T.col+
-        ';margin-bottom:5px">'+T.lbl+'</div>'+tellLadderHTML(k,s[k])+
+        ';margin-bottom:5px">'+T.lbl+'</div>'+
+        /* #252 - the ladder that NAMES the number, and beside it where the
+           number came from. Two columns, or the box runs off the board. */
+        '<div class="statwrap">'+tellLadderHTML(k,s[k])+statSumHTML(p,k)+'</div>'+
         '<div style="font-style:italic;color:#a38652;margin-top:5px;font-size:var(--fs2)">'+
         (STATHELP[k.toUpperCase()]?STATHELP[k.toUpperCase()].x:'')+'</div>';
       TIP.style.display='block';moveTip(e);};
@@ -37297,6 +37844,9 @@ function drawInv(){
     /* #122 - a banked stat level is spent on the tell itself */
     if(statPts>0)el.onclick=()=>{
       if((p.statPoints||0)<=0)return;
+      /* #252 - the level is COUNTED as well as banked, or the hover would
+         read a promotion as something this body was born with */
+      p.lvUp=p.lvUp||{};p.lvUp[k]=(p.lvUp[k]||0)+1;
       p.st[k]++;p.statPoints--;sfx('promote');
       TIP.style.display='none';drawInv();};});
   /* class and race explain themselves wherever they are named */
@@ -37582,7 +38132,17 @@ function bindLoreTips(root,p,live){
     const plur=(n,w)=>n+' '+w+(n===1?'':'s');
     const facts='<div style="font-family:var(--mono);font-size:var(--fs1);color:#8fa5a2;'+
       'margin-bottom:3px">STEP '+(RACESTEP[r]||4)+' · '+plur(COST[r],'seat')+' · '+
-      plur(WAGE[r],'crown')+' a day</div>';
+      plur(WAGE[r],'crown')+' a day</div>'+
+      /* ⛔ #254 - AND WHAT THE BODY ITSELF IS WORTH, off the three tables that
+         own it. The race carries the pool, the weight of the blow and how easy
+         it is to hit, and until now the hover named none of the three - it
+         listed the stat lean and stopped, which is the smallest of the four
+         things a race decides. */
+      '<div style="font-family:var(--mono);font-size:var(--fs1);color:#8fa5a2;'+
+      'margin-bottom:3px">'+((RACESIZE[r]||{}).n?RACESIZE[r].n+' · ':'')+
+      ((RACEHP[r]||GIVEN.hp)+(RACEBULK[r]||0))+' HITPOINTS'+
+      (RACEMELEE[r]?' · '+sgn(Math.round(RACEMELEE[r]*100))+'% MELEE':'')+
+      (RACEATK[r]?' · '+sgn(RACEATK[r])+' FOR ANYBODY SWINGING AT THEM':'')+'</div>';
     const lean=['str','agi','int','mor'].filter(s=>RACEMOD[r]&&RACEMOD[r][s])
       .map(s=>'<span style="color:'+TELLS[s].col+'">'+sgn(RACEMOD[r][s])+' '+TELLS[s].lbl+'</span>')
       .join(' · ');
@@ -37617,6 +38177,15 @@ function bindLoreTips(root,p,live){
   root.querySelectorAll('[data-cls]').forEach(el=>{
     const k=el.dataset.cls,h=CLASSHELP[k],C=CLASSES[k];if(!h||!C)return;
     el.removeAttribute('title');       /* #196 - see the note on data-race */
+    /* ⛔ #254 - THE TRADE LEANS A RUNG NOW AND THE HOVER SAYS WHICH. It is the
+       third of the four named lines and it was the one with nothing to show. */
+    const csg=v=>(v>0?'+':'−')+Math.abs(v);
+    const cl=CLSLEAN[k]||{},clw=['str','agi','int','mor'].filter(s=>cl[s])
+      .map(s=>'<span style="color:'+TELLS[s].col+'">'+csg(cl[s])+' '+TELLS[s].lbl+'</span>').join(' · ');
+    const clRow='<div style="font-family:var(--mono);font-size:var(--fs1);margin-bottom:5px">'+
+      (clw||'<span style="color:var(--t3)">No lean on any axis.</span>')+
+      ((isCaster(k)||k==='archer')?'<span style="color:#8fa5a2"> · '+
+        Math.round(GIVEN.frail*100)+'% OF THE POOL</span>':'')+'</div>';
     let extra='';
     if(u&&p&&p.cls===k){
       /* the race verb is the RACE's tooltip, not the class's - listing it in
@@ -37641,7 +38210,7 @@ function bindLoreTips(root,p,live){
     el.onmouseenter=e=>{
       TIP.innerHTML='<div style="font-family:var(--display);font-size:var(--fs5);color:var(--g4);'+
         'margin-bottom:4px">'+cIcon(k)+' '+C.n.toUpperCase()+'</div>'+
-        '<div style="margin-bottom:5px">'+h.d+'</div>'+
+        '<div style="margin-bottom:5px">'+h.d+'</div>'+clRow+     /* #254 */
         '<div style="font-style:italic;color:#a38652">'+h.x+'</div>'+extra;
       TIP.style.display='block';moveTip(e);};
     el.onmousemove=moveTip;el.onmouseleave=()=>{TIP.style.display='none';};});
@@ -37798,7 +38367,15 @@ TIP.id='gtTip';
    on any call that lands before this line runs. */
 function hideTip(){const t=document.getElementById('gtTip');
   if(t)t.style.display='none';}
-TIP.style.cssText='position:fixed;z-index:99;max-width:290px;background:rgba(22,16,9,.98);'+
+/* ⚠ #252 - `max-width` MOVED OUT OF THE INLINE STYLE, and that is the whole
+   reason the stat tip can be two columns. An inline declaration outranks every
+   stylesheet rule, so the 290 cap could only ever have been lifted with
+   `!important` or with a class the other fourteen hover sources would have had
+   to remember to clear. It is `#gtTip{max-width:290px}` in the sheet now and
+   one `:has()` rule raises it for the one layout that needs it - the same
+   shape as `#wDlg:has(.evstage)`, and it cannot go stale because every hover
+   writes `TIP.innerHTML=` from scratch. */
+TIP.style.cssText='position:fixed;z-index:99;background:rgba(22,16,9,.98);'+
   'border:1px solid var(--e3);padding:var(--p4) var(--p5);font-family:var(--body);font-size:var(--fs4);'+
   'color:var(--g-body);line-height:1.4;pointer-events:none;display:none;'+
   'box-shadow:0 8px 26px rgba(0,0,0,.7)';
@@ -41755,7 +42332,11 @@ function passDays(n){
        ⚠ PLAYTEST #6'S FINDING IS THEREFORE LIVE AGAIN and it is the thing to
        watch: if a whole run now ends with the barrels untouched, the answer
        is a better REASON to spend them, never a tax reinstated here. */
-    const mend=G.doubleRations>0?MEND_DOUBLE:MEND_BASE;
+    /* ⛔ #254 - AND MORALE +3 TURNS A DIAL THAT ALREADY EXISTED. `MEND_BASE`
+       is the number DOUBLE RATIONS doubles; the rung doubles it too, per body,
+       and the two stack. ⚠ IT TOUCHES INJURIES AND NEVER SCARS - a scar that
+       healed itself would stop being the thing #197 made permanent. */
+    const mend=(G.doubleRations>0?MEND_DOUBLE:MEND_BASE);
     if(G.doubleRations>0)G.doubleRations--;
     G.party.forEach(p=>{if(p.hpLoss)p.hpLoss=Math.max(0,p.hpLoss-mend);});
     /* ═══ #225 · THE INJURY CLOCK, ON THE ONE CLOCK THE GAME HAS ═════════
@@ -48916,7 +49497,7 @@ function simStock(race,cls){
     name:({human:'Sellsword',ratkin:'Clan-blade',ogre:'Hill-hand'})[race]||'Sellsword',
     sur:'',race:race,cls:cls,
     kind:race==='ratkin'?'ratkin':race==='ogre'?'ogre':(KIND_BY_CLS[cls]||'human'),
-    st:{str:8,agi:8,int:7,mor:8},trait:'stubborn',
+    st:{str:0,agi:0,int:0,mor:0},trait:'stubborn',
     eq:{armour:g[0],main:g[1],off:null,trinket:null}});
 }
 /* the level is paid the way promotions pay it (levelUp banks the points) and
@@ -48932,7 +49513,9 @@ function simLevelTo(p,L){
   while((p.level||0)<L)levelUp(p);
   p.xp=xpNeed(p,p.level);
   const prio=STAT_PRIO[p.cls]||STAT_PRIO.none;let i=0;
-  while((p.statPoints||0)>0){p.st[prio[i%prio.length]]+=1;p.statPoints--;i++;}
+  while((p.statPoints||0)>0){const k=prio[i%prio.length];
+    p.lvUp=p.lvUp||{};p.lvUp[k]=(p.lvUp[k]||0)+1;      /* #252 */
+    p.st[k]+=1;p.statPoints--;i++;}
   while((p.perkPoints||0)>0){
     const open=perkPool(p).filter(k=>p.perks.indexOf(k)<0);
     if(!open.length){p.perkPoints=0;break;}

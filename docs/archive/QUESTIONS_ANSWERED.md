@@ -86,3 +86,12 @@ should be visible**, and because any of them can come back on one word.*
 state, some since **#90**. **A question nobody can find is not a question that waits; it is a
 question that rots** - and the cost was never the answer that failed to come, it was that the other
 twenty-nine were sitting beside them where he could not see them either.
+
+## K1 and L2 - answered by #256, 2026-08-27
+
+*"have you fixed 253 and 254? if not - fix."* Both were things that PRINTED and did not PAY, and both are closed in the build rather than ruled on.
+
+| | the question | how it was answered |
+|---|---|---|
+| **L2** · #254 | **Two authored rungs do nothing yet.** INTELLECT +3 promises *+1 reach on workings and skills* and MORALE −4 promises *starts a fight one rung lower*; both print on the hover and neither is applied. Everything else on all four ladders is live | **CLOSED in #256.** INTELLECT +3 takes spellRange 2 to 3 and the stave's reach 2 to 3; MORALE -4 opens SHAKEN where MOR -3 opens STEADY, expressed as the next rung's threshold rather than a subtraction. |
+| **K1** · #253 | **The sheet prints two damage ranges for one weapon and does not label either.** The MAIN HAND slot says `ARMING SWORD 16-24`, the SKILLS card says `16-24`, and the ACTIONS line says `24-34`. **The chain between them checks out** - the slot's hover states it (rolls 16-24, the arm adds +3, build and mood +25%, so it lands for 24-34) and every figure is derived - so this is a labelling call, not an arithmetic one | **CLOSED in #256.** `landsFor` is the one function the ACTIONS line, the sheet card and the battle card all read; the gear slot keeps the weapon's own dice and the ACTIONS line says *lands*. |

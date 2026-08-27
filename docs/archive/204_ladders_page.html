@@ -1,0 +1,472 @@
+<title>The Four Ladders</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Spectral:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+:root{
+  --bg:#f1ebdd; --panel:#faf6ec; --panel2:#efe7d3; --edge:#cdbf9c; --edge2:#b39f72;
+  --ink:#3a2f1e; --ink2:#6b5a3c; --mute:#8a7248; --bright:#6b5330;
+  --str:#9c4330; --agi:#4f7d4c; --int:#4a6a9c; --mor:#8a6a22; --gold:#8a6a22;
+  --neg:#b0433a; --hl:rgba(138,106,34,.10);
+  --display:'Cinzel','Palatino Linotype',Georgia,serif;
+  --body:'Spectral',Georgia,'Times New Roman',serif;
+  --mono:'JetBrains Mono',Consolas,'Courier New',monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#100c06; --panel:#1d1710; --panel2:#241c12; --edge:#3d2f1d; --edge2:#6b5330;
+  --ink:#c2b493; --ink2:#a89a80; --mute:#a38652; --bright:#d9bd7e;
+  --str:#c96a50; --agi:#8fbd8b; --int:#86a2d0; --mor:#d9b64a; --gold:#d9bd7e;
+  --neg:#d8655a; --hl:rgba(217,189,126,.08);}}
+:root[data-theme="dark"]{
+  --bg:#100c06; --panel:#1d1710; --panel2:#241c12; --edge:#3d2f1d; --edge2:#6b5330;
+  --ink:#c2b493; --ink2:#a89a80; --mute:#a38652; --bright:#d9bd7e;
+  --str:#c96a50; --agi:#8fbd8b; --int:#86a2d0; --mor:#d9b64a; --gold:#d9bd7e;
+  --neg:#d8655a; --hl:rgba(217,189,126,.08);}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.5}
+.wrap{max-width:1060px;margin:0 auto;padding:40px 24px 72px}
+h1{font-family:var(--display);font-weight:700;font-size:30px;letter-spacing:.04em;color:var(--bright);margin:0 0 6px;text-wrap:balance}
+.sub{color:var(--ink2);margin:0 0 28px;max-width:74ch}
+h2{font-family:var(--display);font-weight:500;font-size:15px;letter-spacing:.16em;text-transform:uppercase;color:var(--bright);margin:40px 0 12px;padding-bottom:6px;border-bottom:1px solid var(--edge)}
+h2 small{font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--mute);margin-left:10px;text-transform:none}
+p{margin:0 0 10px;max-width:74ch}
+.note{font-size:13.5px;color:var(--ink2);max-width:78ch}
+.note b{color:var(--ink)}
+.card{background:var(--panel);border:1px solid var(--edge);padding:16px 18px}
+.mono{font-family:var(--mono)}
+.STR{color:var(--str)} .AGI{color:var(--agi)} .INT{color:var(--int)} .MOR{color:var(--mor)}
+.NEG{color:var(--neg)} .NEW{color:var(--gold);font-weight:600}
+/* the formula */
+.formula{display:grid;gap:4px}
+.frow{display:grid;grid-template-columns:112px 1fr;gap:14px;align-items:baseline;padding:8px 0;border-bottom:1px dashed var(--edge)}
+.frow:last-child{border-bottom:0}
+.frow .k{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--mute);text-transform:uppercase}
+.frow .v{font-family:var(--mono);font-size:13.5px;color:var(--ink);line-height:1.7}
+.frow .v .mul{color:var(--gold);font-weight:600;padding:0 5px}
+.frow .v .add{color:var(--ink2)}
+.frow .v u{text-decoration:none;border-bottom:2px solid var(--edge2)}
+.frow .v .s{color:var(--str)} .frow .v .a{color:var(--agi)} .frow .v .i{color:var(--int);font-style:normal}
+/* givens */
+.giv{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px}
+.giv div{background:var(--panel);border:1px solid var(--edge);padding:8px 10px}
+.giv b{font-family:var(--display);font-size:18px;color:var(--bright);display:block}
+.giv span{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;color:var(--mute);text-transform:uppercase}
+.giv i{display:block;font-style:normal;font-size:12px;color:var(--ink2);margin-top:2px}
+/* tables */
+.tw{overflow-x:auto;border:1px solid var(--edge);background:var(--panel)}
+table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums}
+th{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);text-align:left;padding:9px 12px;border-bottom:1px solid var(--edge2);white-space:nowrap;font-weight:600}
+td{padding:8px 12px;border-bottom:1px solid var(--edge);font-family:var(--mono);font-size:12.5px;white-space:nowrap;vertical-align:middle}
+tr:last-child td{border-bottom:0}
+td.name{font-family:var(--body);font-size:14px;font-weight:600;color:var(--ink);white-space:normal;min-width:150px}
+td.name i{display:block;font-weight:400;font-size:12px;color:var(--ink2);font-style:normal}
+td.big{font-family:var(--display);font-size:20px;font-weight:700;color:var(--bright)}
+td.out{font-family:var(--display);font-size:16px;font-weight:700;color:var(--bright)}
+.rg{font-family:var(--display);font-weight:700;font-size:14px}
+.rg.neg{color:var(--neg)}
+/* ladders */
+.ladders{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media (max-width:820px){.ladders{grid-template-columns:1fr}}
+.ladder{background:var(--panel);border:1px solid var(--edge);padding:14px 16px 12px}
+.ladder h3{font-family:var(--display);font-size:14px;letter-spacing:.18em;margin:0 0 2px;font-weight:700;display:flex;justify-content:space-between;align-items:baseline}
+.ladder .sub2{font-family:var(--body);font-style:italic;font-size:12.5px;color:var(--ink2);margin-bottom:10px}
+.rung{display:grid;grid-template-columns:40px 1fr;gap:8px 12px;padding:7px 6px;border-top:1px solid var(--edge);align-items:start}
+.rung:first-of-type{border-top:0}
+.rung .n{font-family:var(--display);font-size:20px;line-height:1;font-weight:700;text-align:center;padding-top:2px;display:flex;flex-direction:column;align-items:center;gap:2px}
+.rung .w{font-family:var(--body);font-size:14.5px;font-weight:600;color:var(--ink)}
+.rung .g{font-family:var(--mono);font-size:12px;line-height:1.55;color:var(--ink)}
+.rung.base{background:var(--hl);outline:1px solid var(--edge2);outline-offset:-1px}
+.rung.base .g{color:var(--ink2);font-style:italic;font-family:var(--body);font-size:13px}
+.rung.low .n{color:var(--neg)}
+.rung.low .g{color:var(--neg)}
+.rung.cap .n{color:var(--gold)}
+.arm{image-rendering:pixelated;display:block}
+.cost2{display:flex;gap:2px;justify-content:center;margin-top:3px}
+.cost2 i{width:6px;height:6px;border:1px solid currentColor;display:block;opacity:.9}
+.twocost{font-family:var(--mono);font-size:10px;letter-spacing:.1em;color:var(--gold);
+  display:inline-block;border:1px solid var(--gold);padding:0 4px;margin-right:5px;vertical-align:1px}
+.lfoot{font-size:12.5px;color:var(--ink2);margin-top:10px;padding:8px 6px 2px;border-top:1px solid var(--edge);font-style:italic}
+.tag{font-family:var(--mono);font-size:10px;letter-spacing:.12em;padding:1px 6px;border:1px solid var(--edge2);color:var(--ink2);text-transform:uppercase}
+.tag.cap{color:var(--gold);border-color:var(--gold)}
+.bar{background:var(--hl);border:1px solid var(--gold);padding:9px 12px;margin:14px 0 0;font-size:13.5px;color:var(--ink)}
+.bar b{color:var(--gold);font-family:var(--display);letter-spacing:.1em}
+ul.q{padding-left:20px;margin:0}
+ul.q li{margin:0 0 8px;max-width:78ch;font-size:13.5px;color:var(--ink2)}
+ul.q li b{color:var(--ink)}
+/* the four lines, and the one number that is authored */
+.src{display:flex;align-items:center;gap:5px}
+.src .tot{font-family:var(--display);font-size:15px;font-weight:700;min-width:22px;text-align:right}
+.src .tot.neg{color:var(--neg)}
+.src .pt{font-family:var(--mono);font-size:10.5px;color:var(--mute);letter-spacing:.04em}
+.stp{display:inline-flex;gap:2px;margin-right:4px}
+.stp button{font-family:var(--mono);font-size:11px;line-height:1;width:16px;height:16px;padding:0;
+  cursor:pointer;background:var(--panel2);color:var(--ink);border:1px solid var(--edge2)}
+.stp button:hover{border-color:var(--gold);color:var(--gold)}
+.born{font-family:var(--display);font-size:13px;font-weight:700;min-width:16px;
+  display:inline-block;text-align:center;color:var(--gold)}
+.derived{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;color:var(--mute);text-transform:uppercase;
+  border:1px solid var(--edge2);padding:1px 6px;display:inline-block;margin-left:10px;vertical-align:2px}
+</style>
+
+<div class="wrap">
+<h1>The Four Ladders</h1>
+<p class="sub">Every stat is nine signed rungs, &minus;4 to +4, where 0 is the ordinary human and each rung says what it gives or costs.
+<b>Every number on this page below the givens is computed by the page itself</b> out of the givens, the race table and the ladders.
+The only thing authored on a body is its four lines &ndash; <b>born, race, class, trait</b> &ndash; and the weapon in its hands.
+Change a rung, a race row or a born value and the company recomputes. None of this is in the game yet.</p>
+
+<h2>The shape <small>one multiplication; everything else is one bracket that adds</small></h2>
+<div class="card formula" id="fShape"></div>
+
+<h2>The givens <small>the ordinary human, before any rung</small></h2>
+<div class="giv" id="fGiven"></div>
+<p class="note" style="margin-top:10px"><b>These are the roster&rsquo;s and the enemy does not move with them.</b> Every foe takes its hitpoints, skill and dodge from its own template, so a raised roster baseline is structurally roster-only: it is a change to the people you own and to nobody else.</p>
+
+<h2>The race <small>the body, one table</small></h2>
+<div class="tw"><table id="fRace"></table></div>
+<p class="note" style="margin-top:8px">Class leans, one rung each: <b>spear STR &middot; brute STR &middot; archer AGI &middot; cutter AGI &middot; mage INT and MOR &middot; captain MOR</b>.
+A body&rsquo;s rung on any stat is <b>born + race + class + trait</b>, four named lines, and that is the whole answer to &ldquo;why is this one stronger&rdquo;.
+A bow class and a casting class carry <b id="fFrail"></b> of the race&rsquo;s hitpoints.</p>
+
+<h2>The ladders</h2>
+<div class="ladders" id="fLadders"></div>
+
+<div class="bar"><b>THE TOP RUNG COSTS TWO POINTS.</b> A capstone is not a bigger number, it is a rule of its own: one point buys the rung&rsquo;s numbers and the second buys the rule.
+It also protects the pace &ndash; at one to two stat points an act, +4 arrives late in act 3 and only for a body that spent everything on one stat.
+<b>The two small empty squares under the +4 digit are the price tag</b>, in the rung&rsquo;s own number column, so it reads before the rung does.
+&#9888; No other rung shows squares: one point is the default and only the exception needs a receipt.</div>
+
+<div class="bar" style="margin-top:10px"><b>WHERE A RUNG IS READ, AND NO DIGIT IS ADDED.</b>
+The company sheet already prints <b>one word</b> per stat and opens <b>the whole ladder on the stat&rsquo;s hover</b> in the inventory. That hover is where a rung&rsquo;s word, its picture and what it gives belong, and it costs the sheet nothing because it is already built.
+<b>No number goes beside the stat.</b> The digit on this page is the designer&rsquo;s view, not the player&rsquo;s.</div>
+
+<div class="bar" style="margin-top:10px"><b>AN INJURY AND A SCAR ARE TWO DIFFERENT THINGS, AND THE RUNG ONLY TOUCHES ONE.</b>
+An <b>injury</b> is damage the body is carrying (<span class="mono">hpLoss</span>). It closes on the road at <b id="fMend"></b> a day &ndash; the same number DOUBLE RATIONS doubles &ndash; so <b>MORALE +3 turns a dial that already exists</b> and needs nothing new built.
+A <b>scar</b> is the permanent mark (<span class="mono">p.injuries</span>: <i>Rat-bite fever, &minus;1 STR</i>), and the sheet labels each one with that exact word. <b>The rung does not touch scars.</b> They stay permanent and the medicine chest, once a run, stays the only thing that takes one off.</div>
+
+<h2>Where each rung comes from <small>four named lines &middot; born is the only authored number, and it is editable</small></h2>
+<div class="tw"><table id="fSrc"></table></div>
+<p class="note" style="margin-top:8px"><b>Born is 0 unless a backstory has paid for it, and today only the Captain&rsquo;s has.</b> Everything else on a body is the race row, the class lean and the trait, which is why nothing in the table below is typed.
+Use the arrows to move a born value and read the company change under it.</p>
+
+<h2>The company on it <small>computed, live, from the two tables above</small></h2>
+<div class="tw"><table id="fCo"></table></div>
+<p class="note" style="margin-top:8px"><b>The race is in four of these columns and it is only visible in three.</b> Hitpoints carry it and so does the swing.
+<b>Dodge does not</b>: the race&rsquo;s body is a modifier on the ATTACKER&rsquo;s roll, which is the last column, not on the defender&rsquo;s dodge.
+So a ratkin dodges at 18 <i>and</i> everybody rolling at him takes &minus;5, instead of folding that &minus;5 into his dodge and printing 23.
+<b>Same arithmetic, said in the honest place</b>: a small body is hard to hit because it is small, not because it is nimble.</p>
+<p class="note">Swing is the weapon&rsquo;s dice through the bracket, before nerve. <b>To land</b> is the spell number and only the caster spends it. <b>Nerve</b> is the pool, not what is left of it.</p>
+
+<h2>What changes in the engine <small>per stat, in the file&rsquo;s own terms</small></h2>
+<div class="card"><ul class="q">
+  <li><b>A roster body stops carrying its own numbers.</b> <span class="mono">makeParty</span> authors four rung lines and a weapon; <span class="mono">finishRecruit</span> derives hitpoints, to hit, dodge, nerve and the swing from them, the way this page does. There is no per-body hitpoint literal left to drift.</li>
+  <li><b>STRENGTH and AGILITY.</b> <span class="mono">D.hp</span> becomes <span class="mono">RACE[r].hp &times; class &times; (1 + held(STR,'hp'))</span>; the flat <span class="mono">round(0.3&times;STR)</span> is deleted and baked into every weapon and enemy act row (+2 both ends); <span class="mono">D.hit</span> becomes <span class="mono">70 + held(AGI,'hit')</span> and <span class="mono">D.dodge</span> <span class="mono">14 + held(AGI,'dodge')</span>; <span class="mono">RACEDODGE</span> and <span class="mono">SIZEHIT</span> collapse into the race table&rsquo;s <i>to be hit</i> column.</li>
+  <li><b>INTELLECT.</b> <span class="mono">arcSkill</span> becomes <span class="mono">69 + held(INT,'land')</span>; <b>the dodge against a spell goes to zero</b> at both sites that carry it today (<span class="mono">dodgeOf(d)&times;0.35</span> in the breakdown and in the nerve row) &ndash; a spell lands or it does not; <span class="mono">D.spell</span> becomes <span class="mono">1 + held(INT,'magic')</span> with the spell dice re-based once so rung 0 casts what INT 9 casts today; <span class="mono">D.learn</span> becomes <span class="mono">1 + held(INT,'xp')</span>; <span class="mono">D.flank</span> becomes a flat <b>15</b> and stops reading INT; reach is <span class="mono">spellRange</span> and <span class="mono">act.range</span> +1.</li>
+  <li><b>MORALE.</b> <span class="mono">D.moral</span> becomes <span class="mono">90 + held(MOR,'nerve')</span>; <span class="mono">MORALE.recover</span> becomes <span class="mono">8 + held(MOR,'climb')</span>; every negative <span class="mono">mor(u,amt)</span> multiplies by <span class="mono">1 + held(MOR,'loss')</span> at the one site that pays them; <b>an injury heals at <span class="mono">MEND_BASE &times; (1 + held(MOR,'heal'))</span></b>, the same dial double rations already turns; <b>scars are not touched</b>; <span class="mono">D.bonus</span> is deleted and the nerve rung carries the damage instead (HAPPY +5%, IT ROCKS +10%).</li>
+  <li><b>The four capstones are rules, not numbers, and each is read somewhere else.</b> <span class="mono">STANDS</span> is a once-a-fight floor at the site that applies damage; <span class="mono">FLEET</span> is +1 on <span class="mono">step</span>; <span class="mono">UNREPEATABLE</span> is a per-turn flag on the defender, cleared at the top of each turn and read where a target is chosen, so both AI brains obey it without being taught twice; MORALE&rsquo;s is a promotion rule and lands in the level-up screen.</li>
+</ul></div>
+
+<h2>Still open <small>ideas with a place to go, not decisions</small></h2>
+<div class="card"><ul class="q">
+  <li><b>The heavy blow.</b> STR +3: <i>once a fight, one blow at &times;1.5, chosen</i>. A button, not a roll.</li>
+  <li><b>MORALE&rsquo;s capstone is the one that is a promotion and not a battlefield rule</b>, so it is the odd one of the four. Two perk points is worth the same as the other three; it just never shows on the board.</li>
+  <li><b>The map&rsquo;s mood, printed and symmetric.</b> Today only a bad mood reaches a fight, silently. Proposal: &#128516; +8 nerve at the start of every fight &middot; &#128578; +4 &middot; &#128528; 0 &middot; &#128543; &minus;4 &middot; &#128128; &minus;8, said on the chip&rsquo;s hover.</li>
+  <li><b>Jack of all trades.</b> The stranger who never picks a trade learns from whoever he stands beside; a perk from any tier-1 pool at each level, and the adjacency the board already measures decides which stat he gains.</li>
+  <li><b>The backstory, unfolding.</b> Three chapters a body, opened by a level, a named fight or a road card; the third pays a rung of born. The Captain&rsquo;s is already spent: born +1 STR and +1 AGI.</li>
+  <li><b>The word.</b> The game calls a spell a <i>working</i> in 22 player-facing places. Renaming it to magic is a read-every-hit job, not a replace: nine more uses of the same word are ordinary English and must survive.</li>
+</ul></div>
+
+<h2>Build order</h2>
+<div class="card"><ul class="q">
+  <li><b>Pass one:</b> STR and AGI rungs, the race table, the class leans, the raised 60 and 70, the founders&rsquo; four lines, the flat baked into the weapon rows, the two-point capstone and the promotion that refuses it. The sheet keeps the word it prints and the hover it already opens; no digit is added. INT and MOR keep today&rsquo;s wiring.</li>
+  <li><b>Pass two:</b> INT and MOR onto the same scaffolding, the spell dodge to zero, the mend dial, UNREPEATABLE.</li>
+  <li><b>The gate, both passes:</b> <span class="mono">ARENA.match()</span> over the eight authored fights, n=50 a side, before and after, read as win rate and as the fraction of runs under a threshold &ndash; the raised baseline is a real buff on every body you own and has to be priced; the sheet&rsquo;s overflow probe against HEAD; <span class="mono">LINT()</span> at 0.</li>
+</ul></div>
+</div>
+
+<script>
+const ART={str:{
+  '4':'iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAKJSURBVEhLzZVfaxNBFMXPnaQpbXYmSUERiooIPihCQeyz+O6X8VP4aqEiPvjko99BEAQVQURis/8aqSgi0gfR2jY5E7mzuyE2KZTSihcmhL2X+5s598wuRqMRTnMVP6cU/z1gOLFmxrEBNWCQiWUulj1EbAAEMDhYd2zAW2kzN87nYn2GyGewzE2LUoDGcWxA1zjWAH6UJjfFMUOkwJMDANi5J/PajE/NIlWuTUT8bNq8CjSqoqMCVNvQrBxobSInKwBziRiL5Rc43gDmquRRAKNP0mEvNIjYF1uAZDxQbpkWY3Fe/3fF0hgZyzQFEGAYy0K102FsImYSMQ2OcXx+5gk3ZImpuABKjNOcz8T6GuABYV+Cq15PAQTY7UqTiUTsieU8MG6emoj3V7b5rHOHMZqMEfGraXEDkdf6MANpKdQrsAG8mQX4rVJoQ3WDNkl1iWVmOv7RxQEfnB/4tUsDn5Z1BgjD1RPksEEmtWwDeDEFMMBeKpFPxelxg+ZJCVi79ss/Xt7lwwsDn2Ap7FjvQCotJuLCRhZKI+icDPBqCiAB0PRJuJ02uKLUN5xm/fI238lyaJaLC883xFHr9UZ3xTFHVLktOO0gYD9G4Wk9ZhiiQsIp2ly/8pM9NEMzHXjfOM6NaywzvXDFHGa7SICdStugu1i/WGqqr4MExW6LnPN1wKv+6qjyGb8XNpbDAPtxabkgASxXxfi7tSa/mQ5/YAxmgjm/FdzmGEMlDa+Jg5fwb0AN6OtbsfC89Zti+bLYUf2W1P0HNQBs2PV70+JZES4BvI366k3g3HWgM9l8ClDGMClOwMw4zgsmk5W+FIE6ZW8iNzNmATSqRod+SI4ahwFOLP4d4DTXH7TYjuN1xtkiAAAAAElFTkSuQmCC',
+  '3':'iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAALmSURBVEhLzZQ/bxxVFMXPvfNmxnGMxB8RLKGAohRISBSIAtFge/7umgihoFDQE0EFgQ9ASUULDQ18A2q+ARISJaVRmlQBxfbu7Mw7b9F9kxjjXaTIYMSV3s5q7933e+/ccwfL5RIXucaPC4r/NUCdwDsBBRgAJGcLLM4N2AD8UIF9JfStkhNHp+LP1p0XIJcBzivQ18LeQHvCWaHcTOSr04XnBSBX8ayUAHjcSOh2wdkkYwJ8ebru3ADrQQJ4AZgpwrxQDpXad4OexGMDvnkJTyxvIVveRmrrVEqupeCiEA6lcMuBr+HP/GMBNMqQcTbNOWsc71eObzyJFx/ltxT01uxK2JVCc9ej3DqAP9wBVdXfGq3XD7XQ1+DQKodG2Lej9tc38JnVD60EeesoLGLTlSwdrzh8sgLIFb8saombvP+MMBVwvgMOJTjUoG+Fl9vfOQIlQo52QL+vQSaHYXEji7WzJuN2pp+uAFLBr+brvgQXNUIqCEMlccP+7ST8VFwPXZFEmFnTAL4F96ofwqyVcDB9NnSl42yahasZ7qwDHNhm8cSV8EGTkfvKb9+8yY/e+yK8fvO70E9TDs0IFihTlfBK+2OwoRsmEoZGwmyS8/kMH68CFHfjiW1wSnuOMtVPjbfqpy4k1b2g+7+F55qfo3PMpsNUgzkoDlwpPG5zbq+7wSXBQZSoGF8B8VS18pJDOH53i10h9Dc0bNT3Q29Nr4Rfv6zhzlUJvjEpQXuadHHDs4CTHhTjnzcV7MwZ04QPdkHd9SPYZGwlnrorlF2N0NtvEwlOQSfSrwU4wd1r+UOJKmEmoAPY7Wm8/r3i6bCo3Zi3xttwVcJFCc73wOMdME/kL55fmQMR0PxsWuYSryrR643QLBxv0CJYT2w2HsrBF3LcvpLjg9ObW6wAFOi/f1XpK4TNJDnRMhEM83dSf9jkPGxzHtWp5Wxi7QB/GysAi22HD+318Hnk/bNYC/g3478DXOT6A7PTs3wRu3TEAAAAAElFTkSuQmCC',
+  '2':'iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAK6SURBVEhLzZTPaxNBFMdnZ2c3TSu19CDaIkgpiHjzx8mDeNKCevPkxZvelGJF226329haPRTE/0A8KLTJ/khAUbHgSW960aP/gBTbtHFn9zuVN0lq2qRKoxUfvF12d/L9vO+beWHr6+tsN7N62aX4vwGmaUrDYCnnhtz6rR7tAgxh8lTOjyApTgEvczANhq2LKNoGDB0/iDjvKhl6St+jKQKkZKxxYbsAduZIX9qdzSi8noMMPcgFV+HtI4KIxnVtAxhjlbkrZyFMgVNHDyGOPGBxDl222LQffwLYCFvw9TjwtBNb8E17sROAUeuxTmHyjUpPH+5DvDCuZN5V3woO6ADUv/0KkPCqmGEJrhhjkJGHxHdVUvTw7OYlqhQD+3udE4P9kL6rKJPQgc1/nqiWANsSq2WyHIzBMg28f3gV9EN6JvEk8hCH40h8BxmTI/Ynq+KBq6iASjSDDOcftgPIpegByG7su2p5fgyfH48gCUaRlDywobJKgklFEBk6KOfvaCd1BzJwVaW4DaArYxVXoruQgQM617LgquViDl+eDCMJbqPy4hqy58uwzn1V39/cggzHERdGYQsTSSmHuFAtqhJNk7NPzYAO8bzse1qYMqF76CAu3oO4uIJyOK2dUa741QEjUarcMjn0et9VS8E0OOcfmwB7OqxXq8VZPaHUSxLXrViY0KIaTO9rBegBq288PecnlPR1y1qfok6bvysHuQ0Hqe8qw2CIwylFEA2tC1PqIjwsh/fVSjSL4QsnU4OxpC7eBMjafHEtmtGbp8V8B9xgyAgzXSvNVltA7qjXgYPergx6sgLHBvufDuzbe6Onu+Nyo3gToBapLOW0WMYSqM0CMzmHxTlEQw4c6LleG8BtoxXA6LStlE6RyY2tf8Ek1pi/jVYAZnG+KITZcrx3Gi0BfzP+HWA38wdGwfcOAP9CiAAAAABJRU5ErkJggg==',
+  '1':'iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAJ5SURBVEhLzVW/i9RAFJ43M9m9ZZUTLSy8RrAQ4VAQa6+0tdDOwtbyCkH3R9y9sziuOxQLsRWE/ZHcCsKB/gn+DXaWHuuvzSTfRN5sEnK7CyfLnfjgJZmZN+/73vcmiUjTVJymTy+nZP89ABFRQkRQRJBEZjZgeYB7QgkhErPfghn61gx8e/fWVZAQR5ItDXB9dfXcONzCYdCFCRowoy7isIWap5Ny3NIA65fOr73bvI/dh3fwYOMGYq5k1MXv3mOWKs7jlgbILL155SK0JGysX7Y42EE82oIQ4sQAcqMVT1nT960JW9yHQqa/ASAiwazK7ubLMSueAjc6CpuIP75AVesBLxwHQPVqJTE93+YnJR76Fp/2gINtVD196IJIJDzP6ybw7XjYwZla5S2vHQeAyeg5XOm8mQH4HrZgem17+9oaPKV+cly+zkTGwbY9W9U9TrAIgLR0GkJLAdNvuqTRoO3YR+wMtN+BCVrQWiAaPEUc+Db38fsd1D31ag4gTZ2u4JcnDp7ZMrNCgowlOydTRPbXh11EwVQeV0G4jfqKej0HwONo2Jg2q5SU7wVA9szJOSHHfXm5OR2H0wqVpPwgLAAoMcwby3PFfCZDUUWpGq4iChp8TBe/B0SUFozzKkYdFIyzZMwyH7s17seoi4pWqHk0yZPPAwjhAHLWJuxaKQmTsAPTbxdM80rMfgdR0ATHZLLMHceZCkTqNjo5nsBT0m3SJJIo7GISNJHLNem1bK2iE0/SkY/brB0BqFXUG2Ziek37ee8Rsk+yM63ou6fom5byq5byUEv6caFe2yonW2SzTRa+ELKi+Cci5n4ey9gcwEnbvwM4Tf8DDdkUAusVmxQAAAAASUVORK5CYII=',
+  '0':'iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAMbSURBVEhLtZTLTxNRFIdn7jzbTluHttCC8miwQiFuak0wRJBoQmJMDLEQ/wYjGzXFYlNq7MaYqHFD3CgxcdfXEJZCjIlxB5GNibhy54qFKDPtmZpz26mFsirlJKeT3sfvO68ZplKpMCfp1Z8TsmMB+nzumV5fR2zA746d8aqzIZ8yfvhMywCvIr5jGKbMMAwwDGPWnqVOt/1V47lWAbtbr+dBL6bB0NJgFFOmUUiZsPaUQjyKeNM62BKAEFY3snHQV1E8CUZxyTTyNcjHl0BYti7YEoAjzL6RXQA9FwdJIGapuAgIKCFg4zlmcTwAGssy5b1CGvaycRA4AjqWKlfNoC0ANLbWZJZhQBZ40AsJgM/L7QNYFolEBIHjQM+mTFh/hhNV8qnyAu61BcBzpPRgbgKM4iPa9KnzQTgliZu4dyQA68sTgqliCdCpXRzscEWHhjyRUMgbDocVa532IJ+AEk5SPmVOjPaDQxS/4F4TgCeksnLvFui5h2BoSdhfy4DAc+XR/q67GCnPEfwPPEfKg92eGzQelgWjNknokyNB02kT1psAkkg2bQILRmERcOSsCzvL8xDs6oAfK/er05JPmd/fLsCbO9cxS1iNz9ajR78c7kfARhNAJmRLVSQ6btTxQi5l7r5PmJnbV6tvLc47ei5l6loSpqNn68K6VaLhPnAdVSKJ477ZJUIBNINC7YlvqpakJaNrKNYYBK5pj6tZa0mYHBkAlyxuNwF4jttxyTyNEqPBC3VQ8f+aFbElTmH42dDSAJ9e0OGIhALeJoBMyLbTJtAoqaOgtoRzTb+Wxlqmmh0K18plZfsnF6f9QO/2ODNU8DBAIuSrInNVABVPgmqTQORIqbdTBY9DrE5LvVyLtOkBtwLdbnvZKYmbTkX4YIkfBdhUJA6MfAL+ak/MseHTNF2XXdJisRhnF8VfY6EeuDDopx4NBeDSUC84BP6n0yFvNQpbdgAQDKpum8jvW6lKAv875HdFGy/4Vdd0QFXGe9yOqR6P40rA5bjWuH/YDgDQznk8TtUhzCk2cebAyRatCdBuqwNO0v8B2NYHv/6LjqcAAAAASUVORK5CYII=',
+  '-1':'iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAINSURBVEhL7ZS/jtNAEMZnZn1OQgDpKK4BJBoaKOhor0Cip7iGhgaJZ7gjloPDXQ54BJ4ACWInTrgTHU8AFRIPgGgoEP8U7+44aNb2KQkcB+TS3SeNbXnG3292PVqYTCawzCguS9IJ4EgdF8AigpX7uWY9nU4cB8CO93dZxy3We132lLKrjZXtKrkowGQvdzhL7rNOwlzHYW7TiAGBlaL3UrAQwCM043iLzbDDulcATBoxIXJDqXdSsxDg+uXz1xq+Z880aqzTiE2/nWf9wAFqPr2RmoUAokkYEgLYT3HAWb/lVqMI2Sd66/L/CEAAoDKcQgASw8/DLuu0w882bzMA8il/5bXk/wSojFBMNjZAIaIllJFESwAf7qyv12sIlve6eZa02KQdBgC+cnH1XtnMoQAkEjN0+1mFefWEdT9gnWw5I+lcx5us++1cDx7w917x/sLa6VuV0QzAIxzLXHtEzkQ+0gPZ2+BgUoyMYxmu61FU1KXbYm6bdf/pdKezAKV+SAdaRk8MZOySMDeDthvBylieXU6gsqLRDt+4esmunW1+nDb/BaAIMwFkg4jHL6TDMNeDKNfPA2dsBFKCHFiaGD3k3bs3LQJ8nTcXzQAI8YucKYjo9hIB5J5n+4856xVduxWUK/o2fOTqfCJT/dR5HfaT5yUdymHmDKfg8u63xpX+FvDfOgEcqQPAMuMngAlNLLTW2AwAAAAASUVORK5CYII=',
+  '-2':'iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAJGSURBVEhL3ZXPaxNBFMdn3252V422op4Ej548Cv6gtepRvOQSCpI/QTy0qCUN+dVaD5JgabyJoeBJiLvZIJ6sf4BaKwGxthFBr55c6+7mu5E3TSQ19WCTXPzC29k37+189s3s7IhWqyWGaduXwUnpdoYB2KFhAmQlwwRI9QNQI0JACAFFiKZom6mqP7qT9gxQhPBdZx5+NQXPyUrberEETaUmKRIstWeAECL4/rwAvzoLQ9fgOgsInBywssSDB52kvgA8PaQowMoiPCsJ386EeHkPGin+sah+m5P6AbCa3+x5/HwyhaCaCf2n6TBwsuHGwykc1LUvnNAvgBVoqoBbSSKw0yFXsf5oGqP7zQ8cHARAkCIC186DK/CtdPixfAuHD5ibHBsQQGm61hw8CciEm8szDGhwbCAATaXAtbLbFdiZsLE8g5Fo5DPHegA60VuD6I1O9M7QadXUqa4TrXKfQfTaNKhuEK1xzFBpPWpEXilCwLXy8J0c/Go2bDxOYjSqf90VcPzISFBKXEJxchyL1yZQnLyAUuIi7sbOoRgfQyE+joXYeaSunEYhPoY7sbMoJS5jy8nDq2YR1OawUb6JQ1Gz3gN4dv+6cfXMSXjWLHixeE7lvHJbSYd+pe3zm3biVjr0azn4TgqBnZGL/Kk8jaP7zPc9ANbEqRPgBzwepJaHHKAN4nvps/En2WmdlHyGwWsPbiCiyf8R7Qrgnamp9O9Gsm1qpPAO/33o9ADa6iTsOJ26xP3dsY7/Z/9fAQPTfwQYpv0C6chjN0INspAAAAAASUVORK5CYII=',
+  '-3':'iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAJwSURBVEhL7ZNPaxNBGMbnnd3ttiWltIJUBG+9BMRDKHgQiyKI0oOgqyB4E4VShR60pWkau2msFXpRD0qvIqK0yWY3WP0GCi0Ifgev1ljLzO6TyEzSYps/tmAOgg88O8POzPt7550ZVqlUWDtd/bRJ/wF/1H4BETGGvT/3o5YA51yi1zIMbL65hx/5DCyDh/F4vGPvvFZqCbh+6nifaXCEgQuZn0Z+4praRWnvvFZqBOD9sa6XfT2d+cN9sTWDc3x7OwnpZyC9dPn80CAGeuyvacfZ104aAQzLNCKVuWkYUG2nbWEryEAuT5dlkEW3bUZjl05fcBzH+H1hI+0CnD0xeJQYi2RuEjJwIQpJCN/FZnEeJucQQUaXK/RSiHXa4ERRIpGwhhkz6zzMzDpATcQYg8kJtZsD8W4e0p9FWHAhc+my7vsu4gO9elzNI6KdvsF51B+z15sBmGVS9N3PorS6iNLKFERuCrKYgVDB8+myOgupSuZNQ/izkL4L4aWq9l1IL4mPz+58qANcHIoPEGNhaWUCYXEOIp8E3j/Glv9Q91XwUAVXOwjmIAupWilTEIUqSI1JL4W1xVurdYDxKye71KNaGh3B09sjeH3f0Yfc1WFBelMasG2RS+qSNLNNFNQBtmWZxoaqZazbxsrEVZ2RzlTXfhai+Aivxi+rQBViVCHdsgpnTAXSPnKo50FTwEgifkxlUSrMQy7PlEt+trz+YhSfntzEl6W7+Px8TB0kHMYOdk23RcTCjVwSm8uT+FlcwMKNMxERhZyTICLBGJO7FrRQQ0BN4FQ1EW3Vru+B1QrwV/RPA3RJ2wnQ2gG0078AketrEkol6RsAAAAASUVORK5CYII=',
+  '-4':'iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAALsSURBVEhL7ZTPaxNBFMfn7exuE6uICiqCVkQremgFPUhbf6B4ELXgj0NBlCpSUBQF0dKkQbrZpkXw5008KB6qULH5HUopiEf/Bz2ooKAg1DTJ7ux3IzNpLZqmudhbv/B2Z3fevM+8eTPDyuUyW0yrPBZJS4C6WghAmkZ5xphHxDzGGKQRkbKZ7zlnYiViTBBTvmJNo3FW/q8J0DWtcO5Qi7je2YEbne24fXo/rhxvQ8/RvbhwZA+uHmsHEcsHTD2/Imi8nZ2AMiKs5OxULQDta23qlo6versgEhG46Sic5ABcaeko3FQUv970w9DmguLdY5RSUbiJAYhUFB+e3jwxL2AnY6bONa+QHVaB3GQ/puNhuGmrElyZDScVhcgNwckOghOhQddQyg1BpKMQiQH/y/NbnVWA7U3rNnOuec74MJxEGG4uBicZ9Rs0hunsXYiMXQmgMrKQT1gwda4yEOPDENmY7PPd+ID//UWoOoNtm1ZuCXDNc5MROGN3fDkw2KCjMPEIbqaSjZu1IWQ7ZaGYsvD+wSVwYjA5h5sIQ2RtlfmPkb4jVYBVqwIbiVihZeMatG/f8Gd9RcZCcfw+TEOHm5MBLDgpCyI7qOpin+xQmSwPmHDjfRBpG1+f9R6sAsyI5NY0DY4zbc2Q2RRfR/zzh3YpmDc+WCm6BKRtHN61FaaugRihOPlQAZ20jY9Prh1YEDA1FkIpdxduJoZvIyG5JVGMhyFk4GQEk/cuY2LoooKamqbeCbsbWbsbY6EuvLR6am9TCShkZIEj4LIOvBKglOhXs/uZu4+gaXiGrstDVZgZ58hxvHIovUZTv14LwAxO3q+RkF96HVaFDhgcpVQETjyEqdFeCfNam9aO/jWoIjm5WVOaD6AymE7GZq4GBl0jlNIxLDP12W0561dX8wI4J5/k2uq6T8RkZ/no7mYYXPOCDUb1vbKA5gMoETHRaOifZXvb+tU7iJirMfbpX796qgn4X1oC1NUfwGLab3h8v9uwM9ZyAAAAAElFTkSuQmCC',
+},int:{
+  '4':'iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAM3SURBVEhLzZTdaxxlFIfnna/dJCvopXgp+C+Id975H3jlpVetWKjVNk0T0IbWb8UiRa9sSY00m43R3MSqYKKxFi2WJm6SbgIqCIKm7MfszO685zyysxBZdpsmFxF/cIbhHM555p3znuMAzmFa93FI+n8Bmnd8JN7BJmMcfdrZV9JAgBRddH5416mLedgOSe8MEfgO+byDlA3czPckyqxBir2+gQD91EGi90muGuy8Qbc8bGWEtJInqZ4j/eMp0o2A1m0H1l3SkiGeNmjyAa3Z8P6AjtJZBztn0G23E8Sq0NEXx/Nc/ei57B2SLKabLjrrEU+ZvkL3BGgpRCp5CiMBqqCqqLZp3z3DpQ9fw1rb9dXO4XkO6aqDLfX3ZSCgNj2MVrzu16kijRNIfRytneX2iw4qHWKK1E+i9UnSpTyua6Ds7w/Aao7FyyFJ7TJam+DmSYcoidHGG6TtGFHLD6dy2Slsq8m1ox6/XjHYVQ+ZDu7dA10ooCUXmXcpFIawO5OUJx9CUpv9camNs3jMwUqEiCCiSPU0rb9P01pxGRn2aRcNMuOx/c2jWdFeQDFEk/fQ5AKFQoFWq1vYxvPcGg1I0zY2GkfiCxlga+oRtHYGqR5HV1x8Y5DGeTR+l/lLD/cDOpKZECl7DOdz3SYCXx8JM1DWj/oEP426WBGstFk84iHRW+iNIYxx+vrQB8icazneecVFaqNI4xQ/ngiR6Dy2+jzaeJnlY4YO2TYvIvVX0W8Dql8WkI0R5JPscvxbaxCgORei29nAoM0J7PpjrE04SPUF/pxyIT6L1l/CbjxOuuzS/sqQDzzkZ5d2VL4/IAuUfNJ1F9ny4bpBvs9hVzwC30Mbz9JedtHrAbXvXALXQW+52QXpqzMIkM4ESPR2ltAqGx4oZAOUWbTmEYYOxmRTi90cQjdc0qKD/PYMSfzL3idolgwSvY4ujJAmS8iC310FlRxaCbCVB9G1HLIZoBUfKTk05nziz3wkehNZe4J2vLRbsA/QUWdNpPGNXedfvz+Z7SWZddG7Y0gxINu4n/femJ0rHsnHvftoIGAvSXUMir3TupcODmhdQ5PNfSccGHBQ/XeAw7R/AHhTy56yd374AAAAAElFTkSuQmCC',
+  '3':'iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAIvSURBVEhL7ZHLTxNRFIfLTGeqhZbWuHNBInHhK2qUuIL4SmiRkhi0LaRIHzYIElEUDEIQX0F5RUxYAEkTDYkL2KgLV8a/SFeGMp175zO0g9FQSiFhx5ecezfnd757cxyAYy+rcOwR+4Jt2ZFAfNaw1hbKa7YpW3Dm1GmOHPbw4b6TuvNnOXH85PahcgQVDgWnqiAy82SbbqI6HOTicYyOjvXQ1kGbkgJdd/H7aghr5Almzz3MWJLVVy8Rc+8QY88QiQS/LlwrHrYpKXhcU4vsTJBSFeTHRQa9h5AzE6xFbyM6k2SDt5BNUXRVKT6glEBVVUQgQm91NWJxDiOeZqjKg3zQjxwcgKUMw14fsrmd3JXWzQNs/hNI6zlWbgGZnabO50cGIswdrUE8GuBHQz25oWG+1zcgEynk+0nMdBdPK33IQDS/Dys7g7U6nx8mVw7m700/WFvW4KvGRa8fcb0NsznKuNuNmBrHyixgpO8i4ylk30Nkbw8TVV7MQKQg+KbDF70gWHYWF2zg1DRkKIZoifFzbJTc7BSiuxuzMYxIphFvXtNf5Ue2xMjdiG0eYLOlYB1dURChCKOVXkSgFXE5zIjHg5h8i2i/g3kpjBGMou1myevMTr/ApSiYwTZEMEyfz8cBVUWGophNbQxUe2g85isetikp2KBSq8Dt0sikz7HYVYuqqCgVW7/6X8oSbGB80rGMTHnNNjsSyBUXlrFUXrPNjgS7YV+wLX8Fe1l/AFlUPhUh4ptQAAAAAElFTkSuQmCC',
+  '2':'iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAPsSURBVEhLzZR9aJVVHMfvc5/d+9ztTi6pV9NRkZhY9AbRH1FQRCVFZTFnmjKUVFC0bL6U5jbnS4Mp1kpz8wWSIPBlathWaZYvWUiYpaOG07vNqW3Rtub1vj3n/M4n7pUK2XUKYfSFc/44nPP5HH6H8/MAnhs5Lk83KP8PQarpAXr32bDfj/nChs8sqPejDwXQB339Hr6mwHxtY7qnIdESVKuHRHM+bpNFrDEX6RqD+f1p1Kf+qwL6FRAZCR13E9lqIZIilUoiIrhKIUYwIqjzz0DrLZjIqKyQqwpovwt17jbcjlEYY2hpaeH8hQs0NzejXJdo9CLdXV1ordFiMC0haLu1DyirwHw1AHP+dnp+eYJkMonX8vBNcRkHJy3m+6IF2F6Lb6dXcGhqKQGfj+mF92J6V6ObBqEPB6+A9RGwdwCmZwryx5Mk4jH8OQ7xme+j19ah39nK8cdmMMETRKq2IZUfk5xTSyDHRzQWJ9o5G9pGYvbk/g3sIzDxEqQplKm117ZJzPgAWVuHqdqOLqlljhNGl29BV+/kbf9w5JV3cR+dh2PnEE+5nG7IRS6uyC6IX/oSEyvFPeGj68IRfnzxTUzlNmTuemThBtw3NqHKPkKq6zDVO5BXa1ji3IxMrCD+/BI8nhx+3jsK0zub7uN2BnqFQMdWIk2D6fhuSHqB5NRqZH4tVaGhSM0e3PIPUZXb0Ys2IvM3ICU1qDnraHykGDWpkhFOiFjKxbTloZqzCX59CHMqRPexgfh8vsytU7OrYWMDZs129LzNrAoMQ8+rQRZuJF5UjjxbjowtRcYtZaDt0Na+C9odLjZ6+grSkVMD6DzmJeD3IZNXoSu28FagIFMmvbAmU5ZpvoHI6+tQczewzBmOPFeGKawgnBPAkMS0B6A9nF1gjocwPS8R7TxEa/Fy1GvvIbPWsTQw7LKksIK5vjB6fi1qwXrcCVWcHjOL+PhlmTeQ1gdRh22ikYezC1L7HUz3FE5+ch/+XAdVvBo9bhl6/Ar02AosjwcpXI4uWoF+oRSZuDKzlmb99PnLyLn7MXX/tI4+gnRklwVnR1C/ZjBeyyIyuYzk44tITKzMwPyWjfvUYtyxpdheL4V3+NGSQM4ORg5c46P9ldQRC4mEObBpKMH8PPKCQQIBJ9Maujv3kZ8fJJiXx+iCEJcSceRMCHNmEOq3O69PkI6cHIJpGY5qHErH2YZMT1JKZdpHKpXCVYbT9Tdl9pi2ArQ62gfUryAd2e0gP4Qx5+5BTnkhEoSW9G0dTPtodNsIpN5G9czMCrmmIJ3EiTCxBguzw8bszMHs8CJbLXp3W3C0oN/D1yX4N/nvBDdy/AlPRRFPmYUbAQAAAABJRU5ErkJggg==',
+  '1':'iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAJYSURBVEhL7ZNPTxNBGIe73e3uQlWI0UBiTIx68mziJzAYKpSgQS5gD7S1LVWylAYIUkBK/xjkAoGAVv04fgbPno1GY9ud2cdsG42W/kND4sEnmc1kd97fszN5xwN4TnPUH6dE14Kz/l50Xa8tNA0d3ae5846F3QqopnepLO9hqCrfpjeozuQpT2UwTB8TE5MtAzoKfF4vtrWDLJSQkSwx33nscBb54i1iZQ97cgl3TWPdD9oKvIqCk32Fs1lCzG3jRPPISJ6YcQEZyyNDK4jRFGJ0HlVXm4a0E1BNFHHyJYS1g5Ms4sQL5C7fQMYLOJkDKuuHfAmtEjP7KQ9bGNrxnbQUKB4P8vFzxGyRRO8AMpFHxAssnhlE5ko4228QkSwyvEnaf4nK+Dx6k6NqKtA0DZF9jVjfJ2kOYieLiOgWcrbAjNaHSOSQ8SIy/AwRzpLpv4IdtBBjC3gbJC0F9uoBIlqgOrfN/vVbOI9yyESxtotZ4yIymsXqGcR5sIwcsZDBFHIshaIonQU+TaMcWECENnASeZ76B1jru8q7oYc44S3mzQFk5pDq0i6VYJrPgSTyroUctnB/7tespgIXt4OkK7m/WDt/GdlCTCwT0s4hp9eQoc3aN3tkgdK1m1SHHrshx4JaClxUVaE8nq5v/16a6u0ntRBxZw4RTCECFnagHuw2RWO9S1uBy8ujIwyviunV0NV6r/eoGqb7TlUxNV/r4m4Ef8t/QUf+PUFPr7/7xScVLKam4KOJrv9+W9txAoGO/KAj7K98eu/BpzW/WI2cQPBn/BSc5vgOeHNymL7P4XwAAAAASUVORK5CYII=',
+  '0':'iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAIGSURBVEhL7ZRLTxNRGIZnemamUwMxeInRhaxc8SNMTIgLIwRoIWIKiiYIimlhaBHaABrk1gJtjJsm0iJxrzu3/iRjKHa+6WMmRDe9x7DjSc5t8b7PyVkcDdDOc5xN50TbghePnjMRneB+fz/FYonISJiBhwMtg20JlK5Tnt+h4hxwfG8UWxmcLu1Tfpryg03DLQWWGUA2Cri5Y8TJ88DsonLwBcl+phJNIc/W0JtImgqCSlHZO0Lyx0imhMxlcDcPz/YLOaq7RcbMy/weTmBbVt2ShoIfW1l6lYm3W6K6XcKL7eHN7zOp2cjyB8Q5wE3kkHiGSU3x8nZfbUkzQdA0cTc/UV7MUZ7eQF7v4C3mcWeyOMHrSCKPTL3Fm0gTNXpwhxIYeqCmqKEgoOtUs0dIbJ9k8CZzXbfw3hWovi8wa/TgbZdw0x9x7Gt4Iw5eeBFD02uKGgoMpTgdTSKxbeRVho2rd8j09nFyd5ZfM5vI1iGSLVEejFOJJKg+WSVomDVFDQU+QdNCxlPI2BtkfBl3bAWlach4GomuIsPLSGQJLaCj6tzep6nAx9B1ZGodGYxzMr2OUjohZSDhJPJ4hcpQkkCdt/9LS4GPaRpcskP4q3++0t2NZVlYpokdCjUNtyX4Hy4ELbkQtKRjgffNhq/1v+Z6dCyo/lzj9PuNtgMdCzrln+A8xx914jF35HkK8QAAAABJRU5ErkJggg==',
+  '-1':'iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAALYSURBVEhL7ZPLbxNHAMa9T78Cf0V6gFBCEBckIjWoSeQDKhLgpgToAW4cOCABx0rtAVWiUSIgt4oLUcEJmMSYJBUIMK6bZL27BmPxSMmxtKpAqpq29s7sr8oCBotEViXCiU/6dnZ2Zr7fzisEhFbTLx6rpA+ApmoKOHjoEMnk5/T37yORSAQdOzo2s62zk96eHro+6aK759MVA5oCdFVD1zQM/UX58nPwHjZNtKA0VgxoBoBnfyJcB39mBq9cpkVV6OtOIC0bb66ILN9jTTyGqqrLhqwIMA2NxUoFeSeHX3Lx75eJRSPw9Ffkg4cIx8YvlZDFIl4+B8//IByuz7CuZQGGrvNXqYKsVBB2EWnbgXfH4kjXRjo20nWCtrorZRZtB0VRGsLeAkTCET5ubUW6JQ62b0bOP0K6Lr7r0B1vgV/m8YtFZKnEV4leBvfsQjpuMKPq5DTb2zcSj8cYS40GoQ2AwaFBTNPEc12kbbFFVRCPnyBKLrJowcICHSENMTOLP2exIxqmLxajevMWfqGAyOeojl5E117vRwNgYOA7IpEI/v1KsLb9H7VyZOMmaoU88u5dfMfh8Lr1fJ1M4s8/RlpzHG7fRLJlDeLOLcREmtqlFOoby9QAGB4+i2kYiB+v4+duI1ybYxvaGN67n6F9XyJnZ5GWRWc0jvj9N4RVpLbwhKNtbZz+bCd+ZgJvPI3x+jg3Ak6d+pZo1OTmyW8QU1eR+RxybpYzfQcY2vNFUPcLebZGYlQfPcCzCoipa1QnsyTXrsUbOY997nuWDsmygCWdOH58qUL1wgjiWgZxNYvMjiOmsshUipZwmANd2/EmM4ifcvjZDCI7Qe1ymn8vjARj62HLAV5J1zX+uXEDb2lwOkUtPcrfl8bQVQXT0FmcnkaM/YDMXMHLjsPPeQz97cu2IiCQEvwNihJCU4ONq3c0TQ1VCQXWQ8r/v8nvSh8ATfX+AKvp/wByTw5a0RamwgAAAABJRU5ErkJggg==',
+  '-2':'iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAKVSURBVEhL7ZTrThNBFMe7O3t7GTWRRBMeAeEVeAqMgCKKoRjDTaHbFrEtQmI0MSF+xgZUSvcyO7PblouVBX0BfIO/mSltQHv5It84yWma6dn/75z/mW0CQOIqs/FxRXEN6Bk9AfcGhzAwMIDBoUEMDw+3Cvv7+3Hn7h3c7uvDjZu3Ogr0BIgaTdOgqqrM5qH4TgiRvxFF6SjQFWDoKk5OfqJer+PwoI7d4jdYugpT1/H98Aj1+jEqUQVnv8+EQFuRbgB4JRdx/ANxHKNW2Zci5ZKDaqWKOD7Gr9NTcMbBaAAWBCDqv5O0BYixa9E+jg4OQX2GkEWgvg9T0+DsOfBdDzzgCNl58hCcMUQ8gq7rl8TaAsS571IEPpMpugvDEK7rQkmoKO2WpGDIuRQVgJCF4JSDXNiTFLoIeDY1JZdmv8yBBQzUp2BUCDFpBQ+YBInlClsEQKTsPgzlMx/efwTRtNZOLgHGx8fkTRFi1agibQl82ug0FDZwOHtlECWBSlSV9ogzMUEg9kADbG5+AiEdAJOTkxKQWipIr0PGGl1zDup5qNVq2CluyRrP8aQg9XxpYUApVrLryGbWpQttAY8fTcA0DNjLBWTsNQloWmUv57A4l4FlGvi6/UUKBucTOqUSiluf8WZ1Q9Z1nKAZpk6QTuWQWsrDKbtwymVks3nk8+9AiIr08lu5aGGhuFHbxR2sZNdQyG/A0EjnJf8VeJG0YafyyKTzeLX4GoZhQFUVWJaF1ZUNpO2C7Dhj57A4n4ba5o3uBkgIuxRFga4TmLrW9FaGZQmY+LtQYRq6vFmXn25EV0Ay+RxTT54iOT2N2dk5PJyYaBWO3B/BzMwMHoyOYmxsFAsL821FugL+R1wDekYLcJX5B1GQHrOEFeJnAAAAAElFTkSuQmCC',
+  '-3':'iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAJOSURBVEhL7ZPNaxNBGIe7M7Nfack2bUQ9KELxYP8JsRfxIOI/WQ/xLEgVrSlWESO1jSEmsaJoQdJk0w9ndnYmP5nZWLRJzMXopS/MvsvO7vPMvO/sDICZaY7sMqU4E0yM/yu4eOE8KHFAHAe+S+E4zsmLDiFwXQrGsufLy9dGQsYKoigPyigIccAYsxDP85DL5RCGIQghds5xCCghmJvNIZ+fGwKNFRhgEATQOkXK20hFD4JzMEotUAgBlRwj5fvoawl3sIjTnJECj1F83G1BSW4BOomhkh7u3rkNz/MhBYfi+1CiA530oEUbWgko+d3u6lfWkIBSCikl+lpDJx2kIoZOulZyY+W6LZM63EPKO1CieyJRIkYqOtj7UAGlBFcuX7LQ3wSl+yXbtEQcZqsWBmIEMfryADdvrSCKIqS8C8WN3MC70CYffbLv1ypr8OgMisXFEYJSydyACwEtM3Am6UIlMVL+Df30GDI5GKw8hhZd26P61mM0dtZR31q3jMWoMCy4t7oKl1F8ab1Bc7uMZnUTircHpRiUyvTkpCwd26Pm2ydo1Z6jVnmE7VcP7EEoFkYIfoZpcvtrDdXKGpSMoWQPknegZQbNmh4jOdqDEvtoVTfQ2Cnj8/sXcCc12cTVpSV79plLsVt/iebOMzSrZkdlNLaf2tx6t4Hd+qYtS/X1QywUIvg+w7niwmSBCZd5mA19hEGAIPARhgFyYWDz6WHmDYsyNgQaKzDhMtd+7Ad+ln1zH2R5MMzPaPL8fDQS8kfB34gzwcT4d4Jpjh8S3wGstNyxOwAAAABJRU5ErkJggg==',
+  '-4':'iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAHWSURBVEhL7ZPNbtNAFIU9nhnbVIqogAVqN2UVqpYNLTxIKUtoEciwKBKCBYIXQUI8Hl2BZDsx/sn8nOreSVDThHZDNlWPdDLxnavz+WrGEYBolQ4/K9IN4Epdc4BSCmStEyilobXmxu8/voV6QvVZT9i7qKWA/E2O4+NXiOMYSkrIOP77f2/3ETbvb0BSfbpHANrP89f48vXzXNhSQJqm0EqhbRr0fY+qHKOu/6BpGiRJwm7aBk3dout69F2PqqoYQnvns+YAHz99gKS3EQJ379yD9x7WOTgbPDEGg8EA67fXYTsLZyz3OONQj1rcWltDlmZQKsb2w20OnQO8PHrBIz99sg+SNRbGWlhr4bwLzxMH78GmujGG4QTq2g7D4RBSCuzs7iwC8ndvEccC+3uP4ToKC+H8lt6H1TkYY3kl22k44GEnBltbDyCiCM8PDxcBJ+9P+GZQnWxGZi6IpnBuOtG07pzn5/G4RpZlfJvIBwfPFgHnhERrFL8LVNUIRVmg/FXzQY6qMR96UZQoy4pNPT9PT/mWKSX/fcgXlaYJhBCIIsEHL0TE41MtOEyqJYVS36IuBWgdPiApFV/b2fhJEtbZR5ZSTamlIZcC/oduAFfqGgFW6TOITJx9y6vKgAAAAABJRU5ErkJggg==',
+}};
+
+/* ═══ THE MODEL. Everything on the page above is drawn out of this. ═══════ */
+
+const G={hp:60,hit:70,dodge:14,land:69,step:4,acts:2,nerve:90,nerveStart:70,
+  climb:8,mend:6,opening:15,frail:0.90,back:0.30,flank:0.15,scar:'once a run'};
+
+/* the race carries the BODY: the pool, the weight of the blow, and how easy
+   the body is to hit - which is a modifier on the ATTACKER, never on dodge */
+const RACE={
+  human :{mul:1   ,melee: 0   ,hit:  0,step:4,lean:{int:+1}},
+  ratkin:{mul:0.75,melee:-0.10,hit: -5,step:5,lean:{str:-1,agi:+1,int:+1,mor:-1}},
+  ogre  :{mul:1.25,melee:+0.10,hit:+10,step:3,lean:{str:+1,agi:-1,int:-1,mor:+1}}
+};
+for(const k in RACE)RACE[k].hp=Math.round(G.hp*RACE[k].mul);
+
+const CLASS={
+  captain:{n:'captain',lean:{mor:+1}},
+  spear  :{n:'spearwoman',lean:{str:+1}},
+  brute  :{n:'brute',lean:{str:+1}},
+  archer :{n:'archer',lean:{agi:+1},frail:true},
+  cutter :{n:'cutter',lean:{agi:+1}},
+  mage   :{n:'mage',lean:{int:+1,mor:+1},frail:true}
+};
+
+/* a trait is a fifth line only where it moves a rung; the rest of what a trait
+   does is its own rule and is not a stat */
+const TRAIT={
+  stubborn   :{n:'stubborn',lean:{mor:-1}},
+  thrice     :{n:'widowed thrice'},
+  windtouched:{n:'wind-touched',lean:{mor:-1}},
+  ambition   :{n:'ambition'},
+  twitchy    :{n:'twitchy',lean:{agi:+1,mor:-1}},
+  dutiful    :{n:'dutiful'},
+  big        :{n:'big',lean:{agi:-1},hp:+16}
+};
+
+/* the dice already carry the +2 both ends that the deleted flat used to add */
+const WEAP={
+  sword:{n:'arming sword',d:[18,26]}, spear:{n:'boar spear',d:[17,24]},
+  rod  :{n:'working stave',d:[8,12],spell:true}, bow:{n:'hunting bow',d:[16,23],bow:true},
+  knife:{n:'gut-knife',d:[13,18]},    club:{n:'warclub',d:[25,38]}
+};
+
+const LAD={
+  str:{lbl:'STRENGTH',c:'STR',sub:'the body and the blow',art:'str',
+    r:{ 4:{w:'Monstrously strong',fx:{melee: .20,bow: .10},cap:'STANDS: once a fight, the blow that would drop them leaves 1 hitpoint'},
+        3:{w:'Enormously strong', fx:{hp: .15}},
+        2:{w:'Very strong',       fx:{melee: .20,bow: .10}},
+        1:{w:'Strong',            fx:{hp: .10}},
+        0:{w:'Strong enough'},
+       '-1':{w:'Not strong',        fx:{hp:-.05}},
+       '-2':{w:'Weak',              fx:{melee:-.15,bow:-.08}},
+       '-3':{w:'Feeble',            fx:{hp:-.10}},
+       '-4':{w:'No use lifting anything',fx:{melee:-.15,bow:-.08}}}},
+  agi:{lbl:'AGILITY',c:'AGI',sub:'the dice, and nothing else',
+    r:{ 4:{w:'Uncannily quick',fx:{dodge: 4},cap:'FLEET: +1 hex of step, every turn'},
+        3:{w:'Very quick',     fx:{hit:  4}},
+        2:{w:'Quick',          fx:{dodge: 4}},
+        1:{w:'Handy',          fx:{hit:  4}},
+        0:{w:'Steady enough'},
+       '-1':{w:'Heavy-handed',   fx:{dodge:-3}},
+       '-2':{w:'Clumsy',         fx:{hit: -3}},
+       '-3':{w:'Hopeless with their hands',fx:{dodge:-4}},
+       '-4':{w:'All thumbs, every time',   fx:{hit:-3,dodge:-3}}}},
+  int:{lbl:'INTELLECT',c:'INT',sub:'landing a spell, the magic itself, and how fast this one learns',art:'int',
+    r:{ 4:{w:'Brilliant',   fx:{land: 7},cap:'UNREPEATABLE: no enemy may strike this body twice in the same turn. A second enemy still can'},
+        3:{w:'Sharp',       fx:{land: 7,reach:1}},
+        2:{w:'Clever',      fx:{land: 7,magic: .15}},
+        1:{w:'Quick to see it',fx:{land:7,xp: .10}},
+        0:{w:'Sensible'},
+       '-1':{w:'Plain',       fx:{land:-7,xp:-.05}},
+       '-2':{w:'Slow-witted', fx:{land:-7,magic:-.12}},
+       '-3':{w:'Simple',      fx:{land:-7,xp:-.05}},
+       '-4':{w:'Not all there',fx:{land:-7,magic:-.13}}}},
+  mor:{lbl:'MORALE',c:'MOR',sub:'how much nerve, how fast it comes back, and how fast the body does',
+    r:{ 4:{w:'Afraid of nothing',cap:'TWO PERK POINTS at every level instead of one'},
+        3:{w:'Fearless', fx:{heal: 1},tail:'scars are untouched'},
+        2:{w:'Brave',    fx:{loss:-.25}},
+        1:{w:'Steady',   fx:{nerve: 10,climb: 4}},
+        0:{w:'Fairly brave'},
+       '-1':{w:'Nervous',  fx:{nerve:-10}},
+       '-2':{w:'Easily frightened',fx:{climb:-3}},
+       '-3':{w:'A coward, and knows it',fx:{loss:+.20}},
+       '-4':{w:'Runs before it starts',fx:{low:1}}}}
+};
+
+/* THE COMPANY. Four named lines and a weapon: nothing else is authored. */
+const BODIES=[
+  {n:'Captain',       race:'human', cls:'captain',trait:'stubborn',   weap:'sword',born:{str:1,agi:1,int:0,mor:0}},
+  {n:'Vesna Kolb',    race:'human', cls:'spear',  trait:'thrice',     weap:'spear',born:{str:0,agi:0,int:0,mor:0}},
+  {n:'Marrow',        race:'human', cls:'mage',   trait:'windtouched',weap:'rod',  born:{str:0,agi:0,int:0,mor:0}},
+  {n:'Ilka Renn',     race:'human', cls:'archer', trait:'ambition',   weap:'bow',  born:{str:0,agi:0,int:0,mor:0}},
+  {n:'Skree',         race:'ratkin',cls:'cutter', trait:'twitchy',    weap:'knife',born:{str:0,agi:0,int:0,mor:0}},
+  {n:'Ash Nobody\u2019s',race:'ratkin',cls:'cutter',trait:'dutiful', weap:'knife',born:{str:0,agi:0,int:0,mor:0}},
+  {n:'Bruht',         race:'ogre',  cls:'brute',  trait:'big',        weap:'club', born:{str:0,agi:0,int:0,mor:0}}
+];
+
+/* ═══ THE ARITHMETIC, SAID ONCE ══════════════════════════════════════════ */
+const KEYS=['str','agi','int','mor'];
+const sgn =v=>(v>0?'+':v<0?'\u2212':'')+Math.abs(v);
+const pct =v=>(v>0?'+':'\u2212')+Math.round(Math.abs(v)*100)+'%';
+const trim=v=>String(+v.toFixed(2));
+
+/* every rung from 1 up to n, or from -1 down to n, added together */
+function held(k,n){const h={},L=LAD[k].r,s=n<0?-1:1;
+  for(let i=s;Math.abs(i)<=Math.abs(n)&&n!==0;i+=s){const f=L[i].fx||{};
+    for(const q in f)h[q]=(h[q]||0)+f[q];}
+  return h;}
+
+/* what a rung says, in the page's own words, out of its fx alone.
+   `at` is the running total up to and including this rung, for the three
+   effects that are stated as an absolute (climb, loss, heal). */
+function fxText(f,at,tail){
+  const o=[];f=f||{};at=at||{};
+  if(f.hp)   o.push(pct(f.hp)+' hitpoints');
+  if(f.melee)o.push(pct(f.melee)+' melee');
+  if(f.bow)  o.push(pct(f.bow)+' bow');
+  if(f.hit)  o.push(sgn(f.hit)+' to hit');
+  if(f.dodge)o.push(sgn(f.dodge)+' dodge');
+  if(f.land) o.push(sgn(f.land)+' to land');
+  if(f.magic)o.push('magic '+pct(f.magic));
+  if(f.xp)   o.push(pct(f.xp)+' experience');
+  if(f.reach)o.push('<b>+'+f.reach+' reach</b> on spells and skills');
+  if(f.nerve)o.push('<b>'+sgn(f.nerve)+' nerve</b>');
+  if(f.climb)o.push('climbs back '+(G.climb+(at.climb||0))+' a quiet turn');
+  if(f.loss) o.push('loses nerve at \u00d7'+trim(1+(at.loss||0)));
+  if(f.heal) o.push('<b>injuries heal twice as fast</b>: '+(G.mend*(1+(at.heal||0)))+
+                    ' a day on the road instead of '+G.mend);
+  if(f.low)  o.push('starts the fight one rung lower (OK, not HAPPY)');
+  if(tail)   o.push(tail);
+  return o.join(' \u00b7 ');
+}
+
+/* the base rung says what the givens are, in the words of its own stat */
+const BASE={
+  str:()=>'the ordinary human arm: <b>'+G.hp+' hitpoints</b>, the weapon\u2019s own dice',
+  agi:()=>'the ordinary hand: <b>'+G.hit+' to hit, '+G.dodge+' dodge</b>',
+  int:()=>'<b>'+G.land+' to land a spell</b> \u00b7 the spell\u2019s own dice \u00b7 experience \u00d71',
+  mor:()=>'<b>'+G.nerve+' nerve</b> \u00b7 starts HAPPY at '+G.nerveStart+
+          ' \u00b7 climbs back '+G.climb+' a quiet turn \u00b7 injuries heal '+G.mend+' a day'
+};
+
+function rungsOf(b){const r={};KEYS.forEach(k=>{
+  r[k]=(b.born[k]||0)+(RACE[b.race].lean[k]||0)+(CLASS[b.cls].lean[k]||0)+
+       ((TRAIT[b.trait].lean||{})[k]||0);});return r;}
+
+function calc(b){
+  const R=RACE[b.race],C=CLASS[b.cls],T=TRAIT[b.trait],W=WEAP[b.weap],rg=rungsOf(b);
+  const S=held('str',rg.str),A=held('agi',rg.agi),I=held('int',rg.int),M=held('mor',rg.mor);
+  const hp=Math.round(R.hp*(C.frail?G.frail:1)*(1+(S.hp||0)))+(T.hp||0);
+  const m =1+((W.bow?S.bow:S.melee)||0)+R.melee;
+  return {rg:rg,hp:hp,
+    swing:[Math.round(W.d[0]*m),Math.round(W.d[1]*m)],
+    hit:G.hit+(A.hit||0), dodge:G.dodge+(A.dodge||0),
+    land:G.land+(I.land||0), nerve:G.nerve+(M.nerve||0),
+    adds:R.hit, step:R.step+(rg.agi>=4?1:0), weap:W};
+}
+
+/* ═══ THE PAGE ═══════════════════════════════════════════════════════════ */
+const $=id=>document.getElementById(id);
+const cel=(v,cls)=>'<td class="'+(cls||'')+'">'+v+'</td>';
+
+function drawShape(){
+  const row=(k,v)=>'<div class="frow"><span class="k">'+k+'</span><span class="v">'+v+'</span></div>';
+  $('fShape').innerHTML=
+    row('hitpoints','<u>race hp</u><span class="mul">\u00d7</span> class <span class="mul">\u00d7</span>( 1 <span class="add">+</span> <span class="s">\u03a3 STR rungs</span> )')+
+    row('damage','weapon dice<span class="mul">\u00d7</span>( 1 <span class="add">+</span> <span class="s">\u03a3 STR rungs</span> <span class="add">+</span> <u>race</u> <span class="add">+ nerve + perks</span> )')+
+    row('to hit','<span class="NEW">'+G.hit+'</span> <span class="add">+</span> <span class="a">\u03a3 AGI rungs</span> <span class="add">+</span> <u>the target\u2019s race</u> <span class="add">+ the card (arc, nerve, the scrum \u2026)</span>')+
+    row('dodge',G.dodge+' <span class="add">+</span> <span class="a">\u03a3 AGI rungs</span> <span class="add">+ harness, nerve</span>')+
+    row('a spell',G.land+' <span class="add">+</span> <span class="i">\u03a3 INT rungs</span> <span class="add">to land.</span> <span class="NEW">Nothing subtracts.</span> <span class="add">A spell is not dodged; it lands or it does not.</span>')+
+    row('nerve',G.nerve+' <span class="add">+</span> <span class="i" style="color:var(--mor)">\u03a3 MOR rungs</span>');
+}
+
+function drawGivens(){
+  const g=(v,l,i)=>'<div><b>'+v+'</b><span>'+l+'</span><i>'+i+'</i></div>';
+  $('fGiven').innerHTML=
+    g(G.hp,'hitpoints','\u00d7'+G.frail+' on a bow or a caster')+
+    g(G.hit,'to hit','the roster')+
+    g(G.dodge,'dodge','the target\u2019s race is on the attacker')+
+    g(G.land,'to land a spell','and no dodge against it')+
+    g(G.step,'step','the race\u2019s')+
+    g(G.acts,'actions','everybody')+
+    g(G.nerve,'nerve','starts at '+G.nerveStart+' \u00b7 climbs '+G.climb)+
+    g(G.mend,'an injury a day','on the road \u00b7 '+(G.mend*2)+' on double rations')+
+    g(G.opening,'the opening','flat \u00b7 per extra body')+
+    g(G.scar,'a scar off','the medicine chest')+
+    g('+'+Math.round(G.back*100)+'% / +'+Math.round(G.flank*100)+'%','back / flank','damage');
+  $('fFrail').textContent=Math.round(G.frail*100)+'%';
+  $('fMend').textContent=G.mend;
+}
+
+function drawRace(){
+  let h='<tr><th>race</th><th>hitpoints</th><th>melee</th><th>the attacker adds</th><th>step</th>'+
+        KEYS.map(k=>'<th class="'+LAD[k].c+'">'+k.toUpperCase()+'</th>').join('')+'</tr>';
+  for(const r in RACE){const R=RACE[r];
+    h+='<tr>'+cel(r,'big')+cel('<b class="NEW">'+R.hp+'</b> \u00d7'+R.mul)+
+      cel(R.melee?'<span class="'+(R.melee<0?'NEG':'AGI')+'">'+pct(R.melee)+'</span>':'0')+
+      cel(R.hit?'<span class="'+(R.hit>0?'NEG':'AGI')+'">'+sgn(R.hit)+'</span>':'0')+cel(R.step)+
+      KEYS.map(k=>{const v=R.lean[k]||0;
+        return cel(v?'<span class="'+(v<0?'NEG':LAD[k].c)+'">'+sgn(v)+'</span>':'0');}).join('')+'</tr>';}
+  $('fRace').innerHTML=h;
+}
+
+function drawLadders(){
+  let out='';
+  KEYS.forEach(k=>{const L=LAD[k];let run={},body='';
+    /* the positives first, so the running total is read upwards from 0 */
+    const order=[4,3,2,1,0,-1,-2,-3,-4];
+    const upto={};[1,2,3,4].forEach(n=>upto[n]=held(k,n));
+    [-1,-2,-3,-4].forEach(n=>upto[n]=held(k,n));
+    upto[0]={};
+    order.forEach(n=>{const R=L.r[n],cls=n===0?'base':n<0?'low':(R.cap?'cap':'');
+      const pic=L.art?'<img class="arm" src="data:image/png;base64,'+ART[L.art][n]+'" width="24" height="24" alt="">':'';
+      const sq =R.cap?'<span class="cost2"><i></i><i></i></span>':'';
+      const txt=n===0?BASE[k]():
+        (R.cap?'<b class="twocost">2 POINTS</b>':'')+
+        [fxText(R.fx,upto[n],R.tail),R.cap?'<b>'+R.cap+'</b>':''].filter(Boolean).join(' \u00b7 ');
+      body+='<div class="rung '+cls+'"><span class="n '+(n>0||n===0?L.c:'')+'">'+sgn(n)+pic+sq+'</span>'+
+        '<span><span class="w">'+R.w+'</span><div class="g">'+txt+'</div></span></div>';});
+    const top=fxText(held(k,4),held(k,4)),bot=fxText(held(k,-4),held(k,-4));
+    out+='<div class="ladder"><h3 class="'+L.c+'">'+L.lbl+
+      ' <span class="tag cap">+4 is a rule</span></h3><div class="sub2">'+L.sub+'</div>'+body+
+      '<div class="lfoot">Held at the top: '+(top||'the rule alone')+
+      ' \u00b7 <b>'+L.r[4].cap.split(':')[0]+'</b>. Held at the bottom: '+(bot||'nothing')+'.</div></div>';});
+  $('fLadders').innerHTML=out;
+}
+
+function drawSrc(){
+  let h='<tr><th>body</th>'+KEYS.map(k=>'<th class="'+LAD[k].c+'">'+k.toUpperCase()+
+        ' <span style="color:var(--mute)">born &middot; r+c+t &middot; total</span></th>').join('')+'</tr>';
+  BODIES.forEach((b,i)=>{const rg=rungsOf(b);
+    h+='<tr>'+cel('<b>'+b.n+'</b><i>'+b.race+' \u00b7 '+CLASS[b.cls].n+' \u00b7 '+TRAIT[b.trait].n+
+        ' \u00b7 '+WEAP[b.weap].n+'</i>','name')+
+      KEYS.map(k=>{const parts=[b.born[k]||0,RACE[b.race].lean[k]||0,CLASS[b.cls].lean[k]||0,
+          (TRAIT[b.trait].lean||{})[k]||0];
+        return cel('<span class="src"><span class="stp">'+
+          '<button data-b="'+i+'" data-k="'+k+'" data-d="-1">\u2212</button>'+
+          '<button data-b="'+i+'" data-k="'+k+'" data-d="1">+</button></span>'+
+          '<span class="born">'+sgn(parts[0])+'</span>'+
+          '<span class="pt">'+['r','c','t'].map((L,j)=>L+sgn(parts[j+1])).join(' ')+'</span>'+
+          '<span class="tot'+(rg[k]<0?' neg':'')+'">'+sgn(rg[k])+'</span></span>');}).join('')+'</tr>';});
+  $('fSrc').innerHTML=h;
+  $('fSrc').querySelectorAll('button').forEach(el=>el.onclick=()=>{
+    const b=BODIES[+el.dataset.b],k=el.dataset.k,d=+el.dataset.d;
+    const now=rungsOf(b)[k];
+    if(d>0&&now>=4)return; if(d<0&&now<=-4)return;
+    b.born[k]=(b.born[k]||0)+d;draw();});
+}
+
+function drawCo(){
+  let h='<tr><th>body</th>'+KEYS.map(k=>'<th class="'+LAD[k].c+'">'+k.toUpperCase()+'</th>').join('')+
+    '<th>hitpoints</th><th>swing</th><th>to hit</th><th>dodge</th><th>nerve</th><th>step</th>'+
+    '<th>the attacker adds</th></tr>';
+  BODIES.forEach(b=>{const c=calc(b);
+    h+='<tr>'+cel('<b>'+b.n+'</b><i>'+LAD.str.r[c.rg.str].w.toLowerCase()+' \u00b7 '+
+        LAD.agi.r[c.rg.agi].w.toLowerCase()+'</i>','name')+
+      KEYS.map(k=>cel('<span class="rg'+(c.rg[k]<0?' neg':'')+'">'+sgn(c.rg[k])+'</span>')).join('')+
+      cel(c.hp,'out')+cel(c.swing[0]+'\u2013'+c.swing[1])+cel(c.hit)+cel(c.dodge)+cel(c.nerve)+
+      cel(c.step)+
+      cel(c.adds?'<span class="'+(c.adds>0?'NEG':'AGI')+'">'+sgn(c.adds)+'</span>':'0')+'</tr>';});
+  $('fCo').innerHTML=h;
+}
+
+function draw(){drawShape();drawGivens();drawRace();drawLadders();drawSrc();drawCo();}
+draw();
+</script>
