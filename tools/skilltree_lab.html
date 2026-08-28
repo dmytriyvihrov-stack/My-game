@@ -621,15 +621,25 @@ const SKILLS=[
   what:'Almost no damage. Puts them one hex straight back, away from you.'},
  {num:'HUM2',row:3,lvl:3,race:'human',name:'VERSATILE',src:'user',
   what:'+5 to hit and +5 dodge while both hands hold a different weapon.'},
+ {num:'HUM4',row:3,lvl:4,race:'human',name:'STUBBORN',src:'draft',
+  what:'Morale can never fall below 15%. You cannot rout.'},
  {num:'HUM3',row:3,lvl:6,race:'human',name:'SECOND WIND',src:'draft',
-  what:'Once per battle, your nerve climbs back to full.'},
+  what:'+8 morale at the start of every turn.'},
+ {num:'HUM5',row:3,lvl:7,race:'human',name:'PATIENT',src:'draft',
+  what:'End a turn with an action unspent and you start the next one with an extra.'},
 
  {num:'RAT1',row:3,lvl:0,race:'ratkin',auto:true,name:'POISON',src:'live',
   what:'For two rounds everything that hits them takes 15% more. It stacks.'},
+ {num:'RAT5',row:3,lvl:3,race:'ratkin',name:'SCURRY',src:'draft',
+  what:'+1 hex of movement.'},
  {num:'RAT2',row:3,lvl:3,race:'ratkin',name:'UNNOTICEABLE',src:'user',
   what:'Enemies prefer any other target while an ally stands nearer than you.'},
  {num:'RAT3',row:3,lvl:4,race:'ratkin',name:'STRONG',src:'user',
   what:'+1 STR.'},
+ {num:'RAT6',row:3,lvl:6,race:'ratkin',name:'PACK TACTICS',src:'draft',
+  what:'+10 flanking bonus for every extra body on the target.'},
+ {num:'RAT7',row:3,lvl:7,race:'ratkin',name:'SLIP AWAY',src:'draft',
+  what:'You never provoke a parting swing. Walking away is simply free.'},
  {num:'RAT4',row:3,lvl:6,race:'ratkin',name:'MAGIC POTION',src:'user',
   what:'Deal 15% of your own health to yourself: all action points back this turn. '+
    'Once per battle.'},
@@ -640,6 +650,8 @@ const SKILLS=[
   what:'A hit from behind lands as an ordinary hit: no critical bonus against you.'},
  {num:'OGR3',row:3,lvl:4,race:'ogre',name:'FEARSOME',src:'user',
   what:'Every hit of yours that draws blood forces a nerve check, however small the wound.'},
+ {num:'OGR6',row:3,lvl:5,race:'ogre',name:'STONE HIDE',src:'draft',
+  what:'+10 armour.'},
  {num:'OGR5',row:3,lvl:6,race:'ogre',name:'RAGE',src:'user',
   what:'Below half health: +22% damage, and you cannot disengage.'},
 
@@ -652,8 +664,10 @@ const SKILLS=[
  {num:'GEN5',row:4,lvl:3,name:'COLOSSUS',src:'draft',
   what:'+20% health.'},
  {num:'GEN7',row:4,lvl:4,name:'GOOD HAND',src:'user',
-  what:'+1 range and +10 to hit with every ranged attack, and your shots pass through '+
-   'anyone standing in the way, friend or enemy.'},
+  what:'+1 range and +10 to hit with every ranged attack. '+
+   'ASKED FOR: throwables only, +1 range and +50% damage to hitpoints. '+
+   'THE GAME HAS NO THROWABLE YET (the bag slot is an empty promise and nothing in '+
+   'GEAR carries slot:bag), so that version would pay nothing at all.'},
  {num:'GEN8',row:4,lvl:4,name:'TWO-HANDED WEAPONS',src:'user',
   what:'+50% damage against armour.'},
  {num:'GEN9',row:4,lvl:4,name:'TWO WEAPONS HANDLER',src:'user',

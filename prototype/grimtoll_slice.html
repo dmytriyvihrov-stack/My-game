@@ -5786,6 +5786,11 @@ body:has(#battle.on) .whisp{bottom:138px}
    it costs the card no height: the perk list is already the tallest column on
    the sheet. */
 .pk .kind{float:right;font-size:var(--fs2);line-height:1;opacity:.85;margin-left:var(--p2)}
+/* #264 - TWO COLUMNS OF SKILLS. A grid rather than CSS columns, because
+   `column-count` would let one card break across the fold; and the level
+   heading spans both so the tiers stay readable down the page. */
+.pk2{display:grid;grid-template-columns:1fr 1fr;gap:var(--p2);align-items:start}
+.pk2>.pklv,.pk2>.lbl,.pk2>.pkfoot,.pk2>.pknone{grid-column:1 / -1}
 .pk.locked .tag{color:#7a6238}
 .pknone{font-family:var(--mono);font-size:var(--fs1);color:#7a6238;font-style:italic}
 .pkfoot{font-family:var(--mono);font-size:var(--fs1);color:#5c4a2c;line-height:1.5;
@@ -11477,6 +11482,26 @@ const PERKS={
   fearsome  :{kind:'race',n:'Fearsome',
               d:'Every hit of yours that draws blood costs them 8 morale, however small the wound.'},
   rage      :{kind:'race',n:'Rage',d:'+22% damage while you are below half your hitpoints.'},
+  /* ⛔ #264 - SEVEN MORE RACE SKILLS, AND NOT ONE OF THEM IS NEW CODE.
+     (User: "it should be definently more racial skills - now i see only 1".)
+     Each of these keys still has its engine line standing from before #261
+     retired the ROW, so a race lane three skills deeper cost seven rows and
+     nothing else. `docs/archive/RETIRED_SKILLS.md` is what made that a lookup.
+     ⚠ THE NAME IS THE RACE'S AND THE KEY IS THE ENGINE'S. `quickfoot` pays a
+     hex of movement whatever it is called; SCURRY is what a ratkin calls it.
+     Renaming the KEY would have thrown the working line away. */
+  standfast :{kind:'race',n:'Stubborn',
+              d:'Morale can never fall below 15%: you cannot rout.'},
+  fieldmedic:{kind:'race',n:'Second Wind',d:'+8 morale at the start of every turn.'},
+  waiter    :{kind:'race',n:'Patient',
+              d:'End a turn with an action unspent and you start the next one with an '+
+                'extra action. One, never more.'},
+  quickfoot :{kind:'race',n:'Scurry',d:'+1 hex of movement.'},
+  opportune :{kind:'race',n:'Pack Tactics',
+              d:'+10 flanking bonus for every extra body on the target.'},
+  footwork  :{kind:'race',n:'Slip Away',
+              d:'You never provoke a parting swing. Walking away is simply free.'},
+  stoneskin :{kind:'race',n:'Stone Hide',d:'+10 armour.'},
 
   /* ── GENERAL ───────────────────────────────────────────────────────── */
   luck     :{kind:'general',n:'Everchanging Luck',
@@ -11505,9 +11530,11 @@ const PERKS={
    `perkPool` had only ever asked about a class, so a race skill could not have
    been reached at all before this. */
 const RACEPERKS={
-  human :{3:['versatile']},
-  ratkin:{4:['strongrat']},
-  ogre  :{3:['thickmuscle'],4:['fearsome'],6:['rage']}
+  /* #264 - four apiece. The three lanes were 1/1/3 and the human and the
+     ratkin were being offered a single race skill in a whole career. */
+  human :{3:['versatile'],4:['standfast'],6:['fieldmedic'],7:['waiter']},
+  ratkin:{3:['quickfoot'],4:['strongrat'],6:['opportune'],7:['footwork']},
+  ogre  :{3:['thickmuscle'],4:['fearsome'],5:['stoneskin'],6:['rage']}
 };
 const GENPERKS={2:['luck','disengage'],3:['colossus'],4:['goodhand','twohand'],
                 5:['ninelives','fortmind','shieldwork'],6:['lonewolf','frenzy'],
@@ -15600,6 +15627,12 @@ function unitFrom(p){
   const u={id:p.id,side:'you',name:unitName(p),nick:p.nick,kind:p.kind,race:p.race,
     leader:!!p.leader,cls:p.cls,trait:p.trait,perks:p.perks.slice(),level:p.level,st:s,
     hpMax:bodyHp(p),                    /* #239 - one door; see bodyHp */
+    /* ⚠ #264 - STONE HIDE NEEDED NOTHING HERE AND I ADDED IT ANYWAY.
+       This line already read `stoneskin`: #261 retired the perk's ROW and left
+       every engine line standing, and THIS is an engine line. A second clause
+       paid the perk TWICE, +20 armour on a card that says 10, and only the
+       differential caught it (34 -> 54 where 44 was wanted). Restoring a
+       retired perk means restoring its ROW; check before wiring anything. */
     armourMax:armourValue(p)+(p.perks.indexOf('thickhide')>=0?18:0)+
       (p.perks.indexOf('stoneskin')>=0?10:0),
     moraleMax:D.moral({st:s})+(p.perks.indexOf('fortmind')>=0?20:0),
@@ -38280,6 +38313,10 @@ function drawInv(){
   if(!any)pkHTML+='<div class="pknone">Nothing to learn. This one is finished.</div>';
   pkHTML+='<div class="pkfoot">A promotion buys one rung. Everything above the line this one '+
     'has reached is what the road still owes them.</div>';
+  /* #264 - the list runs in TWO columns now (user: "You can write skills in 2
+     raws"). It is a class on the BODY rather than a rewrite of the card, so the
+     level headings still span the full width and the cards flow under them. */
+  pk.className=(pk.className||'').replace(/\bpk2\b/g,'').trim()+' pk2';
   pk.innerHTML=pkHTML;
   pk.querySelectorAll('.pk.buy').forEach(b=>b.onclick=()=>{
     if((p.perkPoints||0)<=0)return;

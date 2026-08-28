@@ -2076,6 +2076,38 @@ itself the moment the file lands.
 
 ---
 
+## 🐀 FOUR RACE SKILLS EACH, AND TWO COLUMNS  *(#264 · 2026-08-28 · build log 8f.289)*
+
+### 1. Your race is worth four skills now, not one
+
+**Three steps:** company sheet → a body of each race → PERKS.
+**Should happen:** four cards with the race mark. Human: VERSATILE, STUBBORN, SECOND WIND,
+PATIENT. Ratkin: SCURRY, STRONG, PACK TACTICS, SLIP AWAY. Ogre: THICK MUSCLES, FEARSOME,
+STONE HIDE, RAGE.
+**A bug:** a race skill offered to the wrong race, or fewer than four.
+
+### 2. The list is two columns
+
+**Three steps:** the same screen, any body with a few levels.
+**Should happen:** cards in two columns, LEVEL headings spanning the full width, and no card
+split across the two.
+**A bug:** one column, or a card broken in half down the middle.
+
+### 3. The easy ones to check by eye
+
+**STONE HIDE** should add exactly 10 armour, and 28 together with THICK HIDE, not 20 and 38.
+**SCURRY** adds one hex of movement. **PACK TACTICS** takes the flanking bonus from 15 to 25.
+**A bug:** any of those paying double. That happened during this entry and the sheet looked
+perfectly fine while it did.
+
+### 4. GOOD HAND is deliberately unchanged
+
+You asked for it to be throwables-only. **The game has no throwable**: the bag slot is an
+empty promise on purpose and the only throw in the build is the ogre's own racial. Left as the
+working ranged perk until you decide: build throwables, park it, or keep it as it is.
+
+---
+
 ## 🌳 THE SKILL TREE, THREE LANES  *(#262 · 2026-08-27 · build log 8f.287)*
 
 The tree from `tools/skilltree_lab.html` is in the game: **28 skills**, and which ones you
