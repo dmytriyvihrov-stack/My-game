@@ -9543,7 +9543,24 @@ const HELD=(()=>{const o={};for(const k in STATLADDER){o[k]={};
     o[k][n]=h;}}
   return o;})();
 const rungHeld=(k,n)=>HELD[k][rungClamp(n)]||{};
-const heldOf=(u,k)=>rungHeld(k,(u&&u.st&&u.st[k])||0);
+/* ⛔ #263 - THE RUNG A BODY IS STANDING ON, WHICH IS NOT ALWAYS THE RUNG IT
+   WAS BORN WITH. `u.st` is what the body IS; `u.stMod` is what the FIELD is
+   doing to it, and nothing writes one yet - the day a card or a working
+   does, every live channel below (the weight of a blow, how fast a mood
+   goes and comes back, what it takes to land a working) and the four stat
+   marks on the inspect card follow it with no further wiring.
+   ⚠ THE BAKED FOUR DO NOT FOLLOW IT. hitpoints, skill, dodge and the mood
+   pool are derived once, at `build()`/`unitFrom`, so a battlefield buff that
+   means to move those has to apply its own delta the way gear does. That is
+   deliberate: re-deriving a POOL mid-fight would have to decide what happens
+   to the damage already taken out of it. */
+/* ⚠ `statRung` AND NOT `rungOf`: `rungOf` IS ALREADY TAKEN, by the battle's
+   MOOD ladder (`rungOf(frac)` -> a LADDER band index, ~6,000 lines below). Two
+   ladders, two meanings, one name is #102's wrong-unit bug waiting in a
+   stack trace - and the collision is not theoretical, it threw
+   `Identifier 'rungOf' has already been declared` the first time this shipped. */
+const statRung=(u,k)=>rungClamp(((u&&u.st&&u.st[k])||0)+((u&&u.stMod&&u.stMod[k])||0));
+const heldOf=(u,k)=>rungHeld(k,statRung(u,k));
 const holds=(u,k,cap)=>((u&&u.st&&u.st[k])||0)>=RUNG_TOP&&
   (STATLADDER[k][String(RUNG_TOP)]||{}).cap===cap;
 /* ⛔ THE GIVENS: THE ORDINARY HUMAN, BEFORE ANY RUNG. Raised from what the
@@ -16142,60 +16159,7 @@ function unitFrom(p){
   return u;
 }
 function foes(){
-  const T={
-    chief:{kind:'bruiser',name:'Ratkin chieftain',hp:64,armour:58,mor:80,skill:60,dodge:16,speed:3,
-      captain:true,acts:[{k:'maul',n:'MAUL',cost:1,reach:1,dmg:[19,29],am:1.05,ft:.26}]},
-    spear:{kind:'ratkin',name:'Ratkin, spear',hp:36,armour:32,mor:58,skill:54,dodge:18,speed:4,
-      acts:[{k:'jab',n:'JAB',cost:1,reach:2,dmg:[10,15],am:.60,ft:.30}]},
-    cleaver:{kind:'ratkin',name:'Ratkin, cleaver',hp:40,armour:40,mor:62,skill:57,dodge:16,speed:4,
-      acts:[{k:'chop',n:'CHOP',cost:1,reach:1,dmg:[13,21],am:.90,ft:.25}]},
-    /* ═══ THE HOOK-POLE — forced movement, pointed back at you ══════════
-       (backlog #7.) Every trick the player owns should be aimed at them
-       once; that is what made the enemy ogre's HURL land. A pull is worse
-       than a shove: it takes one of YOURS toward them, out of the line and
-       away from the spear wall, and the "standing on its own" morale rule
-       then fires on your side for a change. Reach 2, small damage — the
-       point of it is never the damage. */
-    hooker:{kind:'ratkin',name:'Ratkin, hook-pole',hp:34,armour:26,mor:56,skill:55,dodge:18,speed:4,
-      acts:[{k:'hook',n:'HOOK-POLE',cost:1,reach:2,pull:1,cool:2,dmg:[7,12],am:.45,ft:.35,
-             note:'Small damage, and it drags them a hex toward the pole, out of your line.'},
-            {k:'jab',n:'JAB',cost:1,reach:2,dmg:[9,14],am:.55,ft:.30}]},
-    slinger:{kind:'ratkin',name:'Ratkin slinger',hp:30,armour:22,mor:52,skill:59,dodge:20,speed:4,
-      bow:true,acts:[{k:'sling',n:'SLING',cost:1,range:5,dmg:[11,17],am:.50,ft:.40}]},   /* #135 */
-    sniffer:{kind:'ratkin',name:'Ratkin warp-sniffer',hp:32,armour:20,mor:48,skill:47,dodge:20,
-      speed:4,caster:true,acts:[
-      {k:'warp',n:'WARP-LIGHT',cost:2,strain:14,range:3,dmg:[15,23],am:0,ft:1,arcane:true},
-      {k:'jab',n:'JAB',cost:1,reach:1,dmg:[7,11],am:.4,ft:.3}]},
-    /* An OGRE in the ratkin snare. The act finale should not be one species
-       in a line — the whole point of this island is that the clans hire, buy
-       and bully whoever is standing nearby, and a company that has spent the
-       act learning "ratkin swarm, ogres hit" should meet both in the same
-       room and have to solve two problems at once. */
-    /* the sweep is what an ogre IS: the counter to being ringed by small
-       quick things is one horizontal answer through all of them */
-    hired:{kind:'ogre',name:'Ogre, clan-hired',hp:92,armour:64,mor:80,skill:53,dodge:8,speed:3,
-      /* #46 — the throw is no longer written here. Every ogre on the field,
-         either side, gets it from RACESKILL in the same place: the same
-         synergy aimed at you, out of one definition. */
-      acts:[{k:'club',n:'WARCLUB',cost:1,reach:1,dmg:[23,34],am:1.28,ft:.24},
-            {k:'sweep',n:'SWEEP',cost:2,reach:1,sweep:true,dmg:[18,27],am:1.12,ft:.20}]},
-    /* ═══ THE OGRE WHO LEARNED A WORD ══════════════════════════════════════
-       (User: "add one more ogre to the final fight — an ogre mage, so because
-       of low intellect he almost always should miss.")
-
-       Now that magic is aimed with the INTELLECT (see hitBreakdown), an INT of 3
-       makes him land roughly one working in three — and when he does land one
-       it is enormous, because nothing about the spell itself is weak. He is
-       the best joke in the act and a real threat about a third of the time,
-       which is exactly the ratio that makes people talk about him. He also
-       carries the fists, because he is still an ogre and that always works. */
-    ogremage:{kind:'ogre',name:'Ogre, one-word',hp:96,armour:60,mor:78,skill:48,dodge:7,speed:3,
-      caster:true,int:-5,acts:[
-        {k:'warp',n:'THE WORD',cost:2,strain:16,range:4,dmg:[30,46],am:0,ft:1,arcane:true,
-         note:'He learned one working and he has never learned another. When it lands it '+
-           'takes a person apart. It does not often land.'},
-        {k:'fist',n:'FISTS',cost:1,reach:1,dmg:[18,27],am:1.05,ft:.26,
-         note:'The thing he is actually good at.'}]}};
+  const T=FOE_T.snare;
   /* The act's last fight. Sized to be a hard win with four and a
      comfortable one with six — so the Muster Field is worth stopping at.
      Always at least one of each: ratkin numbers, and one thing that hits.
@@ -16218,30 +16182,7 @@ function foes(){
 /* Broken men — human deserters. The point of this fight is that they are
    people: same species as most of your line, worse fed, and they break fast. */
 function brigands(){
-  const T={
-    bcap:{kind:'human',name:'The broken captain',hp:52,armour:60,mor:74,skill:60,dodge:18,speed:4,
-      captain:true,acts:[{k:'sword',n:'ARMING SWORD',cost:1,reach:1,dmg:[16,25],am:.90,ft:.30}]},
-    sworder:{kind:'human',name:'Deserter, sword',hp:38,armour:34,mor:52,skill:55,dodge:16,speed:4,
-      acts:[{k:'sword',n:'NOTCHED SWORD',cost:1,reach:1,dmg:[13,20],am:.85,ft:.28}]},
-    spearman:{kind:'human',name:'Deserter, spear',hp:36,armour:28,mor:50,skill:54,dodge:15,speed:4,
-      acts:[{k:'jab',n:'PIKE',cost:1,reach:2,dmg:[11,17],am:.70,ft:.28}]},
-    poacher:{kind:'archer',name:'Poacher',hp:30,armour:12,mor:46,skill:60,dodge:20,speed:4,
-      bow:true,acts:[{k:'bow',n:'POACHER’S BOW',cost:1,range:5,dmg:[11,17],am:.50,ft:.42}]},   /* #135 */
-    /* THE DOG — the first enemy that fights by not being there. Fast, thin,
-       and armed with a bite that ends somewhere else: SNAP-AND-AWAY is one
-       action, deals its damage, and then takes the dog two hexes clear
-       WITHOUT giving anybody a parting swing. You cannot trade with it and
-       you cannot pin it — you have to either shoot it, corner it, or accept
-       that it will keep taking small bites out of whoever is furthest out.
-       Its whole purpose is to punish a straggler. */
-    dog:{kind:'dog',name:'Lurcher',hp:26,armour:6,mor:44,skill:58,dodge:31,speed:5,
-      /* #245 - the note is DERIVED from `bounce` now (see `actNote`), so all four
-         dogs in the game say the same thing and every one of them says the
-         ringed half. Two of the four carried this sentence and two carried
-         nothing at all, which is the drift a hand-copied caption always has. */
-      acts:[{k:'snap',n:'SNAP-AND-AWAY',cost:1,reach:1,dmg:[9,15],am:.35,ft:.55,
-        bounce:2}]}
-  };
+  const T=FOE_T.brigand;
   /* one fewer than it had — this fight was landing harder than its place in
      the run deserves. The two dogs are the deserters' actual threat now:
      the swords hold you still and the dogs pick at the edges. */
@@ -16279,19 +16220,7 @@ function brigands(){
    rounds; over 20 runs the seasoned six - the strongest thing the act can
    produce - wins 1, which is the deliberate 5% the entry left open. */
 function circleFoes(){
-  const T={
-    elder:{kind:'human',name:'The one who talks',hp:62,armour:82,mor:80,skill:64,dodge:16,speed:4,
-      captain:true,noRout:true,
-      acts:[{k:'sword',n:'OLD SWORD',cost:1,reach:1,dmg:[17,26],am:.95,ft:.30}]},
-    knife:{kind:'human',name:'Marked, knife',hp:42,armour:36,mor:70,skill:62,dodge:22,speed:5,
-      noRout:true,acts:[{k:'cut',n:'SHORT KNIFE',cost:1,reach:1,dmg:[12,18],am:.55,ft:.26}]},
-    hatchet:{kind:'human',name:'Marked, hatchet',hp:50,armour:56,mor:70,skill:60,dodge:16,speed:4,
-      noRout:true,acts:[{k:'chop',n:'HATCHET',cost:1,reach:1,dmg:[15,23],am:1.10,ft:.30}]},
-    spear:{kind:'human',name:'Marked, spear',hp:48,armour:50,mor:70,skill:59,dodge:15,speed:4,
-      noRout:true,acts:[{k:'jab',n:'LONG SPEAR',cost:1,reach:2,dmg:[13,20],am:.70,ft:.28}]},
-    sling:{kind:'archer',name:'Marked, sling',hp:36,armour:22,mor:68,skill:62,dodge:20,speed:4,
-      bow:true,noRout:true,acts:[{k:'sling',n:'SLING',cost:1,range:5,dmg:[12,18],am:.60,ft:.40}]}
-  };
+  const T=FOE_T.circle;
   const plan=[[11,6,'elder',44],[10,5,'hatchet',40],[10,7,'hatchet',39],[11,4,'spear',37],
     [11,8,'spear',36],[10,3,'knife',48],[10,9,'knife',47],[12,5,'knife',46],
     [12,7,'sling',34],[13,6,'sling',33]];
@@ -16361,7 +16290,7 @@ const WED_T={
     actions:1,noRout:true,acts:[{k:'jab',n:'ROASTING SPIT',cost:1,reach:2,dmg:[7,12],am:.45,ft:.30,
       note:'Four feet of iron, and she has been holding it since the morning.'}]},
   groom:{kind:'ratkin',name:'The groom',hp:44,armour:8,mor:70,skill:52,dodge:14,speed:4,
-    captain:true,noRout:true,
+    captain:true,lean:{mor:+1},noRout:true,
     acts:[{k:'fists',n:'BARE HANDS',cost:1,reach:1,dmg:[7,12],am:.30,ft:.42,
       note:'He was married an hour ago and there is nothing behind his face at all.'}]},
   bride:{kind:'ratkin',name:'The bride',hp:26,armour:2,mor:60,skill:36,dodge:18,speed:4,
@@ -17043,7 +16972,7 @@ function tavernTick(){
 const CHASE_T={
   /* the one who does the talking, and the only crest on the field */
   carter:{kind:'human',name:'The carter',hp:50,armour:14,mor:54,skill:50,dodge:10,
-    speed:4,trait:'braggart',captain:true,
+    speed:4,trait:'braggart',captain:true,lean:{mor:+1},
     acts:[{k:'chop',n:'HATCHET',cost:1,reach:1,dmg:[10,16],am:.55,ft:.32,
       note:'A tool. Eleven years of swinging it at wood and none at all at anybody.'}]},
   /* the one that actually hurts. Slow, and he does not need to be quick */
@@ -18038,20 +17967,7 @@ function tavernAfter(){
    harder to hit. Kill her and the rest are just fast teeth.
    ═══════════════════════════════════════════════════════════════════════ */
 function pack(){
-  const T={
-    bitch:{kind:'dog',name:'The Bitch',hp:39,armour:10,mor:70,skill:62,dodge:29,speed:5,
-      captain:true,
-      /* 1.5× the hitpoints of a lurcher, and a presence the others fight inside */
-      aura:{r:3,kind:'dog',hit:8,dodge:5,n:'THE PACK',g:'✵',col:'#c9a227',
-        d:'+8 to hit and +5 dodge to every dog within 3 hexes. It stops when she does.'},
-      acts:[{k:'snap',n:'SNAP-AND-AWAY',cost:1,reach:1,dmg:[11,18],am:.40,ft:.55,bounce:2},
-            {k:'howl',n:'SHE CALLS THEM IN',cost:1,self:true,rally:true,cool:3,aura:4,
-             note:'Every dog within 4 hexes takes a fresh turn of mood and comes back in.'}]},
-    lurch:{kind:'dog',name:'Lurcher',hp:26,armour:6,mor:44,skill:58,dodge:31,speed:5,
-      acts:[{k:'snap',n:'SNAP-AND-AWAY',cost:1,reach:1,dmg:[9,15],am:.35,ft:.55,bounce:2}]},
-    runt:{kind:'dog',name:'Runt',hp:20,armour:4,mor:38,skill:55,dodge:33,speed:6,
-      acts:[{k:'snap',n:'SNAP-AND-AWAY',cost:1,reach:1,dmg:[7,12],am:.30,ft:.55,bounce:2}]}
-  };
+  const T=FOE_T.pack;
   /* ═══ YOU ARE THE ONES IN THE CAMP ══════════════════════════════════════
      (User's call: "it could work when travelling between tiles — I get
      attacked by a big pack of these dogs, but I am defending in the camp. No
@@ -18082,24 +17998,7 @@ function pack(){
    the one where a shield and a fast ratkin earn their keep.
    ═══════════════════════════════════════════════════════════════════════ */
 function slingline(){
-  const T={
-    boss:{kind:'bruiser',name:'Sling-master',hp:58,armour:44,mor:82,skill:62,dodge:16,speed:3,
-      captain:true,bow:true,
-      aura:{r:3,kind:'ratkin',hit:6,n:'THE VOLLEY',g:'➶',col:'#8fd0a8',
-        d:'+6 to hit for every ratkin within 3 hexes. They shoot on his count.'},
-      acts:[{k:'sling',n:'LEAD SLING',cost:1,range:5,dmg:[14,21],am:.55,ft:.42},
-            {k:'maul',n:'CUDGEL',cost:1,reach:1,dmg:[14,21],am:.95,ft:.26}]},
-    slinger:{kind:'ratkin',name:'Ratkin slinger',hp:28,armour:16,mor:50,skill:59,dodge:22,speed:5,
-      bow:true,acts:[{k:'sling',n:'SLING',cost:1,range:5,dmg:[10,16],am:.50,ft:.40}]},   /* #135 */
-    screen:{kind:'ratkin',name:'Ratkin, long spear',hp:36,armour:30,mor:58,skill:54,dodge:18,speed:4,
-      acts:[{k:'jab',n:'LONG SPEAR',cost:1,reach:2,dmg:[11,17],am:.65,ft:.30},
-            {k:'wall',n:'SPEAR WALL',cost:2,self:true,
-             note:'Anything stepping into reach this round gets the point of it.'}]},
-    sniffer:{kind:'ratkin',name:'Warp-sniffer',hp:30,armour:18,mor:48,skill:47,dodge:20,speed:4,
-      caster:true,acts:[
-        {k:'warp',n:'WARP-LIGHT',cost:2,strain:14,range:4,dmg:[15,23],am:0,ft:1,arcane:true},
-        {k:'jab',n:'JAB',cost:1,reach:1,dmg:[7,11],am:.4,ft:.3}]}
-  };
+  const T=FOE_T.slingline;
   const plan=[[12,4,'boss',44],[12,2,'slinger',42],[12,6,'slinger',41],[11,8,'slinger',40],
     [10,3,'screen',38],[10,5,'screen',37],[12,0,'sniffer',35]];
   if(G.party.length>=6)plan.push([11,1,'slinger',36]);
@@ -18118,23 +18017,7 @@ function slingline(){
    Their kit is rolled, so the shape of the wall is different every run.
    ═══════════════════════════════════════════════════════════════════════ */
 function steading(){
-  const T={
-    club:{kind:'ogre',name:'Ogre, club',hp:104,armour:76,mor:86,skill:55,dodge:8,speed:3,
-      acts:[{k:'club',n:'WARCLUB',cost:1,reach:1,dmg:[25,37],am:1.30,ft:.26}]},
-    pike:{kind:'ogre',name:'Ogre, long pike',hp:96,armour:70,mor:84,skill:57,dodge:9,speed:3,
-      acts:[{k:'jab',n:'FELLING PIKE',cost:1,reach:2,dmg:[21,31],am:1.05,ft:.28}]},
-    maul:{kind:'ogre',name:'Ogre, stone maul',hp:110,armour:82,mor:88,skill:51,dodge:6,speed:2,
-      acts:[{k:'maul',n:'STONE MAUL',cost:2,reach:1,sweep:true,dmg:[27,41],am:1.45,ft:.22}]},
-    thrower:{kind:'ogre',name:'Ogre, stone-thrower',hp:92,armour:64,mor:80,skill:54,dodge:10,
-      speed:3,bow:true,
-      acts:[{k:'rock',n:'THROWN STONE',cost:1,range:3,dmg:[20,30],am:1.10,ft:.30},
-            {k:'fist',n:'FISTS',cost:1,reach:1,dmg:[15,23],am:.90,ft:.28}]},
-    elder:{kind:'ogre',name:'Steading-elder',hp:118,armour:88,mor:100,skill:56,dodge:7,speed:2,
-      captain:true,
-      aura:{r:3,kind:'ogre',dodge:4,n:'THE STEADING',g:'⬢',col:'#7fa8c9',
-        d:'+4 dodge to every ogre within 3 hexes. They do not scatter.'},
-      acts:[{k:'club',n:'ELDER’S CLUB',cost:1,reach:1,dmg:[27,40],am:1.35,ft:.26}]}
-  };
+  const T=FOE_T.steading;
   /* the elder always, then three rolled from the rest — a different wall
      every run, and always at least one that can reach you at distance */
   const bag=['club','pike','maul','thrower'];
@@ -18202,13 +18085,13 @@ const HOLD_T={
      ONE aura in the fight, on purpose: two would be unreadable, and the
      Sling-master and the Steading-elder both make the same argument. */
   serj:{kind:'human',name:'Hold serjeant',hp:62,armour:84,mor:92,skill:62,dodge:14,speed:4,
-    captain:true,
+    captain:true,lean:{mor:+1},
     aura:{r:3,kind:'human',dodge:4,n:'THE LINE',g:'⚑',col:'#c9a227',
       d:'+4 dodge to every one of the Hold\'s men within 3 hexes. The shields stay up.'},
     acts:[{k:'sword',n:'ARMING SWORD',cost:1,reach:1,dmg:[17,26],am:.95,ft:.30}]},
   /* the other two crests. No aura, better reach, and they come forward. */
   corp:{kind:'human',name:'Hold corporal',hp:54,armour:72,mor:84,skill:60,dodge:15,speed:4,
-    captain:true,
+    captain:true,lean:{mor:+1},
     acts:[{k:'axe',n:'POLE-AXE',cost:1,reach:1,dmg:[18,27],am:1.15,ft:.26}]},
   bill:{kind:'human',name:'Hold billman',hp:44,armour:58,mor:74,skill:56,dodge:14,speed:4,
     acts:[{k:'jab',n:'BILL',cost:1,reach:2,dmg:[12,19],am:.75,ft:.28},
@@ -18452,6 +18335,15 @@ function snareClan(){
    below are the whole of what has moved. */
 const WARDEN={kind:'warden',race:'unknown',monster:'armour',name:'Something in armour',
   hp:342,armour:162,mor:460,skill:74,dodge:0,speed:5,
+  /* ⛔ #263 - AUTHORED TO EXACTLY WHAT EVERY BODY IN THE GAME USED TO CARRY,
+     which makes this the one row in the re-stat that changes NOTHING. That is
+     the decision, not an oversight: this fight is a fight against a thing you
+     cannot read, `noFace` already refuses it a portrait and a race, and
+     `notally` refuses it a row on the sheet. A ladder that told you it was
+     enormously strong would be answering the question the whole encounter is
+     built on refusing. ⚠ `noFace` suppresses its four marks on the inspect
+     card too - see the stat row there. */
+  st:{str:-2,agi:-2,int:-1,mor:-2},
   /* THREE ACTIONS, one-cost sword: it closes five hexes AND cuts, or it
      crosses nine, or it stands there and cuts twice (`used[k]>=2` is the cap).
      A two-cost version was tried first and it lost the fight on the action
@@ -18492,88 +18384,7 @@ function armourFoe(){
 /* the Fen-Mother is a different kind of fight: one enormous thing,
    its cub, and the fen-things that follow her about */
 function beasts(){
-  const T={
-    /* tuned so she reliably puts one or two of yours on the ground
-       without ending the run — this is the fight that teaches scars */
-    /* A lindwurm: two hexes of her, head and coiled body. Three actions,
-       reach 2 on the head, and a tail-lash that catches everything around
-       her body. She is meant to put one or two of yours on the ground. */
-    /* She fights alone against your whole line, so she is built like a boss:
-       four actions, reach 2 on the head, and enough hide to last the five or
-       six rounds it takes her to put one or two of yours on the ground. */
-    /* Morale 260, not 150: she is a boss and she is defending a child, and a
-       thing that can be worn down by nerve is not a boss. Nothing routs her. */
-    /* SHE IS THE ACT BOSS AND SHE SHOULD FEEL LIKE ONE.
-       hp 340→470 and armour 125→170 because the two global balance trims
-       (×0.9 hp, ×0.75 armour) are applied to every template in build() and
-       had quietly cut her to 306/94 — a boss shaved twice is not a boss.
-       `noTrim` now exempts her from both: a boss is tuned by hand or not at
-       all. FIVE actions, and three new behaviours below, so that what she
-       does to your line is more frightening than what she does to hitpoints. */
-    /* `monster:'wyrm'` not `captain:true` — she declares 5 actions herself, so
-       she never needed the captain flag except to borrow its action count, and
-       borrowing it was what printed "CAPTAIN" on a lindwurm. `bigkill` keeps
-       the morale shock her death causes, which was the flag's other job. */
-    /* she is a MONSTER, and the panel says so with the bestiary icon rather
-       than borrowing any class glyph — see monTag/MONSTERS */
-    /* `fenborn`: the water does not slow her and does not spoil her aim. It
-       is not a buff, it is the removal of a self-inflicted wound — see
-       wetproof(). She IS the marsh; the marsh was charging her rent. */
-    mother:{kind:'wyrm',monster:'wyrm',name:'The Fen-Mother',fenborn:true,
-      hp:470,armour:170,mor:300,skill:62,dodge:13,speed:3,
-      /* noRout: the set-piece ends when she is DOWN, never by her leaving —
-         see B03 in restate().
-         desperateAt: and when her nerve finally goes, THAT is the turn in the
-         fight — she stops defending herself rather than standing there
-         unchanged. The narrative was already here: she is over a child. */
-      /* ⛔ #240 - `guards:'cub'`. (User: *"в битве с фен мозер - когда бьеш
-         питомца - то мать должна бежать к нему"*.) The comment on the cub's own
-         template thirty lines below has claimed since it was written that
-         *"the cub keeps its distance until somebody hurts its mother"* - the
-         sentence the other way round, and neither half of it was ever built:
-         she has had no idea the cub was on the field. */
-      guards:'cub',
-      big:true,bigkill:true,actions:5,noTrim:true,noRout:true,desperateAt:true,acts:[
-        {k:'anvil',n:'ANVIL-HEAD',cost:1,reach:2,dmg:[22,33],am:1.20,ft:.32},
-        {k:'lash',n:'TAIL-LASH',cost:2,reach:1,sweep:true,dmg:[16,25],am:1.05,ft:.30},
-        {k:'gorge',n:'GORGE',cost:2,reach:1,dmg:[30,44],am:1.30,ft:.45},
-        /* DRAG UNDER — the monstrous one. It does not just hurt somebody, it
-           TAKES them: reach 2, heavy, and the victim is pulled off your line
-           and left lying against her body where the tail-lash reaches. Your
-           formation is the thing she attacks. */
-        {k:'drag',n:'DRAG UNDER',cost:2,reach:2,dmg:[24,36],am:1.15,ft:.40,drag:true,cool:2,
-          note:'Heavy, and it takes them WITH her, hauled out of your line and dropped '+
-            'against her flank, where the tail can reach and you cannot.'},
-        /* THE FEN ANSWERS — she is not in the marsh, she IS the marsh. The
-           ground around her turns to bog, so every round you spend near her
-           the approach gets worse. Nothing in the game had made terrain a
-           weapon before. */
-        {k:'bog',n:'THE FEN ANSWERS',cost:1,self:true,bog:2,cool:3,
-          note:'The ground for two hexes around her goes to standing water. Marsh costs '+
-            'double to cross and −10 to hit from. The field itself is on her side.'},
-        /* THE SOUND SHE MAKES — no damage at all. Every one of yours nearby
-           tests its own nerve, and whoever fails simply leaves the field.
-           This is the boss mechanic the fight was missing: she does not out-
-           damage you, she takes your line apart one person at a time. */
-        {k:'fear',n:'THE SOUND SHE MAKES',cost:2,range:5,fear:true,cool:2,
-          note:'No damage. Everyone of yours within 5 hexes checks their mood: whoever '+
-            'fails breaks and runs. And the NEAREST one who stands it meets her eye and '+
-            'cannot move until she looks away. Holding your ground is how you get picked.'}]},
-    /* The cub does not fight. Ever. It keeps to the edge of the field and
-       hides, and it is only ever a decision you have to make afterwards. */
-    /* her whelp is fen-born too, and it matters: the cub's whole behaviour is
-       keeping its distance, and a cub that bogs down in the water it was born
-       in gets cornered by accident rather than by anybody's decision. */
-    cub:{kind:'cub',monster:'cub',name:'The cub',fenborn:true,
-      hp:52,armour:18,mor:80,skill:1,dodge:34,speed:5,
-      skittish:true,passive:true,acts:[]},
-    fenling:{kind:'ratkin',name:'Fen-thing',hp:34,armour:14,mor:56,skill:52,dodge:22,speed:4,
-      acts:[{k:'claw',n:'CLAW',cost:1,reach:1,dmg:[12,19],am:.55,ft:.42}]},
-    spitter:{kind:'ratkin',name:'Bloom-spitter',hp:30,armour:10,mor:50,skill:54,dodge:20,speed:4,
-      caster:true,acts:[
-        {k:'spit',n:'BLOOM-SPIT',cost:2,strain:12,range:3,dmg:[16,26],am:0,ft:1,arcane:true},
-        {k:'claw',n:'CLAW',cost:1,reach:1,dmg:[8,13],am:.4,ft:.4}]}
-  };
+  const T=FOE_T.mother;
   /* her and the cub. Nothing else — this is a duel with a monster,
      and the cub keeps its distance until somebody hurts its mother. */
   /* her, and the cub off to one side where it will stay */
@@ -18586,18 +18397,7 @@ function beasts(){
    first body in its way. The practice field owns this encounter until its
    campaign event and final sprite pair are chosen. */
 function mirehares(){
-  const T={
-    doe:{kind:'mirehare_f',race:'beast',monster:'mirehare',name:'Mirehare doe',
-      hp:88,armour:18,mor:120,skill:68,dodge:17,speed:3,noWalk:true,
-      acts:[{k:'land',n:'THREE-HEX LANDING',cost:2,leap:3,impact:true,reach:1,
-        dmg:[24,36],am:1.10,ft:.38,
-        note:'Exactly three hexes. She clears the ground between and the blow happens where she lands.'}]},
-    buck:{kind:'mirehare_m',race:'beast',monster:'mirehare',name:'Mirehare buck',
-      hp:68,armour:10,mor:105,skill:72,dodge:22,speed:4,noWalk:true,
-      acts:[{k:'dash',n:'STRAIGHT CHARGE',cost:2,dash:4,impact:true,reach:1,
-        dmg:[19,30],am:.95,ft:.42,
-        note:'Up to four hexes on one straight grid axis. It hits the first body in the line.'}]}
-  };
+  const T=FOE_T.mirehares;
   return build([[10,3,'doe',43],[11,8,'doe',39],[12,5,'buck',56],[11,10,'buck',52]],T);
 }
 /* ═══ ⛔ #245 · A CHAMPION IS A MULTIPLIER, NOT A STATBLOCK ════════════
@@ -18693,7 +18493,22 @@ function build(plan,T){
     const tr1=t.noTrim?1:TRIM,ar1=t.noTrim?1:ARM;
     /* their shooters are thinner too — the same 10% the roster's take */
     const shooterThin=(t.caster||(t.acts||[]).some(a=>a.range&&a.dmg))?0.9:1;
-    const hp0=Math.round(t.hp*tr1*(t.noTrim?1:shooterThin)*(champ?CHAMP.hp:1));
+    /* ⛔ #263 - THE RUNGS THIS BODY STANDS ON, AND THE FOUR NUMBERS THEY PAY.
+       Derived exactly where the roster's are (`D.hp`, `D.hit`, `D.dodge`,
+       `D.moral` off `heldOf`), and applied AFTER the trims and the champion
+       multiplier so a champion is still *one of these, but better* rather
+       than a body on a different ladder.
+       ⚠ A `noTrim` BOSS TAKES NONE OF IT: its four figures are authored and
+       its dice were authored against them. Its `st` still reaches every LIVE
+       channel and the card, which is the half a boss does want. */
+    const fst=foeSt(t,rc),lad=t.noTrim?null:fst;
+    const lHp =lad?(rungHeld('str',lad.str).hp||0):0;
+    const lHit=lad?(rungHeld('agi',lad.agi).hit||0):0;
+    const lDod=lad?(rungHeld('agi',lad.agi).dodge||0):0;
+    const lMor=lad?(rungHeld('mor',lad.mor).nerve||0):0;
+    const hp0=Math.round(t.hp*tr1*(t.noTrim?1:shooterThin)*(champ?CHAMP.hp:1)*(1+lHp));
+    /* the pool the mood is measured against, and the rung it starts on */
+    const mor0=Math.max(10,t.mor+lMor);
     const u={id:'foe'+i,side:'foe',name:t.name,kind:t.kind,race:rc,variant:e[2],col:cc,row:e[1],init:e[3],
       caster:!!t.caster,bow:!!t.bow,captain:!!t.captain,champ:champ,leader:false,perks:[],
       hp:hp0,hpMax:hp0,
@@ -18701,8 +18516,8 @@ function build(plan,T){
       armourMax:Math.round(t.armour*ar1*(champ?CHAMP.armour:1)),
       /* the enemy starts on the same rung you do — HAPPY, not exalted, so the
          top of the ladder is something either side has to earn in the fight */
-      morale:Math.round(t.mor*START_NERVE),morale0:Math.round(t.mor*START_NERVE),
-      moraleMax:t.mor,
+      morale:Math.round(mor0*START_NERVE),morale0:Math.round(mor0*START_NERVE),
+      moraleMax:mor0,
       /* the race sets the stride here too — the SAME first-move numbers the
          roster gets (RACESTEP), so a ratkin line moves like your ratkin do.
          Monsters are not a race and keep their authored speeds. */
@@ -18710,13 +18525,19 @@ function build(plan,T){
          YOUR side (a clash ally, the barman) is stamped up to HIT_EASE.you
          where its side is flipped, so "which side is it on" answers this in
          exactly one place per body. See HIT_EASE. */
-      mskill:Math.round(t.skill*(champ?CHAMP.skill:1))+HIT_EASE.foe,
-      dodgeBase:Math.round(t.dodge*(champ?CHAMP.dodge:1)),
+      mskill:Math.round(t.skill*(champ?CHAMP.skill:1))+lHit+HIT_EASE.foe,
+      dodgeBase:Math.max(0,Math.round(t.dodge*(champ?CHAMP.dodge:1))+lDod),
       /* #146 - a hand-tuned boss opts out of the SIZE dodge rule the same way
          it opts out of the hp and armour trims above, so the flag has to
          reach the unit rather than dying in this function. */
       noTrim:!!t.noTrim,
-      speed:RACESTEP[rc]||Math.max(2,t.speed),
+      /* ⛔ #263 - FLEET IS +1 STEP HERE TOO, off the same `holds()` the roster
+         reads in `unitFrom`. No foe is on a +4 rung today; the day one is
+         authored, or a buff pushes one there, it moves like your people do. */
+      speed:(RACESTEP[rc]||Math.max(2,t.speed))+(holds({st:fst},'agi','FLEET')?1:0),
+      stands:holds({st:fst},'str','STANDS'),stoodUp:false,
+      fleet:holds({st:fst},'agi','FLEET'),
+      unrepeatable:holds({st:fst},'int','UNREPEATABLE'),
       flankPow:10,spellPow:1,dmgBonus:2,morBonus:0,
       /* ═══ #156 - TWO A TURN, ON EVERY BODY THAT DOES NOT DECLARE ITS OWN ═══
          (User, after a playtest: "Почему у капитана 3 очков действия - давать
@@ -18761,11 +18582,13 @@ function build(plan,T){
       /* a monster gets a bestiary entry instead of a class — see MONSTERS */
       monster:t.monster||(BEAST_KIND.indexOf(t.kind)>=0?t.kind:null),
       used:{},dead:false,fled:false,safeMove:false,
-      /* `int` is the one stat a template may override, because magic is aimed
-         with the INTELLECT now (see hitBreakdown) and a stupid caster has to be
-         genuinely unreliable rather than merely flavoured that way */
+      /* ⛔ #263 - THE FOUR RUNGS, derived above. `t.int` is gone: the one
+         template that used it (the one-word ogre) says `lean:{int:-4}` now,
+         which lands on the same -5 through the ogre's own -1. A stupid caster
+         is still genuinely unreliable, and it is now unreliable in the same
+         vocabulary the sheet uses for everybody else. */
       spearwall:false,moved:false,rallyBuff:0,
-      st:{str:-2,agi:-2,int:(t.int===undefined?-1:t.int),mor:-2}};
+      st:fst};
     /* COPY the act objects before trimming the dice — units of one template
        share them, and trimming in place would compound per unit built */
     /* ⚠ #245 - the champion's damage rides in HERE and nowhere else, on the same
@@ -18841,6 +18664,365 @@ let FIGHTBACK=null;
    #239). The dev bench needed a THIRD reader (the foe catalogue), so the
    chains became the table. A new fight adds one row here and all three
    callers follow. `snare` is `foes`, which is also the fallback. */
+/* ═══ ⛔ #263 · THE OTHER SIDE, IN ONE PLACE ══════════════════════
+   (User, 2026-08-28: *"if enemies stats and behavior not together - I think it
+   is a good idea to groop it in main build. So it is easier to find - you can
+   also add it as instruction"*.)
+
+   Every enemy statblock in the game, keyed by the fight that fields it, using
+   the same keys the plan rows use. It was fourteen tables in fourteen places:
+   six already had module-level names (WED_T, CLASH_T, REINF_T, TAVERN_T,
+   CHASE_T, HOLD_T) and eight were a `const T={}` inside their own plan
+   function, so "what does the other side look like" could not be answered
+   without opening eight functions and knowing which eight.
+
+   ⛔ A NEW FIGHT ADDS A GROUP HERE AND A ROW TO `FOE_BUILD` BELOW, never a
+   table inside its own builder. See `.claude/rules/enemy-stats.md`.
+
+   ⚠ THE TABLES MOVED VERBATIM. Not one figure changed in the move, and the
+   proof is an oracle probe that builds every `FOE_BUILD[k]()` side on this
+   build and on the previous one and compares the fields that are not rolled.
+
+   ⚠ WARDEN and the six named tables are NOT re-declared here - they are
+   REFERENCED, so there is still exactly one copy of each. WARDEN keeps its
+   own long comment where it stands, which is the block that explains it. */
+const SNARE_T={
+    chief:{kind:'bruiser',name:'Ratkin chieftain',hp:64,armour:58,mor:80,skill:60,dodge:16,speed:3,
+      captain:true,lean:{mor:+1},acts:[{k:'maul',n:'MAUL',cost:1,reach:1,dmg:[19,29],am:1.05,ft:.26}]},
+    spear:{kind:'ratkin',name:'Ratkin, spear',hp:36,armour:32,mor:58,skill:54,dodge:18,speed:4,
+      acts:[{k:'jab',n:'JAB',cost:1,reach:2,dmg:[10,15],am:.60,ft:.30}]},
+    cleaver:{kind:'ratkin',name:'Ratkin, cleaver',hp:40,armour:40,mor:62,skill:57,dodge:16,speed:4,
+      acts:[{k:'chop',n:'CHOP',cost:1,reach:1,dmg:[13,21],am:.90,ft:.25}]},
+    /* ═══ THE HOOK-POLE — forced movement, pointed back at you ══════════
+       (backlog #7.) Every trick the player owns should be aimed at them
+       once; that is what made the enemy ogre's HURL land. A pull is worse
+       than a shove: it takes one of YOURS toward them, out of the line and
+       away from the spear wall, and the "standing on its own" morale rule
+       then fires on your side for a change. Reach 2, small damage — the
+       point of it is never the damage. */
+    hooker:{kind:'ratkin',name:'Ratkin, hook-pole',hp:34,armour:26,mor:56,skill:55,dodge:18,speed:4,
+      acts:[{k:'hook',n:'HOOK-POLE',cost:1,reach:2,pull:1,cool:2,dmg:[7,12],am:.45,ft:.35,
+             note:'Small damage, and it drags them a hex toward the pole, out of your line.'},
+            {k:'jab',n:'JAB',cost:1,reach:2,dmg:[9,14],am:.55,ft:.30}]},
+    slinger:{kind:'ratkin',name:'Ratkin slinger',hp:30,armour:22,mor:52,skill:59,dodge:20,speed:4,
+      bow:true,acts:[{k:'sling',n:'SLING',cost:1,range:5,dmg:[11,17],am:.50,ft:.40}]},   /* #135 */
+    sniffer:{kind:'ratkin',name:'Ratkin warp-sniffer',hp:32,armour:20,mor:48,skill:47,dodge:20,
+      speed:4,caster:true,acts:[
+      {k:'warp',n:'WARP-LIGHT',cost:2,strain:14,range:3,dmg:[15,23],am:0,ft:1,arcane:true},
+      {k:'jab',n:'JAB',cost:1,reach:1,dmg:[7,11],am:.4,ft:.3}]},
+    /* An OGRE in the ratkin snare. The act finale should not be one species
+       in a line — the whole point of this island is that the clans hire, buy
+       and bully whoever is standing nearby, and a company that has spent the
+       act learning "ratkin swarm, ogres hit" should meet both in the same
+       room and have to solve two problems at once. */
+    /* the sweep is what an ogre IS: the counter to being ringed by small
+       quick things is one horizontal answer through all of them */
+    hired:{kind:'ogre',name:'Ogre, clan-hired',hp:92,armour:64,mor:80,skill:53,dodge:8,speed:3,
+      /* #46 — the throw is no longer written here. Every ogre on the field,
+         either side, gets it from RACESKILL in the same place: the same
+         synergy aimed at you, out of one definition. */
+      acts:[{k:'club',n:'WARCLUB',cost:1,reach:1,dmg:[23,34],am:1.28,ft:.24},
+            {k:'sweep',n:'SWEEP',cost:2,reach:1,sweep:true,dmg:[18,27],am:1.12,ft:.20}]},
+    /* ═══ THE OGRE WHO LEARNED A WORD ══════════════════════════════════════
+       (User: "add one more ogre to the final fight — an ogre mage, so because
+       of low intellect he almost always should miss.")
+
+       Now that magic is aimed with the INTELLECT (see hitBreakdown), an INT of 3
+       makes him land roughly one working in three — and when he does land one
+       it is enormous, because nothing about the spell itself is weak. He is
+       the best joke in the act and a real threat about a third of the time,
+       which is exactly the ratio that makes people talk about him. He also
+       carries the fists, because he is still an ogre and that always works. */
+    ogremage:{kind:'ogre',name:'Ogre, one-word',hp:96,armour:60,mor:78,skill:48,dodge:7,speed:3,
+      /* #263 - was `int:-5` typed onto the body; it is the ogre's own -1 plus
+         this, which lands on the same rung and says WHY. The fight IS the
+         unreliable caster: he is aiming a working with an intellect four
+         rungs under an ordinary one. */
+      caster:true,lean:{int:-4},acts:[
+        {k:'warp',n:'THE WORD',cost:2,strain:16,range:4,dmg:[30,46],am:0,ft:1,arcane:true,
+         note:'He learned one working and he has never learned another. When it lands it '+
+           'takes a person apart. It does not often land.'},
+        {k:'fist',n:'FISTS',cost:1,reach:1,dmg:[18,27],am:1.05,ft:.26,
+         note:'The thing he is actually good at.'}]}};
+const BRIG_T={
+    bcap:{kind:'human',name:'The broken captain',hp:52,armour:60,mor:74,skill:60,dodge:18,speed:4,
+      captain:true,lean:{mor:+1},acts:[{k:'sword',n:'ARMING SWORD',cost:1,reach:1,dmg:[16,25],am:.90,ft:.30}]},
+    sworder:{kind:'human',name:'Deserter, sword',hp:38,armour:34,mor:52,skill:55,dodge:16,speed:4,
+      acts:[{k:'sword',n:'NOTCHED SWORD',cost:1,reach:1,dmg:[13,20],am:.85,ft:.28}]},
+    spearman:{kind:'human',name:'Deserter, spear',hp:36,armour:28,mor:50,skill:54,dodge:15,speed:4,
+      acts:[{k:'jab',n:'PIKE',cost:1,reach:2,dmg:[11,17],am:.70,ft:.28}]},
+    poacher:{kind:'archer',name:'Poacher',hp:30,armour:12,mor:46,skill:60,dodge:20,speed:4,
+      bow:true,acts:[{k:'bow',n:'POACHER’S BOW',cost:1,range:5,dmg:[11,17],am:.50,ft:.42}]},   /* #135 */
+    /* THE DOG — the first enemy that fights by not being there. Fast, thin,
+       and armed with a bite that ends somewhere else: SNAP-AND-AWAY is one
+       action, deals its damage, and then takes the dog two hexes clear
+       WITHOUT giving anybody a parting swing. You cannot trade with it and
+       you cannot pin it — you have to either shoot it, corner it, or accept
+       that it will keep taking small bites out of whoever is furthest out.
+       Its whole purpose is to punish a straggler. */
+    dog:{kind:'dog',name:'Lurcher',hp:26,armour:6,mor:44,skill:58,dodge:31,speed:5,
+      /* #245 - the note is DERIVED from `bounce` now (see `actNote`), so all four
+         dogs in the game say the same thing and every one of them says the
+         ringed half. Two of the four carried this sentence and two carried
+         nothing at all, which is the drift a hand-copied caption always has. */
+      acts:[{k:'snap',n:'SNAP-AND-AWAY',cost:1,reach:1,dmg:[9,15],am:.35,ft:.55,
+        bounce:2}]}
+  };
+const CIRCLE_T={
+    elder:{kind:'human',name:'The one who talks',hp:62,armour:82,mor:80,skill:64,dodge:16,speed:4,
+      captain:true,lean:{mor:+1},noRout:true,
+      acts:[{k:'sword',n:'OLD SWORD',cost:1,reach:1,dmg:[17,26],am:.95,ft:.30}]},
+    knife:{kind:'human',name:'Marked, knife',hp:42,armour:36,mor:70,skill:62,dodge:22,speed:5,
+      noRout:true,acts:[{k:'cut',n:'SHORT KNIFE',cost:1,reach:1,dmg:[12,18],am:.55,ft:.26}]},
+    hatchet:{kind:'human',name:'Marked, hatchet',hp:50,armour:56,mor:70,skill:60,dodge:16,speed:4,
+      noRout:true,acts:[{k:'chop',n:'HATCHET',cost:1,reach:1,dmg:[15,23],am:1.10,ft:.30}]},
+    spear:{kind:'human',name:'Marked, spear',hp:48,armour:50,mor:70,skill:59,dodge:15,speed:4,
+      noRout:true,acts:[{k:'jab',n:'LONG SPEAR',cost:1,reach:2,dmg:[13,20],am:.70,ft:.28}]},
+    sling:{kind:'archer',name:'Marked, sling',hp:36,armour:22,mor:68,skill:62,dodge:20,speed:4,
+      bow:true,noRout:true,acts:[{k:'sling',n:'SLING',cost:1,range:5,dmg:[12,18],am:.60,ft:.40}]}
+  };
+const PACK_T={
+    bitch:{kind:'dog',name:'The Bitch',hp:39,armour:10,mor:70,skill:62,dodge:29,speed:5,
+      captain:true,
+      /* 1.5× the hitpoints of a lurcher, and a presence the others fight inside */
+      aura:{r:3,kind:'dog',hit:8,dodge:5,n:'THE PACK',g:'✵',col:'#c9a227',
+        d:'+8 to hit and +5 dodge to every dog within 3 hexes. It stops when she does.'},
+      acts:[{k:'snap',n:'SNAP-AND-AWAY',cost:1,reach:1,dmg:[11,18],am:.40,ft:.55,bounce:2},
+            {k:'howl',n:'SHE CALLS THEM IN',cost:1,self:true,rally:true,cool:3,aura:4,
+             note:'Every dog within 4 hexes takes a fresh turn of mood and comes back in.'}]},
+    lurch:{kind:'dog',name:'Lurcher',hp:26,armour:6,mor:44,skill:58,dodge:31,speed:5,
+      acts:[{k:'snap',n:'SNAP-AND-AWAY',cost:1,reach:1,dmg:[9,15],am:.35,ft:.55,bounce:2}]},
+    runt:{kind:'dog',name:'Runt',hp:20,armour:4,mor:38,skill:55,dodge:33,speed:6,
+      acts:[{k:'snap',n:'SNAP-AND-AWAY',cost:1,reach:1,dmg:[7,12],am:.30,ft:.55,bounce:2}]}
+  };
+const SLING_T={
+    boss:{kind:'bruiser',name:'Sling-master',hp:58,armour:44,mor:82,skill:62,dodge:16,speed:3,
+      captain:true,lean:{mor:+1},bow:true,
+      aura:{r:3,kind:'ratkin',hit:6,n:'THE VOLLEY',g:'➶',col:'#8fd0a8',
+        d:'+6 to hit for every ratkin within 3 hexes. They shoot on his count.'},
+      acts:[{k:'sling',n:'LEAD SLING',cost:1,range:5,dmg:[14,21],am:.55,ft:.42},
+            {k:'maul',n:'CUDGEL',cost:1,reach:1,dmg:[14,21],am:.95,ft:.26}]},
+    slinger:{kind:'ratkin',name:'Ratkin slinger',hp:28,armour:16,mor:50,skill:59,dodge:22,speed:5,
+      bow:true,acts:[{k:'sling',n:'SLING',cost:1,range:5,dmg:[10,16],am:.50,ft:.40}]},   /* #135 */
+    screen:{kind:'ratkin',name:'Ratkin, long spear',hp:36,armour:30,mor:58,skill:54,dodge:18,speed:4,
+      acts:[{k:'jab',n:'LONG SPEAR',cost:1,reach:2,dmg:[11,17],am:.65,ft:.30},
+            {k:'wall',n:'SPEAR WALL',cost:2,self:true,
+             note:'Anything stepping into reach this round gets the point of it.'}]},
+    sniffer:{kind:'ratkin',name:'Warp-sniffer',hp:30,armour:18,mor:48,skill:47,dodge:20,speed:4,
+      caster:true,acts:[
+        {k:'warp',n:'WARP-LIGHT',cost:2,strain:14,range:4,dmg:[15,23],am:0,ft:1,arcane:true},
+        {k:'jab',n:'JAB',cost:1,reach:1,dmg:[7,11],am:.4,ft:.3}]}
+  };
+const STEAD_T={
+    club:{kind:'ogre',name:'Ogre, club',hp:104,armour:76,mor:86,skill:55,dodge:8,speed:3,
+      acts:[{k:'club',n:'WARCLUB',cost:1,reach:1,dmg:[25,37],am:1.30,ft:.26}]},
+    pike:{kind:'ogre',name:'Ogre, long pike',hp:96,armour:70,mor:84,skill:57,dodge:9,speed:3,
+      acts:[{k:'jab',n:'FELLING PIKE',cost:1,reach:2,dmg:[21,31],am:1.05,ft:.28}]},
+    maul:{kind:'ogre',name:'Ogre, stone maul',hp:110,armour:82,mor:88,skill:51,dodge:6,speed:2,
+      acts:[{k:'maul',n:'STONE MAUL',cost:2,reach:1,sweep:true,dmg:[27,41],am:1.45,ft:.22}]},
+    thrower:{kind:'ogre',name:'Ogre, stone-thrower',hp:92,armour:64,mor:80,skill:54,dodge:10,
+      speed:3,bow:true,
+      acts:[{k:'rock',n:'THROWN STONE',cost:1,range:3,dmg:[20,30],am:1.10,ft:.30},
+            {k:'fist',n:'FISTS',cost:1,reach:1,dmg:[15,23],am:.90,ft:.28}]},
+    elder:{kind:'ogre',name:'Steading-elder',hp:118,armour:88,mor:100,skill:56,dodge:7,speed:2,
+      captain:true,lean:{mor:+1},
+      aura:{r:3,kind:'ogre',dodge:4,n:'THE STEADING',g:'⬢',col:'#7fa8c9',
+        d:'+4 dodge to every ogre within 3 hexes. They do not scatter.'},
+      acts:[{k:'club',n:'ELDER’S CLUB',cost:1,reach:1,dmg:[27,40],am:1.35,ft:.26}]}
+  };
+const BEAST_T={
+    /* tuned so she reliably puts one or two of yours on the ground
+       without ending the run — this is the fight that teaches scars */
+    /* A lindwurm: two hexes of her, head and coiled body. Three actions,
+       reach 2 on the head, and a tail-lash that catches everything around
+       her body. She is meant to put one or two of yours on the ground. */
+    /* She fights alone against your whole line, so she is built like a boss:
+       four actions, reach 2 on the head, and enough hide to last the five or
+       six rounds it takes her to put one or two of yours on the ground. */
+    /* Morale 260, not 150: she is a boss and she is defending a child, and a
+       thing that can be worn down by nerve is not a boss. Nothing routs her. */
+    /* SHE IS THE ACT BOSS AND SHE SHOULD FEEL LIKE ONE.
+       hp 340→470 and armour 125→170 because the two global balance trims
+       (×0.9 hp, ×0.75 armour) are applied to every template in build() and
+       had quietly cut her to 306/94 — a boss shaved twice is not a boss.
+       `noTrim` now exempts her from both: a boss is tuned by hand or not at
+       all. FIVE actions, and three new behaviours below, so that what she
+       does to your line is more frightening than what she does to hitpoints. */
+    /* `monster:'wyrm'` not `captain:true` — she declares 5 actions herself, so
+       she never needed the captain flag except to borrow its action count, and
+       borrowing it was what printed "CAPTAIN" on a lindwurm. `bigkill` keeps
+       the morale shock her death causes, which was the flag's other job. */
+    /* she is a MONSTER, and the panel says so with the bestiary icon rather
+       than borrowing any class glyph — see monTag/MONSTERS */
+    /* `fenborn`: the water does not slow her and does not spoil her aim. It
+       is not a buff, it is the removal of a self-inflicted wound — see
+       wetproof(). She IS the marsh; the marsh was charging her rent. */
+    mother:{kind:'wyrm',monster:'wyrm',name:'The Fen-Mother',fenborn:true,
+      hp:470,armour:170,mor:300,skill:62,dodge:13,speed:3,
+      /* ⛔ #263 - SHE IS AUTHORED, WHICH IS WHAT `noTrim` HAS ALWAYS MEANT.
+         The four figures above are hers and the ladder does not touch them.
+         What her rungs DO reach is every live channel, and `thews` is the one
+         that matters: a str +3 arm swings at x1.20 where the old flat -2 rung
+         swung at x0.85, so her dice below come down x0.71 and she hits for
+         what she has always hit for. ⚠ THAT IS THE WHOLE POINT OF AUTHORING
+         A BOSS ON THE LADDER: her numbers now say she is enormously strong
+         and afraid of nothing, which is what the fight is about, and the
+         damage she does is unchanged. */
+      st:{str:3,agi:0,int:-2,mor:4},
+      /* noRout: the set-piece ends when she is DOWN, never by her leaving —
+         see B03 in restate().
+         desperateAt: and when her nerve finally goes, THAT is the turn in the
+         fight — she stops defending herself rather than standing there
+         unchanged. The narrative was already here: she is over a child. */
+      /* ⛔ #240 - `guards:'cub'`. (User: *"в битве с фен мозер - когда бьеш
+         питомца - то мать должна бежать к нему"*.) The comment on the cub's own
+         template thirty lines below has claimed since it was written that
+         *"the cub keeps its distance until somebody hurts its mother"* - the
+         sentence the other way round, and neither half of it was ever built:
+         she has had no idea the cub was on the field. */
+      guards:'cub',
+      big:true,bigkill:true,actions:5,noTrim:true,noRout:true,desperateAt:true,acts:[
+        {k:'anvil',n:'ANVIL-HEAD',cost:1,reach:2,dmg:[16,23],am:1.20,ft:.32},
+        {k:'lash',n:'TAIL-LASH',cost:2,reach:1,sweep:true,dmg:[11,18],am:1.05,ft:.30},
+        {k:'gorge',n:'GORGE',cost:2,reach:1,dmg:[21,31],am:1.30,ft:.45},
+        /* DRAG UNDER — the monstrous one. It does not just hurt somebody, it
+           TAKES them: reach 2, heavy, and the victim is pulled off your line
+           and left lying against her body where the tail-lash reaches. Your
+           formation is the thing she attacks. */
+        {k:'drag',n:'DRAG UNDER',cost:2,reach:2,dmg:[17,25],am:1.15,ft:.40,drag:true,cool:2,
+          note:'Heavy, and it takes them WITH her, hauled out of your line and dropped '+
+            'against her flank, where the tail can reach and you cannot.'},
+        /* THE FEN ANSWERS — she is not in the marsh, she IS the marsh. The
+           ground around her turns to bog, so every round you spend near her
+           the approach gets worse. Nothing in the game had made terrain a
+           weapon before. */
+        {k:'bog',n:'THE FEN ANSWERS',cost:1,self:true,bog:2,cool:3,
+          note:'The ground for two hexes around her goes to standing water. Marsh costs '+
+            'double to cross and −10 to hit from. The field itself is on her side.'},
+        /* THE SOUND SHE MAKES — no damage at all. Every one of yours nearby
+           tests its own nerve, and whoever fails simply leaves the field.
+           This is the boss mechanic the fight was missing: she does not out-
+           damage you, she takes your line apart one person at a time. */
+        {k:'fear',n:'THE SOUND SHE MAKES',cost:2,range:5,fear:true,cool:2,
+          note:'No damage. Everyone of yours within 5 hexes checks their mood: whoever '+
+            'fails breaks and runs. And the NEAREST one who stands it meets her eye and '+
+            'cannot move until she looks away. Holding your ground is how you get picked.'}]},
+    /* The cub does not fight. Ever. It keeps to the edge of the field and
+       hides, and it is only ever a decision you have to make afterwards. */
+    /* her whelp is fen-born too, and it matters: the cub's whole behaviour is
+       keeping its distance, and a cub that bogs down in the water it was born
+       in gets cornered by accident rather than by anybody's decision. */
+    cub:{kind:'cub',monster:'cub',name:'The cub',fenborn:true,
+      hp:52,armour:18,mor:80,skill:1,dodge:34,speed:5,
+      skittish:true,passive:true,acts:[]},
+    fenling:{kind:'ratkin',name:'Fen-thing',hp:34,armour:14,mor:56,skill:52,dodge:22,speed:4,
+      acts:[{k:'claw',n:'CLAW',cost:1,reach:1,dmg:[12,19],am:.55,ft:.42}]},
+    spitter:{kind:'ratkin',name:'Bloom-spitter',hp:30,armour:10,mor:50,skill:54,dodge:20,speed:4,
+      caster:true,acts:[
+        {k:'spit',n:'BLOOM-SPIT',cost:2,strain:12,range:3,dmg:[16,26],am:0,ft:1,arcane:true},
+        {k:'claw',n:'CLAW',cost:1,reach:1,dmg:[8,13],am:.4,ft:.4}]}
+  };
+const HARE_T={
+    doe:{kind:'mirehare_f',race:'beast',monster:'mirehare',name:'Mirehare doe',
+      hp:88,armour:18,mor:120,skill:68,dodge:17,speed:3,noWalk:true,
+      acts:[{k:'land',n:'THREE-HEX LANDING',cost:2,leap:3,impact:true,reach:1,
+        dmg:[24,36],am:1.10,ft:.38,
+        note:'Exactly three hexes. She clears the ground between and the blow happens where she lands.'}]},
+    buck:{kind:'mirehare_m',race:'beast',monster:'mirehare',name:'Mirehare buck',
+      hp:68,armour:10,mor:105,skill:72,dodge:22,speed:4,noWalk:true,
+      acts:[{k:'dash',n:'STRAIGHT CHARGE',cost:2,dash:4,impact:true,reach:1,
+        dmg:[19,30],am:.95,ft:.42,
+        note:'Up to four hexes on one straight grid axis. It hits the first body in the line.'}]}
+  };
+/* ═══ ⛔ #263 · AND THE OTHER SIDE CLIMBS THE SAME FOUR LADDERS ══════
+   (User, 2026-08-28: *"use this logic with stats and aply all 4 stats also
+   for enemies. So they also get some of the bufs. We can imagine, that each
+   enemy have influence of all this 4 stats"*.)
+
+   ⛔ EVERY FOE ALREADY CARRIED `st` AND IT WAS THE SAME FOUR NUMBERS FOR ALL
+   61 OF THEM - `{str:-2,agi:-2,int:-1,mor:-2}`, typed into `build()`, with
+   `int` the only field a template could override and exactly one template
+   overriding it. So the ladders were ALREADY reaching the enemy through
+   every shared function (`thews` gave every body in the game a x0.85 arm,
+   the mood `loss` and `climb` rungs, `D.arc` for a caster) and reaching them
+   with a number nobody had chosen. `GIVEN`'s own note said the rest out
+   loud: *"THE ENEMY DOES NOT MOVE WITH THEM"*.
+
+   ☑ SO A FOE'S RUNG IS `race + the template's lean`, which is the roster's
+   *born + race + class + trait* said smaller, and the three people-races
+   mirror `RACEMOD` exactly - a clan ratkin leans the way your ratkin do and
+   there is no second table to drift.
+   ⚠ A BEAST IS NOT A PEOPLE and has no `RACEMOD` row: quick, dim and
+   unbothered is the whole of it. `unknown` leans nowhere until somebody
+   authors it, which is what the Warden wants.
+   ⛔ AND A `noTrim` BOSS AUTHORS `st:` WHOLE AND SKIPS THE DERIVATION, the
+   same way it skips TRIM and ARM: a boss is tuned by hand or not at all. */
+/* ⛔ #263 - AND THE OTHER SIDE'S *BASE* IS ITS OWN, AND IT SITS UNDER YOURS.
+   (User, 2026-08-28: *"but of course, enemy have thier own basic stats, that
+   could be a bit lover then the party"*.)
+
+   ⛑ THE LADDER IS SHARED AND THE GIVENS ARE NOT, which is the whole shape of
+   this entry. Your people start from `GIVEN` - one row, 60 hitpoints, 70 to
+   hit, 90 nerve - and climb from there. An enemy starts from the four figures
+   on its own statblock and climbs the SAME rungs from there. So a rung is
+   worth the same thing to both sides, and the two sides are not the same
+   body.
+
+   ⚑ AND THE GAP IS A MEASUREMENT, NOT A FEELING. Averaged over the 55
+   ORDINARY templates (no captain, no boss, no `noTrim`), 2026-08-28:
+
+                    an ordinary foe     your people        the gap
+       hitpoints           49.1              60             -18%
+       to hit              53.3              70             -16.7
+       nerve               62.7              90             -27.3
+       dodge               16.5              14             +2.5
+
+   ...and that is BEFORE `TRIM` takes another 10% of every non-boss body's
+   hitpoints, `ARM` a quarter of its harness, and before `HIT_EASE` tilts the
+   roll another net +5 your way. Dodge is the one column the other side leads,
+   which is correct: they are lighter and worse armoured, and it is the only
+   thing a ratkin in rags has.
+
+   ⛔ SO THERE IS NO `FOE_GIVEN` CONSTANT AND THERE MUST NOT BE ONE. A single
+   number standing behind 61 statblocks would be a second author for figures
+   that are hand-tuned per fight, and every one of those tunings is a
+   measurement somebody took (see the clash ogre's armour note, the Snare's
+   arena retune, the Fen-Mother's `noTrim`). ⚑ THE KNOB THAT DOES EXIST is
+   `HIT_EASE`, which is where #146 put exactly this tilt and where it belongs:
+   one line, both sides, and the comment there explains the asymmetry. */
+const FOE_LEAN={
+  human :{str:0, agi:0, int:+1,mor:0},
+  ratkin:{str:-1,agi:+1,int:+1,mor:-1},
+  ogre  :{str:+1,agi:-1,int:-1,mor:+1},
+  beast :{str:0, agi:+1,int:-4,mor:0},
+  unknown:{str:0,agi:0, int:0, mor:0}
+};
+/* ⚠ `t.st` WINS WHOLE, it does not merge: a hand-tuned boss says what it is
+   and a half-inherited lean underneath it would be a second author. */
+function foeSt(t,rc){
+  if(t.st)return {str:rungClamp(t.st.str||0),agi:rungClamp(t.st.agi||0),
+                  int:rungClamp(t.st.int||0),mor:rungClamp(t.st.mor||0)};
+  const L=FOE_LEAN[rc]||FOE_LEAN.unknown,a=t.lean||{},o={};
+  ['str','agi','int','mor'].forEach(k=>o[k]=rungClamp((L[k]||0)+(a[k]||0)));
+  return o;
+}
+/* the registry itself: fight -> its bodies. `FOE_BUILD` below is the
+   matching dispatch, and the two are read together. */
+const FOE_T={
+  snare:SNARE_T,
+  brigand:BRIG_T,
+  circle:CIRCLE_T,
+  pack:PACK_T,
+  slingline:SLING_T,
+  steading:STEAD_T,
+  mother:BEAST_T,
+  mirehares:HARE_T,
+  clash:CLASH_T, wedding:WED_T, tavern:TAVERN_T, chase:CHASE_T,
+  hold:HOLD_T, snarejoin:HOLD_T,
+  /* not a fight of its own: the allies the clash lends you, the
+     reinforcements a mark buys, and the one body the Warden is. */
+  clashAllies:CLASH_T, reinforcements:REINF_T, armour:{warden:WARDEN}
+};
 const FOE_BUILD={mother:beasts,brigand:brigands,mirehares:mirehares,clash:clashFoes,
   pack:pack,steading:steading,armour:armourFoe,circle:circleFoes,wedding:weddingFoes,
   tavern:tavernFoes,chase:chaseFoes,hold:holdFoes,snarejoin:holdHost,
@@ -31494,6 +31676,32 @@ function inspect(t,e){
     /* words, not the four integers — see the TELLS block */
     (own&&t.st?'<div class="rr" style="display:block;color:#a08a5e;font-style:italic;'+
       'font-family:var(--body);font-size:var(--fs1);line-height:1.35">'+tellLine(t.st)+'</div>':'')+
+    /* ═══ ⛔ #263 · AND THE FOUR MARKS, ON EITHER SIDE OF THE FIELD ═══════
+       (User, 2026-08-28: *"in the card in batlfield we will write this icon"*.)
+
+       ⛑ THE PICTURES ARE `STAT_ICON`, THE SAME FOUR FAMILIES THE COMPANY
+       SHEET DRAWS, and they are keyed on the BAND, which since #254 is the
+       rung. So the mark is the ladder, said as a picture, and there is no
+       second table deciding what a body's strength looks like.
+       ⚠ 32px AND NEVER 24 (#230): these are pixel paintings and 24 is a 3:4
+       resample that smears the grid. `statIcoAt` takes the size because each
+       caller reserved its own box; this one reserves 32.
+       ⛔ AND IT CARRIES NO NUMBER, which is the same rule the MOOD row two
+       blocks up already obeys: show a state, hide the figure. The word is on
+       the hover and it is `tell()`, the band's own name.
+       ⛔ `noFace` IS REFUSED ITS MARKS. The Warden is a thing you cannot
+       read, and four pictures saying how strong it is would answer the one
+       question the whole encounter is built on refusing. Same flag, same
+       reason as the portrait and the race line above.
+       ⚡ IT IS READ OFF `u.st` AT RENDER TIME and this card is rebuilt on
+       every hover, so the day a battlefield buff writes `u.stMod` the marks
+       follow it with nothing added here - see `statRung`. */
+    (t.st&&!t.noFace
+      ?'<div class="rr statmk" style="justify-content:center;gap:var(--p3)">'+
+        ['str','agi','int','mor'].map(k=>'<span title="'+TELLS[k].lbl+': '+
+          String(tell(k,t.st[k])).replace(/"/g,'&quot;')+'">'+
+          statIco(k,t.st[k],32)+'</span>').join('')+'</div>'
+      :'')+
     /* ═══ #163 · A HEADING OVER NOTHING IS STILL A HEADING ═══════════════
        (User: "6) Less wide enemy stats picture - if there is no trait or
        empty stuff - don`t show it at all".) The act list can legitimately

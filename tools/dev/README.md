@@ -114,6 +114,9 @@ carries the setup that keeps being rewritten - `GT.playerTurn()`, `GT.standNextT
 | `reach.js` | … and its `deadGates` half: a door gated on something nothing in the build can grant |
 | `wash.js` | a hex tint COMPOSITED over the painted ground, by luminance. #249 |
 | `cardfloor.js` | the two ui-scales §5 counters over a CARD, which `gates.js` has never opened. ⚠ **Waits 900ms**: read in the same tick it reports twenty false findings off #218's unfold, and at 800ms it reports one. #251 |
+| `foeoracle263.js` | every foe side, 19 fields a body, so a statblock refactor can be PROVED to change nothing and a re-stat to change exactly what it claims. #263. ⚠ `steading` drifts against itself (it rolls its wall) |
+| `statmark263.js` | the four stat marks on the inspect card, DRIVEN through the real `inspect()`: a foe, one of yours, and the Warden that must have none. #263 |
+| `matrix263.js` | the road's win rates, both comps, **accumulated six fight-comps a call** because `eyes.py`'s CDP socket times out at 120s regardless of `--timeout`. Run it until `done`. #263 |
 | `pit250.js` | every rule the PIT carries, driven on a live board: the budget in a hole, the rim in both directions and for all four kinds of act, the fall a shove buys, the turn a climb costs, the hex note, the badge, and the generation in situ. #250 |
 | `align243.js` · `apron241e.js` · `diff243.js` · `road243i.js` | the four one-offs a changelog row names as the instrument that measured it |
 

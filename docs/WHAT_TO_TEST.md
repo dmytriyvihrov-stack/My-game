@@ -26,6 +26,48 @@
 
 ---
 
+## 🧪 THE ENEMY HAS THE FOUR STATS NOW, AND THE CARD SHOWS THEM  *(#263 · 2026-08-28 · build log 8f.288)*
+
+**What it is.** Your people have climbed the four ladders since #254. The other side did not: every
+enemy in the game carried the same four hidden numbers, and the one place that already read them
+(the weight of a blow) was paying off a rung nobody had chosen. Now an enemy's rungs come from its
+race plus whatever its own row leans, they pay the same things yours do, and the battlefield card
+shows them.
+
+**How to reach it in three steps.**
+1. Start any fight.
+2. Hover any enemy.
+3. Look at the bottom of the card that opens: **four stat pictures**, the same four families the
+   company sheet draws. Hover one for the word.
+
+**What should happen.**
+- Four marks on every body on the field, yours and theirs.
+- The picture is the band: a ratkin slinger reads quick and not strong, an ogre the other way round.
+- **No numbers.** Hovering a mark gives the word (*Strong enough*, *Nervous*), the way the MOOD row
+  already works.
+- **Something in Armour has NO marks.** That is deliberate: it is a thing you cannot read, and it
+  is the only body in the game whose numbers this entry did not touch.
+
+**What else moved, and it is a real difficulty change.**
+Ratkins gained +4 to hit and a fifth more on the swing, and lost 5% of their hitpoints and 10 of
+their nerve. Ogres gained 10% hitpoints, 10 nerve and a fifth on the swing, and lost 3 dodge.
+Humans gained the swing. Dogs and mirehares gained +4 to hit. Measured over 15 runs a side:
+the **broken men went 80% to 53%** for the starting four, **the Circle 100% to 53%** for a prepared
+six, **the Steading-Line 53% to 20%**. The early road still wins, but slower and with more blood.
+
+**What would be a bug.**
+- A body with no marks that is not Something in Armour.
+- A NUMBER printed beside a mark.
+- The Fen-Mother hitting noticeably harder or softer than she used to. Her rungs went up and her
+  dice came down to match; if she now flattens the line in two turns, that trade is wrong.
+- Any enemy at a bar that reads full but empty, or a mood word that does not match its bar.
+
+**⛔ What this did NOT fix.** The Snare is still won by the starting four about 9 times in 10.
+That is the open question O1 and this entry did not answer it - the ratkin lean gives and takes in
+roughly equal measure, and the finale is a ratkin deck. It wants its own tuning pass.
+
+---
+
 ## 🧪 THE GAUNTLET, UPDATED: FOUR ORDERS, ITS OWN CALIBRATION, AND A SECOND BUILD  *(#258 · 2026-08-27 · build log 8f.283)*
 
 **It was already alive** - it live-loads the game, so all the ladder work was in it. What changed is

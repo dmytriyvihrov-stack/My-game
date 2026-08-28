@@ -25,6 +25,15 @@ back already answered by work that was not about them.
 
 ---
 
+## P · From #263
+
+| | the question | ⭑ mine |
+|---|---|---|
+| **P1** · #263 | **The other side climbs the ladders now, and the road came down harder in some places than others.** `ARENA.match`, n=15 a side, against the same build without it. Starting four: **broken men 80 → 53%**, pack 100 → 80, Sling-Line 40 → 27, tavern 93 → 87. Prepared six: **the Circle 100 → 53%**, **the Steading-Line 53 → 20%**, the Snare 87 → 80. The early road still wins at 100% but slower and bloodier. Nothing here is a bug - it is the counterweight to O1 arriving, and the question is whether it arrived too hard on the two set-pieces | **keep it and play one run before touching a number.** The whole road moving one step down is what the entry was for, and a 53% Circle for a SIX is a real fight rather than a wall. The two I would watch are the **Steading-Line at 20%**, which was already the hardest fight in the game and now takes the ogre lean on top, and the **broken men at 53% for the four**, which is early. If either reads wrong the dial is that fight's own statblock, not `FOE_LEAN` - the lean is what makes a ratkin read like a ratkin |
+| **P2** · #263 | **And it did NOT answer O1: the Snare is still 93% for the starting four** (28/30 at n=30, 0.6 bodies down). The finale is a ratkin deck, and the ratkin lean is close to a wash - +4 to hit and a fifth on the swing, against 5% of the hitpoints and 10 of the nerve. So the fight the act ends on is still not a threat to the company you start with | **O1 stands and wants its own pass, and it is now a smaller job than it was.** The honest lever is that deck's own rows rather than the lean: the Snare was retuned by the arena once before (its header comment still records *"~3 of 10 in mirror-AI"*) and the same instrument is what would do it again. ⚠ Do it AFTER a played run of this build, not on top of it - two difficulty changes measured together cannot be told apart |
+
+---
+
 ## O · From #258
 
 | | the question | ⭑ mine |

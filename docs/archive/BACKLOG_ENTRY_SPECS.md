@@ -4961,3 +4961,276 @@ than the doc, is the stat hover carrying **a ledger of where the number came fro
 way to build it is that `statParts` becomes the walk `effStats` used to do, so the hover and the
 sheet cannot disagree. ⚠ **That is not #204.** The ladder rework is still parked; what shipped is
 the connective tissue for the stat system the build HAS.
+
+## 263 - The enemy runs on the four stats *(spec written 2026-08-28, number claimed; NOT built)*
+
+*(User, 2026-08-28: "use this logic with stats and aply all 4 stats also for enemies. So they also
+get some of the bufs. We can imagine, that each enemy have influence of all this 4 stats and in the
+card in batlfield we will write this icon. Why I want to use it - in the future add bufs and debufs
+of it completly on the battlfield. Write this logic and changed stats of enemies, so chaper model
+can actually do the job of implimenting" and "if enemies stats and behavior not together - I think
+it is a good idea to groop it in main build. So it is easier to find - you can also add it as
+instruction".)*
+
+**The standing contract this entry creates lives in `.claude/rules/enemy-stats.md`. Read it first.
+This spec is the one-time work; the rule is what survives it.**
+
+### What is true today (verified on the running build, 2026-08-28)
+
+- **Every foe already carries `st`**, hardcoded in `build()` (~line 18770):
+  `st:{str:-2,agi:-2,int:(t.int===undefined?-1:t.int),mor:-2}`. Only `int` is overridable and only
+  THE ONE-WORD OGRE uses it (`int:-5`, line ~16193).
+- **The ladder already reaches foes through the LIVE channels**, because the shared functions read
+  `heldOf(u,k)` off whatever unit they are handed: `thews()` (~21275, the damage multiplier - so
+  every foe today swings at the str -2 rung: melee x0.85 before race), the morale `loss` multiplier
+  (~15435), the `low` rung (~15742), the mood `climb` (~22874), and `D.arc` for casters via
+  `hitBreakdown` (~21073).
+- **The four BAKED numbers do not**: `hp`, `mskill`, `dodgeBase`, `moraleMax` come raw off the
+  template (`t.hp*TRIM`, `t.skill+HIT_EASE.foe`, `t.dodge`, `t.mor`). `GIVEN`'s own comment says
+  so: *"THE ENEMY DOES NOT MOVE WITH THEM"*. This entry is that sentence being retired.
+- **The statblocks are scattered**: `const T={}` inside each plan function - foes() ~16145,
+  brigands() ~16221, circleFoes ~16282, weddingFoes ~16350, clashFoes ~16410, clashAllies ~16460,
+  tavernFoes ~16590, chaseFoes ~17040, pack() ~18041, slingline() ~18085, steading() ~18121,
+  holdFoes ~18200, beasts() ~18495, mirehares() ~18589, plus the bare `WARDEN` const ~18454.
+  `FOE_BUILD` (~18844) is already the one dispatch table.
+- Balance context: the 2026-08-28 matrix (n=15 a side, `ARENA.match`, both comps) reads the road
+  EASIER since the ladders - snare four-comp 57% to 93% wins, circle prepared 53% to 87% - because
+  the roster got +13 to hit and +26% hp and the foes got nothing. `OPEN_QUESTIONS.md` O1. This
+  entry is the counterweight, so its balance move is INTENDED, and it is measured, not assumed.
+
+### Step 1 - group the statblocks (behavior change: none)
+
+Hoist every `const T={}` and `WARDEN` into ONE registry beside `FOE_BUILD`:
+
+```js
+/* THE OTHER SIDE, IN ONE PLACE (#263).
+   Every enemy statblock in the game. Keyed by fight, same keys the plan rows
+   use. See .claude/rules/enemy-stats.md - a new fight adds a group here,
+   never a table inside its own builder. */
+const FOE_T={
+  snare:{ chief:{...}, spear:{...} /* was foes()'s T, verbatim */ },
+  brigand:{ bcap:{...} /* ... */ },
+  /* ...one group per fight... */
+  armour:{ warden:{...} }            /* was the bare WARDEN */
+};
+```
+
+Each plan function's `const T={...}` becomes `const T=FOE_T.<fight>;` (and `armourFoe` reads
+`FOE_T.armour.warden`). Nothing else moves - plans, acts and their comments travel with the rows.
+
+- TDZ is safe here because plan functions run at `startBattle`, long after boot - but keep
+  `FOE_T` ABOVE `FOE_BUILD` and both above `startBattle` anyway, per the standing rule.
+- The prototype is CRLF and 30 MB: every edit through `tools/dev/safeedit.py`, each hunk
+  anchored uniquely, re-runnable scripts, never typed-in edits.
+- **Proof this step changed nothing**: a probe that runs `FOE_BUILD[k]()` for every kind on this
+  build and on a `git show HEAD:` copy (second browser via `gt.py launch --url`, and `--port`
+  goes AFTER the verb) and deep-compares the deterministic fields (name, hp, hpMax, armour,
+  mskill, dodgeBase, moraleMax, speed, the acts' dmg arrays). Traits are rolled per build, so
+  exclude `trait`. Expect 0 drift. `LINT()` (returns an OBJECT - read `.findings`, never
+  `.length`) and `gt.py check` clean.
+
+### Step 2 - the lean, and the derivation
+
+**A foe's rung is race + authored lean, exactly the roster's born+race+class+trait said smaller.**
+
+```js
+/* beside FOE_T. The three people-races mirror RACEMOD exactly; a beast is
+   quick, dim and unbothered; 'unknown' is nothing until authored. */
+const FOE_LEAN={
+  human :{str:0, agi:0, int:+1,mor:0},
+  ratkin:{str:-1,agi:+1,int:+1,mor:-1},
+  ogre  :{str:+1,agi:-1,int:-1,mor:+1},
+  beast :{str:0, agi:+1,int:-4,mor:0},
+  unknown:{str:0,agi:0, int:0, mor:0}
+};
+const foeSt=(t,rc)=>{const L=FOE_LEAN[rc]||FOE_LEAN.unknown,a=t.lean||{};
+  const o={};['str','agi','int','mor'].forEach(k=>o[k]=rungClamp((L[k]||0)+(a[k]||0)));
+  return t.st?Object.assign(o,t.st):o;};   /* an authored t.st wins whole (bosses) */
+```
+
+In `build()`, compute `const fst=foeSt(t,rc)` and write `st:fst` where the hardcoded literal is
+now; delete the `t.int` special case and migrate its one user: ogremage takes `lean:{int:-4}`
+(ogre -1 plus -4 is the same -5).
+
+Then the four baked numbers read the ladder, AFTER champ and trim, exactly where each is built:
+
+```js
+hp0        = Math.round(hp0*(1+(rungHeld('str',fst.str).hp||0)));   /* after the existing hp0 line */
+mskill     = Math.round(t.skill*(champ?CHAMP.skill:1))+(rungHeld('agi',fst.agi).hit||0)+HIT_EASE.foe
+dodgeBase  = Math.round(t.dodge*(champ?CHAMP.dodge:1))+(rungHeld('agi',fst.agi).dodge||0)
+moraleMax  = t.mor+(rungHeld('mor',fst.mor).nerve||0)   /* and morale: round(that*START_NERVE) */
+```
+
+And the three capstones, copied from `unitFrom` (~15617), so an authored or future-buffed +4 foe
+works: `stands`, `fleet` (+1 speed - mirror `unitFrom`'s speed line), `unrepeatable`, all off
+`holds({st:fst},...)`.
+
+- `noTrim` bodies (the Fen-Mother, the Warden) SKIP all four derivations, the same way they skip
+  TRIM and ARM: *"a boss is tuned by hand or not at all"*. Their `t.st` is authored verbatim and
+  still feeds the live channels and the card icons.
+- Nothing changes in `thews`, `hitBreakdown`, `dodgeOf`, `moraleDelta` - they already read the
+  unit's `st`. The damage change below happens BECAUSE the default rung moves, not because any
+  formula was edited.
+- `besideYou`, champions, `shooterThin`, `RACESTEP` and `init` all compose unchanged.
+
+### Step 3 - authored rows (the whole list)
+
+- Every `captain:true` PERSON leans `{mor:+1}`: chief (snare), bcap (brigand), elder (circle),
+  groom (wedding), carter (chase), boss (slingline), elder (steading), serj AND corp (hold).
+  Beast captains (the Bitch) get nothing - a dog is a dog.
+- ogremage: `lean:{int:-4}` (keeps the authored -5; the fight IS the unreliable caster).
+- The Fen-Mother: `st:{str:3,agi:0,int:-2,mor:4}` authored. Her rungs now feed `thews` live,
+  x0.85 to x1.20, so her dice come down x0.71 TO KEEP HER OUTPUT LEVEL:
+  anvil 22-33 to **16-23**, lash 16-25 to **11-18**, gorge 30-44 to **21-31**,
+  drag 24-36 to **17-25** (bog and fear carry no dice). Her mor rungs also slow her nerve rundown
+  (`loss -.25` from +2 up), and her desperation turn is timed off that rundown: measure
+  rounds-to-desperate with `fightn.js` before and after, and if it moved, lower her authored mor
+  pool (300 toward ~240) until it is back.
+- The Warden: `st:{str:-2,agi:-2,int:-1,mor:-2}` authored - today's default frozen, zero change
+  on the one body designed to be unreadable. `noFace` suppresses its icons (step 4).
+
+### The changed numbers (computed 2026-08-28, template level, before TRIM/ARM/champ)
+
+Melee mult includes the race's weight of blow; today's column includes the str -2 rung every foe
+currently swings at. Bow acts move the same way (x0.82 to x0.90 on a ratkin sling, x0.92 to x1.00
+human and beast). Casters' arcane acts take no thews; they aim at `D.arc` off their int rung.
+
+| body | race | rungs s/a/i/m | hp | skill | dodge | mood pool | melee dmg mult |
+|---|---|---|---|---|---|---|---|
+| **SNARE (FOES)** | | | | | | | |
+| Ratkin chieftain | ratkin | -1/+1/+1/+0 | 64 -> **61** | 60 -> **64** | 16 | 80 | x0.75 -> **x0.90** |
+| Ratkin, spear | ratkin | -1/+1/+1/-1 | 36 -> **34** | 54 -> **58** | 18 | 58 -> **48** | x0.75 -> **x0.90** |
+| Ratkin, cleaver | ratkin | -1/+1/+1/-1 | 40 -> **38** | 57 -> **61** | 16 | 62 -> **52** | x0.75 -> **x0.90** |
+| Ratkin, hook-pole | ratkin | -1/+1/+1/-1 | 34 -> **32** | 55 -> **59** | 18 | 56 -> **46** | x0.75 -> **x0.90** |
+| Ratkin slinger | ratkin | -1/+1/+1/-1 | 30 -> **28** | 59 -> **63** | 20 | 52 -> **42** | x0.75 -> **x0.90** |
+| Ratkin warp-sniffer | ratkin | -1/+1/+1/-1 | 32 -> **30** | 47 -> **51** | 20 | 48 -> **38** | x0.75 -> **x0.90** |
+| Ogre, clan-hired | ogre | +1/-1/-1/+1 | 92 -> **101** | 53 | 8 -> **5** | 80 -> **90** | x0.95 -> **x1.10** |
+| Ogre, one-word | ogre | +1/-1/-5/+1 | 96 -> **106** | 48 | 7 -> **4** | 78 -> **88** | x0.95 -> **x1.10** |
+| **BRIGAND (BRIGANDS)** | | | | | | | |
+| The broken captain | human | +0/+0/+1/+1 | 52 | 60 | 18 | 74 -> **84** | x0.85 -> **x1.00** |
+| Deserter, sword | human | +0/+0/+1/+0 | 38 | 55 | 16 | 52 | x0.85 -> **x1.00** |
+| Deserter, spear | human | +0/+0/+1/+0 | 36 | 54 | 15 | 50 | x0.85 -> **x1.00** |
+| Poacher | human | +0/+0/+1/+0 | 30 | 60 | 20 | 46 | x0.85 -> **x1.00** |
+| Lurcher | beast | +0/+1/-4/+0 | 26 | 58 -> **62** | 31 | 44 | x0.85 -> **x1.00** |
+| **CIRCLE (CIRCLEFOES)** | | | | | | | |
+| The one who talks | human | +0/+0/+1/+1 | 62 | 64 | 16 | 80 -> **90** | x0.85 -> **x1.00** |
+| Marked, knife | human | +0/+0/+1/+0 | 42 | 62 | 22 | 70 | x0.85 -> **x1.00** |
+| Marked, hatchet | human | +0/+0/+1/+0 | 50 | 60 | 16 | 70 | x0.85 -> **x1.00** |
+| Marked, spear | human | +0/+0/+1/+0 | 48 | 59 | 15 | 70 | x0.85 -> **x1.00** |
+| Marked, sling | human | +0/+0/+1/+0 | 36 | 62 | 20 | 68 | x0.85 -> **x1.00** |
+| **WEDDING (WEDDINGFOES)** | | | | | | | |
+| Wedding guest | ratkin | -1/+1/+1/-1 | 30 -> **28** | 38 -> **42** | 12 | 34 -> **24** | x0.75 -> **x0.90** |
+| Guest, with a jug | ratkin | -1/+1/+1/-1 | 32 -> **30** | 41 -> **45** | 11 | 36 -> **26** | x0.75 -> **x0.90** |
+| The aunt with the roasting spit | ratkin | -1/+1/+1/-1 | 34 -> **32** | 45 -> **49** | 12 | 42 -> **32** | x0.75 -> **x0.90** |
+| The groom | ratkin | -1/+1/+1/+0 | 44 -> **42** | 52 -> **56** | 14 | 70 | x0.75 -> **x0.90** |
+| The bride | ratkin | -1/+1/+1/-1 | 26 -> **25** | 36 -> **40** | 18 | 60 -> **50** | x0.75 -> **x0.90** |
+| **CLASH (CLASHFOES)** | | | | | | | |
+| Ratkin, spear | ratkin | -1/+1/+1/-1 | 46 -> **44** | 53 -> **57** | 18 | 72 -> **62** | x0.75 -> **x0.90** |
+| Ratkin slinger | ratkin | -1/+1/+1/-1 | 38 -> **36** | 57 -> **61** | 20 | 66 -> **56** | x0.75 -> **x0.90** |
+| Ogre, club | ogre | +1/-1/-1/+1 | 124 -> **136** | 53 | 8 -> **5** | 96 -> **106** | x0.95 -> **x1.10** |
+| **CLASH ALLIES (CLASHALLIES)** | | | | | | | |
+| A ring-eyed man | human | +0/+0/+1/+0 | 42 | 50 | 14 | 60 | x0.85 -> **x1.00** |
+| A ring-eyed woman | human | +0/+0/+1/+0 | 46 | 48 | 10 | 60 | x0.85 -> **x1.00** |
+| **TAVERN (TAVERNFOES + BARMAN)** | | | | | | | |
+| Harl the carter | human | +0/+0/+1/+0 | 52 | 50 | 10 | 52 | x0.85 -> **x1.00** |
+| Brakk | human | +0/+0/+1/+0 | 44 | 44 | 12 | 46 | x0.85 -> **x1.00** |
+| Osper | human | +0/+0/+1/+0 | 40 | 46 | 14 | 42 | x0.85 -> **x1.00** |
+| Tull | human | +0/+0/+1/+0 | 46 | 42 | 10 | 44 | x0.85 -> **x1.00** |
+| Weft | human | +0/+0/+1/+0 | 34 | 40 | 20 | 44 | x0.85 -> **x1.00** |
+| The barman | ogre | +1/-1/-1/+1 | 96 -> **106** | 48 | 6 -> **3** | 96 -> **106** | x0.95 -> **x1.10** |
+| **CHASE (CHASEFOES)** | | | | | | | |
+| The carter | human | +0/+0/+1/+1 | 50 | 50 | 10 | 54 -> **64** | x0.85 -> **x1.00** |
+| The big one off the wharf | human | +0/+0/+1/+0 | 46 | 46 | 10 | 48 | x0.85 -> **x1.00** |
+| The thin one | human | +0/+0/+1/+0 | 34 | 44 | 20 | 44 | x0.85 -> **x1.00** |
+| The small one | ratkin | -1/+1/+1/-1 | 36 -> **34** | 52 -> **56** | 18 | 50 -> **40** | x0.75 -> **x0.90** |
+| **PACK (PACK)** | | | | | | | |
+| The Bitch | beast | +0/+1/-4/+0 | 39 | 62 -> **66** | 29 | 70 | x0.85 -> **x1.00** |
+| Lurcher | beast | +0/+1/-4/+0 | 26 | 58 -> **62** | 31 | 44 | x0.85 -> **x1.00** |
+| Runt | beast | +0/+1/-4/+0 | 20 | 55 -> **59** | 33 | 38 | x0.85 -> **x1.00** |
+| **SLINGLINE (SLINGLINE)** | | | | | | | |
+| Sling-master | ratkin | -1/+1/+1/+0 | 58 -> **55** | 62 -> **66** | 16 | 82 | x0.75 -> **x0.90** |
+| Ratkin slinger | ratkin | -1/+1/+1/-1 | 28 -> **27** | 59 -> **63** | 22 | 50 -> **40** | x0.75 -> **x0.90** |
+| Ratkin, long spear | ratkin | -1/+1/+1/-1 | 36 -> **34** | 54 -> **58** | 18 | 58 -> **48** | x0.75 -> **x0.90** |
+| Warp-sniffer | ratkin | -1/+1/+1/-1 | 30 -> **28** | 47 -> **51** | 20 | 48 -> **38** | x0.75 -> **x0.90** |
+| **STEADING (STEADING)** | | | | | | | |
+| Ogre, club | ogre | +1/-1/-1/+1 | 104 -> **114** | 55 | 8 -> **5** | 86 -> **96** | x0.95 -> **x1.10** |
+| Ogre, long pike | ogre | +1/-1/-1/+1 | 96 -> **106** | 57 | 9 -> **6** | 84 -> **94** | x0.95 -> **x1.10** |
+| Ogre, stone maul | ogre | +1/-1/-1/+1 | 110 -> **121** | 51 | 6 -> **3** | 88 -> **98** | x0.95 -> **x1.10** |
+| Ogre, stone-thrower | ogre | +1/-1/-1/+1 | 92 -> **101** | 54 | 10 -> **7** | 80 -> **90** | x0.95 -> **x1.10** |
+| Steading-elder | ogre | +1/-1/-1/+2 | 118 -> **130** | 56 | 7 -> **4** | 100 -> **120** | x0.95 -> **x1.10** |
+| **HOLD (HOLDFOES)** | | | | | | | |
+| Hold serjeant | human | +0/+0/+1/+1 | 62 | 62 | 14 | 92 -> **102** | x0.85 -> **x1.00** |
+| Hold corporal | human | +0/+0/+1/+1 | 54 | 60 | 15 | 84 -> **94** | x0.85 -> **x1.00** |
+| Hold billman | human | +0/+0/+1/+0 | 44 | 56 | 14 | 74 | x0.85 -> **x1.00** |
+| Hold crossbow | human | +0/+0/+1/+0 | 34 | 62 | 16 | 70 | x0.85 -> **x1.00** |
+| Hold hound | beast | +0/+1/-4/+0 | 30 | 60 -> **64** | 30 | 62 | x0.85 -> **x1.00** |
+| **MOTHER (BEASTS)** | | | | | | | |
+| The Fen-Mother (noTrim) | beast | **+3/0/-2/+4, authored** | hand: 470 | hand: 62 | hand: 13 | hand: 300 | x0.85 -> x1.20 live: **dice cut x0.71, table below** |
+| The cub | beast | 0/+1/-4/0 | 52 | 5 (was 1; it never swings) | 34 | 80 | never swings |
+| Fen-thing | ratkin | -1/+1/+1/-1 | 34 -> **32** | 52 -> **56** | 22 | 56 -> **46** | x0.75 -> **x0.90** |
+| Bloom-spitter | ratkin | -1/+1/+1/-1 | 30 -> **28** | 54 -> **58** | 20 | 50 -> **40** | x0.75 -> **x0.90** |
+| **MIREHARES (MIREHARES)** | | | | | | | |
+| Mirehare doe | beast | +0/+1/-4/+0 | 88 | 68 -> **72** | 17 | 120 | x0.85 -> **x1.00** |
+| Mirehare buck | beast | +0/+1/-4/+0 | 68 | 72 -> **76** | 22 | 105 | x0.85 -> **x1.00** |
+| **ARMOUR (armourFoe)** | | | | | | | |
+| Something in armour (noTrim) | unknown | -2/-2/-1/-2 authored | hand: 342 | hand: 74 | hand: 0 | hand: 460 | x0.85 -> x0.85, **unchanged** |
+
+Reading it: ratkins get +4 skill and 15 points of melee mult, and pay 5% hp and 10 nerve; ogres
+get +10% hp, +10 nerve and 15 points of mult, and pay 3 dodge; humans get the mult alone; dogs and
+mirehares get +4 skill and the mult. The whole table presses the road back DOWN toward the
+pre-ladder feel, which is the O1 direction.
+
+### Step 4 - the icons on the battlefield card
+
+In the inspect card (the `own&&t.st` tellLine row, ~31494), replace the own-only word line with a
+row of the four stat paintings for EVERY body except `noFace`:
+
+```js
+(t.st&&!t.noFace?'<div class="rr" style="justify-content:center;gap:var(--p3)">'+
+  ['str','agi','int','mor'].map(k=>'<span title="'+tell(k,t.st[k]).replace(/"/g,'&quot;')+'">'+
+    statIco(k,t.st[k],32)+'</span>').join('')+'</div>':'')
+```
+
+- **32px and never 24**: #230's note - these are pixel paintings and 24 is a 3:4 resample that
+  smears. Four at 32 plus gaps fits the card's width; measure it, do not assume it.
+- The hover word is the TELLS band, which since #254 IS the rung - no number is printed, same as
+  the mood row's rule (show a state, hide the figure).
+- The icon is read off `u.st` at render time and the card is rebuilt per hover, so a future
+  buffed rung changes the picture with no extra wiring.
+- Gates: the ui-scales section-5 floor and clip probes on the battle screen with a card open, on
+  this build AND on a `git show HEAD:` baseline driven to the same card.
+
+### Step 5 - the seam for battlefield buffs (built now, used later)
+
+```js
+const rungOf=(u,k)=>rungClamp(((u&&u.st&&u.st[k])||0)+((u&&u.stMod&&u.stMod[k])||0));
+```
+
+`heldOf` changes to read `rungOf` instead of `u.st` directly. `stMod` exists on no body today, so
+behavior is identical - but the day a card or a working writes `u.stMod={str:-1}`, every LIVE
+channel (damage, mood loss and climb, casting) and the card's icons follow with zero further code.
+THE BAKED FOUR DO NOT: a buff that should move to-hit or dodge must apply its delta explicitly
+(the way gear does) until those reads are made live. That is deliberately out of this entry's
+scope; write it into the buff entry when it comes.
+
+### The measurement that ships with it
+
+Run the matrix before and after: `ARENA.match(comp,k,15)` over the 14 road kinds x both comps
+(`four` and `prepared`), with `TUT_SILENT=true` around the loop and `G.party` restored with
+`makeParty()` after. Expected movement: everything comes down a step. Watch four places:
+
+- **tavern, four comp**: the tutorial. It read 87% on 2026-08-28; if it lands under ~75% the dial
+  is the brawlers' own rows, not the lean.
+- **steading**: already the hardest fight (50% prepared at n=30) and the ogre lean buffs it
+  further. Expect to hand the user a retune question, not to fix it silently.
+- **snare**: O1 wants it harder; this entry delivers some of that. Re-read O1 after.
+- **the Fen-Mother's desperation timing** (step 3).
+
+File what moved into `OPEN_QUESTIONS.md` beside O1; the final dials are the user's ruling.
+
+### Gates before it ships
+
+`LINT()` .findings 0 (it builds every FOE_BUILD side itself, so a derivation throw fails loud) -
+`gt.py check` - the step-1 oracle probe 0 drift on non-derived fields - `regress.js` 8/8 no
+ERR/FATAL/GUARD - `smoke.js` 0 throws - the matrix, both builds - icons driven, floor and clip
+clean - no em dash anywhere in the diff - `python tools/record.py check`.
