@@ -9637,7 +9637,19 @@ const holds=(u,k,cap)=>((u&&u.st&&u.st[k])||0)>=RUNG_TOP&&
    ⚠ AND IT SOFTENS EVERY MORALE EVENT BY 11%, because `MORALE`'s figures are
    POINTS against this pool. That is paid back by the lower opening fraction in
    the same edit: 57 of 100 sits 15 points over SHAKEN where 64 of 90 sat 17. */
-const GIVEN={hp:60,hit:70,dodge:14,land:69,nerve:100,climb:8,opening:15,frail:.90};
+/* ⛔ 2026-08-29 - THE OTHER SIDE OF EVERY BODY: HITPOINTS, DAMAGE, ARMOUR, ALL
+   AT ONCE, BOTH SIDES, 3.5x DOWN. User's own word: "reduce health and damage
+   and armor of all my units and enemies and boses and pets. Everething! for
+   3.5 times". Never touches to-hit, dodge, speed or the mood ladder - those
+   are a different ask and a different set of knobs (HIT_EASE, RACESTEP,
+   FOE_NERVE). One constant, read wherever one of the three is DERIVED
+   (GIVEN.hp, `build()`'s hp0/arm0, armourValue(), strike()'s global trim,
+   petUnit()) rather than swept across the ~55 FOE_T rows or the ~30 GEAR
+   rows - the enemy-stats.md rule against a second FOE_GIVEN table applies
+   here exactly as it does to HIT_EASE and FOE_NERVE: a knob, not a rewrite
+   of every authored number. */
+const HDA_CUT=1/3.5;
+const GIVEN={hp:Math.round(60*HDA_CUT),hit:70,dodge:14,land:69,nerve:100,climb:8,opening:15,frail:.90};
 /* the body: the pool, the weight of the blow, and how easy it is to hit -
    which is a modifier on the ATTACKER'S roll and never on the defender's
    dodge. A small body is hard to hit because it is small, not because it is
@@ -9666,7 +9678,7 @@ const RACESIZE={
 };
 const RACEMUL={},RACEHP={},RACEBULK={},RACEMELEE={},RACEATK={};
 for(const r in RACESIZE){const z=RACESIZE[r];
-  RACEMUL[r]=z.mul;RACEHP[r]=Math.round(GIVEN.hp*z.mul);RACEBULK[r]=z.bulk;
+  RACEMUL[r]=z.mul;RACEHP[r]=Math.round(GIVEN.hp*z.mul);RACEBULK[r]=Math.round(z.bulk*HDA_CUT);
   RACEMELEE[r]=z.melee;RACEATK[r]=z.atk;}
 /* ⛔ #254 - ONE RUNG EACH, WHICH IS THE FILE'S TABLE. A race that leant two
    rungs where a class leans one made the race the loudest of the four lines,
@@ -13343,15 +13355,18 @@ function bodyHp(p){
   /* #254 - the race's own pool through the STRENGTH climb */
   /* #255 - the race's pool through the climb, then its BULK on top: meat is
      not multiplied by how strong the body is. */
+  /* the RACEHP/GIVEN.hp base already carries HDA_CUT (see D.hp); the flats
+     that ride on top of it do not, on their own, so they are cut here or a
+     +16 ogre bulk would outweigh a pool a third its old size */
   let h=D.hp({st:s,raceHp:RACEHP[p.race]||GIVEN.hp})+(RACEBULK[p.race]||0)+
-        bonusHp(p)+traitHp(p);
+        Math.round((bonusHp(p)+traitHp(p))*HDA_CUT);
   h=Math.round(h*(1+LVL_HP*levelSteps(p)));
   const m=GEAR[p.eq&&p.eq.main];
   if((m&&m.range)||isCaster(p.cls))h=Math.round(h*GIVEN.frail);   /* #254 */
   /* #262 - COLOSSUS, before the wound is taken off: the perk grows the POOL,
      it does not heal what is already missing from it. */
   if(p.perks&&p.perks.indexOf('colossus')>=0)h=Math.round(h*1.20);
-  if(p.hurt&&p.hurt.hp)h=Math.max(14,h+p.hurt.hp);
+  if(p.hurt&&p.hurt.hp)h=Math.max(Math.round(14*HDA_CUT),h+p.hurt.hp);
   return h;
 }
 /* ⛔ #232 - THESE TWO SIT HERE AND NOT BESIDE `ARMOUR_BANDS`, WHICH IS WHERE
@@ -13559,7 +13574,9 @@ function armourValue(p){
      shield would otherwise have shipped with a number that did not count. */
   const a=GEAR[p.eq.armour],m=GEAR[p.eq.main];
   const worn=a?Math.round(a.armour*(sizeMismatch(p)?WRONGSIZE.mult:1)):0;
-  return worn+((m&&m.armour)||0);
+  /* 2026-08-29 - HDA_CUT, the one door every worn/held armour figure reaches
+     the body through; see the note beside GIVEN. */
+  return Math.round((worn+((m&&m.armour)||0))*HDA_CUT);
 }
 function sizeJoke(p){
   const a=GEAR[p.eq.armour];if(!a||!sizeMismatch(p))return '';
@@ -13640,6 +13657,11 @@ const HURTS=[
   {k:'bled', n:'Bled white',       hp:-18,             band:[9,14],
    d:'Nothing is broken. There is simply less of them than there was.'}
 ];
+/* the 2026-08-29 hp/dmg/armour cut, read from the same door bodyHp() reads
+   it from: without this the card would still promise "-18 hitpoints" while
+   the pool it is charged against is a third the size, which is the exact
+   promise-versus-payment defect event-cards.md exists to forbid. */
+HURTS.forEach(r=>{if(r.hp)r.hp=Math.round(r.hp*HDA_CUT);});
 /* the Captain gets two scars at the user's word: he is the one body the run
    is written around, and the ladder may not take him on the same rung it
    takes a spearman hired at a wall. */
@@ -15826,8 +15848,8 @@ function unitFrom(p){
        paid the perk TWICE, +20 armour on a card that says 10, and only the
        differential caught it (34 -> 54 where 44 was wanted). Restoring a
        retired perk means restoring its ROW; check before wiring anything. */
-    armourMax:armourValue(p)+(p.perks.indexOf('thickhide')>=0?18:0)+
-      (p.perks.indexOf('stoneskin')>=0?10:0),
+    armourMax:armourValue(p)+Math.round(((p.perks.indexOf('thickhide')>=0?18:0)+
+      (p.perks.indexOf('stoneskin')>=0?10:0))*HDA_CUT),
     moraleMax:D.moral({st:s})+(p.perks.indexOf('fortmind')>=0?20:0),
     /* the stride belongs to the race, not to agility — see RACESTEP */
     /* #146 - the roster's ease knob, at the one door a roster body comes
@@ -18848,7 +18870,11 @@ function build(plan,T){
     const lHit=lad?(rungHeld('agi',lad.agi).hit||0):0;
     const lDod=lad?(rungHeld('agi',lad.agi).dodge||0):0;
     const lMor=lad?(rungHeld('mor',lad.mor).nerve||0):0;
-    const hp0=Math.round(t.hp*tr1*(t.noTrim?1:shooterThin)*(champ?CHAMP.hp:1)*(1+lHp));
+    /* 2026-08-29 - HDA_CUT, applied UNCONDITIONALLY (outside the t.noTrim
+       guard TRIM/ARM use), so the Warden and the Fen-Mother take the 3.5x
+       cut too without their two authored statblocks being hand-edited. */
+    const hp0=Math.round(t.hp*tr1*(t.noTrim?1:shooterThin)*(champ?CHAMP.hp:1)*(1+lHp)*HDA_CUT);
+    const arm0=Math.round(t.armour*ar1*(champ?CHAMP.armour:1)*HDA_CUT);
     /* the pool the mood is measured against, and the rung it starts on.
        #265 - `FOE_NERVE` last, so the ladder's own rung is what gets scaled
        rather than the two being added in a different order on two bodies. */
@@ -18856,8 +18882,8 @@ function build(plan,T){
     const u={id:'foe'+i,side:'foe',name:t.name,kind:t.kind,race:rc,variant:e[2],col:cc,row:e[1],init:e[3],
       caster:!!t.caster,bow:!!t.bow,captain:!!t.captain,champ:champ,leader:false,perks:[],
       hp:hp0,hpMax:hp0,
-      armour:Math.round(t.armour*ar1*(champ?CHAMP.armour:1)),
-      armourMax:Math.round(t.armour*ar1*(champ?CHAMP.armour:1)),
+      armour:arm0,
+      armourMax:arm0,
       /* the enemy starts on the same rung you do — HAPPY, not exalted, so the
          top of the ladder is something either side has to earn in the fight */
       morale:Math.round(mor0*START_NERVE),morale0:Math.round(mor0*START_NERVE),
@@ -18905,7 +18931,7 @@ function build(plan,T){
       /* backlog #18. `noArc` and `soak` are rules; `noFace`/`notally` are the
          two places the UI would otherwise NAME a thing that is meant to stay
          unnamed — the panel portrait, and the row of heads on the sheet. */
-      noArc:!!t.noArc,soak:t.soak||0,noFace:!!t.noFace,notally:!!t.notally,
+      noArc:!!t.noArc,soak:Math.round((t.soak||0)*HDA_CUT),noFace:!!t.noFace,notally:!!t.notally,
       /* ⚠ `cc`, NOT `e[0]` — THE SHIFTED COLUMN, and this was a real bug that
          put the Fen-Mother's body on the wrong side of her head for the life
          of the fight. The head is placed at `cc` (the plan's column pushed
@@ -18983,7 +19009,8 @@ function petUnit(){
   if(!def)return null;
   return {id:'pet',side:'you',name:def.n,kind:def.kind,race:'beast',leader:false,
     pet:true,passive:true,petFollow:true,perks:[],st:{str:-7,agi:4,int:-7,mor:-7},
-    hp:30,hpMax:30,armour:8,armourMax:8,morale:100,moraleMax:100,
+    hp:Math.round(30*HDA_CUT),hpMax:Math.round(30*HDA_CUT),
+    armour:Math.round(8*HDA_CUT),armourMax:Math.round(8*HDA_CUT),morale:100,moraleMax:100,
     mskill:1,dodgeBase:def.dodge||24,speed:5,flankPow:0,spellPow:1,dmgBonus:0,morBonus:0,
     caster:false,bow:false,used:{},actions:0,actionsMax:0,acts:[],state:'steady',
     dead:false,fled:false,downed:false,safeMove:false,spearwall:false,moved:false,rallyBuff:0};
@@ -19923,7 +19950,7 @@ const mcost=(c,r,u)=>{
    CARRYING it out: the ground is twice the price of the clock now, where it
    used to be half again. That is the reading the rule wants - the fire is a
    place, and the burn is what you took away from it. */
-const EMBER_HIT=6, BURN_TICK=3, BURN_TURNS=2;
+const EMBER_HIT=Math.round(6*HDA_CUT), BURN_TICK=Math.max(1,Math.round(3*HDA_CUT)), BURN_TURNS=2;
 const onEmber=u=>!!(B&&B.terr&&B.terr[K(u.col,u.row)]==='ember');
 /* what both brains charge a hex for being on fire, in the scorers' own
    unit (six a hex of walking). `mcost` already prices the CROSSING; this is
@@ -20058,7 +20085,7 @@ function burnTick(u){
 
    ⚠ AND `B.hasPits` GATES THE WHOLE THING, so every fight in the game that
    has no hole in it pays one boolean read per aim and nothing else. */
-const PIT_FALL=10;      /* what going over the edge costs, through any armour */
+const PIT_FALL=Math.round(10*HDA_CUT);      /* what going over the edge costs, through any armour */
 /* what both brains charge a hex for being a hole, in the movement scorers'
    own unit (six a hex of walking). ⛑ IT IS DELIBERATELY SMALLER THAN
    `EMBER_AI`: the fire hurts you for standing in it and the pit does not, so
@@ -21940,7 +21967,12 @@ function dmgPreview(a,d,act){
      about it, so every number the player used to choose a target has been
      25% high since. Found while wiring `soak` in, which is displayed through
      the same two rows. */
-  const G8=0.8;
+  /* 2026-08-29 - HDA_CUT rides the same G8 knob so the preview and the blow
+     cannot drift, which is the exact bug the comment above already warns
+     about for the ORIGINAL 0.8. Covers every act that reaches this
+     function, weapon or spell alike - `dmgMul`/`act.arcane` are read AFTER
+     this multiplier is built, so no attack kind can bypass it. */
+  const G8=0.8*HDA_CUT;
   const b=dmgMul(a,d,act)*G8,m=act.arcane?a.spellPow:1;
   const lo=(act.dmg[0]+(act.arcane?0:a.dmgBonus))*b,hi=(act.dmg[1]+(act.arcane?0:a.dmgBonus))*b;
   /* flat soak comes off the BODY damage only, floored at 1 — same rule and
@@ -22087,7 +22119,9 @@ function strike(a,d,act,mult){
      One global knob, both sides, applied LAST so every other multiplier
      keeps its meaning relative to the rest. Target band: 6-12 rounds,
      boss ~15. */
-  raw*=0.8;
+  /* 2026-08-29 - HDA_CUT, the same knob dmgPreview()'s G8 reads, so the
+     number a player is shown before the click always equals the blow */
+  raw*=0.8*HDA_CUT;
   let armD=0,hpD=0;
   /* #79 - LIGHT 50/50 · MEDIUM 60/40 · HEAVY 75/25, and the two halves add up
      to the blow. What they are wearing decides it; see splitFor(). The three
@@ -22268,7 +22302,7 @@ function strike(a,d,act,mult){
     }
     if(hitWall&&stepped<want){
       /* stopped by something solid: the rest of the shove goes into them */
-      const extra=Math.round((want-stepped)*7);
+      const extra=Math.round((want-stepped)*7*HDA_CUT);
       d.hp-=extra;fx(d,'−'+extra+' (wall)','#e08a80',true);
       say(d.name+' is driven into something that does not move. '+extra+' more.');
     }
@@ -25256,9 +25290,10 @@ function clickHex(c,r){
     spend(u,a);payStrain(u,a);sfx('cast');
     let n=0;
     /* it plates them, it does not mend them — no healing in a fight, ever */
+    const oathArm=Math.round(18*HDA_CUT);      /* 2026-08-29 - HDA_CUT; label built off the same number so the receipt cannot drift from the plate */
     alive().filter(x=>x.side==='you'&&udist(tgt,x)<=2).forEach(x=>{
-      x.armour+=18;if(x.armour>x.armourMax)x.armourMax=x.armour;
-      mor(x,12,'');fx(x,'+18 armour','#96a1a5',true);
+      x.armour+=oathArm;if(x.armour>x.armourMax)x.armourMax=x.armour;
+      mor(x,12,'');fx(x,'+'+oathArm+' armour','#96a1a5',true);
       /* #87 — a plate on every body it reached, staggered so the oath spreads
          through the line instead of arriving everywhere at once */
       setTimeout(((y,i)=>()=>plateFx(y,'#8fd0a8'))(x,n),hitPaced(n*90));
@@ -25371,7 +25406,7 @@ function clickHex(c,r){
     if(a.hex){                                  /* UNPICK: armour off, nerve with it */
       sfx('cast');
       faceToward(u,tgt.col,tgt.row);
-      const off=Math.min(tgt.armour,25);tgt.armour-=off;
+      const off=Math.min(tgt.armour,Math.round(25*HDA_CUT));tgt.armour-=off;
       /* #87 — the tether takes hold and the harness comes off it as shards.
          Steel motes rather than green ones: the same primitive, and the
          colour is the only thing saying which of the two it was. */
