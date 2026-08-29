@@ -8,6 +8,9 @@
   out.inv.overlap=GT.overlap('iChar');
   out.inv.slack=GT.slack('iChar').slack;
   /* the battle card, which draws the same three rows off the same block */
+  /* ⚠ #266 - THIS LEAVES A LIVE BATTLE IN `B`, AND AN `ARENA.match` RUN ON TOP OF ONE
+     WEDGES THE PAGE. Cost eleven minutes and read exactly like a fight that never ends.
+     Run this probe LAST on a page, or relaunch before an arena call. */
   startBattle('brigand');GT.playerTurn();render();
   out.battle={floor:GT.floor(),clip:GT.clip()};
   const plq=document.getElementById('bPlq');
