@@ -75,6 +75,73 @@ statblocks would be a second author for figures that are hand-tuned per fight, a
 tunings is somebody's measurement. ⚑ **The knob that does exist is `HIT_EASE`**, which is where
 #146 put exactly this tilt.
 
+⚡ **AND SINCE #265 THERE IS A SECOND SUCH KNOB, ON THE NERVE COLUMN ALONE: `FOE_NERVE`**
+*(2026-08-28, the user: "i feel we need to add more morale for enemies, similar to us. So it is a
+little bit harder to break them")*. It is **1.25**, applied to the mood pool in `build()`, and it
+does not contradict the paragraph above: a knob is one number that says what the two SIDES are
+worth against each other, which is exactly what `HIT_EASE` is; a `FOE_GIVEN` would be one number
+standing in for 61 authored rows. **The table's 62.7 is still what the templates AUTHOR** - what
+changed is what `build()` makes of it.
+
+⛔ **IT IS A MULTIPLIER AND NOT A FLAT ADD, AND THE SPREAD IS WHY.** The authored pools run
+**24 to 120**. A flat +16 is +67% on a wedding guest and +13% on a mirehare, so it would quietly
+delete the one thing the wedding deck is tuned around - guests who break the moment it starts.
+A multiplier keeps every fight's own shape and moves only the line between the sides.
+⚡ **Measured both sides BUILT, 2026-08-28: your six average a 101.7 pool against the road's
+63.6, which is -37.5%; at 1.25 the road reads 79.4, which is -21.9%.** Closer, and still the
+lesser side, which is *"a little bit harder"* read exactly rather than *the same*.
+⚠ **The ladder is FRACTIONAL** (`nerveFrac`), so a quarter more pool is a quarter more morale
+damage before BREAKING and nothing about HOW they break has moved. ⚠ **Fights run a round or
+two longer for it**, because fewer of them end in a rout - which is what broke the road matrix's
+chunking twice in the entry that added it.
+⛔ **A `noTrim` boss is exempt**, like every other derivation in this block.
+
+## ⛔ #265 · A champion is a body four levels on
+
+*(User, 2026-08-28: "For a champion - it could be 4 the lvl - so 2 random perks from that pool and
+at least 1 stat up".)*
+
+#245's rule is *a champion is one of these, but better*, carried by one word on a plan row. The
+`CHAMP` multipliers are still the BODY (half again the meat, the harness and the swing, a tenth
+more skill); the same word now also buys what four levels buy on your own roster, because
+`levelUp` alternates a perk point and a stat point and level 4 is therefore two perks and two
+stat points.
+
+- **Two perks, ROLLED, from the body's own lanes** - `RACEPERKS[race]` + `GENPERKS` at tier
+  <= `CHAMP.level`, which is `perksAt` minus the class half a foe does not have.
+- **One rung, DERIVED and never rolled**, because which stat is the one thing on this body that is
+  not a coin toss: a shooter is better quicker, a caster cleverer, and everything that closes and
+  swings is better stronger. A rolled rung would put INTELLECT on a dog.
+- ⚠ **The rung is written onto `u.st`**, so the four marks on the card show it with no extra
+  wiring and every live channel pays it. It does NOT retro-derive the baked four - so a champion's
+  extra STRENGTH is felt in its swing and not in its hitpoints, which is what `CHAMP.hp` is for.
+
+⛔ **THIRTEEN OF THE 28 PERKS WOULD PAY A FOE NOTHING, AND THE ANSWER IS TO PAY THEM RATHER
+THAN TO BAN THEM.** They are read off `p.perks` inside `effStats`/`bodyHp`/`unitFrom` - the ROSTER
+path, which no foe takes - so handing one to a champion prints a promise nothing pays, which is the
+defect #259's audit was run to delete. **`FOE_PERK_OK` is the list and `foePerks()` is the foe's
+copy of those build-time lines.** Paying eight of them takes a human champion's pool from three
+keys to five, which is the difference between every champion being the same and a champion that
+can come up tanky, lucky or long-armed.
+⚠ **Three are deliberately still out and the comment says why**: DISENGAGE would put a new ACT
+on a body neither AI brain has been taught to spend one on (#224's greyed-act trap), and SHIELDWORK
+and VERSATILE both read a piece of GEAR a foe has no `eq` to hold. **A perk goes on the list when
+something pays it, and not before.**
+⚠ **The perks are ROLLED, which the ask asks for**, so `snarejoin` now drifts against ITSELF in
+the oracle the way `steading` already does. That is the probe's note, not a finding.
+
+⛔ **AND THE FIGHT THAT FIELDS THEM IS NOT ON THE ROAD MATRIX'S LIST, WHICH IS HOW IT WENT TO
+ZERO UNWATCHED.** `snarejoin` measured **0 wins in 20** after #263 and #265, on a fight
+`holdHost`'s own table tunes to 40-53%: **30% before #263, 15% after it, 0% after #265**. Three
+bills came out by that function's own documented dial (*"one bill is worth twenty-seven points of
+win rate"*) and it reads 40% again. ⛑ **So the census a foe change is priced over is
+`FOE_BUILD`, not the road** - the road list has no `snarejoin`, no `tavern` and no `chase`.
+⚠ **It is measured at n=20 or it is not measured**: the same build reads 33% at n=15 and 55%
+under a monkey-patched sweep. Its own note calls it the high-variance fight.
+⚠ **A tuning sweep that rebuilds its subject has to rebuild ALL of it.** The first cut of that
+sweep omitted `holdHost`'s `if(G.party.length>=6)` clause and measured a 15-body host against the
+real 19, reporting 57% where the fight reads 0.
+
 ## The marks
 
 The inspect card shows the four `STAT_ICON` paintings (32px - **never 24**, #230: a 3:4 resample
@@ -89,6 +156,7 @@ obeys. `noFace` is refused its marks because the Warden is a thing you cannot re
 python tools/dev/gt.py eval tools/dev/probes/foeoracle263.js    # 19 fields a body, both builds
 python tools/dev/gt.py eval tools/dev/probes/statmark263.js     # the card, driven not read
 python tools/dev/gt.py eval tools/dev/probes/matrix263.js       # the road, 6 fight-comps a call
+python tools/dev/gt.py eval tools/dev/probes/champ265.js        # the champion + the nerve gap
 ```
 
 - **The oracle** builds every `FOE_BUILD[k]()` side and compares 19 fields. 0 drift on a refactor;

@@ -25,6 +25,16 @@ back already answered by work that was not about them.
 
 ---
 
+## Q · From #265
+
+| | the question | ⭑ mine |
+|---|---|---|
+| **Q1** · #265 | **`FOE_NERVE` is 1.25 and it is the one number in this entry that is a taste call.** Measured both sides built, the road's mood pool was **37.5% under your six's** and is now **21.9% under**. Your words were *"similar to us"* and *"a little bit harder to break"*, which point at slightly different numbers - 1.25 is the second one, and 1.45 would be the first (dead level) | **play it at 1.25 first.** The ladder is fractional, so this is a quarter more morale damage before anything breaks, and fights already run a round or two longer for it. ⚠ Going level would delete routing from the game as a thing that happens to the enemy, and routing is how most of your wins currently end - the aftermath's own mercy screen is built on it |
+| **Q2** · #265 | **A champion is now the multipliers AND four levels, and I did not cut the multipliers to pay for it.** Your words were *"it could be 4 the lvl"*, which could equally have meant *instead of* the x1.5 body. Measured, a champion billman is 59hp/65 armour against a plain 40/44, and swings 16-26 against 11-17 | **keep both, and judge it in the Hold host.** #245 measured that the boards did not move the win rate and only changed the shape, and that is still roughly true: the fight reads 40% with them. If a champion reads as a boss rather than as a better soldier, the honest cut is `CHAMP.dmg` (1.5), which is the one multiplier that stacks with the STRENGTH rung the level now adds |
+| **Q3** · #265 | **I retuned a fight without being asked, and it was a break rather than a preference.** `snarejoin` measured **0 wins in 20** on a fight its own table tunes to 40-53%: 30% before #263, 15% after it, 0% after this. Three bills came out by that function's own documented dial and it reads **40%** | **it needed doing and the number is yours to move.** What I want you to know is the shape: **#263's road matrix never covered `snarejoin`**, because that fight is not on the road list, so a 19-body host took two rounds of enemy buffs with nothing watching. The matrix list should grow that row |
+
+---
+
 ## P · From #263
 
 | | the question | ⭑ mine |
