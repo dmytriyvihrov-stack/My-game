@@ -77,6 +77,42 @@ Four fights looked like they had moved 20 points or more and every one of them c
 n=30. ⚠ **The Captain is one rung weaker** - he was carrying +1 STR and +1 AGI that nothing on the
 sheet could explain, and that is the *No Born* ask. If he now feels thin, that is the one number to
 argue about.
+## 🧪 THE ENEMY HOLDS ITS NERVE LONGER, AND CHAMPIONS ARE A REAL STEP UP  *(#265 · 2026-08-28 · build log 8f.290)*
+
+**What it is.** Two things you asked for, and one the sweep found.
+
+**1. They break less easily.** Every enemy's mood pool went up a quarter. Against your six's
+average pool they were 37.5% under; now they are 22% under - closer, still the lesser side. Nothing
+about *how* they break changed, only how much it takes.
+
+**2. A champion is a body four levels on.** The epaulette still means half again the meat, the
+harness and the swing. On top of that it now carries **two perks rolled from its own race and
+general lanes** and **one stat rung**, which is what level 4 buys one of your own people.
+
+**How to reach it in three steps.**
+1. Take the clan's side at the Snare, so the Hold host follows you east.
+2. Find the three bodies with an epaulette - one corporal and two billmen.
+3. Hover one. The four stat marks are on the card, and one of them is a rung higher than its
+   plain twin standing beside it.
+
+**What should happen.**
+- A champion billman is noticeably harder than a plain one: about **59 hitpoints against 40, 65
+  armour against 44**, and it swings for **16-26 where the plain one swings 11-17**.
+- Its two perks differ run to run. Today a human champion draws from five: STANDFAST, COLOSSUS,
+  TWO-HANDED, GOOD HAND, EVERCHANGING LUCK.
+- Enemies should reach BREAKING later in a fight than they used to, and rout less often. Fights
+  will run a round or two longer for that reason.
+
+**3. And the sweep found the Hold host had gone unwinnable.** That fight is tuned to about 40%
+and measured **0 wins in 20**. Three billmen came out of it and it is back to **8 in 20**. If it
+now feels like a rout in either direction, that is the number to tell me about.
+
+**What would be a bug.**
+- An enemy that never breaks at all. The pool went up a quarter, not a third.
+- The Fen-Mother or Something in Armour behaving differently. Both are hand-tuned and exempt.
+- A champion with only one mark raised, or with a perk that plainly does nothing.
+- The wedding guests standing and fighting. They are meant to break almost at once, and the
+  multiplier was chosen so they still do.
 
 ---
 

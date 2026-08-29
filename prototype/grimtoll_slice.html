@@ -18444,7 +18444,7 @@ function holdHost(){
   const plan=[[10,6,'serj',46],
     [9,4,'corp',42,'champ'],[9,8,'corp',41],[10,2,'corp',40],
     [10,5,'bill',38,'champ'],[10,7,'bill',37,'champ'],[9,10,'bill',36],[11,4,'bill',35],
-    [11,10,'bill',33],[10,4,'bill',32],
+    [11,10,'bill',33],
     [11,6,'cross',33],[12,1,'cross',32],
     [9,1,'hound',49],[9,11,'hound',48],[10,9,'hound',47]];
   /* ⛔ THE DIAL ON THIS FIGHT IS THE BILL COUNT, AND IT IS NOT THE HEADCOUNT.
@@ -18467,8 +18467,28 @@ function holdHost(){
      row sits at 53% against the honest finale's 45% (`snare`, same instrument,
      n=20), which is the intended ranking - joining the clan brings eight more
      bodies and must not therefore be the EASY way to end the act. */
-  if(G.party.length>=6)plan.push([10,10,'corp',39],[11,8,'bill',34],[12,11,'cross',31],
-    [11,2,'bill',30]);
+  /* ⛔ #265 - AND THE CLAUSE STOPPED ADDING BILLS, WHICH IS THIS FIGHT'S OWN
+     DIAL TURNED THE OTHER WAY FOR THE FIRST TIME.
+     #263 gave every body on the other side rungs on the four ladders and #265
+     gave them a quarter more nerve to lose. This host is 19 coats of the two
+     bodies that gained most from both, and it went off the bottom of the scale:
+     measured n=20 a side on the same instrument, **30% before #263, 15% after
+     it, 0/20 after #265**, on a fight the table above tunes to 40-53%.
+     ⛑ THE FIX IS THE DIAL THE TABLE ALREADY NAMES - a bill, one at a time -
+     and the row it lands on is the one that table already measured: **17 coats,
+     5 bills, 3 bows**. Three bills came out, the two this clause used to add
+     and one from the wall, and the fight reads **55% at n=20** against the 53%
+     it was tuned to. ⚠ At n=15 the same build reads 33: this fight is the
+     high-variance one its own note warns about (*"the first three passes here
+     read as noise"*), so it is measured at 20 or it is not measured.
+     ⚠ THE CLAUSE STILL ANSWERS A BIG COMPANY, with a corporal and a bow - what
+     it no longer does is thicken the wall, which is the one thing that decides
+     this fight.
+     ⚠ AND THE RANKING AGAINST THE HONEST FINALE CANNOT BE RESTORED HERE. The
+     note above wants this road slightly EASIER than `snare`, and `snare` has
+     drifted to ~80% on this instrument - which is `OPEN_QUESTIONS.md` O1 and
+     not something this function can fix by losing bodies. */
+  if(G.party.length>=6)plan.push([10,10,'corp',39],[12,11,'cross',31]);
   return build(plan,HOLD_T);
 }
 /* ═══ THE CLAN, ON YOUR SIDE OF THE BOARD, ONE SHORT ══════════════════════
@@ -18662,7 +18682,103 @@ function mirehares(){
    reason), and a champion with three would be that rule growing a second sentence
    inside the enemy tables again. What it is, is harder to kill and harder to
    stand in front of - not a longer turn. */
-const CHAMP={hp:1.5,armour:1.5,dmg:1.5,skill:1.1,dodge:1.05};
+/* ⛔ #265 - A CHAMPION IS A BODY FOUR LEVELS ON, AND THAT IS WHAT THE
+   MULTIPLIERS WERE ALWAYS TRYING TO SAY.
+   (User, 2026-08-28: *"For a champion - it could be 4 the lvl - so 2 random
+   perks from that pool and at least 1 stat up"*.)
+
+   ⛑ #245 SET THE SHAPE AND THIS FINISHES IT. That entry's rule is *a champion
+   is one of these, but better*, expressed as one word on a plan row and no new
+   statblock. The multipliers below are still the BODY - half again the meat and
+   the harness, a tenth more skill - and now the same word also buys what four
+   levels buy a body on your own roster: `levelUp` alternates a perk point and a
+   stat point, so level 4 is TWO perks and TWO stat points, and the ask names
+   two perks and *at least* one rung.
+
+   ⛔ THE PERKS ARE ROLLED FROM THE BODY'S OWN LANES AND NOT FROM ALL 28.
+   A roster body is offered its class, its race and the general lane; a foe has
+   no class, so it is offered its RACE lane and the general one, which is
+   `perksAt` minus the half a foe does not have. That is why an ogre champion
+   can come up thick-muscled or raging and a ratkin one cannot.
+   ⛔ AND THE RUNG IS DERIVED, NOT ROLLED, because *which* stat is the one thing
+   on this body that is not a coin toss: a shooter is better for being quicker,
+   a caster for being cleverer, and everything else for being stronger. A rolled
+   rung would put INTELLECT on a dog.
+   ⚠ THE PERKS *ARE* ROLLED, which the ask asks for - so a champion differs run
+   to run and `snarejoin` therefore drifts against ITSELF in the oracle, the way
+   `steading` already does. That is the probe's note, not a finding. */
+const CHAMP={hp:1.5,armour:1.5,dmg:1.5,skill:1.1,dodge:1.05,level:4,perks:2,rungs:1};
+/* ⛔ WHICH PERKS A FOE CAN ACTUALLY BE PAID FOR, AND WHY THE LIST IS NOT THE
+   WHOLE TABLE. Thirteen of the 28 are read off `p.perks` inside `effStats`,
+   `bodyHp` or `unitFrom` - the ROSTER path, which no foe takes - so handing one
+   to a champion would print a promise nothing pays. That is the exact defect
+   #259's audit was run to delete and #260 was caught by.
+   ⛑ SO THE ANSWER IS TO PAY THEM RATHER THAN TO BAN THEM: `foePerks()` below is
+   the foe's copy of the seven build-time lines, applied where a foe is built.
+   Everything else on this list is read live through `has(u,...)`, which asks the
+   UNIT and has never cared which side it is on. */
+const FOE_PERK_OK={
+  /* live, through has(): they work on any body that carries the key */
+  standfast:1,fieldmedic:1,waiter:1,footwork:1,thickmuscle:1,fearsome:1,rage:1,
+  twohand:1,lonewolf:1,frenzy:1,underdog:1,berserk:1,
+  /* build-time: paid by foePerks() below, or they would pay nothing */
+  colossus:1,fortmind:1,stoneskin:1,quickfoot:1,opportune:1,ninelives:1,
+  goodhand:1,luck:1
+};
+/* ⛔ AND THREE ARE DELIBERATELY ABSENT, WHICH IS NOT THE SAME AS FORGOTTEN.
+   `disengage` and `shieldwork` and `versatile` are all payable in principle and
+   none of them is safe here: DISENGAGE would put a new ACT on a body whose two
+   AI brains have never been taught to spend one (the greyed-act trap #224 wrote
+   down), and the other two read a piece of GEAR - an off-hand, a shield - and a
+   foe has no `eq` to read. A perk that cannot pay is the promise #259 spent a
+   whole audit deleting, so it stays off the list until somebody builds the half
+   that pays it. */
+/* the build-time half, and it is `unitFrom`'s own arithmetic on a foe. ⚠ It runs
+   AFTER the unit exists because every one of these edits a finished figure. */
+function foePerks(u){
+  if(!u.perks||!u.perks.length)return u;
+  const p=k=>u.perks.indexOf(k)>=0;
+  if(p('colossus')){u.hpMax=Math.round(u.hpMax*1.20);u.hp=u.hpMax;}
+  if(p('fortmind')){u.moraleMax+=20;u.morale=Math.round(u.moraleMax*START_NERVE);
+                    u.morale0=u.morale;}
+  if(p('stoneskin')){u.armourMax+=10;u.armour=u.armourMax;}
+  if(p('quickfoot'))u.speed+=1;
+  if(p('opportune'))u.flankPow+=10;
+  if(p('ninelives'))u.stands=true;
+  /* +1 range on everything that is thrown or shot, which is `unitFrom`'s own
+     line said over the foe's authored acts instead of over a GEAR row. */
+  if(p('goodhand'))u.acts.forEach(a=>{if(a.range)a.range+=1;});
+  /* EVERCHANGING LUCK is a rung on the body's best or worst, rolled once at the
+     moment it is built - which is where `rollLuck` puts it for your own people
+     (#260: inside effStats it would shimmer, because it is asked many times a
+     frame). A foe is built once a fight, so building IS that moment. */
+  if(p('luck')){const K=['str','agi','int','mor'];
+    const s=K.slice().sort((a,b)=>(u.st[a]||0)-(u.st[b]||0));
+    const k=Math.random()<.5?s[0]:s[3];
+    u.st[k]=rungClamp((u.st[k]||0)+1);u.luckOn=k;}
+  return u;
+}
+/* the two rolled perks and the one derived rung. ⚠ `RACEPERKS`/`GENPERKS` are
+   the same two lanes `perksAt` reads for your own people. */
+function champLevel(u,t){
+  const lanes=[];
+  const rp=(typeof RACEPERKS!=='undefined'&&RACEPERKS[u.race])||{};
+  const gp=(typeof GENPERKS!=='undefined'&&GENPERKS)||{};
+  [rp,gp].forEach(L=>Object.keys(L).forEach(tier=>{
+    if(+tier<=CHAMP.level)(L[tier]||[]).forEach(k=>{
+      if(FOE_PERK_OK[k]&&lanes.indexOf(k)<0)lanes.push(k);});}));
+  const pick=[];
+  while(pick.length<CHAMP.perks&&lanes.length)
+    pick.push(lanes.splice(Math.random()*lanes.length|0,1)[0]);
+  u.perks=(u.perks||[]).concat(pick);
+  /* the rung: what this body is FOR. A shooter is better quicker, a caster
+     cleverer, and everything that closes and swings is better stronger. */
+  const shoots=(t.acts||[]).some(a=>a.range&&a.dmg&&!a.arcane);
+  const k=t.caster?'int':shoots?'agi':'str';
+  u.st[k]=rungClamp((u.st[k]||0)+CHAMP.rungs);
+  u.champRung=k;
+  return u;
+}
 function build(plan,T){
   return plan.map((e,i)=>{const t=T[e[2]];
     /* #245 - the fifth column, and the only thing it may say today. Written as a
@@ -18733,8 +18849,10 @@ function build(plan,T){
     const lDod=lad?(rungHeld('agi',lad.agi).dodge||0):0;
     const lMor=lad?(rungHeld('mor',lad.mor).nerve||0):0;
     const hp0=Math.round(t.hp*tr1*(t.noTrim?1:shooterThin)*(champ?CHAMP.hp:1)*(1+lHp));
-    /* the pool the mood is measured against, and the rung it starts on */
-    const mor0=Math.max(10,t.mor+lMor);
+    /* the pool the mood is measured against, and the rung it starts on.
+       #265 - `FOE_NERVE` last, so the ladder's own rung is what gets scaled
+       rather than the two being added in a different order on two bodies. */
+    const mor0=t.noTrim?t.mor:Math.max(10,Math.round((t.mor+lMor)*FOE_NERVE));
     const u={id:'foe'+i,side:'foe',name:t.name,kind:t.kind,race:rc,variant:e[2],col:cc,row:e[1],init:e[3],
       caster:!!t.caster,bow:!!t.bow,captain:!!t.captain,champ:champ,leader:false,perks:[],
       hp:hp0,hpMax:hp0,
@@ -18832,6 +18950,15 @@ function build(plan,T){
        second definition to drift. A monster is not a race and gets nothing —
        classes and race skills are a human idea (README §2). */
     if(!u.monster&&!u.big&&RACESKILL[rc])u.acts.push(Object.assign({},RACESKILL[rc]));
+    /* ⛔ #265 - THE CHAMPION'S FOUR LEVELS, LAST, because the rung it adds and
+       the perks it rolls both edit figures the lines above have just finished
+       building. ⚠ `champLevel` writes the RUNG onto `u.st`, so the four marks
+       on the inspect card show it without being told, and every live channel
+       (the weight of the blow, the mood, a working) pays it the same way.
+       ⚠ The rung does NOT retro-derive the four baked figures - #263's own
+       note - so a champion's extra STRENGTH is felt in its swing and not in
+       its hitpoints, which is what `CHAMP.hp` is already for. */
+    if(champ){champLevel(u,t);foePerks(u);}
     restate(u);return u;});
 }
 /* ═══ #146 - A STATBLOCK BODY THAT ENDS UP ON YOUR SIDE ═══════════════════
@@ -19216,6 +19343,34 @@ const HARE_T={
    arena retune, the Fen-Mother's `noTrim`). ⚑ THE KNOB THAT DOES EXIST is
    `HIT_EASE`, which is where #146 put exactly this tilt and where it belongs:
    one line, both sides, and the comment there explains the asymmetry. */
+/* ⛔ #265 - AND THE OTHER SIDE BREAKS LESS EASILY THAN IT DID.
+   (User, 2026-08-28: *"i feel we need to add more morale for enemies, similar
+   to us. So it is a little bit harder to break them"*.)
+
+   ⛑ IT IS ONE KNOB AND NOT 61 EDITS, WHICH IS THE SAME ANSWER `HIT_EASE` IS
+   for the to-hit tilt and `salvageCut` is for a pile of loot: what a row
+   AUTHORS is how steady that body is COMPARED TO THE OTHERS ON ITS SIDE, and
+   what the two sides are worth against each other is decided in one place.
+   Raising 61 figures by hand puts the rule in 61 places and gets it wrong on
+   the 62nd card somebody writes.
+
+   ⚑ AND IT IS A MULTIPLIER RATHER THAN A FLAT ADD, WHICH THE SPREAD DECIDES.
+   The authored pools run 24 to 120. A flat +16 is +67% on a wedding guest and
+   +13% on a mirehare, so it would quietly delete the one thing the wedding
+   deck is tuned around - guests who break the moment it starts. A multiplier
+   keeps every fight's own shape and moves only the line between the sides.
+
+   ⚡ MEASURED, BOTH SIDES BUILT, 2026-08-28: your six average a **101.7** pool
+   and the 100 ordinary bodies the road can field averaged **63.6**, which is
+   **-37.5%**. At 1.25 they average 79.5, which is **-22%** - closer, and still
+   the lesser side, which is the ask read exactly (*"a little bit harder"*, not
+   *the same*). ⚠ The ladder is FRACTIONAL (`nerveFrac`), so a quarter more
+   pool is a quarter more morale damage before BREAKING, and nothing else about
+   how they break has moved.
+   ⛔ A `noTrim` BOSS IS EXEMPT, like every other derivation in this block: the
+   Fen-Mother's 300 and the Warden's 460 are authored, and 460 is already the
+   number that means *it does not react*. */
+const FOE_NERVE=1.25;
 const FOE_LEAN={
   human :{str:0, agi:0, int:+1,mor:0},
   ratkin:{str:-1,agi:+1,int:+1,mor:-1},

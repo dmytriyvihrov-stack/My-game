@@ -117,6 +117,7 @@ carries the setup that keeps being rewritten - `GT.playerTurn()`, `GT.standNextT
 | `foeoracle263.js` | every foe side, 19 fields a body, so a statblock refactor can be PROVED to change nothing and a re-stat to change exactly what it claims. #263. ⚠ `steading` drifts against itself (it rolls its wall) |
 | `statmark263.js` | the four stat marks on the inspect card, DRIVEN through the real `inspect()`: a foe, one of yours, and the Warden that must have none. #263 |
 | `matrix263.js` | the road's win rates, both comps, **accumulated six fight-comps a call** because `eyes.py`'s CDP socket times out at 120s regardless of `--timeout`. Run it until `done`. #263 |
+| `champ265.js` | the champion's two rolled perks and its derived rung, plus the nerve gap between the two sides. #265 |
 | `pit250.js` | every rule the PIT carries, driven on a live board: the budget in a hole, the rim in both directions and for all four kinds of act, the fall a shove buys, the turn a climb costs, the hex note, the badge, and the generation in situ. #250 |
 | `align243.js` · `apron241e.js` · `diff243.js` · `road243i.js` | the four one-offs a changelog row names as the instrument that measured it |
 
