@@ -4,7 +4,7 @@
    survives n=30 on both builds is the finding; anything that does not was the
    sample. */
 (() => {
-  const JOBS=[['four','brigand'],['four','slingline'],['four','armour'],['prepared','hold']];
+  const JOBS=window.RC_JOBS||[['four','tavern'],['four','slingline'],['prepared','mother']];
   const N=window.RC_N||30, PER=window.RC_PER||1;
   if(!window.__RC||window.__RC.n!==N)window.__RC={n:N,i:0,r:{}};
   const M=window.__RC;

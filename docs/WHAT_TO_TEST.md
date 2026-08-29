@@ -71,6 +71,8 @@ mood ladder; the other seven are about being able to read what is in front of yo
   spring's permanent +1 MOR or the falling star's wish, and nothing else can make one.)
 - A Boar spear, a broom, a gut-knife or a short sword arriving as the extra piece after a fight.
 
+**⚠ ONE FIGHT GOT HARDER AND IT IS THE FEN-MOTHER.** A prepared six wins **57% where it won 77%** (n=30, against the build with #265 and without this). It is not the mood pool: she is the one body in the game that does not rout but goes **DESPERATE** below 16% of her nerve, losing hitpoints a turn and hitting harder, so starting a fight lower on the ladder starts her nearer the state she is frightening in. **Play it before judging it** - a 57% boss for a prepared six is in the same band as the Circle and the Steading-Line, and this may simply be the fight finally being one. If it reads wrong, the lever is `START_NERVE` or her own `desperateAt`, not the ladder.
+
 **What was measured, so you know what is NOT a bug.** The road was priced against the previous build
 at n=15 a side over 14 fights and both companies: **starting four 56% → 55%, prepared six 87% → 86%**.
 Four fights looked like they had moved 20 points or more and every one of them came back identical at
