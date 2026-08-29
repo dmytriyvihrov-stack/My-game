@@ -26,6 +26,60 @@
 
 ---
 
+## 🧪 THE COMPANY SHEET: A 100 POOL, A BAND CALLED STEADY, AND WHAT A THING ACTUALLY DOES  *(#266 · 2026-08-29 · build log 8f.291)*
+
+**What it is.** Nine asks off one screen. The two that change the FIGHT are the mood pool and the
+mood ladder; the other seven are about being able to read what is in front of you.
+
+**How to reach it in three steps.**
+1. THE COMPANY (the roster button on the road bar).
+2. Look at the three bars, the row under the name, and the chips beside it.
+3. Hover STR (or any of the four) for the ledger.
+
+**What should happen.**
+
+- **Everybody's mood pool is a round number now.** An ordinary body reads `/100`; the Captain reads
+  `/120` because he leans +2 MOR, and every rung is worth 10 either way. Nothing reads `/90`.
+- **The bar says STEADY, and that is where a fight opens.** The ladder is IT ROCKS · HAPPY · STEADY ·
+  SHAKEN · BREAKING · BROKEN. Your people walk on at **57 of 100**, dead centre of STEADY, and the
+  enemy walks on in the same band. Hover the row for the whole ladder.
+  - A company at HIGH SPIRITS opens at **72** (the top edge of STEADY) and one ON THE BRINK at
+    **42** (its bottom edge). That is the company's mood being worth exactly one rung.
+  - **STEADY and HAPPY both cost nothing.** That is deliberate: what tells them apart is that one is
+    a step from the bonus and the other a step from the first penalty.
+- **All three bars are divided.** Armour and hitpoints in *blows* (a wide section is a tough body);
+  the mood bar at the ladder's own rungs, so you can see how far the next word is. The same three
+  rows on the battle card read identically.
+- **The line under the name is just the personality.** `Experienced` and not
+  `Experienced · +1 STR and +1 MOR` - the rungs are two columns over, where they add up.
+- **The level is back on the chip row, with the experience on it**: the ring, the level inside it,
+  and `0/150 XP` beside it. The exact wording is on its hover.
+- **The stat ledger's total is the big thing in the box**, with what the rung BUYS under it in
+  brighter type. `born` is gone from it entirely.
+- **An off-hand piece says what it does.** A Round Shield row reads `RARE · OFF · +9 dodge`, an
+  off-hand dirk `COMMON · OFF · +5 to hit in melee · +5 melee damage · reaches what a bow cannot`.
+  The dirk's paragraph is half the length it was.
+- **After a battle you are never handed a cheap weapon.** The extra piece on top of the haul refuses
+  a common main-hand weapon, and the two hauls that handed over a Boar spear pay salvage instead.
+
+**What would be a bug.**
+- Any body reading `/90`, or a mood bar with no ticks on it.
+- The battle card and the sheet disagreeing about the word or the dividers.
+- A personality whose short form is a RULE losing it: DOES NOT RUN must still read
+  `Cannot rout, ever`, HAS NO STOMACH FOR IT must still read its per-kill clause.
+- A stat ledger row called `born`. (A row called **the road** is correct and rare: it is the warm
+  spring's permanent +1 MOR or the falling star's wish, and nothing else can make one.)
+- A Boar spear, a broom, a gut-knife or a short sword arriving as the extra piece after a fight.
+
+**What was measured, so you know what is NOT a bug.** The road was priced against the previous build
+at n=15 a side over 14 fights and both companies: **starting four 56% → 55%, prepared six 87% → 86%**.
+Four fights looked like they had moved 20 points or more and every one of them came back identical at
+n=30. ⚠ **The Captain is one rung weaker** - he was carrying +1 STR and +1 AGI that nothing on the
+sheet could explain, and that is the *No Born* ask. If he now feels thin, that is the one number to
+argue about.
+
+---
+
 ## 🧪 THE ENEMY HAS THE FOUR STATS NOW, AND THE CARD SHOWS THEM  *(#263 · 2026-08-28 · build log 8f.288)*
 
 **What it is.** Your people have climbed the four ladders since #254. The other side did not: every

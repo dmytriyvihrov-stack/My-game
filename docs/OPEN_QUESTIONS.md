@@ -25,6 +25,16 @@ back already answered by work that was not about them.
 
 ---
 
+## Q · From #266
+
+| | the question | ⭑ mine |
+|---|---|---|
+| **Q1** · #266 | **"No Born !" took a real point off the Captain, and only you can say whether that is what you meant.** #255 stopped ROLLING a born line and kept his authored `{str:1,agi:1}`; the ask, pointed at the row that survived, reads as *that one too*. So he is **-1 STR and -1 AGI**, and what is left of him is EXPERIENCED (+1 STR +1 MOR), the captaincy (+1 MOR) and being human (+1 INT). Priced: the road is flat (four 56 → 55%, six 87 → 86%, and every cell that looked worse came back identical at n=30) | **keep it.** The row was unreadable by design - a residual with no story - and four named lines is the whole point of the ladders. If he feels thin, the honest fix is to give EXPERIENCED the point rather than to put the residual back: a personality is something the sheet can explain |
+| **Q2** · #266 | **"don`t like this line" was read as the STAT half of it, not the whole row.** The header said **Experienced · +1 STR and +1 MOR** and now says **Experienced**. The other reading is that the personality row should go entirely - but then the one thing on the sheet that says WHO this body is would be a hover on a name | **the half.** The rungs are two columns over where they add up, so the tail was the second receipt; the name is the only copy of the personality on this screen. ⚑ Either way it is one word: `SHEET_TRAIT_STATS = true` puts the numbers back, and `#iTrait` is one line to drop |
+| **Q3** · #266 | **STEADY and HAPPY are mechanically identical and are told apart only by which way they are one step from.** #228 merged those two bands precisely because neither should cost anything, and this entry splits the display again without giving either a number. That is legal (IT ROCKS has been a display-only distinction since it was written) and it is a judgement about how much a band should have to earn | **leave them both free.** A penalty on HAPPY would undo the ask #228 was, and a bonus would make the rung a fight opens one step from feel like a thing you are losing. What the split buys is a word for where a body actually stands, which the ladder did not have |
+
+---
+
 ## P · From #263
 
 | | the question | ⭑ mine |

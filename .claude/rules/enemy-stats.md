@@ -63,8 +63,19 @@ same rungs. A rung is worth the same to both sides; the two sides are not the sa
 |---|---|---|---|
 | hitpoints | 49.1 | 60 | **-18%** |
 | to hit | 53.3 | 70 | **-16.7** |
-| nerve | 62.7 | 90 | **-27.3** |
+| nerve | 62.7 | **100** | **-37.3** |
 | dodge | 16.5 | 14 | +2.5 |
+
+⚡ **THE NERVE ROW MOVED ON 2026-08-29 (#266) AND THE FOE COLUMN DID NOT, WHICH IS THIS SECTION
+WORKING RATHER THAN ROTTING.** `GIVEN.nerve` went 90 to 100 at the user's word (*"basic start is
+100%"*); a foe's pool is `t.mor` off its own statblock and has never come through `GIVEN`, so the
+gap widened by 10 points and nothing on the other side was touched. ⚠ **The widening is smaller
+than it looks**, because `START_NERVE` came down .78 to .64 in the same edit and both sides open in
+the same band as they always did. **Priced with `ARENA.match` n=15 a side over 14 fights x 2 comps:
+starting four 56% -> 55%, prepared six 87% -> 86%**, and every cell that moved 20 points came back
+identical at n=30 on both builds.
+⛔ **RE-MEASURE THIS TABLE WHENEVER EITHER SIDE'S GIVENS MOVE.** A gap written down once is a claim
+about a build, and this row was one edit away from being a wrong one.
 
 ...before `TRIM` takes another 10% of a non-boss body's hitpoints, `ARM` a quarter of its harness,
 and `HIT_EASE` tilts the roll a net +5 your way. **Dodge is the one column they lead**, which is
