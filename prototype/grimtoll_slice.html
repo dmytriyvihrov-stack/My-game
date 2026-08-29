@@ -533,9 +533,20 @@ button:disabled{cursor:not-allowed}
    at one site, setBar(), which is the same door the width goes through - the
    two cannot come apart. SEG() is deliberately sublinear and capped: a boss
    at 120 would otherwise draw sixty hairlines.
-   ⚠ SCOPED TO #bPlq. `.bar` is the company screen's and the sheet's too. */
-#bPlq .bar{position:relative}
-#bPlq .bar::after{content:'';position:absolute;inset:0;pointer-events:none;
+   ⚠ ~~SCOPED TO #bPlq~~. ⚡ #266 - AND THE SHEET IS IN IT NOW. (User, the three
+   rows boxed: *"Bars with health do more in style of the game - and feel free to
+   add some dividers (like in battle)"*.) #249 had already given both surfaces the
+   socket and the crown; the DIVIDERS were the half that stayed behind, so the sheet
+   drew the same three pools as unbroken blocks while the card two clicks away read
+   in blows. Nothing here is new - it is one selector, and the arithmetic that makes
+   it free is #219's: `:is()` takes the specificity of its most specific argument,
+   so these rules keep exactly the 1-1-0 they had and `.ibars .sbar .bar` (0-3-0,
+   later in the sheet) still wins on height and border the way it must.
+   ⚠ `--seg` IS WRITTEN BY `drawInv` OFF THE SAME `SEG()` AND THE SAME TWO
+   CONSTANTS the plaque uses, never a second figure: a section is one blow's worth
+   and a blow does not change size between screens. */
+:is(#bPlq,.ibars) .bar{position:relative}
+:is(#bPlq,.ibars) .bar::after{content:'';position:absolute;inset:0;pointer-events:none;
   background:repeating-linear-gradient(90deg,
     rgba(0,0,0,0) 0, rgba(0,0,0,0) calc(100%/var(--seg,4) - 1.5px),
     rgba(7,11,12,.92) calc(100%/var(--seg,4) - 1.5px), rgba(7,11,12,.92) calc(100%/var(--seg,4)))}
@@ -554,12 +565,23 @@ button:disabled{cursor:not-allowed}
    rung in the rung's colour, and the bar says where on the scale they are
    standing. The full five-rung ladder stays exactly where #91 put it, on
    the hover, which is now the whole row rather than a 62px chip.
-   ⚠ THE TICKS ARE THE RUNG THRESHOLDS AND NOT EVEN SECTIONS. LADDER's gates
-   are 15 / 40 / 70 / 90, so an evenly sectioned bar would draw a scale this
-   game does not have - the wide stretch between 40 and 70 is the real shape
-   of "Ok", and it is the thing the player is reading. `--seg` is suppressed
-   here for that reason: it is the blows-left rule, and nerve is not spent
-   in blows. */
+   ⚠ THE TICKS ARE THE RUNG THRESHOLDS AND NOT EVEN SECTIONS, so an evenly
+   sectioned bar would draw a scale this game does not have - the wide stretch
+   the body actually stands in is the real shape of the ladder, and it is the thing
+   the player is reading. `--seg` is suppressed here for that reason: it is the
+   blows-left rule, and nerve is not spent in blows.
+   ⛔ #266 - AND THE FOUR FIGURES USED TO BE TYPED HERE, AND THEY WERE WRONG.
+   This rule read `15 / 40 / 70 / 90` and the ladder's gates have been
+   `15 / 34 / 52 / 90` since #129 inserted SHAKEN and #228 merged Ok into Happy -
+   so for two entries the mood bar on the battle card drew its dividers at rungs
+   that do not exist, and the word inside the bar and the tick beside it disagreed
+   by up to 18% of the pool. Nothing said so, because a stylesheet cannot be asked
+   what `LADDER` says. It is `--nrvticks` now, BUILT from `LADDER` beside the table
+   itself, which is #137's rule arriving on a gradient: a rung added or moved is
+   drawn correctly untaught, and this entry moved two of them.
+   ⚠ The `none` fallback is not defensive dressing: it is what the rule paints
+   between parse and the line that sets the variable, and no ticks is the right
+   picture for a ladder nothing has read yet. */
 /* #247 - one row now (`.sbar` supplies the flex), so this rule carries the hover
    and the flash and nothing else. */
 #bState{cursor:help}
@@ -571,14 +593,20 @@ button:disabled{cursor:not-allowed}
                   100%{background:rgba(226,143,180,0)}}
 @media (prefers-reduced-motion:reduce){#bState.mflash{animation:none}}
 #bState .sbL{font-weight:600;letter-spacing:.08em}
-#bPlq .bar.nrv::after{display:none}
-#bPlq .bar.nrv::before{content:'';position:absolute;inset:0;pointer-events:none;
-  background:linear-gradient(90deg,
-    transparent 0 calc(15% - 1px),rgba(7,11,12,.92) calc(15% - 1px) 15%,
-    transparent 15% calc(40% - 1px),rgba(7,11,12,.92) calc(40% - 1px) 40%,
-    transparent 40% calc(70% - 1px),rgba(7,11,12,.92) calc(70% - 1px) 70%,
-    transparent 70% calc(90% - 1px),rgba(7,11,12,.92) calc(90% - 1px) 90%,
-    transparent 90%)}
+/* ⛔ #266 - AND THE TICKS GO IN `::after` WITH THE OTHER TWO ROWS' DIVIDERS,
+   WHICH IS A LAYER FIX AND ONLY THE PICTURE FOUND IT. A generated `::before` is
+   the FIRST child and the `<i>` fill is a real one, so the mood ticks painted
+   UNDER the fill while the blows hatch - `::after`, the last child - paints OVER
+   it. Three bars in one column, two of them divided end to end and the third
+   divided only in its empty half: that is #102's wrong-unit rule with the LAYERS
+   as the units, and it has been on the battle card since #102 wrote the rule.
+   ⛑ The `display:none` was only ever there to get the blows hatch off a pool
+   that is not spent in blows. Overriding the BACKGROUND does that and keeps the
+   layer, so one declaration replaces two rules.
+   ⚠ MEASURED ON THE PICTURE AND NOT ON THE DOM: both readings are `background:
+   <a gradient>` on a `pointer-events:none` pseudo covering the same box, and no
+   probe in this file can tell them apart. `shots/266_bars.png` is what said so. */
+:is(#bPlq,.ibars) .bar.nrv::after{background:var(--nrvticks,none)}
 /* ═══ THE TWO THINGS A TURN SPENDS, IN ONE BOX, AT ONE SIZE ═════════════
    Playtest 2026-08-10, the second of three: "it took me a very long time to
    see where to read a character's step count - it is hidden in small type
@@ -806,8 +834,19 @@ button:disabled{cursor:not-allowed}
 .ladfull.tells .lrung .lgv .two{color:#8ca35a;border:1px solid #8ca35a;padding:0 3px;
   margin-right:4px;font-size:var(--fs1)}
 .ladfull.tells .lrung.on .lgv{color:#c2b493}
-.stsum .ssgv{font-family:var(--mono);font-size:var(--fs1);color:#8a7248;line-height:1.35;
-  margin-top:var(--p1)}
+/* ⛔ #266 - THE TOTAL AND WHAT IT BUYS ARE THE HEADLINE, AND THEY WERE THE
+   QUIETEST THING IN THE BOX. (User: *"Show bigger total bonus - i feel it is quite
+   important"*.) The ledger's whole point is the line under the rule - the rung this
+   body actually stands on and what the fight pays for it - and it was set one step
+   over the sources that add up to it, with the effects under it on the 10px floor in
+   the dimmest brown on the card. A sum drawn quieter than its own addends is the
+   readout saying the wrong thing is important.
+   ⚠ EVERY SIZE IS STILL AN `--fs` STEP (ui-scales §1) and the sources did NOT
+   move: what makes a total read as a total is the GAP to the rows above it, so
+   raising both would have bought nothing. */
+.stsum .ssgv{font-family:var(--mono);font-size:var(--fs2);color:#c2b493;line-height:1.35;
+  margin-top:var(--p2)}
+.stsum .ssgv b{color:#d9bd7e;letter-spacing:.06em}
 /* the cap that used to be inline. See the note beside `TIP.style.cssText`. */
 #gtTip{max-width:290px}
 /* ⛔ #252 - THE LEDGER STANDS BESIDE THE LADDER, WHICH IS A HEIGHT DECISION
@@ -819,7 +858,12 @@ button:disabled{cursor:not-allowed}
 #gtTip:has(.statwrap){max-width:640px}
 .statwrap{display:flex;align-items:flex-start;gap:var(--p4)}
 .statwrap .ladfull{flex:1 1 auto;min-width:0}
-.statwrap .stsum{flex:0 0 auto;width:154px;margin-top:0;padding-top:0;border-top:0;
+/* ⚡ #266 - 154 -> 176, WHICH IS WHAT THE BIGGER TOTAL COSTS AND IT IS PAID BY THE
+   TIP AND NOT BY THE LADDER. `#gtTip:has(.statwrap)` caps at 640 and the ladder
+   column is `flex:1 1 auto`, so 22px comes off a column measured at #230's own
+   `width:auto`. Measured after: the tip is the same height it was, and no rung name
+   wraps. */
+.statwrap .stsum{flex:0 0 auto;width:176px;margin-top:0;padding-top:0;border-top:0;
   border-left:1px solid var(--e2);padding-left:var(--p4);align-self:stretch}
 /* ⛔ #252 - THE SUM ITSELF. It is a LEDGER and not a paragraph:
    one line a source, the figure right-aligned in its own column so the eye
@@ -837,7 +881,8 @@ button:disabled{cursor:not-allowed}
 .stsum .ssr.tot{margin-top:var(--p1);padding-top:var(--p1);border-top:1px solid var(--e1)}
 .stsum .ssr.tot .ssn{font-family:var(--display);font-size:var(--fs1);letter-spacing:.12em;
   text-transform:uppercase;color:#a38652}
-.stsum .ssr.tot .ssv{font-family:var(--display);font-size:var(--fs4);font-weight:700}
+.stsum .ssr.tot .ssv{font-family:var(--display);font-size:var(--fs6);font-weight:700;
+  line-height:1.1}
 /* #bDerived is gone (#91): CHANCE TO HIT and DODGE are two of the plaque's
    four big numbers, and ENGAGED was the board's fact all along - the red
    threat edges and the rings say it where it happens. */
@@ -4885,6 +4930,12 @@ body:has(#battle.on) .whisp{bottom:138px}
 /* #174 - the level chip is the ring itself: no box round a circle */
 .ichip.xplv{padding:0;border:none;background:transparent;display:inline-flex;align-items:center}
 .ichip.xplv .xpring{display:block}
+/* #266 - the two figures beside the ring. `--fs1` is the floor and the pool it is
+   out of takes `.of`'s own dimmer treatment, which is the same pair the hitpoint
+   bar draws: what is EARNED is the fact, what it is out of is context. */
+.ichip.xplv .xpn{font-family:var(--mono);font-size:var(--fs1);letter-spacing:.08em;
+  color:var(--g3);margin-left:var(--p2)}
+.ichip.xplv .xpn .of{color:#7a6238}
 .ichip.race.human {border-left:2px solid #d8d5cc}
 .ichip.race.ratkin{border-left:2px solid #c98a4b}
 .ichip.race.ogre  {border-left:2px solid #7fa8c9}
@@ -9574,7 +9625,19 @@ const holds=(u,k,cap)=>((u&&u.st&&u.st[k])||0)>=RUNG_TOP&&
    hitpoints, skill and dodge off its own template in `build()`, so a raised
    roster baseline is structurally roster-only. It is a real buff on every body
    you own and `ARENA.match()` is what prices it. */
-const GIVEN={hp:60,hit:70,dodge:14,land:69,nerve:90,climb:8,opening:15,frail:.90};
+/* ⛔ #266 - NERVE IS 100 AND IT WAS 90. (User: *"For morale - basic start is
+   100% (I don`t know, why some of my people have 90)"*.) 90 was never a decision
+   anybody defends: it is the figure the ladder's ±10-a-rung was authored around,
+   so an ordinary human carried 90 and the Captain 110, and the one number on the
+   sheet a player can read without arithmetic was the odd one out.
+   ⚠ IT IS YOUR SIDE ONLY. A foe's pool is `t.mor` off its own statblock and has
+   never come through `GIVEN` (`.claude/rules/enemy-stats.md`: there is no
+   `FOE_GIVEN` and there must not be one), so this widens the measured gap rather
+   than moving both lines. It is priced with ARENA below.
+   ⚠ AND IT SOFTENS EVERY MORALE EVENT BY 11%, because `MORALE`'s figures are
+   POINTS against this pool. That is paid back by the lower opening fraction in
+   the same edit: 57 of 100 sits 15 points over SHAKEN where 64 of 90 sat 17. */
+const GIVEN={hp:60,hit:70,dodge:14,land:69,nerve:100,climb:8,opening:15,frail:.90};
 /* the body: the pool, the weight of the blow, and how easy it is to hit -
    which is a modifier on the ATTACKER'S roll and never on the defender's
    dodge. A small body is hard to hit because it is small, not because it is
@@ -10679,9 +10742,13 @@ const GEAR={
      body that wears the piece; these two are read in `unitFrom` only where the main
      weapon has no `range`, which is the one place that question is answered. */
   offhand:{rarity:'common',n:'Off-hand dirk',   slot:'off',meleeHit:+5,meleeDmg:+5,emergency:true,
-           d:'Short, ugly, and drawn with the wrong hand. In the other hand it is the '+
-             'second half of a blow; behind a bow it is the only thing you own that still '+
-             'works when something is already on top of you.'},
+           /* ⚡ #266 - 39 WORDS TO 20 (*"Shorten text for dirk twice"*), AND IT IS
+              AFFORDABLE BECAUSE THE MECHANICS LEFT THE PROSE IN THE SAME EDIT. Both
+              halves of the old sentence were describing `meleeHit`/`meleeDmg` and
+              `emergency`, which the row and the hover now derive; what a `d` is for
+              is the thing no field carries, and that is the wrong hand. */
+           d:'Short, ugly, and drawn with the wrong hand. Behind a bow it is the only '+
+             'thing that works up close.'},
   focus  :{rarity:'common',n:'Chalk-and-cord rod',slot:'off',windsCut:4,d:'Something to hold onto while you do it. Spells cost 4 less of your own mood.'},
 
   /* Trinkets carry a small flat bonus, some hitpoints, and often a clause
@@ -11357,6 +11424,41 @@ const traitShort=p=>{
      the two fields existed. LINT 12 is what stops one shipping this way. */
   const full=traitDesc(p),cut=full.indexOf('. ');
   return (cut>0&&cut<70)?full.slice(0,cut+1):full.slice(0,66)+'…';
+};
+/* ═══ ⛔ #266 · THE COMPANY SHEET'S PERSONALITY LINE STOPS SAYING THE LEDGER ══
+   (User, an arrow along the row under the name: *"don`t like this line"*, on a
+   header reading **Experienced · +1 STR and +1 MOR**.)
+
+   ⛑ AND WHAT IS WRONG WITH IT IS NOT THE LINE, IT IS THAT ONE SCREEN SAYS ONE
+   FACT TWICE. #234 authored `up:'+1 STR and +1 MOR'` at the user's own word and it
+   is right where it is READ - the muster wall, the promotion card, the battle
+   hover, all places with no ledger beside them. On this sheet the four stat hovers
+   name EXPERIENCED as a row and total it, and this entry has just made that total
+   the loudest thing in the box; the header was the second receipt, and it was the
+   one that cannot be checked against anything. That is the rule at the top of
+   `.claude/rules/event-cards.md` arriving on the company sheet.
+
+   ⛔ SO IT IS A FILTER AND NOT A REWRITE, AND IT RUNS ON THIS SURFACE ONLY.
+   `traitShort` is unchanged and its five other callers print exactly what they
+   printed. What comes off here is a clause that is ONLY a stat restatement; a
+   clause that says something else keeps every word - DOES NOT RUN keeps *Cannot
+   rout, ever*, HAS NO STOMACH FOR IT keeps *-18 morale and -7% damage per kill*,
+   which are rules rather than rungs and appear on no ladder.
+   ⚠ SO A TRAIT WHOSE WHOLE SHORT FORM IS ITS STATS PRINTS ITS NAME ALONE, and
+   that is the case the ask is about. Nothing is lost: the lore box is one hover
+   away on the name, and the rungs are two columns down where they add up.
+   ⚑ `SHEET_TRAIT_STATS = true` PUTS IT BACK IN ONE WORD, which is #240's switch
+   and the reason that entry cost one line when the user changed his mind hours
+   later. A cut taken on somebody's word gets a way back or the next answer is a
+   re-argument.
+   ⚠ BOTH MINUS SIGNS. The tables are authored with U+2212 and a hyphen appears in
+   both; a regex that knows only one of them silently keeps half the clauses. */
+const SHEET_TRAIT_STATS=false;
+const STAT_CLAUSE=/^[+−-]\s*\d+\s*(STR|AGI|INT|MOR)(\s*(and|,|·)\s*[+−-]?\s*\d+\s*(STR|AGI|INT|MOR))*\.?$/i;
+const traitSheetShort=p=>{
+  const s=String(traitShort(p)||'');
+  if(SHEET_TRAIT_STATS)return s;
+  return s.split(' · ').filter(x=>!STAT_CLAUSE.test(x.trim())).join(' · ');
 };
 
 /* ---------- the four kinds of magic ----------
@@ -12900,8 +13002,18 @@ function makeParty(){
      three roles the game teaches with (line, reach, bow, spell) so the first
      fight can actually demonstrate them. */
   const P=[
+    /* ⛔ #266 - AND THE CAPTAIN IS BORN WITH NOTHING, WHICH IS THE LAST HALF OF
+       #255. (User, the row boxed in red on the STRENGTH hover: *"No Born !"*.)
+       #255 stopped ROLLING a born line and kept this one, on the argument that the
+       Captain's backstory had paid for it. The ask is the same ask a second time,
+       pointed at the one row that survived: what a body is comes from its race, its
+       trade and its personality, all three of which the player can read.
+       ⚠ IT IS A REAL SUBTRACTION AND NOT A RELABEL: he is -1 STR and -1 AGI, which
+       is priced with ARENA in this entry. What is left of him is +1 STR and +1 MOR
+       off EXPERIENCED, +1 MOR off the captaincy and +1 INT off being human - four
+       named lines, none of them a residual. */
     {id:'you',name:'You',sur:'',race:'human',cls:'captain',kind:'human',leader:true,
-     st:{str:1,agi:1,int:0,mor:0},trait:'harness',
+     st:{str:0,agi:0,int:0,mor:0},trait:'harness',
      eq:{armour:'jack',main:'sword',off:null,trinket:null}},
     {id:'vesna',name:'Vesna',sur:'Kolb',race:'human',cls:'spear',kind:'human',
      st:{str:0,agi:0,int:0,mor:0},trait:'thrice',
@@ -13286,12 +13398,26 @@ function statParts(p){
      same way the race does, so it comes back out the same way. Without this
      row a spearwoman's +1 STR would read as something she was born with. */
   const m=RACEMOD[p.race]||{},lv=p.lvUp||{},cl=CLSLEAN[p.cls]||{};
-  /* #253 - the born line is ALWAYS drawn, at 0 as much as at +2: it is the
-     origin the whole ledger is read from, and a column that starts blank on an
-     ordinary body reads as a broken box rather than as an ordinary body. */
-  /* #255 - and the row is drawn only when a backstory actually paid for it */
+  /* ~~#253 - the born line is ALWAYS drawn~~ / #255 - only when a backstory paid */
+  /* ⛔ #266 - THE ROW IS CALLED `the road` NOW, AND DELETING IT WOULD HAVE COST
+     TWO SHIPPED REWARDS. (User: *"No Born !"*.) The obvious reading of that ask is
+     to take this line out, and it is wrong: the residual is not the birth roll (#255
+     deleted that) and it is not the Captain's backstory (deleted above). What is
+     left in it is `p.st` raised in play - a night at THE WARM SPRING (`springStay`,
+     +1 MOR, *permanently, for as long as they live*) and the wish off the falling
+     star (`starWish`, +1 on their weakest axis). Both are permanent, both are
+     written straight into `p.st` on purpose, and this is the only row that pays
+     them. Deleting it would have deleted two rewards the cards promise in prose,
+     which is the promise-versus-payment defect this build has caught six times.
+     ⛑ SO THE WORD GOES AND THE ROW STAYS, and the new word is the true one: every
+     live producer of this figure is something the road did. `born` stopped being
+     accurate the moment nothing is born with anything.
+     ⚠ IT IS STILL DRAWN ONLY WHEN IT IS NON-ZERO, so an ordinary body's ledger is
+     race, trade and personality and nothing else - which is what the ask wanted to
+     see. A LEGACY SAVE reads a pre-#253 promotion here too; that is a line which is
+     less specific rather than one that is wrong, and it was true of `born` as well. */
   STATK.forEach(k=>{const b=(p.st[k]||0)-(m[k]||0)-(cl[k]||0)-(lv[k]||0);
-    if(b)out[k].push({n:'born',v:b});});
+    if(b)out[k].push({n:'the road',v:b});});
   add('levels',lv);
   add(p.race,m);            /* the word IS the key: human / ratkin / ogre */
   add((CLASSES[p.cls]&&CLASSES[p.cls].n||p.cls).toLowerCase(),cl);   /* #254 */
@@ -13408,8 +13534,9 @@ function statSumHTML(p,k){
     '<span class="ssv" style="color:'+TELLS[k].col+'">0</span></div></div>';
   return '<div class="stsum">'+rows.map(r=>
       '<div class="ssr'+(r.floor?' floor':'')+'"><span class="ssn">'+esc(r.n)+'</span>'+
-      /* #254 - zero is `0` and never `−0`: the born line is always drawn now
-         (#253) and on an ordinary body it is exactly this row. */
+      /* #254 - zero is `0` and never `−0`. ⚠ #266: no row here can be zero any
+         more (the road line is gated on being non-zero and every other row is a
+         real lean), so this is the guard rather than the common case. */
       '<span class="ssv'+(r.v<0?' dn':'')+'">'+(r.v>0?'+':r.v<0?'−':'')+Math.abs(r.v)+'</span></div>').join('')+
     '<div class="ssr tot"><span class="ssn">'+TELLS[k].lbl+'</span>'+
     '<span class="ssv" style="color:'+TELLS[k].col+'">'+(tot>0?'+':'')+tot+'</span></div>'+
@@ -14910,8 +15037,22 @@ function shotState(a,d,act){
 /* ⛔ #256 - the four rungs `restate` reads, worst last. It was a chain of
    ternaries and it is a table because MORALE -4 has to ask for the rung BELOW
    the one a body would have opened in, and you cannot index a ternary. */
-const NERVE_RUNGS=[['steady',.52],['shaken',.34],['breaking',.15],['routed',0]];
-const START_NERVE=0.78;   /* the neutral, as a fraction of the ceiling */
+/* ⛔ #266 - THE CUT-OFFS MOVED WITH `LADDER` AND THAT IS NOT OPTIONAL. The
+   comment in `restate` says these two are one fact in two places; STEADY going in
+   between Happy and Shaken moves the free band's floor .52 -> .42 and Shaken's
+   .34 -> .30. The floor and the top are untouched, which is #129's own rule. */
+const NERVE_RUNGS=[['steady',.42],['shaken',.30],['breaking',.15],['routed',0]];
+/* ⛔ #266 - AND BOTH SIDES OPEN IN THE MIDDLE OF STEADY. (User: *"your guys
+   basic start on the middle of stead (aprox 55-60)"*.) STEADY runs .42 to .72, so
+   its middle is .57 and that is what your side takes. The gap #244 measured
+   between the two sides is preserved exactly - .07 - which puts the foe at .64 and
+   BOTH of them inside the same band, so the note under `mor0` (*"the enemy starts
+   on the same rung you do"*) is true again after two entries of drift.
+   ⚡ AND ±15 IS EXACTLY HALF THE BAND, WHICH IS WHY THESE NUMBERS ARE THE ONES.
+   `moodFx().start` runs -15 to +15, so a company at HIGH SPIRITS opens on the top
+   edge of STEADY and one ON THE BRINK on its bottom edge: the company's own mood
+   is worth precisely one band and cannot be worth two. */
+const START_NERVE=0.64;   /* the neutral, as a fraction of the ceiling */
 /* ⛔ #244 · AND YOUR OWN SIDE OPENS LOWER THAN THAT.
    (User, 2026-08-25: *"a bit lower start of mood for your party (now it is two
    hiugh) - maybe 5-10% lower"*.)
@@ -14926,10 +15067,12 @@ const START_NERVE=0.78;   /* the neutral, as a fraction of the ceiling */
    one the ladder's own note says is *"reachable by killing, by COMMAND or by a
    rally, and NOT by standing still"*. At .71 the same company opens one rung
    down with the top still 6 points away.
-   ⚠ 7% AND NOT 10: the band he named is 5-10, and the clamp under this figure
+   ⚡ #266 MOVED BOTH FIGURES AND KEPT THE 7 POINTS BETWEEN THEM. See the note on
+  `START_NERVE` above: the pair is .64 / .57 now, both inside the new STEADY band.
+  ⚠ 7% AND NOT 10: the band he named is 5-10, and the clamp under this figure
    is `moraleMax*.3`, so a body that is owed wages and standing in a bad company
    is already near a floor. Measured on the shipped Captain, AT EASE: 75 -> 68. */
-const START_NERVE_YOU=0.71;
+const START_NERVE_YOU=0.57;
 const MORALE={ownKill:30,allyKill:10,tookHit:-5,allyDied:-14,nearDeath:-15,
   recover:8,   /* MOST it may climb back toward the start in one quiet turn */
   settle:4};   /* MOST it may sink back toward the start in one quiet turn */
@@ -15066,11 +15209,35 @@ const LADDER=[
      table of what a state DOES, `u.state` is battle-only so no save can carry
      the word, and deleting a row to celebrate is how a table stops being a
      record of what the ladder has been. */
-  {at:.52,n:'Happy',       ic:'🙂',col:'#a3bd6c',bg:'rgba(163,189,108,.20)',
-   d:'No penalties. Full skill, full dodge.'},
+  /* ⛔ #266 - AND THE BAND IS SPLIT AGAIN, WHICH OVERRULES #228 WITHOUT
+     CONTRADICTING IT. (User: *"Add intermediate more (steady) to inventory screen
+     and connected battle. And your guys basic start on the middle of stead (aprox
+     55-60)"*.)
+     #228 merged Ok into Happy on the argument that neither should cost anything,
+     and that is KEPT: both of these are free, and both are mechanically `steady`.
+     What #228 also did, without being asked, was leave the game with no name for
+     where a body actually STANDS - a fight opened in the middle of a 38-point band
+     called Happy, so the word every player read first was the second-best rung in
+     the game and there was nothing under it but bad news.
+     ⛑ SO THE TWO FREE RUNGS SAY DIFFERENT THINGS RATHER THAN THE SAME THING
+     TWICE. Neither costs anything; what separates them is which way they are one
+     step from, and that IS information - the rule this file already allows for the
+     top band, which the engine does not act on either. A `d` reading *no penalties*
+     on both would be the furniture `.claude/rules/event-cards.md` keeps deleting.
+     ⚠ `STATES.wavering` STAYS UNREACHABLE. This is a DISPLAY band over the same
+     `steady` state, not the old rung coming back: nothing here costs a point of
+     hit or dodge, and `NERVE_RUNGS` gained no row. */
+  {at:.72,n:'Happy',       ic:'🙂',col:'#a3bd6c',bg:'rgba(163,189,108,.20)',
+   d:'No penalties, and one good turn from the top rung.'},
+  /* ⛑ THE COLOUR AND THE FACE ARE `MOODSTATES`' OWN NEUTRAL (AT EASE), not a
+     seventh hue invented for this row: the company ladder and the body ladder are
+     two readouts of one idea, and the cream that means *neither glad nor sorry*
+     already exists on the map's mood chip. */
+  {at:.42,n:'Steady',      ic:'😐',col:'#c9b98a',bg:'rgba(201,185,138,.18)',
+   d:'No penalties. Where a body walks onto the field.'},
   /* #129 - the new rung, and the whole reason this pass exists: the drop from
      "watching the line" to "one bad thing from breaking" used to be one step. */
-  {at:.34,n:'Shaken',      ic:'😕',col:'#c2a86a',bg:'rgba(194,168,106,.22)',
+  {at:.30,n:'Shaken',      ic:'😕',col:'#c2a86a',bg:'rgba(194,168,106,.22)',
    d:'9 off their chance to hit, 4 off their dodge.'},
   /* renamed from "Depressed" and softened (user): 18/7 plus no heavy actions
      meant this rung was effectively out of the fight, so the whole ladder
@@ -15081,6 +15248,27 @@ const LADDER=[
   {at:0,   n:'Broken',     ic:'💀',col:'#c15d55',bg:'rgba(193,93,85,.26)',
    d:'Routed. Running off the map and out of the battle, unless somebody rallies them.'}
 ];
+/* ⛔ #266 - THE DIVIDERS ON A MOOD BAR ARE THIS TABLE, READ. See the
+   `.bar.nrv::before` rule in the stylesheet for what they were before: four
+   percentages typed into CSS, two of them wrong for two entries. A gradient cannot
+   ask a JS table anything, so the table hands it over - one custom property, set
+   once, read by the battle card and the company sheet alike.
+   ⚠ IT IS DECLARED IMMEDIATELY UNDER `LADDER` AND RUNS AT PARSE. A `const` read
+   from its temporal dead zone throws and aborts the whole script, which is the
+   crash `.claude/rules/world-map-sights.md` records this project shipping once;
+   sitting directly under the thing it reads is what makes that impossible.
+   ⚠ THE BOTTOM GATE IS 0 AND IS NOT DRAWN: a tick on the left edge of the bar is
+   the edge of the bar. */
+const NRV_TICKS=(()=>{
+  const ink='rgba(7,11,12,.92)';
+  const g=LADDER.map(l=>l.at).filter(a=>a>0).sort((a,b)=>a-b)
+                .map(a=>+(a*100).toFixed(2));
+  let s='transparent 0';
+  g.forEach(p=>{s+=' calc('+p+'% - 1px),'+ink+' calc('+p+'% - 1px) '+p+
+                   '%,transparent '+p+'%';});
+  return 'linear-gradient(90deg,'+s+')';
+})();
+try{document.documentElement.style.setProperty('--nrvticks',NRV_TICKS);}catch(e){}
 /* ═══ ⛔ #227 · THE MORALE FLAG, AND IT SPEAKS TWICE A FIGHT ════════════
    (User, 2026-08-21: *"On the battlfiled show only them:
    art/ui/morale/morale-flags-unfurling-right-v5.png"*, then, asked where it
@@ -15132,7 +15320,12 @@ const MORALE_FLAG={
    different picture saying a different thing, and the user boxed the banner.
    ⚠ `FLAG_SHOWN` is indices off the ENDS of the ladder and is not touched, so
    the battlefield reads exactly as it did: rung 1 was never drawn there. */
-const FLAG_BY_RUNG=['rock',null,'low','breaking','broken'];
+/* ⚠ #266 - SIX ROWS NOW, AND THIS IS THE ONE TABLE HERE THAT IS INDEXED BY
+   POSITION rather than derived off the ends. STEADY carries no flag, the way Happy
+   does not: a mark that is up on the band every fight opens in marks nothing,
+   which is #228's own argument about the banner. `FLAG_SHOWN` and `FLAG_FAINT`
+   needed nothing - both count from the ENDS, which is exactly why. */
+const FLAG_BY_RUNG=['rock',null,null,'low','breaking','broken'];
 /* ⛔ #228 · AND IT IS ONLY SOLID ONCE THE FLAG IS ALL THE WAY OUT.
    (User: *"until it is fully (full or run) - it has some tranperency"*.) The
    two ENDS of the ladder are the two states where a flag is fully committed -
@@ -32932,6 +33125,27 @@ window.LINT=function(){
           'fought on it, so nothing in the act can ever have a hole in it');
     });
   })();
+  /* ═══ ⛔ 8j (#266) - A HAUL MAY NOT HAND OVER A COMMON WEAPON ════════════
+     (User: *"For after battle don`t give a common weapon as bonus"*.)
+     There are two doors out of a battle and the rule has to hold on both.
+     `rollFind` refuses it in code, where the pool is rolled; a LOOT row is
+     AUTHORED, so nothing in the build can stop the next one being written that way
+     - and this is the shape `rollRack`'s own note has carried since #248 without
+     anything ever asserting it. A cheap sword is the thing a company already has
+     six of, and a prize screen that hands one over reads as the game having
+     nothing to give.
+     ⛑ PROVED BY MAKING IT FIRE: `gear:'spear'` put back on the clash's first row
+     reported *clash hands over a common main-hand weapon (Boar spear)*; taken off
+     again the linter is silent. ⚠ `gear2` counts, and the row that shipped this
+     defect the second time was a `gear2` - a check that reads only `gear` would
+     have passed the Snare. */
+  (function commonWeaponHaul(){
+    Object.keys(LOOT).forEach(k=>LOOT[k].forEach(l=>{
+      [].concat(l.gear||[],l.gear2||[]).forEach(g=>{const G2=GEAR[g];
+        if(G2&&G2.slot==='main'&&(G2.rarity||'common')==='common')
+          hit('content','LOOT.'+k,'hands over a common main-hand weapon ('+G2.n+
+            ') - see rollFind and rollRack, which both refuse one');});}));
+  })();
   /* ═══ 8b — THE GRAPH ITSELF (backlog #6) ═══════════════════════════════
      The map is hand-placed data, and hand-placed data rots. These are the
      four things that must stay true of it however it gets redrawn, checked
@@ -33998,9 +34212,20 @@ const LOOT={
     {t:'The padded jack off the big one. It fits somebody.',c:'a padded jack',gear:'jack'},
     {t:'The hatchets, the knives, and the buckles off all four.',c:'+4 salvage',
      fx:{salvage:4}}],
+  /* ⛔ #266 - AND THE BOAR SPEAR COMES OFF THIS ROW. (User: *"For after battle
+     don`t give a common weapon as bonus"*.) `rollFind` is the other door and it is
+     shut in the same edit; this is the one the player actually meets, because the
+     find only ever steps down to `common` on an emptied pool and a LOOT row is
+     dealt every fight. A BOAR SPEAR is `rarity:'common'` and Vesna is holding one
+     on the screen where this lands, which is the whole of what makes it read as
+     junk rather than as a prize.
+     ⚠ THE SALVAGE IS 8 AND THE ROW PAYS 4: #239's `salvageCut` halves anything
+     over three, so an authored figure is an amount of STUFF and never an amount of
+     pay. It was 3 paid 3; it is 4 now, which is the spear's weight in iron and not
+     a replacement for it. */
   clash:[
-    {t:'Their spears and whatever the slings were made of.',c:'a boar spear · +3 salvage',
-     fx:{salvage:3},gear:'spear'},
+    {t:'Their spears and whatever the slings were made of, broken down for the iron.',
+     c:'+4 salvage',fx:{salvage:8}},
     {t:'Go through the packs. Both sides of the road.',c:'+30 crowns +2 supplies',
      fx:{crowns:30,food:2}},
     {t:'Take the club. It takes two of you to lift it.',c:'a warclub',gear:'club'}],
@@ -34027,7 +34252,10 @@ const LOOT={
     {t:'Strip the dead for iron and rivets.',c:'+10 salvage',fx:{salvage:10}},
     {t:'Take their coin-purses and the chieftain’s ring.',c:'+70 crowns',fx:{crowns:70}},
     {t:'Take the chieftain’s harness. It is ogre-sized.',c:'lashed plates',gear:'lashed'},
-    {t:'Take the slinger’s kit and the good spear.',c:'a full quiver and a boar spear',gear2:['quiver','spear']},
+    /* #266 - the same cut. The quiver is the kit and it is the thing worth taking;
+       the spear was a second common weapon on a row that already had one prize. */
+    {t:'Take the slinger’s kit, and every stone left in the bags.',
+     c:'a full quiver · +2 salvage',fx:{salvage:4},gear:'quiver'},
     {t:'Cut the bells down and take the rope and timber.',c:'+6 salvage +25 crowns',fx:{salvage:6,crowns:25}}],
   /* #74 - no decision row. Everything here is arithmetic, because the one
      decision this fight was about was made on the road card and it was made
@@ -37720,11 +37948,28 @@ function drawInv(){
       ?'<span class="ichip" style="color:#a08a5e">'+bmk(cIcon('none'))+' <b>'+CLASSES.none.n+'</b></span>'
       :'<span class="ichip bare" data-cls="'+p.cls+'" title="'+esc(CLASSES[p.cls].n)+'">'+
         bmk(cIcon(p.cls))+'</span>')+
-    /* ⚠ #253 - AND THE LEVEL RING STAYS DELETED. #246 put the level on the
-       roster portrait's corner and #251 moved `xpHover` onto that plate with
-       it, so this would be the one fact on the row that IS said twice. The
-       race and the class are back because a mark on a tile is not a name. */
-    '';
+    /* ~~⚠ #253 - AND THE LEVEL RING STAYS DELETED~~.
+       ⚡ #266 - IT IS BACK, AT THE USER'S WORD, AND WITH THE FIGURES ON IT.
+       (*"return lvl with expirience - so i can see it in details"*.)
+       #251's argument was that the roster tile 130px away carries the level and
+       the arc, so this row would say it twice - and that argument was about the
+       LEVEL. It was never true of the EXPERIENCE: a 42px arc round a bust says
+       *somewhere along* and nothing else, and the two exact figures were on a
+       `title` attribute, which is the one readout `.claude/rules/ui-scales.md`
+       and #191 both record as not being a readout. The ask names the numbers,
+       so the numbers are on the chip rather than behind it.
+       ⚠ THE RING IS THE SAME BUILDER AT THE SAME 26 IT USED TO BE, and `xpHover`
+       stays on the roster plate as well: two surfaces reading one function is not
+       the drift this file guards against, two surfaces computing it would be.
+       ⚠ AT THE CAP THERE IS NOTHING LEFT TO COUNT, so the figures give way to the
+       word `xpHover` already uses. A `0 of 0` on a body that is finished is a
+       counter printing the wrong unit. */
+    '<span class="ichip xplv" title="'+esc(xpHover(p))+'" style="cursor:help">'+
+      xpRing(p,26,true)+'<span class="xpn">'+
+      ((p.level||0)>=XP_CAP?'MAX'
+        :(Math.max(0,(p.xp||0)-xpNeed(p,p.level||0))+'<span class="of">/'+
+          Math.max(1,xpNeed(p,(p.level||0)+1)-xpNeed(p,p.level||0))+'</span> XP'))+
+      '</span></span>';
   /* ⛔ #224 · AND THE TALLY IS NOT UP HERE ANY MORE ═══════════════════════
      (User: *"В инвенторе показывать кол-во убийств только внизу. (не
      вверху)"*.) It was on this chip row AND on the accordion at the foot, and
@@ -37921,7 +38166,9 @@ function drawInv(){
          and the sheet says so once. (#136 point 4: the " · hover for the rest"
          hint is gone. Everything on this sheet explains itself on hover, so a
          line saying so is a line the other twenty elements do not have.) */
-      '<div id="iTrait"><b>'+TRAITS[p.trait].n+'</b> · '+traitShort(p)+'</div>'+
+      /* #266 - and the stat half of it comes off. See `traitSheetShort`. */
+      (t=>'<div id="iTrait"><b>'+TRAITS[p.trait].n+'</b>'+(t?' · '+t:'')+'</div>')
+        (traitSheetShort(p))+
       /* ⛑ #200 - and it is FREE HERE. The head is a 104px portrait tile beside
          this column; the tile stands ~120px tall and the name, the chips and
          the personality stack to ~76, so a 20px row of doors lands inside
@@ -37971,8 +38218,14 @@ function drawInv(){
              mid-fight - which is what two markups for one readout always comes to.
              #140 point 2 - the band carries the absorb rule on hover, and it is the
              word inside the bar now. */
+          /* ⚡ #266 - `--seg` AND `nrv`, WHICH IS ALL THE SHEET NEEDED. The two
+             divider rules moved to `:is(#bPlq,.ibars)` in the stylesheet; what a
+             renderer still owes them is the section count on the two pools that are
+             spent in blows, off `SEG()` and the plaque's own two constants, and the
+             `nrv` class on the one that is not. */
           '<div class="sbar"><span class="sbi" title="ARMOUR - it takes the hit first">⛨</span>'+
-            '<div class="bar sbb" style="background:#243133"><i style="width:'+(arm?100:0)+
+            '<div class="bar sbb" style="--seg:'+SEG(u.armourMax||1,SEG_ARM)+
+              ';background:#243133"><i style="width:'+(arm?100:0)+
               '%;background:var(--steel)"></i>'+
             '<span class="sbt"><b class="sbL band" id="iBand" style="color:'+bd.col+'">'+bd.n+
               '</b><span class="sbR">'+arm+'</span></span></div></div>'+
@@ -37981,7 +38234,8 @@ function drawInv(){
              carried a third reading of the second - so a body at 40% was amber here
              and light red there. `hpCol(.,.,card)` is the one ramp now. */
           '<div class="sbar"><span class="sbi" title="HITPOINTS - what is left of the body">♥</span>'+
-            '<div class="bar sbb" style="background:#3b2126"><i style="width:'+(100*hpF)+
+            '<div class="bar sbb" style="--seg:'+SEG(hpMax,SEG_HP)+
+              ';background:#3b2126"><i style="width:'+(100*hpF)+
               '%;background:'+hpCol(p,hpF,true)+'"></i>'+
             '<span class="sbt"><span class="sbR">'+
               hpNow+'<span class="of">/'+hpMax+'</span></span></span></div></div>'+
@@ -37993,7 +38247,7 @@ function drawInv(){
              printing a constant, which is #102's rule at its bluntest. The rung name
              beside it moved with `nl` and the bar under it did not, so the two halves
              of one line disagreed on any body who was not exactly neutral. */
-            '<div class="bar sbb" style="background:#20272a"><i style="width:'+
+            '<div class="bar sbb nrv" style="background:#20272a"><i style="width:'+
               Math.round(100*nu.morale/(nu.moraleMax||1))+'%;background:'+nl.col+'"></i>'+
             /* #247 - the rung name takes the bar it is measured on: this ask's *"for
                mood use space"*, and the one row of the three with no figure. */
@@ -38160,9 +38414,42 @@ function drawInv(){
      survives is the one standing where the cost is PAID.
      ⚠ IT IS STILL IN THE HOVER: `gearLine` prints the full row on the item's own
      tip, and the stash and the shop both read that. This cut is the slot's FACE. */
+  /* ⛔ #266 - AND EVERY OTHER KIND OF PIECE SAID NOTHING AT ALL. (User, arrows at
+     an OFF-HAND DIRK row, a ROUND SHIELD row and the dirk's own hover: *"For
+     offhand dirk and shield show what they exactly do"*.)
+     ⛑ THE TWO BRANCHES BELOW COVER WEAPONS AND COATS, AND THE SLOT THEY BOTH MISS
+     IS THE OFF HAND. A shield row read `RARE · OFF` and a dirk row `COMMON · OFF`
+     while the cook-pot beside them read `COMMON · ARMOUR · stops 12`, so the one
+     slot whose whole job is a modifier was the one slot with no figure on it -
+     which is why the ask arrives as two items and is really about a hole.
+     ⛔ DERIVED OFF THE SAME FIELDS `gearLine` READS AND NEVER A SECOND TABLE.
+     `gearLine` has printed all of these into the shop card since #200; this is the
+     SHORT form of the same walk, so a field added to a GEAR row appears on the row
+     and in the hover without a second edit, and the two mouths cannot disagree.
+     ⚠ `hush` IS OBEYED HERE TOO. A piece that declines to itemise itself (#141)
+     declines on every surface or it does not decline at all. */
+  const sgSign=v=>(v>0?'+':'−')+Math.abs(v);
+  const shortFx=g=>{
+    if(g.hush)return '';
+    const o=[];
+    if(g.dodge)o.push(sgSign(g.dodge)+' dodge');
+    if(g.hit)o.push(sgSign(g.hit)+' to hit');
+    /* #244's pair, which is the whole of what a dirk is in a swordsman's hand */
+    if(g.meleeHit)o.push(sgSign(g.meleeHit)+' to hit in melee');
+    if(g.meleeDmg)o.push(sgSign(g.meleeDmg)+' melee damage');
+    if(g.rangedDmg)o.push(sgSign(g.rangedDmg)+' bow damage');
+    if(g.windsCut)o.push('−'+g.windsCut+' mood a working');
+    if(g.spellRange)o.push('+'+g.spellRange+' working reach');
+    if(g.hp)o.push(sgSign(g.hp)+' hitpoints');
+    ['str','agi','int','mor'].forEach(s=>{if(g[s])o.push(sgSign(g[s])+' '+s.toUpperCase());});
+    /* the dirk's other half: a rule rather than a rung, and the one thing on this
+       row a figure cannot say. See `emergency` in the act builder. */
+    if(g.emergency)o.push('reaches what a bow cannot');
+    return o.join(' · ');};
   const shortGear=g=>g.dmg?(g.dmg[0]+'-'+g.dmg[1]+
       (g.reach>1?' · reach '+g.reach:'')+(g.range?' · range '+g.range:''))
-    :(g.armour!=null?'stops '+g.armour+(g.agi?' · '+(g.agi>0?'+':'')+g.agi+' hands':''):'');
+    :(g.armour!=null?'stops '+g.armour+(g.agi?' · '+(g.agi>0?'+':'')+g.agi+' hands':'')
+                    :shortFx(g));
   SLOTS.forEach(([slot,label])=>{
     const g=GEAR[p.eq[slot]];
     /* THE OFF HAND IS FULL when the main weapon needs both. It says so, names
@@ -39119,6 +39406,17 @@ function tipFor(key,p,foot){
   if(g.hp)rows.push((g.hp>0?'Adds ':'Costs ')+'<b>'+Math.abs(g.hp)+'</b> hitpoints.');
   if(g.hit)rows.push((g.hit>0?'Easier':'Harder')+' to land a blow (<b>'+
     (g.hit>0?'+':'')+g.hit+'</b> to hit).');
+  /* ⛔ #266 - AND THE OFF-HAND DIRK'S TWO FIELDS, WHICH THIS BOX HAD NEVER READ.
+     `meleeHit`/`meleeDmg` went in with #244 and reached `gearLine` and not `tipFor`,
+     so the piece with the most conditional rule in the game opened a hover carrying
+     its flavour paragraph and not one number. The condition is in the words because
+     it is in the field name: these apply where the other hand is not a bow. */
+  if(g.meleeHit)rows.push('Easier to land the blow the OTHER hand is making (<b>'+
+    (g.meleeHit>0?'+':'')+g.meleeHit+'</b> to hit, in melee only).');
+  if(g.meleeDmg)rows.push('And it bites deeper (<b>'+(g.meleeDmg>0?'+':'')+
+    g.meleeDmg+'</b> melee damage, in melee only).');
+  if(g.emergency)rows.push('Behind a bow it is a card of its own: the one thing that '+
+    'still works with something already on top of them.');
   if(g.dodge)rows.push((g.dodge>0?'Harder':'Easier')+' to hit (<b>'+
     (g.dodge>0?'+':'')+g.dodge+'</b> dodge).');
   if(g.rangedDmg)rows.push('Arrows bite deeper (<b>+'+g.rangedDmg+'</b> ranged damage).');
@@ -47492,11 +47790,30 @@ function rollFind(src){
   if(!tier)return null;
   const tiers=[tier,tier==='epic'?'rare':'common'];
   const order=slotOrder();
+  /* ⛔ #266 - THE COMMON TIER IS NEVER A MAIN-HAND WEAPON, AND THE RULE WAS
+     ALREADY WRITTEN DOWN ONE FUNCTION AWAY. (User: *"For after battle don`t give a
+     common weapon as bonus"*.)
+     `rollRack` calls `take('common',true)` and its note says in capitals: *THE
+     COMMON ROW IS NEVER A MAIN-HAND WEAPON, WHICH IS THE USER'S OWN PARENTHESIS AND
+     IS THE ROW'S WHOLE JOB. A cheap sword is the thing a company already has six
+     of.* That is the same sentence he has now said about the find, and the find is
+     where it never got applied - `common` is only ever reached here as the STEP
+     DOWN from an empty rare pool, which is exactly the roll that produces a cheap
+     sword nobody wanted, on the screen that has just announced a prize.
+     ⚠ IT IS A REFUSAL AND NOT A RE-ROLL: the walk simply skips `main` on that tier
+     and falls through to the next slot, the way `rollRack` does. `rare` and `epic`
+     are untouched, so the serjeant's sword is still a thing a fight can hand over.
+     ⚠ AND IT MAY LEAVE THE FIND EMPTY where a one-race company has bought the
+     common non-weapon pool out. `rollFind` has always been allowed to return null;
+     the caller (`consequences`) draws nothing extra and the haul is untouched. */
+  const noMain=(tr,list)=>tr==='common'?list.filter(k=>GEAR[k].slot!=='main'):list;
   for(const tr of tiers)for(const s of order){
-    const p=findPool(tr,s);if(p.length)return pickOne(p);}
+    if(tr==='common'&&s==='main')continue;
+    const p=noMain(tr,findPool(tr,s));if(p.length)return pickOne(p);}
   /* the slot preference goes first, then the duplicate guard */
-  for(const tr of tiers){const p=findPool(tr);if(p.length)return pickOne(p);}
-  for(const tr of tiers){const p=findPool(tr,null,true);if(p.length)return pickOne(p);}
+  for(const tr of tiers){const p=noMain(tr,findPool(tr));if(p.length)return pickOne(p);}
+  for(const tr of tiers){const p=noMain(tr,findPool(tr,null,true));
+    if(p.length)return pickOne(p);}
   return null;
 }
 /* somebody in the company skims, and it shows up in the takings */
