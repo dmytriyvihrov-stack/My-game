@@ -11888,7 +11888,12 @@ const monTag=k=>(MONSTERS[k]
    ⚠ A FEN-THING IS DELIBERATELY NOT ON THIS LIST. Its `kind` is 'ratkin' and
    it is a twisted one, so its ratkin sheet and its race word are both true of
    it. The ask was about animals and this test is about animals. */
-const BEAST_KIND=['dog','wyrm','cub','beast','mirehare_f','mirehare_m'];
+const BEAST_KIND=['dog','wyrm','cub','beast','mirehare_f','mirehare_m',
+  'salamander','slaghide','drake','furnace'];      /* #267 */
+/* #267 - a great beast's trailing hexes are drawn off ITS OWN kind. One row
+   per body that is longer than one hex, which is the same shape as MAP_SIGHT:
+   a kind with no row keeps the Fen-Mother's hindquarters. */
+const BODY_KIND={wyrm:'wyrmbody',furnace:'furnacebody'};
 const isBeast=u=>!!u&&(u.race==='beast'||BEAST_KIND.indexOf(u.kind)>=0);
 const MONSTERS={
   /* #239 - `boss` is the one row on this register the face is kept for: she
@@ -11901,6 +11906,26 @@ const MONSTERS={
     nature:'Bites and is gone. There is nothing here to hold a line against.'},
   mirehare:{ico:'♞',tag:'MIREHARE',
     nature:'The doe only travels by a three-hex landing. The buck only travels by a straight charge.'},
+  /* ═══ #267 · THE LIZARDS ══════════════════════════════════════════════════
+     Ashmoor's foundry fell last winter and the lore book already says the
+     Snare Clan could not light two of its furnaces, and does not say why. The
+     reason is that they were not empty. Everything below is that one sentence
+     coming west along the road. */
+  salamander:{ico:'\uD83E\uDD8E',tag:'CINDER-VERMIN',
+    nature:'It cannot really hurt you. The ground it leaves behind can.'},
+  slaghide:{ico:'\uD83D\uDC45',tag:'SLAG-HIDE',
+    nature:'You will not see it until it moves. The tongue is the first you know of it, '+
+      'and by then somebody is already travelling.'},
+  drake:{ico:'\uD83D\uDD25',tag:'ASH-DRAKE',
+    nature:'The breath goes through the first of you and finds the second. There is no '+
+      'safe rank in front of it.'},
+  /* ⚠ 🐉 AND NOT 🌋. The bestiary face is drawn over the token, and a volcano
+     over an animal reads as a piece of TERRAIN - which on a board that is
+     already half on fire is the one thing it must not say. The Fen-Mother's
+     🐲 is the other dragon face and they are told apart at a glance. */
+  furnace:{ico:'\uD83D\uDC09',boss:true,tag:'GREAT BEAST - THE THIRD FURNACE',
+    nature:'Four hexes of her, and the tail is two of them. It does not aim at one of '+
+      'you; it aims at the idea of you standing in a line.'},
   fenling:{ico:'👁',tag:'FEN-THING',
     nature:'Whatever the water made. It does not appear to mind being hurt.'},
   /* ═══ THE ONE ENTRY THAT REFUSES TO IDENTIFY ITS SUBJECT ════════════════
@@ -14301,7 +14326,9 @@ function sprite(kind,side,opt){
   const artKey=paintedSpriteKey(kind,side,opt);
   const key=artKey?'paint|'+artKey:
     kind+'|'+side+'|'+(opt.leader?'L':'')+(opt.caster?'C':'')+(opt.bow?'B':'')+
-      (opt.gills?'W':'');
+      (opt.gills?'W':'')+(opt.last?'T':'');    /* #267 - the tail TIP is a
+      different picture from the segments in front of it, and the cache key has
+      to carry that or the first one drawn is the one every hex gets. */
   if(SPR[key])return SPR[key];
   /* #244 - a COPY, and it carries its own key. `spriteHurt` needs a stable name
      for the picture it is making a bloodied variant of, and writing `.key` onto
@@ -14310,6 +14337,10 @@ function sprite(kind,side,opt){
   const DIM={human:[26,38],archer:[25,37],mage:[26,38],ratkin:[21,29],bruiser:[26,33],
     ogre:[36,42],wyrm:[42,40],wyrmbody:[40,30],cub:[26,24],dog:[28,22],
     mirehare_f:[30,31],mirehare_m:[34,25],
+    /* #267 - the lizards. Drawn silhouettes while the pack is painted, the
+       same shipping state the mirehares have been in since #193. */
+    salamander:[24,18],slaghide:[30,24],drake:[34,30],
+    furnace:[44,42],furnacebody:[40,30],
     /* taller than a man and no wider — see the `warden` branch below */
     warden:[30,44]}[kind]||[24,34];
   /* TOKENS ARE DRAWN BIGGER THAN THEIR HEX. The board went 13x8 -> 15x10 and
@@ -14447,6 +14478,138 @@ function sprite(kind,side,opt){
       R(19,2,3,9,hide);R(24,1,3,10,hide);R(20,3,1,6,lit);R(25,2,1,7,lit);
       R(28,8,2,2,'#c9a227');R(7,10,14,2,lit);
       c.strokeStyle=hide;c.lineWidth=2;c.beginPath();c.moveTo(5,12);c.lineTo(1,10);c.stroke();
+    }
+  }
+  /* ═══ #267 · THE LIZARDS ═════════════════════════════════════════════════
+     Four bodies off one idea, so they have to read as one FAMILY at 37px and
+     still be told apart at a glance. The shared language: a low slung body, a
+     long head, and ONE saturated ember colour that is the only warm thing on
+     any of them. What separates them is silhouette and nothing else - the
+     salamander is small and horizontal, the slag-hide is a squat lump with a
+     crest, the drake stands up on its forelegs with its wings half open, and
+     the Furnace is the only one whose seams are actually open. */
+  if(kind==='salamander'){
+    const hide='#3f4340',lit='#575c56',fire='#e07a28';
+    R(3,7,14,6,hide);R(3,7,14,1,lit);                  // body, wet along the spine
+    R(5,10,10,2,fire);                                 // the one warm band
+    R(16,5,7,7,hide);R(16,5,7,1,lit);                  // long head
+    R(21,7,2,2,fire);R(22,7,1,1,'#1a0d08');            // eye, slit
+    R(17,11,5,1,'#c9a227');                            // the mouth it spits out of
+    R(4,13,3,4,'#232624');R(9,13,2,3,'#232624');R(13,13,3,4,'#232624');
+    c.strokeStyle=hide;c.lineWidth=2;c.beginPath();     // the fat tail
+    c.moveTo(3,10);c.quadraticCurveTo(-1,12,0,16);c.stroke();
+  }
+  if(kind==='slaghide'){
+    /* a lump of road with an eye in it. Deliberately the DRABBEST thing on the
+       board: the whole creature is an argument for not being looked at. */
+    const hide='#4a4c43',lit='#5e6157',fire='#c9a227';
+    R(4,10,18,10,hide);R(4,10,18,1,lit);               // heavy body
+    R(4,19,18,2,'#2a2c27');                            // belly shadow
+    R(6,13,3,3,'#3d3f38');R(12,14,4,3,'#3d3f38');      // slag plates
+    R(20,7,9,9,hide);R(20,7,9,1,lit);                  // blunt head
+    R(20,4,7,3,hide);                                  // the crest
+    R(25,9,4,4,fire);R(27,10,2,3,'#1a0d08');           // the turret eye
+    R(21,15,6,1,'#8c8a7c');                            // the mouth the tongue lives in
+    R(6,20,4,4,'#232624');R(16,20,4,4,'#232624');      // squat legs
+    c.strokeStyle=hide;c.lineWidth=3;c.beginPath();     // the curled tail
+    c.moveTo(4,15);c.quadraticCurveTo(-2,17,1,21);c.stroke();
+  }
+  if(kind==='drake'){
+    const hide='#463f3a',lit='#5d534b',fire='#e07a28';
+    /* wings first, so the body sits in front of them */
+    c.fillStyle='#332d2a';
+    c.beginPath();c.moveTo(9,11);c.lineTo(1,1);c.lineTo(13,7);c.closePath();c.fill();
+    c.beginPath();c.moveTo(15,11);c.lineTo(24,0);c.lineTo(20,9);c.closePath();c.fill();
+    R(6,13,17,10,hide);R(6,13,17,1,lit);               // barrel body
+    R(8,17,12,2,fire);                                 // the furnace showing through
+    R(6,22,17,2,'#26221f');
+    R(22,7,10,9,hide);R(22,7,10,1,lit);                // head, carried high
+    R(29,10,3,3,fire);R(30,11,1,2,'#1a0d08');
+    R(23,15,8,2,'#d8d5cc');                            // teeth
+    R(24,16,6,2,fire);                                 // the breath, banked
+    R(8,23,4,6,'#232624');R(17,23,4,6,'#232624');      // forelegs, standing up on them
+    c.strokeStyle=hide;c.lineWidth=3;c.beginPath();
+    c.moveTo(6,19);c.quadraticCurveTo(0,22,2,28);c.stroke();
+  }
+  if(kind==='furnace'){
+    /* ⛔ SHE IS THE ONLY ONE WHOSE SEAMS ARE OPEN, and that is the whole design
+       claim of the picture: the other three are animals that live in fire and
+       she is a thing with fire inside it.
+       ⛑ SHE FACES WEST, WHICH IS THE CONVENTION AND NOT A CHOICE. A great
+       beast is exempted from the ordinary facing flip (`beastFlip` keys off the
+       head-to-tail axis instead), and her tail hexes run EAST - so art drawn
+       with the skull on the right of its own canvas points the head into its
+       own shoulder. The Fen-Mother's painted pair is the reference: head hex
+       west and looking west, hindquarters east.
+       ⛔ AND THE SEAMS RUN ALONG HER, NOT ACROSS. The first cut drew five
+       uprights a segment over four hexes, which at 37px is a picket fence.
+       Every probe in this project passed it. */
+    /* ⛑ THE HIDE IS LIGHT ENOUGH TO READ. The first two cuts used #3b3531 and
+       #4a423c against a ground that is itself about #2b2f28, so the boss of the
+       act was the least visible thing on her own board. The Fen-Mother is a
+       mid-green mass for the same reason. */
+    const hide='#5a4f45',lit='#7b6a5c',crack='#e07a28',hot='#ffc76b',dk='#2a231f';
+    /* ⛔ THE BACK IS A CURVE AND NOT A SLAB, which is the second thing only the
+       picture said: a flat-topped rectangle four hexes long on eight identical
+       legs is a BENCH. Two legs, thick, and an outline that rises and falls. */
+    c.fillStyle=hide;
+    c.beginPath();c.ellipse(29,25,16,10,0,0,7);c.fill();          // haunch mass
+    c.beginPath();c.ellipse(17,26,10,8,0,0,7);c.fill();           // shoulder
+    c.fillStyle=lit;
+    c.beginPath();c.ellipse(29,22,15,6,0,Math.PI,2*Math.PI);c.fill();
+    c.fillStyle=dk;
+    c.beginPath();c.ellipse(29,33,14,4,0,0,Math.PI);c.fill();     // belly shadow
+    /* one long split down the flank, open in two places */
+    R(16,26,26,2,crack);R(20,26,7,2,hot);R(33,26,7,2,hot);
+    R(20,19,15,3,'#6b5d51');                                       // one broad plate
+    R(20,34,7,8,dk);R(20,41,10,2,dk);                              // two legs, thick
+    R(34,33,6,8,dk);R(33,40,9,2,dk);
+    /* the skull, carried low and WEST. ⚠ THE TEETH ARE THREE AND UNEVEN: the
+       first cut drew a even row of four bright blocks, which at 37px is a comb,
+       and two square eyes beside it read as windows in a shed. */
+    c.fillStyle=hide;
+    c.beginPath();c.ellipse(12,22,13,9,0,0,7);c.fill();             // one heavy skull
+    c.fillStyle=lit;
+    c.beginPath();c.ellipse(12,19,12,5,0,Math.PI,2*Math.PI);c.fill();
+    c.fillStyle=hide;
+    c.beginPath();c.moveTo(4,17);c.lineTo(0,23);c.lineTo(5,28);c.closePath();c.fill();
+    R(2,27,15,2,'#3b332e');                                         // the mouth line, dark
+    R(3,29,3,4,'#cfcabc');R(8,29,2,3,'#cfcabc');R(12,29,3,4,'#cfcabc');
+    R(5,24,2,3,'#a89f92');R(10,24,2,2,'#a89f92');                   // uppers, uneven
+    c.fillStyle=hot;
+    c.beginPath();c.ellipse(6,20,3,2,0,0,7);c.fill();               // two eyes, both lit
+    c.beginPath();c.ellipse(13,19,2,2,0,0,7);c.fill();
+    R(6,20,2,2,'#1a0d08');R(13,19,1,2,'#1a0d08');
+    R(5,13,10,2,crack);                                             // a seam over the skull
+  }
+  if(kind==='furnacebody'){
+    /* the rest of her. The ridge and the split run edge to edge so three of
+       these in a row read as ONE long back; `opt.last` is the far end, which
+       tapers and carries the tail, so the animal has a direction. */
+    const hide='#5a4f45',lit='#7b6a5c',crack='#e07a28',hot='#ffc76b',dk='#2a231f';
+    const last=!!opt.last;
+    /* ⛑ AN OVERLAPPING ELLIPSE, NOT A BOX. Three of these in a row give one
+       lumpy back with no seam between the hexes, where three rectangles gave
+       three visible joins and a flat top. The ellipse is drawn WIDER than the
+       canvas on purpose so it runs under its neighbours. */
+    c.fillStyle=hide;
+    c.beginPath();c.ellipse(20,16,last?15:24,last?7:10,0,0,7);c.fill();
+    c.fillStyle=lit;
+    c.beginPath();c.ellipse(20,13,last?14:23,last?4:6,0,Math.PI,2*Math.PI);c.fill();
+    c.fillStyle=dk;
+    c.beginPath();c.ellipse(20,24,last?13:22,4,0,0,Math.PI);c.fill();
+    /* the split runs the whole length, so the four hexes are one animal */
+    R(0,17,last?30:40,2,crack);
+    R(6,17,9,2,hot);if(!last)R(25,17,9,2,hot);
+    R(9,10,last?14:20,3,'#6b5d51');                    // one broad plate a segment
+    R(14,25,7,8,dk);R(13,32,10,2,dk);                  // ONE leg, thick
+    if(last){
+      /* the far end: it thins, and the tail goes on past the hex */
+      c.fillStyle=hide;
+      c.beginPath();c.moveTo(30,10);c.lineTo(40,15);c.lineTo(30,22);c.closePath();c.fill();
+      c.strokeStyle=hide;c.lineWidth=3;c.beginPath();
+      c.moveTo(34,16);c.quadraticCurveTo(39,17,40,21);c.stroke();
+      R(30,15,8,2,crack);
     }
   }
   if(kind==='warden'){
@@ -14807,13 +14970,19 @@ const uid=u=>u._uid||(u._uid=++UIDN);
 function boardIndex(){
   let sig='';
   for(let i=0;i<B.units.length;i++){const u=B.units[i];
-    sig+=(u.dead||u.fled||u.downed)?'x;':u.col+','+u.row+(u.tail?':'+u.tail:'')+';';}
+    sig+=(u.dead||u.fled||u.downed)?'x;'
+      :u.col+','+u.row+(u.tails?':'+u.tails.join('|'):u.tail?':'+u.tail:'')+';';}
   if(B._occSig===sig)return B._occ;
   const m={};
   for(let i=0;i<B.units.length;i++){const u=B.units[i];
     if(u.dead||u.fled||u.downed)continue;
     m[K(u.col,u.row)]=u;
-    if(u.tail)m[K(u.tail[0],u.tail[1])]=u;}
+    /* #267 - written out rather than through hexesOf(), which is declared five
+       thousand lines below this one. The call would be legal (nothing here runs
+       at boot) and the temporal-dead-zone throw this file has shipped once is
+       not worth re-earning for two lines. */
+    if(u.tails)u.tails.forEach(t=>{m[K(t[0],t[1])]=u;});
+    else if(u.tail)m[K(u.tail[0],u.tail[1])]=u;}
   B._occSig=sig;B._occ=m;B._losCache={};
   return m;
 }
@@ -18576,6 +18745,7 @@ function snareClan(){
     u.id='clan'+i;besideYou(u);u.facing=0;
     const p=SLOT[i%SLOT.length];u.col=p[0];u.row=p[1];
     if(u.tail)u.tail=[u.col+1,u.row];
+    if(u.tails)u.tails=u.tails.map((t,j)=>[u.col+1+j,u.row]);   /* #267 */
     return u;});
 }
 /* ═══════════════════════════════════════════════════════════════════════
@@ -18704,6 +18874,52 @@ function beasts(){
 function mirehares(){
   const T=FOE_T.mirehares;
   return build([[10,3,'doe',43],[11,8,'doe',39],[12,5,'buck',56],[11,10,'buck',52]],T);
+}
+/* ═══ #267 · THE THREE ROAD FIGHTS AND THE BOSS ═══════════════════════════
+   One trail, getting fresher. The first is two of each and teaches both verbs
+   at a size a starting four can read; the second adds the drake and a champion;
+   the third is the animal that emptied Ashmoor. */
+function warmStones(){
+  const T=FOE_T.warmstones;
+  /* the vermin lead - they are quicker and they are what you see first */
+  return build([[10,4,'sala',62],[11,8,'sala',60],
+                [10,6,'hide',38],[12,5,'hide',36]],T);
+}
+function glassRoad(){
+  const T=FOE_T.glassroad;
+  /* ⚑ #245's champion word, on a monster for the first time. A champion
+     slag-hide is 23 hitpoints of the same animal, which is the difference
+     between a puzzle piece and a wall. */
+  return build([[10,3,'sala',63],[11,9,'sala',61],[12,5,'sala',59],[10,8,'sala',58],
+                [11,6,'hide',38],[12,8,'hide',36],[10,5,'hide',34,'champ']],T);
+}
+function ashDrakes(){
+  const T=FOE_T.ashdrakes;
+  /* ⚡ MEASURED, AND THE FIRST CUT OF THIS FIGHT WAS THE ONE THAT DID NOT WORK.
+     Two drakes and four hangers-on read as the tier-three encounter on paper and
+     priced at 100% in 6 rounds for the prepared six - the same figure as THE
+     GLASS ROAD, i.e. a fight that was third in the story and second in the
+     difficulty. A 25-hitpoint body is not a wall however good its verb is, so
+     the answer is the CROWD the verb comes off: three breaths mean the second
+     rank is never safe anywhere on the board, and the fourth is a champion. */
+  return build([[11,4,'drake',50],[12,8,'drake',48],[11,6,'drake',46,'champ'],
+                [10,3,'sala',63],[11,10,'sala',61],[12,2,'sala',59],
+                [12,6,'hide',36],[10,8,'hide',34]],T);
+}
+/* #267 - the fifth and smallest, for the one-sentence card below. Three
+   bodies: the least this family can be and still be both of its verbs. */
+function emberPatch(){
+  const T=FOE_T.emberpatch;
+  return build([[10,5,'sala',62],[11,8,'sala',60],[11,6,'hide',36]],T);
+}
+function thirdFurnace(){
+  const T=FOE_T.furnace;
+  /* ⚠ SHE IS FOUR HEXES LONG AND THE COLUMN IS CHOSEN FOR IT. `build()` pushes
+     every foe FOE_SHIFT (2) toward the far edge, so a head authored at 8 lands
+     at 10 and her tail lies across 11, 12 and 13 on a 15-wide board. Authored
+     further right, the far end of her would be off the map. */
+  return build([[8,6,'furnace',44],[12,2,'sala',62],[12,10,'sala',60],
+                [11,9,'drake',48]],T);
 }
 /* ═══ ⛔ #245 · A CHAMPION IS A MULTIPLIER, NOT A STATBLOCK ════════════
    (User, 2026-08-25: *"Давай додамо "чемпіонів" - в деяких боях кони
@@ -18968,6 +19184,10 @@ function build(plan,T){
       /* backlog #18. `noArc` and `soak` are rules; `noFace`/`notally` are the
          two places the UI would otherwise NAME a thing that is meant to stay
          unnamed — the panel portrait, and the row of heads on the sheet. */
+      /* #267 - the two flags the lizards travel on. `veiled` is the CAPACITY
+         (this body can disappear); `veil` is whether it is holding one right
+         now, and beginTurn is the only thing that sets it. */
+      fireborn:!!t.fireborn,veiled:!!t.veiled,veil:false,flier:!!t.flier,
       noArc:!!t.noArc,soak:Math.round((t.soak||0)*HDA_CUT),noFace:!!t.noFace,notally:!!t.notally,
       /* ⚠ `cc`, NOT `e[0]` — THE SHIFTED COLUMN, and this was a real bug that
          put the Fen-Mother's body on the wrong side of her head for the life
@@ -18982,7 +19202,13 @@ function build(plan,T){
          face away from each other and she reads as two animals standing back
          to back. See beastFlip() in render(), which keeps them joined once
          she starts moving. */
-      tail:t.big?[cc+1,e[1]]:null,skittish:!!t.skittish,passive:!!t.passive,
+      tail:t.big?[cc+1,e[1]]:null,
+      /* #267 - `tailLen` is how many hexes of her lie behind the head. The
+         Third Furnace declares 3, so she is four hexes of animal and the two
+         at the far end are the ones her sweep comes off. */
+      tails:(t.big&&t.tailLen>1)
+        ?Array.from({length:t.tailLen},(_,j)=>[cc+1+j,e[1]]):null,
+      skittish:!!t.skittish,passive:!!t.passive,
       guards:t.guards||null,        /* #240 - what this body will come back for */
       fenborn:!!t.fenborn,noWalk:!!t.noWalk,
       aura:t.aura||null,trait:trait,noRout:!!t.noRout,
@@ -19354,6 +19580,105 @@ const HARE_T={
         dmg:[19,30],am:.95,ft:.42,
         note:'Up to four hexes on one straight grid axis. It hits the first body in the line.'}]}
   };
+/* ═══ ⛔ #267 · THE LIZARDS, AND EVERY FIGURE HERE IS AUTHORED ON THE OLD
+   SCALE ══════════════════════════════════════════════════════════════════
+   (User, 2026-08-30: *"slug hide 15 / 5. Ash drake 25 / 6 and fiy skil. The
+   third furnance damage 10 and tail hit push 2- tiles. Tail has 2-3 other
+   tiles ocupation. 120 health"*.)
+
+   ⛔ THE NUMBERS IN THIS TABLE ARE NOT THE NUMBERS ON THE BOARD, AND WRITING
+   THEM PRE-CUT WOULD HAVE TAKEN THE CUT TWICE. `build()` puts every template
+   through `TRIM` (.9 hp and dice), `ARM` (.75), `shooterThin` (.9 for a body
+   with a ranged damage act) and then `HDA_CUT` (1/3.5) unconditionally - so a
+   figure is solved BACKWARDS from what the fight is meant to feel like. That is
+   the steading ogres' own lesson written down again: *the figure in a statblock
+   is not the figure on the board, and anything tuned by eye off this table is
+   tuning three quarters of a number.*
+
+   What the asks above become, measured on the built bodies:
+     salamander  30/5   -> 7 hp, 1 armour, spit 2-3, bite 3-4
+     slag-hide   65/23  -> 15 hp, 5 armour, tongue 3-4, bite 5-8   (the ask)
+     ash-drake   97/28  -> 25 hp, 6 armour, breath 6-9, claw 4-6   (the ask)
+     the Furnace 420/160-> 120 hp, 46 armour, bite 9-12, tail 5-7  (the ask)
+   ⚠ THE BOSS IS `noTrim`, so only HDA_CUT touches her - a boss is tuned by
+   hand or not at all - which is why her authored figures are the ones that
+   look nothing like the other three.
+   ⚠ AND ALL FOUR ARE `fireborn`, which is the family's one shared word. */
+const LIZ_T={
+  sala:{kind:'salamander',race:'beast',monster:'salamander',name:'Cinder salamander',
+    fireborn:true,
+    hp:30,armour:5,mor:55,skill:56,dodge:24,speed:4,
+    acts:[
+      /* ⛔ A MONSTER THAT SHOOTS, AND THE BESTIARY'S OWN RULE SURVIVES IT.
+         *"Nothing in this bestiary shoots, because a thing that can kill you
+         from six hexes is a soldier"* - and at three hexes for two hitpoints
+         this cannot kill anybody from anywhere. It does not attack the body,
+         it deletes the hex the body was using, which is a different verb. */
+      {k:'spit',n:'SPIT FIRE',cost:2,range:3,dmg:[8,12],am:.35,ft:.55,ember:true,
+        note:'Almost nothing to a grown body. What it is for is the ground: the hex it '+
+          'lands on catches, and burning ground is 2 through any armour to stand in or '+
+          'cross, and it keeps costing after you are out of it.'},
+      {k:'bite',n:'BITE',cost:1,reach:1,dmg:[10,15],am:.5,ft:.4,
+        note:'It would rather be somewhere else. This is what it does when it cannot.'}]},
+  hide:{kind:'slaghide',race:'beast',monster:'slaghide',name:'Slag-hide',
+    fireborn:true,veiled:true,
+    hp:65,armour:23,mor:95,skill:61,dodge:10,speed:2,
+    acts:[
+      /* ⛔ THE TONGUE IS THE FEN-MOTHER'S DRAG AT RANGE, AND IT COSTS THE WHOLE
+         TURN ON PURPOSE. That is the valve against the thing the reference is
+         annoying for: the pull lands on ITS turn and the bite cannot come until
+         the NEXT one, so a body that has been reeled in always gets a full turn
+         standing next to a 15-hitpoint animal. Being dragged is an invitation
+         rather than a turn taken off you. */
+      {k:'tongue',n:'TONGUE',cost:2,range:3,dmg:[10,16],am:.45,ft:.5,drag:true,cool:1,
+        note:'Three hexes, and it does not let go. Whoever it catches is hauled out of '+
+          'your line and dropped against it - with their whole turn still in hand, and '+
+          'the thing that pulled them standing right there.'},
+      {k:'bite',n:'BITE',cost:1,reach:1,dmg:[20,30],am:1.05,ft:.35,
+        note:'What the tongue was for.'}]},
+  drake:{kind:'drake',race:'beast',monster:'drake',name:'Ash-drake',
+    fireborn:true,flier:true,
+    hp:97,armour:28,mor:110,skill:58,dodge:8,speed:3,
+    acts:[
+      /* ⛔ THE BREATH GOES THROUGH, WHICH IS THE ASK IN ONE WORD (*"like
+         dragons in heroes of might and magic"*), AND IT DOES NOT CHECK WHOSE
+         SECOND BODY IT IS. Baiting it into breathing through its own vermin is
+         the counterplay, and a rule that made an exception for its friends
+         would delete it. */
+      {k:'breath',n:'FURNACE BREATH',cost:2,reach:1,dmg:[24,36],am:1.15,ft:.45,
+        pierce:true,ember:true,cool:1,
+        note:'It does not stop at the first of you. Whoever is standing directly behind '+
+          'them takes it too, friend or foe, and both hexes are left burning. Do not '+
+          'stand in a file in front of this.'},
+      {k:'claw',n:'CLAW',cost:1,reach:1,dmg:[16,24],am:.95,ft:.3,
+        note:'While the breath is banking.'}]},
+  furnace:{kind:'furnace',race:'beast',monster:'furnace',name:'The Third Furnace',
+    fireborn:true,
+    hp:420,armour:160,mor:300,skill:60,dodge:8,speed:2,
+    /* ⛑ `tailLen:3` IS THE ASK (*"Tail has 2-3 other tiles ocupation"*), AND
+       IT BUYS THE SWEEP FOR NOTHING. `udist` measures to a body's nearest hex,
+       so an act with `sweep` off a four-hex animal already catches everything
+       standing along her whole length: her tail IS the arc, and where it is
+       lying is the warning. No new geometry was written for it. */
+    big:true,tailLen:3,bigkill:true,noTrim:true,noRout:true,desperateAt:true,actions:4,
+    acts:[
+      {k:'bite',n:'BITE',cost:1,reach:2,dmg:[32,42],am:1.3,ft:.4,
+        note:'The head end. It reaches two hexes and it is the half of her that kills.'},
+      /* ⛔ push:2 IS THE ASK AND THE FIRE COMBO IS ALREADY BUILT. Forced
+         movement has asked `onEmber` since #186 - *shoved INTO the burning
+         ground: it lights them* - so her own ring, her drakes' trails and her
+         vermin's spit all pay off through a line nobody had to write. */
+      {k:'tail',n:'THE TAIL',cost:2,reach:1,sweep:true,push:2,dmg:[16,25],am:1.05,ft:.3,cool:2,
+        note:'It comes round her whole length, hits everything it touches and throws them '+
+          'two hexes. It is not aimed at one of you. It is aimed at your line, and at '+
+          'whatever is burning behind it.'},
+      /* THE FURNACE DRAWS - THE FEN ANSWERS with the element swapped. The game
+         has already taught the player that a boss weaponises its own ground, so
+         the second one speaking that language is a rhyme and not a repeat. */
+      {k:'draw',n:'THE FURNACE DRAWS',cost:1,self:true,char:2,cool:3,
+        note:'The ground for two hexes around her chars and stays lit. She does not like '+
+          'the heat. She is where it comes from.'}]}
+};
 /* ═══ ⛔ #263 · AND THE OTHER SIDE CLIMBS THE SAME FOUR LADDERS ══════
    (User, 2026-08-28: *"use this logic with stats and aply all 4 stats also
    for enemies. So they also get some of the bufs. We can imagine, that each
@@ -19465,6 +19790,10 @@ const FOE_T={
   steading:STEAD_T,
   mother:BEAST_T,
   mirehares:HARE_T,
+  /* #267 - four fights, one table of bodies. The difference between them is
+     the PLAN, which is where a fight's shape belongs. */
+  warmstones:LIZ_T, glassroad:LIZ_T, ashdrakes:LIZ_T, furnace:LIZ_T,
+  emberpatch:LIZ_T,
   clash:CLASH_T, wedding:WED_T, tavern:TAVERN_T, chase:CHASE_T,
   hold:HOLD_T, snarejoin:HOLD_T,
   /* not a fight of its own: the allies the clash lends you, the
@@ -19472,6 +19801,8 @@ const FOE_T={
   clashAllies:CLASH_T, reinforcements:REINF_T, armour:{warden:WARDEN}
 };
 const FOE_BUILD={mother:beasts,brigand:brigands,mirehares:mirehares,clash:clashFoes,
+  warmstones:warmStones,glassroad:glassRoad,ashdrakes:ashDrakes,furnace:thirdFurnace,
+  emberpatch:emberPatch,
   pack:pack,steading:steading,armour:armourFoe,circle:circleFoes,wedding:weddingFoes,
   tavern:tavernFoes,chase:chaseFoes,hold:holdFoes,snarejoin:holdHost,
   slingline:slingline,snare:foes};
@@ -19910,11 +20241,24 @@ function dropBody(u){
     rot:74+Math.round(Math.random()*26)};
 }
 /* a great beast fills two hexes: a head and a body behind it */
-const hexesOf=u=>u.tail?[[u.col,u.row],u.tail]:[[u.col,u.row]];
-const at=(c,r)=>alive().find(u=>(u.col===c&&u.row===r)||
-  (u.tail&&u.tail[0]===c&&u.tail[1]===r));
+/* ⛔ #267 - AND THE THIRD FURNACE FILLS FOUR. `u.tail` is STILL the first hex
+   behind the head and still means exactly what it meant, which is why not one
+   drawing rule had to learn anything: `beastFlip` reads it for the head-to-tail
+   axis, the hindquarters sprite is painted on it, the ambush mark is drawn on
+   it. `u.tails` is the WHOLE chain, present only on a body that declared
+   `tailLen`, and `hexesOf` is the one place that knows the difference.
+   ⛑ EVERYTHING THAT MATTERS FOLLOWED FOR FREE, and that is the argument for
+   having had one such place: `udist` measures to a body's NEAREST hex, so a
+   sweep off a four-hex animal catches everything standing along her whole
+   length without a line of new geometry. Her tail IS the arc. */
+const hexesOf=u=>u.tails?[[u.col,u.row]].concat(u.tails)
+  :u.tail?[[u.col,u.row],u.tail]:[[u.col,u.row]];
+const onHex=(u,c,r)=>(u.col===c&&u.row===r)||
+  (u.tails?u.tails.some(t=>t[0]===c&&t[1]===r)
+    :!!(u.tail&&u.tail[0]===c&&u.tail[1]===r));
+const at=(c,r)=>alive().find(u=>onHex(u,c,r));
 const isTail=(c,r)=>{const u=at(c,r);
-  return u&&u.tail&&u.tail[0]===c&&u.tail[1]===r?u:null;};
+  return u&&!(u.col===c&&u.row===r)&&onHex(u,c,r)?u:null;};
 /* distance measured to the nearest part of a thing */
 function udist(from,u){
   const a=Array.isArray(from)?[from]:hexesOf(from);
@@ -19950,7 +20294,16 @@ function udist(from,u){
    question therefore belongs HERE and nowhere else - the alternative was three
    separate perk checks that could drift apart, which is the shape this function
    was written to prevent. */
-const wetproof=u=>!!(u&&(u.mut==='gills'||u.fenborn||has(u,'groundwise')));
+/* ⛑ #267 - AND A FLIER JOINS THEM, WHICH IS WHY FLIGHT NEEDED NO NEW VERB.
+   The paragraph above is the argument: this is the ONE place "does the ground
+   get to charge this body" is answered, and it is read by the entry cost, by
+   the standing penalty in moveBudget and by the -10 out of the water in
+   hitBreakdown. An ash-drake crosses water, bog and its own burning ground at
+   a hex a hex and aims out of them unbothered - which is the whole of what
+   flying means on a board this size, and it arrives as one word rather than as
+   a second movement system. ⚠ It does NOT pass over bodies: a zone of control
+   is other people's reach and a drake at head height is still in it. */
+const wetproof=u=>!!(u&&(u.mut==='gills'||u.fenborn||u.flier||has(u,'groundwise')));
 const mcost=(c,r,u)=>{
   const t=B.terr[K(c,r)];
   if(t==='deep')return wetproof(u)?1:3;
@@ -19992,6 +20345,25 @@ const mcost=(c,r,u)=>{
    place, and the burn is what you took away from it. */
 const EMBER_HIT=Math.round(6*HDA_CUT), BURN_TICK=Math.max(1,Math.round(3*HDA_CUT)), BURN_TURNS=2;
 const onEmber=u=>!!(B&&B.terr&&B.terr[K(u.col,u.row)]==='ember');
+/* ⛔ #267 - AN ACT MAY WRITE FIRE ONTO THE GROUND, WHICH IS `bog` ON THE
+   OTHER ELEMENT. THE FEN ANSWERS turns field to marsh and says the field
+   itself is on her side; a mouthful of salamander turns field to ember and
+   says the same thing about this road. Both ask the same question of the hex
+   (`==='field'`), which is what keeps the rule free of an exception list:
+   water does not catch, a pit is a hole, and a hex that is already burning is
+   already burning. */
+function charHex(c,r){
+  if(!B||!B.terr)return false;
+  if(B.terr[K(c,r)]!=='field')return false;
+  B.terr[K(c,r)]='ember';return true;
+}
+/* ⚠ #267 - THE RECURSION GUARD FOR `pierce`, AND IT IS A MODULE FLAG RATHER
+   THAN AN ARGUMENT ON PURPOSE: strike() is called from eleven places (both
+   brains, the click, the sweep, the parting shot, the leap), and an argument
+   would have to be threaded through every one of them to stop a breath that
+   pierces into a body that pierces. A flag is inherited by all eleven without
+   any of them being taught. */
+let PIERCING=false;
 /* what both brains charge a hex for being on fire, in the scorers' own
    unit (six a hex of walking). `mcost` already prices the CROSSING; this is
    only about where a turn ENDS. One read of B.terr, so it may sit in the
@@ -20008,7 +20380,12 @@ const onEmber=u=>!!(B&&B.terr&&B.terr[K(u.col,u.row)]==='ember');
    reaches anybody it cancels out and the body goes in. That is the user's own
    condition - "if they have another safe option" - written as arithmetic. */
 const EMBER_AI=60;
-const emberPen=p=>B.terr[K(p[0],p[1])]==='ember'?EMBER_AI:0;
+/* ⛑ #267 - AND THE PREFERENCE TAKES THE UNIT NOW, because a rule that only
+   reached the DAMAGE would have left the slag-hides walking round the one
+   thing they are supposed to be standing beside. 60 is a price, not a ban
+   (see the note above); for a fireborn body the price is nothing at all, so
+   the burning ground reads to both brains as ordinary footing. */
+const emberPen=(p,u)=>(u&&u.fireborn)?0:(B.terr[K(p[0],p[1])]==='ember'?EMBER_AI:0);
 /* damage from the ground rather than from a body: no attacker, no arc, no
    armour, and the fall goes through the same two doors strike() uses (your
    roster is DOWNED, everybody else DEAD). Returns true if the body fell. */
@@ -20051,6 +20428,13 @@ function envHurt(u,n,why,defer){
    (walked, shoved), only for the log. */
 function ignite(u,why,defer){
   if(!u||u.dead||u.downed||u.fled)return false;
+  /* ⛔ #267 - THE LIZARDS ARE NOT LIT BY THE COUNTRY THEY COME FROM.
+     `fireborn` is `fenborn` on the other element, and the note on wetproof()
+     is the one to read: it is NOT a buff, it is the removal of a rent the
+     ground was charging its own animal. Guarded at all THREE doors a body can
+     catch fire through - this one, the walk (emberCross) and the turn's own
+     tick - so nothing downstream has to remember which door it came in by. */
+  if(u.fireborn)return false;
   const fresh=!(u.burning>0);
   u.burning=BURN_TURNS;
   if(fresh){fx(u,'BURNING','#e07a28');sfx('venom');
@@ -20062,6 +20446,7 @@ function ignite(u,why,defer){
    it puts the body out. Forced movement calls ignite() at its own site. */
 function emberCross(u,path){
   if(!B||!B.terr||!path||!path.length)return false;
+  if(u&&u.fireborn)return false;                      /* #267 - see ignite */
   const dest=B.terr[K(u.col,u.row)];
   if(u.burning>0&&(dest==='marsh'||dest==='deep')&&!path.some(p=>B.terr[K(p[0],p[1])]==='ember')){
     u.burning=0;fx(u,'PUT OUT','#5ec8b8',true);
@@ -20075,7 +20460,7 @@ function emberCross(u,path){
    clock reset; out of it and still alight, the tick and one off the clock.
    Returns true if the body fell, so beginTurn can hand the turn on. */
 function burnTick(u){
-  if(!u||u.passive)return false;
+  if(!u||u.passive||u.fireborn)return false;
   if(onEmber(u)){u.burning=BURN_TURNS;return envHurt(u,EMBER_HIT,'fire');}
   if(u.burning>0){
     u.burning--;
@@ -20734,6 +21119,14 @@ const mayAim=(u,a,t)=>
      refuse the second enemy too.
      ⚠ IT DOES NOT REFUSE A MOVE OR A HELP - `a.dmg` is the test, so a shove, a
      heal or a shout still reach a body that has already been hit. */
+  /* ⛔ #267 - THE VEIL, AND IT IS ONE CLAUSE BECAUSE THIS IS THE ONE GATE.
+     A slag-hide takes the colour and the grain of whatever it is standing
+     against at the top of its own turn, and while it holds you cannot aim at
+     it from further than a hex - walk up to it and it is an ordinary body.
+     Stated here, so the player's offer ring, `aiTurn` and `autoStep` all
+     refuse together and none of them can stall on it: that is the whole
+     argument of the block above, arriving on a fifth rule. */
+  (!t.veil||udist(u,t)<=1)&&
   (!t.unrepeatable||!a||!a.dmg||!(t.hitBy&&t.hitBy[u.id||u.uid]))&&
   (!a.maxSize||sizeOK(a,t))&&
   (!a.rear||arcOn(u,t).n==='BACK')&&
@@ -21083,7 +21476,7 @@ function circleNear(u){
 }
 function bloomNear(u){
   if(!B||!B.flowers||!B.anyFlowerOpen)return false;
-  const hs=u.tail?[[u.col,u.row],u.tail]:[[u.col,u.row]];
+  const hs=hexesOf(u);                                /* #267 */
   for(const h of hs)
     for(const p of nbrs(h[0],h[1]))
       if(B.flowers[K(p[0],p[1])]===true)return true;
@@ -22038,6 +22431,13 @@ function dmgPreview(a,d,act){
 }
 function strike(a,d,act,mult){
   mult=mult||1;
+  /* ⛑ #267 - A VEIL IS BROKEN BY BEING USED. The attacker gives itself away
+     by striking and a body that has been hit has been found, and both are said
+     HERE because this is the one door every blow in the game comes through -
+     the click, both brains, the sweep, the parting shot. A verb added tomorrow
+     breaks a veil without being taught to. */
+  if(a.veil){a.veil=false;fx(a,'SEEN','#e07a28',true);}
+  if(d.veil)d.veil=false;
   const arc=arcOn(a,d);
   faceToward(a,d.col,d.row);
   /* SHOW IT. A ranged attack sends something across the ground; a melee blow
@@ -22241,6 +22641,50 @@ function strike(a,d,act,mult){
      victim is hauled to a hex beside her body, out of your line and inside
      her tail's arc. This attacks your FORMATION, which is the thing a boss
      should be able to attack. */
+  /* ⛔ #267 - THE MOUTHFUL THAT STAYS BEHIND. A cinder salamander's whole
+     payload is the HEX and not the body: two or three hitpoints, and the ground
+     they were standing on is alight. #186's constants do the rest and are not
+     touched - the entry hit, the clock, the water that puts it out - which is
+     why this is four lines rather than a fire system.
+     ⚠ The ignite() below is for the body that is standing in what just caught;
+     `fireborn` refuses it at ignite's own door, so the drake can burn the
+     ground under its own vermin and they will go on sitting in it. */
+  if(act.ember&&!d.dead&&!d.downed){
+    if(charHex(d.col,d.row)){
+      paintTerrain();
+      say('The ground under '+d.name+' catches, and stays caught.');
+      ignite(d,' is standing in what just caught',true);
+    }
+  }
+  /* ⛔ #267 - AND THE BREATH GOES THROUGH, WHICH IS THE ASK IN ONE WORD
+     (*"like dragons in heroes of might and magic"*): the second rank is not
+     the safe rank. Friend or foe - the drake does not check, and baiting it
+     into breathing through its own salamanders is the counterplay the whole
+     creature exists to offer.
+     ⛑ THE HEX BEYOND IS FOUND IN PIXELS AND NOT IN ARITHMETIC, and that is
+     load-bearing: on an offset hex grid "straight on" is not a repeatable
+     column step (`DIR[r&1]` is two different tables), and of the target's six
+     neighbours TWO are plausible continuations. The dot product against the
+     breath's own direction is the only thing that tells them apart. */
+  if(act.pierce&&!PIERCING&&!d.big){
+    const pa=hexPix(a.col,a.row),pd=hexPix(d.col,d.row);
+    let vx=pd.x-pa.x,vy=pd.y-pa.y;const vl=Math.hypot(vx,vy)||1;vx/=vl;vy/=vl;
+    let beyond=null,bs=-9;
+    nbrs(d.col,d.row).forEach(p=>{
+      const pp=hexPix(p[0],p[1]);
+      let wx=pp.x-pd.x,wy=pp.y-pd.y;const wl=Math.hypot(wx,wy)||1;
+      const dot=(wx/wl)*vx+(wy/wl)*vy;
+      if(dot>bs){bs=dot;beyond=p;}});
+    if(beyond&&bs>0.5){
+      if(act.ember&&charHex(beyond[0],beyond[1]))paintTerrain();
+      const o=at(beyond[0],beyond[1]);
+      if(o&&o!==a&&!o.dead&&!o.downed&&!o.fled){
+        PIERCING=true;
+        say('It does not stop at '+d.name+'.');
+        try{strike(a,o,act,mult);}finally{PIERCING=false;}
+      }
+    }
+  }
   if(act.drag&&!d.dead&&!d.big){
     const spots=[];
     hexesOf(a).forEach(h=>nbrs(h[0],h[1]).forEach(p=>{
@@ -23218,6 +23662,7 @@ function verbFx(u,a){
     return;}
   if(a.fear){ringFx(u,a.range||3,'#c2477f');return;}          /* THE SOUND SHE MAKES */
   if(a.bog){ringFx(u,a.bog,'#35c8b8',hexSpan()*0.22);return;} /* THE FEN ANSWERS - the GROUND */
+  if(a.char){ringFx(u,a.char,'#e07a28',hexSpan()*0.22);return;} /* #267 - THE FURNACE DRAWS */
   /* #206 - the radius comes off `a.aura` at all four of these, the same field
      the handler charges and the card prints. The literals were the second of
      three copies each. */
@@ -23367,6 +23812,19 @@ function beginTurn(){
   if((u.burning>0||onEmber(u))&&burnTick(u)){
     render();if(checkEnd())return;nextTurn();return;
   }
+  /* ⛔ #267 - THE VEIL GOES ON AT THE TOP OF ITS OWN TURN, which is the ask
+     (*"lets on the start of their turn they have ability to mask"*), and it is
+     REFUSED where the fire would give it away. That is the deliberate crack in
+     this family's teamwork and the reason the two creatures are dealt together:
+     the salamanders' spit is cover for what the slag-hide is dragging, and a
+     lantern on the slag-hide itself. Standing beside your own vermin's work is
+     the one thing it must not do. */
+  if(u.veiled&&!u.dead&&!u.downed&&!u.fled){
+    const lit=onEmber(u)||nbrs(u.col,u.row).some(p=>{
+      const t=B.terr[K(p[0],p[1])];return t==='ember'||t==='fire';});
+    if(lit){if(u.veil){u.veil=false;fx(u,'SEEN','#e07a28',true);}}
+    else if(!u.veil){u.veil=true;fx(u,'GONE','#5a7a6a',true);}
+  }
   /* ═══ ⛔ #245 · THE TWO THINGS THE BAG DOES TO A TURN ═════════════════
      ⛔ AFTER `despActs`, NOT BESIDE THE HANDOUT AT THE TOP, AND THAT ORDER IS THE
      WHOLE OF IT. The obvious place is the line that writes `u.actionsMax+banked`,
@@ -23395,6 +23853,7 @@ function beginTurn(){
   if(u.venom&&u.venom.length)u.venom=u.venom.filter(v=>v.until>B.round);
   if(u.fearCool>0)u.fearCool--;        /* she cannot scream every round */
   if(u.bogCool>0)u.bogCool--;
+  if(u.charCool>0)u.charCool--;        /* #267 - and she cannot draw every round */
   if(u.dragCool>0)u.dragCool--;
   if(u.rallyCool>0)u.rallyCool--;
   /* ═══ COOLDOWNS ═══════════════════════════════════════════════════════
@@ -26613,6 +27072,30 @@ function aiTurn(u){
       sfx('rout');
       if(checkEnd()){B.busy=false;return;}later(step,420);return;
     }
+    /* ⛔ #267 - THE FURNACE DRAWS, WHICH IS THE FEN ANSWERS WITH THE ELEMENT
+       SWAPPED: same shape, same cooldown, same "spend it when somebody is close
+       enough for it to matter to them". The Fen-Mother is not IN the marsh, she
+       IS it; this one is not in the fire either. It writes through `charHex`, so
+       which hexes can catch is asked in the one place that knows.
+       ⚠ AND IT LIGHTS WHOEVER IS ALREADY STANDING THERE, which is the half that
+       makes it a threat rather than scenery - `fireborn` refuses at ignite()'s
+       own door, so her own vermin sit in it and yours do not. */
+    const charAct=u.acts.find(a=>a.char);
+    if(charAct&&canUse(u,charAct)&&(u.charCool||0)<=0&&
+       T.some(t=>udist(u,t)<=charAct.char+2)){
+      spend(u,charAct);u.charCool=charAct.cool||3;
+      let n=0;
+      hexesOf(u).forEach(h=>{
+        for(let r=0;r<ROWS;r++)for(let c=0;c<COLS;c++){
+          if(hdist([c,r],h)<=charAct.char&&charHex(c,r))n++;}});
+      terrMoved();
+      paintTerrain();render();
+      say(u.name+' draws breath, and the ground goes with her: '+n+' hexes of it catch '+
+        'and stay caught.');
+      sfx('venom');
+      alive().forEach(x=>{if(onEmber(x))ignite(x,' is standing where it caught');});
+      if(checkEnd()){B.busy=false;return;}later(step,420);return;
+    }
     /* A great beast screams before it bites. Worth spending when it will
        reach enough of the line to matter, and never twice in a row. */
     const fearAct=u.acts.find(a=>a.fear);
@@ -27161,7 +27644,7 @@ function aiTurn(u){
           nbrs(p[0],p[1]).some(q2=>B.terr[K(q2[0],q2[1])]==='fire'))?14:0;
         /* #186 - and nothing ends its move standing IN the burning ground.
            The same line exists in autoStep, three times (both brains). */
-        const emberP=emberPen(p)+pitPen(p);          /* #250 - and the hole */
+        const emberP=emberPen(p,u)+pitPen(p);        /* #250 - and the hole */
         /* the human trick: a hex that completes a row of three is worth
            walking to — the line is the only formation anybody can learn */
         const lineB=(doc.lineSeek&&!at(p[0],p[1])&&inLineAt(p,u.side))?doc.lineSeek:0;
@@ -27215,7 +27698,7 @@ function aiTurn(u){
         Object.keys(rm.dist).forEach(k=>{const p=k.split(',').map(Number);
           /* closing on the target, but not so far ahead that nobody is with me */
           const dd=hdist(p,[goal.col,goal.row])+
-            (anchor?hdist(p,anchor)*(cohere?0.7:0):0)+(emberPen(p)+pitPen(p))/6;   /* #186, #250 */
+            (anchor?hdist(p,anchor)*(cohere?0.7:0):0)+(emberPen(p,u)+pitPen(p))/6; /* #186, #250 */
           if(dd<bd){bd=dd;best=p;}});
         /* ...and if that pick does not actually get us any closer, we are in a
            pocket and it will oscillate there forever. Walk the real path. See
@@ -27238,7 +27721,12 @@ function aiTurn(u){
             const path=pathTo(rm,best[0],best[1]);
             const wfrom=[u.col,u.row];
             path.forEach(hop=>{                 /* NOT named `step` — that shadows the turn loop above */
-              u.tail=[u.col,u.row];
+              /* ⛑ #267 - A LONGER BODY IS A SNAKE: every hex takes the one in
+                 front of it and the last one is let go, so a four-hex animal
+                 stays joined however far she walks. The two-hex case is the
+                 same line with a chain of one. */
+              if(u.tails){u.tails.unshift([u.col,u.row]);u.tails.pop();u.tail=u.tails[0];}
+              else u.tail=[u.col,u.row];
               u.col=hop[0];u.row=hop[1];
             });
             /* #94 point 9 - she already wrote her own hexes above; this only
@@ -27525,6 +28013,18 @@ const FIELDS={
   /* Practice-only until the encounter earns a campaign node. Open swamp
      leaves room to read the doe's exact landing ring and the buck's axes. */
   mirehares:{t:'swamp',trees:3,huge:0,pool:['open','anvil','broken']},
+  /* ⛔ #267 - THE LIZARD FIGHTS ARE FOUGHT ON GROUND THAT IS ALREADY ALIGHT,
+     AND `blaze` IS WHY THE WHOLE FAMILY WORKS. #186 built the burning patch and
+     the forest carries one a third of the time; this is the first encounter
+     written FOR it. The trail gets hotter as it goes: two patches, then three,
+     then five under the animal that makes them. */
+  emberpatch:{t:'forest',trees:9,blaze:2,blazeOdds:1,pool:['open','broken']},
+  warmstones:{t:'forest',trees:14,blaze:2,blazeOdds:1,pool:['open','broken']},
+  glassroad :{t:'plains',trees:5, blaze:3,blazeOdds:1,pool:['open','broken','anvil']},
+  ashdrakes :{t:'forest',trees:10,blaze:4,blazeOdds:1,pool:['open','broken']},
+  /* ⚠ SHE NEEDS ROOM TO LIE DOWN IN. Four hexes of animal on a spine board
+     would deploy her through a wall, so the boss keeps the open pools. */
+  furnace   :{t:'rocky', trees:2, blaze:5,blazeOdds:1,huge:0,pool:['open','broken']},
   /* ═══ #147 - THE CARD HAS SAID "TREELINE" SINCE THE DAY IT SHIPPED ═══════
      (User, 2026-08-13: "check which exshsting backgrounds you can add to
      current battles, so they feel better / more uniq".)
@@ -31437,7 +31937,16 @@ function render(){
           pad.className='aimpad';hx.appendChild(pad);}
       }else if(tailHere){
         /* the rest of the beast */
-        const sp=sprite('wyrmbody','foe',{unit:tailHere});
+        /* #267 - DERIVED OFF THE HEAD'S KIND, because there are two great
+           beasts now and this line drew the Fen-Mother's hindquarters on both.
+           A kind with no body picture keeps hers, which is the same
+           legitimate fallback `MAP_SIGHT` has. */
+        /* #267 - and WHICH segment this is, so the far end can taper. A
+           four-hex animal drawn as four copies of one picture is a train. */
+        const segI=tailHere.tails
+          ?tailHere.tails.findIndex(t=>t[0]===c&&t[1]===r):-1;
+        const sp=sprite(BODY_KIND[tailHere.kind]||'wyrmbody','foe',
+          {unit:tailHere,last:segI>=0&&segI===tailHere.tails.length-1});
         const img=document.createElement('img');
         img.className='usp';img.src=sp.src;img.width=sp.w;img.height=sp.h;
         img.alt=tailHere.name+' (body)';img.style.marginBottom='11px';
@@ -32735,7 +33244,7 @@ function autoStep(){
         if(at(p[0],p[1]))return;
         const exp=exposureAt(p,u.side),step=B.reach.dist[k]*0.2;
         const knot=anchor?hdist(p,anchor):0;
-        const emberP=emberPen(p)+pitPen(p);     /* #186, #250 - see aiTurn's twin */
+        const emberP=emberPen(p,u)+pitPen(p);   /* #186, #250 - see aiTurn's twin */
         aim.forEach((t,i)=>{
           const dd=udist(p,t);
           if(dd>rng)return;
@@ -32775,7 +33284,7 @@ function autoStep(){
           const p=k.split(',').map(Number);
           if(at(p[0],p[1]))return;
           const d=hdist(p,[want[0].col,want[0].row])*4+exposureAt(p,u.side)*soft*0.6+
-            (anchor?hdist(p,anchor)*1.5:0)+emberPen(p)+pitPen(p);      /* #186, #250 */
+            (anchor?hdist(p,anchor)*1.5:0)+emberPen(p,u)+pitPen(p);    /* #186, #250 */
           if(d<bd){bd=d;best=p;}});
         /* the same pocket fix as aiTurn's — both brains or neither */
         const now=hdist([u.col,u.row],[want[0].col,want[0].row]);
@@ -35582,6 +36091,32 @@ const AFTER={
   /* #210 - the road behind you, empty again, and the card refuses to say for
      how long. The carter had four friends; nobody in the company knows the
      number and the aftermath is not going to pretend it does. */
+  /* ═══ #267 · THE TRAIL, FOUR WINNING CARDS ══════════════════════════════
+     Each one says the same thing a little louder: this is not weather, and it
+     is going somewhere. The first three are written to be read in any order,
+     because they can be dealt in any order; only the boss knows it is last. */
+  emberpatch:{t:'THE SCRUB STOPS MOVING',
+    b:'Three of them, and none of them was ever going to be the thing that killed you.\n\n'+
+      'The patch they were sitting in is still alight.'},
+  warmstones:{t:'THE SMOKE GOES ON GOING UP',
+    b:'They come apart easily and they burn where they lie, which saves somebody a job.\n\n'+
+      'The stones are still warm on the wrong side. Whatever the fire is for, it was not '+
+      'these four, and it was here before they were.'},
+  glassroad:{t:'A HUNDRED PACES OF GREEN GLASS',
+    b:'The big one takes a long time to stop, and the small ones go on spitting at the '+
+      'ground after there is nobody left to spit at.\n\nSomebody scuffs a boot across the '+
+      'verge. It rings. Whatever made a road into a window did it in one pass, walking, '+
+      'and it did not stop here either.'},
+  ashdrakes:{t:'THE TIMBER IS STILL STANDING',
+    b:'The wings are the last part to stop. Up close the crust over their backs is the same '+
+      'stuff as the glass on the road, and it has split in the same places.\n\n'+
+      'Nobody says the obvious thing, which is that these were the children.'},
+  furnace:{t:'THE THIRD FURNACE GOES OUT',
+    b:'It takes a long while, and the light under the crust goes last, seam by seam, the way '+
+      'a forge does when nobody has banked it.\n\nThe clearing cools. By morning the road '+
+      'west is only a road again, and the burn behind you has stopped spreading.\n\n'+
+      'Somebody asks what it was. The honest answer is that Ashmoor could not light two of '+
+      'its furnaces, and that nobody ever asked what was in the third.'},
   chase:{t:'THE ROAD BEHIND YOU IS EMPTY AGAIN',
     b:'It takes about as long as a bad argument and it ends the same way, with everybody standing further apart than they started.\n\nOne of yours asks whether that was all of them. Nobody answers, because nobody knows how many friends a carter has.'},
   /* #74 - it is not supposed to be reachable and it is reachable. Whoever
@@ -40821,7 +41356,13 @@ const FLOATING=['toll','pedlar','chapel','wain','bloom','milestone','saltwives',
      star. ⚠ Its body used to open "A day east of Grausen", which was true of
      exactly one node and is a lie on the other seven. Rewritten to name no
      place at all. */
-  'star'];
+  'star',
+  /* #267 - the trail. Four cards, dealt anywhere, met in order: see the block
+     on `trail` in dealEvents below. */
+  'warmstones','glassroad','ashdrakes','furnace',
+  /* the one-sentence card. No `trail`: it is not part of the story the other
+     four tell, it is a skirmish the road can hand you at any point. */
+  'emberpatch'];
 /* Seven slots across three forks, of which a single run walks two to five —
    one or three on fork A, one on fork B's quiet arm, one on either arm of
    fork C. Fewer slots than the sixteen-card pool on purpose: the deck should
@@ -40845,10 +41386,35 @@ const NODE_HINT={
 };
 function dealEvents(){
   const bag=FLOATING.slice();
+  const picked=[];
   SLOTS_ON_MAP.forEach(slot=>{
     if(!bag.length)return;
-    const k=bag.splice(Math.random()*bag.length|0,1)[0];
+    picked.push([slot,bag.splice(Math.random()*bag.length|0,1)[0]]);
+  });
+  /* ⛔ #267 - A TRAIL IS DEALT ANYWHERE AND MET IN ORDER. `SLOTS_ON_MAP` is in
+     road order, so whichever slots happened to draw a `trail` card are sorted
+     back into that order and the trail cards are laid along them by their own
+     number. The PLACES stay random, which is the ask; what stops being random is
+     meeting the Third Furnace before anything has explained her.
+     ⚠ It only ever REORDERS cards that were already dealt - it never adds one and
+     never drops one, so the pool's own arithmetic is untouched. */
+  const trailAt=picked.filter(p=>EVENTS[p[1]]&&EVENTS[p[1]].trail);
+  if(trailAt.length>1){
+    const inOrder=trailAt.map(p=>p[1]).sort((a,b)=>EVENTS[a].trail-EVENTS[b].trail);
+    trailAt.forEach((p,i)=>{p[1]=inOrder[i];});
+  }
+  picked.forEach(pr=>{
+    const slot=pr[0],k=pr[1];
     NODES[slot].ev=k;
+    /* ⛔ #267 - AND A DEALT CARD IS NEVER TYPED `battle`, WHICH LINT CAUGHT.
+       The five lizard cards were authored `nodeType:'battle'` because they ARE
+       fights, and `p1` is BOTH a floating slot and the Hold's men band stop: a
+       run that dealt one there reported *the stop would stack two fights onto
+       one arrival*. The rule underneath is the older one and it is right - the
+       road does not announce itself, so a card with a battle door behind it is
+       an ordinary `event` node until you are standing on it, exactly like the
+       toll, the circle and the clash. `packev` is the only `battle` type in the
+       game and it is a FIXED node, never dealt here. */
     NODES[slot].t=(k==='pedlar'||k==='camp'||k==='ratcart'||k==='saltwives')?'shop'
       :(k==='bloom'||k==='shipwreck')?'weird'
       :(k==='packev')?'battle':'event';
@@ -45238,6 +45804,100 @@ const EVENTS={
       {t:'Make a detour.',ico:['leave'],
        c:'the journey takes two days longer',fx:{days:2},
        after:'You turn the cart around. The red lights watch until the road bends. You find dry ground two days later.'}]},
+  /* ═══ ⛔ #267 · THE TRAIL: FOUR CARDS THAT ARE ONE CARD ═══════════════════
+     (User, 2026-08-30: *"Create 3 fighting random event (small - at the start
+     of adbenture), medium, big and with boss - random on diferent places of the
+     road"*.)
+
+     ⛔ THEY ARE FLOATING AND THEY ARE ORDERED, WHICH SOUNDS LIKE A CONTRADICTION
+     AND IS THE WHOLE DESIGN. *Random places* and *small at the start* are both
+     asks, and the pool cannot honour the second by itself: sixteen cards into six
+     slots deals the boss to the first fork about as often as it deals the vermin.
+     So the card carries `trail` and `dealEvents` sorts the trail cards it happened
+     to deal into road order across the slots they landed on. WHERE they fall is
+     random; the ORDER they are met in is not, and a company can never meet the
+     Furnace before it has seen what she leaves behind.
+     ⚠ `nodeType` is here because the map hint is derived from it, and the four are
+     BATTLES rather than events: "A bad stretch of road" is the honest warning.
+     ⚠ Adding four to `FLOATING` takes it from 16 to 20 against six slots, which
+     costs every other card about a fifth of its odds. That is a real price and it
+     is the user's ask; the alternative was a seventh slot, which changes the
+     pacing of every run for four cards' sake. */
+  /* ⛔ #267 · THE ONE-SENTENCE CARD, AND IT IS DELIBERATELY OUT OF BAND
+     (User, 2026-08-30: *"create and add very short 1 sentence one choice event
+     - to fight (i will change this events later)"*.)
+
+     ⚠ `.claude/rules/event-cards.md` puts the LIGHT band at 45 to 90 words and
+     this card is TWELVE. That is the ask read exactly, and the note is here so
+     that the next session to run a length census reads it as an authored
+     placeholder rather than as a card somebody forgot to finish. It is the
+     shortest thing the road can deal: one line, one door, one fight.
+     ⚠ ONE DOOR RENDERS AS ONE DOOR. The appended walk-away only fires when
+     nothing visible is affordable (`!visible.some(doorOpen)`), and a battle door
+     carries no `need`, so nothing is added underneath it. */
+  emberpatch:{title:'SOMETHING IN THE SCRUB',art:'gold',seed:271,
+    body:'Something in the burnt scrub sits up on its front legs and looks at you.',
+    choices:[
+      {t:'Kill it before it calls the others.',ico:['fight'],
+       c:'three of them',
+       battle:'emberpatch',after:''}]},
+  warmstones:{title:'THE WARM STONES',art:'gold',seed:267,trail:1,
+    body:'The burn is a season old and it is still going. Not flames: smoke, coming up out of '+
+      'the ground in a dozen places, and the roadside stones are warm on the shaded side, '+
+      'which is the wrong side and the wrong hour.\n\nSomething small crosses the road ahead '+
+      'of the cart. Then something the colour of the road does not.',
+    choices:[
+      {t:'Go through it.',ico:['fight'],
+       c:'four of them · the ground is already lit',
+       battle:'warmstones',after:''},
+      {t:'Go round, and lose the afternoon.',ico:['leave'],
+       c:'the smoke is a mile across',fx:{days:1},
+       after:'You give the smoke a wide berth and come back to the road with the light going. '+
+         'Whatever was sitting in it does not follow.'}]},
+  glassroad:{title:'THE GLASS ROAD',art:'gold',seed:268,trail:2,
+    body:'A hundred paces of the verge have gone to glass. Not slag: glass, green and bubbled, '+
+      'with the shape of the cart ruts still in it.\n\nIt is days old. Nothing that came off a '+
+      'hill did this, and nothing that came off a hill did it in a straight line heading west, '+
+      'which is the way you are going.\n\nThere are more of them in the burnt scrub than there '+
+      'were at the stones, and one of them is a good deal bigger.',
+    choices:[
+      {t:'Walk it.',ico:['fight'],
+       c:'seven of them · one is a champion',
+       battle:'glassroad',after:''},
+      {t:'Go by the wet ground.',ico:['leave'],
+       c:'a day in the water, and nothing burns in it',fx:{days:1},
+       after:'You spend the day wet to the knee. Nothing follows you into it, which is the '+
+         'first useful thing the fen has ever done.'}]},
+  ashdrakes:{title:'THE ASH-DRAKES',art:'gold',seed:269,trail:3,
+    body:'The trail stops being a trail and becomes a place: half a mile of standing timber '+
+      'burnt from the inside out, the trunks still upright and still lit in the '+
+      'seams.\n\nTwo of them are up on their forelegs in the middle of it with their wings '+
+      'half open, and they are not the size of the things you have been '+
+      'meeting.\n\nOne breathes at nothing in particular, to watch it go.',
+    choices:[
+      {t:'Cross it.',ico:['fight'],
+       c:'eight of them · three that breathe through you',danger:true,
+       battle:'ashdrakes',after:''},
+      {t:'Wait for dark and go round.',ico:['leave'],
+       c:'a day, and the trees are still burning behind you',fx:{days:1},
+       after:'You go round in the dark, by the light of the trees. It takes the night and '+
+         'most of a day, and every hour of it you are walking away from the answer.'}]},
+  furnace:{title:'THE THIRD FURNACE',art:'gold',seed:270,trail:4,
+    body:'The road ends in a clearing that was not a clearing a month ago, and the heat comes '+
+      'off it like a doorway.\n\nShe is lying across the whole of it, four lengths of her, and '+
+      'the crust over her back has split. What is underneath is the colour of a working '+
+      'forge.\n\nThey took Ashmoor at the winter and could not light two of its furnaces, and '+
+      'no one in that clan would ever say why. Whatever was coiled in the warm dark of the '+
+      'third one is in front of you now. It has been walking west since the thaw, and '+
+      'everything you have met on this road has been walking behind it.',
+    choices:[
+      {t:'It ends here.',ico:['fight'],
+       c:'she is four hexes long · the tail throws you into what it lit',danger:true,
+       battle:'furnace',after:''},
+      {t:'Back away the way you came.',ico:['leave'],
+       c:'two days, and the road west stays hers',fx:{days:2},
+       after:'You go back the way you came, slowly, and nothing comes after you, which is '+
+         'somehow worse. The smoke is still going up behind you two days later.'}]},
   /* REFERENCE EVENT — the shape everything else should aim at.
      The costs are stated as intent, not as a receipt. What you actually
      get is a surprise, it lands on a specific named person, and it has a
@@ -50751,6 +51411,17 @@ const SIM_FIGHTS=[
   {k:'mother',   n:'The Fen-Mother',    d:'A boss that takes your formation apart, not your hitpoints.'},
   {k:'mirehares',n:'The Mirehares',
    d:'Does land exactly three hexes away. Bucks only charge on a straight hex axis.'},
+  /* #267 - the trail, in the order the road deals it */
+  {k:'emberpatch',n:'Something in the Scrub',
+   d:'Three of them, and the smallest thing this road fields. The one-sentence card.'},
+  {k:'warmstones',n:'The Warm Stones',
+   d:'Two spitters and two things you cannot see. The ground is the weapon here.'},
+  {k:'glassroad', n:'The Glass Road',
+   d:'Four spitters, three tongues, one of them a champion. Do not walk in a line.'},
+  {k:'ashdrakes', n:'The Ash-Drakes',
+   d:'The breath goes through the first of you into the second. Spread out.'},
+  {k:'furnace',   n:'The Third Furnace',
+   d:'Four hexes of her, and the tail throws your line into what it just lit.'},
   /* #74 - the only fight on this list you are not supposed to be able to win,
      and that is the whole reason it belongs here: the practice field is where
      a player finds out what "you will not win" actually looks like without

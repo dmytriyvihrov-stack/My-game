@@ -92,6 +92,29 @@ Needs an entry of its own when the files exist: `portraitOf` reads `PORTRAIT[id]
 `PORTRAIT_BY_NAME`, then the race plate; the pool is a fourth step that stamps a face key on the
 body at `finishRecruit` and rides the save.
 
+### G. The lizards of the burnt road (#267): four creatures, five fights, five cards
+
+Built and playable 2026-08-30, drawn as temporary flat silhouettes. The full brief, with the story,
+the family rules, the scale ladder and the fixed prompt suffix, is
+[`LIZARD_PACK_GPT_TASK.md`](LIZARD_PACK_GPT_TASK.md); the table there is the one to work down.
+
+| # | asset | size / format | file -> key | status |
+|---|---|---|---|---|
+| G1a | battle token: cinder salamander | 24x18 alpha PNG, facing LEFT | `art/src/stage-3/battle-sprites/final-v4/salamander.png` -> `salamander` | ⏳ + one `paintedSpriteKey` row |
+| G1b | battle token: slag-hide | 30x24 alpha | `.../slaghide.png` -> `slaghide` | ⏳ + one row |
+| G1c | battle token: ash-drake | 34x30 alpha | `.../drake.png` -> `drake` | ⏳ + one row |
+| G1d | battle token: the Third Furnace, head | 44x42 alpha | `.../furnace.png` -> `furnace` | ⏳ + one row |
+| G1e | battle token: her body segment, **must tile** | 40x30 alpha | `.../furnacebody.png` -> `furnacebody` | ⏳ + one `BODY_KIND` row |
+| G1f | battle token: her tail end | 40x30 alpha | `.../furnacebody_tail.png` | ⏳ + one row |
+| G2a-e | the five wide event stages | **1672x941**, left 45% reserved | `art/src/stage-6/j-stage/EV-J70..J74_*.png` -> `EVJ70..EVJ74` | ⏳ + five `JSTAGE` rows |
+| G3a-e | the five map sights | 128x128 alpha cut-out | `art/src/world-map-sites/MAP-EV35..39_*-source.png` -> `MAPEV35..39` | ⏳ + five `MAP_SIGHT` rows |
+| G4a | the plaque face: a lizard head | as the other `C*` sheets | `art/src/C10_Lizard_Foe.png` -> `C10` | ⏳ + one cascade row |
+
+⚠ **G1 is the valuable half.** A battle token is what the player looks at for a whole fight; a wide
+stage is read once. If the limits only allow six pictures, make G1.
+
+---
+
 ### E. The vignettes: optional, and probably never
 
 Eight one-line road cards (FOUND x2, LOST x2, THE MULE, THE BET, SORE HEELS, THE CROW) draw the
