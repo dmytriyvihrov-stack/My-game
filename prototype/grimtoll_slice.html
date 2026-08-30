@@ -9724,7 +9724,7 @@ const D={
      dice rows, and it leaves the STRENGTH ladder as the ONE place strength
      reaches damage. A stat that pays through two channels cannot be read off
      one ladder. */
-  dmg  :u=>2,
+  dmg  :u=>Math.round(2*HDA_CUT),   /* 2026-08-29 - HDA_CUT; flat, so cut with the dice */
   hit  :u=>GIVEN.hit+(heldOf(u,'agi').hit||0),        /* #254 */
   dodge:u=>GIVEN.dodge+(heldOf(u,'agi').dodge||0),    /* #254 */
   /* NO `speed` HERE ON PURPOSE. The stride belongs to the RACE, not to the
@@ -10984,6 +10984,22 @@ const GEAR={
              'hands. Some of the names are people you remember. Most of them are not, which '+
              'means the road has been talking about you for longer than you knew.'}
 };
+/* 2026-08-29 - HDA_CUT baked into the dice AND the armour at the SOURCE, not
+   read back out downstream. Every act built off a `main.dmg` reference (the
+   base swing and every derived special act that takes a fraction of it)
+   inherits the cut for free, and so does every display that reads a GEAR
+   row's `.dmg`/`.armour` directly (the inventory slot, the class/race skill
+   tooltip, the gear info popup, the dev bench, the shop price) without ever
+   routing through strike() or armourValue(). One write, not a hunt through
+   every reader - see landsFor()'s note for why this replaced the earlier
+   "cut it at swing time" design. */
+Object.values(GEAR).forEach(g=>{
+  if(g.dmg)g.dmg=[Math.round(g.dmg[0]*HDA_CUT),Math.round(g.dmg[1]*HDA_CUT)];
+  if(g.armour)g.armour=Math.round(g.armour*HDA_CUT);
+  /* the pilum and the shuriken carry their throw as a NESTED act, not a
+     bare `.dmg` on the row itself */
+  if(g.throw&&g.throw.dmg)g.throw.dmg=[Math.round(g.throw.dmg[0]*HDA_CUT),Math.round(g.throw.dmg[1]*HDA_CUT)];
+});
 /* MAIN/SECOND WEAPON → MAIN HAND / OFF HAND (user). The old names described
    what you put there; the new ones describe what is holding it, which is what
    makes "this takes both hands" read as a fact about the body rather than an
@@ -11495,6 +11511,14 @@ const traitSheetShort=p=>{
    `range N` off `a.range`, so a number written into this prose is a second
    readout that goes wrong the moment somebody picks up a stave. The RADIUS in
    IRON-OATH's note stays: that is a hard 2 in the code and nothing moves it. */
+/* 2026-08-29 - HDA_CUT. `dmg` on the two damage spells is scaled below the
+   table, the same one-loop pattern as GEAR and RACESKILL. The two armour
+   numbers named in prose (oath's "+18 armour", unpick's "Strips 25 armour")
+   are NOT derived from anything the game reads back - they are typed to
+   match the literals in the code that actually pays them (see `oathArm` in
+   the cast handler, and the `off` cap in the UNPICK handler) - so they are
+   hand-updated here to the same Math.round(N*HDA_CUT) those sites compute,
+   or the card promises a number the spell does not pay. */
 const SPELLS={
   blight:{k:'blight',n:'BLIGHT-WIND',cost:2,strain:14,range:3,aoe:true,cool:3,
     dmg:[12,19],am:0,ft:1,arcane:true,
@@ -11510,12 +11534,13 @@ const SPELLS={
       'takes it away from you.'},
   oath:{k:'oath',n:'IRON-OATH',cost:2,strain:12,range:1,buff:true,arcane:true,cool:3,
     note:'BUFF YOUR OWN. Click one of YOUR people: they and every ally within '+
-      '2 hexes gain +18 armour and +12 morale. The shortest throw you have. You '+
-      'stand with the line to give it.'},
+      '2 hexes gain +'+Math.round(18*HDA_CUT)+' armour and +12 morale. The shortest throw '+
+      'you have. You stand with the line to give it.'},
   unpick:{k:'unpick',n:'UNPICK',cost:1,strain:9,range:2,hex:true,arcane:true,cool:2,
-    note:'DEBUFF. Strips 25 armour and 14 morale off one enemy. No damage. '+
-      'It makes the next person’s swing land properly.'}
+    note:'DEBUFF. Strips '+Math.round(25*HDA_CUT)+' armour and 14 morale off one enemy. '+
+      'No damage. It makes the next person’s swing land properly.'}
 };
+Object.values(SPELLS).forEach(s=>{if(s.dmg)s.dmg=[Math.round(s.dmg[0]*HDA_CUT),Math.round(s.dmg[1]*HDA_CUT)];});
 const SPELLKEYS=Object.keys(SPELLS);
 /* ═══ #157 · HOW MANY SCHOOLS A CASTER WAKES UP KNOWING ═══════════════════
    (User: "the mage at the start has only two spells - one basic, and the
@@ -13375,7 +13400,10 @@ function bodyHp(p){
    the temporal-dead-zone throw that aborts the script, and this project has
    shipped it once (see the note on `RACE_ICO`). The TABLE they key into stays
    where it is - only the two numbers and the lookup moved. */
-const BAND_MEDIUM=36,BAND_HEAVY=71;
+/* 2026-08-29 - HDA_CUT: these classify an armourMax that is now ~3.5x
+   smaller, so the two thresholds have to shrink with it or every body in
+   the game reads as LIGHT regardless of what it is wearing. */
+const BAND_MEDIUM=Math.round(36*HDA_CUT),BAND_HEAVY=Math.round(71*HDA_CUT);
 const bandKey=v=>v>=BAND_HEAVY?'heavy':v>=BAND_MEDIUM?'medium':'light';
 /* ═══ ⛔ #252 · A STAT IS A SUM, AND THE SHEET SHOWS THE SUM ════════
    (User, 2026-08-26: *"i want to see when i hover stats in inventory - how it
@@ -13574,9 +13602,10 @@ function armourValue(p){
      shield would otherwise have shipped with a number that did not count. */
   const a=GEAR[p.eq.armour],m=GEAR[p.eq.main];
   const worn=a?Math.round(a.armour*(sizeMismatch(p)?WRONGSIZE.mult:1)):0;
-  /* 2026-08-29 - HDA_CUT, the one door every worn/held armour figure reaches
-     the body through; see the note beside GIVEN. */
-  return Math.round((worn+((m&&m.armour)||0))*HDA_CUT);
+  /* 2026-08-29 - HDA_CUT now lives in GEAR's own `.armour` fields (see the
+     loop right after GEAR closes), not here - a second cut on top of an
+     already-cut number would double it */
+  return worn+((m&&m.armour)||0);
 }
 function sizeJoke(p){
   const a=GEAR[p.eq.armour];if(!a||!sizeMismatch(p))return '';
@@ -15816,6 +15845,13 @@ const RACESKILL={
       'stacks, so two of you make it 30%. It is not poison that kills; it is poison that makes '+
       'the next blow matter.'}
 };
+/* 2026-08-29 - HDA_CUT. RACESKILL is pushed onto both sides by a plain
+   Object.assign (build()'s own comment: "given by RACE, from the same
+   register the roster reads"), never through the t.acts.map() transform
+   that carries the cut for an ordinary statblock act - so it has to carry
+   its own cut at the source or a ratkin's venom-blade and a human's kick
+   stay at the old scale forever. */
+Object.values(RACESKILL).forEach(a=>{if(a.dmg)a.dmg=[Math.round(a.dmg[0]*HDA_CUT),Math.round(a.dmg[1]*HDA_CUT)];});
 /* ⚠ THE ONE PERSON WHOSE NAME IS A PRONOUN, and the third time it has bitten.
    The Captain's roster name is the word "You", and EVERY combat-log line in the
    game is written in the third person because it is written about a unit -- so
@@ -16091,7 +16127,8 @@ function unitFrom(p){
     if(main.reload)acts.push({k:'reload',n:'WIND IT',cost:1,self:true,reload:'do',
       note:'One action on the crank. The '+main.n.toLowerCase()+' will not shoot again until '+
         'somebody has spent it.'});
-  }else acts.push({k:'fists',n:'BARE HANDS',cost:1,reach:1,dmg:[5,9],am:.2,ft:.5,
+  }else acts.push({k:'fists',n:'BARE HANDS',cost:1,reach:1,
+    dmg:[Math.round(5*HDA_CUT),Math.round(9*HDA_CUT)],am:.2,ft:.5,
     note:'He has no weapon. This is going about as well as you would think.'});
   /* THE EMERGENCY BLADE — the whole point of spending a shooter's second hand
      on a knife instead of arrows. A bow is useless at reach 1; this is not. */
@@ -16099,7 +16136,7 @@ function unitFrom(p){
      the dirk is `meleeHit`/`meleeDmg` on the blow you were already swinging, not a
      second, worse card nobody would ever pick. See the GEAR row. */
   if(off&&off.emergency&&main&&main.range)acts.push({k:'dirk',n:'OFF-HAND DIRK',cost:1,reach:1,
-    dmg:[10,15],am:.35,ft:.50,
+    dmg:[Math.round(10*HDA_CUT),Math.round(15*HDA_CUT)],am:.35,ft:.50,
     note:'Reach 1, and it does not care that your other weapon is a bow. For when '+
       'something is already on top of you.'});
   /* ⛔ #245 - WHAT IS IN THE BAG IS A CARD, AND IT IS DERIVED OFF THE ROW.
@@ -16207,7 +16244,7 @@ function unitFrom(p){
            'for two turns.'}
       : {k:'cripple',n:'CRIPPLING SHOT',cost:1,range:((main&&main.range)||4)+R,aim:10,cool:2,
       cripple:true,
-      dmg:main?[Math.round(main.dmg[0]*.55),Math.round(main.dmg[1]*.55)]:[8,13],
+      dmg:main?[Math.round(main.dmg[0]*.55),Math.round(main.dmg[1]*.55)]:[Math.round(8*HDA_CUT),Math.round(13*HDA_CUT)],
       am:(main&&main.am)||.5,ft:(main&&main.ft)||.5,
       note:'Half damage, and the target loses HALF ITS MOVEMENT and 10 dodge until it '+
         'next acts. Put it in the thing that is about to reach your line.'},
@@ -16222,7 +16259,7 @@ function unitFrom(p){
       note:'No damage. The target turns to face AWAY from you: its back is now '+
         'yours, and your whole line can see it. Backstabs are +30 to hit and +25% damage.'},
     brute:{k:'sweep',n:'SWEEP',cost:2,reach:1,sweep:true,cool:2,
-      dmg:main?[Math.round(main.dmg[0]*.75),Math.round(main.dmg[1]*.72)]:[20,29],am:1.10,ft:.18,
+      dmg:main?[Math.round(main.dmg[0]*.75),Math.round(main.dmg[1]*.72)]:[Math.round(20*HDA_CUT),Math.round(29*HDA_CUT)],am:1.10,ft:.18,
       note:'Hits every adjacent enemy at 75% damage.'}
   }[p.cls];
   /* #46 — THE RACE SKILL, from the ONE register the enemy side reads too.
@@ -16302,7 +16339,7 @@ function unitFrom(p){
        has always been. Its note never carried a range figure and must not gain
        one: the card prints `range N` off the act. */
     acts.push({k:'willkick',n:'WILL-KICK',cost:1,strain:5,range:2+u.spellRange,
-      dmg:[10,16],am:.30,ft:.80,arcane:true,
+      dmg:[Math.round(10*HDA_CUT),Math.round(16*HDA_CUT)],am:.30,ft:.80,arcane:true,
       note:'The cantrip every caster has. Cheap, 5 of their own mood, and mostly ignores '+
         'armour. Does not count against your one working a turn, but it is once a turn all '+
         'the same.'});
@@ -18908,7 +18945,7 @@ function build(plan,T){
       stands:holds({st:fst},'str','STANDS'),stoodUp:false,
       fleet:holds({st:fst},'agi','FLEET'),
       unrepeatable:holds({st:fst},'int','UNREPEATABLE'),
-      flankPow:10,spellPow:1,dmgBonus:2,morBonus:0,
+      flankPow:10,spellPow:1,dmgBonus:Math.round(2*HDA_CUT),morBonus:0,
       /* ═══ #156 - TWO A TURN, ON EVERY BODY THAT DOES NOT DECLARE ITS OWN ═══
          (User, after a playtest: "Почему у капитана 3 очков действия - давать
          везде только 2".)
@@ -18966,8 +19003,11 @@ function build(plan,T){
        REFERENCE (see the note above), so a champion multiplier applied outside
        this branch would edit the template every ordinary body shares. */
     u.acts=(t.noWalk?[]:[{k:'move',n:'MOVE',cost:1,move:true}]).concat(t.acts.map(a=>
-      a.dmg?Object.assign({},a,{dmg:[Math.round(a.dmg[0]*tr1*cDmg),
-                                    Math.round(a.dmg[1]*tr1*cDmg)]}):a));
+      /* 2026-08-29 - HDA_CUT baked in here too, on the COPY only, same as
+         TRIM/cDmg above it - the shared FOE_T template stays the authored
+         figure and every unit built off it inherits the cut once */
+      a.dmg?Object.assign({},a,{dmg:[Math.round(a.dmg[0]*tr1*cDmg*HDA_CUT),
+                                    Math.round(a.dmg[1]*tr1*cDmg*HDA_CUT)]}):a));
     /* ═══ #46 — THE RACE SKILL IS AIMED AT YOU TOO ════════════════════════
        Every trick the player owns gets pointed back at them once; that is
        what made the enemy ogre's throw land as a real threat rather than a
@@ -21967,12 +22007,14 @@ function dmgPreview(a,d,act){
      about it, so every number the player used to choose a target has been
      25% high since. Found while wiring `soak` in, which is displayed through
      the same two rows. */
-  /* 2026-08-29 - HDA_CUT rides the same G8 knob so the preview and the blow
-     cannot drift, which is the exact bug the comment above already warns
-     about for the ORIGINAL 0.8. Covers every act that reaches this
-     function, weapon or spell alike - `dmgMul`/`act.arcane` are read AFTER
-     this multiplier is built, so no attack kind can bypass it. */
-  const G8=0.8*HDA_CUT;
+  /* 2026-08-29 - HDA_CUT moved OUT of here and into the authored dice
+     themselves (GEAR.dmg, foe act.dmg, dmgBonus) after `landsFor()` proved
+     there is a THIRD reader of `act.dmg` that never came through this
+     function at all - the action-bar card and the swing plaque both read
+     the raw dice directly. Baking the cut into the data means every
+     reader, this one included, agrees automatically; re-applying it here
+     on top of already-cut dice would double the reduction to 12.25x. */
+  const G8=0.8;
   const b=dmgMul(a,d,act)*G8,m=act.arcane?a.spellPow:1;
   const lo=(act.dmg[0]+(act.arcane?0:a.dmgBonus))*b,hi=(act.dmg[1]+(act.arcane?0:a.dmgBonus))*b;
   /* flat soak comes off the BODY damage only, floored at 1 — same rule and
@@ -22119,9 +22161,9 @@ function strike(a,d,act,mult){
      One global knob, both sides, applied LAST so every other multiplier
      keeps its meaning relative to the rest. Target band: 6-12 rounds,
      boss ~15. */
-  /* 2026-08-29 - HDA_CUT, the same knob dmgPreview()'s G8 reads, so the
-     number a player is shown before the click always equals the blow */
-  raw*=0.8*HDA_CUT;
+  /* 2026-08-29 - HDA_CUT lives in the dice now (GEAR.dmg, foe act.dmg,
+     dmgBonus), not here - see the note on dmgPreview()'s G8 */
+  raw*=0.8;
   let armD=0,hpD=0;
   /* #79 - LIGHT 50/50 · MEDIUM 60/40 · HEAVY 75/25, and the two halves add up
      to the blow. What they are wearing decides it; see splitFor(). The three
@@ -24824,7 +24866,8 @@ const throwAimOK=(u,pas,tgt)=>!!(tgt&&pas&&tgt.side!==pas.side&&!tgt.passive&&
 function throwBodyAt(u,act,pas,tgt){
   const land=throwSpotBy(u,tgt);
   if(!land)return false;
-  const slam={k:'slam',n:'THROWN BODY',cost:0,reach:1,impact:true,dmg:[12,20],am:.70,ft:.36};
+  const slam={k:'slam',n:'THROWN BODY',cost:0,reach:1,impact:true,
+    dmg:[Math.round(12*HDA_CUT),Math.round(20*HDA_CUT)],am:.70,ft:.36};
   throwBody(u,act,pas,land[0],land[1]);
   if(!tgt.dead&&!tgt.downed&&!pas.dead&&!pas.downed){
     /* ⚠ NOT `fst()`. It takes the FIRST WORD, which is right for a body
@@ -24861,7 +24904,7 @@ function throwRock(u,act,from,c,r){
   let hit=true;
   if(victim){
     const stone={k:'stone',n:'BOULDER',cost:1,range:act.rockRange||3,
-      dmg:[22,34],am:1.15,ft:.30};
+      dmg:[Math.round(22*HDA_CUT),Math.round(34*HDA_CUT)],am:1.15,ft:.30};
     hit=strike(u,victim,stone);
   }
   /* where it comes to rest: the target hex if it is free, otherwise the free
@@ -27076,7 +27119,7 @@ function aiTurn(u){
          the dog, which does not stay long enough for it to matter.
          PERSONALITY moves this number: the cautious will not be surrounded,
          the courageous do not care, the feral want to be in the middle. */
-      let soft=doc.fearless?0:(u.bow||u.caster)?8:(u.hpMax<=60?5:2);
+      let soft=doc.fearless?0:(u.bow||u.caster)?8:(u.hpMax<=GIVEN.hp?5:2);
       if(tr(u,'cautious'))soft+=5;
       if(tr(u,'courage'))soft=Math.max(0,soft-3);
       if(tr(u,'feral'))soft=Math.max(0,soft-4);
@@ -32665,7 +32708,7 @@ function autoStep(){
          behind something is worth walking further for). Thin-skinned
          bodies weight exposure three times as heavily as a brute does,
          so the archer and the ratkin stop leading the advance. */
-      const soft=(u.bow||u.caster)?9:(u.hpMax<=60?6:3);
+      const soft=(u.bow||u.caster)?9:(u.hpMax<=GIVEN.hp?6:3);
       const mates=alive().filter(x=>x.side===u.side&&!x.passive&&x!==u);
       const anchor=mates.length?[Math.round(mates.reduce((s,x)=>s+x.col,0)/mates.length),
                                  Math.round(mates.reduce((s,x)=>s+x.row,0)/mates.length)]:null;
