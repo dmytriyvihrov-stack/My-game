@@ -26,6 +26,64 @@
 
 ---
 
+## 🧪 THE LIZARDS: A TRAIL OF FIRE, AND A BOSS FOUR HEXES LONG  *(#267 · 2026-08-30 · build log 8f.292)*
+
+**The short version:** the road can now deal five new fights against four new creatures. They are
+immune to fire and they use it as furniture. The practice field carries all five.
+
+### The fastest way in: the practice field
+
+⚙ TEST → THE PRACTICE FIELD. Five new rows, in the order the road deals them:
+
+| row | what it is for |
+|---|---|
+| **Something in the Scrub** | three bodies. The smallest fight in the game |
+| **The Warm Stones** | two spitters and two things you cannot see |
+| **The Glass Road** | seven, one of them a champion |
+| **The Ash-Drakes** | eight, three that breathe through you |
+| **The Third Furnace** | the boss. Four hexes of her |
+
+### What to look at, in order
+
+1. **The salamander does almost no damage and that is not a bug.** 2 or 3 hitpoints. What it is
+   for is the HEX: the ground under whoever it spat at catches, and burning ground is 2 through
+   any armour to stand in or cross, plus the clock. Watch a fight turn into a floor problem.
+2. **The slag-hide disappears at the top of its own turn** (a `GONE` mark). While it holds, you
+   cannot target it from more than one hex: walk up to it and it is an ordinary body. ⛑ **Fire
+   gives it away** - standing in or beside burning ground it cannot veil, and reads `SEEN`. That is
+   deliberate: the vermin's own fire is a lantern on the hunter.
+3. **The tongue costs its whole turn.** You are pulled on its turn and bitten on the NEXT one, so
+   whoever gets reeled in always has a full turn standing next to a 15-hitpoint animal. Being
+   dragged should read as an invitation, not as a turn taken off you. **If it ever feels like the
+   Battle Brothers serpents, that is the thing that has broken.**
+4. **The drake's breath goes through** the first body into whoever is directly behind, friend or
+   foe, and chars both hexes. **Try baiting it into breathing through its own salamanders.** Do
+   not stand in a file in front of it.
+5. **The Third Furnace is four hexes long and the tail is two of them.** Where the tail is lying is
+   where the sweep comes from. It hits everything it touches and throws them **two** hexes - and
+   landing in burning ground lights you, so her own THE FURNACE DRAWS ring is what the tail is
+   aiming you at.
+6. **Nothing on their side minds the fire.** They will stand in it, walk through it and end their
+   turn in it. Yours will not.
+
+### On the road
+
+The five cards are in the floating pool, so a run deals some of them and not others. **The three
+story fights are dealt anywhere but always met in order** (the stones, then the glass, then the
+drakes), so you can never meet the boss with nothing having explained her.
+
+⚠ **THE ART IS TEMPORARY.** All four are flat drawn silhouettes while the painted pack is made;
+the brief is `art/LIZARD_PACK_GPT_TASK.md`. The Furnace especially is a placeholder shape.
+
+### What was measured, so a surprise is a finding
+
+`ARENA.match`, n=15 a side. Starting four: **Something in the Scrub 100%, The Warm Stones 100%**
+(5 to 9 rounds), **The Glass Road 40%**. Prepared six: **The Glass Road 100%, The Ash-Drakes 93%,
+The Third Furnace 53%**. If the boss reads as easier than the drakes, or the stones as a real
+fight for the starting four, say so.
+
+---
+
 ## 🧪 THE COMPANY SHEET: A 100 POOL, A BAND CALLED STEADY, AND WHAT A THING ACTUALLY DOES  *(#266 · 2026-08-29 · build log 8f.291)*
 
 **What it is.** Nine asks off one screen. The two that change the FIGHT are the mood pool and the

@@ -25,6 +25,17 @@ back already answered by work that was not about them.
 
 ---
 
+## S · From #267
+
+| | the question | ⭑ mine |
+|---|---|---|
+| **S1** · #267 | **The floating pool went 16 cards to 21 against six slots, which costs every other card about a fifth of its odds.** Five new cards is what *three fighting random events plus a boss plus a one-sentence one* comes to, and the deck is deliberately bigger than the road so two runs differ. The alternative is a seventh slot | **accept the dilution.** A seventh slot changes the pacing of every run for five cards' sake, and the deck outlasting the road is the property that makes the pool worth having. ⚠ If the road starts feeling like *all lizards*, the honest lever is dropping the one-sentence card back out of `FLOATING`, not shrinking the trail |
+| **S2** · #267 | **The one-sentence card is TWELVE words and the LIGHT band starts at 45.** You asked for one sentence and said you would change it later, so it is authored out of band with a note saying so. The risk is that the next session to run a length census reads it as unfinished and pads it | **leave it, and tell me when you rewrite it.** The note in the code should stop a sweep touching it. ⚠ It is also the only card in the game with exactly one door, which is legal (the appended walk-away only fires when nothing visible is affordable) but makes it the thinnest thing the road can deal |
+| **S3** · #267 | **"fiy skil" was read as FLIGHT, and built as a movement property rather than as an act.** A drake crosses water, bog and its own burning ground at a hex a hex and aims out of them unbothered - one word in `wetproof`, where that question is already answered for the gills and the Fen-Mother. The other readings were a 3-hex wing-hop as its own act (the mirehare doe's machinery) or a second FIERY skill beyond the breath | **the property, and it is the cheapest of the three.** A hop act would have routed the drake through `mirehareMove`, whose contract is *the leap IS the turn*, so a drake that hopped could never also breathe. ⚠ If you wanted a second fiery skill instead, say which and it is one row |
+| **S4** · #267 | **The breath hits whoever is behind the target whether they are yours or its own.** That is the Heroes of Might and Magic rule you named, and it is what makes baiting the drake the counterplay | **keep it.** An exception for its own vermin would delete the one interesting decision the creature offers. ⚠ The AI does not currently AVOID doing it, so a drake will sometimes cook its own salamander; that reads as an animal rather than as a bug, but it is one scorer line if you want it smarter |
+
+---
+
 ## R · From #266
 
 | | the question | ⭑ mine |
