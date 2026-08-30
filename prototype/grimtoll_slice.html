@@ -32000,7 +32000,11 @@ const hpSide=u=>u.side!=='you'?'foe':(u.ally||u.pet)?'ally':'you';
 HPCOL.card=HPCOL.foe;
 const hpCol=(u,f,card)=>{const r=HPCOL[card?'card':hpSide(u)];
   return f>.6?r[0]:f>.3?r[1]:r[2];};
-const SEG_HP=15, SEG_ARM=10;
+/* 2026-08-29 - re-tuned for the HDA_CUT pools (user: "1 section 5 hitpoints
+   ... 1 section is 3 armor points"). 15/10 was sized for the old ~60hp/~30arm
+   bodies; a pool now a third that size wants a segment a third that size or
+   the bar draws almost no dividers at all. */
+const SEG_HP=5, SEG_ARM=3;
 const SEG=(max,per)=>Math.max(1,Math.round((max||1)/(per||SEG_HP)));
 /* the token bar widens only once a section would go under ~3px */
 const barW=secs=>Math.round(Math.max(26,Math.min(54,secs*3.4)));
