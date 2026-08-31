@@ -11180,6 +11180,22 @@ const GEAR={
             throw:{n:'THROW A STAR',range:4,dmg:[5,9],am:.30,ft:.45,uses:2,slow:1},
             d:'Two flat iron stars on a cord. They do not kill anybody. They go into a hand '+
               'or a foot, and the man spends his next turn finding out which.'},
+  /* ═══ ⛔ #275 · THE DISGUISE CLOAK ═════════════════════════════════
+     ⛑ *"Uncommon"* IS `rare`, which is the same vocabulary fact the draught's
+     own note records: `RARITY{}` has three tiers and the stash's break-down
+     table calls the middle one uncommon. Green is the tier the ask means.
+     ⛑ AND IT IS A `use` ROW AND NOT A NEW SHAPE. The bag already builds a card
+     off `use:{}` (the cube), `canUse` already holds `uses` to once a fight, and
+     `hideAct`'s note already refuses to take a spent card off the sheet - so
+     what is new here is the RULE (see `hiddenLive`), not the wiring.
+     ⚠ `▒` AND NOT `▨`, which is already RAGS in `MAT_ICON`. Checked against the
+     whole file at 0 occurrences, as `.claude/rules/event-cards.md` requires. */
+  cloak   :{rarity:'rare',n:'Disguise Cloak',slot:'bag',g:'▒',
+            use:{n:'PULL IT OVER YOU',uses:1,hide:2},
+            d:'A hooded thing of stitched sacking and dead grass, heavy with the smell '+
+              'of whatever ditch it was cut from. One action, once a fight: you stop '+
+              'being a man and start being a heap somebody has walked past all week. '+
+              'It lasts two rounds. It does not last one swing.'},
   timecube:{rarity:'epic',n:'The Time-Cube',slot:'bag',g:'⧉',
             use:{n:'TURN IT OVER',uses:1,burn:true,slowFoes:2},
             d:'A cube of grey stone that fits the palm, with a different hour scratched on '+
@@ -16787,6 +16803,13 @@ function unitFrom(p){
     {note:bagG.use.slowFoes
       ? 'Every enemy on the field takes half its actions for '+bagG.use.slowFoes+
         ' rounds. Once, and then it is gone for good.'
+      /* #275 - and the cloak says all four of its exits, because every one of
+         them is a thing the player can choose not to do. */
+      : bagG.use.hide
+      ? 'Once a fight. Nothing on the other side can aim at you for '+bagG.use.hide+
+        ' rounds. It comes off the moment you swing, the moment anything lands on '+
+        'you, if something clever ends up beside you, or if something walks into '+
+        'the ground you are standing on.'
       : 'Once a fight.'}));
   const sig={
     /* #208 - the morale order is EARNED, not issued at the door (user: "Boost
@@ -17999,10 +18022,19 @@ const TUTSTEPS={
   circled:{h:'CIRCLED',
     /* #137 - teaches the rule the game HAS. The hex is this turn's now, so
        the spotlight had to move with it or the brawl would be teaching a
-       promise the build no longer keeps. */
-    t:'Moving while they touch you pays a free swing to each of them. '+
-      'DISENGAGE first: it gives you an extra hex right now and the rest of '+
-      'this turn\'s moving is clean. Then go where they come one at a time.',
+       promise the build no longer keeps.
+       \u26d4 #275 - AND FOR TWO WEEKS IT HAD STOPPED BEING THE RULE THE GAME HAS.
+       #224 made DISENGAGE a perk, so the first lesson in the game was pointing
+       at a card the Captain does not carry and the spotlight was falling
+       through to the whole action row. `hasDis` is the fact; the lesson reads
+       it, the same way its own anchor already did. */
+    t:()=>'Moving while they touch you pays a free swing to each of them. '+
+      (hasDis(cur())
+        ?'DISENGAGE first: it gives you an extra hex right now and the rest of '+
+          'this turn\'s moving is clean. '
+        :'Nobody here has learned to step out of a grip yet, so there is no clean '+
+          'way through them. ')+
+      'Then go where they come one at a time.',
     a:()=>{const u=cur();if(!u)return $('bActions');
       const i=u.acts.findIndex(x=>x.k==='dis');
       return (i>=0&&document.querySelector('#bActions .act[data-a="'+i+'"]'))||$('bActions');}},
@@ -18218,6 +18250,19 @@ function tutPaint(head,text,anchor,tier,skip){
   if(window.TUT_SILENT)return false;
   const r=tutRect(anchor);
   if(!r||r.w<2||r.h<2)return false;        /* hidden pane, missing anchor */
+  /* ⛔ #275 - AND THE HOVER BOX GOES DOWN WITH IT, WHICH IS A Z-INDEX FACT
+     RATHER THAN A TASTE ONE. `#tutDim` is 61 and `#gtTip` is 99, and the tip
+     lives on `document.body` (it has to: `moveTip` clamps it against the
+     window, not against the stage) - so a HELD GROUND or PALISADE box opened a
+     second before a lesson fires goes on painting over the dimmed sheet, on the
+     one screen in the game whose whole job is to have exactly one thing on it.
+     Reported as *"HELD GROUND repeatedly covered the central battlefield while
+     tutorial cards were also active"*.
+     ⛑ HERE AND NOWHERE ELSE, because this is the ONE function that puts the
+     sheet up and writes `B.tutLock` - its own note two paragraphs above says so,
+     and that is what makes one line cover every teacher in the file.
+     ⚠ BY ID AND NOT THE `TIP` CONST, which is declared 22,000 lines below. */
+  {const tp=document.getElementById('gtTip');if(tp)tp.style.display='none';}
   const d=tutEl(),pad=6;
   const hx=Math.max(0,r.x-pad),hy=Math.max(0,r.y-pad);
   const hw=Math.min(1280,r.x+r.w+pad)-hx,hh=Math.min(720,r.y+r.h+pad)-hy;
@@ -21340,6 +21385,62 @@ const passable=(c,r,u)=>{
   return o.side===u.side&&!o.tail;
 };
 const cur=()=>B.order[B.idx];
+/* ═══ ⛔ #275 · THE DISGUISE CLOAK: A BODY NOBODY IS LOOKING FOR ═══════
+   (User, 2026-08-31: *"add disgise cloak. Camufliage for 2 turns for this unit.
+   It gets of - when enemy is standing on nearest tile / triyng to take the
+   place, where you disgies character stands. After your atack or active
+   damaging skill effect disapear. Take 1 action. Uncommon"*, then *"maybe, add
+   that you are invisible until enemy actually steps on you. for near by can
+   only smart 2+ detect you"*.)
+
+   ⛑ THE LIZARDS' VEIL IS THE SAME KIND OF FACT AND IT IS NOT THE SAME RULE,
+   so this is a second field rather than a second meaning on the first. A veil
+   is *you cannot aim at me from further than a hex*; the cloak is *you cannot
+   aim at me at all*, and it is broken by four different things. Merging them
+   would be one field answering two questions, which is the split `passable`
+   and `walkable` were separated over.
+
+   THE FOUR DOORS OUT, AND EACH IS STATED EXACTLY ONCE:
+     · you swing, or something lands on you    -> `strike`, the one blow door
+     · something clever is standing beside you -> `spotAround`, off `beginTurn`
+       and `walkTo`, i.e. it was already there or it has just walked up
+     · something walks into the hex you are on -> `walkTo`, the one move door
+     · two rounds                              -> `hiddenLive`, and no clock
+
+   ⚠ `HIDE_SEE` IS AN INTELLECT RUNG AND NOT A RACE. *"smart 2+"* read against
+   the ladder every body on both sides climbs (`.claude/rules/enemy-stats.md`),
+   so a clever ratkin sees you and a dog does not, and nothing here carries a
+   list of who is clever that could go stale.
+   ⚠ AND IT IS ROUNDS, WHICH IS #46's OWN RULING ON VENOM: a clock counting
+   TICKS would last a different length of time depending on how many bodies are
+   on the field. Set to `B.round+2`, live while `B.round` is strictly under it,
+   so a cloak pulled on in round 3 covers rounds 3 and 4 and is gone in 5. */
+const HIDE_TURNS=2, HIDE_SEE=2;
+function hiddenLive(u){return !!(u&&u.hideUntil&&B&&B.round<u.hideUntil&&!u.dead&&!u.fled);}
+/* can `u` NOT see `t`. Same side always sees its own: your line walks round its
+   own hidden mate exactly as it did before, so nothing on your half of the
+   board changed. */
+function hiddenFrom(u,t){
+  if(!hiddenLive(t))return false;
+  if(!u||u.side===t.side)return false;
+  return !(udist(u,t)<=1&&statRung(u,'int')>=HIDE_SEE);
+}
+/* the one exit, whatever ended it - the same shape `popIllusion` has. */
+function unhide(u,why){
+  if(!u||!u.hideUntil)return;
+  u.hideUntil=0;
+  fx(u,'SEEN','#e07a28',true);
+  if(why)say(why);
+}
+/* `u` looks around it. Called where a body arrives and where its turn opens,
+   which between them are every way something comes to be standing beside you. */
+function spotAround(u){
+  if(!u||!B||!B.units)return;
+  if(statRung(u,'int')<HIDE_SEE)return;
+  B.units.forEach(t=>{
+    if(t.side===u.side||!hiddenLive(t)||udist(u,t)>1)return;
+    unhide(t,u.name+' is close enough to see the shape of somebody under the rags.');});
+}
 /* anything standing next to ANY part of you is engaging you */
 const engagers=(c,r,side)=>{
   const seen=[];
@@ -21388,7 +21489,12 @@ const holdsHex=(e,c,r)=>{
   const n=arcFrom(c,r,e).n;
   return n==='FRONT'||n==='SHOULDER';
 };
-const controllers=(c,r,side)=>engagers(c,r,side).filter(e=>holdsHex(e,c,r));
+/* #275 - and a body nobody can see holds no ground. All four readers of
+   control (the parting swing, the red edge, the undo test and DISENGAGE's own
+   gate) inherit that from this one filter, which is why the list of four in the
+   note above is the reason it goes here and not in `partingShots`. */
+const controllers=(c,r,side)=>engagers(c,r,side)
+  .filter(e=>holdsHex(e,c,r)&&!hiddenLive(e));
 const heldAt=(c,r,side)=>controllers(c,r,side).length;
 const held=u=>heldAt(u.col,u.row,u.side)>0;
 /* ═══ ⛔ #205 · WHO WOULD ACTUALLY SWING, AS ONE FUNCTION ══════════════
@@ -21622,6 +21728,10 @@ const mayAim=(u,a,t)=>
      Stated here, so the player's offer ring, `aiTurn` and `autoStep` all
      refuse together and none of them can stall on it: that is the whole
      argument of the block above, arriving on a fifth rule. */
+  /* ⛔ #275 - THE CLOAK, AND IT IS ONE CLAUSE FOR THE VEIL'S OWN REASON: this
+     is the one gate, so the player's offer ring, `aiTurn` and `autoStep` refuse
+     together and none of them can stall on it. */
+  !hiddenFrom(u,t)&&
   (!t.veil||udist(u,t)<=1)&&
   (!t.unrepeatable||!a||!a.dmg||!(t.hitBy&&t.hitBy[u.id||u.uid]))&&
   (!a.maxSize||sizeOK(a,t))&&
@@ -21894,13 +22004,17 @@ function zocNote(c,r){
     if(!zc.length)return null;
     const who=zc.length===1?zc[0].name
       :zc.length+' of them - '+zc.map(e=>e.name).join(', ');
+    /* #275 - the third door is only there for a body that carries the card. */
     return {n:'HELD GROUND',
       d:'<b>'+who+'</b> '+(zc.length===1?'has':'have')+' the front of '+
         (zc.length===1?'its':'their')+' hex on this one, so this is inside a ZONE OF '+
         'CONTROL. Step out of it and everyone holding you gets a free swing at your '+
-        'back as you go. Three ways out and no fourth: kill them, walk round to a hex '+
-        'they are not facing, or spend DISENGAGE - which is the step itself, costs one '+
-        'action, and nobody swings.'};
+        'back as you go. '+(hasDis(u)
+          ?'Three ways out and no fourth: kill them, walk round to a hex they are not '+
+           'facing, or spend DISENGAGE - which is the step itself, costs one action, '+
+           'and nobody swings.'
+          :'Two ways out and no third: kill them, or walk round to a hex they are not '+
+           'facing.')};
   }catch(e){return null;}
 }
 /* the TIP body, for a hex nobody is standing on */
@@ -22084,17 +22198,31 @@ function reachMap(u,budget){
     pq.sort((a,b)=>a[0]-b[0]);const q=pq.shift(),d=q[0],c=q[1],r=q[2];
     if(d>dist[K(c,r)])continue;
     for(const p of nbrs(c,r)){
-      if(!passable(p[0],p[1],u))continue;
+      /* ⛔ #275 - A HEX WITH SOMEBODY UNDER A CLOAK ON IT IS GROUND, TO ANYBODY
+         WHO CANNOT SEE THEM. `passable` refuses an enemy body outright, so the
+         delete pass at the foot of this function was never reached for one:
+         the hex had no `dist` to keep. It is entered here and NOT expanded
+         from, which is the whole of the difference between *I will walk onto
+         that ground* and *I will walk through a man* - so a route never runs
+         past the cloak, it only ever ends on it, and `walkTo` is where the
+         mover finds out what it has walked into. */
+      const o275=at(p[0],p[1]),hid275=!!(o275&&o275!==u&&hiddenFrom(u,o275));
+      if(!hid275&&!passable(p[0],p[1],u))continue;
       const nd=d+mcost(p[0],p[1],u);if(nd>budget)continue;
       if(nd<(dist[K(p[0],p[1])]??1e9)){dist[K(p[0],p[1])]=nd;prev[K(p[0],p[1])]=[c,r];
-        pq.push([nd,p[0],p[1]]);}}}
+        if(!hid275)pq.push([nd,p[0],p[1]]);}}}
   delete dist[K(u.col,u.row)];
   /* #68 - you went THROUGH them; you do not get to stop on top of them.
      `prev` keeps the crossing so pathTo() can still walk the real route,
      and `dist` keeps its one meaning: the hexes I may end this move on.
      This is the line that makes the change invisible to every consumer. */
+  /* ⛔ #275 - EXCEPT A HEX WHOSE BODY THIS ONE CANNOT SEE, which is what makes
+     *"triyng to take the place where your disgies character stands"* a thing
+     that can happen at all: an enemy that does not know you are there picks
+     your ground like any other ground, and `walkTo` is where it finds out. */
   Object.keys(dist).forEach(k=>{const p=k.split(',');
-    if(at(+p[0],+p[1]))delete dist[k];});
+    const o=at(+p[0],+p[1]);
+    if(o&&o!==u&&!hiddenFrom(u,o))delete dist[k];});
   return{dist,prev};
 }
 /* walk a reachMap's prev-chain back to a hex-by-hex path, start excluded.
@@ -22149,6 +22277,21 @@ function walkTo(u,c,r,rm){
     if(rm&&rm.prev&&rm.prev[K(c,r)])path=pathTo(rm,c,r);
     if(!path.length)path=pathTo(reachMap(u,999),c,r);
   }catch(e){path=[];}
+  /* ⛔ #275 - WALKING INTO SOMEBODY YOU COULD NOT SEE. The step is REFUSED and
+     the body stops on the last hex it had actually crossed, because two bodies
+     on one hex is the fault `tavernPlace` spends a paragraph refusing and this
+     is the one door that could produce it. ⚠ If that hex is taken too, the
+     mover simply does not move: it has spent its action walking into somebody,
+     which is exactly what happened to it. */
+  {const blk=at(c,r);
+   if(blk&&blk!==u&&hiddenFrom(u,blk)){
+     unhide(blk,u.name+' walks straight into something that is not ground.');
+     path=path.slice(0,-1);
+     const last=path.length?path[path.length-1]:from;
+     const taken=at(last[0],last[1]);
+     if(taken&&taken!==u){path=[];c=from[0];r=from[1];}
+     else{c=last[0];r=last[1];}
+   }}
   u.col=c;u.row=r;
   walkMark(u,from,path.length?path:[[c,r]]);
   /* #250 - the rim, at the same door and for the same reason as the fire below */
@@ -22156,6 +22299,7 @@ function walkTo(u,c,r,rm){
   /* #186 - the ground crossed can be on fire. Same door every mover uses, so
      the player's click, both brains, the pet and the kite all pay it. */
   emberCross(u,path.length?path:[[c,r]]);
+  spotAround(u);        /* #275 - and it looks at what it is now standing beside */
 }
 /* the picture. Called by render(), once, at the end, on the board it just
    drew - so every hex it measures exists and is at the current camera stop. */
@@ -22451,8 +22595,41 @@ function splitFor(d,act){
   const b=bandOf(d);
   return {arm:b.absorb,body:b.through};
 }
-const DODGE_SOFT=12,DODGE_RATE=0.6;
+/* ═══ ⛔ #275 · THE TWO STACKING CAPS, AND THEY ARE ONE RULE SAID TWICE ═══
+   (User, 2026-08-31, of the DODGE hover's own `hard to stack past 12` row:
+   *"hard to stuck: -dodge after 25, -atack - after 100"*.)
+
+   ⛔ DODGE_SOFT WAS 12 AND A STARTING BODY ALREADY DODGES 14. So the cap was
+   biting every body in the game on the day it was rolled, which makes it a flat
+   tax on the stat rather than a ceiling on STACKING it - and a player who spent
+   a level, a shield and a trait on footwork was being handed 60% of the third
+   thing they bought. 25 is above what a fresh body brings and under what a
+   built one reaches, which is where a soft cap is supposed to sit.
+
+   ⛑ AND THE TO-HIT SIDE HAD NO CAP AT ALL, which is why the ask names both in
+   one breath. `hitOf` is the same shape as `dodgeOf` below - one function, a
+   collector for the hover, the cap applied LAST to the sum so no contributor
+   gets to opt out of it - and every reader of `u.mskill` on a card or in the
+   arithmetic goes through it. ⚠ The raw field stays raw: it is written by
+   `unitFrom` and by `build()` in a dozen `+=` lines and read by the ledger, so
+   capping it in place would leave the hover unable to say what it took off. */
+const DODGE_SOFT=25,DODGE_RATE=0.6;
 const softDodge=v=>v<=DODGE_SOFT?v:DODGE_SOFT+(v-DODGE_SOFT)*DODGE_RATE;
+const HIT_SOFT=100,HIT_RATE=0.6;
+const softHit=v=>v<=HIT_SOFT?v:HIT_SOFT+(v-HIT_SOFT)*HIT_RATE;
+/* ⛔ IT IS THE BODY'S OWN RATING AND NOT THE WHOLE ROLL. An act's `aim` is a
+   fact about the WEAPON and is added after, the same way the target, the ground
+   and the arc are: what the ask is capping is what a player STACKS onto a body,
+   which is exactly the figure the sheet's TO HIT prints.
+   ⚠ THE COLLECTOR IS `u.hitWhy`, WHICH #254 BUILT BESIDE THE `+=` LINES. This
+   function does not re-add anything; it copies those rows and appends the one
+   line they cannot know about, which is the cap. Same contract as `dodgeOf`. */
+function hitOf(u,W){
+  const raw=(u&&u.mskill)||0,out=Math.max(0,Math.round(softHit(raw)));
+  if(W){(u&&u.hitWhy||[]).forEach(r=>W.push(r));
+    if(raw>HIT_SOFT)W.push(['hard to stack past '+HIT_SOFT,-Math.round(raw-softHit(raw))]);}
+  return out;
+}
 /* ═══ #146 - THE SECOND ARGUMENT IS THE WHOLE "WHAT IS OTHERS" ANSWER ═════
    (User: "For chances to hit and dodge show what is others".) `their dodge`
    was a single number with nothing behind it anywhere in the game: the
@@ -22552,6 +22729,8 @@ function dodgeOf(u,W,noNerve){
    above its declaration is a TDZ crash). See the note at the foot of
    hitBreakdown for the rule. */
 const SURE_AFTER=2;
+/* #275 - and the brawl's opening blow. See the note in hitBreakdown. */
+const TUT_FIRST_SURE=true;
 /* ═══ #191 · THE ODDS ARE STILL THERE, THE PLAYER JUST CANNOT READ THEM ══════
    (User, 2026-08-18: *"Из битвы спрячь 'next one lands' - не хочу, чтобы плеер
    это видел. И не хочу, чтобы он видел % попадания. Хочу, чтобы он думал,
@@ -22628,7 +22807,10 @@ function hitBreakdown(a,d,act){
      its caption are the same arithmetic. `po()` writes to both, which is the
      only way to add a contributor without being able to forget one. */
   const parts=[],oth=[],po=s=>{parts.push(s);oth.push(s);},
-        skill=(arcSkill!==null?arcSkill:a.mskill)+(act.aim||0),
+        /* #275 - the cap, on both halves of the same question. A working is
+           aimed with the INTELLECT and it stacks the same way a sword arm
+           does, so `softHit` takes the arcane figure too. */
+        skill=(arcSkill!==null?softHit(arcSkill):hitOf(a))+(act.aim||0),
         /* ⛔ #254 - A SPELL LANDS OR IT DOES NOT. The file: *"Nothing
            subtracts. A spell is not dodged."* A nimble body partly sidestepping
            a blight-wind was the one place the arcane roll had a defender in it
@@ -22808,8 +22990,35 @@ function hitBreakdown(a,d,act){
      against and what both AI brains score with, so the card reads 100%, the
      roll cannot miss, and AUTO spends the sure swing on purpose - one place,
      three readers, nothing to teach. */
-  const sure=!!act.impact||(SURE_AFTER&&a.side==='you'&&(a.missRun||0)>=SURE_AFTER);
+  /* ═══ ⛔ #275 · AND THE VERY FIRST SWING OF THE GAME LANDS ═══════════
+     A playthrough report: *"I missed an approximately 82% opening sword attack,
+     after which the drunk enemy landed two attacks before my next activation.
+     It remained survivable, but for the tutorial battle it may make the system
+     feel harsher than intended."* SURE_AFTER already exists for exactly this
+     reason and it is written down as the player's frustration - it simply
+     cannot reach the FIRST swing, because two misses have to happen first.
+     ⛑ THE BRAWL ONLY, AND ONE BODY'S FIRST BLOW ONLY. `B.tut` is the tavern
+     and nothing else, and the test is that this body has neither hit nor missed
+     yet, so it is one swing in one fight in a whole run.
+     ⛔ AND IT IS DECIDED HERE FOR SURE_AFTER's OWN REASON: this function is
+     what the hover prints, what strike() rolls against and what both AI brains
+     score with, so the card reads 100%, the roll cannot miss and AUTO spends it
+     knowing. One place, three readers, nothing to teach.
+     ⚠ `TUT_FIRST_SURE` is one word to switch it off, which is what a taste
+     call somebody else may want back gets in this file. */
+  /* ⚠ `a.swung` AND NOT `a.hits`, WHICH COST A DRIVEN PROBE TO FIND. `a.hits`
+     is incremented inside `if(tr(a,'hitLift'))` and `a.misses` inside the
+     ogre's rage clause, so on an ordinary Captain BOTH stay 0 for the whole
+     fight - and the first cut of this read them, which would have made every
+     landing swing in the brawl a guaranteed 100%. A counter that exists for
+     one personality is not a counter, and the two names look identical to a
+     third one. `strike` sets `swung` at the top, on a hit and on a miss alike. */
+  const firstBlow=TUT_FIRST_SURE&&B&&B.tut&&a.side==='you'&&!a.ally&&!a.pet&&
+    !!act.dmg&&!a.swung;
+  const sure=!!act.impact||firstBlow||
+    (SURE_AFTER&&a.side==='you'&&(a.missRun||0)>=SURE_AFTER);
   if(act.impact)po('movement becomes the hit');
+  else if(firstBlow)po('the first one always lands');
   else if(sure)po('two wide, this one lands');
   return {skill:Math.round(skill),dodge:dodge,flank:Math.round(fl),other:Math.round(other),
     nerveA:Math.round(nerveA),nerveD:Math.round(nerveD),sure:sure,
@@ -22975,6 +23184,15 @@ function strike(a,d,act,mult){
      breaks a veil without being taught to. */
   if(a.veil){a.veil=false;fx(a,'SEEN','#e07a28',true);}
   if(d.veil)d.veil=false;
+  /* #275 - and the cloak, at the same door and for the same reason. Both
+     halves of the ask - *"after your atack or active damaging skill effect
+     disapear"* - and the one nobody has to write down: a body that has been hit
+     has been found. */
+  if(hiddenLive(a))unhide(a,a.name+' comes out from under the rags to swing.');
+  if(hiddenLive(d))unhide(d,null);
+  /* #275 - this body has now swung at something, whatever comes of it. Read by
+     the brawl's one free blow and by nothing else. */
+  a.swung=true;
   const arc=arcOn(a,d);
   faceToward(a,d.col,d.row);
   /* SHOW IT. A ranged attack sends something across the ground; a melee blow
@@ -24404,6 +24622,15 @@ function beginTurn(){
     if(lit){if(u.veil){u.veil=false;fx(u,'SEEN','#e07a28',true);}}
     else if(!u.veil){u.veil=true;fx(u,'GONE','#5a7a6a',true);}
   }
+  /* ⛔ #275 - THE CLOAK'S TWO TURN-TOP FACTS. It looks around at whatever it is
+     standing beside (the body that was already there when its turn came, which
+     `walkTo` cannot see), and a cloak that has run out says so out loud rather
+     than simply stopping being true - a state that ends silently is a state the
+     player finds out about by being shot. */
+  spotAround(u);
+  if(u.hideUntil&&!hiddenLive(u)){u.hideUntil=0;
+    fx(u,'SEEN','#e07a28',true);
+    say('The cloak has been on '+u.name+' long enough. They are a man again.');}
   /* ═══ ⛔ #245 · THE TWO THINGS THE BAG DOES TO A TURN ═════════════════
      ⛔ AFTER `despActs`, NOT BESIDE THE HANDOUT AT THE TOP, AND THAT ORDER IS THE
      WHOLE OF IT. The obvious place is the line that writes `u.actionsMax+banked`,
@@ -25195,6 +25422,18 @@ function canUse(u,a){
    ⛔ ONE MEMBER, AND KEEP IT THAT WAY. Every act hidden here is an act a
    player cannot discover by looking at the screen. */
 function hideAct(u,a){return a.k==='dis'&&!held(u);}
+/* ═══ ⛔ #275 · DOES THIS BODY ACTUALLY HAVE THE CARD ════════════════
+   DISENGAGE stopped being a thing every body has when it became a PERK, and
+   THREE readouts went on telling the player to spend it: the brawl's CIRCLED
+   lesson (which is the first fight in the game, on a Captain who has not got
+   it), the HELD GROUND note on any hex in a zone of control, and the title on
+   the ⚔ chip that prices a step off. All three were written when the sentence
+   was true of everybody.
+   ⛑ ONE PREDICATE, ASKED OF THE ACT ROW ITSELF and not of `perks`: the act is
+   built by `unitFrom` behind a `courage` clause as well as the perk, and a foe
+   has neither - so the row is the fact and the perk list is a description of
+   it. Same reason `canUse` reads the act. */
+function hasDis(u){return !!(u&&u.acts&&u.acts.some(a=>a.k==='dis'));}
 function spend(u,a){
   /* #91 - any paid act closes the undo window. spend() is the one door every
      paid act passes through (#87's lesson), so this is the ONE line that
@@ -25479,6 +25718,14 @@ function selectAct(i){
     if(a.burn){const m=member(u.id);
       if(m&&m.eq)m.eq.bag=null;
       say('The cube is not in anybody’s hand any more.');}
+    /* ⛔ #275 - THE CLOAK. `B.round+hide` and not a tick count, for the reason
+       the rules block gives; and the card is NOT taken off the sheet, because
+       `canUse` is already refusing it on the counter and a row that vanished
+       would be the hidden-act fault `hideAct` spends a paragraph on. */
+    if(a.hide){u.hideUntil=B.round+a.hide;
+      fx(u,'GONE','#5a7a6a',true);sfx('cast');
+      say(u.name+' pulls the cloak over their head and goes down against the '+
+        'ground, and there is nothing there but a heap of wet sacking.');}
     render();return;
   }
   /* SINK BELOW — the reach map is "every free marsh hex within 5", not a
@@ -26241,7 +26488,8 @@ function paintHand(){
                                           :' lands it '+x.pct+' times in a hundred')).join('. ')+
         '. '+(any==null?'Nothing there can draw blood on the way out.'
               :'Between them, '+any+' in a hundred that you take one.')+
-        ' That is what stepping off costs. DISENGAGE first and the step is clean.';
+        ' That is what stepping off costs.'+       /* #275 - and the card, only if there is one */
+        (hasDis(cur())?' DISENGAGE first and the step is clean.':'');
       inn.appendChild(zo);
     }
   }
@@ -27023,6 +27271,15 @@ const STATUS={
      ⚠ SECOND IN THE REGISTER, behind `surrounded` and in front of everything
      else, because `.stbar` prints four badges and slices the rest: a body one
      fall from the end may not lose its mark to a poison stack. */
+  /* ⛔ #275 - THIRD IN THE REGISTER, and for `hurt`'s own reason: `.stbar`
+     prints four badges and slices the rest, and a body that cannot be aimed at
+     may not lose the one mark that says so to a poison stack. The glyph is the
+     GEAR row's own, which is the same fact wearing the same mark. */
+  hidden:{n:'Under the cloak',g:'▒',col:'#5a7a6a',on:u=>hiddenLive(u),
+    d:u=>'Nothing on the other side can aim at this body until the end of round '+
+      ((u.hideUntil||1)-1)+'. It comes off on a swing, on a blow landing, on '+
+      'anything clever ending its move beside them, or on anything at all trying '+
+      'to walk onto this hex.'},
   hurt:{n:'Injured',g:'✚',col:'#c9a227',on:u=>!!u.injured&&u.lastFall!=='dead',
     d:u=>u.hurtName+' - '+u.hurtNote+' Goes down again and it is a scar for good.'},
   hurtlast:{n:'One fall left',g:'✚',col:'#c15d55',on:u=>!!u.injured&&u.lastFall==='dead',
@@ -31473,7 +31730,7 @@ function render(){
        anything is the worst of the two states. DODGE STAYS: it is what comes
        off somebody else's swing, and it is a defensive stat. */
     $('bHitCell').style.display=SHOW_HIT_ODDS?'':'none';
-    $('bHitN').textContent=u.mskill+'%';
+    $('bHitN').textContent=hitOf(u)+'%';   /* #275 - the capped figure, like DODGE beside it */
     /* #94 point 5 - the only one of the four numbers that carried no unit,
        and it is a percentage exactly like the one beside it: hitBreakdown
        subtracts it straight off the attacker's roll. */
@@ -31539,8 +31796,13 @@ function render(){
              tell two stories. Both halves, because the crank greys too. */
           :(a.reload&&a.reload!=='do'&&u.spent)?'EMPTY: WIND IT FIRST'
           :(a.reload==='do'&&!u.spent)?'NOTHING TO WIND: IT IS ALREADY LOADED'
+          /* #275 - and what the corner tally is counting, in words, on the one
+             line that already carries this card's prices. The `<u>1/2</u>` is a
+             CEILING and it was being read as a penalty; a number with no unit is
+             the readout fault this file keeps paying for. */
           :(sub+(a.strain?' · '+strainCost(u,a)+' mood':'')+
             (a.cool?' · '+a.cool+'-turn cooldown':'')+
+            (used?' · '+used+' of 2 this turn':'')+
             (gathers(a)?' · lands next turn':'')).toUpperCase();
         /* #91 point 9 - ONE effect sentence on the hover, cut at a sentence
            boundary. The paragraph stays in ? RULES; a summary nobody wrote
@@ -33432,7 +33694,7 @@ function inspect(t,e){
     /* #191 - SKILL is the hit figure wearing a third label, and on an ENEMY it is
        the one number a player could still aim with. DODGE stays, on its own. */
     (SHOW_HIT_ODDS
-      ?'<div class="rr"><span>SKILL / DODGE</span><span>'+t.mskill+' / '+dodgeOf(t)+'</span></div>'
+      ?'<div class="rr"><span>SKILL / DODGE</span><span>'+hitOf(t)+' / '+dodgeOf(t)+'</span></div>'
       :'<div class="rr"><span>DODGE</span><span>'+dodgeOf(t)+'</span></div>')+
     '<div class="rr"><span>ACTIONS</span><span>'+t.actions+' of '+t.actionsMax+'</span></div>'+
     /* words, not the four integers — see the TELLS block */
@@ -38343,11 +38605,20 @@ const CAPLINES={
   learn_close:{tier:'learn',l:[
     'Nothing is close enough to hit. Move first, then swing with the other action.',
     'Too far to reach anybody. The lit hexes are as far as this one gets this turn.']},
+  /* ⛔ #275 - THE SECOND LINE PROMISED A DIMINISHING RETURN NOTHING PAYS.
+     *"Doing the same thing twice in one turn is always the weaker half of it"*
+     is true of MOVE, whose second is a hex shorter, and of nothing else in the
+     game: `spend()` writes `u.used[k]` and it is read by `canUse` as a CEILING
+     and by `moveBudget` for the shorter stride. So a player swinging twice was
+     watching a card count 1/2 then 2/2 with the damage and the odds unchanged
+     and being told by the Captain that something had got worse. The register's
+     own note above defends this lesson on exactly the claim that turned out to
+     be the false one, which is why the note is corrected here too. */
   learn_twice:{tier:'learn',l:[
     'Two actions a turn. The second move is a hex shorter, and the strong things need a '+
     'round before you can use them again.',
-    'Doing the same thing twice in one turn is always the weaker half of it. Move, then '+
-    'swing.']},
+    'Twice a turn is the ceiling on any one card, and the small number on it is that '+
+    'tally. Only walking gets worse the second time.']},
   learn_bow  :{tier:'learn',l:[
     'A bow is worst up close and it needs a clear line. Keep {N} back, with one of ours in '+
     'front of them, not three.',
@@ -38384,8 +38655,10 @@ const CAPLINES={
      ⚠ WHAT STAYED, AND WHY, BECAUSE THIS IS THE PART A LATER PASS GETS
      WRONG. `learn_twice` reads like a duplicate of TUTSTEPS.act and is not:
      `act` says "Two actions a turn" and stops, while the lesson teaches the
-     DIMINISHING RETURN on the second one, which nothing else in the game
-     says anywhere. `learn_sides`, `learn_close`, `learn_bow`, `learn_cast`,
+     TWICE-A-TURN CEILING and the shorter second stride, which nothing else in
+     the game says anywhere. (#275: it said DIMINISHING RETURN until then, and
+     there is no such return on anything but MOVE. A note that defends a lesson
+     on a claim the build does not keep is how the lesson survived a year.) `learn_sides`, `learn_close`, `learn_bow`, `learn_cast`,
      `learn_round` and `w_rung` are about the ring colours, reach, a bow, a
      spell, the back arc and standing alone - the brawl teaches none of the
      six, so the Captain is their only voice.
@@ -39798,7 +40071,7 @@ function drawInv(){
                (sw.a&&sw.a.range?' <span style="color:#8a7449">range '+sw.a.range+'</span>':'')+
                '</span>'
              :'<span>BLOW <b class="dmg">nothing much</b></span>')+
-          '<span data-drv="hit">TO HIT <b>'+u.mskill+'%</b></span>'+
+          '<span data-drv="hit">TO HIT <b>'+hitOf(u)+'%</b></span>'+
           /* #243 - the unit, at the user's word. TO HIT beside it has printed
              `%` since #94 and this was the one figure on the row without it. */
           '<span data-drv="dodge">DODGE <b>'+dodgeOf(u)+'%</b></span>'+
@@ -40301,8 +40574,10 @@ function drawInv(){
     el.onmouseenter=e=>{
       /* #269 - and a third: the hitpoint pool, off `bodyHp(p,W)`, which is the
          same collector shape `dodgeOf` has carried since #146. */
-      const W=[],val=which==='dodge'?dodgeOf(u,W):which==='hp'?bodyHp(p,W):u.mskill;
-      const rows=(which==='dodge'||which==='hp')?W:(u.hitWhy||[]);
+      /* #275 - and the third takes a collector too, so the cap gets a NAMED row
+         instead of falling through to the residual line below. */
+      const W=[],val=which==='dodge'?dodgeOf(u,W):which==='hp'?bodyHp(p,W):hitOf(u,W);
+      const rows=W;
       const TITLE={hit:'TO HIT',dodge:'DODGE',hp:'HITPOINTS'}[which];
       const FOOT={hit:'What this body brings to a swing, before the target, the ground and '+
           'the arc are counted.',

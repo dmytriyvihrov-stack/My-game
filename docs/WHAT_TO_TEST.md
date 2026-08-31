@@ -26,6 +26,50 @@
 
 ---
 
+## 🧪 THE TWO CAPS, THE MISSING DISENGAGE, AND A CLOAK  *(#275 · 2026-08-31 · build log 8f.299)*
+
+**Reach the caps in three steps:** company sheet → hover TO HIT, then hover DODGE.
+
+**What should happen.** The DODGE hover's `hard to stack past 12` row is now `past 25`, and on an
+ordinary body it **does not appear at all** - which was the bug. A starting body dodges 14, so every
+body in the game was being taxed by a cap meant for a stacked one. TO HIT has the same row now at
+**100**, and it will not appear until you have built somebody past it. ⚠ Both figures on the sheet
+may read a point or two higher than you remember; that is the tax coming off.
+
+**The DISENGAGE that is not there.** Since #224 it is a PERK, and three places went on telling you
+to spend it. Open the tap-room brawl and let two of them get a hand on the Captain: the CIRCLED card
+now says *"Nobody here has learned to step out of a grip yet"*. Hover any hex inside a red edge:
+HELD GROUND says **two ways out** on a body without the card and **three** on one with it.
+
+**The twice-a-turn tally.** Swing the same card twice and hover it: the receipt line now says
+`· 1 OF 2 THIS TURN` beside the cost. Nothing is reduced by repeating an attack and nothing ever
+was - only a second MOVE is shorter - and the Captain's lesson used to claim otherwise.
+
+**The brawl's first swing.** Your first attack of the tap-room fight reads **100%** and cannot miss.
+One swing, one fight, one run. Whether you want it at all is **Y2** in
+[`OPEN_QUESTIONS.md`](OPEN_QUESTIONS.md).
+
+**Reach the cloak in three steps:** find or buy a **Disguise Cloak** (70 crowns, uncommon, bag slot)
+→ equip it on somebody → in a fight, press **PULL IT OVER YOU** (1 action, once a fight).
+
+**What should happen.** A `▒` badge under their feet, and **nothing on the other side can aim at
+them at all** for two rounds. It comes off when:
+
+- **they swing, or anything lands on them.** Attacking gives you away, and so does a spell that
+  catches you in passing;
+- **anything clever ends up beside them.** An INTELLECT rung of 2 or better sees the shape under the
+  rags. A dog or a drunk does not;
+- **anything walks into the hex they are standing on.** The enemy does not know they are there, so
+  it picks that ground like any other ground, walks into them, and stops one hex short;
+- **or two rounds pass**, and the log says so rather than letting it end silently.
+
+**What would be a bug:** two bodies on one hex after a bump · an enemy shooting a hidden body from
+across the map · the cloak surviving your own attack · the badge showing on a body that can be aimed
+at · a hidden body taking a free swing at somebody walking past it (it holds no ground while it is
+hidden, on purpose).
+
+---
+
 ## 🧪 THE LIZARDS FIGHT NOW  *(#274 · 2026-08-31 · build log 8f.298)*
 
 **Reach it in three steps:** the road → any of the five lizard cards (THE WARM STONES, THE GLASS
