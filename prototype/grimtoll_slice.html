@@ -17219,27 +17219,8 @@ function circleFoes(){
    ⚑ THE GROOM KEEPS HIS TWO. He is the exception the rule is worth having:
    one body on the field is moving at fighting speed, and it is the one the
    card is about. */
-const WED_T={
-  guest:{kind:'ratkin',name:'Wedding guest',hp:30,armour:4,mor:34,skill:38,dodge:12,speed:4,
-    actions:1,noRout:true,acts:[{k:'fists',n:'FISTS',cost:1,reach:1,dmg:[4,8],am:.25,ft:.40,
-      note:'What anybody has, when nobody brought anything.'}]},
-  jug:{kind:'ratkin',name:'Guest, with a jug',hp:32,armour:4,mor:36,skill:41,dodge:11,speed:4,
-    actions:1,noRout:true,acts:[{k:'club',n:'JUG, SWUNG',cost:1,reach:1,dmg:[6,11],am:.35,ft:.35,
-      note:'It was full. It does not stay full.'}]},
-  /* the one body with reach, and it is a kitchen implement. Somebody has to
-     be able to answer a spear line or the fight is a queue. */
-  aunt:{kind:'ratkin',name:'The aunt with the roasting spit',hp:34,armour:6,mor:42,
-    skill:45,dodge:12,speed:4,
-    actions:1,noRout:true,acts:[{k:'jab',n:'ROASTING SPIT',cost:1,reach:2,dmg:[7,12],am:.45,ft:.30,
-      note:'Four feet of iron, and she has been holding it since the morning.'}]},
-  groom:{kind:'ratkin',name:'The groom',hp:44,armour:8,mor:70,skill:52,dodge:14,speed:4,
-    captain:true,lean:{mor:+1},noRout:true,
-    acts:[{k:'fists',n:'BARE HANDS',cost:1,reach:1,dmg:[7,12],am:.30,ft:.42,
-      note:'He was married an hour ago and there is nothing behind his face at all.'}]},
-  bride:{kind:'ratkin',name:'The bride',hp:26,armour:2,mor:60,skill:36,dodge:18,speed:4,
-    actions:1,noRout:true,acts:[{k:'fists',n:'NAILS',cost:1,reach:1,dmg:[2,5],am:.10,ft:.50,
-      note:'It is not a weapon and she is not a soldier and she is still coming.'}]}
-};
+/* WED_T lives in the one statblock block beside FOE_T now (2026-08-31).
+   weddingFoes still reads it; the note above stays with the fight. */
 function weddingFoes(){
   /* the crowd is BETWEEN you and the two who matter: guests across the road,
      the groom behind them, the bride behind him. Initiative 22-31 against the
@@ -17278,34 +17259,8 @@ function weddingFoes(){
    more and hit no harder — high morale so they do not break at the first
    loss, more body so the fight takes the rounds the lessons need. The solo
    "watched it happen" branch stays dangerous the way it always was. */
-const CLASH_T={
-  ratspear:{kind:'ratkin',name:'Ratkin, spear',hp:46,armour:34,mor:72,skill:53,dodge:18,speed:5,
-    acts:[{k:'jab',n:'JAB',cost:1,reach:2,dmg:[10,15],am:.60,ft:.30}]},
-  ratsling:{kind:'ratkin',name:'Ratkin slinger',hp:38,armour:22,mor:66,skill:57,dodge:20,speed:5,
-    bow:true,acts:[{k:'sling',n:'SLING',cost:1,range:5,dmg:[10,16],am:.50,ft:.40}]},   /* #135 */
-  /* ⚠ ARMOUR 72 -> 27, WHICH IS 20 ON THE FIELD (user, 2026-08-02: "В первом
-     бою если выбираешь помочь ретлингам - у огров противников 20 брони,
-     вместо 50ти. Когда 50 - сложновато"). The number he saw was 54, because
-     `build()` puts every statblock through the playtest-#4 armour trim
-     (ARM=.75), so THE FIGURE IN A STATBLOCK IS NOT THE FIGURE ON THE BOARD
-     and this one had to be solved backwards: 20 / .75 = 26.67, rounded to 27.
-     Anything tuned by eye off this table is tuning three quarters of a number.
-
-     Measured before and after with 12 arena runs a branch, because his
-     complaint was about ONE of the three doors and this table feeds all three:
-     helping the ratkin (three of these as foes) ran **67% win, 7-16 rounds,
-     median 12** for the starting four - a third of first fights lost, at the
-     top of the round band, in the fight that teaches the game. The other two
-     doors were already 100% at medians of 6 and 8.
-
-     THE HITPOINTS ARE UNTOUCHED ON PURPOSE. An ogre should still be more meat
-     than a company in rags can chew through quickly; what was wrong was that
-     knives and a spear could not get THROUGH it, which reads as your weapons
-     being fake rather than as the enemy being big. */
-  ogreclub:{kind:'ogre',name:'Ogre, club',hp:124,armour:27,mor:96,skill:53,dodge:8,speed:3,
-    acts:[{k:'club',n:'WARCLUB',cost:1,reach:1,dmg:[22,33],am:1.28,ft:.24},
-          {k:'sweep',n:'SWEEP',cost:2,reach:1,sweep:true,dmg:[17,26],am:1.12,ft:.20}]}
-};
+/* CLASH_T lives in the one statblock block beside FOE_T now (2026-08-31).
+   clashFoes and clashAllies still reads it; the note above stays with the fight. */
 /* whoever you did NOT help is who you are fighting. Stand back and watch and
    the ogres win, and then come for you anyway — same two ogres, nobody beside
    you. Neutrality is not a way out of the fight, only a way of arriving at it
@@ -17375,12 +17330,8 @@ function clashAllies(){
    spoils, and `checkEnd` still ends the fight when YOUR two go down even with
    the pair standing. They keep the fight alive only by fighting in it. */
 const REINF_ODDS=.5;
-const REINF_T={
-  ringblade:{kind:'human',name:'A ring-eyed man',hp:42,armour:6,mor:60,skill:50,dodge:14,speed:4,
-    acts:[{k:'knife',n:'KNIFE',cost:1,reach:1,dmg:[7,12],am:.30,ft:.50}]},
-  ringclub :{kind:'human',name:'A ring-eyed woman',hp:46,armour:8,mor:60,skill:48,dodge:10,speed:4,
-    acts:[{k:'club',n:'CUDGEL',cost:1,reach:1,dmg:[8,13],am:.55,ft:.35}]}
-};
+/* REINF_T lives in the one statblock block beside FOE_T now (2026-08-31).
+   the reinforcement pair still reads it; the note above stays with the fight. */
 /* which sources this company has earned and not yet spent, for THIS fight */
 function reinfSources(){
   if(!G||!G.party||SIM.on||!B||B.tut)return [];
@@ -17462,51 +17413,8 @@ function reinforce(){
    this one fight (see learn()/whisper()), so Blood on the Road keeps its
    eleven lessons unspent.
    ═══════════════════════════════════════════════════════════════════════ */
-const TAVERN_T={
-  harl :{kind:'human',name:'Harl the carter',hp:52,armour:8,mor:52,skill:50,dodge:10,
-    speed:4,trait:'braggart',
-    acts:[{k:'club',n:'CUDGEL',cost:1,reach:1,dmg:[8,14],am:.55,ft:.35}]},
-  brakk:{kind:'human',name:'Brakk',hp:44,armour:6,mor:46,skill:44,dodge:12,
-    speed:4,trait:'cautious',
-    acts:[{k:'club',n:'CUDGEL',cost:1,reach:1,dmg:[7,12],am:.50,ft:.35}]},
-  osper:{kind:'human',name:'Osper',hp:40,armour:4,mor:42,skill:46,dodge:14,
-    speed:4,trait:'courage',
-    acts:[{k:'fists',n:'FISTS',cost:1,reach:1,dmg:[5,9],am:.30,ft:.45}]},
-  tull :{kind:'human',name:'Tull',hp:46,armour:6,mor:44,skill:42,dodge:10,
-    speed:4,trait:'stubborn',
-    acts:[{k:'club',n:'STOOL, SWUNG',cost:1,reach:1,dmg:[7,13],am:.45,ft:.35}]},
-  /* ═══ #145 - THE ONE YOU CANNOT HIT, AND HE IS HERE TO BE MISSED ═════════
-     (User: "One more thug who is coming add - Very nimble - huge dodge.")
-     He walks in with the barman, one round before your crew, so the room is
-     four against one-and-an-ogre at the moment the lesson is needed.
-     THE ARITHMETIC IS THE LESSON. dodge 20 plus the personality's 16 is 36
-     before the soft cap, which lands it at 26. Against the Captain's 68 that
-     is a 42% swing at his face, 57% at his flank and 72% at his back - so
-     the front is a coin the player will lose twice in a row, and the angle
-     is not a preference, it is the difference between the two halves of a
-     fight. Thin everywhere else on purpose: he is a puzzle, not a threat,
-     and he must go down in two landed blows once the player solves him. */
-  /* ⛔ AND THE KNIFE WAS NEARLY NERFED ON A NUMBER THAT WAS NOT THERE. Two
-     batches of sixteen AI-driven brawls read "the Captain's worst finish
-     falls from 29% of his hitpoints to 10%" against the build without him,
-     which is a frightening number for the opening fight, and the answer
-     drafted here was [4,8]. At n=50 a side the two builds are the SAME
-     fight - average finish 45% and 45%, runs under 25% two and three, runs
-     under 15% one and one, worst 13% and 12%. The tail was always in the
-     brawl; sixteen runs had simply not sampled it.
-     ⚑ A MINIMUM OVER n IS NOT A MEASUREMENT, IT IS THE UNLUCKIEST SAMPLE,
-     and it gets worse every time you look. Measure a tail as the FRACTION
-     of runs under a threshold, which is stable, and this file's own rule
-     (n=6 cannot tell 0% from 20%) applies to worst cases twice over. */
-  weft :{kind:'human',name:'Weft',hp:34,armour:3,mor:44,skill:40,dodge:20,
-    speed:5,trait:'nimble',
-    acts:[{k:'knife',n:'BONING KNIFE',cost:1,reach:1,dmg:[6,11],am:.25,ft:.55}]},
-  /* #111 - the user's ruling: no ratkin allies here. The non-human helper is
-     the BARMAN, an ogre with a proprietary interest in the furniture. */
-  barman:{kind:'ogre',name:'The barman',hp:96,armour:12,mor:96,skill:48,dodge:6,
-    speed:3,trait:'stubborn',
-    acts:[{k:'club',n:'BAR CLUB',cost:1,reach:1,dmg:[18,27],am:1.1,ft:.25}]}
-};
+/* TAVERN_T lives in the one statblock block beside FOE_T now (2026-08-31).
+   tavernFoes and the scripted waves still reads it; the note above stays with the fight. */
 function tavernFoes(){
   /* init 24: the Captain moves first, so every lesson lands on a player turn */
   const f=build([[8,6,'harl',24]],TAVERN_T);
@@ -17912,50 +17820,8 @@ function tavernTick(){
    is 11 on the board. Anything tuned by eye off this table is tuning three
    quarters of a number (CLASH_T learned that one the expensive way).
    ════════════════════════════════════════════════════════════════════════ */
-const CHASE_T={
-  /* the one who does the talking, and the only crest on the field */
-  carter:{kind:'human',name:'The carter',hp:50,armour:14,mor:54,skill:50,dodge:10,
-    speed:4,trait:'braggart',captain:true,lean:{mor:+1},
-    acts:[{k:'chop',n:'HATCHET',cost:1,reach:1,dmg:[10,16],am:.55,ft:.32,
-      note:'A tool. Eleven years of swinging it at wood and none at all at anybody.'}]},
-  /* the one that actually hurts. Slow, and he does not need to be quick */
-  wharf:{kind:'human',name:'The big one off the wharf',hp:46,armour:12,mor:48,skill:46,
-    dodge:10,speed:4,trait:'stubborn',
-    acts:[{k:'club',n:'CARGO MAUL',cost:1,reach:1,dmg:[12,19],am:.80,ft:.26}]},
-  /* #145's puzzle, sober, and this time nobody explains him */
-  knife:{kind:'human',name:'The thin one',hp:34,armour:6,mor:44,skill:44,dodge:20,
-    speed:5,trait:'nimble',
-    acts:[{k:'knife',n:'BONING KNIFE',cost:1,reach:1,dmg:[7,12],am:.28,ft:.55,
-      note:'You have met this problem before, in a tap-room, and an angle solved it.'}]},
-  /* ═══ ⛔ #234 · AND THE POLE IS PUT DOWN ═══════════════════════════════
-     (User, 2026-08-22: *"in the battle when there is 1 rat-ling (chase) - give him
-     a knife instead of pole. It is simplier for new playrs to coordinate"*.)
-
-     #210's argument, kept because it was right about the VERB: *"reach 2, small
-     damage, and it takes one of YOURS out of the line. Its whole job is that the
-     line is the thing a starting company owns. Same verb as the Snare's hook-pole."*
-     What it did not weigh is where this fight SITS. It is the second battle in the
-     game, one node after the brawl and one before Blood on the Road, and a reach-2
-     puller is the only verb on this road that UNDOES the player's arrangement after
-     they have made it. A company still learning that standing together is worth
-     something cannot read that as a lesson; it reads as the board moving by itself.
-     ⛑ THE POLE IS NOT DELETED, IT IS LEFT TO ITS FIRST OWNER. The Snare's HOOK-POLE
-     is untouched, so the verb is met exactly once, later, on a card that is about
-     being pulled apart - which is a better introduction than a second copy of it
-     here was.
-     ⚠ THE TWO ACTS BECOME ONE AND THE FIGURES ARE THE SUM, NOT AN UPGRADE. He had
-     HOOK [6,11] and JAB [7,12] and could take two actions; he has one blade at
-     [7,13] and can still take two. Armour and footwork sit between the two rows he
-     is replacing. Nothing about the fight's weight is meant to change - only the
-     number of things a new player has to hold in their head.
-     ⚠ AND THE KEY MOVED WITH THE VERB. `hook` naming a body that carries a knife is
-     the shape this file keeps deleting; it is read in exactly two places (chaseFoes
-     and the comment above it), so it is cheap to make honest. */
-  rat:{kind:'ratkin',name:'The small one',hp:36,armour:10,mor:50,skill:52,
-    dodge:18,speed:5,
-    acts:[{k:'knife',n:'SHORT KNIFE',cost:1,reach:1,dmg:[7,13],am:.38,ft:.42,
-      note:'He is unhurried about it, which is somehow worse.'}]}
-};
+/* CHASE_T lives in the one statblock block beside FOE_T now (2026-08-31).
+   chaseFoes still reads it; the note above stays with the fight. */
 /* ⛔ ONE SOURCE FOR WHO CAME BACK, read by the CARD'S PROSE and by the BOARD,
    so the two can never name different men. That is the whole reason this is a
    function and not two lists: the body says *"Harl the carter, and Weft a step
@@ -19045,33 +18911,8 @@ function steadingHeads(){return 4+((typeof G!=='undefined'&&G.party&&G.party.len
    broken rather than a rabble that has to be scattered. That difference is
    what the fiction is claiming, so the table has to pay for it.
    ═══════════════════════════════════════════════════════════════════════ */
-const HOLD_T={
-  /* the one who does the talking on the road, and the reason the rest hold.
-     ONE aura in the fight, on purpose: two would be unreadable, and the
-     Sling-master and the Steading-elder both make the same argument. */
-  serj:{kind:'human',name:'Hold serjeant',hp:62,armour:84,mor:92,skill:62,dodge:14,speed:4,
-    captain:true,lean:{mor:+1},
-    aura:{r:3,kind:'human',dodge:4,n:'THE LINE',g:'⚑',col:'#c9a227',
-      d:'+4 dodge to every one of the Hold\'s men within 3 hexes. The shields stay up.'},
-    acts:[{k:'sword',n:'ARMING SWORD',cost:1,reach:1,dmg:[17,26],am:.95,ft:.30}]},
-  /* the other two crests. No aura, better reach, and they come forward. */
-  corp:{kind:'human',name:'Hold corporal',hp:54,armour:72,mor:84,skill:60,dodge:15,speed:4,
-    captain:true,lean:{mor:+1},
-    acts:[{k:'axe',n:'POLE-AXE',cost:1,reach:1,dmg:[18,27],am:1.15,ft:.26}]},
-  bill:{kind:'human',name:'Hold billman',hp:44,armour:58,mor:74,skill:56,dodge:14,speed:4,
-    acts:[{k:'jab',n:'BILL',cost:1,reach:2,dmg:[12,19],am:.75,ft:.28},
-          {k:'wall',n:'BRACE',cost:2,self:true,
-           note:'Anything stepping into reach this round gets the point of it.'}]},
-  /* ⚠ THE HARDEST MISSILE IN THE ACT AFTER AN OGRE THROWING A ROCK, and that
-     is the design rather than an oversight: a windlass bow is the one weapon
-     a poor island keeps buying, and `am:1.00` against the poacher's .50 is
-     what makes standing in armour stop being an answer. */
-  cross:{kind:'archer',name:'Hold crossbow',hp:34,armour:30,mor:70,skill:62,dodge:16,speed:4,
-    bow:true,acts:[{k:'bolt',n:'WINDLASS BOW',cost:1,range:5,dmg:[14,21],am:1.00,ft:.45}]},
-  /* off the leash-ring. Same lurcher the deserters run, better fed. */
-  hound:{kind:'dog',name:'Hold hound',hp:30,armour:10,mor:62,skill:60,dodge:30,speed:5,
-    acts:[{k:'snap',n:'SNAP-AND-AWAY',cost:1,reach:1,dmg:[10,16],am:.40,ft:.55,bounce:2}]}
-};
+/* HOLD_T lives in the one statblock block beside FOE_T now (2026-08-31).
+   holdFoes and holdHost still reads it; the note above stays with the fight. */
 /* ═══ #183 · THE FIRST PATROL COMES ONE CREST SHORT ════════════════════════
    (User, 2026-08-17: *"For enforcers - first fight -1 capitan for them.
    Otherwise it is to hard."*)
@@ -19319,34 +19160,8 @@ function snareClan(){
    the largest single softening this block has taken. `noTrim` still keeps it
    out of every global balance pass, so this number and the 10% off hp/armour
    below are the whole of what has moved. */
-const WARDEN={kind:'warden',race:'unknown',monster:'armour',name:'Something in armour',
-  hp:342,armour:162,mor:460,skill:74,dodge:0,speed:5,
-  /* ⛔ #263 - AUTHORED TO EXACTLY WHAT EVERY BODY IN THE GAME USED TO CARRY,
-     which makes this the one row in the re-stat that changes NOTHING. That is
-     the decision, not an oversight: this fight is a fight against a thing you
-     cannot read, `noFace` already refuses it a portrait and a race, and
-     `notally` refuses it a row on the sheet. A ladder that told you it was
-     enormously strong would be answering the question the whole encounter is
-     built on refusing. ⚠ `noFace` suppresses its four marks on the inspect
-     card too - see the stat row there. */
-  st:{str:-2,agi:-2,int:-1,mor:-2},
-  /* THREE ACTIONS, one-cost sword: it closes five hexes AND cuts, or it
-     crosses nine, or it stands there and cuts twice (`used[k]>=2` is the cap).
-     A two-cost version was tried first and it lost the fight on the action
-     economy alone — one body against six is four attacks a round short
-     however hard each one hits.
-
-     MOR 460 is "it does not react". `noRout` already floors it at 16% so it
-     cannot break, but the ordinary tookHit grind was walking it down into
-     BREAKING (−12 to hit) by round six, and a thing in armour losing its
-     nerve is the wrong story AND a self-solving fight. At 460 it gives up
-     about one rung over a long engagement, which reads as it slowing down at
-     the very end — a tell worth having, and the only one it offers. */
-  actions:3,noTrim:true,noRout:true,noArc:true,soak:4,noFace:true,notally:true,
-  acts:[{k:'sweep',n:'THE SWORD COMES ROUND',cost:1,reach:1,sweep:true,
-    dmg:[34,50],am:1.45,ft:.32,
-    note:'It does not pick a target. Everything standing next to it is in the way, and '+
-      'the more of you there are, the more of you it costs.'}]};
+/* WARDEN lives in the one statblock block beside FOE_T now (2026-08-31).
+   armourFoe still reads it; the note above stays with the fight. */
 function armourFoe(){
   /* one body. It arrives from the road, in the middle, and it comes to you. */
   const CY=ROWS>>1;
@@ -19860,6 +19675,237 @@ let FIGHTBACK=null;
    ⚠ WARDEN and the six named tables are NOT re-declared here - they are
    REFERENCED, so there is still exactly one copy of each. WARDEN keeps its
    own long comment where it stands, which is the block that explains it. */
+/* ═══ ⛔ THE SEVEN THAT WERE STILL SCATTERED ════════════════════
+   (User, 2026-08-31: *"could be good to group enemy data in the build - so it
+   is grouped, rather then thrown through everething"*.)
+
+   #263 answered the same ask for the eight tables that were a `const T={}` inside
+   their own plan function, and left these seven where they stood because they
+   already had module-level names and were therefore already single copies. That
+   was true and it was not the ask: they sat over 2,100 lines of file, so *what
+   does the other side look like* still meant scrolling through seven of them.
+
+   ⛔ THE TABLES MOVED AND NOT ONE FIGURE CHANGED. The oracle is what says so:
+   `tools/dev/probes/foeoracle263.js` builds every `FOE_BUILD[k]()` side on this
+   build and on the previous one and compares 19 fields a body.
+
+   ⚠ THE COMMENTS DELIBERATELY DID NOT COME WITH THEM. Each of these seven
+   carried an essay about its FIGHT: the massacre brief on the wedding, the
+   fiction on Blood on the Road, the teach script on the brawl, the lore on the
+   Hold. Those belong
+   above the plan function that reads them, which is where they still are. A
+   one-line pointer stands at each old site.
+
+   ⚠ THEY ARE DECLARED ABOVE `FOE_T` AND THAT IS LOAD-BEARING, NOT TIDINESS. A
+   `const` read from above its own declaration is the temporal-dead-zone throw
+   that aborts the whole script, and `FOE_T` reads all seven by name.
+   ═════════════════════════════════════════════════════════════════════ */
+/* --- WED_T : the wedding fight --- */
+const WED_T={
+  guest:{kind:'ratkin',name:'Wedding guest',hp:30,armour:4,mor:34,skill:38,dodge:12,speed:4,
+    actions:1,noRout:true,acts:[{k:'fists',n:'FISTS',cost:1,reach:1,dmg:[4,8],am:.25,ft:.40,
+      note:'What anybody has, when nobody brought anything.'}]},
+  jug:{kind:'ratkin',name:'Guest, with a jug',hp:32,armour:4,mor:36,skill:41,dodge:11,speed:4,
+    actions:1,noRout:true,acts:[{k:'club',n:'JUG, SWUNG',cost:1,reach:1,dmg:[6,11],am:.35,ft:.35,
+      note:'It was full. It does not stay full.'}]},
+  /* the one body with reach, and it is a kitchen implement. Somebody has to
+     be able to answer a spear line or the fight is a queue. */
+  aunt:{kind:'ratkin',name:'The aunt with the roasting spit',hp:34,armour:6,mor:42,
+    skill:45,dodge:12,speed:4,
+    actions:1,noRout:true,acts:[{k:'jab',n:'ROASTING SPIT',cost:1,reach:2,dmg:[7,12],am:.45,ft:.30,
+      note:'Four feet of iron, and she has been holding it since the morning.'}]},
+  groom:{kind:'ratkin',name:'The groom',hp:44,armour:8,mor:70,skill:52,dodge:14,speed:4,
+    captain:true,lean:{mor:+1},noRout:true,
+    acts:[{k:'fists',n:'BARE HANDS',cost:1,reach:1,dmg:[7,12],am:.30,ft:.42,
+      note:'He was married an hour ago and there is nothing behind his face at all.'}]},
+  bride:{kind:'ratkin',name:'The bride',hp:26,armour:2,mor:60,skill:36,dodge:18,speed:4,
+    actions:1,noRout:true,acts:[{k:'fists',n:'NAILS',cost:1,reach:1,dmg:[2,5],am:.10,ft:.50,
+      note:'It is not a weapon and she is not a soldier and she is still coming.'}]}
+};
+/* --- CLASH_T : the clash fight --- */
+const CLASH_T={
+  ratspear:{kind:'ratkin',name:'Ratkin, spear',hp:46,armour:34,mor:72,skill:53,dodge:18,speed:5,
+    acts:[{k:'jab',n:'JAB',cost:1,reach:2,dmg:[10,15],am:.60,ft:.30}]},
+  ratsling:{kind:'ratkin',name:'Ratkin slinger',hp:38,armour:22,mor:66,skill:57,dodge:20,speed:5,
+    bow:true,acts:[{k:'sling',n:'SLING',cost:1,range:5,dmg:[10,16],am:.50,ft:.40}]},   /* #135 */
+  /* ⚠ ARMOUR 72 -> 27, WHICH IS 20 ON THE FIELD (user, 2026-08-02: "В первом
+     бою если выбираешь помочь ретлингам - у огров противников 20 брони,
+     вместо 50ти. Когда 50 - сложновато"). The number he saw was 54, because
+     `build()` puts every statblock through the playtest-#4 armour trim
+     (ARM=.75), so THE FIGURE IN A STATBLOCK IS NOT THE FIGURE ON THE BOARD
+     and this one had to be solved backwards: 20 / .75 = 26.67, rounded to 27.
+     Anything tuned by eye off this table is tuning three quarters of a number.
+
+     Measured before and after with 12 arena runs a branch, because his
+     complaint was about ONE of the three doors and this table feeds all three:
+     helping the ratkin (three of these as foes) ran **67% win, 7-16 rounds,
+     median 12** for the starting four - a third of first fights lost, at the
+     top of the round band, in the fight that teaches the game. The other two
+     doors were already 100% at medians of 6 and 8.
+
+     THE HITPOINTS ARE UNTOUCHED ON PURPOSE. An ogre should still be more meat
+     than a company in rags can chew through quickly; what was wrong was that
+     knives and a spear could not get THROUGH it, which reads as your weapons
+     being fake rather than as the enemy being big. */
+  ogreclub:{kind:'ogre',name:'Ogre, club',hp:124,armour:27,mor:96,skill:53,dodge:8,speed:3,
+    acts:[{k:'club',n:'WARCLUB',cost:1,reach:1,dmg:[22,33],am:1.28,ft:.24},
+          {k:'sweep',n:'SWEEP',cost:2,reach:1,sweep:true,dmg:[17,26],am:1.12,ft:.20}]}
+};
+/* --- REINF_T : the reinforcements fight --- */
+const REINF_T={
+  ringblade:{kind:'human',name:'A ring-eyed man',hp:42,armour:6,mor:60,skill:50,dodge:14,speed:4,
+    acts:[{k:'knife',n:'KNIFE',cost:1,reach:1,dmg:[7,12],am:.30,ft:.50}]},
+  ringclub :{kind:'human',name:'A ring-eyed woman',hp:46,armour:8,mor:60,skill:48,dodge:10,speed:4,
+    acts:[{k:'club',n:'CUDGEL',cost:1,reach:1,dmg:[8,13],am:.55,ft:.35}]}
+};
+/* --- TAVERN_T : the tavern fight --- */
+const TAVERN_T={
+  harl :{kind:'human',name:'Harl the carter',hp:52,armour:8,mor:52,skill:50,dodge:10,
+    speed:4,trait:'braggart',
+    acts:[{k:'club',n:'CUDGEL',cost:1,reach:1,dmg:[8,14],am:.55,ft:.35}]},
+  brakk:{kind:'human',name:'Brakk',hp:44,armour:6,mor:46,skill:44,dodge:12,
+    speed:4,trait:'cautious',
+    acts:[{k:'club',n:'CUDGEL',cost:1,reach:1,dmg:[7,12],am:.50,ft:.35}]},
+  osper:{kind:'human',name:'Osper',hp:40,armour:4,mor:42,skill:46,dodge:14,
+    speed:4,trait:'courage',
+    acts:[{k:'fists',n:'FISTS',cost:1,reach:1,dmg:[5,9],am:.30,ft:.45}]},
+  tull :{kind:'human',name:'Tull',hp:46,armour:6,mor:44,skill:42,dodge:10,
+    speed:4,trait:'stubborn',
+    acts:[{k:'club',n:'STOOL, SWUNG',cost:1,reach:1,dmg:[7,13],am:.45,ft:.35}]},
+  /* ═══ #145 - THE ONE YOU CANNOT HIT, AND HE IS HERE TO BE MISSED ═════════
+     (User: "One more thug who is coming add - Very nimble - huge dodge.")
+     He walks in with the barman, one round before your crew, so the room is
+     four against one-and-an-ogre at the moment the lesson is needed.
+     THE ARITHMETIC IS THE LESSON. dodge 20 plus the personality's 16 is 36
+     before the soft cap, which lands it at 26. Against the Captain's 68 that
+     is a 42% swing at his face, 57% at his flank and 72% at his back - so
+     the front is a coin the player will lose twice in a row, and the angle
+     is not a preference, it is the difference between the two halves of a
+     fight. Thin everywhere else on purpose: he is a puzzle, not a threat,
+     and he must go down in two landed blows once the player solves him. */
+  /* ⛔ AND THE KNIFE WAS NEARLY NERFED ON A NUMBER THAT WAS NOT THERE. Two
+     batches of sixteen AI-driven brawls read "the Captain's worst finish
+     falls from 29% of his hitpoints to 10%" against the build without him,
+     which is a frightening number for the opening fight, and the answer
+     drafted here was [4,8]. At n=50 a side the two builds are the SAME
+     fight - average finish 45% and 45%, runs under 25% two and three, runs
+     under 15% one and one, worst 13% and 12%. The tail was always in the
+     brawl; sixteen runs had simply not sampled it.
+     ⚑ A MINIMUM OVER n IS NOT A MEASUREMENT, IT IS THE UNLUCKIEST SAMPLE,
+     and it gets worse every time you look. Measure a tail as the FRACTION
+     of runs under a threshold, which is stable, and this file's own rule
+     (n=6 cannot tell 0% from 20%) applies to worst cases twice over. */
+  weft :{kind:'human',name:'Weft',hp:34,armour:3,mor:44,skill:40,dodge:20,
+    speed:5,trait:'nimble',
+    acts:[{k:'knife',n:'BONING KNIFE',cost:1,reach:1,dmg:[6,11],am:.25,ft:.55}]},
+  /* #111 - the user's ruling: no ratkin allies here. The non-human helper is
+     the BARMAN, an ogre with a proprietary interest in the furniture. */
+  barman:{kind:'ogre',name:'The barman',hp:96,armour:12,mor:96,skill:48,dodge:6,
+    speed:3,trait:'stubborn',
+    acts:[{k:'club',n:'BAR CLUB',cost:1,reach:1,dmg:[18,27],am:1.1,ft:.25}]}
+};
+/* --- CHASE_T : the chase fight --- */
+const CHASE_T={
+  /* the one who does the talking, and the only crest on the field */
+  carter:{kind:'human',name:'The carter',hp:50,armour:14,mor:54,skill:50,dodge:10,
+    speed:4,trait:'braggart',captain:true,lean:{mor:+1},
+    acts:[{k:'chop',n:'HATCHET',cost:1,reach:1,dmg:[10,16],am:.55,ft:.32,
+      note:'A tool. Eleven years of swinging it at wood and none at all at anybody.'}]},
+  /* the one that actually hurts. Slow, and he does not need to be quick */
+  wharf:{kind:'human',name:'The big one off the wharf',hp:46,armour:12,mor:48,skill:46,
+    dodge:10,speed:4,trait:'stubborn',
+    acts:[{k:'club',n:'CARGO MAUL',cost:1,reach:1,dmg:[12,19],am:.80,ft:.26}]},
+  /* #145's puzzle, sober, and this time nobody explains him */
+  knife:{kind:'human',name:'The thin one',hp:34,armour:6,mor:44,skill:44,dodge:20,
+    speed:5,trait:'nimble',
+    acts:[{k:'knife',n:'BONING KNIFE',cost:1,reach:1,dmg:[7,12],am:.28,ft:.55,
+      note:'You have met this problem before, in a tap-room, and an angle solved it.'}]},
+  /* ═══ ⛔ #234 · AND THE POLE IS PUT DOWN ═══════════════════════════════
+     (User, 2026-08-22: *"in the battle when there is 1 rat-ling (chase) - give him
+     a knife instead of pole. It is simplier for new playrs to coordinate"*.)
+
+     #210's argument, kept because it was right about the VERB: *"reach 2, small
+     damage, and it takes one of YOURS out of the line. Its whole job is that the
+     line is the thing a starting company owns. Same verb as the Snare's hook-pole."*
+     What it did not weigh is where this fight SITS. It is the second battle in the
+     game, one node after the brawl and one before Blood on the Road, and a reach-2
+     puller is the only verb on this road that UNDOES the player's arrangement after
+     they have made it. A company still learning that standing together is worth
+     something cannot read that as a lesson; it reads as the board moving by itself.
+     ⛑ THE POLE IS NOT DELETED, IT IS LEFT TO ITS FIRST OWNER. The Snare's HOOK-POLE
+     is untouched, so the verb is met exactly once, later, on a card that is about
+     being pulled apart - which is a better introduction than a second copy of it
+     here was.
+     ⚠ THE TWO ACTS BECOME ONE AND THE FIGURES ARE THE SUM, NOT AN UPGRADE. He had
+     HOOK [6,11] and JAB [7,12] and could take two actions; he has one blade at
+     [7,13] and can still take two. Armour and footwork sit between the two rows he
+     is replacing. Nothing about the fight's weight is meant to change - only the
+     number of things a new player has to hold in their head.
+     ⚠ AND THE KEY MOVED WITH THE VERB. `hook` naming a body that carries a knife is
+     the shape this file keeps deleting; it is read in exactly two places (chaseFoes
+     and the comment above it), so it is cheap to make honest. */
+  rat:{kind:'ratkin',name:'The small one',hp:36,armour:10,mor:50,skill:52,
+    dodge:18,speed:5,
+    acts:[{k:'knife',n:'SHORT KNIFE',cost:1,reach:1,dmg:[7,13],am:.38,ft:.42,
+      note:'He is unhurried about it, which is somehow worse.'}]}
+};
+/* --- HOLD_T : the hold and snarejoin fight --- */
+const HOLD_T={
+  /* the one who does the talking on the road, and the reason the rest hold.
+     ONE aura in the fight, on purpose: two would be unreadable, and the
+     Sling-master and the Steading-elder both make the same argument. */
+  serj:{kind:'human',name:'Hold serjeant',hp:62,armour:84,mor:92,skill:62,dodge:14,speed:4,
+    captain:true,lean:{mor:+1},
+    aura:{r:3,kind:'human',dodge:4,n:'THE LINE',g:'⚑',col:'#c9a227',
+      d:'+4 dodge to every one of the Hold\'s men within 3 hexes. The shields stay up.'},
+    acts:[{k:'sword',n:'ARMING SWORD',cost:1,reach:1,dmg:[17,26],am:.95,ft:.30}]},
+  /* the other two crests. No aura, better reach, and they come forward. */
+  corp:{kind:'human',name:'Hold corporal',hp:54,armour:72,mor:84,skill:60,dodge:15,speed:4,
+    captain:true,lean:{mor:+1},
+    acts:[{k:'axe',n:'POLE-AXE',cost:1,reach:1,dmg:[18,27],am:1.15,ft:.26}]},
+  bill:{kind:'human',name:'Hold billman',hp:44,armour:58,mor:74,skill:56,dodge:14,speed:4,
+    acts:[{k:'jab',n:'BILL',cost:1,reach:2,dmg:[12,19],am:.75,ft:.28},
+          {k:'wall',n:'BRACE',cost:2,self:true,
+           note:'Anything stepping into reach this round gets the point of it.'}]},
+  /* ⚠ THE HARDEST MISSILE IN THE ACT AFTER AN OGRE THROWING A ROCK, and that
+     is the design rather than an oversight: a windlass bow is the one weapon
+     a poor island keeps buying, and `am:1.00` against the poacher's .50 is
+     what makes standing in armour stop being an answer. */
+  cross:{kind:'archer',name:'Hold crossbow',hp:34,armour:30,mor:70,skill:62,dodge:16,speed:4,
+    bow:true,acts:[{k:'bolt',n:'WINDLASS BOW',cost:1,range:5,dmg:[14,21],am:1.00,ft:.45}]},
+  /* off the leash-ring. Same lurcher the deserters run, better fed. */
+  hound:{kind:'dog',name:'Hold hound',hp:30,armour:10,mor:62,skill:60,dodge:30,speed:5,
+    acts:[{k:'snap',n:'SNAP-AND-AWAY',cost:1,reach:1,dmg:[10,16],am:.40,ft:.55,bounce:2}]}
+};
+/* --- WARDEN : the armour fight --- */
+const WARDEN={kind:'warden',race:'unknown',monster:'armour',name:'Something in armour',
+  hp:342,armour:162,mor:460,skill:74,dodge:0,speed:5,
+  /* ⛔ #263 - AUTHORED TO EXACTLY WHAT EVERY BODY IN THE GAME USED TO CARRY,
+     which makes this the one row in the re-stat that changes NOTHING. That is
+     the decision, not an oversight: this fight is a fight against a thing you
+     cannot read, `noFace` already refuses it a portrait and a race, and
+     `notally` refuses it a row on the sheet. A ladder that told you it was
+     enormously strong would be answering the question the whole encounter is
+     built on refusing. ⚠ `noFace` suppresses its four marks on the inspect
+     card too - see the stat row there. */
+  st:{str:-2,agi:-2,int:-1,mor:-2},
+  /* THREE ACTIONS, one-cost sword: it closes five hexes AND cuts, or it
+     crosses nine, or it stands there and cuts twice (`used[k]>=2` is the cap).
+     A two-cost version was tried first and it lost the fight on the action
+     economy alone — one body against six is four attacks a round short
+     however hard each one hits.
+
+     MOR 460 is "it does not react". `noRout` already floors it at 16% so it
+     cannot break, but the ordinary tookHit grind was walking it down into
+     BREAKING (−12 to hit) by round six, and a thing in armour losing its
+     nerve is the wrong story AND a self-solving fight. At 460 it gives up
+     about one rung over a long engagement, which reads as it slowing down at
+     the very end — a tell worth having, and the only one it offers. */
+  actions:3,noTrim:true,noRout:true,noArc:true,soak:4,noFace:true,notally:true,
+  acts:[{k:'sweep',n:'THE SWORD COMES ROUND',cost:1,reach:1,sweep:true,
+    dmg:[34,50],am:1.45,ft:.32,
+    note:'It does not pick a target. Everything standing next to it is in the way, and '+
+      'the more of you there are, the more of you it costs.'}]};
 const SNARE_T={
     chief:{kind:'bruiser',name:'Ratkin chieftain',hp:64,armour:58,mor:80,skill:60,dodge:16,speed:3,
       captain:true,lean:{mor:+1},acts:[{k:'maul',n:'MAUL',cost:1,reach:1,dmg:[19,29],am:1.05,ft:.26}]},
@@ -52625,31 +52671,84 @@ $('menuBtn').onclick=()=>{
    Everything random is SEEDED for the measurement (seededly): the steading
    rolls its wall, build() rolls foe personalities, a caster tops up his
    schools. One number per build, never a flicker. */
-const PTS_SCALE=0.42;   /* the dial. Recalibrate against the founders, nothing else. */
+/* ⛔ 2026-08-31 - 0.42 -> 1.275, WHICH IS THIS COMMENT BEING OBEYED RATHER THAN
+   CHANGED. The dial is calibrated so the four founders sum to ~100 ("bring 100
+   points" means "bring the company the run starts with"), and measured against
+   `ARENA.COMPS.four()` they summed to 37: HDA_CUT took hitpoints, damage and
+   armour 3.5x on BOTH sides, and `pts` is a geometric mean of the two, so it
+   came down 3.5x with them. ⚠ IT IS NOT 0.42*100/37: the four other fixes
+   below move the founders too (Marrow's flat-26 caster clamp was making her the
+   second most valuable body in the company), so the dial is re-derived AFTER
+   them, and re-derived again if any of them moves.
+   ⚠ THE BANDS DID NOT MOVE AND CANNOT: `simBands` is
+   ratios of the same net (x1.3 / x1 / x0.75), so only the absolute reading was
+   ever wrong. Recalibrate against the founders, nothing else. */
+const PTS_SCALE=1.275;
+/* ⛑ A WORKING GOES THROUGH THE PLATES ENTIRELY (`ignoresArmour`, am:0), so an
+   arcane blow only has to chew the hitpoints while a sword has to chew the whole
+   pool `stay` counts. The premium is therefore (hp + .8*armour)/hp on whoever
+   they are actually fighting: measured 1.19 on the starting four and 1.53 on the
+   prepared six, 2026-08-31. ⚠ RE-MEASURE IT IF EITHER COMPANY'S KIT MOVES. */
+const PTS_ARC_THROUGH=1.35;
 function seededly(fn){
   const real=Math.random;let s=1234567;
   Math.random=()=>{s=(s*1103515245+12345)%2147483648;return s/2147483648;};
   try{return fn();}finally{Math.random=real;}
 }
+/* how much of a swing actually lands, off the skill that AIMS that swing */
+const ptsWeight=k=>.35+.011*(k||50);
 function unitPts(u){
   if(!u||u.passive)return 0;              /* the cub is a decision, not a threat */
-  let dpr=0;
-  (u.acts||[]).forEach(a=>{
-    if(!a.dmg||a.move)return;
-    const avg=(a.dmg[0]+a.dmg[1])/2+(u.dmgBonus||0);
+  const mw=ptsWeight(u.mskill);
+  /* ⛔ AN ARCANE ACT IS AIMED WITH THE INTELLECT AND NOTHING DODGES IT (#253,
+     #254), so it is weighted by `D.arc` and never by the weapon arm. Weighting
+     every act by `mskill` priced the one-word ogre - arc 41, and the fight IS
+     that he misses - as if he swung at 53, and the warp-sniffer - arc 76 - as
+     if he cast at 56. Two bodies, wrong in opposite directions, from one line.
+     ⚠ `D.arc` NEEDS `u.st` AND A HAND-TUNED BOSS MAY NOT HAVE ONE, so the
+     weapon weight is the fallback rather than a throw. */
+  let aw=mw;
+  try{if(u.st)aw=ptsWeight(D.arc(u));}catch(e){}
+  const score=a=>{
+    if(a.move)return 0;
+    let avg=a.dmg?(a.dmg[0]+a.dmg[1])/2+(u.dmgBonus||0):0;
+    /* ⛑ BURNING GROUND IS DAMAGE, AND IT IS THE GAME'S OWN ARITHMETIC RATHER
+       THAN A GUESS: one body pays EMBER_HIT to stand in it and BURN_TICK for
+       BURN_TURNS after. The cinder salamander's bestiary line is *"It cannot
+       really hurt you. The ground it leaves behind can"* and it was priced on
+       the half that cannot. */
+    if(a.ember||a.char)avg+=EMBER_HIT+BURN_TICK*BURN_TURNS;
+    if(!avg)return 0;
     let v=avg*((u.actionsMax||2)/Math.max(1,a.cost||1));
     if(a.sweep)v*=1.35;                   /* hits everything adjacent */
     if(a.range)v*=1.10;                   /* distance is rounds of free work */
-    dpr=Math.max(dpr,v);
-  });
-  if(u.caster)dpr=Math.max(dpr,26*(u.spellPow||1));   /* a school, through armour */
-  let off=dpr*(.35+.011*(u.mskill||50));
+    if(a.arcane)v*=PTS_ARC_THROUGH;       /* it only has to chew the body */
+    return v*(a.arcane?aw:mw);
+  };
+  const acts=(u.acts||[]).filter(a=>!a.move);
+  let best=0,bestCool=0,free=0;
+  acts.forEach(a=>{const v=score(a);
+    if(v>best){best=v;bestCool=a.cool||0;}
+    if(!a.cool&&v>free)free=v;});
+  /* ⛔ A COOLED ACT DOES NOT FIRE EVERY TURN AND THE MAX PRICED IT AS IF IT
+     DID. Over `cool+1` turns it lands once and the best FREE act covers the
+     rest, which is arithmetic rather than a discount factor. ⚡ It changed
+     nothing on the shipped build - no body's best act is behind a cooldown -
+     and it is here because the re-weighting above can make one, silently. */
+  let off=bestCool?(best+bestCool*free)/(bestCool+1):best;
   /* the wedding's whole difficulty tuning is this flag (#159), so the scale
      has to read it: a drunk body swings at -12 and dodges at -8 */
   if(u.drunk)off*=0.7;
   const dv=Math.max(0,(u.dodgeBase||0)-(u.drunk?8:0));
-  const stay=((u.hpMax||1)+.8*(u.armourMax||0)+22*(u.soak||0))
+  let stay=((u.hpMax||1)+.8*(u.armourMax||0)+22*(u.soak||0))
     *(1+dv/90)*(u.noRout?1.25:1);
+  /* ⛑ TWO RULES THAT ARE STAYING POWER WITHOUT BEING A NUMBER ON THE BODY.
+     `bounce` leaves the hex after it swings, so the thing is not standing there
+     when your turn comes - which is the lurcher's ENTIRE design and was worth
+     nothing; `veiled` cannot be targeted at all until it moves. Both are
+     deliberately small: they buy turns, not hitpoints. */
+  if(acts.some(a=>a.bounce))stay*=1.20;
+  if(u.veiled)stay*=1.15;
   return Math.max(1,Math.round(Math.sqrt(off*stay)*PTS_SCALE));
 }
 /* a roster body, priced as the unit it would be on the field. The deep copy

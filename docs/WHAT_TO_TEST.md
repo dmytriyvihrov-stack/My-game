@@ -26,6 +26,37 @@
 
 ---
 
+## #276 - the foe dex, the grouped statblocks, and the threat price
+
+**Open `tools/enemies.html` in a browser.** It is a loose file and needs no server.
+
+- the ENEMIES tab opens grouped into **14 families**, threat-sorted, 60 bodies with 5
+  champions folded in. Click a `CHAMPION` toggle: the better version appears under its base
+  with a gold rail. Hold billman's toggle reads **2 rolls, 32/30 pts** because the perks are
+  rolled;
+- click any column header. **The groups switch off** - a header saying DOGS over a list
+  ordered by hitpoints would be a claim the rows do not support;
+- hover a skill chip for its own sentence, a `CHAMPION` perk chip for what the perk does, and
+  a card chip for the door that starts the fight;
+- edit any dotted cell. It marks green, survives a reload, and **EXPORT JSON** carries it;
+  **RESET EDITS** throws them away;
+- the FIGHTS tab: 20 cards, each with its cast, per-body pts and the easy/even/hard bands;
+- the foot of the ENEMIES tab: **what was drawn and is never shown**, with the pictures.
+
+**In the game**, and this is the half that could break something:
+
+- open the practice field (⚙ dev mode). Every fight's `easy / even / hard` figures are
+  about **3x what they were** and the RATIOS are unchanged. A starting company is ~100 points
+  again, which is what "bring 100 points" was always supposed to mean;
+- start each of the twenty fights. The cast, the numbers and the board are byte-identical to
+  the previous build: the statblocks MOVED and not one figure changed.
+
+```bash
+python tools/dev/gt.py eval tools/dev/probes/foeoracle263.js   # twice a build, then diff
+python tools/dev/gt.py eval tools/dev/probes/ptsprice.js       # every body, every fight
+python tools/dev/gt.py eval tools/dev/probes/orphanart.js      # what nothing can reach
+```
+
 ## 🧪 THE TWO CAPS, THE MISSING DISENGAGE, AND A CLOAK  *(#275 · 2026-08-31 · build log 8f.299)*
 
 **Reach the caps in three steps:** company sheet → hover TO HIT, then hover DODGE.

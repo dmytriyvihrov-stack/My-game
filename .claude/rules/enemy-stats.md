@@ -19,9 +19,19 @@ twice.**
   inside a plan function is the scattered shape #263 deleted** - it was fourteen tables in fourteen
   places, and *what does the other side look like* could not be answered without opening eight
   functions and knowing which eight.
-- The six tables that already had module-level names (`WED_T`, `CLASH_T`, `REINF_T`, `TAVERN_T`,
-  `CHASE_T`, `HOLD_T`) and `WARDEN` are **referenced** by `FOE_T`, not re-declared. There is still
-  exactly one copy of each.
+- **Since 2026-08-31 all sixteen tables are DECLARED in one contiguous block** above `FOE_LEAN` /
+  `FOE_T` / `FOE_BUILD`, and that block is the whole of the other side. The seven that used to sit
+  where their plan function sits (`WED_T`, `CLASH_T`, `REINF_T`, `TAVERN_T`, `CHASE_T`, `HOLD_T`,
+  `WARDEN`) moved there verbatim, on the user's second asking of #263's own question: *"could be
+  good to group enemy data in the build - so it is grouped, rather then thrown through
+  everething"*. ⚠ **Their COMMENTS did not move.** Each of the seven carried an essay about its
+  FIGHT (the massacre brief on the wedding, the fiction on Blood on the Road, the teach script on
+  the brawl, the lore on the Hold), and those belong above the plan function that reads them,
+  which is where they still are. A one-line pointer stands at each old site.
+  ⛑ **The move is `tools/dev/patches/foegroup.py`, and it is re-runnable and refuses a second
+  run.** Its own scanner is the lesson: the first cut skipped strings but not COMMENTS, so an
+  ordinary apostrophe in a comment opened a string that never closed and `HOLD_T` measured
+  **107 KB instead of 1.9**. Only the balance guard stopped it being written.
 - **`build()` is the one body-maker for that side** and `besideYou()` the one door onto yours. A
   statblock body given `side='you'` by hand silently keeps the other side's ease knob; that warning
   is on `besideYou` itself and it stays true.
@@ -232,6 +242,78 @@ prepared **93% -> 63%**, glass road / prepared **100% -> 83%**. Nothing in `LIZ_
 lizard fights were priced in #267 against an AI that stood still, so those figures describe a fight
 nobody had played rather than a nerf.
 
+## ⛔ THE THREAT PRICE IS ADVISORY, AND FIVE THINGS ABOUT IT WERE WRONG
+
+*(2026-08-31, measured while building `tools/enemies.html`. The user: "you can double check enemy
+threads points just in case".)*
+
+`unitPts` (#216) is the one scale for a body, a piece of kit and a fight: a geometric mean of
+offence and staying power, `sqrt(off * stay) * PTS_SCALE`. It prices the practice field's
+easy/even/hard bands, the dev bench and the map's dev badge, and **it never touches a fight**. So
+everything below is a readout being wrong, not a balance bug - which is exactly why nothing caught
+it.
+
+⚡ **THE ANCHOR SENTENCE IN ITS OWN COMMENT IS FALSE.** `PTS_SCALE` is documented as *"calibrated
+so THE FOUR FOUNDERS SUM TO ~100"*. Measured on the shipped build the four founders sum to **37**,
+because HDA_CUT took hitpoints, damage and armour 3.5x on BOTH sides and a geometric mean of two
+things each cut 3.5x is cut 3.5x. ⛑ **The BANDS did not move**, because they are ratios of the
+same net (`net*1.3` / `net` / `net*0.75`); only the absolute reading did. Filed as **B15**.
+
+⛔ **A CONSTANT INSIDE A DERIVED FORMULA IS A SECOND AUTHOR, AND `26` IS ONE.** A caster's
+damage-per-round is clamped `Math.max(dpr, 26*spellPow)`. Every damage die in the game was cut by
+HDA_CUT; the 26 was not, so it now dominates all three casters in the build - measured raw dpr
+**7 / 7 / 14** against a clamp of **26**. ⚠ It is also weighted by `mskill`, and an `arcane` act is
+aimed with INTELLECT, so the one-word ogre - whose entire design is that he misses two working in
+three - prices as the third-hardest body in the Snare. Filed as **B16**.
+
+⚠ **AND IT READS SIX FIELDS, SO A CREATURE WHOSE THREAT IS A RULE PRICES AS ITS LEFTOVERS.**
+It sees damage, hitpoints, armour, soak, dodge and rout. It does NOT see burning ground, `veiled`,
+`bounce`, `pull`, being multi-hex, a mood attack, `guards`, or SPEED at all. The cinder salamander
+prices at **4** on a bestiary line that says in so many words that its bite is not the point.
+⛑ **The answer is to know it rather than to guess at it**: a price with a documented blind spot
+is worth more than one that estimates unmodelled rules. Filed as **B17**.
+
+⚡ **WHAT DID CHECK OUT.** The six fields it reads it reads correctly on all 62 bodies, and the
+cooldown omission cost nothing: no body in the game has its highest-scoring act behind a `cool`.
+
+## ⛑ AND ALL FIVE ARE FIXED, WITH EVERY NEW CONSTANT MEASURED OFF THE BUILD
+
+*(2026-08-31, the user: "Can you recheck threat points?". `tools/dev/patches/ptsfix.py` is the
+change, `tools/dev/probes/ptsprice.js` the before-and-after.)*
+
+| | |
+|---|---|
+| `PTS_SCALE` **0.42 -> 1.275** | so `ARENA.COMPS.four()` reads **101**, which is the dial's own comment being obeyed |
+| the flat `26` caster clamp | **gone.** An arcane act is scored off its real dice like every other act |
+| `PTS_ARC_THROUGH` **1.35** | a working goes through the plates entirely, so it only has to chew the hitpoints. **Measured** as `(hp+.8*armour)/hp` on the two reference companies: 1.19 on the starting four, 1.53 on the prepared six |
+| the aiming stat | **per ACT.** `D.arc(u)` weights an arcane act, `mskill` weights a swing |
+| a cooled act | `(best + cool*bestFree)/(cool+1)`, which is arithmetic and not a discount |
+| burning ground | `EMBER_HIT + BURN_TICK*BURN_TURNS`, **the game's own three constants**, on one body |
+| `bounce` / `veiled` | staying x1.20 / x1.15: they buy turns, and they were worth nothing |
+
+⛔ **1.275 IS NOT `0.42 * 100/37` AND THAT IS THE PART TO REMEMBER.** The other four fixes move
+your own people too, so the dial has to be re-derived AFTER them: the flat 26 was making Marrow the
+second most valuable body in the company, and without it the founders read 89 at 1.135. **Re-derive
+it again the day any of the other four changes.**
+
+⚡ **WHAT MOVED, PRICED AGAINST A `git show HEAD:` BASELINE, EVERY BODY AND EVERY FIGHT.** The
+pure rescale is x3.04; anything off it is one of the five:
+
+| | |
+|---|---|
+| the lurcher and the runt | **+15 to +21%** - `bounce`, which is their entire design |
+| the one-word ogre | **-23%** - arc **41**, and the fight IS that he misses |
+| both warp-sniffers | **-29%** - they were priced on a flat 26 and their working does 4-6 |
+| every fight | **within 7% of the rescale except the pack (+15%) and snarejoin (+10%)**, which is the dogs in both cases |
+
+⚠ **THE BANDS COULD NOT MOVE AND DID NOT**: `simBands` is ratios of the same net. What changed is
+that an absolute reading now means something again.
+⚠ **THE SALAMANDER IS STILL PRICED ON ITS BITE**, and that is the formula answering honestly
+rather than the fix failing: with two actions, biting twice scores 9.0 against 8.25 for a spit plus
+its ground. The ember term is in and it is correctly computed; on this creature it does not win.
+⛑ **AND `LINT()`, the gates, the oracle and all twenty fights were re-run after it**, because a
+readout change that breaks a fight is exactly the shape nobody would look for.
+
 ## The marks
 
 The inspect card shows the four `STAT_ICON` paintings (32px - **never 24**, #230: a 3:4 resample
@@ -239,6 +321,70 @@ smears a pixel painting) for every body except `noFace`, with `tell()`'s band wo
 **The mark is a claim about the rung and nothing else** - not a receipt, not a threat rating, and
 it never carries a number, which is the show-a-state-hide-the-figure rule the mood row already
 obeys. `noFace` is refused its marks because the Warden is a thing you cannot read.
+
+## ⛑ The one table of every enemy: `tools/enemies.html`
+
+*(2026-08-31. The user: "as independent tool create a file with all enemies ... Photo / Name /
+Stats (all - from damage to hexes) / Race / Skills / Threat points / Typical party ...
+Description".)*
+
+**It is DERIVED and it is not part of the game.** `tools/dev/probes/foedex.js` runs every
+`FOE_BUILD` builder through the dev bench's own seeded catalogue and dumps 62 bodies with the
+figures `build()` actually makes of them; `tools/dev/probes/orphanart.js` asks each art table what
+nothing can reach; `tools/dev/build_foedex.py` lays both out. A statblock change moves the file by
+itself:
+
+```bash
+python tools/dev/gt.py launch
+python tools/dev/gt.py eval tools/dev/probes/foedex.js    > foedex.raw
+python tools/dev/gt.py eval tools/dev/probes/orphanart.js > orphan.raw
+python tools/dev/build_foedex.py foedex.raw orphan.raw
+```
+
+⛔ **EDITS LIVE BESIDE THE ROW AND NEVER IN IT.** Every cell is editable and every edit is a
+`{variant|name|field: value}` entry in the browser's own storage, exported on demand. An edit
+written INTO the row would be lost the first time somebody regenerates, which is the one thing a
+derived file must never cost anybody.
+
+⚠ **A NAME IS NOT A KEY, AND THAT WAS A REAL DEFECT IN THE FIRST CUT.** A champion wears its
+ordinary twin's name (Ash-drake 9 and 14, Hold corporal 9 and 13, Slag-hide 8 and 13), so grouping
+a fight's cast by name folded two statblocks into one row and priced the whole cast off whichever
+the sort happened to put first. The key is `name+pts`, the same one the bench uses.
+
+⛑ **THE ONE AUTHORED FILE IN THE PIPELINE IS `tools/dev/foedex_desc.py`, AND IT IS AUTHORED
+BECAUSE WHAT IT HOLDS DOES NOT EXIST IN THE BUILD** *(the user: "Make description short and clear
+(one senctence), that they could be shown on hover in the battle screen")*. The derived fallback was
+the bestiary `nature` line or the note on an act, and both are two or three sentences written for a
+card read at rest. A battle hover is read in a second, over a body somebody is about to swing at, so
+it gets ONE sentence saying what this thing DOES TO YOU. ⚠ **Keyed on the NAME and not the
+variant**: two tables use `spear` for two different creatures, and no two creatures share a name. A
+name with no row falls back to the derived line and the generator prints it, so a new statblock is
+never described by an empty box.
+⏳ **THEY ARE NOT WIRED INTO THE BATTLE SCREEN YET.** They are written to that spec and they live
+in one dict; putting them on the hover is a separate edit.
+
+⛑ **AND FOUR THINGS THE TABLE LEARNED BY BEING LOOKED AT** *(2026-08-31)*: the bodies are grouped
+into **fourteen families** (`fam` is derived - a beast IS its bestiary row, everybody else belongs to
+the fight that fields them - and the generator only gives those keys words); a **champion folds under
+the body it is a better version of**, joined on the variant; the **cards that start each fight** are
+read off `EVENTS`/`CAMPS` doors, never authored beside the statblock; and **MOVE and a champion's two
+rolled perks are in the skills column**, because a list of acts was half of what a champion is.
+⚠ **A base body can have MORE THAN ONE CHAMPION** - the perks are rolled, so Hold billman comes out
+of the catalogue at 30 AND at 32 - and the first cut kept one of them: five champions in the data,
+four toggles on the page. The join is a list.
+⚠ **AND THE TABLE'S OWN HEADER CARRIED A TYPED FIGURE FOR ONE AFTERNOON** ("4 bodies / 37 pts"),
+which `PTS_SCALE` invalidated the next morning. It reads `ARENA.COMPS.four()` now, which is the same
+company the dial is calibrated against, so the two cannot come apart. **That is this file's own rule
+arriving on the tool that reports it.**
+
+⚡ **AND ITS ORPHAN HALF FOUND SIX PAINTINGS AND THREE STATBLOCKS NOTHING CAN REACH** - THE
+DESERTER, SPEAR (cut from `brigands()` in a balance pass, statblock and painting both still there),
+the FEN-THING and the BLOOM-SPITTER (statblocks, three paintings, a bestiary row, a map sight and
+two wide stages, for a fight nobody wrote), and `ogre_you_guardian` / `ogre_you_maul`. ⛑ **All
+of it was proved by DRIVING the thing that would use it** - the sprite cascade, the plan builders,
+the two map tables - and three of the probe's first findings were its own blind spots: it filtered
+weapons on a `slot` name `GEAR` does not use, built no body above level 1, and could not build
+Asha. **A filter that matches nothing looks exactly like a finding.** Filed as **B18**.
 
 ## After a change here
 
@@ -250,8 +396,15 @@ python tools/dev/gt.py eval tools/dev/probes/champ265.js        # the champion +
 ```
 
 - **The oracle** builds every `FOE_BUILD[k]()` side and compares 19 fields. 0 drift on a refactor;
-  on a re-stat, exactly the drift the entry names. ⚠ `steading` drifts against ITSELF - it rolls
-  three of four ogres for its wall - so compare it sorted or skip it.
+  on a re-stat, exactly the drift the entry names.
+  ⛔ **FOUR KINDS DRIFT AGAINST THEMSELVES AND THIS FILE ONLY EVER NAMED TWO.** `steading` rolls
+  three of four ogres for its wall and `snarejoin` rolls its champion's perks; **`ashdrakes` and
+  `glassroad` roll champions too** (measured 2026-08-31), and `steading` differs even SORTED
+  because the roll picks a different three, not a different order. ⛑ **So the honest reading is
+  the oracle run TWICE on each build**: whatever differs against itself is noise, and the finding
+  is the cross-build diff MINUS that set. On the 2026-08-31 move that came out empty on all
+  sixteen deterministic kinds, which is what proved it. A single cross-build diff would have
+  reported four false findings.
 - **`LINT()` builds every foe side itself** (the acts census), so a throw in the derivation fails
   loud there. It returns an OBJECT: read `.findings`, never `.length`.
 - **Any change to a foe's numbers is priced with `ARENA.match`** over the road kinds, both comps,
