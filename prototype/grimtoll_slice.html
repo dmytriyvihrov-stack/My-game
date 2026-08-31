@@ -3089,13 +3089,17 @@ body:has(#battle.on) .whisp{bottom:138px}
 .rseg:first-child{margin-left:0}
 .rseg .ri{font-size:var(--fs4);line-height:1;font-family:var(--body)}
 .rseg b{font-weight:600;font-size:var(--fs5);font-variant-numeric:tabular-nums;color:#e0d3b4}
-/* ⛔ #272 - THE ROAD CHIP. No parent is named and that is deliberate: the chip
-   MOVES between #wBar and #iBar with the other readouts (see show()), and an
-   id selector cannot drift between the two the way a `#wBar .x` rule would.
-   `.cchip` still brings it the shared --barChip height through the :is() pair
-   above. The border colour is written by `roadStrip` because it is a READOUT,
+/* ⛔ #272/#273 - THE ROAD CHIP, IN THE MAP'S OWN TOP-RIGHT CORNER, ON THE ROW
+   `#wZoom` used to hold. It keeps `.cchip`'s shape and hover cursor but none of
+   the bar's height rule - the `:is(#wBar,#iBar)` --barChip line above cannot
+   reach it any more, so the box is content-height and that is what buys back
+   the clearance to ☰ MENU at 82. The ground is `#menuBtn`'s translucent one
+   rather than the bar's flat brown, because this now floats over a painting.
+   ⚠ The border colour is written by `roadStrip`, because it is a READOUT -
    which is where the UNPAID chip and the mood chip already keep theirs. */
-#wRoad{gap:var(--p2);padding:var(--p1) var(--p3);cursor:help}
+#wRoad{position:absolute;right:10px;top:10px;z-index:14;
+       gap:var(--p2);padding:0 var(--p3);cursor:help;
+       background:rgba(16,12,6,.8)}
 #wRoad .rdi{font-style:normal;font-size:var(--fs3);line-height:1;
             font-family:var(--body);opacity:.75;filter:grayscale(.45)}
 #wRoad svg{display:block}
@@ -7248,11 +7252,6 @@ a.popt.sendit{display:block;text-decoration:none}
   <div id="wBar">
     <div id="wCompany"></div>
     <div class="sep"></div>
-    <!-- #272 - the road's own state, at the right-hand end of the bar's middle
-         air and hard against the chest. That is as far right as this bar goes:
-         #wRes ends at 1148 and #wWagon takes 1156..1194, which is the whole of
-         the 86px the button group reserves. -->
-    <span class="cchip" id="wRoad" data-w="road"></span>
     <div id="wRes"></div>
     <!-- #238 - the wagon, right of the chest: the door to the one place salvage is spent -->
     <span class="cchip click" id="wWagon" data-w="wagon"></span>
@@ -7299,7 +7298,29 @@ a.popt.sendit{display:block;text-decoration:none}
         <span class="tl">THE COMPANY</span></div>
     </div>
     <div id="wQuest"></div>
-    <div id="wZoom"></div>
+    <!-- ⛔ #273 - `#wZoom` IS GONE FROM THE MAP, AND THE ROAD'S STATE HAS ITS
+         ROW. (User: *"i want it here - instead of zoom - zoom can remove from
+         the screen (keeping functionality on map scroll)"*.) This is #269's
+         own edit one screen across: the three stops, `WCAMS`, `wcamSet` and
+         the remembered `gt_wcam` are all untouched, and what went is the row
+         of buttons naming them - because `wpanInit`'s WHEEL has stepped
+         between them since the drag was written and does not need the row.
+         ⛑ `wcamBar()` GUARDS ON THE ELEMENT (`if(!bar)return`), exactly as
+         `camBar()` did, so nothing that calls it had to change and the row is
+         one line away if it is ever wanted back.
+         ⚠ THE CLEARANCE WAS RE-MEASURED RATHER THAN READ, AND THE NOTE IT
+         WOULD HAVE BEEN READ FROM IS STALE. #220 records ☰ MENU sitting at
+         y 82 *because* this row ended at 75 - and that stopped being true at
+         #249, which deleted the world override ("the world's override IS the
+         default now. The rule is deleted, not moved."). Driven on the live
+         map: ☰ MENU is on the bar's own row at **y 6..30**, this chip is
+         **50..78**, and a sweep over the corner's five boxes reports **0
+         collisions** with 20px of air between the two.
+         ⚠ AND IT COVERS NO NODE AND NO NAME PLATE AT ANY OF THE THREE STOPS,
+         which is #240's own `audioBox` check one element across: a corner
+         widget that grows over the board underneath it is the fault that
+         probe was written for. -->
+    <span class="cchip" id="wRoad" data-w="road"></span>
     <div id="wDlg"></div>
     <div id="wLock">DECIDE FIRST - THE COMPANY WILL NOT MOVE UNTIL YOU DO</div>
     <!-- #118 - the company's chosen name, signed along the bottom of the
@@ -7892,22 +7913,19 @@ const show=i=>{
      bar, so on this one it would land across the company name.
      ⚠ RESTORED IN `#wBar`'S OWN ORDER (company, sep, res, wagon, plaque), or
      the strip comes home on the wrong side of the gap. */
-  /* ⚠ #272 - AND THE ROAD CHIP TRAVELS WITH THEM, ON THE OTHER SIDE OF THE
-     CHEST ON EACH BAR. On `#wBar` it goes BEFORE `#wRes`, because that is the
-     right-hand end of the middle air and the 86px the button group reserves is
-     entirely spoken for by the chest and the wagon; on `#iBar` it goes AFTER
-     it, because there the readouts sit left of a `.sep` and the far right is
-     the BACK button. Both readings are the same rule - the road's state sits
-     at the outer end of the readouts - and each is what its own bar allows. */
-  (()=>{const wb=$('wBar'),ib=$('iBar'),co=$('wCompany'),re=$('wRes'),rd=$('wRoad');
+  /* ⚠ #273 - THE ROAD CHIP IS NOT IN THIS REPARENT ANY MORE. It took the map's
+     own zoom row (see `#wRoad` in the markup), so it is a child of `#wMap` and
+     belongs to the world screen alone; a chip that moved onto `#iBar` would be
+     leaving the screen it is positioned against. ⚠ THE SHEET THEREFORE NO
+     LONGER SHOWS IT, which is the cost of the corner and is one `insertBefore`
+     to undo if it is wanted back. */
+  (()=>{const wb=$('wBar'),ib=$('iBar'),co=$('wCompany'),re=$('wRes');
     if(!wb||!ib||!co||!re)return;
     if(i==='inv'){const sep=ib.querySelector('.sep');
-      if(co.parentNode!==ib){ib.insertBefore(co,sep);ib.insertBefore(re,sep);
-        if(rd)ib.insertBefore(rd,sep);}
+      if(co.parentNode!==ib){ib.insertBefore(co,sep);ib.insertBefore(re,sep);}
     }else if(co.parentNode!==wb){
       wb.insertBefore(co,wb.querySelector('.sep'));
       wb.insertBefore(re,$('wWagon')||wb.querySelector('#wPlaque'));
-      if(rd)wb.insertBefore(rd,re);
     }})();
   /* the REAL screen id, not a pre-collapsed battle/world. Which cue a screen
      gets is setMusicMode's question and nobody else's; this line answering
@@ -42411,12 +42429,18 @@ function wpanInit(){
      is exactly the two halves of the report.
      ⚑ `pointerdown` two lines down has excluded `#wZoom,#wDlg` since it was
      written. The wheel simply never got the same sentence. */
+  /* ⛔ #273 - `#wZoom` NO LONGER EXISTS AND THE TWO SENTENCES PART COMPANY.
+     The WHEEL must still step over the corner chip, because with the button
+     row gone the wheel is now the ONLY way to zoom and a 111px dead patch in
+     the corner would be a hole in the one gesture that is left. The DRAG still
+     skips it, the way it skipped the zoom row: a press on a hover target is
+     reaching for the tooltip, not for the map. */
   M.addEventListener('wheel',e=>{
-    if(e.target&&e.target.closest&&e.target.closest('#wZoom,#wDlg'))return;
+    if(e.target&&e.target.closest&&e.target.closest('#wDlg'))return;
     e.preventDefault();wcamStep(e.deltaY>0?-1:1);},{passive:false});
   M.addEventListener('pointerdown',e=>{
     if(e.button)return;                      /* left button and touch only */
-    if(e.target.closest&&e.target.closest('#wZoom,#wDlg'))return;
+    if(e.target.closest&&e.target.closest('#wRoad,#wDlg'))return;
     if(!wcamPans())return;
     WPAN={x:e.clientX,y:e.clientY,cx:WCAM.x,cy:WCAM.y,s:panScale(M),
           grab:e.pointerType==='touch'?12:5};
@@ -44378,7 +44402,11 @@ function worldTick(){
   /* #239 - `#iBar` too, because the two strips MOVE there while the sheet is
      up (see show()). A selector naming only the bar would silently drop every
      hover on the screen the player spends the most time on. */
-  document.querySelectorAll('#wBar [data-w],#iBar [data-w]').forEach(el=>{
+  /* ⛔ #273 - AND `#wRoad`, WHICH IS IN NEITHER BAR ANY MORE. It moved into
+     `#wMap` to take the zoom row's corner, and a selector naming only the two
+     bars would have dropped its hover silently - the same failure #239 wrote
+     this line's own comment about, one element later. */
+  document.querySelectorAll('#wBar [data-w],#iBar [data-w],#wRoad').forEach(el=>{
     const inf=WTIPS[el.dataset.w];if(inf)bindW(el,inf);});
   /* #194 - the plaque and the disc no longer bind anything. They were the two
      callers of WTIPS.day and both are the same readout, so both go: the disc

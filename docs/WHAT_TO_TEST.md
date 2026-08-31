@@ -26,11 +26,31 @@
 
 ---
 
+## 🧪 THE ZOOM ROW IS GONE FROM THE MAP  *(#273 · 2026-08-31 · build log 8f.297)*
+
+**The short version:** ROAD / NEAR / CLOSE has come off the map's top-right corner, and the road's
+state chip is standing in its place. **Zooming still works exactly as before - on the wheel.**
+
+| what to check | where | what should happen |
+|---|---|---|
+| **the wheel still zooms** | the map, wheel up and down anywhere on it | it steps between the same three stops it always did, and the stop is still remembered between sessions. Nothing else changed about them |
+| **including over the chip** | wheel with the pointer directly on the arch | it still steps. The old button row swallowed the wheel; the chip must not, because the wheel is now the only zoom there is |
+| **the drag still pans** | at NEAR or CLOSE, drag the map | it pans. Dragging **from the arch itself** should not start a pan - you are reaching for its tooltip |
+| **the card still scrolls** | open a long event card and wheel over its prose | the card scrolls and the map does **not** zoom underneath it |
+| **nothing is buried** | look at the corner at all three zoom stops | the arch covers no node and no name plate, and does not touch ☰ MENU |
+
+⚠ **THE COMPANY SHEET NO LONGER SHOWS THE ROAD'S STATE.** That is the price of putting it on the
+map: it is positioned against the map itself now, so it cannot travel onto the sheet's bar the way
+the chest and the company chips do. If you want it back on both, say so - it is one line.
+
+---
+
 ## 🧪 THE ROAD'S OWN STATE  *(#272 · 2026-08-31 · build log 8f.296)*
 
-**The short version:** the top bar has a new chip, between the day plaque and the coin chest: a
-small arch with a skull at one end and a handshake at the other. It is the state of the **ROAD**,
-not a score of you, and today it does nothing whatsoever except say what it is.
+**The short version:** the map's top-right corner has a new chip, just under ☰ MENU, where the
+ROAD / NEAR / CLOSE buttons used to be (see #273 above): a small arch with a skull at one end and a
+handshake at the other. It is the state of the **ROAD**, not a score of you, and today it does
+nothing whatsoever except say what it is.
 
 ⛔ **THE ONE THING TO JUDGE IS WHETHER ANYBODY NOTICES IT**, which was your own condition
 (*"lets do it and see - do people recognise it"*). So the question to put to a playtester is not
@@ -43,11 +63,11 @@ section next to that pillar in `01_GAME_CONCEPT.md` explaining what would have t
 
 | what to check | where | what should happen |
 |---|---|---|
-| **it is there from day one** | start a run, look between `DAY 1 MIDDAY` and the coin chest | a stone-grey arch with one segment lit at the crown, skull left, handshake right. The hover says **A QUIET ROAD** |
+| **it is there from day one** | start a run, look at the map's top-right corner, under ☰ MENU | a stone-grey arch with one segment lit at the crown, skull left, handshake right. The hover says **A QUIET ROAD** |
 | **a cruelty moves it** | take one ☠️ door - rob the pedlar, the toll-man, the wedding | the arch grows two segments to the LEFT and **stays grey**: one bad thing is a thing that happened, not a pattern. Take a second ☠️ door and the whole chip goes red: **A BLACK ROAD** |
 | **a kindness moves it** | take two 🤝 or 🙏 doors | it grows to the RIGHT and goes green: **A CLEAN ROAD**. One is not enough, exactly as with cruelty |
 | **the mixed case** | three cruelties and three kindnesses in the same run | **BLACK**, not grey. A cruelty is worth two kindnesses on this arc, on purpose |
-| **it follows you onto the sheet** | open THE COMPANY | the same chip is on that bar too, just right of the coin chest |
+| **it is on the map only** | open THE COMPANY | the arch is **not** there, and that is #273's known cost rather than a bug. It lives on the map, where it is positioned |
 | **the hover tells the whole truth** | hover it after a few doors | it names the state, lists what you have actually done (`☠️ EVIL 2`, `🤝 HELP 1`), and ends with *"It changes nothing on the road. Not yet."* |
 
 **What would be a bug:** a number anywhere on the chip · one single door flipping it black or white
