@@ -3400,6 +3400,24 @@ body:has(#battle.on) .whisp{bottom:138px}
 @keyframes walkpulse{0%,100%{box-shadow:0 0 6px rgba(217,189,126,.25)}
                      50%{box-shadow:0 0 16px rgba(217,189,126,.55)}}
 @media (prefers-reduced-motion:reduce){.node.walking .glyph{animation:none}}
+/* ⛔ #270 - AND THE ROAD THAT HAS STOPPED IS A THIRD STATE, NOT THE SECOND ONE.
+   (User: *"After stop at the middle of the road i catch soft lock - that I cant
+   continue forward movment"*.) #268 pauses a multi-day leg after a card is
+   answered and holds `G.moving` true for the length of it, which is right: the
+   token has to stay where it stopped and every other node has to stay inert.
+   What it could not do is say so - the destination wore `walking`, whose plate
+   reads *· on the way* and whose whole design note above is *nothing on the map
+   is clickable*. So a node that is STOPPED and IS clickable gets its own state
+   and its own three words, which is #102's rule about a readout printing what it
+   actually reads. Lit like `live`, because that is what it is: the one place a
+   click can go. */
+.node.waiting{opacity:1;z-index:6}
+.node.waiting .glyph{border-color:var(--g4);background:#3a2b16;
+  box-shadow:0 0 12px rgba(217,189,126,.3);animation:nodebeat 1.6s ease-in-out infinite}
+.node.waiting .nm{color:#f0e6c0;background:rgba(20,14,6,.9);box-shadow:0 0 0 1px #4d3c22}
+.node.waiting .nm::after{content:" · press to go on";color:#a38652;font-style:italic}
+.node.waiting:hover .glyph{background:var(--blood);border-color:var(--blood-lit)}
+@media (prefers-reduced-motion:reduce){.node.waiting .glyph{animation:none}}
 /* ═══ A PLACE YOU KNOW ABOUT (the cache) ════════════════════════════════
    Every other node on this map is a rumour until you stand in it. This one
    is a FACT somebody in the company gave you, so it is the only plate
@@ -4486,6 +4504,13 @@ body:has(#battle.on) .whisp{bottom:138px}
 .wtile:hover:not(:disabled):not(.built) .gart{border-color:var(--e3)}
 .wtile:disabled{opacity:.38;cursor:default}
 .wtile.built{border-color:#8ca35a;cursor:default}
+/* ⛔ #270 - a bolted fitting the Kept Crate could take is still pressable, so it
+   has to LOOK pressable: `.built` alone says done-and-finished. `kept` is the
+   gold this build uses for "this one is chosen" everywhere else, which is why
+   the crate's pin may not also be gold on the unpinned ones. */
+.wtile.built.keepable{cursor:pointer}
+.wtile.built.keepable:hover{background:#2c2214;border-color:var(--g3)}
+.wtile.built.kept{border-color:var(--g4);background:#2a2114}
 .wtile b{font-size:var(--fs5);font-weight:400;color:var(--g4)}
 .wtile i{font-family:var(--mono);font-size:var(--fs3);font-style:normal;line-height:1.35}
 .wpips{display:inline-flex;gap:3px;margin-left:var(--p3);vertical-align:middle}
@@ -4761,15 +4786,31 @@ body:has(#battle.on) .whisp{bottom:138px}
 .race.human {color:#d8d5cc}                       /* bone — the baseline */
 .race.ratkin{color:#c98a4b}                       /* rust-orange, small and quick */
 .race.ogre  {color:#7fa8c9}                       /* cold slate-blue, large and slow */
-/* ⛔ #249 - THE RACE RAIL MOVES ONTO THE TILE, because the div it used to sit on
-   is gone with the text column. It is an INSET SHADOW and not a border for one
-   reason: `.rmem.on` writes `border-left:3px solid var(--g4)` and the two would be
-   the same edge arguing. A shadow is drawn inside the padding box, so on a selected
-   tile the gold says *this one* and the hue says *what they are*, in that order,
-   which is the reading #247 asked for when it kept the colour and cut the mark. */
-.rmem.human {box-shadow:inset 2px 0 0 #d8d5cc}
-.rmem.ratkin{box-shadow:inset 2px 0 0 #c98a4b}
-.rmem.ogre  {box-shadow:inset 2px 0 0 #7fa8c9}
+/* ⛔ #270 - AND #268 DELETED THE WRONG ONE OF THE TWO. (User: *"The line near
+   portrait when i was picking guy was good. But the line near each portrait on
+   the left - i didnt want. You did it wronhly - can you please revrse and do
+   right"*, with all four arrows on this column's left edge.)
+
+   ⛑ THERE WERE TWO RAILS ON THIS TILE AND AT 80px WIDE THEY LOOK THE SAME.
+   `.rmem.on` drew a 3px gold `border-left` on the PICKED tile, and #249 put a
+   2px inset shadow in the race's own hue on EVERY tile. #268 read *"it works
+   only when character selected"* as a complaint about the first and deleted it;
+   it was a DESCRIPTION of the first and a complaint about the second. So the
+   gold comes back and the race hue goes, which is the reverse of #268 and the
+   thing that was asked for both times.
+   ⚠ THE RACE IS NOT LOST WITH IT, and #247 already said why in as many words
+   when it cut the race MARK off this tile: *"We don`t need here no name no race
+   (both clear from the image)"*. The portrait is painted per race, the class
+   rides one corner, the level the other, and the whole button carries the name
+   on its `title`.
+   ⛑ AND IT IS THE SHADOW RATHER THAN THE BORDER, WHICH IS #249's OWN HALF OF
+   THE ARGUMENT SURVIVING ITS OTHER HALF. A border eats the content box, so the
+   picked tile's portrait stepped 1.5px to the right the moment it was picked -
+   measured, `.rbust` at 12.5 from the tile's left edge against 11 on every other
+   row, i.e. the one thing on this column that moves when you click it. An inset
+   shadow is drawn inside the padding box and moves nothing. #249 could not have
+   this because it had two rails to keep apart; with one left, it can. */
+.rmem.on{box-shadow:inset 3px 0 0 var(--g4)}
 /* ═══ ⛔ #196 · A BODY'S MARK, WHEREVER A BODY IS LISTED ═══════════════════
    Built only by `cMark`/`rMark`, so every surface that names a class or a race
    without its word wears the same box. Three things it has to do and one it
@@ -7758,7 +7799,15 @@ const DETOUR={inv:1,help:1};
    ⚠ The button never MOVES: left 100px, bottom 10px on every one of these.
    "One place" is the whole request, so a screen that cannot host that
    coordinate does not get the button rather than getting it somewhere else. */
-const MENU_ON={world:1,battle:1,inv:1,camp:1,sim:1};
+/* ⛔ #270 - AND THE REPORT AND THE END OF A RUN JOIN THE LIST. (User: *"I nned
+   to go to menu from any screen"*.) Five of the fourteen screens carried the
+   button and the two that a run can sit on for minutes did not.
+   ⚠ `promo` IS NOT ADDED AND THAT IS NOT AN OVERSIGHT: nothing in the build
+   calls `show('promo')`, so it is a screen that cannot be reached. The four
+   that are still off the list - `prologue`, `help`, `notes`, `poll`, `options`
+   - each own a Back that already leads here, which is what `MENU_ON`'s original
+   note means by *a coherent out*. */
+const MENU_ON={world:1,battle:1,inv:1,camp:1,sim:1,spoils:1,epilogue:1};
 const show=i=>{
   if(i!=='world'&&!DETOUR[i]){const d=$('wDlg');if(d)d.classList.remove('on');}
   hideTip();
@@ -9496,6 +9545,12 @@ LEGACY.made=LEGACY.made||[];
 LEGACY.pending=LEGACY.pending||[];
 /* What is BOLTED INTO the wagon, which is the thing that actually persists. */
 LEGACY.built=LEGACY.built||[];
+/* ⛔ #270 - THE ONE FITTING THE KEPT CRATE CARRIES INTO THE NEXT RUN. One key
+   and never a list: the crate takes ONE thing, which is what makes choosing
+   which a decision. `LEGACY.built` above it is #238's retired permanent-fittings
+   list and stays dead; this is deliberately not that field, because an old
+   install may still have rows in it and they were never meant to come back. */
+LEGACY.carry=LEGACY.carry||null;
 LEGACY.yard=LEGACY.yard||0;
 LEGACY.runs=LEGACY.runs||0;
 /* did the LAST company die? decides how this run's opening is told —
@@ -9954,6 +10009,11 @@ const TELLS={
    fact written twice, which is what #137 is about.
    ⚠ `false` STILL WORKS and still means the picture alone. */
 const SHEET_STAT_WORDS=true;
+/* ⛔ #270 - AND THE SAME SHAPE ON THE AFTERMATH'S RECEIPT. (User: *"also don`t
+   write what resourse in words - icon is enough"*.) `false` is icons only, which
+   is what shipped; `true` puts the captions back. See `fxChips` in
+   `consequences()` for why it is scoped to that renderer and not to `.fxl`. */
+const SPOILS_RES_WORDS=false;
 /* ═══ ⛔ #251 · AND THE HEADER'S MARK LINE IS THE SAME SHAPE, SWITCH AND ALL
    (User, 2026-08-26, an arrow along the row under the name: *"Delete that
    smaller line near human face"*.)
@@ -12898,6 +12958,34 @@ const PARTYBASE=12;
    everything a whole run earns and tier III was a greedy-run purchase rather
    than a decision. 5/10/18 is the same SHAPE against the new total. */
 const FRAME_COST=[5,10,18],FRAME_SEATS=[0,1,3,5];
+/* ═══ ⛔ #270 · THE RACKS: HOW MANY THINGS THE WAGON MAY CARRY BOLTED IN ═══
+   (User, 2026-08-31: *"И добавь несколько улучшений (как с сайзонм) которые
+   увличвают кол-во активных построек в фургоне"* - several upgrades, like the
+   size one, that raise the number of ACTIVE fittings in the wagon.)
+
+   ⛔ SO THERE IS A SLOT CAP AGAIN, AND #238 DELETED THE LAST ONE ON PURPOSE.
+   Its note reads *"`FIT_SLOTS` is gone: the money is the cap"*, and that was
+   true and it is exactly what the ask overrules: a money cap cannot be UPGRADED,
+   so it could never be the candy the frame is. The two now do the same job on
+   two axes - the frame says how many BODIES ride, the racks how many THINGS -
+   and both are bought with the same run's salvage and gone with the run.
+   ⛔ THE BASE IS TWO AND THAT IS WHAT MAKES IT BIND. There are five fittings
+   now; a company that bought nothing but racks could bolt in four of them, and
+   one that bought none is choosing two out of five on the first road. Same
+   shape as the frame: tier III is the run that bought little else.
+   ⚠ PRICED UNDER THE FRAME'S OWN CURVE, not beside it: 4/8/14 against 5/10/18,
+   because a rack competes with the seats AND with the thing it makes room for,
+   which is two prices for one purchase. `shots/238_salvage_curve.js` is the
+   measurement both ladders are fitted to - 23-24 salvage at the last fire.
+   ⚠ DECLARED HERE, beside `FRAME_COST`, for the reason that comment gives in
+   capitals: `FITTINGS` is 36,000 lines down and a const read from its temporal
+   dead zone is the throw that aborts the whole script. */
+const RACK_COST=[4,8,14],RACK_SLOTS=[2,3,4,5];
+/* how many things may be bolted in today, and how many are. Guarded like
+   `wagonCap()` because both can be reached before `G` exists. */
+function fitSlots(){return RACK_SLOTS[(typeof G!=='undefined'&&G.wagon&&G.wagon.rack)||0];}
+function fitsHeld(){return ((typeof G!=='undefined'&&G.wagon&&G.wagon.built)||[]).length;}
+function wagonFull(){return fitsHeld()>=fitSlots();}
 function wagonCap(){return PARTYBASE+(LEGACY.yard||0)+FRAME_SEATS[(typeof G!=='undefined'&&G.wagon&&G.wagon.frame)||0];}
 let PARTYCAP=PARTYBASE+(LEGACY.yard||0);
 const G={ day:1, at:'hold', battleRounds:0, log:[], ambush:false, contact:false,
@@ -12942,7 +13030,10 @@ const G={ day:1, at:'hold', battleRounds:0, log:[], ambush:false, contact:false,
   /* #238 - what THIS run has bolted into the wagon: the frame tier, the
      fittings, and the chest signature the card was last opened at (the chip's
      ! badge). Run state: it rides the save and a new company starts bare. */
-  wagon:{frame:0,built:[],seen:''},
+  /* #270 - `rack` is the racks' tier and `kept` is which bolted fitting the
+     Kept Crate is pinned to. Both ride `runBlob`'s `wagon` field whole, so
+     neither needed a row of its own in the save. */
+  wagon:{frame:0,built:[],seen:'',rack:0,kept:null},
   recruits:null, hiredHere:0, battleKind:'snare',
   /* ═══ #160 · THE LEDGER OF WHAT THIS COMPANY HAS DONE ═════════════════════
      One row per evil door taken, in the order they were taken, each holding
@@ -12989,6 +13080,28 @@ if(LEGACY.pending.length){LEGACY.pending=[];saveLegacy();}
 /* #238 - the chest is bought ON THE ROAD now and grants its one use then
    (`wagonDo`); `LEGACY.built` is no longer read by anything. */
 G.aidLeft=0;
+/* ═══ ⛔ #270 · WHAT THE KEPT CRATE KEPT ══════════════════════════════════
+   (User: *"В фургон добавь постройку - которая перемещает одну из текущих
+   построек в тележке в след. ран"* - a fitting that moves one of the wagon's
+   current fittings into the next run.)
+
+   ⛑ ONE KEY, USED ONCE. It is cleared the instant it is handed over, so a
+   company that does not build another crate takes the road on a bare wagon -
+   which is what keeps #238's *"gone with the run"* true of everything else.
+   ⛔ AND IT IS WRITTEN ONLY BY A COMPANY THAT BANKED. `openCampScreen(true)` is
+   the winning road's own door; `toDefeat` walks to the wagon with `bankIt`
+   false and its card already says why (*"What was hauled this run is lost with
+   the men who hauled it"*). A crate that outlived the men carrying it would be
+   the one thing on that screen the prose contradicts.
+   ⚠ THE KEY IS NOT VALIDATED HERE and it must not be: `FITTINGS` is declared
+   36,000 lines below this and reading it from its temporal dead zone aborts the
+   script. It is validated where it is WRITTEN, where the table is in scope, and
+   every reader of `G.wagon.built` filters unknown keys. */
+if(LEGACY.carry){
+  G.wagon.built.push(LEGACY.carry);
+  if(LEGACY.carry==='aid')G.aidLeft=1;
+  LEGACY.carry=null;saveLegacy();
+}
 
 /* ═══════════════════════════════════════════════════════════════════════
    BLESSINGS & CURSES — the company's mood shown as a named state
@@ -13039,8 +13152,15 @@ const MOODSTATES=[
   {max:40, n:'STEADY MARCH',ic:'🙂',col:'#a3bd6c',
    fx:{start:10},
    d:'The column moves well together.'},
+  /* ⛔ #270 - AND THE TOP RUNG BUYS A PAYDAY. (User: *"When the mood is maximum
+     (the highest tier) on the global map and it is payment day - your guys can
+     skip payment 'travel with you is too good'. Very short shartp text (one
+     sentence)"*.) `freePay` is read by `passDays`, which is the one place a
+     wage is ever settled, and `moodEffect` prints it under the rung with every
+     other figure on the row - so the ladder cannot promise a waiver the chest
+     does not get, which is what this table's own header is about. */
   {max:999,n:'HIGH SPIRITS',ic:'😄',col:'#7fae4e',
-   fx:{start:15,xp:.10,hit:10,dodge:5},
+   fx:{start:15,xp:.10,hit:10,dodge:5,freePay:1},
    d:'They would follow you into the sea, and it shows on the field.'}
 ];
 const moodState=v=>MOODSTATES.find(s=>v<s.max)||MOODSTATES[MOODSTATES.length-1];
@@ -13064,6 +13184,8 @@ function moodEffect(s){
      the user's own "+10 to hit and +5 to dodge" for the top rung). */
   if(f.dodge)out.push('+'+f.dodge+' dodge');
   if(f.xp)out.push('+'+Math.round(f.xp*100)+'% experience');
+  /* #270 - the one row on this ladder that is money rather than a fight */
+  if(f.freePay)out.push('they waive the wages');
   return out.join(' · ');
 }
 /* the whole ladder, worst at the bottom the way MOODSTATES is written, with the
@@ -14045,7 +14167,24 @@ function hurtWarn(){
 /* the first injury of a run explains the ladder, once, on the card of the
    person it just happened to. Same spotlight as every other lesson in the
    game, so there is nothing new for the player to learn how to dismiss. */
+/* ⛔ #270 - OFF, AT THE USER'S WORD. (*"Don`t need extra explanation about wen
+   down and killed (screen) - because below ther is explisit infomation"*.)
+
+   ⛑ HE IS RIGHT, AND THE CARD UNDER THE SPOTLIGHT IS THE EVIDENCE. `crewCards`
+   prints the state on the body it happened to - `hurt · 8d` on the blood strip,
+   `carried off · <the scar>` on a scarred one, the ash frame on a dead one - and
+   the sub-line over the grid says `N OF M CARRIED OFF`. This lesson stopped the
+   screen to say those three facts in four sentences, over a card that had
+   already said all three.
+   ⚠ `hurtWarn` IS UNTOUCHED AND IS NOT THE SAME LESSON. That one fires on the
+   FIELD, before a hurt body walks onto it, where nothing else says so. This one
+   fired after, over a report that does.
+   ⚠ `true` PUTS IT BACK, the way #240's own switch did the same day it was
+   written. `G.hurtTaught` still rides the save, so a run that has already seen
+   it does not see it twice if it is ever switched back on. */
+const HURT_LESSON=false;
 function hurtTeach(list){
+  if(!HURT_LESSON)return;
   if(!list||G.hurtTaught||window.TUT_SILENT||SIM.on)return;
   const f=list.find(x=>x.kind==='hurt');
   if(!f)return;
@@ -28190,8 +28329,12 @@ const TERRAIN={
      without either being told about the other. Widening it is one field per
      row - and see the note on `pitDue` for what a wider one would cost the
      three hand-tuned fights that own the other grounds. */
+  /* ⚡ #270 - 2 -> 3, at the user's word (*"If you use terrain with pits use
+     at least more then one (so it is more obsticle)"*). `pits` is the CEILING
+     and `digPits` rolls under it; the floor moved with it, so a board that
+     carries holes at all now carries two or three of them and never one. */
   rocky  :{paint:'dust',  marsh:.93, rock:.975, trees:2, blaze:2, blazeOdds:.5,
-           pits:2, pitOdds:.65,
+           pits:3, pitOdds:.65,
            pool:['broken','spine','anvil','flanks','strewn','open']},
   /* the ogres' own camp — a ring of stacked timber with two gaps in it */
   camp   :{paint:'teal',  marsh:.99, rock:.99,  layout:'camp'},
@@ -28806,12 +28949,21 @@ function digPits(terr,T,rnd){
     if(c<DEPLOY_EDGE||c>=COLS-DEPLOY_EDGE)return false;
     if(reserved(c,r))return false;
     return terr[K(c,r)]==='field';};
-  const want=Math.min(T.pits,1+(rnd()<.5?1:0));
+  /* ⛔ #270 - THE FLOOR IS TWO. (User: *"If you use terrain with pits use at
+     least more then one (so it is more obsticle)"*.) #250 rolled 1-or-2 under
+     the ground's ceiling, so half the boards that carried holes carried ONE,
+     and one hole on a 15x13 field is a hex you step round without thinking.
+     Two or three is a thing to route around, which is what the ask is for. */
+  const want=Math.min(T.pits,2+(rnd()<.5?1:0));
   const dug=[];
   for(let i=0,tries=0;i<want&&tries<240;tries++){
     let c,r;
+    /* ⚠ GROWN OFF A RANDOM HOLE AND NOT OFF THE FIRST ONE. With a ceiling of
+       two, `dug[0]` was the only hole there could be to grow from; at three it
+       chains every hole onto the first and draws a caterpillar. */
     if(dug.length&&rnd()<.5){
-      const near=nbrs(dug[0][0],dug[0][1]).filter(q=>open(q[0],q[1]));
+      const seed=dug[(rnd()*dug.length)|0];
+      const near=nbrs(seed[0],seed[1]).filter(q=>open(q[0],q[1]));
       if(!near.length)continue;
       const q=near[(rnd()*near.length)|0];c=q[0];r=q[1];
     }else{
@@ -28820,6 +28972,31 @@ function digPits(terr,T,rnd){
     if(!open(c,r))continue;
     terr[K(c,r)]='pit';dug.push([c,r]);i++;
   }
+  spoilHeaps(terr,dug,open,rnd);
+}
+/* ⛑ #270 - AND WHAT CAME OUT OF THE HOLE IS LYING BESIDE IT
+   (the same ask: *"And also feel free to add other stuff here and there"*.)
+   A hole with clear ground all round it is a hex you sidestep; a hole with its
+   own spoil heap on one side is a corner you have to commit to. `rock` is the
+   material this ground already scatters, so nothing new is drawn and nothing
+   new has to be taught.
+   ⛔ IT IS ONE HEAP PER HOLE AT MOST, THREE ON THE BOARD, AND THE ROOM IS
+   COUNTED AFTER THE PLACEMENT AND NOT BEFORE IT. `rock` is in `BLOCKED`, so a
+   rim of them round a pit would wall the hole off entirely - the exact
+   board-disconnects failure `makeObstacles` warns about in its own header. The
+   heap only lands where the hole keeps THREE open neighbours once it is there.
+   ⚠ It consumes randomness only inside `digPits`, which is guarded on
+   `TF.pits`, so #250's claim that no ground without the dial can shift holds
+   exactly as it did. */
+function spoilHeaps(terr,dug,open,rnd){
+  let laid=0;
+  dug.forEach(p=>{
+    if(laid>=3||rnd()>=.6)return;
+    const near=nbrs(p[0],p[1]).filter(q=>open(q[0],q[1]));
+    if(near.length<4)return;
+    const q=near[(rnd()*near.length)|0];
+    terr[K(q[0],q[1])]='rock';laid++;
+  });
 }
 /* read the placed flowers off the finished board, all asleep. Runs AFTER
    openPockets and the "nobody starts walled in" rescue, either of which can
@@ -34721,6 +34898,10 @@ function loadRun(){
      starts bare. The cap is DERIVED from the wagon, never read back off the
      save: the saved `partyCap` predates the frame. */
   G.wagon=r.wagon||{frame:0,built:[],seen:''};
+  /* #270 - `||` and not a migration, the same way the line above does it: a save
+     written before the racks arrives on tier 0 with nothing pinned. */
+  G.wagon.rack=G.wagon.rack||0;
+  if(G.wagon.kept===undefined)G.wagon.kept=null;
   PARTYCAP=wagonCap();
   Object.keys(r.nodes||{}).forEach(k=>{
     if(!NODES[k])return;
@@ -35566,7 +35747,9 @@ function clashAfter(){
   }else{
     const took=[],noRoom=[];
     presets.forEach(pr=>{
-      if(partyUsed()+COST[pr.race]<=PARTYCAP){
+      /* #270 - the ratkin cap reaches this door too: it is somebody NEW walking
+         into the company, which is the whole test `raceRoom` is for. */
+      if(partyUsed()+COST[pr.race]<=PARTYCAP&&raceRoom(pr.race)){
         const nr=finishRecruit(JSON.parse(JSON.stringify(pr)));
         G.party.push(nr);took.push(nr);
       }else noRoom.push(pr.name);});
@@ -36220,6 +36403,18 @@ function consequences(scarred){
        DELIBERATELY still spelled out here and nowhere else: this renderer is the
        aftermath's, its LOOT rows are the one table still authored in the old two
        materials, and a haul that says TIMBER is naming what was on the cart. */
+    /* ⛔ #270 - THE WORD COMES OFF THIS SCREEN'S CHIPS. (User, the same ask:
+       *"also don`t write what resourse in words - icon is enough"*.)
+       ⛑ `RES_ICON` IS THE READOUT AND THE CAPTION WAS A SECOND ONE. Every glyph
+       on this row is the one the world bar has carried since the bar existed,
+       and this card is read directly before the bar it is about to change - so
+       `◉ +55` says what `◉ +55 CROWNS` said, in a third of the row.
+       ⚠ SCOPED TO THIS RENDERER AND NOT TO `.fxl`. The class is shared furniture
+       (`.claude/rules/event-cards.md`: three callers, and a restyle of it is
+       scoped or it is a bug) - the road card's `evFxChips` and the contract
+       card's receipt keep their captions, because neither is read beside the bar.
+       ⚠ `true` PUTS IT BACK. The rows keep their captions, so the switch costs
+       nothing but a `false`. */
     const rows=[['crowns',resCaps('crowns')],['food',resCaps('food')],
                 ['salvage',resCaps('salvage')],
                 ['gems',resCaps('gems')],['iron','IRON'],['wood','TIMBER'],
@@ -36235,7 +36430,8 @@ function consequences(scarred){
       const v=f[r[0]],mor=r[0]==='morale';
       return '<div class="fxc '+(mor?(v>0?'fx-up':'fx-down'):'fx-'+r[0])+'"><span class="fxi">'+
         (mor?moodState(G.morale).ic:(RES_ICON[r[0]]||'◉'))+'</span><span><span class="fxn">'+
-        (v>0?'+':'')+v+'</span><span class="fxl">'+r[1]+'</span></span></div>';
+        (v>0?'+':'')+v+'</span>'+(SPOILS_RES_WORDS?'<span class="fxl">'+r[1]+'</span>':'')+
+        '</span></div>';
     }).join('')+'</div>';};
   /* ═══ #151 - A FIGHT REPORTS WHAT IT TOOK ONCE ═══════════════════════════
      Blood on the Road's waiting door pays its own haul on the card before this
@@ -42798,7 +42994,10 @@ function drawNodes(){
        silently swallowed every click. A control that looks live and does
        nothing is worse than one that is plainly disabled. Everything locks
        for the walk, and the place being walked to says so. */
-    if(G.moving){st=(k===G.dest)?'walking':(k===G.at?'here':'locked');}
+    /* ⛔ #270 - and the destination of a PAUSED leg is `waiting`, not `walking`.
+       See the CSS note: it is lit, it says three words, and it is the one node
+       on the map that takes a click while `G.moving` is true. */
+    if(G.moving){st=(k===G.dest)?(walkPaused(k)?'waiting':'walking'):(k===G.at?'here':'locked');}
     /* #113: the painted sight where there is one, the abstract type mark
        where there is not. Discovery, live, done, locked and marked are
        gameplay information and must not be baked into a picture. #114: a
@@ -42841,7 +43040,16 @@ function drawNodes(){
         b.innerHTML+='<span class="devpts">⚔'+worst+'</span>';
       }
     }catch(e){}
+    /* ⛔ #270 - AND THIS LINE WAS THE WHOLE SOFT LOCK. #268 built the resume in
+       `travel()` (*"clicking the SAME destination again is the one click that gets
+       through"*) and proved it by CALLING `travel(k)`; nothing ever proved there
+       was a BUTTON to call it with. Measured on the shipped build with the pause
+       state forced: 28 nodes on the map, **0 with an onclick**, the destination
+       included, while `travel()` would have resumed happily if anything could
+       have reached it. A feature that is built and unreachable is this repo's
+       oldest shape and #245 found three of them in one batch. */
     if(st==='live'&&!G.moving)b.onclick=()=>confirmTravel(k);
+    else if(st==='waiting')b.onclick=()=>travel(k);
     /* standing on an unfinished place (a battle you withdrew from):
        knock on its door again — this is also the way out of the Snare */
     /* ═══ ⛔ #245 · AND A PLACE OF BUSINESS OPENS AS OFTEN AS YOU LIKE ══════
@@ -44294,7 +44502,40 @@ function passDays(n){
     G.owed=(G.owed||0)+dailyUpkeep();
     const payday=G.day%PAY_EVERY===0;
     const behind=G.party.some(p=>(p.unpaid||0)>0);
-    if(payday||behind){
+    /* ═══ ⛔ #270 · A COMPANY AT THE TOP OF THE LADDER LETS A PAYDAY GO ══════
+       (User: *"When the mood is maximum (the highest tier) on the global map and
+       it is payment day - your guys can skip payment 'travel with you is too
+       good'. Very short shartp text (one sentence)"*.)
+
+       ⛑ IT IS TAKEN HERE AND NOT AT `pay()`, WHICH IS THE WHOLE OF WHY IT IS
+       SAFE. `G.owed` has already accrued for the day, so the waiver ZEROES what
+       is standing rather than skipping the accrual - a skipped accrual would come
+       back doubled on the following payday and read as the game changing its mind.
+       ⛔ ONLY A PAYDAY, NEVER BACK WAGES. `behind` is a company that has already
+       been let down; forgiving THAT would delete the ten-mood-a-day grievance
+       #114 built and the walkout at the end of it, which is the sharpest thing
+       on this screen. A company owed nothing and glad about it waives the bill;
+       a company owed three days does not stop being owed because it cheered up.
+       ⚠ AND IT IS DETERMINISTIC, NOT A ROLL, WHICH IS A DESIGN CALL AND IS
+       FLAGGED AS ONE. The top rung is expensive to reach and easy to fall off,
+       so the reward for holding it wants to be a thing the player can plan a
+       route around; a coin toss on the same rung would read as the game being
+       stingy. `docs/OPEN_QUESTIONS.md` carries it as O2 if it should be a chance.
+       ⚡ WHAT IT IS WORTH: `dailyUpkeep()` x `PAY_EVERY`, i.e. one whole payday
+       of about thirty crowns, every fourth day the company is over +40 mood.
+       ⚠ AN `else if` AND NOT AN EARLY RETURN. `passDays` is a `for` loop over
+       days and everything under this block is still owed today - the barrels,
+       the mending, the sky. A `return` here would have swallowed the rest of
+       the day AND every day after it in the same call, which on a three-day
+       road is most of the road. */
+    const waived=payday&&!behind&&!!moodFx().freePay&&G.owed>0;
+    if(waived){
+      const letGo=G.owed;
+      G.owed=0;G.paidFlash=true;sfx('coin');
+      G.party.forEach(p=>{if(p.unpaid)p.unpaid=0;});
+      say2('Nobody puts a hand out. Travelling with you is worth more than the money.',
+        'cheer','◉'+letGo);
+    }else if(payday||behind){
       /* pay() returns the signed amount actually moved, so adding it to the
          bill IS the settlement: a full chest zeroes it, a scraped chest
          leaves the remainder standing. The chest is never overdrawn. */
@@ -44696,7 +44937,18 @@ function openProvisions(){
    happened". It should not recur — `travel()` starts the token walking
    immediately and locks the whole map while it does — but that is the
    regression to look for if a corridor ever feels dead. */
+/* ⛔ #270 - THE ONE PREDICATE FOR "the leg is stopped and waiting on a click".
+   A FUNCTION DECLARATION AND NOT A `const`, deliberately: `drawNodes` sits ~2,200
+   lines above this and a const read from its temporal dead zone is the throw that
+   aborts the whole script - the crash `.claude/rules/world-map-sights.md` records
+   this project shipping once. Read by `drawNodes` (the state and the door),
+   `confirmTravel` (the pass-through) and `travel` (which does the resuming). */
+function walkPaused(k){return !!(G.walkResume&&G.walkDest===k);}
 function confirmTravel(k){
+  /* the road is already chosen and half walked: there is no fork card left to
+     draw and no rations left to offer, so this goes straight through to the
+     resume `travel()` has been holding since #268. */
+  if(walkPaused(k)){travel(k);return;}
   if(G.pending||G.moving)return;
   const e=edgesFrom(G.at).find(x=>x[1]===k);if(!e)return;
   if(edgesFrom(G.at).length<2){travel(k);return;}
@@ -45270,6 +45522,12 @@ function travel(k){
       rollCampAt(a,b,to,()=>{
         if(sync){resume();return;}
         G.walkResume=resume;G.walkDest=k;worldTick();saveRun();
+        /* ⛔ #270 - AND IT SAYS SO. #268's pause was silent, so a player who did
+           not already know the rule was looking at a map where every node was
+           dark and the one lit one said *on the way*. One line, the node's own
+           plate, and the road bar all say the same thing now. */
+        say2('The column has stopped where it stands. Press '+
+          ((NODES[k]||{}).n||'the road ahead')+' again to go on.');
       },i>0,legHad);
       sync=false;
     });
@@ -45893,7 +46151,9 @@ function choiceNote(o,skipMorale){
     parts.push('<span class="hurt">'+(o.hurt.lasting?'permanent':'temporary')+' injury</span>');
   if(!canAfford(o.need))parts.push(needTag(o.need));
   /* #197 - the muster wall's own phrasing, so one shortage has one name */
-  else if(!hasRoomFor(o))parts.push('<span class="hurt">no room left</span>');
+  /* #270 - and WHICH room ran out. See `roomTag`: a wagon with three empty
+     seats and four ratkin already in it is not "no room left". */
+  else if(!hasRoomFor(o))parts.push('<span class="hurt">'+roomTag(doorRace(o))+'</span>');
   /* #216 - dev only: the fight behind this door on the one points scale.
      A balancing readout, not a receipt; TEST.on is why it may name figures. */
   if(typeof TEST!=='undefined'&&TEST.on&&o.battle)try{
@@ -47545,8 +47805,36 @@ function doorRace(c){
   if(c.recruitPreset){const p=presetOf(c.recruitPreset);return p&&p.race;}
   return null;
 }
+/* ═══ ⛔ #270 · FOUR RATKIN, AND THE FIFTH ONE IS A KNIFE FIGHT ═══════════
+   (User, 2026-08-31: *"In the party maximum 4 ratkins (write then - if more
+   they will kill each other)"*.)
+
+   ⛑ A SECOND CAP, ON A DIFFERENT AXIS, AND IT HAS TO BE A SECOND ONE. The
+   wagon's cap is SEATS and a ratkin costs one of twelve, so a company can hold
+   twelve of them and a ratkin is by some distance the cheapest way to fill a
+   line. This is not that number: it is a rule about who will sit at the same
+   fire, and folding it into `COST` would have priced the fifth ratkin out
+   instead of refusing it - which is a different sentence and a worse one.
+   ⛔ ONE TABLE, AND IT IS KEYED ON RACE SO THE NEXT CAP IS A ROW. `RACE_FULL`
+   holds the WORDS beside the number for the same reason `NEED_SHORT` does: a
+   dead door has to name the thing you ran out of, and *no room left* over a
+   half-empty wagon is the shortage with the wrong name on it.
+   ⚠ IT GUARDS THE DOORS SOMEBODY NEW COMES THROUGH AND NOT THE ONES SOMEBODY
+   COMES BACK THROUGH. The muster wall, an event's `recruit`/`recruitPreset`
+   door and the clash's allies all ask; the returner at a fire and the body who
+   walks out of the sinkhole three days later do not, because both were already
+   in this company and a company does not knife its own for coming home.
+   ⚠ AND IT IS COUNTED OFF `G.party`, so a dismissal frees the seat at once. */
+const RACE_MAX={ratkin:4};
+const RACE_FULL={ratkin:'four ratkin is as many as will share a fire'};
+function raceHeld(r){return G.party.filter(p=>p.race===r).length;}
+function raceRoom(r){return !r||!RACE_MAX[r]||raceHeld(r)<RACE_MAX[r];}
+/* which shortage a dead recruit door is naming. Derived off the two caps, so
+   the muster row, the road door and the camp door cannot disagree about it. */
+function roomTag(r){return (r&&!raceRoom(r))?RACE_FULL[r]:'no room left';}
+const seatRoomFor=r=>!r||partyUsed()+(COST[r]||0)<=PARTYCAP;
 const hasRoomFor=c=>{const r=doorRace(c);
-  return !r||partyUsed()+(COST[r]||0)<=PARTYCAP;};
+  return seatRoomFor(r)&&raceRoom(r);};
 /* ⛔ THE ONE PREDICATE BOTH RENDERERS ASK, and the appended walk-away asks it
    too. If the exit guard had gone on testing `canAfford` alone, a card whose
    only live door was a full-party recruit would have had every button dead
@@ -47579,6 +47867,25 @@ function needTag(need){
    own price by a fifth rather than be the one left sitting on the wall. It is
    not generosity. It is that they cannot stand it.
    ============================================================ */
+/* ═══ ⛔ #270 · ONE OFF THE WALL ═══════════════════════════════════════════
+   (User, 2026-08-31: *"Давай ограничим наем токо 1 воина из трех в пункте
+   наема"* - limit the hiring to one warrior of the three at a muster point.)
+
+   ⛑ THE SURCHARGE ABOVE WAS THE OLD ANSWER TO THE SAME QUESTION AND IT IS NOW
+   UNREACHABLE, WHICH IS WHY ITS TWO LINES OF PROSE COME OFF THE CARD. That
+   comment's own words are *"it should be a tempting bad idea rather than an
+   obvious no"*, and the ask is that it be a no. `hirePrice` and its two
+   constants are left standing because they ARE the way back - raise the limit
+   and the second body prices itself again - but nothing may go on PROMISING a
+   mark-up that can never be charged: the "Prices are up by half" paragraph and
+   the ratkin's "(undercutting)" tag are deleted with the same edit, because a
+   promise nothing pays is the defect this build has caught seven times.
+   ⚠ THE RULE IS ON THE CARD BEFORE THE PRESS, not discovered by pressing. The
+   opening line says how many you may take; the rows say why they are dead once
+   you have. Same law the muster's own `no room left` row has obeyed since #197.
+   ⚠ AND IT IS PER WALL, NOT PER RUN: `G.hiredHere` is zeroed by the walk-away
+   door and by `hire2`'s own re-roll, so The Last Muster is a second one. */
+const HIRE_LIMIT=1;
 const SECOND_HIRE=1.5, RATKIN_JEALOUS=0.8;
 const hirePrice=(r,already)=>{
   if(!already)return r.price;
@@ -47660,12 +47967,10 @@ function openHire(){
     :'Three of them on the wall by the crossroads, and a quartermaster’s cart in the mud '+
      'beside them with its boards down.\n\n')+
     'You have <b style="color:var(--g4)">'+G.run.crowns+' crowns</b> and '+
-    '<b style="color:var(--g4)">'+room+' of party room</b> left.'+
-    (G.hiredHere?'\n\n<b style="color:#c15d55">They watched you pay the first one. Prices are '+
-      'up by half.</b>'+
-      (G.recruits.some(r=>r.race==='ratkin')
-        ? ' <span style="color:#8ca35a">The ratkin went the other way and cut a fifth off.</span>':'')
-      :'')+'</div>'+
+    '<b style="color:var(--g4)">'+room+' of party room</b> left. '+
+    'They will let you take <b style="color:var(--g4)">one</b> of them.'+
+    (G.hiredHere?'\n\n<b style="color:#c15d55">You have had your one. The rest go back to '+
+      'watching the road.</b>':'')+'</div>'+
     '<div id="hList" style="display:flex;flex-direction:column;gap:5px"></div>';
   if(hireArt)html='<div class="hirestage fit"><img class="evback" src="'+hireArt+
     '" alt=""><div class="hirepanel">'+html+'</div></div>';
@@ -47707,11 +48012,21 @@ function openHire(){
     drawNodes();return;
   }
   G.recruits.forEach((r,i)=>{
-    const price=hirePrice(r,G.hiredHere), s=effStats(r);
-    const afford=G.run.crowns>=price, fits=COST[r.race]<=room;
+    /* #270 - four refusals, and each one names itself below: the wall is spent,
+       the wagon is full, four ratkin already share this fire, the chest is short. */
+    const taken=G.hiredHere>=HIRE_LIMIT;
+    /* ⛔ AND A SPENT WALL SHOWS THE HONEST PRICE, NOT THE SURCHARGE. Caught by
+       driving it: with the limit at one, `hirePrice(r,G.hiredHere)` put the
+       second-hire mark-up on all three rows the moment one was taken - 72 crowns
+       reading 108 on a row that can never be bought. That is a promise nothing
+       pays, printed in the one place this card is arithmetic. The surcharge is
+       still live for any HIRE_LIMIT above one, which is what makes this the
+       right shape rather than a deletion. */
+    const price=hirePrice(r,taken?0:G.hiredHere), s=effStats(r);
+    const afford=G.run.crowns>=price, fits=COST[r.race]<=room&&raceRoom(r.race);
     const b=document.createElement('button');
     b.className='choice';
-    if(!afford||!fits)b.disabled=true,b.style.opacity=.4;
+    if(!afford||!fits||taken)b.disabled=true,b.style.opacity=.4;
     /* the strangers explain what they ARE, which is most of what you are
        buying — hovering the class or the race says so */
     /* #174 - the stranger with no trade says so in the trade's place, in the
@@ -47751,7 +48066,6 @@ function openHire(){
          ' <span style="color:#a08a5e">no class yet</span>'
         :cMark(r.cls))+'</b>'+
       '<i>'+price+' crowns'+
-      (G.hiredHere&&r.race==='ratkin'?' <span style="color:#8ca35a">(undercutting)</span>':'')+
       ' · '+COST[r.race]+' room · '+WAGE[r.race]+'/day'+
       /* THE MOST IMPORTANT PLACE THE NUMBERS COME OFF. Hiring used to be four
          integers per candidate laid side by side, which is a spreadsheet
@@ -47791,7 +48105,11 @@ function openHire(){
          that stops you. */
       (none?' · <span style="color:#8ca35a">picks up a class at the first level</span>'+
             ' · <span style="color:var(--wood)">comes with no weapon</span>':'')+
-      (!fits?'<span class="hurt"> · no room left</span>':
+      /* #270 - the wall being spent outranks the other two: a row that says
+         "cannot afford" on a wall you may not buy from again is the shortage
+         with the wrong name on it. `roomTag` picks between the two caps. */
+      (taken?'<span class="hurt"> · one off this wall, and you took them</span>':
+        !fits?'<span class="hurt"> · '+roomTag(r.race)+'</span>':
         !afford?'<span class="hurt"> · cannot afford</span>':'')+'</i>';
     if(!b.disabled)b.onclick=()=>{
       pay('crowns',-price);
@@ -48052,7 +48370,14 @@ function villageDo(id){
    into it would delete the event under the player's hand.
    ═══════════════════════════════════════════════════════════════════════ */
 const WAGON_ART='EV40';
-const WAGON_KEYS=['frame','bed','aid','fire','shrine'];
+/* #270 - the racks sit under the frame because they are the same KIND of row: a
+   tier with pips, bought over and over, that changes what the wagon can hold. The
+   crate goes last because it is the only one that is about the next company. */
+const WAGON_KEYS=['frame','rack','bed','aid','fire','shrine','crate'];
+const RACK_NOTE=[
+  'A rail down one side and four iron hooks. Things stop sliding into each other.',
+  'Shelving over the axle, pegged rather than nailed, so it can come out again.',
+  'Every inch of the bed is spoken for. The mule has opinions and no vote.'];
 const FRAME_WORD=['I','II','III'];
 const FRAME_NOTE=[
   'A foot of bench and a second strap. The mule looks at the new weight the way mules do.',
@@ -48061,49 +48386,103 @@ const FRAME_NOTE=[
 /* what the next purchase of `k` costs, or null when there is nothing left to buy */
 function wagonCost(k){
   if(k==='frame')return G.wagon.frame>=FRAME_COST.length?null:{salvage:FRAME_COST[G.wagon.frame]};
+  if(k==='rack') return G.wagon.rack >=RACK_COST.length ?null:{salvage:RACK_COST[G.wagon.rack]};
   return hasFit(k)?null:FITTINGS[k].cost;
 }
+/* #270 - a fitting you can pay for and have nowhere to put. It is a REFUSAL and
+   not a price, so it is asked separately from `canAfford` and named separately on
+   the tile: "no room on the racks" over a full purse is the shortage with the
+   wrong name on it, which is `needTag`'s own lesson from #157. */
+const wagonTier=k=>k==='frame'||k==='rack';
+function fitBlocked(k){return !wagonTier(k)&&!hasFit(k)&&wagonFull();}
 function wagonSig(){return G.camp.salvage+'/'+G.camp.gems;}
 function wagonWaiting(){
   if(!G.wagon||wagonSig()===G.wagon.seen)return false;
-  return WAGON_KEYS.some(k=>{const c=wagonCost(k);return !!c&&canAfford(c);});
+  /* #270 - and a thing there is no rack for is not waiting for you */
+  return WAGON_KEYS.some(k=>{const c=wagonCost(k);
+    return !!c&&canAfford(c)&&!fitBlocked(k);});
 }
 function wagonTile(k){
-  const isF=k==='frame',F=isF?null:FITTINGS[k],cost=wagonCost(k);
-  const done=!cost,ok=!!cost&&canAfford(cost);
+  const isF=k==='frame',isR=k==='rack',tier=isF||isR;
+  const F=tier?null:FITTINGS[k],cost=wagonCost(k);
+  const done=!cost;
+  const blocked=fitBlocked(k);
+  /* ⛔ #270 - A BOLTED FITTING THE CRATE COULD TAKE IS STILL A BUTTON, AND THAT
+     IS WHY IT MAY NOT CARRY `disabled`. A disabled button eats the click and
+     says nothing back, which this file already calls "the same experience as a
+     broken one" on the mercy screen - and pinning what the crate keeps is the
+     only interaction on this card that is not a purchase. */
+  const keepable=!tier&&done&&k!=='crate'&&hasFit('crate');
+  const pinned=keepable&&G.wagon.kept===k;
+  const ok=!!cost&&canAfford(cost)&&!blocked;
   const art=itemImg('wagon_'+k,56);
-  const glyph=isF?'◎':F.g;
-  let receipt,clause,hover;
-  if(isF){
-    const t=G.wagon.frame;
-    hover='The frame. Three tiers, each wider than the last, paid in salvage: '+
-      FRAME_COST.join(' / ')+'. Seats go '+
-      FRAME_SEATS.map(n=>PARTYBASE+(LEGACY.yard||0)+n).join(', ')+'.';
-    clause=done?'as wide as a cart bed gets':'seats '+PARTYCAP+' → '+(PARTYCAP-FRAME_SEATS[t]+FRAME_SEATS[t+1]);
+  const glyph=isF?'◎':isR?'▤':F.g;
+  let receipt,clause,hover,name;
+  if(tier){
+    const t=isF?G.wagon.frame:G.wagon.rack,COSTS=isF?FRAME_COST:RACK_COST;
+    name=isF?'THE FRAME':'THE RACKS';
+    hover=isF
+      ?'The frame. Three tiers, each wider than the last, paid in salvage: '+
+        FRAME_COST.join(' / ')+'. Seats go '+
+        FRAME_SEATS.map(n=>PARTYBASE+(LEGACY.yard||0)+n).join(', ')+'.'
+      :'The racks. Three tiers, paid in salvage: '+RACK_COST.join(' / ')+'. How many things '+
+        'may be bolted into the wagon at once goes '+RACK_SLOTS.join(', ')+'.';
+    clause=done?(isF?'as wide as a cart bed gets':'every inch of the bed is spoken for')
+      :isF?('seats '+PARTYCAP+' → '+(PARTYCAP-FRAME_SEATS[t]+FRAME_SEATS[t+1]))
+          :('holds '+RACK_SLOTS[t]+' → '+RACK_SLOTS[t+1]+' bolted in');
     receipt=done?'':resGlyphs('−'+cost.salvage+' salvage')+(ok?'':' · '+needTag(cost));
   }else{
-    hover=F.d;clause=F.s;
-    receipt=done?'<span style="color:#8ca35a">BOLTED IN</span>'
-      :resGlyphs(Object.keys(cost).map(r=>'−'+cost[r]+' '+r).join(' '))+(ok?'':' · '+needTag(cost));
+    name=F.n.toUpperCase();hover=F.d;
+    clause=pinned?'this is the one that rides on'
+      :keepable?'press to keep this one'
+      :(k==='crate'&&done)?((G.wagon.kept&&FITTINGS[G.wagon.kept])
+          ?'keeping '+FITTINGS[G.wagon.kept].n:'nothing pinned yet · press a bolted fitting')
+      :F.s;
+    receipt=done
+      ?'<span style="color:#8ca35a">BOLTED IN</span>'+
+        (pinned?' · <span style="color:var(--g4)">◆ KEPT</span>':'')
+      :resGlyphs(Object.keys(cost).map(r=>'−'+cost[r]+' '+r).join(' '))+
+        (blocked?' · <span class="hurt">no room on the racks</span>'
+          :canAfford(cost)?'':' · '+needTag(cost));
   }
-  const pips=isF?'<span class="wpips">'+FRAME_WORD.map((w,i)=>'<span class="wpip'+
-    (i<G.wagon.frame?' on':'')+'" title="'+w+'"></span>').join('')+'</span>':'';
-  return '<button class="wtile'+(isF?' wide':'')+(done?' built':'')+'" data-k="'+k+'"'+
-    (ok?'':' disabled')+' title="'+hover.replace(/"/g,'&quot;')+'">'+
+  const pipOf=(words,t)=>'<span class="wpips">'+words.map((w,i)=>'<span class="wpip'+
+    (i<t?' on':'')+'" title="'+w+'"></span>').join('')+'</span>';
+  const pips=isF?pipOf(FRAME_WORD,G.wagon.frame):isR?pipOf(FRAME_WORD,G.wagon.rack):'';
+  /* ⚠ #270 - ONLY THE FRAME IS `wide`, AND THAT IS ARITHMETIC RATHER THAN
+     STYLE. Seven tiles at two columns with both tier rows full-width is five
+     rows, and measured on the card that is 28px more than `.bd` can show: the
+     last row lands under the fold on a screen whose whole job is that
+     everything on it competes with everything else. The racks keep their pips
+     in half a tile. */
+  return '<button class="wtile'+(isF?' wide':'')+(done?' built':'')+
+    (keepable?' keepable':'')+(pinned?' kept':'')+'" data-k="'+k+'"'+
+    ((ok||keepable)?'':' disabled')+' title="'+hover.replace(/"/g,'&quot;')+'">'+
     '<span class="gart">'+(art||glyph)+'</span>'+
-    '<span class="gtx"><b>'+(isF?'THE FRAME':F.n.toUpperCase())+pips+'</b>'+
+    '<span class="gtx"><b>'+name+pips+'</b>'+
     (receipt?'<i class="gpr">'+receipt+'</i>':'')+'<i class="gsay">'+clause+'</i></span></button>';
+}
+/* ⛔ #270 - WHICH BOLTED FITTING THE CRATE TAKES. Pressing the pinned one again
+   unpins it, because a choice you cannot take back is a trap on a card whose
+   whole job is that everything here competes with everything else. */
+function wagonKeep(k){
+  if(!hasFit('crate')||!hasFit(k)||k==='crate')return;
+  G.wagon.kept=(G.wagon.kept===k)?null:k;
+  sfx('coin');saveRun();openWagon();
 }
 function openWagon(note){
   if(typeof note!=='string')note=null;            /* it is also an onclick handler */
   const dlg=$('wDlg');
   if(dlg.classList.contains('on')&&!dlg.querySelector('.wagGrid'))return;
   G.wagon.seen=wagonSig();
-  const built=G.wagon.built.map(k=>FITTINGS[k].n).join(', ');
+  /* #270 - FILTERED, because `LEGACY.carry` hands a key straight into this list
+     at boot and a retired one would take the whole card down on a `.n` of null. */
+  const built=G.wagon.built.filter(k=>FITTINGS[k]).map(k=>FITTINGS[k].n).join(', ');
   dlg.innerHTML='<h3>THE WAGON</h3>'+(artFor(WAGON_ART)?artTag():'')+
     '<div class="bd">'+(note||'One cart and one mule that has outlived several owners. Whatever '+
       'nobody is wearing rides in the back, and salvage is what it is rebuilt with.')+
-    '\n\n<span class="lbl">SEATS '+partyUsed()+' OF '+PARTYCAP+' · BOLTED IN: '+(built||'nothing yet')+'</span>'+
+    '\n\n<span class="lbl">SEATS '+partyUsed()+' OF '+PARTYCAP+
+      ' · SLOTS '+fitsHeld()+' OF '+fitSlots()+          /* #270 - the second cap */
+      ' · BOLTED IN: '+(built||'nothing yet')+'</span>'+
     '<div class="wagGrid">'+WAGON_KEYS.map(wagonTile).join('')+'</div></div>'+
     '<div id="wChoices" style="display:flex;flex-direction:column;gap:5px">'+
     '<button class="choice" data-i="go"><b>Back to the road</b><i>nothing is spent</i></button></div>';
@@ -48111,15 +48490,20 @@ function openWagon(note){
   const n=NODES[G.at]||{x:640,y:300};placeDlg(n.x,n.y);
   const wa=artFor(WAGON_ART);if(wa)drawArt($('wArt'),wa);
   dlg.querySelectorAll('.wtile').forEach(b=>{
-    if(!b.disabled&&!b.classList.contains('built'))b.onclick=()=>wagonDo(b.dataset.k);});
+    if(!b.disabled&&!b.classList.contains('built'))b.onclick=()=>wagonDo(b.dataset.k);
+    /* #270 - a bolted fitting is a button again once the crate is in, and the
+       only thing it does is say "this is the one that rides on". */
+    else if(b.classList.contains('keepable'))b.onclick=()=>wagonKeep(b.dataset.k);});
   dlg.querySelector('[data-i="go"]').onclick=()=>{dlg.classList.remove('on');worldTick();};
   drawNodes();
 }
 function wagonDo(k){
   const cost=wagonCost(k);if(!cost||!canAfford(cost))return;
+  if(fitBlocked(k))return;                                   /* #270 - no rack for it */
   Object.keys(cost).forEach(r=>{G.camp[r]-=cost[r];});
   let note;
   if(k==='frame'){G.wagon.frame++;PARTYCAP=wagonCap();note=FRAME_NOTE[G.wagon.frame-1];}
+  else if(k==='rack'){G.wagon.rack++;note=RACK_NOTE[G.wagon.rack-1];}   /* #270 */
   else{G.wagon.built.push(k);if(k==='aid')G.aidLeft=1;note=FITTINGS[k].d;}
   sfx('promote');saveRun();
   /* the bar first (seats, the chest, the badge), then the card on the new state */
@@ -49420,7 +49804,11 @@ function pickChoice(k,i){
        reason so it reads as arithmetic and not as a bug. Hoom and Pell
        carry no price and behave exactly as before. */
     const price=c.recruit.price||0;
-    if(partyUsed()+COST[c.recruit.race]>PARTYCAP){
+    /* #270 - the fire is full of ratkin before the wagon is full of anybody */
+    if(!raceRoom(c.recruit.race)){
+      hurtLine+='\n\n'+c.recruit.name+' looks along the line, counts, and does not sit down. '+
+        'Four of them is as many as will share a fire, and everybody at it knows the number.';
+    }else if(partyUsed()+COST[c.recruit.race]>PARTYCAP){
       hurtLine+='\n\n'+c.recruit.name+' would have joined, but nobody follows a captain with no '+
         'room at the fire. (No room left.)';
     }else if(price>G.run.crowns){
@@ -49451,7 +49839,7 @@ function pickChoice(k,i){
      person (Skree or Bruht) whose stats and trait are already written */
   if(c.recruitPreset){
     const preset=presetOf(c.recruitPreset);   /* #197 - one mapping, see doorRace */
-    if(partyUsed()+COST[preset.race]<=PARTYCAP){
+    if(partyUsed()+COST[preset.race]<=PARTYCAP&&raceRoom(preset.race)){   /* #270 */
       const nr=finishRecruit(JSON.parse(JSON.stringify(preset)));
       G.party.push(nr);
       hurtLine+='\n\n'+who(nr)+' joins the company. '+TRAITS[nr.trait].n+' - '+traitDesc(nr);
@@ -49675,7 +50063,20 @@ const FITTINGS={
   shrine:{n:'The Reliquary',cost:{salvage:6,gems:2},g:'✧',s:'+10 maximum morale, everybody, every fight',
     d:'A shelf, a curtain, and whatever the company has decided is worth putting behind it. '+
       'Everyone in the company has +10 MAXIMUM morale, in every battle, forever. Nobody agrees '+
-      'about what is behind the curtain and everybody touches it on the way past.'}
+      'about what is behind the curtain and everybody touches it on the way past.'},
+  /* ⛔ #270 - THE ONE FITTING THAT IS ABOUT THE NEXT COMPANY. Everything above it
+     is a grind removed from THIS run and dies with it (#238's own rule, and the
+     reason the wagon is not power); this one buys the right to keep exactly one of
+     them. It takes a rack slot like anything else, so on a bare wagon the crate
+     and the thing it saves ARE the wagon, which is the trade the whole tile is.
+     ⚠ IT DOES NOT KEEP ITSELF. A crate that carried itself over would be the one
+     permanent purchase in the run economy, and the wheelwright's +2 seats is
+     already the only piece of raw metaprogression in the game. */
+  crate:{n:'The Kept Crate',cost:{salvage:7,gems:1},g:'▣',s:'one fitting rides into the next run',
+    d:'A crate with a lid, a lock, and the company mark burnt into the end grain. When this run '+
+      'is banked, ONE other thing bolted into this wagon comes out with you and is already '+
+      'bolted into the next one. Press a bolted fitting to choose which. Nothing else survives, '+
+      'and neither does the crate.'}
 };
 /* #238 - read off THIS run's wagon. `FIT_SLOTS` is gone: the money is the cap. */
 const hasFit=k=>!!(G.wagon&&G.wagon.built.indexOf(k)>=0);
@@ -49689,6 +50090,13 @@ function openCampScreen(bankIt){
        used for arithmetic again. */
     LEGACY.bank.salvage=(LEGACY.bank.salvage||0)+G.camp.salvage;
     LEGACY.bank.gems+=G.camp.gems;
+    /* ⛔ #270 - AND THE CRATE COMES OFF THE WAGON HERE, WHICH IS THE ONE PLACE
+       THE TABLE IS IN SCOPE TO VALIDATE THE KEY. Both halves have to be true at
+       once: the crate bolted in AND something pinned to it. A crate with nothing
+       pinned keeps nothing, on purpose - it is a choice the card asks for out
+       loud and does not make on the player's behalf. */
+    LEGACY.carry=(hasFit('crate')&&G.wagon.kept&&G.wagon.kept!=='crate'&&
+                  FITTINGS[G.wagon.kept])?G.wagon.kept:null;
     LEGACY.runs++;G.banked=true;saveLegacy();
   }
   show('camp');
@@ -51421,7 +51829,36 @@ $('menuBtn').onclick=()=>{
        {t:'Stay in it.',c:'you are still standing'}]);
     return;
   }
-  if(G.pending||G.moving){say2('Finish what you are standing in first.');return;}
+  /* ⛔ #270 - THE REPORT ASKS, FOR THE SAME REASON THE FIGHT DOES: it is the one
+     other exit that can throw something away. `afterPromotion()` is what normally
+     clears these three fields, and leaving without it would send the player back
+     to a map where `G.openEv` still points at the event whose battle has just
+     been won - i.e. the fight offered a second time, after its haul was paid. */
+  if($('spoils').classList.contains('on')){
+    ask('LEAVE THE REPORT?',
+      'The fight is settled and whatever it paid is already in the cart.\n\n'+
+      'Anything still waiting on this screen goes with it: the prisoners walk, and '+
+      'whatever else was about to be offered is not offered again.',
+      [{t:'Leave it.',danger:true,c:'the road is saved where it stands',
+        go:()=>{G.pending=null;G.openEv=null;G.queuedEv=null;saveRun();openMenu();}},
+       {t:'Stay and read it.',c:'nothing is spent'}]);
+    return;
+  }
+  /* ⛔ #270 - AND THE WORLD'S GUARD IS GONE. It read `if(G.pending||G.moving)` and
+     said *Finish what you are standing in first*, which was written when the only
+     way to be `moving` was to be actually walking. Since #268 a mid-road pause
+     holds `G.moving` true while nothing at all is happening, so the one screen the
+     player was most likely to be stuck on was the one that refused the door - and
+     that is exactly where he hit it.
+     ⛑ IT WAS NEVER PROTECTING ANYTHING, WHICH IS THE PART WORTH KNOWING.
+     `loadRun()` normalises all three fields on the way back in (`G.pending=null;
+     G.moving=false; G.dest=null`), so a run resumed from the menu can no more be
+     stranded mid-walk than one resumed from a closed tab. And #131 already carries
+     the other half: an unresolved card rides the save as `G.openEv` and is
+     re-offered by the Continue button, with the queued ambush left alone behind it.
+     ⚠ WHAT IT DOES COST is an unanswered CAMP incident, which is not an `openEvent`
+     and so has no `G.openEv` to come back on. That is the price of a door the
+     player pressed on purpose, and it is smaller than the lock it replaces. */
   saveRun();openMenu();
 };
 

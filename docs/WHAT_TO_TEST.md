@@ -26,6 +26,38 @@
 
 ---
 
+## 🧪 THE NINE-ASK BATCH  *(#270 · 2026-08-31 · build log 8f.295)*
+
+**The short version:** nine points off four screenshots. **One of them is the soft lock you hit**,
+and it turned out to be yesterday's own feature shipped without a button: #268's mid-road stop
+held the map locked and the resume it built could only be reached by calling the function, never by
+clicking anything. The rest is two caps (four ratkin, one hire a wall), two cuts on screens that
+were saying things twice, the wagon growing a second ladder, and the top mood rung buying you a
+payday.
+
+⛔ **THE TWO TO ARGUE WITH ARE THE PAYDAY AND THE RACKS.** A company at HIGH SPIRITS now pays
+**nothing at all** on a payday, which is about thirty crowns every fourth day, deterministically -
+not a chance. And the wagon's fittings are capped at **two** until you buy racks, where before the
+only cap was the money. Both are one constant if either feels wrong.
+
+| what to check | where | what should happen |
+|---|---|---|
+| **the road unsticks** | take a road two or more days long, and answer whatever card stops you halfway | the column stops, a line says **"The column has stopped where it stands. Press <the place> again to go on."**, and the destination stays LIT with **· press to go on** under its name while every other node is dark. Pressing it walks the rest of the leg. Before today nothing on that map was clickable at all |
+| **the menu opens from anywhere** | press ☰ MENU while a card is open, while the column is stopped mid-road, and on the after-battle report | it opens. On the report it ASKS first, because leaving there throws away the prisoners. It is also on the run's END screen now. The old *"Finish what you are standing in first"* refusal is gone |
+| **the roster's lines** | open THE COMPANY and click down the left column | exactly ONE gold line, on the tile you have picked. The coloured race lines on every tile are gone, and the portrait no longer shifts sideways when you select it |
+| **the report says less** | win a fight with somebody carried off | no pop-up explaining down-versus-killed. The crew card under it still says `hurt · 8d` / `carried off · <the scar>`, and the line over the grid still says `1 OF 4 CARRIED OFF`. The haul chips are `◉ +55` with **no words** |
+| **four ratkin** | hire ratkin until you have four, then look at a ratkin door or a ratkin on a muster wall | the row is dead and says **four ratkin is as many as will share a fire** - not "no room left", which would be a lie with seats free. An ogre or a human on the same wall is unaffected |
+| **one off the wall** | a muster field | the card says *They will let you take one of them*. After one hire all three go dead with **· one off this wall, and you took them**, and their prices do not move |
+| **the free payday** | get the company to HIGH SPIRITS and walk into a payday | nothing leaves the chest and the line reads *"Nobody puts a hand out. Travelling with you is worth more than the money."* ⚠ It will NOT fire if anybody is already owed back wages, on purpose |
+| **THE RACKS** | open THE WAGON | a second tiered row under the frame, three pips, **holds 2 → 3 bolted in**. With two things bolted in the rest of the tiles go grey saying **no room on the racks**. The header reads `SEATS n OF m · SLOTS n OF m` |
+| **THE KEPT CRATE** | bolt the crate in, then press one of your other bolted fittings | that tile lights gold, says **BOLTED IN · ◆ KEPT** and *this is the one that rides on*; the crate says *keeping The Bed*. Finish the run and walk back to the wagon: the next company starts with that fitting already bolted in. ⚠ A company that DIES keeps nothing |
+| **the holes** | any fight on the rocky ridge in the back half of a run (the Sling-Line, the Steading-Line, Something in Armour) | when there are pits there are **two or three** of them, never one, with a rock or two of spoil lying beside them. Nothing should ever be walled into a hole |
+
+⏳ **What is unfinished:** the two new wagon tiles have no painting and fall back to a glyph
+(`wagon_rack`, `wagon_crate`), the way every wagon tile did before the art landed.
+
+---
+
 ## 🧪 THE TWENTY-FIVE-ASK BATCH  *(#269 · 2026-08-31 · build log 8f.294)*
 
 **The short version:** twenty-five points off eleven screenshots. Two of them were bugs rather

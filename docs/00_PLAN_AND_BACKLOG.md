@@ -256,6 +256,26 @@ section used to carry each entry in full, which made the work file a second chan
 
 ---
 
+## ~~270 · the nine-ask batch~~ ✅ BUILT 2026-08-31 (8f.295), in the working tree
+
+> *2026-08-31, in one message with four screenshots. Quoted verbatim, because
+> [[capture-all-task-context]]: the reason and the exact words are the half that does not survive a
+> paraphrase. The batch arrived as **"another buch:"** directly after #269 landed.*
+
+| # | the ask, in his words | where it lands |
+|---|---|---|
+| 1 | *"If you use terrain with pits use at least more then one (so it is more obsticle). And also feel fre to add other stuff here and there"* | `digPits` · `TERRAIN.rocky` |
+| 2 | *"Don` need extra explanation about wen down and killed (screen) - because below ther is explisit infomation - also don`t write what resourse in words - icon is enough"* | `hurtTeach` · the aftermath's `fxChips` |
+| 3 | *"After stop at the middle of the road i catch soft lock - that I cant continue forward movment"* | #268's mid-road pause · `drawNodes` |
+| 4 | *"In the party maximum 4 ratkins (write then - if more they will kill each other)"* | a second cap, on race |
+| 5 | *"I nned to go to menu from any screen"* | `MENU_ON` · `menuBtn`'s guard |
+| 6 | *"The line near portrait when i was picking guy was good. But the line near each portrait on the left - i didnt want. You did it wronhly - can you please revrse and do right (screnshot)"* | `.rmem.on` vs `.rmem.<race>` |
+| 7 | *"Add road event: When the mood is maximum (the highest tier) on the global map and it is payment day - your guys can skip payment 'travel with you is too good'. Very short shartp text (one sentence)"* | `MOODSTATES` · `passDays` |
+| 8 | *"В фургон добавь постройку - которая перемещает одну из текущих построек в тележке в след. ран. И добавь несколько улучшений (как с сайзонм) которые увличвают кол-во активных построек в фургоне"* | THE RACKS · THE KEPT CRATE |
+| 9 | *"Давай ограничим наем токо 1 воина из трех в пункте наема"* | `HIRE_LIMIT` |
+
+---
+
 ## ~~269 · the twenty-five-ask batch~~ ✅ SHIPPED 2026-08-31 (8f.294)
 
 > *2026-08-31, in one message with eleven screenshots. Quoted verbatim, because
