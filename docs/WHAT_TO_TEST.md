@@ -26,6 +26,49 @@
 
 ---
 
+## 🧪 THE TWENTY-FIVE-ASK BATCH  *(#269 · 2026-08-31 · build log 8f.294)*
+
+**The short version:** twenty-five points off eleven screenshots. Two of them were bugs rather
+than asks - **Coldharrow soft-locked on every single visit** and had done for eight days, and the
+XP a fight pays had quietly fallen 3.5x when hitpoints did. The rest is one big rule change (all
+armour stops 70%, the categories deleted), one big honesty pass (ten personalities were promising
+stat figures the fight does not charge), and a long tail of small ones.
+
+⛔ **THE ONE TO ARGUE WITH IS THE ARMOUR.** Every suit stopping 70% makes armoured enemies
+noticeably harder: measured against yesterday's build, **THE HOLD'S MEN went 30% to 5% for the
+starting four** and **THE CIRCLE 55% to 25% for the prepared six** (n=20 a side). Isolated one knob
+at a time on the Hold: 70% absorb reads 0-5%, 60% reads 5%, **50% reads 25%** - i.e. that is the
+whole of it, and it is one number (`ARMOUR_ABSORB`). Say the word and it moves.
+
+| what to check | where | what should happen |
+|---|---|---|
+| **Coldharrow does not lock** | walk into Coldharrow | six buttons: bone-setter, market, the rack, and **Back to the road**. Before today there were **none at all** and the only way out was reloading |
+| all armour stops 70% | battle card, hover the ⛨ mark | no LIGHT/MEDIUM/HEAVY word in the bar any more. The hover says 70% stops, 30% reaches the body. A stripped body still says **NONE** |
+| the hitpoint hover | company sheet, hover the ♥ bar | every line that made the pool: build and race, how much of them there is, what they are carrying, their nature, what the levels bought, the shooter's tithe, an injury |
+| the mood hover | company sheet, hover the ☺ bar | the ladder as before, and **under it** what put them on that rung: their own nature, the company's mood, their personality, the banner and the drum, what the road owes them |
+| the capstone rung | sheet → hover AGILITY | the top rung now reads **FLEET · +1 hex of step, every turn**. Same on STANDS, UNREPEATABLE and TWO PERK POINTS |
+| a trait's figures | sheet → hover **Twitchy** | **+1 AGI · −1 MOR**, matching the AGILITY column beside it, and a paragraph that is not the same line again. It said +2 and −3 |
+| Asha | company sheet → Asha | personality **Half human**, +1 STR and +1 MOR, −1 AGI |
+| an archer with no bow | strip Ilka's bow, open a fight | **no CRIPPLING SHOT**. Put the bow back and it returns. Same for a spearwoman without a pole and a brute with empty hands |
+| XP | win any fight, read the aftermath | roughly three and a half times what it paid yesterday. Levels should arrive at about the old pace again |
+| surrounded | aiming card, three bodies on one target | `surrounded +10` where it used to read +30 |
+| the enemy card | hover any enemy | **⛨ / ♥ / ☺** instead of the words ARMOUR / HITPOINTS / MOOD, armour first |
+| the step | your own battle card | a **⇢ 4** cell between ACTIONS and the two percentages |
+| the zoom row | battle screen, top right | FULL / FIELD / CLOSE is gone. **The mouse wheel still steps between the three** |
+| dogs and mirehares | THE PACK, THE MIREHARES | no armour bar on any of them; the points are in their hitpoints instead |
+| CRIPPLING SHOT on a mirehare | shoot the buck, then watch his charge | one hex shorter than usual. It did literally nothing to them before |
+| the buck | THE MIREHARES | he charges **through** the doe now instead of being stopped by her. This makes the fight harder: the prepared six went 100% to 70% |
+| the pack aura | THE PACK | the ✵ mark comes and goes at **2 hexes** from The Bitch, not 3 |
+| rarity | any item name or the found row | COMMON / **UNCOMMON** / **RARE** / **LEGENDARY** in gold. Four things are legendary: the Wood-Stick, the Stone Shield, the Unusual Coin, the Roll of Names |
+| adjustable | hover rags, a cook-pot or the worn bucket | **adjustable: fits any body, no penalty**. It was always true and never said |
+| the cub | kill the Fen-Mother | **two** doors, and taking the cub is **+2 morale** rather than −6 |
+| the drum | any shop that stocks it, and the world bar | costs **120** and the bar chip shows the painted drum rather than ◍ |
+| POISON | any ratkin's skill list | called **POISON**, on the battlefield and in the inventory |
+| the working stave | Marrow's weapon hover | **reach 1**, and its spell range is still +2 |
+| Everchanging Luck | perks tab | **+2** to your worst or best stat |
+
+---
+
 ## 🧪 THE ELEVEN-ASK BATCH  *(#268 · 2026-08-31 · build log 8f.293)*
 
 **The short version:** eleven small fixes off five screenshots - a mood number, a skill's own

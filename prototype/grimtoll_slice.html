@@ -831,6 +831,11 @@ button:disabled{cursor:not-allowed}
 .ladfull.tells .lrung .lgv{flex:0 0 auto;margin-left:auto;max-width:250px;text-align:right;
   font-family:var(--mono);font-size:var(--fs1);color:#8a7248;line-height:1.35}
 .ladfull.tells .lrung .lgv b{color:#d9bd7e;letter-spacing:.06em}
+/* #269 - what the capstone DOES, under the word that names it. `display:block`
+   so it is a line of its own rather than a fifth clause on a `·` list, and the
+   box already wraps (`max-width:250px`), so nothing here changes a width. */
+.capd{display:block;font-style:italic;font-family:var(--body);color:#a08a5e;
+  letter-spacing:0;line-height:1.3}
 .ladfull.tells .lrung .lgv .two{color:#8ca35a;border:1px solid #8ca35a;padding:0 3px;
   margin-right:4px;font-size:var(--fs1)}
 .ladfull.tells .lrung.on .lgv{color:#c2b493}
@@ -7283,7 +7288,17 @@ a.popt.sendit{display:block;text-decoration:none}
   <div id="bField">
     <div id="bGround"><canvas id="bTerrain" width="600" height="440"></canvas>
       <div id="bGrid"></div></div>
-    <div id="bFx"></div><div id="bVig"></div><div id="bZoom"></div>
+     <!-- ⛔ #269 - `#bZoom` IS GONE FROM THE BATTLE SCREEN. (User: "lets delete it
+          from the battlescreen (living option to zoom in and zoom out with your
+          mouse)".) The three stops are unchanged and so is every rule about them;
+          what went is the row of buttons naming them, because the WHEEL has stepped
+          between them since #66 and does not need the row to exist.
+          ⛑ `camBar()` HAS GUARDED ON THE ELEMENT SINCE IT WAS WRITTEN (`if(!bar)
+          return`), so nothing else had to change - and the map's own `#wZoom` is a
+          different element on a different screen and is untouched, which is the ask.
+          ⚠ The stop is still remembered in `gt_cam`, still applied at boot, and the
+          `#bZoom` STYLE rules are left standing beside `#wZoom`'s, which share them. -->
+    <div id="bFx"></div><div id="bVig"></div>
     <!-- ═══ #163 · THE CARD IS EMPTY IN THE MARKUP, AND THAT IS THE FIX ═══
          Both readout() and inspect() set innerHTML unconditionally before
          they read a single id back, so nothing here was ever seen. It was a
@@ -7342,7 +7357,7 @@ a.popt.sendit{display:block;text-decoration:none}
              #100 point 9: what CLASS of armour that is - it is the word inside the
              bar now, and it keeps its own hover. -->
         <div class="sbar">
-          <span class="sbi" title="ARMOUR - it takes the hit first">⛨</span>
+          <span class="sbi" id="bArmI" title="ARMOUR - it takes the hit first">⛨</span>
           <div class="bar sbb" style="background:#243133"><i id="bArm" style="background:var(--steel)"></i>
             <span class="sbt"><b class="sbL" id="bArmK"></b><span class="sbR" id="bArmN"></span></span></div>
         </div>
@@ -7376,6 +7391,18 @@ a.popt.sendit{display:block;text-decoration:none}
            labelled with is better as a hover than as a caption, because it can
            say what the number MEANS rather than repeat what it is. The two
            marks are drawn rather than typed - see ICO_HIT / ICO_DODGE. -->
+      <!-- ⛔ #269 - AND THE STRIDE IS BACK ON THE PANEL. (User, an arrow from the
+           enemy card's MOVEMENT row down to this block: "move speed there".) The
+           enemy inspect card has printed MOVEMENT since it was written and your own
+           body's only reader was the MOVE card's face - so the one number you plan a
+           turn with was on a card you had to pick up first, while the same number
+           for the thing trying to kill you was on a hover.
+           ⛑ #95 PARKED THIS SLOT AND SAID SO: *"the id may be absent, so this stays
+           guarded rather than being deleted ... if a later session wants the number
+           back on the panel it plugs in here"*. `render` already writes `bStepNum`
+           off `moveBudget(u)`, the same call the MOVE button and both AI brains
+           make, so this is markup and no second reader. -->
+      <div class="pcell mini" id="bStepCell" title="STEP - hexes this body can cross on its first move this turn. The second move is one shorter, and the ground can take more."><span class="pic">⇢</span><span class="pnum" id="bStepNum">–</span></div>
       <div class="pcell mini" id="bHitCell"><span class="pic" id="bHitIc"></span><span class="pnum" id="bHitN">–</span></div>
       <div class="pcell mini" id="bDodgeCell"><span class="pic" id="bDodgeIc"></span><span class="pnum" id="bDodgeN">–</span></div>
       <!-- #102 point 7 (user: "Simple question mark move to char info screen -
@@ -9663,7 +9690,20 @@ const holds=(u,k,cap)=>((u&&u.st&&u.st[k])||0)>=RUNG_TOP&&
    here exactly as it does to HIT_EASE and FOE_NERVE: a knob, not a rewrite
    of every authored number. */
 const HDA_CUT=1/3.5;
-const GIVEN={hp:Math.round(60*HDA_CUT),hit:70,dodge:14,land:69,nerve:100,climb:8,opening:15,frail:.90};
+/* ⛔ #269 - WHAT ONE EXTRA BODY ON A TARGET IS WORTH, AND IT IS 5. (User:
+   *"Suriunded - 5 to swing for each adjustment ally (curen unit doesnt count).
+   Morale debf stays also"*.) It was 15, which on a three-body ring was +30 to hit
+   on top of the arc - so surrounding was not a tactic, it was the answer to every
+   question on the board.
+   ⚠ `curen unit doesnt count` WAS ALREADY TRUE and stays: `hitBreakdown` counts
+   `threatsAt(d) - 1`, i.e. everybody on the target except the one swinging.
+   ⚠ AND THE MORALE HALF IS UNTOUCHED, which he asked for by name: `FORM.weightMor`
+   is what a crowd does to the body standing in it and it is a different rule in a
+   different table. ⚠ `opportune` (PACK TACTICS, +10 a head) is a PERK and rides on
+   top of this unchanged - it is now worth three times the base rather than two
+   thirds of it, which is what a perk should be. */
+const OPENING=5;
+const GIVEN={hp:Math.round(60*HDA_CUT),hit:70,dodge:14,land:69,nerve:100,climb:8,opening:OPENING,frail:.90};
 /* the body: the pool, the weight of the blow, and how easy it is to hit -
    which is a modifier on the ATTACKER'S roll and never on the defender's
    dodge. A small body is hard to hit because it is small, not because it is
@@ -10615,7 +10655,7 @@ const GEAR={
      the word for it, nobody has the powder, and it is heavy at one end —
      so it is a club, and it is a very good club. The joke only works
      because the numbers are real. */
-  woodstick:{rarity:'epic',unique:true,n:'The Wood-Stick With Two Holes',slot:'main',dmg:[17,25],am:1.15,ft:.20,reach:1,
+  woodstick:{rarity:'legendary',unique:true,n:'The Wood-Stick With Two Holes',slot:'main',dmg:[17,25],am:1.15,ft:.20,reach:1,
            d:'Heavier at one end than a stick has any business being. Two holes bored in it, '+
              'one at each end, and the far one is black inside and smells of a fire that '+
              'happened somewhere else. Marrow has tried drinking out of it. It has been swung '+
@@ -10656,7 +10696,10 @@ const GEAR={
      is read by `swingOf`/the sheet's own `reach N` clause and by `reachLane`, so
      the mage now blocks a lane the way a spearwoman does; nothing is authored
      twice. */
-  rod    :{rarity:'rare',n:'Working stave',   slot:'main',dmg:[6,10],am:.20,ft:.35,reach:2,spellRange:2,
+  /* #269 - reach 1. (User: "reach of mages stuff - 1".) `spellRange` is what the
+     stave is FOR and it is untouched; what came down is how far the pole itself
+     will hit somebody, which is the half the description already calls useless. */
+  rod    :{rarity:'rare',n:'Working stave',   slot:'main',dmg:[6,10],am:.20,ft:.35,reach:1,spellRange:2,
            d:'A stripped ash pole, chalked its whole length and burnt black at the tip. '+
              'Hitting a man with it works about as well as you would expect. That is not '+
              'what it is for.'},
@@ -10725,7 +10768,7 @@ const GEAR={
      the first and said so in capitals; the second was found by driving it.
      ⚠ `push:1` NEEDED NOTHING - #224 moved the shove onto a `push:` field on
      the WEAPON for the crossbow, so every hit already shoves by construction. */
-  stoneshield:{rarity:'epic',unique:true,n:'Fingerprint Stone Shield',slot:'main',
+  stoneshield:{rarity:'legendary',unique:true,n:'Fingerprint Stone Shield',slot:'main',
            dmg:[8,13],am:.60,ft:.20,reach:1,hands:2,armour:30,dodge:12,push:1,
            d:'A slab of grey stone the size of a door, worn smooth, with a thumbprint pressed '+
              'into the middle of it as deep as your hand is long. Whoever left it did not need '+
@@ -10824,7 +10867,23 @@ const GEAR={
            d:'Ashmoor knows this mark. So do its gate-guards, and so do their prices.'},
   banner :{rarity:'rare',unique:true,n:'The Company Banner',slot:'trinket',g:'⚑',company:true,coMor:6,
            d:'Stitched from three different dead companies. Everyone walks a little straighter.'},
-  drum   :{rarity:'rare',n:'Marching Drum',     slot:'trinket',g:'◍',company:true,coFood:1,
+  /* ⛔ #269 - THE DRUM COSTS WHAT IT IS WORTH. (User: *"This marching dram is
+     great. It sshould be a bit more expensive"*.) It is +2 company mood on EVERY
+     leg of the road, which is the only permanent lift in the game that nobody has
+     to wear, and `gearPrice` valued it at its tier floor plus the flat +40 every
+     company relic gets - 110 crowns, less than a round shield and a quiver.
+     ⛑ THE TIER IS THE PRICE, WHICH IS `gearPrice`'S OWN NOTE: *"most trinkets do
+     their work through a CONDITION rather than a number, so a purely additive model
+     values them at nothing - the tier is the honest answer there"*. One rung up
+     takes the floor 70 -> 120 and the price 110 -> 160, and it puts the drum in the
+     tier its effect belongs in rather than inventing a second pricing rule.
+     ⚡ MEASURED, NOT PREDICTED: `gearPrice('drum')` reads **120** where it read 70.
+     Both are the FLOOR - the additive half of that function values a company relic
+     at its flat +40 and nothing else, which is exactly the case the floor exists
+     for and the reason the tier is the only dial here.
+     ⚠ IT IS NOT `unique`, so `findPool` can still hand one over - unchanged, and
+     deliberately: a company that never sees a shop should be able to find it. */
+  drum   :{rarity:'epic',n:'Marching Drum',     slot:'trinket',g:'◍',company:true,coFood:1,
            d:'Keeps the pace. The column arrives in better heart than it left: +2 mood every leg.'},
   tooth  :{rarity:'rare',unique:true,n:'Fen-Mother’s Tooth',slot:'trinket',g:'❥',str:+1,hp:+6,
            forRace:'ogre',bonus:{str:+1,hp:8},bonusD:'+2 STR and +8 HP more on an ogre',
@@ -10878,7 +10937,7 @@ const GEAR={
 
      ⚠ It costs nothing at all, which every other strange trinket here does
      not, and nothing in the slice ever explains it. That is the hook. */
-  oddcoin:{rarity:'epic',unique:true,n:'An Unusual Coin',   slot:'trinket',g:'⊚',hit:+7,dodge:+7,hush:true,
+  oddcoin:{rarity:'legendary',unique:true,n:'An Unusual Coin',   slot:'trinket',g:'⊚',hit:+7,dodge:+7,hush:true,
     scrap:{crowns:1},                       /* #247 - break a coin, get a coin */
            d:'It feels good to keep in the hand. Nobody can say why.'},
   /* ═══ #160 · WHAT A CLEAN ROAD IS WORTH, AND IT ARRIVES ON THE LAST DAY ════
@@ -10993,7 +11052,7 @@ const GEAR={
               'sure about something. Turn it over once and everyone who is not with you moves '+
               'as if through cold water, for two rounds, and then it is not in your hand any '+
               'more.'},
-  roll   :{rarity:'epic',unique:true,n:'The Roll of Names', slot:'trinket',g:'❧',mor:+1,hp:+8,hit:+4,
+  roll   :{rarity:'legendary',unique:true,n:'The Roll of Names', slot:'trinket',g:'❧',mor:+1,hp:+8,hit:+4,
            d:'A strip of linen folded eight times, written down the inside in eight different '+
              'hands. Some of the names are people you remember. Most of them are not, which '+
              'means the road has been talking about you for longer than you knew.'}
@@ -11162,9 +11221,9 @@ const itemImg=(k,px,cls)=>{const s=itemArt(k);return s
 const TRAITS={
   stubborn  :{n:'Stubborn',mrec:8,mor:-2,
               up:'Mood back twice as fast on a quiet turn',
-              cost:'−5 MOR',
+              cost:'−2 MOR',
               d:'Gets their mood back twice as fast on a quiet turn, and starts from '+
-                'further down: −5 MOR. Nobody has ever talked them into anything, which '+
+                'further down: −2 MOR. Nobody has ever talked them into anything, which '+
                 'is the same fact from both ends.'},
   thrice    :{n:'Widowed thrice',thriceSoft:-.10,
               up:'+17% damage under half hitpoints',
@@ -11179,22 +11238,41 @@ const TRAITS={
                 'They are counting something, and walking loses the count.'},
   windtouched:{n:'Wind-touched',
               up:'Casting costs 4 less mood',
-              cost:'−2 MOR',
+              cost:'−1 MOR',
               d:'Casting costs them 4 less of their own mood than it costs anybody else. '+
-                'Whatever it is, it does not seem to mind them. −2 MOR the rest of the time.',
+                'Whatever it is, it does not seem to mind them. −1 MOR the rest of the time.',
               mor:-1,cls:['mage','warmage']},
-  twitchy   :{n:'Twitchy',up:'+2 AGI',cost:'−3 MOR',
-              d:'+2 AGI, −3 MOR.',agi:+1,mor:-1,notRace:['ogre']},
-  vegetarian:{n:'Insists he is a vegetarian',up:'+6 MOR',cost:'−10% damage',
-              d:'−10% damage dealt, +6 MOR.',mor:+2,race:['ogre']},
+  /* ⛔ #269 - AND THE PARAGRAPH IS NOT THE SHORT LINE AGAIN. (User: *"somehow in
+     twitchy things doubles"*, with the hover's two identical rows boxed in red.)
+     `up`/`cost` are the mechanics and `d` is the character; twitchy, cautious and
+     dutiful had all three saying the same sentence, so the box printed it twice.
+     ⚠ THE FIGURES ARE DERIVED NOW (`traitFigs`), so what it says here is what it
+     pays whatever anybody edits. */
+  twitchy   :{n:'Twitchy',up:'+1 AGI',cost:'−1 MOR',
+              d:'Never entirely still. Somebody speaks to them and they are already '+
+                'looking at something else, which is useful exactly as often as it is not.',
+              agi:+1,mor:-1,notRace:['ogre']},
+  /* ⛔ #269 - ASHA'S OWN, AND HERS ALONE. (User: *"For asha Trait 'Half human' -
+     +1 strng + 1 morale, - 1 agility"*.) `authored:true` keeps it out of
+     `traitPool`, which is `traitFits`'s second sanctioned exemption and the same
+     word the Captain's own trait carries: this is not a personality the register
+     offers, it is a fact about one person. */
+  halfhuman :{n:'Half human',authored:true,
+              up:'+1 STR and +1 MOR',cost:'−1 AGI',
+              d:'Bigger in the shoulder than a ratkin has any business being, and slower '+
+                'with it. Nobody in either clan has ever asked her about it to her face.',
+              str:+1,mor:+1,agi:-1},
+  vegetarian:{n:'Insists he is a vegetarian',up:'+2 MOR',cost:'−10% damage',
+              d:'−10% damage dealt, and he is the calmest thing on the field about it. '+
+                 'Nobody has established what he thinks the stew is.',mor:+2,race:['ogre']},
   /* unpaidMod: how much a missed payday actually costs THIS person. The
      light-fingered were taking a cut off the top anyway, so an empty chest
      is barely news to them — the one personality that is better off when the
      company is broke. */
   greedy    :{n:'Light-fingered',
               up:'+15% crowns from every event, minds an empty chest least',
-              cost:'−4 MOR',
-              d:'+15% crowns from every event. −4 MOR: nobody trusts them. '+
+              cost:'−1 MOR',
+              d:'+15% crowns from every event. −1 MOR: nobody trusts them. '+
               'Minds an empty pay-chest less than anybody, for reasons nobody investigates.',
               mor:-1,loot:.15,unpaidMod:.4},
   /* the aura does NOT check sides. Standing near them steadies the people
@@ -11212,16 +11290,20 @@ const TRAITS={
               d:'+10 extra morale on their own kill. −8 when they miss twice running.',
               brag:true},
   cautious  :{n:'Cautious',up:'+6 dodge below half hitpoints',cost:'−5 to hit above it',
-              d:'+6 dodge below half hitpoints, −5 to hit above it.',cautious:true},
+              d:'Fights carefully while there is something to be careful with, and properly '+
+                'once there is not. The company has never decided which half it prefers.',
+              cautious:true},
   veteran   :{n:'Old hand',up:'+4 to hit, +4 dodge',cost:'−1 AGI, −8 hitpoints',
               d:'+4 to hit and +4 dodge: they have done this before. −1 AGI and −8 '+
                 'hitpoints, because they have also been doing it a long time.',
               agi:-1,hp:-8,vet:true},
-  feral     :{n:'Feral',up:'+12% damage while Shaken or worse',cost:'−3 MOR, breaks sooner',
+  feral     :{n:'Feral',up:'+12% damage while Shaken or worse',cost:'−1 MOR, breaks sooner',
               d:'+12% damage while their own mood is Shaken or worse. Breaks sooner.',
               mor:-1,feral:true,notCls:['mage','warmage']},
   dutiful   :{n:'Dutiful',up:'+8 dodge beside the Captain',cost:'−4 dodge away from him',
-              d:'+8 dodge beside the Captain, −4 dodge away from them.',dutiful:true},
+              d:'Watches where the Captain is standing before they decide anything else. '+
+                'Out of sight of him they are a worse soldier and they know it.',
+              dutiful:true},
 
   /* ---- personalities that change what a person DOES, not what they are worth ---- */
 
@@ -11290,17 +11372,17 @@ const TRAITS={
                 'has heard of, and it is the reason anybody is following them at all.',
               str:+1,mor:+1},
   /* the one nobody expects: the one that does not go */
-  nofear    :{n:'Does not run',up:'Cannot rout, ever',cost:'−2 STR',
+  nofear    :{n:'Does not run',up:'Cannot rout, ever',cost:'−1 STR',
               d:'Cannot rout. Whatever the rest of the line does, they are '+
-              'still standing there when it is over. −2 STR: there is not much of them.',
+              'still standing there when it is over. −1 STR: there is not much of them.',
               str:-1,nofear:true,notRace:['ogre'],
               byRace:{ratkin:{d:'Cannot rout. A ratkin who does not run is a thing the other '+
-                'clans tell stories about, mostly to explain why they are dead. −2 STR.'}}},
+                'clans tell stories about, mostly to explain why they are dead. −1 STR.'}}},
   /* kills, and is not able to put it down afterwards */
   pacifist  :{n:'Has no stomach for it',notCls:['brute'],
-              up:'+8 MOR',cost:'−18 morale and −7% damage per kill they make',
+              up:'+2 MOR',cost:'−18 morale and −7% damage per kill they make',
               d:'Takes 18 morale of their OWN every time they kill somebody instead of the usual '+
-              'lift, and −7% damage for the rest of the battle per kill. +8 MOR to start: they '+
+              'lift, and −7% damage for the rest of the battle per kill. +2 MOR to start: they '+
               'are calm right up until it matters.',mor:+2,pacifist:true},
   /* there is simply a great deal of them */
   /* ⛔ #255 - `big` IS GONE AND ITS WEIGHT IS THE OGRE'S RACE ROW (`RACESIZE`).
@@ -11358,10 +11440,10 @@ const TRAITS={
      check sides. Where the kind one steadies the men about to kill you, this
      one frightens your own line as thoroughly as it frightens theirs. */
   frightening:{n:'Frightening',aura:-6,auraAll:true,mor:+2,notCls:['mage','warmage'],
-              up:'+5 MOR: it has never once been their problem',
+              up:'+2 MOR: it has never once been their problem',
               cost:'−6 morale to EVERYONE within 2 hexes, yours included',
               d:'Everybody within 2 hexes starts the fight 6 morale down, yours and theirs '+
-                'alike, and they are 5 morale up. Something about them is wrong at a '+
+                'alike, and they are steadier than anybody. Something about them is wrong at a '+
                 'distance nobody can name, and the company has stopped asking them to '+
                 'stand in the middle.'},
   /* the first personality about the pay-chest rather than the field. `wage`
@@ -11431,7 +11513,9 @@ const rollTrait=(race,cls)=>{const p=traitPool(race,cls);
 /* the description the player reads is the RACE'S version of it */
 const traitDesc=p=>{const t=TRAITS[p.trait];if(!t)return '';
   const v=t.byRace&&t.byRace[p.race];
-  return (v&&v.d)||t.d;};
+  /* #269 - the paragraph takes the same substitution the short line does, or the
+     hover would correct itself in its first row and lie again in its third. */
+  return traitFigs(t,(v&&v.d)||t.d);};
 /* ═══ ONE LINE, AND IT IS THE ARITHMETIC ═════════════════════════════════
    ⛔ `TRAITSHORT` IS DELETED. It was a second table keyed by the same twenty
    keys, and it was written in MOOD where this line has to be written in
@@ -11448,6 +11532,33 @@ const traitDesc=p=>{const t=TRAITS[p.trait];if(!t)return '';
 
    The flavour paragraph is untouched and is still what the hover shows: that
    is where the character lives. This is where the decision lives. */
+/* ⛔ #269 · A TRAIT'S STAT FIGURES ARE READ OFF THE TRAIT, NEVER OFF ITS OWN
+   SENTENCE. (User: *"somehow in twitchy things doubles"*, which is the visible
+   half; the audit under it is the rest.)
+
+   ⛔ TEN OF THE NINETEEN PERSONALITIES PROMISED A FIGURE THEY DID NOT PAY, and
+   nothing in the build could have said so. TWITCHY read *+2 AGI · −3 MOR* and paid
+   +1 and −1; STUBBORN said −5 MOR and paid −2; PACIFIST said +8 MOR and FRIGHTENING
+   +5 MOR, and both pay +2. They are pre-#254 numbers left standing when `st` became
+   a signed RUNG, and the sheet's own stat ledger has been printing the true figure
+   in the next column along ever since - two receipts for one payment, which is the
+   rule at the top of `.claude/rules/event-cards.md` arriving on the trait register.
+
+   ⛑ SO THE NUMBER IS SUBSTITUTED RATHER THAN THE SENTENCE REWRITTEN, and that is
+   what keeps the writing. FERAL's *−3 MOR, breaks sooner* keeps its second clause,
+   FRIGHTENING keeps *it has never once been their problem*, NOFEAR keeps *there is
+   not much of them*; only the digit moves, in `up`, in `cost` and in the paragraph
+   alike, so the hover cannot say one thing while the ledger says another.
+   ⚠ A CLAUSE NAMING A STAT THE TRAIT DOES NOT PAY IS LEFT ALONE rather than being
+   printed as `−0 STR`. That is a defect and it is `LINT` 15's to report, not this
+   function's to paper over.
+   ⚠ THE MINUS IS U+2212 IN THESE TABLES AND A HYPHEN IN SOME OF THEM, which
+   `traitSheetShort`'s own note already records the hard way. Both are matched, and
+   what comes OUT is always U+2212. */
+const traitFigs=(t,s)=>String(s||'').replace(
+  /([+−-])\s*(\d+)\s*(STR|AGI|INT|MOR)(?![a-z])/g,
+  (m,sg,n,k)=>{const v=t&&t[k.toLowerCase()];
+    return (typeof v!=='number'||!v)?m:((v>0?'+':'−')+Math.abs(v)+' '+k);});
 const traitShort=p=>{
   const t=TRAITS[p.trait];
   if(!t)return '';
@@ -11455,7 +11566,7 @@ const traitShort=p=>{
      misses and the ratkin's gets heavy - so both are read through `tr()`'s own
      lookup order rather than off the base entry. */
   const v=(t.byRace&&p.race&&t.byRace[p.race])||{};
-  const up=v.up||t.up,cost=v.cost||t.cost;
+  const up=traitFigs(t,v.up||t.up),cost=traitFigs(t,v.cost||t.cost);
   if(up&&cost)return up+' · '+cost;
   /* #234 - an `authored` trait may have no cost at all (see traitFits), and the
      hinge is what this line is FOR: with one half there is no hinge, so it prints
@@ -11594,6 +11705,14 @@ const castAct=(sp,bonus)=>{
   return a;
 };
 
+/* ⛔ #269 - WHAT EVERCHANGING LUCK IS WORTH, IN RUNGS, AND IT IS DECLARED
+   ABOVE THE TABLE THAT READS IT. (User: "Everchanging luck '+2', imstead +1".)
+   `PERKS.luck.d` builds its sentence from this at OBJECT-LITERAL time and
+   `effStats` pays it, so one figure serves the promise and the payment both.
+   ⚠ THE ORDER IS LOAD-BEARING: a `const` read from its temporal dead zone
+   throws and aborts the whole script, which `.claude/rules/event-cards.md`
+   records this file shipping once already. */
+const LUCK_RUNGS=2;
 /* 4 perks per class — two at level 2, two at level 3 — all stated in numbers */
 const PERKS={
   /* ⛔ #262 · THE TREE FROM tools/skilltree_lab.html, IN THREE LANES.
@@ -11658,7 +11777,7 @@ const PERKS={
 
   /* ── GENERAL ───────────────────────────────────────────────────────── */
   luck     :{kind:'general',n:'Everchanging Luck',
-             d:'+1 to your worst or your best stat, rolled fresh at the start of every battle.'},
+             d:'+'+LUCK_RUNGS+' to your worst or your best stat, rolled fresh at the start of every battle.'},
   disengage:{kind:'general',n:'Disengage',
              d:'Break off from an enemy and move two hexes, free of parting swings. '+
                'Nobody can break off without it.'},
@@ -12017,7 +12136,21 @@ const xpNeed=(p,L)=>Math.round(XP_TABLE[Math.max(0,Math.min(L,XP_CAP))]*(XP_RACE
    act-1 target (level 4 ± 1 at the Snare) for both the six-body company and
    the bare four (~4.0 and ~4.6). XP_KILL is a flat kill bonus in hitpoint
    units: the peers' kill-stealing threads all start with a PERCENTAGE. */
-const XP_PER_HP=1.5, XP_LEAD=40, XP_KILL=15;
+/* ⛔ #269 - AND IT IS DIVIDED BY `HDA_CUT`, WHICH IS THE WHOLE OF THE USER'S
+   ASK. (*"somehow i feel with lower health you started to give less xp - can you
+   please, reajust it again or check this connection?"*.) He is right and the
+   connection is arithmetic rather than a feeling: this dial is XP **per enemy
+   hitpoint**, and on 2026-08-29 every hitpoint in the game was cut 3.5x at the
+   source. Nothing here moved, so a fight paid 3.5x less while `XP_TABLE` - which
+   is what a level COSTS - did not move at all.
+   ⛑ SO THE FIX IS TO READ THE KNOB RATHER THAN TO GUESS A NEW NUMBER. 1.5 is
+   still the figure the harness set at n=20 over the eight fights (the note above),
+   and dividing by the cut restores the pool that measurement was taken on,
+   exactly. The day `HDA_CUT` moves again this follows it and nobody has to
+   remember. ⚠ `XP_LEAD` IS FLAT XP AND IS NOT IN HITPOINT UNITS, so it does not
+   take the divisor; `XP_KILL` is a SHARE weight inside `c()` and never leaves the
+   ledger, so it does not either. */
+const XP_PER_HP=1.5/HDA_CUT, XP_LEAD=40, XP_KILL=15;
 /* ═══ ⛔ #239 · EVERYTHING IS LEARNED A FIFTH SLOWER ════════════════
    (User, 2026-08-24: *"slow the experience and level progression by 20%"*.)
 
@@ -13022,7 +13155,8 @@ const PRESET_SKREE={id:'skree',name:'Skree',sur:'',race:'ratkin',cls:'archer',ki
    it is the field that changed. */
 const PRESET_ASH={id:'ash',name:'Asha',nick:'Nobody’s',sur:'',race:'ratkin',
   cls:'cutter',kind:'ratkin',
-  st:{str:0,agi:0,int:0,mor:0},trait:'dutiful',
+  /* #269 - HALF HUMAN, at the user's word, and it is why she is Nobody's. */
+  st:{str:0,agi:0,int:0,mor:0},trait:'halfhuman',
   eq:{armour:'scrap',main:'knife',off:'offhand',trinket:null}};
 /* str 15 → 11. With strength now driving a damage MULTIPLIER and `big` adding
    16 hitpoints on top, an ogre at 17 STR read as a different game rather than
@@ -13415,23 +13549,46 @@ const levelSteps=p=>Math.max(0,(p&&p.level||0)-1);
    ⚠ THE ORDER IS LOAD-BEARING AND IS `unitFrom`'S OWN: level, then the
    shooter's tithe, then the injury - or a hurt caster pays the 10% on the
    wound as well as on the body. The old code's own note says so. */
-function bodyHp(p){
+/* ⛔ #269 - AND IT TAKES A WRITER, WHICH IS #146's COLLECTOR ON A THIRD SURFACE.
+   (User: *"In the morale and health on hover show all modifiers to curent stat
+   below"*.) The four stats have named their contributors since #252 and the two
+   derived figures since #254; the two POOLS - the ones a fight is actually decided
+   by - named nothing at all.
+   ⛑ EVERY ROW IS THE DIFFERENCE THE STEP MAKES, taken beside the step, so the
+   column adds to the figure by construction and a multiplier is reported as the
+   hitpoints it is worth ON THIS BODY rather than as a percentage the player would
+   have to apply themselves. A second function re-deriving this list is the shape
+   this file has merged out five times; `dodgeOf(u,w)` is the precedent.
+   ⚠ PASS NOTHING AND NOT ONE STRING IS BUILT. `bodyHp` is called from six sites. */
+function bodyHp(p,W){
   const s=effStats(p);
+  /* ⚠ AN ARRAY AND NOT A CALLBACK, because `dodgeOf(u,W)` takes an array and one
+     hover reads both. Two collectors with two conventions on one surface is the
+     half-refactor this file keeps finding six months later. */
+  let was=0;const step=n=>{const d=Math.round(h)-Math.round(was);
+    if(W&&d)W.push([n,d]);was=h;};
   /* #254 - the race's own pool through the STRENGTH climb */
   /* #255 - the race's pool through the climb, then its BULK on top: meat is
      not multiplied by how strong the body is. */
   /* the RACEHP/GIVEN.hp base already carries HDA_CUT (see D.hp); the flats
      that ride on top of it do not, on their own, so they are cut here or a
      +16 ogre bulk would outweigh a pool a third its old size */
-  let h=D.hp({st:s,raceHp:RACEHP[p.race]||GIVEN.hp})+(RACEBULK[p.race]||0)+
-        Math.round((bonusHp(p)+traitHp(p))*HDA_CUT);
-  h=Math.round(h*(1+LVL_HP*levelSteps(p)));
+  let h=D.hp({st:s,raceHp:RACEHP[p.race]||GIVEN.hp});
+  step('their build and their race');
+  h+=(RACEBULK[p.race]||0);              step('how much of them there is');
+  h+=Math.round(bonusHp(p)*HDA_CUT);     step('what they are carrying');
+  h+=Math.round(traitHp(p)*HDA_CUT);
+  step((TRAITS[p.trait]&&TRAITS[p.trait].n)||'their nature');
+  h=Math.round(h*(1+LVL_HP*levelSteps(p)));  step('what the levels bought');
   const m=GEAR[p.eq&&p.eq.main];
   if((m&&m.range)||isCaster(p.cls))h=Math.round(h*GIVEN.frail);   /* #254 */
+  step(isCaster(p.cls)?'a caster is not built for this':'a shooter is not built for this');
   /* #262 - COLOSSUS, before the wound is taken off: the perk grows the POOL,
      it does not heal what is already missing from it. */
   if(p.perks&&p.perks.indexOf('colossus')>=0)h=Math.round(h*1.20);
+  step('Colossus');
   if(p.hurt&&p.hurt.hp)h=Math.max(Math.round(14*HDA_CUT),h+p.hurt.hp);
+  step((p.hurt&&(p.hurt.n||'an injury'))||'an injury');
   return h;
 }
 /* ⛔ #232 - THESE TWO SIT HERE AND NOT BESIDE `ARMOUR_BANDS`, WHICH IS WHERE
@@ -13443,8 +13600,12 @@ function bodyHp(p){
 /* 2026-08-29 - HDA_CUT: these classify an armourMax that is now ~3.5x
    smaller, so the two thresholds have to shrink with it or every body in
    the game reads as LIGHT regardless of what it is wearing. */
-const BAND_MEDIUM=Math.round(36*HDA_CUT),BAND_HEAVY=Math.round(71*HDA_CUT);
-const bandKey=v=>v>=BAND_HEAVY?'heavy':v>=BAND_MEDIUM?'medium':'light';
+/* #269 - the three-way `bandKey` is deleted with the bands. What survives is the
+   ONE threshold a dormant rule still asks about: `heavyOnly`, the condition #234
+   took off the Captain's trait and deliberately left in the code for whoever wants
+   it back. It is a WEIGHT of harness and not a category - nothing else reads it,
+   nothing prints it, and no body is named by it. */
+const HEAVY_ARM=Math.round(71*HDA_CUT);
 /* ═══ ⛔ #252 · A STAT IS A SUM, AND THE SHEET SHOWS THE SUM ════════
    (User, 2026-08-26: *"i want to see when i hover stats in inventory - how it
    was calculated"* and *"Things should be connected, not just hardcoded
@@ -13524,7 +13685,7 @@ function statParts(p){
      `heavyOnly` is what comes off a body that is not in HEAVY, read off the
      same `bandKey` the battle reads, so the sheet and the field cannot
      disagree about which harness counts. */
-  if(t&&t.heavyOnly&&bandKey(armourValue(p))!=='heavy')
+  if(t&&t.heavyOnly&&armourValue(p)<HEAVY_ARM)
     add((t.n||'')+', out of heavy',{mor:t.heavyOnly},-1);
   /* #253 - the floor was `Math.max(1,…)` on a scale whose human was 8, so on
      the signed one it is 1-STAT_ZERO. Same body, same number, said in rungs. */
@@ -13545,8 +13706,12 @@ function effStats(p){
      its whole audit on. ⚠ WHICH stat is rolled once per battle by `rollLuck`
      and parked on the body, never rolled here: this is called many times a
      frame and a roll inside it would shimmer. */
+  /* #269 - +2 and not +1, at the user's word ("Everchanging luck '+2', imstead
+     +1"). LUCK_RUNGS is the one figure and the perk's own sentence reads it, so
+     the promise cannot come apart from the payment the way this file keeps
+     finding that it has. */
   if(p&&p.luckOn&&p.perks&&p.perks.indexOf('luck')>=0&&typeof s[p.luckOn]==='number')
-    s[p.luckOn]+=1;
+    s[p.luckOn]+=LUCK_RUNGS;
   /* #262 - STRONG, at the same door and for the same reason: a stat changed
      anywhere else pays the four derived figures and not the hitpoints. */
   if(p&&p.perks&&p.perks.indexOf('strongrat')>=0&&typeof s.str==='number')s.str+=1;
@@ -13576,7 +13741,13 @@ function rollLuck(p){
    worth nothing until it was connected.
    ⚠ A stub unit and not a real body, on purpose: a real one carries gear and a
    personality, and the question here is what the RUNG is worth. */
-function fxWords(f,cap){
+/* ⛔ #269 - AND THE CAPSTONE SAYS WHAT IT DOES. (User, an arrow on **FLEET**:
+   *"Show specifically - what this (and each sTAT last thing do)"*.) `capD` has
+   been authored on all four top rungs since #254 and was printed NOWHERE - so the
+   one rung that costs two points was the one rung whose effect the player could
+   not read. It is the rung's own field, so nothing new is typed and the four
+   sentences cannot drift from the rules they describe. */
+function fxWords(f,cap,capD){
   const o=[],sg=v=>(v>0?'+':'\u2212')+Math.abs(v),
         pc=v=>(v>0?'+':'\u2212')+Math.round(Math.abs(v)*100)+'%';
   if(f.hp)   o.push(pc(f.hp)+' hitpoints');
@@ -13593,7 +13764,7 @@ function fxWords(f,cap){
   if(f.loss) o.push('loses mood at \u00d7'+String(+(1+f.loss).toFixed(2)));
   if(f.heal) o.push('mends '+(MEND_BASE*(1+f.heal))+' a day, not '+MEND_BASE);
   if(f.low)  o.push('starts a fight one rung lower');
-  if(cap)    o.push('<b>'+cap+'</b>');
+  if(cap)    o.push('<b>'+cap+'</b>'+(capD?'<i class="capd">'+capD+'</i>':''));
   return o.join(' \u00b7 ');
 }
 /* \u26d4 #254 - WHAT A RUNG SAYS IS THE LADDER, READ. `statGive` used to
@@ -13602,9 +13773,10 @@ function fxWords(f,cap){
    SAME table the engine reads - so the hover cannot describe a rung the fight
    does not pay. */
 const rungText=(k,n)=>{const R=STATLADDER[k][String(rungClamp(n))]||{};
-  return (RUNG_COST(rungClamp(n))>1?'<b class="two">2 PTS</b>':'')+fxWords(R,R.cap);};
+  return (RUNG_COST(rungClamp(n))>1?'<b class="two">2 PTS</b>':'')+fxWords(R,R.cap,R.capD);};
 const heldText=(k,n)=>{const h=rungHeld(k,n),c=STATLADDER[k][String(rungClamp(n))]||{};
-  return fxWords(h,rungClamp(n)>=RUNG_TOP?c.cap:'');};
+  const top=rungClamp(n)>=RUNG_TOP;
+  return fxWords(h,top?c.cap:'',top?c.capD:'');};
 /* the same list, as the tip prints it. It reads `statParts` and adds nothing. */
 function statSumHTML(p,k){
   const rows=statParts(p)[k];if(!rows)return '';   /* not one of the four */
@@ -14736,7 +14908,33 @@ const K=(c,r)=>c+','+r;
    OWN hex is on the lane back toward the line every time, so counting itself as
    a wall scores every plan at zero. That was already true and is now said once
    instead of twice. */
-function chargeLanes(from,len,ignore){
+/* ⛔ #269 - HOW FAR A HOP REACHES, ASKED ONCE. (User: *"On meraheres 'creeple
+   shot' give them -1 to movement"*.)
+   ⛑ THE ARCHER'S SIGNATURE COULD NOT TOUCH EITHER OF THEM AND NOTHING SAID SO.
+   CRIPPLED halves `moveBudget`, and `moveBudget` is what a body that WALKS spends;
+   the doe and the buck are `noWalk`, so they have no MOVE act, their reach is the
+   act's own `leap`/`dash` constant, and half of nothing is nothing. A player
+   spending the one shot that is supposed to take a thing's legs, on the two things
+   in the game whose whole content is how far they travel, got the dodge penalty
+   and nothing else.
+   ⛔ ONE FUNCTION AND SIX READERS, because the length is asked by the hover
+   overlay, by the AI's landing search, by the AI's lane search and by the act
+   itself - and a preview that promises four hexes while the brain takes three is
+   the promise-versus-payment split this file keeps merging out.
+   ⚠ `Math.max(1,...)`: a crippled thing still gets somewhere. */
+const hopLen=(u,a)=>Math.max(1,((a&&(a.leap||a.dash))||0)-((u&&u.crippled>0)?1:0));
+/* ⛔ #269 - AND A CHARGE GOES THROUGH ITS OWN. (User: *"Mirahare can go throgh
+   their allies (buck)"*.) `at()` answers with ANY body, so a buck lining up a
+   straight charge was stopped by the doe standing in front of him - which on a
+   field made entirely of mirehares is most of the lanes, most of the time, and it
+   is a large part of why the pair read as a fight that stands still.
+   ⛑ SAME SIDE IS STEPPED OVER AND NOT LANDED ON, which is the distinction that
+   makes this safe: the hex stays out of `path`, so it is never offered as a place
+   to END, and the lane simply carries on past it. The first body of the OTHER side
+   still stops the charge and still takes the blow, which is the act's whole rule.
+   ⚠ `side` IS OPTIONAL AND ABSENT MEANS THE OLD BEHAVIOUR, so any caller that has
+   no body in hand is unchanged. */
+function chargeLanes(from,len,ignore,side){
   const out=[],q=cube(from[0],from[1]);
   for(let d=0;d<6;d++){
     const v=CUBE_AXIS[d],path=[];
@@ -14746,7 +14944,9 @@ function chargeLanes(from,len,ignore){
       const p=[x+((z-(z&1))/2),z];
       if(p[0]<0||p[0]>=COLS||p[1]<0||p[1]>=ROWS||BLOCKED[B.terr[K(p[0],p[1])]])break;
       const o=at(p[0],p[1]);
-      if(o&&o!==ignore){blocker=o;n=k;break;}
+      if(o&&o!==ignore){
+        if(side&&o.side===side&&!o.dead)continue;   /* #269 - through their own */
+        blocker=o;n=k;break;}
       path.push(p);
     }
     out.push({dir:d,path:path,blocker:blocker,n:n});
@@ -14781,15 +14981,15 @@ function moveEnvelope(u){
     /* exactly N, and the ground in between is not paid for: she clears it */
     const dist={},ring=[];
     for(let r=0;r<ROWS;r++)for(let c=0;c<COLS;c++){
-      if(hdist([u.col,u.row],[c,r])!==leap.leap||!walkable(c,r))continue;
-      dist[K(c,r)]=leap.leap;ring.push([c,r]);
+      if(hdist([u.col,u.row],[c,r])!==hopLen(u,leap)||!walkable(c,r))continue;
+      dist[K(c,r)]=hopLen(u,leap);ring.push([c,r]);
     }
-    return {kind:'leap',rm:{dist:dist,prev:{}},ring:ring,n:leap.leap,act:leap};
+    return {kind:'leap',rm:{dist:dist,prev:{}},ring:ring,n:hopLen(u,leap),act:leap};
   }
   if(dash){
-    const lanes=chargeLanes([u.col,u.row],dash.dash,null),dist={};
+    const lanes=chargeLanes([u.col,u.row],hopLen(u,dash),null,u.side),dist={};
     lanes.forEach(L=>L.path.forEach(p=>{dist[K(p[0],p[1])]=hdist([u.col,u.row],p);}));
-    return {kind:'dash',rm:{dist:dist,prev:{}},lanes:lanes,n:dash.dash,act:dash};
+    return {kind:'dash',rm:{dist:dist,prev:{}},lanes:lanes,n:hopLen(u,dash),act:dash};
   }
   return {kind:'walk',rm:reachMap(u,u.speed)};
 }
@@ -16024,7 +16224,11 @@ const RACESKILL={
      whole turn before anybody hit anything, and if he moves, dies to somebody
      else, or the line breaks first, all of it is wasted. Let the risk do the
      balancing; only add a cap if testing shows +75% deleting bosses. */
-  ratkin:{k:'venom',n:'POISON THE BLADE',cost:1,reach:1,cool:2,venom:2,
+  /* #269 - the name is POISON. (User: "Rename skill 'poison the blade' into
+     'poison' (both in battlfild and in inventory)".) One row, and the card, the
+     inventory list and the log all read it, because `n` has always been the one
+     place an act is named. */
+  ratkin:{k:'venom',n:'POISON',cost:1,reach:1,cool:2,venom:2,
     dmg:[2,5],am:.10,ft:.50,
     note:'Almost no damage. For two rounds everything that hits them takes 15% more, and it '+
       'stacks, so two of you make it 30%. It is not poison that kills; it is poison that makes '+
@@ -16230,6 +16434,19 @@ function unitFrom(p){
     const nx=NERVE_RUNGS[Math.min(i+1,NERVE_RUNGS.length-1)];
     if(nx)u.morale=Math.min(u.morale,Math.round(u.moraleMax*(nx[1]+.01)));
   }
+  /* ⛔ #269 - AND WHAT PUT THEM ON THAT RUNG, BESIDE THE SUM THAT PUTS THEM THERE.
+     (User: *"In the morale and health on hover show all modifiers to curent stat
+     below"*.) Same shape as `hitWhy` five screens up and for the same reason: a
+     second function re-adding these five terms would be a second till, and the one
+     thing every reader of this file knows is that the second till drifts.
+     ⚠ THE ROWS ARE BUILT AFTER THE CLAMP, SO THEY CAN ADD TO MORE THAN THE FIGURE,
+     and that is correct: the tip prints the residual as its own line the way the
+     DODGE hover already does. What clamps it is `morale0` itself. */
+  u.morWhy=[['their own nature',Math.round(u.moraleMax*START_NERVE_YOU)],
+    ['the company\u2019s mood',moodFx().start||0],
+    [(TRAITS[u.trait]&&TRAITS[u.trait].n)||'their nature',tr(u,'startMor')||0],
+    ['the banner and the drum',relicSum('coMor')],
+    ['what the road owes them',-(u.owedBite||0)]].filter(r=>r[1]);
   u.morale0=u.morale;      /* the magnet. See morBase(). */
   restate(u);
   /* #262 - GOOD HAND stacks with EAGLE EYE on purpose: one is the archer's
@@ -16371,7 +16588,7 @@ function unitFrom(p){
     /* THE WEAPON DECIDES THE SIGNATURE — a pattern the game had not used.
        With a boar spear she braces; with a halberd she shoves. Same class,
        two different jobs, chosen in the inventory rather than at creation. */
-    spear:(main&&main.n==='Halberd')
+    spear:!(main&&main.reach>=2)?null:(main&&main.n==='Halberd')
       ? {k:'shove',n:'BRACE AND SHOVE',cost:1,reach:2,push:2,cool:2,
          dmg:[Math.round(main.dmg[0]*.5),Math.round(main.dmg[1]*.5)],am:.5,ft:.4,
          note:'Half damage, and it puts them TWO HEXES back: into the marsh, into a fire, '+
@@ -16419,7 +16636,26 @@ function unitFrom(p){
        spent: this is the shot that opens armour.
        ⚠ NO `aim`. CRIPPLING SHOT gets +10 because it is a placed shot at the
        legs; a quarrel driven through a shield is not a more careful one. */
-    archer:(main&&main.reload)
+    /* ⛔ #269 - A SIGNATURE THAT SWINGS A WEAPON NEEDS ONE. (User: *"First and
+       secondary weapon abilities related to a used weapon+class. Archer without bow
+       couldnt use cripling shot (he just have nothing to shoot)"*, with BARE HANDS
+       and CRIPPLING SHOT both boxed in red on one card.)
+       ⛑ THIS IS THE BLOCK'S OWN LAW EXTENDED, NOT A NEW ONE. *"THE WEAPON DECIDES
+       THE SIGNATURE"* is written six lines up and it decided WHICH signature; what
+       it never asked is whether there is a weapon at all. Every one of these rows
+       reads `main.dmg`, `main.range` or `main.am`, and each carries a fallback
+       constant for when there is none - so a stripped archer was offered a range-4
+       shot with no bow in his hands, and a stripped brute a 20-29 SWEEP with his
+       fists, both at full price.
+       ⛔ AND IT IS ASKED PER TRADE, BECAUSE THE ANSWER DIFFERS. The archer's needs
+       something that SHOOTS; the spearwoman's wall needs a pole (a spear wall built
+       out of a knife is not a wall); the brute's sweep needs something to sweep
+       with. The cutter's DISTRACT and the captain's two orders deal no damage and
+       read no weapon, so they are unconditional and stay so.
+       ⚠ IT DOES NOT GREY THE CARD, IT REMOVES IT, which is `hideAct`'s rule read the
+       other way: a greyed act is one you could have if something changed THIS turn.
+       Nothing you can do in a fight puts a bow in your hands. */
+    archer:!(main&&main.range)?null:(main&&main.reload)
       ? {k:'punch',n:'PUNCH THROUGH',cost:1,range:(main.range||4)+R,cool:2,
          reload:true,pointBlank:!!main.pointBlank,
          dmg:[Math.round(main.dmg[0]*1.4),Math.round(main.dmg[1]*1.4)],
@@ -16443,7 +16679,7 @@ function unitFrom(p){
     cutter:{k:'distract',n:'DISTRACT',cost:1,reach:1,distract:true,cool:2,
       note:'No damage. The target turns to face AWAY from you: its back is now '+
         'yours, and your whole line can see it. Backstabs are +30 to hit and +25% damage.'},
-    brute:{k:'sweep',n:'SWEEP',cost:2,reach:1,sweep:true,cool:2,
+    brute:!main?null:{k:'sweep',n:'SWEEP',cost:2,reach:1,sweep:true,cool:2,
       dmg:main?[Math.round(main.dmg[0]*.75),Math.round(main.dmg[1]*.72)]:[Math.round(20*HDA_CUT),Math.round(29*HDA_CUT)],am:1.10,ft:.18,
       note:'Hits every adjacent enemy at 75% damage.'}
   }[p.cls];
@@ -19142,8 +19378,25 @@ function build(plan,T){
     /* 2026-08-29 - HDA_CUT, applied UNCONDITIONALLY (outside the t.noTrim
        guard TRIM/ARM use), so the Warden and the Fen-Mother take the 3.5x
        cut too without their two authored statblocks being hand-edited. */
-    const hp0=Math.round(t.hp*tr1*(t.noTrim?1:shooterThin)*(champ?CHAMP.hp:1)*(1+lHp)*HDA_CUT);
-    const arm0=Math.round(t.armour*ar1*(champ?CHAMP.armour:1)*HDA_CUT);
+    let hp0=Math.round(t.hp*tr1*(t.noTrim?1:shooterThin)*(champ?CHAMP.hp:1)*(1+lHp)*HDA_CUT);
+    let arm0=Math.round(t.armour*ar1*(champ?CHAMP.armour:1)*HDA_CUT);
+    /* ⛔ #269 - `bare` MOVES THE HARNESS INTO THE MEAT. (User: *"Miraheres start
+       battles without armor (put their curent armor into health)"* and, one fight
+       along, *"In dog fith - some of them has armor, some of them doesnt - it
+       doesnt go to hitpoints"*.)
+       ⛑ IT IS A WORD ON THE TEMPLATE AND THE FOLD IS HERE, which is `noTrim`'s own
+       shape: the fact belongs to the creature and the arithmetic belongs to the one
+       body-maker. A dog wearing four points of harness reads as a thing you have to
+       get through before you can hurt it, and it is a dog.
+       ⛔ AND IT IS NOT `isBeast`, WHICH IS THE OBVIOUS AND WRONG GENERALISATION.
+       The slag-hide's twenty-three points ARE its hide, its name, and half of what
+       #267 measured five fights against; sweeping every animal into this would
+       re-balance four freshly-priced fights nobody asked about. The two families
+       the ask names carry the word, and the next creature that should carries it
+       by being written with it.
+       ⚠ AFTER THE TRIMS AND `HDA_CUT`, so what moves across is what the board
+       would actually have shown, not the authored figure. */
+    if(t.bare){hp0+=arm0;arm0=0;}
     /* the pool the mood is measured against, and the rung it starts on.
        #265 - `FOE_NERVE` last, so the ladder's own rung is what gets scaled
        rather than the two being added in a different order on two bodies. */
@@ -19444,17 +19697,30 @@ const CIRCLE_T={
       bow:true,noRout:true,acts:[{k:'sling',n:'SLING',cost:1,range:5,dmg:[12,18],am:.60,ft:.40}]}
   };
 const PACK_T={
-    bitch:{kind:'dog',name:'The Bitch',hp:39,armour:10,mor:70,skill:62,dodge:29,speed:5,
+    /* #269 - `bare`: a dog is a dog. The ten points go into the 39. */
+    bitch:{kind:'dog',name:'The Bitch',hp:39,armour:10,bare:true,mor:70,skill:62,dodge:29,speed:5,
       captain:true,
       /* 1.5× the hitpoints of a lurcher, and a presence the others fight inside */
-      aura:{r:3,kind:'dog',hit:8,dodge:5,n:'THE PACK',g:'✵',col:'#c9a227',
-        d:'+8 to hit and +5 dodge to every dog within 3 hexes. It stops when she does.'},
+      /* ⛔ #269 - TWO HEXES, NOT THREE. (User: *"when dog break enough distance -
+         stop using 'the pack' ability. It should be a bit more dynamic"*.)
+         ⚑ THE RULE WAS ALREADY LIVE AND MEASURED: `aurasOn` has checked
+         `udist(u,src)>a.r` since it was written, and on the shipped board five of
+         the seven dogs carried the mark and the two at four hexes carried nothing.
+         What is wrong is the RADIUS, not the wiring - at three hexes a pack that
+         deploys as a column is inside it before anybody moves and stays inside it
+         all fight, so the one thing the aura is FOR (breaking them up is worth
+         something) never happens on screen. At two it comes and goes as they run.
+         ⚠ THE OTHER THREE AURAS ARE UNTOUCHED. THE VOLLEY, THE STEADING and THE
+         LINE are lines that hold, and holding is what they are about; this one is
+         about a thing that scatters. */
+      aura:{r:2,kind:'dog',hit:8,dodge:5,n:'THE PACK',g:'✵',col:'#c9a227',
+        d:'+8 to hit and +5 dodge to every dog within 2 hexes. It stops when she does.'},
       acts:[{k:'snap',n:'SNAP-AND-AWAY',cost:1,reach:1,dmg:[11,18],am:.40,ft:.55,bounce:2},
             {k:'howl',n:'SHE CALLS THEM IN',cost:1,self:true,rally:true,cool:3,aura:4,
              note:'Every dog within 4 hexes takes a fresh turn of mood and comes back in.'}]},
-    lurch:{kind:'dog',name:'Lurcher',hp:26,armour:6,mor:44,skill:58,dodge:31,speed:5,
+    lurch:{kind:'dog',name:'Lurcher',hp:26,armour:6,bare:true,mor:44,skill:58,dodge:31,speed:5,
       acts:[{k:'snap',n:'SNAP-AND-AWAY',cost:1,reach:1,dmg:[9,15],am:.35,ft:.55,bounce:2}]},
-    runt:{kind:'dog',name:'Runt',hp:20,armour:4,mor:38,skill:55,dodge:33,speed:6,
+    runt:{kind:'dog',name:'Runt',hp:20,armour:4,bare:true,mor:38,skill:55,dodge:33,speed:6,
       acts:[{k:'snap',n:'SNAP-AND-AWAY',cost:1,reach:1,dmg:[7,12],am:.30,ft:.55,bounce:2}]}
   };
 const SLING_T={
@@ -19586,12 +19852,12 @@ const BEAST_T={
   };
 const HARE_T={
     doe:{kind:'mirehare_f',race:'beast',monster:'mirehare',name:'Mirehare doe',
-      hp:88,armour:18,mor:120,skill:68,dodge:17,speed:3,noWalk:true,
+      hp:88,armour:18,bare:true,mor:120,skill:68,dodge:17,speed:3,noWalk:true,
       acts:[{k:'land',n:'THREE-HEX LANDING',cost:2,leap:3,impact:true,reach:1,
         dmg:[24,36],am:1.10,ft:.38,
         note:'Exactly three hexes. She clears the ground between and the blow happens where she lands.'}]},
     buck:{kind:'mirehare_m',race:'beast',monster:'mirehare',name:'Mirehare buck',
-      hp:68,armour:10,mor:105,skill:72,dodge:22,speed:4,noWalk:true,
+      hp:68,armour:10,bare:true,mor:105,skill:72,dodge:22,speed:4,noWalk:true,
       acts:[{k:'dash',n:'STRAIGHT CHARGE',cost:2,dash:4,impact:true,reach:1,
         dmg:[19,30],am:.95,ft:.42,
         note:'Up to four hexes on one straight grid axis. It hits the first body in the line.'}]}
@@ -21896,14 +22162,42 @@ const raceKey=u=>(u.race==='ogre'||u.kind==='ogre')?'ogre'
    data, they are the input the parked entry needs, and they are why it is
    cheap: `pen = (ft - 0.30) × 100` gives the maul its -12 and the knife its
    +15 straight out of the file. Do not "tidy them away". */
-const ARMOUR_BANDS={
-  light :{n:'LIGHT', absorb:.50,through:.50,dodge:  0,col:'#8ca35a',
-          d:'Half of a blow stops in it. You keep every point of your footwork.'},
-  medium:{n:'MEDIUM',absorb:.60,through:.40,dodge: -5,col:'#c9a227',
-          d:'Three-fifths of a blow stops in it, and it costs you 5 dodge.'},
-  heavy :{n:'HEAVY', absorb:.75,through:.25,dodge:-10,col:'#7fa8c9',
-          d:'Three-quarters of a blow stops in it, and it costs you 10 dodge.'}
-};
+/* ═══ ⛔ #269 · THERE IS ONE BAND NOW, AND IT STOPS 70% ═══════════════
+   (User: *"Lets delete catogeory of light and heady armor. Lets do the all type of
+   armor blocks 70% of damage (and then some armor has different stats - that could
+   be heavier or not). Would be easier to play around"*, with a red arrow on the
+   word LIGHT in the battle card's armour bar.)
+
+   ⛔ THE CATEGORY IS DELETED, NOT RENAMED. #79's three bands each carried an
+   absorb, a through and a dodge price, and a player had to learn a second ladder -
+   invisible, derived off a threshold, and printed as a word that looked like a
+   NAME - before they could read what the bar in front of them was worth. What the
+   ask replaces it with is the thing the game already had and was hiding behind it:
+   **the piece**. `planks` costs a rung of AGI, `shroud` gives one, `mail` and
+   `plate` and `ogrescale` each cost one, and those are on the rows, in the hover,
+   in the stat ledger, and different per item - which is exactly *"some armor has
+   different stats - that could be heavier or not"*.
+
+   ⛑ SO WHAT IS LEFT IS AN OBJECT AND NOT A LOOKUP, and every call site is
+   unchanged: `bandOf` still answers, `splitFor` still reads `.absorb`/`.through`,
+   the two hovers still read `.d`. There was never a second implementation of the
+   split and there is still not one.
+   ⚠ THE DODGE PRICE GOES WITH THE BANDS. #79's own note calls it *"the price of a
+   band"*; a band that does not exist cannot charge for itself, and charging it
+   anyway off a hidden threshold is the invisible second ladder this ask deletes.
+   The heavy suits still cost their wearer a step, because they still carry
+   `agi:-1` on their own rows, and THAT the player can read.
+   ⚠ IT IS A REAL RE-BALANCE AND IT IS PRICED, NOT ASSUMED: light goes 50% -> 70%
+   and heavy 75% -> 70%, so the cheap end of the rack gains most and plate loses a
+   little. Both sides of the field read this one function, so the change lands on
+   the road as much as on the roster. See the ARENA figures in the changelog.
+   ⚠ `armourValue()` STILL APPLIES THE WRONG-SIZE ×0.70 BEFORE ANY OF THIS, which
+   is now the one remaining thing a harness's SIZE decides - see ADJUSTABLE. */
+const ARMOUR_ABSORB=.70;
+const ARMOUR_ON={n:'',absorb:ARMOUR_ABSORB,through:1-ARMOUR_ABSORB,dodge:0,col:'#c9c6bb',
+  d:'Seven tenths of every blow stops in the harness. What is left reaches the body. '+
+    'Every suit in the game works the same way; what differs is how much of it there '+
+    'is, and what wearing it does to the person inside.'};
 /* ⛔ #244 - AND NOTHING AT ALL IS ITS OWN ROW. (User, on a stripped Captain:
    *"when there is no armor write 'none' insted of light"*.) `bandKey(0)` answers
    `light`, which is arithmetically true - zero armour absorbs half of zero and
@@ -21912,14 +22206,15 @@ const ARMOUR_BANDS={
    because that is what the arithmetic has always been and no rule changes here.
    Anything that wants the band's numbers gets the numbers it always got; anything
    that prints `.n` prints the truth. */
-const ARMOUR_NONE=Object.assign({},ARMOUR_BANDS.light,{n:'NONE',col:'#8a7449',
+const ARMOUR_NONE=Object.assign({},ARMOUR_ON,{n:'NONE',col:'#8a7449',
   d:'Nothing on but cloth. Every blow lands on the body.'});
-const bandOf=u=>((u.armourMax||u.armour||0)>0
-  ?ARMOUR_BANDS[bandKey(u.armourMax||u.armour||0)]:ARMOUR_NONE);
+/* #244's rule survives the cut whole: nothing on is its own word, because a zero
+   pool absorbing 70% of nothing still reads as a claim that the man is wearing
+   something. ⚠ WHAT CHANGED IS THE OTHER SIDE OF THAT `if`: a body that IS wearing
+   something no longer has a word at all, which is the ask. */
+const bandOf=u=>((u.armourMax||u.armour||0)>0?ARMOUR_ON:ARMOUR_NONE);
 /* the band of a PIECE, for the inventory hover, where there is no unit yet */
-const bandOfGear=(g,p)=>!g||!g.armour?null
-  :ARMOUR_BANDS[bandKey(p&&g.size&&g.size!=='any'&&g.size!==RACEMOD[p.race].size
-      ?Math.round(g.armour*WRONGSIZE.mult):g.armour)];
+const bandOfGear=(g,p)=>!g||!g.armour?null:ARMOUR_ON;
 /* A WORKING GOES THROUGH THE PLATES ENTIRELY. `am:0` has meant exactly this
    since the first pass (spells, the ogre's armour-ignoring throw) and it is
    the ONE thing still read off the weapon. Named, so the convention lives in
@@ -21984,8 +22279,10 @@ function dodgeOf(u,W,noNerve){
      the stated ten, for the same reason the ratkin's +5 pays for part of
      itself: the cap is applied LAST, to the sum, and no contributor gets to
      opt out of it. The sheet's DODGE row is the number that is true. */
-  d+=bandOf(u).dodge;
-  if(w)w(bandOf(u).n.toLowerCase()+' harness',bandOf(u).dodge);
+  /* #269 - the harness row is gone from this readout with the bands it read. What
+     a suit costs its wearer is on the PIECE (`agi:-1` on the plates, `dodge:+N` on
+     the shields) and reaches this function through the stat ladder and the gear
+     rows, each with its own named line, which is where a player can act on it. */
   /* #146 - the personality the user asked for by name. See TRAITS.nimble. */
   const nb=tr(u,'nimble');
   if(nb){d+=nb;w&&w('very nimble',nb);}
@@ -26859,7 +27156,7 @@ function mirehareMove(u,T){
     let best=null,bs=1e9;
     T.filter(t=>!t.passive).forEach(t=>{
       nbrs(t.col,t.row).forEach(p=>{
-        if(hdist([u.col,u.row],p)!==leap.leap||!walkable(p[0],p[1]))return;
+        if(hdist([u.col,u.row],p)!==hopLen(u,leap)||!walkable(p[0],p[1]))return;
         const sc=targetScore(t)+exposureAt(p,u.side)*4;
         if(sc<bs){bs=sc;best={t:t,p:p};}
       });
@@ -26877,7 +27174,7 @@ function mirehareMove(u,T){
       const live=T.filter(t=>!t.passive);
       if(!live.length)return false;
       for(let r=0;r<ROWS;r++)for(let c=0;c<COLS;c++){
-        if(hdist([u.col,u.row],[c,r])!==leap.leap||!walkable(c,r))continue;
+        if(hdist([u.col,u.row],[c,r])!==hopLen(u,leap)||!walkable(c,r))continue;
         let near=99;live.forEach(t=>{const d=udist([c,r],t);if(d<near)near=d;});
         const sc=near*10+exposureAt([c,r],u.side);
         if(sc<ms){ms=sc;mv=[c,r];}
@@ -26907,7 +27204,7 @@ function mirehareMove(u,T){
      since #195, because the hover overlay draws these same lanes and a second
      copy of this loop is a second answer waiting to disagree with it. The
      scoring below is unchanged, line for line. */
-  chargeLanes([u.col,u.row],dash.dash,null).forEach(L=>{
+  chargeLanes([u.col,u.row],hopLen(u,dash),null,u.side).forEach(L=>{
     /* A charge must actually travel. An adjacent body pins the buck and
        is not quietly converted into an ordinary melee swing. */
     if(L.blocker&&L.blocker.side!==u.side&&!L.blocker.passive&&L.n>=2){
@@ -26934,10 +27231,10 @@ function mirehareMove(u,T){
        hex it is on? `u` is skipped for that reason: his own hex is on the
        lane back toward the line every time, and counting it as a wall is how
        a two-ply look-ahead scores every plan at zero. */
-    const lanesFrom=(p)=>chargeLanes(p,dash.dash,u).filter(L=>
+    const lanesFrom=(p)=>chargeLanes(p,hopLen(u,dash),u,u.side).filter(L=>
       L.blocker&&L.blocker.side!==u.side&&!L.blocker.passive&&L.n>=2).length;
     let mv=null,ms=-1e9;
-    chargeLanes([u.col,u.row],dash.dash,null).forEach(L=>{
+    chargeLanes([u.col,u.row],hopLen(u,dash),null,u.side).forEach(L=>{
       L.path.forEach((p,i)=>{
         let near=99;live.forEach(t=>{const d=udist(p,t);if(d<near)near=d;});
         const sc=lanesFrom(p)*100-near*6-exposureAt(p,u.side);
@@ -30620,16 +30917,24 @@ function render(){
        suit rather than how much of it is left: a mail hauberk beaten down to
        9 points is still a mail hauberk, and the sections beside it are
        already saying how many blows are left in it. */
-    {const ak=ARMOURKIND(u.armourMax||0),ke=$('bArmK');
-     ke.textContent=ak;
-     ke.onmouseenter=e=>{
+    /* ⛔ #269 - AND THE WORD IN THE BAR IS GONE WITH THE BANDS. `bandOf` answers
+       NONE on a stripped body and NOTHING on a dressed one, which is #244's rule
+       kept whole and this ask's rule applied: the only thing worth saying inside
+       that bar is that there is nothing in it.
+       ⛑ SO THE HOVER MOVES ONE ELEMENT LEFT, ONTO THE ⛨ MARK. A tooltip hung on a
+       word that is now usually empty is a tooltip with no hit area, which is the
+       shape #223 already found once on a scrolling box. The mark is always drawn. */
+    {const bd=bandOf(u),ke=$('bArmK'),ki=$('bArmI');
+     ke.textContent=bd.n;
+     ki.onmouseenter=e=>{
        TIP.innerHTML='<div style="font-family:var(--display);font-size:var(--fs5);color:var(--g4);'+
-         'margin-bottom:4px">'+ak+' ARMOUR</div><div>'+ARMOURWHY[ak]+'</div>'+
-         '<div style="font-style:italic;color:#a38652;margin-top:5px">Armour takes the hit '+
-         'first. Only what gets through it reaches the body.</div>';
+         'margin-bottom:4px">ARMOUR</div><div>'+bd.d+'</div>'+
+         '<div style="font-family:var(--mono);font-size:var(--fs1);color:#8fa5a2;margin-top:5px">'+
+         'STOPS <b style="color:#c9c6bb">'+Math.round(bd.absorb*100)+'%</b> OF EVERY BLOW · '+
+         '<b style="color:#c9c6bb">'+Math.round(bd.through*100)+'%</b> REACHES THE BODY</div>';
        TIP.style.display='block';moveTip(e);};
-     ke.onmousemove=moveTip;
-     ke.onmouseleave=()=>{TIP.style.display='none';};}
+     ki.onmousemove=moveTip;
+     ki.onmouseleave=()=>{TIP.style.display='none';};}
     /* #96 point 2 - the plaque takes the same colour off the same helper as
        the token, or the two readings of one body would disagree.
        #105 point 6 - and so does the numeral now that it is the loud half of
@@ -32564,17 +32869,9 @@ const apPips=(n,max,pay)=>{let s='';
    rat-silk shroud 30 and a padded jack 34 are MEDIUM; a mail hauberk 66,
    lashed plates 74, foundry plate 96 and ogre scale 104 are HEAVY, and
    every one of those is a suit that costs its wearer a step of agility. */
-const ARMOURKIND=v=>v<=0?'NONE':v<25?'LIGHT':v<60?'MEDIUM':'HEAVY';
-const ARMOURWHY={
-  NONE  :'Cloth, and whatever they are standing behind. Every blow that lands goes '+
-         'straight into the body.',
-  LIGHT :'Rags, hides, a cook-pot, somebody’s door. One good blow and it is gone, and '+
-         'the next one is on them.',
-  MEDIUM:'A padded jack, a rat-silk shroud, stitched hides. Two or three blows before '+
-         'the body takes any, and nothing it costs to move in.',
-  HEAVY :'Mail, foundry plate, lashed ogre scale. It eats blows for most of a fight, '+
-         'and the heavy suits are slower: they take a step of agility off the wearer, '+
-         'which is dodge.'};
+/* #269 - `ARMOURKIND` and `ARMOURWHY` are deleted with the bands they named.
+   Their one reader was the plaque's word-in-the-bar, which reads `bandOf(u).n`. */
+/* (the two of them were `ARMOURKIND` and `ARMOURWHY`.) */
 /* #105 point 6 - the two halves of "34/60" are not one number and they are
    not read equally. What is LEFT is the fact the fight turns on and it takes
    the 19px; the pool it is out of is context and it takes the old 10px. Both
@@ -32628,10 +32925,24 @@ function inspect(t,e){
          an animal it was printing 'RATKIN' with a rat's painting beside it.
          The bestiary tag in front of it already says what the thing is. */
       (t.noFace||isBeast(t)?'':' · '+bmk(rIcon(t.race))+' '+t.race.toUpperCase())+'</div>'+
-    '<div class="rr"><span>HITPOINTS</span><span style="color:#c15d55">'+
-      Math.max(0,Math.ceil(t.hp))+' / '+t.hpMax+'</span></div>'+
-    '<div class="rr"><span>ARMOUR</span><span style="color:var(--steel)">'+
+    /* ⛔ #269 - THE THREE POOLS WEAR THE MARKS YOUR OWN BODIES WEAR. (User: *"on
+       the enemy use same typeof icons as for your guys - so it is even more
+       compact"*.) `SLOT_ICON.armour`, the blood heart and `MOOD_MARK` are the three
+       glyphs `#bPlq` and `.ibars` have printed since #247/#249, and this card was
+       spelling the same three words out in a mono caption column - so one screen
+       named one fact two ways, which is #196's rule about a mark and a word.
+       ⛑ AND THE ORDER IS THE PLAQUE'S, armour then blood then mood, because those
+       two readouts are read within a second of each other and a swapped pair costs
+       more than the caption ever bought.
+       ⚠ THE WORD IS NOT GONE, IT IS ON THE `title`. #196's own note: a mark inside
+       its own explanation explains nothing - but the explanation still has to be
+       one hover away, and on this card the hover IS the box. */
+    '<div class="rr"><span title="ARMOUR - it takes the hit first">'+SLOT_ICON.armour+
+      '</span><span style="color:var(--steel)">'+
       Math.max(0,Math.ceil(t.armour))+' / '+t.armourMax+'</span></div>'+
+    '<div class="rr"><span title="HITPOINTS - what is left of the body">♥</span>'+
+      '<span style="color:#c15d55">'+
+      Math.max(0,Math.ceil(t.hp))+' / '+t.hpMax+'</span></div>'+
     /* ═══ #134 - THE RUNG, NOT THE RAW POOL AND NOT THE ENGINE'S WORD ══════
        Hitpoints and armour above are numbers on purpose: they are what the
        swing does and what it has to get through, and the player decides with
@@ -32642,7 +32953,8 @@ function inspect(t,e){
        states are called something else on the ladder. It says what the plaque
        says now. (The last surviving breach of "show a state, hide the
        number" in the nerve system.) */
-    '<div class="rr"><span>MOOD</span><span style="color:'+LADDER[ladderAt(t)].col+'">'+
+    '<div class="rr"><span title="MOOD">'+MOOD_MARK+'</span>'+
+      '<span style="color:'+LADDER[ladderAt(t)].col+'">'+
       nerveFlag(ladderAt(t),12)+' '+LADDER[ladderAt(t)].n.toUpperCase()+'</span></div>'+
     /* directly under the three bars it modifies, and above the movement it
        often halves — a condition is read as a change to the numbers around
@@ -33566,6 +33878,19 @@ window.LINT=function(){
       try{
         const c=JSON.parse(JSON.stringify(body));
         c.cls=k;c.level=9;c.perks=[];
+        /* ⛔ #269 - AND IT IS EQUIPPED FOR THE TRADE IT IS TESTING, because since
+           this entry three signatures are gated on the weapon they are a signature
+           FOR: an archer with no bow gets no CRIPPLING SHOT, a spearwoman with a
+           sword no SPEAR WALL, a brute with empty hands no SWEEP. The stub was the
+           Captain, with the Captain's sword, wearing every class in turn - so the
+           check reported both of those as broken promises the moment the gate
+           landed, which is the check working and the FIXTURE being wrong. `sig` is
+           what the trade IS, and a trade comes with its tool.
+           ⚠ A CLASS WITH NO ROW KEEPS THE STUB'S OWN WEAPON, which is right for the
+           captain, the cutter and both casters: their signatures read no weapon and
+           are unconditional. */
+        const SIG_KIT={archer:'bow',spear:'spear',brute:'club'};
+        if(SIG_KIT[k])c.eq=Object.assign({},c.eq,{main:SIG_KIT[k],off:null});
         if(k==='mage'||k==='warmage')c.spells=c.spells&&c.spells.length?c.spells:['blight'];
         acts=unitFrom(c).acts.map(a=>a.n);
       }catch(e){return;}                    /* a class that cannot be built is 8c's job */
@@ -34093,6 +34418,29 @@ window.LINT=function(){
         hit('trait',w,'`'+f+'` is '+t[f].length+' characters. It is one half of a muster '+
           'line and has to be read in a second, not parsed');
       if(t[f]&&/—/.test(t[f]))hit('trait',w,'`'+f+'` contains an em dash');
+    });
+    /* ⛔ #269 · 15 - WHAT A TRAIT SAYS ABOUT A STAT MUST BE WHAT IT PAYS.
+       (User: *"somehow in twitchy things doubles"*, which was the visible half of
+       a table where TEN of the nineteen personalities promised a figure the fight
+       does not charge: TWITCHY said +2 AGI and paid +1, PACIFIST +8 MOR for +2,
+       STUBBORN −5 MOR for −2. They are pre-#254 numbers left standing when `st`
+       became a signed RUNG, and the sheet's own stat ledger has printed the true
+       figure in the next column ever since.
+       ⛑ `traitFigs` SUBSTITUTES AT THE RENDERER so nothing on screen can be wrong
+       today; this is what stops the TABLE drifting again, which is the half a
+       renderer cannot defend. A check a document claims and the build does not run
+       is `.claude/rules/event-cards.md`'s own 6f, and it was a lie for two days.
+       ⚠ IT READS `up`, `cost` AND `d`, because all three print, and both minus
+       signs, because both are in the tables.
+       ⛑ PROVED BY MAKING IT FIRE: putting `+2 AGI` back on twitchy reports
+       *says +2 AGI and pays +1*, and taking it out returns the linter to silence. */
+    ['up','cost','d'].forEach(f=>{
+      const s=(typeof t[f]==='string')?t[f]:'';
+      s.replace(/([+\u2212-])\s*(\d+)\s*(STR|AGI|INT|MOR)(?![a-z])/g,(m,sg,n,k)=>{
+        const said=(sg==='+'?1:-1)*(+n),pays=t[k.toLowerCase()]||0;
+        if(said!==pays)hit('trait',w,'`'+f+'` says '+(said>0?'+':'')+said+' '+k+
+          ' and the body is paid '+(pays>0?'+':'')+pays);
+        return m;});
     });
     /* a race variant may re-state one half; re-stating only one leaves the
        other half describing a different body's arithmetic */
@@ -35091,15 +35439,26 @@ function cubChoice(){
   /* #202 - `c:` carries only what `fx` cannot say (the tooth, the pet); the
      figures and the two mood echoes came off, see MERCY for the reason. */
   const opts=[
+    /* ⛔ #269 - TAKING IT LIFTS THEM, AND THERE ARE TWO DOORS. (User: *"In here
+       (after killing fen mother even) - two options only. And taking cub boosts
+       morale +2 also"*.)
+       ⛑ THE MOOD FIGURE WAS THE WRONG SIGN FOR WHAT THE PROSE SAYS. The `after`
+       already reads *"nobody has said the word pet ... somehow that is worth
+       something"*, and the receipt under it charged the company six morale for it -
+       the prose and the chip disagreeing about one event, which is the rule at the
+       top of `.claude/rules/event-cards.md`.
+       ⛔ AND THE THIRD DOOR THAT WENT IS `Kill it too`, WHICH WAS DOMINATED. It paid
+       2 gems against LEAVE IT's 3 gems and 120 crowns, cost 12 morale against 4, and
+       ended the cub either way - so there was no company for which it was the right
+       answer, and a door nobody can have a reason to press is not a choice, it is a
+       trap with a receipt on it. What is left is the two answers that differ: take
+       it on, or take the money. 👤 Filed as T2 in OPEN_QUESTIONS - the screenshot
+       boxed the top ROW of two, and which two he meant could be read either way. */
     {t:'Take the cub. It has nowhere else to be.',c:'a milk-tooth · it follows the Captain now',
-     fx:{morale:-6},gear:'cubtooth',cub:true,pet:'cub',ok:cubAlive,
+     fx:{morale:+2},gear:'cubtooth',cub:true,pet:'cub',ok:cubAlive,
      after:'It will not leave her. It takes two of you and a rope and most of an hour, and then it simply '+
        'walks beside the Captain as though this had always been the arrangement. Nobody has said '+
        'the word pet. It does not fight: it just does not leave, and somehow that is worth something.'},
-    {t:'Kill it too. Finish what you started.',danger:true,
-     fx:{gems:2,morale:-12},ok:cubAlive,
-     after:'It is quick. {ANY} goes and stands somewhere else for a while, and when they come back '+
-       'nobody asks him anything.'},
     {t:'Leave it. Take the hide and go.',
      fx:{gems:3,crowns:120,morale:-4},ok:true,
      after:'You are half a mile off before it starts making the sound, and it makes the sound for a '+
@@ -38297,7 +38656,11 @@ function equipFromStash(p,idx){
    the confirm says its name, and nothing in the game sells it back - which is
    exactly why this asks first and the row is `danger`. */
 const SCRAP={common:{crowns:10},rare:{crowns:25,salvage:2},
-             epic:{crowns:45,salvage:3,gems:1}};
+             epic:{crowns:45,salvage:3,gems:1},
+             /* #269 - the fourth tier. `SCRAP[rarityOf(k)]||SCRAP.common` is the
+                fall-through, so a legendary with no row here would break down for
+                ten crowns, which is the silent-absence shape this file names. */
+             legendary:{crowns:90,salvage:5,gems:2}};
 /* ⛔ #247 - AND A ROW MAY ANSWER FOR ITSELF. (User: *"Price of break of 1 coin
    = 1 coin :)"*.) THE TIER IS STILL THE RULE and this is the one exception the
    rule cannot express: `oddcoin` IS a coin, so breaking it down for 45 crowns
@@ -38864,7 +39227,7 @@ function drawInv(){
              renderer still owes them is the section count on the two pools that are
              spent in blows, off `SEG()` and the plaque's own two constants, and the
              `nrv` class on the one that is not. */
-          '<div class="sbar"><span class="sbi" title="ARMOUR - it takes the hit first">⛨</span>'+
+          '<div class="sbar"><span class="sbi" id="iArmI" title="ARMOUR - it takes the hit first">⛨</span>'+
             '<div class="bar sbb" style="--seg:'+SEG(u.armourMax||1,SEG_ARM)+
               ';background:#243133"><i style="width:'+(arm?100:0)+
               '%;background:var(--steel)"></i>'+
@@ -38874,7 +39237,8 @@ function drawInv(){
              `blood / #c07a2c / #e0544c`, the token carries `HPCOL` and the plaque
              carried a third reading of the second - so a body at 40% was amber here
              and light red there. `hpCol(.,.,card)` is the one ramp now. */
-          '<div class="sbar"><span class="sbi" title="HITPOINTS - what is left of the body">♥</span>'+
+          '<div class="sbar" data-drv="hp" style="cursor:help">'+
+            '<span class="sbi" title="HITPOINTS - what is left of the body">♥</span>'+
             '<div class="bar sbb" style="--seg:'+SEG(hpMax,SEG_HP)+
               ';background:#3b2126"><i style="width:'+(100*hpF)+
               '%;background:'+hpCol(p,hpF,true)+'"></i>'+
@@ -39428,24 +39792,31 @@ function drawInv(){
   $('iChar').querySelectorAll('[data-drv]').forEach(el=>{
     const which=el.dataset.drv;
     el.onmouseenter=e=>{
-      const W=[],val=which==='dodge'?dodgeOf(u,W):u.mskill;
-      const rows=which==='dodge'?W:(u.hitWhy||[]);
+      /* #269 - and a third: the hitpoint pool, off `bodyHp(p,W)`, which is the
+         same collector shape `dodgeOf` has carried since #146. */
+      const W=[],val=which==='dodge'?dodgeOf(u,W):which==='hp'?bodyHp(p,W):u.mskill;
+      const rows=(which==='dodge'||which==='hp')?W:(u.hitWhy||[]);
+      const TITLE={hit:'TO HIT',dodge:'DODGE',hp:'HITPOINTS'}[which];
+      const FOOT={hit:'What this body brings to a swing, before the target, the ground and '+
+          'the arc are counted.',
+        dodge:'How hard this body is to land a blow on. How BIG they are is not in here: '+
+          'it is a modifier on whoever is swinging.',
+        hp:'What the body can take before it goes down. Armour is a separate pool and is '+
+          'spent first.'}[which];
       const sum=rows.reduce((n,r)=>n+r[1],0);
       const line=(n,v,cls)=>'<div class="ssr'+(cls||'')+'"><span class="ssn">'+esc(n)+'</span>'+
         '<span class="ssv'+(v<0?' dn':'')+'">'+(v>0?'+':'\u2212')+Math.abs(Math.round(v))+'</span></div>';
       TIP.innerHTML='<div style="font-family:var(--display);font-size:var(--fs5);color:var(--g4);'+
-          'margin-bottom:5px">'+(which==='dodge'?'DODGE':'TO HIT')+'</div>'+
+          'margin-bottom:5px">'+TITLE+'</div>'+
         '<div class="stsum" style="border-top:0;margin-top:0;padding-top:0">'+
         rows.map(r=>line(r[0],r[1])).join('')+
         (Math.round(sum)!==Math.round(val)
           ? line('as far as it goes',val-sum,' floor'):'')+
-        '<div class="ssr tot"><span class="ssn">'+(which==='dodge'?'DODGE':'TO HIT')+'</span>'+
-        '<span class="ssv" style="color:var(--g4)">'+Math.round(val)+'%</span></div></div>'+
+        '<div class="ssr tot"><span class="ssn">'+TITLE+'</span>'+
+        '<span class="ssv" style="color:var(--g4)">'+Math.round(val)+(which==='hp'?'':'%')+
+        '</span></div></div>'+
         '<div style="font-style:italic;color:#a38652;margin-top:5px;font-size:var(--fs2)">'+
-        (which==='dodge'
-          ?'How hard this body is to land a blow on. How BIG they are is not in here: it is a modifier on whoever is swinging.'
-          :'What this body brings to a swing, before the target, the ground and the arc are counted.')+
-        '</div>';
+        FOOT+'</div>';
       TIP.style.display='block';moveTip(e);};
     el.onmousemove=moveTip;el.onmouseleave=()=>{TIP.style.display='none';};});
 
@@ -39510,12 +39881,13 @@ function drawInv(){
       TIP.style.display='block';moveTip(e);};
     dmgEl.onmousemove=moveTip;dmgEl.onmouseleave=()=>{TIP.style.display='none';};
   }
-  /* #140 point 2 - and the band is where the absorb rule lives */
-  const bandEl=$('iBand');
+  /* #140 point 2 - and the mark is where the absorb rule lives. #269 moved it off
+     `iBand`, which is empty on any body that is actually wearing something. */
+  const bandEl=$('iArmI');
   if(bandEl){
     bandEl.onmouseenter=e=>{
       TIP.innerHTML='<div style="font-family:var(--display);font-size:var(--fs5);color:'+bd.col+
-        ';margin-bottom:4px">'+bd.n+' ARMOUR</div>'+
+        ';margin-bottom:4px">'+(bd.n?bd.n+' ':'')+'ARMOUR</div>'+
         '<div style="font-size:var(--fs2);color:#c2b493;line-height:1.45">'+bd.d+'</div>'+
         '<div style="font-family:var(--mono);font-size:var(--fs1);color:#8fa5a2;margin-top:5px">'+
         'STOPS <b style="color:#c9c6bb">'+Math.round(bd.absorb*100)+'%</b> OF EVERY BLOW · '+
@@ -39563,7 +39935,19 @@ function drawInv(){
         '<div class="mwdn"><b>DOWN</b> an ally goes down <i>'+
         deathShock((G.party||[]).length)+
         '</i> · surrounded by enemies · taking a blow <i>'+MORALE.tookHit+'</i></div>'+
-        '</div>';
+        '</div>'+
+        /* #269 - and the ledger under it: every term that decided the rung they
+           open on, off `u.morWhy`, which is built beside the sum in `unitFrom`. */
+        (function(){const rows=u.morWhy||[],sum=rows.reduce((n,r)=>n+r[1],0);
+          const line=(n,v,cls)=>'<div class="ssr'+(cls||'')+'"><span class="ssn">'+esc(n)+
+            '</span><span class="ssv'+(v<0?' dn':'')+'">'+(v>0?'+':'\u2212')+
+            Math.abs(Math.round(v))+'</span></div>';
+          return '<div class="stsum">'+rows.map(r=>line(r[0],r[1])).join('')+
+            (Math.round(sum)!==Math.round(u.morale0)
+              ?line('as far as it goes',u.morale0-sum,' floor'):'')+
+            '<div class="ssr tot"><span class="ssn">STARTS ON</span>'+
+            '<span class="ssv" style="color:var(--g4)">'+Math.round(u.morale0)+
+            ' of '+u.moraleMax+'</span></div></div>';})();
       TIP.style.display='block';moveTip(e);};
     nv.onmousemove=moveTip;nv.onmouseleave=()=>{TIP.style.display='none';};
   }
@@ -39906,6 +40290,19 @@ function gearLine(g,p){
        event cards. It is derived now, in both mouths, and the sentence that
        carried it comes out of GEAR.rod in the same edit. */
     if(g.spellRange)small.push('workings reach '+g.spellRange+' hexes further');
+    /* ⛔ #269 - ADJUSTABLE, AND IT IS DERIVED FROM THE FIELD THAT ALREADY DECIDED
+       IT. (User: *"Some armors can have 'adjusteble' size - so you can put it on
+       any creature without debaff. Create this property"*.)
+       ⛑ THE PROPERTY WAS ALREADY IN THE BUILD AND HAD NO NAME ANYWHERE ON SCREEN.
+       `size:'any'` is what `sizeMismatch` asks, and a piece carrying it takes no
+       ×0.70 on any body - so rags, the cook-pot and the worn bucket have been
+       adjustable since they were written, and the only way to find that out was to
+       put one on an ogre and watch the number not move. Naming it is the whole of
+       the ask, and authoring a second boolean beside `size` would have been two
+       fields deciding one fact.
+       ⏳ TODAY IT IS THREE PIECES AND ALL THREE ARE JUNK. Which real harness should
+       be adjustable is his call, and it is filed as T3. */
+    if(g.slot==='armour'&&g.size==='any')small.push('adjustable: fits any body, no penalty');
     ['str','agi','int','mor'].forEach(s=>{if(g[s])
       small.push('a little '+(g[s]>0?STATWORD[s]:STATWORD_DOWN[s])+
         ' ('+(g[s]>0?'+':'')+g[s]+')');});
@@ -43414,8 +43811,15 @@ function worldTick(){
       heartSVG(hs.st)+'</span>'+
     (petKey?'<span class="bcchip" data-w="pet" style="border-color:#8ca35a66">'+
       PAW_SVG+'</span>':'')+
+    /* ⛔ #269 - AND THE CHIP SHOWS THE THING. (User: *"on the global map it is
+       smaller icon with marching drum"*.) `ITEM_ICON` has held a painting for this
+       row since #192 and the bar was drawing the ◍ that was standing in for it -
+       which is the same fault that entry fixed on five other surfaces and never
+       reached this one. 16px against the chip's own 30px box, and the glyph is the
+       fallback for a relic with no painting, which is a legitimate shipping state
+       (`itemImg` returns '' and the `||` catches it). */
     relics.map(k=>'<span class="tchip" data-tri="'+k+'">'+
-      (GEAR[k].g||'✧')+' '+GEAR[k].n+'</span>').join('');
+      (itemImg(k,16)||(GEAR[k].g||'✧'))+' '+GEAR[k].n+'</span>').join('');
   /* ⛔ #220 - #104 point 1 put the Captain's painted head on the party chip
      and this is where it was drawn. It is off: a portrait answers "who leads
      this lot", and the one job of the left-hand group is "how many bodies,
@@ -47558,8 +47962,16 @@ function drawVillage(note){
     if(r.gear)return '<button class="choice gitem" data-i="'+r.id+'"'+
       ((r.done||!ok)?' disabled style="opacity:.38"':'')+'>'+
       gearCardRow(r.gear,'−'+RES_ICON.crowns+r.price+tail)+'</button>';
+    /* ⛔ #269 - `evLabel(r.c)` AND NEVER `r.c`. (User: "I cought soft lock on
+       goldharrow".) #243 made the market row's label a FUNCTION so its figure could
+       be derived through `foodCut`; this renderer handed that function straight to
+       `resGlyphs`, which calls `.replace` on it and throws - so the whole
+       `innerHTML` expression died before it was assigned, `#wChoices` stayed EMPTY,
+       and the one card with no walk-away of its own had no way off the node. It
+       fired on every visit to Coldharrow, measured. #240 wrote `evLabel` for exactly
+       this trap and named it in capitals; this was the renderer nobody told. */
     return '<button class="choice" data-i="'+r.id+'"'+((r.done||!ok)?' disabled style="opacity:.38"':'')+
-      '><b>'+r.t+'</b><i>'+resGlyphs(r.c)+tail+'</i></button>';}).join('')+
+      '><b>'+r.t+'</b><i>'+resGlyphs(evLabel(r))+tail+'</i></button>';}).join('')+
     '<button class="choice" data-i="go"><b>Back to the road</b>'+
     '<i>'+roadOut(G.at)+'</i></button>';
   $('wChoices').querySelectorAll('.choice').forEach(b=>{
@@ -48301,8 +48713,32 @@ const relicSum=key=>heldGear().reduce((s,k)=>
    reward. The authored tables have always been allowed to do that - the Snare
    gives you lashed plates whoever you are - because a written row is about the
    body it came off. A roll has no such excuse. */
-const RARITY={common:{n:'COMMON',c:'#c9c2b4'},rare:{n:'RARE',c:'#8ca35a'},
-              epic:{n:'EPIC',c:'#a07cc9'}};
+/* ═══ ⛔ #269 · FOUR TIERS, AND THE KEYS DID NOT MOVE ══════════════════════
+   (User: *"rename curent 'rate' to 'uncommon', 'epic' to 'rare' - amd create 1
+   more category - 'legendary'. It is golden and for exseptionally great
+   artifacts"*.)
+
+   ⛔ THE WORD MOVED AND THE KEY STAYED, WHICH IS THIS FILE'S OWN PRECEDENT TWICE
+   OVER. #212 kept `id:'ash'` and changed the NAME (*"a key is not a name"*); #234
+   kept `trait:'harness'` and called it Experienced, for the same reason. The key
+   `rare` is read by `SCRAP`, `GEAR_FLOOR`, `FIND_ODDS`, `rollFind`, `rollRack`,
+   `earlyFind` and one LINT rule - seven places, none of them a screen - and
+   renaming a key to make a table read better is how a build acquires a silent
+   hole. ⚠ SO A ROW AUTHORED `rarity:'epic'` PRINTS **RARE**, AND THAT IS THE ONE
+   THING TO KNOW BEFORE WRITING A NEW GEAR ROW.
+
+   ⛑ `legendary` IS A REAL FOURTH KEY AND IT IS SAFE BECAUSE EVERY BODY ON IT IS
+   `unique`. `findPool` refuses uniques - *"a named thing out of one scene may not
+   be sold off a cart"* - so nothing here reaches a drop table, a rack or a
+   bonus-find roll, and the tier costs no measurement. What it does reach is
+   `SCRAP` and `GEAR_FLOOR`, and both have a row below or a legendary would break
+   down for a common thing's ten crowns.
+   ⚠ THE GOLD IS `#e0b84a` AND NOT `--gold`. `--g3`/`--g4` is hover and select on
+   every slot, stash row and shop row these names are printed in, so the tier's
+   colour would read as *this one is chosen* - which is #218's own argument for why
+   the trade door's rail is coin-yellow rather than gold. */
+const RARITY={common:{n:'COMMON',c:'#c9c2b4'},rare:{n:'UNCOMMON',c:'#8ca35a'},
+              epic:{n:'RARE',c:'#a07cc9'},legendary:{n:'LEGENDARY',c:'#e0b84a'}};
 const rarityOf=k=>(GEAR[k]&&GEAR[k].rarity)||'common';
 const rarityTag=k=>{const r=RARITY[rarityOf(k)];
   return '<span style="color:'+r.c+'">'+r.n+'</span>';};
@@ -48445,7 +48881,7 @@ const dmgMean=g=>(g&&g.dmg)?(g.dmg[0]+g.dmg[1])/2:0;
    and both are priced by the armour they stop; charging less for the cost of
    wearing them would make the best harness in the game the cheapest.
    ⚠ ROUNDED TO FIVE, because a price is read at a glance and 287 is not. */
-const GEAR_FLOOR={common:45,rare:70,epic:120};
+const GEAR_FLOOR={common:45,rare:70,epic:120,legendary:260};   /* #269 */
 function gearPrice(k){
   const g=GEAR[k];if(!g)return 0;
   let v=(g.armour||0)*3;
