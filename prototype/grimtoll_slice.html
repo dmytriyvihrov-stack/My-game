@@ -2244,10 +2244,27 @@ body:has(#battle.on) .whisp{bottom:138px}
    comes off, which is where a comparison between two cards is made; what the
    board now says is what this swing does to THIS body, which is the question the
    board is for. */
+/* #274 - the act's own sentence on the enemy readout card. Body face, one step
+   under the row it belongs to, indented so the list still reads as a list. */
+#bRead .actsay{font-family:var(--body);font-size:var(--fs1);line-height:1.3;color:#8fa5a2;
+  font-style:italic;padding:0 0 3px var(--p4)}
 .hodds{position:absolute;top:14px;left:0;right:0;text-align:center;font-family:var(--mono);
        font-size:var(--fs0);line-height:1;font-weight:700;text-shadow:0 0 3px #000,0 0 3px #000;
        display:none}
 #bGrid.odds .hodds{display:block}
+/* ⛔ #274 - THE SAME FIGURE, ASKED OF THE HEX THE STEP IS AIMED AT.
+   (User: *"when i hover of movment of archer or mag - show, would i be able to hit
+   enemies (or just chances of that enemis after movment)"*.)
+   ⛑ ONE FIGURE ON A HEX, WHICH IS WHY THE LIVE ONE IS HIDDEN RATHER THAN JOINED.
+   #98 point 7's own note: *"two numbers on one hex want a hierarchy"*, and these two
+   are the same number answering two different questions - from here, and from there.
+   While a step is being aimed the board is about THERE, which is exactly what the
+   enemy peek (#156) already does to the washes: *a hover changes what the board is
+   about*. The dotted underline is what says the figure is conditional; the colour
+   ramp is untouched, because the ramp IS the answer. */
+#bGrid .hodds.aodds{display:block;font-style:italic;
+  text-decoration:underline dotted;text-underline-offset:2px}
+#bGrid.stepodds .hodds:not(.aodds){display:none}
 /* WHAT IT WOULD ACTUALLY TAKE OFF (user: "show not only % to hit - but also
    potential damage"). It rides directly under the odds on the same hex, in
    the hitpoint red the readout card uses for the same number, so the two
@@ -5902,7 +5919,15 @@ body:has(#battle.on) .whisp{bottom:138px}
 /* #264 - TWO COLUMNS OF SKILLS. A grid rather than CSS columns, because
    `column-count` would let one card break across the fold; and the level
    heading spans both so the tiers stay readable down the page. */
-.pk2{display:grid;grid-template-columns:1fr 1fr;gap:var(--p2);align-items:start}
+/* ⛔ #274 - `.pk2.on` AND NEVER `.pk2` BARE, AND THE BARE ONE SHIPPED FOR A WEEK.
+   `.itabbody{display:none}` is 0-1-0; so was `.pk2{display:grid}`, and it sits
+   LATER in this stylesheet, so from #264 the PERK tab's body was displayed on the
+   STASH tab as well - the whole tree stacked under the stash on every sheet in the
+   game, which is the screenshot this entry was reported with. It is the identical
+   trap the note on `#iStashBody.on` four blocks up spells out in capitals, arriving
+   on the other tab. ⚠ Neither §5 counter can see it: nothing clips and nothing
+   overlaps, the column is simply twice as long as it should be. */
+.pk2.on{display:grid;grid-template-columns:1fr 1fr;gap:var(--p2);align-items:start}
 .pk2>.pklv,.pk2>.lbl,.pk2>.pkfoot,.pk2>.pknone{grid-column:1 / -1}
 .pk.locked .tag{color:#7a6238}
 .pknone{font-family:var(--mono);font-size:var(--fs1);color:#7a6238;font-style:italic}
@@ -10734,7 +10759,13 @@ const GEAR={
   scrap  :{rarity:'common',n:'Scrap harness',   slot:'armour',size:'ratkin',armour:18},
   hides  :{rarity:'common',n:'Stitched hides',  slot:'armour',size:'ogre',  armour:26},
   /* --- proper kit --- */
-  jack   :{rarity:'common',n:'Padded jack',     slot:'armour',size:'human', armour:34},
+  /* ⛔ #274 - UNCOMMON, AT THE USER'S WORD (*"padded jack is uncommon armor"*).
+     34 armour is nearly three times the cook-pot and it was sitting in the same
+     tier as a bucket. ⚠ `rarity:'rare'` PRINTS "UNCOMMON" - see RARITY, which
+     keeps the engine's key and renames only the word on the card. ⚠ The PRICE
+     does not move (34x3 = 100, over the rare floor of 70); what moves is the
+     break-down row, the find tier and the rack row it can appear on. */
+  jack   :{rarity:'rare',  n:'Padded jack',     slot:'armour',size:'human', armour:34},
   mail   :{rarity:'rare',n:'Mail hauberk',    slot:'armour',size:'human', armour:66,agi:-1},
   plate  :{rarity:'epic',n:'Foundry plate',   slot:'armour',size:'human', armour:96,agi:-1},
   shroud :{rarity:'rare',n:'Rat-silk shroud', slot:'armour',size:'ratkin',armour:30,agi:+1},
@@ -23110,6 +23141,27 @@ function strike(a,d,act,mult){
      makes the personality legible on the field. `hpD>0` is the test and it is
      the same figure the chip prints. */
   if(hpD>0&&tr(d,'grudge'))d.grudgeOn=a.id;
+  /* ═══ ⛔ #274 · A BLOW THAT HAULS THE BODY IS DRAWN WHERE THE BODY LANDS
+     ═══════════════════════════════════════════════════════════════════════
+     (User, of the slag-hide: *"Slug hide started to attack empty tiles"*.)
+
+     ⛑ MEASURED, AND IT IS EXACTLY WHAT HE SAW. Driven on the warm stones with
+     the victim two hexes off: the body stood at pixel (1086,127) and finished at
+     (1295,197), and the `hitflash`, the blood and the −N were all appended at
+     **1086,127** - the hex the tongue had just emptied. Everything that says
+     MOVEMENT (the tether, the gust, the DRAGGED mark) was correct; everything
+     that says a blow landed was painted on empty ground, and from the far side
+     of the board an armour-flash with a number over it on a hex with nobody on
+     it is an attack on an empty tile.
+
+     ⛑ THE FIX IS A COORDINATE AND NOT A CLOCK. All of `strike` runs in ONE
+     tick, so nothing here is delayed by a microsecond: the paint is deferred
+     only far enough down the function that `hexPt(d)` answers with the hex the
+     drag put them on. ⚠ `say` STAYS OUTSIDE IT, so the log's order is
+     untouched - the damage line still comes before the hauling line.
+     ⚠ AND IT IS CALLED IN BOTH BRANCHES: a drag with nowhere to drop them
+     moves nobody, and the blow still has to be drawn. */
+  const paintBlow=()=>{
   fx(d,'−'+Math.round(hpD),'#e08a80');
   /* the collision: a hard white ring if the harness turned it, blood if it
      found the body. Ranged shots flash on the target without the lunge. */
@@ -23139,6 +23191,10 @@ function strike(a,d,act,mult){
   }else animClash(a,d,flavour,false,!!act.sweep,hpD);
   sfxStrike(a,d,armD,hpD);
   if(armD>3)fx(d,'−'+Math.round(armD)+' arm','#96a1a5',true);
+  };
+  /* #274 - a hauling blow waits for the haul; everything else paints now */
+  const hauls=!!(act.drag&&!d.dead&&!d.big);
+  if(!hauls)paintBlow();
   /* #60's ARMOUR BEFORE BLOOD lesson fired here, on the first blow where the
      harness took the bigger half. #137 deleted it: TUTSTEPS.armour spotlights
      the two bars in the brawl, on the player's own first dent, which is the
@@ -23223,6 +23279,7 @@ function strike(a,d,act,mult){
          point at, and this is the event. */
       if(d.side==='you'&&!d.ally)d.fenwater=true;
     }
+    paintBlow();                                   /* #274 - see the note above */
   }
   /* ═══ FORCED MOVEMENT — PUSH AND PULL ═══════════════════════════════════
      Somebody else decides where they are standing. This is the cheapest way
@@ -24218,6 +24275,20 @@ function beginTurn(){
   B.seq++;
   const u=cur();
   if(!u||u.dead||u.fled||u.downed){nextTurn();return;}
+  /* ⛔ #274 - A TURN HANDED BACK BY ⟲ IS RESUMED, NOT BEGUN AGAIN. Everything
+     below this line is the per-turn TICK - morale, burning, poison, the veil, the
+     cooldowns, the banked action, the fresh `actions` - and a body that has already
+     had it must not have it twice. `B.busy=false` and `B.seq++` are above, because
+     those are the turn machinery rather than the tick and they have to run for the
+     board to answer at all. What is left is the dispatch, copied from the tail of
+     this function, which is the one thing a resumed turn still needs. */
+  if(u.turnHeld){
+    u.turnHeld=false;
+    B.sel=null;B.reach=null;B.reach2=null;B.aura=null;
+    render();
+    if(u.side==='foe'||u.ally){B.busy=true;later(()=>aiTurn(u),380);}
+    return;
+  }
   /* the pet does not take a real turn — it stays near the Captain and
      the player never has to drive it */
   if(u.petFollow){
@@ -24535,7 +24606,30 @@ function beginTurn(){
   }
   B.sel=null;B.reach=null;B.reach2=null;
   B.aura=null;               /* #206 - and no order's ring outlives its card */
-  B.undo=null;               /* #91 - a new turn owes nobody last turn's step */
+  /* ═══ ⛔ #274 · THE OFFER SURVIVES THE HAND-OVER ════════════════
+     (User: *"When unit made move for two action (longer move) - give turn to the
+     other unit. But keep 'undo button' to return action of current one"*.)
+
+     ⛔ #247 REFUSED THIS AND #251 PUT IT TO HIM AND HE HAS NOW ASKED FOR IT, SO IT
+     IS BUILT. The refusal's reason was real and is answered rather than ignored:
+     *"giving the turn back after `beginTurn` has run would mean running it twice
+     on somebody - two morale ticks, two poison ticks, two banked actions"*. A turn
+     handed back is RESUMED now (`turnHeld` at the head of this function), so
+     nothing ticks twice; what #247 could not do was the tick guard, not the offer.
+
+     ⚠ FOUR CLAUSES AND EVERY ONE IS A REAL CASE. The incoming body must be one of
+     YOURS (a foe's turn cannot be interrupted and its own `beginTurn` clears the
+     offer, which is what bounds the window); it must not be the mover itself (that
+     is the offer's own body coming round again, and by then the step is history);
+     the mover must still be standing; and `B.idx>0`, because the rewind is inside
+     one round - the round that has already ticked its blooms, its disposition and
+     its hunger is not a round to walk back into.
+     ⚠ AND NOTHING NEW GUARDS "SOMEBODY DID SOMETHING", because `spend()` has
+     cleared `B.undo` on every paid act since #91. The offer dies the instant the
+     next body swings, walks or casts, which is exactly the rule it always had. */
+  if(!(B.undo&&B.idx>0&&u.side==='you'&&!u.ally&&!u.pet&&B.undo.id!==u.id&&
+       B.units.some(x=>x.id===B.undo.id&&x.side==='you'&&!x.dead&&!x.downed&&!x.fled)))
+    B.undo=null;             /* #91 - a new turn owes nobody last turn's step */
   /* the people you sided with fight their own fight. They are on your side of
      the board and they are not yours to command — you never get to spend their
      turns, which is most of the point of standing next to them. */
@@ -25562,17 +25656,18 @@ function undoGo(u){
 }
 function autoEnd(u){
   if(!(u.actions<=0||u.dead||u.downed||u.fled))return;
-  if(B.undo&&B.undo.id===u.id&&!u.dead&&!u.downed&&!u.fled){
-    const t=B.undoT=(B.undoT||0)+1;
-    undoDrain();
-    later(()=>{
-      if(B.undoT!==t)return;                     /* another hold, or an undo */
-      const c=cur();
-      if(!c||c.id!==u.id||u.actions>0)return;    /* ended by hand, or taken back */
-      nextTurn();
-    },UNDO_HOLD);
-    return;
-  }
+  /* ⛔ #274 - AND THE HOLD IS GONE, WHICH IS THE HALF OF THE ASK THAT IS A
+     DELETION. #249 bought the undo a window by making the board WAIT
+     (`UNDO_HOLD`, 3.15s at the shipped board clock) and #251 then had to teach
+     that window to end early because *"a control that swallows input while
+     showing a countdown reads as a hang"*. The offer outlives the hand-over now,
+     so there is nothing left to wait for: the turn goes at once, the button is
+     still there, and it stands until somebody spends something.
+     ⚠ `UNDO_HOLD`, `undoDrain` AND `#bUndo.draining` ARE KEPT AND ARE NOW UNUSED
+     BY THIS PATH. They are the drawn window, and the day an offer wants a clock
+     again it is one call. Nothing draws a countdown on an offer that has none -
+     #251's own wrong-unit note, and `render` still strips `.draining` whenever
+     the offer is down. */
   later(nextTurn,140);
 }
 /* the window, drawn. Restarted by hand because the element is not rebuilt: an
@@ -26077,6 +26172,57 @@ function paintHand(){
      about is the one that would be hit. */
   g.querySelectorAll('.hex.hand').forEach(h=>h.classList.remove('hand'));
   if(el)el.classList.add('hand');
+  /* ═══ ⛔ #274 · WHAT THIS BODY COULD HIT FROM THE HEX THE STEP IS AIMED AT
+     ═════════════════════════════════════════════════════════════
+     #234 put the standing figures back on the board and its own note says what
+     they answer: *whom can I hit from where I am* - measured from the hex the
+     body is on, so a foe only reachable after a walk carries no figure and never
+     did. That is the whole of the question a SHOOTER asks: an archer's turn is
+     *where do I stand so that this is a shot*, and the board answered it only
+     after the step had been paid for.
+
+     ⛑ IT LIVES IN `paintHand` AND NOT IN `render`, which is #246's own finding
+     one surface across: the pointer moving is the path that does not re-render,
+     and a figure recomputed on every render would be a figure about a hex the
+     pointer has already left.
+     ⚠ THE BODY IS MOVED AND PUT BACK, AND THAT IS SAFE BECAUSE ALL OF THIS RUNS
+     IN ONE TICK. `hitBreakdown` reads the attacker's hex for range, cover, the
+     lane and the arc, and there is no version of it that takes a hex - so the
+     honest way to ask *from there* is to stand there. `finally` puts it back
+     whatever throws.
+     ⚠ AND IT ASKS WHETHER THE SHOT IS STILL AFFORDABLE AFTER THE STEP. A
+     two-action stride empties the body, so the far half of the walk preview
+     carries no figures at all - which is the truth, and it is the same fact ask
+     12 makes the turn hand over on. */
+  g.querySelectorAll('.hodds.aodds').forEach(e=>e.remove());
+  g.classList.remove('stepodds');
+  if(aiming&&land&&SHOW_HIT_ODDS){
+    const su=cur();
+    const w=su?mainAtk(su):null;
+    if(su&&su.side==='you'&&!su.ally&&!su.pet&&!su.dead&&B.sel&&B.sel.move&&
+       w&&w.range&&w.dmg&&(su.actions-moveCostAt(land))>=(w.cost||1)){
+      const p=land.split(',').map(Number),c0=su.col,r0=su.row;
+      let any=false;
+      su.col=p[0];su.row=p[1];
+      try{
+        alive().filter(x=>x.side!==su.side&&!x.passive).forEach(t=>{
+          if(udist(su,t)>(w.range||0))return;
+          if(!mayAim(su,w,t))return;
+          const hx=g.querySelector('[data-k="'+K(t.col,t.row)+'"]');
+          const inn=hx&&hx.querySelector('.hin');if(!inn)return;
+          const n=hitBreakdown(su,t,w).total;
+          const o=document.createElement('div');
+          o.className='hodds aodds';
+          o.style.color=n>=70?'#8ca35a':n>=45?'#c9a227':'#c15d55';
+          o.textContent=n+'%';
+          o.title=n+' in a hundred with '+w.n+', FROM THE HEX YOU ARE POINTING AT. '+
+            'It is what the step buys, not what you have now.';
+          inn.appendChild(o);any=true;});
+      }catch(e){}
+      finally{su.col=c0;su.row=r0;}
+      if(any)g.classList.add('stepodds');
+    }
+  }
   const old=g.querySelector('.zodds');if(old)old.remove();
   const risk=(B.zrisk&&B.zrisk.length)?B.zrisk:null;
   if(aiming&&risk&&B.zfrom){
@@ -26553,14 +26699,26 @@ function clickHex(c,r){
    ⛔ AUTO never sees this: B.undo is only ever set on the player's click. */
 function undoMove(){
   const s=B.undo;if(!s||B.busy)return;
-  const u=cur();if(!u||u.side!=='you'||u.id!==s.id)return;
+  const u=cur();if(!u||u.side!=='you'||u.ally||u.pet)return;
+  /* #274 - the step's own body, which since the hand-over may not be the one
+     whose turn it is. `B.undo` only ever holds a roster body's snapshot. */
+  const m=B.units.find(x=>x.id===s.id);
+  if(!m||m.dead||m.downed||m.fled)return;
   B.undo=null;
   /* #249 - and the hold that was counting this offer down is void with it */
   B.undoT=(B.undoT||0)+1;
   {const b=$('bUndo');if(b)b.classList.remove('draining');}
-  u.col=s.col;u.row=s.row;u.facing=s.facing;
-  u.actions=s.actions;u.used.move=s.usedMove;u.movesUsed=s.movesUsed;u.moved=s.moved;
-  say(u.name+' steps back. The ground keeps no record of it.');
+  m.col=s.col;m.row=s.row;m.facing=s.facing;
+  m.actions=s.actions;m.used.move=s.usedMove;m.movesUsed=s.movesUsed;m.moved=s.moved;
+  say(m.name+' steps back. The ground keeps no record of it.');
+  /* ⛔ #274 - AND THE TURN GOES BACK WITH THE STEP. Both bodies are marked
+     `turnHeld`, so neither of them ticks twice: the mover picks its turn up where
+     it left it, and the body that was interrupted picks its own up when the order
+     reaches it again. See the note at the head of `beginTurn`. */
+  if(m!==u){
+    const i=B.order.indexOf(m);
+    if(i>=0&&i<B.idx){u.turnHeld=true;m.turnHeld=true;B.idx=i;beginTurn();return;}
+  }
   B.sel=null;B.reach=null;render();
 }
 function routStep(u,done){
@@ -26675,6 +26833,36 @@ function targetScore(t){
       holds its ground, keeps shooting, and makes YOU cross the field into
       its arrows. Which is what anybody with archers and no hurry would do.
    ═══════════════════════════════════════════════════════════════════════ */
+/* ═══ ⛔ #274 · A STANDOFF NEEDS RANGE, AND THREE HEXES IS NOT RANGE ════
+   (User, of the lizard fights: *"on the other battle while they where able to move
+   and hit me - they where standing. They have amazing rang abilities to use it on
+   me"*.)
+
+   ⛔ THE HOLD IS AN ARGUMENT ABOUT WHOSE GROUND GETS CROSSED, AND IT ONLY WORKS
+   IF THE SHOT REACHES FURTHER THAN A STRIDE. #267 gave the salamander a SPIT at
+   three hexes and the slag-hide a TONGUE at three, both carrying `dmg` - so a
+   warm-stones side counted FOUR shooters against your two, took the stance, and
+   every one of them came out `rooted`: measured on a fresh board, all four with
+   `shotInRange=false` and the nearest of you TEN TO TWELVE hexes away. They stood
+   at the far edge of the map for the whole fight, refusing to close on the
+   strength of a weapon that cannot touch anything they are refusing to close on.
+   That is not a shooting line, it is a stalemate the AI argued itself into.
+
+   ⛑ FOUR IS MEASURED AND NOT PICKED. Every ranged damage act in the game, swept
+   over `FOE_BUILD` and a prepared six: RANGE 3 is the salamander's spit and the
+   slag-hide's tongue and nothing else; RANGE 5 is every bow, sling and crossbow;
+   the three `warp` castings are `arcane`. So this line moves the two lizards and
+   leaves every shooting fight in the game exactly where it was - which is the
+   check to re-run if a weapon is ever authored at 4.
+   ⚠ ARCANE IS ALWAYS A STANDOFF whatever its `range` says: a working is the one
+   thing on this board that gets worse the closer you let it be cast, and the
+   warp-sniffer has been counted into its side's stance since #126.
+   ⚠ IT IS READ IN THREE PLACES AND MUST STAY ONE PREDICATE: `disposition` decides
+   the stance, `rooted` holds a body to it, and the cohesion weight in the movement
+   scorer asks the same question from the other end. A body counted INTO a stance
+   has to be held BY it - #240's own note, and this is its third customer. */
+const STANDOFF=4;
+const outRanged=x=>!!(x&&x.acts&&x.acts.some(a=>a.dmg&&(a.arcane||(a.range||0)>=STANDOFF)));
 function disposition(side){
   const mine=alive().filter(x=>x.side===side&&!x.passive);
   const them=alive().filter(x=>x.side!==side&&!x.passive);
@@ -26684,8 +26872,10 @@ function disposition(side){
      range 4, so every ogre holding one registered as an archer. That inflated
      this side's shooter count into the `hold` stance and then froze the ogre
      itself (see `iShoot` in aiTurn) — the reported bug where an ogre stood
-     still with a melee fight in front of it. */
-  const shooters=u=>u.filter(x=>x.acts.some(a=>(a.range||a.arcane)&&a.dmg)).length;
+     still with a melee fight in front of it.
+     ⛔ #274 - AND THE SECOND HALF OF THAT LESSON IS `outRanged` ABOVE: A SHOT
+     UNDER FOUR HEXES IS NOT A BOW EITHER. */
+  const shooters=u=>u.filter(outRanged).length;
   const myShots=shooters(mine),theirShots=shooters(them);
   /* worth standing still for: real shooting, a clear edge, and enough bodies
      left in front to make crossing the ground expensive */
@@ -27094,7 +27284,7 @@ function doctrine(u){
      started keeping station at three hexes like bowmen — in the one fight
      whose whole premise is that they hold their ground and you come to them.
      8 rounds became 29 without a single throw being taken. */
-  const on=aip(u).doct,shoot=u.acts.some(a=>a.range&&!a.arcane&&a.dmg);
+  const on=aip(u).doct,shotAct=u.acts.find(a=>a.range&&!a.arcane&&a.dmg),shoot=!!shotAct;
   const rat=u.race==='ratkin',ogre=u.race==='ogre';
   /* A DOG hunts the edges of your line, not its middle. It ignores cohesion
      (it has no line to keep), it wants the loneliest target rather than the
@@ -27123,11 +27313,24 @@ function doctrine(u){
     arcW: on&&rat?1.5:1,                       /* flank hunger multiplier */
     lineSeek: on&&u.race==='human'&&!shoot&&!u.caster?6:0,
     herd: on&&ogre?1:0,                        /* stay near the other ogres */
+    /* #274 - a beast of a mixed pack keeps station on the heavier ones. See the
+       note at `others` in aiTurn's movement block. */
+    herdBig: on&&u.race==='beast'?1:0,
     noChase: on&&ogre,                         /* mass does not run sprints */
     /* #127 - off the weapon now. `shotAct` is found with the same `a.dmg`
        test as `shoot` above, so PICK UP AND THROW still cannot buy an ogre a
        bowman's stance. */
-    band: on&&shoot?bandFor(u.acts.find(a=>a.range&&!a.arcane&&a.dmg)):0
+    /* ⛔ #274 - AND THE BAND LETS GO WHILE THE SHOT IS COOLING. (User: *"Slug
+       hides doesnt use their abilities at all"*.) The slag-hide's TONGUE is
+       `cool:1`, so on every other turn `canUse` refuses it - and a band of 2, read
+       off that same tongue, parked the animal exactly one hex outside its own BITE
+       and left it standing there with nothing it could reach. A station is only
+       worth keeping while the weapon it was measured off can be fired.
+       ⚠ `onCool` AND NOT `canUse`. This is read AFTER the move has been paid for,
+       so a two-action tongue always answers "cannot afford" and every archer in the
+       game would lose its band on the one turn it walks. The cooldown is the fact
+       about the NEXT turn, which is what a band is for. */
+    band: on&&shoot&&!onCool(u,shotAct)?bandFor(shotAct):0
   };
 }
 /* would standing at p put a body of this side into a row of three? */
@@ -27931,8 +28134,11 @@ function aiTurn(u){
        column 13 and the sniffer alone was at 9. A body that is counted INTO a
        stance has to be held BY it, so this is the same predicate
        `disposition()` used to decide there was a stance at all. */
+    /* #274 - `outRanged`, the same predicate `disposition` counted this body
+       into the stance with. A three-hex spitter is not held by a stance it was
+       never counted into. */
     const rooted=holds&&aip(u).hold&&!canSwing&&!engaged(u)&&
-      (wallAct||u.acts.some(a=>(a.range||a.arcane)&&a.dmg));
+      (wallAct||outRanged(u));
     /* ═══ GIVING GROUND IS FINITE ══════════════════════════════════════
        Once the race set the stride (ratkin 5 vs your 4) a shooting line
        could retreat one hex further than you could advance, every turn,
@@ -28055,7 +28261,16 @@ function aiTurn(u){
          is exactly what one lone ratkin out in front used to do every fight. */
       const lonely=aheadOfLine(u);
       let anchor=disp.anchor;                /* #240 - a guard re-points it */
-      let cohere=(melee.length&&!iShoot)?(lonely>=3?9:lonely>=2?4:0):0;
+      /* ⛔ #274 - `outRanged` AND NOT `iShoot`, WHICH IS THE OTHER END OF THE
+         SAME SENTENCE. (User: *"Salamandra are sticking together to their bigger
+         allies and dont go in front by themselves"*.) This clause exempts a
+         SHOOTER from caring about the line, because a bowman's whole job is to
+         stand where the line is not - and `iShoot` said yes to a lizard whose
+         weapon is a three-hex spit, so the salamanders were the one body on the
+         field with NO cohesion at all and ran out in front of the animals they
+         came with, every fight. A body that has to be within three hexes to do
+         anything is a body in the line. */
+      let cohere=(melee.length&&!outRanged(u))?(lonely>=3?9:lonely>=2?4:0):0;
       /* a captain is the head — it does not lead the charge in person */
       if(u.captain)cohere=Math.max(cohere,5);
       cohere*=aip(u).cohere;
@@ -28096,8 +28311,21 @@ function aiTurn(u){
       }
       /* an ogre keeps near the other ogres: three of them close is a WEIGHT
          the enemy's nerve pays for every turn */
-      const others=doc.herd?alive().filter(x=>x.side===u.side&&x!==u&&
-        (x.race==='ogre'||x.kind==='ogre')):[];
+      /* ⛑ #274 - AND A BEAST KEEPS NEAR THE BIG ONE IT CAME WITH, which is the
+         second half of the salamander ask and is the ogres' own rule with the
+         question asked of the BODY instead of the race. `hpMax*1.4` is what
+         separates 7 hitpoints of vermin from 15 of slag-hide, 25 of drake and 120
+         of Furnace; the biggest thing on a side finds nothing bigger and keeps its
+         own mind. ⚠ SCOPED TO `beast` ON PURPOSE. The dog and the Warden return
+         their own doctrines above this line, the mirehares never reach the movement
+         scorer (`mirehareMove` returns first), and the ratkin/human/ogre fights are
+         measured - so today this is the lizards and nothing else. A rule that read
+         hitpoints across every race would re-price the sling-line, which is not
+         what was asked for. */
+      const others=doc.herdBig
+        ?alive().filter(x=>x.side===u.side&&x!==u&&!x.passive&&x.hpMax>u.hpMax*1.4)
+        :doc.herd?alive().filter(x=>x.side===u.side&&x!==u&&
+          (x.race==='ogre'||x.kind==='ogre')):[];
       const oAnchor=others.length?[Math.round(others.reduce((s,x)=>s+x.col,0)/others.length),
         Math.round(others.reduce((s,x)=>s+x.row,0)/others.length)]:null;
       /* mass does not run sprints: a faster target that is already out of
@@ -31383,8 +31611,11 @@ function render(){
     }else{$('bActions').innerHTML='';B.cards=null;B.actHover=null;
       $('bEnd').disabled=true;$('bFlee').disabled=true;}}
   /* #91 point 12 - the UNDO offer, shown exactly while it is real */
-  {const ub=$('bUndo'),live=!!(B.undo&&u&&u.side==='you'&&!u.ally&&!u.pet&&
-      B.undo.id===u.id&&!B.busy);
+  /* ⚠ #274 - `B.undo.id===u.id` IS GONE FROM THIS TEST AND `beginTurn` IS WHAT
+     REPLACES IT. The offer may now belong to the body that moved BEFORE this one,
+     and the four clauses that decide whether it survives a hand-over are stated
+     once, there. Asked again here they would be a second copy to keep in step. */
+  {const ub=$('bUndo'),live=!!(B.undo&&u&&u.side==='you'&&!u.ally&&!u.pet&&!B.busy);
    ub.classList.toggle('on',live);
    /* ⚠ #251 - AND THE BAR DIES WITH THE OFFER. `.draining` was added by
       `undoDrain` and removed only by `undoMove`, so it survived a handover on the
@@ -32884,11 +33115,18 @@ function paintPeek(){
   const T=B.peek?B.peekHit:null;
   const A=B.aura||null;
   const foe=!!(B.peek&&B.peek.side==='foe');
-  /* #171 - the pair. The darker is where the body goes, the lighter is where
-     the arm goes, and they are the same hue so they read as one creature's
-     envelope rather than as two unrelated overlays. */
-  const col =foe?'rgba(120,50,66,.34)':'rgba(60,110,130,.30)';
-  const colH=foe?'rgba(120,50,66,.17)':'rgba(60,110,130,.14)';
+  /* #171 - the pair. The two are the same hue so they read as one creature's
+     envelope rather than as two unrelated overlays.
+     ⛔ #274 - AND THE DARKER ONE IS THE ARM, NOT THE LEGS. (User: *"more red the
+     one, that it can hit. Less red - the one it can move"*.) #171 painted the
+     WALK dark and the reach light, on the argument that the darker band is
+     "where the body goes"; that is the half a player does not act on. What the
+     question is - the question that entry's own note states, *"can he reach me
+     where I am about to stand"* - is answered by the OUTER ring, and it was the
+     fainter of the two on every board in the game. The two figures are simply
+     traded: nothing else about the envelope moves, and yours is untouched. */
+  const col =foe?'rgba(120,50,66,.17)':'rgba(60,110,130,.30)';
+  const colH=foe?'rgba(120,50,66,.34)':'rgba(60,110,130,.14)';
   const overWalk=!!(B.peek&&B.peek!==cur());
   for(let i=0;i<list.length;i++){
     const h=list[i];
@@ -33067,7 +33305,10 @@ const hpCol=(u,f,card)=>{const r=HPCOL[card?'card':hpSide(u)];
    ... 1 section is 3 armor points"). 15/10 was sized for the old ~60hp/~30arm
    bodies; a pool now a third that size wants a segment a third that size or
    the bar draws almost no dividers at all. */
-const SEG_HP=5, SEG_ARM=3;
+/* ⛔ #274 - AND THE ARMOUR ROW IS FIVE NOW TOO (user: *"5 pieces of armor - one
+   section in the armor bar"*), so both pools are sectioned in the same unit and
+   a section means one thing on the card whichever bar it is on. */
+const SEG_HP=5, SEG_ARM=5;
 const SEG=(max,per)=>Math.max(1,Math.round((max||1)/(per||SEG_HP)));
 /* the token bar widens only once a section would go under ~3px */
 const barW=secs=>Math.round(Math.max(26,Math.min(54,secs*3.4)));
@@ -33235,10 +33476,29 @@ function inspect(t,e){
       '<div style="height:1px;background:#2c3d3f"></div>'+
       '<div style="font-family:var(--mono);font-size:var(--fs1);color:#6b8280;letter-spacing:.1em">'+
         (own?'WHAT THEY CAN DO':'WHAT IT CAN DO TO YOU')+'</div>'+
+      /* ═══ ⛔ #274 · AND IT SAYS WHAT THE ACT DOES, NOT ONLY WHAT IT COSTS
+         ═══════════════════════════════════════════════════════════════
+         (User, on a screenshot of the slag-hide's card reading ✧ TONGUE / ✦ BITE:
+         *"Have no idea what this gone do for them"*.)
+
+         ⛑ THE SENTENCE ALREADY EXISTED AND THIS CARD WAS THE ONE SURFACE THAT
+         DID NOT PRINT IT. `noteLine(a)` is what the player's own act popover has
+         shown since #91 point 9 - the act's `note` cut at a boundary under ~110
+         characters - and every one of the lizards' verbs is authored with one that
+         is the whole creature: *it does not let go*, *the hex it lands on catches*,
+         *it does not stop at the first of you*. A row reading `3–4 · rng 3` is the
+         PRICE of a thing whose entire point is what it does to your line.
+         ⛔ IT IS THE ENEMY'S CARD AND NOT YOURS. Your own acts carry the same
+         sentence on the card you press, one hover away in the row below the board;
+         printing it twice on one screen is the second-receipt rule this project
+         spends `.claude/rules/event-cards.md` on. `own` is the test.
+         ⚠ AND IT IS `noteLine` RATHER THAN `a.note`, so the cut is the one the
+         popover already makes and a long note cannot grow this box off the field. */
       (t.passive?'<div class="rr"><span style="color:#8ca35a">Nothing. It does not fight.</span></div>'
         :mv.map(a=>'<div class="rr"><span>'+iconFor(a)+' '+a.n+'</span><span style="color:#a8b5b3">'+
         (a.dmg?a.dmg[0]+'–'+a.dmg[1]:'–')+(a.range?' · rng '+a.range:a.reach?' · rch '+a.reach:'')+
-        '</span></div>').join('')):'')+
+        '</span></div>'+
+        ((!own&&noteLine(a))?'<div class="actsay">'+esc(noteLine(a))+'</div>':'')).join('')):'')+
     /* ⚑ AND THE FALLBACK SENTENCE GOES WITH IT. "Its blue overlay is where it
        can reach next turn" was a caption for the reach tint (#156) parked in
        the slot reserved for the trait, so it appeared on every body in the
@@ -38878,7 +39138,8 @@ function equipFromStash(p,idx){
    the last sentence of the ask checkable rather than a feeling. Against
    `gearPrice` on the same piece:
 
-       padded jack    common   buy 100   break  10 crowns               10%
+       bucket, worn   common   buy  45   break  10 crowns               22%
+       padded jack    rare     buy 100   break  25 crowns + 2 salvage   25%   <- #274
        mail hauberk   rare     buy 200   break  25 crowns + 2 salvage   13%
        foundry plate  epic     buy 290   break  45 crowns + 3 salvage   16%
                                                 + 1 gem
@@ -39603,13 +39864,22 @@ function drawInv(){
       (led.length?'<div id="iLedger">'+led.join('')+'</div>':'')+
     '</div>'+
 
-    /* #268 - SKILLS MOVED INTO THE PERKS TAB (user: "This block with perks
-       move in perks section"). It used to sit here, under the doll, printing
-       "what they can do" for anybody wearing gear rather than for anybody
-       spending a point - `skillsHTML` below is built off the same `acts`/
-       `actCard` this column always used and is handed to both branches of
-       the perks tab, so a class-less hire still sees the racial kit they
-       already have. */
+    /* ⛔ #274 - AND THEY ARE BACK, WHICH IS THE ASK IN FOUR WORDS (*"Skills are
+       going back. And perks are going to perk category"*). #268 read *"this block
+       with perks move in perks section"* as covering both blocks and took the acts
+       with the tree; they are two different questions. WHAT THIS BODY CAN DO is
+       true of a level-0 hire with no tree at all and is read beside the gear that
+       decides it - the weapon in the slot two rows up IS the first card in this
+       row. WHAT IT MAY LEARN is a decision, it wants the whole width of the tab,
+       and it is the one the tab was built for (#133).
+       ⚠ IT COSTS THE COLUMN ~100px AND THE COLUMN HAS IT: measured over all 16
+       body x state cases before the move, worst slack 198.8 with the row out. The
+       Captain is still the widest row (six 78px cards + five 5px gaps = 493 in
+       ~500 of content) and still does not wrap - which is #200's own arithmetic,
+       and it is what the char column's 526 was set by. */
+    '<div class="lbl" style="color:#8a7449">SKILLS</div>'+
+    '<div id="iSkills">'+acts.map(actCard).join('')+'</div>'+
+
     '<div id="iStory" class="'+(G.showMem?'open':'')+'">'+storyHTML+'</div>'+
 
     '<div id="iFoot">'+
@@ -39946,11 +40216,8 @@ function drawInv(){
      question "what does the next promotion buy" can actually be answered.
      ⚑ THE ROOM THIS TAB HAS IS THE ROOM THE REAL TREE WILL NEED. */
   const pk=$('iPerkBody');
-  /* #268 - SKILLS, first, in both branches below: the acts this body already
-     has are true of a level-0 hire too, and the perks tab is now the one
-     place this sheet talks about what a body can DO. */
-  const skillsHTML='<div class="lbl" style="color:#8a7449">SKILLS</div>'+
-    '<div id="iSkills">'+acts.map(actCard).join('')+'</div>';
+  /* #274 - the SKILLS row #268 put here is back in the character column. This
+     tab is the tree and nothing else again. */
   /* ═══ #174 - THE STRANGER PICKS HIS TRADE HERE ═══════════════════════════
      A level-0 hire has no tree to show, so this tab is his: before his first
      level, one line saying what he is waiting for; at it, the trades of his
@@ -39976,7 +40243,7 @@ function drawInv(){
         '<div class="pknone">Hired without one. The first level is where a class is picked, and it '+
         'is a fight or two away.</div>';
     }
-    pk.innerHTML=skillsHTML+tHTML;
+    pk.innerHTML=tHTML;
     pk.querySelectorAll('.pk.buy').forEach(b=>b.onclick=()=>{
       if(!tradeOwed(p))return;
       takeTrade(p,b.dataset.trade);sfx('promote');drawInv();});
@@ -40010,7 +40277,7 @@ function drawInv(){
      raws"). It is a class on the BODY rather than a rewrite of the card, so the
      level headings still span the full width and the cards flow under them. */
   pk.className=(pk.className||'').replace(/\bpk2\b/g,'').trim()+' pk2';
-  pk.innerHTML=skillsHTML+pkHTML;
+  pk.innerHTML=pkHTML;
   pk.querySelectorAll('.pk.buy').forEach(b=>b.onclick=()=>{
     if((p.perkPoints||0)<=0)return;
     p.perks.push(b.dataset.perk);p.perkPoints--;sfx('promote');drawInv();});
@@ -49481,7 +49748,9 @@ function gearPrice(k){
    ⛔ THE COMMON ROW IS NEVER A MAIN-HAND WEAPON, WHICH IS THE USER'S OWN
    PARENTHESIS AND IS THE ROW'S WHOLE JOB. A cheap sword is the thing a
    company already has six of; the cheap row is for the shield, the quiver,
-   the padded jack - the slot nobody thinks to fill.
+   the cook-pot - the slot nobody thinks to fill. (⚠ #274 - it said *the padded
+   jack* until the jack became UNCOMMON. A comment naming a row by its tier goes
+   stale the day the row's tier moves, which is this file's oldest trap.)
    ⚠ IT STEPS TO A LOOSE POOL BEFORE IT GIVES UP A ROW, the way `rollFind`
    does, and for the same reason: a rack with a hole in it reads as a bug,
    and by the late muster a one-race company can genuinely have bought the

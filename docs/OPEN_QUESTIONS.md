@@ -25,6 +25,16 @@ back already answered by work that was not about them.
 
 ---
 
+## X · From #274
+
+| | the question | ⭐ mine |
+|---|---|---|
+| **X1** | **The lizard fights are 20-30 points harder now that they actually fight, and that is a re-tune you did not ask for.** #267 priced them against an AI that stood still: measured over 30 runs a cell, the ash-drakes go **93% -> 63%** for a prepared six and the glass road **100% -> 83%**. Nothing in a statblock moved; what changed is that a range-3 spitter no longer counts as an archery line. If the third fight is now too steep the dial is the statblocks, not the AI - and the AI is the half that was reported as broken. | **leave the fights alone and play them.** #267's own note says the drakes priced at 100% in 6 rounds and calls that too easy for the third fight on the trail |
+| **X2** | **Ask 10: *"when I hover on enemy - i stopped seeing automatical atack on range atacks"*. I could not reproduce it and I need a repro.** Driven on a real archer with MOVE standing: the figures are there at rest, they are still there while the pointer rests on an enemy, still there with the bow card hovered, still there with one action spent, still there while engaged (two figures, 50% and 5%). They go only where they should: when the shot has been taken twice this turn, and when a melee card is picked with nothing in reach. **What would help is one screenshot of the board with the odds missing**, with the act row visible. ⚡ It is possible ask 11 was the whole of it - the figures ARE from where the body stands, and hovering a hex you were about to walk to never showed you what the step buys. That is built now. | **a screenshot, or tell me it is fixed by ask 11** |
+| **X3** | **The undo now survives the hand-over only while the next body is one of yours.** When the next in initiative is an enemy the offer goes with the turn, because an enemy's turn cannot be interrupted and its brain has already moved by the time a hand reaches the button. The alternative is holding the enemy's turn back for a second or two, which is the three-second wait this entry deleted. | **as built.** A wait is what you asked me to remove |
+
+---
+
 ## W · From #272
 
 | | the question | ⭑ mine |
