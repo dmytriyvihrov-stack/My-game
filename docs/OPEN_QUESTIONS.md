@@ -25,11 +25,22 @@ back already answered by work that was not about them.
 
 ---
 
-## T · From the 2026-08-31 rhythm rulings (concept §5)
+## U · From the 2026-08-31 rhythm rulings (concept §5)
 
 | | the question | ⭑ mine |
 |---|---|---|
-| **T1** · concept §5 | **The Sling-Line under the "no doors on 60-70% of fights" ruling: forced, or kept as a paid walk-around?** Every other fight classified itself (they attack = forced; you choose = doors). The Stone Field's walk-around is a PRICE - a day and two provisions - which makes it the toll-man's shape rather than a refusal, and it is the only door of its kind on the road | **keep the paid walk-around.** A priced detour is a real decision, not bureaucracy, and cutting it deletes a shape rather than a duplicate. If it reads as clutter in play, forcing it later is one door's deletion; un-forcing it later means re-tuning a fight |
+| **U1** · concept §5 | **The Sling-Line under the "no doors on 60-70% of fights" ruling: forced, or kept as a paid walk-around?** Every other fight classified itself (they attack = forced; you choose = doors). The Stone Field's walk-around is a PRICE - a day and two provisions - which makes it the toll-man's shape rather than a refusal, and it is the only door of its kind on the road | **keep the paid walk-around.** A priced detour is a real decision, not bureaucracy, and cutting it deletes a shape rather than a duplicate. If it reads as clutter in play, forcing it later is one door's deletion; un-forcing it later means re-tuning a fight |
+
+---
+
+## T · From #269
+
+*(**T1** was answered the same day and is in [`archive/QUESTIONS_ANSWERED.md`](archive/QUESTIONS_ANSWERED.md).)*
+
+| | the question | ⭑ mine |
+|---|---|---|
+| **T2** | **Which two doors on the cub screen?** You boxed the top ROW - TAKE THE CUB and KILL IT TOO - and wrote *two options only*. I read the box as *this list* rather than *these two*, and cut **KILL IT TOO**, because it was dominated: 2 gems against LEAVE IT's 3 gems and 120 crowns, 12 morale against 4, and the cub ends either way. | **Mine as shipped.** A door no company can have a reason to press is not a choice. If you meant the other pair, it is one line back |
+| **T3** | **Which real harness should be adjustable?** The property existed and had no name; it is named now. But it is on **rags, a cook-pot and a worn bucket** - three junk pieces - so *some armour can be adjustable* is technically true and buys nothing. | Put it on **one** good piece, so it is a reason to keep something rather than a footnote. The rat-silk shroud is the obvious candidate |
 
 ---
 

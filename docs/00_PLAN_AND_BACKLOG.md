@@ -256,6 +256,42 @@ section used to carry each entry in full, which made the work file a second chan
 
 ---
 
+## ~~269 · the twenty-five-ask batch~~ ✅ SHIPPED 2026-08-31 (8f.294)
+
+> *2026-08-31, in one message with eleven screenshots. Quoted verbatim, because
+> [[capture-all-task-context]]: the reason and the exact words are the half that does not survive a
+> paraphrase.*
+
+| # | the ask, in his words | where it lands |
+|---|---|---|
+| 1 | *"Lets delete catogeory of light and heady armor. Lets do the all type of armor blocks 70% of damage (and then some armor has different stats - that could be heavier or not). Would be easier to play around"* | `ARMOUR_BANDS` |
+| 2 | *"Rename skill 'poison the blade' into 'poison' (both in battlfild and in inventory)"* | the ratkin act row |
+| 3 | *"Show specifically - what this (and each sTAT last thing do)"* - arrow on **FLEET** | `capD` is authored and printed nowhere |
+| 4 | *"For asha Trait 'Half human' - +1 strng + 1 morale, - 1 agility"* | `TRAITS` |
+| 5 | *"Mirahare can go throgh their allies (buck)"* | movement blocking |
+| 6 | *"On meraheres 'creeple shot' give them -1 to movement"* | `cripple` |
+| 7 | *"Miraheres start battles without armor (put their curent armor into health)"* | `MIRE_T` |
+| 8 | *"First and secondary weapon abilities related to a used weapon+class. Archer without bow couldnt use cripling shot (he just have nothing to shoot)"* | `actsFor` |
+| 9 | *"somehow i feel with lower health you started to give less xp - can you please, reajust it again or check this connection?"* | `HDA_CUT` vs the XP formula |
+| 10 | *"rename curent 'rate' to 'uncommon', 'epic' to 'rare' - amd create 1 more category - 'legendary'. It is golden and for exseptionally great artifacts"* | `RARITY` |
+| 11 | *"Everchanging luck '+2', imstead +1"* | `effStats` |
+| 12 | *"In the morale and health on hover show all modifiers to curent stat beloww"* | the two pool hovers |
+| 13 | *"Some armors can have 'adjusteble' size - so you can put it on any creature without debaff. Create this property"* | `size:'any'` already exists; the WORD does not |
+| 14 | *"And check agility increse of dodge and hit chance implimentation. So far i feel it isn`t alwayscorrect to writen numbers on stat (use it connected, not hard code)"* | measure, then report |
+| 15 | *"when dog break enough distance - stop using 'the pack' ability. It should be a bit more dynamic"* | the aura tag |
+| 16 | *"somehow in twitchy things doubles"* | the trait hover |
+| 17 | *"on the enemy use same typeof icons as for your guys - so it is even more compact"* | the inspect card |
+| 18 | *"lets delete it from the battlescreen (living option to zoom in and zoom out with your mouse)"* | `#bZoom` |
+| 19 | *"In dog fith - some of them has armor, some of them doesnt - it doesnt go to hitpoints"* | same as 7, one fight along |
+| 20 | *"Suriunded - 5 to swing for each adjustment ally (curen unit doesnt count). Morale debf stays also"* | `hitBreakdown` |
+| 21 | *"move speed there"* - arrow at the player card's ACTIONS row | `#bPlq` |
+| 22 | *"This marching dram is great. It sshould be a bit more expensive. and on the global map it is smaller icon with marching drum"* | price + the relic chip |
+| 23 | *"reach of mages stuff - 1"* | `rod` |
+| 24 | *"In here (after killing fen mother even) - two options only. And taking cub boosts morale +2 also"* | `cubChoice` |
+| 25 | *"I cought soft lock on goldharrow"* | the Coldharrow card |
+
+---
+
 ## 86 · The first fifteen minutes
 
 > 🚪 **THE FRONT DOOR** and 🗺 **THE ROAD** - also ⚔ the first fight

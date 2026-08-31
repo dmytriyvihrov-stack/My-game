@@ -14,6 +14,17 @@
 
 ---
 
+## ✅ Answered, 2026-08-31
+
+*Answered within the hour by the person who asked for the change, which is the shape this file was
+built for. Applied as the tail of #269, build log **8f.294**.*
+
+| | what it was | what happened |
+|---|---|---|
+| **T1** · #269 | Whether `ARMOUR_ABSORB` should stay at 70%, given the price: **THE HOLD'S MEN 30% -> 5%** for the starting four and **THE CIRCLE 55% -> 25%** for the prepared six (n=20 a side, against the previous build), with the driver isolated one knob at a time on the Hold - **.70 -> 0-5%, .60 -> 5%, .50 -> 25%** | **The user: *"all armor 70% - do it evwrywhere"*.** So the figure stands and the ruling is the second half of it: *everywhere*. ⛑ **The arithmetic already was, and it is proved rather than asserted**: `splitFor` is the one split and `strike()` and `dmgPreview()` are its only two callers, so a sweep over **every body `FOE_BUILD` can make, every roster body and every armour row on every race** reads **119 bodies, one split, 0.70/0.30, no exceptions** (`probes/a269_split.js`). The one thing that is not 70% is a working with `am:0`, which goes through the plates entirely and is a spell rule rather than a band. ⛔ **What was NOT everywhere was the PROSE**: six comment blocks still described LIGHT/MEDIUM/HEAVY as the live rule, including `strike()`'s own line over the split and the CSS note whose worked example was `LIGHT 6/6`. A comment that describes a deleted rule as current is a lie with a longer half-life than the code, and the next reader has no way to tell. All six now say what the build does; #79's reasoning is kept and marked overruled, because two of its paragraphs are still true (**one threshold read by both sides through one function**, and the wrong-size ×0.70, which is now the only thing a harness's SIZE decides) |
+
+---
+
 ## ✅ Answered, 2026-08-26
 
 *Both of these were answered by an ask that was not about them, which is what this file exists to
