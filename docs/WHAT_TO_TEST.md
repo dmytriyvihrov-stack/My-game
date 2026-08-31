@@ -26,6 +26,31 @@
 
 ---
 
+## #277 - one creature, its contexts, and the redraw flag
+
+**In the game.** Nothing should look different, and that is the whole test:
+
+- start Blood on the Road, the Snare, the sling-line, the pack, the deserters and the
+  Hold's men. The cast, every number and the board are identical to the previous build:
+  thirteen statblocks became five creatures plus ten deltas and **not one figure moved**;
+- the ogre in the Snare is still OGRE, CLAN-HIRED with 64 armour and a 23-34 warclub, and
+  the one at Blood on the Road is still OGRE, CLUB with 27 armour and 22-33. Same animal,
+  two hand-made contexts, one entity behind them.
+
+**In `tools/enemies.html`:**
+
+- five rows now carry a teal **N MORE CONTEXTS** toggle. Open the Lurcher: three bodies
+  fold out, each showing only what its fight tuned;
+- tick the **redraw** box under any picture. The cell edges red, the header counts it, and
+  EXPORT JSON carries a `redraw` list with the name, the variant, the sprite key and the
+  fights it appears in. Reload: the ticks are still there. RESET EDITS clears them.
+
+```bash
+python tools/dev/gt.py eval tools/dev/probes/foeoracle263.js   # TWICE a build, then diff
+```
+⛔ Twice a build. `steading`, `snarejoin`, `ashdrakes` and `glassroad` roll their own cast,
+so a single cross-build diff reports four findings that are not there.
+
 ## #276 - the foe dex, the grouped statblocks, and the threat price
 
 **Open `tools/enemies.html` in a browser.** It is a loose file and needs no server.

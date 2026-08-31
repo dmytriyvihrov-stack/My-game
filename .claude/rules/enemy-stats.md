@@ -36,6 +36,57 @@ twice.**
   statblock body given `side='you'` by hand silently keeps the other side's ease knob; that warning
   is on `besideYou` itself and it stays true.
 
+## ⛔ #277 · ONE CREATURE, AUTHORED ONCE, AND A FIGHT NAMES ONLY WHAT DIFFERS
+
+*(2026-08-31. The user: **"to merge same units (ogre club and ogr clan-hired). It is one unit in two
+contexts. Same with smaller rats. I prefere to handmade specific characteristics in the specific
+battle, rather then havin multiple entieties"**.)*
+
+#263 put every statblock in one registry and #276 put them in one block. **Neither stopped the same
+creature being written out three times.** A RATKIN SLINGER was authored in the snare, the clash AND
+the sling-line; the clash's OGRE, CLUB and the snare's OGRE, CLAN-HIRED are the same animal wearing
+two names; and the Hold hound's own comment had read *"Same lurcher the deserters run, better fed"*
+since it was written.
+
+⛑ **`FOE_BASE` IS THE CREATURE AND A FIGHT'S ROW SAYS `from:'<base>'` PLUS ONLY WHAT THAT FIGHT
+TUNES.** Thirteen rows became **five bases and ten deltas**; the longest delta is five numbers and
+the shortest is `{from:'lurcher',bare:true}`. The five are `ratspear`, `ratsling`, `ratsniffer`,
+`ogreclub`, `lurcher`.
+
+⛑ **`foeInherit()` EXPANDS THEM ONCE, AT DECLARATION TIME.** `build`, `LINT`, `devFoeCatalog`,
+the foe dex and the oracle all go on seeing a complete row, so **not one reader had to learn what
+`from:` is**. A resolver called from `build()` would have to be called from six places and would be
+forgotten by the seventh.
+⚠ **`acts` WINS WHOLE**, which is `t.st`'s own rule one field across: a fight that re-dices a
+weapon restates the act, because a half-inherited act list would be a second author. **The bases are
+chosen so exactly ONE member of each family has to** - the sling-line is the slinger's base and not
+the Snare precisely because two of the three already agreed on 10-16.
+
+⛔ **A FIELD YOU FORGET TO LIST SILENTLY TAKES THE BASE'S VALUE, AND THAT IS THE ONE FAILURE MODE
+OF THE WHOLE SHAPE.** The clash's slinger dodges 20 and its new base dodges 22; the delta list left
+`dodge` out, and a merge advertised as changing nothing moved one number on one body. **Nothing but
+a field-by-field diff of both sides can see it.** The oracle caught it on the first run.
+⛑ **SO: RUN THE ORACLE TWICE ON EACH BUILD, EVERY TIME A ROW HERE CHANGES.** `steading`,
+`snarejoin`, `ashdrakes` and `glassroad` roll their own cast, so a single cross-build diff reports
+four findings that are not there; the real finding is the cross-build diff MINUS whatever each build
+disagrees with itself about.
+
+⛑ **AND `LINT` 8k HOLDS THE OTHER END.** A base nobody inherits is a statblock the game cannot
+field, and nothing in a run would ever say so - 8h's own finding (*a painted event no node can
+deal*) arriving on the statblocks. `foeInherit` leaves `_from` on every row it expanded for the
+check to read. **Proved by making it fire**: a scratch base reported *`"scratch" is in FOE_BASE and
+no statblock inherits it`*, and removing it returned the linter to silence.
+⚠ **The other direction is a THROW and not a finding**: a `from:` naming a base that does not
+exist takes `foeInherit()` down at declaration time and the whole script with it, which is loud
+enough.
+
+⛔ **WHAT WAS DELIBERATELY NOT MERGED.** The steading's four ogres share the CLUB'S NAME and not
+its kit - three of the eight ogre statblocks have SWEEP and five do not - so merging them is a
+balance decision, not a refactor, and it is filed as **B19** rather than taken. The Bitch stays her
+own creature: an aura and a crest is a different animal from a lurcher.
+⚠ **The four dogs were merged without being named in the ask**, on the strength of the Hold
+hound's own comment. One line each to back out.
+
 ## The four stats on the other side
 
 - **A foe's rung is `FOE_LEAN[race]` + the template's `lean:{}`**, clamped by `rungClamp` - the

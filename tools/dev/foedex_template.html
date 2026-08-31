@@ -80,6 +80,15 @@ td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
 .pic img{display:block;max-width:52px;max-height:52px;image-rendering:pixelated;
   filter:drop-shadow(0 1px 2px #000)}
 .pic .noart{color:var(--faint);font-size:9px;letter-spacing:.08em}
+/* the redraw flag: quiet until it is set, and then it is the loudest thing in
+   the column, because a list of them is what an artist is handed */
+.rdw{display:flex;align-items:center;gap:3px;margin-top:4px;cursor:pointer;
+  color:var(--faint);font-size:9px;letter-spacing:.06em;user-select:none}
+.rdw:hover{color:var(--dim)}
+.rdw input{margin:0;width:11px;height:11px;accent-color:var(--blood);cursor:pointer}
+.rdw.on{color:var(--blood-lit,#c15d55)}
+.rdw.on span{color:#c15d55}
+tbody tr:has(.rdw.on) td.pic{box-shadow:inset 0 0 0 1px #6d2b25}
 
 /* the name column carries the flags under it, so it gets width rather than
    wrapping a two-word name onto two lines and stacking the flags into a tower */
@@ -166,6 +175,16 @@ tr.champ:hover td{background:#211b13}
   cursor:pointer;margin-top:4px;display:inline-block}
 .chtog:hover{border-color:var(--gold);color:#fff}
 .chmark{color:var(--gold-lit);font-size:9px;letter-spacing:.08em;margin-right:5px}
+.chmark.cxm{color:var(--teal)}
+.chtog.ctxtog{color:var(--teal);border-color:#2c4d4a;background:#141f1e}
+.chtog.ctxtog:hover{border-color:var(--teal);color:#fff}
+tr.ctx{display:none}
+tr.ctx.open{display:table-row}
+tr.ctx td{background:#141a1a;box-shadow:inset 3px 0 0 var(--teal)}
+tr.ctx:hover td{background:#1a2222}
+tr.ctx.champ td{box-shadow:inset 3px 0 0 var(--teal),inset 6px 0 0 var(--gold)}
+.dlt{color:var(--teal);font-size:9px;line-height:1.4;margin-top:4px;max-width:180px}
+.dlt b{color:var(--ink);font-weight:400}
 
 #orphans{padding:18px 14px 40px;border-top:2px solid var(--line2);margin-top:8px}
 #orphans h2{font-family:var(--disp);font-size:16px;color:var(--wood);letter-spacing:.1em;
@@ -346,21 +365,37 @@ const twin=n=>NCOUNT[n]>1;
 
 /* ── the columns. `n` renders, `sort` sorts, `e` is the field an edit writes ── */
 const COLS=[
+ /* ⛑ THE ART FLAG IS AN EDIT LIKE ANY OTHER FIELD, AND THAT IS THE WHOLE
+    DESIGN. (User: "near unit images create the checkbox - weather or not it
+    needed to be redisigned".) It goes in the same `{variant|name|field}` map the
+    dotted cells use, so it survives a reload, rides the EXPORT, and RESET EDITS
+    clears it with everything else. Writing it into the row instead would put an
+    art decision inside a DERIVED file and lose it on the next regenerate. */
  {t:'',       cls:'pic', n:f=>{
-    const s=D.spr[f.spr];
-    return s?'<img src="'+s.src+'" width="'+s.w+'" height="'+s.h+'" alt="">':'<span class="noart">no art</span>';}},
+    const s=D.spr[f.spr],on=String(val(f,'redraw'))==='1';
+    return (s?'<img src="'+s.src+'" width="'+s.w+'" height="'+s.h+'" alt="">'
+             :'<span class="noart">no art</span>')+
+      '<label class="rdw'+(on?' on':'')+'" title="Mark this one for a redraw">'+
+      '<input type="checkbox" data-rdw="'+esc(f.variant+'|'+f.name)+'"'+
+      (on?' checked':'')+'><span>redraw</span></label>';}},
  {t:'Name',   sort:f=>String(val(f,'name')), n:f=>{
     const fl=f.flags.filter(x=>x!=='champ')
       .map(x=>'<i class="fl'+(HOT[x]?' hot':'')+'">'+x+'</i>').join('');
-    const ch=champsOf(f),id=f.name+'|'+f.pts;
+    const ch=champsOf(f),cx=contextsOf(f),id=f.name+'|'+f.pts,dl=deltaOf(f);
     return (f.champOf?'<span class="chmark">CHAMPION</span>':'')+
+      (!f.champOf&&!isPrimary(f)?'<span class="chmark cxm">'+
+        esc((D.fightName[f.fights[0]]||f.fights[0]).toUpperCase())+'</span>':'')+
       '<div class="nm" title="'+esc(val(f,'desc'))+'">'+ed(f,'name')+'</div>'+
       '<div class="sub"><span class="rc '+f.race+'">'+f.race+'</span>'+
       (f.tag?'<span class="rc">'+esc(f.tag)+'</span>':'')+fl+'</div>'+
       (ch.length?'<span class="chtog" data-tog="'+esc(id)+'">'+
         (OPEN[id]?'▾':'▸')+' CHAMPION '+
         (ch.length>1?ch.length+' rolls, ':'')+
-        ch.map(c=>c.pts).join('/')+' pts</span>':'');}},
+        ch.map(c=>c.pts).join('/')+' pts</span>':'')+
+      (cx.length?'<span class="chtog ctxtog" data-tog="ctx:'+esc(id)+'">'+
+        (OPEN['ctx:'+id]?'▾':'▸')+' '+cx.length+
+        (cx.length===1?' MORE CONTEXT':' MORE CONTEXTS')+'</span>':'')+
+      (dl?'<div class="dlt">'+dl+'</div>':'');}},
  {t:'HP',     cls:'num',sort:f=>+val(f,'hp'),    e:'hp'},
  {t:'Armour', cls:'num',sort:f=>+val(f,'armour'),e:'armour'},
  {t:'Soak',   cls:'num',sort:f=>+val(f,'soak'),  e:'soak'},
@@ -388,6 +423,39 @@ const COLS=[
     f.fights.map(k=>partyBox(k,f)).join('')+'</div>'},
  {t:'Description', n:f=>ed(f,'desc',1)}
 ];
+
+/* ⛔ ONE CREATURE, ONE ROW, AND ITS OTHER CONTEXTS FOLDED UNDER IT.
+   (User: "to merge same units (ogre club and ogr clan-hired). It is one unit in
+   two contexts ... I prefere to handmade specific characteristics in the specific
+   battle, rather then havin multiple entieties".) The build answers that with
+   `FOE_BASE` + `from:`; this is the same answer on the table. The PRIMARY is the
+   dearest body of the family - the one a reader thinks of as the creature - and
+   every other context folds under it showing ONLY what its fight tuned. */
+const FAMILY_OF={};
+D.foes.forEach(f=>{if(f.base&&!f.champOf)(FAMILY_OF[f.base]=FAMILY_OF[f.base]||[]).push(f);});
+/* ⛔ THE PRIMARY IS THE BODY THE BASE IS NAMED FOR, AND ONLY THEN THE DEAREST.
+   Sorting by price alone put the HOLD HOUND at the head of the lurcher family -
+   the tail naming the dog - and every delta under it then read as a change to a
+   creature nobody calls by that name. */
+Object.keys(FAMILY_OF).forEach(k=>FAMILY_OF[k].sort((a,b)=>{
+  const bn=a.baseName||b.baseName||'';
+  const av=(a.name===bn?0:1),bv=(b.name===bn?0:1);
+  return av!==bv?av-bv:b.pts-a.pts;}));
+const primaryOf=f=>f.base?FAMILY_OF[f.base][0]:null;
+const isPrimary=f=>!f.base||primaryOf(f)===f;
+const contextsOf=f=>(f.base&&isPrimary(f))?FAMILY_OF[f.base].slice(1):[];
+/* what this fight tuned, against the body the family is named for */
+const DFIELDS=[['hp','HP'],['armour','armour'],['soak','soak'],['mor','mood'],
+  ['hit','to hit'],['dodge','dodge'],['speed','hexes'],['actions','acts'],
+  ['dmgLo','dmg lo'],['dmgHi','dmg hi']];
+function deltaOf(f){
+  const p=primaryOf(f);if(!p||p===f)return '';
+  const bits=[];
+  if(f.name!==p.name)bits.push('named <b>'+esc(f.name)+'</b>');
+  DFIELDS.forEach(d=>{const a=+p[d[0]],b=+f[d[0]];
+    if(a!==b)bits.push(d[1]+' '+a+'→<b>'+b+'</b>');});
+  return bits.length?bits.join(' · '):'identical to the base';
+}
 
 /* ⛔ A BASE BODY CAN HAVE MORE THAN ONE CHAMPION AND THE FIRST CUT KEPT ONE.
    #265's champion rolls TWO PERKS, so the same statblock comes out of the
@@ -420,9 +488,14 @@ function render(){
      does not: a search for "champ" must not return an empty table, and a search
      for "ash-drake" must not silently drop the champion into nowhere. */
   let rows=D.foes.filter(f=>{
-    if(!f.champOf)return hit(f);
-    const base=D.foes.filter(x=>x.name+'|'+x.pts===f.champOf)[0];
-    return base?false:hit(f);          /* a linked champion rides its base */
+    if(f.champOf){
+      const base=D.foes.filter(x=>x.name+'|'+x.pts===f.champOf)[0];
+      return base?false:hit(f);        /* a linked champion rides its base */
+    }
+    /* ⚠ A CONTEXT RIDES ITS PRIMARY, and only when the primary is on screen:
+       a search for "clan-hired" must find it, not return an empty table. */
+    if(!isPrimary(f))return hit(primaryOf(f))?false:hit(f);
+    return hit(f);
   });
   const col=COLS[SORT.i];
   if(col&&col.sort)rows.sort((a,b)=>{
@@ -436,8 +509,12 @@ function render(){
   const bodyRow=f=>{
     const cls=(f.flags.indexOf('noTrim')>=0||f.flags.indexOf('captain')>=0)?'boss':'';
     let h=trFor(f,cls);
-    const open=OPEN[f.name+'|'+f.pts]?' open':'';
+    const id=f.name+'|'+f.pts,open=OPEN[id]?' open':'';
     champsOf(f).forEach(c=>{h+=trFor(c,'champ'+open);});
+    const cx=contextsOf(f),copen=OPEN['ctx:'+id]?' open':'';
+    cx.forEach(c=>{h+=trFor(c,'ctx'+copen);
+      champsOf(c).forEach(cc=>{h+=trFor(cc,'champ ctx'+copen+
+        (OPEN[c.name+'|'+c.pts]?' open':''));});});
     return h;
   };
   let html='',shown=0;
@@ -465,9 +542,21 @@ function render(){
     rows.forEach(f=>{html+=bodyRow(f);shown++;});
   }
   $('body').innerHTML=html;
+  SHOWN=shown;
+  $('count').textContent=countLine();
+}
+/* ⛑ ONE BUILDER FOR THE COUNT, because it is written from two places now (a
+   render and a checkbox) and two copies of a sentence with a figure in it is
+   the drift this whole tool exists to report. */
+let SHOWN=0;
+function countLine(){
   const champs=D.foes.filter(f=>f.champOf).length;
-  $('count').textContent=shown+' of '+(D.foes.length-champs)+' bodies'+
-    (champs?' · '+champs+' champions folded in':'');
+  const ctx=D.foes.filter(f=>!f.champOf&&!isPrimary(f)).length;
+  const rd=Object.keys(EDITS).filter(k=>/\|redraw$/.test(k)&&EDITS[k]==='1').length;
+  return SHOWN+' of '+(D.foes.length-champs-ctx)+' creatures'+
+    (ctx?' · '+ctx+' contexts':'')+
+    (champs?' · '+champs+' champions':'')+
+    (rd?' · '+rd+' marked for redraw':'');
 }
 
 /* ── what was drawn and is never shown ────────────────────────────────────
@@ -549,17 +638,25 @@ function sheet(title,text){$('shTitle').textContent=title;$('shText').value=text
 const FIELDS=['name','hp','armour','soak','mor','hit','dodge','speed','actions','reach',
   'dmgLo','dmgHi','pts','desc'];
 function rowOut(f){
-  const o={variant:f.variant,race:f.race,kind:f.kind,flags:f.flags,
+  const o={variant:f.variant,race:f.race,kind:f.kind,family:f.fam,
+    base:f.base||'',context:isPrimary(f)?'':'a context of '+f.base,
+    flags:f.flags,redraw:String(val(f,'redraw'))==='1',
     fights:f.fights.map(k=>D.fightName[k]||k)};
   FIELDS.forEach(k=>o[k]=val(f,k));
   o.skills=f.acts.map(a=>a.n+' '+(a.dmg?a.dmg[0]+'-'+a.dmg[1]:'-')+' '+a.cost+'ap');
   return o;
 }
 $('exJson').onclick=()=>sheet('EXPORT - JSON',JSON.stringify(
-  {built:D.built,edits:EDITS,foes:D.foes.map(rowOut)},null,1));
+  {built:D.built,
+   /* the flagged list, named on its own: a hand-off is a list of bodies, not a
+      census with a boolean buried in it */
+   redraw:D.foes.filter(f=>String(val(f,'redraw'))==='1')
+     .map(f=>({name:val(f,'name'),variant:f.variant,sprite:f.spr,
+               fights:f.fights.map(k=>D.fightName[k]||k)})),
+   edits:EDITS,foes:D.foes.map(rowOut)},null,1));
 $('exCsv').onclick=()=>{
-  const head=['name','race','kind','hp','armour','soak','mor','hit','dodge','speed',
-    'actions','reach','dmgLo','dmgHi','pts','skills','fights','desc'];
+  const head=['name','race','kind','family','base','redraw','hp','armour','soak','mor',
+    'hit','dodge','speed','actions','reach','dmgLo','dmgHi','pts','skills','fights','desc'];
   const lines=[head.join(',')];
   D.foes.forEach(f=>{const o=rowOut(f);
     lines.push(head.map(h=>{
@@ -596,6 +693,14 @@ $('body').addEventListener('input',e=>{
 $('body').addEventListener('click',e=>{
   const t=e.target.closest('.chtog');if(!t)return;
   const id=t.dataset.tog;OPEN[id]=!OPEN[id];render();
+});
+$('body').addEventListener('change',e=>{
+  const c=e.target;if(!c.dataset||!c.dataset.rdw)return;
+  const key=c.dataset.rdw+'|redraw';
+  if(c.checked)EDITS[key]='1';else delete EDITS[key];
+  saveEdits();
+  const l=c.closest('label');if(l)l.classList.toggle('on',c.checked);
+  $('count').textContent=countLine();
 });
 $('head').addEventListener('click',e=>{
   const th=e.target.closest('th');if(!th)return;

@@ -61,6 +61,15 @@
          side that fields them, and the fight key is that side. `fam` is the key,
          `FAMILY` in the generator has the words. */
       fam:u.monster?('mon:'+u.monster):('fight:'+u._fight),
+      /* ⛑ WHICH CREATURE THIS BODY IS A CONTEXT OF. `foeInherit` leaves `_from`
+         on every row it expanded, so the dex can fold the three ratkin slingers
+         and the two club ogres into one creature without being told which. A row
+         with no base stands alone, which is most of them. */
+      base:(t&&t._from)||'',
+      /* ⛑ AND WHAT THE BASE CREATURE IS CALLED, so the table can put the right
+         body FIRST. Picking the dearest of a family made the HOLD HOUND stand in
+         for the lurcher it inherits from, which is the tail naming the dog. */
+      baseName:(t&&t._from&&FOE_BASE[t._from])?FOE_BASE[t._from].name:'',
       st:u.st||null,
       flags:['captain','champ','caster','bow','big','bigkill','noRout','noArc',
              'fenborn','fireborn','veiled','flier','skittish','passive','noWalk',

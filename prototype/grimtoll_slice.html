@@ -19675,6 +19675,72 @@ let FIGHTBACK=null;
    ⚠ WARDEN and the six named tables are NOT re-declared here - they are
    REFERENCED, so there is still exactly one copy of each. WARDEN keeps its
    own long comment where it stands, which is the block that explains it. */
+/* ═══ ⛔ FOE_BASE · ONE CREATURE, AUTHORED ONCE ══════════════════
+   (User, 2026-08-31: *"to merge same units (ogre club and ogr clan-hired). It is
+   one unit in two contexts. Same with smaller rats. I prefere to handmade specific
+   characteristics in the specific battle, rather then havin multiple entieties"*.)
+
+   #263 put every statblock in one registry and the block below put them in one
+   place. Neither stopped the same creature being written out three times: a
+   RATKIN SLINGER was authored in the snare, the clash AND the sling-line, and the
+   clash's OGRE, CLUB and the snare's OGRE, CLAN-HIRED are the same animal wearing
+   two names. Changing what a ratkin slinger IS meant finding three rows and
+   getting all three right.
+
+   ⛑ A FIGHT'S ROW SAYS `from:'<base>'` AND THEN ONLY WHAT THAT FIGHT TUNES.
+   The creature is here; the tuning is where the fight is, which is the ask
+   exactly. `foeInherit()` below expands them once, at declaration time, so every
+   reader downstream - `build`, `LINT`, the dev bench, the foe dex - goes on seeing
+   a complete row and not one of them had to learn anything.
+
+   ⛔ NOT ONE FIGURE MOVED IN THE MERGE. Every delta is the number that row
+   already carried, and the oracle over all twenty sides is what says so.
+
+   ⚠ `acts` WINS WHOLE, which is `t.st`'s own rule one field across: a fight
+   that re-dices a weapon restates the act, because a half-inherited act list
+   would be a second author. The bases below are chosen so exactly ONE member of
+   each family has to do it.
+
+   ⚠ AND A BASE IS NOT A FIGHT. Nothing in `FOE_BUILD` names one; a base with
+   no `from:` pointing at it is dead weight, and `LINT` 8i says so.
+   ═════════════════════════════════════════════════════════════════ */
+const FOE_BASE={
+  /* the clan spearman. The Snare's numbers are the base; Blood on the Road
+     fields a tougher, quicker one (#8f.29's three-round problem). */
+  ratspear:{kind:'ratkin',name:'Ratkin, spear',hp:36,armour:32,mor:58,skill:54,dodge:18,speed:4,
+    acts:[{k:'jab',n:'JAB',cost:1,reach:2,dmg:[10,15],am:.60,ft:.30}]},
+  /* the clan slinger. #135 gave every sling five hexes. ⚠ THE SLING-LINE IS THE
+     BASE and the Snare is the one member that re-dices, because two of the three
+     already agreed on 10-16 and the base that restates least is the right one. */
+  ratsling:{kind:'ratkin',name:'Ratkin slinger',hp:28,armour:16,mor:50,skill:59,dodge:22,speed:5,
+    bow:true,acts:[{k:'sling',n:'SLING',cost:1,range:5,dmg:[10,16],am:.50,ft:.40}]},
+  /* the clan's caster. The Snare's is the base; the sling-line's reaches one
+     hex further and is called by the short name. */
+  ratsniffer:{kind:'ratkin',name:'Ratkin warp-sniffer',hp:32,armour:20,mor:48,skill:47,dodge:20,
+    speed:4,caster:true,acts:[
+      {k:'warp',n:'WARP-LIGHT',cost:2,strain:14,range:3,dmg:[15,23],am:0,ft:1,arcane:true},
+      {k:'jab',n:'JAB',cost:1,reach:1,dmg:[7,11],am:.4,ft:.3}]},
+  /* the ogre with a club, which is the user's own example of the fault. Blood
+     on the Road's is the base - it is the first one the player meets - and the
+     Snare's is the same animal, hired, wearing clan harness.
+     ⚠ #46 - the throw is NOT written here. Every ogre on the field, either side,
+     gets it from RACESKILL in the same place: the same synergy aimed at you, out
+     of one definition. */
+  ogreclub:{kind:'ogre',name:'Ogre, club',hp:124,armour:27,mor:96,skill:53,dodge:8,speed:3,
+    acts:[{k:'club',n:'WARCLUB',cost:1,reach:1,dmg:[22,33],am:1.28,ft:.24},
+          {k:'sweep',n:'SWEEP',cost:2,reach:1,sweep:true,dmg:[17,26],am:1.12,ft:.20}]},
+  /* ⛑ THE FOUR DOGS ARE ONE DOG, AND THE BUILD SAID SO BEFORE ANYBODY ASKED:
+     the Hold hound's own comment reads *"Same lurcher the deserters run, better
+     fed"*, and #245 already merged the four captions on the grounds that they
+     were one creature. The runt is a smaller one and the Bitch is not in here -
+     she carries an aura and a crest, which is a different animal. */
+  lurcher:{kind:'dog',name:'Lurcher',hp:26,armour:6,mor:44,skill:58,dodge:31,speed:5,
+    /* #245 - the note is DERIVED from `bounce` (see `actNote`), so all four dogs
+       say the same thing and every one of them says the ringed half. Two of the
+       four carried the sentence and two carried nothing at all, which is the
+       drift a hand-copied caption always has. */
+    acts:[{k:'snap',n:'SNAP-AND-AWAY',cost:1,reach:1,dmg:[9,15],am:.35,ft:.55,bounce:2}]}
+};
 /* ═══ ⛔ THE SEVEN THAT WERE STILL SCATTERED ════════════════════
    (User, 2026-08-31: *"could be good to group enemy data in the build - so it
    is grouped, rather then thrown through everething"*.)
@@ -19724,10 +19790,10 @@ const WED_T={
 };
 /* --- CLASH_T : the clash fight --- */
 const CLASH_T={
-  ratspear:{kind:'ratkin',name:'Ratkin, spear',hp:46,armour:34,mor:72,skill:53,dodge:18,speed:5,
-    acts:[{k:'jab',n:'JAB',cost:1,reach:2,dmg:[10,15],am:.60,ft:.30}]},
-  ratsling:{kind:'ratkin',name:'Ratkin slinger',hp:38,armour:22,mor:66,skill:57,dodge:20,speed:5,
-    bow:true,acts:[{k:'sling',n:'SLING',cost:1,range:5,dmg:[10,16],am:.50,ft:.40}]},   /* #135 */
+  /* the first fight has to LAST long enough to teach (playtest #6), so the two
+     clan bodies here are the base creature with more meat and more nerve. */
+  ratspear:{from:'ratspear',hp:46,armour:34,mor:72,skill:53,speed:5},
+  ratsling:{from:'ratsling',hp:38,armour:22,mor:66,skill:57,dodge:20,speed:5},
   /* ⚠ ARMOUR 72 -> 27, WHICH IS 20 ON THE FIELD (user, 2026-08-02: "В первом
      бою если выбираешь помочь ретлингам - у огров противников 20 брони,
      вместо 50ти. Когда 50 - сложновато"). The number he saw was 54, because
@@ -19747,9 +19813,8 @@ const CLASH_T={
      than a company in rags can chew through quickly; what was wrong was that
      knives and a spear could not get THROUGH it, which reads as your weapons
      being fake rather than as the enemy being big. */
-  ogreclub:{kind:'ogre',name:'Ogre, club',hp:124,armour:27,mor:96,skill:53,dodge:8,speed:3,
-    acts:[{k:'club',n:'WARCLUB',cost:1,reach:1,dmg:[22,33],am:1.28,ft:.24},
-          {k:'sweep',n:'SWEEP',cost:2,reach:1,sweep:true,dmg:[17,26],am:1.12,ft:.20}]}
+  /* the base animal, unchanged: this is the fight its numbers were tuned in */
+  ogreclub:{from:'ogreclub'}
 };
 /* --- REINF_T : the reinforcements fight --- */
 const REINF_T={
@@ -19874,7 +19939,9 @@ const HOLD_T={
   cross:{kind:'archer',name:'Hold crossbow',hp:34,armour:30,mor:70,skill:62,dodge:16,speed:4,
     bow:true,acts:[{k:'bolt',n:'WINDLASS BOW',cost:1,range:5,dmg:[14,21],am:1.00,ft:.45}]},
   /* off the leash-ring. Same lurcher the deserters run, better fed. */
-  hound:{kind:'dog',name:'Hold hound',hp:30,armour:10,mor:62,skill:60,dodge:30,speed:5,
+  /* off the leash-ring. The same lurcher the deserters run, better fed - which
+     the comment here said in those words long before the base existed. */
+  hound:{from:'lurcher',name:'Hold hound',hp:30,armour:10,mor:62,skill:60,dodge:30,
     acts:[{k:'snap',n:'SNAP-AND-AWAY',cost:1,reach:1,dmg:[10,16],am:.40,ft:.55,bounce:2}]}
 };
 /* --- WARDEN : the armour fight --- */
@@ -19909,8 +19976,7 @@ const WARDEN={kind:'warden',race:'unknown',monster:'armour',name:'Something in a
 const SNARE_T={
     chief:{kind:'bruiser',name:'Ratkin chieftain',hp:64,armour:58,mor:80,skill:60,dodge:16,speed:3,
       captain:true,lean:{mor:+1},acts:[{k:'maul',n:'MAUL',cost:1,reach:1,dmg:[19,29],am:1.05,ft:.26}]},
-    spear:{kind:'ratkin',name:'Ratkin, spear',hp:36,armour:32,mor:58,skill:54,dodge:18,speed:4,
-      acts:[{k:'jab',n:'JAB',cost:1,reach:2,dmg:[10,15],am:.60,ft:.30}]},
+    spear:{from:'ratspear'},
     cleaver:{kind:'ratkin',name:'Ratkin, cleaver',hp:40,armour:40,mor:62,skill:57,dodge:16,speed:4,
       acts:[{k:'chop',n:'CHOP',cost:1,reach:1,dmg:[13,21],am:.90,ft:.25}]},
     /* ═══ THE HOOK-POLE — forced movement, pointed back at you ══════════
@@ -19924,12 +19990,11 @@ const SNARE_T={
       acts:[{k:'hook',n:'HOOK-POLE',cost:1,reach:2,pull:1,cool:2,dmg:[7,12],am:.45,ft:.35,
              note:'Small damage, and it drags them a hex toward the pole, out of your line.'},
             {k:'jab',n:'JAB',cost:1,reach:2,dmg:[9,14],am:.55,ft:.30}]},
-    slinger:{kind:'ratkin',name:'Ratkin slinger',hp:30,armour:22,mor:52,skill:59,dodge:20,speed:4,
-      bow:true,acts:[{k:'sling',n:'SLING',cost:1,range:5,dmg:[11,17],am:.50,ft:.40}]},   /* #135 */
-    sniffer:{kind:'ratkin',name:'Ratkin warp-sniffer',hp:32,armour:20,mor:48,skill:47,dodge:20,
-      speed:4,caster:true,acts:[
-      {k:'warp',n:'WARP-LIGHT',cost:2,strain:14,range:3,dmg:[15,23],am:0,ft:1,arcane:true},
-      {k:'jab',n:'JAB',cost:1,reach:1,dmg:[7,11],am:.4,ft:.3}]},
+    /* the Snare's slinger is a point heavier on every die than the sling-line's,
+       which is the one place in this family that restates its weapon */
+    slinger:{from:'ratsling',hp:30,armour:22,mor:52,dodge:20,speed:4,
+      acts:[{k:'sling',n:'SLING',cost:1,range:5,dmg:[11,17],am:.50,ft:.40}]},
+    sniffer:{from:'ratsniffer'},
     /* An OGRE in the ratkin snare. The act finale should not be one species
        in a line — the whole point of this island is that the clans hire, buy
        and bully whoever is standing nearby, and a company that has spent the
@@ -19937,10 +20002,10 @@ const SNARE_T={
        room and have to solve two problems at once. */
     /* the sweep is what an ogre IS: the counter to being ringed by small
        quick things is one horizontal answer through all of them */
-    hired:{kind:'ogre',name:'Ogre, clan-hired',hp:92,armour:64,mor:80,skill:53,dodge:8,speed:3,
-      /* #46 — the throw is no longer written here. Every ogre on the field,
-         either side, gets it from RACESKILL in the same place: the same
-         synergy aimed at you, out of one definition. */
+    /* THE USER'S OWN EXAMPLE: the same ogre as Blood on the Road's, hired by the
+       clans and wearing clan harness. Less meat, more than twice the plate, and a
+       point on every die. */
+    hired:{from:'ogreclub',name:'Ogre, clan-hired',hp:92,armour:64,mor:80,
       acts:[{k:'club',n:'WARCLUB',cost:1,reach:1,dmg:[23,34],am:1.28,ft:.24},
             {k:'sweep',n:'SWEEP',cost:2,reach:1,sweep:true,dmg:[18,27],am:1.12,ft:.20}]},
     /* ═══ THE OGRE WHO LEARNED A WORD ══════════════════════════════════════
@@ -19980,13 +20045,8 @@ const BRIG_T={
        you cannot pin it — you have to either shoot it, corner it, or accept
        that it will keep taking small bites out of whoever is furthest out.
        Its whole purpose is to punish a straggler. */
-    dog:{kind:'dog',name:'Lurcher',hp:26,armour:6,mor:44,skill:58,dodge:31,speed:5,
-      /* #245 - the note is DERIVED from `bounce` now (see `actNote`), so all four
-         dogs in the game say the same thing and every one of them says the
-         ringed half. Two of the four carried this sentence and two carried
-         nothing at all, which is the drift a hand-copied caption always has. */
-      acts:[{k:'snap',n:'SNAP-AND-AWAY',cost:1,reach:1,dmg:[9,15],am:.35,ft:.55,
-        bounce:2}]}
+    /* the base animal, unchanged */
+    dog:{from:'lurcher'}
   };
 const CIRCLE_T={
     elder:{kind:'human',name:'The one who talks',hp:62,armour:82,mor:80,skill:64,dodge:16,speed:4,
@@ -20023,9 +20083,10 @@ const PACK_T={
       acts:[{k:'snap',n:'SNAP-AND-AWAY',cost:1,reach:1,dmg:[11,18],am:.40,ft:.55,bounce:2},
             {k:'howl',n:'SHE CALLS THEM IN',cost:1,self:true,rally:true,cool:3,aura:4,
              note:'Every dog within 4 hexes takes a fresh turn of mood and comes back in.'}]},
-    lurch:{kind:'dog',name:'Lurcher',hp:26,armour:6,bare:true,mor:44,skill:58,dodge:31,speed:5,
-      acts:[{k:'snap',n:'SNAP-AND-AWAY',cost:1,reach:1,dmg:[9,15],am:.35,ft:.55,bounce:2}]},
-    runt:{kind:'dog',name:'Runt',hp:20,armour:4,bare:true,mor:38,skill:55,dodge:33,speed:6,
+    /* #269 - `bare` at the fire: a dog is a dog, and the harness goes into the meat.
+       The only thing separating the pack's lurcher from the deserters' one. */
+    lurch:{from:'lurcher',bare:true},
+    runt:{from:'lurcher',name:'Runt',hp:20,armour:4,bare:true,mor:38,skill:55,dodge:33,speed:6,
       acts:[{k:'snap',n:'SNAP-AND-AWAY',cost:1,reach:1,dmg:[7,12],am:.30,ft:.55,bounce:2}]}
   };
 const SLING_T={
@@ -20035,14 +20096,15 @@ const SLING_T={
         d:'+6 to hit for every ratkin within 3 hexes. They shoot on his count.'},
       acts:[{k:'sling',n:'LEAD SLING',cost:1,range:5,dmg:[14,21],am:.55,ft:.42},
             {k:'maul',n:'CUDGEL',cost:1,reach:1,dmg:[14,21],am:.95,ft:.26}]},
-    slinger:{kind:'ratkin',name:'Ratkin slinger',hp:28,armour:16,mor:50,skill:59,dodge:22,speed:5,
-      bow:true,acts:[{k:'sling',n:'SLING',cost:1,range:5,dmg:[10,16],am:.50,ft:.40}]},   /* #135 */
+    /* the base creature, unchanged: the sling-line is the fight it is named for */
+    slinger:{from:'ratsling'},
     screen:{kind:'ratkin',name:'Ratkin, long spear',hp:36,armour:30,mor:58,skill:54,dodge:18,speed:4,
       acts:[{k:'jab',n:'LONG SPEAR',cost:1,reach:2,dmg:[11,17],am:.65,ft:.30},
             {k:'wall',n:'SPEAR WALL',cost:2,self:true,
              note:'Anything stepping into reach this round gets the point of it.'}]},
-    sniffer:{kind:'ratkin',name:'Warp-sniffer',hp:30,armour:18,mor:48,skill:47,dodge:20,speed:4,
-      caster:true,acts:[
+    /* one hex further than the Snare's, and known by the short name here */
+    sniffer:{from:'ratsniffer',name:'Warp-sniffer',hp:30,armour:18,
+      acts:[
         {k:'warp',n:'WARP-LIGHT',cost:2,strain:14,range:4,dmg:[15,23],am:0,ft:1,arcane:true},
         {k:'jab',n:'JAB',cost:1,reach:1,dmg:[7,11],am:.4,ft:.3}]}
   };
@@ -20393,6 +20455,42 @@ const FOE_BUILD={mother:beasts,brigand:brigands,mirehares:mirehares,clash:clashF
   pack:pack,steading:steading,armour:armourFoe,circle:circleFoes,wedding:weddingFoes,
   tavern:tavernFoes,chase:chaseFoes,hold:holdFoes,snarejoin:holdHost,
   slingline:slingline,snare:foes};
+/* ⛑ THE ONE EXPANSION, AT DECLARATION TIME AND NOWHERE ELSE. Every reader
+   downstream - `build`, `LINT`, `devFoeCatalog`, the foe dex, the oracle - goes on
+   seeing a complete row, so not one of them had to learn what `from:` is. A
+   resolver called from `build()` instead would have to be called from six places
+   and would be forgotten by the seventh.
+   ⚠ IT WALKS `FOE_T` AND `FOE_T` SHARES TABLES (`hold` and `snarejoin` are one
+   object, the five lizard fights are one object), so it is guarded against
+   expanding the same table twice - which would be harmless today and is exactly
+   the kind of thing that stops being harmless.
+   ⚠ THE ACTS ARRAY IS SHALLOW-COPIED per inheriting row. `build()` already
+   copies each act object before trimming its dice, so the objects are shared the
+   way they always were; what this stops is a future in-place edit to one fight's
+   act LIST reaching another fight. */
+function foeInherit(){
+  const done=[];
+  Object.keys(FOE_T).forEach(f=>{
+    const T=FOE_T[f];
+    if(!T||done.indexOf(T)>=0)return;
+    done.push(T);
+    Object.keys(T).forEach(v=>{
+      const t=T[v];
+      if(!t||!t.from)return;
+      const b=FOE_BASE[t.from];
+      if(!b)throw new Error('FOE_BASE has no "'+t.from+'", asked for by '+f+'.'+v);
+      const out=Object.assign({},b,t);
+      delete out.from;
+      /* ⚠ THE PROVENANCE SURVIVES THE EXPANSION, or LINT 8k cannot ask which
+         bases are live: `from` is deleted so no downstream reader mistakes it for
+         a statblock field, and `_from` is the record that it was one. */
+      out._from=t.from;
+      out.acts=(t.acts||b.acts||[]).slice();
+      T[v]=out;
+    });
+  });
+}
+foeInherit();
 /* #242 - the whole tap-room, as one plan. tavernFoes() fields Harl alone
    (the waves arrive scripted), so anything that wants the ROOM - fightPts
    pricing it, the dev bench cataloguing it - reads this instead of keeping
@@ -34845,6 +34943,29 @@ window.LINT=function(){
         hit('structure','TERRAIN.'+k,'carries the pit dial and no FIELDS row is '+
           'fought on it, so nothing in the act can ever have a hole in it');
     });
+  })();
+  /* ═══ ⛔ 8k (#277) - A BASE CREATURE NOBODY INHERITS ═══════════
+     `FOE_BASE` is a creature, not a fight: nothing in `FOE_BUILD` names one, so a
+     base with no `from:` pointing at it is a statblock the game cannot field and
+     nothing in a run will ever say so. That is 8h's own finding (*a painted event
+     no node can deal*) on the statblocks, and it is the exact shape the foe dex's
+     orphan half found three of in the content.
+     ⚠ AND THE OTHER DIRECTION IS A THROW, NOT A FINDING: a `from:` naming a base
+     that does not exist takes `foeInherit()` down at declaration time and the whole
+     script with it, which is loud enough. This check is only for the silent half.
+     ⛑ PROVED BY MAKING IT FIRE: a scratch row added to `FOE_BASE` reported
+     `"scratch" is in FOE_BASE and no statblock inherits it`, and removing it
+     returned the linter to silence. */
+  (()=>{
+    if(typeof FOE_BASE!=='object')return;
+    const used={};
+    const done=[];
+    Object.keys(FOE_T).forEach(f=>{const T=FOE_T[f];
+      if(!T||done.indexOf(T)>=0)return;done.push(T);
+      Object.keys(T).forEach(v=>{if(T[v]&&T[v]._from)used[T[v]._from]=1;});});
+    Object.keys(FOE_BASE).forEach(b=>{
+      if(!used[b])hit('foe',b,'is in FOE_BASE and no statblock inherits it - '+
+        'nothing in FOE_BUILD can ever field it');});
   })();
   /* ═══ ⛔ 8j (#266) - A HAUL MAY NOT HAND OVER A COMMON WEAPON ════════════
      (User: *"For after battle don`t give a common weapon as bonus"*.)
