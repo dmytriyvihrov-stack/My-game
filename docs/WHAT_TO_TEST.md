@@ -26,6 +26,34 @@
 
 ---
 
+## 🧪 THE ELEVEN-ASK BATCH  *(#268 · 2026-08-31 · build log 8f.293)*
+
+**The short version:** eleven small fixes off five screenshots - a mood number, a skill's own
+honesty about its damage, three chips that stopped repeating a figure their own picture or hover
+already carries, a guaranteed trophy off the first chase, a deleted rail, a sheet re-sized, a
+third kind of hover the text editor can now reach, SKILLS moved into the PERKS tab, and a mid-road
+event that now stops the walk for a deliberate click instead of resuming on its own.
+
+| what to check | where | what should happen |
+|---|---|---|
+| HIGH SPIRITS dodge | company screen, a body at the top mood rung, hover MOOD | +5 dodge in the rung's own line, not +10 |
+| KICK's description | any body's Perks tab → SKILLS → KICK | says "1 or 2 points" rather than just "almost no damage" |
+| the blood chip | world bar, top left | a heart, no `%` beside it; hover it for the exact figure |
+| the PAYDAY chip | world bar | `◉N IN Nd` with no "PAYDAY" word; hover for the word and the wage table |
+| the chase trophy | fight the chase event (`travel` there, take the BATTLE door), win it | the aftermath's bonus-find strip shows a sword, maul or crossbow the first time, never on a repeat |
+| the roster rail | company screen, click through the four portraits | no gold line on the left edge of the picked one, only the background change |
+| the seats hover | world bar, hover the party chip (head + seat count) | lists every member by name, race and seat cost under the existing rule |
+| the sheet's pools | company screen, ARMOUR/HITPOINTS/MOOD bars | visibly a touch shorter; TO HIT / DODGE / STEP figures a touch bigger |
+| the text editor's third hover | ✎ TEXT → ⌁ HOVER, rest on a slot or a skill card | the kind-switcher offers a 🛈 POP CARD option alongside TEXT |
+| SKILLS in the Perks tab | company screen → ★ PERKS | SKILLS is the first thing in the tab, above the tree; gone from the main column |
+| the road pause | walk a multi-day leg until a camp/vignette card fires, answer it | the party stops there - click the destination node again to finish the leg |
+
+**What would be a bug:** the party stuck mid-road with no node accepting a click (should only ever
+be the SAME destination that unsticks it); the chase trophy landing twice on the same run; a
+common-tier weapon as the chase trophy; the sheet clipping or overlapping on any body.
+
+---
+
 ## 🧪 THE LIZARDS: A TRAIL OF FIRE, AND A BOSS FOUR HEXES LONG  *(#267 · 2026-08-30 · build log 8f.292)*
 
 **The short version:** the road can now deal five new fights against four new creatures. They are

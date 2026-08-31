@@ -789,8 +789,8 @@ button:disabled{cursor:not-allowed}
    `/max` in mono) make a line box taller than either, and 22 was measured as what
    `--fs6` needs. `--fs5` needs 19. Read the clip counter, never the picture -
    `.bar.sbb` reports `scrollHeight` over `clientHeight` the moment this is wrong. */
-#bPlq .sbar{--sbh:20px;margin-bottom:var(--p3)}
-#bPlq .sbt .sbR{font-size:var(--fs5)}
+#bPlq .sbar{--sbh:17px;margin-bottom:var(--p3)}
+#bPlq .sbt .sbR{font-size:var(--fs4)}
 #bPlq .sbi{font-size:var(--fs4)}
 #bPlq #bArmK{color:#e6e1d4}
 /* ═══ #100 point 9 · WHAT KIND OF ARMOUR THAT IS ══════════════════════════
@@ -4712,7 +4712,7 @@ body:has(#battle.on) .whisp{bottom:138px}
 .rmem .rup{position:absolute;right:-3px;top:-3px;font-size:var(--fs2);line-height:1;
   color:#8ca35a;text-shadow:0 0 5px rgba(140,163,90,.7);pointer-events:none}
 .rmem:hover{background:#221a10}
-.rmem.on{background:#2a2114;border-left:3px solid var(--g4)}
+.rmem.on{background:#2a2114}
 .rmem canvas{border:1px solid var(--e1);flex:none}
 /* ═══ #174 - THE RING ROUND THE BUST ══════════════════════════════════════
    (User: "bar progression could be shown circle as in total war".) The bust
@@ -5176,7 +5176,7 @@ body:has(#battle.on) .whisp{bottom:138px}
    pixel over*, which the clip counter ignores by design. Copying the card means
    copying that, not improving on it: 21 would be clean and would make the two
    surfaces disagree about a shared block for one pixel nobody can see. */
-.ibars .sbar{--sbh:20px;margin-bottom:var(--p3)}
+.ibars .sbar{--sbh:17px;margin-bottom:var(--p3)}
 /* ⛔ AND THIS ROW IS NOT BELT AND BRACES. `.ibars .bar{height:7px}` two rules up
    is 0-2-0, exactly what `.sbar>.sbb` is, and it comes LATER in the stylesheet -
    so on this screen and this screen only the old 7px won and the three rows landed
@@ -5189,7 +5189,7 @@ body:has(#battle.on) .whisp{bottom:138px}
 .ibars .sbar .bar{height:var(--sbh);margin-bottom:0;border:none}
 /* #251 - the card's own two sizes: the figure a step up, and the mark with it.
    `#bPlq` sets exactly these and the sheet was the outlier. */
-.ibars .sbt .sbR{font-size:var(--fs5)}
+.ibars .sbt .sbR{font-size:var(--fs4)}
 .ibars .sbi{font-size:var(--fs4)}
 /* ═══ #140 point 1 · WHAT THE SWING ACTUALLY DOES ═════════════════════════
    ("reorginise this block - probably a bit mor info about damage".)
@@ -5208,8 +5208,8 @@ body:has(#battle.on) .whisp{bottom:138px}
    a full-width row's 14, and it wraps to two lines in 214px. */
 .idrv{display:flex;gap:var(--p3);flex-wrap:wrap;align-items:baseline;font-family:var(--mono);
   font-size:var(--fs1);color:#8a7449;letter-spacing:.04em;border-top:1px solid #2a2114;padding-top:var(--p2)}
-.idrv b{color:var(--g4);font-weight:400}
-.idrv .dmg{font-family:var(--display);font-size:var(--fs4);color:#e0d3b4;letter-spacing:.02em;
+.idrv b{color:var(--g4);font-weight:400;font-size:var(--fs3)}
+.idrv .dmg{font-family:var(--display);font-size:var(--fs5);color:#e0d3b4;letter-spacing:.02em;
   cursor:help}
 .idrv .dmgw{cursor:help}
 /* the band chip in the armour row: it explains the whole absorb rule */
@@ -9079,9 +9079,18 @@ function tePick(e){
   const tip=(t&&t.style.display!=='none')?(t.textContent||'').replace(/\s+/g,' ').trim():'';
   const th=(el.closest?el.closest('[title]'):null);
   const title=th?(th.getAttribute('title')||'').trim():'';
+  /* #268 - a THIRD hover box, and it is not read live: a `.pop` card (a
+     slot, a skill, a wagon row) sits in the DOM the whole time and only its
+     CSS visibility changes on :hover, so it can be FOUND rather than caught
+     in the instant it shows. It is also why it could never be clicked at
+     all - moving the pointer toward the panel loses the :hover that was
+     showing it, the same trap #196 solved for the hover-picked click. */
+  const popc=el.closest?el.closest('.act,.iact,.slot,.wchip'):null;
+  const popEl=popc?popc.querySelector('.pop'):null;
+  const pop=popEl?(popEl.textContent||'').replace(/\s+/g,' ').trim():'';
   /* an icon button with a tooltip and no text of its own is a legitimate pick */
-  if(!orig&&!tip&&!title)return null;
-  return {node:node,el:el,orig:orig,tip:tip,title:title,titleEl:th};
+  if(!orig&&!tip&&!title&&!pop)return null;
+  return {node:node,el:el,orig:orig,tip:tip,title:title,titleEl:th,pop:pop,popEl:popEl};
 }
 /* a cheap breadcrumb, anchored on the first id up the tree. Not a selector
    to re-apply by - the renderers rebuild these nodes - a hint for the human
@@ -9104,9 +9113,12 @@ function teWhere(el){
 const TE_KINDS={text:{g:'✎',n:'TEXT',h:'the words on the line under the cursor'},
   hovertip:{g:'🛈',n:'HOVER BOX',h:'what #gtTip was showing at the moment of the pick. '+
     'No preview: tipOn rebuilds this box from a function on the next hover.'},
-  title:{g:'🛈',n:'TOOLTIP',h:'the title= attribute of the nearest element that owns one'}};
+  title:{g:'🛈',n:'TOOLTIP',h:'the title= attribute of the nearest element that owns one'},
+  popbox:{g:'🛈',n:'POP CARD',h:'the .pop card this row opens on hover: a slot, a skill, '+
+    'a wagon row. No preview - it is CSS-hover only and the cursor is on the panel now, '+
+    'not on the card.'}};
 function teCurText(){const c=TEDIT.cur;if(!c)return '';
-  return c.kind==='hovertip'?c.tip:c.kind==='title'?c.title:c.orig;}
+  return c.kind==='hovertip'?c.tip:c.kind==='title'?c.title:c.kind==='popbox'?c.pop:c.orig;}
 function teAdd(op,to,note){
   const c=TEDIT.cur;if(!c)return;
   TEDIT.edits.push({when:new Date().toISOString(),screen:c.screen,op:op,kind:c.kind,
@@ -9163,8 +9175,9 @@ const teRows=s=>Math.max(4,Math.min(14,
 function teOpen(pick){
   TEDIT.cur={orig:pick.orig,node:pick.node,el:pick.el,
     tip:pick.tip||'',title:pick.title||'',titleEl:pick.titleEl||null,
+    pop:pick.pop||'',popEl:pick.popEl||null,
     /* the pick opens on whichever string it actually found, in this order */
-    kind:pick.orig?'text':(pick.tip?'hovertip':'title'),
+    kind:pick.orig?'text':(pick.tip?'hovertip':pick.title?'title':'popbox'),
     where:teWhere(pick.el),screen:teScreen(),
     ctx:teClip((pick.el.parentElement?pick.el.parentElement.textContent:'').replace(/\s+/g,' ').trim(),140)};
   teDraw();
@@ -9172,7 +9185,7 @@ function teOpen(pick){
 function teDraw(){
   const c=TEDIT.cur;if(!c)return;
   const p=$('tePanel');if(!p)return;
-  const have=[['text',c.orig],['hovertip',c.tip],['title',c.title]].filter(x=>x[1]);
+  const have=[['text',c.orig],['hovertip',c.tip],['title',c.title],['popbox',c.pop]].filter(x=>x[1]);
   const cur=teCurText(),K=TE_KINDS[c.kind]||TE_KINDS.text;
   p.classList.toggle('wide',TEDIT.wide);
   p.innerHTML=teHead('✎ THIS TEXT · '+esc(c.screen))+
@@ -9252,10 +9265,11 @@ function teList(){
   p.innerHTML=teHead('✎ TEXT EDIT · armed')+
     '<div class="teHint">'+(TEDIT.hoverPick
       ?'Rest the cursor on any text and the editor opens under it. This is the '+
-       'mode that reaches a TOOLTIP or a HOVER BOX: they die the instant you '+
-       'reach for them, so they are caught where they stand. Clicking still works.'
+       'mode that reaches a TOOLTIP, a HOVER BOX or a POP CARD: they die or '+
+       'close the instant you reach for them, so they are caught where they stand. '+
+       'Clicking still works.'
       :'Click any text on any screen to edit it. Switch to ⌁ HOVER to reach a '+
-       'tooltip or a hover box, which cannot be clicked at all.')+
+       'tooltip, a hover box or a pop card, none of which can be clicked at all.')+
     ' The change on screen is a preview; the record below is what Claude lands '+
     'in the source and pushes.</div>'+
     (rows||'<div class="teItem">nothing recorded yet</div>')+teFoot();
@@ -12891,7 +12905,7 @@ const MOODSTATES=[
    fx:{start:10},
    d:'The column moves well together.'},
   {max:999,n:'HIGH SPIRITS',ic:'😄',col:'#7fae4e',
-   fx:{start:15,xp:.10,hit:10,dodge:10},
+   fx:{start:15,xp:.10,hit:10,dodge:5},
    d:'They would follow you into the sea, and it shows on the field.'}
 ];
 const moodState=v=>MOODSTATES.find(s=>v<s.max)||MOODSTATES[MOODSTATES.length-1];
@@ -12911,7 +12925,8 @@ function moodEffect(s){
      body already carrying a shield - which is exactly what the Round Shield's own
      printed `+9` does, and stating this one post-cap would make the mood ladder the
      single readout in the build speaking a different dodge. Measured on the
-     Captain: dodgeOf 13 at AT EASE, 19 at HIGH SPIRITS. */
+     Captain: dodgeOf 9 at AT EASE, 13 at HIGH SPIRITS (#268, dodge 10 -> 5,
+     the user's own "+10 to hit and +5 to dodge" for the top rung). */
   if(f.dodge)out.push('+'+f.dodge+' dodge');
   if(f.xp)out.push('+'+Math.round(f.xp*100)+'% experience');
   return out.join(' · ');
@@ -15979,11 +15994,12 @@ const RACESKILL={
   human:{k:'kick',n:'KICK',cost:1,reach:1,push:1,cool:1,maxSize:1,aim:10,
     provoke:true,slip:true,
     dmg:[2,4],am:.15,ft:.35,
-    note:'Almost no damage. It puts them ONE HEX straight back, away from you - into the '+
-      'water, off your spearman, or into your ogre\'s reach. There is no aiming it: walk '+
-      'round first. Anyone else still in reach of them gets a free half-swing as they go, '+
-      'and if somebody is standing right behind them they are shoved round him instead of '+
-      'into him. It does not move an ogre.'},
+    note:'Almost no damage - 1 or 2 points, most of it eaten by their armour. It puts '+
+      'them ONE HEX straight back, away from you - into the water, off your spearman, or '+
+      'into your ogre\'s reach. There is no aiming it: walk round first. Anyone else still '+
+      'in reach of them gets a free half-swing as they go, and if somebody is standing '+
+      'right behind them they are shoved round him instead of into him. It does not move '+
+      'an ogre.'},
   /* ONE GENERAL VERB, not a rock-throwing skill: pick up anything on an
      adjacent tile and throw it. It ABSORBS the old HURL A RATKIN, which stops
      being its own action and becomes the case where the thing you grabbed
@@ -35766,7 +35782,15 @@ function consequences(scarred){
      AFTER takeLoot so a table row that hands over a treasure map has already
      put its cache on the road: the two are independent and neither reads the
      other's result. */
-  const found=rollFind('battle');
+  /* #268 - the chase leaves behind a trophy weapon, once, the day it is won.
+     Rides the `found` strip rollFind already draws on this screen, so nothing
+     new is built - it just never rolls for a second find that day. Rare or
+     better only: #266's own rule that a common weapon reads as junk. */
+  const found=(G.battleKind==='chase'&&!G.chaseTrophy)
+    ?(()=>{G.chaseTrophy=true;const k=pickOne(['sword','maul','crossbow']);
+        remember(pickOne(G.party),'Took '+GEAR[k].n+' off the men who chased '+
+          'the company down the wheel-rut road.');return k;})()
+    :rollFind('battle');
   if(found)stashGain(found);
   /* ═══ #174 - THE RANDOM PROMOTION IS GONE ═══════════════════════════════
      This line used to read `const hero=pickOne(G.party); hero.level++;` and
@@ -38975,12 +38999,13 @@ function drawInv(){
       (led.length?'<div id="iLedger">'+led.join('')+'</div>':'')+
     '</div>'+
 
-    /* #232 - one word. (User: *"replace 'what they can do' to Skills"*.) ⚠ The
-       BATTLE hover keeps its sentence, and that is not an oversight: there it
-       alternates with WHAT IT CAN DO TO YOU, and the pair is the readout. */
-    '<div class="lbl" style="color:#8a7449">SKILLS</div>'+
-    '<div id="iSkills">'+acts.map(actCard).join('')+'</div>'+
-
+    /* #268 - SKILLS MOVED INTO THE PERKS TAB (user: "This block with perks
+       move in perks section"). It used to sit here, under the doll, printing
+       "what they can do" for anybody wearing gear rather than for anybody
+       spending a point - `skillsHTML` below is built off the same `acts`/
+       `actCard` this column always used and is handed to both branches of
+       the perks tab, so a class-less hire still sees the racial kit they
+       already have. */
     '<div id="iStory" class="'+(G.showMem?'open':'')+'">'+storyHTML+'</div>'+
 
     '<div id="iFoot">'+
@@ -39317,6 +39342,11 @@ function drawInv(){
      question "what does the next promotion buy" can actually be answered.
      ⚑ THE ROOM THIS TAB HAS IS THE ROOM THE REAL TREE WILL NEED. */
   const pk=$('iPerkBody');
+  /* #268 - SKILLS, first, in both branches below: the acts this body already
+     has are true of a level-0 hire too, and the perks tab is now the one
+     place this sheet talks about what a body can DO. */
+  const skillsHTML='<div class="lbl" style="color:#8a7449">SKILLS</div>'+
+    '<div id="iSkills">'+acts.map(actCard).join('')+'</div>';
   /* ═══ #174 - THE STRANGER PICKS HIS TRADE HERE ═══════════════════════════
      A level-0 hire has no tree to show, so this tab is his: before his first
      level, one line saying what he is waiting for; at it, the trades of his
@@ -39342,7 +39372,7 @@ function drawInv(){
         '<div class="pknone">Hired without one. The first level is where a class is picked, and it '+
         'is a fight or two away.</div>';
     }
-    pk.innerHTML=tHTML;
+    pk.innerHTML=skillsHTML+tHTML;
     pk.querySelectorAll('.pk.buy').forEach(b=>b.onclick=()=>{
       if(!tradeOwed(p))return;
       takeTrade(p,b.dataset.trade);sfx('promote');drawInv();});
@@ -39376,7 +39406,7 @@ function drawInv(){
      raws"). It is a class on the BODY rather than a rewrite of the card, so the
      level headings still span the full width and the cards flow under them. */
   pk.className=(pk.className||'').replace(/\bpk2\b/g,'').trim()+' pk2';
-  pk.innerHTML=pkHTML;
+  pk.innerHTML=skillsHTML+pkHTML;
   pk.querySelectorAll('.pk.buy').forEach(b=>b.onclick=()=>{
     if((p.perkPoints||0)<=0)return;
     p.perks.push(b.dataset.perk);p.perkPoints--;sfx('promote');drawInv();});
@@ -43353,7 +43383,9 @@ function worldTick(){
     '<span class="cchip click'+(kitUp?' waiting':'')+'" data-w="kit">'+SACK_SVG+
       (kitUp?'<span class="cbadge">!</span>':'')+'</span>'+
     '<span class="cchip'+(G.paidFlash?' payflash':'')+'" data-w="keep">'+
-      '<span class="nm">PAYDAY</span>'+
+      /* #268 - the word comes off the chip; WTIPS.keep's own `t:'PAYDAY'`
+         still opens the hover with the same word, the way `seats` already
+         dropped its own caption to the same title-carries-it rule above. */
       (owedDays>=1
         ?'<b style="color:#c15d55"><span style="color:var(--g4)">◉</span>'+owedNow+'</b>'+
          '<span class="nm" style="color:#c15d55">OVERDUE</span>'
@@ -43379,7 +43411,7 @@ function worldTick(){
        so it can no longer be mistaken for the average being low. */
     '<span class="bcchip click'+(hs.crit?' crit':'')+'" data-w="blood" '+
       'style="border-color:'+hs.col+'66">'+
-      heartSVG(hs.st)+'<b style="color:'+hs.col+'">'+hs.pct+'%</b></span>'+
+      heartSVG(hs.st)+'</span>'+
     (petKey?'<span class="bcchip" data-w="pet" style="border-color:#8ca35a66">'+
       PAW_SVG+'</span>':'')+
     relics.map(k=>'<span class="tchip" data-tri="'+k+'">'+
@@ -43482,7 +43514,13 @@ function worldTick(){
         '</b> seats spent.<br><br>'+
         'Seats are what the wagon and the pay-chest can carry, and everybody takes room '+
         'by size - ratkin 1, human 2, ogre 3 - so a fistful of ratkin and one ogre cost '+
-        'the same. Widen the wagon bed at a wheelwright to raise it, permanently.',
+        'the same. Widen the wagon bed at a wheelwright to raise it, permanently.<br><br>'+
+        '<div>'+G.party.map(p=>
+          '<span style="color:#c8bfa6">'+capName(p)+
+            ' <span style="color:#8a7449">'+p.race+'</span> '+
+            '<b style="color:var(--g4)">'+COST[p.race]+'</b>'+
+            '<span style="color:#8a7449"> seat'+(COST[p.race]>1?'s':'')+'</span></span>'
+          ).join('<br>')+'</div>',
       act:'CLICK: the roster, their sheets and their gear.'},
     kit:{t:'THE KIT',col:'var(--g4)',
       d:(kitUp?'<b style="color:#8ca35a">! Something in the wagon beats what somebody '+
@@ -44620,6 +44658,14 @@ function offerRations(k,e){
       go:()=>{rationsAskedFor=k;travel(k);}}]);
 }
 function travel(k){
+  /* #268 - a mid-road event paused the walk here (see `leg` below). The
+     resume check runs BEFORE the guard on purpose: G.moving stays true for
+     the whole pause, which is what keeps the token exactly where it
+     stopped and every other node inert, and clicking the SAME destination
+     is the one click this guard has to let through. */
+  if(G.walkResume&&G.walkDest===k){
+    const fn=G.walkResume;G.walkResume=null;G.walkDest=null;fn();return;
+  }
   if(G.pending||G.moving)return;
   const e=edgesFrom(G.at).find(x=>x[1]===k);if(!e)return;
   /* #75 — the question, once per commitment, then straight back in here */
@@ -44804,7 +44850,22 @@ function travel(k){
        A road that resolved early here would strand the token, which is the
        exact failure that moved the dog ambush onto a node. */
     walk(a,b,from,to,i===0?2100:1560,()=>{
-      rollCampAt(a,b,to,()=>leg(i+1),i>0,legHad);
+      /* ═══ #268 · A CARD ANSWERED PAUSES; A QUIET TICK DOES NOT ══════════
+         (User: "party stops in the middle, click to continue".) rollCampAt
+         calls `next` in two shapes: SYNCHRONOUSLY, when nothing was drawn
+         (the roll missed, the incident deck is empty of anything new to
+         say), and LATER, from a card's own button, once the player has
+         actually read something and answered it. Only the second one is
+         a moment worth a click of its own - a tick that showed nothing
+         has nothing to pause FOR. `sync` tells the two apart without
+         touching any of the four openers `rollCampAt` can reach. */
+      const resume=()=>leg(i+1);
+      let sync=true;
+      rollCampAt(a,b,to,()=>{
+        if(sync){resume();return;}
+        G.walkResume=resume;G.walkDest=k;worldTick();saveRun();
+      },i>0,legHad);
+      sync=false;
     });
   };
   leg(0);
