@@ -26,6 +26,78 @@
 
 ---
 
+## 🧪 THE LIZARDS FIGHT NOW  *(#274 · 2026-08-31 · build log 8f.298)*
+
+**Reach it in three steps:** the road → any of the five lizard cards (THE WARM STONES, THE GLASS
+ROAD, THE ASH-DRAKES, SOMETHING IN THE SCRUB, the Furnace) → open the fight.
+
+**What should happen.** They come at you. Before this they counted as an archery line - a spit and a
+tongue at three hexes each - decided you should cross the ground, and then stood at the far edge of
+the map for the whole fight because nothing was ever in range of a weapon that short. Now:
+
+- **the salamanders keep with the big ones.** They no longer run out in front on their own; they
+  hang back toward the slag-hides and the drakes and spit from two hexes;
+- **the slag-hides use the tongue.** It hauls somebody out of your line and drops them against its
+  flank, and it is on a one-turn cooldown - on the cooling turn the animal now walks in and BITES
+  instead of standing at two hexes doing nothing;
+- **and the tongue's blow is drawn on the body, not on the hex it just emptied.** That is the one
+  you reported as *attacking empty tiles*: the damage flash and the number were painted where the
+  body HAD been, a fifth of a second before it was dragged somewhere else.
+
+⚠ **THESE FIGHTS ARE HARDER AND THE FIGURES ARE IN THE RECORD.** Measured over 30 runs a cell:
+the ash-drakes went 93% to 63% for a prepared six and the glass road 100% to 83%. That is the price
+of them actually fighting, and whether it is the fight you wanted is **X1** in
+[`OPEN_QUESTIONS.md`](OPEN_QUESTIONS.md).
+
+**What would be a bug:** a lizard standing still with something inside three hexes · a salamander
+alone at the front · any damage mark on a hex with nobody on it · a slag-hide that never uses
+the tongue across a whole fight.
+
+---
+
+## 🧪 HOVER AN ENEMY, AND FOUR OTHER THINGS ON THE BOARD  *(#274)*
+
+1. **Hover an enemy.** Two red areas as before, and they have **traded weight**: the STRONGER red is
+   now the ring it can *hit*, the fainter is where it can *walk*. You asked for it that way round;
+   the outer ring is the one you act on.
+2. **Hover an enemy and read its card.** Under each act there is now a line saying what the act
+   DOES - *"Three hexes, and it does not let go"* - instead of only its damage and range. Your own
+   bodies do not get it: that sentence is already on the card you press.
+3. **Take an archer or a mage and hover a hex you could step to.** The percentages on the enemies
+   are now the ones you would have **from there**, in italic with a dotted underline. Move the
+   pointer off and they go back to the figures from where you stand. ⚠ **A two-action stride shows
+   none**, on purpose: it empties the body, so there is no shot to price.
+4. **Make a two-action move.** The turn goes to the next body **at once** - the three-second wait is
+   deleted - and the ⟲ button is still there. Press it and the mover steps back with both actions
+   and the turn returns to it. ⚠ It only survives while the next body is one of YOURS: when the
+   next in initiative is an enemy the offer goes with the hand-over, because an enemy's turn cannot
+   be interrupted. That is **X3**.
+5. **The armour bar** is divided every **5** points now, the same as the health bar, instead of
+   every 3.
+
+**What would be a bug:** a figure left on the board after the pointer moves off · two percentages
+on one enemy at once · ⟲ giving a body a second full turn · an enemy's mood or poison
+ticking twice after you press it.
+
+---
+
+## 🧪 THE COMPANY SHEET: SKILLS ARE BACK, PERKS ARE IN THE TAB  *(#274)*
+
+**Reach it in three steps:** THE COMPANY → anybody → look under the gear slots.
+
+**SKILLS is a row in the character column again**, where it was before #268, and it stays there
+whichever tab is open. **The perk tree is only on the ★ PERKS tab.** ⛑ It was being drawn on
+the STASH tab as well - the whole tree stacked under your items on every sheet in the game, since
+#264 - which is what your screenshot showed.
+
+**Also:** the **padded jack is UNCOMMON** now. It costs 70 rather than 45, breaks down for 25 crowns
+and 2 salvage rather than 10 crowns, and it is found and stocked at the uncommon tier.
+
+**What would be a bug:** the perk tree visible while THE STASH is selected · the character column
+scrolling · the skill cards wrapping onto a second row on anybody.
+
+---
+
 ## 🧪 THE ZOOM ROW IS GONE FROM THE MAP  *(#273 · 2026-08-31 · build log 8f.297)*
 
 **The short version:** ROAD / NEAR / CLOSE has come off the map's top-right corner, and the road's

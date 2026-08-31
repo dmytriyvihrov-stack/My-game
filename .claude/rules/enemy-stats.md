@@ -168,6 +168,56 @@ under a monkey-patched sweep. Its own note calls it the high-variance fight.
 sweep omitted `holdHost`'s `if(G.party.length>=6)` clause and measured a 15-body host against the
 real 19, reporting 57% where the fight reads 0.
 
+## ⛔ #274 · A `range` ON A STATBLOCK BUYS TWO THINGS, AND ONE OF THEM HAS A FLOOR
+
+*(2026-08-31. The user, of the lizard fights: **"on the other battle while they where able to move
+and hit me - they where standing. They have amazing rang abilities to use it on me"**.)*
+
+An act's `range` decides what it can reach. It ALSO decides, through `disposition`, whether the whole
+side thinks of itself as a shooting line - and those are not the same question. #267 authored the
+salamander's SPIT and the slag-hide's TONGUE at **three hexes** with `dmg` on both, which is correct
+for what they do; it also made a warm-stones side count **four shooters against your two**, take the
+hold stance, and stand at the far edge of the map for the entire fight, refusing to close on the
+strength of a weapon that cannot touch anything they are refusing to close on.
+
+⛑ **`outRanged` IS THE ONE PREDICATE AND `STANDOFF` IS 4.** A shot under four hexes is not a bow:
+it does not buy a standoff, and the body carrying it is still a body in the line. Three readers, and
+they must stay one predicate - `disposition` decides the stance, `rooted` holds a body to it, and the
+cohesion weight in the movement scorer asks it from the other end. *A body counted INTO a stance has
+to be held BY it* is #240's own note; this is its third customer.
+
+⚡ **FOUR IS MEASURED, AND THE SWEEP IS THE THING TO RE-RUN.** Over every ranged damage act in
+`FOE_BUILD` and a prepared six, 2026-08-31:
+
+| | |
+|---|---|
+| **range 3** | the salamander's spit and the slag-hide's tongue. **Nothing else in the game.** |
+| **range 5** | every bow, every sling, the Hold's crossbow |
+| `arcane` | the three `warp` castings - **always a standoff whatever their range says** |
+
+So the line moves the two lizards and leaves every shooting fight where it was. ⛔ **AUTHOR A
+DAMAGE WEAPON AT RANGE 4 AND YOU HAVE MOVED SOMEBODY ACROSS THAT BOUNDARY**, in both directions:
+re-run the sweep before believing the fight it is in.
+
+⚠ **AND A BAND IS ONLY WORTH KEEPING WHILE THE WEAPON IT WAS MEASURED OFF CAN BE FIRED.**
+`doctrine`'s `band` reads `bandFor(shotAct)`, and the slag-hide's tongue is `cool:1` - so on every
+other turn the animal was parked at two hexes, one outside its own BITE, with nothing it could reach.
+It asks `onCool` now and **not `canUse`**: `doctrine` is read AFTER the move has been paid for, so a
+two-action weapon always answers *cannot afford* and every archer in the game would lose its band on
+the one turn it walks. The cooldown is the fact about the NEXT turn, which is what a band is for.
+
+⛑ **A BEAST ALSO KEEPS STATION ON THE HEAVIER BEASTS OF ITS OWN SIDE** (`herdBig`, `hpMax*1.4`),
+which is the ogres' `herd` with the question asked of the BODY instead of the race. ⚠ **Scoped to
+`race==='beast'` on purpose**: the dog and the Warden return their own doctrines above that line, the
+mirehares never reach the movement scorer, and every ratkin/ogre/human fight in the census is
+measured. A rule that read hitpoints across every race would re-price the sling-line.
+
+⚡ **AND THE PRICE OF MAKING THEM FIGHT IS THAT THEY WIN MORE, WHICH IS THE THING TO LOOK AT
+BEFORE TOUCHING A STATBLOCK.** `runFight` n=30 a cell against the previous build: ash-drakes /
+prepared **93% -> 63%**, glass road / prepared **100% -> 83%**. Nothing in `LIZ_T` moved. The five
+lizard fights were priced in #267 against an AI that stood still, so those figures describe a fight
+nobody had played rather than a nerf.
+
 ## The marks
 
 The inspect card shows the four `STAT_ICON` paintings (32px - **never 24**, #230: a 3:4 resample
