@@ -435,6 +435,40 @@ sensible, and - later - somebody on the road who knew him.
 > **The pillar in one line: you can be a good captain - you cannot be good to everyone. Even the
 > saint chooses who pays.**
 
+### The road's state is not a karma meter
+
+*(User, 2026-08-31: "I want system of good and evil in the world. That world have states (as in
+deamon sols (evil, neutral, good)) ... So far just track it and show, don`t make any active changes
+in the events around it." Built as #272, build log 8f.296.)*
+
+**The pillar above refuses a meter three times, and it is untouched.** Every one of those three
+lines is about scoring a COMPANY: *"no karma meter; the company is the conscience"*, *"consequences
+are personal, never global"*, *"a deed changes the future options, not a bar"*. The arc that shipped
+scores a **PLACE**. Things happened here, and the people on this road have heard about them. That is
+Demon's Souls world tendency, and **road** is the user's own word for it.
+
+**The line between the two is a real line and not a relabelling:**
+
+| what the pillar forbids | what shipped |
+|---|---|
+| a number that answers for your soul | the arc carries **no figure**, ever. It shows a state and a position, the way the mood row does |
+| a global consequence (`company morality -15`) | it has **no consequence at all**: it pays nothing, gates nothing, and changes no door, no price and no fight |
+| a bar standing in for changed future options | those options are still the mechanism - #160's sin ledger, the serjeant on the road, what the Snare Clan makes of you - and **not one of them reads this arc** |
+
+⛔ **THE DAY IT PAYS, THE PILLAR HAS TO BE ARGUED AGAIN, AND THIS SECTION IS THE RECEIPT.** A road
+state that opens a door or moves a price is a karma meter with a different word on it. If that is
+ever wanted it is a decision taken out loud against rules 5 and 6 above, never a small extension of
+a readout that happens to already be on screen.
+
+**What it reads.** `G.deeds` - #224's tally, derived from every door's own intent glyph and already
+in the save blob, so nothing is authored and nothing new is stored. `evil` -2, `help` +1, `honor` +1,
+clamped to ±5. The five VERBS weigh nothing (`fight`, `take`, `trade`, `rest`, `leave`), because the
+door vocabulary already puts the verb first and the moral colour second, and fighting is not a sin
+any more than walking away is a virtue. **Two doors either way turns the road**: BLACK at -3 or
+below, WHITE at +2 or above, QUIET between. A cruelty moves twice as far as a kindness, so three of
+each still reads BLACK - which is rule 3 above, *bad deeds must actually pay*, arriving on the one
+readout that watches them.
+
 ### Synergies come from smart use, not from menus
 
 The model *(user's framing)*: mostly they are not new code - they are two existing rules meeting.
