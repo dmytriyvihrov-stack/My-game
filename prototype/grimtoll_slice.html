@@ -3089,6 +3089,16 @@ body:has(#battle.on) .whisp{bottom:138px}
 .rseg:first-child{margin-left:0}
 .rseg .ri{font-size:var(--fs4);line-height:1;font-family:var(--body)}
 .rseg b{font-weight:600;font-size:var(--fs5);font-variant-numeric:tabular-nums;color:#e0d3b4}
+/* ⛔ #272 - THE ROAD CHIP. No parent is named and that is deliberate: the chip
+   MOVES between #wBar and #iBar with the other readouts (see show()), and an
+   id selector cannot drift between the two the way a `#wBar .x` rule would.
+   `.cchip` still brings it the shared --barChip height through the :is() pair
+   above. The border colour is written by `roadStrip` because it is a READOUT,
+   which is where the UNPAID chip and the mood chip already keep theirs. */
+#wRoad{gap:var(--p2);padding:var(--p1) var(--p3);cursor:help}
+#wRoad .rdi{font-style:normal;font-size:var(--fs3);line-height:1;
+            font-family:var(--body);opacity:.75;filter:grayscale(.45)}
+#wRoad svg{display:block}
 /* the company chips: bodies, kit, upkeep - the left-hand family */
 .cchip{display:flex;align-items:center;gap:6px;background:#221a10;border:1px solid var(--e1);
        padding:var(--p1) var(--p4);font-family:var(--mono);font-size:var(--fs1);cursor:help;white-space:nowrap}
@@ -7238,6 +7248,11 @@ a.popt.sendit{display:block;text-decoration:none}
   <div id="wBar">
     <div id="wCompany"></div>
     <div class="sep"></div>
+    <!-- #272 - the road's own state, at the right-hand end of the bar's middle
+         air and hard against the chest. That is as far right as this bar goes:
+         #wRes ends at 1148 and #wWagon takes 1156..1194, which is the whole of
+         the 86px the button group reserves. -->
+    <span class="cchip" id="wRoad" data-w="road"></span>
     <div id="wRes"></div>
     <!-- #238 - the wagon, right of the chest: the door to the one place salvage is spent -->
     <span class="cchip click" id="wWagon" data-w="wagon"></span>
@@ -7877,13 +7892,22 @@ const show=i=>{
      bar, so on this one it would land across the company name.
      ⚠ RESTORED IN `#wBar`'S OWN ORDER (company, sep, res, wagon, plaque), or
      the strip comes home on the wrong side of the gap. */
-  (()=>{const wb=$('wBar'),ib=$('iBar'),co=$('wCompany'),re=$('wRes');
+  /* ⚠ #272 - AND THE ROAD CHIP TRAVELS WITH THEM, ON THE OTHER SIDE OF THE
+     CHEST ON EACH BAR. On `#wBar` it goes BEFORE `#wRes`, because that is the
+     right-hand end of the middle air and the 86px the button group reserves is
+     entirely spoken for by the chest and the wagon; on `#iBar` it goes AFTER
+     it, because there the readouts sit left of a `.sep` and the far right is
+     the BACK button. Both readings are the same rule - the road's state sits
+     at the outer end of the readouts - and each is what its own bar allows. */
+  (()=>{const wb=$('wBar'),ib=$('iBar'),co=$('wCompany'),re=$('wRes'),rd=$('wRoad');
     if(!wb||!ib||!co||!re)return;
     if(i==='inv'){const sep=ib.querySelector('.sep');
-      if(co.parentNode!==ib){ib.insertBefore(co,sep);ib.insertBefore(re,sep);}
+      if(co.parentNode!==ib){ib.insertBefore(co,sep);ib.insertBefore(re,sep);
+        if(rd)ib.insertBefore(rd,sep);}
     }else if(co.parentNode!==wb){
       wb.insertBefore(co,wb.querySelector('.sep'));
       wb.insertBefore(re,$('wWagon')||wb.querySelector('#wPlaque'));
+      if(rd)wb.insertBefore(rd,re);
     }})();
   /* the REAL screen id, not a pre-collapsed battle/world. Which cue a screen
      gets is setMusicMode's question and nobody else's; this line answering
@@ -44041,6 +44065,7 @@ function worldTick(){
      One SALVAGE segment on purpose: wood and iron alias the same pool,
      and showing both was the same number twice with different names on it */
   resStrip();      /* #239 - lifted out whole; see the function above worldTick */
+  roadStrip();     /* #272 - the road's state, beside it and on the same tick */
   /* ═══ #238 · THE WAGON CHIP ═════════════════════════════════════════════════════
      The door to the one place salvage is spent, right of the chest (user:
      "справа от ресурсов"). Static markup, filled here like the chips: the ! is lit
@@ -44141,6 +44166,24 @@ function worldTick(){
           'is wearing</b>, or goes in a slot that is empty.<br><br>':'')+
         'The wagon\'s stash, and what everybody is wearing out of it.',
       act:'CLICK: the same screen, straight to work.'},
+    /* ⛔ #272 - THE ROAD, AND THE HOVER STILL MAY NOT PRINT THE SCORE.
+       #220's split gives the chip a state and its hover the full information,
+       so this box names what has been DONE - the same three counts `deedTally`
+       already prints at the end of a run - and never the weight they add up
+       to. A figure for your soul is precisely the `-10 karma` the concept doc
+       refuses, and a hover would be the one place a player actually read it.
+       ⛑ AND THE LAST LINE IS LOAD-BEARING RATHER THAN MODEST: a readout that
+       visibly moves and changes nothing gets filed as a broken feature, so it
+       says so itself. The day it starts paying, that line comes out. */
+    road:{t:roadState().n,col:roadState().c,
+      d:roadState().d+'<br><br>'+
+        (Object.keys(ROAD_W).some(k=>(G.deeds||{})[k])
+          ? 'What this road has seen of you:<br><div style="margin-top:5px">'+
+            Object.keys(ROAD_W).filter(k=>(G.deeds||{})[k]).map(k=>
+              '<span style="color:#c8bfa6">'+CHOICE_ICO[k].g+' '+CHOICE_ICO[k].n+
+              ' <b style="color:var(--g4)">'+G.deeds[k]+'</b></span>').join('<br>')+'</div>'
+          : 'Nothing yet. It moves when you are cruel, and when you are kind.')+
+        '<br><br><i style="color:#8a7449">It changes nothing on the road. Not yet.</i>'},
     /* #238 - the wagon's door. The ! answers for itself first, like the kit's */
     wagon:{t:'THE WAGON',col:'var(--g4)',
       d:(wagonWaiting()?'<b style="color:#8ca35a">! Something on the wagon can be paid for.</b><br><br>':'')+
@@ -46066,6 +46109,126 @@ function deedTally(){
   return keys.map(k=>'<span class="deed" title="'+CHOICE_ICO[k].d+'">'+
     '<i class="dic">'+CHOICE_ICO[k].g+'</i>'+CHOICE_ICO[k].n+
     ' <b>'+d[k]+'</b></span>').join('');
+}
+/* ═══ ⛔ #272 · THE ROAD KEEPS ITS OWN STATE ═══════════════════════════════
+   (User, 2026-08-31: *"I want system of good and evil in the world. That world
+   have states (as in deamon sols (evil, neutral, good)) ... So far just track
+   it and show, don`t make any active changes in the events around it."*)
+
+   ⛔ IT IS THE ROAD'S CONDITION AND IT IS NOT A KARMA METER, AND THAT
+   DISTINCTION IS THE ONLY REASON THIS COULD BE BUILT AT ALL.
+   `docs/01_GAME_CONCEPT.md`'s pillar says it three times - *"No karma meter;
+   the company is the conscience"*, *"Consequences are personal, never global"*,
+   *"A deed changes the future options, not a bar"* - and that pillar is
+   untouched, because every one of those lines is about scoring a COMPANY'S
+   SOUL. This scores a PLACE, the way Demon's Souls world tendency does: things
+   happened here, and the people on this road have heard. The user's own word
+   for it was **road**, and the ruling is written up beside the pillar itself.
+   ⚠ THE MOMENT IT CHANGES A DOOR, A PRICE OR A FIGHT, THAT DISTINCTION IS
+   SPENT AND THE PILLAR HAS TO BE ARGUED AGAIN. Today it changes nothing, which
+   is the ask, and the hover says so out loud so a playtester does not file it
+   as broken.
+
+   ⛑ NOTHING IS AUTHORED AND NOTHING NEW IS SAVED. `G.deeds` is #224's tally,
+   already derived off every door's own `ico` and already in the save blob, so
+   this reads a fact the build has kept since 2026-08-21 and adds no second
+   ledger. A card written next month joins it untaught, which is #137's rule on
+   whatever surface this is now - and the meter works on a save made yesterday.
+
+   ⛔ THE FIVE VERBS WEIGH NOTHING, AND THE DOOR VOCABULARY IS WHY.
+   `.claude/rules/event-cards.md` states it: *"the verb comes first and the
+   moral colour second"*. `fight`, `take`, `trade`, `rest` and `leave` are the
+   verbs - fighting is not a sin and walking away is not a virtue - so the only
+   keys here are the two moral colours plus `honor`, which is the quiet half of
+   `help`. ⚠ A door wearing two intents counts on BOTH in `markDeed`, so a
+   ⚔️☠️ door is one fight and one cruelty, and only the cruelty has a weight
+   here. That is correct rather than double-counting: it did both. */
+const ROAD_W={evil:-2,help:1,honor:1};
+/* ⛔ THE CAP IS 5 AND IT IS NOT DECORATION. Measured over the shipped content:
+   167 doors across EVENTS and CAMPS, of which 15 are evil, 20 help and 12
+   honor. At these weights three cruelties reach one end of the arc and three
+   kindnesses the other, inside the ten or so cards a run actually opens. A cap
+   nobody can reach is a readout that never moves; one everybody pins on day
+   two is a readout that stops meaning anything. */
+const ROAD_CAP=5;
+/* ⛑ THE THREE COLOURS ARE THE DOORS' OWN RAILS, NOT A NEW PALETTE. #218 gives
+   an `evil` door `--blood` and a `help` door `--grain`, so the arc ends up the
+   colour of the button that moved it; `--ore` is the grave stone the bare rail
+   already falls to. Same argument as the two marks below: nothing here is a
+   second vocabulary for a fact the card screen already has one for. */
+const ROAD_STATES=[
+  {k:'black',n:'A BLACK ROAD',c:'var(--blood-lit)',
+   d:'Things have been done on this road, and the people on it have heard about them.'},
+  {k:'grey',n:'A QUIET ROAD',c:'var(--ore)',
+   d:'Nothing has happened here that anybody would carry to the next village.'},
+  {k:'white',n:'A CLEAN ROAD',c:'var(--grain)',
+   d:'You have been the best thing that happened to this road, so far.'}
+];
+/* clamped, so a company that helped nine villages does not run off the arc */
+function roadWeight(){
+  const d=G.deeds||{};let w=0;
+  Object.keys(ROAD_W).forEach(k=>{w+=(d[k]||0)*ROAD_W[k];});
+  return Math.max(-ROAD_CAP,Math.min(ROAD_CAP,w));
+}
+/* ⛔ THE GATE IS TWO DOORS EITHER WAY, AND THAT IS WHY THE TWO NUMBERS ARE
+   NOT THE SAME NUMBER. One cruelty is a thing that happened; two is a pattern,
+   which is the same line #160's serjeant draws at one bill against two - and
+   it is the pillar's own sentence about the robbed pedlar, that a decent
+   person does one bad thing for an understandable reason.
+
+   ⚠ THE FIRST CUT READ `w<=-2` AND WAS WRONG, WHICH ONLY THE LADDER SAID.
+   A cruelty weighs -2, so a single evil door hit that gate exactly and turned
+   the whole road black on its own - the comment above it claimed the opposite,
+   in capitals, and nothing but driving the eleven rungs would have caught it.
+   -3 is the first weight two cruelties can reach (-4) and one cannot (-2).
+   ⚑ THE ASYMMETRY IS THE POINT AND NOT A FUDGE. In DOORS the two gates are
+   even - two of either turns the road - while a cruelty still moves the needle
+   twice as far as a kindness, so it wins any mixed ledger: three of each reads
+   BLACK, not grey. That is the pillar's *"bad deeds must actually pay"* on the
+   one readout that watches them. */
+function roadState(w){
+  w=(w==null?roadWeight():w);
+  return w<=-3?ROAD_STATES[0]:w>=2?ROAD_STATES[2]:ROAD_STATES[1];
+}
+/* ═══ THE ARC, AND IT IS THE ONE RENDERER ═════════════════════════════════
+   Eleven segments over a half circle, lit from the MIDDLE outward - so the
+   picture says which way this road has gone and how far, and never carries a
+   figure. That is `.claude/rules/ui-scales.md` §3c's own law (a readout shows
+   a state and hides the number) and #102's before it.
+   ⚠ THE SEGMENT COUNT IS ODD ON PURPOSE: 11 gives a true middle segment, so a
+   road at 0 lights the crown of the arch and reads as *here*, not as *empty*.
+   ⚠ AND THE COLOUR IS PASSED IN RATHER THAN LOOKED UP, so the one caller that
+   wants to draw a state this road is not in - a mockup, a probe, the day this
+   goes on the end-of-run screen - does not need a second builder. */
+const ROAD_SEGS=11;
+function roadArc(w,col){
+  const N=ROAD_SEGS,SPAN=180/N,GAP=1.6,R=17,CX=28,CY=23,MID=(N-1)>>1;
+  const pt=a=>[(CX+R*Math.cos(a*Math.PI/180)).toFixed(2),
+               (CY-R*Math.sin(a*Math.PI/180)).toFixed(2)];
+  const lo=Math.min(MID,MID+w),hi=Math.max(MID,MID+w);
+  let p='';
+  for(let i=0;i<N;i++){
+    const s=pt(180-i*SPAN-GAP),e=pt(180-(i+1)*SPAN+GAP),lit=i>=lo&&i<=hi;
+    p+='<path d="M'+s[0]+' '+s[1]+'A'+R+' '+R+' 0 0 1 '+e[0]+' '+e[1]+
+       '" fill="none" stroke-width="4.2" stroke="'+(lit?col:'var(--e2)')+'"'+
+       (lit&&i!==MID+w?' opacity=".78"':'')+'/>';
+  }
+  return '<svg viewBox="0 0 56 26" width="56" height="26" aria-hidden="true">'+p+'</svg>';
+}
+/* ⚠ GUARDED ON THE BOX EXISTING, exactly as `resStrip` is, because the chip is
+   REPARENTED onto the sheet by `show()` and a caller should not have to know
+   where it currently lives - only that there is one of it.
+   ⛑ AND THE TWO MARKS ARE READ OFF `CHOICE_ICO`, NEVER TYPED. They are the
+   same two glyphs the doors wear, so the mark on the arc is the mark on the
+   button that moved it and the widget teaches itself. Two fresh glyphs for a
+   meaning ☠️ already carries would be #102's wrong-unit bug arriving on the
+   one screen that had so far escaped it. */
+function roadStrip(){
+  const box=$('wRoad');if(!box)return;
+  const w=roadWeight(),st=roadState(w);
+  box.style.borderColor=st.c;
+  box.innerHTML='<i class="rdi">'+CHOICE_ICO.evil.g+'</i>'+roadArc(w,st.c)+
+                '<i class="rdi">'+CHOICE_ICO.help.g+'</i>';
 }
 /* the first N of them, in the order they were done. The user's own framing:
    the serjeant reads out the first and the second, not the worst two. */

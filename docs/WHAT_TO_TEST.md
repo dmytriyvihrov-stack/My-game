@@ -26,6 +26,36 @@
 
 ---
 
+## 🧪 THE ROAD'S OWN STATE  *(#272 · 2026-08-31 · build log 8f.296)*
+
+**The short version:** the top bar has a new chip, between the day plaque and the coin chest: a
+small arch with a skull at one end and a handshake at the other. It is the state of the **ROAD**,
+not a score of you, and today it does nothing whatsoever except say what it is.
+
+⛔ **THE ONE THING TO JUDGE IS WHETHER ANYBODY NOTICES IT**, which was your own condition
+(*"lets do it and see - do people recognise it"*). So the question to put to a playtester is not
+whether they like it. It is whether they can say what it means **without being told**.
+
+⚠ **AND IT IS DELIBERATELY WIRED TO NOTHING.** No door, price or fight behaves differently because
+of it. Your concept doc refuses a karma meter in three separate lines, and the only reason this is
+not one is that it scores the road rather than your company and pays nothing at all. There is a new
+section next to that pillar in `01_GAME_CONCEPT.md` explaining what would have to change first.
+
+| what to check | where | what should happen |
+|---|---|---|
+| **it is there from day one** | start a run, look between `DAY 1 MIDDAY` and the coin chest | a stone-grey arch with one segment lit at the crown, skull left, handshake right. The hover says **A QUIET ROAD** |
+| **a cruelty moves it** | take one ☠️ door - rob the pedlar, the toll-man, the wedding | the arch grows two segments to the LEFT and **stays grey**: one bad thing is a thing that happened, not a pattern. Take a second ☠️ door and the whole chip goes red: **A BLACK ROAD** |
+| **a kindness moves it** | take two 🤝 or 🙏 doors | it grows to the RIGHT and goes green: **A CLEAN ROAD**. One is not enough, exactly as with cruelty |
+| **the mixed case** | three cruelties and three kindnesses in the same run | **BLACK**, not grey. A cruelty is worth two kindnesses on this arc, on purpose |
+| **it follows you onto the sheet** | open THE COMPANY | the same chip is on that bar too, just right of the coin chest |
+| **the hover tells the whole truth** | hover it after a few doors | it names the state, lists what you have actually done (`☠️ EVIL 2`, `🤝 HELP 1`), and ends with *"It changes nothing on the road. Not yet."* |
+
+**What would be a bug:** a number anywhere on the chip · one single door flipping it black or white
+· the chip sitting on top of the chest, the wagon or ☰ MENU · it not moving at all after two ☠️
+doors · any door, price or fight behaving differently because of where the arch stands.
+
+---
+
 ## 🧪 THE NINE-ASK BATCH  *(#270 · 2026-08-31 · build log 8f.295)*
 
 **The short version:** nine points off four screenshots. **One of them is the soft lock you hit**,
