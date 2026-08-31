@@ -27,9 +27,10 @@ back already answered by work that was not about them.
 
 ## T · From #269
 
+*(**T1** was answered the same day and is in [`archive/QUESTIONS_ANSWERED.md`](archive/QUESTIONS_ANSWERED.md).)*
+
 | | the question | ⭑ mine |
 |---|---|---|
-| **T1** | **What should `ARMOUR_ABSORB` be?** You asked for 70% on every suit and that is what shipped. It is a real re-balance and it is measured: **THE HOLD'S MEN 30% -> 5% for the starting four, THE CIRCLE 55% -> 25% for the prepared six** (n=20 a side, against yesterday's build). Isolated on the Hold, one knob at a time: **.70 -> 0-5%, .60 -> 5%, .50 -> 25%**. It is one constant. | **Play it first.** The fights that got harder are the two you are outnumbered in, which is arguably correct; if they read as unwinnable rather than hard, **.60** buys most of it back and keeps one rule |
 | **T2** | **Which two doors on the cub screen?** You boxed the top ROW - TAKE THE CUB and KILL IT TOO - and wrote *two options only*. I read the box as *this list* rather than *these two*, and cut **KILL IT TOO**, because it was dominated: 2 gems against LEAVE IT's 3 gems and 120 crowns, 12 morale against 4, and the cub ends either way. | **Mine as shipped.** A door no company can have a reason to press is not a choice. If you meant the other pair, it is one line back |
 | **T3** | **Which real harness should be adjustable?** The property existed and had no name; it is named now. But it is on **rags, a cook-pot and a worn bucket** - three junk pieces - so *some armour can be adjustable* is technically true and buys nothing. | Put it on **one** good piece, so it is a reason to keep something rather than a footnote. The rat-silk shroud is the obvious candidate |
 

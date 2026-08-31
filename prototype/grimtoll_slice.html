@@ -699,11 +699,13 @@ button:disabled{cursor:not-allowed}
                                     rgba(0,0,0,.14) 64%,rgba(0,0,0,.34) 100%)}
 /* ⛔ #249 - THE FIGURE STANDS IN THE MIDDLE OF THE BAR IT MEASURES.
    (User: *"write the curent point of that in the midle of that bar"*.)
-   ⛑ A GRID AND NOT `justify-content:center`, because two of the three rows carry
-   a WORD as well - the armour class, the mood rung - and centring a flex row would
-   centre the PAIR, so `LIGHT 6/6` would sit off to one side and `45/45` alone would
-   sit dead centre. Three columns `1fr auto 1fr` put the figure on the bar's own
-   midline whatever stands beside it, which is what makes the three rows line up.
+   ⛑ A GRID AND NOT `justify-content:center`, because a row may carry a WORD as
+   well - the mood rung, or NONE on a body wearing nothing - and centring a flex row
+   would centre the PAIR, so `NONE 0/0` would sit off to one side and `45/45` alone
+   would sit dead centre. Three columns `1fr auto 1fr` put the figure on the bar's
+   own midline whatever stands beside it, which is what makes the three rows line up.
+   ⚠ #269 DELETED THE ARMOUR CLASS, which used to be the second word here and was
+   this note's own example; the ROW is unchanged and still has to survive one.
    ⚠ THE MOOD ROW HAS NO FIGURE - its value IS the word - so `:has()` moves that
    word into the middle column instead. One rule, and it cannot drift from the other
    two, because it is asking about the row it is on. */
@@ -793,13 +795,13 @@ button:disabled{cursor:not-allowed}
 #bPlq .sbt .sbR{font-size:var(--fs4)}
 #bPlq .sbi{font-size:var(--fs4)}
 #bPlq #bArmK{color:#e6e1d4}
-/* ═══ #100 point 9 · WHAT KIND OF ARMOUR THAT IS ══════════════════════════
-   (User: "near armor in the left bottom - right which class of armor is
-   that (light, medium, heavy)".) The bar said how much was left and never
-   what it was: 34 and 96 are the same picture at full, and the difference
-   between a padded jack and foundry plate is the whole of what the player
-   is deciding when they hand it out. One word, quieter than the label it
-   follows, and the hover is what the word costs. */
+/* ═══ #100 point 9's WORD, AND #269 TOOK IT AWAY AGAIN ════════════════════
+   #100 asked for the armour CLASS in this bar ("light, medium, heavy") and it
+   was the right answer while there were three of them. There is one rule now
+   and the word had nothing left to say, so `#bArmK` prints NONE on a stripped
+   body and NOTHING on a dressed one - #244's rule kept whole ("when there is
+   no armor write 'none'") and #269's applied. The style stays because the
+   element stays and still carries one of those two words. */
 #bArmK{font-weight:400;color:#7f9490;letter-spacing:.04em;cursor:help}
 /* THE MORALE LADDER lives in the nerve chip's hover now (#91 point 10):
    .lrung and .ladfull stay because ladderHTML() still draws it there. */
@@ -22124,44 +22126,52 @@ const raceKey=u=>(u.race==='ogre'||u.kind==='ogre')?'ogre'
    ⚠ It is also what keeps the racial ±5 above honest: a ratkin's +5 arrives
    before the cap, so a ratkin already above 12 gets ~3 of it. The bonus pays
    for part of itself, and that is intended. */
-/* ═══ #79 - ARMOUR IS LIGHT, MEDIUM OR HEAVY, AND IT DECIDES THE SPLIT ═════
+/* ═══ ⛔ #79's THREE BANDS ARE GONE. #269 DELETED THEM. ═══════════════════
+   ⚠ THE PARAGRAPHS BELOW ARE THE RULE THAT WAS, KEPT BECAUSE THE REASONING IS
+   STILL WORTH HAVING AND BECAUSE TWO OF THEM ARE STILL TRUE. Nothing here
+   describes what the build does any more except where it says so.
+
    (User, 2026-08-02: "You can classify each armor piece light, medium or
    heavy. I like this. Ligh absorbs 50% of damage, another 50% goes to health.
    Medium absorbs 60%, 40% goes to health. And heavy absobs 75% of damage, 25%
    goes to health" - then, on the shape of it: "focus only on main light,
    medium and heavy armor thing. With huge bonus and a small debuf to it".)
+   ⛔ OVERRULED 2026-08-31: *"Lets delete catogeory of light and heady armor.
+   Lets do the all type of armor blocks 70% of damage"*, and then, asked
+   whether 70% should stand: *"all armor 70% - do it evwrywhere"*.
 
-   THE HUGE BONUS is the absorption. THE SMALL DEBUFF is dodge, and it is the
-   user's own figure from earlier the same day ("-5% it is big and -10% heavy
-   armor") finally given somewhere to live: it was refused as a rule of its
-   own and it is right as the price of a band.
-
-   ⛔ ONE THRESHOLD, READ BY BOTH SIDES. A player's band comes off the value
-   of the piece they are wearing and an enemy's off the bare `armour:` number
-   on its statblock, THROUGH THE SAME FUNCTION. The alternative was a `band:`
-   field on all thirteen gear rows plus a separate rule for enemies, which is
-   two lists that have to agree forever. This way an ogre in lashed plates
-   (74) and a man in foundry plate (96) are both heavy because they are both
-   wearing seventy-plus points of metal, which is what the word means.
-   ⚑ It falls out well: the human line spans all three on its own (padded jack
-   34 light, mail hauberk 66 medium, foundry plate 96 heavy), the ratkin line
-   is light whatever they do, and the ogre line starts at medium. Nobody had
-   to be assigned anything.
-   ⚠ `armourValue()` applies the wrong-size ×0.70 BEFORE this reads it, so a
-   man roped into ogre plates (74 → 52) is banded MEDIUM. That is correct and
-   it is funny: half the plates do not meet, so half the blow does not stop.
-
-   ⚠ BANDED OFF `armourMax`, NOT `armour`. A stripped hauberk is still a
-   hauberk; what happens once the pool is empty is handled where it always
+   ⛑ THE ONE THING FROM #79 THAT SURVIVES WHOLE IS ITS BEST IDEA: **ONE
+   THRESHOLD, READ BY BOTH SIDES, THROUGH THE SAME FUNCTION.** A player's
+   split comes off the piece they are wearing and an enemy's off the bare
+   `armour:` number on its statblock, and neither has its own copy. The
+   alternative it refused - a field on every gear row plus a separate rule for
+   enemies - is still the wrong answer; there is simply one number in the
+   middle now instead of three. **Measured over every body `FOE_BUILD` can
+   make, every roster body and every armour row on every race: 119 bodies, one
+   split, 0.70/0.30, no exceptions** (`probes/a269_split.js`).
+   ⚠ AND SO IS THE OTHER HALF: `armourValue()` applies the wrong-size ×0.70
+   BEFORE any of this, which is now the ONE thing a harness's SIZE decides.
+   A man roped into ogre plates carries fewer points, not a worse rule.
+   ⚠ AND `armourMax` VS `armour` IS UNCHANGED: a stripped hauberk is still a
+   hauberk, and what happens once the pool is empty is handled where it always
    was, by the `d.armour>0` test in strike() and dmgPreview(), which sends the
    whole blow into the body.
 
-   🚧 THE WEAPON'S HALF OF THIS IS PARKED, ON THE USER'S CALL ("Let put this
-   advanced system in backlog"). Every act still carries `am` and `ft` and
-   NOTHING NOW READS THEM except `ignoresArmour` below - they are not dead
+   ⛔ WHAT DIED WITH THE BANDS IS THE DODGE PRICE. #79 called it *the price of
+   a band*; a band that does not exist cannot charge for itself, and charging
+   it anyway off a hidden threshold is exactly the invisible second ladder the
+   ask deletes. The heavy suits still cost their wearer a step, because they
+   still carry `agi:-1` on their own rows - which the player can read.
+
+   🚧 THE WEAPON'S HALF OF THIS IS STILL PARKED, ON THE USER'S CALL ("Let put
+   this advanced system in backlog"). Every act still carries `am` and `ft`
+   and NOTHING NOW READS THEM except `ignoresArmour` below - they are not dead
    data, they are the input the parked entry needs, and they are why it is
    cheap: `pen = (ft - 0.30) × 100` gives the maul its -12 and the knife its
-   +15 straight out of the file. Do not "tidy them away". */
+   +15 straight out of the file. Do not "tidy them away".
+   ⚑ AND THAT PARKED ENTRY IS THE ONE THING THAT WOULD MAKE THE SPLIT VARY
+   AGAIN. If it is ever built, it varies by WEAPON, which the player chooses
+   and can read - never by a band nobody was shown. */
 /* ═══ ⛔ #269 · THERE IS ONE BAND NOW, AND IT STOPS 70% ═══════════════
    (User: *"Lets delete catogeory of light and heady armor. Lets do the all type of
    armor blocks 70% of damage (and then some armor has different stats - that could
@@ -22726,13 +22736,15 @@ function dmgPreview(a,d,act){
   /* flat soak comes off the BODY damage only, floored at 1 — same rule and
      the same order as strike(), or the preview and the blow disagree */
   const soak=v=>d.soak?Math.max(1,v-d.soak):v;
-  /* #79 - the split is the DEFENDER'S band now, not the weapon's two numbers.
-     Same call, same order, same rounding as strike() twenty lines down. */
+  /* #269 - the split is 70/30 and it is the same for everybody. It is still
+     read off the DEFENDER rather than off the weapon, which is what makes one
+     call serve both sides. Same call, same order, same rounding as strike()
+     twenty lines down - those two have drifted apart once already. */
   const sp=splitFor(d,act);
   return {arm:sp?[Math.round(lo*sp.arm*m),Math.round(hi*sp.arm*m)]:[0,0],
     hp:(d.armour>0&&sp)?[Math.round(soak(lo*sp.body*m)),Math.round(soak(hi*sp.body*m))]
       :[Math.round(soak(lo*m)),Math.round(soak(hi*m))],
-    /* #98 point 7 - THE WHOLE BLOW, BEFORE ARMOUR TAKES ITS HALF.
+    /* #98 point 7 - THE WHOLE BLOW, BEFORE ARMOUR TAKES ITS SHARE.
        (User: "for hit - a full damage, regardless the armor - so i see full
        scale of my damage of the skill.") `arm` and `hp` answer "what does
        this do to THIS target"; `full` answers "how hard does this skill
@@ -22878,10 +22890,12 @@ function strike(a,d,act,mult){
      dmgBonus), not here - see the note on dmgPreview()'s G8 */
   raw*=0.8;
   let armD=0,hpD=0;
-  /* #79 - LIGHT 50/50 · MEDIUM 60/40 · HEAVY 75/25, and the two halves add up
-     to the blow. What they are wearing decides it; see splitFor(). The three
-     branches are unchanged in shape: no armour to speak of, or armour still
-     standing, or armour already gone and the whole thing lands. */
+  /* #269 - 70/30 ON EVERY BODY IN THE GAME, and the two halves add up to the
+     blow. There is no band and no per-weapon variation: `splitFor` is the one
+     answer and `dmgPreview` twenty lines up asks it the same way, in the same
+     order, with the same rounding. The three branches are what they always
+     were: a blow that ignores armour, armour still standing, or armour
+     already gone and the whole thing lands. */
   const sp=splitFor(d,act);
   if(!sp)hpD=raw;
   else if(d.armour>0){armD=Math.min(d.armour,raw*sp.arm);d.armour-=armD;hpD=raw*sp.body;}
@@ -32857,18 +32871,6 @@ const apPips=(n,max,pay)=>{let s='';
   return s;};
 /* ⚠ the width and the section count go through the SAME door, so a bar can
    never be drawn at one scale and sectioned at another. */
-/* ═══ #100 point 9 · THE THREE WEIGHTS OF ARMOUR ══════════════════════════
-   ⚑ CLASSIFIED OFF THE POOL, NOT OFF THE ITEM, and that is deliberate: an
-   ogre in stitched hides, a ratkin in a scrap harness and a brigand who was
-   never handed a GEAR entry at all must all get an answer. `armourValue`
-   already puts a wrong-size penalty through the same number, so a human
-   wearing an ogre's plates is honestly reported as the lesser thing it has
-   become on him.
-   The boundaries are the rack: rags 6, a bucket 9, a cook-pot 12, a scrap
-   harness 18 and a door-plank 20 are all LIGHT; stitched hides 26, a
-   rat-silk shroud 30 and a padded jack 34 are MEDIUM; a mail hauberk 66,
-   lashed plates 74, foundry plate 96 and ogre scale 104 are HEAVY, and
-   every one of those is a suit that costs its wearer a step of agility. */
 /* #269 - `ARMOURKIND` and `ARMOURWHY` are deleted with the bands they named.
    Their one reader was the plaque's word-in-the-bar, which reads `bandOf(u).n`. */
 /* (the two of them were `ARMOURKIND` and `ARMOURWHY`.) */
