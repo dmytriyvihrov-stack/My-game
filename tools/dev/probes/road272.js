@@ -38,10 +38,20 @@
       inBar: r.top >= bar.top - .5 && r.bottom <= bar.bottom + .5,
       border: getComputedStyle(b).borderColor,
       overflow: (b.scrollWidth - b.clientWidth) + ',' + (b.scrollHeight - b.clientHeight),
-      /* nothing on this bar may stand on it */
+      /* ⚠ #273 MOVED THE CHIP INTO `#wMap`, SO THIS HAS TO BE 2D. While the
+         parent was a 42px bar every sibling shared its row and an x-overlap
+         WAS a collision; against the map, x alone reports the whole corner
+         and reads as a shipped fault. Full box test, both axes. */
       hits: [...b.parentElement.querySelectorAll(':scope > *')]
-        .filter(o => o !== b && R(o).width)
-        .filter(o => { const a = R(o); return a.right > r.left + .5 && a.left < r.right - .5; })
+        .filter(o => o !== b && R(o).width && R(o).height)
+        .filter(o => { const a = R(o);
+          /* ⚠ AND A SIBLING THAT CONTAINS THE CHIP IS GROUND, NOT A COLLISION.
+             `#wCam` is `inset:0` over the whole map, so a plain box test calls
+             the map itself a fault. Only a box that CROSSES the chip counts. */
+          if (a.left <= r.left && a.right >= r.right &&
+              a.top <= r.top && a.bottom >= r.bottom) return false;
+          return a.right > r.left + .5 && a.left < r.right - .5 &&
+                 a.bottom > r.top + .5 && a.top < r.bottom - .5; })
         .map(o => o.id || o.className)
     };
   };
