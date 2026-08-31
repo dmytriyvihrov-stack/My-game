@@ -81,6 +81,20 @@ about a build, and this row was one edit away from being a wrong one.
 and `HIT_EASE` tilts the roll a net +5 your way. **Dodge is the one column they lead**, which is
 correct: they are lighter and worse armoured, and it is all a ratkin in rags has.
 
+⚡ **AND #275 MOVED WHAT BOTH DODGE COLUMNS ARE WORTH WITHOUT MOVING EITHER FIGURE**
+*(2026-08-31, the user: "hard to stuck: -dodge after 25, -atack - after 100")*. `DODGE_SOFT` went
+**12 to 25** and a `HIT_SOFT` of **100** was added beside it (`hitOf`, which is `dodgeOf`'s shape).
+The authored numbers above are pre-cap and are unchanged; what changed is that at 12 the cap was
+biting **every body on both sides** - your 14 and their 16.5 are both over it - so it was a flat tax
+on the stat rather than a ceiling on stacking it. Effective dodge is now **+1 on a fresh body of
+yours and about +2.5 on an ordinary foe**, which is the direction this table already says is
+correct: the lighter side leads that column and now keeps more of its lead.
+⛔ **IT IS NOT PRICED OVER THE ROAD MATRIX AND THAT IS THE USER'S OWN CALL**, given while the
+sweep was running (*"maybe dont do it that pricacly with dodge cup through battles - it is your unit
+stat"*). The BASELINE half was taken at n=15 over all 28 fight-comps before he said stop; the new
+build's half was not. **So this is the one number in this file whose effect on the road is
+unmeasured**, and if the road ever reads slower to kill through, it is the first place to look.
+
 ⛔ **There is no `FOE_GIVEN` constant and there must not be one.** A single number behind 61
 statblocks would be a second author for figures that are hand-tuned per fight, and each of those
 tunings is somebody's measurement. ⚑ **The knob that does exist is `HIT_EASE`**, which is where

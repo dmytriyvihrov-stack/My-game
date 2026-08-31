@@ -25,6 +25,16 @@ back already answered by work that was not about them.
 
 ---
 
+## Y · From #275
+
+| | the question | ⭐ mine |
+|---|---|---|
+| **Y1** | **The dodge cap went 12 to 25 and it is NOT priced against the road.** You said not to (*"maybe dont do it that pricacly with dodge cup through battles - it is your unit stat"*), and the reasoning is sound: what moved is a curve every body on both sides climbs, not a statblock. But it does move both sides - a foe's dodge averages 16.5 and was being taxed too, so **every enemy in the game also got a point or two harder to hit**. The baseline half of the matrix was taken before you said stop and it is in the session record; the other half is about twenty minutes. | **leave it unpriced and play it.** If the road feels slower to kill through, this is the number |
+| **Y2** | **The brawl's first swing now cannot miss.** A playthrough report said an ~82% opening miss followed by two blows from the drunk made the tutorial feel harsher than intended. `SURE_AFTER` already exists for exactly that frustration and structurally cannot reach the FIRST swing. It is `TUT_FIRST_SURE`, one word, the tap-room only, one body's first blow only. | **keep it.** It is the first thing a new player ever does and it costs one swing in a whole run |
+| **Y3** | **A hidden body still counts as CROWDING the enemy it is standing next to.** It holds no zone of control (nobody takes a free swing from a body they cannot see), but `engagers` still counts it, so your line gets the `surrounded` to-hit bonus from somebody the enemy does not know is there. That reads as an ambush working and it may read as a cheat. One clause either way. | **as built.** The body IS pressing on them; they simply do not know what it is |
+
+---
+
 ## X · From #274
 
 | | the question | ⭐ mine |
