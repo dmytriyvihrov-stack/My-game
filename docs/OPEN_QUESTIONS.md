@@ -25,13 +25,21 @@ back already answered by work that was not about them.
 
 ---
 
-## U · From #270
+## V · From #270
 
 | | the question | ⭑ mine |
 |---|---|---|
-| **U1** | **Is the free payday every time, or sometimes?** You asked for it at the top mood rung and I built it deterministic: at HIGH SPIRITS the wages are simply waived, about thirty crowns every fourth day, and the ladder's own hover now says *they waive the wages*. A chance would read as the game being stingy about a rung that is expensive to hold; a certainty is a thing you can plan a route around. It is one `if` either way. | **every time**, as built |
-| **U2** | **Two fittings before any racks: too tight?** The wagon had no slot cap at all (#238 deleted the last one deliberately: *"the money is the cap"*), and an upgradeable count needs something to upgrade FROM. `RACK_SLOTS` opens at **2** of five fittings and goes 3 / 4 / 5 for 4 / 8 / 14 salvage, against the frame's 5 / 10 / 18 and a run that holds 23-24 at the last fire. If it bites too hard the base is one digit. | **2**, so the first rack is worth buying |
-| **U3** | **Does the ratkin cap belong on a body coming BACK?** Four is the cap on taking somebody NEW: a muster wall, a road door, the allies at Blood on the Road. It is deliberately NOT asked of the returner at a fire or the man who walks out of the sinkhole three days later, because both were already yours and a company that knifes its own for coming home is a different game. Say the word and it binds everywhere. | **new bodies only** |
+| **V1** | **Is the free payday every time, or sometimes?** You asked for it at the top mood rung and I built it deterministic: at HIGH SPIRITS the wages are simply waived, about thirty crowns every fourth day, and the ladder's own hover now says *they waive the wages*. A chance would read as the game being stingy about a rung that is expensive to hold; a certainty is a thing you can plan a route around. It is one `if` either way. | **every time**, as built |
+| **V2** | **Two fittings before any racks: too tight?** The wagon had no slot cap at all (#238 deleted the last one deliberately: *"the money is the cap"*), and an upgradeable count needs something to upgrade FROM. `RACK_SLOTS` opens at **2** of five fittings and goes 3 / 4 / 5 for 4 / 8 / 14 salvage, against the frame's 5 / 10 / 18 and a run that holds 23-24 at the last fire. If it bites too hard the base is one digit. | **2**, so the first rack is worth buying |
+| **V3** | **Does the ratkin cap belong on a body coming BACK?** Four is the cap on taking somebody NEW: a muster wall, a road door, the allies at Blood on the Road. It is deliberately NOT asked of the returner at a fire or the man who walks out of the sinkhole three days later, because both were already yours and a company that knifes its own for coming home is a different game. Say the word and it binds everywhere. | **new bodies only** |
+
+---
+
+## U · From the 2026-08-31 rhythm rulings (concept §5)
+
+| | the question | ⭑ mine |
+|---|---|---|
+| **U1** · concept §5 | **The Sling-Line under the "no doors on 60-70% of fights" ruling: forced, or kept as a paid walk-around?** Every other fight classified itself (they attack = forced; you choose = doors). The Stone Field's walk-around is a PRICE - a day and two provisions - which makes it the toll-man's shape rather than a refusal, and it is the only door of its kind on the road | **keep the paid walk-around.** A priced detour is a real decision, not bureaucracy, and cutting it deletes a shape rather than a duplicate. If it reads as clutter in play, forcing it later is one door's deletion; un-forcing it later means re-tuning a fight |
 
 ---
 
