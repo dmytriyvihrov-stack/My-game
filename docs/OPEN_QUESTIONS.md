@@ -25,6 +25,14 @@ back already answered by work that was not about them.
 
 ---
 
+## T · From the 2026-08-31 rhythm rulings (concept §5)
+
+| | the question | ⭑ mine |
+|---|---|---|
+| **T1** · concept §5 | **The Sling-Line under the "no doors on 60-70% of fights" ruling: forced, or kept as a paid walk-around?** Every other fight classified itself (they attack = forced; you choose = doors). The Stone Field's walk-around is a PRICE - a day and two provisions - which makes it the toll-man's shape rather than a refusal, and it is the only door of its kind on the road | **keep the paid walk-around.** A priced detour is a real decision, not bureaucracy, and cutting it deletes a shape rather than a duplicate. If it reads as clutter in play, forcing it later is one door's deletion; un-forcing it later means re-tuning a fight |
+
+---
+
 ## S · From #267
 
 | | the question | ⭑ mine |

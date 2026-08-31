@@ -147,6 +147,55 @@ important, nothing is.** The rules:
    the shape: three lines, the loot on the card, one button. **A card with two or more doors
    still shows nothing before the pick.**
 
+### The road's rhythm and the demo's shape (rulings, 2026-08-31)
+
+*(Design conversation, 2026-08-31. Five rulings that extend the choice economy above; each was
+argued against the shipped build's numbers before it was taken.)*
+
+1. **The demo is all of Act 1 plus a tail of Act 2, never a longer Act 1.** Act 1 already runs
+   1.5-2 hours against a 45-90 minute demo norm, and each of its eight fights teaches something
+   different; a ninth would teach nothing. The tail is **2-4 nodes of the next region** - new
+   ground visible on the map, one or two LIGHT/MEDIUM cards, a new enemy's silhouette - closed
+   by the Act 1 stinger (backlog #28, which is exactly this). The player crosses the border,
+   sees the world is bigger, and is cut off on the inhale. *20-30% of Act 2 in the demo* was
+   weighed and rejected: Act 2 is parked as "deeper beats longer", so a third of it is months of
+   content for a demo that would then end mid-rough instead of on the threshold. Nothing in the
+   tail is throwaway - it becomes Act 2's real opening.
+
+2. **The road's resting ratio is 1.5-2 events per fight.** Measured in minutes, not in counts: a
+   fight is 5-10 minutes of tactics, a dieted event is 30-90 seconds of reading, so the band
+   costs 2-4 minutes of story per fight and does not fatigue. It holds only while the rules
+   above hold: a third of the road LIGHT, HEAVY rare and spaced, the chapter shape kept. On
+   repeat runs the player skims, so **novelty at the second and third run comes from the
+   floating deck and the gated doors, never from more fixed cards.**
+
+3. **No second global text diet. The picture earns the cut, card by card.** The first diet's own
+   finding stands: what survived it is load-bearing, and cutting to a quota costs the joke or
+   the fact. As a card gains its wide 1672x941 master it is re-read once and loses only the
+   sentences the painting now says (the place, who stands in it, the light) - the "prose and
+   receipt never say the same thing" rule, with the painting as a third voice. New cards author
+   to the lower half of their bands (LIGHT toward 45-60, MEDIUM toward 90-110).
+
+4. **The map says the category; the painting stays.** #116 stands: sights are visible from the
+   first minute. What an unvisited node gains is a small **category pip** beside it - derived
+   from `fightAt` (sure / choice / none), never authored - so a new player plans routes by
+   category while a veteran reads the paintings, and both channels stay honest. The armour
+   ambush carries no node and stays a surprise; the fork card stays hearsay.
+
+5. **Most fights ask nothing: 60-70% of non-boss battles open with no doors, by classification
+   and not by quota.** The classification: **when they come at you, the fight simply starts; a
+   door remains only where you choose to be the aggressor or to pass by.** On the shipped
+   census that lands at ~6 of 9 non-boss fights forced (the tutorial, the Pack, the armour, the
+   chase, the mirehares, the Sling-Line - the last one still an open call), which is the band
+   asked for. The doors that stay are the ones that ARE the card: the Broken Men's "No.", the
+   Steading-Line's three doors before the fourth (the hardest fight on the road; its doors are
+   the survival valve), the wedding's massacre. Doors that only change how you ENTER one
+   unavoidable fight (the tutorial's three, the armour's three) are a different species and stay
+   on set-pieces. Two bills come with the ruling: **a forced fight must be winnable by the worst
+   company that can legally reach it** (`ARENA.match`, n>=15, per flipped fight - a refusal door
+   was hidden balance, and deleting it moves that balance into the tuning), and the refusal
+   decision moves up to the route pick, which is what the category pip in ruling 4 exists for.
+
 ## 6. You, the Captain - and the party
 
 **You are a character, not a cursor.** The player is the company's Captain: a unit on the battlefield who fights, bleeds, and can die, but who is marked as the leader everywhere - a banner crest on the sprite, a gold edge on the turn-order card, his own line in the roster. This gives the whole design a spine it was missing:
