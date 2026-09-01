@@ -854,6 +854,14 @@ const SWA={
            w:'He wants to be where the crowd is, which is the one place everything can reach him, '+
              'and an ogre’s stride is the shortest in the game.',
            a:'THE CROWD-BREAKER · the only class that wants to be flanked.'},
+  plateman:{s:'The only class in the roster whose identity is a RULE rather than a number: '+
+             'his harness wears at 70% of the rate anybody else\u2019s does, so the 70/30 split '+
+             'keeps working for half again as many blows. Nothing else in the game changes '+
+             'how a blow is divided.',
+           w:'He does no damage worth the name, and the rule has an OFF SWITCH: an empty '+
+             'harness is an ordinary body. It is worth nothing in rags and two blows in '+
+             'plate, so he is a class you have to afford.',
+           a:'THE ANVIL \u00b7 protection, the job no class owned until #284.'},
   none   :{s:'Half price and a blank slate: the class is picked at the first promotion, after you '+
              'have seen what the company is missing.',
            w:'No class skills and no weapon. Until something is put in his hands he can walk, and '+
@@ -880,74 +888,17 @@ const AUTHORED_NOTE='AUTHORED · the only hand-written text on this page';
    `CLSLEAN` row, `START_GEAR`, `KIND_BY_CLS`, `STAT_PRIO`, a `CLS_BY_RACE` seat, a
    sprite key and a painting - and the lab will draw every one of those gaps the
    moment the row exists, which is what it is for. */
-const DRAFT={
-  plateman:{
-    /* the user's pick, 2026-09-01, out of the eight the card offered */
-    n:'PLATEMAN',ico:'⛨',
-    alts:['PLATEMAN','ANVIL','HARNESSMAN','IRONSIDE','BULWARK','HOLDFAST','SHIELDMAN','BREAKWATER'],
-    lean:{str:+1},
-    /* 70% is stated HERE and nowhere else; the simulation reads it */
-    wear:0.7,
-    promise:'You hit him and nothing happens. That is the whole trade.',
-    job:'Stand where the blows are meant for somebody else, and still be standing.',
-    /* the ask, and the three other things it could have meant, priced on the page */
-    /* ⛔ THE MEASUREMENT OVERRULED THE FIRST DRAFT OF THIS ROW, WHICH IS WHY THE
-       TABLE IS ON THE PAGE. It first read `sim:'c'` - "only 70% of what reaches flesh
-       gets through" - on the reasoning that it is visible and collides with nothing.
-       Priced against the build it came back at SEVEN BLOCKS, the same as today: at
-       HDA_CUT scale a padded jack is 10 armour against 19 hitpoints and it is empty
-       after three blows, so a rule that only works WHILE THE HARNESS HOLDS is a rule
-       that works for three blows out of seven. The two readings that moved the number
-       are the two that outlive the harness. */
-    /* ⛔ THE READING IS THE USER'S, TAKEN AFTER THE TABLE. Two of the four were
-       measured no-ops: the literal ask is what the build already does for every body,
-       and improving the BAND is worth nothing because the harness is gone after three
-       blows. This is the one that moved the number without adding a second mechanic,
-       and it is the one the ask actually described. The soak variant stays on the
-       table below, priced, if the off switch ever needs closing. */
-    rule:{n:'THE HARNESS WEARS AT 70%',
-      ask:'armour gets only 70% of normal damage',
-      sim:'b',
-      d:'Every blow takes his harness down by seven tenths of what it would take off '+
-        'anybody else’s. The split is untouched: seven tenths of a blow still stops in '+
-        'the plates and three tenths still reaches him. What changes is HOW LONG the '+
-        'plates are there to do it.'},
-    weapon:{n:'THE SHIELD IS THE SIGNATURE',
-      d:'A shield in the off hand is what raises TAUNT, the way a boar spear is what '+
-        'raises SPEAR WALL. Without one he is a man with a sword.'},
-    /* ⛑ TWO OFF-HAND TOOLS, ONE JOB, OPPOSITE RISK. This is the fork, and it is a
-       better one than "shield or hook as different jobs": a taunt and a hook are the
-       SAME job done two ways. The shield says come to me and protects him while they
-       do; the hook says you are coming, and buys him nothing. Same question, opposite
-       answer, which is what a real choice looks like.
-       ⚠ BOTH ARE OFF-HAND, AND THAT IS ONE NEW RULE FOR THE WHOLE GAME: an off-hand
-       piece may carry an ACT. Today every `slot:'off'` row is a passive number (+4
-       dodge, +5 hit) and nothing in the off hand does anything. This gives the slot a
-       reason to exist for every class, not just this one - and it prices itself,
-       because `handsFree` means a two-handed weapon locks the off hand entirely. A
-       plateman with a hook cannot carry a maul. */
-    acts:[
-      {n:'TAUNT',off:'a shield',cost:1,cool:2,
-       d:'Everything within 2 hexes that can reach him picks him this round, whatever '+
-         'else it wanted. He does not attack on the turn he does it.',
-       cost2:'Nothing in the build taunts today. It is one insertion into targetScore, '+
-         'the single function both brains pick targets with.'},
-      {n:'HOOK',off:'a hook-pole',cost:1,cool:2,reach:2,pull:1,
-       d:'Reach 2, small damage, and it drags them one hex toward him: out of their '+
-         'line, off your archer, into your own reach, or over the rim of a pit.',
-       cost2:'ALREADY IN THE ENGINE. `act.pull` is read by the forced-movement '+
-         'resolver, the gust flips its sign for it, and the pit rule names a body '+
-         '"hooked, dragged" by hand. The RATKIN HOOK-POLE has been fielding it since '+
-         'backlog #7. This is a GEAR row and a class gate, not new code.'}],
-    s:'The first class in the roster whose identity is a RULE rather than a number, '+
-      'and the only one that gets better the more armour you put on it: nothing else '+
-      'in the game scales with the harness instead of with a stat.',
-    w:'He does no damage worth the name, and his advantage has an OFF SWITCH: an empty '+
-      'harness is an ordinary body and the rule keeping him alive stops existing '+
-      'mid-fight. It is also worth almost nothing in rags, so he is a class you have to '+
-      'afford. Repairing and replacing armour starts to matter.',
-    a:'THE PLATEMAN · protection, the one job no class currently owns.'}
-};
+/* ⛑ THE SHELF IS EMPTY, AND THAT IS THE POINT OF IT.
+   The PLATEMAN was drafted here on 2026-09-01, priced against the build's own
+   `ARMOUR_ABSORB` (four readings, two of them measured no-ops), named out of eight,
+   and shipped in #284 with the rule the measurement chose. It is a `CLASSES` row now,
+   so the lab reads it live like every other class and drawing it here as well would be
+   the same class twice with one copy stale by construction.
+   ⚠ TO DRAFT THE NEXT ONE: put a row back in `DRAFT` in the shape the plateman had
+   (`git show 29160e3:tools/classes.html` is the last version that carries it), give it
+   a `rule.sim` naming one of `draftSim`'s readings, and the shelf draws itself. The
+   simulation, the sweep and the NOT IN THE BUILD frame are all still here. */
+const DRAFT={};
 
 /* ⛔ ═══ THE TRAINING LOCK, AS A PROPOSAL ═══════════════════════════════════
    (User: *"lets lock special weapon skills to a class"*, and *"what if to both? so

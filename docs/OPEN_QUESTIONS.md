@@ -25,6 +25,15 @@ back already answered by work that was not about them.
 
 ---
 
+## AC · From #284
+
+| | the question | ⭐ mine |
+|---|---|---|
+| **AC1** | **The harpoon's cone is aimed by WALKING, and nothing on screen says so.** `u.facing` is real and maintained - `faceToward` sets it on every blow and every walk, and the token has been drawn pointing since deployment - so the cone is a working rule. But there is **no turn action** and **no lit arc**: a player who wants to catch something behind them has to walk to turn, and will discover that by the act refusing. Three ways out, and they cost very differently: light the arc when the act is armed (cheap, and it is what `offerAtk` already does for range); add a free turn-in-place (a new verb, and it changes every facing-based rule in the game including the back-attack bonus); or drop the cone and make it a plain range-4 pull (cheapest, and it throws away the shape you asked for). | **light the arc and play it first.** The shape is the interesting half of the weapon and the refusal is only frustrating while it is invisible. A turn action is the expensive answer and it would quietly buff every flanker in the game, which is a much bigger change than a harpoon |
+| **AC2** | **The star-shaped AoE spell (#6) needs a spell that targets a SHAPE, and no spell in the game does.** `castAct` builds a single-target act and every working lands on a body; the plus-pattern in your screenshot is centred on a HEX, which is a different question from `inCone` (that one still picks a body and then asks where it is). It also needs a rule for what happens to your own people standing in it. | **build it as its own entry, not as a line in a batch.** It is the third new targeting primitive in two entries and the first that can hit your own line - that wants its own rules-and-a-picture pass before code, which is the one thing this project has learned to do before a system rather than after |
+
+---
+
 ## AB · From #283
 
 | | the question | ⭐ mine |

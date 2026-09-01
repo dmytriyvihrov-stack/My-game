@@ -26,6 +26,37 @@
 
 ---
 
+## #284 - The PLATEMAN, the harpoon, and the class lane stops costing a perk point
+
+**In the game.** There is a seventh class on the wall and the level-up screen owes you more.
+
+**In three steps.** New company · walk to the **Muster Field** · look for **PLATEMAN**.
+
+- **The PLATEMAN.** Human or ogre, and his whole class is a rule: his harness wears at 70% of the
+  rate anybody else's does, so the armour is there for half again as long. Measured: in the same
+  padded jack he survives **8 landed blows to a spear's 7**, and it is worth **nothing in rags and
+  two blows in plate**. Put a shield in his off hand and he gets **TAUNT** - everything within 2
+  hexes would rather hit him for a round. Take the shield away and the taunt goes with it.
+- **The HARPOON.** A rare two-handed weapon, and the brute can carry it too. It reaches **4 hexes
+  straight ahead and 3 either side of that**, and it will not go round a corner: you point it by
+  **walking**, because a body faces the way it last moved or swung. What it catches comes **one hex
+  toward you** - out of their line, off your archer, or over the rim of a pit.
+- **A class skill is free now.** Level an archer: SURE SHOT is simply there from level 1, and at
+  level 4 the tier says **FREE - CLICK TO TAKE** and does not spend the perk point. The point is
+  still yours for the general lane. The foot of the tree counts both out loud.
+- **Two perks that are CARDS.** The archer's tier 4 is PIERCING SHOT (ignores armour entirely,
+  half again the damage) or POISON SHOT (everything that touches them lands 15% harder for two
+  rounds). Every other perk in the game is a number; these hand you a button.
+- **The MAGE** gets ELEMENTAL MELEE at level 2: fire on whatever he swings, and only what he swings
+  - nothing he casts or shoots catches. His stave now adds **one** hex of working reach, not two.
+- **The CAPTAIN** picks at 4 what COMMAND carries: **GRAND COMMAND** (+10 more morale, one hex
+  further) or **BATTLE FURY** (+10 to hit and +10% damage instead of the morale).
+- **The SPEAR** gets **+5 to hit** whenever her target is not adjacent - the range only she has.
+- **What would be a bug.** A plateman whose armour empties as fast as anybody else's · TAUNT on a
+  body with no shield, or on one holding the harpoon · the harpoon firing behind him · a class
+  skill charging a perk point · PIERCING SHOT appearing on somebody holding a sword · the word
+  HARPOON twice on one body.
+
 ## #283 - The halberd had no door, the weapons get categories, and one MAGE says what it costs
 
 **In the game.** The headline is a weapon you have never seen.
