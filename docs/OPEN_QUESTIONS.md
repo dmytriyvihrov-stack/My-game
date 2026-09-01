@@ -25,6 +25,15 @@ back already answered by work that was not about them.
 
 ---
 
+## AB · From #283
+
+| | the question | ⭐ mine |
+|---|---|---|
+| **AB1** | **“Mage stuff have 1 range” has two readings and they are different changes.** If *staff* means the weapon, the Working stave is **already `reach:1`** and there is nothing to do. If it means its **spell range**, the stave adds **+2 hexes to every school** today and you are asking for +1 - which is a real nerf to the one thing that makes a stave worth carrying over a sword, and it interacts with the level-2 ELEMENTAL MELEE you also asked for (a caster who wants to be in melee wants LESS reach, not more). | **leave the stave at +2 and let ELEMENTAL MELEE be the short-range answer.** The stave and the sword are already the long/short choice; cutting the stave to +1 collapses that choice rather than sharpening it. If you want the mage pulled forward, the fire-on-the-blade perk does it by making the sword better, which is the same result without taking anything away |
+| **AB2** | **A two-handed harpoon cannot coexist with a shield, and that changes the PLATEMAN’s whole fork.** You asked for the hook as *“two hended style of weapon”*. Two-handed means `handsFree` locks the off hand, so the class choice becomes **shield-and-taunt** or **harpoon-and-drag-with-nothing-in-the-off-hand** - which is a sharper fork than I proposed. But it removes the reason for the new rule *an off-hand piece may carry an act*, which was going to give every class’s off hand a purpose for the first time. | **make the harpoon two-handed and keep the off-hand-act rule anyway, for the shield alone.** The fork is better your way, and TAUNT still needs the rule to exist. One new rule, used by one piece today and available to every piece later, is a cheaper thing to own than two half-rules |
+
+---
+
 ## AA · From #280
 
 | | the question | ⭐ mine |

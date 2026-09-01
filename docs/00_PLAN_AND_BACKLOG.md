@@ -91,6 +91,7 @@ section used to carry each entry in full, which made the work file a second chan
 
 | | the subtraction | log |
 |---|---|---|
+| **#283** *(09-01)* | **The halberd had no door, the weapons get categories, and one MAGE says what it costs** | 8f.306 |
 | **#281** *(09-01)* | **The glass-cannon mage is deleted, and the class lab says what each weapon unlocks** | 8f.305 |
 | **#280** *(09-01)* | **The class lab: every class in one table, a body built by hand, and a fight to try it in** | 8f.304 |
 | **#279** *(09-01)* | **The Armoury: every artifact, where it comes from, and who it is for** | 8f.303 |

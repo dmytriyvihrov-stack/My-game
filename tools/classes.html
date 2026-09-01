@@ -154,6 +154,8 @@
     border:1px solid var(--edge);vertical-align:middle;margin-left:6px}
   .dbar i{display:block;height:100%;background:var(--mid)}
   .act.gone{border-color:var(--bad);color:var(--bad);text-decoration:line-through;opacity:.75}
+  .cat{border:1px solid var(--edge2);color:var(--teal);font-size:9px;padding:0 4px;
+    letter-spacing:1px;text-transform:uppercase}
   .wep.trained{border-color:var(--gold)}
 
   /* ── tables ──────────────────────────────────────────────────────── */
@@ -556,13 +558,20 @@ window.GT=(function(){
      brute swinging a warclub is the body the muster wall actually produces, and its
      acts and reach are the ogre's. A class on no wall (the captain) falls back to a
      human, which is what he is. */
-  function weaponsFor(cls){
+  function weaponsFor(cls,level){
+    /* ⛔ #283 - IT WAS BUILT AT LEVEL 1 AND THAT WAS A LIE BY OMISSION. (User: *"i
+       think in actual build it works a bit differently then in tool"*.) The captain's
+       COMMAND is gated on `level>=4`, so a grid built at level 1 could never draw it -
+       the lab was showing a real body, honestly, at the one level that hides the act
+       the class is named for. It builds at the level the bar is set to now, and the
+       card says which level it is looking at. */
+    level=level||1;
     const walls=Object.keys(get('CLS_BY_RACE',{}))
       .filter(r=>(CLS_BY_RACE[r]||[]).indexOf(cls)>=0);
     const race=walls.indexOf('human')>=0?'human':(walls[0]||'human');
     const G=get('GEAR',{}),start=(get('START_GEAR',{})[cls]||[])[1]||null;
     const actsOf=eq=>{
-      try{const u=unitFrom(person({race:race,cls:cls,level:1,eq:eq}));
+      try{const u=unitFrom(person({race:race,cls:cls,level:level,eq:eq}));
         return (u.acts||[]).filter(a=>!a.move).map(a=>({
           n:a.n,cost:a.cost,dmg:a.dmg?a.dmg.slice():null,reach:a.reach,range:a.range,
           cool:a.cool0||a.cool||0,note:a.note||'',self:!!a.self}));
@@ -582,7 +591,7 @@ window.GT=(function(){
     const plainActs=k=>{
       if(plainOf[k])return plainOf[k];
       const o={};
-      try{unitFrom(person({race:race,cls:'none',level:1,eq:{main:k,off:null}}))
+      try{unitFrom(person({race:race,cls:'none',level:level,eq:{main:k,off:null}}))
         .acts.forEach(a=>{if(!a.move)o[a.n]=1;});}catch(e){}
       return (plainOf[k]=o);
     };
@@ -608,7 +617,11 @@ window.GT=(function(){
     out.sort((a,b)=>(b.start-a.start)||(b.fits-a.fits)||
       ((b.range||0)-(a.range||0))||((b.reach||1)-(a.reach||1))||
       (((b.dmg&&b.dmg[1])||0)-((a.dmg&&a.dmg[1])||0)));
-    return {race:race,bare:bare,rows:out};
+    return {race:race,level:level,bare:bare,rows:out,
+      cat:(function(){const o={};Object.keys(get('GEAR',{})).forEach(k=>{
+        if(GEAR[k].cat)o[k]=GEAR[k].cat;});return o;})(),
+      trains:(function(){try{return {list:CLS_TRAINS[cls],word:trainsWord(cls)};}
+        catch(e){return null;}})()};
   }
 
   /* ── what a proposed armour rule is worth, run against the real engine ─── */
@@ -971,6 +984,9 @@ const DRAFT_TRAINS={
    yesterday's question; every one of these resets to "everything" on RELOAD BUILD,
    which is the state somebody arriving at the page wants. */
 let FILTER='all';
+/* #283 - the level the class cards build their weapon grid at. It was hard-wired to
+   1, which hid COMMAND (level>=4) from the captain's own card. */
+let CARDLVL=4;
 const SHOW={races:true,logic:true,tree:true,trains:false};
 const WEPOPEN={};
 
@@ -1072,12 +1088,17 @@ function drawClasses(){
     '<button data-sec="tree" class="'+(SHOW.tree?'on':'')+'">the whole tree</button>'+
     '<button data-sec="trains" class="draftbtn '+(SHOW.trains?'on':'')+'">'+
       'lock specials to trained weapons <span class="lbl">draft</span></button>'+
+    '<span class="lbl">cards at level</span>'+
+    [1,2,4,7,10].map(l=>'<button data-lvl="'+l+'" class="'+(CARDLVL===l?'on':'')+
+      '">'+l+'</button>').join('')+
     '</div>';
   $('classFilter').innerHTML=h;
   $('classFilter').querySelectorAll('[data-f]').forEach(b=>b.onclick=()=>{
     FILTER=b.dataset.f;drawClasses();window.scrollTo(0,0);});
   $('classFilter').querySelectorAll('[data-sec]').forEach(b=>b.onclick=()=>{
     SHOW[b.dataset.sec]=!SHOW[b.dataset.sec];drawClasses();});
+  $('classFilter').querySelectorAll('[data-lvl]').forEach(b=>b.onclick=()=>{
+    CARDLVL=+b.dataset.lvl;drawClasses();});
 
   const shown=CS.filter(c=>FILTER==='all'||c.k===FILTER);
   const draftShown=Object.keys(DRAFT).filter(k=>FILTER==='all'||FILTER==='d:'+k);
@@ -1217,7 +1238,7 @@ function classCard(c,RS,CS){
       t.gen.map(k=>perkChip(k)).join('')+'</span></div>';});
 
   /* THE WEAPONS. Derived by building the body with each one - see weaponsFor. */
-  const W=GT.weaponsFor(c.k);
+  const W=GT.weaponsFor(c.k,CARDLVL);
   /* ⛔ THE LOCK IS DRAWN AS A SUBTRACTION. With it on, a weapon this class does not
      train keeps its PLAIN attack and loses its SPECIAL, and the grid strikes the
      acts that would go rather than quietly not drawing them. A proposal that only
@@ -1255,7 +1276,9 @@ function classCard(c,RS,CS){
           (g.fits?'':' <span class="tag bad">wrong size</span>')+
           (g.unique?' <span class="tag">unique</span>':'')+
         '</div>'+
-        '<div class="wep-s rar-'+esc(g.rarity)+'">'+esc(g.rarity)+' \u00b7 '+esc(bits.join(' \u00b7 '))+'</div>'+
+        '<div class="wep-s rar-'+esc(g.rarity)+'">'+
+          (W.cat&&W.cat[g.k]?'<span class="cat">'+esc(W.cat[g.k])+'</span> ':'')+
+          esc(g.rarity)+' \u00b7 '+esc(bits.join(' \u00b7 '))+'</div>'+
       '</div>'+
       '<div class="wep-a">'+
         (brought.length
@@ -1293,7 +1316,14 @@ function classCard(c,RS,CS){
           (c.prio?c.prio.map(k=>STATN[k]).join(' \u2192 '):'-')+'</span>'+
         '<span class="k">battle art</span><span class="v">'+esc(c.kind||'-')+'</span>'+
         '<span class="k">hireable by</span><span class="v">'+races+'</span>'+
-      '</div></div>'+
+        '<span class="k">specialises in</span><span class="v">'+
+          (W.trains&&W.trains.word?'<b class="ok">'+esc(W.trains.word)+'</b>':'-')+'</span>'+
+      '</div>'+
+      '<div class="why">Read off <b>CLS_TRAINS</b>, in weapon CATEGORIES rather than in '+
+      'weapon keys, so a weapon written next year is trained without a second edit. '+
+      '<b>It is a readout today and not a gate</b>: nothing in <b>unitFrom</b> asks it, so no '+
+      'signature has been taken away. Press <i>lock specials to trained weapons</i> in the bar '+
+      'to see what turning it into a rule would cost.</div></div>'+
     '<div><h3>ITS OWN SKILLS <span class="lbl">\u00b7 nobody else is offered these</span></h3>'+
       own+
       '<h3>AND EVERYBODY\u2019S <span class="lbl">\u00b7 hover for the mechanics</span></h3>'+
@@ -1306,8 +1336,8 @@ function classCard(c,RS,CS){
       '<b>ARCHETYPE</b><span class="arch">'+esc(s.a||'-')+'</span></div></div>'+
     '</div>'+
     '<div class="weps"><h3>WHAT IT CAN CARRY, AND WHAT EACH ONE UNLOCKS '+
-      '<span class="lbl">\u00b7 built as a '+esc(W.race)+' and read off unitFrom \u00b7 click a '+
-      'weapon for every card in full</span></h3>'+
+      '<span class="lbl">\u00b7 built as a '+esc(W.race)+' at LEVEL '+W.level+
+      ' and read off unitFrom \u00b7 click a weapon for every card in full</span></h3>'+
       '<div class="wepgrid">'+weps+'</div>'+
       (SHOW.trains?'<div class="why warn" style="margin-bottom:6px">'+
         '<b>THE TRAINING LOCK IS ON, and it is a DRAFT.</b> '+

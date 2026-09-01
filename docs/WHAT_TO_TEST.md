@@ -26,6 +26,33 @@
 
 ---
 
+## #283 - The halberd had no door, the weapons get categories, and one MAGE says what it costs
+
+**In the game.** The headline is a weapon you have never seen.
+
+**In three steps.** New company · play until you reach a village or the quartermaster · read the rack.
+
+- **The halberd can now be bought.** It never could: measured over 400 shop rolls before this entry
+  it appeared **zero** times, and after it appears **30**. Buy one, put it on your SPEAR, and her
+  signature changes from SPEAR WALL to **BRACE AND SHOVE** - half damage, two hexes back, nobody gets
+  a parting swing at somebody being shoved. That whole tactical job has been in the game and
+  unreachable since it was written.
+- **Weapons say what kind of thing they are.** Every weapon carries a category (POLEARM, BOW, HEAVY,
+  BLADE, STAVE, SHIELD) and every class says what it specialises in. **This is a label, not a rule**:
+  nothing is taken away from anybody, and an archer holding a halberd still swings it exactly as
+  before.
+- **The MAGE says what it costs on the picker.** His signature line now reads *A BLADE OR A STAVE
+  · ONE SCHOOL · PAID FOR IN MOOD*, and his hover leads with it instead of burying it in the third
+  clause. **WILL-KICK is now WILL STRIKE.**
+- **EAGLE EYE is gone.** The archer's tier 7 is empty until its fork lands.
+- **What would be a bug.** A shop rack full of weapons and nothing else · a weapon with no category
+  on its card in the class lab · an old save whose archer had EAGLE EYE failing to load · the word
+  WILL-KICK appearing anywhere.
+
+**In the class lab.** The bar has a **cards at level** control now. Set it to 1 and the captain has
+HOLD THE LINE; set it to 4 and COMMAND appears. That is the build's own `level>=4` gate, and the lab
+was hiding it by building every card at level 1.
+
 ## #281 - The glass-cannon mage is deleted, and the class lab says what each weapon unlocks
 
 **In the game.** There is one MAGE now, and he is the one who could always hold a line.

@@ -11229,6 +11229,66 @@ Object.values(GEAR).forEach(g=>{
      bare `.dmg` on the row itself */
   if(g.throw&&g.throw.dmg)g.throw.dmg=[Math.round(g.throw.dmg[0]*HDA_CUT),Math.round(g.throw.dmg[1]*HDA_CUT)];
 });
+/* ═══ ⛔ #283 · WHAT KIND OF THING IT IS ═══════════════════════════════════
+   (User: *"Too each weapon we need add and write on it category (so it is easier to
+   get which class can use it)"*.)
+
+   ⛑ THE CATEGORY IS THE UNIT A CLASS TRAINS. A trained list of GEAR KEYS goes
+   stale the day a weapon is added; a trained list of CATEGORIES does not, and
+   "the archer trains BOW" is also the sentence a player can hold in their head.
+   ⚠ EVERY MAIN-HAND ROW MUST HAVE ONE, and `LINT` says so out loud rather than a
+   comment asking nicely - an uncategorised weapon is a weapon no class can be said
+   to train, which is the halberd's own failure wearing a different hat.
+   ⚠ THE OFF HAND IS CATEGORISED TOO, because a shield is a kind of thing a class
+   can be trained in exactly the way a bow is, and #282's draft turns on it. */
+const WEP_CAT={
+  /* reach 2, both hands: they fight over the person in front */
+  spear:'polearm', halberd:'polearm', broom:'polearm',
+  /* it throws a working further than an arm can */
+  rod:'stave',
+  /* it kills at a distance and is useless in a scrum */
+  bow:'bow', crossbow:'bow',
+  /* heavy, both hands, one reach: the answer to a crowd */
+  club:'heavy', maul:'heavy', weeper:'heavy',
+  /* one hand, one reach, and it is about the edge */
+  sword:'blade', shortsw:'blade', knife:'blade', cudgel:'blade',
+  woodstick:'blade',
+  /* held to stop a blow rather than to land one */
+  stoneshield:'shield', shield:'shield', lid:'shield', buckler:'shield',
+  panlid:'shield',
+  /* the rest of the off hand: not a thing anybody trains in */
+  quiver:'kit', offhand:'kit', focus:'kit'
+};
+const CAT_NAME={polearm:'POLEARM',stave:'STAVE',bow:'BOW',heavy:'HEAVY',
+  blade:'BLADE',shield:'SHIELD',kit:'KIT'};
+Object.keys(GEAR).forEach(k=>{if(WEP_CAT[k])GEAR[k].cat=WEP_CAT[k];});
+/* ⛑ AND WHAT EACH CLASS IS TRAINED IN, IN CATEGORIES. (User: *"On each class
+   writes - what wepon this class specialises"*, and *"lets lock special weapon
+   skills to a class"*.) This is #262's own draft rules 3 and 4, written down and
+   never built: the captain uses every weapon's special, everybody else trains two.
+   ⚠ IT IS A READOUT TODAY AND NOT YET A GATE. Nothing in `unitFrom` asks it, so no
+   signature is taken away by this entry - the table is what the sheet and the class
+   lab print, and turning it into a lock is its own decision with its own cost
+   (measured: the brute loses 13 specials, the archer none). Stated so a later
+   session cannot mistake a label for a rule.
+   ⚠ TWO CLASSES MAY TRAIN THE SAME CATEGORY ON PURPOSE - the blade is a caster's
+   and a cutter's both - and that is the answer to "can some classes use the same
+   weapon skills". */
+const CLS_TRAINS={
+  captain:'all',
+  spear  :['polearm'],
+  archer :['bow'],
+  cutter :['blade'],
+  brute  :['heavy'],
+  warmage:['stave','blade'],
+  none   :[]
+};
+const trainsCat=(cls,cat)=>{const t=CLS_TRAINS[cls];
+  return t==='all'?true:!!(t&&cat&&t.indexOf(cat)>=0);};
+const trainsWord=cls=>{const t=CLS_TRAINS[cls];
+  if(t==='all')return 'every weapon in the game';
+  if(!t||!t.length)return 'nothing yet';
+  return t.map(c=>CAT_NAME[c]||c.toUpperCase()).join(' and ');};
 /* MAIN/SECOND WEAPON → MAIN HAND / OFF HAND (user). The old names described
    what you put there; the new ones describe what is holding it, which is what
    makes "this takes both hands" read as a fact about the body rather than an
@@ -11896,7 +11956,12 @@ const PERKS={
              d:'Your parting swings deal 100% damage instead of 50%.'},
   sureshot :{kind:'class',n:'Sure Shot',
              d:'Shooting while engaged: -15 to hit instead of -35.'},
-  eagle    :{kind:'class',n:'Eagle Eye',d:'+2 range on every ranged attack.'},
+  /* #283 - EAGLE EYE IS DELETED. (User: *"Eagle Eye - delete completely"*.) It was
+     the archer's tier-7 door and +2 range on a 5-range bow is a stat increase with a
+     name, which is this table's own test for a perk that should not exist. ⚠ The
+     ENGINE LINE STAYS (`p.perks.indexOf('eagle')`), the way #261 left every retired
+     perk's line standing: a save written before today can carry the key, and a
+     retired row that still resolves is cheaper than a crash. */
   shadowstep:{kind:'class',n:'Shadow-Step',
              d:'After you DISTRACT something, your next attack on it this turn costs no action.'},
   butcher  :{kind:'class',n:'Butcher',
@@ -12031,7 +12096,10 @@ const CLASSES={
      ⚠ THE SKILLS ARE UNTOUCHED, which is the half of the ask that is easy to
      lose: this is a NAME and a GLYPH. One school, one casting a turn, a blade
      in the other hand - all of it is where it was. */
-  warmage:{n:'MAGE',sig:'A BLADE OR A STAVE, AND ONE SCHOOL',
+  /* #283 - the signature says what it COSTS. `sig` is printed on the class picker,
+     which is the one screen where a class is chosen, and "pays in his own mood" was
+     only ever in the hover behind it. */
+  warmage:{n:'MAGE',sig:'A BLADE OR A STAVE · ONE SCHOOL · PAID FOR IN MOOD',
     perks:{}},
   /* ⛔ #281 · AND THE SECOND ONE IS DELETED. (User: *"Older MAGE off the wall -
      we can delete from here and from current build"*.) #243 turned the glass cannon
@@ -12113,7 +12181,9 @@ const CLASSES={
    one table and the card's `kind` can never disagree with where it came from. */
 CLASSES.captain.perks={2:['duelist'],4:['inspire'],7:['warleader']};
 CLASSES.spear.perks  ={4:['bracewall'],7:['killzone']};
-CLASSES.archer.perks ={4:['sureshot'],7:['eagle']};
+/* #283 - and the lane it sat in. Tier 7 is empty for the archer now, which is the
+   honest state until the tier-4 fork lands. */
+CLASSES.archer.perks ={4:['sureshot']};
 CLASSES.cutter.perks ={4:['shadowstep'],7:['butcher']};
 CLASSES.brute.perks  ={4:['brawn'],7:['thickhide']};
 CLASSES.warmage.perks={4:['inspire'],7:['warleader']};
@@ -12828,33 +12898,46 @@ const CLASSHELP={
   captain:{d:'You. On the field, in reach, and worth killing, which is the point: leadership '+
     'that costs nothing is not leadership.',
     x:'COMMAND steadies the line, HOLD THE LINE hardens it. If the Captain falls the whole '+
-      'company takes the shock, and he is the only one who is never left behind.'},
-  spear:{d:'The line. Reach 2 means she fights over the person in front of her, which is what '+
-    'turns a row of bodies into a wall.',
-    x:'With a boar spear her signature is SPEAR WALL - one action, and anything stepping into '+
+      'company takes the shock, and they are the only one who is never left behind.'},
+  /* #283 - THE PRONOUNS GO. (User: *"It isn't connected to a gender anymore or
+     race"*.) #259 renamed the CLASS from SPEARWOMAN and left this hover saying "she"
+     and "her" three times, on a trade the muster wall offers to humans, ratkin and
+     ogres alike. A class is a job. */
+  spear:{d:'The line. Reach 2 means they fight over the person in front of them, which is '+
+    'what turns a row of bodies into a wall.',
+    x:'With a boar spear the signature is SPEAR WALL - one action, and anything stepping into '+
       'reach takes 75% of it and is often shoved back out. It stops dead the moment somebody '+
-      'gets inside her reach, so she needs a front rank. With a HALBERD it is BRACE AND SHOVE '+
+      'gets inside that reach, so they need a front rank. With a HALBERD it is BRACE AND SHOVE '+
       'instead: the weapon decides the job.'},
+  /* #283 - the same pass. The archer is a trade the wall offers to humans and ratkin,
+     and #259's rename went no further than the class NAME. */
   archer:{d:'Useless in a scrum and decisive from four hexes, so the rest of the line exists '+
-    'partly to keep the scrum off her.',
-    x:'CRIPPLING SHOT does not kill the thing running at you. It takes its legs. Her off hand '+
-      'is a real decision: a quiver, or a dirk for when something reaches her anyway.'},
+    'partly to keep the scrum off them.',
+    x:'CRIPPLING SHOT does not kill the thing running at you. It takes its legs. The off hand '+
+      'is a real decision: a quiver, or a dirk for when something reaches them anyway.'},
   /* ⚠ #161 - "Two schools" and "Three schools" below were both wrong, and had
      been since #157 cut the ladder to warmage 1 / mage 2. SCHOOLS{} is the
      fact; this is a hover that was printing a number the game had stopped
      keeping, which is #102's own rule caught on a fourth surface. */
   warmage:{d:'A mediocre swordsman who occasionally does something appalling. One school, one '+
     'working a turn, and a free hand for a blade - low magic written as a class.',
-    x:'Casting costs his own mood, and a working is aimed with the INTELLECT, so a stupid one '+
-      'misses. What he HOLDS decides how far a working carries: a working stave adds 2 hexes '+
-      'to every school, a sword adds none and is a great deal better in the scrum.'},
+    /* ⛑ #283 - AND THE MORALE COST IS SAID FIRST, NOT IN THE MIDDLE. (User:
+       *"Somwhere explain - that mage pays for its magic with his morale"*.) It has been
+       in this hover since it was written, third clause of a long sentence, which is
+       exactly the "present but invisible" case a batch keeps turning up. It is the
+       first thing the class says about itself now. */
+    x:'EVERY WORKING IS PAID FOR IN THEIR OWN MOOD, and a rattled caster is a caster '+
+      'who has run out of what casting costs. A working is aimed with the INTELLECT, so '+
+      'a stupid one misses. What they HOLD decides how far it carries: a working stave '+
+      'adds 2 hexes to every school, a sword adds none and is a great deal better in the '+
+      'scrum.'},
   /* #281 - the glass cannon's hover went with his row. It read: *"Two schools and a
      second working each turn at half strength, and almost nothing else. Bad with a
      blade, bad at dodging, thin. The line exists to keep him alive."* */
-  cutter:{d:'Not a damage dealer. A SETUP piece: he makes the opening and the whole line takes '+
-    'it, including him.',
-    x:'DISTRACT turns a target to face away from him: its back is then open to everybody, at '+
-      '+30 to hit and +25% damage. He also reads the ground: +1 hex on his first move.'},
+  cutter:{d:'Not a damage dealer. A SETUP piece: they make the opening and the whole line '+
+    'takes it, including them.',
+    x:'DISTRACT turns a target to face away from them: its back is then open to everybody, at '+
+      '+30 to hit and +25% damage. They also read the ground: +1 hex on their first move.'},
   brute:{d:'The answer to being surrounded is one horizontal reply through all of it.',
     x:'SWEEP hits every adjacent enemy at 75%. ROAR takes 28 morale off everything within two '+
       'hexes. Wants to be where the crowd is, which is the opposite of everybody else.'}
@@ -17060,7 +17143,11 @@ function unitFrom(p){
        #161 - it is 2 in the bare hand and 4 with the stave, which is what it
        has always been. Its note never carried a range figure and must not gain
        one: the card prints `range N` off the act. */
-    acts.push({k:'willkick',n:'WILL-KICK',cost:1,strain:5,range:2+u.spellRange,
+    /* #283 - WILL STRIKE. (User: *"rename it to will strike"*.) The KEY stays
+       `willkick`: `capTick` filters on `a.k==='willkick'` to keep this one working
+       when a magpie re-rolls a caster's schools, and renaming an identifier to
+       change a label is how a working line gets thrown away. */
+    acts.push({k:'willkick',n:'WILL STRIKE',cost:1,strain:5,range:2+u.spellRange,
       dmg:[Math.round(10*HDA_CUT),Math.round(16*HDA_CUT)],am:.30,ft:.80,arcane:true,
       note:'The cantrip every caster has. Cheap, 5 of their own mood, and mostly ignores '+
         'armour. Does not count against your one working a turn, but it is once a turn all '+
@@ -34850,6 +34937,25 @@ window.LINT=function(){
           hit('class',k,'sig advertises "'+name+'", which is not an act it gets');});
     });
   })();
+  /* ⛔ #283 · 6b - EVERY MAIN-HAND WEAPON MUST HAVE A CATEGORY, and this check
+     exists because the halberd's whole failure was a weapon nothing could say a
+     class trained. An uncategorised row is the same hole one edit earlier.
+     ⚠ PROVED BY MAKING IT FIRE: `delete GEAR.halberd.cat` in the console reports
+     one finding and putting it back clears it. A check that has only ever returned
+     zero is indistinguishable from a broken one. */
+  Object.keys(GEAR).forEach(k=>{const g=GEAR[k];
+    if(g.slot==='main'&&!g.cat)
+      hit('gear',k,'is a main-hand weapon with no category: no class can be said to train it');});
+  /* ⛔ #283 · 6c - AND EVERY CATEGORY A CLASS CLAIMS TO TRAIN MUST EXIST. A
+     trained list naming a category no weapon carries is a promise the shop can
+     never pay, which is this file's own recurring defect on a new surface. */
+  (function(){
+    const live={};Object.keys(GEAR).forEach(k=>{if(GEAR[k].cat)live[GEAR[k].cat]=1;});
+    Object.keys(CLS_TRAINS).forEach(c=>{const t=CLS_TRAINS[c];
+      if(t==='all'||!t)return;
+      t.forEach(cat=>{if(!live[cat])
+        hit('class',c,'trains "'+cat+'", which no weapon in the game is');});});
+  })();
   /* 7 — nicknames must not cross cultures */
   Object.keys(NICKS_BY_RACE).forEach(r=>{
     Object.keys(NICKS_BY_RACE).forEach(r2=>{
@@ -50311,9 +50417,15 @@ function rollRack(){
      shape is an accident of how many rows somebody happened to author.
      ⛑ IT IS A PREFERENCE AND NEVER A RULE, which is `slotOrder`'s own note: an
      empty slot falls through to the next one rather than costing the shop a row.
-     ⚠ AND THE `noMain` GATE SURVIVES IT - the common row may still never be a
-     main-hand weapon, so the slot walk skips `main` on that call instead of
-     picking it and being refused. */
+     ⚠ ~~AND THE `noMain` GATE SURVIVES IT~~ / ⛔ #283 - THE `noMain` GATE IS GONE.
+     Its own note above called it an optimisation ("instead of picking it and being
+     refused"), and that was true while `weaponAdvance` refused every common
+     main-hand weapon. It does not any more: a weapon that changes somebody's
+     SIGNATURE now passes, so skipping `main` on the common row is the difference
+     between the halberd being buyable and the halberd not existing. `weaponAdvance`
+     is the one filter; two gates saying the same thing is how the halberd fell
+     between them. ⚠ `take` still takes the flag, because the CALLER may still want
+     to skip a slot - it is simply no longer passed. */
   const take=(tier,noMain)=>{
     const ok=k=>out.indexOf(k)<0&&(!noMain||GEAR[k].slot!=='main');
     for(const sl of slotOrder()){
@@ -50325,13 +50437,56 @@ function rollRack(){
     if(!pool.length)pool=findPool(tier,null,true).filter(ok);
     if(pool.length)out.push(pickOne(pool));
   };
-  take('common',true);take('rare');take('epic');
+  take('common');take('rare');take('epic');
   return out.map(k=>[k,gearPrice(k)]);
+}
+/* ═══ ⛔ #283 · A WEAPON THAT CHANGES SOMEBODY'S JOB IS AN ADVANCE ═══════════
+   (User: *"Somehow i hadn't even one time halberd in my game"*.)
+
+   ⛑ AND HE NEVER COULD HAVE. Measured over all 15 main-hand rows: FIVE have no
+   door in the game at all - the halberd, the broom, the fence-post cudgel and the
+   two legendaries. The cause is two gates that agree by accident:
+     · `rollFind` only rolls `rare` and `epic`, so a COMMON is never a find;
+     · `rollRack` calls `take('common',true)` - `noMain` - so the shop's common row
+       may never be a main-hand weapon either.
+   A common main-hand weapon is therefore reachable through `START_GEAR` and nowhere
+   else, and the halberd is not in `START_GEAR`. It has been unbuyable since it was
+   written, along with the BRACE AND SHOVE signature it is the only source of - a
+   whole tactical job nobody has ever been able to reach.
+
+   ⛔ AND THE ADVANCE TEST IS WHY IT STAYS UNBUYABLE EVEN WITH THE GATES OPEN. It
+   measures the WEAPON - dice, reach, range, push - and a halberd is a boar spear
+   with the same dice and the same reach. What it actually brings is a different
+   SIGNATURE: the spear raises a wall with one and shoves with the other, which is
+   the whole of #72's weapon-defined-signature idea. The test could not see it.
+   ⛑ `sigChange` asks the ONE function that knows: it swaps the weapon onto a real
+   roster body, rebuilds it through `unitFrom`, and compares the act KEYS with the
+   plain swing and the kick taken out. Derived, so a signature added tomorrow is in
+   the shop the same day without a second edit.
+   ⚠ IT MUTATES AND PUTS BACK, inside a try/finally, because `unitFrom` reads
+   `p.eq.main` and there is no other way to ask it a hypothetical. Called on a shop
+   roll and a find roll, never in a frame. */
+function sigOf(p,k){
+  const was=p.eq.main;
+  try{p.eq.main=k;
+    return unitFrom(p).acts.filter(a=>!a.move&&a.k!=='main'&&a.k!=='kick')
+      .map(a=>a.k).sort().join('|');
+  }catch(e){return '';}
+  finally{p.eq.main=was;}
+}
+function sigChange(k){
+  const g=GEAR[k];if(!g||g.slot!=='main')return false;
+  return (G.party||[]).some(p=>{
+    if(!p||!p.eq||p.eq.main===k)return false;
+    if(g.size&&g.size!=='any'&&g.size!==p.race)return false;
+    return sigOf(p,k)!==sigOf(p,p.eq.main);});
 }
 function weaponAdvance(k){
   const g=GEAR[k];if(!g||g.slot!=='main')return true;
   const mine=(G.party||[]).map(p=>GEAR[p.eq&&p.eq.main]).filter(Boolean);
   if(!mine.length)return true;
+  /* #283 - a different job beats a bigger number */
+  if(sigChange(k))return true;
   /* ⛔ A CASTING TOOL IS NOT THE FLOOR, AND MEASURING SAID SO. The working
      stave hits for 6-10 because hitting is not what it is for, so taking the
      worst weapon in the company literally put the bar at a mean of 8 and made
