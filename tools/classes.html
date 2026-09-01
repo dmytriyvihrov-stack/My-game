@@ -139,6 +139,21 @@
   .tag.start{border-color:var(--gold);color:var(--gold)}
   .tag.bad{border-color:var(--bad);color:var(--bad)}
 
+  /* ── the draft shelf: it must not be mistakable for a reading ───────── */
+  .card.draft{border:1px dashed var(--mid);background:#191a16}
+  .card.draft>.hd{background:#20211a;border-bottom:1px dashed var(--mid)}
+  .card.draft .nm{color:var(--mid)}
+  .dmark{border:1px solid var(--mid);color:var(--mid);font-size:9.5px;letter-spacing:1.5px;
+    padding:1px 6px}
+  .filter button.draftbtn{border-style:dashed;color:var(--mid)}
+  .filter button.draftbtn.on{border-color:var(--mid);background:#20211a}
+  .pickd td{background:#1c2620}
+  .pickd td.n{color:var(--gold)}
+  tr.scale td{opacity:.6}
+  .dbar{display:inline-block;width:70px;height:6px;background:#1e2a29;
+    border:1px solid var(--edge);vertical-align:middle;margin-left:6px}
+  .dbar i{display:block;height:100%;background:var(--mid)}
+
   /* ── tables ──────────────────────────────────────────────────────── */
   table{border-collapse:collapse;font-size:11px;width:100%}
   th{color:var(--dim);font-weight:normal;text-align:left;letter-spacing:1px;font-size:10px;
@@ -575,6 +590,85 @@ window.GT=(function(){
     return {race:race,bare:bare,rows:out};
   }
 
+  /* ── what a proposed armour rule is worth, run against the real engine ─── */
+  /* ⛔ THE BLOW LOOP IS `strike`'s OWN, AND IT IS COPIED ON PURPOSE, ONCE, HERE.
+     `strike()` mutates a live unit inside a battle; there is no way to ask it a
+     hypothetical. So the three lines that matter are restated - armour takes
+     `raw*absorb` until it is empty, the body takes `raw*(1-absorb)`, then the flat
+     soak with its floor of 1 - and every INPUT is read off the build: the pool from
+     `bodyHp`, the harness from `armourValue`, and the split from `ARMOUR_ABSORB`
+     itself, never from a literal 0.7. If #269's band is ever retuned this readout
+     moves with it.
+     ⚠ IT IS A MODEL, NOT A FIGHT. No dodge, no misses, no morale: it answers "how
+     many landed blows does this body eat", which is the only question a proposed
+     armour rule actually asks. */
+  function blowsToDrop(hp,armour,raw,absorb,soak){
+    let a=armour,h=hp,n=0,strip=null;
+    while(h>0&&n<999){
+      n++;
+      let hpD;
+      if(a>0){const armD=Math.min(a,raw*absorb);a-=armD;hpD=raw*(1-absorb);}
+      else hpD=raw;
+      if(soak&&hpD>0)hpD=Math.max(1,hpD-soak);
+      h-=hpD;
+      if(a<=0&&strip===null)strip=n;
+    }
+    return {blows:n,strip:strip===null?n:strip};
+  }
+  function draftSim(spec){
+    spec=spec||{};
+    const absorb=(function(){try{return ARMOUR_ABSORB;}catch(e){return 0.7;}})();
+    const p=person({race:spec.race||'human',cls:spec.cls||'spear',level:spec.level||1,
+      eq:{armour:spec.armour||'jack',main:spec.main||'shortsw',off:spec.off||null}});
+    const u=unitFrom(p);
+    const hp=u.hpMax,arm=u.armourMax;
+    /* the blow: a real weapon's mean, through the global x0.8 `strike` applies */
+    const w=get('GEAR',{})[spec.blow||'shortsw'];
+    const raw=w&&w.dmg?((w.dmg[0]+w.dmg[1])/2)*0.8:4;
+    const out={hp:hp,armour:arm,raw:Math.round(raw*100)/100,
+      armourKey:spec.armour||'jack',
+      armourN:(get('GEAR',{})[spec.armour||'jack']||{}).n||spec.armour,
+      blowN:w?w.n:spec.blow,absorb:absorb,
+      today:blowsToDrop(hp,arm,raw,absorb,0)};
+    /* every reading the ask could have meant, priced side by side */
+    out.readings=[
+      {k:'a', n:'70% of the blow stops in the harness',
+       d:'what the build already does for every body in the game',
+       r:blowsToDrop(hp,arm,raw,absorb,0)},
+      {k:'b', n:'his harness wears at 70% rate',
+       d:'the same split, but his armour loses durability slower',
+       r:(function(){
+          /* armour wear x0.7 is the same as a body carrying armour/0.7 */
+          return blowsToDrop(hp,Math.round(arm/0.7),raw,absorb,0);})()},
+      {k:'c', n:'only 70% of what would reach flesh gets through',
+       d:'his band is '+Math.round((1-(1-absorb)*0.7)*100)+'/'+
+         Math.round((1-absorb)*0.7*100)+' while the harness holds, not '+
+         Math.round(absorb*100)+'/'+Math.round((1-absorb)*100),
+       r:blowsToDrop(hp,arm,raw,1-(1-absorb)*0.7,0)},
+      {k:'d', n:'a flat soak of 2, the way the Thing in Armour has one',
+       d:'never depletes; costs a heavy blow a tenth and a light one a fifth',
+       r:blowsToDrop(hp,arm,raw,absorb,2)},
+      {k:'bd',n:'soak 2 AND the harness wears at 70%',
+       d:'the two that actually moved, together: it lasts longer and it never stops',
+       r:blowsToDrop(hp,Math.round(arm/0.7),raw,absorb,2)}
+    ];
+    /* and what the two shipped +armour perks already buy, for scale */
+    out.perks=[
+      {n:'THICK HIDE (+18, cut)',r:blowsToDrop(hp,arm+Math.round(18*get('HDA_CUT',1)),raw,absorb,0)},
+      {n:'STONE HIDE (+10, cut)',r:blowsToDrop(hp,arm+Math.round(10*get('HDA_CUT',1)),raw,absorb,0)}
+    ];
+    return out;
+  }
+  /* the off-hand shields the build actually holds, for a draft that names one */
+  function shields(){
+    const G=get('GEAR',{}),out=[];
+    Object.keys(G).forEach(k=>{const g=G[k];
+      if(g&&g.slot==='off'&&g.dodge)out.push({k:k,n:g.n,dodge:g.dodge,
+        rarity:g.rarity||'common',hit:g.hit||0});});
+    out.sort((a,b)=>a.dodge-b.dodge);
+    return out;
+  }
+
   /* ── the fight: the practice field, driven from outside ───────────────── */
   function foeCat(){
     try{return devFoeCatalog().map(r=>({f:r.f,v:r.v,n:r.n,race:r.race,pts:r.pts}));}
@@ -642,7 +736,7 @@ window.GT=(function(){
   return {ok:true,
     tag:(function(){try{return BUILD_ID;}catch(e){return 'dev';}})(),
     races:raceRows,classes:classRows,perks:perkRows,lanes:lanes,
-    weaponsFor:weaponsFor,
+    weaponsFor:weaponsFor,draftSim:draftSim,shields:shields,
     build:build,gearFor:gearFor,traitsFor:traitsFor,
     foeCat:foeCat,grounds:grounds,fightKinds:fightKinds,
     startFight:startFight,leaveFight:leaveFight,fightOver:fightOver,
@@ -652,7 +746,9 @@ window.GT=(function(){
             /* ⛑ THE PRICE OF THE WRONG HARNESS IS TAKEN, NOT DESCRIBED. The armoury
                note used to say "the WRONGSIZE penalty", which is a label rather than a
                figure and goes stale the day the row is retuned. */
-            wrongsize:get('WRONGSIZE',null)}};
+            wrongsize:get('WRONGSIZE',null),
+            armourAbsorb:(function(){try{return ARMOUR_ABSORB;}catch(e){return null;}})(),
+            dodgeSoft:get('DODGE_SOFT',null)}};
 })();
 </script>
 
@@ -713,6 +809,61 @@ const SWA={
            a:'THE STRANGER · an option, deferred, at the cost of a body that cannot fight yet.'}
 };
 const AUTHORED_NOTE='AUTHORED · the only hand-written text on this page';
+
+/* ⛔ ═══ THE DRAFT SHELF: CLASSES THAT DO NOT EXIST ══════════════════
+   Everything else on this page is read out of the running build. THIS IS NOT. A
+   draft is a proposal: it has no `CLASSES` row, nothing in the game can be hired as
+   one, and no derived count on this page includes it. It is drawn beside the real
+   classes because that is the only way to see whether a proposal collides with what
+   already ships - and it is marked NOT IN THE BUILD on every surface it reaches, in
+   a dashed frame, so it can never be read as a measurement.
+
+   ⛑ THE PROSE IS AUTHORED AND THE ARITHMETIC IS NOT. `rule.sim` names a
+   reading, and the lab runs that reading against the build's own `ARMOUR_ABSORB`,
+   `bodyHp` and `armourValue` - because "will it work" is a number, and a number
+   typed here would be the promise-versus-payment defect this repo has caught seven
+   times, committed on purpose.
+
+   ⚠ TO ADD A DRAFT: one row here. To PROMOTE one: it needs a `CLASSES` row, a
+   `CLSLEAN` row, `START_GEAR`, `KIND_BY_CLS`, `STAT_PRIO`, a `CLS_BY_RACE` seat, a
+   sprite key and a painting - and the lab will draw every one of those gaps the
+   moment the row exists, which is what it is for. */
+const DRAFT={
+  anvil:{
+    n:'ANVIL',ico:'⛨',
+    alts:['ANVIL','HARNESSMAN','IRONSIDE','BULWARK','PLATEMAN','HOLDFAST','SHIELDMAN','BREAKWATER'],
+    lean:{str:+1},
+    promise:'You hit him and nothing happens. That is the whole trade.',
+    job:'Stand where the blows are meant for somebody else, and still be standing.',
+    /* the ask, and the three other things it could have meant, priced on the page */
+    /* ⛔ THE MEASUREMENT OVERRULED THE FIRST DRAFT OF THIS ROW, WHICH IS WHY THE
+       TABLE IS ON THE PAGE. It first read `sim:'c'` - "only 70% of what reaches flesh
+       gets through" - on the reasoning that it is visible and collides with nothing.
+       Priced against the build it came back at SEVEN BLOCKS, the same as today: at
+       HDA_CUT scale a padded jack is 10 armour against 19 hitpoints and it is empty
+       after three blows, so a rule that only works WHILE THE HARNESS HOLDS is a rule
+       that works for three blows out of seven. The two readings that moved the number
+       are the two that outlive the harness. */
+    rule:{n:'THE HARNESS DOES THE WORK',
+      ask:'armour gets only 70% of normal damage',
+      sim:'bd',
+      d:'His harness wears at 70% rate AND a flat 2 comes off every blow that reaches '+
+        'flesh. The first makes the armour last; the second is the half that still '+
+        'works when it is gone, which is what stops the class having an off switch. '+
+        'The soak is the Thing in Armour’s own rule, already in the engine.'},
+    weapon:{n:'THE SHIELD IS THE SIGNATURE',
+      d:'A shield in the off hand is what raises TAUNT, the way a boar spear is what '+
+        'raises SPEAR WALL. Without one he is a man with a sword.'},
+    act:{n:'TAUNT',cost:1,cool:2,
+      d:'Everything within 2 hexes that can reach him picks him this round, whatever '+
+        'else it wanted. He does not attack on the turn he does it.'},
+    s:'The first class in the roster whose identity is a RULE rather than a number. '+
+      'Nothing else in the game changes how a blow is divided.',
+    w:'He does no damage worth the name, and half his advantage still empties: once the '+
+      'harness is gone only the soak is left, so he goes from unkillable to merely hard '+
+      'in the middle of a fight. Repairing and replacing armour starts to matter.',
+    a:'THE ANVIL · protection, the one job no class currently owns.'}
+};
 
 /* ⛑ WHAT THE PAGE IS SHOWING, AND IT IS DELIBERATELY NOT IN THE URL OR IN
    localStorage. A reference tool that remembers a filter across a reload hands you
@@ -810,7 +961,10 @@ function drawClasses(){
   let h='<div class="filter"><span class="lbl">show</span>'+
     '<button data-f="all" class="'+(FILTER==='all'?'on':'')+'">EVERYTHING</button>';
   CS.forEach(c=>{h+='<button data-f="'+c.k+'" class="'+(FILTER===c.k?'on':'')+'">'+
-    esc(c.ico)+' '+esc(c.n)+(c.k==='warmage'?'':'')+'</button>';});
+    esc(c.ico)+' '+esc(c.n)+'</button>';});
+  Object.keys(DRAFT).forEach(k=>{h+='<button data-f="d:'+k+'" class="draftbtn '+
+    (FILTER==='d:'+k?'on':'')+'">'+esc(DRAFT[k].ico)+' '+esc(DRAFT[k].n)+
+    ' <span class="lbl">draft</span></button>';});
   h+='<span class="lbl" style="margin-left:auto">sections</span>'+
     '<button data-sec="races" class="'+(SHOW.races?'on':'')+'">the races</button>'+
     '<button data-sec="logic" class="'+(SHOW.logic?'on':'')+'">the logic column</button>'+
@@ -823,6 +977,7 @@ function drawClasses(){
     SHOW[b.dataset.sec]=!SHOW[b.dataset.sec];drawClasses();});
 
   const shown=CS.filter(c=>FILTER==='all'||c.k===FILTER);
+  const draftShown=Object.keys(DRAFT).filter(k=>FILTER==='all'||FILTER==='d:'+k);
 
   /* ── the logic column, the one authored thing ─────────────────────────── */
   h='';
@@ -873,8 +1028,20 @@ function drawClasses(){
   $('raceBlock').innerHTML=h;
 
   /* ── one card a class ─────────────────────────────────────────────────── */
-  h='<h2>'+(FILTER==='all'?'THE CLASSES, ONE CARD EACH':esc((shown[0]||{}).n||''))+'</h2>';
+  h='';
+  if(shown.length)
+    h+='<h2>'+(FILTER==='all'?'THE CLASSES, ONE CARD EACH':esc((shown[0]||{}).n||''))+'</h2>';
   shown.forEach(c=>{h+=classCard(c,RS,CS);});
+  if(draftShown.length){
+    h+='<h2 class="warn">THE DRAFT SHELF <span class="lbl warn">\u00b7 '+AUTHORED_NOTE+
+      ' \u00b7 nothing below exists in the game</span></h2>'+
+      '<div class="sub">A proposal has no <b>CLASSES</b> row, nobody can be hired as one, and no '+
+      'count on this page includes it. It is drawn here so a proposal can be checked against what '+
+      'already ships. <b>The prose is written by hand; the arithmetic underneath it is not</b> - '+
+      'every figure in THE RULE, PRICED is simulated against the build\u2019s own '+
+      '<b>ARMOUR_ABSORB</b>, <b>bodyHp</b> and <b>armourValue</b>.</div>';
+    draftShown.forEach(k=>{h+=draftCard(k,DRAFT[k]);});
+  }
   $('classCards').innerHTML=h;
   $('classCards').querySelectorAll('[data-wep]').forEach(el=>el.onclick=()=>{
     const key=el.dataset.cls+'|'+el.dataset.wep;
@@ -1023,6 +1190,83 @@ function classCard(c,RS,CS){
       (W.bare.length?W.bare.map(a=>esc(a.n)).join(', '):'nothing')+
       ' - it has bare-handed and keeps whatever it picks up. A <span class="bad">wrong size</span> '+
       'row still goes on and still costs the harness penalty.</div>'+
+    '</div></div>';
+}
+
+/* ── a proposal, drawn so it cannot be mistaken for a measurement ─────────── */
+function draftCard(key,D){
+  const S=GT.draftSim({race:'human',cls:'spear',level:1,armour:'jack',
+    main:'shortsw',blow:'sword'});
+  const sh=GT.shields();
+  const pick=S.readings.find(r=>r.k===D.rule.sim)||S.readings[0];
+  const bar=r=>{
+    const w=Math.min(100,Math.round(r.blows/Math.max(1,S.today.blows)*50));
+    return '<span class="dbar"><i style="width:'+w+'%"></i></span>';
+  };
+  let rows='';
+  S.readings.forEach(r=>{
+    const d=r.blows-S.today.blows;
+    rows+='<tr class="'+(r.k===D.rule.sim?'pickd':'')+'">'+
+      '<td class="n">'+(r.k===D.rule.sim?'\u25b6 ':'')+esc(r.n)+'</td>'+
+      '<td class="m">'+esc(r.d)+'</td>'+
+      '<td class="n">'+r.r.blows+' '+bar(r.r)+'</td>'+
+      '<td class="'+(r.r.blows>S.today.blows?'ok':r.r.blows<S.today.blows?'bad':'m')+'">'+
+        (r.r.blows===S.today.blows?'no change':sgn(r.r.blows-S.today.blows)+' blows')+'</td>'+
+      '<td class="m">harness empty after '+r.r.strip+'</td></tr>';
+  });
+  S.perks.forEach(p=>{
+    rows+='<tr class="scale"><td class="m">'+esc(p.n)+'</td>'+
+      '<td class="m">for scale: what a shipped perk already buys</td>'+
+      '<td class="m">'+p.r.blows+'</td>'+
+      '<td class="m">'+sgn(p.r.blows-S.today.blows)+' blows</td>'+
+      '<td class="m">harness empty after '+p.r.strip+'</td></tr>';
+  });
+
+  return '<div class="card draft"><div class="hd">'+
+    '<span class="ico">'+esc(D.ico)+'</span><span class="nm">'+esc(D.n)+'</span>'+
+    '<span class="dmark">DRAFT \u00b7 NOT IN THE BUILD</span>'+
+    '<span class="lean">lean '+esc(leanTxt(D.lean))+'</span></div>'+
+    '<div class="cols">'+
+    '<div><h3>THE PROMISE</h3><p class="d">'+esc(D.promise)+'</p>'+
+      '<p class="x">'+esc(D.job)+'</p>'+
+      '<h3>NAMES ON THE TABLE</h3><div class="pick">'+
+      D.alts.map(a=>'<button class="'+(a===D.n?'on':'')+'" disabled>'+esc(a)+'</button>').join('')+
+      '</div>'+
+      '<div class="why">The picker boxes were measured around SPEAR, five characters, so '+
+      'anything at or under that length is safe wherever a class name is drawn.</div></div>'+
+    '<div><h3>'+esc(D.rule.n)+'</h3><p class="d">'+esc(D.rule.d)+'</p>'+
+      '<h3>'+esc(D.weapon.n)+'</h3><p class="x">'+esc(D.weapon.d)+'</p>'+
+      '<div class="why">The build holds '+sh.length+' off-hand shields: '+
+      sh.map(s=>esc(s.n)+' '+sgn(s.dodge)).join(' \u00b7 ')+
+      '. <b>SHIELDWORK</b> (doubles the shield bonus) is already in the general lane and '+
+      'currently has no class that wants it.</div>'+
+      '<h3>THE ACTION</h3><div class="skill"><div class="sk-t">'+D.act.cost+'ap</div><div>'+
+      '<div class="sk-n">'+esc(D.act.n)+' <span class="lbl">cooldown '+D.act.cool+'</span></div>'+
+      '<div class="sk-d">'+esc(D.act.d)+'</div></div></div>'+
+      '<div class="why warn">Nothing in the build taunts today. The nearest thing is the '+
+      'cutter\u2019s DISTRACT, which turns a target AWAY. A taunt is the opposite and it is one '+
+      'insertion into <b>targetScore</b>, the single function both brains pick targets with.</div>'+
+    '</div>'+
+    '<div class="authored"><h3>'+AUTHORED_NOTE+'</h3><div class="swa">'+
+      '<b>STRENGTH</b>'+esc(D.s)+'<b>WEAKNESS</b>'+esc(D.w)+
+      '<b>ARCHETYPE</b><span class="arch">'+esc(D.a)+'</span></div></div>'+
+    '</div>'+
+    '<div class="weps"><h3>THE RULE, PRICED <span class="lbl">\u00b7 simulated against the '+
+      'build\u2019s own numbers, not typed</span></h3>'+
+      '<div class="why" style="margin-bottom:6px">A level-1 human in a '+esc(S.armourN)+
+      ' (<b>'+S.armour+' armour</b>, <b>'+S.hp+' hitpoints</b>, both read off the build) taking '+
+      'landed blows from an '+esc(S.blowN)+' (<b>'+S.raw+'</b> raw after the global \u00d70.8). '+
+      'The build splits every blow <b>'+Math.round(S.absorb*100)+'/'+
+      Math.round((1-S.absorb)*100)+'</b> between harness and flesh - <b>ARMOUR_ABSORB</b>, one '+
+      'constant, every body in the game. No dodge and no misses: this asks how many LANDED blows '+
+      'the body eats, which is the only question an armour rule asks.</div>'+
+      '<table><tr><th>What the ask could mean</th><th>What it does</th>'+
+      '<th style="width:120px">Blows to drop him</th><th style="width:90px">Against today</th>'+
+      '<th style="width:150px">Harness</th></tr>'+rows+'</table>'+
+      '<div class="why"><b>Today he takes '+S.today.blows+' blows and his harness is empty after '+
+      S.today.strip+'.</b> Reading (a) is what the ask literally says and it is what the game '+
+      'already does for everybody, so it would ship as a no-op. The marked row is the one this '+
+      'draft proposes.</div>'+
     '</div></div>';
 }
 
