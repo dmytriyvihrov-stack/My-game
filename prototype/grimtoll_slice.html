@@ -5910,7 +5910,13 @@ body:has(#battle.on) .whisp{bottom:138px}
 .pk.buy{cursor:pointer;border-color:#8ca35a}
 .pk.buy:hover{background:#2a3a20}
 .pk b{font-family:var(--display);font-size:var(--fs2);color:var(--g4);display:block;line-height:1.15}
+/* #285 - the two rows the class picker gained. Both reuse `--fs1`, which is the
+   size every other line on this card already is: `ui-scales` keeps font-size a closed
+   vocabulary and a new row is not a reason to open it. Only the COLOUR separates
+   them, which is what a colour is for. */
 .pk i{font-family:var(--mono);font-size:var(--fs1);color:#8a7449;font-style:normal;line-height:1.35}
+.pk i.pkgives{color:#8ca35a}
+.pk i.pkkit{color:#6b5836}
 .pk .tag{font-family:var(--mono);font-size:var(--fs1);letter-spacing:.1em;color:#8ca35a;display:block}
 /* #261 - the belongs-to mark. Floated beside the name rather than above it, so
    it costs the card no height: the perk list is already the tallest column on
@@ -11331,6 +11337,39 @@ const CLS_TRAINS={
 };
 const trainsCat=(cls,cat)=>{const t=CLS_TRAINS[cls];
   return t==='all'?true:!!(t&&cat&&t.indexOf(cat)>=0);};
+/* ═══ ⛔ #285 · THE TRAINING LOCK IS A RULE NOW, NOT A LABEL ════════════════
+   (User: *"For all unit - they can use weapon skill and 4th lvl class sill - only
+   when it mathes their class wepon type"*.) #283 built the table and said out loud
+   that it was a readout; this is the half that was deferred.
+
+   ⛑ IT IS ONE PREDICATE AT ONE DOOR. `trainedMain` is asked where a class act is
+   PUSHED, not inside each resolver, so the tenth act to be written is gated by
+   existing rather than by being remembered. That is #148's own lesson about `mayAim`
+   applied a second time.
+   ⚠ AN EMPTY HAND IS TRAINED. A body with no weapon has no weapon category to fail,
+   and refusing there would delete the cutter's DISTRACT and the brute's ROAR from
+   anybody the road disarmed - which is a punishment nobody asked for and the exact
+   shape of a rule that fails the wrong way.
+   ⚠ AND IT DOES NOT REACH A CASTER'S SCHOOLS. Those are `arcane`, need no weapon,
+   and are pushed in their own block; a mage holding a spear still casts, because the
+   spear was never what he was casting with. */
+/* ⛔ #285 - IT ASKS BOTH HANDS, AND THE PLATEMAN IS WHY. The first cut asked the
+   MAIN hand only and his trained categories are SHIELD and HOOK: a shield is an
+   off-hand thing, so a plateman holding the short sword he starts with failed his own
+   class's test and lost CRYSTALISE and MADNESS. Measured, not reasoned about - the
+   probe came back with two empty lists.
+   ⛑ A CLASS TRAINS CATEGORIES AND IS KITTED WHEN ANYTHING IT HOLDS IS ONE OF THEM.
+   That was always the rule; it was only ever visible on the class whose category
+   lives in the other hand. ⚠ Empty hands stay trained, for the reason below. */
+const trainedKit=(p,main,off)=>{
+  if(!main&&!off)return true;                     /* nothing to fail */
+  if(main&&trainsCat(p.cls,main.cat))return true;
+  if(off&&trainsCat(p.cls,off.cat))return true;
+  return false;
+};
+/* the SIGNATURE is still the MAIN hand's business: SWEEP is what the club does, and a
+   shield in the other hand is not what makes it happen. */
+const trainedMain=(p,g)=>!g||trainsCat(p.cls,g.cat);
 const trainsWord=cls=>{const t=CLS_TRAINS[cls];
   if(t==='all')return 'every weapon in the game';
   if(!t||!t.length)return 'nothing yet';
@@ -12041,6 +12080,59 @@ const PERKS={
              d:'Ordinary damage, and it leaves something in the cut: everything that '+
                'touches them for the next two rounds lands 15% harder, and it stacks '+
                'with every other cut on them.'},
+  /* ═══ ⛔ #285 · EVERY CLASS GETS ITS TIER-4 FORK, AND NINE OF THEM ARE CARDS ══
+     (The user's own list, one class at a time.) #284 gave the archer and the captain
+     theirs and noted that thirty-four of thirty-five perks were passive numbers; this
+     finishes the row and tips the balance the other way. A perk that hands out a
+     BUTTON is a thing a player remembers taking.
+     ⚠ EVERY ONE OF THESE IS GATED ON THE CLASS'S OWN WEAPON CATEGORY (`CLS_TRAINS`),
+     which is the user's *"they can use weapon skill and 4th lvl class skill - only
+     when it matches their class weapon type"*. The gate is `trainedMain` and it is
+     applied where the act is pushed, not inside each resolver: a rule stated once at
+     the door cannot be forgotten by the tenth act to arrive. */
+
+  /* ── the brute: heavy and hook ────────────────────────────────────── */
+  hithard  :{kind:'class',n:'Hit Hard',
+             d:'A blow that takes the fight out of them: full damage, and they lose an '+
+               'ACTION on their next turn. Needs something heavy or a hook in your hands. '+
+               'Three turns before it comes round again.'},
+  crazyjump:{kind:'class',n:'Crazy Jump',
+             d:'Leap two hexes onto somebody. Full damage, you take a tenth of your own '+
+               'hitpoints landing on them, and their blood is worth a tenth of your pool '+
+               'and ten more on top. Needs something heavy or a hook.'},
+
+  /* ── the spear: polearms ──────────────────────────────────────────── */
+  spearrun :{kind:'class',n:'Set and Run',
+             d:'Run up to three hexes straight at somebody and put the point in at the end '+
+               'of it: +20% damage for every hex you crossed. Needs a polearm.'},
+
+  /* ── the cutter: blades ───────────────────────────────────────────── */
+  backknife:{kind:'class',n:'A Knife in the Back',
+             d:'From behind, with a blade, on somebody who has not touched you this fight: '+
+               'they lose their whole next turn. Anything big or unbreakable loses one '+
+               'action instead.'},
+  executioner:{kind:'class',n:'Executioner',
+             d:'A blade, and it counts the room: 2 damage, +2 for every one of YOURS '+
+               'standing next to them and +1 for every one of THEIRS. It is the reward for '+
+               'a target the whole line has surrounded.'},
+
+  /* ── the plateman: shields and hooks ──────────────────────────────── */
+  crystalise:{kind:'class',n:'Crystalise',
+             d:'BOTH ACTIONS. Until your next turn you take a quarter of everything - '+
+               'through the armour and through the flesh. You do nothing else with that turn.'},
+  madness  :{kind:'class',n:'Madness',
+             d:'Everything standing next to you takes 3 damage plus your level, through '+
+               'armour. It does not care which side they are on.'},
+
+  /* ── the mage: the two schools he chooses between ─────────────────── */
+  breaking :{kind:'class',n:'The Breaking',
+             d:'A working with no range at all: it goes off AROUND YOU and catches every '+
+               'enemy in the six hexes you are standing in the middle of. It costs a great '+
+               'deal of your own mood, and the only way to aim it is to walk into them.'},
+  unmaking :{kind:'class',n:'Unmaking',
+             d:'One enemy, no damage: every plate they are wearing comes off, they lose 25 '+
+               'morale, and for two rounds everything that touches them lands 25% harder.'},
+
   shadowstep:{kind:'class',n:'Shadow-Step',
              d:'After you DISTRACT something, your next attack on it this turn costs no action.'},
   butcher  :{kind:'class',n:'Butcher',
@@ -12109,7 +12201,16 @@ const PERKS={
   colossus :{kind:'general',n:'Colossus',d:'+20% hitpoints.'},
   goodhand :{kind:'general',n:'Good Hand',
              d:'+1 range and +10 to hit with every ranged attack.'},
-  twohand  :{kind:'general',n:'Two-Handed Weapons',d:'+50% damage against armour.'},
+  /* ⛔ #285 - IT WAS NAMED AFTER A WEAPON AND IT DOES NOT CARE WHAT YOU HOLD.
+     (User: *"Change skill 'two handed' for 'armorer breaker'"*.) `dmgMul` reads the
+     key and asks nothing about hands; the name was describing a class of weapon while
+     the effect described a class of TARGET, so a player picked it for the wrong reason
+     or skipped it for one. ⚠ THE KEY STAYS `twohand`: it is written into every save
+     already carrying it, and renaming an identifier to change a label is how a working
+     line gets thrown away. */
+  twohand  :{kind:'general',n:'Armour Breaker',
+             d:'+50% damage against armour. It does not care what you are holding: what '+
+               'it cares about is what they are wearing.'},
   ninelives:{kind:'general',n:'Nine Lives',
              d:'Once per battle, the blow that would drop you leaves you standing.'},
   fortmind :{kind:'general',n:'Fortified Mind',d:'+20 maximum morale.'},
@@ -12312,16 +12413,30 @@ const CLASSES={
    empty for every class. Nothing was taken away to make room. */
 CLASSES.captain.perks={2:['duelist'],4:['grandcmd','battlefury'],6:['inspire'],
   7:['warleader']};
-CLASSES.spear.perks  ={4:['bracewall'],7:['killzone']};
+/* ⛔ #285 - AND BRACED WALL IS THE SPEAR'S OTHER DOOR, NOT A NEW ONE. The ask
+   (*"You spearwall has reach 2 and your sweep can be cast to adjusted tiles"*) is
+   what `bracewall` has said since #72: *"Your SPEAR WALL can be raised, and keeps
+   working, with somebody already inside your reach."* It was already at tier 4 and
+   already the right thing; what it lacked was something to be chosen AGAINST. */
+CLASSES.spear.perks  ={4:['spearrun','bracewall'],7:['killzone']};
 /* #284 - SURE SHOT moved out of the lane entirely: it is GIVEN at level 1 (see
    CLS_GIVEN), so it is no longer something to buy. Tier 4 is the fork the user
    asked for, and both of its doors are ACTS rather than numbers - the first two
    perks in the game that hand a body a new card. */
 CLASSES.archer.perks ={4:['pierceshot','poisonshot']};
-CLASSES.cutter.perks ={4:['shadowstep'],7:['butcher']};
-CLASSES.brute.perks  ={4:['brawn'],7:['thickhide']};
-/* #284 - the mage's own lane at last. It had been borrowing the captain's two. */
-CLASSES.warmage.perks={2:['elemental'],4:['inspire'],7:['warleader']};
+/* #285 - SHADOW-STEP moves to 6, which was empty for every class: nothing was
+   taken away to make room for the fork. */
+CLASSES.cutter.perks ={4:['backknife','executioner'],6:['shadowstep'],7:['butcher']};
+/* #285 - BRAWN moves to 6 for SHADOW-STEP's reason. */
+CLASSES.brute.perks  ={4:['hithard','crazyjump'],6:['brawn'],7:['thickhide']};
+/* #284 - the mage's own lane at last. It had been borrowing the captain's two.
+   #285 - and tier 4 is his own question rather than the captain's: a working that
+   only goes off around him, or one that takes a single body apart. STEADYING moves
+   to 6. */
+CLASSES.warmage.perks={2:['elemental'],4:['breaking','unmaking'],6:['inspire'],
+  7:['warleader']};
+/* #285 - and the plateman's, which #284 left empty on purpose until the acts existed. */
+CLASSES.plateman.perks={4:['crystalise','madness']};
 /* ⏳ TIERS 6 AND 8 ARE EMPTY FOR EVERY CLASS and that is a KNOWN, temporary
    state of the teardown, not an oversight: a body past level 5 banks perk
    points with nothing to spend them on until the tree's own skills land.
@@ -13974,7 +14089,12 @@ const START_GEAR={spear:['rags','spear'],archer:['rags','bow'],warmage:['jack','
   /* #284 - he arrives in the best common harness the wall hands out and a short blade.
      The shield is not in `START_GEAR`'s shape (it is [armour, main]) so TAUNT waits on
      the first shield he is given, which the road hands out constantly. */
-  plateman:['pot','shortsw'],
+  /* ⛔ #285 - AND A THIRD SLOT, BECAUSE HIS CLASS IS IN THE OTHER HAND. `START_GEAR`
+     was `[armour, main]` and every reader destructures it that way; a plateman with no
+     shield has no TAUNT and no tier-4 cards, which is a class that does not work until
+     the road happens to hand him one. The three readers take `g[2]` now and every
+     other row is unchanged, because `undefined` is the off hand they always had. */
+  plateman:['pot','shortsw','lid'],
   cutter:['scrap','knife'],brute:[null,'club']};
 function rollRecruit(taken){
   const race=pickOne(['human','human','human','ratkin','ratkin','ogre']);
@@ -14043,7 +14163,7 @@ function rollRecruit(taken){
        stranger has no class skills either, so until he is armed he can only
        walk. That is the price, it is real, and the muster row says so before
        the button is pressed. */
-    eq:{armour:g[0],main:stranger?null:g[1],off:null,trinket:null},
+    eq:{armour:g[0],main:stranger?null:g[1],off:stranger?null:(g[2]||null),trinket:null},
     /* claim:false — a stranger you walk past must not take a nickname with them */
     level:stranger?0:1,perks:[],perkPoints:0,nextIsPerk:true,injuries:[],mem:[],
     nick:rollNick(race,(taken||[]).map(r=>r.nick),false)};
@@ -17293,7 +17413,11 @@ function unitFrom(p){
      move under somebody who swapped a trinket. */
   [main,off,trk].forEach(g=>{if(g&&g.act)acts.push(Object.assign({},g.act));});
   if(RACESKILL[p.race])acts.push(Object.assign({},RACESKILL[p.race]));
-  if(sig)acts.push(sig);
+  /* ⛔ #285 - AND THE SIGNATURE IS THE FIRST THING THE LOCK REACHES. SWEEP on a
+     broom, SPEAR WALL on a broom, DISTRACT with a bow and CRIPPLING SHOT off a
+     harpoon were all legal until now: the class's own trick fired on anything that
+     met its shape. It fires on the class's own category or not at all. */
+  if(sig&&trainedMain(p,main))acts.push(sig);
   /* ⛔ #240 - ANYTHING THAT DISCHARGES THE WEAPON SPENDS THE WINDING, and it
      is one line here rather than a `reload:true` typed onto each act that
      might one day be a shot. `spend` already sets the lock off `a.reload` and
@@ -17369,6 +17493,28 @@ function unitFrom(p){
         'armour. Does not count against your one working a turn, but it is once a turn all '+
         'the same.'});
     p.spells.forEach(k=>{if(SPELLS[k])acts.push(castAct(SPELLS[k],u.spellRange));});
+    /* ⛔ #285 - THE TWO HE CHOOSES BETWEEN AT FOUR, AND THEY ARE WORKINGS RATHER
+       THAN CARDS BOLTED ON: `arcane` means they are aimed with the INTELLECT, they
+       cost his own mood, and they land through `strike` like every other school.
+       ⚠ NEITHER IS GATED ON A WEAPON. A working is not swung, so `trainedMain` has
+       nothing to say about it - which is why they are pushed here and not in the
+       tier-4 block above. */
+    if(p.perks.indexOf('breaking')>=0)
+      acts.push({k:'breaking',n:'THE BREAKING',cost:1,self:true,cool:3,arcane:true,
+        strain:BREAK_MOOD,aura:1,am:.20,ft:.60,
+        dmg:[Math.round(14*HDA_CUT),Math.round(20*HDA_CUT)],
+        note:'NO RANGE AT ALL. It goes off around YOU and catches every enemy in the '+
+          'six hexes you are standing in the middle of. It costs '+BREAK_MOOD+' of your '+
+          'own mood, and the only way to aim it is to walk into them.'});
+    if(p.perks.indexOf('unmaking')>=0)
+      /* ⚠ `hex:true` IS LOAD-BEARING: it routes to UNPICK's own branch, which is the
+         one path in the file for a working that strips instead of cutting. Without it
+         the act falls through to `strike`, which reads `act.dmg[0]` and throws. */
+      acts.push({k:'unmaking',n:'UNMAKING',cost:1,reach:1,cool:3,arcane:true,hex:true,
+        strain:UNMAKE_MOOD,
+        note:'No damage. Every plate they are wearing comes off, they lose 25 morale, '+
+          'and for two rounds everything that touches them lands 25% harder. One '+
+          'hex: you have to be next to them.'});
     u.castCap=many?2:1;          /* the mage gets a second one, at half */
     u.castHalfAfter=many?1:99;   /* ...and it is half strength */
     /* THE MAGE IS BAD WITH A BLADE, and now the numbers say so. Three schools
@@ -17411,6 +17557,62 @@ function unitFrom(p){
   /* #284 - the harpoon needs no card of its own: `main.pull` and `main.cone` ride the
      weapon's own act now (see the push line above), which is why there is one HARPOON
      on the body and not two. */
+  /* ═══ ⛔ #285 · THE TIER-4 CARDS ══════════════════════════════════════════
+     Every one is gated on `trainedMain`, so a brute who put his club down cannot
+     leap, and every one reads the weapon in the hand for its dice rather than
+     carrying its own - the rule CRIPPLING SHOT has followed since it was written.
+     ⚠ `hasP` IS THE PERK TEST AND `trainedMain` THE WEAPON TEST, and they are
+     separate on purpose: a body keeps the perk it bought when it changes hands, and
+     gets the card back when it picks the right thing up again. */
+  const hasP=k=>p.perks.indexOf(k)>=0, trained=trainedKit(p,main,off);
+  if(main&&trained){
+    /* the brute */
+    if(hasP('hithard'))
+      acts.push({k:'hithard',n:'HIT HARD',cost:1,cool:3,reach:main.reach||1,stun:1,
+        dmg:main.dmg.slice(),am:main.am,ft:main.ft,
+        note:'Full damage, and they lose an ACTION on their next turn. Three turns '+
+          'before it comes round again.'});
+    if(hasP('crazyjump'))
+      acts.push({k:'jump',n:'CRAZY JUMP',cost:1,cool:3,reach:2,leap:2,
+        dmg:main.dmg.slice(),am:main.am,ft:main.ft,
+        note:'Leap two hexes and land on them. Full damage. You take a tenth of your '+
+          'own hitpoints coming down, and their blood is worth a tenth of your pool '+
+          'and ten more on top.'});
+    /* the spear */
+    if(hasP('spearrun'))
+      acts.push({k:'spearrun',n:'SET AND RUN',cost:1,cool:3,reach:4,run:3,
+        dmg:main.dmg.slice(),am:main.am,ft:main.ft,
+        note:'Run up to three hexes straight at them and put the point in: +20% '+
+          'damage for every hex you crossed. Nothing swings at you on the way.'});
+    /* the cutter */
+    if(hasP('backknife'))
+      /* ⚠ `rear` AND NOT A NEW FIELD. The click block already refuses a rear act
+         with *"That wants the small of the back. Get behind them first."* - inventing
+         `fromBack` would have been a second gate with a worse sentence. */
+      acts.push({k:'backknife',n:'A KNIFE IN THE BACK',cost:1,cool:3,reach:1,rear:true,
+        dmg:main.dmg.slice(),am:main.am,ft:main.ft,
+        note:'Only from BEHIND, and only on somebody who has not touched you this '+
+          'fight. They lose their whole next turn. Anything big or unbreakable loses '+
+          'one action instead.'});
+    if(hasP('executioner'))
+      acts.push({k:'execute',n:'EXECUTIONER',cost:1,cool:2,reach:1,crowd:true,
+        dmg:[Math.round(2*HDA_CUT),Math.round(2*HDA_CUT)],am:main.am,ft:main.ft,
+        note:'It counts the room: 2 damage, +2 for every one of YOURS standing next '+
+          'to them and +1 for every one of THEIRS. The reward for a body the whole '+
+          'line has surrounded.'});
+  }
+  /* the plateman and the mage need no weapon in hand for theirs, but they DO need
+     the class's own kit: the shield or the hook for one, nothing for the other */
+  if(p.cls==='plateman'&&trained){
+    if(hasP('crystalise'))
+      acts.push({k:'crystal',n:'CRYSTALISE',cost:2,self:true,cool:3,
+        note:'BOTH ACTIONS. Until your next turn you take a quarter of everything, '+
+          'through the armour and through the flesh. You do nothing else with the turn.'});
+    if(hasP('madness'))
+      acts.push({k:'madness',n:'MADNESS',cost:1,self:true,cool:3,aura:1,
+        note:'Everything standing next to you takes 3 plus your level, straight '+
+          'through armour. It does not care which side they are on.'});
+  }
   if(p.cls==='captain')acts.push({k:'rallyline',n:'HOLD THE LINE',cost:1,self:true,aura:2,
     note:'+10 dodge to every ally within 2 hexes until their next turn.'});
   /* ⛔ #284 - TAUNT IS THE SHIELD'S, NOT THE CLASS'S, which is what makes the
@@ -23173,6 +23375,12 @@ const wearOf=u=>(u&&u.cls==='plateman')?PLATE_WEAR:1;
    the same scale as the shooter's own -28 and the caster's -34 deliberately: a taunting
    plateman should outrank a bowman as a target and not outrank a boss. */
 const TAUNT_REACH=2, TAUNT_PULL=60;
+/* #285 - what the mage's two tier-4 workings cost him, in his own mood. Named
+   beside the taunt's figures for the same reason: the card quotes them, the class
+   lab prices them, and a literal in the act row is a figure nothing can find. */
+const BREAK_MOOD=18, UNMAKE_MOOD=14;
+/* #285 - what CRYSTALISE leaves of a blow, and what MADNESS costs the room. */
+const CRYSTAL_TAKE=0.25, MADNESS_BASE=3;
 /* the band of a PIECE, for the inventory hover, where there is no unit yet */
 const bandOfGear=(g,p)=>!g||!g.armour?null:ARMOUR_ON;
 /* A WORKING GOES THROUGH THE PLATES ENTIRELY. `am:0` has meant exactly this
@@ -23938,6 +24146,23 @@ function strike(a,d,act,mult){
      boss ~15. */
   /* 2026-08-29 - HDA_CUT lives in the dice now (GEAR.dmg, foe act.dmg,
      dmgBonus), not here - see the note on dmgPreview()'s G8 */
+  /* ⛔ #285 - EXECUTIONER COUNTS THE ROOM, AND THE ARITHMETIC WAS MISSING. The act
+     shipped with `crowd:true` and a flat 2, and nothing anywhere read the flag: the
+     card promised *"+2 for every one of YOURS and +1 for every one of THEIRS"* and the
+     engine paid two damage to everybody. Found by firing it, which is the only way a
+     promise-versus-payment split is ever found.
+     ⛑ IT IS ADDITIVE AND IT GOES HERE, before the global x0.8, because that is where
+     the blow's dice have just been rolled and before anything multiplies them - so the
+     crowd term is diluted by exactly what every other damage term is diluted by.
+     ⚠ IT COUNTS AROUND THE TARGET, NOT AROUND THE ATTACKER. The reward is for a body
+     the LINE has surrounded, which is what makes it the cutter's: he is the class that
+     pays out through other people. Cut by HDA_CUT like every other flat figure. */
+  if(act.crowd){
+    const ring=nbrs(d.col,d.row).map(p=>at(p[0],p[1])).filter(x=>x&&!x.dead);
+    const mine=ring.filter(x=>x.side===a.side).length;
+    const theirs=ring.filter(x=>x.side!==a.side&&x!==d).length;
+    raw+=Math.round((2*mine+theirs)*HDA_CUT);
+  }
   raw*=0.8;
   let armD=0,hpD=0;
   /* #269 - 70/30 ON EVERY BODY IN THE GAME, and the two halves add up to the
@@ -23947,7 +24172,6 @@ function strike(a,d,act,mult){
      were: a blow that ignores armour, armour still standing, or armour
      already gone and the whole thing lands. */
   const sp=splitFor(d,act);
-  if(!sp)hpD=raw;
   /* ⛔ #284 - THE PLATEMAN'S HARNESS WEARS SLOWER, AND THIS IS THE ONE LINE THAT
      TAKES ARMOUR OFF ANYBODY. The split is untouched: seven tenths of the blow still
      stops in the plates and three tenths still reaches him. What changes is how much
@@ -23961,9 +24185,22 @@ function strike(a,d,act,mult){
      unchanged - which is correct. Wear is about how long the armour LASTS, not about
      what this blow does, and a preview that quoted it would be answering a different
      question from the one the player is asking. */
-  else if(d.armour>0){armD=Math.min(d.armour,raw*sp.arm*wearOf(d));d.armour-=armD;
-    hpD=raw*sp.body;}
-  else hpD=raw;
+  /* ⛔ #285 - CRYSTALISE, AND IT HAS TO BE IN THE SPLIT AND NOT AFTER IT. (User:
+     *"recive only 25% of the damage"* - not 25% of the flesh half.)
+     ⚠ THE FIRST CUT SAT ONE LINE LOWER AND WAS WORTH ALMOST NOTHING. `d.armour-=armD`
+     had already spent the harness at full price, so shrinking `armD` afterwards only
+     changed a local, and the body half was the only half reduced. Measured over ten
+     blows each way: it took 79% of the damage instead of 25% - 0.7 unreduced plus
+     0.3x0.25, which is exactly the arithmetic of the bug. A number is what caught it;
+     reading the line said what it was supposed to do.
+     ⛑ SO THE FACTOR RIDES THE SPLIT ITSELF, where `wearOf` already is. Both halves,
+     one multiplication each, and the harness is spent at the reduced rate rather than
+     refunded afterwards. */
+  const cry=d.crystal?CRYSTAL_TAKE:1;
+  if(!sp)hpD=raw*cry;
+  else if(d.armour>0){armD=Math.min(d.armour,raw*sp.arm*wearOf(d)*cry);d.armour-=armD;
+    hpD=raw*sp.body*cry;}
+  else hpD=raw*cry;
   /* ═══ FLAT SOAK (backlog #18) ══════════════════════════════════════════
      A fixed amount off the BODY damage of every blow, after the armour split
      and floored at 1. Armour is a pool you can empty; soak never empties, so
@@ -23977,6 +24214,22 @@ function strike(a,d,act,mult){
      any wound: this is the one place in the file that knows blood was drawn
      rather than armour dented. */
   if(hpD>0&&has(a,'fearsome')&&!d.dead)mor(d,-8,'fearsome');
+  /* ═══ ⛔ #285 · THREE ON-HIT RULES, AT THE ONE PLACE THAT KNOWS A BLOW LANDED ══
+     `fearsome` above is the precedent and the reason: this is the only line in the
+     file that has both the attacker, the defender and the fact that blood was drawn
+     rather than armour dented. A stun applied at the click would fire on a miss.
+     ⚠ ALL THREE READ THE ACT, NOT THE PERK. The perk decides whether the CARD
+     exists (`unitFrom`); by the time a blow lands, what matters is which card was
+     played - which is what lets the same rule be handed to a foe act later. */
+  if(hpD>0&&act.stun&&!d.dead)d.stunned=Math.max(d.stunned||0,act.stun);
+  /* A KNIFE IN THE BACK: the whole turn, and one action off anything too big or too
+     stubborn to lose one. `noRout` is the file's own word for a body that does not
+     break, and `big` for one that is two hexes of animal. */
+  if(hpD>0&&act.rear&&act.k==='backknife'&&!d.dead)
+    d.stunned=Math.max(d.stunned||0,(d.big||d.noRout)?1:9);
+  /* #285 - UNMAKING is NOT here. It has no dice, and `strike` reads `act.dmg[0]`:
+     hooking it in threw the first time it was fired. It resolves through `a.hex`
+     beside UNPICK, which is the one path for a working that strips rather than cuts. */
   d.hp-=hpD;
   /* who did it, for the after-battle roll (user: "show how much damage
      dealt"). BODY damage only, so the per-person figures add up to the
@@ -25180,6 +25433,17 @@ function beginTurn(){
       if(--x.ttl<=0){fx(x,'GONE','#8fd0a8',true);popIllusion(x,true);
         say('The second one of them is not there any more. Nobody saw it go.');}});
   u.actions=u.actionsMax+(u.banked||0);
+  /* ⛔ #285 - AND THE STUN IS TAKEN OFF HERE, AT THE ONE LINE THAT HANDS ACTIONS OUT.
+     `stunned` is how many actions this turn costs them, spent once and cleared; 9 is
+     the whole turn (A KNIFE IN THE BACK) and 1 is HIT HARD. Floored at 0, never below,
+     because a body with negative actions is a body the turn loop cannot end.
+     ⚠ CLEARED HERE AND NOWHERE ELSE. A status with two clear sites is a status that
+     outlives one of them - the lesson `furyBuff` and `taunting` are both filed under. */
+  if(u.stunned){
+    u.actions=Math.max(0,u.actions-u.stunned);
+    fx(u,u.stunned>=9?'NO TURN':'-'+u.stunned+' ACTION','#a33b34',true);
+    u.stunned=0;}
+  u.crystal=false;               /* #285 - one turn, same shelf as the stun */
   if(u.banked){u.banked=0;fx(u,'+1 ACTION','#8ca35a',true);}
   /* #284 - `furyBuff` dies with `rallyBuff`, at the one site that clears a one-round
      buff. A buff with two clear sites is a buff that outlives one of them. */
@@ -26197,6 +26461,30 @@ function releaseGather(u){
   }else strike(u,t,a);
   return true;
 }
+/* ═══ ⛔ #285 · THE THREE THAT MOVE THE BODY BEFORE THEY SWING ═══════════════
+   CRAZY JUMP and SET AND RUN both travel and then hit, which is a shape the file did
+   not have: every other act either moves or strikes. They are one function because
+   they are one idea - land somewhere, then swing - and the difference between them is
+   two arguments.
+   ⛑ THE DESTINATION IS A FREE NEIGHBOUR OF THE TARGET, chosen nearest to where the
+   body already stands, so the leap reads as going TOWARD them rather than teleporting
+   round them. `free` is the same test `forceDest` uses.
+   ⚠ NO PARTING SWINGS ON THE WAY, and the cards say so: being carried through a
+   scrum by your own leap is not walking out of one. */
+function leapStrike(u,t,a){
+  const free=p=>p&&!at(p[0],p[1])&&!BLOCKED[B.terr[K(p[0],p[1])]];
+  const spots=nbrs(t.col,t.row).filter(free);
+  if(!spots.length&&udist(u,t)>1){say('There is nowhere beside them to land.');return false;}
+  const from=[u.col,u.row];
+  let moved=0;
+  if(spots.length){
+    spots.sort((x,y)=>hdist(from,x)-hdist(from,y));
+    moved=hdist(from,spots[0]);
+    u.col=spots[0][0];u.row=spots[0][1];
+  }
+  faceToward(u,t.col,t.row);
+  return {moved:moved};
+}
 /* Walking out of a fight costs you a swing — but each enemy only gets ONE,
    and does not get another until it has had its own turn. Otherwise a single
    move through a crowded line took four free hits and movement stopped being
@@ -26468,6 +26756,40 @@ function selectAct(i){
       .forEach((x,i)=>{x.rallyBuff=10;fx(x,'+10 dodge','#8ca35a',true);
         setTimeout(()=>plateFx(x,'#8ca35a'),hitPaced(130+i*70));});
     say('Shields up, feet planted. Nobody moves and nobody dies.');
+    B.sel=null;render();autoEnd(u);return;}
+  /* ═══ ⛔ #285 · THE SELF ACTS ═════════════════════════════════════════════
+     Placed with the other self acts for `reload`'s own stated reason: `selectAct` is
+     the ONE door - the card, the number key and both AI brains all arrive through it
+     - so a self act resolving anywhere else would be a second implementation of "an
+     act with no target happens immediately". */
+  if(a.k==='crystal'){spend(u,a);
+    u.crystal=true;
+    plateFx(u,'#7da8a4');fx(u,'CRYSTALISED','#7da8a4',true);sfx('cool');
+    say(u.name+' locks up behind the plates. Whatever hits him now barely does.');
+    B.sel=null;render();autoEnd(u);return;}
+  if(a.k==='madness'){spend(u,a);
+    ringFx(u,1,'#a33b34');
+    /* ⚠ EVERYTHING ADJACENT, AND THE CARD SAYS SO. It does not check sides, which is
+       the whole price of the act and the one thing that stops it being free damage. */
+    const hit=nbrs(u.col,u.row).map(p=>at(p[0],p[1])).filter(x=>x&&!x.dead&&x!==u);
+    const dmg=MADNESS_BASE+(u.level||1);
+    hit.forEach(x=>{envHurt(x,dmg,'madness');});
+    say(hit.length?u.name+' goes off like a dropped lantern: '+hit.length+
+        ' of them, whoever they were.'
+      :u.name+' throws it and there is nobody standing close enough to care.');
+    B.sel=null;render();autoEnd(u);return;}
+  if(a.k==='breaking'){spend(u,a);
+    /* ⚠ `payStrain` AND NOT A BARE `mor()`. It is the one function that knows what a
+       working costs THIS body - the wind-touched personality pays 4 less, the
+       chalk-and-cord rod pays 4 less - and a second subtraction here would have been
+       a caster paying full price for one school and a discount on the rest. */
+    payStrain(u,a);
+    ringFx(u,1.6,'#e28fb4');sfx('cast');
+    const caught=nbrs(u.col,u.row).map(p=>at(p[0],p[1]))
+      .filter(x=>x&&!x.dead&&x.side!==u.side);
+    caught.forEach(x=>strike(u,x,a));
+    say(caught.length?'The ground goes out from under '+caught.length+' of them.'
+      :u.name+' breaks the air around himself and there is nobody in it.');
     B.sel=null;render();autoEnd(u);return;}
   if(a.k==='taunt'){spend(u,a);
     /* one flag, cleared where every other one-round flag is cleared */
@@ -27450,6 +27772,36 @@ function clickHex(c,r){
         (openings>1?': '+openings+' of yours can see it.':'.'));
       B.sel=null;B.reach=null;B.reach2=null;render();autoEnd(u);
       return;}
+    /* ⛔ #285 - THE TWO THAT TRAVEL AND THEN SWING, resolved HERE because they are
+       TARGETED: the self-act chain in `selectAct` has no target to reach for, and the
+       first cut of this read a `B.sel.tgt` that does not exist. Placed after `spend`
+       with the other special targets, and `leapStrike` is asked BEFORE it so the one
+       refusal it has (nowhere to land) cannot happen after the action is paid. */
+    if(a.k==='jump'||a.k==='spearrun'){
+      const r=leapStrike(u,tgt,a);
+      if(!r){B.sel=null;B.reach=null;render();return;}
+      if(a.k==='jump'){
+        /* the blood is worth a tenth of his POOL and ten more, and the landing costs
+           him a tenth of it - both off the ceiling, so a hurt body does not heal less
+           for being hurt */
+        const gain=Math.round(u.hpMax*0.10)+Math.round(10*HDA_CUT);
+        const cost=Math.round(u.hpMax*0.10);
+        fx(u,'DOWN ON THEM','#c07a2c',true);
+        strike(u,tgt,a);
+        envHurt(u,cost,'the landing');
+        if(!u.dead){u.hp=Math.min(u.hpMax,u.hp+gain);fx(u,'+'+gain,'#8ca35a',true);}
+        say(u.name+' comes down on '+tgt.name+' with everything, and gets up worse and '+
+          'better at once.');
+      }else{
+        const mult=1+0.20*r.moved;
+        fx(u,r.moved?'+'+Math.round(r.moved*20)+'%':'SET','#d9bd7e',true);
+        strike(u,tgt,a,mult);
+        say(r.moved?u.name+' crosses '+r.moved+' hexes and puts the whole run behind the '+
+          'point.':u.name+' sets and puts the point in from a standstill.');
+      }
+      B.sel=null;B.reach=null;B.reach2=null;render();
+      if(!checkEnd())autoEnd(u);
+      return;}
     if(a.strain){payStrain(u,a);sfx('cast');}
     /* ═══ #67 · a damaging school is begun here and lands next turn ══════
        Everything above this line has already been paid. The click is the
@@ -27462,6 +27814,23 @@ function clickHex(c,r){
     if(a.hex){                                  /* UNPICK: armour off, nerve with it */
       sfx('cast');
       faceToward(u,tgt.col,tgt.row);
+      /* ⛔ #285 - UNMAKING IS UNPICK'S BIGGER SIBLING AND SHARES ITS BRANCH. It takes
+         ALL of the harness rather than a fixed 25, costs 25 morale rather than 14, and
+         leaves a venom stack so everything that touches them afterwards lands harder.
+         One branch, two workings, because they are one verb at two prices - a second
+         copy of "strip a body" is the shape this file deletes. */
+      if(a.k==='unmaking'){
+        const gone=tgt.armour;tgt.armour=0;
+        tetherFx(u,tgt,'#e28fb4');
+        setTimeout(()=>moteFx(tgt,7,'#e8b0cf'),hitPaced(220));
+        fx(tgt,'UNMADE','#e28fb4');
+        mor(tgt,-25,'it came apart');
+        tgt.venom=(tgt.venom||[]).concat([{until:B.round+2}]);
+        say(u.name+' unmakes '+tgt.name+': every plate off, '+Math.round(gone)+
+          ' of it, and for two rounds everything that touches them lands harder.');
+        B.sel=null;B.reach=null;render();
+        if(!checkEnd())autoEnd(u);
+        return;}
       const off=Math.min(tgt.armour,Math.round(25*HDA_CUT));tgt.armour-=off;
       /* #87 — the tether takes hold and the harness comes off it as shards.
          Steel motes rather than green ones: the same primitive, and the
@@ -41254,6 +41623,19 @@ function drawInv(){
     let tHTML;
     if(tradeOwed(p)){
       const trades=[...new Set(CLS_BY_RACE[p.race]||CLS_BY_RACE.human)];
+      /* ═══ ⛔ #285 · THE PICKER SAYS WHAT THE CLASS GIVES ══════════════════════
+         Everything below is DERIVED, so a lean retuned or a category re-trained is on
+         this card the same day: the LEAN off `CLSLEAN`, in the same words the stat
+         ladder uses; what it SPECIALISES in off `CLS_TRAINS`, which is also the gate
+         deciding whether its signature fires at all; the kit off `START_GEAR`.
+         ⚠ NOTHING HERE IS TYPED. The only thing that could go stale is the order,
+         and the order is the three tables' own. */
+      const pickLean=k=>{const l=CLSLEAN[k]||{};
+        const ks=Object.keys(l).filter(x=>l[x]);
+        return ks.length?ks.map(x=>(l[x]>0?'+':'')+l[x]+' '+x.toUpperCase()).join(' · ')
+                        :'no lean';};
+      const pickKit=k=>{const g=START_GEAR[k]||[];
+        return g.map(x=>x?((GEAR[x]||{}).n||x):null).filter(Boolean).join(' · ')||'nothing';};
       tHTML='<div class="lbl" style="color:#8ca35a">A CLASS TO PICK · CLICK ONE · THE TOOL COMES WITH IT</div>'+
         trades.map(k=>'<button class="pk buy" data-trade="'+k+'"><span class="tag">CLASS</span>'+
           /* ⚠ #196 - THE CLASS YOU ARE PICKING KEEPS ITS NAME. This is the one
@@ -41262,8 +41644,14 @@ function drawInv(){
              ⚑ #197 - and the word is CLASS, not TRADE, on all nine surfaces
              that meant a class. The `data-trade` attribute is the handler's
              key and is deliberately NOT renamed with it. */
-          '<b>'+bmk(cIcon(k))+' '+CLASSES[k].n+'</b><i>'+CLASSES[k].sig+'</i></button>').join('')+
-        '<div class="pkfoot">A class is picked once and kept. The perks come after it, at 2, 4, 6 and 8.</div>';
+          '<b>'+bmk(cIcon(k))+' '+CLASSES[k].n+'</b>'+
+          '<i class="pkgives">'+pickLean(k)+' · trains '+trainsWord(k).toUpperCase()+'</i>'+
+          '<i>'+CLASSES[k].sig+'</i>'+
+          '<i class="pkkit">comes with '+pickKit(k)+'</i></button>').join('')+
+        '<div class="pkfoot">A class is picked once and kept. Its own skills are FREE at 2, 4, 6 '+
+        'and 8 - the perk point that level hands over is yours for the general lane. '+
+        '<b>A class only gets its signature and its own skills with the weapon it trains</b>: '+
+        'put anything else in its hands and it swings the thing, and nothing more.</div>';
     }else{
       tHTML='<div class="lbl" style="color:#8a7449">NO CLASS YET</div>'+
         '<div class="pknone">Hired without one. The first level is where a class is picked, and it '+
@@ -53811,7 +54199,7 @@ function simStock(race,cls){
     sur:'',race:race,cls:cls,
     kind:race==='ratkin'?'ratkin':race==='ogre'?'ogre':(KIND_BY_CLS[cls]||'human'),
     st:{str:0,agi:0,int:0,mor:0},trait:'stubborn',
-    eq:{armour:g[0],main:g[1],off:null,trinket:null}});
+    eq:{armour:g[0],main:g[1],off:g[2]||null,trinket:null}});
 }
 /* the level is paid the way promotions pay it (levelUp banks the points) and
    the bank is then spent by POLICY, because this bench has no sheet to ask

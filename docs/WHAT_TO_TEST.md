@@ -26,6 +26,34 @@
 
 ---
 
+## #285 - Every class gets its tier-4 fork, the training lock becomes a rule, and the picker says what a class gives
+
+**In the game.** Every class now has a real question at level 4, and a weapon it has to be holding.
+
+**In three steps.** New company · level anybody to 4 · open the **★ PERKS** tab.
+
+- **The fork is free and it is a real choice.** Every class has two doors at 4 and the tag says
+  **FREE - CLICK TO TAKE**: the perk point that level handed over is still yours for the general lane.
+- **Brute**: HIT HARD (they lose an action next turn) or CRAZY JUMP (leap two hexes onto somebody;
+  you take a tenth of your own hitpoints landing and take back a tenth plus ten).
+- **Spear**: SET AND RUN (run up to three hexes at them, +20% damage a hex) or BRACED WALL.
+- **Cutter**: A KNIFE IN THE BACK (from behind, they lose their **whole** next turn; one action off
+  anything big) or EXECUTIONER (2, +2 for every one of yours beside them, +1 for every one of theirs).
+- **Plateman**: CRYSTALISE (**both actions**, and until your next turn you take a quarter of
+  everything) or MADNESS (3 + your level to everything adjacent, either side).
+- **Mage**: THE BREAKING (**no range at all** - it goes off around you and catches every enemy in the
+  six hexes you are standing in the middle of) or UNMAKING (every plate off, 25 morale, and everything
+  that touches them lands 25% harder for two rounds).
+- **A class only works with its own weapon.** Put a broom in a brute's hands: he keeps ROAR, and SWEEP
+  and HIT HARD are gone until he picks up something heavy. The picker names what each class trains.
+  **Empty hands are fine** - a disarmed body keeps everything that needs no weapon.
+- **The class picker says what it gives.** The stat lean, what it specialises in, and what it comes
+  with - none of which was on that screen before.
+- **TWO-HANDED WEAPONS is now ARMOUR BREAKER.** Same perk, same key, a name that says what it does.
+- **What would be a bug.** A class skill charging a perk point · CRYSTALISE that does not obviously
+  blunt a blow · a brute who still SWEEPs with a broom · a cutter whose DISTRACT survives a club ·
+  a plateman with no shield in his stash · THE BREAKING asking you to click a target.
+
 ## #284 - The PLATEMAN, the harpoon, and the class lane stops costing a perk point
 
 **In the game.** There is a seventh class on the wall and the level-up screen owes you more.

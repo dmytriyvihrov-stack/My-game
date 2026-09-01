@@ -25,6 +25,14 @@ back already answered by work that was not about them.
 
 ---
 
+## AD · From #285
+
+| | the question | ⭐ mine |
+|---|---|---|
+| **AD1** | **The training lock takes DISTRACT off a cutter holding anything but a blade, and that is a bigger bite than the measurement suggested.** #283 measured the lock as costing the brute 13 specials and the cutter 0 - but that measurement asked whether an act was in the class's BARE-HANDED set, and DISTRACT is (it needs no weapon). The lock as built gates the whole SIGNATURE on the trained category, so a cutter with a club now has a club and nothing else. That is exactly what you asked for (*"only when it matches their class weapon type"*) and it is the right rule for SWEEP and SPEAR WALL, which are things you do WITH a weapon. DISTRACT is not: he makes them look the wrong way. | **leave it locked and play it.** The rule is better for being one rule, and a cutter is meant to want a blade. But if DISTRACT feels wrong to lose, the fix is one word - move it out of the SIG table into its own `p.cls==='cutter'` push beside the brute's ROAR, which is where a class act that needs no weapon already lives |
+
+---
+
 ## AC · From #284
 
 | | the question | ⭐ mine |
