@@ -1,0 +1,1057 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>RABBLEBOUND - The Armoury</title>
+<meta name="theme-color" content="#14110d">
+<!-- ═══════════════════════════════════════════════════════════════════════
+     THE ARMOURY - every artifact the game can hand you, in one table.
+
+     It is NOT part of the game and the game does not know it exists. Every
+     figure in it is DERIVED off the running build by tools/dev/probes/gear.js
+     and laid out by tools/dev/build_gear.py, so a GEAR row change moves this
+     file by itself. Nothing here is authored twice.
+
+     To regenerate:
+       python tools/dev/gt.py launch
+       python tools/dev/gt.py eval tools/dev/probes/gear.js > gear.raw
+       python tools/dev/build_gear.py gear.raw
+
+     Every cell with a dotted underline is EDITABLE. Edits live in this
+     browser (localStorage) and never touch the build; EXPORT hands you back
+     only what you changed, so a rebuild can never lose your figures.
+     ═══════════════════════════════════════════════════════════════════════ -->
+<style>
+:root{
+  --bg:#14110d; --panel:#1b1712; --panel2:#221d17; --line:#332b21; --line2:#4d3c22;
+  --ink:#e6dcc6; --dim:#8a7a5e; --faint:#5d5242;
+  --gold:#c9a227; --gold-lit:#e0bd4a; --teal:#4a8f8b; --blood:#a8422f;
+  --grain:#8ca35a; --steel:#96a1a5; --ore:#7d8a54; --wood:#b98a45; --arc:#a07cc9;
+  --mono:ui-monospace,"Cascadia Mono",Consolas,monospace;
+  --disp:"Cinzel",Georgia,serif;
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--ink);font:12px/1.45 var(--mono);
+  display:flex;flex-direction:column;overflow:hidden}
+
+/* ── chrome ───────────────────────────────────────────────────────────── */
+#top{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:8px 14px;
+  background:var(--panel);border-bottom:1px solid var(--line);flex:0 0 auto}
+.brand{font-family:var(--disp);letter-spacing:.22em;font-weight:700;color:var(--gold);
+  font-size:14px;white-space:nowrap}
+.brand small{color:var(--faint);letter-spacing:.1em;font-weight:400;margin-left:9px;
+  font-family:var(--mono);font-size:10px}
+button{font:inherit;color:var(--ink);background:var(--panel2);border:1px solid var(--line);
+  padding:3px 10px;cursor:pointer}
+button:hover{border-color:var(--gold);color:#fff}
+button.on{background:var(--gold);color:#14110d;border-color:var(--gold);font-weight:700}
+input,select{font:inherit;color:var(--ink);background:#100e0a;border:1px solid var(--line);
+  padding:3px 7px}
+input:focus,select:focus{outline:none;border-color:var(--gold)}
+.grow{flex:1}
+.tabs{display:flex;gap:2px}
+.tabs button{letter-spacing:.12em;font-size:11px;padding:4px 15px}
+
+#note{padding:6px 14px;background:#1d1a12;border-bottom:1px solid var(--line);
+  color:var(--dim);font-size:11px;flex:0 0 auto}
+#note b{color:var(--gold)}
+#note .warn{color:var(--blood)}
+
+.page{flex:1;min-height:0;overflow:auto;display:none}
+.page.on{display:block}
+
+/* ── the table ────────────────────────────────────────────────────────── */
+table{border-collapse:separate;border-spacing:0;width:100%;font-size:11px}
+thead th{position:sticky;top:0;z-index:5;background:#1f1a13;color:var(--dim);
+  font-weight:700;letter-spacing:.1em;font-size:10px;text-transform:uppercase;
+  padding:7px 6px;border-bottom:1px solid var(--line2);text-align:left;
+  white-space:nowrap;cursor:pointer;user-select:none}
+thead th:hover{color:var(--gold)}
+thead th.sorted{color:var(--gold-lit)}
+thead th .ar{color:var(--faint);font-weight:400}
+tbody td{padding:5px 6px;border-bottom:1px solid #241f18;vertical-align:top}
+tbody tr:hover td{background:#1a1610}
+tbody tr.uniq td{background:#1d1a12}
+tbody tr.uniq:hover td{background:#241f15}
+/* the one row a reader cannot explain: painted, priced, unreachable */
+tbody tr.dead td{box-shadow:inset 0 -1px 0 #4a1f1a}
+tbody tr.dead td:first-child{box-shadow:inset 3px 0 0 var(--blood),inset 0 -1px 0 #4a1f1a}
+
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+.pic{width:76px;padding:3px 6px !important}
+.pic img{display:block;width:64px;height:64px;object-fit:contain;
+  filter:drop-shadow(0 1px 2px #000)}
+.pic .noart{color:var(--faint);font-size:9px;letter-spacing:.08em;display:block;
+  width:64px;height:64px;border:1px dashed var(--line2);text-align:center;
+  line-height:64px}
+.pic .glyph{color:var(--dim);font-size:26px;text-align:center;width:64px;height:64px;
+  line-height:64px;border:1px dashed var(--line2)}
+/* the redraw flag: quiet until it is set, and then it is the loudest thing in
+   the column, because a list of them is what an artist is handed */
+.rdw{display:flex;align-items:center;gap:3px;margin-top:4px;cursor:pointer;
+  color:var(--faint);font-size:9px;letter-spacing:.06em;user-select:none}
+.rdw:hover{color:var(--dim)}
+.rdw input{margin:0;width:11px;height:11px;accent-color:var(--blood);cursor:pointer}
+.rdw.on span{color:#c15d55}
+tbody tr:has(.rdw.on) td.pic{box-shadow:inset 0 0 0 1px #6d2b25}
+
+tbody td:nth-child(2){min-width:170px;max-width:210px}
+.nm{font-family:var(--disp);font-size:13px;line-height:1.25}
+.sub{color:var(--faint);font-size:10px;letter-spacing:.06em;margin-top:3px}
+.kk{color:var(--faint);font-size:9px;letter-spacing:.08em}
+.fl{display:inline-block;color:var(--wood);font-size:9px;letter-spacing:.06em;
+  margin-right:5px}
+.fl.hot{color:var(--blood)}
+.sl{display:inline-block;padding:0 4px;border:1px solid var(--line2);color:var(--dim);
+  font-size:9px;letter-spacing:.09em;margin-right:4px}
+.tier{font-size:10px;letter-spacing:.1em;font-weight:700}
+
+/* price */
+.pr{font-family:var(--disp);font-size:15px;color:var(--gold-lit)}
+.prb{display:block;height:3px;background:#2a2114;margin-top:3px;min-width:34px}
+.prb i{display:block;height:3px;background:var(--gold)}
+.prf{display:block;color:var(--faint);font-size:9px;margin-top:2px;white-space:nowrap}
+.prf.floored{color:var(--wood)}
+.sc{color:var(--dim);font-size:10px;white-space:nowrap}
+.sc b{color:var(--ink);font-weight:400}
+.sc .own{color:var(--gold-lit)}
+
+/* what it does */
+.effs{display:flex;flex-direction:column;gap:3px;min-width:190px;max-width:250px}
+.eff{background:#241c11;border:1px solid var(--line);border-left:2px solid var(--line2);
+  padding:2px 6px}
+.eff b{color:var(--ink);font-weight:700;letter-spacing:.05em}
+.eff .m{color:var(--dim)}
+.eff.good{border-left-color:var(--grain)}
+.eff.bad{border-left-color:var(--blood)}
+.eff.cond{border-left-color:var(--arc);color:var(--dim)}
+.eff.co{border-left-color:var(--gold)}
+.eff.act{border-left-color:var(--teal)}
+.eff.act b{color:var(--teal)}
+.wep{color:var(--dim);font-size:10px;white-space:nowrap}
+.wep b{color:var(--ink);font-weight:400}
+.wep .d{color:var(--blood)}
+
+/* who gets full value out of it */
+.uses{display:flex;flex-direction:column;gap:3px;min-width:180px;max-width:230px}
+.use{background:#181f1e;border:1px solid #2c4d4a;border-left:2px solid var(--teal);
+  padding:2px 6px}
+.use b{color:var(--teal);font-weight:700;letter-spacing:.04em}
+.use .m{color:var(--dim);font-size:10px;display:block;line-height:1.3}
+.use.any{border-color:var(--line);border-left-color:var(--faint);background:#1b1712}
+.use.any b{color:var(--dim)}
+
+/* a draft: an artifact that is not in the build yet */
+tbody tr.draft td{background:#1a1d17}
+tbody tr.draft:hover td{background:#212617}
+tbody tr.draft td:first-child{box-shadow:inset 3px 0 0 var(--grain)}
+.dmark{display:inline-block;background:var(--grain);color:#14110d;font-weight:700;
+  font-size:9px;letter-spacing:.1em;padding:0 5px;margin-bottom:3px}
+.dkill{color:var(--blood);font-size:9px;letter-spacing:.06em;cursor:pointer;
+  border:1px solid var(--line);padding:0 5px;display:inline-block;margin-top:4px}
+.dkill:hover{border-color:var(--blood);color:#fff}
+.dhint{color:var(--faint);font-size:9px;line-height:1.35;margin-top:3px}
+
+/* where it comes from */
+.srcs{display:flex;flex-direction:column;gap:4px;min-width:230px;max-width:300px}
+.src{background:#1b1712;border:1px solid var(--line);padding:3px 6px}
+.src b{color:var(--gold);font-family:var(--disp);font-size:11px;letter-spacing:.04em}
+.src .sh{color:var(--faint);font-size:9px;float:right;letter-spacing:.08em}
+.src .sd{color:var(--dim);font-size:10px;line-height:1.35;margin-top:2px;clear:both}
+.src .sp{color:var(--grain)}
+.src.code{border-color:#4a3a5c}
+.src.code b{color:var(--arc)}
+.roll{font-size:10px;color:var(--dim);margin-top:4px;padding-top:4px;
+  border-top:1px solid #241f18;line-height:1.4}
+.roll .yes{color:var(--grain)}
+.roll .no{color:var(--blood)}
+.roll i{color:var(--faint);font-style:normal}
+.none{color:var(--blood);font-size:10px;letter-spacing:.04em}
+
+/* editable */
+[contenteditable]{border-bottom:1px dotted var(--line2);min-width:18px;display:inline-block;
+  outline:none;padding:0 1px}
+[contenteditable]:hover{border-bottom-color:var(--gold);background:#241c11}
+[contenteditable]:focus{border-bottom-color:var(--gold-lit);background:#2a2114;color:#fff}
+td.edited{box-shadow:inset 2px 0 0 var(--grain)}
+
+/* the slot rows: a group header inside the table */
+tbody tr.grp td{background:#221d17;border-top:1px solid var(--line2);
+  border-bottom:1px solid var(--line2);padding:5px 8px}
+tbody tr.grp:hover td{background:#221d17}
+.grp .gh{font-family:var(--disp);font-size:12px;color:var(--gold);letter-spacing:.12em;
+  font-weight:600}
+.grp .gn{color:var(--dim);font-size:10px;margin-left:10px}
+.grp .gt{font-size:10px;margin-left:10px;letter-spacing:.06em}
+
+/* ── what nothing can reach ───────────────────────────────────────────── */
+#orphans{padding:18px 14px 40px;border-top:2px solid var(--line2);margin-top:8px}
+#orphans h2{font-family:var(--disp);font-size:16px;color:var(--wood);letter-spacing:.1em;
+  margin:0 0 3px;font-weight:600}
+#orphans .lead{color:var(--dim);font-size:11px;max-width:900px;margin-bottom:14px}
+#orphans h4{font-family:var(--disp);font-size:12px;color:var(--gold);letter-spacing:.08em;
+  margin:16px 0 6px;font-weight:600}
+#orphans h4 span{color:var(--faint);font-family:var(--mono);font-size:10px;
+  letter-spacing:0;margin-left:8px;font-weight:400}
+.ocards{display:flex;flex-wrap:wrap;gap:8px}
+.ocard{background:var(--panel);border:1px dashed var(--line2);padding:7px 9px;
+  display:flex;gap:9px;align-items:flex-start;min-width:230px;max-width:300px}
+.ocard img{width:48px;height:48px;object-fit:contain;filter:drop-shadow(0 1px 2px #000)}
+.ocard .on1{font-family:var(--disp);font-size:12px;color:var(--ink)}
+.ocard .ok{color:var(--faint);font-size:9px;letter-spacing:.06em;word-break:break-all}
+.ocard .od{color:var(--dim);font-size:10px;margin-top:3px;line-height:1.35}
+.olist{display:flex;flex-wrap:wrap;gap:5px}
+.otag{background:#241c11;border:1px dashed var(--line2);color:var(--dim);
+  padding:2px 7px;font-size:10px}
+.otag b{color:var(--ink);font-weight:400}
+#orphans .ok0{color:var(--grain);font-size:11px}
+
+/* ── the sources page ─────────────────────────────────────────────────── */
+#where{padding:14px;display:none;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));
+  gap:12px;align-content:start}
+#where.on{display:grid}
+.wcard{background:var(--panel);border:1px solid var(--line);padding:10px 12px}
+.wcard h3{margin:0 0 2px;font-family:var(--disp);font-size:15px;color:var(--gold-lit);
+  font-weight:600;letter-spacing:.04em}
+.wcard .k{color:var(--faint);font-size:10px;letter-spacing:.08em;margin-bottom:8px}
+/* the row wraps on purpose: .wd is flex-basis 100% so the door text drops to
+   its own line instead of squeezing the name into a three-line tower */
+.wrow{display:flex;flex-wrap:wrap;align-items:center;gap:7px;padding:3px 0;
+  border-top:1px solid #241f18}
+.wrow img{width:28px;height:28px;object-fit:contain}
+.wrow .wg{width:28px;text-align:center;color:var(--dim);font-size:16px}
+.wrow .wn{flex:1 1 auto;min-width:130px}
+.wrow .wp{color:var(--faint);width:56px;text-align:right;font-size:10px}
+.wrow .wd{color:var(--dim);font-size:9px;flex-basis:100%;padding-left:35px;
+  margin-top:-2px;line-height:1.3}
+.wtot{margin-top:8px;padding-top:6px;border-top:1px solid var(--line2);
+  display:flex;justify-content:space-between;color:var(--dim);font-size:11px}
+.wtot b{color:var(--gold-lit);font-family:var(--disp);font-size:14px}
+.wcard.pool{border-color:var(--line2)}
+.wcard.pool h3{color:var(--grain)}
+/* a grant nothing on a table can see reads differently on purpose */
+.wcard.code{border-color:#4a3a5c}
+.wcard.code h3{color:var(--arc)}
+
+/* ── the drafting bench ───────────────────────────────────────────────── */
+#forge{position:fixed;inset:0;background:rgba(8,6,4,.86);display:none;
+  align-items:center;justify-content:center;z-index:60}
+#forge.on{display:flex}
+#forge .box{background:var(--panel);border:1px solid var(--line2);width:min(880px,94vw);
+  max-height:88vh;overflow:auto;padding:14px}
+#forge h3{margin:0 0 6px;font-family:var(--disp);color:var(--grain);letter-spacing:.1em;
+  font-size:14px;font-weight:600}
+#forge .lead{color:var(--dim);font-size:11px;margin-bottom:12px;line-height:1.5}
+#forge .lead b{color:var(--gold)}
+#fgForm{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:9px}
+#fgForm label{display:block;color:var(--faint);font-size:10px;letter-spacing:.1em;
+  text-transform:uppercase;margin-bottom:2px}
+#fgForm .f{display:flex;flex-direction:column}
+#fgForm .f.wide{grid-column:1/-1}
+#fgForm input,#fgForm select,#fgForm textarea{width:100%;font:inherit;color:var(--ink);
+  background:#100e0a;border:1px solid var(--line);padding:4px 7px}
+#fgForm textarea{min-height:56px;resize:vertical;font-size:11px;line-height:1.4}
+#fgForm .hint{color:var(--faint);font-size:9px;margin-top:2px;line-height:1.35}
+#forge .row{display:flex;gap:8px;margin-top:14px;align-items:center}
+#fgPrice{color:var(--gold-lit);font-family:var(--disp);font-size:14px}
+
+/* ── the export sheet ─────────────────────────────────────────────────── */
+#sheet{position:fixed;inset:0;background:rgba(8,6,4,.86);display:none;
+  align-items:center;justify-content:center;z-index:50}
+#sheet.on{display:flex}
+#sheet .box{background:var(--panel);border:1px solid var(--line2);width:min(880px,92vw);
+  max-height:82vh;display:flex;flex-direction:column;padding:14px}
+#sheet h3{margin:0 0 8px;font-family:var(--disp);color:var(--gold);letter-spacing:.1em;
+  font-size:14px;font-weight:600}
+#sheet textarea{flex:1;min-height:340px;background:#100e0a;color:var(--ink);
+  border:1px solid var(--line);font:11px/1.4 var(--mono);padding:8px;resize:none}
+#sheet .row{display:flex;gap:8px;margin-top:10px}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-track{background:#100e0a}
+::-webkit-scrollbar-thumb{background:#2f2a1f;border:2px solid #100e0a}
+::-webkit-scrollbar-thumb:hover{background:var(--line2)}
+</style>
+</head>
+<body>
+
+<div id="top">
+  <span class="brand">THE ARMOURY<small id="stamp"></small></span>
+  <div class="tabs">
+    <button id="tabItems" class="on">ARTIFACTS</button>
+    <button id="tabWhere">WHERE THEY COME FROM</button>
+  </div>
+  <input id="q" placeholder="search name, key, effect, card..." style="width:210px">
+  <select id="slot"><option value="">every slot</option></select>
+  <select id="tier"><option value="">every tier</option></select>
+  <select id="src"><option value="">every source</option>
+    <option value="__none">nothing can reach it</option></select>
+  <select id="grp"><option value="slot">group by slot</option>
+    <option value="tier">group by tier</option>
+    <option value="how">group by where it comes from</option>
+    <option value="">no grouping</option></select>
+  <span class="grow"></span>
+  <span id="count" style="color:var(--faint)"></span>
+  <button id="exJson">EXPORT JSON</button>
+  <button id="exCsv">EXPORT CSV</button>
+  <button id="exMd">EXPORT MD</button>
+  <button id="newRow">+ NEW ARTIFACT</button>
+  <button id="reset">RESET EDITS</button>
+</div>
+
+<div id="note"></div>
+
+<div id="items" class="page on">
+  <table>
+    <thead><tr id="head"></tr></thead>
+    <tbody id="body"></tbody>
+  </table>
+  <div id="orphans"></div>
+</div>
+
+<div id="where" class="page"></div>
+
+<div id="forge"><div class="box">
+  <h3 id="fgTitle">A NEW ARTIFACT</h3>
+  <div class="lead">Nothing here touches the build. What you sketch lives in this
+    browser and rides EXPORT as a paste-ready <b>GEAR{}</b> row; the price is
+    charged by the build’s own <b>gearPrice()</b>, shipped with this file, so a
+    draft cannot be priced by a second model.</div>
+  <div id="fgForm"></div>
+  <div class="row"><button id="fgSave">SAVE THE DRAFT</button>
+    <span class="grow"></span>
+    <span id="fgPrice"></span>
+    <button id="fgCancel">CANCEL</button></div>
+</div></div>
+
+<div id="sheet"><div class="box">
+  <h3 id="shTitle">EXPORT</h3>
+  <textarea id="shText" spellcheck="false"></textarea>
+  <div class="row"><button id="shCopy">COPY TO CLIPBOARD</button>
+    <span class="grow"></span><button id="shClose">CLOSE</button></div>
+</div></div>
+
+<script>
+const D=/*__ARMOURY__*/null;
+const $=id=>document.getElementById(id);
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+/* ── edits: a flat {key|field: value} map, kept OUT of the data ──────────
+   The armoury is regenerated from the running game, so an edit written INTO
+   the row would be lost the next time somebody re-runs the probe. It lives
+   beside the row instead, and EXPORT hands back only what moved. */
+const EK='armoury_edits_v1';
+let EDITS={};
+try{EDITS=JSON.parse(localStorage.getItem(EK))||{};}catch(e){EDITS={};}
+const saveEdits=()=>{try{localStorage.setItem(EK,JSON.stringify(EDITS));}catch(e){}};
+const ekey=(g,k)=>g.key+'|'+k;
+const val=(g,k)=>{const e=EDITS[ekey(g,k)];return e===undefined?g[k]:e;};
+const moved=(g,k)=>EDITS[ekey(g,k)]!==undefined;
+
+/* an editable cell. `long` is the description column, which wraps. */
+function ed(g,k,long){
+  return '<span contenteditable="true" data-g="'+esc(g.key)+'" data-k="'+k+'"'+
+    (long?' style="display:block;min-width:200px;max-width:250px"':'')+
+    '>'+esc(val(g,k))+'</span>';
+}
+
+/* ── what a row says it does, chip by chip ───────────────────────────────
+   ⛑ EVERY AUTHORED FIELD THE TABLE HAS NO COLUMN FOR IS DRAWN HERE, and the
+   probe decides which those are rather than this file: a field written onto a
+   gear row next month arrives untaught, wearing its raw key. A hand-kept list
+   of "the fields worth showing" is the shape that goes stale silently. */
+const L=k=>(D.effLabel[k]||[k,0]);
+const SKIPV={company:1,emergency:1,pointBlank:1,hush:1};
+function fmtV(k,v){
+  const sign=L(k)[1];
+  if(v===true)return '';
+  if(v===false)return 'no';
+  if(typeof v==='number')return (sign&&v>0?'+':'')+v;
+  if(Array.isArray(v))return v.join(' to ');
+  if(v&&typeof v==='object')
+    return Object.keys(v).map(x=>(L(x)[0]||x)+' '+(v[x]>0?'+':'')+v[x]).join(', ');
+  return String(v);
+}
+function effChip(e){
+  const lab=L(e.k)[0]||e.k;
+  const cls=(e.k==='bonusD'||e.k==='forRace'||e.k==='forCls'||e.k==='bonus')?'cond'
+    :/^co[A-Z]/.test(e.k)||e.k==='company'?'co'
+    :(typeof e.v==='number'&&e.v<0)?'bad':'good';
+  if(e.k==='bonusD')return '<div class="eff cond">'+esc(String(e.v))+'</div>';
+  const v=SKIPV[e.k]?'':fmtV(e.k,e.v);
+  return '<div class="eff '+cls+'"><b>'+esc(lab)+'</b>'+
+    (v?' <span class="m">'+esc(v)+'</span>':'')+'</div>';
+}
+/* an act a piece of kit carries in its own right: a trinket's cast, a
+   throwable's throw, a consumable's use. One shape, three field names. */
+function actChip(a){
+  const bits=[];
+  if(a.cost)bits.push(a.cost+'ap');
+  if(a.range)bits.push(a.range+' hex');
+  if(a.uses)bits.push(a.uses===1?'once a fight':a.uses+' a fight');
+  if(a.cool)bits.push('cool '+a.cool);
+  if(a.slow)bits.push('slows '+a.slow);
+  if(a.hide)bits.push('hides '+a.hide);
+  if(a.slowFoes)bits.push('slows the other side '+a.slowFoes);
+  if(a.burn)bits.push('burns up');
+  if(a.self)bits.push('on yourself');
+  return '<div class="eff act" title="'+esc(a.note||'')+'"><b>'+esc(a.n||a._how)+'</b>'+
+    (a.dmg?' <span class="m">'+a.dmg[0]+'-'+a.dmg[1]+'</span>':'')+
+    (bits.length?' <span class="m">'+esc(bits.join(' · '))+'</span>':'')+'</div>';
+}
+
+/* ── where it comes from ─────────────────────────────────────────────────
+   ⛔ DERIVED OFF THE DECKS, THE LOOT TABLES, THE ROSTER AND THE CODE, never
+   authored beside the row: the card that hands a thing over already carries
+   `gear:'<key>'`, so the decks ARE the index. */
+function srcBox(s){
+  const nm=D.sourceName[s.how]||[s.how,''];
+  const where=s.how==='loot'?(D.fightName[s.card]||s.card):s.card;
+  return '<div class="src'+(s.how==='code'?' code':'')+'">'+
+    '<span class="sh">'+esc(nm[0])+'</span><b>'+esc(where)+'</b>'+
+    '<div class="sd">'+esc(s.door)+
+    (s.pay?' <span class="sp">'+esc(s.pay)+'</span>':'')+'</div></div>';
+}
+function rollLine(g){
+  if(g.rollable)return '<div class="roll"><span class="yes">the rack and the find can roll it</span>'+
+    (g.gates.length?'<br><i>'+g.gates.map(esc).join('<br>')+'</i>':'')+'</div>';
+  return '<div class="roll"><span class="no">no roll can produce it</span>'+
+    '<br><i>'+g.gates.map(esc).join('<br>')+'</i></div>';
+}
+
+/* ── the drafting bench: an artifact that is not in the build yet ────────
+   ⛔ THE PRICE OF A DRAFT IS CHARGED BY THE BUILD'S OWN FUNCTION. `gearPrice`
+   is shipped into this file as source and run against a one-row shim, so the
+   tool has no price model of its own to go stale. That is the same rule the
+   whole dex is built on, applied to the one place a tool is tempted to break
+   it: a second implementation of a rule has drifted every time this repo has
+   allowed one. */
+const PRICE=(function(){
+  const GEAR={},GEAR_FLOOR=D.floors;
+  let fn=null;try{fn=eval('('+D.priceFn+')');}catch(e){fn=null;}
+  return row=>{if(!fn)return 0;GEAR.__draft=row;
+    try{return fn('__draft');}catch(e){return 0;}};
+})();
+
+const DK='armoury_drafts_v1';
+let DRAFTS=[];
+try{DRAFTS=JSON.parse(localStorage.getItem(DK))||[];}catch(e){DRAFTS=[];}
+const saveDrafts=()=>{try{localStorage.setItem(DK,JSON.stringify(DRAFTS));}catch(e){}};
+
+/* the free-text field: `dodge +9, mor -1, company` becomes real fields, so a
+   draft can carry anything a GEAR row can carry without this file keeping a
+   list of what those are */
+function parseExtra(txt){
+  const out=[];
+  String(txt||'').split(/[,;\n]+/).forEach(part=>{
+    const t=part.trim();if(!t)return;
+    const m=t.match(/^([A-Za-z][A-Za-z0-9_]*)\s*[:=]?\s*(.*)$/);
+    if(!m)return;
+    const k=m[1],raw=m[2].trim();
+    let v;
+    if(raw==='')v=true;
+    else if(/^[+-]?\d+(\.\d+)?$/.test(raw))v=parseFloat(raw);
+    else v=raw;
+    out.push({k:k,v:v});
+  });
+  return out;
+}
+/* the GEAR row a draft would BE, which is both what gearPrice reads and what
+   EXPORT hands back to be pasted. One object, two consumers. */
+function gearRow(r){
+  const o={rarity:r.rarity||'common',n:r.n||'',slot:r.slot||'main'};
+  if(r.size&&r.size!=='any')o.size=r.size;
+  if(r.unique)o.unique=true;
+  if(+r.armour)o.armour=+r.armour;
+  if(r.dmgLo!==''&&r.dmgLo!=null&&r.dmgHi!==''&&r.dmgHi!=null)
+    o.dmg=[+r.dmgLo,+r.dmgHi];
+  if(r.am!==''&&r.am!=null)o.am=+r.am;
+  if(r.ft!==''&&r.ft!=null)o.ft=+r.ft;
+  if(+r.reach)o.reach=+r.reach;
+  if(+r.range)o.range=+r.range;
+  if(+r.hands>1)o.hands=+r.hands;
+  if(r.glyph)o.g=r.glyph;
+  parseExtra(r.extra).forEach(e=>{o[e.k]=e.v;});
+  if(r.d)o.d=r.d;
+  return o;
+}
+function draftItem(r){
+  const w=D.rarity[r.rarity]||D.rarity.common;
+  const row=gearRow(r),price=PRICE(row);
+  const STRUCT={rarity:1,n:1,slot:1,size:1,d:1,g:1,unique:1,hands:1,
+                dmg:1,am:1,ft:1,reach:1,range:1};
+  const eff=Object.keys(row).filter(k=>!STRUCT[k]).map(k=>({k:k,v:row[k]}));
+  const g={draft:true,raw:r,key:r.key||'newartifact',n:row.n||'Unnamed',
+    rarity:row.rarity,tier:w.n,colour:w.c,slot:row.slot,size:row.size||'any',
+    unique:!!row.unique,hands:row.hands||1,glyph:row.g||'',
+    dmg:row.dmg||null,am:row.am==null?null:row.am,ft:row.ft==null?null:row.ft,
+    reach:row.reach||0,range:row.range||0,armour:row.armour||0,
+    price:price,floor:D.floors[row.rarity]||45,
+    scrap:D.scrapTable[row.rarity]||D.scrapTable.common,scrapOwn:false,
+    ico:'',art:false,eff:eff,acts:[],d:row.d||'',
+    users:[{who:'nobody yet',
+      why:'a draft is not in GEAR{}, so nothing in the build reads a field off it'}],
+    sources:[],gates:['a draft: paste it into GEAR{} and re-run the probe'],
+    rollable:false};
+  g.dmgMean=g.dmg?Math.round((g.dmg[0]+g.dmg[1])/2*10)/10:0;
+  g.floored=price===g.floor;
+  return g;
+}
+/* the one list the table walks: the build's rows, then anything drafted */
+const ALL=()=>D.items.concat(DRAFTS.map(draftItem));
+
+/* ── the readings the table is measured against ─────────────────────────── */
+let MAXP=Math.max.apply(null,D.items.map(g=>g.price));
+const dead=g=>!g.draft&&!g.sources.length&&!g.rollable;
+const artOf=g=>g.art?D.art[g.ico]:null;
+function pic(g){
+  const s=artOf(g),on=String(val(g,'redraw'))==='1';
+  return (s?'<img src="'+s+'" alt="">'
+          :g.glyph?'<div class="glyph">'+esc(g.glyph)+'</div>'
+          :'<span class="noart">no art</span>')+
+    '<label class="rdw'+(on?' on':'')+'" title="Mark this one for a repaint">'+
+    '<input type="checkbox" data-rdw="'+esc(g.key)+'"'+(on?' checked':'')+
+    '><span>redraw</span></label>';
+}
+
+/* ── the columns. `n` renders, `sort` sorts, `e` is the field an edit writes ── */
+const COLS=[
+ {t:'',        cls:'pic', n:pic},
+ {t:'Name',    sort:g=>String(val(g,'n')), n:g=>{
+    const fl=[g.unique&&'unique',g.hands>1&&'both hands',
+      g.size!=='any'&&(g.size+'-sized'),dead(g)&&'unreachable']
+      .filter(Boolean).map(x=>'<i class="fl'+(x==='unreachable'?' hot':'')+'">'+
+        esc(x)+'</i>').join('');
+    return (g.draft?'<span class="dmark">DRAFT</span>':'')+
+      '<div class="nm" style="color:'+g.colour+'" title="'+esc(val(g,'d'))+'">'+
+      (g.draft?esc(g.n):ed(g,'n'))+'</div>'+
+      '<div class="sub"><span class="sl">'+esc((D.mark[g.slot]||'◇')+' '+
+        (D.slotName[g.slot]||g.slot))+'</span></div>'+
+      '<div class="sub"><span class="kk">'+esc(g.key)+'</span> '+fl+'</div>'+
+      (g.draft?'<span class="dkill" data-edit="'+esc(g.key)+'">EDIT</span> '+
+        '<span class="dkill" data-kill="'+esc(g.key)+'">DELETE</span>'+
+        '<div class="dhint">not in the build: EXPORT hands back a GEAR row to paste</div>':'');}},
+ {t:'Tier',    sort:g=>['COMMON','UNCOMMON','RARE','LEGENDARY'].indexOf(g.tier),
+    n:g=>'<span class="tier" style="color:'+g.colour+'">'+esc(g.tier)+'</span>'+
+      '<div class="kk" style="margin-top:3px">rarity: '+esc(g.rarity)+'</div>'},
+ {t:'Armour',  cls:'num', sort:g=>+val(g,'armour'), e:'armour'},
+ {t:'Damage',  cls:'num', sort:g=>g.dmgMean, n:g=>g.dmg
+    ? '<span class="wep"><b>'+g.dmg[0]+'-'+g.dmg[1]+'</b></span>'+
+      '<div class="kk">mean '+g.dmgMean+'</div>'
+    : '<span class="kk">-</span>'},
+ /* ⚠ `am` IS THE ARMOUR MULTIPLIER AND `ft` IS THE FLAT-FOOTED ONE, which is
+    what the two comments beside the crossbow and the will-kick call them. Two
+    bare field names in a header would be a column only the author can read. */
+ {t:'vs armour', cls:'num', sort:g=>g.am==null?-1:g.am,
+    n:g=>g.am==null?'<span class="kk">-</span>':'x'+g.am},
+ {t:'flat-footed', cls:'num', sort:g=>g.ft==null?-1:g.ft,
+    n:g=>g.ft==null?'<span class="kk">-</span>':'x'+g.ft},
+ {t:'Reach',   cls:'num', sort:g=>Math.max(g.reach,g.range),
+    n:g=>g.range?'<span style="color:var(--teal)">'+g.range+' hex</span>'
+      :g.reach?g.reach:'<span class="kk">-</span>'},
+ {t:'What it does', sort:g=>g.eff.length+g.acts.length, n:g=>'<div class="effs">'+
+    g.eff.map(effChip).join('')+g.acts.map(actChip).join('')+'</div>'},
+ /* ⛑ WHO IT IS FOR IS DERIVED OFF THE FIELDS THE ROW CARRIES, and the probe
+    names the line in the build each clause is read off. There is no class-gear
+    table in this game and writing one here would be a second one: nothing stops
+    a mage picking up a warclub, so the honest answer for most kit is "anybody"
+    and the interesting answer is the row that says otherwise. */
+ {t:'Who uses it fully', sort:g=>g.users.length, n:g=>'<div class="uses">'+
+    g.users.map(u=>'<div class="use'+(u.who==='anybody'?' any':'')+'">'+
+      '<b>'+esc(u.who)+'</b><span class="m">'+esc(u.why)+'</span></div>').join('')+
+    '</div>'},
+ {t:'Price',   cls:'num', sort:g=>+val(g,'price'), n:g=>{
+    const p=+val(g,'price')||0;
+    return '<span class="pr">'+ed(g,'price')+'</span>'+
+      '<span class="prb"><i style="width:'+Math.min(100,p/MAXP*100)+'%"></i></span>'+
+      '<span class="prf'+(g.floored?' floored':'')+'">'+
+        (g.floored?'the '+g.rarity+' floor':'off what it does')+'</span>';}},
+ {t:'Break-down', sort:g=>(g.scrap.crowns||0), n:g=>{
+    const s=g.scrap,bits=Object.keys(s).map(m=>'<b>'+s[m]+'</b> '+m);
+    return '<span class="sc'+(g.scrapOwn?' own':'')+'">'+bits.join(' · ')+'</span>'+
+      (g.scrapOwn?'<div class="kk">its own row, not the tier</div>':'');}},
+ {t:'Where it comes from', sort:g=>g.sources.length, n:g=>'<div class="srcs">'+
+    (g.sources.length?g.sources.map(srcBox).join('')
+      :'<div class="none">no card, no fight and no roster hands this over</div>')+
+    rollLine(g)+'</div>'},
+ {t:'Description', n:g=>ed(g,'d',1)}
+];
+
+let SORT={i:10,dir:-1},SHOWN=0;
+
+/* ── the three ways to group, and every one of them is a fact off the row ──
+   ⛑ SORTING NO LONGER SWITCHES GROUPING OFF, because grouping is now a CHOICE
+   and not a default. The first cut carried the foe dex's rule (a header saying
+   DOGS over rows ordered by hitpoints is a claim the rows do not support) and
+   it does not survive an explicit control: a header saying TRINKET over rows
+   ordered by armour is still true of every row under it. The sort orders
+   INSIDE each group. */
+const GROUPERS={
+  slot:{n:'slot', key:g=>g.slot, order:()=>D.slotOrder,
+        name:k=>(D.mark[k]||'\u25c7')+'  '+(D.slotName[k]||k)},
+  tier:{n:'tier', key:g=>g.rarity,
+        order:()=>Object.keys(D.rarity),
+        name:k=>(D.rarity[k]||{}).n||k,
+        colour:k=>(D.rarity[k]||{}).c},
+  /* ⛔ A ROW CAN COME FROM FOUR PLACES AND A GROUP TAKES ONE KEY, so it is
+     grouped under the FIRST way a player can meet it - earliest in the source
+     order, which runs from day one outwards. Repeating one row under four
+     headers would make every count on the page a lie. */
+  how :{n:'where it comes from',
+        key:g=>{if(g.draft)return '__draft';
+          let best=null;
+          g.sources.forEach(x=>{const i=D.sourceOrder.indexOf(x.how);
+            if(best===null||i<best)best=i;});
+          return best===null?(g.rollable?'__roll':'__none'):D.sourceOrder[best];},
+        order:()=>D.sourceOrder.concat(['__roll','__none','__draft']),
+        name:k=>k==='__roll'?'A ROLL AND NOTHING ELSE'
+          :k==='__none'?'NOTHING CAN REACH IT'
+          :k==='__draft'?'DRAFTED HERE, NOT IN THE BUILD'
+          :(D.sourceName[k]||[k])[0],
+        sub:k=>k==='__roll'?'only a shop rack or a battle find produces it'
+          :k==='__none'?'no card, no fight, no roster and no roll'
+          :k==='__draft'?'sketched in this browser'
+          :(D.sourceName[k]||['',''])[1]}
+};
+
+function trFor(g){
+  const cls=[g.draft?'draft':'',g.unique?'uniq':'',dead(g)?'dead':'']
+    .filter(Boolean).join(' ');
+  return '<tr class="'+cls+'" data-id="'+esc(g.key)+'">'+
+    COLS.map(c=>'<td class="'+(c.cls||'')+(c.e&&!g.draft&&moved(g,c.e)?' edited':'')+'">'+
+      (c.n?c.n(g):(g.draft?esc(g[c.e]):ed(g,c.e)))+'</td>').join('')+'</tr>';
+}
+function hitOf(g,q,sl,tr,sr){
+  if(sl&&g.slot!==sl)return false;
+  if(tr&&g.tier!==tr)return false;
+  if(sr==='__none'&&!dead(g))return false;
+  if(sr==='__draft'&&!g.draft)return false;
+  if(sr&&sr!=='__none'&&sr!=='__draft'&&!g.sources.some(s=>s.how===sr))return false;
+  if(!q)return true;
+  return (g.key+' '+g.n+' '+g.slot+' '+g.tier+' '+g.size+' '+g.d+' '+
+    g.eff.map(e=>(D.effLabel[e.k]||[e.k])[0]+' '+e.k+' '+e.v).join(' ')+' '+
+    g.acts.map(a=>a.n+' '+(a.note||'')).join(' ')+' '+
+    g.users.map(u=>u.who).join(' ')+' '+
+    g.sources.map(s=>s.card+' '+s.door+' '+(D.fightName[s.card]||'')).join(' '))
+    .toLowerCase().indexOf(q)>=0;
+}
+function render(){
+  const q=$('q').value.toLowerCase(),sl=$('slot').value,tr=$('tier').value,
+        sr=$('src').value,gb=$('grp').value;
+  const all=ALL();
+  MAXP=Math.max.apply(null,[1].concat(all.map(g=>g.price)));
+  const rows=all.filter(g=>hitOf(g,q,sl,tr,sr));
+  const col=COLS[SORT.i];
+  const order=(a,b)=>{const x=col.sort(a),y=col.sort(b);
+    return (x<y?-1:x>y?1:0)*SORT.dir;};
+  if(col&&col.sort)rows.sort(order);
+
+  $('head').innerHTML=COLS.map((c,i)=>'<th class="'+(c.cls||'')+
+    (i===SORT.i?' sorted':'')+'" data-i="'+i+'">'+esc(c.t)+
+    (i===SORT.i?' <span class="ar">'+(SORT.dir>0?'\u25b2':'\u25bc')+'</span>':'')+'</th>').join('');
+
+  let html='',shown=0;
+  const G=GROUPERS[gb];
+  if(G){
+    const seen=[];
+    rows.forEach(g=>{const k=G.key(g);if(seen.indexOf(k)<0)seen.push(k);});
+    const ord=G.order();
+    seen.sort((a,b)=>{const x=ord.indexOf(a),y=ord.indexOf(b);
+      return (x<0?99:x)-(y<0?99:y);});
+    seen.forEach(k=>{
+      const grp=rows.filter(g=>G.key(g)===k);if(!grp.length)return;
+      const sub=G.sub?G.sub(k):'';
+      html+='<tr class="grp"><td colspan="'+COLS.length+'">'+
+        '<span class="gh"'+(G.colour&&G.colour(k)?' style="color:'+G.colour(k)+'"':'')+
+          '>'+esc(G.name(k))+'</span>'+
+        '<span class="gn">'+grp.length+(grp.length===1?' artifact':' artifacts')+
+          ' \u00b7 '+grp.reduce((s,g)=>s+g.price,0)+' crowns</span>'+
+        (sub?'<span class="gt" style="color:var(--faint)">'+esc(sub)+'</span>':'')+
+        '</td></tr>';
+      grp.forEach(g=>{html+=trFor(g);shown++;});
+    });
+  }else{
+    rows.forEach(g=>{html+=trFor(g);shown++;});
+  }
+  $('body').innerHTML=html;
+  SHOWN=shown;
+  $('count').textContent=countLine();
+}
+/* \u26d1 ONE BUILDER FOR THE COUNT, because it is written from three places now
+   (a render, a checkbox and a saved draft) and two copies of a sentence with a
+   figure in it is the drift this whole tool exists to report. */
+function countLine(){
+  const rd=Object.keys(EDITS).filter(k=>/\|redraw$/.test(k)&&EDITS[k]==='1').length;
+  const nd=D.items.filter(dead).length;
+  return SHOWN+' of '+(D.items.length+DRAFTS.length)+' artifacts'+
+    (DRAFTS.length?' \u00b7 '+DRAFTS.length+' drafted here':'')+
+    (nd?' \u00b7 '+nd+' nothing can reach':'')+
+    (rd?' \u00b7 '+rd+' marked for redraw':'');
+}
+
+/* ── what was drawn and hangs on nothing ─────────────────────────────────
+   Every row here is a JOIN over two tables the build already keeps, never a
+   list somebody maintains: GEAR against ITEM_ICON against ITEM_ART, and the
+   sources scan against the pool clauses. */
+function renderOrphans(){
+  const O=D.orphans,box=$('orphans');
+  const card=(img,name,key,desc)=>'<div class="ocard">'+
+    (img?'<img src="'+img+'" alt="">':'')+'<div><div class="on1">'+esc(name)+'</div>'+
+    (key?'<div class="ok">'+esc(key)+'</div>':'')+
+    (desc?'<div class="od">'+esc(desc)+'</div>':'')+'</div></div>';
+  const tags=(a,none)=>a&&a.length
+    ? '<div class="olist">'+a.map(x=>'<span class="otag"><b>'+esc(x)+'</b></span>').join('')+'</div>'
+    : '<div class="ok0">'+none+'</div>';
+  const sec=(t,n,body)=>'<h4>'+t+'<span>'+n+'</span></h4>'+body;
+
+  const nd=D.items.filter(dead);
+  let h='<h2>WHAT NOTHING CAN REACH</h2>'+
+    '<div class="lead">Rows and paintings that exist in the build and that no card, fight, '+
+    'roster or roll can put in a player’s hands. None of it is broken and none of it is a '+
+    'bug: it is work that was finished and then out-run by a card that was rewritten or a '+
+    'scene that was never built. It is listed so the next pass can either wire it up or take '+
+    'the bytes back.</div>';
+
+  h+=sec('ARTIFACTS NOTHING IN THE GAME CAN HAND OVER',nd.length+' of '+D.items.length,
+    nd.length?'<div class="ocards">'+nd.map(g=>card(artOf(g),g.n,
+      g.key+' · '+g.slot+' · '+g.tier,
+      g.gates.join(' · ')+'  |  '+g.price+' crowns')).join('')+'</div>'
+      :'<div class="ok0">none: every artifact has a door or a roll</div>');
+
+  /* ⛔ THE ONE SECTION THAT IS A LIVE DEFECT AND NOT A LOOSE END. Everything
+     else on this page is finished work nothing can reach; this is a sentence
+     the player reads that the row does not pay. */
+  const st=D.stale||[];
+  h+=sec('A SENTENCE QUOTING A FIGURE THE ROW NO LONGER PAYS',st.length,
+    st.length?'<div class="ocards">'+st.map(s=>{
+      const g=D.items.filter(x=>x.key===s.key)[0];
+      return card(g?artOf(g):null,s.name,s.key+' · '+s.where,
+        'says '+s.says+' '+s.field+', the row pays '+s.pays+
+        '. HDA_CUT moved the figure and the sentence stayed.');}).join('')+'</div>'
+      :'<div class="ok0">none: every figure in prose matches the row it describes</div>');
+
+  h+=sec('GEAR ROWS WITH NO PAINTING',(O.rowNoIco||[]).length+' of '+D.items.length,
+    tags((O.rowNoIco||[]).map(k=>{const g=D.items.filter(x=>x.key===k)[0];
+      return g?g.n+' ('+k+')':k;}),'none: every row has a painting'));
+
+  h+=sec('PAINTINGS WITH NO GEAR ROW',(O.icoNoRow||[]).length,
+    (O.icoNoRow||[]).length
+      ? '<div class="ocards">'+O.icoNoRow.map(o=>card(o.art?D.art[o.ico]:null,
+          o.key.replace(/_/g,' '),o.ico,o.art?'':'mapped, and the picture is not embedded'))
+          .join('')+'</div>'
+      : '<div class="ok0">none</div>');
+
+  h+=sec('ITEM_ICON KEYS WITH NOTHING EMBEDDED',(O.icoNoArt||[]).length,
+    tags(O.icoNoArt,'none'));
+  box.innerHTML=h;
+}
+
+/* ── where they come from, one card per place ─────────────────────────── */
+function renderWhere(){
+  const groups={};
+  D.items.forEach(g=>g.sources.forEach(s=>{
+    const key=s.how+'|'+s.id;
+    (groups[key]=groups[key]||{how:s.how,id:s.id,card:s.card,rows:[]})
+      .rows.push({g:g,s:s});}));
+  const keys=Object.keys(groups).sort((a,b)=>{
+    const A=groups[a],B=groups[b];
+    const x=D.sourceOrder.indexOf(A.how),y=D.sourceOrder.indexOf(B.how);
+    if(x!==y)return x-y;
+    return B.rows.length-A.rows.length;});
+  const rowHtml=r=>{
+    const s=artOf(r.g);
+    return '<div class="wrow">'+(s?'<img src="'+s+'" alt="">'
+        :'<span class="wg">'+esc(r.g.glyph||'◇')+'</span>')+
+      '<span class="wn" style="color:'+r.g.colour+'">'+esc(r.g.n)+'</span>'+
+      '<span class="wp">'+r.g.price+' crowns</span>'+
+      (r.s.door?'<span class="wd">'+esc(r.s.door)+
+        (r.s.pay?' <span style="color:var(--grain)">'+esc(r.s.pay)+'</span>':'')+
+        '</span>':'')+'</div>';};
+  let html=keys.map(k=>{
+    const G=groups[k],nm=D.sourceName[G.how]||[G.how,''];
+    const where=G.how==='loot'?(D.fightName[G.card]||G.card):G.card;
+    return '<div class="wcard'+(G.how==='code'?' code':'')+'"><h3>'+esc(where)+'</h3>'+
+      '<div class="k">'+esc(nm[0]+' · '+nm[1])+'</div>'+
+      G.rows.map(rowHtml).join('')+
+      '<div class="wtot"><span>'+G.rows.length+
+        (G.rows.length===1?' artifact':' artifacts')+'</span><b>'+
+        G.rows.reduce((s,r)=>s+r.g.price,0)+' crowns</b></div></div>';}).join('');
+
+  /* ⛑ AND THE POOLS, WHICH ARE NOT A PLACE BUT ARE HOW MOST GEAR ARRIVES.
+     One card a tier, listing exactly what `findPool` can return: the shop rack
+     takes one row of each of the first three, and a fight or a cache rolls the
+     same pool at the odds in the note. */
+  const tiers=[];D.items.forEach(g=>{if(tiers.indexOf(g.rarity)<0)tiers.push(g.rarity);});
+  html+=tiers.map(t=>{
+    const rows=D.items.filter(g=>g.rarity===t&&g.rollable)
+      .sort((a,b)=>b.price-a.price);
+    const shut=D.items.filter(g=>g.rarity===t&&!g.rollable).length;
+    const w=(D.rarity[t]||{});
+    return '<div class="wcard pool"><h3 style="color:'+(w.c||'#fff')+'">'+
+      esc(w.n||t)+' POOL</h3>'+
+      '<div class="k">what a shop rack and a battle find can roll at this tier · '+
+        'battle '+Math.round((D.findOdds.battle[t]||0)*100)+'% · cache '+
+        Math.round((D.findOdds.cache[t]||0)*100)+'%</div>'+
+      (rows.length?rows.map(g=>'<div class="wrow">'+
+        (artOf(g)?'<img src="'+artOf(g)+'" alt="">':'<span class="wg">'+
+          esc(g.glyph||'◇')+'</span>')+
+        '<span class="wn" style="color:'+g.colour+'">'+esc(g.n)+'</span>'+
+        '<span class="wp">'+g.price+' crowns</span>'+
+        (g.gates.length?'<span class="wd">'+esc(g.gates.join(' · '))+'</span>':'')+
+        '</div>').join('')
+        :'<div class="wd" style="padding:6px 0">nothing at this tier can be rolled</div>')+
+      '<div class="wtot"><span>'+rows.length+' rollable · '+shut+
+        ' shut out</span><b>'+
+        (rows.length?Math.round(rows.reduce((s,g)=>s+g.price,0)/rows.length):0)+
+        ' crowns average</b></div></div>';}).join('');
+  $('where').innerHTML=html;
+}
+
+
+/* ── the forge: sketch an artifact that is not in the build yet ──────────
+   ⛑ THE FORM IS BUILT OFF THE SAME TABLES THE TABLE IS. Slots come from
+   `D.slotOrder`, tiers from `D.rarity`, sizes from the sizes the build's own
+   rows use, so a fifth slot or a fifth tier appearing in the game appears here
+   on the next regenerate and none of them is typed twice. */
+const FGF=[
+  ['key','the GEAR key','text','','one word, lower case. This is the key a card writes on the door that hands it over'],
+  ['n','name','text','','what the player reads'],
+  ['rarity','tier','tier','common',''],
+  ['slot','slot','slot','main',''],
+  ['size','size','size','any','anything but ANY makes it race-locked, and locks it out of a rack while nobody in the company is that race'],
+  ['unique','unique','check','','a named thing out of one scene: never rolled, never sold, never on a rack'],
+  ['armour','armour','num','','what it stops. Use the CUT figure, the one the board plays with'],
+  ['dmgLo','damage low','num','',''],
+  ['dmgHi','damage high','num','',''],
+  ['am','vs armour','num','','the armour multiplier: 1.55 crushes a harness, 0.30 barely touches one'],
+  ['ft','flat-footed','num','','what it does to somebody who cannot get out of the way'],
+  ['reach','reach','num','','2 holds a lane the way a spear does'],
+  ['range','range','num','','hexes, for something that shoots'],
+  ['hands','hands','num','','2 costs the off hand'],
+  ['glyph','glyph','text','','the one character a trinket or a bag item shows when it has no painting'],
+  ['extra','anything else it does','area','',
+   'one per line or comma-separated: dodge +9 \u00b7 mor -1 \u00b7 hp 4 \u00b7 windsCut 4 \u00b7 company \u00b7 forRace ogre. Any field a GEAR row can carry works here, including one that does not exist yet.'],
+  ['d','description','area','','the sentence on the card. Never quote a figure in it: the figure moves and the sentence does not, which is the defect this tool lists at the bottom of the page.']
+];
+let FGROW=null;
+function fgOpts(kind){
+  if(kind==='tier')return Object.keys(D.rarity).map(k=>[k,(D.rarity[k]||{}).n+'  ('+k+')']);
+  if(kind==='slot')return D.slotOrder.map(k=>[k,D.slotName[k]||k]);
+  if(kind==='size'){const z=[];D.items.forEach(g=>{if(z.indexOf(g.size)<0)z.push(g.size);});
+    return z.map(k=>[k,k]);}
+  return [];
+}
+function openForge(row){
+  FGROW=row||null;
+  const r=row||{};
+  $('fgTitle').textContent=row?'EDIT THE DRAFT':'A NEW ARTIFACT';
+  $('fgForm').innerHTML=FGF.map(f=>{
+    const k=f[0],lab=f[1],kind=f[2],dflt=f[3]||'',hint=f[4]||'';
+    const v=r[k]===undefined?dflt:r[k];
+    let ctl;
+    if(kind==='area')ctl='<textarea id="fg_'+k+'">'+esc(v)+'</textarea>';
+    else if(kind==='check')ctl='<input type="checkbox" id="fg_'+k+'"'+(v?' checked':'')+
+      ' style="width:14px;height:14px">';
+    else if(kind==='num')ctl='<input id="fg_'+k+'" inputmode="decimal" value="'+esc(v)+'">';
+    else if(fgOpts(kind).length)ctl='<select id="fg_'+k+'">'+
+      fgOpts(kind).map(o=>'<option value="'+esc(o[0])+'"'+(o[0]===v?' selected':'')+
+        '>'+esc(o[1])+'</option>').join('')+'</select>';
+    else ctl='<input id="fg_'+k+'" value="'+esc(v)+'">';
+    return '<div class="f'+(kind==='area'?' wide':'')+'"><label>'+esc(lab)+'</label>'+ctl+
+      (hint?'<div class="hint">'+esc(hint)+'</div>':'')+'</div>';}).join('');
+  FGF.forEach(f=>{const el=$('fg_'+f[0]);if(el)
+    ['input','change'].forEach(ev=>el.addEventListener(ev,fgPrice));});
+  fgPrice();
+  $('forge').classList.add('on');
+}
+function fgRead(){
+  const o={};
+  FGF.forEach(f=>{const el=$('fg_'+f[0]);if(!el)return;
+    o[f[0]]=f[2]==='check'?el.checked:el.value;});
+  return o;
+}
+function fgPrice(){
+  const row=gearRow(fgRead());
+  $('fgPrice').textContent='gearPrice() charges '+PRICE(row)+' crowns';
+}
+$('newRow').onclick=()=>openForge(null);
+$('fgCancel').onclick=()=>$('forge').classList.remove('on');
+$('fgSave').onclick=()=>{
+  const o=fgRead();
+  if(!o.key||!/^[A-Za-z][A-Za-z0-9_]*$/.test(o.key)){
+    alert('The GEAR key has to be one word: letters, digits and underscore, no spaces.');return;}
+  const clash=D.items.some(g=>g.key===o.key);
+  if(clash&&!confirm('The build already has a row called '+o.key+'. Keep the draft anyway?'))return;
+  if(FGROW){DRAFTS[DRAFTS.indexOf(FGROW)]=o;}
+  else{
+    if(DRAFTS.some(r=>r.key===o.key)){alert('There is already a draft with that key.');return;}
+    DRAFTS.push(o);}
+  saveDrafts();$('forge').classList.remove('on');render();
+};
+
+/* the paste-ready source line, written the way the rows in GEAR{} are written */
+const QT=String.fromCharCode(39);
+function gearSource(r){
+  const o=gearRow(r),key=r.key||'newartifact';
+  const APO=String.fromCharCode(8217);
+  const q=v=>typeof v==='string'?QT+v.split(QT).join(APO)+QT
+    :Array.isArray(v)?'['+v.join(',')+']':String(v);
+  const parts=Object.keys(o).filter(k=>k!=='d').map(k=>k+':'+q(o[k]));
+  return '  '+key+':{'+parts.join(',')+
+    (o.d?',\n           d:'+q(o.d):'')+'},';
+}
+
+/* ── export ─────────────────────────────────────────────────────────────
+   JSON hands back the whole armoury WITH the edits folded in, plus the raw
+   edit map: a rebuild can then be diffed against it rather than silently
+   overwriting somebody's afternoon. */
+function sheet(title,text){$('shTitle').textContent=title;$('shText').value=text;
+  $('sheet').classList.add('on');}
+const FIELDS=['n','armour','price','d'];
+function rowOut(g){
+  const o={key:g.key,tier:g.tier,rarity:g.rarity,slot:g.slot,size:g.size,
+    unique:g.unique,hands:g.hands,
+    dmg:g.dmg?g.dmg[0]+'-'+g.dmg[1]:'',crush:g.am,tire:g.ft,
+    reach:g.reach,range:g.range,
+    redraw:String(val(g,'redraw'))==='1',
+    art:g.ico||'',
+    breakdown:Object.keys(g.scrap).map(m=>g.scrap[m]+' '+m).join(' + '),
+    does:g.eff.map(e=>(D.effLabel[e.k]||[e.k])[0]+' '+fmtV(e.k,e.v)).concat(
+      g.acts.map(a=>a.n)),
+    from:g.sources.map(s=>(D.sourceName[s.how]||[s.how])[0]+': '+
+      (s.how==='loot'?(D.fightName[s.card]||s.card):s.card)+
+      (s.door?' - '+s.door:'')),
+    rollable:g.rollable, gates:g.gates,
+    reachable:!!(g.sources.length||g.rollable)};
+  FIELDS.forEach(k=>o[k]=val(g,k));
+  return o;
+}
+$('exJson').onclick=()=>sheet('EXPORT - JSON',JSON.stringify(
+  {built:D.built,
+   /* the flagged list, named on its own: a hand-off is a list of pieces, not a
+      census with a boolean buried in it */
+   redraw:D.items.filter(g=>String(val(g,'redraw'))==='1')
+     .map(g=>({name:val(g,'n'),key:g.key,art:g.ico||'none',slot:g.slot})),
+   unreachable:D.items.filter(dead).map(g=>({name:g.n,key:g.key,why:g.gates})),
+   /* ⛑ AND THE DRAFTS, AS SOURCE. A new artifact is only finished when it is
+      a row in GEAR{}, so what the export hands back is the row itself, ready to
+      paste, rather than a description of one somebody has to transcribe. */
+   newArtifacts:DRAFTS.map(r=>({key:r.key,name:r.n,price:PRICE(gearRow(r)),
+     row:gearRow(r),source:gearSource(r)})),
+   edits:EDITS,items:D.items.map(rowOut)},null,1));
+$('exCsv').onclick=()=>{
+  const head=['key','n','tier','slot','size','unique','armour','dmg','crush','tire',
+    'reach','range','price','breakdown','does','from','reachable','redraw','d'];
+  const lines=[head.join(',')];
+  ALL().forEach(g=>{const o=rowOut(g);
+    lines.push(head.map(h=>{
+      let v=h==='does'?o.does.join(' | '):h==='from'?o.from.join(' | '):o[h];
+      v=String(v==null?'':v);
+      return /[",\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v;}).join(','));});
+  sheet('EXPORT - CSV',lines.join('\n'));};
+$('exMd').onclick=()=>{
+  const head=['Name','Key','Tier','Slot','Size','Armour','Damage','Crush','Reach',
+    'Price','Break-down','What it does','Where it comes from','Description'];
+  const out=['| '+head.join(' | ')+' |','|'+head.map(()=>'---').join('|')+'|'];
+  ALL().forEach(g=>{const o=rowOut(g);
+    out.push('| '+[o.n,o.key,o.tier,o.slot,o.size,o.armour,o.dmg||'-',o.crush==null?'-':o.crush,
+      Math.max(o.reach,o.range)||'-',o.price,o.breakdown,o.does.join('<br>'),
+      (o.from.join('<br>')||'**nothing can reach it**'),
+      String(o.d).replace(/\|/g,'/')].join(' | ')+' |');});
+  sheet('EXPORT - MARKDOWN',out.join('\n'));};
+$('shCopy').onclick=()=>{const t=$('shText');t.select();
+  try{document.execCommand('copy');$('shCopy').textContent='COPIED';
+    setTimeout(()=>{$('shCopy').textContent='COPY TO CLIPBOARD';},1200);}catch(e){}};
+$('shClose').onclick=()=>$('sheet').classList.remove('on');
+/* ⚠ A DRAFT IS NOT AN EDIT AND RESET MUST NOT EAT ONE. The edits are a layer
+   over rows the build already has; a draft is the only copy of something that
+   does not exist anywhere else, so it is asked about separately. */
+$('reset').onclick=()=>{if(!confirm('Throw away every edit in this browser?'))return;
+  EDITS={};saveEdits();
+  if(DRAFTS.length&&confirm('And the '+DRAFTS.length+
+    ' drafted artifact'+(DRAFTS.length===1?'':'s')+'? They exist nowhere else.'))
+    {DRAFTS=[];saveDrafts();}
+  render();};
+
+/* ── wiring ─────────────────────────────────────────────────────────── */
+$('body').addEventListener('input',e=>{
+  const t=e.target;if(!t.dataset||!t.dataset.k)return;
+  const src=D.items.filter(g=>g.key===t.dataset.g)[0];
+  if(!src)return;
+  const key=ekey(src,t.dataset.k),now=t.textContent;
+  if(String(src[t.dataset.k])===now)delete EDITS[key];else EDITS[key]=now;
+  saveEdits();
+  const td=t.closest('td');if(td)td.classList.toggle('edited',EDITS[key]!==undefined);
+});
+$('body').addEventListener('click',e=>{
+  const ed=e.target.closest('[data-edit]'),ki=e.target.closest('[data-kill]');
+  if(ed){openForge(DRAFTS.filter(r=>(r.key||'newartifact')===ed.dataset.edit)[0]);return;}
+  if(ki){
+    const r=DRAFTS.filter(x=>(x.key||'newartifact')===ki.dataset.kill)[0];
+    if(!r)return;
+    if(!confirm('Throw away the draft “'+(r.n||r.key)+'”?'))return;
+    DRAFTS=DRAFTS.filter(x=>x!==r);saveDrafts();render();}
+});
+$('body').addEventListener('change',e=>{
+  const c=e.target;if(!c.dataset||!c.dataset.rdw)return;
+  const key=c.dataset.rdw+'|redraw';
+  if(c.checked)EDITS[key]='1';else delete EDITS[key];
+  saveEdits();
+  const l=c.closest('label');if(l)l.classList.toggle('on',c.checked);
+  $('count').textContent=countLine();
+});
+$('head').addEventListener('click',e=>{
+  const th=e.target.closest('th');if(!th)return;
+  const i=+th.dataset.i;if(!COLS[i]||!COLS[i].sort)return;
+  if(SORT.i===i)SORT.dir*=-1;else{SORT.i=i;SORT.dir=-1;}
+  render();
+});
+['q','slot','tier','src','grp'].forEach(id=>$(id).addEventListener('input',render));
+$('tabItems').onclick=()=>{$('tabItems').classList.add('on');$('tabWhere').classList.remove('on');
+  $('items').classList.add('on');$('where').classList.remove('on');};
+$('tabWhere').onclick=()=>{$('tabWhere').classList.add('on');$('tabItems').classList.remove('on');
+  $('where').classList.add('on');$('items').classList.remove('on');};
+
+/* ── boot ───────────────────────────────────────────────────────────── */
+(function(){
+  const painted=D.items.filter(g=>g.art).length;
+  $('stamp').textContent='derived off the build of '+D.built+' · '+
+    D.items.length+' artifacts · '+painted+' painted · '+
+    D.items.filter(dead).length+' nothing can reach';
+  const slots=D.slotOrder.filter(s=>D.items.some(g=>g.slot===s));
+  $('slot').innerHTML='<option value="">every slot</option>'+
+    slots.map(s=>'<option value="'+s+'">'+esc(D.slotName[s]||s)+'</option>').join('');
+  const tiers=[];D.items.forEach(g=>{if(tiers.indexOf(g.tier)<0)tiers.push(g.tier);});
+  $('tier').innerHTML='<option value="">every tier</option>'+
+    tiers.map(t=>'<option>'+esc(t)+'</option>').join('');
+  const hows=D.sourceOrder.filter(h=>D.items.some(g=>g.sources.some(s=>s.how===h)));
+  $('src').innerHTML='<option value="">every source</option>'+
+    hows.map(h=>'<option value="'+h+'">'+esc((D.sourceName[h]||[h])[0])+'</option>').join('')+
+    '<option value="__none">nothing can reach it</option>';
+  /* ⛔ EVERY FIGURE IN THIS SENTENCE IS READ, NOT TYPED, which is the defect
+     the foe dex's own note shipped with for one afternoon: it carried "4 bodies
+     / 37 pts" as prose and the dial moved underneath it the next morning. */
+  const tw=k=>'<b style="color:'+(D.rarity[k]||{}).c+'">'+
+    esc((D.rarity[k]||{}).n||k)+'</b>';
+  $('note').innerHTML=
+    'Every figure is what the build actually holds after <b>HDA_CUT '+
+    D.hdaCut.toFixed(3)+'</b>, which is what the board plays with: the row in '+
+    '<b>GEAR</b>, the price <b>gearPrice()</b> charges, the break-down '+
+    '<b>scrapPay()</b> pays and the painting <b>ITEM_ICON</b> points at. '+
+    '<span class="warn">Armour and damage are cut in place at boot</span>, so a '+
+    'description still quoting the authored figure disagrees with its own row on '+
+    'purpose: that is a defect in the prose and this is where it shows. '+
+    '<span class="warn">The engine key is not the printed word</span> - '+
+    Object.keys(D.rarity).map(k=>'<code>'+esc(k)+'</code> prints '+tw(k)).join(', ')+
+    '. Floors: '+Object.keys(D.floors).map(k=>esc(k)+' '+D.floors[k]).join(' · ')+
+    ' crowns. A fight rolls a find at <b>'+
+    Math.round(D.findOdds.battle.epic*100)+'%</b> / <b>'+
+    Math.round(D.findOdds.battle.rare*100)+'%</b> and a cache at <b>'+
+    Math.round(D.findOdds.cache.epic*100)+'%</b> / <b>'+
+    Math.round(D.findOdds.cache.rare*100)+'%</b>. '+
+    'Dotted cells are editable; EXPORT hands back only what you moved.';
+  render();renderWhere();renderOrphans();
+})();
+</script>
+</body>
+</html>

@@ -57,6 +57,7 @@ exists to end; so is skipping the one that would have caught it.
 | a map node or its art | `gt.py eval sights.js` (0/0/0) · the road-crossing probe by hand |
 | a foe's numbers or a statblock | `foeoracle263.js` **twice on each build** · `LINT()` · `ARENA.match` n>=15 over `FOE_BUILD`, not the road |
 | the threat price | `ptsprice.js` against a `git show HEAD:` baseline · re-derive `PTS_SCALE` |
+| a `GEAR` row, an item icon, a price, a card that hands gear over | regenerate `tools/artifacts.html` (`gear.js` + `build_gear.py`) and read the bottom of it: it names every artifact nothing can reach, every row with no painting, and every sentence quoting a figure the row no longer pays |
 | art embedded or re-packed | `gt.py check` (it parses both embed files) · the key present in `art/embed/*.js` AND `index.html` |
 | an act, a skill, a perk | `gt.py eval regress.js` · `smoke.js` · `LINT()` · `promises257.js` |
 | **any new content**: a card, statblock, item, node, skill, painting | `gt.py eval reach.js` |

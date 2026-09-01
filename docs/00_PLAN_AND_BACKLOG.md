@@ -91,6 +91,7 @@ section used to carry each entry in full, which made the work file a second chan
 
 | | the subtraction | log |
 |---|---|---|
+| **#279** *(09-01)* | **The Armoury: every artifact, where it comes from, and who it is for** | 8f.303 |
 | **#278** *(09-01)* | **three vacuous checks, the table the linter never read, and two dead vignettes** | 8f.302 |
 | **#267** *(08-30)* | **the lizards of the burnt road** | 8f.292 |
 | **#266** *(08-29)* | **the nine-ask inventory batch** | 8f.291 |

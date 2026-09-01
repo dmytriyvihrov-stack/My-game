@@ -23,6 +23,31 @@ plus `shot`, `arena` and `grep`. `gt.py <verb> --help` for the flags.
 
 ---
 
+## The two dexes, and why they are generated rather than written
+
+```bash
+python tools/dev/gt.py eval tools/dev/probes/foedex.js    > foedex.raw
+python tools/dev/gt.py eval tools/dev/probes/orphanart.js > orphan.raw
+python tools/dev/build_foedex.py foedex.raw orphan.raw    # -> tools/enemies.html
+
+python tools/dev/gt.py eval tools/dev/probes/gear.js      > gear.raw
+python tools/dev/build_gear.py gear.raw                   # -> tools/artifacts.html
+```
+
+**Neither file is authored and neither ships.** `tools/enemies.html` is every enemy the game can
+field and `tools/artifacts.html` is every artifact it can hand you; both are one probe, one
+generator and one template, so a statblock or a `GEAR` row moving in the build moves the table by
+itself. **Re-run the pair after any change to `FOE_T`/`FOE_BUILD` or to `GEAR`/`ITEM_ICON`.**
+
+⛔ **THE GENERATOR HOLDS THE WORDS AND THE PROBE HOLDS THE FIGURES**, and a key with no row in
+the generator's naming tables shows its raw key rather than vanishing. `build_gear.py` imports
+`FIGHT_NAME` from `build_foedex.py` instead of retyping twenty fight titles: one fact, one builder.
+
+⚠ **BOTH TOOLS CARRY AN EDIT LAYER AND IT IS NOT IN THE DATA.** Edits live beside the row in
+`localStorage` and ride EXPORT, so a regenerate can never cost anybody an afternoon. The armoury
+also carries DRAFTS - artifacts sketched in the tool that are not in the build - and **a draft is
+the only copy of something that exists nowhere else**, so RESET asks about it separately.
+
 ## ⛔ Why not `preview_start`
 
 `docs/README.md` §5 used to send every session to `tools/serve.ps1` through `preview_start`, and
@@ -120,6 +145,7 @@ carries the setup that keeps being rewritten - `GT.playerTurn()`, `GT.standNextT
 | `champ265.js` | the champion's two rolled perks and its derived rung, plus the nerve gap between the two sides. #265 |
 | `pit250.js` | every rule the PIT carries, driven on a live board: the budget in a hole, the rim in both directions and for all four kinds of act, the fall a shove buys, the turn a climb costs, the hex note, the badge, and the generation in situ. #250 |
 | `foedex.js` · `orphanart.js` | the 62-body foe catalogue and the art nothing can reach, which together generate `tools/enemies.html`. #276 |
+| `gear.js` | every artifact the game can hand you, which generates `tools/artifacts.html`. Its reach half **scans the three decks, the loot tables, the roster, `START_GEAR`, `CRAFT` AND the source of every global function**, because three keys are handed over by code and a decks-only census calls all three unreachable. ⚠ It strips comments before that scan: `LINT`'s essay quotes `gear:'spear'` and the first cut reported the linter as a door. #279 |
 | `ptsprice.js` | every body and every fight's threat price, for diffing against a `git show HEAD:` baseline after any `unitPts` change. #276 |
 | `align243.js` · `apron241e.js` · `diff243.js` · `road243i.js` · `a269_split.js` · `lad254b.js` · `m266_gap.js` · `promises257.js` · `statsum252.js` · `statsum252b.js` · `statzero253.js` | the one-offs a changelog row or a rule names as the instrument that measured it, which is how a one-off earns its place |
 

@@ -26,6 +26,38 @@
 
 ---
 
+## #279 - The Armoury: every artifact, where it comes from, and who it is for
+
+**Not in the game.** This is a tool, and the game does not know it exists. Open
+`tools/artifacts.html` in a browser: no server, no build step, one file.
+
+**In three steps.** Open the file · the table is every artifact in the game, grouped by slot
+· the second tab, **WHERE THEY COME FROM**, is the same census asked the other way round: one
+card per place a piece of kit can arrive from, plus one card per tier showing exactly what a shop
+rack and a battle find can roll.
+
+- **The header should say `60 artifacts · 55 painted · 4 nothing can reach`** and the
+  four should be listed at the bottom of the page under WHAT NOTHING CAN REACH. Set the source
+  filter to *nothing can reach it* and you should get exactly those four.
+- **Every dotted cell is editable and every edit survives a reload.** They live in this browser
+  only, they never touch the build, and EXPORT JSON hands back both the whole table and the raw
+  edit map. RESET EDITS asks before it throws them away, and asks a SECOND time about drafts.
+- **The redraw checkbox under each picture** is an edit like any other: tick a few, and EXPORT
+  JSON carries a `redraw` list an artist can be handed straight.
+- **+ NEW ARTIFACT** opens the drafting bench. Fill in a key and a name, pick a tier and a slot,
+  and the price at the bottom right updates as you type - that figure is charged by the game's own
+  `gearPrice()`, not by the tool. SAVE THE DRAFT and it appears in the table marked DRAFT, grouped
+  under its own slot. EXPORT JSON then carries a `newArtifacts` block with the `GEAR{}` line ready
+  to paste.
+- **It would be a bug** if: a figure here disagrees with the same figure in the game (everything
+  is derived, so a disagreement is a real defect, not a stale copy) · an artifact you know a
+  card hands over is listed as unreachable · an edit or a draft disappears on reload ·
+  the price on the drafting bench disagrees with what the shop charges once the row is in the
+  build · the table scrolls the whole page sideways instead of scrolling inside itself.
+- ⚠ **The armour and damage figures are POST-`HDA_CUT`**, which is what the board plays with,
+  and the note at the top says so. A description still quoting the authored figure is listed at the
+  bottom of the page as a defect - there are five today, all of them on the forge card.
+
 ## #278 - three vacuous checks, the table the linter never read, and two dead vignettes
 
 **In the game.** Nothing changed that a player can see, and that is deliberate: this entry

@@ -25,6 +25,14 @@ back already answered by work that was not about them.
 
 ---
 
+## Z · From #279
+
+| | the question | ⭐ mine |
+|---|---|---|
+| **Z1** | **Four artifacts exist, are painted, are priced, and nothing in the game can hand any of them over.** The Armoury's reach scan walks the three decks, the fifteen loot tables, the roster, `START_GEAR`, `CRAFT` and the source of every global function, and finds no door for **The Wood-Stick With Two Holes** (legendary, 17-25 authored, *“it has been swung at people eleven times and has worked eleven times”*), **The Mirrored Sphere**, **The Company Banner** (`company`, +6 morale to everybody) and the **Foundry Ledger-Pin** (Wynn's, +1 INT and +3 MOR more on the Captain). All four are `unique`, so `findPool` refuses them by design and no rack or find can ever produce one; grep finds **zero** references to any of them outside their own `GEAR` row. This is not a bug, it is four finished things out-run by scenes that were rewritten or never written. Each wants either a door or a deletion, and which is a call about the FICTION, not about the code. | **give the Banner and the Ledger-Pin a door** - a `company` relic and a named pin off a dead clerk are both hooks the Foundry act wants anyway - and **leave the Wood-Stick and the Sphere where they are** until a scene earns them. They are jokes that only land once, and a joke handed over by a roll is a joke nobody set up |
+
+---
+
 ## Y · From #275
 
 | | the question | ⭐ mine |
