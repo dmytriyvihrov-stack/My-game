@@ -335,7 +335,7 @@ field, which is the Banner-Saga-counter road to kill-farming.
 `340 / 500` on hover, the level in the roster row where `L{level}` already prints, and the pending
 badge where the ★ already is (portrait row and road bar). The aftermath crew card's hidden ✦ is the
 per-battle receipt, and an XP chip would join `EVFX_ROWS` for the event doors that pay it, built
-beside `pay()` like every other chip (`.claude/rules/event-cards.md`).
+beside `pay()` like every other chip (`.claude/skills/event-cards/SKILL.md`).
 
 ---
 

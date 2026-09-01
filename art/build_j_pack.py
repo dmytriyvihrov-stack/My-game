@@ -23,7 +23,7 @@ THE THREE RULES IT OBEYS, ALL THREE LIFTED FROM RULES THAT ALREADY EXIST
 ------------------------------------------------------------------------
 1. A MARK IS PNG AND A STAGE IS JPEG, and that is not a preference. The marks
    are cut-outs that sit on a button's own ground, and a JPEG has no alpha
-   (.claude/rules/static-event-art.md, the item icons). A stage is a full-bleed
+   (.claude/skills/static-event-art/SKILL.md, the item icons). A stage is a full-bleed
    photograph of a scene with no transparency anywhere in it, and a PNG of one
    is 2 MB against 180 KB. q82 is build_assets.ps1's own setting; the house
    number is used rather than a second one.
@@ -56,7 +56,7 @@ RACE   = ['ratkin', 'ogre', 'human']
 #   `as-delivered` means the source is ALREADY the exact box the game wants, cut
 #   out and optimised outside this repo - so it goes in verbatim and this script
 #   does not touch a pixel of it. That is the same rule
-#   .claude/rules/static-event-art.md states for the item icons and the map
+#   .claude/skills/static-event-art/SKILL.md states for the item icons and the map
 #   sights: embed verbatim, never re-cook a file somebody already composed.
 #   ⚠ AND IT IS A DECLARATION, NOT A MEASUREMENT. The first cut of this script
 #   gated the alpha floor on "how much of the canvas is faint", and that number
@@ -154,7 +154,7 @@ def main():
 
     # ── the stages. The key is the filename prefix with hyphens removed,
     #    `EV-J4_clan-wedding-stage.png` -> `EVJ4`, which is the rule
-    #    .claude/rules/static-event-art.md already states for MAP-EV and the
+    #    .claude/skills/static-event-art/SKILL.md already states for MAP-EV and the
     #    stage packs. Everything in the folder ships; which key a CARD uses is
     #    decided by `JSTAGE{}` in the prototype and nowhere else.
     for f in sorted(os.listdir(STAGE)):

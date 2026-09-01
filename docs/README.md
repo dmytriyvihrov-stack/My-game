@@ -211,7 +211,7 @@ choice paid is a **row of chips**, the same ones the aftermath uses, built off t
 than off the label, so the prose never spends a sentence on a figure the receipt is already
 holding. ⚠ **A percentage is not a goal**: four cards were cut under 30% because their remaining
 lines were load-bearing, and cutting to a quota costs the joke or the fact. Full procedure, with
-the counters and what must never be cut: [`.claude/rules/event-cards.md`](../.claude/rules/event-cards.md).
+the counters and what must never be cut: [`.claude/skills/event-cards/SKILL.md`](../.claude/skills/event-cards/SKILL.md).
 
 **And an eleventh, set 2026-08-14 by #151** *(the user: "on the global map crossroad never write a
 clear '1 fith' or '0 fignts'. Write aprox 1-2 … It should be some unsertunty - keep it as a
@@ -497,7 +497,7 @@ missing ids. It cannot cover the half that matters, so read the event once and a
 - **How long is it, in words, measured?** LIGHT 45-90 · MEDIUM 90-140 · HEAVY 140-175, body and
   outcomes together. A card over its band is claiming to be heavier than the Dead Company.
 - **Does the prose repeat a number the chip row is already holding?** If so, the prose loses it.
-  *(Both from [`.claude/rules/event-cards.md`](../.claude/rules/event-cards.md).)*
+  *(Both from [`.claude/skills/event-cards/SKILL.md`](../.claude/skills/event-cards/SKILL.md).)*
 - **Could this be removed with nothing lost?** If yes, remove it or rewrite it.
 
 **That last question does the work.** A road that is mostly filler makes the events that *do* return

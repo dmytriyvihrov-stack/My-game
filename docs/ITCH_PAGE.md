@@ -37,7 +37,7 @@
 > ⛔ **1280 x 720 IS NOT A PREFERENCE, IT IS THE TYPE FLOOR.** The whole game is one 1280x720 stage
 > and `fit()` scales it as a unit, so the embed size multiplies every glyph in the build: measured,
 > a 960-wide embed renders at **0.75** and the 10px floor that
-> [`.claude/rules/ui-scales.md`](../.claude/rules/ui-scales.md) exists to protect lands at **7.5px**.
+> [`.claude/skills/ui-scales/SKILL.md`](../.claude/skills/ui-scales/SKILL.md) exists to protect lands at **7.5px**.
 > If the itch page theme is too narrow for 1280, widen the page rather than shrinking the frame.
 
 ---

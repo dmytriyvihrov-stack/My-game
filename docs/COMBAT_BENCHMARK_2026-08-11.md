@@ -461,7 +461,7 @@ question:
 `TOKEN=1.13*0.90`, so a human draws at about **26x39 px** on a 37x42 hex. **A spearman and a
 swordsman can be two different paintings and one shape at 26 pixels wide.** And the project already
 owns the right instrument for exactly this question: the type floor in
-[`.claude/rules/ui-scales.md`](../.claude/rules/ui-scales.md) was set by the Discord channel's own
+[`.claude/skills/ui-scales/SKILL.md`](../.claude/skills/ui-scales/SKILL.md) was set by the Discord channel's own
 distance test, *"how far away can you get and still read it"*. **The same test applies to a token,
 and it has never been run on one.** ⚠ Note also that #163 took 10% off every body on the board for
 hex navigation, which is the `*0.90` in that constant: **legibility and crowd-readability are
@@ -491,7 +491,7 @@ Written down so the gaps are known rather than discovered later.
 - **Only the eight canonical fights.** Comp `prepared` only.
 - **No token-legibility measurement**, added by part four. The 41 painted unit tokens are confirmed
   present and distinct as files; **nobody has checked whether they are distinct as objects at
-  26x39 px**. The distance test in [`.claude/rules/ui-scales.md`](../.claude/rules/ui-scales.md) is
+  26x39 px**. The distance test in [`.claude/skills/ui-scales/SKILL.md`](../.claude/skills/ui-scales/SKILL.md) is
   the right instrument and has never been pointed at a token.
 - **Part four's own test has not been run.** *"What was I forced to do here that I did not do in the
   previous fight?"* is written down and unanswered for all eight fights. It needs a human, not a

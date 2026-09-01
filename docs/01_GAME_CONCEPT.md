@@ -1724,7 +1724,7 @@ loot on the card, because there is no score to hide where there is no decision.
 part of a card's weight, and it was the half nobody was measuring.** The choice-economy rules from
 #123 counted doors; a two-door card written at 259 words was still charging the player a heavy
 card's attention for a light card's decision. Procedure:
-[`.claude/rules/event-cards.md`](../.claude/rules/event-cards.md).
+[`.claude/skills/event-cards/SKILL.md`](../.claude/skills/event-cards/SKILL.md).
 
 ### ⏳ Still open
 

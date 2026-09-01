@@ -179,5 +179,5 @@ contradict what the body is wearing: a collar, a hood, a scarf at most.
 | every family | | `tools\build_site.ps1` or `deploy.ps1` | `python tools/dev/gt.py check`, and the census probes |
 
 Formats are not negotiable: a cut-out is PNG with alpha, a full-bleed stage is JPEG at q82 (the
-pipeline converts), nothing is resampled by hand. The reasons are in `.claude/rules/static-event-art.md`
-and `.claude/rules/world-map-sights.md`.
+pipeline converts), nothing is resampled by hand. The reasons are in `.claude/skills/static-event-art/SKILL.md`
+and `.claude/skills/world-map-sights/SKILL.md`.

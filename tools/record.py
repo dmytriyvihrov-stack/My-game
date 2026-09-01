@@ -65,6 +65,9 @@ CLAIMDIR = os.path.join(ROOT, ".grimtoll", "claims")
 # entries as missing on the first run after the split.
 CHANGELOG_ARCHIVES = [
     os.path.join(ROOT, "docs", "archive", "CHANGELOG_BUILD_LOG_pre_8f200.md"),
+    # 2026-09-01, the second split, same reason and same contract: 8f.200 to
+    # 8f.274 moved out so the live file is the era being worked in.
+    os.path.join(ROOT, "docs", "archive", "CHANGELOG_BUILD_LOG_pre_8f275.md"),
     os.path.join(ROOT, "docs", "archive", "CHANGELOG_BUILT_ENTRY_TEXT.md"),
 ]
 
@@ -73,6 +76,27 @@ def changelog_text():
     """The live changelog plus whatever has been split out of it."""
     parts = ["".join(read(CHANGELOG))]
     for p in CHANGELOG_ARCHIVES:
+        if os.path.exists(p):
+            parts.append("".join(read(p)))
+    return "\n".join(parts)
+
+
+# ⛔ AND THE TEST BENCH SPLITS THE SAME WAY, FOR A REASON THAT WAS LEARNED THE
+# HARD WAY ON 2026-09-01. WHAT_TO_TEST.md had been CUT three times before that,
+# deleting its old sections outright and leaving a git command behind, which was
+# right while nothing counted them. Write 4 of 4 counts them: the fourth cut
+# moved 80 sections out and `check` immediately reported 70 shipped entries as
+# having no test bench. The sections are archived rather than deleted now, and
+# this reader is why that is a move instead of a mass deletion.
+TESTBENCH_ARCHIVES = [
+    os.path.join(ROOT, "docs", "archive", "WHAT_TO_TEST_pre_265.md"),
+]
+
+
+def testbench_text():
+    """The live bench plus whatever has been split out of it."""
+    parts = ["".join(read(TESTBENCH))]
+    for p in TESTBENCH_ARCHIVES:
         if os.path.exists(p):
             parts.append("".join(read(p)))
     return "\n".join(parts)
@@ -86,7 +110,7 @@ def changelog_text():
 # next twenty-two happen.
 ENTRY_FLOOR = 195
 
-# ⚠ THE SAME WARNING `.claude/rules/ui-scales.md` PUTS ON ITS OWN KNOWN-GOOD
+# ⚠ THE SAME WARNING `.claude/skills/ui-scales/SKILL.md` PUTS ON ITS OWN KNOWN-GOOD
 # LIST: this is four genuine facts, not a place to put whatever is failing
 # today. Each is parked in 00_PLAN_AND_BACKLOG.md's "PARKED BY THE LANDING
 # SWEEP OF 2026-08-21" section with its reason, and each leaves this list the
@@ -98,7 +122,7 @@ KNOWN_MISSING_SHIPPED = {196, 198, 199, 201, 208, 209}
 # exists so that "after a build session you can open the game, go straight to
 # the new thing". #222 fixed `claim.ps1 verify`, which is a script in tools/:
 # there is no game to open and a section saying so would be furniture, which is
-# what `.claude/rules/event-cards.md` spends its length deleting.
+# what `.claude/skills/event-cards/SKILL.md` spends its length deleting.
 # ⚠ THE BAR IS "NOTHING TO PLAY", NOT "SMALL" OR "INTERNAL". A one-line CSS fix
 # to a screen still changes a screen and still gets its section.
 NO_TESTBENCH = {222}
@@ -270,7 +294,7 @@ def four_writes(rep):
     cl = changelog_text()
     sh = "".join(read(SHIPPED))
     bl = "".join(read(BACKLOG))
-    wt = "".join(read(TESTBENCH))
+    wt = testbench_text()
 
     entries = sorted(set(int(m) for m in RE_CL_ENTRY.findall(cl)))
     in_sh = set(int(m) for m in re.findall(r"^\| \*\*(\d+)\*\* \|", sh, re.M))
@@ -506,7 +530,7 @@ ASKS = "\U0001f464"                       # the person glyph a row marks a rulin
 def questions(rep):
     """⛔ #248 - A RULING RAISED IN A ROW IS FILED WHERE NOBODY LOOKS.
 
-    `.claude/rules/open-questions.md` is the rule; this is the counter under it.
+    `.claude/rules/how-we-work.md` is the rule; this is the counter under it.
     `ASKS` in a CHANGELOG or SHIPPED row means *this entry wants the user to
     decide something*, and it was used correctly in twenty entries over five
     months while **nothing ever collected them** - so the user had never seen
@@ -525,7 +549,7 @@ def questions(rep):
     check that pins its FORMAT would break the first time he reorganised it."""
     if not os.path.exists(QUESTIONS):
         rep.note("docs/OPEN_QUESTIONS.md is missing, and it is the fifth write "
-                 "(.claude/rules/open-questions.md)")
+                 "(.claude/rules/how-we-work.md)")
         return
     q = "".join(read(QUESTIONS))
     if os.path.exists(ANSWERED):
@@ -769,6 +793,97 @@ def do_prove():
     return 0 if ok == total else 1
 
 
+# ===========================================================================
+# ⛑ `new` - THE FIVE WRITES, SCAFFOLDED, BECAUSE COUNTING THEM WAS NEVER THE
+# HARD PART.
+#
+# This tool has counted the writes since 2026-08-21 and the gap it reports has
+# always had the same cause: five files, five formats, at the end of a session,
+# by hand. A checker that names a missing write and cannot open the hole for you
+# is a checker that gets bypassed on the day somebody is tired.
+#
+# ⛔ IT WRITES STUBS, NEVER TEXT. Every stub says TODO and carries the shape the
+# file wants, because what an entry MEANS is the one thing no tool can generate
+# and the four documents exist to hold exactly that. `check` still reports an
+# unfilled stub as a missing write, which is the point: the scaffold saves the
+# formatting, not the thinking.
+# ⚠ Write 5 is CONDITIONAL and is therefore only ever a printed reminder. An
+# entry that raises no ruling writes nothing to OPEN_QUESTIONS.md, and a stub
+# row there would be a question nobody asked.
+# ===========================================================================
+def do_new(entry, title, log=None):
+    try:
+        n = int(str(entry).lstrip("#"))
+    except ValueError:
+        print("  the entry has to be a number, got %r" % entry)
+        return 2
+
+    lines = read(CHANGELOG)
+    seen = sorted(int(m.group(1)) for m in
+                  (RE_CL.match(l) for l in lines) if m)
+    if log is None:
+        log = "8f.%d" % ((seen[-1] + 1) if seen else 200)
+    log = log.lstrip()
+
+    if any(int(m) == n for m in RE_CL_ENTRY.findall(changelog_text())):
+        print("  #%d already has a changelog row. Refusing to scaffold over it." % n)
+        return 2
+
+    def top_insert(path, rx, row):
+        """Put a row at the head of the file's own run of rows.
+
+        ⚠ `first_run` returns (start, end), not an index. Newest-first is this
+        repo's order everywhere, so the new row goes at `start`.
+        """
+        L = read(path)
+        span = first_run(L, rx)
+        if span is None:
+            print("  could not find the row block in %s" % os.path.basename(path))
+            return False
+        L.insert(span[0], row + NL)
+        write(path, L)
+        return True
+
+    ok = []
+    if top_insert(CHANGELOG, RE_CL,
+                  "| %s | **#%d - %s** TODO: what changed, why, what it "
+                  "cost, and the gates it passed. |" % (log, n, title.upper())):
+        ok.append("CHANGELOG.md (%s)" % log)
+
+    if top_insert(SHIPPED, RE_SH,
+                  "| **%d** | **%s.** TODO: one line. | TODO: open remainders, "
+                  "or leave empty |" % (n, title)):
+        ok.append("SHIPPED.md")
+
+    if top_insert(BACKLOG, RE_BL,
+                  "| **#%d** *(%s)* | **%s** | %s |"
+                  % (n, "TODO MM-DD", title, log)):
+        ok.append("00_PLAN_AND_BACKLOG.md")
+
+    L = read(TESTBENCH)
+    i = next((k for k, l in enumerate(L) if l.startswith("## ")), len(L))
+    L[i:i] = [
+        "## #%d - %s%s" % (n, title, NL),
+        NL,
+        "**In the game.** TODO: how to reach it in three steps." + NL,
+        NL,
+        "- TODO: what should happen." + NL,
+        "- TODO: what would be a bug." + NL,
+        NL,
+    ]
+    write(TESTBENCH, L)
+    ok.append("WHAT_TO_TEST.md")
+
+    print("  #%d scaffolded into %d files:" % (n, len(ok)))
+    for f in ok:
+        print("    " + f)
+    print("")
+    print("  ⛔ Write 5 is yours and is conditional: every ruling only the user")
+    print("     can take goes in docs/OPEN_QUESTIONS.md, marked 👤, this session.")
+    print("  ⚠ These are STUBS. `check` counts a row, it cannot read one.")
+    return 0
+
+
 if __name__ == "__main__":
     # ⛔ THE CONSOLE WILL NOT BE UTF-8 AND THIS TOOL PRINTS THE DOCS' OWN TEXT.
     # A finding quotes a heading, and every heading in this repo carries a mark
@@ -792,5 +907,12 @@ if __name__ == "__main__":
         sys.exit(do_fix())
     if verb == "prove":
         sys.exit(do_prove())
-    print("usage: python tools/record.py check [--strict] | fix | prove")
+    if verb == "new":
+        if len(sys.argv) < 4:
+            print('usage: python tools/record.py new <entry> "<title>" [--log 8f.NNN]')
+            sys.exit(2)
+        sys.exit(do_new(sys.argv[2], sys.argv[3],
+                        sys.argv[sys.argv.index("--log") + 1]
+                        if "--log" in sys.argv else None))
+    print("usage: python tools/record.py check [--strict] | fix | prove | new")
     sys.exit(2)

@@ -119,11 +119,27 @@ carries the setup that keeps being rewritten - `GT.playerTurn()`, `GT.standNextT
 | `matrix263.js` | the road's win rates, both comps, **accumulated six fight-comps a call** because `eyes.py`'s CDP socket times out at 120s regardless of `--timeout`. Run it until `done`. #263 |
 | `champ265.js` | the champion's two rolled perks and its derived rung, plus the nerve gap between the two sides. #265 |
 | `pit250.js` | every rule the PIT carries, driven on a live board: the budget in a hole, the rim in both directions and for all four kinds of act, the fall a shove buys, the turn a climb costs, the hex note, the badge, and the generation in situ. #250 |
-| `align243.js` · `apron241e.js` · `diff243.js` · `road243i.js` | the four one-offs a changelog row names as the instrument that measured it |
+| `foedex.js` · `orphanart.js` | the 62-body foe catalogue and the art nothing can reach, which together generate `tools/enemies.html`. #276 |
+| `ptsprice.js` | every body and every fight's threat price, for diffing against a `git show HEAD:` baseline after any `unitPts` change. #276 |
+| `align243.js` · `apron241e.js` · `diff243.js` · `road243i.js` · `a269_split.js` · `lad254b.js` · `m266_gap.js` · `promises257.js` · `statsum252.js` · `statsum252b.js` · `statzero253.js` | the one-offs a changelog row or a rule names as the instrument that measured it, which is how a one-off earns its place |
 
 ## ⛔ A PROBE IS EITHER AN INSTRUMENT OR IT IS SCRATCH, AND SCRATCH DOES NOT STAY
 
-*(#248, 2026-08-25, after deleting **61** of them in one command.)*
+*(#248, 2026-08-25, after deleting **61** of them in one command. ⚡ **And again on 2026-09-01,
+after deleting 78 more**: the directory had grown back to **118** files, of which 34 were
+instruments. The rule below was right and nothing enforced it, so it decayed at about the same rate
+twice. **The test that was actually used is mechanical and is the one to re-run**: a probe no
+document, rule or script names anywhere is scratch.*
+
+```bash
+for p in tools/dev/probes/*.js; do b=$(basename "$p");
+  n=$(grep -rl --include=*.md --include=*.py --include=*.ps1 -F "$b" docs .claude tools \
+      | grep -v "^tools/dev/probes/" | wc -l);
+  [ "$n" -eq 0 ] && echo "uncited $b"; done
+```
+
+⚠ **It is a starting list, not a verdict**: `_reload.js` and `_who.js` are infrastructure and are
+cited by nothing, and a probe written this session has not been cited yet.*)
 
 This directory had grown to **76 files**, of which fifteen were the ones above and the other
 sixty-one were session scratch - `ask240c.js`, `ask247_wash.js`, `setup244blood.js`, four `ver243`

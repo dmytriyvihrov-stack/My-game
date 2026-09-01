@@ -193,7 +193,7 @@ and are marked as such rather than guessed.
 | A5 | not the AI palette | **PASS** | the palette is `#100c06` ground with browns and desaturated greens. Not purple/blue/gold. The art is a hand-directed stage pipeline with a written brief, not prompt output dropped in |
 | B1 | the distance test | ✅ **FIXED, #164** | was: **77 declarations at 9px or smaller**, down to 7px, across the whole label layer. Now a **10px floor** (`--fs1`), measured in the running build: elements rendering under 10px went **58 to 0** on the battle screen and **43 to 0** on the skirmish setup |
 | B2 | numbers get contrast + outline | **not audited** | needs a screen. Worth checking 3-vs-5 in the mono face specifically, since damage figures and hex counts both use it |
-| B3 | colour coding earns its place | **PASS** | this is `.claude/rules/event-cards.md` already: *"one glyph may not mean two things on one screen"*, ☠️ vs 💀 fixed in #150, and the receipt/intent split holds the line |
+| B3 | colour coding earns its place | **PASS** | this is `.claude/skills/event-cards/SKILL.md` already: *"one glyph may not mean two things on one screen"*, ☠️ vs 💀 fixed in #150, and the receipt/intent split holds the line |
 | C1 | one set of outlines | ✅ **FIXED, #164** | was 7 near-identical hexes hand-written at 88 sites, two pairs indistinguishable on screen. Now **5 named edge tokens** (`--e1`..`--e5`). ⚠ The 47 `border-color` accents were deliberately NOT collapsed: those carry meaning, and flattening them would be #102's wrong-unit bug arriving through a tidy-up |
 | C2 | few font sizes | ✅ **FIXED, #164** | was **29 sizes** in half-pixel steps including a `7.6px`. Now **9 tokens**, `--fs1`..`--fs8` plus `--fsTitle`, and **zero literal `font-size` px left in the file**. Font families already passed: three, all tokens |
 | C3 | consistent padding | ✅ **FIXED, #164** | was **72 distinct values**, none used often enough to be a system. Now **7 steps**, `--p1`..`--p7`, with exactly **one literal left in the whole file** (`#wBar`'s 64px plaque gutter, which is geometry and says so) |
@@ -208,7 +208,7 @@ and are marked as such rather than guessed.
 
 **Score at the first run, 2026-08-16 morning: 8 pass, 2 partial, 4 fail, 6 not yet applicable.**
 **Score after #164 the same day: 12 pass, 2 partial, 0 fail, 6 not yet applicable.** The four fails
-were one finding and they were fixed in one pass; see `.claude/rules/ui-scales.md` for the standing
+were one finding and they were fixed in one pass; see `.claude/skills/ui-scales/SKILL.md` for the standing
 rule and §4 there for the five boxes the 10px floor broke on the way.
 
 ---

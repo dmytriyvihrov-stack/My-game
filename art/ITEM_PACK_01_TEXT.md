@@ -41,12 +41,12 @@ DISAPPEARS after use, which is what "precious" means mechanically). Both are one
 ⛔ **Rarity is not power.** A COMMON pilum kills a man. Rarity is **how often the road hands one
 out**, and nothing else reads off it: no damage multiplier, no price formula. The day a tier starts
 meaning "this one hits harder" it is a second receipt for the damage line, which is the one rule at
-the top of `.claude/rules/event-cards.md` arriving on the stash.
+the top of `.claude/skills/event-cards/SKILL.md` arriving on the stash.
 
 ### Where the colour goes, and where it does not
 
 - **The colour is on the icon's FRAME in the game's UI**: the 40px box on the sheet slot and on
-  the stash row (§4.1). It is an accent edge in the sense of `.claude/rules/ui-scales.md` §2 (an
+  the stash row (§4.1). It is an accent edge in the sense of `.claude/skills/ui-scales/SKILL.md` §2 (an
   edge that SAYS something), so it is not on the `--e1..--e5` scale and must not be collapsed into
   it. **The word stays beside the colour** (`COMMON` / `UNCOMMON` / `EPIC` at `--fs1` on the
   tooltip and stash row): a colour alone is not a readout for a fifth of the players.
@@ -242,7 +242,7 @@ one most likely to be wrong.
   transparent or flat neutral ground, upper-left light, no labels, numbers, frames or decorative
   background, large connected shapes, quiet negative space.
 - **Master 128x128 per item, delivered as singles**, `ITEM-01_pilum.png` and so on. Same master
-  size as the map sights (`.claude/rules/world-map-sights.md`), so `art/build_assets.ps1` needs one
+  size as the map sights (`.claude/skills/world-map-sights/SKILL.md`), so `art/build_assets.ps1` needs one
   more folder and no new rule. Native alpha or `#ff00ff` chroma, either is accepted; the builder
   zeroes alpha below 40.
 - **Display**: the sheet's slot is 150 wide and about 46 tall, and today the item's face is a
