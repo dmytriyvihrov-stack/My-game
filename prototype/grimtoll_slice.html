@@ -5019,6 +5019,15 @@ body:has(#battle.on) .whisp{bottom:138px}
 .ichip.race.ratkin{border-left:2px solid #c98a4b}
 .ichip.race.ogre  {border-left:2px solid #7fa8c9}
 .ichip.kills{cursor:help;font-size:var(--fs2);letter-spacing:0;padding:var(--p1) var(--p3);color:#c9c6bb}
+/* #287 - the class block. `--fs1` and `--p2` are the sizes the rest of this column
+   already uses: `ui-scales` keeps font-size and padding closed vocabularies, and a new
+   row is not a reason to open either. The rule indents under the line it belongs to. */
+/* #287 - one line, `white-space:nowrap` off deliberately: a long class name plus two
+   leans can wrap on the narrowest body and a wrapped second line is cheaper than a
+   clipped one. Everything else about the class is on the hover. */
+#iCls{font-family:var(--mono);font-size:var(--fs1);color:#8a958f;line-height:1.4;
+  margin-top:var(--p1);cursor:help}
+#iCls b{color:var(--g1)}
 #iTrait{font-size:var(--fs3);font-style:italic;color:var(--g3);line-height:1.3;margin-top:4px;
   cursor:help}
 #iTrait b{color:var(--g4);font-style:normal}
@@ -13255,6 +13264,57 @@ const RACEHELP={
     form:{n:'THE WEIGHT',w:'ogres, near each other',k:'weightMor',u:'mood a turn to everything nearby',
           note:'Slow enough that they arrive together anyway. Keep them that way.'}}
 };
+/* ═══ ⛔ #287 · WHAT A CLASS DOES THAT IS NOT A STAT AND NOT A PERK ═══════════
+   (User: *"I don't see class information in the inventory in the main build. Make it
+   happen what we worked in the file in the main build"*.)
+
+   ⛑ IT LIVED IN THE DEV TOOL AND THAT WAS BACKWARDS. `tools/classes.html` authored
+   these sentences and the game had nowhere to read them from, so the one screen a
+   player actually opens could not say what their class does. The lab is supposed to
+   READ the build; a fact that exists only in a tool is a fact the game cannot show.
+   ⚠ EVERY FIGURE IN THESE SENTENCES IS INTERPOLATED FROM THE CONSTANT THAT PAYS IT,
+   so a retune of `CAP_AURA`, `SPEAR_OVER` or `PLATE_WEAR` moves the words. That is the
+   whole reason this is a function of the tables rather than a block of prose.
+   ⚠ A CLASS WITH NO RULE IS AN EMPTY STRING AND THE SHEET SAYS SO, which is a fact
+   about the roster rather than a hole in the readout. */
+const clsRule=cls=>({
+  captain:'THE AURA. Every ally within '+CAP_AURA.reach+' hexes gets +'+CAP_AURA.mor+
+    ' morale at the start of your turn, for nothing: no action, no card, no cooldown.',
+  spear:'OVER THE FRONT RANK. +'+SPEAR_OVER+' to hit whenever the target is NOT '+
+    'adjacent, which is the reach-2 range only a polearm gives you.',
+  archer:'SURE SHOT FROM THE FIRST LEVEL, given rather than bought: shooting while '+
+    'engaged costs 15 to hit instead of 35.',
+  plateman:'THE HARNESS WEARS AT '+Math.round(PLATE_WEAR*100)+'%. Every blow takes '+
+    'your armour down by that much of what it would take off anybody else, so the '+
+    'plates last half again as long. Worth nothing in rags and a great deal in plate.',
+  cutter:'READS THE GROUND: +1 hex on the first move. DISTRACT opens a back arc for '+
+    'the WHOLE line, not just for you.',
+  brute:'ROAR needs no weapon, which no other signature can say: you keep it '+
+    'bare-handed and disarmed.',
+  warmage:'EVERY WORKING IS PAID FOR IN YOUR OWN MOOD. A rattled caster is a caster '+
+    'who has run out of what casting costs.'
+}[cls]||'');
+/* ⛑ AND WHAT THE CLASS'S LEAN BUYS, ASKED OF THE LADDER RATHER THAN TYPED.
+   `rungHeld(stat,n)` is the exact payment of a rung, so "+1 MOR" can print what it is
+   WORTH on the one screen where a player is looking at their own body. The words for
+   the ladder's field names are the game's own. */
+const LADDER_WORD={hp:'hitpoints',hit:'to hit',dodge:'dodge',nerve:'maximum nerve',
+  climb:'nerve back on a quiet turn',land:'to land a working',xp:'experience',
+  magic:'casting strength',reach:'reach on skills and workings',step:'hexes of movement',
+  low:'opens a rung lower',mend:'mends faster',slow:'loses mood slower'};
+function leanWords(cls){
+  const L=CLSLEAN[cls]||{},out=[];
+  Object.keys(L).forEach(s=>{
+    if(!L[s])return;
+    let held={};try{held=rungHeld(s,L[s])||{};}catch(e){}
+    const pays=Object.keys(held).map(f=>{
+      const v=held[f];
+      const n=(typeof v==='number'&&v<1&&v>0)?'+'+Math.round(v*100)+'%'
+             :(typeof v==='number'?(v>0?'+':'')+v:String(v));
+      return n+' '+(LADDER_WORD[f]||f);});
+    out.push({stat:s.toUpperCase(),by:L[s],pays:pays});});
+  return out;
+}
 const CLASSHELP={
   captain:{d:'You. On the field, in reach, and worth killing, which is the point: leadership '+
     'that costs nothing is not leadership.',
@@ -35799,7 +35859,15 @@ window.LINT=function(){
            `off:null`, so it reported the class advertising an act it does not get - which
            is the check working, on the day a signature stopped being a main-hand fact.
            A row is `[main, off]` now; a string still means main-hand only. */
-        const SIG_KIT={archer:'bow',spear:'spear',brute:'club',
+        /* ⛔ #287 - AND THE CUTTER, BECAUSE #286 MADE A SIGNATURE NEED THE WEAPON.
+           This check builds a stub body and asks whether the class's advertised sig is
+           on it; before #286 a cutter with the stub's own kit got DISTRACT anyway, so
+           the row was never needed. It is now, and the check caught it on the first
+           run after the rule changed - the same way it caught the plateman at #284.
+           ⚠ THE LIST IS THE CLASS'S OWN TRAINED WEAPON, not a convenience: a row
+           here that armed a class with something it does not train would make the
+           check pass by lying about the body. */
+        const SIG_KIT={archer:'bow',spear:'spear',brute:'club',cutter:'knife',
                        plateman:['shortsw','shield']};
         if(SIG_KIT[k]){const kit=SIG_KIT[k];
           c.eq=Object.assign({},c.eq,Array.isArray(kit)?{main:kit[0],off:kit[1]}
@@ -40973,8 +41041,13 @@ function drawInv(){
        YET (CLASSES.none) in the muted colour and carries no data-cls */
     (p.cls==='none'
       ?'<span class="ichip" style="color:#a08a5e">'+bmk(cIcon('none'))+' <b>'+CLASSES.none.n+'</b></span>'
-      :'<span class="ichip bare" data-cls="'+p.cls+'" title="'+esc(CLASSES[p.cls].n)+'">'+
-        bmk(cIcon(p.cls))+'</span>')+
+      /* ⛔ #287 - THE CLASS SAYS ITS NAME. It was a bare icon with the word on a
+         `title`, which `ui-scales` and #191 both record as not being a readout - and
+         the user's report is exactly that: *"I don't see class information"*. The race
+         chip beside it stays bare because a race has a painted mark that reads on
+         sight; a class has a tool glyph that does not. */
+      :'<span class="ichip" data-cls="'+p.cls+'" title="'+esc(CLASSES[p.cls].n)+'">'+
+        bmk(cIcon(p.cls))+' <b>'+esc(CLASSES[p.cls].n)+'</b></span>')+
     /* ~~⚠ #253 - AND THE LEVEL RING STAYS DELETED~~.
        ⚡ #266 - IT IS BACK, AT THE USER'S WORD, AND WITH THE FIGURES ON IT.
        (*"return lvl with expirience - so i can see it in details"*.)
@@ -41196,6 +41269,31 @@ function drawInv(){
       /* #266 - and the stat half of it comes off. See `traitSheetShort`. */
       (t=>'<div id="iTrait"><b>'+TRAITS[p.trait].n+'</b>'+(t?' · '+t:'')+'</div>')
         (traitSheetShort(p))+
+      /* ═══ ⛔ #287 · WHAT THE CLASS IS WORTH, ON THE SHEET ══════════════════════
+         (User: *"I don't see class information in the inventory"*, and *"update perks
+         and everething based on our lab file"*.)
+
+         ⛑ THE LAB HAS PRINTED THIS FOR TWO ENTRIES AND THE GAME HAS NOT. Three lines,
+         all derived: what the class's LEAN buys (off `rungHeld`, so a retune of the
+         ladder moves it), what the class TRAINS (off `CLS_TRAINS`, which is the gate
+         deciding whether the thing in their hands gives them a signature at all), and
+         the class's OWN RULE (off `clsRule`, whose figures interpolate from the
+         constants that pay them).
+         ⚠ IT SITS UNDER THE PERSONALITY BECAUSE THAT IS THE SAME KIND OF FACT: who
+         they are, then what they were trained to do. Both are one line with the rest
+         on hover, which is this sheet's whole grammar.
+         ⚠ THE NO-TRADE BODY GETS NOTHING HERE, not an empty box: a stranger has not
+         been trained in anything and the perk tab is already telling him so. */
+      (p.cls==='none'?'':(function(){
+        /* ⚠ ONE LINE. The lean's PAYMENT and the class's RULE are both on the hover:
+           the baseline diff says three lines here cost the column 60px it has not got,
+           and `#iTrait` above is the shape this sheet already uses for exactly this. */
+        const lw=leanWords(p.cls);
+        const lean=lw.length?lw.map(l=>(l.by>0?'+':'')+l.by+' '+l.stat).join(' · ')
+                            :'no lean';
+        return '<div id="iCls">'+
+          '<b>'+esc(CLASSES[p.cls].n)+'</b> · '+lean+
+          ' · trains <b>'+esc(trainsWord(p.cls).toUpperCase())+'</b></div>';})())+
       /* ⛑ #200 - and it is FREE HERE. The head is a 104px portrait tile beside
          this column; the tile stands ~120px tall and the name, the chips and
          the personality stack to ~76, so a 20px row of doors lands inside
@@ -41484,10 +41582,17 @@ function drawInv(){
        row a figure cannot say. See `emergency` in the act builder. */
     if(g.emergency)o.push('reaches what a bow cannot');
     return o.join(' · ');};
-  const shortGear=g=>g.dmg?(g.dmg[0]+'-'+g.dmg[1]+
+  /* ⛔ #287 - AND THE TYPE, ON THE SLOT ITSELF. (User: *"I don't see weapon type in
+     the inventory"*.) #286 put the category into `gearLine`, which is the one builder
+     the HOVER and the card row read - and the slot has its own short summary and does
+     not call it, so the fact reached two surfaces out of three. This is the third.
+     ⚠ IT LEADS, because the category is the gate that decides whether this body gets
+     its signature with the thing at all: a spear holding a club is holding a club. */
+  const shortGear=g=>(g.cat?(CAT_NAME[g.cat]||g.cat.toUpperCase())+' · ':'')+
+    (g.dmg?(g.dmg[0]+'-'+g.dmg[1]+
       (g.reach>1?' · reach '+g.reach:'')+(g.range?' · range '+g.range:''))
     :(g.armour!=null?'stops '+g.armour+(g.agi?' · '+(g.agi>0?'+':'')+g.agi+' hands':'')
-                    :shortFx(g));
+                    :shortFx(g)));
   SLOTS.forEach(([slot,label])=>{
     const g=GEAR[p.eq[slot]];
     /* THE OFF HAND IS FULL when the main weapon needs both. It says so, names
@@ -42120,6 +42225,31 @@ function drawInv(){
       TIP.style.display='block';moveTip(e);};
     tEl.onmousemove=moveTip;
     tEl.onmouseleave=()=>{TIP.style.display='none';};
+  }
+  /* ⛔ #287 - AND THE CLASS EXPLAINS ITSELF THE WAY THE PERSONALITY DOES. Same door,
+     same three handlers, same `TIP`: what the lean BUYS (off `rungHeld`, so the ladder
+     moving moves this), what the class TRAINS and why that matters, and the class's
+     own RULE off `clsRule`. It is a hover rather than a block because the baseline
+     diff says the column has one row to spare, not three. */
+  const cEl=$('iCls');
+  if(cEl&&CLASSES[p.cls]&&p.cls!=='none'){
+    cEl.onmouseenter=e=>{
+      const lw=leanWords(p.cls),rule=clsRule(p.cls);
+      TIP.innerHTML='<div style="font-family:var(--display);font-size:var(--fs5);color:var(--g4)">'+
+        CLASSES[p.cls].n+'</div>'+
+        '<div style="font-size:var(--fs1);font-family:var(--mono);color:#8a7449;'+
+          'margin:2px 0 6px">CLASS · '+esc(CLASSES[p.cls].sig||'no signature')+'</div>'+
+        (lw.length?lw.map(l=>'<div style="margin-bottom:4px"><b>'+(l.by>0?'+':'')+l.by+' '+
+            l.stat+'</b> buys '+(l.pays.length?l.pays.join(' · ')
+              :'nothing the ladder names')+'</div>').join('')
+          :'<div style="margin-bottom:4px">It leans nowhere: the same four rungs '+
+           'anybody starts on.</div>')+
+        '<div style="margin-bottom:4px">Trained in <b>'+esc(trainsWord(p.cls))+'</b>. '+
+          'Holding anything else, they swing it and get no signature with it.</div>'+
+        (rule?'<div style="color:#8ca35a;margin-top:6px">'+esc(rule)+'</div>':'');
+      TIP.style.display='block';moveTip(e);};
+    cEl.onmousemove=moveTip;
+    cEl.onmouseleave=()=>{TIP.style.display='none';};
   }
 }
 /* WHAT EACH AXIS IS FOR, in words. The old version of this quoted exact

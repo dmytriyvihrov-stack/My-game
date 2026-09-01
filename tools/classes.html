@@ -361,7 +361,18 @@ window.GT=(function(){
      The prose is this tool's; every FIGURE in it comes from the game, so a retune of
      `CAP_AURA` or `SPEAR_OVER` or `PLATE_WEAR` moves the sentence. A class with no
      rule says so, which is a fact about the roster rather than a gap in the tool. */
+  /* ⛔ #287 - THE RULE MOVED INTO THE BUILD AND THE LAB READS IT NOW. It was
+     authored here, which is backwards: this tool exists to READ the game, and a fact
+     about a class that lives only in a dev tool is a fact the company sheet cannot
+     show - which is exactly what the user reported. `clsRule` is a function of the
+     game's own constants; the block below is the fallback for a build older than
+     #287, kept for the reason every fallback in this file is kept. */
   const CLS_RULE=(function(){
+    try{if(typeof clsRule==='function'){
+      const o={};Object.keys(get('CLASSES',{})).forEach(k=>{const r=clsRule(k);
+        if(r)o[k]=r;});
+      if(Object.keys(o).length)return o;}
+    }catch(e){}
     const n=(k,d)=>{try{return eval(k);}catch(e){return d;}};
     const cap=n('CAP_AURA',{mor:5,reach:2});
     const over=n('SPEAR_OVER',5);

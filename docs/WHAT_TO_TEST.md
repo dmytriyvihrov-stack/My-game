@@ -26,6 +26,27 @@
 
 ---
 
+## #287 - The class reaches the company sheet, the weapon type reaches the slot, and a skill so the next one is quicker
+
+**In the game.** Everything the class lab has been showing is on the company sheet now.
+
+**In three steps.** New company · open the sheet on anybody · read under their personality.
+
+- **The class says its name and what it gives.** One line: `ARCHER · +1 AGI · trains BOW`.
+  **Hover it** and you get what the lean actually buys (+4 to hit), what training means (holding
+  anything else, they swing it and get no signature), and the class's own rule.
+- **Every weapon slot leads with its type.** `BOW · 4-6 · range 5`, `SHIELD · +9 dodge`,
+  `BLADE · 4-5`. The same word the class line says it trains, so the two can be read against
+  each other without opening anything.
+- **The class chip is a name, not just a glyph.** It was an icon with the word hidden on a
+  tooltip.
+- **The perk tab was already correct** and is worth checking anyway: level anybody to 4 and the
+  class doors say **FREE · CLICK TO TAKE**, with the foot counting your free picks and your perk
+  points separately.
+- **What would be a bug.** A class line on a body with no class · a weapon slot with no type ·
+  a hover that names a figure the sheet does not · the character column scrolling (it was
+  measured against the previous build and has room to spare).
+
 ## #286 - The signature needs the weapon in hand, the cards quote what they pay, and the arrow goes somewhere
 
 **In the game.** Three things to look at: a cutter's hands, a perk card, and a missed arrow.

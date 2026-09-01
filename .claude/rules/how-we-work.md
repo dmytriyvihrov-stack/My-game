@@ -36,6 +36,7 @@ gate for its surface, and each replaced a file that used to be loaded whether yo
 | you are touching | load |
 |---|---|
 | **a numbered list of asks, screenshots, "another buch"** | `batch` **first**, before building anything |
+| a class, a perk, a class act, a weapon category, anything a class GIVES | `class-surfaces` |
 | an event card, a door, a receipt, a camp incident, the opening deck | `event-cards` |
 | any CSS, any inline style built in a JS string, a font size, a padding, a border | `ui-scales` |
 | an enemy statblock, `FOE_*`, a foe's stats, threat points, the foe dex | `enemy-stats` |
