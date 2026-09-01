@@ -43,11 +43,32 @@
      the whole first game, so that door has never once opened for anybody. A
      gate whose key is not issued is the same defect as an unreachable node,
      one field across. */
+  /* ⛔ #278 - AND THE GATE MAY SIT ON THE CARD AND NOT ON A DOOR, WHICH THIS
+     PROBE COULD NOT SEE. It scanned `e.choices` only, so it reported the
+     chapel's one door and missed TWO WHOLE VIGNETTES carrying `needMut:'gills'`
+     on the card - unreachable since #16 parked mutations, and invisible to the
+     one check written to find exactly this. The backlog's own #16 row still
+     said *exactly one door in the entire content set* on the strength of it.
+     ⚠ VIGNETTES IS AN ARRAY, not a keyed table: it is indexed by position and
+     `Object.entries` on it yields string indices, which is why it is listed
+     separately rather than concatenated onto the other two. */
+  const cardGates = [];
+  const scanCards = (label, table) => {
+    const rows = Array.isArray(table) ? table.map((e, i) => [label + '[' + i + ']', e])
+                                      : Object.entries(table).map(([k, e]) => [label + ':' + k, e]);
+    rows.forEach(([where, e]) => {
+      if (e.needMut) cardGates.push(where + ' (card) needs ' + e.needMut);
+      (e.choices || []).forEach((c, i) => {
+        if (c.needMut) cardGates.push(where + '#' + i + ' needs ' + c.needMut);
+      });
+    });
+  };
+  scanCards('EVENTS', EVENTS);
+  scanCards('CAMPS', CAMPS);
+  if (typeof VIGNETTES !== 'undefined') scanCards('VIGNETTES', VIGNETTES);
   o.deadGates = {
     mutationsOn: typeof MUTATIONS_ON !== 'undefined' ? MUTATIONS_ON : 'n/a',
-    needMutDoors: Object.entries(EVENTS).concat(Object.entries(CAMPS))
-      .flatMap(([k, e]) => (e.choices || []).filter(c => c.needMut)
-        .map(c => k + ' needs ' + c.needMut)),
+    needMutGates: cardGates,
   };
 
   /* item art embedded but wired to no GEAR row (the reverse orphan) */

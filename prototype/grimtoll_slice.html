@@ -103,7 +103,7 @@
      The build had 29 font sizes, 42 border declarations and 72 paddings, all
      locally correct and globally unrelated. These are the whole vocabulary now.
      ⛔ A NEW LITERAL px IN font-size, border OR padding IS THE BUG.
-     Rules and the mapping table: `.claude/rules/ui-scales.md`. */
+     Rules and the mapping table: `.claude/skills/ui-scales/SKILL.md`. */
   /* type. --fs1 is the FLOOR: nothing on this screen is smaller than 10px. */
   /* ⛔ #231 · AND --fs0 IS THE ONE STEP UNDER IT, WHICH IS A MEASUREMENT AND
      NOT AN EXEMPTION. (User, 2026-08-21: *"damage and chance to hit 20%
@@ -114,7 +114,7 @@
      --fs0 the same three are 13.1 / 17.6 / 20 - the smallest of them still three
      points over the floor, at the stop that shows the most ground.
      ⛔ SO IT IS FOR A SCALED SURFACE AND NOWHERE ELSE, and
-     `.claude/rules/ui-scales.md` §5 carries the probe that holds the line: the
+     `.claude/skills/ui-scales/SKILL.md` §5 carries the probe that holds the line: the
      floor check multiplies an element's font-size by its own transform chain
      measured AGAINST #stage, so on every unscaled screen it reads exactly what
      it has always read and a --fs0 there is reported as the bug it would be. */
@@ -133,7 +133,7 @@
      same size, so it looks nicer"*.)
 
      ⚑ IT IS GEOMETRY AND NOT ONE OF THE THREE SCALES, which is why it is a
-     token of its own rather than a `--p` step: `.claude/rules/ui-scales.md`
+     token of its own rather than a `--p` step: `.claude/skills/ui-scales/SKILL.md`
      governs type, edge and spacing, and a shared BOX SIZE is none of them.
      Same footing as `#wBar`'s own 64px right-hand reservation, and it carries
      its arithmetic for the same reason.
@@ -638,7 +638,7 @@ button:disabled{cursor:not-allowed}
 
    ⛔ THE THREE MARKS ARE THE BUILD'S OWN AND NOT ONE NEW GLYPH. ⛨ is
    `SLOT_ICON.armour`, on the doll on this player's other screen; ♥ is BLOOD and
-   only blood (`.claude/rules/event-cards.md` in capitals: the MENDED row, the road
+   only blood (`.claude/skills/event-cards/SKILL.md` in capitals: the MENDED row, the road
    bar's health chip); and the mood mark is `nerveFlag()`, the same painted rung
    face `#bStateN` was already printing beside the word. Nothing here invents a
    vocabulary - the mood face simply moved out of the value and into the mark
@@ -681,7 +681,7 @@ button:disabled{cursor:not-allowed}
 .sbar>.sbi{flex:none;width:17px;text-align:center;line-height:1;font-size:var(--fs3)}
 .sbar>.sbi img{display:block;margin:0 auto;image-rendering:pixelated}
 /* ⛔ #249 - AN `outline`, NEVER A `border`, AND THE PROJECT HAD ALREADY PAID FOR
-   THIS ONCE. `.claude/rules/static-event-art.md` records it about the road card's
+   THIS ONCE. `.claude/skills/static-event-art/SKILL.md` records it about the road card's
    canvas: *"a border on a border-box element eats into the content box"*. Here the
    content box is what the FIGURE stands in, so a 1px frame costs 2px of type room -
    measured, it took the numeral `--fs6` needs from a 22px bar to a 24px one, which
@@ -1171,7 +1171,7 @@ button:disabled{cursor:not-allowed}
    only cue small enough to fit at 10px.
 
    ⚠ --fs1 AND NOT SMALLER, however tempting "мелким шрифтом" reads. The floor
-   is the floor (see .claude/rules/ui-scales.md §1); a quieter line is made
+   is the floor (see .claude/skills/ui-scales/SKILL.md §1); a quieter line is made
    quieter with COLOUR, never with type.
 
    z-index 43 sits one under the balloon's 44 on purpose: if the Captain and
@@ -1508,7 +1508,7 @@ button:disabled{cursor:not-allowed}
    number at every board speed.
    ⚠ `position:relative` IS ALREADY THERE VIA `absolute`, and the bar is a `::after`
    rather than a background so the hover's own background can still change under it.
-   ⚠ AND THE RESTING STATE IS EMPTY, not full: `.claude/rules/ui-scales.md` §5's rule
+   ⚠ AND THE RESTING STATE IS EMPTY, not full: `.claude/skills/ui-scales/SKILL.md` §5's rule
    that a build which composites no frames has to come out merely STILL. A drain that
    never runs shows nothing; it never shows a full bar that is lying. */
 #bUndo::after{content:'';position:absolute;left:0;bottom:0;height:2px;width:0;
@@ -1831,7 +1831,7 @@ body:has(#battle.on) .whisp{bottom:138px}
   clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%)}
 /* ═══ #205 · THE PARTING-SWING WARNING ══════════════════════════
    ⛔ AN ACCENT EDGE, WHICH IS DELIBERATELY NOT ON THE `--e` SCALE. The three
-   scales (`.claude/rules/ui-scales.md` §2) govern the edge that DRAWS A BOX;
+   scales (`.claude/skills/ui-scales/SKILL.md` §2) govern the edge that DRAWS A BOX;
    this one SAYS SOMETHING, and flattening it into the gold ladder would be the
    wrong-unit bug arriving through a tidy-up. Same footing as `--blood-lit`
    warning and `--grain` approving, and it is the same red the refusal cursors
@@ -1914,7 +1914,7 @@ body:has(#battle.on) .whisp{bottom:138px}
    OCCUPIED hex; it is text with the same triple halo `.hodds` and `.hdmg` wear two
    rows above it now, which is what the ask asked for and what makes the three
    readouts on a hex read as one family. The 1px 2px padding that
-   `.claude/rules/ui-scales.md` §3 listed as this build's second geometry literal
+   `.claude/skills/ui-scales/SKILL.md` §3 listed as this build's second geometry literal
    goes with it, and that table is one row shorter.
    ⚠ `left/right:-6px`, the same overhang `.stbar` takes: the figure is wider than
    37px and `.hin` does not clip, which is deliberate and is why it can be centred
@@ -2238,7 +2238,7 @@ body:has(#battle.on) .whisp{bottom:138px}
    ⛔ AND THE DAMAGE ROW IS DELETED RATHER THAN MOVED. `.hdmg` and its three
    rules are gone: the blow is on the target's own two bars (#234) and in the
    readout card's breakdown, and a third statement of it was the second receipt
-   `.claude/rules/event-cards.md` forbids on a card and #102 forbids on a readout.
+   `.claude/skills/event-cards/SKILL.md` forbids on a card and #102 forbids on a readout.
    ⚠ What goes with it is the `full` figure, i.e. *how hard is this skill*
    before armour (#98 point 7). That question is answered on the CARD the swing
    comes off, which is where a comparison between two cards is made; what the
@@ -2561,7 +2561,7 @@ body:has(#battle.on) .whisp{bottom:138px}
    HAS BEEN GIVEN (user, 2026-08-21: *"Morale more transparent on the
    batlfield"*). The paragraph above is #164 answering the same complaint, so
    this is not taste arriving twice: it is a number that was still wrong after
-   being moved once, which is the shape `.claude/rules/ui-scales.md` and the
+   being moved once, which is the shape `.claude/skills/ui-scales/SKILL.md` and the
    battle-screen entries keep recording. .66 -> .40 and grayscale .35 -> .55.
    ⚠ THE FLOOR IS THAT IT MUST STILL BE FINDABLE WHEN LOOKED FOR. Deleting the
    quiet faces outright was considered and refused: 😐 and 😕 are the two rungs
@@ -2706,7 +2706,7 @@ body:has(#battle.on) .whisp{bottom:138px}
    ⚠ THE LADDER STOPS AT `--fs6`, AND `FX_ROW` IS WHY. Lines on one hex step
    18px apart with `line-height:1`, so a box over 17 eats its neighbour's row.
    `--fs7` (20) was the first pick and it is arithmetically closed.
-   ⚠ AND `--fs1` IS THE FLOOR AND NOT UNDER IT (.claude/rules/ui-scales.md §1).
+   ⚠ AND `--fs1` IS THE FLOOR AND NOT UNDER IT (.claude/skills/ui-scales/SKILL.md §1).
    The smallest tick was `--fs3` before this; it comes down because the size is
    carrying meaning now and the quiet end has to be quiet. */
 .fx.fxmood.sm {font-size:var(--fs1)}
@@ -3287,7 +3287,7 @@ body:has(#battle.on) .whisp{bottom:138px}
    show only when expanded"*.) `.bcchip` sets `--fs1`, which was right while
    the face was a bullet in front of STEADY and is the item-icon finding again
    the moment the word goes: a picture standing alone at 10px is a smudge
-   (`.claude/rules/static-event-art.md`). `--fs5` is the chip's own figure size
+   (`.claude/skills/static-event-art/SKILL.md`). `--fs5` is the chip's own figure size
    two chips over, and `line-height:1` keeps the emoji's line box off the
    chip's height - 15+2+2+2 is 21 against `--barChip`'s 30, so the strip does
    not move. ⚠ The NAME is not lost: `WTIPS.mood.t` has been
@@ -3851,7 +3851,7 @@ body:has(#battle.on) .whisp{bottom:138px}
 
    ⚠ EVERY NUMBER BELOW THAT IS NOT ON THE THREE SCALES IS GEOMETRY, and it
    carries its arithmetic the way `#wBar`'s 64px and `--barChip` do
-   (.claude/rules/ui-scales.md §3, §3b):
+   (.claude/skills/ui-scales/SKILL.md §3, §3b):
      1180  the map window is 1280 and placeDlg's PAD is 10, so this leaves 50
            of map either side. It is the sketch's own `min(100%,1180px)`.
       620  `#wMap` is 678 (720 stage minus the 42px bar), so 29 either side.
@@ -3881,7 +3881,7 @@ body:has(#battle.on) .whisp{bottom:138px}
    REASON `transform-origin` IS HERE. A blurred image has soft edges, so it is
    scaled past its own box and cropped - the sketch does the same and writes
    down that its scene "REPORTS 19x9 OF OVERFLOW, AND IT IS DELIBERATE". This
-   build may not do that: .claude/rules/ui-scales.md §5 forbids adding a fifth
+   build may not do that: .claude/skills/ui-scales/SKILL.md §5 forbids adding a fifth
    entry to the known-overflow list to make a new decoration fit, and the probe
    duly reported `DIV.evstage 12x6` on the first cut. The same file also
    records WHY the fix is free: overflow to the LEFT and the TOP is not
@@ -3967,7 +3967,7 @@ body:has(#battle.on) .whisp{bottom:138px}
    the withdraw screen are still the 620px column, and they were not asked for.
 
    ⛔ EVERY RESTING STATE IS THE NATURAL ONE, AND THAT IS A SAFETY RULE RATHER
-   THAN A STYLE. `.claude/rules/ui-scales.md` §5 says the preview pane
+   THAN A STYLE. `.claude/skills/ui-scales/SKILL.md` §5 says the preview pane
    composites no frames; a build where these never advance has to come out
    merely STILL, never one where the doors are invisible and the card cannot be
    answered. So the seam's own base opacity is 0 (it is a flash, and an un-run
@@ -4131,7 +4131,7 @@ body:has(#battle.on) .whisp{bottom:138px}
    full-body character paintings; every portrait this build owns is a 220x220
    BUST (build_assets.ps1, `P[1-5]_*` -> 220x220). A 482-tall plate would
    cover-crop a square head to a strip of nose. The plate is sized for the art
-   that exists, which is the same call `.claude/rules/static-event-art.md`
+   that exists, which is the same call `.claude/skills/static-event-art/SKILL.md`
    makes about the item icons: each caller writes the size its own box was
    reserved at. */
 .evstage .evcast{position:absolute;z-index:4;left:16px;bottom:30px;width:274px;height:300px}
@@ -4159,7 +4159,7 @@ body:has(#battle.on) .whisp{bottom:138px}
    12.5px, its receipt line at 8px, and clipped both with
    `white-space:nowrap;text-overflow:ellipsis`. 8px is under the 10px FLOOR
    and a clipped door label is the exact regression table in
-   .claude/rules/ui-scales.md §4. The label WRAPS instead, and the receipt
+   .claude/skills/ui-scales/SKILL.md §4. The label WRAPS instead, and the receipt
    keeps the `--fs3` it has had since #150.
    ⛔ AND THE COLOURS ARE THE ONES THE GAME ALREADY USES (user: *"make buttons
    of choices a bit more in colors of game (i feel now they use colors what
@@ -4180,7 +4180,7 @@ body:has(#battle.on) .whisp{bottom:138px}
    #wChoices on every beat and only fills it on the last one */
 :is(#wDlg,#prDlg) .evchoices:empty{display:none}
 /* ⚑ AND A CARD WHOSE DOORS ARE ALL BARE DOES NOT RESERVE THE GLYPH COLUMN.
-   `.claude/rules/event-cards.md`: *"A DOOR MAY BE BARE, AND THE FIRE'S RULINGS
+   `.claude/skills/event-cards/SKILL.md`: *"A DOOR MAY BE BARE, AND THE FIRE'S RULINGS
    ARE ... bare reads as this is you deciding, not doing"* - 31 of 53 camp doors
    carry a mark and the rest are judgments. A 44px empty cell is worth paying on
    a card where SOME door has a mark, because that is what keeps the labels in
@@ -4215,7 +4215,7 @@ body:has(#battle.on) .whisp{bottom:138px}
    #102's WRONG-UNIT BUG. The four-sided border on a door is a READOUT and has
    been since #137: `--e2` at rest, `#8c3a31` when the door is a warning,
    `#5a7a6a` when it is only open because of who is in the company, `--g3`
-   under the pointer. `.claude/rules/ui-scales.md` §2 says in capitals that an
+   under the pointer. `.claude/skills/ui-scales/SKILL.md` §2 says in capitals that an
    accent edge carries meaning and may not be flattened into the scale, so none
    of that is touched. What was empty is the 2px LEFT RAIL, which every door in
    the game wore in the same `--e3` whatever the door did.
@@ -4267,7 +4267,7 @@ body:has(#battle.on) .whisp{bottom:138px}
    A door wears EVERY intent it carries as a class, so a two-glyph door matches
    two of the rows below at identical specificity and the LATER one wins. The
    five verbs are listed first and the two moral colours last, which is the
-   head of `.claude/rules/event-cards.md` (*"the verb comes first and the moral
+   head of `.claude/skills/event-cards/SKILL.md` (*"the verb comes first and the moral
    colour second"*) written as a cascade instead of as a `.slice()`:
      ⚔️☠️  fight + evil  -> blood       fighting as the predator
      ⚔️🤝  fight + help  -> grain       fighting for somebody
@@ -4338,7 +4338,7 @@ body:has(#battle.on) .whisp{bottom:138px}
    (User, 2026-08-20: *"Apdate also emoji pack for all choices and emoji pack
    for a race"*.) The eight intents and the three races are paintings now
    (`INTENT_ART`/`RACE_ART`, art/build_icons.py), and where they are drawn is
-   decided per surface - which is the finding .claude/rules/static-event-art.md
+   decided per surface - which is the finding .claude/skills/static-event-art/SKILL.md
    already wrote down for the item icons: a 120px painting rendered inside a
    line of 13px text is a smudge, and the same picture given its own cell
    beside the text costs the row nothing.
@@ -4351,7 +4351,7 @@ body:has(#battle.on) .whisp{bottom:138px}
    a font, so the inline ones want every pixel they can have; the box does not.
    Measured on a three-door fire card: 16x20 and 17x22 both leave every row at
    54px and the card at 575, 18x24 takes two rows to 55 and the card to 577.
-   That is .claude/rules/ui-scales.md §4's rule in its cheapest form - the text
+   That is .claude/skills/ui-scales/SKILL.md §4's rule in its cheapest form - the text
    never breaks, the box measured around it does - so the size was chosen by
    watching the box rather than by looking at the glyph. */
 .cig .cico{display:inline-block;height:22px;width:17px;object-fit:contain;
@@ -4362,7 +4362,7 @@ body:has(#battle.on) .whisp{bottom:138px}
 :is(#wDlg,#prDlg) .evchoices .cigs .cig .cico{width:30px;height:40px;vertical-align:0}
 /* ⚑ A SECOND INTENT OVERLAPS THE FIRST AND SITS LOWER, which is the sketch's
    own `img+img{width:21px;margin-left:-6px}`. The rule at the head of
-   .claude/rules/event-cards.md is that the VERB comes first and the moral
+   .claude/skills/event-cards/SKILL.md is that the VERB comes first and the moral
    colour second, so the pair has to read as one mark with a rider rather than
    as two equal marks: 30+22 side by side is 52 in a 44px cell and both would
    be squeezed. 30 - 10 + 22 = 42 and the first one stays the size it is on a
@@ -4415,7 +4415,7 @@ body:has(#battle.on) .whisp{bottom:138px}
    flow is 460 wide, so on the stage it WRAPS instead of squashing. It also
    drops its own frame: `.evrec` is already a beat with a ground under it, and
    two frames round one strip is the second-receipt shape
-   .claude/rules/event-cards.md spends itself on. */
+   .claude/skills/event-cards/SKILL.md spends itself on. */
 .evstage .evrec .tvr{flex-wrap:wrap;gap:var(--p2) var(--p5);
   background:none;border:none;padding:0}
 .evstage .evrec .tvrrow{margin-left:0;flex-wrap:wrap;gap:var(--p2) var(--p5)}
@@ -4444,7 +4444,7 @@ body:has(#battle.on) .whisp{bottom:138px}
 /* ⛔ AND THE STRIP'S OWN HEADING GOES, WHICH IS A CONSISTENCY FIX BEFORE IT IS
    A SPACE ONE. A road card's receipt is chips and nothing else (#143); "THE ROOM
    SETTLES" is a third small-caps heading on a card that already has a title and
-   a mark eight lines above it, which is the furniture .claude/rules/event-cards.md
+   a mark eight lines above it, which is the furniture .claude/skills/event-cards/SKILL.md
    keeps deleting. ⚠ Hidden rather than cut from `tavernReceipt`, because the
    dormant column path (proCard) has no title of its own and still wants it. */
 .evstage .evrec .tvrt{display:none}
@@ -4849,7 +4849,7 @@ body:has(#battle.on) .whisp{bottom:138px}
    · `--fs5` and not the `--fs1` of the lines it sits in. A pictogram is not
      text: at 10px 🔱 and 🪓 are the same grey smudge, which is the exact fault
      the old ⌇/† set had and the reason this entry exists. ⚠ It is a scale
-     step, not a literal (`.claude/rules/ui-scales.md` §1), and it is the one
+     step, not a literal (`.claude/skills/ui-scales/SKILL.md` §1), and it is the one
      thing here that can break a measured row - `.rmem` is 65px and the muster
      card was 91 once. ⚑ SO IT WAS MEASURED AT THREE STEPS RATHER THAN PICKED:
      the roster's race line lands at 15 / 17 / 19px for `--fs4` / `--fs5` /
@@ -4883,7 +4883,7 @@ body:has(#battle.on) .whisp{bottom:138px}
    ⚠ 16px IS THE BIGGEST SIZE THAT COSTS NOTHING, MEASURED, which is #209's own
    method one screen over: a picture in a line of text is free until the LINE
    BOX grows, and the line box is what breaks a row measured around a glyph
-   (`.claude/rules/ui-scales.md` §4). Driven against a `git show HEAD:` baseline
+   (`.claude/skills/ui-scales/SKILL.md` §4). Driven against a `git show HEAD:` baseline
    in a second tab, company sheet and muster wall, fonts loaded:
      16px  roster rows 68/68/68/70 (was 69x4) · race chip 21 (was 21) · muster
            dialog 467 (was 473) · `#iChar` 678 into 678 · overflow probe []
@@ -4987,7 +4987,7 @@ body:has(#battle.on) .whisp{bottom:138px}
    SKILLS is a label FOR the list under it, so 12px of air on both sides would set it
    floating between two things it only belongs to one of. It gives the gap back with
    a negative margin, written as `calc(var(--p5) * -1 + ...)` so the two numbers
-   cannot drift - the pair `.claude/rules/ui-scales.md` §3 already blesses. */
+   cannot drift - the pair `.claude/skills/ui-scales/SKILL.md` §3 already blesses. */
 #iChar{flex:1;padding:var(--p3) var(--p5);display:flex;flex-direction:column;gap:var(--p5);
        min-width:0;overflow:auto}
 /* ── the head: three lines, and everything longer is a hover ─────────────
@@ -5051,7 +5051,7 @@ body:has(#battle.on) .whisp{bottom:138px}
    canvas plus `--p2` twice plus a 1px border twice, and the row is now the tallest
    of the tile, the text column and the token.
    ⛔ AND THE BACKING STORE MOVES WITH THE BOX. It is written 2x in the HTML (see
-   `#iFace`), which is `.claude/rules/static-event-art.md`'s whole first section:
+   `#iFace`), which is `.claude/skills/static-event-art/SKILL.md`'s whole first section:
    *"the number a canvas ATTRIBUTE gives you is not the box it lands in"*, and a
    188x148 store in a 104x85 box would be the prologue card's shipped stretch
    arriving on the sheet. 208 x 170. */
@@ -5835,7 +5835,7 @@ body:has(#battle.on) .whisp{bottom:138px}
    already uses and the same red a `danger:true` door wears on a card, so the
    button, the rows it lights and the warning all speak once.
    ⚠ IT IS AN ACCENT EDGE AND IS DELIBERATELY NOT ON THE `--e` SCALE - see
-   `.claude/rules/ui-scales.md` §2: that scale is for the edge that DRAWS A BOX
+   `.claude/skills/ui-scales/SKILL.md` §2: that scale is for the edge that DRAWS A BOX
    and this one says something. */
 /* ⛑ #246 - AND IT WEARS `#iDismiss`'s EXACT COLOURS NOW (user: *"make same
    color as let them go"*). The two are the only buttons on this screen that
@@ -6105,7 +6105,7 @@ body:has(#battle.on) .whisp{bottom:138px}
    and pressing a face is the player choosing to answer. */
 /* #223 - and the button that ends the sentence. It is the reason box's own last
    row and never the card's, which is what keeps the deletion above true.
-   ⚠ EVERY NUMBER IS A SCALE STEP (`.claude/rules/ui-scales.md`): --fs1 is the
+   ⚠ EVERY NUMBER IS A SCALE STEP (`.claude/skills/ui-scales/SKILL.md`): --fs1 is the
    floor and this is a mono label like every other, the pads are --p2/--p4, and
    the edge is the battle chrome's `--e4` because the box it closes is already
    drawn in it. */
@@ -6299,7 +6299,7 @@ body:has(#battle.on) .whisp{bottom:138px}
 
    MEASURED FIRST, which is #88's rule. The panel was 370 wide with a THREE-ROW
    textarea at `--fs2`, i.e. about 44 mono characters a line and 3 lines of
-   them = ~130 characters visible. `.claude/rules/event-cards.md` puts the
+   them = ~130 characters visible. `.claude/skills/event-cards/SKILL.md` puts the
    heaviest card in the game at 175 words, ~1,050 characters. The shrine's body
    was being rewritten eight lines at a time through a slot the size of a
    tweet, and every road card is authored against that file.
@@ -6317,7 +6317,7 @@ body:has(#battle.on) .whisp{bottom:138px}
        stack, and the ✎ TEXT button that disarms the mode, are never covered.
    ⚠ THE TEXTAREA IS `--fs3`, ONE STEP OVER THE REST OF THE PANEL. Dev chrome
    is `--fs2` and stays there; the one box you type prose into is not chrome.
-   Both are scale steps, per `.claude/rules/ui-scales.md` §1 - nothing here is
+   Both are scale steps, per `.claude/skills/ui-scales/SKILL.md` §1 - nothing here is
    a literal. */
 #tePanel{position:absolute;right:10px;top:254px;z-index:60;width:460px;max-height:456px;
   display:none;flex-direction:column;gap:6px;overflow:auto;
@@ -6463,7 +6463,7 @@ body:has(#battle.on) .whisp{bottom:138px}
    editing `takeLoot`, `payFightXP` or an `AFTER` row to make the screen look
    right, it has left the brief.
 
-   ⛔ THE THREE SCALES ARE CLOSED HERE TOO (.claude/rules/ui-scales.md). The
+   ⛔ THE THREE SCALES ARE CLOSED HERE TOO (.claude/skills/ui-scales/SKILL.md). The
    mockup is written in 8px and 9px type and in seven hand-mixed browns; every
    one of those landed on --fs1 and on --e1..--e3. An inner hairline that the
    scale has no colour for is drawn with `box-shadow: inset 0 0 0 1px`, which
@@ -7106,7 +7106,7 @@ a.popt.sendit{display:block;text-decoration:none}
 
    It is a READ-ONLY LABEL about the FILE, never about the run, so it takes no
    pointer and it is not on any of the glyph vocabularies. `--fs1` is the floor
-   (`.claude/rules/ui-scales.md` §1) and the mono is the same face every counter
+   (`.claude/skills/ui-scales/SKILL.md` §1) and the mono is the same face every counter
    in the game wears; what makes it "very light" is the opacity, not a size
    under the floor.
 
@@ -9796,7 +9796,7 @@ const holds=(u,k,cap)=>((u&&u.st&&u.st[k])||0)>=RUNG_TOP&&
    so an ordinary human carried 90 and the Captain 110, and the one number on the
    sheet a player can read without arithmetic was the odd one out.
    ⚠ IT IS YOUR SIDE ONLY. A foe's pool is `t.mor` off its own statblock and has
-   never come through `GIVEN` (`.claude/rules/enemy-stats.md`: there is no
+   never come through `GIVEN` (`.claude/skills/enemy-stats/SKILL.md`: there is no
    `FOE_GIVEN` and there must not be one), so this widens the measured gap rather
    than moving both lines. It is priced with ARENA below.
    ⚠ AND IT SOFTENS EVERY MORALE EVENT BY 11%, because `MORALE`'s figures are
@@ -10373,7 +10373,7 @@ const placeName=()=>{
    declared ~1,500 lines BELOW this one, so `ic:RACE_ICON.human` here is a
    const read from inside its own temporal dead zone: it throws at boot and
    takes the whole script with it, which is the crash
-   `.claude/rules/world-map-sights.md` records this file shipping once and
+   `.claude/skills/world-map-sights/SKILL.md` records this file shipping once and
    `RACE_ICO` was deliberately declared 24,000 lines downstream to avoid.
    `killMark` below is a function, so by the time anything calls it the table
    it reads has been initialised for the whole session.
@@ -11139,7 +11139,7 @@ const GEAR={
      OVERLOADED GLYPH IN THE FILE: the flee button, the Company Banner, the LINE
      aura, the COMMAND act and the `⚑ CHIEFTAIN` foe tag all wear it, and its own
      note in `CLASS_ICON` says so out loud. Checked against the whole file at 0
-     occurrences, as `.claude/rules/event-cards.md` requires. */
+     occurrences, as `.claude/skills/event-cards/SKILL.md` requires. */
   draught:{rarity:'rare',n:'Healing Draught',slot:'bag',g:'⚗',heal:10,uses:1,
            d:'A stoppered flask of something dark that a hedge-doctor swore by. Once a '+
              'fight, a body can stop what it is doing and drink it: 10 hitpoints back, '+
@@ -11189,7 +11189,7 @@ const GEAR={
      `hideAct`'s note already refuses to take a spent card off the sheet - so
      what is new here is the RULE (see `hiddenLive`), not the wiring.
      ⚠ `▒` AND NOT `▨`, which is already RAGS in `MAT_ICON`. Checked against the
-     whole file at 0 occurrences, as `.claude/rules/event-cards.md` requires. */
+     whole file at 0 occurrences, as `.claude/skills/event-cards/SKILL.md` requires. */
   cloak   :{rarity:'rare',n:'Disguise Cloak',slot:'bag',g:'▒',
             use:{n:'PULL IT OVER YOU',uses:1,hide:2},
             d:'A hooded thing of stitched sacking and dead grass, heavy with the smell '+
@@ -11693,7 +11693,7 @@ const traitDesc=p=>{const t=TRAITS[p.trait];if(!t)return '';
    +5 MOR, and both pay +2. They are pre-#254 numbers left standing when `st` became
    a signed RUNG, and the sheet's own stat ledger has been printing the true figure
    in the next column along ever since - two receipts for one payment, which is the
-   rule at the top of `.claude/rules/event-cards.md` arriving on the trait register.
+   rule at the top of `.claude/skills/event-cards/SKILL.md` arriving on the trait register.
 
    ⛑ SO THE NUMBER IS SUBSTITUTED RATHER THAN THE SENTENCE REWRITTEN, and that is
    what keeps the writing. FERAL's *−3 MOR, breaks sooner* keeps its second clause,
@@ -11740,7 +11740,7 @@ const traitShort=p=>{
    name EXPERIENCED as a row and total it, and this entry has just made that total
    the loudest thing in the box; the header was the second receipt, and it was the
    one that cannot be checked against anything. That is the rule at the top of
-   `.claude/rules/event-cards.md` arriving on the company sheet.
+   `.claude/skills/event-cards/SKILL.md` arriving on the company sheet.
 
    ⛔ SO IT IS A FILTER AND NOT A REWRITE, AND IT RUNS ON THIS SURFACE ONLY.
    `traitShort` is unchanged and its five other callers print exactly what they
@@ -11861,7 +11861,7 @@ const castAct=(sp,bonus)=>{
    `PERKS.luck.d` builds its sentence from this at OBJECT-LITERAL time and
    `effStats` pays it, so one figure serves the promise and the payment both.
    ⚠ THE ORDER IS LOAD-BEARING: a `const` read from its temporal dead zone
-   throws and aborts the whole script, which `.claude/rules/event-cards.md`
+   throws and aborts the whole script, which `.claude/skills/event-cards/SKILL.md`
    records this file shipping once already. */
 const LUCK_RUNGS=2;
 /* 4 perks per class — two at level 2, two at level 3 — all stated in numbers */
@@ -12120,7 +12120,7 @@ const MONSTER_ICON='☠';
    ⛑ THE GLYPH WAS DOING THE OPPOSITE OF WHAT IT WAS PUT THERE FOR. It was
    added so a monster would not wear a TRADE - a wyrm did not train at
    anything - and on a field of ten lurchers it became ten identical faces on
-   ten identical rows, which is furniture (`.claude/rules/event-cards.md`: a
+   ten identical rows, which is furniture (`.claude/skills/event-cards/SKILL.md`: a
    phrase you can grep twenty-four times is furniture, whatever it says). The
    Fen-Mother's dragon is the only one on its own field and it is the reason
    that field exists.
@@ -12485,7 +12485,7 @@ function payFightXP(){
    zone - the crash this file has already shipped once).
 
    ⛔ CHECKED AGAINST EVERY OTHER FAMILY BEFORE IT WAS WRITTEN, which is the
-   rule at `.claude/rules/event-cards.md` and beside `GEAR_MARK`: 🔱 🏹 🔮 🗡 🪓
+   rule at `.claude/skills/event-cards/SKILL.md` and beside `GEAR_MARK`: 🔱 🏹 🔮 🗡 🪓
    appear ZERO times in this file, so none of them collides with `CHOICE_ICO`
    (⚔️🤝☠️👣⚖️🧺⛺🙏), `RES_ICON`, `GEAR_MARK`, `SLOT_ICON`, a monster's `ico`,
    an act's `iconFor`, or the `MOODSTATES` faces (💀😟😐🙂😄 - and note ☠️ is
@@ -12518,7 +12518,7 @@ const RES_ICON={crowns:'◉',food:'❦',salvage:'▤',wood:'▤',iron:'▬',gems
    labels, the store's own heading and both of its buttons, the wagon's cook-fire
    blurb, the run-end tally, the rules card and a battle line about the barrels.
    Not one of them was wrong. Every one of them was decided separately, which is
-   `.claude/rules/ui-scales.md`'s own Discord finding arriving on VOCABULARY: a
+   `.claude/skills/ui-scales/SKILL.md`'s own Discord finding arriving on VOCABULARY: a
    build polished surface by surface converges on locally-perfect and globally
    unrelated, and the author is the one person who cannot see it.
 
@@ -12668,7 +12668,7 @@ function perkKind(k,p){
    is a temporal-dead-zone throw - and `typeof` does not save you from a const
    in its TDZ, only from a name that was never declared. This is the same guard
    `hasSight` carries for `MAP_SIGHT`, for the same reason, after the same
-   crash (`.claude/rules/world-map-sights.md`). It also covers a build where
+   crash (`.claude/skills/world-map-sights/SKILL.md`). It also covers a build where
    `art\inject_j_pack.ps1` has not been run: a fresh checkout, a bisect, a
    half-finished merge. Those all fall back to the emoji instead of taking the
    whole script down. */
@@ -13258,7 +13258,7 @@ const moodFx=v=>moodState(v==null?(typeof G!=='undefined'?G.morale:0):v).fx||{};
 /* ⛔ THE WORDS UNDER A RUNG ARE BUILT FROM ITS OWN FIGURES, NEVER TYPED BESIDE
    THEM. Five rungs x four effects is twenty numbers that would otherwise be
    written twice, and this file has caught that family six times (see
-   `.claude/rules/event-cards.md`). Returns '' for AT EASE, which is the honest
+   `.claude/skills/event-cards/SKILL.md`). Returns '' for AT EASE, which is the honest
    thing a rung that does nothing has to say. */
 function moodEffect(s){
   const f=(s&&s.fx)||{},out=[];
@@ -13389,7 +13389,7 @@ const PRESET_BRUHT={id:'bruht',name:'Bruht',sur:'',race:'ogre',cls:'brute',kind:
    ⚠ THE FOUR KEYS ARE A LITERAL AND NOT `STATK`. This runs at
    `G.party=makeParty()`, ~330 lines above `const STATK`, and a const read from
    its temporal dead zone throws and aborts the whole script - the crash
-   `.claude/rules/world-map-sights.md` says this project has shipped once, and
+   `.claude/skills/world-map-sights/SKILL.md` says this project has shipped once, and
    #254 shipped it again for four minutes. */
 function applyLeans(p){
   const m=RACEMOD[p.race]||{},c=CLSLEAN[p.cls]||{};
@@ -14395,7 +14395,7 @@ const TAVERNART='EV00E';
    was aslo good - we can add it to the main"*.)
 
    ⛔ ONE TABLE, AND IT IS THE ONLY PLACE A CARD KEY MEETS A STAGE. Same shape
-   and same rule as `MAP_SIGHT{}` (.claude/rules/world-map-sights.md): add a key
+   and same rule as `MAP_SIGHT{}` (.claude/skills/world-map-sights/SKILL.md): add a key
    here and nowhere else, and a card with NO key is a legitimate shipping state
    rather than a bug - it falls back to `EVENTART`'s 586x212 letterbox, which
    the stage cover-crops, and to the procedural `paint()` under that.
@@ -15888,7 +15888,7 @@ const LADDER=[
      TWICE. Neither costs anything; what separates them is which way they are one
      step from, and that IS information - the rule this file already allows for the
      top band, which the engine does not act on either. A `d` reading *no penalties*
-     on both would be the furniture `.claude/rules/event-cards.md` keeps deleting.
+     on both would be the furniture `.claude/skills/event-cards/SKILL.md` keeps deleting.
      ⚠ `STATES.wavering` STAYS UNREACHABLE. This is a DISPLAY band over the same
      `steady` state, not the old rung coming back: nothing here costs a point of
      hit or dodge, and `NERVE_RUNGS` gained no row. */
@@ -15920,7 +15920,7 @@ const LADDER=[
    once, read by the battle card and the company sheet alike.
    ⚠ IT IS DECLARED IMMEDIATELY UNDER `LADDER` AND RUNS AT PARSE. A `const` read
    from its temporal dead zone throws and aborts the whole script, which is the
-   crash `.claude/rules/world-map-sights.md` records this project shipping once;
+   crash `.claude/skills/world-map-sights/SKILL.md` records this project shipping once;
    sitting directly under the thing it reads is what makes that impossible.
    ⚠ THE BOTTOM GATE IS 0 AND IS NOT DRAWN: a tick on the left edge of the bar is
    the edge of the bar. */
@@ -18339,7 +18339,7 @@ function tavernContract(won,skipped){
        ⚑ AND IT DOES NOT MOVE THE PAINTING. `art/src/stage-4/prologue/EV-00E`
        is locked to "he crosses the wreckage, sits uninvited, and calmly
        places a closed purse on the table, two paid swords still at the door"
-       (.claude/rules/static-event-art.md). Every one of those still happens
+       (.claude/skills/static-event-art/SKILL.md). Every one of those still happens
        on this card; the purse is three paragraphs further down it. ⛔ What
        the ledger asked for and did NOT get is "He throws a bag of coin" -
        the lock says he never throws it, and the painting shows the purse set
@@ -18456,7 +18456,7 @@ function tavernContract(won,skipped){
          you walk out of the tap-room - and the door wore only the first of
          them. ⛑ TWO VERBS IS LEGAL AND THE PRECEDENT IS NAMED: THE WARM
          SPRING's second door is `['take','leave']`, and
-         `.claude/rules/event-cards.md` records it as the door that broke a
+         `.claude/skills/event-cards/SKILL.md` records it as the door that broke a
          cascade written for verb-plus-moral-colour. The rail is unchanged
          either way, because `leave` is the one intent with no rail row - the
          quietest door has no colour - so the amber it had as a `trade` door
@@ -18481,7 +18481,7 @@ function tavernContract(won,skipped){
          instruction (cut, delay, merge).
 
          ⚑ NOTHING ELSE WAS TORN OUT, ON PURPOSE. `PRO_ART.joke_hit` stays
-         mapped to EV00C: `.claude/rules/static-event-art.md` requires that
+         mapped to EV00C: `.claude/skills/static-event-art/SKILL.md` requires that
          mapping to be preserved exactly, the painting exists and is good, and
          the scene name must not be invented again when this comes back. The
          `verdict` banner machinery in prologueEnd stays for the same reason.
@@ -18589,7 +18589,7 @@ const CONTRACT_PURSE=80;
    through in red on the contract card: *"Delete heads and crowns"*.)
 
    ⛑ THE RECEIPT RULE IS WHY THIS COSTS NOTHING, AND IT IS THE RULE THAT PUT
-   THEM THERE. `.claude/rules/event-cards.md`: *the prose says what happened,
+   THEM THERE. `.claude/skills/event-cards/SKILL.md`: *the prose says what happened,
    the chips say what it cost*. On every OTHER card in the game that split is
    real, because the prose has been cut of its figures. This card is the one
    place where the two halves are read a second apart and both are the SAME
@@ -19666,7 +19666,7 @@ let FIGHTBACK=null;
    without opening eight functions and knowing which eight.
 
    ⛔ A NEW FIGHT ADDS A GROUP HERE AND A ROW TO `FOE_BUILD` BELOW, never a
-   table inside its own builder. See `.claude/rules/enemy-stats.md`.
+   table inside its own builder. See `.claude/skills/enemy-stats/SKILL.md`.
 
    ⚠ THE TABLES MOVED VERBATIM. Not one figure changed in the move, and the
    proof is an oracle probe that builds every `FOE_BUILD[k]()` side on this
@@ -21552,7 +21552,7 @@ const cur=()=>B.order[B.idx];
      · two rounds                              -> `hiddenLive`, and no clock
 
    ⚠ `HIDE_SEE` IS AN INTELLECT RUNG AND NOT A RACE. *"smart 2+"* read against
-   the ladder every body on both sides climbs (`.claude/rules/enemy-stats.md`),
+   the ladder every body on both sides climbs (`.claude/skills/enemy-stats/SKILL.md`),
    so a clever ratkin sees you and a dog does not, and nothing here carries a
    list of who is clever that could go stale.
    ⚠ AND IT IS ROUNDS, WHICH IS #46's OWN RULING ON VENOM: a clock counting
@@ -25826,7 +25826,7 @@ function selectAct(i){
      whose second click is always your own feet is a click nobody wants.
      ⚠ IT CANNOT OVERHEAL, and the float says what actually went in rather than
      what the label promises - a body 4 short drinks the whole flask and the
-     number that comes up is 4. `.claude/rules/event-cards.md`'s own rule: the
+     number that comes up is 4. `.claude/skills/event-cards/SKILL.md`'s own rule: the
      label is the promise and the receipt is the fact.
      ⚠ AND `u.drank` IS SET BEFORE `render`, or the card the player is looking
      at is drawn from the state before the drink. */
@@ -27409,7 +27409,7 @@ const STATUS={
      fall changes. That is not #102's wrong-unit bug: the unit never changes,
      the reading does.
      ⛔ ✚ AND NOT ♥ OR 🩸. On this build ♥ means BLOOD MENDED (see
-     `.claude/rules/event-cards.md`) and the aftermath's 🩸 is damage taken. ✚
+     `.claude/skills/event-cards/SKILL.md`) and the aftermath's 🩸 is damage taken. ✚
      already means hurt-and-mending on the medicine chest, which is the one
      meaning wanted here.
      ⚠ SECOND IN THE REGISTER, behind `surrounded` and in front of everything
@@ -29197,7 +29197,7 @@ const FIELDS={
      and, asked which two: *"is chase and blood on the road"*.)
 
      ⛑ NAMED FIGHTS AND NEVER A COUNTER, WHICH IS THE MAP RULE ARRIVING ON THE
-     GROUND. `.claude/rules/world-map-sights.md` and `armourWhere` both carry
+     GROUND. `.claude/skills/world-map-sights/SKILL.md` and `armourWhere` both carry
      it: a rule phrased against a fight's PROGRESS through the run breaks
      silently the day somebody reorders the map, and #71 proved it. The user
      named two fights, so two rows change and nothing counts anything.
@@ -31839,7 +31839,7 @@ function render(){
        rungs in between - correct on a body standing on a hex, wrong in a column of
        three marks where the other two are always there. The five faces 😄🙂😕😟💀
        are `LADDER[].ic`, the same ladder, and they are the mood vocabulary
-       `.claude/rules/event-cards.md` already names in capitals.
+       `.claude/skills/event-cards/SKILL.md` already names in capitals.
        ⚠ AND THE WORD IS NOT PAINTED IN THE RUNG'S COLOUR ANY MORE: the BAR is,
        and cream-on-#a3bd6c was one colour written over itself. */
     $('bStateI').textContent=MOOD_MARK;   /* #249 - the pool's mark, not the rung's */
@@ -32642,7 +32642,7 @@ function render(){
       /* ⛔ #213 - #205's ⊘⚔ OVER THE MOVER'S TORSO IS DELETED. It is the
          cursor now (`--curWalkZoc`) and the figure below, and leaving a copy
          on the body would be the same fact in two places - the thing the whole
-         receipt rule at .claude/rules/event-cards.md exists to stop, arriving
+         receipt rule at .claude/skills/event-cards/SKILL.md exists to stop, arriving
          on the board. The red edge under the mover's feet STAYS: that is a
          ring saying which hex is being paid for, and the cursor cannot say it
          while the pointer is four hexes away.
@@ -33781,7 +33781,7 @@ function inspect(t,e){
             ⚠ IT REPLACES `RABBLE` AND ONLY `RABBLE`, because "rabble, champion" is
             a contradiction and every other tag composes.
             ⚠ ▰ appears nowhere else in this file - checked, as
-            `.claude/rules/event-cards.md` requires of every new glyph - and it is
+            `.claude/skills/event-cards/SKILL.md` requires of every new glyph - and it is
             the same shape as the mark on the board it explains. */
          :t.captain?'⚑ CHIEFTAIN':t.caster?'✷ CASTER'
          :t.big?'⬢ GREAT BEAST':t.champ?'':'⚔ RABBLE')+
@@ -33897,7 +33897,7 @@ function inspect(t,e){
          ⛔ IT IS THE ENEMY'S CARD AND NOT YOURS. Your own acts carry the same
          sentence on the card you press, one hover away in the row below the board;
          printing it twice on one screen is the second-receipt rule this project
-         spends `.claude/rules/event-cards.md` on. `own` is the test.
+         spends `.claude/skills/event-cards/SKILL.md` on. `own` is the test.
          ⚠ AND IT IS `noteLine` RATHER THAN `a.note`, so the cut is the one the
          popover already makes and a long note cannot grow this box off the field. */
       (t.passive?'<div class="rr"><span style="color:#8ca35a">Nothing. It does not fight.</span></div>'
@@ -34882,7 +34882,7 @@ window.LINT=function(){
      silent in both directions and the only symptom is an absence.
 
      ⛔ THE EXISTING ORPHAN CHECK ASKS THE WRONG HALF. `MAP_SIGHT`'s own gate in
-     `.claude/rules/world-map-sights.md` is *does this key have ART*, which was
+     `.claude/skills/world-map-sights/SKILL.md` is *does this key have ART*, which was
      true of `mirehares` the whole time. The question nobody was asking is *can
      any node ever CARRY this key*, and `MAP_SIGHT` is exactly the table where
      that question has a right answer: its whole purpose is a picture on a map
@@ -35253,6 +35253,33 @@ window.LINT=function(){
     });
   })();
 
+  /* ═══ #278 · 10b · THE VIGNETTES, WHICH THIS LINTER HAD NEVER ONCE READ ══
+     ⛔ IT IS THE ONE CONTENT TABLE WITH NO BLOCK OF ITS OWN, and that is how
+     two dead cards lived in it unnoticed. `EVENTS` has block 4 above and
+     `CAMPS` has block 10; `VIGNETTES` had nothing, so a card-level `needMut`
+     naming a mutation that does not exist would drop the card out of
+     `openVignette`'s pool silently and for the whole life of the project -
+     the same silent-never-fires failure the camps block's own note is written
+     about, one table across.
+     ⚠ IT DOES NOT ASK WHETHER `MUTATIONS_ON` CAN PAY THE GATE, and that is
+     deliberate: two vignettes and the chapel door are gated on gills and the
+     system has been parked since #16, so asking here would put three findings
+     into a gate whose whole contract is 0. That question belongs to
+     `probes/reach.js`, which is a list to READ, and it is asked there. */
+  (function vignettes(){
+    if(typeof VIGNETTES==='undefined')
+      {hit('structure','VIGNETTES','the table is gone');return;}
+    VIGNETTES.forEach((v,i)=>{
+      const w='VIGNETTES['+i+']';
+      if(typeof v.body!=='function')hit('structure',w,'body is not a function');
+      if(!v.t)hit('structure',w,'no title');
+      if(v.needMut&&!MUTS[v.needMut])
+        hit('gate',w,'needMut "'+v.needMut+'" is not a mutation');
+      Object.keys(v.fx||{}).forEach(r=>{
+        if(FXKEYS.indexOf(r)<0)hit('fx',w,'fx key "'+r+'" is not applied anywhere');});
+    });
+  })();
+
   /* ═══ 11 · THE MUTTERS ═════════════════════════════════════════════════
      The register above them is checked by the eye at authoring time and by
      nothing afterwards, which is how "it sits badly with them" reached 24
@@ -35339,7 +35366,7 @@ window.LINT=function(){
        ⛑ `traitFigs` SUBSTITUTES AT THE RENDERER so nothing on screen can be wrong
        today; this is what stops the TABLE drifting again, which is the half a
        renderer cannot defend. A check a document claims and the build does not run
-       is `.claude/rules/event-cards.md`'s own 6f, and it was a lie for two days.
+       is `.claude/skills/event-cards/SKILL.md`'s own 6f, and it was a lie for two days.
        ⚠ IT READS `up`, `cost` AND `d`, because all three print, and both minus
        signs, because both are in the tables.
        ⛑ PROVED BY MAKING IT FIRE: putting `+2 AGI` back on twitchy reports
@@ -36291,7 +36318,7 @@ const LOOT={
    `pay()` (pickChoice's `addPaid`, clashAfter's travelling haul) prints the
    figure that actually landed. `evPaidOf` runs the same cut for the sites
    whose payment IS the raw fx. The label and the purse cannot disagree,
-   which is `.claude/rules/event-cards.md`'s one sentence.
+   which is `.claude/skills/event-cards/SKILL.md`'s one sentence.
 
    ⚠ `Math.round` AND NOT `floor`: fifty percent is the ask, and floor turns
    +5 into 2, which is 40%. The nine rows at 3 and under are untouched by
@@ -36360,7 +36387,7 @@ function cubChoice(){
        already reads *"nobody has said the word pet ... somehow that is worth
        something"*, and the receipt under it charged the company six morale for it -
        the prose and the chip disagreeing about one event, which is the rule at the
-       top of `.claude/rules/event-cards.md`.
+       top of `.claude/skills/event-cards/SKILL.md`.
        ⛔ AND THE THIRD DOOR THAT WENT IS `Kill it too`, WHICH WAS DOMINATED. It paid
        2 gems against LEAVE IT's 3 gems and 120 crowns, cost 12 morale against 4, and
        ended the cub either way - so there was no company for which it was the right
@@ -37141,7 +37168,7 @@ function consequences(scarred){
        and this card is read directly before the bar it is about to change - so
        `◉ +55` says what `◉ +55 CROWNS` said, in a third of the row.
        ⚠ SCOPED TO THIS RENDERER AND NOT TO `.fxl`. The class is shared furniture
-       (`.claude/rules/event-cards.md`: three callers, and a restyle of it is
+       (`.claude/skills/event-cards/SKILL.md`: three callers, and a restyle of it is
        scoped or it is a bug) - the road card's `evFxChips` and the contract
        card's receipt keep their captions, because neither is read beside the bar.
        ⚠ `true` PUTS IT BACK. The rows keep their captions, so the switch costs
@@ -37673,7 +37700,7 @@ const CAMPS=[
      four sentences about what the ruling costs you in trust. Those ARE the
      costs. The morale figures beside them were the same news a second time, in
      the one currency the player can read off a chip - which is the rule at the
-     top of `.claude/rules/event-cards.md` arriving on a card rather than on a
+     top of `.claude/skills/event-cards/SKILL.md` arriving on a card rather than on a
      label.
 
      ⚠ SO THE THIRD DOOR IS FREE NOW AND THAT IS ALLOWED, not an oversight:
@@ -39900,7 +39927,7 @@ function drawInv(){
        the arc, so this row would say it twice - and that argument was about the
        LEVEL. It was never true of the EXPERIENCE: a 42px arc round a bust says
        *somewhere along* and nothing else, and the two exact figures were on a
-       `title` attribute, which is the one readout `.claude/rules/ui-scales.md`
+       `title` attribute, which is the one readout `.claude/skills/ui-scales/SKILL.md`
        and #191 both record as not being a readout. The ask names the numbers,
        so the numbers are on the chip rather than behind it.
        ⚠ THE RING IS THE SAME BUILDER AT THE SAME 26 IT USED TO BE, and `xpHover`
@@ -40327,7 +40354,7 @@ function drawInv(){
          (User, 2026-08-25: *"Pharse 'Let the go' - write just it, withot second
          part in this function"*.) The seats and the wage were printed on the
          BUTTON and then again in the confirm's own second paragraph - two
-         receipts for one payment, which is `.claude/rules/event-cards.md`'s rule
+         receipts for one payment, which is `.claude/skills/event-cards/SKILL.md`'s rule
          at the top arriving on the company sheet. The button is the question and
          the card is where the arithmetic goes. ⚠ The `title` keeps both figures,
          so nothing is lost for somebody who wants them before pressing. */
@@ -40366,7 +40393,7 @@ function drawInv(){
      directly beside it reads `✋ OFF HAND · TAKEN` over `Both hands are on the boar
      spear.` - so the fact was on the screen twice, once as a price on the weapon and
      once as a state of the slot it costs. That is the receipt rule at the top of
-     `.claude/rules/event-cards.md` arriving on the company sheet, and the copy that
+     `.claude/skills/event-cards/SKILL.md` arriving on the company sheet, and the copy that
      survives is the one standing where the cost is PAID.
      ⚠ IT IS STILL IN THE HOVER: `gearLine` prints the full row on the item's own
      tip, and the stash and the shop both read that. This cut is the slot's FACE. */
@@ -40438,7 +40465,7 @@ function drawInv(){
        ⛑ AND THE `.pop` DOUBLED INSIDE ITSELF ON TOP OF THAT: `popBody` printed
        `g.d`, then called `gearLine`, whose last line is `<i>g.d</i>` - the
        whole description, twice, in one box. That is the rule at the top of
-       `.claude/rules/event-cards.md` on a fourth surface: two receipts for one
+       `.claude/skills/event-cards/SKILL.md` on a fourth surface: two receipts for one
        payment, and here they were literally the same words.
 
        So the filled slot keeps `tipFor` - the box with the item's own painting
@@ -40452,7 +40479,7 @@ function drawInv(){
        (User: *"when two handed thngs - don't write in off hand 'carry something
        one-...'"*.) The slot's own label already reads `✋ OFF HAND · TAKEN` in
        amber, which is the fact; a hover repeating it in a sentence is the second
-       receipt `.claude/rules/event-cards.md` spends its length deleting.
+       receipt `.claude/skills/event-cards/SKILL.md` spends its length deleting.
        ⚠ THE FILLED CASE KEEPS ITS LINE, and that is not an inconsistency: a
        shield sitting in a slot that is doing nothing is a thing the player cannot
        see from the label, and naming the weapon that took the hand is the only way
@@ -41377,7 +41404,7 @@ function tipFor(key,p,foot){
      ⛔ ONE LINE AND NOT TWO, AND IT IS THE SCOPE LINE IT REPLACES. A trinket's
      COMPANY RELIC / PERSONAL AMULET is already the answer to *where does this
      belong* - printing TRINKET above it would be the same fact twice, which is
-     `.claude/rules/event-cards.md`'s one sentence arriving on a tooltip.
+     `.claude/skills/event-cards/SKILL.md`'s one sentence arriving on a tooltip.
      ⚠ `hands===2` IS PART OF WHERE IT BELONGS AND THE USER NAMED IT. It is the
      one property that decides whether taking this thing costs you the off-hand,
      and it was on no surface at all: the stash row prints the slot alone.
@@ -42020,7 +42047,7 @@ const vy=y=>y*VIEWH/MAPH;
    thousand lines up spent two hundred entries paying for. The control point is
    written once here and both the painter and the placer read it, so a label
    cannot sit beside a road that is somewhere else.
-   ⚠ `edgePt` IS ALSO WHAT `.claude/rules/world-map-sights.md`'s road-crossing
+   ⚠ `edgePt` IS ALSO WHAT `.claude/skills/world-map-sights/SKILL.md`'s road-crossing
    probe hand-rolls. That probe can read this now instead of copying it. */
 const edgeCtl=(a,b,bow)=>({x:(a.x+b.x)/2,y:(a.y+b.y)/2-((b.y-a.y)*.14)+(bow||0)});
 const edgePt=(a,b,bow,t)=>{const q=edgeCtl(a,b,bow),u=1-t;
@@ -42979,7 +43006,7 @@ const GLYPH={
    deleted quietly, exactly as `cache` and `armour` are, and `MAPEV28` stays
    embedded the way `EVJ8` does - the day the cage becomes a place on the road,
    it is one row. ⚠ A dead row here is not harmless: it is what made the gate
-   in `.claude/rules/world-map-sights.md` read 0 while a whole encounter was
+   in `.claude/skills/world-map-sights/SKILL.md` read 0 while a whole encounter was
    unreachable, because that gate asks whether a key has ART and never whether
    a NODE can hold it. */
 const MAP_SIGHT={
@@ -44737,7 +44764,7 @@ function worldTick(){
          already: `WTIPS.party` says *"seats spent"* in full on the hover, which
          is #220's own split on this chip (*"full info show only when expanded"*).
          ⚠ IT IS A LABEL AND NOT A READOUT, so it keeps `.nm`'s dim mono and does
-         not join the glyph vocabularies `.claude/rules/event-cards.md` governs:
+         not join the glyph vocabularies `.claude/skills/event-cards/SKILL.md` governs:
          nothing else in the game means "resize", so #102's one-glyph-one-unit
          rule is untouched. A `title` carries the word for anybody who hovers the
          label itself rather than the chip. */
@@ -45720,7 +45747,7 @@ function openProvisions(){
 /* ⛔ #270 - THE ONE PREDICATE FOR "the leg is stopped and waiting on a click".
    A FUNCTION DECLARATION AND NOT A `const`, deliberately: `drawNodes` sits ~2,200
    lines above this and a const read from its temporal dead zone is the throw that
-   aborts the whole script - the crash `.claude/rules/world-map-sights.md` records
+   aborts the whole script - the crash `.claude/skills/world-map-sights/SKILL.md` records
    this project shipping once. Read by `drawNodes` (the state and the door),
    `confirmTravel` (the pass-through) and `travel` (which does the resuming). */
 function walkPaused(k){return !!(G.walkResume&&G.walkDest===k);}
@@ -46873,7 +46900,7 @@ function deedTally(){
    whatever surface this is now - and the meter works on a save made yesterday.
 
    ⛔ THE FIVE VERBS WEIGH NOTHING, AND THE DOOR VOCABULARY IS WHY.
-   `.claude/rules/event-cards.md` states it: *"the verb comes first and the
+   `.claude/skills/event-cards/SKILL.md` states it: *"the verb comes first and the
    moral colour second"*. `fight`, `take`, `trade`, `rest` and `leave` are the
    verbs - fighting is not a sin and walking away is not a virtue - so the only
    keys here are the two moral colours plus `honor`, which is the quiet half of
@@ -46930,7 +46957,7 @@ function roadState(w){
 /* ═══ THE ARC, AND IT IS THE ONE RENDERER ═════════════════════════════════
    Eleven segments over a half circle, lit from the MIDDLE outward - so the
    picture says which way this road has gone and how far, and never carries a
-   figure. That is `.claude/rules/ui-scales.md` §3c's own law (a readout shows
+   figure. That is `.claude/skills/ui-scales/SKILL.md` §3c's own law (a readout shows
    a state and hides the number) and #102's before it.
    ⚠ THE SEGMENT COUNT IS ODD ON PURPOSE: 11 gives a true middle segment, so a
    road at 0 lights the crown of the arch and reads as *here*, not as *empty*.
@@ -46993,7 +47020,7 @@ const sinAt=(i,cap)=>{
    a marker; a build where that injection has not been run yet - a fresh
    checkout, a bisect, somebody's half-finished merge - would throw here and
    take the whole script with it, which is the temporal-dead-zone crash
-   .claude/rules/world-map-sights.md has shipped once. `typeof` is safe on an
+   .claude/skills/world-map-sights/SKILL.md has shipped once. `typeof` is safe on an
    INITIALISED const and on a name that does not exist, and by this line both
    packs are hundreds of lines above.
    ⚠ THE RACE MARK NESTS INSIDE THE LAST INTENT rather than standing beside it.
@@ -47080,7 +47107,7 @@ function choiceNote(o,skipMorale){
    who walks off in the night at ON THE BRINK leaves the same way a dismissed one
    does - same roster splice, same `G.dismissed` seat, same returner three fights
    later - and only the line about it differs. Two lines about one departure is
-   the receipt rule (`.claude/rules/event-cards.md`) arriving on the road strip. */
+   the receipt rule (`.claude/skills/event-cards/SKILL.md`) arriving on the road strip. */
 function dismiss(p,quiet){
   const i=G.party.indexOf(p);if(i<0||p.leader)return;
   G.party.splice(i,1);
@@ -47454,7 +47481,7 @@ const EVENTS={
      (User, 2026-08-30: *"create and add very short 1 sentence one choice event
      - to fight (i will change this events later)"*.)
 
-     ⚠ `.claude/rules/event-cards.md` puts the LIGHT band at 45 to 90 words and
+     ⚠ `.claude/skills/event-cards/SKILL.md` puts the LIGHT band at 45 to 90 words and
      this card is TWELVE. That is the ask read exactly, and the note is here so
      that the next session to run a length census reads it as an authored
      placeholder rather than as a card somebody forgot to finish. It is the
@@ -48173,7 +48200,7 @@ const EVENTS={
          `raceDoorPick` shows the RATKIN door to a company holding both.
          ⚠ The label says nothing: `gear:` renders as a strip on the outcome,
          and a door that announces its own payout is the second receipt
-         `.claude/rules/event-cards.md` opens by forbidding. */
+         `.claude/skills/event-cards/SKILL.md` opens by forbidding. */
       {t:'Give him bread. Sit a while.',ico:['help'],c:'',
        need:{food:2},fx:{food:-2,morale:12},rep:{ogre:+15},gear:'stoneshield',
        after:'He eats slowly and tells you, eventually, what is on the road ahead. It is '+
@@ -48478,7 +48505,7 @@ const EVENTS={
      ⚠ THE 168 THAT USED TO BE ON THIS LINE WAS MEASURED WITH THE COUNTER
      THAT PREDATES BRANCH-GATED DOORS, and it has been wrong since the card
      shipped: it summed all four `after`s when no company can ever read more
-     than two of them. `.claude/rules/event-cards.md` already carries the
+     than two of them. `.claude/skills/event-cards/SKILL.md` already carries the
      right figures (137 one-sin, 125 two-sin) and this comment did not.
      ⚑ Re-measured on the #198 build with the gated counter, on every branch
      the card can take: 138 words on the ONE-sin branch, 118 on two, 118 on
@@ -48683,7 +48710,7 @@ function canAfford(need){
    the outside that is indistinguishable from the option not existing, which
    is exactly how it was reported.
 
-   ⚑ AND THE PROJECT ALREADY HAD THE RULE, TWICE. `.claude/rules/event-cards.md`:
+   ⚑ AND THE PROJECT ALREADY HAD THE RULE, TWICE. `.claude/skills/event-cards/SKILL.md`:
    *"a door the player cannot afford has to say so BEFORE it is pressed"*, and
    the muster wall has printed `· no room left` on a greyed row since it was
    built. Room is a price; it was the one price the road cards could not read.
@@ -49972,7 +49999,7 @@ const relicSum=key=>heldGear().reduce((s,k)=>
    picture, per the standing rule on new systems.)
 
    ⛔ THE FIRST PROBLEM WAS THAT "RARE" MEANT NOTHING IN THIS BUILD. There was
-   no `rarity:` field on any of the 51 rows - `.claude/rules/static-event-art.md`
+   no `rarity:` field on any of the 51 rows - `.claude/skills/static-event-art/SKILL.md`
    has been promising one since #192 - so a request to hand out more of them had
    nothing to count. The ladder is authored ON THE ROW, where `slot` and
    `armour` and `dmg` already live, and it is POWER and strangeness: the rack
@@ -50601,7 +50628,7 @@ function pickChoice(k,i){
            make it shorter: THE LONG FIRE"*.)
 
            ⛔ BOTH HALVES OF HIS OWN SPEECH SURVIVE, because they are canon:
-           `.claude/rules/event-cards.md` names this monologue as a user line
+           `.claude/skills/event-cards/SKILL.md` names this monologue as a user line
            that frames may be cut from and that may not itself be rewritten.
            What went is everything that was NOT his:
              · the stage direction it opened on ("Late, when the fire has gone
@@ -51191,7 +51218,7 @@ const PRO_ART={coin:'EV00B',joke_hit:'EV00C',joke_miss:'EV00D'};
    a card goes over - which the merged card below does - the PAINTING is what
    gives: it squashed to 1px in the first draft of shots/138. Pinned here rather
    than at the call site so no future card can inherit the fault.
-   ⛔ 460x190 is fixed by .claude/rules/static-event-art.md. Do not shrink the
+   ⛔ 460x190 is fixed by .claude/skills/static-event-art/SKILL.md. Do not shrink the
    box to make a tall card fit; cut the card. */
 /* ═══ #150 - A TITLE AND A SUB-LABEL ARE BOTH OPTIONAL NOW ══════════════════
    (User, 2026-08-13, on the opening card: *"we don't need a name for it so far
@@ -51253,7 +51280,7 @@ function proCard(title,body,opts,artKey,banner,strip){
    `artFor` returns null for an unpainted scene, and in that case the tavern
    art already on the canvas is exactly what should stay there - which is how
    `floor` and `joke_miss` are specified to behave in
-   .claude/rules/static-event-art.md. So this is a no-op for them by
+   .claude/skills/static-event-art/SKILL.md. So this is a no-op for them by
    construction rather than by a guard somebody has to remember. */
 /* ═══ ⛔ #219 · THE OPENING IS A CARD, SO IT IS ON THE CARD'S FORM ══════
    (User, 2026-08-21: *"make intro (before fight) and after picking name in the
@@ -51391,7 +51418,7 @@ function proArtSwap(artKey){
    191 words -> 170, which is 11%: past the 10% asked for, and every word of
    it came out of the restatement plus "and, still joking," (the sentence
    already has him joking) and "that" after "Harl does not notice". The card
-   stays HEAVY under .claude/rules/event-cards.md and it is not a road card,
+   stays HEAVY under .claude/skills/event-cards/SKILL.md and it is not a road card,
    so no band binds it; the number is recorded so the next trim starts from a
    measurement. */
 /* ═══ #156 - THE SECOND COMPANY DOES NOT FIGHT THE BRAWL AGAIN ════════════
@@ -51845,7 +51872,7 @@ function openHelp(){
       s.b.split('\n\n').map(p=>'<p>'+p+'</p>').join('')+'</div>').join('')+
     /* #188 - bare, like the other two Backs. Three identical sub-lines that
        said the same nothing, and a control that reads one way on two screens
-       and another way on a third is the thing .claude/rules/ui-scales.md calls
+       and another way on a third is the thing .claude/skills/ui-scales/SKILL.md calls
        "decided thirty separate times". */
     '<div class="popts" style="grid-template-columns:1fr"><button class="popt" id="hBack">'+
     '<b>Back</b></button></div>';
