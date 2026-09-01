@@ -9957,14 +9957,6 @@ const D={
    scaled rather than shifted moves the good shooters and leaves the bad
    ones exactly as bad, which is the opposite of the ask. */
 const HIT_EASE={you:10,foe:5};
-/* #284 - what the spear is paid for fighting at the range only she has. Named,
-   because `hitBreakdown` prints it in its own receipt and a literal there would be a
-   figure the player can see and nothing can grep for. */
-const SPEAR_OVER=5;
-/* #284 - what BATTLE FURY hands to everybody COMMAND reaches, for one round. Two
-   readers (`hitBreakdown` and `dmgMul`) and a perk card that quotes it, so a literal
-   would be three places to forget. */
-const CMD_FURY={hit:10,dmg:0.10};
 /* ═══════════════════════════════════════════════════════════════════════
    THE TELLS — what a person is, in words instead of numbers.
 
@@ -12017,6 +12009,66 @@ const castAct=(sp,bonus)=>{
    throws and aborts the whole script, which `.claude/skills/event-cards/SKILL.md`
    records this file shipping once already. */
 const LUCK_RUNGS=2;
+/* ═══ ⛔ #286 · THE FOUR PERK FIGURES HDA_CUT SHRINKS, NAMED ═══════════════════
+   (User: *"the perk cards quote pre-HDA_CUT figures ... So do it"*.)
+
+   ⛑ EVERY CARD BELOW IS BUILT FROM THESE, so the sentence and the payment are one
+   expression apart and cannot drift. Correcting the literals instead would have been
+   the same defect again at the next retune - which is exactly how they got here: the
+   text was written before HDA_CUT and nothing re-read it.
+   ⚠ ONLY THE FLAT HITPOINT, ARMOUR AND DAMAGE FIGURES ARE AFFECTED. A percentage is
+   honest at any scale, and MORALE is not cut at all: `fearsome`'s 8 and `fortmind`'s
+   20 are paid in full and are left exactly as written. */
+/* ═══ ⛔ #286 · EVERY FIGURE A CLASS CARD QUOTES, ABOVE THE TABLE THAT QUOTES IT ══
+   ⛔ THIS ORDER IS LOAD-BEARING AND IT WAS FOUND BY THE BUILD DYING. `PERKS` is an
+   object literal evaluated where it sits, and #286 taught four of its cards to quote
+   `LONGSHOT_RANGE` and `MADNESS_BASE` - `const`s that were declared eleven thousand
+   lines further down, at the site of their first ENGINE use. A `const` read before its
+   declaration is a ReferenceError at load, so the script stopped and every global after
+   it was gone. `gt.py check` passed the whole time: the file was valid JavaScript and
+   the game was dead. The probe said `LINT is not defined`, which is what that looks
+   like from outside.
+   ⛑ SO THE FIGURES LIVE TOGETHER AND THEY LIVE FIRST. They are the numbers the class
+   tables are written against; keeping each one beside its first engine use is what
+   scattered them, and what let a card quote a value that did not exist yet. */
+const THICKHIDE_ARM=18, STONESKIN_ARM=10;
+/* ═══ ⛔ #284 · HOW FAST A HARNESS WEARS, WHICH IS THE PLATEMAN'S WHOLE CLASS ═══
+   1 for every body in the game and `PLATE_WEAR` for one trade. Named and read
+   through a function rather than written into `strike` as a literal, for the reason
+   the file has learned six times: the class lab prices this rule off the same number,
+   the class hover quotes it in words, and three copies of 0.7 is three chances for
+   one of them to move alone. */
+const PLATE_WEAR=0.7;
+const wearOf=u=>(u&&u.cls==='plateman')?PLATE_WEAR:1;
+/* #284 - how far a taunt carries, and what it is worth to the two brains. `TAUNT_PULL`
+   is subtracted from `targetScore`, where LOWER means "kill this one first" - it is on
+   the same scale as the shooter's own -28 and the caster's -34 deliberately: a taunting
+   plateman should outrank a bowman as a target and not outrank a boss. */
+const TAUNT_REACH=2, TAUNT_PULL=60;
+/* #285 - what the mage's two tier-4 workings cost him, in his own mood. Named
+   beside the taunt's figures for the same reason: the card quotes them, the class
+   lab prices them, and a literal in the act row is a figure nothing can find. */
+const BREAK_MOOD=18, UNMAKE_MOOD=14;
+/* #285 - what CRYSTALISE leaves of a blow, and what MADNESS costs the room. */
+const CRYSTAL_TAKE=0.25, MADNESS_BASE=3;
+/* #286 - LONG SHOT's reach and what the distance costs to land. An ABSOLUTE range, so
+   the perk cannot make the crossbow longer than the bow. */
+const LONGSHOT_RANGE=7, LONGSHOT_AIM=-15;
+/* #286 - the stray shot: how often a hex the arrow fell into is actually hit, and how
+   much of the weapon's own dice it lands for. Named because the class lab prices this
+   and the weapon hover quotes it. Half, at half weight: a stray is a near miss that
+   still had a head on it, not a second full shot. */
+const STRAY_HIT=0.50, STRAY_DMG=0.50;
+/* #284 - what the spear is paid for fighting at the range only she has. Named, because
+   `hitBreakdown` prints it in its own receipt and a literal there would be a figure the
+   player can see and nothing can grep for. */
+const SPEAR_OVER=5;
+/* #284 - what BATTLE FURY hands to everybody COMMAND reaches, for one round. Two
+   readers (`hitBreakdown` and `dmgMul`) and a perk card that quotes it. */
+const CMD_FURY={hit:10,dmg:0.10};
+const EXEC_BASE=2, EXEC_ALLY=2, EXEC_FOE=1;
+const JUMP_FLAT=10, JUMP_FRAC=0.10;
+const paid=n=>Math.round(n*HDA_CUT);
 /* 4 perks per class — two at level 2, two at level 3 — all stated in numbers */
 const PERKS={
   /* ⛔ #262 · THE TREE FROM tools/skilltree_lab.html, IN THREE LANES.
@@ -12076,6 +12128,10 @@ const PERKS={
   pierceshot:{kind:'class',n:'Piercing Shot',
              d:'A shot that goes through the plates entirely: no armour at all, and '+
                'half again the damage. Two turns before it comes round again.'},
+  longshot :{kind:'class',n:'Long Shot',
+             d:'A shot that carries to '+LONGSHOT_RANGE+' hexes for the same damage as '+
+               'any other, and is '+Math.abs(LONGSHOT_AIM)+' harder to land for the '+
+               'distance. Two turns before it comes round again.'},
   poisonshot:{kind:'class',n:'Poison Shot',
              d:'Ordinary damage, and it leaves something in the cut: everything that '+
                'touches them for the next two rounds lands 15% harder, and it stacks '+
@@ -12099,7 +12155,7 @@ const PERKS={
   crazyjump:{kind:'class',n:'Crazy Jump',
              d:'Leap two hexes onto somebody. Full damage, you take a tenth of your own '+
                'hitpoints landing on them, and their blood is worth a tenth of your pool '+
-               'and ten more on top. Needs something heavy or a hook.'},
+               'and '+paid(JUMP_FLAT)+' more on top. Needs something heavy or a hook.'},
 
   /* ── the spear: polearms ──────────────────────────────────────────── */
   spearrun :{kind:'class',n:'Set and Run',
@@ -12112,17 +12168,22 @@ const PERKS={
                'they lose their whole next turn. Anything big or unbreakable loses one '+
                'action instead.'},
   executioner:{kind:'class',n:'Executioner',
-             d:'A blade, and it counts the room: 2 damage, +2 for every one of YOURS '+
-               'standing next to them and +1 for every one of THEIRS. It is the reward for '+
-               'a target the whole line has surrounded.'},
+             d:'A blade, and it counts the room. It starts small and it counts UP: every '+
+               'one of yours standing next to them and every one of theirs makes it '+
+               'bigger. Against a body the whole line has surrounded it is the biggest '+
+               'thing a cutter does.'},
 
   /* ── the plateman: shields and hooks ──────────────────────────────── */
   crystalise:{kind:'class',n:'Crystalise',
              d:'BOTH ACTIONS. Until your next turn you take a quarter of everything - '+
                'through the armour and through the flesh. You do nothing else with that turn.'},
+  /* ⚠ #286 - THIS ONE WAS ALREADY HONEST AND IS LEFT ALONE. `MADNESS_BASE` is paid
+     UNCUT (the resolver adds it straight to `envHurt`), so 3-plus-your-level is what
+     the card says and what the engine does. It is named here so the next reader does
+     not "fix" it into agreement with the four above. */
   madness  :{kind:'class',n:'Madness',
-             d:'Everything standing next to you takes 3 damage plus your level, through '+
-               'armour. It does not care which side they are on.'},
+             d:'Everything standing next to you takes '+MADNESS_BASE+' damage plus your '+
+               'level, through armour. It does not care which side they are on.'},
 
   /* ── the mage: the two schools he chooses between ─────────────────── */
   breaking :{kind:'class',n:'The Breaking',
@@ -12138,7 +12199,7 @@ const PERKS={
   butcher  :{kind:'class',n:'Butcher',
              d:'+17% damage against anything under half hitpoints.'},
   brawn    :{kind:'class',n:'Brawn',d:'+10% melee damage.'},
-  thickhide:{kind:'class',n:'Thick Hide',d:'+18 armour.'},
+  thickhide:{kind:'class',n:'Thick Hide',d:'+'+paid(THICKHIDE_ARM)+' armour.'},
 
   /* ⛔ #284 - ELEMENTAL MELEE, AND IT IS A RESTORED ROW RATHER THAN A NEW MECHANIC.
      (User: *"On second lvl class skill - Lets add elemental melee - Ads fire efect to
@@ -12190,7 +12251,7 @@ const PERKS={
               d:'+10 flanking bonus for every extra body on the target.'},
   footwork  :{kind:'race',n:'Slip Away',
               d:'You never provoke a parting swing. Walking away is simply free.'},
-  stoneskin :{kind:'race',n:'Stone Hide',d:'+10 armour.'},
+  stoneskin :{kind:'race',n:'Stone Hide',d:'+'+paid(STONESKIN_ARM)+' armour.'},
 
   /* ── GENERAL ───────────────────────────────────────────────────────── */
   luck     :{kind:'general',n:'Everchanging Luck',
@@ -12423,7 +12484,10 @@ CLASSES.spear.perks  ={4:['spearrun','bracewall'],7:['killzone']};
    CLS_GIVEN), so it is no longer something to buy. Tier 4 is the fork the user
    asked for, and both of its doors are ACTS rather than numbers - the first two
    perks in the game that hand a body a new card. */
-CLASSES.archer.perks ={4:['pierceshot','poisonshot']};
+/* #286 - POISON SHOT moves to 7 and LONG SHOT takes its place at 4 (user). The
+   tier-4 question is now range against armour, which is the archer's real one; the
+   poison is a late answer to one big thing. */
+CLASSES.archer.perks ={4:['pierceshot','longshot'],7:['poisonshot']};
 /* #285 - SHADOW-STEP moves to 6, which was empty for every class: nothing was
    taken away to make room for the fork. */
 CLASSES.cutter.perks ={4:['backknife','executioner'],6:['shadowstep'],7:['butcher']};
@@ -16969,8 +17033,10 @@ function unitFrom(p){
        paid the perk TWICE, +20 armour on a card that says 10, and only the
        differential caught it (34 -> 54 where 44 was wanted). Restoring a
        retired perk means restoring its ROW; check before wiring anything. */
-    armourMax:armourValue(p)+Math.round(((p.perks.indexOf('thickhide')>=0?18:0)+
-      (p.perks.indexOf('stoneskin')>=0?10:0))*HDA_CUT),
+    /* #286 - the two figures are named now and the CARD is built from the same two,
+       so a retune moves the sentence with the payment. */
+    armourMax:armourValue(p)+Math.round(((p.perks.indexOf('thickhide')>=0?THICKHIDE_ARM:0)+
+      (p.perks.indexOf('stoneskin')>=0?STONESKIN_ARM:0))*HDA_CUT),
     moraleMax:D.moral({st:s})+(p.perks.indexOf('fortmind')>=0?20:0),
     /* the stride belongs to the race, not to agility — see RACESTEP */
     /* #146 - the roster's ease knob, at the one door a roster body comes
@@ -17417,7 +17483,14 @@ function unitFrom(p){
      broom, SPEAR WALL on a broom, DISTRACT with a bow and CRIPPLING SHOT off a
      harpoon were all legal until now: the class's own trick fired on anything that
      met its shape. It fires on the class's own category or not at all. */
-  if(sig&&trainedMain(p,main))acts.push(sig);
+  /* ⛔ #286 - AND IT HAS TO BE IN THE HAND. (User, answering AD1: *"For cutter it
+     fires - if he has a knife in his hand - it is the main rule"*.) #285's gate passed
+     an EMPTY hand, on the reasoning that deleting a disarmed body's class is a
+     punishment nobody asked for. That reasoning is right about ROAR and COMMAND, which
+     need no weapon and are pushed elsewhere - and wrong about a SIGNATURE, which is by
+     definition the thing you do WITH the weapon. Measured before: a bare-handed cutter
+     kept DISTRACT. He does not now. */
+  if(sig&&main&&trainsCat(p.cls,main.cat))acts.push(sig);
   /* ⛔ #240 - ANYTHING THAT DISCHARGES THE WEAPON SPENDS THE WINDING, and it
      is one line here rather than a `reload:true` typed onto each act that
      might one day be a shot. `spend` already sets the lock off `a.reload` and
@@ -17547,6 +17620,18 @@ function unitFrom(p){
         note:'Half again the damage and it IGNORES ARMOUR ENTIRELY - the whole blow '+
           'reaches the body, whatever they are wearing. The heavier the harness the '+
           'more this is worth. Two turns to come round again.'});
+    /* #286 - LONG SHOT. It carries further than any bow in the game and pays for it
+       in the one currency a shot has: `aim` is the same field CRIPPLING SHOT uses (+10)
+       with the sign turned round, so the cost is legible on the card the player is
+       already reading. ⚠ `LONGSHOT_RANGE` is an ABSOLUTE and not a bonus: the bow
+       reaches 5 and the crossbow 4, and a "+2" would have made the crossbow the longer
+       weapon on one perk. */
+    if(p.perks.indexOf('longshot')>=0)
+      acts.push({k:'longshot',n:'LONG SHOT',cost:1,range:LONGSHOT_RANGE+R,cool:2,
+        aim:LONGSHOT_AIM,dmg:main.dmg.slice(),am:main.am,ft:main.ft,
+        note:'Out to '+LONGSHOT_RANGE+' hexes, which is further than anything else on '+
+          'the field can answer. The same damage as any other shot and '+
+          Math.abs(LONGSHOT_AIM)+' harder to land, because it is a long way.'});
     if(p.perks.indexOf('poisonshot')>=0)
       acts.push({k:'poisonshot',n:'POISON SHOT',cost:1,range:RNG,cool:2,venom:2,
         dmg:main.dmg.slice(),am:main.am,ft:main.ft,
@@ -17577,7 +17662,7 @@ function unitFrom(p){
         dmg:main.dmg.slice(),am:main.am,ft:main.ft,
         note:'Leap two hexes and land on them. Full damage. You take a tenth of your '+
           'own hitpoints coming down, and their blood is worth a tenth of your pool '+
-          'and ten more on top.'});
+          'and '+paid(JUMP_FLAT)+' more on top.'});
     /* the spear */
     if(hasP('spearrun'))
       acts.push({k:'spearrun',n:'SET AND RUN',cost:1,cool:3,reach:4,run:3,
@@ -17596,10 +17681,11 @@ function unitFrom(p){
           'one action instead.'});
     if(hasP('executioner'))
       acts.push({k:'execute',n:'EXECUTIONER',cost:1,cool:2,reach:1,crowd:true,
-        dmg:[Math.round(2*HDA_CUT),Math.round(2*HDA_CUT)],am:main.am,ft:main.ft,
-        note:'It counts the room: 2 damage, +2 for every one of YOURS standing next '+
-          'to them and +1 for every one of THEIRS. The reward for a body the whole '+
-          'line has surrounded.'});
+        dmg:[paid(EXEC_BASE),paid(EXEC_BASE)],am:main.am,ft:main.ft,
+        note:'It counts the room: '+paid(EXEC_BASE)+' damage, and '+
+          paid(EXEC_ALLY)+' more for every one of YOURS standing next to them plus '+
+          paid(EXEC_FOE)+' for every one of THEIRS - all three cut by the same scale '+
+          'every number in this game is. The reward for a body the line has surrounded.'});
   }
   /* the plateman and the mage need no weapon in hand for theirs, but they DO need
      the class's own kit: the shield or the hook for one, nothing for the other */
@@ -23362,25 +23448,9 @@ const ARMOUR_NONE=Object.assign({},ARMOUR_ON,{n:'NONE',col:'#8a7449',
    something. ⚠ WHAT CHANGED IS THE OTHER SIDE OF THAT `if`: a body that IS wearing
    something no longer has a word at all, which is the ask. */
 const bandOf=u=>((u.armourMax||u.armour||0)>0?ARMOUR_ON:ARMOUR_NONE);
-/* ═══ ⛔ #284 · HOW FAST A HARNESS WEARS, WHICH IS THE PLATEMAN'S WHOLE CLASS ═══
-   1 for every body in the game and `PLATE_WEAR` for one trade. Named and read
-   through a function rather than written into `strike` as a literal, for the reason
-   the file has learned six times: the class lab prices this rule off the same number,
-   the class hover quotes it in words, and three copies of 0.7 is three chances for
-   one of them to move alone. */
-const PLATE_WEAR=0.7;
-const wearOf=u=>(u&&u.cls==='plateman')?PLATE_WEAR:1;
-/* #284 - how far a taunt carries, and what it is worth to the two brains. `TAUNT_PULL`
-   is subtracted from `targetScore`, where LOWER means "kill this one first" - it is on
-   the same scale as the shooter's own -28 and the caster's -34 deliberately: a taunting
-   plateman should outrank a bowman as a target and not outrank a boss. */
-const TAUNT_REACH=2, TAUNT_PULL=60;
-/* #285 - what the mage's two tier-4 workings cost him, in his own mood. Named
-   beside the taunt's figures for the same reason: the card quotes them, the class
-   lab prices them, and a literal in the act row is a figure nothing can find. */
-const BREAK_MOOD=18, UNMAKE_MOOD=14;
-/* #285 - what CRYSTALISE leaves of a blow, and what MADNESS costs the room. */
-const CRYSTAL_TAKE=0.25, MADNESS_BASE=3;
+/* #286 - the captain's own aura: what standing near him is worth every turn, and how
+   near. Named because the class card, the class lab and `beginTurn` all read it. */
+const CAP_AURA={mor:5,reach:2};
 /* the band of a PIECE, for the inventory hover, where there is no unit yet */
 const bandOfGear=(g,p)=>!g||!g.armour?null:ARMOUR_ON;
 /* A WORKING GOES THROUGH THE PLATES ENTIRELY. `am:0` has meant exactly this
@@ -24055,6 +24125,45 @@ function strike(a,d,act,mult){
        :act.range ?a.name+' shoots wide.'
                   :a.name+' swings wide.'));
     fx(d,dodged?'DODGE':'MISS',dodged?'#8ca35a':'#7d9490');
+    /* ═══ ⛔ #286 · AND THE ARROW GOES SOMEWHERE ═══════════════════════════════
+       (User: *"for bow and crosbow - if they miss, that arrow goes in on of the nearby
+       haxes. And if it goes in the same hex as enemy - it has 50% of chance to hit
+       it"*.)
+
+       ⛑ A SHOT THAT MISSES IS NOT A SHOT THAT STOPPED EXISTING. Every other miss in
+       the game is a swing that went wide, which ends where it started; a bolt does
+       not. This is the first rule in the file that makes a failed roll into a second
+       event, and it is the reason shooting into a crowd is now a different decision
+       from shooting at somebody alone.
+
+       ⛔ THE STRAY IS ROLLED OFF THE TARGET'S NEIGHBOURS AND NOT OFF A DIRECTION.
+       A line-of-flight scatter would need the flight, and `animShot` draws a curve
+       rather than walking hexes; the six hexes around whoever was aimed at ARE where
+       a near miss goes, and that is a fact about the grid rather than about the
+       drawing.
+       ⚠ IT CAN CATCH YOUR OWN PEOPLE, and that is the whole point of the rule. A
+       friendly hex is exactly as likely as an enemy one, because the arrow does not
+       know. `laneClean` already makes both brains PREFER a clear lane; this is what
+       makes that preference cost something when it is ignored.
+       ⚠ NO RECURSION. The stray is resolved with a bare roll and `envHurt` rather
+       than by calling `strike` again: a second `strike` could miss and scatter again,
+       and an arrow that ricochets round a battlefield is a different game. One hop,
+       one roll, done.
+       ⚠ ARROWS ONLY. `act.arcane` is excluded - a working that comes apart comes
+       apart, it does not land in the next hex - and so is a body that is already down. */
+    if(ranged&&!act.arcane&&act.dmg){
+      const ring=nbrs(d.col,d.row);
+      const into=ring[Math.floor(Math.random()*ring.length)];
+      const who=into&&at(into[0],into[1]);
+      if(who&&!who.dead&&!who.downed&&Math.random()<STRAY_HIT){
+        const lo=act.dmg[0],hi=act.dmg[1];
+        const dmg=Math.max(1,Math.round((lo+Math.random()*(hi-lo))*STRAY_DMG));
+        fx(who,'STRAY','#c07a2c');
+        envHurt(who,dmg,'a stray shot');
+        say('The shot goes wide and finds '+who.name+' instead'+
+          (who.side===a.side?', who is on your own side.':'.'));
+      }
+    }
     if(!ranged)animClash(a,d,'miss',dodged,!!act.sweep);
     /* #165 - a shot that goes past still moves the body it went past. animClash
        is the wrong door for it: it would lunge the archer at a target across
@@ -24161,7 +24270,7 @@ function strike(a,d,act,mult){
     const ring=nbrs(d.col,d.row).map(p=>at(p[0],p[1])).filter(x=>x&&!x.dead);
     const mine=ring.filter(x=>x.side===a.side).length;
     const theirs=ring.filter(x=>x.side!==a.side&&x!==d).length;
-    raw+=Math.round((2*mine+theirs)*HDA_CUT);
+    raw+=Math.round((EXEC_ALLY*mine+EXEC_FOE*theirs)*HDA_CUT);
   }
   raw*=0.8;
   let armD=0,hpD=0;
@@ -25718,6 +25827,24 @@ function beginTurn(){
   /* somebody in the line is quietly holding the people either side together.
      Through morUp: holding people together means keeping them at their own
      neutral, it does not mean stacking them past it every turn. */
+  /* ═══ ⛔ #286 · THE CAPTAIN'S AURA, AND IT IS THE CLASS'S RATHER THAN A PERK'S ══
+     (User: *"for a capitan 'the aura' - morale +5"*.)
+
+     ⛑ IT IS WHAT THE CLASS DOES, THE WAY THE SPEAR'S +5 AT REACH IS. Every class
+     was supposed to have one line that fires only in the situation the class exists to
+     create; the captain's was the last one missing, and *"leadership that costs
+     nothing is not leadership"* is his own card asking for it. Standing near him is
+     worth something now without him spending a turn on it.
+     ⚠ IT STACKS WITH STEADYING ON PURPOSE and the numbers are deliberately apart:
+     this is the CLASS at +5, `inspire` is a PERK at +4, and a captain who bought the
+     perk is a captain who chose to be better at the thing he already does. Both run
+     through `morUp`, which is the one door a per-turn lift comes through and the one
+     the situation cap already watches.
+     ⚠ AND IT IS NOT GATED ON A WEAPON. `CAP_AURA` is a voice, not a swing: #286's own
+     hand-must-hold-it rule is about SIGNATURES, and gating this would delete the
+     class's identity from a captain who put his sword down. */
+  if(u.cls==='captain')alive().filter(x=>x.side===u.side&&x!==u&&udist(u,x)<=CAP_AURA.reach)
+    .forEach(x=>morUp(x,CAP_AURA.mor,''));
   if(has(u,'inspire'))alive().filter(x=>x.side===u.side&&x!==u&&udist(u,x)<=2)
     .forEach(x=>morUp(x,4,''));
   /* --- formations, resolved at the start of whoever's turn it is --- */
@@ -27784,8 +27911,8 @@ function clickHex(c,r){
         /* the blood is worth a tenth of his POOL and ten more, and the landing costs
            him a tenth of it - both off the ceiling, so a hurt body does not heal less
            for being hurt */
-        const gain=Math.round(u.hpMax*0.10)+Math.round(10*HDA_CUT);
-        const cost=Math.round(u.hpMax*0.10);
+        const gain=Math.round(u.hpMax*JUMP_FRAC)+paid(JUMP_FLAT);
+        const cost=Math.round(u.hpMax*JUMP_FRAC);
         fx(u,'DOWN ON THEM','#c07a2c',true);
         strike(u,tgt,a);
         envHurt(u,cost,'the landing');
@@ -42204,8 +42331,31 @@ const STARWISH={
       'That is it. That is the wish.',
   int:'I want to see it coming. Not understand it afterwards. See it coming, '+
       'once, before it happens.'};
+/* ═══ ⛔ #286 · WHAT KIND OF THING IT IS, ON EVERY SURFACE AT ONCE ═══════════
+   (User: *"on the weapon everywhere - in the tool and in the game (inventory, market,
+   item hover) - show type of weapon"*.)
+
+   ⛑ ONE INSERTION, THREE SURFACES, AND THAT IS WHY IT GOES HERE. `gearLine` is the
+   one builder the inventory slot, the market row and the item hover all read: the ask
+   names three places and this is the single place all three come from. Writing it at
+   the three call sites is the four-copies-of-a-rule shape #148 records the cost of.
+   ⚠ IT LEADS, because the category is what decides whether a class gets its
+   signature at all (#285) - it is not decoration, it is the gate, and a player
+   choosing between two weapons is choosing between two gates.
+   ⚠ AND IT NAMES WHO TRAINS IT, derived off `CLS_TRAINS`, so the sentence answers the
+   question the category exists to raise. An uncategorised row says nothing rather than
+   saying "none", which is the honest state for a trinket. */
 function gearLine(g,p){
   const b=[];
+  if(g.cat){
+    const who=Object.keys(CLS_TRAINS).filter(c=>c!=='none'&&CLS_TRAINS[c]!=='all'&&
+      (CLS_TRAINS[c]||[]).indexOf(g.cat)>=0)
+      .map(c=>(CLASSES[c]||{}).n||c);
+    b.push('<b>'+(CAT_NAME[g.cat]||g.cat.toUpperCase())+'</b>'+
+      (who.length?' \u00b7 trained by the '+who.join(' and the ').toLowerCase()+
+        ', and the captain trains everything'
+       :' \u00b7 no class trains it, so nobody gets a signature with it'));
+  }
   if(g.armour){
     const ill=p&&g.size&&g.size!=='any'&&g.size!==RACEMOD[p.race].size;
     b.push('Stops '+(ill?Math.round(g.armour*WRONGSIZE.mult)+' (it does not fit: '+
@@ -42223,6 +42373,12 @@ function gearLine(g,p){
     (g.reach>1?', and reaches '+g.reach+' hexes':g.range?' at up to '+g.range+' hexes':'')+'.');
   else if(g.reach>1)b.push('Reaches '+g.reach+' hexes.');
   else if(g.range)b.push('Shoots up to '+g.range+' hexes.');
+  /* #286 - and what a miss does, on the weapon that does it. Derived off the two
+     constants the engine rolls, so the sentence moves with them. */
+  if(g.range&&g.dmg)b.push('A miss does not vanish: the shot falls into one of the six '+
+    'hexes around what you aimed at, and anybody standing there takes it '+
+    Math.round(STRAY_HIT*100)+'% of the time, for '+Math.round(STRAY_DMG*100)+
+    '% damage. <b>It does not care whose side they are on.</b>');
   /* #141 - `hush`: a piece of kit that declines to itemise itself. The fields
      are still the real ones and the engine still reads every one of them;
      this renderer and `tipFor` are the only two mouths, and both are shut. */

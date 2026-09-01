@@ -91,6 +91,7 @@ section used to carry each entry in full, which made the work file a second chan
 
 | | the subtraction | log |
 |---|---|---|
+| **#286** *(09-01)* | **The signature needs the weapon in hand, the cards quote what they pay, and the arrow goes somewhere** | 8f.309 |
 | **#285** *(09-01)* | **Every class gets its tier-4 fork, the training lock becomes a rule, and the picker says what a class gives** | 8f.308 |
 | **#284** *(09-01)* | **The PLATEMAN, the harpoon, and the class lane stops costing a perk point** | 8f.307 |
 | **#283** *(09-01)* | **The halberd had no door, the weapons get categories, and one MAGE says what it costs** | 8f.306 |

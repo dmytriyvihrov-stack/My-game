@@ -26,6 +26,34 @@
 
 ---
 
+## #286 - The signature needs the weapon in hand, the cards quote what they pay, and the arrow goes somewhere
+
+**In the game.** Three things to look at: a cutter's hands, a perk card, and a missed arrow.
+
+**In three steps.** New company · open the sheet · take the knife off your cutter.
+
+- **A signature needs the weapon in the hand.** A cutter with a knife has DISTRACT. Give him a club,
+  or nothing at all, and it is gone until he picks up a blade. **A brute with empty hands still has
+  ROAR** and a captain still has HOLD THE LINE - those need no weapon and never did.
+- **The perk cards now say what they pay.** THICK HIDE reads **+5 armour**, not +18, because 5 is
+  what the body actually gets. Take it and watch the armour figure move by exactly 5. Same for
+  STONE HIDE (+3) and CRAZY JUMP.
+- **A missed shot goes somewhere.** Shoot at something with one of your own people standing beside
+  it and miss: about once in twelve shots the arrow falls into a neighbouring hex and hits whoever
+  is standing there, **your own side included**, for half damage. The bow's hover says so.
+- **The captain has an aura.** Every ally within 2 hexes gets **+5 morale at the start of his turn**,
+  free, with no action spent. It stacks with STEADYING, which is the perk at +4.
+- **The archer's tier 4 is PIERCING SHOT or LONG SHOT** (range 7 against the bow's 5, same damage,
+  15 harder to land). POISON SHOT moved to 7.
+- **Every weapon says what type it is** - POLEARM, BOW, HEAVY, BLADE, STAVE, SHIELD, HOOK - and who
+  trains it, on the inventory slot, the market row and the item hover.
+- **What would be a bug.** A cutter who keeps DISTRACT bare-handed · a perk card whose number does
+  not match what the body gets · a stray arrow that hits somebody NOT next to the target · a captain
+  whose neighbours gain no morale on his turn · a weapon with no type on its hover.
+
+**In the class lab.** The card header used to read `lean +1 MOR` and stop. It now reads **+1 MOR buys
++10 maximum nerve and +4 nerve back on a quiet turn**, and every class states its own rule underneath.
+
 ## #285 - Every class gets its tier-4 fork, the training lock becomes a rule, and the picker says what a class gives
 
 **In the game.** Every class now has a real question at level 4, and a weapon it has to be holding.

@@ -156,6 +156,12 @@
   .act.gone{border-color:var(--bad);color:var(--bad);text-decoration:line-through;opacity:.75}
   .cat{border:1px solid var(--edge2);color:var(--teal);font-size:9px;padding:0 4px;
     letter-spacing:1px;text-transform:uppercase}
+  .leanrow{border-bottom:1px solid var(--edge);background:#141d1c;padding:7px 12px;
+    font-size:11px;color:var(--mut);line-height:1.6}
+  .leanrow b{color:var(--gold)}
+  .clsrule{margin-top:5px;color:var(--ink);border-left:2px solid var(--ok);
+    padding-left:8px}
+  .clsrule b{color:var(--ok);letter-spacing:1px;font-size:10px}
   .wep.trained{border-color:var(--gold)}
 
   /* ── tables ──────────────────────────────────────────────────────── */
@@ -341,6 +347,46 @@ window.GT=(function(){
      only the procedural half (`bust`, synchronous) goes through a canvas. Squashing
      the painting into the box would have been the wrong picture - no screen in the
      game stretches a portrait. */
+  /* ⛑ THE LADDER'S FIELD NAMES IN WORDS. `rungHeld` returns keys like `nerve` and
+     `climb`; the game's own stat hover already turns those into sentences, and this is
+     the same vocabulary. A field with no row here prints its key, which is a readable
+     failure rather than a blank. */
+  const LADDER_WORD={hp:'hitpoints',hit:'to hit',dodge:'dodge',nerve:'maximum nerve',
+    climb:'nerve back on a quiet turn',land:'to land a working',xp:'experience',
+    magic:'casting strength',reach:'reach on skills and workings',
+    step:'hexes of movement',low:'opens a rung lower',mend:'mends faster',
+    slow:'loses mood slower'};
+  /* ⛔ #286 - EACH CLASS'S OWN RULE, AND IT IS READ OFF THE BUILD'S OWN CONSTANTS.
+     (User: *"for a capitan 'the aura' - morale +5 / For spear +5 to hit in reach 2"*.)
+     The prose is this tool's; every FIGURE in it comes from the game, so a retune of
+     `CAP_AURA` or `SPEAR_OVER` or `PLATE_WEAR` moves the sentence. A class with no
+     rule says so, which is a fact about the roster rather than a gap in the tool. */
+  const CLS_RULE=(function(){
+    const n=(k,d)=>{try{return eval(k);}catch(e){return d;}};
+    const cap=n('CAP_AURA',{mor:5,reach:2});
+    const over=n('SPEAR_OVER',5);
+    const wear=n('PLATE_WEAR',0.7);
+    return {
+      captain:'THE AURA. Every ally within '+cap.reach+' hexes gets +'+cap.mor+
+        ' morale at the start of his turn, for nothing. He does not spend an action '+
+        'on it and he does not have to be doing anything else.',
+      spear:'OVER THE FRONT RANK. +'+over+' to hit whenever the target is NOT adjacent '+
+        ' - the reach-2 range only she has. It is dead weight with a reach-1 weapon, '+
+        'which is what makes the polearm the class.',
+      archer:'SURE SHOT, GIVEN AT LEVEL 1. Shooting while engaged costs '+
+        '15 to hit instead of 35. She is the only class that starts with a skill '+
+        'rather than buying one.',
+      plateman:'THE HARNESS WEARS AT '+Math.round(wear*100)+'%. Every blow takes his '+
+        'armour down by that fraction of what it would take off anybody else, so the '+
+        '70/30 split keeps working for half again as many blows. Worth nothing in rags '+
+        'and two blows in plate.',
+      cutter:'READS THE GROUND. +1 hex on his first move, and DISTRACT opens a back '+
+        'arc for the WHOLE line rather than for him.',
+      brute:'ROAR needs no weapon, which no other signature can say: he keeps it '+
+        'bare-handed and disarmed.',
+      warmage:'PAYS IN HIS OWN MOOD. Every working costs morale rather than a resource, '+
+        'so a rattled caster is a caster who has run out of what casting costs.'};
+  })();
   function face(p){
     try{
       const src=portraitOf(p);
@@ -383,6 +429,27 @@ window.GT=(function(){
       out.push({k:c,n:C.n,ico:(get('CLASS_ICON',{})[c])||'',
         sig:C.sig||'',sigActs:(C.sigActs||[]).slice(),
         lean:get('CLSLEAN',{})[c]||{},
+        /* ⛔ #286 - WHAT THE LEAN IS WORTH, ASKED OF THE LADDER RATHER THAN TYPED.
+           `rungHeld(stat,1)` is the exact payment of one rung and `STATLADDER` names
+           the fields, so "+1 MOR" can print what it BUYS and a retune of the ladder
+           moves this card with it. The first thing the user could not read on the
+           header was not the lean, it was the lean's consequence. */
+        leanPays:(function(){
+          const out=[];
+          const L=get('CLSLEAN',{})[c]||{};
+          Object.keys(L).forEach(s=>{
+            if(!L[s])return;
+            let held={};try{held=rungHeld(s,L[s])||{};}catch(e){}
+            const words=Object.keys(held).map(f=>{
+              const v=held[f];
+              const n=(typeof v==='number'&&v<1&&v>0)?('+'+Math.round(v*100)+'%')
+                     :(typeof v==='number'?(v>0?'+':'')+v:String(v));
+              return n+' '+(LADDER_WORD[f]||f);});
+            out.push({stat:s.toUpperCase(),by:L[s],pays:words});});
+          return out;})(),
+        /* the class's own RULE - the thing that is not a stat and not a perk. Authored
+           only in the sense that the build states it in prose; the figures are read. */
+        rule:CLS_RULE[c]||null,
         perks:C.perks||{},
         races:races,
         gear:g.map(x=>x?{k:x,n:(get('GEAR',{})[x]||{}).n||x}:null),
@@ -789,6 +856,7 @@ window.GT=(function(){
     tag:(function(){try{return BUILD_ID;}catch(e){return 'dev';}})(),
     races:raceRows,classes:classRows,perks:perkRows,lanes:lanes,
     weaponsFor:weaponsFor,draftSim:draftSim,shields:shields,
+    ladderWord:LADDER_WORD,
     build:build,gearFor:gearFor,traitsFor:traitsFor,
     foeCat:foeCat,grounds:grounds,fightKinds:fightKinds,
     startFight:startFight,leaveFight:leaveFight,fightOver:fightOver,
@@ -1256,7 +1324,20 @@ function classCard(c,RS,CS){
     '<span class="ico">'+esc(c.ico)+'</span><span class="nm">'+esc(c.n)+'</span>'+
     (c.sig?'<span class="sig">'+esc(c.sig)+'</span>':'')+
     '<span class="lean">lean '+esc(leanTxt(c.lean))+(c.caster?' \u00b7 casts':'')+'</span>'+
-    '</div><div class="cols">'+
+    '</div>'+
+    /* #286 - the header said `lean +1 MOR` and nothing else, which is a stat name and
+       a number on a screen whose whole job is saying what things mean. What the rung
+       BUYS is read off `rungHeld`. */
+    '<div class="leanrow">'+
+      (c.leanPays&&c.leanPays.length
+        ? c.leanPays.map(l=>'<b>'+(l.by>0?'+':'')+l.by+' '+esc(l.stat)+'</b> buys '+
+            (l.pays.length?esc(l.pays.join(' \u00b7 ')):'nothing the ladder names')).join('  ')
+        : 'This class leans nowhere: it starts on the same four rungs anybody does.')+
+      (c.rule?'<div class="clsrule"><b>ITS OWN RULE</b> '+esc(c.rule)+'</div>'
+             :'<div class="clsrule warn">No rule of its own yet: this class is a weapon '+
+              'and a lane.</div>')+
+    '</div>'+
+    '<div class="cols">'+
     '<div><h3>WHAT IT IS</h3><p class="d">'+esc(c.d||'-')+'</p>'+
       (c.x?'<p class="x">'+esc(c.x)+'</p>':'')+
       '<div class="kv" style="margin-top:8px">'+
