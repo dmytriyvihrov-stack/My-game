@@ -91,6 +91,7 @@ section used to carry each entry in full, which made the work file a second chan
 
 | | the subtraction | log |
 |---|---|---|
+| **#280** *(09-01)* | **The class lab: every class in one table, a body built by hand, and a fight to try it in** | 8f.304 |
 | **#279** *(09-01)* | **The Armoury: every artifact, where it comes from, and who it is for** | 8f.303 |
 | **#278** *(09-01)* | **three vacuous checks, the table the linter never read, and two dead vignettes** | 8f.302 |
 | **#267** *(08-30)* | **the lizards of the burnt road** | 8f.292 |

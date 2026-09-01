@@ -72,6 +72,15 @@ def port_for(root):
 
 
 def url_for(path):
+    # ⛔ #280 - AN ABSOLUTE http(s) URL PASSES STRAIGHT THROUGH. A tool that
+    # loads the game in a same-origin iframe (tools/classes.html, and
+    # tools/gauntlet.html before it) cannot be driven off file://: Chrome gives a
+    # file:// frame an opaque origin, so `contentWindow.eval` throws and the bridge
+    # never takes. Those pages are only reachable over tools/serve.ps1, and
+    # wrapping an http URL in file:/// made `launch` refuse its own page.
+    s = str(path)
+    if s.startswith('http://') or s.startswith('https://'):
+        return s
     return 'file:///' + os.path.abspath(path).replace('\\', '/')
 
 

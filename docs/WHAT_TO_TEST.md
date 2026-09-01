@@ -26,6 +26,45 @@
 
 ---
 
+## #280 - The class lab: every class in one table, a body built by hand, and a fight to try it in
+
+**Not in the game.** This is a tool and the game does not know it exists. It reads the game file
+LIVE, so unlike `tools/artifacts.html` it needs a server: start one, then open the page.
+
+```
+powershell -NoProfile -ExecutionPolicy Bypass -File tools\serve.ps1
+http://localhost:8777/tools/classes.html
+```
+
+**In three steps.** Wait for the status line to say *ready* (the game file is large; ten to thirty
+seconds, longer in a background tab) · **THE CLASSES** is every class as the build holds it,
+with the logic column - strength, weakness, archetype - at the top · **THE BUILDER** picks a
+race, a class, a level, a personality and a harness, and **▶ FIGHT** drops that exact body onto
+the practice field.
+
+- **It should say what the build says, not what a document says.** Change a lean, a perk tier, a
+  price or a `START_GEAR` row in the prototype, press **⟳ RELOAD BUILD**, and the tool shows the
+  new figure. Nothing on the page is typed twice - the one exception is the STRENGTH / WEAKNESS /
+  ARCHETYPE column, which says AUTHORED on itself wherever it is drawn.
+- **The builder's figures should match the game's.** Put mail on a human spearwoman and the armour
+  goes 2 to 19 and the dodge 14 to 11 (the hauberk is -1 AGI); tick THICK HIDE on a brute and the
+  armour goes 0 to 5. Those are the game's own numbers through `HDA_CUT`, not the raw table.
+- **The fight is a real fight.** Two Poachers in the tap-room against one level-3 spearwoman is
+  about eleven rounds. **Leaving it must hand the company back**: press **LEAVE THE FIGHT** (or
+  Escape) and the party behind the tool is You, Vesna, Marrow, Ilka again, exactly as it was.
+- **The wrong harness goes on, and costs.** The armoury dims what does not fit but still lets
+  you wear it, because the game does. Put the mail hauberk on an ogre: **19 armour becomes 13**
+  (×0.70), AGI and MOR each drop, and the ladder names the row *the harness does not fit*.
+- **What would be a bug.** A figure in the builder that disagrees with the same body on the
+  company sheet in the game · a perk you can tick above your level · a wrong-size piece that
+  goes on for free · anything you do in the practice fight following the company home · the
+  status line stuck on *loading the build* after a minute with the server running.
+- **Known and not a bug.** The CAPTAIN card says *nobody · not on any muster wall*: that is
+  `CLS_BY_RACE`, and it has never contained the captain · tiers 6 and 8 are empty for every class
+  · the arena bar calls the tap-room *24% walkable: a single mandatory corridor* - the shipped
+  tap-room brawl measures 16% on the same reading, so the room is the room. Any other ground is one
+  click away in **the ground**.
+
 ## #279 - The Armoury: every artifact, where it comes from, and who it is for
 
 **Not in the game.** This is a tool, and the game does not know it exists. Open

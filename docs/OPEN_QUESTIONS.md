@@ -25,6 +25,14 @@ back already answered by work that was not about them.
 
 ---
 
+## AA · From #280
+
+| | the question | ⭐ mine |
+|---|---|---|
+| **AA1** | **Two rows in `CLASSES` are both called MAGE, and a tool now has to print a raw engine key to tell them apart.** #243 moved the name MAGE and the globe onto `warmage` and turned the glass cannon off the muster wall with one `const` (`MAGE_GLASS=false`), on the correct reading that one word cannot name two classes on a picker. The row stayed, because traits, `isCaster`, the `elemental` gate and every save written before that day still name it. The class lab has to draw BOTH - it is a reference, and a row that exists is a row it shows - so its picker reads `MAGE warmage` / `MAGE mage`, which is an engine key on a screen. Every other surface in the project has one name per thing. | **give the glass cannon its own name and leave it off the wall.** It is a different class in every way that matters - two schools, a second working at half, and deliberately bad with a blade - and the moment it is ever dealt again the picker problem comes straight back. A name costs one string; renaming the KEY would throw the working row away, which is exactly what #243 refused and was right to refuse |
+
+---
+
 ## Z · From #279
 
 | | the question | ⭐ mine |
