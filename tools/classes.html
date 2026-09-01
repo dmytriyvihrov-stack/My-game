@@ -97,6 +97,48 @@
   .swa b:first-child{margin-top:0}
   .arch{color:var(--gold);letter-spacing:1px}
 
+  /* ── the filter: sticky, because the question is always about one class ── */
+  .filter{position:sticky;top:0;z-index:20;display:flex;flex-wrap:wrap;gap:5px;
+    align-items:center;background:var(--bg);border-bottom:1px solid var(--edge);
+    padding:7px 0 8px;margin-bottom:12px}
+  .filter button{padding:4px 10px;font-size:11px}
+
+  /* ── a class's own skills, drawn in full ────────────────────────────── */
+  .skill{display:grid;grid-template-columns:30px 1fr;gap:8px;align-items:start;
+    border-left:2px solid #4a6a58;background:#141d1c;padding:6px 9px;margin-bottom:5px}
+  .sk-t{color:var(--dim);font-size:10px;letter-spacing:1px;padding-top:2px}
+  .sk-n{color:#a9c8a0;font-size:12px;letter-spacing:1px}
+  .sk-d{color:var(--ink);font-size:11px;line-height:1.55}
+
+  /* ── the weapon grid ─────────────────────────────────────────────────── */
+  .weps{border-top:1px solid var(--edge);padding:10px 12px}
+  .weps>h3{margin-top:0}
+  .wepgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(268px,1fr));gap:6px;
+    margin-bottom:8px}
+  .wep{border:1px solid var(--edge);background:var(--panel2);padding:6px 8px;cursor:pointer}
+  .wep:hover{border-color:var(--edge2)}
+  .wep.open{border-color:var(--gold);grid-column:1/-1}
+  .wep-h{display:grid;grid-template-columns:34px 1fr;gap:8px;align-items:center}
+  .wep-h img{width:34px;height:34px;grid-row:1/3;object-fit:contain;
+    background:#0b0f0f;border:1px solid #24302f}
+  .wep-g{grid-row:1/3;width:34px;height:34px;display:flex;align-items:center;
+    justify-content:center;font-size:17px;color:var(--dim);
+    background:#0b0f0f;border:1px solid #24302f}
+  .wep-n{color:var(--ink);font-size:11.5px}
+  .wep-s{font-size:10px}
+  .wep-a{margin-top:5px;display:flex;flex-wrap:wrap;gap:3px}
+  .act{border:1px solid #4a6a58;color:#a9c8a0;font-size:10px;padding:1px 5px;
+    letter-spacing:.5px}
+  .act i{color:var(--mut);font-style:normal}
+  .wep-full{margin-top:7px;border-top:1px solid var(--edge);padding-top:6px}
+  .act-row{margin-bottom:6px;font-size:11px}
+  .act-row b{color:var(--gold);letter-spacing:1px;margin-right:6px}
+  .act-row .m{color:var(--mut);font-size:10.5px;line-height:1.5}
+  .tag{border:1px solid var(--edge2);color:var(--mut);font-size:9px;padding:0 4px;
+    letter-spacing:1px;text-transform:uppercase}
+  .tag.start{border-color:var(--gold);color:var(--gold)}
+  .tag.bad{border-color:var(--bad);color:var(--bad)}
+
   /* ── tables ──────────────────────────────────────────────────────── */
   table{border-collapse:collapse;font-size:11px;width:100%}
   th{color:var(--dim);font-weight:normal;text-align:left;letter-spacing:1px;font-size:10px;
@@ -197,6 +239,7 @@ page is the <span class="warn">STRENGTH / WEAKNESS / ARCHETYPE</span> block, whi
 </div>
 
 <div id="paneA" class="pane on">
+  <div id="classFilter"></div>
   <div id="classSummary"></div>
   <div id="raceBlock"></div>
   <div id="classCards"></div>
@@ -246,7 +289,11 @@ page is the <span class="warn">STRENGTH / WEAKNESS / ARCHETYPE</span> block, whi
 window.GT=(function(){
   const has=n=>{try{return eval('typeof '+n)!=='undefined';}catch(e){return false;}};
   const get=(n,d)=>{try{return eval(n);}catch(e){return d;}};
-  const REAL=['captain','spear','archer','warmage','mage','cutter','brute'];
+  /* ⛔ DERIVED, LIKE EVERYTHING ELSE ON THIS PAGE. This was a typed list of seven
+     class keys, and #281 deleting one of them is exactly the day a typed list goes
+     wrong: it would have kept drawing a MAGE card for a row that no longer exists.
+     A real class is a `CLASSES` key that is not the no-trade-yet row. */
+  const isReal=k=>k!=='none'&&!!(get('CLASSES',{})[k]);
 
   /* ── the four lines a stat is made of, and the leans, straight off the build ── */
   function raceRows(){
@@ -324,8 +371,11 @@ window.GT=(function(){
         caster:(function(){try{return isCaster(c);}catch(e){return false;}})(),
         kind:(get('KIND_BY_CLS',{})[c])||null,
         d:H.d||'',x:H.x||'',
-        real:REAL.indexOf(c)>=0,
-        offWall:c==='mage'&&get('MAGE_GLASS',null)===false});
+        real:isReal(c),
+        /* #281 - `MAGE_GLASS` is gone with the class it gated. A class is off the
+           wall exactly when no race lists it, which `races` above already says, so
+           there is nothing left for a second flag to know. */
+        offWall:races.length===0&&isReal(c)});
     });
     return out;
   }
@@ -476,6 +526,55 @@ window.GT=(function(){
     return out;
   }
 
+  /* ── what a weapon does to a class ────────────────────────────────────── */
+  /* ⛔ NOTHING IN THE BUILD HOLDS THIS AND NOTHING SHOULD. There is no table of
+     "weapons an archer may use": every body may pick up anything its harness fits,
+     and what a class IS with a given weapon comes out of `unitFrom` - the act row,
+     the reach, the signature swap (a spear with a boar spear raises SPEAR WALL, the
+     same spear with a halberd BRACES AND SHOVES), the shooter flag, the two-hand
+     lockout. So the answer is built rather than looked up: one body per weapon,
+     every card read back off it, and the BARE-HANDED body as the control arm so the
+     tool can say which acts the WEAPON brought and which the class had anyway.
+     ⚠ THE RACE IS THE ONE THAT COULD BE HIRED AS THIS, not always a human: an ogre
+     brute swinging a warclub is the body the muster wall actually produces, and its
+     acts and reach are the ogre's. A class on no wall (the captain) falls back to a
+     human, which is what he is. */
+  function weaponsFor(cls){
+    const walls=Object.keys(get('CLS_BY_RACE',{}))
+      .filter(r=>(CLS_BY_RACE[r]||[]).indexOf(cls)>=0);
+    const race=walls.indexOf('human')>=0?'human':(walls[0]||'human');
+    const G=get('GEAR',{}),start=(get('START_GEAR',{})[cls]||[])[1]||null;
+    const actsOf=eq=>{
+      try{const u=unitFrom(person({race:race,cls:cls,level:1,eq:eq}));
+        return (u.acts||[]).filter(a=>!a.move).map(a=>({
+          n:a.n,cost:a.cost,dmg:a.dmg?a.dmg.slice():null,reach:a.reach,range:a.range,
+          cool:a.cool0||a.cool||0,note:a.note||'',self:!!a.self}));
+      }catch(e){return [];}
+    };
+    const bare=actsOf({main:null,off:null});
+    const bareN={};bare.forEach(a=>{bareN[a.n]=1;});
+    const out=[];
+    Object.keys(G).forEach(k=>{
+      const g=G[k];if(!g||g.slot!=='main')return;
+      const fits=!g.size||g.size==='any'||g.size===race;
+      const acts=actsOf({main:k,off:null});
+      out.push({k:k,n:g.n,rarity:g.rarity||'common',size:g.size||'any',fits:fits,
+        dmg:g.dmg?g.dmg.slice():null,reach:g.reach,range:g.range,hands:g.hands||1,
+        am:g.am,ft:g.ft,push:!!g.push,reload:!!g.reload,unique:!!g.unique,
+        spellRange:g.spellRange||0,d:g.d||'',
+        art:(function(){try{return itemArt(k)||null;}catch(e){return null;}})(),
+        glyph:(function(){try{return g.g||ITEM_GLYPH[k]||'';}catch(e){return '';}})(),
+        start:start===k,
+        acts:acts.map(a=>Object.assign({},a,{fromWeapon:!bareN[a.n]}))});
+    });
+    /* what the class starts with first, then by what it does: the two-handers and
+       the shooters are the interesting rows and they sort to the top of their band */
+    out.sort((a,b)=>(b.start-a.start)||(b.fits-a.fits)||
+      ((b.range||0)-(a.range||0))||((b.reach||1)-(a.reach||1))||
+      (((b.dmg&&b.dmg[1])||0)-((a.dmg&&a.dmg[1])||0)));
+    return {race:race,bare:bare,rows:out};
+  }
+
   /* ── the fight: the practice field, driven from outside ───────────────── */
   function foeCat(){
     try{return devFoeCatalog().map(r=>({f:r.f,v:r.v,n:r.n,race:r.race,pts:r.pts}));}
@@ -543,6 +642,7 @@ window.GT=(function(){
   return {ok:true,
     tag:(function(){try{return BUILD_ID;}catch(e){return 'dev';}})(),
     races:raceRows,classes:classRows,perks:perkRows,lanes:lanes,
+    weaponsFor:weaponsFor,
     build:build,gearFor:gearFor,traitsFor:traitsFor,
     foeCat:foeCat,grounds:grounds,fightKinds:fightKinds,
     startFight:startFight,leaveFight:leaveFight,fightOver:fightOver,
@@ -592,11 +692,10 @@ const SWA={
            w:'Casting costs his own mood and the working is aimed with INTELLECT, so a rattled or '+
              'a stupid one misses. Mediocre with the blade he is carrying.',
            a:'THE BATTLE-CASTER · the hybrid, and the low-magic setting written as a class.'},
-  mage   :{s:'Two schools and a second working each turn at half strength. The best offence the '+
-             'company can field, by a distance.',
-           w:'Bad with a blade, slow to dodge, thin. Everything else on the field exists to keep '+
-             'him alive, and ELEMENTAL at tier 6 is a real choice precisely because he is bad at it.',
-           a:'THE GLASS CANNON · off the muster wall today (MAGE_GLASS), and kept on purpose.'},
+  /* #281 - the glass cannon's row is deleted here because the CLASS is deleted from
+     the build. A judgement about something that does not exist is the one kind of
+     stale this authored block can go, and there is no derived column beside it any
+     more to catch it. */
   cutter :{s:'A SETUP piece. DISTRACT turns a target to face away and its back is then open to the '+
              'whole line at +30 to hit and +25% damage - including his own.',
            w:'Not a damage dealer. Everything he is worth is worth nothing unless somebody else '+
@@ -614,6 +713,14 @@ const SWA={
            a:'THE STRANGER · an option, deferred, at the cost of a body that cannot fight yet.'}
 };
 const AUTHORED_NOTE='AUTHORED · the only hand-written text on this page';
+
+/* ⛑ WHAT THE PAGE IS SHOWING, AND IT IS DELIBERATELY NOT IN THE URL OR IN
+   localStorage. A reference tool that remembers a filter across a reload hands you
+   yesterday's question; every one of these resets to "everything" on RELOAD BUILD,
+   which is the state somebody arriving at the page wants. */
+let FILTER='all';
+const SHOW={races:true,logic:true,tree:true};
+const WEPOPEN={};
 
 /* ── boot ────────────────────────────────────────────────────────────────── */
 const MC=new MessageChannel(),MQ=[];
@@ -665,7 +772,7 @@ async function boot(){
   }
   $('buildTag').textContent='build: '+FR.src.split('/').pop()+' · '+GT.tag+
     ' · loaded '+new Date().toLocaleTimeString();
-  CACHE={};
+  CACHE={};FILTER='all';Object.keys(WEPOPEN).forEach(k=>{delete WEPOPEN[k];});
   drawClasses();
   initBuilder();
   const cl=GT.classes().filter(c=>c.real).length;
@@ -691,131 +798,232 @@ function perkChip(k,cls,own,click){
 
 /* ═══ TAB ONE - THE CLASSES ═══════════════════════════════════════════════ */
 function drawClasses(){
-  const CS=GT.classes(),RS=GT.races();
+  const CS=GT.classes().filter(c=>c.real||c.k==='none'),RS=GT.races();
   CACHE.perks=GT.perks();
+  CACHE.classList=CS;
 
-  /* the logic column the user asked for, as its own compact matrix first */
-  let h='<h2>THE LOGIC COLUMN <span class="lbl warn">· '+AUTHORED_NOTE+'</span></h2>'+
-    '<div class="sub">Nothing below is read off the build, which is why it sits in one place with '+
-    'its own heading rather than scattered through the cards. Every row is a judgement about a class; '+
-    'the columns beside it in the cards are the figures that judgement is made against.</div>'+
-    '<table><tr><th style="width:120px">Class</th><th style="width:26%">Strength</th>'+
-    '<th style="width:26%">Weakness</th><th>Archetype</th></tr>';
-  CS.filter(c=>c.real||c.k==='none').forEach(c=>{
-    const s=SWA[c.k]||{s:'-',w:'-',a:'-'};
-    h+='<tr><td class="n">'+esc(c.ico)+' <b>'+esc(c.n)+'</b>'+
-      (c.offWall?'<br><span class="lbl warn">off the wall</span>':'')+
-      (c.k==='none'?'<br><span class="lbl">no trade yet</span>':'')+'</td>'+
-      '<td class="m">'+esc(s.s)+'</td><td class="m">'+esc(s.w)+'</td>'+
-      '<td class="arch">'+esc(s.a)+'</td></tr>';
-  });
-  h+='</table>';
+  /* \u26d1 THE FILTER IS WHAT MAKES THIS A REFERENCE RATHER THAN A SCROLL. Seven
+     cards of this depth is 7,000px; the question a reference gets asked is always
+     about ONE class. The bar stays put and the cards it does not name are removed
+     from the flow, not hidden - a `display:none` card still costs the browser its
+     weapon grid on every redraw. */
+  let h='<div class="filter"><span class="lbl">show</span>'+
+    '<button data-f="all" class="'+(FILTER==='all'?'on':'')+'">EVERYTHING</button>';
+  CS.forEach(c=>{h+='<button data-f="'+c.k+'" class="'+(FILTER===c.k?'on':'')+'">'+
+    esc(c.ico)+' '+esc(c.n)+(c.k==='warmage'?'':'')+'</button>';});
+  h+='<span class="lbl" style="margin-left:auto">sections</span>'+
+    '<button data-sec="races" class="'+(SHOW.races?'on':'')+'">the races</button>'+
+    '<button data-sec="logic" class="'+(SHOW.logic?'on':'')+'">the logic column</button>'+
+    '<button data-sec="tree" class="'+(SHOW.tree?'on':'')+'">the whole tree</button>'+
+    '</div>';
+  $('classFilter').innerHTML=h;
+  $('classFilter').querySelectorAll('[data-f]').forEach(b=>b.onclick=()=>{
+    FILTER=b.dataset.f;drawClasses();window.scrollTo(0,0);});
+  $('classFilter').querySelectorAll('[data-sec]').forEach(b=>b.onclick=()=>{
+    SHOW[b.dataset.sec]=!SHOW[b.dataset.sec];drawClasses();});
+
+  const shown=CS.filter(c=>FILTER==='all'||c.k===FILTER);
+
+  /* ── the logic column, the one authored thing ─────────────────────────── */
+  h='';
+  if(SHOW.logic){
+    h='<h2>THE LOGIC COLUMN <span class="lbl warn">\u00b7 '+AUTHORED_NOTE+'</span></h2>'+
+      '<div class="sub">Nothing here is read off the build, which is why it sits in one place '+
+      'with its own heading rather than scattered through the cards. Every row is a judgement '+
+      'about a class; the columns beside it in the card are the figures that judgement is made '+
+      'against, so a class retuned in the prototype shows the disagreement instead of hiding it. '+
+      '<b>To change one, edit <code>SWA</code> at the top of this file\u2019s script.</b></div>'+
+      '<table><tr><th style="width:118px">Class</th><th style="width:26%">Strength</th>'+
+      '<th style="width:26%">Weakness</th><th>Archetype</th></tr>';
+    shown.forEach(c=>{
+      const s=SWA[c.k]||{s:'-',w:'-',a:'-'};
+      h+='<tr><td class="n">'+esc(c.ico)+' <b>'+esc(c.n)+'</b></td>'+
+        '<td class="m">'+esc(s.s)+'</td><td class="m">'+esc(s.w)+'</td>'+
+        '<td class="arch">'+esc(s.a)+'</td></tr>';});
+    h+='</table>';
+  }
   $('classSummary').innerHTML=h;
 
-  /* the three races, because a class is only half of what a body is */
-  h='<h2>THE THREE RACES <span class="lbl">· the other lean, and who may be hired as what</span></h2>'+
-    '<table><tr><th>Race</th><th>Size</th><th>Lean</th><th>Pool &amp; stride</th>'+
-    '<th>Wagon &amp; wage</th><th>Formation</th><th>May be hired as</th><th>Race skills</th></tr>';
-  RS.forEach(r=>{
-    const lean=leanTxt(r.mod);
-    const lanes=Object.keys(r.perks||{}).sort((a,b)=>a-b)
-      .map(t=>'<span class="tier">L'+t+'</span> '+(r.perks[t]||[]).map(k=>perkChip(k)).join('')).join('<br>');
-    h+='<tr><td class="n"><b>'+esc(r.n)+'</b></td>'+
-      '<td class="m">'+esc(r.size)+' · ×'+r.mul+'<br>'+
-        (r.bulkPaid?'<span class="ok">'+sgn(r.bulkPaid)+' hp bulk</span><br>':'')+
-        'melee '+sgn(Math.round((r.melee||0)*100))+'% · hit-me '+sgn(r.atk)+'</td>'+
-      '<td class="n">'+esc(lean)+'</td>'+
-      '<td class="m">'+r.hp+' hp base<br>'+r.step+' hexes</td>'+
-      '<td class="m">'+r.cost+' of the wagon<br>'+r.wage+' crowns a day · xp ×'+r.xp+'</td>'+
-      '<td class="m">'+(r.form?'<b class="n">'+esc(r.form.n)+'</b><br>'+esc(r.form.note||''):'-')+'</td>'+
-      '<td class="m">'+r.classes.map(c=>{
-        const cc=CS.find(x=>x.k===c);return esc(cc?cc.n:c);}).join('<br>')+'</td>'+
-      '<td>'+lanes+'</td></tr>';
-  });
-  h+='</table><div class="sub" style="margin-top:8px">Every figure in this table is derived. '+
-    '<b>Pool</b> is <b>RACEHP</b>, the given hitpoints through the race multiplier; <b>bulk</b> is the '+
-    'ogre’s meat, added after the strength climb and cut by <b>HDA_CUT</b>; <b>stride</b> is '+
-    '<b>RACESTEP</b>. Who may be hired as what is <b>CLS_BY_RACE</b>, which is the muster wall’s own list.</div>';
+  /* ── the three races ──────────────────────────────────────────────────── */
+  h='';
+  if(SHOW.races){
+    h='<h2>THE THREE RACES <span class="lbl">\u00b7 the other lean, and who may be hired as what</span></h2>'+
+      '<table><tr><th>Race</th><th>Size</th><th>Lean</th><th>Pool &amp; stride</th>'+
+      '<th>Wagon &amp; wage</th><th>Formation</th><th>May be hired as</th><th>Race skills</th></tr>';
+    RS.forEach(r=>{
+      const lanes=Object.keys(r.perks||{}).sort((a,b)=>a-b)
+        .map(t=>'<span class="tier">L'+t+'</span> '+(r.perks[t]||[]).map(k=>perkChip(k)).join('')).join('<br>');
+      h+='<tr><td class="n"><b>'+esc(r.n)+'</b></td>'+
+        '<td class="m">'+esc(r.size)+' \u00b7 \u00d7'+r.mul+'<br>'+
+          (r.bulkPaid?'<span class="ok">'+sgn(r.bulkPaid)+' hp bulk</span><br>':'')+
+          'melee '+sgn(Math.round((r.melee||0)*100))+'% \u00b7 hit-me '+sgn(r.atk)+'</td>'+
+        '<td class="n">'+esc(leanTxt(r.mod))+'</td>'+
+        '<td class="m">'+r.hp+' hp base<br>'+r.step+' hexes</td>'+
+        '<td class="m">'+r.cost+' of the wagon<br>'+r.wage+' crowns a day \u00b7 xp \u00d7'+r.xp+'</td>'+
+        '<td class="m">'+(r.form?'<b class="n">'+esc(r.form.n)+'</b><br>'+esc(r.form.note||''):'-')+'</td>'+
+        '<td class="m">'+r.classes.map(c=>{
+          const cc=CS.find(x=>x.k===c);return esc(cc?cc.n:c);}).join('<br>')+'</td>'+
+        '<td>'+lanes+'</td></tr>';});
+    h+='</table><div class="sub" style="margin-top:8px">Every figure here is derived. '+
+      '<b>Pool</b> is <b>RACEHP</b>, the given hitpoints through the race multiplier; <b>bulk</b> '+
+      'is the ogre\u2019s meat, added after the strength climb and cut by <b>HDA_CUT</b>; '+
+      '<b>stride</b> is <b>RACESTEP</b>. Who may be hired as what is <b>CLS_BY_RACE</b>, the '+
+      'muster wall\u2019s own list.</div>';
+  }
   $('raceBlock').innerHTML=h;
 
-  /* one card a class */
-  h='<h2>THE CLASSES, ONE CARD EACH</h2>';
-  CS.filter(c=>c.real||c.k==='none').forEach(c=>{
-    const s=SWA[c.k]||{};
-    const gear=c.gear.map((g,i)=>g?esc(g.n):'<span class="warn">nothing in the '+
-      (i?'hand':'armour slot')+'</span>').join(' · ')||'-';
-    const races=c.races.length?c.races.map(r=>{
-      const rr=GT.races().find(x=>x.k===r);return esc(rr?rr.n:r);}).join(' · ')
-      :'<span class="warn">nobody · not on any muster wall</span>';
-    let ladder='';
-    const L=GT.lanes('human',c.k);
-    L.forEach(t=>{
-      if(!t.cls.length&&!t.gen.length)return;
-      ladder+='<div class="lane"><span class="tier">LEVEL '+t.tier+'</span><span>'+
-        (t.cls.map(k=>perkChip(k)).join('')||'<span class="lbl">- no class door</span>')+
-        (t.gen.length?' &nbsp;'+t.gen.map(k=>perkChip(k)).join(''):'')+'</span></div>';
-    });
-    h+='<div class="card"><div class="hd">'+
-      '<span class="ico">'+esc(c.ico)+'</span><span class="nm">'+esc(c.n)+'</span>'+
-      (c.sig?'<span class="sig">'+esc(c.sig)+'</span>':'')+
-      '<span class="lean">lean '+esc(leanTxt(c.lean))+
-        (c.caster?' · casts':'')+(c.offWall?' · <span class="warn">off the muster wall</span>':'')+
-      '</span></div><div class="cols">'+
-      '<div><h3>WHAT IT IS</h3><p class="d">'+esc(c.d||'-')+'</p>'+
-        (c.x?'<p class="x">'+esc(c.x)+'</p>':'')+'</div>'+
-      '<div><h3>WHAT IT GIVES</h3><div class="kv">'+
-        '<span class="k">signature</span><span class="v">'+
-          (c.sigActs.length?c.sigActs.map(esc).join(' · '):'<span class="warn">none</span>')+'</span>'+
-        '<span class="k">the lean</span><span class="v">'+esc(leanTxt(c.lean))+'</span>'+
-        '<span class="k">starts with</span><span class="v">'+gear+'</span>'+
-        '<span class="k">battle art</span><span class="v">'+esc(c.kind||'-')+'</span>'+
-        '<span class="k">points go</span><span class="v">'+
-          (c.prio?c.prio.map(k=>STATN[k]).join(' → '):'-')+'</span>'+
-        '<span class="k">hireable by</span><span class="v">'+races+'</span>'+
-        '</div><h3>WHAT IT OPENS <span class="lbl">· its own lane and everybody’s</span></h3>'+
-        (ladder||'<span class="lbl">nothing yet</span>')+
-        '<div class="why" style="margin-top:5px">The third lane is the body’s RACE and is '+
-        'on the race table above: a class is only half of what somebody is offered.</div></div>'+
-      '<div class="authored"><h3>'+AUTHORED_NOTE+'</h3><div class="swa">'+
-        '<b>STRENGTH</b>'+esc(s.s||'-')+
-        '<b>WEAKNESS</b>'+esc(s.w||'-')+
-        '<b>ARCHETYPE</b><span class="arch">'+esc(s.a||'-')+'</span></div></div>'+
-      '</div></div>';
-  });
+  /* ── one card a class ─────────────────────────────────────────────────── */
+  h='<h2>'+(FILTER==='all'?'THE CLASSES, ONE CARD EACH':esc((shown[0]||{}).n||''))+'</h2>';
+  shown.forEach(c=>{h+=classCard(c,RS,CS);});
   $('classCards').innerHTML=h;
+  $('classCards').querySelectorAll('[data-wep]').forEach(el=>el.onclick=()=>{
+    const key=el.dataset.cls+'|'+el.dataset.wep;
+    WEPOPEN[key]=!WEPOPEN[key];drawClasses();
+    const back=document.querySelector('[data-wep="'+el.dataset.wep+'"][data-cls="'+el.dataset.cls+'"]');
+    if(back)back.scrollIntoView({block:'center'});});
 
-  /* and the whole tree in one grid, because a lane is only legible beside the others */
-  const P=CACHE.perks;
-  h='<h2>THE WHOLE TREE <span class="lbl">· three lanes, '+GT.consts.tiers+' tiers</span></h2>'+
-    '<div class="sub">A <span class="pk class">class</span> skill is offered by its own class, a '+
-    '<span class="pk race">race</span> skill by its own race, and a <span class="pk general">general</span> '+
-    'skill by everybody. That is <b>perkPool</b>’s own join, read back out of it: a skill appears in '+
-    'exactly one lane and can never disagree with where it came from.</div>'+
-    '<table><tr><th style="width:60px">Level</th><th>Class lane</th><th>Race lane</th><th>General lane</th></tr>';
-  for(let t=2;t<=GT.consts.tiers;t++){
-    const cls=[],rac=[];
-    CS.filter(c=>c.real).forEach(c=>((c.perks||{})[t]||[]).forEach(k=>{
-      if(!cls.some(x=>x.k===k))cls.push({k:k,by:[c.n]});
-      else cls.find(x=>x.k===k).by.push(c.n);}));
-    GT.races().forEach(r=>(((r.perks||{})[t])||[]).forEach(k=>{
-      if(!rac.some(x=>x.k===k))rac.push({k:k,by:[r.n]});
-      else rac.find(x=>x.k===k).by.push(r.n);}));
-    const gen=GT.lanes('human','captain').find(x=>x.tier===t);
-    h+='<tr><td class="n">L'+t+'</td>'+
-      '<td>'+(cls.length?cls.map(x=>perkChip(x.k)+'<span class="lbl"> '+
-        esc(x.by.join(', '))+'</span>').join('<br>'):'<span class="lbl warn">empty</span>')+'</td>'+
-      '<td>'+(rac.length?rac.map(x=>perkChip(x.k)+'<span class="lbl"> '+
-        esc(x.by.join(', '))+'</span>').join('<br>'):'<span class="lbl warn">empty</span>')+'</td>'+
-      '<td>'+((gen&&gen.gen.length)?gen.gen.map(k=>perkChip(k)).join(''):
-        '<span class="lbl warn">empty</span>')+'</td></tr>';
+  /* ── the whole tree ───────────────────────────────────────────────────── */
+  h='';
+  if(SHOW.tree){
+    const P=CACHE.perks;
+    h='<h2>THE WHOLE TREE <span class="lbl">\u00b7 three lanes, '+GT.consts.tiers+' tiers</span></h2>'+
+      '<div class="sub">A <span class="pk class">class</span> skill is offered by its own class, a '+
+      '<span class="pk race">race</span> skill by its own race, and a '+
+      '<span class="pk general">general</span> skill by everybody. That is <b>perkPool</b>\u2019s '+
+      'own join read back out of it: a skill appears in exactly one lane and can never disagree '+
+      'with where it came from. <b>Hover any chip for its mechanics.</b></div>'+
+      '<table><tr><th style="width:56px">Level</th><th>Class lane</th><th>Race lane</th>'+
+      '<th>General lane</th></tr>';
+    for(let t=2;t<=GT.consts.tiers;t++){
+      const cls=[],rac=[];
+      CS.filter(x=>x.real).forEach(x=>((x.perks||{})[t]||[]).forEach(k=>{
+        const r=cls.find(y=>y.k===k);if(r)r.by.push(x.n);else cls.push({k:k,by:[x.n]});}));
+      RS.forEach(r=>(((r.perks||{})[t])||[]).forEach(k=>{
+        const q=rac.find(y=>y.k===k);if(q)q.by.push(r.n);else rac.push({k:k,by:[r.n]});}));
+      const gen=GT.lanes('human','captain').find(x=>x.tier===t);
+      h+='<tr><td class="n">L'+t+'</td>'+
+        '<td>'+(cls.length?cls.map(x=>perkChip(x.k)+'<span class="lbl"> '+
+          esc(x.by.join(', '))+'</span>').join('<br>'):'<span class="lbl warn">empty</span>')+'</td>'+
+        '<td>'+(rac.length?rac.map(x=>perkChip(x.k)+'<span class="lbl"> '+
+          esc(x.by.join(', '))+'</span>').join('<br>'):'<span class="lbl warn">empty</span>')+'</td>'+
+        '<td>'+((gen&&gen.gen.length)?gen.gen.map(k=>perkChip(k)).join(''):
+          '<span class="lbl warn">empty</span>')+'</td></tr>';
+    }
+    h+='</table><h3>EVERY SKILL, IN FULL</h3><table><tr><th style="width:150px">Skill</th>'+
+      '<th style="width:70px">Lane</th><th>What it does</th></tr>';
+    Object.keys(P).forEach(k=>{const p=P[k];
+      h+='<tr><td class="n">'+esc(p.n)+'</td><td><span class="pk '+p.kind+'">'+p.kind+'</span></td>'+
+        '<td class="m">'+esc(p.d)+'</td></tr>';});
+    h+='</table>';
   }
-  h+='</table><h3>EVERY SKILL, IN FULL</h3><table><tr><th style="width:150px">Skill</th>'+
-    '<th style="width:70px">Lane</th><th>What it does</th></tr>';
-  Object.keys(P).forEach(k=>{const p=P[k];
-    h+='<tr><td class="n">'+esc(p.n)+'</td><td><span class="pk '+p.kind+'">'+p.kind+'</span></td>'+
-      '<td class="m">'+esc(p.d)+'</td></tr>';});
-  h+='</table>';
   $('perkBlock').innerHTML=h;
+}
+
+/* ── one class, in full ──────────────────────────────────────────────────── */
+function classCard(c,RS,CS){
+  const P=CACHE.perks,s=SWA[c.k]||{};
+  const races=c.races.length?c.races.map(r=>{
+      const rr=RS.find(x=>x.k===r);return '<b class="n">'+esc(rr?rr.n:r)+'</b>';}).join(' \u00b7 ')
+    :'<span class="warn">nobody \u00b7 not on any muster wall</span>';
+  const gear=c.gear.map((g,i)=>g?esc(g.n):'<span class="warn">'+(i?'empty hands':'no armour')+
+    '</span>').join(' \u00b7 ')||'-';
+
+  /* the class's OWN skills, in full, because they are what a class IS */
+  let own='';
+  const lanes=GT.lanes('human',c.k);
+  lanes.forEach(t=>{
+    (t.cls||[]).forEach(k=>{const p=P[k]||{n:k,d:''};
+      own+='<div class="skill"><div class="sk-t">L'+t.tier+'</div>'+
+        '<div><div class="sk-n">'+esc(p.n)+'</div>'+
+        '<div class="sk-d">'+esc(p.d)+'</div></div></div>';});
+  });
+  if(!own)own='<div class="why warn">No class skills at any tier. Its whole lane is empty.</div>';
+
+  /* and everything anybody can learn, as chips with the text on hover */
+  let other='';
+  lanes.forEach(t=>{
+    if(!t.gen.length)return;
+    other+='<div class="lane"><span class="tier">L'+t.tier+'</span><span>'+
+      t.gen.map(k=>perkChip(k)).join('')+'</span></div>';});
+
+  /* THE WEAPONS. Derived by building the body with each one - see weaponsFor. */
+  const W=GT.weaponsFor(c.k);
+  let weps='';
+  W.rows.forEach(g=>{
+    const key=c.k+'|'+g.k, open=!!WEPOPEN[key];
+    const bits=[];
+    if(g.dmg)bits.push(g.dmg[0]+'-'+g.dmg[1]);
+    if(g.range)bits.push('range '+g.range);
+    else if(g.reach)bits.push('reach '+g.reach);
+    if(g.hands===2)bits.push('2h');
+    if(g.spellRange)bits.push('+'+g.spellRange+' working');
+    const brought=g.acts.filter(a=>a.fromWeapon);
+    weps+='<div class="wep'+(g.fits?'':' unreach')+(open?' open':'')+'" data-cls="'+esc(c.k)+
+      '" data-wep="'+esc(g.k)+'" title="'+esc(g.d||'')+'">'+
+      '<div class="wep-h">'+
+        (g.art?'<img src="'+g.art+'" alt="">':'<span class="wep-g">'+esc(g.glyph||'?')+'</span>')+
+        '<div class="wep-n">'+esc(g.n)+
+          (g.start?' <span class="tag start">starts with</span>':'')+
+          (g.fits?'':' <span class="tag bad">wrong size</span>')+
+          (g.unique?' <span class="tag">unique</span>':'')+
+        '</div>'+
+        '<div class="wep-s rar-'+esc(g.rarity)+'">'+esc(g.rarity)+' \u00b7 '+esc(bits.join(' \u00b7 '))+'</div>'+
+      '</div>'+
+      '<div class="wep-a">'+
+        (brought.length
+          ? brought.map(a=>'<span class="act">'+esc(a.n)+
+              (a.dmg?' <i>'+a.dmg[0]+'-'+a.dmg[1]+'</i>':'')+
+              (a.cool?' <i>cd'+a.cool+'</i>':'')+'</span>').join('')
+          : '<span class="lbl">nothing this class did not already have</span>')+
+      '</div>'+
+      (open?'<div class="wep-full">'+g.acts.map(a=>
+          '<div class="act-row"><b>'+esc(a.n)+'</b>'+
+          '<span class="lbl">'+(a.cost!=null?a.cost+' AP':'')+
+            (a.dmg?' \u00b7 '+a.dmg[0]+'-'+a.dmg[1]:'')+
+            (a.range!=null?' \u00b7 range '+a.range:a.reach!=null?' \u00b7 reach '+a.reach:'')+
+            (a.cool?' \u00b7 cooldown '+a.cool:'')+
+            (a.fromWeapon?' \u00b7 THIS WEAPON':' \u00b7 the class has it anyway')+'</span>'+
+          '<div class="m">'+esc(a.note)+'</div></div>').join('')+'</div>':'')+
+      '</div>';
+  });
+
+  return '<div class="card" id="cls-'+esc(c.k)+'"><div class="hd">'+
+    '<span class="ico">'+esc(c.ico)+'</span><span class="nm">'+esc(c.n)+'</span>'+
+    (c.sig?'<span class="sig">'+esc(c.sig)+'</span>':'')+
+    '<span class="lean">lean '+esc(leanTxt(c.lean))+(c.caster?' \u00b7 casts':'')+'</span>'+
+    '</div><div class="cols">'+
+    '<div><h3>WHAT IT IS</h3><p class="d">'+esc(c.d||'-')+'</p>'+
+      (c.x?'<p class="x">'+esc(c.x)+'</p>':'')+
+      '<div class="kv" style="margin-top:8px">'+
+        '<span class="k">signature</span><span class="v">'+
+          (c.sigActs.length?c.sigActs.map(esc).join(' \u00b7 '):'<span class="warn">none</span>')+'</span>'+
+        '<span class="k">starts with</span><span class="v">'+gear+'</span>'+
+        '<span class="k">points go</span><span class="v">'+
+          (c.prio?c.prio.map(k=>STATN[k]).join(' \u2192 '):'-')+'</span>'+
+        '<span class="k">battle art</span><span class="v">'+esc(c.kind||'-')+'</span>'+
+        '<span class="k">hireable by</span><span class="v">'+races+'</span>'+
+      '</div></div>'+
+    '<div><h3>ITS OWN SKILLS <span class="lbl">\u00b7 nobody else is offered these</span></h3>'+
+      own+
+      '<h3>AND EVERYBODY\u2019S <span class="lbl">\u00b7 hover for the mechanics</span></h3>'+
+      (other||'<span class="lbl">none</span>')+
+      '<div class="why" style="margin-top:5px">The third lane is the body\u2019s RACE and is on '+
+      'the race table: a class is only half of what somebody is offered.</div></div>'+
+    '<div class="authored"><h3>'+AUTHORED_NOTE+'</h3><div class="swa">'+
+      '<b>STRENGTH</b>'+esc(s.s||'-')+
+      '<b>WEAKNESS</b>'+esc(s.w||'-')+
+      '<b>ARCHETYPE</b><span class="arch">'+esc(s.a||'-')+'</span></div></div>'+
+    '</div>'+
+    '<div class="weps"><h3>WHAT IT CAN CARRY, AND WHAT EACH ONE UNLOCKS '+
+      '<span class="lbl">\u00b7 built as a '+esc(W.race)+' and read off unitFrom \u00b7 click a '+
+      'weapon for every card in full</span></h3>'+
+      '<div class="wepgrid">'+weps+'</div>'+
+      '<div class="why">Green acts are what <b>that weapon</b> brought. The rest of what this '+
+      'class can do with it - '+
+      (W.bare.length?W.bare.map(a=>esc(a.n)).join(', '):'nothing')+
+      ' - it has bare-handed and keeps whatever it picks up. A <span class="bad">wrong size</span> '+
+      'row still goes on and still costs the harness penalty.</div>'+
+    '</div></div>';
 }
 
 /* ═══ TAB TWO - THE BUILDER ═══════════════════════════════════════════════ */

@@ -9879,7 +9879,7 @@ const RACEMOD={
 const CLSLEAN={
   captain:{mor:+1}, spear:{str:+1}, brute:{str:+1},
   archer :{agi:+1}, cutter:{agi:+1},
-  warmage:{int:+1,mor:+1}, mage:{int:+1,mor:+1}, none:{}
+  warmage:{int:+1,mor:+1}, none:{}
 };
 /* Derived values. The AGI-driven spreads were deliberately COMPRESSED after
    playtest #1 — a ratkin used to out-dodge an ogre by 19 points on a 5–95
@@ -10977,7 +10977,12 @@ const GEAR={
      finds, the aftermath and (since #239) both shop racks all roll from - so
      this is one flag and not a rule written at four counters. */
   stem   :{rarity:'rare',unique:true,n:'Bloom-Stem', slot:'trinket',g:'❋',int:+1,mor:-1,
-           forCls:'mage',bonus:{int:+1},bonusD:'+2 INT more on a battle-mage',
+           /* ⛔ #281 - IT SAID BATTLE-MAGE AND PAID THE OTHER ONE. `bonusD` has read
+              *battle-mage* since it was written and `forCls` gated on the glass cannon,
+              who was off the muster wall from #243 - so this clause had been unpayable
+              for two entries while advertising itself on the card. The promise-versus-
+              payment split, on a seventh surface. */
+           forCls:'warmage',bonus:{int:+1},bonusD:'+2 INT more on a battle-mage',
            d:'Hums at a pitch you feel in your teeth.'},
   apple  :{rarity:'common',n:'Glass Apple',       slot:'trinket',g:'◆',int:+1,hp:+3,
            d:'A fruit that died standing.'},
@@ -11392,7 +11397,7 @@ const TRAITS={
               cost:'−1 MOR',
               d:'Casting costs them 4 less of their own mood than it costs anybody else. '+
                 'Whatever it is, it does not seem to mind them. −1 MOR the rest of the time.',
-              mor:-1,cls:['mage','warmage']},
+              mor:-1,cls:['warmage']},
   /* ⛔ #269 - AND THE PARAGRAPH IS NOT THE SHORT LINE AGAIN. (User: *"somehow in
      twitchy things doubles"*, with the hover's two identical rows boxed in red.)
      `up`/`cost` are the mechanics and `d` is the character; twitchy, cautious and
@@ -11450,7 +11455,7 @@ const TRAITS={
               agi:-1,hp:-8,vet:true},
   feral     :{n:'Feral',up:'+12% damage while Shaken or worse',cost:'−1 MOR, breaks sooner',
               d:'+12% damage while their own mood is Shaken or worse. Breaks sooner.',
-              mor:-1,feral:true,notCls:['mage','warmage']},
+              mor:-1,feral:true,notCls:['warmage']},
   dutiful   :{n:'Dutiful',up:'+8 dodge beside the Captain',cost:'−4 dodge away from him',
               d:'Watches where the Captain is standing before they decide anything else. '+
                 'Out of sight of him they are a worse soldier and they know it.',
@@ -11568,7 +11573,7 @@ const TRAITS={
               d:'+16 dodge. Almost impossible to catch from the front - and a body that '+
                 'will not stand still is still a body, which can only watch one side of '+
                 'itself at a time.'},
-  magpie    :{n:'Magpie-minded',cls:['mage','warmage'],
+  magpie    :{n:'Magpie-minded',cls:['warmage'],
               up:'Two fresh schools every round',cost:'you do not choose which',
               d:'Forgets their spells every single round and remembers different ones instead. '+
               'You never know what they can do until their turn starts, and neither do they.',
@@ -11590,7 +11595,7 @@ const TRAITS={
   /* the mirror of `kind`, on the same aura pass and with the same refusal to
      check sides. Where the kind one steadies the men about to kill you, this
      one frightens your own line as thoroughly as it frightens theirs. */
-  frightening:{n:'Frightening',aura:-6,auraAll:true,mor:+2,notCls:['mage','warmage'],
+  frightening:{n:'Frightening',aura:-6,auraAll:true,mor:+2,notCls:['warmage'],
               up:'+2 MOR: it has never once been their problem',
               cost:'−6 morale to EVERYONE within 2 hexes, yours included',
               d:'Everybody within 2 hexes starts the fight 6 morale down, yours and theirs '+
@@ -11835,7 +11840,10 @@ const SPELLKEYS=Object.keys(SPELLS);
    signature cannot fire is worse than a class with one card too many. The
    ladder still runs the right way: the battle-mage knows one thing and can
    hold a line, the mage knows two and can do them twice. */
-const SCHOOLS={warmage:1,mage:2};
+/* ⛔ #281 - AND THIS IS NOW THE DEFINITION OF A CASTER, not just a count.
+   `isCaster` used to name two keys; it asks this table instead, so a class is a
+   caster exactly when it has a school count and the two can never disagree. */
+const SCHOOLS={warmage:1};
 function rollSpells(n){
   const p=SPELLKEYS.slice(),out=[];
   n=n||1;
@@ -12025,10 +12033,39 @@ const CLASSES={
      in the other hand - all of it is where it was. */
   warmage:{n:'MAGE',sig:'A BLADE OR A STAVE, AND ONE SCHOOL',
     perks:{}},
-  /* The real one. Two schools, a second casting each turn at half strength,
-     and almost nothing else — bad with a blade, thin, slow to dodge. */
-  mage   :{n:'MAGE',sig:'TWO SCHOOLS · A SECOND CASTING AT HALF',
-    /* ⛑ TIER 6 IS THE USER'S OWN GATE, AND THE MAGE'S ALONE IS THE POINT OF IT.
+  /* ⛔ #281 · AND THE SECOND ONE IS DELETED. (User: *"Older MAGE off the wall -
+     we can delete from here and from current build"*.) #243 turned the glass cannon
+     off the muster wall with one `const` and KEPT the row, on the reading that traits,
+     `isCaster`, the `elemental` gate and every save written before that day still
+     named it. What that bought was a row nothing in the game could reach, one word
+     naming two classes, and - the day a reference tool had to draw both - a picker
+     printing a raw engine key to tell them apart.
+
+     ⛑ THE ROW GOES AND THE READERS ASK A NUMBER INSTEAD OF A NAME. `SCHOOLS` is
+     the one place a school count lives; `isCaster` is now `!!SCHOOLS[cls]` rather than
+     two hard-coded keys; and `capTick`'s second casting reads `want>1` rather than
+     `cls==='mage'`. So the MECHANIC survives the class: give any class a `SCHOOLS` row
+     above 1 and it gets two schools and a second working at half, with no other edit.
+     That is the difference between deleting a class and deleting a feature.
+
+     ⚠ THE TIER-6 RULING WENT WITH IT, and it was a real one: ELEMENTAL was aimed at
+     the glass cannon *because* he was bad in a scrum (user, 2026-08-18: *"it ads melee
+     - so you mage could be a glass canon. And use him for melee could be a decent trade
+     off"*), and #243's note says explicitly that on the battle-mage the same perk is a
+     straight upgrade to what he already does. With the glass cannon gone, ELEMENTAL has
+     no class to be offered by. It is NOT quietly handed to `warmage` here: that would
+     be the exact ruling #243 refused, taken by accident.
+
+     ⚠ A SAVE WRITTEN BEFORE TODAY MAY STILL CARRY `cls:'mage'`, which is what kept
+     the row alive for two entries. `clsAlive()` is the one door that answers it now,
+     called where a save is read and where the practice bench builds a stock body.
+
+     The row as it stood, so nobody has to dig it out of git:
+       mage:{n:'MAGE',sig:'TWO SCHOOLS · A SECOND CASTING AT HALF',perks:{}}
+       CLASSES.mage.perks={4:['inspire'],7:['warleader']} · SCHOOLS.mage=2
+       CLSLEAN.mage={int:+1,mor:+1} · STAT_PRIO.mage=['int','agi','mor','str']
+       START_GEAR.mage=['rags','rod'] · KIND_BY_CLS.mage='mage' */
+  /* ⛑ TIER 6 WAS THE USER'S OWN GATE AND IS RECORDED HERE RATHER THAN LOST.
        This was raised as an open question - the BATTLE-MAGE one entry up is the
        class that actually swings a blade, so he looked like the obvious home -
        and the answer is better than the question (user, 2026-08-18): *"it ads
@@ -12044,9 +12081,9 @@ const CLASSES={
        is already built to stand in the line, the same perk would be a straight
        upgrade to what he does anyway - and a perk that does not cost anything to
        use is a stat increase with a name (the note at the head of this table).
-       ⛔ SO IT STAYS OFF warmage. That is a design ruling now, not an omission,
-       and moving it needs a reason that beats this one. */
-    perks:{}},
+       ⛔ SO IT STAYS OFF warmage. That is a design ruling and #281 does not
+       overturn it by default: with the class it was written for deleted, ELEMENTAL
+       is offered by nobody until somebody decides otherwise, which is honest. */
   cutter :{n:'CUTTER',    sig:'DISTRACT',sigActs:['DISTRACT'],
     perks:{}},
   brute  :{n:'BRUTE',     sig:'SWEEP + ROAR',sigActs:['SWEEP','ROAR'],
@@ -12080,7 +12117,6 @@ CLASSES.archer.perks ={4:['sureshot'],7:['eagle']};
 CLASSES.cutter.perks ={4:['shadowstep'],7:['butcher']};
 CLASSES.brute.perks  ={4:['brawn'],7:['thickhide']};
 CLASSES.warmage.perks={4:['inspire'],7:['warleader']};
-CLASSES.mage.perks   ={4:['inspire'],7:['warleader']};
 /* ⏳ TIERS 6 AND 8 ARE EMPTY FOR EVERY CLASS and that is a KNOWN, temporary
    state of the teardown, not an oversight: a body past level 5 banks perk
    points with nothing to spend them on until the tree's own skills land.
@@ -12090,7 +12126,30 @@ const PERKTIERS=8;   /* #262 - BERSERK sits at 8 */
 const _PERKTIERS_OLD=8;
 /* two classes cast; everything else in the game that asked "is this a mage?"
    asked `cls==='mage'` and would silently exclude the new one */
-const isCaster=cls=>cls==='mage'||cls==='warmage';
+const isCaster=cls=>!!SCHOOLS[cls];
+/* ═══ ⛔ #281 · A RETIRED CLASS KEY COMES THROUGH ONE DOOR ══════════════════
+   Deleting a `CLASSES` row is only safe if a body still carrying that key can be
+   answered, and there are exactly two places one can arrive from outside this
+   file: a SAVE written by an older build, and a `SIMCREW` row on the practice
+   bench (its `src` is a `race:cls` pair in localStorage). Both are read back as
+   plain JSON, so neither can be fixed by a default.
+
+   ⛑ IT MAPS TO THE SURVIVOR AND SAYS SO IN THE LOG, rather than to `none`.
+   A level-6 body silently demoted to NO CLASS YET would lose its perk tree and
+   its signature, which is worse than the crash it is preventing; the glass
+   cannon and the battle-mage are the same trade in the fiction and #243's own
+   note is that one word was naming both.
+   ⚠ RETIRED is not the same as UNKNOWN. A key that is neither in `CLASSES` nor
+   in this table is a corrupt save, and it lands on `none` - a body you can
+   re-class on the sheet - rather than on a guess.
+   ⚠ THE TABLE IS THE PLACE TO ADD THE NEXT ONE. A class retired without a row
+   here is the same crash again in six months. */
+const CLS_RETIRED={mage:'warmage'};
+function clsAlive(cls){
+  if(cls&&CLASSES[cls])return cls;
+  if(cls&&CLS_RETIRED[cls])return CLS_RETIRED[cls];
+  return 'none';
+}
 /* ═══════════════════════════════════════════════════════════════════════
    THE BESTIARY — monsters are NOT a class, and never get one.
 
@@ -12500,7 +12559,7 @@ function payFightXP(){
    signature is "A BLADE OR A STAVE, AND ONE SCHOOL", so 🗡🔮 is a composition
    and not a third meaning for 🗡 - the same way ⚔️🤝 on a door is fighting FOR
    somebody. The cap is two, here as there. */
-const CLASS_ICON={captain:'★',spear:'🔱',archer:'🏹',mage:'🔮',warmage:'🔮',cutter:'🗡',brute:'🪓',
+const CLASS_ICON={captain:'★',spear:'🔱',archer:'🏹',warmage:'🔮',cutter:'🗡',brute:'🪓',
   /* #174 - the stranger with no trade wears an empty ring: not the ✦ fallback,
      which is experience now, and not the ? of a mystery door */
   none:'○'};
@@ -12789,10 +12848,9 @@ const CLASSHELP={
     x:'Casting costs his own mood, and a working is aimed with the INTELLECT, so a stupid one '+
       'misses. What he HOLDS decides how far a working carries: a working stave adds 2 hexes '+
       'to every school, a sword adds none and is a great deal better in the scrum.'},
-  mage:{d:'Two schools and a second working each turn at half strength, and almost nothing '+
-    'else. Bad with a blade, bad at dodging, thin. The line exists to keep him alive.',
-    x:'Deliberately worse in melee than the battle-mage: the best offence in the company should '+
-      'not also be adequate with a sword.'},
+  /* #281 - the glass cannon's hover went with his row. It read: *"Two schools and a
+     second working each turn at half strength, and almost nothing else. Bad with a
+     blade, bad at dodging, thin. The line exists to keep him alive."* */
   cutter:{d:'Not a damage dealer. A SETUP piece: he makes the opening and the whole line takes '+
     'it, including him.',
     x:'DISTRACT turns a target to face away from him: its back is then open to everybody, at '+
@@ -13615,12 +13673,12 @@ const SCARS=[
    which trades a wall or a stranger's class picker may offer. Two rows wearing
    one word is the thing being fixed; flipping this back to `true` puts the
    glass cannon in the pool again and re-opens it. */
-const MAGE_GLASS=false;
-const CLS_BY_RACE={human:['spear','archer','warmage','cutter','spear','archer']
-    .concat(MAGE_GLASS?['mage']:[]),
+/* #281 - `MAGE_GLASS` is deleted with the class it gated. The switch existed to
+   keep one row off the wall; with the row gone there is nothing to switch. */
+const CLS_BY_RACE={human:['spear','archer','warmage','cutter','spear','archer'],
   ratkin:['cutter','archer','spear','warmage'],
   ogre:['brute','spear']};
-const KIND_BY_CLS={spear:'human',archer:'archer',mage:'mage',warmage:'mage',
+const KIND_BY_CLS={spear:'human',archer:'archer',warmage:'mage',
   cutter:'human',brute:'ogre'};
 /* #161 - the MAGE comes with the stave, because a caster whose reach is gear
    has to be handed the gear. The BATTLE-MAGE keeps the short sword: he is the
@@ -13628,7 +13686,10 @@ const KIND_BY_CLS={spear:'human',archer:'archer',mage:'mage',warmage:'mage',
    what his trade is. Marrow is the exception and he is a deliberate one, so
    the comparison the stave exists for is standing in the company from the
    first minute rather than waiting on a shop (see makeParty). */
-const START_GEAR={spear:['rags','spear'],archer:['rags','bow'],mage:['rags','rod'],warmage:['jack','shortsw'],
+/* ⚠ #281 - WITH `mage` GONE, THE WORKING STAVE HAS ONE DOOR LEFT: Marrow's own
+   authored kit. `rod` was `START_GEAR.mage[1]` and nothing else hands it out, so
+   `reach.js` is the check that matters after this edit rather than a formality. */
+const START_GEAR={spear:['rags','spear'],archer:['rags','bow'],warmage:['jack','shortsw'],
   cutter:['scrap','knife'],brute:[null,'club']};
 function rollRecruit(taken){
   const race=pickOne(['human','human','human','ratkin','ratkin','ogre']);
@@ -14610,7 +14671,7 @@ function paintedSpriteKey(kind,side,opt){
   }else if(race==='human'){
     if(side==='you'){
       k=(u.leader||u.captain||cls==='captain')?'human_you_captain':
-        (kind==='mage'||u.caster||cls==='mage'||cls==='warmage')?'human_you_mage':
+        (kind==='mage'||u.caster||isCaster(cls))?'human_you_mage':
         w?(w==='bow'?'human_you_archer':w==='spear'?'human_you_spear':'human_you_cutter')
         :(kind==='archer'||u.bow||cls==='archer')?'human_you_archer':
         cls==='spear'?'human_you_spear':'human_you_cutter';
@@ -14629,7 +14690,7 @@ function paintedSpriteKey(kind,side,opt){
          ever missing, the tail of this function returns null and she falls
          back to a drawn body: a degraded picture, never a broken one. */
       k=u.id==='ash'?'ratkin_you_thief':
-        (v==='sniffer'||u.caster||cls==='mage'||cls==='warmage')?'ratkin_you_mage':
+        (v==='sniffer'||u.caster||isCaster(cls))?'ratkin_you_mage':
         w?(w==='bow'?'ratkin_you_archer':w==='spear'?'ratkin_you_spear'
            :(u.level>=3?'ratkin_you_veteran':'ratkin_you_cutter'))
         :(v==='ratsling'||v==='slinger'||kind==='archer'||u.bow||cls==='archer')?
@@ -16906,8 +16967,7 @@ function unitFrom(p){
       am:(main&&main.am)||.5,ft:(main&&main.ft)||.5,
       note:'Half damage, and the target loses HALF ITS MOVEMENT and 10 dodge until it '+
         'next acts. Put it in the thing that is about to reach your line.'},
-    mage:null,          /* casters get their rolled schools instead */
-    warmage:null,
+    warmage:null,       /* casters get their rolled schools instead */
     /* BACKSTAB was a bad signature: it demanded you already be in the one hex
        where everybody's ordinary backstab works, so it did nothing the
        positional rules did not already do, and it was mostly unusable.
@@ -16954,7 +17014,11 @@ function unitFrom(p){
      Both cast once at full strength per turn: `castCap` is enforced in
      canUse(), so "one spell a turn" is a rule rather than a suggestion. */
   if(isCaster(p.cls)){
-    const many=p.cls==='mage', want=SCHOOLS[p.cls]||1;
+    /* #281 - `many` is DERIVED from the school count now. It named the glass
+       cannon by key, so deleting that class would have deleted the second-casting
+       mechanic with it; read off `want` it survives its class, and any future row
+       with two schools gets it for free. */
+    const want=SCHOOLS[p.cls]||1, many=want>1;
     /* ═══ #157 · EXACTLY `want`, TRIMMED AS WELL AS TOPPED UP ══════════════
        ⚠ THIS USED TO BE A `<` TEST, WHICH IS A ONE-WAY VALVE: a caster rolled
        under the old numbers would have kept all three schools for the rest of
@@ -34778,7 +34842,7 @@ window.LINT=function(){
            are unconditional. */
         const SIG_KIT={archer:'bow',spear:'spear',brute:'club'};
         if(SIG_KIT[k])c.eq=Object.assign({},c.eq,{main:SIG_KIT[k],off:null});
-        if(k==='mage'||k==='warmage')c.spells=c.spells&&c.spells.length?c.spells:['blight'];
+        if(isCaster(k))c.spells=c.spells&&c.spells.length?c.spells:['blight'];
         acts=unitFrom(c).acts.map(a=>a.n);
       }catch(e){return;}                    /* a class that cannot be built is 8c's job */
       (CLASSES[k].sigActs||[]).forEach(name=>{
@@ -35397,7 +35461,7 @@ window.LINT=function(){
        linter working. `big` is kept only so a save that carries the key still
        resolves to a name. */
     if(!t.foeOnly&&!t.authored&&!t.never&&!['human','ratkin','ogre'].some(r=>
-        ['captain','spear','cutter','brute','archer','mage','warmage'].some(c=>traitFits(k,r,c))))
+        ['captain','spear','cutter','brute','archer','warmage'].some(c=>traitFits(k,r,c))))
       hit('trait',w,'no race and class combination can ever roll this');
   });
 
@@ -35640,6 +35704,13 @@ function loadRun(){
   G.day=r.day;G.at=r.at;G.morale=r.morale;
   G.run=r.run;G.camp=materialPool(r.camp);
   G.party=r.party;G.stash=r.stash;G.visited=r.visited;G.path=r.path;
+  /* ⛔ #281 - BEFORE ANYTHING READS A CLASS. `party` rides the save verbatim (the
+     note below says so), so a body written by a build that still had the glass
+     cannon arrives with `cls:'mage'` and the first `CLASSES[p.cls].n` throws. This
+     is the first line after the copy on purpose: everything under it, `xpNeed`
+     included, asks about a class. */
+  G.party.forEach(p=>{const c=clsAlive(p.cls);
+    if(c!==p.cls){p.cls=c;p.kind=KIND_BY_CLS[c]||p.kind;}});
   /* #174 - a save written before experience existed arrives with levels and
      no `xp`: each body is given exactly the xp its level is worth, so a
      level-3 body reads 450 with an empty ring. Cheap and honest, and it is
@@ -53162,6 +53233,10 @@ const SIMCREW_NAMED={you:1,vesna:1,marrow:1,ilka:1,skree:1,ash:1,bruht:1};
 /* a deterministic hire off the wall: mid-roll stats, Stubborn on everybody,
    so two stock bodies differ by nothing but race, class and what they carry */
 function simStock(race,cls){
+  /* #281 - a `SIMCREW` row is a `race:cls` pair in localStorage, so a bench saved
+     before the glass cannon was deleted asks for one by name. Same door, same
+     answer as the save loader's. */
+  cls=clsAlive(cls);
   const g=START_GEAR[cls]||['rags','cudgel'];
   return finishRecruit({id:'stock_'+race+'_'+cls,
     name:({human:'Sellsword',ratkin:'Clan-blade',ogre:'Hill-hand'})[race]||'Sellsword',
@@ -53176,7 +53251,7 @@ function simStock(race,cls){
    each tier. A level-6 body here is therefore a real level-6 body. */
 const STAT_PRIO={captain:['mor','str','agi','int'],spear:['str','agi','mor','int'],
   archer:['agi','str','mor','int'],warmage:['int','mor','str','agi'],
-  mage:['int','agi','mor','str'],cutter:['agi','str','mor','int'],
+  cutter:['agi','str','mor','int'],
   brute:['str','mor','agi','int'],none:['str','agi','mor','int']};
 function simLevelTo(p,L){
   L=Math.max(1,Math.min(XP_CAP,L|0));

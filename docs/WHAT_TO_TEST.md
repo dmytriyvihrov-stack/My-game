@@ -26,6 +26,39 @@
 
 ---
 
+## #281 - The glass-cannon mage is deleted, and the class lab says what each weapon unlocks
+
+**In the game.** There is one MAGE now, and he is the one who could always hold a line.
+
+**In three steps.** New company · walk to the **Muster Field** · read the wall.
+
+- **Only one MAGE is ever offered, and the picker never shows the word twice.** Hire one, open the
+  sheet: one school, one working a turn, a free hand for a blade. The second one - two schools, a
+  second working at half - is gone from the game rather than hidden behind a switch.
+- **An old save must still open.** This is the half that would be expensive to get wrong: if you
+  have a run saved from before today, load it. Anybody who was the deleted class comes back as the
+  surviving MAGE with their level, their perks and their kit intact. **A crash on Continue, or
+  anybody arriving as NO CLASS YET, is the bug.**
+- **The Bloom-Stem now pays what its card says.** Its clause reads *+2 INT more on a battle-mage*
+  and it had been gated on the other one since #243. Put it on your MAGE: INT should move by two,
+  not one. On anybody else, one.
+- **What would be a bug.** The word MAGE appearing twice anywhere · a caster who is not offered
+  a school · a personality that used to be caster-only (Wind-touched, Magpie-minded) turning up on
+  somebody who cannot cast · an old save refusing to load.
+
+**In the class lab** (`http://localhost:8777/tools/classes.html`, server first - see #280).
+
+- **The filter is the point.** Press a class in the sticky bar and the page is that class only.
+- **Every class now lists what it can carry and what each weapon unlocks.** The archer is the one
+  to look at: the hunting bow brings CRIPPLING SHOT, the crossbow brings WIND IT and PUNCH THROUGH.
+  The spear is the other: a boar spear raises SPEAR WALL and a halberd BRACES AND SHOVES, same class.
+  **Click a weapon** for every card in full, including which ones the class had bare-handed anyway.
+- **Its own skills are on the page; everybody else's are on hover.** That split is deliberate: a
+  class is what only it can learn.
+- **What would be a bug.** A weapon grid that says the same acts for every weapon · a brute whose
+  SWEEP does not scale with what he is holding · the grid claiming a weapon fits an ogre when the
+  game would charge him the harness penalty.
+
 ## #280 - The class lab: every class in one table, a body built by hand, and a fight to try it in
 
 **Not in the game.** This is a tool and the game does not know it exists. It reads the game file
