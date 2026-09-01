@@ -153,6 +153,8 @@
   .dbar{display:inline-block;width:70px;height:6px;background:#1e2a29;
     border:1px solid var(--edge);vertical-align:middle;margin-left:6px}
   .dbar i{display:block;height:100%;background:var(--mid)}
+  .act.gone{border-color:var(--bad);color:var(--bad);text-decoration:line-through;opacity:.75}
+  .wep.trained{border-color:var(--gold)}
 
   /* ── tables ──────────────────────────────────────────────────────── */
   table{border-collapse:collapse;font-size:11px;width:100%}
@@ -568,6 +570,22 @@ window.GT=(function(){
     };
     const bare=actsOf({main:null,off:null});
     const bareN={};bare.forEach(a=>{bareN[a.n]=1;});
+    /* ⛔ WHOSE ACT IS IT: THE WEAPON'S OR THE CLASS'S? DERIVED, NOT GUESSED FROM
+       THE NAME. The first cut of the training-lock display called every act except
+       the one named after the weapon a class special, and it struck WIND IT off the
+       brute's crossbow - which is the crossbow's own reload and belongs to anybody
+       who picks one up. The honest test is a control arm: hand the SAME weapon to a
+       body with NO trade (`none` has no signature at all) and whatever it gets is the
+       WEAPON's. Anything this class gets on top of that is the class's, which is
+       exactly what a training lock would take away. */
+    const plainOf={};
+    const plainActs=k=>{
+      if(plainOf[k])return plainOf[k];
+      const o={};
+      try{unitFrom(person({race:race,cls:'none',level:1,eq:{main:k,off:null}}))
+        .acts.forEach(a=>{if(!a.move)o[a.n]=1;});}catch(e){}
+      return (plainOf[k]=o);
+    };
     const out=[];
     Object.keys(G).forEach(k=>{
       const g=G[k];if(!g||g.slot!=='main')return;
@@ -580,7 +598,10 @@ window.GT=(function(){
         art:(function(){try{return itemArt(k)||null;}catch(e){return null;}})(),
         glyph:(function(){try{return g.g||ITEM_GLYPH[k]||'';}catch(e){return '';}})(),
         start:start===k,
-        acts:acts.map(a=>Object.assign({},a,{fromWeapon:!bareN[a.n]}))});
+        acts:acts.map(a=>Object.assign({},a,{
+          fromWeapon:!bareN[a.n],
+          /* the weapon's own, so a lock must never take it */
+          weaponOwn:!!plainActs(k)[a.n]}))});
     });
     /* what the class starts with first, then by what it does: the two-handers and
        the shooters are the interesting rows and they sort to the top of their band */
@@ -652,6 +673,24 @@ window.GT=(function(){
        d:'the two that actually moved, together: it lasts longer and it never stops',
        r:blowsToDrop(hp,Math.round(arm/0.7),raw,absorb,2)}
     ];
+    /* ⛔ THE SWEEP, AND IT IS NOT DECORATION. A wear-rate rule is worth exactly as
+       much as there is harness to wear, so a single reading on a single suit reports a
+       number that is true and misleading. `wear` comes off the draft row rather than
+       being typed here: 70% is stated once, in the proposal, and the arithmetic reads
+       it. ⚠ Wearing at rate `w` is arithmetically the same body carrying `armour/w`,
+       which is why there is one loop and not two. */
+    const wear=spec.wear||1;
+    out.wear=wear;
+    out.sweep=(spec.suits||['rags','jack','mail','plate']).map(k=>{
+      const g=get('GEAR',{})[k];if(!g)return null;
+      let uu;try{uu=unitFrom(person({race:spec.race||'human',cls:spec.cls||'spear',
+        level:spec.level||1,eq:{armour:k,main:spec.main||'shortsw',off:null}}));}
+      catch(e){return null;}
+      const a=uu.armourMax,h=uu.hpMax;
+      return {k:k,n:g.n,raw:g.armour||0,armour:a,hp:h,
+        today:blowsToDrop(h,a,raw,absorb,0),
+        rule:blowsToDrop(h,Math.round(a/wear),raw,absorb,0)};
+    }).filter(Boolean);
     /* and what the two shipped +armour perks already buy, for scale */
     out.perks=[
       {n:'THICK HIDE (+18, cut)',r:blowsToDrop(hp,arm+Math.round(18*get('HDA_CUT',1)),raw,absorb,0)},
@@ -829,10 +868,13 @@ const AUTHORED_NOTE='AUTHORED · the only hand-written text on this page';
    sprite key and a painting - and the lab will draw every one of those gaps the
    moment the row exists, which is what it is for. */
 const DRAFT={
-  anvil:{
-    n:'ANVIL',ico:'⛨',
-    alts:['ANVIL','HARNESSMAN','IRONSIDE','BULWARK','PLATEMAN','HOLDFAST','SHIELDMAN','BREAKWATER'],
+  plateman:{
+    /* the user's pick, 2026-09-01, out of the eight the card offered */
+    n:'PLATEMAN',ico:'⛨',
+    alts:['PLATEMAN','ANVIL','HARNESSMAN','IRONSIDE','BULWARK','HOLDFAST','SHIELDMAN','BREAKWATER'],
     lean:{str:+1},
+    /* 70% is stated HERE and nowhere else; the simulation reads it */
+    wear:0.7,
     promise:'You hit him and nothing happens. That is the whole trade.',
     job:'Stand where the blows are meant for somebody else, and still be standing.',
     /* the ask, and the three other things it could have meant, priced on the page */
@@ -844,25 +886,84 @@ const DRAFT={
        after three blows, so a rule that only works WHILE THE HARNESS HOLDS is a rule
        that works for three blows out of seven. The two readings that moved the number
        are the two that outlive the harness. */
-    rule:{n:'THE HARNESS DOES THE WORK',
+    /* ⛔ THE READING IS THE USER'S, TAKEN AFTER THE TABLE. Two of the four were
+       measured no-ops: the literal ask is what the build already does for every body,
+       and improving the BAND is worth nothing because the harness is gone after three
+       blows. This is the one that moved the number without adding a second mechanic,
+       and it is the one the ask actually described. The soak variant stays on the
+       table below, priced, if the off switch ever needs closing. */
+    rule:{n:'THE HARNESS WEARS AT 70%',
       ask:'armour gets only 70% of normal damage',
-      sim:'bd',
-      d:'His harness wears at 70% rate AND a flat 2 comes off every blow that reaches '+
-        'flesh. The first makes the armour last; the second is the half that still '+
-        'works when it is gone, which is what stops the class having an off switch. '+
-        'The soak is the Thing in Armour’s own rule, already in the engine.'},
+      sim:'b',
+      d:'Every blow takes his harness down by seven tenths of what it would take off '+
+        'anybody else’s. The split is untouched: seven tenths of a blow still stops in '+
+        'the plates and three tenths still reaches him. What changes is HOW LONG the '+
+        'plates are there to do it.'},
     weapon:{n:'THE SHIELD IS THE SIGNATURE',
       d:'A shield in the off hand is what raises TAUNT, the way a boar spear is what '+
         'raises SPEAR WALL. Without one he is a man with a sword.'},
-    act:{n:'TAUNT',cost:1,cool:2,
-      d:'Everything within 2 hexes that can reach him picks him this round, whatever '+
-        'else it wanted. He does not attack on the turn he does it.'},
-    s:'The first class in the roster whose identity is a RULE rather than a number. '+
-      'Nothing else in the game changes how a blow is divided.',
-    w:'He does no damage worth the name, and half his advantage still empties: once the '+
-      'harness is gone only the soak is left, so he goes from unkillable to merely hard '+
-      'in the middle of a fight. Repairing and replacing armour starts to matter.',
-    a:'THE ANVIL · protection, the one job no class currently owns.'}
+    /* ⛑ TWO OFF-HAND TOOLS, ONE JOB, OPPOSITE RISK. This is the fork, and it is a
+       better one than "shield or hook as different jobs": a taunt and a hook are the
+       SAME job done two ways. The shield says come to me and protects him while they
+       do; the hook says you are coming, and buys him nothing. Same question, opposite
+       answer, which is what a real choice looks like.
+       ⚠ BOTH ARE OFF-HAND, AND THAT IS ONE NEW RULE FOR THE WHOLE GAME: an off-hand
+       piece may carry an ACT. Today every `slot:'off'` row is a passive number (+4
+       dodge, +5 hit) and nothing in the off hand does anything. This gives the slot a
+       reason to exist for every class, not just this one - and it prices itself,
+       because `handsFree` means a two-handed weapon locks the off hand entirely. A
+       plateman with a hook cannot carry a maul. */
+    acts:[
+      {n:'TAUNT',off:'a shield',cost:1,cool:2,
+       d:'Everything within 2 hexes that can reach him picks him this round, whatever '+
+         'else it wanted. He does not attack on the turn he does it.',
+       cost2:'Nothing in the build taunts today. It is one insertion into targetScore, '+
+         'the single function both brains pick targets with.'},
+      {n:'HOOK',off:'a hook-pole',cost:1,cool:2,reach:2,pull:1,
+       d:'Reach 2, small damage, and it drags them one hex toward him: out of their '+
+         'line, off your archer, into your own reach, or over the rim of a pit.',
+       cost2:'ALREADY IN THE ENGINE. `act.pull` is read by the forced-movement '+
+         'resolver, the gust flips its sign for it, and the pit rule names a body '+
+         '"hooked, dragged" by hand. The RATKIN HOOK-POLE has been fielding it since '+
+         'backlog #7. This is a GEAR row and a class gate, not new code.'}],
+    s:'The first class in the roster whose identity is a RULE rather than a number, '+
+      'and the only one that gets better the more armour you put on it: nothing else '+
+      'in the game scales with the harness instead of with a stat.',
+    w:'He does no damage worth the name, and his advantage has an OFF SWITCH: an empty '+
+      'harness is an ordinary body and the rule keeping him alive stops existing '+
+      'mid-fight. It is also worth almost nothing in rags, so he is a class you have to '+
+      'afford. Repairing and replacing armour starts to matter.',
+    a:'THE PLATEMAN · protection, the one job no class currently owns.'}
+};
+
+/* ⛔ ═══ THE TRAINING LOCK, AS A PROPOSAL ═══════════════════════════════════
+   (User: *"lets lock special weapon skills to a class"*, and *"what if to both? so
+   some classes will be able to use same weapons skills?"*)
+
+   ⛑ THIS IS THE DRAFT'S OWN RULE 3 AND 4, WRITTEN DOWN IN #262 AND NEVER BUILT:
+   *"THE CAPTAIN IS THE JACK OF ALL TRADES: he can use the special ability of every
+   weapon. Every other class trains exactly two. The weapon owns the attacks. The
+   plain attack always works; the SPECIAL ability needs a class that trains that
+   weapon. Wrong class or wrong hand: greyed, reason on hover."*
+
+   ⚠ HALF OF IT ALREADY SHIPS AND IT IS WORTH KNOWING WHICH HALF. A signature is
+   already class-gated: an archer holding a halberd gets the plain HALBERD swing and
+   NOT brace-and-shove. What is missing is the second half of rule 4 - a class's own
+   special fires on ANY weapon that satisfies its condition, so the brute SWEEPS with
+   a working stave and the spear raises a wall on a broom. Locking is therefore a
+   SUBTRACTION from what bodies can do today, which is why the lab draws it as one.
+
+   ⚠ AND SHARING IS THE POINT, NOT A SIDE EFFECT. Two classes may train the same
+   weapon; that is what makes the short sword a caster's blade and a cutter's both.
+   The captain trains everything, which is his whole identity. */
+const DRAFT_TRAINS={
+  captain:'all',
+  spear  :['spear','halberd'],
+  archer :['bow','crossbow'],
+  cutter :['knife','shortsw'],
+  brute  :['club','maul'],
+  warmage:['rod','shortsw'],
+  plateman:['shield','hook']
 };
 
 /* ⛑ WHAT THE PAGE IS SHOWING, AND IT IS DELIBERATELY NOT IN THE URL OR IN
@@ -870,7 +971,7 @@ const DRAFT={
    yesterday's question; every one of these resets to "everything" on RELOAD BUILD,
    which is the state somebody arriving at the page wants. */
 let FILTER='all';
-const SHOW={races:true,logic:true,tree:true};
+const SHOW={races:true,logic:true,tree:true,trains:false};
 const WEPOPEN={};
 
 /* ── boot ────────────────────────────────────────────────────────────────── */
@@ -969,6 +1070,8 @@ function drawClasses(){
     '<button data-sec="races" class="'+(SHOW.races?'on':'')+'">the races</button>'+
     '<button data-sec="logic" class="'+(SHOW.logic?'on':'')+'">the logic column</button>'+
     '<button data-sec="tree" class="'+(SHOW.tree?'on':'')+'">the whole tree</button>'+
+    '<button data-sec="trains" class="draftbtn '+(SHOW.trains?'on':'')+'">'+
+      'lock specials to trained weapons <span class="lbl">draft</span></button>'+
     '</div>';
   $('classFilter').innerHTML=h;
   $('classFilter').querySelectorAll('[data-f]').forEach(b=>b.onclick=()=>{
@@ -1115,6 +1218,13 @@ function classCard(c,RS,CS){
 
   /* THE WEAPONS. Derived by building the body with each one - see weaponsFor. */
   const W=GT.weaponsFor(c.k);
+  /* ⛔ THE LOCK IS DRAWN AS A SUBTRACTION. With it on, a weapon this class does not
+     train keeps its PLAIN attack and loses its SPECIAL, and the grid strikes the
+     acts that would go rather than quietly not drawing them. A proposal that only
+     shows what it adds is the half-truth this shelf exists to prevent. */
+  const tr=DRAFT_TRAINS[c.k];
+  const trains=k=>!SHOW.trains||tr==='all'||!tr||tr.indexOf(k)>=0;
+  let lost=0;
   let weps='';
   W.rows.forEach(g=>{
     const key=c.k+'|'+g.k, open=!!WEPOPEN[key];
@@ -1125,12 +1235,23 @@ function classCard(c,RS,CS){
     if(g.hands===2)bits.push('2h');
     if(g.spellRange)bits.push('+'+g.spellRange+' working');
     const brought=g.acts.filter(a=>a.fromWeapon);
-    weps+='<div class="wep'+(g.fits?'':' unreach')+(open?' open':'')+'" data-cls="'+esc(c.k)+
+    /* the PLAIN attack is the one named after the weapon; everything else the weapon
+       brought is a special, and a special is what the lock takes away */
+    const ok=trains(g.k);
+    /* `weaponOwn` is derived in the bridge against a no-trade body; the name test it
+       replaced struck the crossbow's WIND IT off the brute, which is the weapon's own
+       reload and belongs to anybody holding one. */
+    const isSpecial=a=>!a.weaponOwn;
+    if(!ok)lost+=brought.filter(isSpecial).length;
+    weps+='<div class="wep'+(g.fits?'':' unreach')+(open?' open':'')+
+      (SHOW.trains&&ok&&tr!=='all'?' trained':'')+'" data-cls="'+esc(c.k)+
       '" data-wep="'+esc(g.k)+'" title="'+esc(g.d||'')+'">'+
       '<div class="wep-h">'+
         (g.art?'<img src="'+g.art+'" alt="">':'<span class="wep-g">'+esc(g.glyph||'?')+'</span>')+
         '<div class="wep-n">'+esc(g.n)+
           (g.start?' <span class="tag start">starts with</span>':'')+
+          (SHOW.trains&&ok&&tr!=='all'?' <span class="tag start">trained</span>':'')+
+          (SHOW.trains&&tr==='all'?' <span class="tag start">trains all</span>':'')+
           (g.fits?'':' <span class="tag bad">wrong size</span>')+
           (g.unique?' <span class="tag">unique</span>':'')+
         '</div>'+
@@ -1138,9 +1259,12 @@ function classCard(c,RS,CS){
       '</div>'+
       '<div class="wep-a">'+
         (brought.length
-          ? brought.map(a=>'<span class="act">'+esc(a.n)+
-              (a.dmg?' <i>'+a.dmg[0]+'-'+a.dmg[1]+'</i>':'')+
-              (a.cool?' <i>cd'+a.cool+'</i>':'')+'</span>').join('')
+          ? brought.map(a=>{
+              const gone=!ok&&isSpecial(a);
+              return '<span class="act'+(gone?' gone':'')+'"'+
+                (gone?' title="this class does not train '+esc(g.n)+'"':'')+'>'+esc(a.n)+
+                (a.dmg?' <i>'+a.dmg[0]+'-'+a.dmg[1]+'</i>':'')+
+                (a.cool?' <i>cd'+a.cool+'</i>':'')+'</span>';}).join('')
           : '<span class="lbl">nothing this class did not already have</span>')+
       '</div>'+
       (open?'<div class="wep-full">'+g.acts.map(a=>
@@ -1185,6 +1309,14 @@ function classCard(c,RS,CS){
       '<span class="lbl">\u00b7 built as a '+esc(W.race)+' and read off unitFrom \u00b7 click a '+
       'weapon for every card in full</span></h3>'+
       '<div class="wepgrid">'+weps+'</div>'+
+      (SHOW.trains?'<div class="why warn" style="margin-bottom:6px">'+
+        '<b>THE TRAINING LOCK IS ON, and it is a DRAFT.</b> '+
+        (tr==='all'?'This class trains every weapon in the game, which is its whole identity.'
+         :tr?'This class trains <b>'+tr.map(esc).join('</b> and <b>')+'</b>. '+
+            'Struck acts are what the lock would take away: <b>'+lost+' special'+
+            (lost===1?'':'s')+'</b> this class can reach today and could not after. The plain '+
+            'swing always works.'
+         :'No trained list has been proposed for this class.')+'</div>':'')+
       '<div class="why">Green acts are what <b>that weapon</b> brought. The rest of what this '+
       'class can do with it - '+
       (W.bare.length?W.bare.map(a=>esc(a.n)).join(', '):'nothing')+
@@ -1196,7 +1328,7 @@ function classCard(c,RS,CS){
 /* ── a proposal, drawn so it cannot be mistaken for a measurement ─────────── */
 function draftCard(key,D){
   const S=GT.draftSim({race:'human',cls:'spear',level:1,armour:'jack',
-    main:'shortsw',blow:'sword'});
+    main:'shortsw',blow:'sword',wear:D.wear||1});
   const sh=GT.shields();
   const pick=S.readings.find(r=>r.k===D.rule.sim)||S.readings[0];
   const bar=r=>{
@@ -1240,12 +1372,13 @@ function draftCard(key,D){
       sh.map(s=>esc(s.n)+' '+sgn(s.dodge)).join(' \u00b7 ')+
       '. <b>SHIELDWORK</b> (doubles the shield bonus) is already in the general lane and '+
       'currently has no class that wants it.</div>'+
-      '<h3>THE ACTION</h3><div class="skill"><div class="sk-t">'+D.act.cost+'ap</div><div>'+
-      '<div class="sk-n">'+esc(D.act.n)+' <span class="lbl">cooldown '+D.act.cool+'</span></div>'+
-      '<div class="sk-d">'+esc(D.act.d)+'</div></div></div>'+
-      '<div class="why warn">Nothing in the build taunts today. The nearest thing is the '+
-      'cutter\u2019s DISTRACT, which turns a target AWAY. A taunt is the opposite and it is one '+
-      'insertion into <b>targetScore</b>, the single function both brains pick targets with.</div>'+
+      '<h3>THE OFF HAND DECIDES WHICH <span class="lbl">· one job, two answers</span></h3>'+
+      (D.acts||[]).map(a=>'<div class="skill"><div class="sk-t">'+a.cost+'ap</div><div>'+
+        '<div class="sk-n">'+esc(a.n)+' <span class="lbl">'+esc(a.off||'')+
+          ' · cooldown '+a.cool+(a.reach?' · reach '+a.reach:'')+'</span></div>'+
+        '<div class="sk-d">'+esc(a.d)+'</div>'+
+        (a.cost2?'<div class="why" style="margin-top:4px">'+esc(a.cost2)+'</div>':'')+
+        '</div></div>').join('')+
     '</div>'+
     '<div class="authored"><h3>'+AUTHORED_NOTE+'</h3><div class="swa">'+
       '<b>STRENGTH</b>'+esc(D.s)+'<b>WEAKNESS</b>'+esc(D.w)+
@@ -1264,9 +1397,38 @@ function draftCard(key,D){
       '<th style="width:120px">Blows to drop him</th><th style="width:90px">Against today</th>'+
       '<th style="width:150px">Harness</th></tr>'+rows+'</table>'+
       '<div class="why"><b>Today he takes '+S.today.blows+' blows and his harness is empty after '+
-      S.today.strip+'.</b> Reading (a) is what the ask literally says and it is what the game '+
-      'already does for everybody, so it would ship as a no-op. The marked row is the one this '+
-      'draft proposes.</div>'+
+      S.today.strip+'.</b> The literal reading of the ask is what the game already does for '+
+      'everybody, so it would ship as a no-op; improving the BAND is also a no-op, because the '+
+      'harness is gone after three blows. The marked row is the one this draft proposes.</div>'+
+      (S.sweep&&S.sweep.length?
+        '<h3 style="margin-top:12px">AND WHAT IT IS WORTH IN EACH SUIT '+
+        '<span class="lbl">· a wear-rate rule is worth as much as there is harness to wear, '+
+        'so one suit reports half the truth</span></h3>'+
+        '<table><tr><th>Harness</th><th style="width:130px">Armour</th>'+
+        '<th style="width:105px">Blows today</th><th style="width:105px">With the rule</th>'+
+        '<th style="width:150px">Harness lasts</th><th>What it buys</th></tr>'+
+        S.sweep.map(s=>{
+          const d=s.rule.blows-s.today.blows;
+          return '<tr'+(s.k===S.armourKey?' class="pickd"':'')+'>'+
+            '<td class="n">'+(s.k===S.armourKey?'▶ ':'')+esc(s.n)+'</td>'+
+            /* ⚠ THE PIECE AND THE BODY, NOT "BEFORE AND AFTER THE CUT". This column
+               first read `armour (raw N before HDA_CUT)` and the two numbers printed
+               identical every time, because the build cuts `GEAR[k].armour` IN PLACE at
+               boot (one line, beside the table) - so by the time anything can read it,
+               the cut has already happened and there is no "before". They differ for
+               real reasons: a harness that does not fit pays WRONGSIZE, and THICK HIDE
+               or STONE HIDE add to the body and not to the piece. */
+            '<td class="m">'+s.armour+
+              (s.raw!==s.armour?' <span class="lbl">(the piece is '+s.raw+')</span>':'')+'</td>'+
+            '<td class="m">'+s.today.blows+'</td>'+
+            '<td class="n">'+s.rule.blows+'</td>'+
+            '<td class="m">'+s.today.strip+' → '+s.rule.strip+' blows</td>'+
+            '<td class="'+(d>0?'ok':'m')+'">'+(d>0?sgn(d)+' blows survived':'nothing')+'</td></tr>';
+        }).join('')+'</table>'+
+        '<div class="why">Every figure is a body built and read off <b>unitFrom</b>. Wearing at '+
+        Math.round((D.wear||1)*100)+'% is arithmetically the same body carrying <b>armour ÷ '+
+        (D.wear||1)+'</b>, which is why there is one loop and not two.</div>'
+        :'')+
     '</div></div>';
 }
 
