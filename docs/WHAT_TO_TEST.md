@@ -26,6 +26,42 @@
 
 ---
 
+## #289 - Softer shake, salvage stops being a door, the tour cut to a third, and the free class pick is a level-4 thing
+
+**In the game.** Four asks. The one worth checking hardest is the perk sheet, because the rule
+changed under a save you may already be carrying.
+
+**The perk tab, in three steps.** Open the company sheet on the Captain · PERKS tab · read the
+line above the cards.
+
+- **Level 2 offers ONE currency.** `1 PERK POINT · CLICK A CARD TO TAKE IT`, and DUELLIST,
+  EVERCHANGING LUCK and DISENGAGE all say `★ CLICK TO TAKE`. Taking one spends the point.
+  **A bug** is a second perk arriving free, or any card at level 2 or 3 wearing `★ FREE`.
+- **Level 4 is where the free one lands.** The starred class cards read `★ FREE · CLICK TO TAKE`
+  and the general ones do not, and the footer says where it came from. **One** free pick, ever -
+  levels 5 through 8 must not hand a second.
+- **A class card below level 4 is still buyable**, with an ordinary perk point. **A bug** is a
+  card at level 2 saying it needs something you cannot get until level 4.
+- **If you are mid-run with a Captain who already took a free perk at level 2**, they keep the
+  perk and cannot spend a second pick. Nothing is taken back.
+
+**In a fight.** Start any road fight · hit something · let something hit you.
+
+- **The ground moves less than it did.** A landed blow is a small sideways knock; taking one is
+  a slightly bigger, slower drop. **The plaque, the cards and the log must not move.**
+- **A bow shot shakes it too, both ways** - this did not work at all when it shipped. Shoot
+  something, then let their slinger hit you.
+- **A miss shakes nothing.** **A bug** is a dark strip appearing along any edge of the field.
+
+**On the road bar.**
+
+- **The SALVAGE figure does not click any more.** The cursor stays a `?` over it and its hover
+  no longer says ▸ CLICK. **The wagon chip beside it still opens the wagon** - that is the door.
+- **The opening tour is three short cards.** THE CHEST is four one-line resources and no payday
+  paragraph; THE COMPANY is one sentence; THE ROAD is two. **A bug** is a resource line here
+  saying something different from that resource's own hover on the same bar - they read one
+  table now.
+
 ## #288 - The rout pays the toll, the formations go, and the sheet stops charging mood it never took
 
 **In the game.** Seven asks. Two of them turned out to be a bug and an absence rather than a

@@ -2814,18 +2814,26 @@ body:has(#battle.on) .whisp{bottom:138px}
    which one just happened.
    ⚠ `--sx` IS THE SIGN OF THE BLOW and defaults to 1, so a stylesheet read with
    no JS behind it still animates rather than collapsing to `calc(* -3px)`. */
+/* ⛔ #289 - SOFTER, ON HIS WORD, AND THE SCALE DID NOT COME DOWN WITH IT.
+   Throw: jolt 3px -> 1.8, reel 5px -> 3 and the roll .35deg -> .2. ⚠ THE
+   `scale(1.012)` IS NOT PART OF THE PUNCH AND MUST NOT BE TUNED WITH IT - it is
+   the overscan that keeps `#bField`'s `overflow:hidden` edge covered, and the
+   vertical half is the tight one: 720 x .012 / 2 = 4.32px against reel's 3px
+   drop. Taking it to 1.008 would leave 2.88 against that same 3 and open a dark
+   strip along the top on every blow you take. Measured, both keyframes, all four
+   edges - see the coverage probe in the entry. */
 #bField.jolt{animation:jolt calc(.05s * var(--pace) * var(--hitp)) cubic-bezier(.3,.1,.4,1)}
 @keyframes jolt{
   0%{transform:none}
-  38%{transform:translate(calc(var(--sx,1) * -3px),1px) scale(1.012)}
-  72%{transform:translate(calc(var(--sx,1) * 1.6px),0) scale(1.012)}
+  38%{transform:translate(calc(var(--sx,1) * -1.8px),.6px) scale(1.012)}
+  72%{transform:translate(calc(var(--sx,1) * 1px),0) scale(1.012)}
   100%{transform:none}}
 #bField.reel{animation:reel calc(.07s * var(--pace) * var(--hitp)) cubic-bezier(.2,.6,.35,1)}
 @keyframes reel{
   0%{transform:none}
-  22%{transform:translate(calc(var(--sx,1) * 2px),5px) rotate(.35deg) scale(1.012)}
-  50%{transform:translate(calc(var(--sx,1) * -2.4px),-3px) rotate(-.25deg) scale(1.012)}
-  76%{transform:translate(1.4px,2px) scale(1.012)}
+  22%{transform:translate(calc(var(--sx,1) * 1.2px),3px) rotate(.2deg) scale(1.012)}
+  50%{transform:translate(calc(var(--sx,1) * -1.4px),-1.8px) rotate(-.15deg) scale(1.012)}
+  76%{transform:translate(.8px,1.2px) scale(1.012)}
   100%{transform:none}}
 /* the collision itself: a hard bloom where the two of them met */
 .hitflash{position:absolute;width:30px;height:30px;margin:-15px 0 0 -15px;pointer-events:none;
@@ -12590,10 +12598,27 @@ function giveClassSkills(p){
    one, and it may only be spent inside that lane. It is a separate counter from
    `perkPoints` on purpose - a body that banks a free pick and a perk point has two
    different things to spend and the sheet must not let one buy the other. */
+/* ⛔ #289 · AND THE FREE PICK IS A LEVEL-4 THING, NOT AN EVERY-TIER THING.
+   (User, with a level-2 Captain holding two perks on screen: *"somehow i go for
+   free one perk on second lvl for capitan - Class perks for free only on 4th
+   lvl"*.) #284 handed one at EVERY level whose class lane had anything in it,
+   and the captain's lane starts at 2 - so a promotion to 2 banked a perk point
+   AND a free class card, which is two perks for one level on the one class the
+   player is always looking at.
+   ⛑ IT IS A DISCOUNT AT 4, NOT A GATE ANYWHERE ELSE. A class card below the tier
+   is bought with an ordinary perk point like everything else on the sheet; what
+   changed is that the level no longer hands the point back.
+   ⛔ ONE LIST, TWO READERS: `levelUp` grants against it and `freeEarned` caps
+   against it, so a save carrying a pick banked under the OLD rule cannot spend
+   it - the migration is the cap, not a pass over the save. ⚠ #262's own draft
+   said levels 4 AND 7; the user said 4. Putting 7 back is one entry in this
+   array and nothing else. */
+const CLS_FREE_TIERS=[4];
 const clsLaneAt=(p,l)=>((CLASSES[p.cls]&&CLASSES[p.cls].perks&&CLASSES[p.cls].perks[l])||[]);
 const clsLaneOpen=p=>{let a=[];for(let l=2;l<=Math.min(PERKTIERS,p.level||0);l++)
   a=a.concat(clsLaneAt(p,l));return a.filter(k=>(p.perks||[]).indexOf(k)<0);};
-const freeLeft=p=>Math.min(p.freePicks||0,clsLaneOpen(p).length);
+const freeEarned=p=>CLS_FREE_TIERS.filter(l=>(p.level||0)>=l).length;
+const freeLeft=p=>Math.min(p.freePicks||0,freeEarned(p),clsLaneOpen(p).length);
 const PERKTIERS=8;   /* #262 - BERSERK sits at 8 */
 const _PERKTIERS_OLD=8;
 /* two classes cast; everything else in the game that asked "is this a mage?"
@@ -12874,14 +12899,12 @@ function levelUp(p){
   const two=holds({st:effStats(p)},'mor','TWO PERK POINTS')?2:1;
   if(isPerk)p.perkPoints=(p.perkPoints||0)+two;
   else p.statPoints=(p.statPoints||0)+1;
-  /* ⛔ #284 - AND THE CLASS LANE IS FREE. Reaching a level whose class lane has
-     anything in it hands a free pick for that lane, on top of whatever the
-     promotion banked. This is the whole of the user's *"All 4 lvl perks go for
-     free - you can just choice 1"*: the archer's tier 4 costs nothing, and the
-     point that level granted is still there for the general lane.
-     ⚠ IT IS HANDED ON THE LEVEL ITSELF, not on the perk half of the alternation:
-     a class lane at an odd tier would otherwise never pay. */
-  if(clsLaneAt(p,p.level).length)p.freePicks=(p.freePicks||0)+1;
+  /* ⛔ #284, RE-CUT BY #289 - THE CLASS LANE IS FREE AT ONE TIER AND NOT AT EVERY
+     TIER. See `CLS_FREE_TIERS`. It is still handed on the LEVEL itself rather than
+     on the perk half of the alternation, or a class lane at an odd tier would
+     never pay. */
+  if(CLS_FREE_TIERS.indexOf(p.level)>=0&&clsLaneAt(p,p.level).length)
+    p.freePicks=(p.freePicks||0)+1;
   giveClassSkills(p);
 }
 /* how far along the current level, 0..1. Full at the cap. Clamped, because
@@ -18786,18 +18809,20 @@ const TUTSTEPS={
      three inches away counts the days down by itself (#152).
      ⚠ The glyphs are RES_ICON, so this card and the bar it is pointing at
      cannot drift apart. */
+  /* ⛔ #289 - CUT FROM 67 WORDS TO 26, AND EVERY LINE IS `RES_LINE` NOW. The
+     payday paragraph went with the rest: the PAYDAY chip is three inches away,
+     counts the days down by itself and opens on the whole bill (#152, #223), so
+     a tour step spending a third of its card on it was reading a chip out loud -
+     which is exactly what #155 and #156 deleted two other steps for. */
   w_res:{h:'THE CHEST',
-    t:()=>RES_ICON.crowns+' '+resCaps('crowns')+' - wages, supplies, and anything you buy.\n'+
-      RES_ICON.food+' '+resCaps('food')+' - what the road asks for, and mending the hurt faster.\n'+
-      RES_ICON.salvage+' '+resCaps('salvage')+' - fitting out the wagon, on the road. What is left banks for the forge.\n'+
-      RES_ICON.gems+' '+resCaps('gems')+' - the few things nothing else buys.\n\n'+
-      'Wages fall due every '+num(PAY_EVERY)+' days. An empty chest on payday is how '+
-      'companies end, and everybody remembers it.',
+    t:()=>['crowns','food','salvage','gems'].map(k=>
+      RES_ICON[k]+' '+resCaps(k)+' - '+RES_LINE[k]).join('\n'),
     a:()=>$('wRes')},
+  /* ⛔ #289 - and this one names the door and stops. The three things it used to
+     list (gear, wounds, who carries what) are the screen it opens, described
+     from outside; a tour step is a signpost, not a table of contents. */
   w_company:{h:'THE COMPANY',
-    t:'Everyone you have: the heads, the day\'s wages, the mood. Click here '+
-      'to open them: gear, wounds, who carries what, and the stash in the '+
-      'cart. A stash item clicked goes onto somebody.',
+    t:'Everyone you have. Click to open their gear, their wounds and the stash.',
     a:()=>$('wCompany')},
   /* ⛔ #155 - `w_day` IS DELETED, NOT LEFT DARK. (User, 2026-08-14, pointing at
      the step: "this one is also unnesesery for explanation".) The register rule
@@ -18806,10 +18831,12 @@ const TUTSTEPS={
      the middle of the bar and the payday chip counts the wages down beside it;
      a step explaining that a clock is a clock was the one the road was already
      showing. */
+  /* ⛔ #289 - the two clicks and the hover. *"The rest is yours to decide"* was
+     the tour telling the player it had finished rather than teaching anything,
+     and *"This is the company"* is said by the step before it. */
   w_road:{h:'THE ROAD',
-    t:'This is the company. Click a place to see what the road to it costs, '+
-      'click it again to walk it, and hover anything to ask what it is. '+
-      'The rest is yours to decide.',
+    t:'This is you. Click a place to see what the road costs, click it again to '+
+      'walk it. Hover anything to ask what it is.',
     a:()=>$('wToken')}
 };
 /* ═══ #120 - the world tour's own queue. The battle's queue lives on B.tut
@@ -24454,6 +24481,19 @@ function strike(a,d,act,mult){
         bloodFx(d,pd.x,pd.y,bdx,bdy,hpD);
       }}
   }else animClash(a,d,flavour,false,!!act.sweep,hpD);
+  /* ⛔ #289 - AND THE GROUND MOVES HERE, WHICH IS THE ONE PLACE BOTH BRANCHES
+     MEET. #288 put it inside `animClash`, and the line above is the reason that
+     was wrong: a ranged hit never reaches `animClash`, so an arrow in your chest
+     shook nothing while a knife in your arm did. `paintBlow` only ever runs on a
+     blow that LANDED - it opens by floating the damage - so a miss still moves
+     nothing, which was the other half of the ask.
+     ⚠ TAKING ONE WINS THE TIE: a blow between two of your own (a kick, a shove
+     into a friend) is still something that happened TO you, and there is only one
+     field to shake. */
+  {const pa=hexPt(a),pd=hexPt(d);
+   const sx=(pa&&pd&&pd.x<pa.x)?-1:1;
+   if(d.side==='you')fieldJolt('reel',sx);
+   else if(a.side==='you')fieldJolt('jolt',sx);}
   sfxStrike(a,d,armD,hpD);
   if(armD>3)fx(d,'−'+Math.round(armD)+' arm','#96a1a5',true);
   };
@@ -25218,6 +25258,13 @@ function fieldJolt(k,dx){
   f.classList.remove('jolt','reel');void f.offsetWidth;
   f.style.setProperty('--sx',dx>=0?'1':'-1');
   f.classList.add(k);
+  /* ⛔ #289 - AND IT TAKES ITSELF OFF AGAIN. The animation does not fill
+     forwards, so a left-behind class changes nothing on screen - but `gates.js`
+     reported the element as `DIV.reel#bField` and the next reader of that line
+     has to work out whether a shake is stuck on. A class that outlives its
+     animation is furniture. `{once:true}` so a fight's worth of blows cannot
+     stack listeners on one element. */
+  f.addEventListener('animationend',()=>f.classList.remove(k),{once:true});
 }
 function animClash(a,d,kind,evaded,noLunge,hpD){
   const pa=hexPt(a),pd=hexPt(d);
@@ -25266,11 +25313,6 @@ function animClash(a,d,kind,evaded,noLunge,hpD){
     /* #165 - and if it found flesh, it bleeds. See bloodFx: `arm` is the
        harness turning it, and a turned blow leaves nothing on the floor. */
     if(kind!=='arm')bloodFx(d,cx,cy,dx,dy,hpD||0);
-    /* ⛔ #288 - and the ground moves. TAKING one wins the tie, because a blow
-       between two of your own (a kick, a shove into a friend) is still something
-       that happened TO you, and because there is only one field to shake. */
-    if(d.side==='you')fieldJolt('reel',dx);
-    else if(a.side==='you')fieldJolt('jolt',dx);
   }
 }
 /* ═══ #36 — DRAW THE LANE ═══════════════════════════════════════════════
@@ -41942,15 +41984,19 @@ function drawInv(){
          declined rather than something a class IS.
          ⚠ THE TAG SAYS WHICH CURRENCY IT IS, because two currencies the player cannot
          tell apart is worse than one. */
+      /* ⛔ #289 - a class card with no free pick is BOUGHT, not locked. Before
+         this it read `NEEDS A FREE CLASS PICK` at every tier but the ones that
+         handed one, which under the new rule would have walled off the captain's
+         whole level-2 lane until level 4. */
       const isCls=(PERKS[k]||{}).kind==='class';
       const free=isCls&&freeLeft(p)>0;
-      const canBuy=!have&&open&&(free||(!isCls&&perkPts>0));
+      const canBuy=!have&&open&&(free||perkPts>0);
       pkHTML+='<'+(canBuy?'button':'div')+' class="pk'+(have?' have':open?'':' locked')+
         (canBuy?' buy':'')+(free&&!have&&open?' freepick':'')+'"'+
         (canBuy?' data-perk="'+k+'"':'')+'><span class="tag">'+
         (have?'TAKEN'
          :canBuy?(free?'★ FREE · CLICK TO TAKE':'★ CLICK TO TAKE')
-         :open?(isCls?'NEEDS A FREE CLASS PICK':'NEEDS A PERK POINT')
+         :open?'NEEDS A PERK POINT'
          :'NEEDS LEVEL '+lv)+
         '</span>'+perkKind(k,p)+'<b>'+PERKS[k].n+'</b><i>'+PERKS[k].d+
         '</i></'+(canBuy?'button':'div')+'>';
@@ -41965,7 +42011,8 @@ function drawInv(){
         (freeLeft(p)?'<b>'+freeLeft(p)+' free class pick'+(freeLeft(p)>1?'s':'')+'</b>':'')+
         (freeLeft(p)&&perkPts?' and ':'')+
         (perkPts?'<b>'+perkPts+' perk point'+(perkPts>1?'s':'')+'</b>':'')+
-        '. A class skill costs nothing: the level that opened it paid for it. '
+        '. A free class pick comes with level '+CLS_FREE_TIERS.join(' and ')+
+        ' and may only be spent in the starred lane. '
       : '')+
     'A promotion buys one rung. Everything above the line this one has reached is what '+
     'the road still owes them.</div>';
@@ -41979,7 +42026,9 @@ function drawInv(){
        same shape the old one was: refuse, silently, rather than spend the wrong
        thing. A class skill takes a free pick; everything else takes a point. */
     const k=b.dataset.perk, isCls=(PERKS[k]||{}).kind==='class';
-    if(isCls){ if(freeLeft(p)<=0)return; p.freePicks--; }
+    /* #289 - the free pick FIRST when there is one, the point otherwise. A class
+       card is not refused for want of the free pick any more. */
+    if(isCls&&freeLeft(p)>0)p.freePicks--;
     else{ if((p.perkPoints||0)<=0)return; p.perkPoints--; }
     p.perks.push(k);sfx('promote');drawInv();});
   }
@@ -46113,14 +46162,18 @@ function worldTick(){
      while something un-bought is AFFORDABLE and the card has not been opened
      since the chest last changed (`wagonWaiting`). ⛔ Never for a thing you
      cannot afford: a ! that leads to a greyed tile is the tease #197's rule
-     forbids. The salvage segment is a second door to the same card, because
-     it is the resource the card spends. */
+     forbids.
+     ⛔ #289 - AND THE SALVAGE SEGMENT IS NOT A SECOND DOOR ANY MORE. (User:
+     *"Make salvage not clickible (we have clickble wagon)"*.) It was one card
+     with two handles on one bar, and the reason the second one existed - *it is
+     the resource the card spends* - is an argument for the WAGON chip being
+     next to it, which it is. ⚠ The `act:` line came off `WTIPS.salvage` in the
+     same edit: a hover that says ▸ CLICK on a thing that does not click is the
+     readout promising a door the build does not have. */
   const wg=$('wWagon');
   if(wg){const wn=wagonWaiting();
     wg.innerHTML=CART_SVG+(wn?'<span class="cbadge">!</span>':'');
     wg.classList.toggle('waiting',wn);wg.onclick=openWagon;}
-  const sv=$('wRes').querySelector('[data-w="salvage"]');
-  if(sv){sv.classList.add('click');sv.onclick=openWagon;}
   /* the flash is one rebuild wide: the animation plays out on the nodes just
      written, and the next tick builds them plain */
   if(G.paidFlash)G.paidFlash=false;
@@ -46342,23 +46395,21 @@ function worldTick(){
       act:'CLICK: double rations - '+RATION_COST+' '+resName('food',RATION_COST)+'. Wounds AND injuries '+
         'mend twice as fast for '+num(RATION_DAYS)+' days.'},
     crowns:{t:'CROWNS',col:'var(--g4)',
-      d:'Wages, tolls, hires, bribes, anything for sale. You pay the company every '+
-        num(PAY_EVERY)+' days for service and food.',
+      d:resSays('crowns')+'<br><br>You pay the company every '+
+        num(PAY_EVERY)+' days, for service and food.',
       x:'It does not survive the run. Spend it like somebody who knows that.'},
     prov:{t:resCaps('food'),col:'var(--grain)',
       /* ⛔ #288 - cut to the user's own line. The three bold clauses were the
          three DOORS this resource opens, and the doors say so themselves where
          they are offered (`blood.act`, `mood.act`, the road cards' own chips). */
-      d:'Spent on the road, on mending fast, and on lifting the mood.',
+      d:resSays('food'),
       x:'Nothing eats them on its own. Every one you lose, you spent.'},
     salvage:{t:'SALVAGE',col:'var(--wood)',
-      d:'Buys room in the wagon, and the rest of what the wagon can be given.',
+      d:resSays('salvage'),
       x:'Timber, iron and fittings pulled off the road. What is left at the end banks '+
-        'for the travel-forge.',
-      act:'CLICK: the wagon.'},
+        'for the travel-forge.'},
     gems:{t:'GEMS',col:'var(--gem)',
-      d:'Buys a level, the rarest doors on the road, and the last things the wagon '+
-        'has to sell. Stones the wrong colour for this country.',
+      d:resSays('gems')+'<br><br>Stones the wrong colour for this country.',
       x:'The one thing both worlds take: spend them in-run, or bank them for the forge.'},
     pet:{t:(PETS[petKey]?PETS[petKey].n:'A companion'),col:'#8ca35a',
       d:(petKey&&PETS[petKey]?PETS[petKey].d:'A companion follows the company.'),
@@ -48082,6 +48133,24 @@ const raceDoorPick=list=>{
    is deliberate: this rule may only fire on a payment it can actually see. The
    cards where the gift is invisible to it are handled by deleting the dead
    door outright, by hand, with a note. */
+/* ⛔ #289 · WHAT EACH RESOURCE IS FOR, ONCE. (User: *"Check tutorial - i need on
+   global map shorter, more clear and cleaner"*.)
+
+   ⛑ THE TOUR AND THE FOUR HOVERS WERE TWO AUTHORS ON ONE FACT AND THEY HAD
+   ALREADY DRIFTED. `w_res` said salvage was *"fitting out the wagon, on the
+   road"* while `WTIPS.salvage`, rewritten the day before off the same user's own
+   text, said it *"buys room in the wagon"*. Neither was wrong and the player was
+   being taught two vocabularies for one glyph on two screens a click apart.
+   ⚠ ONE CLAUSE EACH, because the tour card is where they are read four at a
+   time and length is the whole ask. Anything longer than a clause belongs in
+   that chip's own hover, under this line. */
+const resSays=k=>RES_LINE[k].charAt(0).toUpperCase()+RES_LINE[k].slice(1);
+const RES_LINE={
+  crowns :'wages, and anything for sale.',
+  food   :'road events, mending fast, and lifting the mood.',
+  salvage:'room in the wagon, and the rest of what it can be given.',
+  gems   :'a level, the rarest doors, and the best the wagon sells.'
+};
 const DOOR_RES=['crowns','food','salvage','gems','wood','iron','morale','xp'];
 const doorGives=c=>{
   const fx=c.fx||{};

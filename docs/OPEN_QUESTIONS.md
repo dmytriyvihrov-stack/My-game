@@ -25,6 +25,14 @@ back already answered by work that was not about them.
 
 ---
 
+## AF · From #289
+
+| | the question | ⭐ mine |
+|---|---|---|
+| **AF1** | **The free class pick lands at level 4 and nowhere else, and #262's own draft said 4 AND 7.** You said *"Class perks for free only on 4th lvl"* and that is what is built: `CLS_FREE_TIERS=[4]`. The consequence is that the tier-7 class lane - the Captain's WAR-LEADER / PATIENT / UNDERDOG, and every other class's - is bought with an ordinary perk point, competing with the general lane the way it did before #284. That is coherent, and it also means a class stops feeling free exactly when a body is finally deep enough to be a specialist | **leave it at 4 and see whether a level-7 body ever feels like it is being taxed for its own trade.** The rule reads better as *one free class card, at the level a class becomes a fork* than as a recurring discount. ⚠ If 7 should come back it is `CLS_FREE_TIERS=[4,7]` and nothing else: both the grant and the cap read that one array |
+
+---
+
 ## AE · From #288
 
 | | the question | ⭐ mine |
