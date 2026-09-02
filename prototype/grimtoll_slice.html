@@ -1316,10 +1316,9 @@ button:disabled{cursor:not-allowed}
    is what the player is looking for. !important beats .usp.now's animation. */
 .hex.spot img.usp{filter:drop-shadow(0 0 4px #f7efd0) drop-shadow(0 0 11px #d9bd7e)!important}
 #bTop .ord:hover{background:#33494a;cursor:pointer}
-/* formation state, worn on the unit */
-.fbadge{position:absolute;bottom:1px;left:2px;font-size:var(--fs2);line-height:1;color:#c9a227;
-        text-shadow:0 0 3px #000,0 0 3px #000}
-.fbadge.sw{color:#e0a89c;left:auto;right:2px;bottom:13px}
+/* ⛔ #288 - `.fbadge` IS DELETED WITH THE FORMATIONS IT DREW. A rule with no
+   writer greps as live furniture and is the next session's ten minutes - the
+   same reason #194 took `day` out of WTIPS rather than leaving it unbound. */
 .props{position:absolute;left:0;right:0;bottom:2px;text-align:center;font-size:var(--fs2);
        line-height:1;opacity:.5;pointer-events:none}
 /* what this one fights with, readable without squinting at the sprite.
@@ -1875,10 +1874,9 @@ body:has(#battle.on) .whisp{bottom:138px}
    ⚠ `#e0a89c` AND NOT `--blood-lit`, same as `.fbadge.sw` four hundred lines
    up and for the same reason: `#c15d55` is a warning colour at 15px and a grey
    smudge at the 10px floor. The EDGE carries the red; the figure carries the
-   legibility. ⚠ `.fbadge` IS ALSO DOWN HERE (bottom:1 left:2, a braced spear),
-   and the two can touch on a spearman who is holding you. It is a two-glyph
-   badge against a plate that is drawn over it, and the plate wins, which is
-   the right way round for the one of them that is a price. */
+   legibility. ⚠ `.fbadge` used to sit down here too and could touch this on a
+   spearman who was holding you; #288 deleted it with the formations, so the
+   corner is the chip's alone now. */
 /* ═══ ⛔ #224 · AND THE WHOLE COLLISION TABLE ABOVE IS HISTORY ════════════
    Every line of it was about surviving a BODY standing on the chip's hex.
    The chip is on the hex the step is aimed AT now (see paintHand), and a lit
@@ -2794,6 +2792,41 @@ body:has(#battle.on) .whisp{bottom:138px}
 @keyframes sway{0%{transform:translate(0,0) scaleX(var(--flip,1))}
   45%{transform:translate(calc(var(--dx)*-3.5px),calc(var(--dy)*-2.5px)) rotate(-2.5deg) scaleX(var(--flip,1))}
   100%{transform:translate(0,0) scaleX(var(--flip,1))}}
+/* ═══ ⛔ #288 · THE FIELD ITSELF FLINCHES, AND THE TWO EVENTS ARE NOT ALIKE ═══
+   (User: *"Lets add smaller shakes of screen when you hit enemy to the body and
+   a little bit diferent when enemy hit you"*.)
+
+   ⛔ IT IS ON `#bField` AND IT MAY NOT BE ANYWHERE ELSE. `#bGround` carries the
+   camera, which `camApply` writes as an INLINE transform, and a CSS animation
+   outranks an inline declaration outright - a shake there would eat the zoom for
+   the length of every blow. `#bField` has no transform of its own, and `#bFx`
+   anchors every float, spark and ray it draws off (hexRect − fieldRect), so the
+   ground, the sprites and the numbers move as one body and that arithmetic is
+   untouched. The chrome is OUTSIDE `#bField` (see the markup note at the top of
+   #battle) and correctly does not move: a HUD that shakes is a bug, not a punch.
+   ⚠ THE SCALE IN EVERY MOVED KEYFRAME IS NOT A FLOURISH. `#bField` is `inset:0`
+   and `overflow:hidden`, so a bare translate uncovers a strip of whatever is
+   behind it; 1.012 on a ~1200px field is ~7px of overscan against a 5px throw.
+   ⚑ AND THE TWO ARE TOLD APART THE WAY #165 TOLD A DODGE FROM A WHIFF: the sizes
+   are the message. LANDING one is 3px, sideways, along the blow, over in one
+   beat - a jolt down your own arm. TAKING one is 5px, vertical first, with a
+   quarter-degree roll and three beats. Same vocabulary, and nobody has to be told
+   which one just happened.
+   ⚠ `--sx` IS THE SIGN OF THE BLOW and defaults to 1, so a stylesheet read with
+   no JS behind it still animates rather than collapsing to `calc(* -3px)`. */
+#bField.jolt{animation:jolt calc(.05s * var(--pace) * var(--hitp)) cubic-bezier(.3,.1,.4,1)}
+@keyframes jolt{
+  0%{transform:none}
+  38%{transform:translate(calc(var(--sx,1) * -3px),1px) scale(1.012)}
+  72%{transform:translate(calc(var(--sx,1) * 1.6px),0) scale(1.012)}
+  100%{transform:none}}
+#bField.reel{animation:reel calc(.07s * var(--pace) * var(--hitp)) cubic-bezier(.2,.6,.35,1)}
+@keyframes reel{
+  0%{transform:none}
+  22%{transform:translate(calc(var(--sx,1) * 2px),5px) rotate(.35deg) scale(1.012)}
+  50%{transform:translate(calc(var(--sx,1) * -2.4px),-3px) rotate(-.25deg) scale(1.012)}
+  76%{transform:translate(1.4px,2px) scale(1.012)}
+  100%{transform:none}}
 /* the collision itself: a hard bloom where the two of them met */
 .hitflash{position:absolute;width:30px;height:30px;margin:-15px 0 0 -15px;pointer-events:none;
   border-radius:50%;animation:hitflash calc(.30s * var(--pace) * var(--hitp)) ease-out forwards}
@@ -7394,7 +7427,7 @@ a.popt.sendit{display:block;text-decoration:none}
          ⚠ THE WORD IS NOT LOST: it is the `title`, which this button already had.
          ⚠ AND IT PAYS FOR THE MENU. 103px of button becomes 34, which is what
          let ☰ MENU take this bar's top-right corner without anything else moving. -->
-    <div class="sep"></div><button id="iWagon" class="ibico" title="THE WAGON - what is bolted in, what the next thing costs, and the seats"></button><button id="iBack">BACK TO THE ROAD</button></div>
+    <div class="sep"></div><button id="iWagon" class="ibico" title="THE WAGON - what is bolted in, what the next thing costs, and the space"></button><button id="iBack">BACK TO THE ROAD</button></div>
   <div id="iMain"><div id="iRoster"></div><div id="iChar"></div><div id="iStash"></div></div>
 </section>
 
@@ -9842,7 +9875,15 @@ const HDA_CUT=1/3.5;
    top of this unchanged - it is now worth three times the base rather than two
    thirds of it, which is what a perk should be. */
 const OPENING=5;
-const GIVEN={hp:Math.round(60*HDA_CUT),hit:70,dodge:14,land:69,nerve:100,climb:8,opening:OPENING,frail:.90};
+/* ⛔ #288 - BASE DODGE 14 -> 10. (User: *"do we have basic dodge 14%? Make it
+   10%"*.) One knob, the way `HDA_CUT` and `HIT_EASE` are knobs: `dodgeOf` reads
+   `GIVEN.dodge` and adds the agility rung, so every body on the roster comes
+   down 4 together and the ladder above it is untouched.
+   ⚠ IT IS THE ROSTER'S FLOOR AND NOT THE FIELD'S. Foes carry AUTHORED dodge on
+   their own statblocks (`enemy-stats`'s rule against a second `FOE_GIVEN`), so
+   this moves your side only - which is what makes it a to-hit change for the
+   enemy and not a wash. */
+const GIVEN={hp:Math.round(60*HDA_CUT),hit:70,dodge:10,land:69,nerve:100,climb:8,opening:OPENING,frail:.90};
 /* the body: the pool, the weight of the blow, and how easy it is to hit -
    which is a modifier on the ATTACKER'S roll and never on the defender's
    dodge. A small body is hard to hit because it is small, not because it is
@@ -13233,36 +13274,28 @@ const rcMarks=o=>rMark(o.race)+' '+cMark(o.cls);
    `d` (who they are, cut to the bone) and `form` (the name of the group
    trick and the shape you have to stand in to get it), because a formation
    is a decision about placement and no table holds the sentence for it.
-   The NUMBER in the formation line is read from FORM, never typed here.
 
-   ⚠ `form.k` NAMES A FIELD OF `FORM`, WHICH IS DECLARED FOUR THOUSAND LINES
-   BELOW THIS ONE. That is fine only because nothing reads it until a hover.
-   Do not "simplify" it by putting FORM.lineDodge in this table: it is a
-   temporal-dead-zone throw that aborts the entire script, and this file has
-   shipped that crash once already. */
+   ⛔ #288 · AND `form` IS GONE TOO, WITH THE FORMATIONS THEMSELVES. (User:
+   *"lets delete all races bonuses - as 'the line' and etc"*.) See the note where
+   `FORM` was declared. The paragraph above is kept as written, because its
+   reasoning is what a race box is still FOR: `d` is who they are, cut to the
+   bone, and every number under it stays DERIVED.
+
+   ⛔ AND `d` IS ONE SENTENCE ON ALL THREE ROWS NOW. (User, cutting the human's
+   box by hand and adding *"If you see other classes / races longer descriptions
+   - feel free to cut them, as in the pattern"*.) #142 measured these three at
+   125 / 116 / 159 words and cut them; two of the three had grown a second
+   sentence back since. The pattern is the first sentence and nothing after it:
+   what they are, in the voice, once. The ogre's wage clause went with the rest -
+   the wage is PRINTED underneath, off `WAGE`, which is #142's whole finding. */
 const RACEHELP={
   human:{t:'HUMAN',
-    d:'Two generations off the ships and militarily a joke. What they are good at is farming, '+
-      'breeding animals, and turning up.',
-    form:{n:'THE LINE',w:'of anyone, in a row',k:'lineDodge',u:'dodge to each of them',
-          note:'The one formation anybody can stand in. It was written for them.'}},
+    d:'Two generations off the ships and militarily a joke.'},
   ratkin:{t:'RATKIN',
-    d:'The most advanced people on the island and the worst manufacturers on it: cheap rubbish, '+
-      'very fast. Organised in clans, mostly at war with each other.',
-    form:{n:'THE SWARM',w:'ratkin, on one enemy',k:'swarmHit',u:'to its chance to hit',
-          note:'The weakest thing you can hire, and what makes everybody else hurt.'}},
+    d:'The most advanced people on the island and the worst manufacturers on it: cheap '+
+      'rubbish, very fast.'},
   ogre:{t:'OGRE',
-    /* ⚠ THE WAGE SENTENCE SURVIVED THE CUT because it made a strange number
-       legible. #152 changed the number (user: "ogr a day 2 instead of 1" -
-       the one-crown joke is dead), so the sentence now explains parity
-       instead of the discount. A line that makes a number legible is not the
-       same thing as a line that repeats one. */
-    d:'Huge, slow, and profoundly uninterested. They live where nobody else wants to and farm '+
-      'it badly. Mostly they want to be left alone. Paid two crowns a day, a human\'s wage: '+
-      'somebody finally told him what the others get, and he thinks slowly but he does not '+
-      'forget.',
-    form:{n:'THE WEIGHT',w:'ogres, near each other',k:'weightMor',u:'mood a turn to everything nearby',
-          note:'Slow enough that they arrive together anyway. Keep them that way.'}}
+    d:'Huge, slow, and profoundly uninterested.'}
 };
 /* ═══ ⛔ #287 · WHAT A CLASS DOES THAT IS NOT A STAT AND NOT A PERK ═══════════
    (User: *"I don't see class information in the inventory in the main build. Make it
@@ -17014,12 +17047,12 @@ const RACESKILL={
   human:{k:'kick',n:'KICK',cost:1,reach:1,push:1,cool:1,maxSize:1,aim:10,
     provoke:true,slip:true,
     dmg:[2,4],am:.15,ft:.35,
-    note:'Almost no damage - 1 or 2 points, most of it eaten by their armour. It puts '+
-      'them ONE HEX straight back, away from you - into the water, off your spearman, or '+
-      'into your ogre\'s reach. There is no aiming it: walk round first. Anyone else still '+
-      'in reach of them gets a free half-swing as they go, and if somebody is standing '+
-      'right behind them they are shoved round him instead of into him. It does not move '+
-      'an ogre.'},
+    /* ⛔ #288 - CUT TO THE USER'S OWN LINE (*"Pushes enemy or ally one hex from
+       you"*), keeping the two facts a card may not drop: `maxSize:1` really does
+       refuse an ogre, and the aim really is your own feet. A note that promised
+       neither would be a label the till does not honour. */
+    note:'Pushes an enemy or one of yours ONE HEX straight back, away from you. There is '+
+      'no aiming it: walk round first. Nothing ogre-sized moves.'},
   /* ONE GENERAL VERB, not a rock-throwing skill: pick up anything on an
      adjacent tile and throw it. It ABSORBS the old HURL A RATKIN, which stops
      being its own action and becomes the case where the thing you grabbed
@@ -17315,7 +17348,10 @@ function unitFrom(p){
           main.cone[1]+' to either side of that, and it will not go round a corner: '+
           'turn before you throw.':'')+
         (main.reload?' One action to wind it again before it will shoot twice.':'')+
-        (main.hands===2?' Two hands: nothing else fits.':'')};
+        /* ⛔ #288 - the user's joke, kept verbatim, and the two-hands fact kept
+           with it: it is what empties the off-hand slot. */
+        (main.hands===2?' Two hands: nothing else fits.':'')+
+        (main.reach>=2?' Poke them in the eye.':'')};
     /* #256 - the same rung on the weapon's own act */
     if(main.range)a.range=main.range+R+IREACH;else a.reach=main.reach+IREACH;
     /* ═══ #224 · THREE FIELDS THE WEAPON HANDS TO ITS OWN BLOW ══════════════
@@ -17443,10 +17479,10 @@ function unitFrom(p){
          was "costs 1 instead of 2" and had nothing left to buy, so it now
          buys the new rule's exception instead - see wallLive(). */
       : {k:'wall',n:'SPEAR WALL',cost:1,self:true,cool:2,
-         note:'One action. Anything stepping into your reach this round takes 75% of your '+
-           'spear, and half the time is shoved a hex back out of it. It will not go up, '+
-           'and stops working, with somebody already inside your reach - a spear is no '+
-           'use in a scrum.'},
+         /* ⛔ #288 - cut on the user's line. The scrum clause stays: it is the one
+            thing that turns this card OFF, and `wallLive` really charges for it. */
+         note:'Anything stepping into your reach takes 75% of the spear, and half the time '+
+           'is shoved a hex back out of it. No use with somebody already inside your reach.'},
     /* AIMED SHOT was "your normal attack, but better" - two actions for more
        of the same thing, which is not a signature, it is a tax. CRIPPLING
        SHOT is what an archer is actually FOR: it does not kill the target, it
@@ -20677,7 +20713,12 @@ const HOLD_T={
      Sling-master and the Steading-elder both make the same argument. */
   serj:{kind:'human',name:'Hold serjeant',hp:62,armour:84,mor:92,skill:62,dodge:14,speed:4,
     captain:true,lean:{mor:+1},
-    aura:{r:3,kind:'human',dodge:4,n:'THE LINE',g:'⚑',col:'#c9a227',
+    /* ⛔ #288 - RENAMED OFF THE DELETED FORMATION. This is a LEADER'S aura on
+       an enemy statblock and was never the race bonus, but it wore that bonus's
+       name, and a player who reads THE LINE on an enemy crest and then goes
+       looking for it on their own side is reading a rule the build no longer
+       has. The aura itself is untouched: +4 dodge, 3 hexes, the Hold's men. */
+    aura:{r:3,kind:'human',dodge:4,n:'SHIELDS UP',g:'⚑',col:'#c9a227',
       d:'+4 dodge to every one of the Hold\'s men within 3 hexes. The shields stay up.'},
     acts:[{k:'sword',n:'ARMING SWORD',cost:1,reach:1,dmg:[17,26],am:.95,ft:.30}]},
   /* the other two crests. No aura, better reach, and they come forward. */
@@ -22465,74 +22506,35 @@ function wallBlocked(u){
     alive().some(x=>x.side!==u.side&&!x.passive&&udist(u,x)<=1);
 }
 
-/* ═══════════════════════════════════════════════════════════════════════
-   FORMATIONS — what a race is FOR, expressed as a reason to stand together.
+/* ═══ ⛔ #288 · THE FORMATIONS ARE DELETED, ALL THREE ════════════════
+   (User: *"lets delete all races bonuses - as 'the line' and etc. It feels to
+   complex already"*.)
 
-   Race leans on the character sheet are deliberately tiny (±1, ±2), which is
-   right: a race should not be a different game. But that leaves nothing that
-   makes a ratkin company feel like a ratkin company. Formations do that
-   instead — they are collective, positional, and free of stat inflation, so
-   the difference shows up in how you PLACE people rather than in their
-   numbers.
+   THE LINE (+5 dodge in a row of three), THE SWARM (−14 to hit inside a ring of
+   three small bodies) and THE WEIGHT (−9 mood a turn near three ogres) are gone,
+   and with them `FORM`, `inLine`, `ringOf`, `weightNear`, both hex badges, both
+   hover rows and the `.fbadge` rule. What is left of a race is what it IS - the
+   stride, the size, the pool, the lean, the wage, the room it takes and the one
+   verb it can do - and none of that asks the player to hold a shape.
 
-   THE SWARM   3+ ratkin around one enemy   — it cannot land a blow cleanly
-   THE WEIGHT  3+ ogres on the field near each other — everything facing them wavers
-   THE LINE    3+ of anyone in a row        — harder to hit
+   ⚑ WHAT THIS COST, so the next session can weigh putting one back. Three
+   POSITIONAL rules, each free, each invisible unless you already knew to look
+   for it, and each carrying a SECOND hand-typed copy of its own number on a hex
+   badge. The argument FOR them is in the block this replaced (`git show
+   HEAD:` and search FORMATIONS): race leans are deliberately tiny, so without
+   these a ratkin company feels like nothing in particular. That is still true
+   and it is now a question about RACE SKILLS, which is where a race's character
+   is allowed to be expensive.
+   ⚠ `RACESKILL` IS UNTOUCHED and is not what this deleted. KICK, PICK UP AND
+   THROW and the ratkin's own verb are one body's act, on a card, with a
+   cooldown - not a shape three bodies have to stand in.
 
-   Deliberately race-agnostic on the last one: humans have no special trick,
-   so the trick they get is the one anybody can learn.
+   The old header is kept below, because it is the only statement of what went:
+
+   THE SWARM   3+ ratkin around one enemy   - it cannot land a blow cleanly
+   THE WEIGHT  3+ ogres on the field near each other - everything facing them wavers
+   THE LINE    3+ of anyone in a row        - harder to hit
    ═══════════════════════════════════════════════════════════════════════ */
-/* lineMor was struck 2026-08-01: the line is a dodge formation now, not a
-   morale one. See the note where it used to be applied. */
-/* ⛔ #217 - `swarmRaces` IS THE SWARM'S OWN LIST, and it is here rather than
-   spelled 'ratkin' at the two sites that ask, because there ARE two: the rule
-   inside hitBreakdown and the ≋ badge the hex draws. They were separate
-   literals, so the day one moved the board would have marked a body the rule
-   did not charge - #102's wrong-unit bug with a formation as the unit.
-   ⚑ THE SWARM IS SMALL BODIES AND NEVER ONE PEOPLE. Its own line has always
-   read *"too many small bodies on you to swing at any one of them"*, which is
-   as true of a dog pack as of a ratkin one, and a pack surrounding you is the
-   thing that fight is about. Beasts joined the list on the day they stopped
-   being ratkin, so the -14 lands exactly where it landed before: measured at
-   3.5% of your swings in the pack fight, on both sides of the change.
-   ⚠ HUMANS STAY OFF IT, for the reason the header above already gives - they
-   have no special trick, so the trick they get is the one anybody can learn. */
-const FORM={swarmNeed:3,weightNeed:3,lineNeed:3,swarmRaces:['ratkin','beast'],
-  swarmHit:-14,weightMor:-9,lineDodge:5};
-/* how many of `race` are engaging this unit. `race` may be one name or a list. */
-function ringOf(u,race){
-  const rr=Array.isArray(race)?race:[race];
-  return engagers(u.col,u.row,u.side)
-    .filter(e=>rr.indexOf(e.race)>=0||rr.indexOf(e.kind)>=0).length;
-}
-/* is this unit standing in a row of 3+ of its own side?
-   A "row" is three bodies on one hex axis — any of the three directions. */
-function inLine(u){
-  if(!B)return false;
-  const mine=alive().filter(x=>x.side===u.side);
-  const atHex=(c,r)=>mine.some(x=>x.col===c&&x.row===r);
-  /* the three hex axes, as (col,row) steps that depend on row parity */
-  const step=(c,r,d)=>{
-    const odd=r&1;
-    if(d===0)return [c+1,r];                          // due east
-    if(d===1)return [c+(odd?1:0),r+1];                // south-east
-    return [c+(odd?0:-1),r+1];                        // south-west
-  };
-  const back=(c,r,d)=>{
-    const odd=r&1;
-    if(d===0)return [c-1,r];
-    if(d===1)return [c-(odd?0:1),r-1];
-    return [c+(odd?1:0),r-1];
-  };
-  for(let d=0;d<3;d++){
-    let n=1,p=[u.col,u.row];
-    for(let i=0;i<2;i++){p=step(p[0],p[1],d);if(atHex(p[0],p[1]))n++;else break;}
-    p=[u.col,u.row];
-    for(let i=0;i<2;i++){p=back(p[0],p[1],d);if(atHex(p[0],p[1]))n++;else break;}
-    if(n>=FORM.lineNeed)return true;
-  }
-  return false;
-}
 /* ═══ WHERE A SHOVE PUTS THEM — asked by the resolver AND by both brains ══
    Pulled out of `strike()` for #46: the kick's whole value is *the hex it
    delivers them to*, so the AI has to be able to ask the question before it
@@ -22693,12 +22695,6 @@ function inCone(u,t,a){
   const off=Math.min((sec-u.facing+6)%6,(u.facing-sec+6)%6);
   if(off>1)return false;
   return udist(u,t)<=(off===0?a.cone[0]:a.cone[1]);
-}
-/* ogres do not need to touch you — there just have to be enough of them near */
-function weightNear(u){
-  if(!B)return 0;
-  return alive().filter(x=>x.side!==u.side&&(x.race==='ogre'||x.kind==='ogre')&&
-    udist(u,x)<=2).length;
 }
 /* ═══════════════════════════════════════════════════════════════════════
    THE COST OF CASTING — cut from the Winds of Magic entirely.
@@ -23641,8 +23637,6 @@ function dodgeOf(u,W,noNerve){
     const v=(cap&&cap!==u&&udist(u,cap)<=1)?8:-4;
     d+=v;w&&w(v>0?'dutiful, beside their captain':'dutiful, and alone',v);
   }
-  /* THE LINE: shoulder to shoulder, and nobody has to watch two sides */
-  if(B&&inLine(u)){d+=FORM.lineDodge;w&&w('in line',FORM.lineDodge);}
   if(u.crippled>0){d-=10;w&&w('crippled',-10);}    /* an arrow in the leg */
   if(u.drunk){d-=8;w&&w('drunk',-8);}              /* #108 - the ale */
   const au=auraSum(u,'dodge');                     /* somebody nearby is worth standing near */
@@ -23877,9 +23871,6 @@ function hitBreakdown(a,d,act){
      the status lives here rather than in a special case */
   if(a.drunk){other-=12;po('drunk −12');}
   if(tr(a,'cautious')&&a.hp>=a.hpMax*.5){other-=5;po('cautious −5');}
-  /* THE SWARM: too many small bodies on you to swing at any one of them */
-  if(ringOf(a,FORM.swarmRaces)>=FORM.swarmNeed){other+=FORM.swarmHit;
-    po('swarmed '+FORM.swarmHit);}
   if(has(a,'deadeye')&&act.range){other+=6;po('dead eye +6');}
   if(has(a,'goodhand')&&act.range){other+=10;po('good hand +10');}
   /* #262 - LONE WOLF, both halves asking the same question. `B&&` because
@@ -25213,6 +25204,21 @@ function markGore(d,hpD){
   const t=pool[(Math.random()*pool.length)|0];
   addGore(K(t[0],t[1]),1);
 }
+/* ⛔ #288 · WHO FELT IT, AND THE RE-ARM. Read the CSS note above for why this is
+   `#bField`. Two things it has to get right and both have bitten this file:
+   ⚠ THE CLASS IS REMOVED AND THE REFLOW FORCED, or the animation runs exactly
+   once per element and every blow after the first is silent - `nerveFlash`'s own
+   trap, and #266's `::before` lesson one layer up: a picture that plays once and
+   then stops is indistinguishable from a picture that was never wired.
+   ⚠ AND `offsetParent` IS THE SCREEN TEST. `#battle` is `display:none` between
+   fights, so a shake queued off-screen would fire on the next `show('battle')`
+   with nothing to shake about. */
+function fieldJolt(k,dx){
+  const f=$('bField');if(!f||!f.offsetParent)return;
+  f.classList.remove('jolt','reel');void f.offsetWidth;
+  f.style.setProperty('--sx',dx>=0?'1':'-1');
+  f.classList.add(k);
+}
 function animClash(a,d,kind,evaded,noLunge,hpD){
   const pa=hexPt(a),pd=hexPt(d);
   if(!pa||!pd)return;
@@ -25260,6 +25266,11 @@ function animClash(a,d,kind,evaded,noLunge,hpD){
     /* #165 - and if it found flesh, it bleeds. See bloodFx: `arm` is the
        harness turning it, and a turned blow leaves nothing on the floor. */
     if(kind!=='arm')bloodFx(d,cx,cy,dx,dy,hpD||0);
+    /* ⛔ #288 - and the ground moves. TAKING one wins the tie, because a blow
+       between two of your own (a kick, a shove into a friend) is still something
+       that happened TO you, and because there is only one field to shake. */
+    if(d.side==='you')fieldJolt('reel',dx);
+    else if(a.side==='you')fieldJolt('jolt',dx);
   }
 }
 /* ═══ #36 — DRAW THE LANE ═══════════════════════════════════════════════
@@ -25907,18 +25918,7 @@ function beginTurn(){
     .forEach(x=>morUp(x,CAP_AURA.mor,''));
   if(has(u,'inspire'))alive().filter(x=>x.side===u.side&&x!==u&&udist(u,x)<=2)
     .forEach(x=>morUp(x,4,''));
-  /* --- formations, resolved at the start of whoever's turn it is --- */
-  /* ⚑ THE LINE'S MORALE TICK IS GONE (user, 2026-08-01: "delete"). Standing in
-     a row was a free +4 every turn on top of shoulder-to-shoulder, which is
-     the same fact told twice, and it was outside the situation cap so it was
-     the single largest per-turn plus in the game. THE LINE STILL PAYS: +5
-     dodge, in dodgeOf(). It is a formation you hold to be harder to hit. */
-  /* THE WEIGHT: enough ogres close enough, and the nerve goes out of you */
-  const ogres=weightNear(u);
-  if(ogres>=FORM.weightNeed){
-    mor(u,FORM.weightMor,'there are that many ogres and they are that close');
-    if(u.side==='you')fx(u,'OUTWEIGHED','#c07a2c',true);
-  }
+  /* ⛔ #288 - THE THREE FORMATIONS ARE DELETED. See the note where FORM was. */
   B.sel=null;B.reach=null;B.reach2=null;
   B.aura=null;               /* #206 - and no order's ring outlives its card */
   /* ═══ ⛔ #274 · THE OFFER SURVIVES THE HAND-OVER ════════════════
@@ -28181,6 +28181,27 @@ function routStep(u,done){
   const away=p=>Math.min.apply(null,alive().filter(x=>x.side!==u.side)
     .map(f=>hdist(p,[f.col,f.row])).concat([99]));
   let hops=u.speed;
+  /* ⛔ #288 - A BODY THAT BREAKS AND RUNS PAYS THE SAME TOLL AS ONE THAT WALKS.
+     (User: *"If enemy routes and run out of zone of control - you still do
+     oportunity atak"*.) Every OTHER way off a held hex was charged for - the
+     click, the two-action stride, the kick's shove - and the one that was free
+     was the flight, which is the exact moment a line is supposed to collect.
+     ⚠ IT IS `partingShots`, NEVER A SECOND COPY OF THE RULE. `usedParting`, the
+     front arc, `safeMove` and FOOTWORK all arrive with it, so the red edge on
+     the board and this swing cannot come apart - see the note on `controllers`.
+     ⚠ AND IT FIRES ONLY IF THE BODY IS ACTUALLY GOING TO LEAVE. `routStep`
+     stands still when no neighbour is further from the enemy than the hex it is
+     already on, and a toll charged for a step nobody took is #102's readout
+     paying out on the wrong event. The destination is computed with the SAME two
+     lines `go()` uses, one statement apart, so they cannot disagree. */
+  const first=nbrs(u.col,u.row).filter(p=>walkable(p[0],p[1]))
+    .sort((a,b)=>away(b)-away(a))[0];
+  let swung=false;
+  if(first&&away(first)>away([u.col,u.row])){
+    swung=partingRisk(u).length>0;
+    partingShots(u);
+    if(u.dead||u.downed){render();if(checkEnd())return;done&&done();return;}
+  }
   const go=()=>{
     if(hops--<=0||u.dead||u.downed){render();done&&done();return;}
     const opts=nbrs(u.col,u.row).filter(p=>walkable(p[0],p[1]));
@@ -28194,7 +28215,9 @@ function routStep(u,done){
       u.fled=true;say(u.name+' is off the field. Gone.');render();
       if(checkEnd())return;done&&done();return;}
     render();later(go,130);};
-  go();
+  /* the swing has to be SEEN before the body is gone, or the log line is the
+     only evidence it happened - which is #205's whole complaint, one event on */
+  if(swung)later(go,340);else go();
 }
 /* ═══ ⛔ #240 · WHAT A BODY WILL COME BACK FOR ═════════════════════════════
    `guards:'<kind>'` on a template names a body on its own side; the moment
@@ -34047,16 +34070,10 @@ function render(){
               (st.from?' [from '+st.from+']':'');
             bar.appendChild(sb);});
           inn.appendChild(bar);}
-        /* formations, visible on the field — a line is worth seeing and so is
-           a swarm, or the bonuses are just numbers the player has to trust */
-        if(!occ.pet&&!occ.passive&&inLine(occ)){
-          const lb=document.createElement('span');lb.className='fbadge';
-          lb.textContent='≡';lb.title='In the line: +5 dodge';
-          inn.appendChild(lb);}
-        if(ringOf(occ,FORM.swarmRaces)>=FORM.swarmNeed){
-          const sb=document.createElement('span');sb.className='fbadge sw';
-          sb.textContent='≋';sb.title='Swarmed: −14 to hit';
-          inn.appendChild(sb);}
+        /* ⛔ #288 - THE TWO FORMATION BADGES WENT WITH THE FORMATIONS, and note
+           what they were: `+5 dodge` and `−14 to hit`, TYPED, beside a table that
+           owned both figures. Two more copies of a rule, on the one surface where
+           a wrong one is least catchable. */
         if(odds!==null){
           /* #191 - the figure comes off the hex; the DAMAGE below it stays.
              ⚠ `odds!==null` REMAINS THE GATE for the damage preview, because it
@@ -41185,7 +41202,15 @@ function drawInv(){
     const isMut=!!(p.mut&&(MUTACT[p.mut]||[]).indexOf(a.k)>=0);
     const sub=a.range?a.cost+' act · range '+a.range
       :a.reach?a.cost+' act · reach '+a.reach:a.cost+' act';
-    const strain=(typeof strainCost==='function')?strainCost(u,a):(a.strain||0);
+    /* ⛔ #288 - `a.strain` FIRST, AND THAT WAS THE WHOLE BUG. (User, of KICK:
+       *"What does mood here means? Mood costs only special abilities for mages
+       and extra lvl and some items"*.) `strainCost` ends in `Math.max(2, …)`,
+       which is right for a working and a lie about everything else: asked about
+       KICK, SPEAR WALL or a boar spear it answered 2, so every card on this
+       sheet printed `2 MOOD` for a price no till has ever taken. The battle's
+       own popover and `actLineHTML` both gate on `a.strain` and were right all
+       along - this was the one reader that asked the cost of a free act. */
+    const strain=a.strain?((typeof strainCost==='function')?strainCost(u,a):a.strain):0;
     const receipt=(sub+(strain?' · '+strain+' mood':'')+
       (a.cool?' · '+a.cool+'-turn cooldown':'')).toUpperCase();
     const line=noteLine(a);
@@ -42345,7 +42370,7 @@ function bindLoreTips(root,p,live){
     const sgn=v=>(v>0?'+':'−')+Math.abs(v);
     const plur=(n,w)=>n+' '+w+(n===1?'':'s');
     const facts='<div style="font-family:var(--mono);font-size:var(--fs1);color:#8fa5a2;'+
-      'margin-bottom:3px">STEP '+(RACESTEP[r]||4)+' · '+plur(COST[r],'seat')+' · '+
+      'margin-bottom:3px">STEP '+(RACESTEP[r]||4)+' · '+COST[r]+' space · '+
       plur(WAGE[r],'crown')+' a day</div>'+
       /* ⛔ #254 - AND WHAT THE BODY ITSELF IS WORTH, off the three tables that
          own it. The race carries the pool, the weight of the blow and how easy
@@ -42362,16 +42387,8 @@ function bindLoreTips(root,p,live){
       .join(' · ');
     const leanRow='<div style="font-family:var(--mono);font-size:var(--fs1);margin-bottom:5px;'+
       'color:var(--t3)">'+(lean||'No lean on any axis.')+'</div>';
-    /* the formation's own numbers: `k` names the value in FORM, and the
-       threshold beside it is that key's prefix + Need. Two fields, one
-       source, so a retune of FORM cannot leave this sentence behind. */
-    const F=h.form,fNeed=FORM[F.k.replace(/[A-Z].*$/,'')+'Need'],fVal=FORM[F.k];
-    const formRow='<div style="margin-bottom:5px"><span style="font-family:var(--mono);'+
-      'font-size:var(--fs1);letter-spacing:.1em;color:#d9bd7e">'+F.n+'</span> '+
-      '<span style="font-family:var(--mono);font-size:var(--fs1);color:#8fa5a2">'+
-        fNeed+' '+F.w+' · '+sgn(fVal)+' '+F.u+'</span>'+
-      '<div style="font-size:var(--fs2);font-style:italic;color:#a38652;line-height:1.3">'+
-        F.note+'</div></div>';
+    /* ⛔ #288 - THE FORMATION ROW IS GONE. It was the one row on this hover that
+       described a RULE rather than a body, and the rule is deleted. */
     let extra='';
     if(u&&p&&p.race===r){
       const rs=(u.acts||[]).filter(a=>RACESKILL[r]&&a.k===RACESKILL[r].k);
@@ -42385,7 +42402,7 @@ function bindLoreTips(root,p,live){
       TIP.innerHTML='<div style="font-family:var(--display);font-size:var(--fs5);color:var(--g4);'+
         'margin-bottom:4px">'+rIcon(r)+' '+h.t+'</div>'+
         '<div style="margin-bottom:5px">'+h.d+'</div>'+
-        facts+leanRow+formRow+extra;
+        facts+leanRow+extra;
       TIP.style.display='block';moveTip(e);};
     el.onmousemove=moveTip;el.onmouseleave=()=>{TIP.style.display='none';};});
   root.querySelectorAll('[data-cls]').forEach(el=>{
@@ -42410,16 +42427,15 @@ function bindLoreTips(root,p,live){
         '<div style="font-family:var(--mono);font-size:var(--fs1);color:#8a7449;letter-spacing:.1em">'+
           'WHAT IS ON THEIR BAR RIGHT NOW</div>'+
         own.map(actLineHTML).join('');
-      const tree=tiersFor(p).map(lv=>{
-        const got=perksAt(p,lv).filter(x=>PERKS[x])
-          .map(x=>(p.perks&&p.perks.indexOf(x)>=0?'<b style="color:#8ca35a">✔ '+PERKS[x].n+'</b>'
-                                                 :PERKS[x].n));
-        return got.length?'<div style="line-height:1.3"><span style="font-family:var(--mono);'+
-          'font-size:var(--fs1);color:#6b5836">LV '+lv+'</span> '+got.join(' · ')+'</div>':'';
-      }).join('');
-      if(tree)extra+='<div style="height:1px;background:#3d2f1d;margin:7px 0"></div>'+
-        '<div style="font-family:var(--mono);font-size:var(--fs1);color:#8a7449;letter-spacing:.1em">'+
-          'AND WHAT THIS CLASS CAN BUY</div>'+tree;
+      /* ⛔ #288 - AND WHAT THIS CLASS CAN BUY IS GONE FROM HERE. (User:
+         *"dont show what it can buy here"*.) Eight rows of perk names, one
+         hover, on a box whose job is *what is this class and what is on their
+         bar right now* - it doubled the height of the tip and it is not a fact
+         about the class, it is the LEVEL-UP screen, which owns it and draws it
+         with its costs, its gates and its ✔. A shopping list read here cannot
+         be acted on and cannot say what anything costs.
+         ⚠ `tiersFor` / `perksAt` KEEP THEIR OTHER READER (the perk tree on the
+         sheet). Nothing was deleted, one copy of it stopped being printed. */
     }
     el.onmouseenter=e=>{
       TIP.innerHTML='<div style="font-family:var(--display);font-size:var(--fs5);color:var(--g4);'+
@@ -45649,9 +45665,10 @@ const GOALS={
     row:g=>'Recruit at least one more. You are '+G.party.length+' of '+g.need+'.',
     ask:'Recruit at least someone else to your party.',
     cheer:'more of you at the fire.',
-    body:()=>'There are '+G.party.length+' of you, on a road none of you has walked, '+
-      'in a country that was not expecting you.\n\nThe wagon has room. Outside it, the '+
-      'country is dangerous.',
+    /* ⛔ #288 - the user's own line. The count stays interpolated: it is the
+       number the goal is ABOUT and it moves the moment somebody is hired. */
+    body:()=>'There are only '+G.party.length+' of you. For this kind of work that is '+
+      'not enough arms.',
     hover:'Nobody set this one. Recruit at least one more body and the whole company '+
       'walks easier for it - the watch splits properly and the wagon stops being '+
       'four people\'s work.'},
@@ -45665,7 +45682,7 @@ const GOALS={
     body:()=>'The axle has been talking to itself since the Bells and nobody has '+
       'answered it. The bed is one plank short of honest.\n\nSalvage is what a wagon '+
       'is rebuilt with, and the road keeps handing you salvage. Whatever goes in stays '+
-      'in for this run: seats, a cot, a fire, a chest of medicine.',
+      'in for this run: room for one more, a cot, a fire, a chest of medicine.',
     hover:'Nobody set this one either. Salvage had nowhere to go until the wagon; the '+
       'first thing bolted into it is the run learning what it is for.'}
 };
@@ -46032,7 +46049,7 @@ function worldTick(){
          nothing else in the game means "resize", so #102's one-glyph-one-unit
          rule is untouched. A `title` carries the word for anybody who hovers the
          label itself rather than the chip. */
-      '<span class="nm seats" title="seats: what the wagon and the pay-chest can carry">'+
+      '<span class="nm seats" title="space: what the wagon and the pay-chest can carry">'+
         SEATS_SVG+partyUsed()+'/'+PARTYCAP+'</span>'+
       (lvUp?'<span class="cbadge star">★'+(lvUp>1?lvUp:'')+'</span>':'')+'</span>'+
     '<span class="cchip click'+(kitUp?' waiting':'')+'" data-w="kit">'+SACK_SVG+
@@ -46174,22 +46191,27 @@ function worldTick(){
            half of the ask (*"full info show only when expanded"*): the bar
            states the two numbers and the box says which is which. */
         '<b>'+G.party.length+'</b> on the books, <b>'+partyUsed()+' of '+PARTYCAP+
-        '</b> seats spent.<br><br>'+
-        'Seats are what the wagon and the pay-chest can carry, and everybody takes room '+
-        'by size - ratkin 1, human 2, ogre 3 - so a fistful of ratkin and one ogre cost '+
-        'the same. Widen the wagon bed at a wheelwright to raise it, permanently.<br><br>'+
+        '</b> space used.<br><br>'+
+        /* ⛔ #288 - SEATS ARE CALLED SPACE NOW (user's own note on this hover).
+           Every user-visible "seat" in the build moved with it - the wagon's
+           frame rows, the race hover, the world chip, the wagon button - because
+           half a rename is a screen that calls one thing two names, which is the
+           defect #102 is about wearing a vocabulary instead of a unit. */
+        'Space is what each body takes up - ratkin 1, human 2, ogre 3 - so a fistful of '+
+        'ratkin and one ogre cost the same. Widen the wagon bed at a wheelwright to '+
+        'raise it, permanently.<br><br>'+
         '<div>'+G.party.map(p=>
           '<span style="color:#c8bfa6">'+capName(p)+
             ' <span style="color:#8a7449">'+p.race+'</span> '+
             '<b style="color:var(--g4)">'+COST[p.race]+'</b>'+
-            '<span style="color:#8a7449"> seat'+(COST[p.race]>1?'s':'')+'</span></span>'
+            '<span style="color:#8a7449"> space</span></span>'
           ).join('<br>')+'</div>',
-      act:'CLICK: the roster, their sheets and their gear.'},
+      act:'CLICK'},
     kit:{t:'THE KIT',col:'var(--g4)',
       d:(kitUp?'<b style="color:#8ca35a">! Something in the wagon beats what somebody '+
           'is wearing</b>, or goes in a slot that is empty.<br><br>':'')+
-        'The wagon\'s stash, and what everybody is wearing out of it.',
-      act:'CLICK: the same screen, straight to work.'},
+        'The wagon\'s stash.',
+      act:'CLICK'},
     /* ⛔ #272 - THE ROAD, AND THE HOVER STILL MAY NOT PRINT THE SCORE.
        #220's split gives the chip a state and its hover the full information,
        so this box names what has been DONE - the same three counts `deedTally`
@@ -46199,25 +46221,26 @@ function worldTick(){
        ⛑ AND THE LAST LINE IS LOAD-BEARING RATHER THAN MODEST: a readout that
        visibly moves and changes nothing gets filed as a broken feature, so it
        says so itself. The day it starts paying, that line comes out. */
+    /* ⛔ #288 - `roadState().d` AND THE ITALIC TAIL ARE CUT (user). The heading
+       already names the rung in its own colour, and the sentence under it said
+       the rung again in prose - #246's finding on the mood box, same shape. */
     road:{t:roadState().n,col:roadState().c,
-      d:roadState().d+'<br><br>'+
-        (Object.keys(ROAD_W).some(k=>(G.deeds||{})[k])
+      d:(Object.keys(ROAD_W).some(k=>(G.deeds||{})[k])
           ? 'What this road has seen of you:<br><div style="margin-top:5px">'+
             Object.keys(ROAD_W).filter(k=>(G.deeds||{})[k]).map(k=>
               '<span style="color:#c8bfa6">'+CHOICE_ICO[k].g+' '+CHOICE_ICO[k].n+
               ' <b style="color:var(--g4)">'+G.deeds[k]+'</b></span>').join('<br>')+'</div>'
-          : 'Nothing yet. It moves when you are cruel, and when you are kind.')+
-        '<br><br><i style="color:#8a7449">It changes nothing on the road. Not yet.</i>'},
+          : 'It moves when you are cruel, and when you are kind.')},
     /* #238 - the wagon's door. The ! answers for itself first, like the kit's */
     wagon:{t:'THE WAGON',col:'var(--g4)',
       d:(wagonWaiting()?'<b style="color:#8ca35a">! Something on the wagon can be paid for.</b><br><br>':'')+
-        'What is bolted in, what the next thing costs, and how many seats there are. Paid in '+
-        'salvage, on the road, and gone with the run.',
-      act:'CLICK: the wagon.'},
+        'What the company can be given for this run, paid for in salvage and gems.',
+      act:'CLICK'},
     keep:{t:'PAYDAY',col:payShort?payC:'var(--g4)',
-      d:'Wages are paid every '+num(PAY_EVERY)+' days, not daily. The bill grows with '+
-        'every day of road - ratkin 1, human 2, ogre 2, and the Captain draws one - and '+
-        'on the day, the chest opens.<br><br>'+
+      /* ⛔ #288 - the intro paragraph is one clause now (user). The per-race
+         rates it used to spell out are the rows underneath it, off `wageOf`,
+         which is #223's whole point: the paragraph was the second copy. */
+      d:'Once every '+num(PAY_EVERY)+' days.<br><br>'+
         /* ⛑ #223 · AND IT NAMES EVERY WAGE IT IS ABOUT TO PAY.
            (User: *"When i hover on 'payday' - show exact ammount of coins how
            much i pay to each person in the team"*.) The chip printed one figure
@@ -46245,8 +46268,8 @@ function worldTick(){
            'drags the mood down hard.'
           :'Run up so far: ◉'+owedNow+'. Due in '+num(pIn)+' day'+(pIn>1?'s':'')+
            ': about <b style="color:'+payC+'">◉'+pBill+'</b>, against '+G.run.crowns+
-           ' in the chest. That bill does not know what the road is about to charge you.'),
-      x:'It never stops you taking a road. Owing them is a way a run can go.'},
+           ' in the chest.'),
+      x:'Miss a payday and the company takes it badly.'},
     owed:{t:'UNPAID',col:'#c15d55',
       d:(owedDays>=5?'Somebody is going to walk.':owedDays>=3?'They have started asking '+
         'what the arrangement is, in a tone that is not quite a question.':'They counted, '+
@@ -46319,29 +46342,24 @@ function worldTick(){
       act:'CLICK: double rations - '+RATION_COST+' '+resName('food',RATION_COST)+'. Wounds AND injuries '+
         'mend twice as fast for '+num(RATION_DAYS)+' days.'},
     crowns:{t:'CROWNS',col:'var(--g4)',
-      d:'The purse of THIS run - wages, tolls, hires, bribes. It does not survive the '+
-        'company. Spend it like somebody who knows that.',
-      x:'Wages fall due every fourth day, walking or sitting.'},
-    prov:{t:resCaps('food')+' - THE GOOD BARRELS',col:'var(--grain)',
-      d:'Your wages already buy the company bread. This is <b>everything better than '+
-        'bread</b>: salt meat, cheese, a jug.<br><br>'+
-        '<b>Nothing eats them on its own</b> - not a day on the road, not a wound '+
-        'mending. Every one you lose, you spent.<br>'+
-        '<b>Double rations</b> - wounds and temporary injuries mend twice as fast '+
-        'for three days.<br>'+
-        '<b>Lay out a proper meal</b> - the mood lifts hard (once a day).<br>'+
-        '<b>The road asks for it</b> - feeding a stranger, a wedding, a hungry ogre.',
-      x:'#157 took the last automatic drain off them: the wounded used to eat one a '+
-        'day whether you liked it or not.'},
+      d:'Wages, tolls, hires, bribes, anything for sale. You pay the company every '+
+        num(PAY_EVERY)+' days for service and food.',
+      x:'It does not survive the run. Spend it like somebody who knows that.'},
+    prov:{t:resCaps('food'),col:'var(--grain)',
+      /* ⛔ #288 - cut to the user's own line. The three bold clauses were the
+         three DOORS this resource opens, and the doors say so themselves where
+         they are offered (`blood.act`, `mood.act`, the road cards' own chips). */
+      d:'Spent on the road, on mending fast, and on lifting the mood.',
+      x:'Nothing eats them on its own. Every one you lose, you spent.'},
     salvage:{t:'SALVAGE',col:'var(--wood)',
-      d:'Timber, iron and fittings pulled off the road. It builds things INTO THE WAGON, '+
-        'on the road: the frame, a bed, a chest, a fire.',
-      x:'What is left at the end banks for the travel-forge.',
+      d:'Buys room in the wagon, and the rest of what the wagon can be given.',
+      x:'Timber, iron and fittings pulled off the road. What is left at the end banks '+
+        'for the travel-forge.',
       act:'CLICK: the wagon.'},
     gems:{t:'GEMS',col:'var(--gem)',
-      d:'Stones the wrong colour for this country. The one thing both worlds take: spend '+
-        'them in-run in a pinch, on the wagon or at a road door, or bank them for the forge.',
-      x:'The deliberate bridge between the purse and the future.'},
+      d:'Buys a level, the rarest doors on the road, and the last things the wagon '+
+        'has to sell. Stones the wrong colour for this country.',
+      x:'The one thing both worlds take: spend them in-run, or bank them for the forge.'},
     pet:{t:(PETS[petKey]?PETS[petKey].n:'A companion'),col:'#8ca35a',
       d:(petKey&&PETS[petKey]?PETS[petKey].d:'A companion follows the company.'),
       x:'Assigned to the Captain. Check the company screen to change or remove it.'},
@@ -46358,8 +46376,8 @@ function worldTick(){
          the ONE place the whole job is written out, because the tour step that
          used to say it was deleted in the same entry. */
       d:'A man of the lord\'s holds Skelbrook, at the far end of the valley: one village, '+
-        'one hall, bandits in it since the thaw. He has been writing to the lord every week '+
-        'since. Bring back the head out of the hall\'s chair. Keep the purse.'+
+        'one hall, bandits in it since the thaw. Bring back the head out of the hall\'s '+
+        'chair. Keep the purse.'+
         /* #161 - the plate grew a row, so the hover grows the paragraph that
            explains it. A row on a cursor:help plate with nothing behind it is
            the defect this whole surface was built to stop. */
@@ -50614,12 +50632,12 @@ function wagonTile(k){
     name=isF?'THE FRAME':'THE RACKS';
     hover=isF
       ?'The frame. Three tiers, each wider than the last, paid in salvage: '+
-        FRAME_COST.join(' / ')+'. Seats go '+
+        FRAME_COST.join(' / ')+'. The space goes '+
         FRAME_SEATS.map(n=>PARTYBASE+(LEGACY.yard||0)+n).join(', ')+'.'
       :'The racks. Three tiers, paid in salvage: '+RACK_COST.join(' / ')+'. How many things '+
         'may be bolted into the wagon at once goes '+RACK_SLOTS.join(', ')+'.';
     clause=done?(isF?'as wide as a cart bed gets':'every inch of the bed is spoken for')
-      :isF?('seats '+PARTYCAP+' → '+(PARTYCAP-FRAME_SEATS[t]+FRAME_SEATS[t+1]))
+      :isF?('space '+PARTYCAP+' → '+(PARTYCAP-FRAME_SEATS[t]+FRAME_SEATS[t+1]))
           :('holds '+RACK_SLOTS[t]+' → '+RACK_SLOTS[t+1]+' bolted in');
     receipt=done?'':resGlyphs('−'+cost.salvage+' salvage')+(ok?'':' · '+needTag(cost));
   }else{

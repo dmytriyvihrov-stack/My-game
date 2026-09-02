@@ -25,6 +25,15 @@ back already answered by work that was not about them.
 
 ---
 
+## AE · From #288
+
+| | the question | ⭐ mine |
+|---|---|---|
+| **AE1** | **"Delete all races bonuses" - I read that as the three FORMATIONS and nothing else.** Gone: THE LINE (+5 dodge in a row of three), THE SWARM (−14 to hit inside a ring of three ratkin or beasts) and THE WEIGHT (−9 mood a turn near three ogres), with their table, their two hex badges and their hover row. **Still standing:** `RACEMOD` (the ±1/±2 stat lean), `RACESIZE` (small/middling/big and the four things it pays), `RACESTEP` (the stride) and `RACESKILL` (KICK, PICK UP AND THROW, the ratkin's own verb). Those are not bonuses you hold a shape for; they are what the body IS, and one of them is a card you are still tuning in ask 3 of this same batch | **stop here.** The complaint was *too complex*, and complexity is the positional half: a rule that only pays when three named bodies stand in a named shape, told nowhere but a badge. A ratkin being quick and small is one number on a sheet and costs nobody a decision. ⚠ If the lean should go too, say so and it is one table - but then a race is only a stride and a wage, and the class becomes the whole character |
+| **AE2** | **Base dodge 10 makes the Snare about ten points harder, and that is the one fight the record already says is too easy.** `ARENA.match('four', ..., 30)` on both builds: the broken men **19/30 → 19/30** (unmoved), the **Snare 23/30 → 20/30**, and half a body more down. The dodge cut and the deleted formations pull opposite ways - the formations were mostly costing YOU (the enemy decks are the ratkin and the ogres) - and on the ratkin deck the dodge cut wins | **keep it and play a run before touching anything else.** It moves **O1** in exactly the direction O1 asks for, for free, and it did it without a retune of that deck's rows. ⚠ Do not now also retune the Snare: two difficulty changes measured together cannot be told apart, which is **P2**'s own warning |
+
+---
+
 ## AD · From #285
 
 | | the question | ⭐ mine |

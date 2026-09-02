@@ -91,6 +91,7 @@ section used to carry each entry in full, which made the work file a second chan
 
 | | the subtraction | log |
 |---|---|---|
+| **#288** *(09-02)* | **the rout pays the toll, the formations go, and the sheet stops charging mood it never took** | 8f.311 |
 | **#287** *(09-01)* | **The class reaches the company sheet, the weapon type reaches the slot, and a skill so the next one is quicker** | 8f.310 |
 | **#286** *(09-01)* | **The signature needs the weapon in hand, the cards quote what they pay, and the arrow goes somewhere** | 8f.309 |
 | **#285** *(09-01)* | **Every class gets its tier-4 fork, the training lock becomes a rule, and the picker says what a class gives** | 8f.308 |

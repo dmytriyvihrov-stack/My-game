@@ -26,6 +26,49 @@
 
 ---
 
+## #288 - The rout pays the toll, the formations go, and the sheet stops charging mood it never took
+
+**In the game.** Seven asks. Two of them turned out to be a bug and an absence rather than a
+request, so the two things most worth checking are the two nobody asked to have built.
+
+**In three steps.** New company · open the company sheet on anybody · hover a skill card, then
+the class word, then the race word.
+
+- **No card says MOOD unless it costs mood.** KICK, the arming sword and SPEAR WALL read
+  `1 ACT · REACH 1 · 1-TURN COOLDOWN` and nothing else. **A bug** is any of them showing
+  `2 MOOD` again - that was the defect, and the sheet was the only screen with it.
+  ⚠ **And check the other half:** put a MAGE on the sheet and their WILL STRIKE must still
+  say `5 MOOD` and UNPICK `9 MOOD`. A fix that silenced those would be worse than the bug.
+- **The class hover stops at WHAT IS ON THEIR BAR RIGHT NOW.** No list of perks under it.
+  The perk tree is still on the PERKS tab, where it can be bought.
+- **The race hover is one sentence and no formation.** `HUMAN · Two generations off the ships
+  and militarily a joke` and then the derived block. **A bug** is a row naming THE LINE,
+  THE SWARM or THE WEIGHT anywhere - they are deleted, badges included, and nothing on a hex
+  should draw ≡ or ≋ any more.
+- **DODGE reads 10%** on a fresh body with no agility rung, where it used to read 14%.
+
+**In a fight, three steps.** Start any road fight · stand next to something · hit it.
+
+- **The field jolts when a blow lands, and differently each way.** Landing one is a short
+  sideways knock; taking one is a bigger, slower drop with a roll in it. **The plaque, the
+  cards, the order rail and the log must NOT move** - only the ground and the bodies on it.
+  **A bug** is the chrome shaking, a dark strip appearing at any edge of the field, or the
+  zoom jumping when a blow lands.
+- **A miss shakes nothing.** Neither a dodge nor a whiff.
+- **Break an enemy and watch it run.** When something routs while one of yours is holding it,
+  you get a parting swing on the way out and the log says
+  *“X gets a parting swing as Y pulls away”*. **A bug** is a swing from somebody the body
+  walked ROUND (only the front arc holds), a second swing from a body that already took one
+  this round, or a swing when the routed body had nowhere better to go and stood still.
+
+**On the road bar.** Hover every chip.
+
+- **Ten hovers were rewritten and all of them got shorter.** PAYDAY opens *Once every four
+  days* and still lists every wage; CROWNS, SUPPLIES, SALVAGE, GEMS, THE WAGON, THE KIT and
+  THE COMPANY are one or two lines each. **The wagon's word is SPACE now, not seats** -
+  `8 of 12 space used`, `human 2 space`. **A bug** is the word *seat* surviving anywhere a
+  player can read it.
+
 ## #287 - The class reaches the company sheet, the weapon type reaches the slot, and a skill so the next one is quicker
 
 **In the game.** Everything the class lab has been showing is on the company sheet now.
