@@ -13,7 +13,7 @@
   }
   const P = ['grandcmd','battlefury','spearrun','bracewall','breaking','unmaking',
              'pierceshot','longshot'];
-  const F = ['brigand','pack'], J = [];
+  const F = ['brigand'], J = [];
   P.forEach(p => F.forEach(k => J.push(['L4_'+p, k])));
   window.BT_JOBS = J; window.BT_N = 20; window.BT_MS = 60000;
   return {jobs:J.length, tally:'on'};
