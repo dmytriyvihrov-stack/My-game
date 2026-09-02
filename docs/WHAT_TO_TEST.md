@@ -26,6 +26,41 @@
 
 ---
 
+## #292 - the design pass: the pools, the seams, the strip and the corners
+
+**In the game, and nothing about the rules changed.** Every line of this entry is what a screen
+LOOKS like. If a number, a door or an outcome behaves differently anywhere, that is the bug.
+
+**In three steps.** Take the road and look at the **top bar** · press **THE COMPANY** and
+look at the **three bars** top left · walk into a fight and look at the **same three bars**
+on the card bottom left.
+
+- **The three pools are the thing to look at hardest.** Armour, hitpoints and mood, on the sheet
+  and on the battle card. The **dividers should now be visible along the WHOLE bar**, not just
+  over the coloured part: a body at half health should show you the empty half in sections too,
+  because that is the half that answers *how many more blows*. The frame round each bar is one
+  step brighter. **On the sheet the armour row now reads `10/10`** rather than `10`, which is what
+  the other two rows and the battle card have always done.
+- **The top bar is one strip now.** Every chip on it stands on the same brown and wears the same
+  gold hairline; the two that carry a colour (the mood face and the heart) wear the mood's or the
+  blood's own colour, at two thirds rather than at two fifths, so they read as chosen rather than
+  as forgotten. The sheet's bar carries the same strip, so the two screens are one bar.
+- **The seams.** The line under both top bars, and the two lines that box the company sheet's
+  middle column, are all 2px of the same gold. The sheet used to have a spine you could not see.
+- **The corners.** `? RULES` bottom left and `FEEDBACK` bottom right are the same height and stand
+  on the same floor now, on every screen; `☰ MENU` top right is the same box; and on the
+  battle screen the **×1 speed knob under it** matches. The little **`?`** at the end of the
+  battle card's bottom row is a full-height cell in that row rather than a half-height chip.
+- **The map.** Every place name has the same hairline plate. Before, only the live one, the marked
+  one, the goal and the finished ones did; the rest were a shadow with no edge.
+- **What would be a bug**: a bar whose figure is clipped or whose fill has changed colour; a
+  divider that is now so loud it is hard to read the number over it; a chip on the top bar that
+  did not get the new ground; a name plate on the map that has moved or collided with another
+  (the plate is a shadow and costs no space, so it should not have); a corner door that overlaps
+  something. ⚠ **And anything at all that is not a picture** - a price, a roll, a door, a
+  fight: nothing in this entry was allowed to touch those, and the sheet measured identical to
+  the previous build on all sixteen body-and-state cases.
+
 ## #291 - The skills pane reads the build, and every part of the lab can be commented on
 
 **Not in the game.** Two additions to `tools/lab.html`. Server first, as always:

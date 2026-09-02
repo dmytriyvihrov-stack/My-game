@@ -157,6 +157,7 @@ carries the setup that keeps being rewritten - `GT.playerTurn()`, `GT.standNextT
 | `sheet.js` | the company sheet's height budget, every body x every state |
 | `board.js` | every readout the battle screen carries about a swing, plus what must NOT survive a foe's turn |
 | `sights.js` | the three map counters on their own |
+| `edges.js` | **every VISIBLE border on four screens, grouped by colour and width, with the elements named.** The grep in `ui-scales` §5 finds a token that was RETYPED; this finds the opposite and commoner fault, a literal that was never a token. #292 |
 | `smoke.js` | a screen-by-screen walk: every road card, every camp, every gear hover, reporting anything that THREW |
 | `regress.js` | the eight fights, both AI brains, one line each |
 | `fightn.js` | ONE fight n times, for a RATE. `regress` runs each fight once and can only say *something went wrong here* |

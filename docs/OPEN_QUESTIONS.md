@@ -25,6 +25,15 @@ back already answered by work that was not about them.
 
 ---
 
+## AG · From #292
+
+| | the question | ⭐ mine |
+|---|---|---|
+| **AG1** | **The mood row on the BATTLE CARD still has no figure, and the same row on the sheet has had one since #257.** #247 gave the mood bar the rung name on the argument that *its value IS the word*; #257 then put `68/120` on the sheet's copy because *every body opens a fight at the same 71% of its own pool, so the ladder's whole positive half was invisible*. That argument is just as true mid-fight, where morale is the thing actually moving. The card has the room (the row is the same 17px grid and the word would move left, exactly as it does on the sheet). **This is the one place left where the two hosts of one readout disagree.** | put the figure on the card too, and the three rows say the same thing on both screens |
+| **AG2** | **The right half of the company sheet is 606px of mostly empty on day one.** THE STASH holds four things at the start and the panel runs the full height of the screen; the PERKS tab beside it is empty until level 2. Nothing in this entry touched it because it is a layout decision rather than a consistency one, but it is the largest single piece of dead ground in the build and it is on the screen a player opens most. | narrow it and give the width back to the middle column, which is where the doll and the skills are cramped |
+
+---
+
 ## AF · From #289
 
 | | the question | ⭐ mine |

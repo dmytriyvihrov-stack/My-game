@@ -124,7 +124,18 @@
   /* edges. Structural only: an accent edge keeps its own meaning colour
      (--gold selects, --blood-lit warns, --grain approves). */
   --e1:#3d2f1d; --e2:#4d3c22; --e3:#6b5330;   /* the gold ladder, dim to lit */
-  --e4:#2c3d3f; --e5:#35494c;                 /* the teal chrome, dim to lit */
+  /* ⛔ #292 - AND THE TEAL LADDER GETS ITS THIRD STEP, WHICH IS THE ONE THE GOLD
+     LADDER HAS ALWAYS HAD. `--e1/--e2/--e3` is dim, raised, lit; the teal side
+     stopped at two, so every raised or hovered teal edge in the build was a literal.
+     Counted before it was added: `#4d6b6c` at ten sites and `#4c6a6d` at ONE - the
+     act card's popover, one unit of blue away from the other ten and unfindable by
+     eye. That is what a missing step costs, and `.claude/skills/ui-scales/SKILL.md`
+     §6's condition is met: the surfaces that needed it are named here.
+     ⚠ TWO SITES KEEP THE LITERAL ON PURPOSE and must not be swept into this: the
+     `#tutCard.call` rail and `#bLog .ll.mine` are MEANING edges that happen to be
+     teal (whose voice is speaking), and §2 forbids collapsing one of those into the
+     structural scale even when the hex agrees today. */
+  --e4:#2c3d3f; --e5:#35494c; --e6:#4d6b6c;   /* the teal chrome, dim to lit */
   /* spacing. ⚠ A padding over 24px is not spacing, it is GEOMETRY (a reserved
      gutter, a scroll footer paired with a negative margin) and keeps its px. */
   --p1:2px; --p2:4px; --p3:6px; --p4:9px; --p5:12px; --p6:16px; --p7:24px;
@@ -151,6 +162,15 @@
      one strip, which is the ask this token was cut for. It is no longer a
      function of anything, so nothing upstream can move it by accident. */
   --barChip:30px;
+  /* ⛔ #292 · ONE HEIGHT FOR THE DOORS THAT STAND IN A CORNER OF EVERY SCREEN.
+     ⚑ GEOMETRY AND NOT A `--p` STEP, for exactly `--barChip`'s reason one comment up:
+     a shared BOX SIZE is none of the three scales.
+     Measured before it existed: `? RULES` 23px at `--fs4`, `FEEDBACK` 20px at
+     `--fs1`, `☰ MENU` 24px - three doors, three heights, and the bottom pair on two
+     different baselines (10px and 6px off the floor). 24 IS THE TALLEST OF THE
+     THREE, so nothing shrank and no type came down a step to buy it: the type sizes
+     are untouched and the BOX is what agrees now. */
+  --chromeChip:24px;
   /* ═══ #81 - THE BATTLE CLOCK, ONE NUMBER ═══════════════════════════════
      Every duration on the battlefield is written as a base × this, so the
      whole board slows down TOGETHER and the relationship between a blow and
@@ -396,7 +416,7 @@ button:disabled{cursor:not-allowed}
 #bIcons button,#bFlee{width:28px;height:28px;background:#1f2d2e;border:1px solid var(--e5);
   display:flex;align-items:center;justify-content:center;font-size:var(--fs4);color:#9fb3ae;
   font-family:var(--body);padding:0}
-#bIcons button:hover:not(:disabled){background:#294041;color:var(--t4);border-color:#4d6b6c}
+#bIcons button:hover:not(:disabled){background:#294041;color:var(--t4);border-color:var(--e6)}
 #bIcons button:disabled{opacity:.35}
 /* ⚠ SCOPED #bIcons #bAuto for the same reason the old #bOpts rule was:
    the `#bIcons button` rule above outranks a bare id on display. */
@@ -464,7 +484,7 @@ button:disabled{cursor:not-allowed}
    it needs, the two chips take what a mark and four characters need, and
    the ? sits at the end of the row it has always ended. */
 #bStats{display:flex;align-items:stretch;gap:4px}
-#bStats .pcell{background:#101a1b;border:1px solid #24383a;padding:var(--p1) var(--p1) var(--p1);
+#bStats .pcell{background:#101a1b;border:1px solid var(--e4);padding:var(--p1) var(--p1) var(--p1);
   display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:2px;
   flex:1;min-width:0}
 /* the two quiet ones: a mark and a number on one line, no caption, and no
@@ -546,9 +566,24 @@ button:disabled{cursor:not-allowed}
    CONSTANTS the plaque uses, never a second figure: a section is one blow's worth
    and a blow does not change size between screens. */
 :is(#bPlq,.ibars) .bar{position:relative}
+/* ⛔ #292 - AND THE DIVIDER IS A DARK LINE WITH A LIT RIM, BECAUSE ONE DARK LINE
+   ONLY EXISTS OVER THE FILL. The trough is `#243133` / `#3b2126` / `#20272a` and the
+   ink was `rgba(7,11,12,.92)`: over steel or blood that is a clean notch, over the
+   drained half it is one dark on another and the sections vanish. So a bar read as
+   sectioned exactly where the pool still is, and as one unbroken block exactly where
+   it is gone - which is backwards, since #94's whole argument is that the width of a
+   section is a BLOW and the question is how many are left.
+   ⛑ THE RIM IS THE SAME LIGHT THE FILL ALREADY WEARS. `.sbb>i::after` crowns every
+   fill with `rgba(255,246,224,.20)`; a 1px rim off that family reads as the lit side
+   of a groove on the fill and as the only visible thing on the trough, so one
+   declaration covers both grounds and no colour is invented.
+   ⚠ THE DIVIDER IS 2.5px WIDE NOW AND THAT IS THE COST. The narrowest host is the
+   sheet at ~193px of bar; `SEG` caps the count, so the widest a divider ever gets is
+   2.5 of a section, and it is 1.5 of one on the battle card. Measured, not guessed. */
 :is(#bPlq,.ibars) .bar::after{content:'';position:absolute;inset:0;pointer-events:none;
   background:repeating-linear-gradient(90deg,
-    rgba(0,0,0,0) 0, rgba(0,0,0,0) calc(100%/var(--seg,4) - 1.5px),
+    rgba(0,0,0,0) 0, rgba(0,0,0,0) calc(100%/var(--seg,4) - 2.5px),
+    rgba(255,246,224,.17) calc(100%/var(--seg,4) - 2.5px), rgba(255,246,224,.17) calc(100%/var(--seg,4) - 1.5px),
     rgba(7,11,12,.92) calc(100%/var(--seg,4) - 1.5px), rgba(7,11,12,.92) calc(100%/var(--seg,4)))}
 /* ═══ #102 point 1 · NERVE STOPS BEING A COLOURED BLOCK ═══════════════════
    (User: "Make nerve less 'green block' and somehow more readible on the
@@ -688,6 +723,16 @@ button:disabled{cursor:not-allowed}
    would have made *"a little bit less high"* impossible to grant.
    `outline-offset:-1px` draws the same hairline in the same place and costs nothing. */
 .sbar>.sbb{position:relative;flex:1;height:var(--sbh);overflow:hidden}
+/* ⛔ #292 - THE TROUGH IS ONE FACT AND IT WAS TYPED IN TWO BUILDERS. `#243133`,
+   `#3b2126` and `#20272a` sat inline on the battle card's markup and inline again in
+   `drawInv`'s string, which is rule 4 (one fact, one builder) on three colours that
+   have to agree across two screens or the same pool means two things. The row says
+   WHICH pool it is and the stylesheet says what a drained one looks like.
+   ⚠ THE FILL STAYS INLINE AND MUST. It is `--steel`, `hpCol`'s ramp and the rung's
+   own colour - three readouts - and #249's note on the veil is about exactly that. */
+.sbar>.sbb.parm{background:#243133}
+.sbar>.sbb.phit{background:#3b2126}
+.sbar>.sbb.nrv {background:#20272a}
 .sbb>i{display:block;height:100%;position:relative}
 /* ⛑ THE LIGHT ON THE FILL, AND IT IS A RAMP RATHER THAN A STEP. The first cut
    broke it hard at the middle, which is how a GLASS button is drawn and read as one
@@ -723,7 +768,12 @@ button:disabled{cursor:not-allowed}
      ⚠ IT MUST STAY A `box-shadow` AND NOT A BORDER: a border here would push the
      figure inwards by a pixel on every row, which is the trap the outline note two
      rules up is about. */
-  box-shadow:inset 0 0 0 1px var(--e1),inset 0 2px 4px -2px rgba(0,0,0,.75);
+  /* #292 - `--e2` AND NOT `--e1`. The ring on this overlay is the only line that
+     says where a pool ENDS, and on a drained bar it is the only line that says the
+     bar is there at all. At `--e1` it was the dimmest edge on a panel whose own
+     border is `--e5`, so the three readouts the player checks most often had the
+     softest boxes on the screen. One step up the gold ladder, no box moved. */
+  box-shadow:inset 0 0 0 1px var(--e2),inset 0 2px 4px -2px rgba(0,0,0,.75);
   /* ⛔ #247 - AN OUTLINE AND NOT A DROP SHADOW, and the first cut got it wrong.
      Two of the three fills are LIGHT - `--steel` #96a1a5 on the armour row and the
      top two rungs' greens on the mood row - so cream type with a soft shadow under
@@ -838,7 +888,10 @@ button:disabled{cursor:not-allowed}
    box already wraps (`max-width:250px`), so nothing here changes a width. */
 .capd{display:block;font-style:italic;font-family:var(--body);color:#a08a5e;
   letter-spacing:0;line-height:1.3}
-.ladfull.tells .lrung .lgv .two{color:#8ca35a;border:1px solid #8ca35a;padding:0 3px;
+/* #292 - `--p2` and not a 3px literal: the last two paddings off the scale in the
+   whole file, and `.claude/skills/ui-scales/SKILL.md` §5's grep has expected `86px`
+   ALONE since it was written. One pixel each, and the check tells the truth again. */
+.ladfull.tells .lrung .lgv .two{color:#8ca35a;border:1px solid #8ca35a;padding:0 var(--p2);
   margin-right:4px;font-size:var(--fs1)}
 .ladfull.tells .lrung.on .lgv{color:#c2b493}
 /* ⛔ #266 - THE TOTAL AND WHAT IT BUYS ARE THE HEADLINE, AND THEY WERE THE
@@ -951,10 +1004,10 @@ button:disabled{cursor:not-allowed}
    The card does not grow a second time: the ROLE{} table is capped at
    TWELVE characters (12 x 6 = 72) and the role's tracking is 0, and that
    is the arithmetic written beside the table. */
-.act{width:80px;height:90px;background:linear-gradient(#1e2c2d,#141f20);border:1px solid #3a4f52;
+.act{width:80px;height:90px;background:linear-gradient(#1e2c2d,#141f20);border:1px solid var(--e5);
   flex:none;position:relative;display:flex;flex-direction:column;align-items:center;
   padding:0;transition:transform .12s ease}
-.act:hover:not(:disabled){background:linear-gradient(#25383a,#182425);border-color:#4d6b6c}
+.act:hover:not(:disabled){background:linear-gradient(#25383a,#182425);border-color:var(--e6)}
 .act.sel{border-color:var(--gold);transform:translateY(-6px);
   box-shadow:0 0 0 1px var(--gold),0 6px 16px rgba(0,0,0,.5)}
 .act.arc{border-color:#5d3350}
@@ -1026,7 +1079,7 @@ button:disabled{cursor:not-allowed}
   background:rgba(20,10,18,.5);pointer-events:none}
 /* the popover: receipt line + one sentence. CSS-only, so it cannot leak */
 .act .pop{position:absolute;bottom:92px;left:50%;transform:translateX(-50%);width:210px;
-  background:rgba(10,15,16,.97);border:1px solid #4c6a6d;padding:var(--p4) var(--p4);z-index:60;
+  background:rgba(10,15,16,.97);border:1px solid var(--e6);padding:var(--p4) var(--p4);z-index:60;
   display:none;flex-direction:column;gap:3px;pointer-events:none;text-align:left}
 .act:hover .pop{display:flex}
 .act .pop .pt{font-family:var(--display);font-size:var(--fs3);color:#e0d3b4;font-weight:600}
@@ -1429,7 +1482,7 @@ button:disabled{cursor:not-allowed}
   display:flex;flex-direction:column;transition:width .16s ease,left .16s ease}
 #bLogWrap.open{left:64px;width:300px}
 #bLogHead{display:flex;align-items:center;gap:6px;padding:var(--p2) var(--p4);cursor:pointer;
-  border-bottom:1px solid #223335;user-select:none}
+  border-bottom:1px solid var(--e4);user-select:none}
 #bLogHead>.lgcar{font-size:var(--fs1);color:#8a9a5c;transition:transform .12s}
 #bLogWrap.open #bLogHead>.lgcar{transform:rotate(90deg)}
 #bLogRound{font-family:var(--mono);font-size:var(--fs1);color:#5d7472;letter-spacing:.1em;margin-left:auto}
@@ -1497,7 +1550,7 @@ button:disabled{cursor:not-allowed}
 /* #111 - directly above END TURN (user's arrow): the two are one decision */
 #bUndo{position:absolute;right:44px;bottom:72px;width:190px;height:24px;z-index:40;
   display:none;align-items:center;justify-content:center;gap:6px;
-  background:#1f2d2e;border:1px solid #4d6b6c;font-family:var(--mono);
+  background:#1f2d2e;border:1px solid var(--e6);font-family:var(--mono);
   font-size:var(--fs1);letter-spacing:.12em;color:#9fb3ae}
 #bUndo.on{display:flex}
 #bUndo:hover{background:#294041;color:var(--t4)}
@@ -1524,10 +1577,15 @@ button:disabled{cursor:not-allowed}
    height is spent, and it lands beside the three measures it explains.
    ⚠ IT OPENS UPWARD AND INBOARD. The plaque is bottom-left, so a body
    hanging below or to the right of the chip leaves the stage. */
-#bLegend{position:relative;flex:none;align-self:flex-end;margin-bottom:1px}
+/* ⛔ #292 - IT IS THE FIFTH CELL IN A ROW OF FIVE AND IT WAS HALF THEIR HEIGHT.
+   `#bStats` is `align-items:stretch` and its four `.pcell` children measure 35px;
+   this one was 19 and hung off the bottom edge. Stretching it costs no width (it is
+   `flex:none` at 19px) and no height (the four cells set the row), and the popover it
+   opens is absolute off this box, so the panel is unmoved. */
+#bLegend{position:relative;flex:none;align-self:stretch}
 #bLegend>.lbl{display:flex;align-items:center;justify-content:center;cursor:pointer;
-  border:1px solid var(--e5);background:#16211f;width:19px;height:19px;color:#8fa5a2;font-size:var(--fs2)}
-#bLegend>.lbl:hover{color:#c9c6bb;border-color:#4d6b6c}
+  border:1px solid var(--e5);background:#16211f;width:19px;height:100%;color:#8fa5a2;font-size:var(--fs2)}
+#bLegend>.lbl:hover{color:#c9c6bb;border-color:var(--e6)}
 #bLegend .lgbody{display:none;position:absolute;bottom:24px;left:-196px;width:300px;
   background:rgba(12,17,19,.96);border:1px solid var(--e5);padding:var(--p4) var(--p4);
   flex-direction:column;gap:3px;z-index:60}
@@ -2245,7 +2303,7 @@ body:has(#battle.on) .whisp{bottom:138px}
 /* #274 - the act's own sentence on the enemy readout card. Body face, one step
    under the row it belongs to, indented so the list still reads as a list. */
 #bRead .actsay{font-family:var(--body);font-size:var(--fs1);line-height:1.3;color:#8fa5a2;
-  font-style:italic;padding:0 0 3px var(--p4)}
+  font-style:italic;padding:0 0 var(--p2) var(--p4)}
 .hodds{position:absolute;top:14px;left:0;right:0;text-align:center;font-family:var(--mono);
        font-size:var(--fs0);line-height:1;font-weight:700;text-shadow:0 0 3px #000,0 0 3px #000;
        display:none}
@@ -3110,7 +3168,16 @@ body:has(#battle.on) .whisp{bottom:138px}
    whole 1280 stage. Without it the plaque would centre on #stage, which is
    the same 1280 today and would silently stop being so the day anything
    inset the bar. */
-#wBar{height:42px;background:var(--g0);border-bottom:1px solid var(--e1);display:flex;align-items:center;
+/* ⛔ #292 · A REGION SEAM IS 2px ON `--e2`, AND BOTH TOP BARS ARE ONE NOW.
+   The two bars are the same furniture on two screens and they disagreed about their
+   own bottom edge: `#wBar` 1px, `#iBar` 2px, and the sheet's other three seams
+   (`#iRoster`, `#iStash`, `#iTabs`) 2px. All five were `--e1`, which on `--g0` is
+   barely a line at all, so the sheet's whole spine was two invisible pixels wide.
+   ⛑ THE RULE, WRITTEN DOWN SO THE NEXT ONE HAS SOMEWHERE TO LAND: a BOX takes 1px
+   of `--e1`; a SEAM between two panes of one screen takes 2px of `--e2`, one step
+   lit-ter, because it is dividing rather than containing. `.claude/skills/ui-scales`
+   §2's *"1px, or 2px when a thing is picked"* is untouched: a seam is not a box. */
+#wBar{height:42px;background:var(--g0);border-bottom:2px solid var(--e2);display:flex;align-items:center;
       /* ⚠ #164: the 86 on the right is GEOMETRY, not spacing. It is off the --p
          scale on purpose and a scale step must not be substituted here.
          ⛔ #223 - AND IT IS 86 BECAUSE THE BUTTON IN IT CHANGED SIZE. #164 wrote
@@ -3142,7 +3209,15 @@ body:has(#battle.on) .whisp{bottom:138px}
 #wCompany{display:flex;align-items:center;gap:6px;min-width:0}
 #wRes{display:flex;align-items:center;flex:none}
 /* the counted resources: one strip, segments sharing borders */
-.rseg{display:flex;align-items:center;gap:6px;background:#161009;border:1px solid var(--e1);
+/* ⛔ #292 · ONE GROUND AND ONE EDGE FOR EVERY CHIP ON THE BAR, which is #197's ask
+   (*"Make heights same size, so it looks nicer"*) finished on the other axis. #197
+   gave the strip one HEIGHT and left three BACKGROUNDS standing: `.cchip` `#221a10`,
+   `.rseg` `#161009`, `.bcchip` `#1a1a14` - measured side by side in one 42px row, and
+   the eye reads three grounds as three kinds of thing. `#221a10` wins because six of
+   the ten chips already wore it and it is the only one that lifts off `--g0`.
+   ⚠ THE EDGE GOES `--e2` AND THE MEANING EDGES ARE UNTOUCHED: `.tchip` keeps its
+   bloom red and `.bcchip`'s inline mood/blood colour keeps carrying the rung. */
+.rseg{display:flex;align-items:center;gap:6px;background:#221a10;border:1px solid var(--e2);
       padding:var(--p1) var(--p4);margin-left:-1px;font-family:var(--mono);cursor:help}
 .rseg:first-child{margin-left:0}
 .rseg .ri{font-size:var(--fs4);line-height:1;font-family:var(--body)}
@@ -3162,7 +3237,7 @@ body:has(#battle.on) .whisp{bottom:138px}
             font-family:var(--body);opacity:.75;filter:grayscale(.45)}
 #wRoad svg{display:block}
 /* the company chips: bodies, kit, upkeep - the left-hand family */
-.cchip{display:flex;align-items:center;gap:6px;background:#221a10;border:1px solid var(--e1);
+.cchip{display:flex;align-items:center;gap:6px;background:#221a10;border:1px solid var(--e2);
        padding:var(--p1) var(--p4);font-family:var(--mono);font-size:var(--fs1);cursor:help;white-space:nowrap}
 .cchip .ri{font-size:var(--fs4);line-height:1;font-family:var(--body)}
 .cchip .nm{color:#8a7449;font-size:var(--fs1);letter-spacing:.1em}
@@ -3320,7 +3395,7 @@ body:has(#battle.on) .whisp{bottom:138px}
 .tchip{display:flex;align-items:center;gap:4px;background:#2a1420;border:1px solid #5d2f45;
        padding:var(--p1) var(--p3);font-family:var(--mono);font-size:var(--fs1);color:var(--bloom-lit);cursor:help}
 /* Blessings & Curses — Total War style named company states */
-.bcchip{display:flex;align-items:center;gap:5px;background:#1a1a14;border:1px solid var(--e1);
+.bcchip{display:flex;align-items:center;gap:5px;background:#221a10;border:1px solid var(--e2);
        padding:var(--p1) var(--p4);font-family:var(--mono);font-size:var(--fs1);cursor:help}
 .bcchip b{font-weight:500;font-size:var(--fs1);letter-spacing:.06em}
 /* ⛔ #220 - THE MOOD FACE LOST ITS WORD, SO IT MAY NOT STAY AT LABEL SIZE.
@@ -3350,13 +3425,13 @@ body:has(#battle.on) .whisp{bottom:138px}
    from it. A cursor tells you something can be clicked; only the words can
    tell you what it will cost. */
 .bcchip.click{cursor:pointer}
-.bcchip.click:hover{background:#26261c;filter:brightness(1.15)}
+.bcchip.click:hover{background:#2a2114;filter:brightness(1.15)}
 /* #150: the "somebody is nearly down" alarm, as its own mark rather than as
    a second meaning bolted onto the heart's fill. A pip on the corner, so it
    costs no width on a bar that has none to give. */
 .bcchip.crit{position:relative}
 .bcchip.crit::after{content:"";position:absolute;top:-3px;right:-3px;width:7px;height:7px;
-  border-radius:50%;background:#c15d55;box-shadow:0 0 0 1px #1a1a14,0 0 7px rgba(193,93,85,.9)}
+  border-radius:50%;background:#c15d55;box-shadow:0 0 0 1px #221a10,0 0 7px rgba(193,93,85,.9)}
 #wMap{flex:1;position:relative;overflow:hidden}
 /* ═══ #156 · THE CAMERA LAYER ═══════════════════════════════════════════
    ⚠ A `transform` MAKES A STACKING CONTEXT, so every z-index inside here is
@@ -3423,7 +3498,16 @@ body:has(#battle.on) .whisp{bottom:138px}
    they read as a speck, so they are scaled here rather than in GLYPH{} — the
    same strings are used by anything else that wants a type mark. */
 .node .glyph svg{width:19px;height:19px}
-.node .nm{font-family:var(--display);font-size:var(--fs2);color:#c9b98f;text-align:center;line-height:1.15;background:rgba(10,8,4,.74);padding:var(--p1) var(--p2);text-shadow:0 1px 2px #000;
+/* ⛔ #292 - EVERY CAPTION GETS THE HAIRLINE THE LIVE ONE ALREADY HAD. `.node.live
+   .nm`, `.node.mark .nm`, `.node.goal .nm` and `.node.done .nm` have each carried a
+   `box-shadow:0 0 0 1px` ring since they were written; the PLAIN caption had none, so
+   two thirds of the labels on the map were an unbounded smudge of `rgba(10,8,4,.74)`
+   over painted ground and the other third were plates.
+   ⛔ A `box-shadow` AND NEVER A `border`, and that is not taste here: the three map
+   counters in `.claude/skills/world-map-sights/SKILL.md` measure label BOXES against
+   each other and against the roads, and a border would grow every one of them by 2px.
+   A shadow costs no layout, so spacing/label/orphan stay 0/0/0 by construction. */
+.node .nm{font-family:var(--display);font-size:var(--fs2);color:#c9b98f;text-align:center;line-height:1.15;background:rgba(10,8,4,.74);padding:var(--p1) var(--p2);text-shadow:0 1px 2px #000;box-shadow:0 0 0 1px var(--e1);
           text-wrap:balance}
 .node.live .glyph{border-color:var(--g4);background:#3a2b16;box-shadow:0 0 12px rgba(217,189,126,.3);animation:nodebeat 1.6s ease-in-out infinite}
 @keyframes nodebeat{0%,100%{box-shadow:0 0 10px rgba(217,189,126,.25)}50%{box-shadow:0 0 20px rgba(217,189,126,.6)}}
@@ -4693,13 +4777,16 @@ body:has(#battle.on) .whisp{bottom:138px}
    BUTTON. Without it `BACK TO THE ROAD` runs to x1264 and ☰ MENU lands on top of it.
    It is affordable because the wagon door became a picture in the same edit: 103px of
    button went to 34, so the bar's own slack pays for the reservation. */
-#iBar{height:42px;background:var(--g0);border-bottom:2px solid var(--e1);display:flex;align-items:center;
+#iBar{height:42px;background:var(--g0);border-bottom:2px solid var(--e2);display:flex;align-items:center;
       padding:0 86px 0 var(--p6);gap:12px;flex:none}
 #iBar h2{font-family:var(--display);font-size:var(--fs5);margin:0;color:#e0d3b4;font-weight:600;
          letter-spacing:.06em}
 #iBar .sep{flex:1}
+/* #292 - `--chromeChip`, so the two doors on this bar and the `☰ MENU` floating over
+   the same bar are one height. They were 25 and 24. */
 #iBar button{font-family:var(--display);font-size:var(--fs2);color:var(--g4);border:1px solid var(--e2);
-             padding:var(--p2) var(--p5);background:#2a2114;letter-spacing:.08em}
+             padding:var(--p2) var(--p5);background:#2a2114;letter-spacing:.08em;
+             min-height:var(--chromeChip);display:flex;align-items:center}
 #iBar button:hover{background:#3a2b16}
 /* #249 - the wagon door is a picture on this bar, the same one the map draws. The
    pad comes in because an 18px cart in a 24px-wide button is a target, not a chip. */
@@ -4758,7 +4845,7 @@ body:has(#battle.on) .whisp{bottom:138px}
    never come close. See `WHAT_TO_TEST.md` for the number this shipped at.
    ⚠ AND THE 68 GOES TO `#iChar`, not to the stash: both flanks are `flex:none`
    with `#iChar` `flex:1` between them, which is #246's own pairing. */
-#iRoster{width:80px;background:#161009;border-right:2px solid var(--e1);overflow:auto;flex:none}
+#iRoster{width:80px;background:#161009;border-right:2px solid var(--e2);overflow:auto;flex:none}
 /* the level, on the corner of the picture that is already drawing this person's
    progress. `--fs1` is the floor and the plate is what keeps it off the art. */
 .rmem .rlv{position:absolute;right:-2px;bottom:-2px;font-family:var(--mono);
@@ -4789,7 +4876,7 @@ body:has(#battle.on) .whisp{bottom:138px}
    size match and not a medium match. */
 .ichip.bare .bmk{font-size:var(--fs7)}
 .rmem{width:100%;display:flex;flex-direction:column;gap:var(--p1);
-  padding:var(--p3) var(--p4);border-bottom:1px solid #2a2114;align-items:center}
+  padding:var(--p3) var(--p4);border-bottom:1px solid var(--e1);align-items:center}
 /* #249 - the clock, under the picture rather than beside it. Each chip is
    `nowrap` so the LINE breaks between chips and never inside one: `✚ 3d` split
    across two lines would be a countdown that has to be reassembled by eye. */
@@ -5183,7 +5270,7 @@ body:has(#battle.on) .whisp{bottom:138px}
    hangs its whole body below the row it belongs to, which is the other half of
    what the ask is describing. */
 .itl{display:flex;align-items:center;gap:8px;
-  border-bottom:1px dotted #332818;cursor:help;min-width:0}
+  border-bottom:1px dotted var(--e1);cursor:help;min-width:0}
 /* ⛔ #240 - 30 AND NOT 78, AND IT IS MEASURED. Three glyphs of real JetBrains
    Mono at `--fs2` plus .13em of tracking render at **26.6px** (canvas-measured
    on the running sheet, the way #202's own table was); 30 is that plus the
@@ -5336,7 +5423,7 @@ body:has(#battle.on) .whisp{bottom:138px}
 /* #232 - it lives inside `.ibars` now, so the gap is a `--p` step rather than
    a full-width row's 14, and it wraps to two lines in 214px. */
 .idrv{display:flex;gap:var(--p3);flex-wrap:wrap;align-items:baseline;font-family:var(--mono);
-  font-size:var(--fs1);color:#8a7449;letter-spacing:.04em;border-top:1px solid #2a2114;padding-top:var(--p2)}
+  font-size:var(--fs1);color:#8a7449;letter-spacing:.04em;border-top:1px solid var(--e1);padding-top:var(--p2)}
 .idrv b{color:var(--g4);font-weight:400;font-size:var(--fs3)}
 .idrv .dmg{font-family:var(--display);font-size:var(--fs5);color:#e0d3b4;letter-spacing:.02em;
   cursor:help}
@@ -5422,7 +5509,7 @@ body:has(#battle.on) .whisp{bottom:138px}
    a worst-case slack of 38. A negative top margin would have done it for free and
    would have hung the chest out of the panel it is drawn inside. */
 #iDollBox{--armlift:var(--p4);width:100%;flex:none;background:#1c150c;
-  border:1px solid #3d3020;display:flex;flex-direction:column;gap:var(--p3);
+  border:1px solid var(--e1);display:flex;flex-direction:column;gap:var(--p3);
   padding:var(--p3)}
 .drow{display:flex;gap:var(--p3);align-items:flex-end}
 /* a third of the row, gaps taken off first, so a centred bottom row of two sits
@@ -5497,7 +5584,7 @@ body:has(#battle.on) .whisp{bottom:138px}
 .wchip.mark b{color:#d9bd7e}
 .wchip .gives{font-family:var(--mono);font-size:var(--fs1);letter-spacing:.06em;color:#5ec8b8;
   display:block;margin-top:1px}
-.wchip.none{border-color:#2a2114;background:#171208;color:#6b5836;font-style:italic;cursor:default}
+.wchip.none{border-color:var(--e1);background:#171208;color:#6b5836;font-style:italic;cursor:default}
 .wchip.none .ic{color:#5c4a2c}
 /* ⛑ #200 - THE TWO ONCE-A-RUN DOORS, AS CHIPS BESIDE THE NAME. (User:
    "cut the jam - make much much smaller button - and maybe move up, near char
@@ -5591,7 +5678,7 @@ body:has(#battle.on) .whisp{bottom:138px}
    somebody else. No numbers, no bonuses — it is here to be read. */
 .memlist{display:flex;flex-direction:column;gap:1px}
 .memlist .mm{font-family:var(--body);font-size:var(--fs2);color:#a89a80;padding-left:var(--p4);
-  border-left:2px solid #3d3020}
+  border-left:2px solid var(--e1)}
 .memlist .mb{font-family:var(--body);font-size:var(--fs2);color:#8a9a5c;font-style:italic;
   padding-left:var(--p4);border-left:2px solid #46502c}
 .memlist .mh{font-family:var(--mono);font-size:var(--fs1);color:#7a6238;letter-spacing:.05em;
@@ -5817,11 +5904,11 @@ body:has(#battle.on) .whisp{bottom:138px}
    its own would have handed all 48 pixels to the CHARACTER column - the one part
    of this screen the ask was not about. The pair moves together or it does
    nothing. `#iChar` is unchanged at 526 by arithmetic: 1280 - 176 - 578. */
-#iStash{width:606px;background:#161009;border-left:2px solid var(--e1);flex:none;
+#iStash{width:606px;background:#161009;border-left:2px solid var(--e2);flex:none;
         display:flex;flex-direction:column;min-height:0;padding:0;overflow:hidden}
-#iTabs{display:flex;flex:none;border-bottom:2px solid var(--e1)}
+#iTabs{display:flex;flex:none;border-bottom:2px solid var(--e2)}
 .itab{flex:1;position:relative;font-family:var(--mono);font-size:var(--fs1);letter-spacing:.12em;
-  color:#8a7449;background:#120d07;border:none;border-right:1px solid #2a2114;padding:var(--p4) var(--p2);
+  color:#8a7449;background:#120d07;border:none;border-right:1px solid var(--e1);padding:var(--p4) var(--p2);
   cursor:pointer}
 .itab:last-child{border-right:none}
 .itab:hover{color:#c9b98f}
@@ -6064,7 +6151,9 @@ body:has(#battle.on) .whisp{bottom:138px}
    and this bar sits inboard of it: the cog measures 26px wide at --fs3 with
    --p3 either side, so 38 leaves a 4px gap that does not close when DEV.MODE
    comes on (the label is a fixed one glyph on purpose - see syncTest). */
-#reactBar{position:absolute;right:38px;bottom:6px;z-index:150;display:flex;gap:4px;
+/* ⛔ #292 - AND ON THE SAME FLOOR AS `? RULES` OPPOSITE IT. 6 against 10 is a 4px
+   step between the two bottom corners, which nothing reads as deliberate. */
+#reactBar{position:absolute;right:38px;bottom:10px;z-index:150;display:flex;gap:4px;
   align-items:center;font-family:var(--mono)}
 #reactTog{font-family:var(--mono);font-size:var(--fs1);letter-spacing:.14em;cursor:pointer;
   background:rgba(16,12,6,.92);color:#7a6642;border:1px solid var(--e1);padding:var(--p2) var(--p4);
@@ -6090,8 +6179,8 @@ body:has(#battle.on) .whisp{bottom:138px}
    inboard of the corner it is measured into. Anchored to the bar's own left
    edge it costs the row nothing whether it is showing or not. */
 #reactWhat{position:absolute;right:100%;bottom:0;margin-right:6px;
-  font-size:var(--fs1);color:#8a7449;background:rgba(16,12,6,.92);
-  border:1px solid var(--e1);padding:var(--p2) var(--p3);max-width:250px;white-space:nowrap;
+  font-size:var(--fs1);color:#8a7449;background:rgba(16,12,6,.88);
+  border:1px solid var(--e2);padding:var(--p2) var(--p3);max-width:250px;white-space:nowrap;
   overflow:hidden;text-overflow:ellipsis;opacity:0;transition:opacity .2s;
   pointer-events:none}
 #reactWhat.on{opacity:1}
@@ -6143,7 +6232,7 @@ body:has(#battle.on) .whisp{bottom:138px}
 #rxWhy textarea{width:100%;box-sizing:border-box;background:#141d1e;color:var(--t4);
   border:1px solid var(--e4);font-family:var(--body);font-size:var(--fs3);
   padding:var(--p3);resize:vertical}
-#rxWhy textarea:focus{outline:none;border-color:#4d6b6c;background:#172223}
+#rxWhy textarea:focus{outline:none;border-color:var(--e6);background:#172223}
 #rxWhy textarea::placeholder{color:#5f7472;font-style:italic}
 /* ⛔ #191 - `#rxOpts`, `#rxSend` AND `#rxSkip` ARE GONE, MARKUP AND RULES.
    (User: *"From there delete options 'send' and 'not now' they are not needed"*.)
@@ -6169,7 +6258,7 @@ body:has(#battle.on) .whisp{bottom:138px}
   letter-spacing:.14em;color:#8fa5a2;background:#141d1e;border:1px solid var(--e4);
   padding:var(--p2) var(--p4);cursor:pointer;
   transition:color .15s,border-color .15s,background .15s}
-#rxSend:hover{color:var(--t4);border-color:#4d6b6c;background:#172223}
+#rxSend:hover{color:var(--t4);border-color:var(--e6);background:#172223}
 /* ⚠ AN ACCENT EDGE, AND IT CARRIES MEANING, so it is not on the five structural
    greys and may not be flattened onto them (ui-scales §2). */
 #rxSend.sent{color:#8ca35a;border-color:#5a7a3a;background:#1a2618}
@@ -6960,12 +7049,12 @@ body:has(#battle.on) .whisp{bottom:138px}
 .qta{width:100%;box-sizing:border-box;background:#141d1e;border:1px solid var(--e4);
   color:var(--g-body);font-family:var(--body);font-size:var(--fs4);line-height:1.45;
   padding:var(--p3) var(--p4);resize:vertical}
-.qta:focus{outline:none;border-color:#4d6b6c;background:#172223}
+.qta:focus{outline:none;border-color:var(--e6);background:#172223}
 .qta::placeholder{color:#5f7472;font-style:italic}
 .qpicks{display:flex;flex-wrap:wrap;gap:6px}
 .qpick{background:#1f2d2e;border:1px solid var(--e5);color:#9fb3ae;font-family:var(--display);
   font-size:var(--fs2);letter-spacing:.05em;padding:var(--p3) var(--p5)}
-.qpick:hover{background:#294041;color:var(--t4);border-color:#4d6b6c}
+.qpick:hover{background:#294041;color:var(--t4);border-color:var(--e6)}
 .qpick.on{background:#2c4a3a;border-color:#8ca35a;color:#c3d18a}
 /* THE GREEN IS THE ONE THING BEING ASKED FOR, and it is the only green on the
    card. Two controls wear it now (2026-08-03): the mail anchor on the notes
@@ -7108,7 +7197,7 @@ a.popt.sendit{display:block;text-decoration:none}
    screen. Static, not absolute, so it rides the box whatever height it is. */
 #helpBtn.inlog,#menuBtn.inlog{position:static;left:auto;right:auto;top:auto;bottom:auto;
   background:none;border:none;
-  border-top:1px solid #223335;font-size:var(--fs1);letter-spacing:.1em;color:#7d8f8c;
+  border-top:1px solid var(--e4);font-size:var(--fs1);letter-spacing:.1em;color:#7d8f8c;
   padding:var(--p2) var(--p4);text-align:left;width:100%;box-sizing:border-box}
 #helpBtn.inlog:hover,#menuBtn.inlog:hover{color:var(--t4);background:#1a2729}
 /* ═══ ⛔ #249 · ONE CORNER, EVERY SCREEN ════════════════════════
@@ -7136,6 +7225,16 @@ a.popt.sendit{display:block;text-decoration:none}
   border:1px solid var(--e1);padding:var(--p1) var(--p4)}
 #menuBtn.on{display:block}
 #menuBtn:hover{color:var(--g4)}
+/* ⛔ #292 · THE THREE DOORS THAT STAND IN A CORNER OF EVERY SCREEN ARE ONE BOX.
+   `? RULES` bottom left, `FEEDBACK` bottom right and `☰ MENU` top right are the only
+   chrome a player sees on all fourteen screens, and they were three sizes, two
+   backgrounds and two floor heights. `--chromeChip` is the tallest of the three, so
+   the type is untouched and only the BOXES agree; the ground and the edge come with
+   it. `:not(.inlog)` leaves the battle log's footer door alone - that one is a full
+   width row inside the log and has its own rule three lines up. */
+#helpBtn:not(.inlog),#menuBtn:not(.inlog),#reactTog,#bPace{display:flex;align-items:center;
+  min-height:var(--chromeChip);padding:0 var(--p4);line-height:1.1;
+  background:rgba(16,12,6,.88);border:1px solid var(--e2)}
 /* ⛔ #220 - AND ON THE MAP IT SITS TOP RIGHT (user: *"Move a menu to the
    top right"*). Scoped to the world screen exactly the way `#audioBtn` carries
    its own two overrides, and for the same reason: `MENU_ON` draws this button
@@ -7518,19 +7617,19 @@ a.popt.sendit{display:block;text-decoration:none}
              bar now, and it keeps its own hover. -->
         <div class="sbar">
           <span class="sbi" id="bArmI" title="ARMOUR - it takes the hit first">⛨</span>
-          <div class="bar sbb" style="background:#243133"><i id="bArm" style="background:var(--steel)"></i>
+          <div class="bar sbb parm"><i id="bArm" style="background:var(--steel)"></i>
             <span class="sbt"><b class="sbL" id="bArmK"></b><span class="sbR" id="bArmN"></span></span></div>
         </div>
         <div class="sbar">
           <span class="sbi" title="HITPOINTS - what is left of the body">♥</span>
-          <div class="bar sbb" style="background:#3b2126"><i id="bHp" style="background:var(--blood)"></i>
+          <div class="bar sbb phit"><i id="bHp" style="background:var(--blood)"></i>
             <span class="sbt"><span class="sbR" id="bHpN"></span></span></div>
         </div>
         <!-- #102 point 1: nerve is the third measure, in the same idiom as
              the two above it. The chip it replaces is described in the CSS. -->
         <div id="bState" class="sbar" tabindex="0">
           <span class="sbi" id="bStateI" title="MOOD"></span>
-          <div class="bar nrv sbb" style="background:#20272a"><i id="bNerve"></i>
+          <div class="bar nrv sbb"><i id="bNerve"></i>
             <span class="sbt"><b class="sbL" id="bStateN">–</b></span></div>
         </div>
       </div>
@@ -16570,13 +16669,17 @@ const LADDER=[
    sitting directly under the thing it reads is what makes that impossible.
    ⚠ THE BOTTOM GATE IS 0 AND IS NOT DRAWN: a tick on the left edge of the bar is
    the edge of the bar. */
+/* ⛔ #292 - THE RUNG GATES TAKE THE SAME LIT RIM AS THE BLOWS HATCH, and they need
+   it more: the mood trough is `#20272a` and a body standing at STEADY has two thirds
+   of its ladder drawn on that ground, so the gates the whole row is READ against were
+   the half of the bar you could not see. Same two stops, same family, one place. */
 const NRV_TICKS=(()=>{
-  const ink='rgba(7,11,12,.92)';
+  const ink='rgba(7,11,12,.92)',rim='rgba(255,246,224,.17)';
   const g=LADDER.map(l=>l.at).filter(a=>a>0).sort((a,b)=>a-b)
                 .map(a=>+(a*100).toFixed(2));
   let s='transparent 0';
-  g.forEach(p=>{s+=' calc('+p+'% - 1px),'+ink+' calc('+p+'% - 1px) '+p+
-                   '%,transparent '+p+'%';});
+  g.forEach(p=>{s+=' calc('+p+'% - 2px),'+rim+' calc('+p+'% - 2px) calc('+p+'% - 1px),'+
+                   ink+' calc('+p+'% - 1px) '+p+'%,transparent '+p+'%';});
   return 'linear-gradient(90deg,'+s+')';
 })();
 try{document.documentElement.style.setProperty('--nrvticks',NRV_TICKS);}catch(e){}
@@ -41416,19 +41519,26 @@ function drawInv(){
              spent in blows, off `SEG()` and the plaque's own two constants, and the
              `nrv` class on the one that is not. */
           '<div class="sbar"><span class="sbi" id="iArmI" title="ARMOUR - it takes the hit first">⛨</span>'+
-            '<div class="bar sbb" style="--seg:'+SEG(u.armourMax||1,SEG_ARM)+
-              ';background:#243133"><i style="width:'+(arm?100:0)+
+            '<div class="bar sbb parm" style="--seg:'+SEG(u.armourMax||1,SEG_ARM)+
+              '"><i style="width:'+(arm?100:0)+
               '%;background:var(--steel)"></i>'+
             '<span class="sbt"><b class="sbL band" id="iBand" style="color:'+bd.col+'">'+bd.n+
-              '</b><span class="sbR">'+arm+'</span></span></div></div>'+
+              /* ⛔ #292 - AND THE DENOMINATOR, WHICH ONLY THIS ROW WAS MISSING. It printed
+   `10` under a `19/19` and over a `68/120`, and the SAME row on the battle card has
+   read `2/2` since #247 - so one pool of three said what it was out of, depending on
+   which screen you were on. `armourValue(p)` IS `u.armourMax` here (measured on the
+   whole company), which is why the fill is drawn at 100%: out of a fight the shell is
+   whole, and saying so is the point. */
+'</b><span class="sbR">'+arm+'<span class="of">/'+(u.armourMax||arm)+
+              '</span></span></span></div></div>'+
           /* ⛔ #247 - AND THE THIRD HP RAMP GOES WITH IT. This row carried its own
              `blood / #c07a2c / #e0544c`, the token carries `HPCOL` and the plaque
              carried a third reading of the second - so a body at 40% was amber here
              and light red there. `hpCol(.,.,card)` is the one ramp now. */
           '<div class="sbar" data-drv="hp" style="cursor:help">'+
             '<span class="sbi" title="HITPOINTS - what is left of the body">♥</span>'+
-            '<div class="bar sbb" style="--seg:'+SEG(hpMax,SEG_HP)+
-              ';background:#3b2126"><i style="width:'+(100*hpF)+
+            '<div class="bar sbb phit" style="--seg:'+SEG(hpMax,SEG_HP)+
+              '"><i style="width:'+(100*hpF)+
               '%;background:'+hpCol(p,hpF,true)+'"></i>'+
             '<span class="sbt"><span class="sbR">'+
               hpNow+'<span class="of">/'+hpMax+'</span></span></span></div></div>'+
@@ -41440,7 +41550,7 @@ function drawInv(){
              printing a constant, which is #102's rule at its bluntest. The rung name
              beside it moved with `nl` and the bar under it did not, so the two halves
              of one line disagreed on any body who was not exactly neutral. */
-            '<div class="bar sbb nrv" style="background:#20272a"><i style="width:'+
+            '<div class="bar sbb nrv"><i style="width:'+
               Math.round(100*nu.morale/(nu.moraleMax||1))+'%;background:'+nl.col+'"></i>'+
             /* #247 - the rung name takes the bar it is measured on: this ask's *"for
                mood use space"*, and the one row of the three with no figure. */
@@ -46125,15 +46235,19 @@ function worldTick(){
        eye and costs the row 42px instead of 96. ⚠ The face is the ladder
        out of `MOODSTATES`, which the road card's own morale chip wears too:
        one glyph, one unit (#102). */
-    '<span class="bcchip click" data-w="mood" style="border-color:'+ms.col+'66">'+
+    /* ⛔ #292 - `aa` AND NOT `66`. A meaning edge at 40% alpha over `#221a10` is DIMMER
+   than the `--e2` on the seven chips beside it, so the two readouts that carry a
+   colour read as the two chips that were forgotten. At 67% the rung's colour is the
+   loudest edge on the strip, which is what it is for. */
+     '<span class="bcchip click" data-w="mood" style="border-color:'+ms.col+'aa">'+
       '<span class="mface">'+ms.ic+'</span></span>'+
     /* #150 - the heart, then the company's own figure beside it. The red pip
        is the "somebody is nearly down" alarm #106 built, given its own mark
        so it can no longer be mistaken for the average being low. */
     '<span class="bcchip click'+(hs.crit?' crit':'')+'" data-w="blood" '+
-      'style="border-color:'+hs.col+'66">'+
+      'style="border-color:'+hs.col+'aa">'+
       heartSVG(hs.st)+'</span>'+
-    (petKey?'<span class="bcchip" data-w="pet" style="border-color:#8ca35a66">'+
+    (petKey?'<span class="bcchip" data-w="pet" style="border-color:#8ca35aaa">'+
       PAW_SVG+'</span>':'')+
     /* ⛔ #269 - AND THE CHIP SHOWS THE THING. (User: *"on the global map it is
        smaller icon with marching drum"*.) `ITEM_ICON` has held a painting for this

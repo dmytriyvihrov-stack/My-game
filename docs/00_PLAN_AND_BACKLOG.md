@@ -91,6 +91,7 @@ section used to carry each entry in full, which made the work file a second chan
 
 | | the subtraction | log |
 |---|---|---|
+| **#292** *(09-02)* | **the design pass: the pools, the seams, the strip and the corners** | 8f.315 |
 | **#291** *(09-02)* | **The skills pane reads the build, and every part of the lab can be commented on** | 8f.314 |
 | **#290** *(09-02)* | **The Lab: the four tools become one, and two of them stop being generated** | 8f.313 |
 | **#289** *(09-02)* | **softer shake, salvage stops being a door, the tour cut to a third, and the free class pick is a level-4 thing** | 8f.312 |

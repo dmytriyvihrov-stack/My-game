@@ -54,14 +54,24 @@ so `--fs0` renders 13.1 / 17.6 / 20 real px at the three `CAMS` stops. ONE reade
 | `--e2` | `#4d3c22` | gold, mid. A raised or hovered edge |
 | `--e3` | `#6b5330` | gold, lit. A selected or important edge |
 | `--e4` | `#2c3d3f` | teal, dim. The battle chrome |
-| `--e5` | `#35494c` | teal, lit. The battle chrome, raised |
+| `--e5` | `#35494c` | teal, mid. The battle chrome, raised |
+| `--e6` | `#4d6b6c` | teal, lit. **A hovered or focused teal edge** (#292) |
 
 ⛔ **AN ACCENT EDGE IS NOT ON THIS SCALE AND MUST NOT BE COLLAPSED INTO IT.** `border-color` carries
 MEANING: `var(--gold)` selects, `var(--blood-lit)` warns, `#8ca35a` approves, `#c15d55` is the unpaid
 red. Flattening those is #102's wrong-unit bug arriving through a tidy-up. **The scale is for the edge
 that draws a box, never for the edge that says something.**
-⚠ Thickness is 1px, or 2px when a thing is picked. `border:Npx solid transparent` at 2.5/3/7/9 is a
+⛔ **A BOX IS 1px OF `--e1`. A SEAM IS 2px OF `--e2`** *(#292)*. A seam is the line between two
+PANES of one screen - `#wBar` and `#iBar`'s bottoms, `#iRoster`'s right, `#iStash`'s left, `#iTabs`'s
+bottom - and it is one step lit-ter because it divides rather than contains. Before #292 the two top
+bars disagreed about their own (1px against 2px, both `--e1`) and the sheet's whole spine was two
+invisible pixels wide.
+⚠ Otherwise thickness is 1px, or 2px when a thing is picked. `border:Npx solid transparent` at 2.5/3/7/9 is a
 CSS triangle, not an edge, and is off the scale on purpose.
+⚠ **`--e6` HAS TWO DOCUMENTED LITERALS AND §5'S BORDER GREP READS 2, NOT 0.** `#tutCard.call`
+and `#bLog .ll.mine` are MEANING rails (whose voice is speaking) that happen to be teal, so the rule
+two lines up forbids collapsing them - **they are the exception the grep counts, the way `86px` is
+the exception the padding grep prints.** A third one appearing is the bug.
 
 ## 3. Spacing: seven steps
 
@@ -85,7 +95,10 @@ licence: a geometry literal that outlives its geometry is what it guards against
 ## 3b. A shared box height is geometry, and it is on none of the three scales
 
 ⛔ **A HEIGHT IS NOT A `--p` STEP AND MUST NOT BE MADE ONE.** `--barChip:30px` sits in `:root` on the
-same footing as the 86px reservation and carries its arithmetic for the same reason.
+same footing as the 86px reservation and carries its arithmetic for the same reason. **`--chromeChip:24px`
+is the second one** *(#292)*: the height of the three doors a player sees on all fourteen screens
+(`? RULES`, `☰ MENU`, `FEEDBACK`, and `#bPace` and the sheet bar's buttons with them). 24 is the
+TALLEST of the three as measured (23/20/24), so it took no type down a step to buy the alignment.
 ⚑ **30 IS NOT A TASTE, IT IS THE ONE LOAD-BEARING CHIP**: a 24px bust, that image's own 1px border,
 `--p1`, and the chip's border top and bottom. The bar is 42, so 30 leaves 6px of air either side.
 ⚠ **If the bust ever changes size this number moves with it.** ⛔ And it is SCOPED
@@ -101,9 +114,11 @@ rows off the same block. A fourth surface copies `.sbar`; it does not write a se
 |---|---|
 | the mark | ⛨ `SLOT_ICON.armour` · ♥ blood · `MOOD_MARK`, one glyph, `U+263A︎` |
 | inside, left | the WORD that is a fact: the armour class, the mood rung. Nothing on hitpoints |
-| inside, **the middle** | the figure, **`--fs5` on both** |
-| the height | `--sbh`, **20 on both** |
-| the frame | a `box-shadow` on `.sbt`, never on `.sbb` |
+| inside, **the middle** | the figure, **`--fs4` on both** |
+| the height | `--sbh`, **17 on both** |
+| the trough | `.parm` / `.phit` / `.nrv` **in the stylesheet** (#292), never inline in a builder |
+| the frame | a `box-shadow` on `.sbt`, never on `.sbb`. **`--e2`** since #292 |
+| the dividers' rim | a 1px `rgba(255,246,224,.17)` stop **before** the dark one (#292), or the sections exist only over the fill |
 | the dividers | **`::after` on the `.bar`**, on all three rows, derived from `LADDER` via `--nrvticks` |
 | the figure's place | grid `1fr auto 1fr`, never `justify-content:center` (two rows carry a word too) |
 
@@ -217,7 +232,7 @@ TIMES.** The DOM and these counters are the proof. First, that the three scales 
 ```bash
 grep -o "font-size:[ ]*[0-9.]*px" prototype/grimtoll_slice.html | sort -u | wc -l   # 0
 grep -o "padding[a-z-]*:[^;}\"']*" prototype/grimtoll_slice.html | grep -oE "[0-9.]+px" | sort -u  # 86px
-grep -o "border[a-z-]*:[^;}\"']*" prototype/grimtoll_slice.html | grep -icE "#(3d2f1d|4d3c22|6b5330|2c3d3f|35494c|33474a|3d5250)"  # 0
+grep -o "border[a-z-]*:[^;}\"']*" prototype/grimtoll_slice.html | grep -icE "#(3d2f1d|4d3c22|6b5330|2c3d3f|35494c|4d6b6c|33474a|3d5250)"  # 2, and both named in §2
 ```
 
 In the running build, per screen:
