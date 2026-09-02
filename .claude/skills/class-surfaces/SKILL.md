@@ -27,7 +27,7 @@ building X** - the `batch` skill's table, and it has been right every time here.
 ## ⛑ Where a class fact lives
 
 ⛔ **The game is the source. The lab READS it.** #287 had `clsRule` authored in
-`tools/classes.html`, so the one screen a player opens could not say what their class does.
+the class lab, so the one screen a player opens could not say what their class does.
 If a class fact exists only in a dev tool, it is not a class fact yet.
 
 | the fact | the table | notes |
@@ -63,7 +63,7 @@ Walk this list every time. Four of the five are one insertion each.
    on. It draws lean, trains, signature and kit.
 4. **The gear hover** - `gearLine`, read by the hover *and* the market row *and* the card row.
    **Three surfaces, one insertion** - which is exactly why the slot being separate is easy to miss.
-5. **The class lab** - `tools/classes.html`, which reads all of it live. Add the field to the
+5. **The class lab** - the CLASSES tab of `tools/lab.html`, which reads all of it live. Add the field to the
    bridge's `classRows()` and it is on the card.
 
 ## ⛔ The gate row for a class change

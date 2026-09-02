@@ -139,7 +139,7 @@ J-pack pipeline for a card on screen for seconds. **Make these last, or not at a
 | the mule ladder (#238 spec §D: the ox, the horse) | two tile icons and the two swap cards' stages | 128 alpha · 1672x941 |
 | the forge on the road (#238 spec, acts 1-2) | nothing: `CRAFT`'s five pieces already have icons | |
 | the settlement screen (`09_SETTLEMENTS_AND_LEGACY.md`) | a painting per building tier, when it is designed | |
-| the skill tree (#208, `tools/skilltree_lab.html`) | perk icons, when the tree is in the game | |
+| the skill tree (#208, the SKILLS tab of `tools/lab.html`) | perk icons, when the tree is in the game | |
 
 ---
 

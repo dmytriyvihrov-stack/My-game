@@ -124,7 +124,7 @@ The `CHAMP` multipliers are still the BODY (half again meat, harness and swing, 
 
 The inspect card shows the four `STAT_ICON` paintings (**32px, never 24**: a 3:4 resample smears a pixel painting, #230) for every body except `noFace`, with `tell()`'s band word on the hover. **The mark is a claim about the rung and nothing else**: not a receipt, not a threat rating, and it never carries a number. `noFace` is refused its marks because the Warden is a thing you cannot read.
 
-## ⛑ The one table of every enemy: `tools/enemies.html`
+## ⛑ The one table of every enemy: the ENEMIES tab of `tools/lab.html`
 
 **It is DERIVED and it is not part of the game.** A statblock change moves the file by itself:
 

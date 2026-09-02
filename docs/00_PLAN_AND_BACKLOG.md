@@ -91,6 +91,8 @@ section used to carry each entry in full, which made the work file a second chan
 
 | | the subtraction | log |
 |---|---|---|
+| **#291** *(09-02)* | **The skills pane reads the build, and every part of the lab can be commented on** | 8f.314 |
+| **#290** *(09-02)* | **The Lab: the four tools become one, and two of them stop being generated** | 8f.313 |
 | **#289** *(09-02)* | **softer shake, salvage stops being a door, the tour cut to a third, and the free class pick is a level-4 thing** | 8f.312 |
 | **#288** *(09-02)* | **the rout pays the toll, the formations go, and the sheet stops charging mood it never took** | 8f.311 |
 | **#287** *(09-01)* | **The class reaches the company sheet, the weapon type reaches the slot, and a skill so the next one is quicker** | 8f.310 |

@@ -26,6 +26,81 @@
 
 ---
 
+## #291 - The skills pane reads the build, and every part of the lab can be commented on
+
+**Not in the game.** Two additions to `tools/lab.html`. Server first, as always:
+
+```
+powershell -NoProfile -ExecutionPolicy Bypass -File tools\serve.ps1
+http://localhost:8777/tools/lab.html
+```
+
+**In three steps.** Open **SKILLS** and press the new third sub-tab, **3 · AGAINST THE BUILD** ·
+press **✎ COMMENT MODE** in the bar and click any line on any tab · press **NOTES** and then
+**EXPORT**.
+
+- **SKILLS was the one pane wired to nothing, and now half of it is wired to everything.** Tabs 1
+  and 2 are unchanged and still authored: a shelf of five other games, and a proposal. Tab 3 reads
+  `PERKS`, `GENPERKS`, `RACEPERKS`, `CLASSES` and `PERKTIERS` off the running build and draws the
+  three lanes tier by tier for a race and a class you pick, then puts the draft next to them.
+- **The number to look at is the middle one.** *33 of 56 draft rows are in the build, 6 are marked
+  as ideas, and 17 are neither* - and below that, *21 skills the game can hand out that no row in
+  the draft mentions*. Those two figures are the whole reason the tab exists; if they read 0 and 0
+  the draft and the build agree.
+- **The join is the NAME, on purpose.** A perk renamed in the prototype shows up as NOT IN THE
+  BUILD rather than silently matching. That is a question about the draft, not a fault in the table.
+- **`open this class in the CLASSES tab →`** filters the CLASSES pane to the class whose lane you
+  are reading.
+- **COMMENT MODE turns the whole tool into something you can write on.** Click any line, type what
+  is wrong with it, SAVE. The line gets a dashed gold box. **EDIT THE TEXT** lets you type over it,
+  and the note then carries both what it said and what you think it should say.
+- **Buttons, tabs and filters keep working while comment mode is on**, so you can walk the whole
+  tool leaving notes. To write about a control rather than press it, **alt+click** it.
+- **NOTES lists everything, jumps to it, and EXPORT hands back one markdown block** to paste into
+  a session. Notes live in this browser only and survive a reload.
+- **A note on a derived table survives the table being derived again.** Leave one on a statblock,
+  press RELOAD BUILD, and it comes back on the same row.
+- **What would be a bug.** A note that cannot be found again after a reload and is not marked as
+  lost · a text rewrite that comes back over a line the BUILD has since changed (it should go red
+  and say the build moved) · comment mode you cannot leave · anything in this layer reaching the
+  game file, which nothing on this page has ever been able to do.
+
+## #290 - The Lab: the four tools become one, and two of them stop being generated
+
+**Not in the game.** This is a tool and the game does not know it exists. `tools/classes.html`,
+`tools/skilltree_lab.html`, `tools/artifacts.html` and `tools/enemies.html` are gone; all four are
+tabs of one page now, and the last two are derived off the running build rather than generated.
+
+```
+powershell -NoProfile -ExecutionPolicy Bypass -File tools\serve.ps1
+http://localhost:8777/tools/lab.html
+```
+
+**In three steps.** Start the server and open the page · wait for the status line to say *ready*
+(the game file is large: ten to thirty seconds, longer in a background tab) · press each of
+**CLASSES · SKILLS · ARTIFACTS · ENEMIES** in turn.
+
+- **The two table tabs pause the first time you open them, and only the first time.** ARTIFACTS
+  and ENEMIES run their probe against the loaded game when you press them: the status line says
+  *deriving the armoury* / *deriving the foe dex* for a few seconds, then the table appears. Press
+  another tab and come back: instant. **RELOAD BUILD throws both away**, because a reload is a new
+  build and a figure derived off the old one is wrong.
+- **The stamp on each table says the date it was derived.** It should say TODAY, every time, on
+  every machine. That is the whole point of the entry: those two tables used to carry the date
+  somebody last remembered to run `build_gear.py`.
+- **Everything the four tools did, they still do.** The class filter and the weapon grid, the
+  skill tree's two tabs, the armoury's forge and its WHERE THEY COME FROM census, the foe dex's
+  champion toggles and its FIGHTS tab, every EXPORT, every editable dotted cell.
+- **The edit layer survived and it is per browser.** Tick a **redraw** box in ENEMIES, reload the
+  page, and the tick is still there. ⚠ Edits and drafts made in the OLD `file://` armoury are on
+  a different origin and do not follow: `git show 534c431:tools/artifacts.html > old.html`, open
+  it, EXPORT, paste. Nothing is lost, but nothing moves by itself either.
+- **What would be a bug.** A tab that draws blank rather than saying why · a pane that keeps
+  yesterday's figures after RELOAD BUILD · two panes visible at once · a filter in one tab
+  changing what another tab shows · a font or a colour that belongs to one pane leaking into
+  another (all four stylesheets share one document now, scoped by pane id) · the class builder's
+  ▶ FIGHT failing to open the practice field.
+
 ## #289 - Softer shake, salvage stops being a door, the tour cut to a third, and the free class pick is a level-4 thing
 
 **In the game.** Four asks. The one worth checking hardest is the perk sheet, because the rule
@@ -260,7 +335,7 @@ was hiding it by building every card at level 1.
   a school · a personality that used to be caster-only (Wind-touched, Magpie-minded) turning up on
   somebody who cannot cast · an old save refusing to load.
 
-**In the class lab** (`http://localhost:8777/tools/classes.html`, server first - see #280).
+**In the class lab** (the CLASSES tab of `http://localhost:8777/tools/lab.html`, server first - see #280, #290).
 
 - **The filter is the point.** Press a class in the sticky bar and the page is that class only.
 - **Every class now lists what it can carry and what each weapon unlocks.** The archer is the one
@@ -276,11 +351,12 @@ was hiding it by building every card at level 1.
 ## #280 - The class lab: every class in one table, a body built by hand, and a fight to try it in
 
 **Not in the game.** This is a tool and the game does not know it exists. It reads the game file
-LIVE, so unlike `tools/artifacts.html` it needs a server: start one, then open the page.
+LIVE, so it needs a server: start one, then open the page. Since #290 it is the CLASSES tab of
+the lab rather than a page of its own.
 
 ```
 powershell -NoProfile -ExecutionPolicy Bypass -File tools\serve.ps1
-http://localhost:8777/tools/classes.html
+http://localhost:8777/tools/lab.html
 ```
 
 **In three steps.** Wait for the status line to say *ready* (the game file is large; ten to thirty
@@ -314,8 +390,9 @@ the practice field.
 
 ## #279 - The Armoury: every artifact, where it comes from, and who it is for
 
-**Not in the game.** This is a tool, and the game does not know it exists. Open
-`tools/artifacts.html` in a browser: no server, no build step, one file.
+**Not in the game.** This is a tool, and the game does not know it exists. Since #290 it is the
+ARTIFACTS tab of `http://localhost:8777/tools/lab.html`, derived off the running build when you
+open the tab: a server, but no build step and nothing to regenerate.
 
 **In three steps.** Open the file · the table is every artifact in the game, grouped by slot
 · the second tab, **WHERE THEY COME FROM**, is the same census asked the other way round: one
@@ -391,7 +468,7 @@ python tools/dev/gt.py eval reach.js
   the one at Blood on the Road is still OGRE, CLUB with 27 armour and 22-33. Same animal,
   two hand-made contexts, one entity behind them.
 
-**In `tools/enemies.html`:**
+**In the lab's ENEMIES tab:**
 
 - five rows now carry a teal **N MORE CONTEXTS** toggle. Open the Lurcher: three bodies
   fold out, each showing only what its fight tuned;
@@ -407,7 +484,8 @@ so a single cross-build diff reports four findings that are not there.
 
 ## #276 - the foe dex, the grouped statblocks, and the threat price
 
-**Open `tools/enemies.html` in a browser.** It is a loose file and needs no server.
+**Open the ENEMIES tab of `http://localhost:8777/tools/lab.html`** (`tools\serve.ps1` first). It
+was a loose generated file until #290 and is derived live now.
 
 - the ENEMIES tab opens grouped into **14 families**, threat-sorted, 60 bodies with 5
   champions folded in. Click a `CHAMPION` toggle: the better version appears under its base

@@ -23,30 +23,57 @@ plus `shot`, `arena` and `grep`. `gt.py <verb> --help` for the flags.
 
 ---
 
-## The two dexes, and why they are generated rather than written
+## The two dexes are tabs now, and there is nothing to regenerate
 
 ```bash
-python tools/dev/gt.py eval tools/dev/probes/foedex.js    > foedex.raw
-python tools/dev/gt.py eval tools/dev/probes/orphanart.js > orphan.raw
-python tools/dev/build_foedex.py foedex.raw orphan.raw    # -> tools/enemies.html
-
-python tools/dev/gt.py eval tools/dev/probes/gear.js      > gear.raw
-python tools/dev/build_gear.py gear.raw                   # -> tools/artifacts.html
+powershell -NoProfile -ExecutionPolicy Bypass -File tools\serve.ps1
+#   then: http://localhost:8777/tools/lab.html
 ```
 
-**Neither file is authored and neither ships.** `tools/enemies.html` is every enemy the game can
-field and `tools/artifacts.html` is every artifact it can hand you; both are one probe, one
-generator and one template, so a statblock or a `GEAR` row moving in the build moves the table by
-itself. **Re-run the pair after any change to `FOE_T`/`FOE_BUILD` or to `GEAR`/`ITEM_ICON`.**
+⛔ **#290 DELETED THIS SECTION'S OWN RITUAL.** Until then the foe dex and the armoury were two
+generated files: `gt.py eval probes/foedex.js > foedex.raw`, then `build_foedex.py`, and the same
+again for gear. Two commands that had to be remembered after every statblock and every `GEAR` row,
+and a table that was silently stale until somebody remembered. **The probes are unchanged**; they
+run in the same hidden iframe `tools/lab.html` already held for the class lab, so the ENEMIES and
+ARTIFACTS tabs derive when you open them and RELOAD BUILD refreshes all four panes off one file.
 
-⛔ **THE GENERATOR HOLDS THE WORDS AND THE PROBE HOLDS THE FIGURES**, and a key with no row in
-the generator's naming tables shows its raw key rather than vanishing. `build_gear.py` imports
-`FIGHT_NAME` from `build_foedex.py` instead of retyping twenty fight titles: one fact, one builder.
+⚑ **The evidence that the ritual was the problem**: the last generated `tools/artifacts.html`
+recorded three artifacts as *in the wagon on day one* that were not. `gear.js` reads `G.stash`,
+which is RUN state, and the browser that generated the file had picked three classes first. A
+freshly booted iframe cannot carry that.
 
-⚠ **BOTH TOOLS CARRY AN EDIT LAYER AND IT IS NOT IN THE DATA.** Edits live beside the row in
-`localStorage` and ride EXPORT, so a regenerate can never cost anybody an afternoon. The armoury
-also carries DRAFTS - artifacts sketched in the tool that are not in the build - and **a draft is
-the only copy of something that exists nowhere else**, so RESET asks about it separately.
+⛔ **THE WORDS AND THE FIGURES ARE STILL SEPARATE**, they have simply both moved into the tool: the
+`WORDS` block at the foot of `tools/lab.html` holds the display names (`FAMILY`, `FIGHT_NAME`,
+`EFF_LABEL`, `SLOT_NAME`, `SOURCE_NAME`) and the authored hover line that used to be
+`foedex_desc.py`, and **a key with no row in it shows its raw key rather than vanishing**.
+
+⚠ **BOTH TABLES CARRY AN EDIT LAYER AND IT IS NOT IN THE DATA.** Edits live beside the row in
+`localStorage` under the keys they always used (`foedex_edits_v1`, `armoury_edits_v1`,
+`armoury_drafts_v1`) and ride EXPORT, so a re-derive can never cost anybody an afternoon. The
+armoury also carries DRAFTS - artifacts sketched in the tool that are not in the build - and **a
+draft is the only copy of something that exists nowhere else**, so RESET asks about it separately.
+⚠ `localStorage` is per ORIGIN: a draft made in the old `file://` armoury is not visible at
+`http://localhost:8777`. Recover the old file with `git show <rev>:tools/artifacts.html` and EXPORT
+from it.
+
+## ⛑ The lab can be written on (#291)
+
+**`✎ COMMENT MODE` in the build bar turns every line of every tab into something you can note.**
+Click a line, say what is wrong with it, SAVE; `EDIT THE TEXT` types over it and the note then
+carries both what it said and what it should say. `NOTES` lists them, jumps to them, and `EXPORT`
+hands back one markdown block to paste into a session. Notes are `localStorage`, key
+`lab_notes_v1`, and never reach the game file.
+
+⛔ **A NOTE IS ANCHORED TWICE, and both anchors are supposed to break.** A child path dies when the
+table gains a row; the first 80 characters of the line die when the build rewords it. A note that
+neither can find is kept and shown as LOST rather than dropped, because what somebody typed is the
+one thing on that page that exists nowhere else. ⚠ A text rewrite is only re-applied over the
+words it replaced: if the build has since changed that line, the note goes **red** instead of
+quietly overwriting the change the reload was run to see.
+
+⚑ **The SKILLS pane's third tab is the one that reads the build**, and its two numbers are the
+reason it exists: how many rows of the authored draft are in the game, and how many skills the game
+can hand out that the draft never named.
 
 ## ⛔ Why not `preview_start`
 
@@ -144,8 +171,8 @@ carries the setup that keeps being rewritten - `GT.playerTurn()`, `GT.standNextT
 | `matrix263.js` | the road's win rates, both comps, **accumulated six fight-comps a call** because `eyes.py`'s CDP socket times out at 120s regardless of `--timeout`. Run it until `done`. #263 |
 | `champ265.js` | the champion's two rolled perks and its derived rung, plus the nerve gap between the two sides. #265 |
 | `pit250.js` | every rule the PIT carries, driven on a live board: the budget in a hole, the rim in both directions and for all four kinds of act, the fall a shove buys, the turn a climb costs, the hex note, the badge, and the generation in situ. #250 |
-| `foedex.js` · `orphanart.js` | the 62-body foe catalogue and the art nothing can reach, which together generate `tools/enemies.html`. #276 |
-| `gear.js` | every artifact the game can hand you, which generates `tools/artifacts.html`. Its reach half **scans the three decks, the loot tables, the roster, `START_GEAR`, `CRAFT` AND the source of every global function**, because three keys are handed over by code and a decks-only census calls all three unreachable. ⚠ It strips comments before that scan: `LINT`'s essay quotes `gear:'spear'` and the first cut reported the linter as a door. #279 |
+| `foedex.js` · `orphanart.js` | the 62-body foe catalogue and the art nothing can reach, which together fill the lab's ENEMIES tab. #276, live since #290 |
+| `gear.js` | every artifact the game can hand you, which fills the lab's ARTIFACTS tab (live since #290). Its reach half **scans the three decks, the loot tables, the roster, `START_GEAR`, `CRAFT` AND the source of every global function**, because three keys are handed over by code and a decks-only census calls all three unreachable. ⚠ It strips comments before that scan: `LINT`'s essay quotes `gear:'spear'` and the first cut reported the linter as a door. #279 |
 | `ptsprice.js` | every body and every fight's threat price, for diffing against a `git show HEAD:` baseline after any `unitPts` change. #276 |
 | `align243.js` · `apron241e.js` · `diff243.js` · `road243i.js` · `a269_split.js` · `lad254b.js` · `m266_gap.js` · `promises257.js` · `statsum252.js` · `statsum252b.js` · `statzero253.js` | the one-offs a changelog row or a rule names as the instrument that measured it, which is how a one-off earns its place |
 
